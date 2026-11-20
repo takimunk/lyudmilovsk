@@ -258,7 +258,7 @@ def local_to_world(front, yaw, local):
     """A building's local point (the buildings thread's frame: x along the front to the right of someone in the street facing
     it, y inland away from the street, z up; metres from the plot's front point) -> Unreal metres."""
     a = math.radians(yaw)
-    x, y, z = local
+    x, y, z = (list(local) + [0.0])[:3]     # a spot given on the floor: [x, y]
     return [round(front[0] + x * math.sin(a) - y * math.cos(a), 2), round(front[1] - x * math.cos(a) - y * math.sin(a), 2), round(front[2] + z, 2)]
 
 
@@ -1043,6 +1043,9 @@ def main():
         write(os.path.join(OUT_STRINGS, "strings_%s.json" % lang), table)
 
     write_counters(people, workplaces)
+    # what is added to the town after it is made: the sanatorium's guests, then the new things to do (both idempotent)
+    for extra_script in ("sanatorium_guests.py", "town_activities.py"):
+        subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), extra_script)], check=True)
 
     jobs = sum(1 for p in people if any(d.get("place") for d in p["duties"]) and p["occupation"] != "pupil")
     open_posts = sum(sum(c for _, c, _, _ in w["staff"]) for w in workplaces)

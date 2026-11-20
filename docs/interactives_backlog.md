@@ -395,7 +395,7 @@ never per-frame). Done: Blender previews of three rooms in two states, perf benc
 
 ## 26. Residents do the new activities
 
-`[ ]` **Brief (Fable 5.2):** Make the townsfolk use tonight's features by persona and weather: kids fly kites and skip
+`[~] residents-activities 2026-11-20` (docs/town_life.md "The new activities") **Brief (Fable 5.2):** Make the townsfolk use tonight's features by persona and weather: kids fly kites and skip
 stones, pensioners take the sanatorium cure and play dominoes in its lounge, the regulars go to the cinema (seats fill,
 `FindFreeThing`), people read the paper on benches (the `read_bench` activity holding the new paper prop), someone plays the
 piano in the hall in the evening (item 15's synth, rarely), allotment neighbours dig and water, the postman does his round,
