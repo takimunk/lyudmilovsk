@@ -1,0 +1,45 @@
+{
+ "about": "Written by tools/rail_passenger/passenger.py (docs/railway.md \"Riding as a passenger\"); never edit by hand.",
+ "fare": 5,
+ "fine": 20,
+ "walk_cms": 85.0,
+ "start_after": 12.0,
+ "conductors": [
+  {
+   "id": "valya",
+   "model": "Korneeva_nina",
+   "warns": 1,
+   "name": "rail.conductor.valya.name",
+   "ask": "rail.conductor.valya.ask",
+   "punch": "rail.conductor.valya.punch",
+   "again": "rail.conductor.valya.again",
+   "warn": "rail.conductor.valya.warn",
+   "fine": "rail.conductor.valya.fine",
+   "broke": "rail.conductor.valya.broke"
+  },
+  {
+   "id": "timofeich",
+   "model": "Crowd_12",
+   "warns": 0,
+   "name": "rail.conductor.timofeich.name",
+   "ask": "rail.conductor.timofeich.ask",
+   "punch": "rail.conductor.timofeich.punch",
+   "again": "rail.conductor.timofeich.again",
+   "warn": "rail.conductor.timofeich.warn",
+   "fine": "rail.conductor.timofeich.fine",
+   "broke": "rail.conductor.timofeich.broke"
+  },
+  {
+   "id": "sato",
+   "model": "Sato_kei",
+   "warns": 2,
+   "name": "rail.conductor.sato.name",
+   "ask": "rail.conductor.sato.ask",
+   "punch": "rail.conductor.sato.punch",
+   "again": "rail.conductor.sato.again",
+   "warn": "rail.conductor.sato.warn",
+   "fine": "rail.conductor.sato.fine",
+   "broke": "rail.conductor.sato.broke"
+  }
+ ]
+}

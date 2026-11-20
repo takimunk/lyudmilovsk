@@ -1,6 +1,6 @@
 #!/bin/sh
 # An offscreen scripted flight of the player bird (UBirdFlightSubsystem's Bird.Script), one frame per 1/30 s of game time,
-# joined into renders/bird_flight/<name>.mp4. Waits for other Unreal -game runs; never opens a window.
+# joined into renders/bird_flight/<name>.mp4. Waits for a slot in tools/wait_ue_queue.sh; never opens a window.
 #   unreal/scripts/record_bird_flight.sh showcase[:Species] [name] [extra -ExecCmds before the script, ';'-separated] [map]
 #   e.g. record_bird_flight.sh showcase:HerringGull gull     record_bird_flight.sh styles styles "lyud.Bird.Debug 1"
 set -e
@@ -13,7 +13,8 @@ MAP="${4:-/Game/Scene01/Lvl_Scene01}"
 FRAMES="$ROOT/unreal/Lyudmilovsk/Saved/BirdFlight/$NAME"
 OUT="$ROOT/renders/bird_flight"
 rm -rf "$FRAMES"; mkdir -p "$FRAMES" "$OUT"
-while pgrep -f "UnrealEditor.*-game" >/dev/null; do sleep 5; done
+# a slot among the offscreen runs of all checkouts (up to three at once), not the machine to itself
+sh "${WAIT:-$ROOT/tools/wait_ue_queue.sh}" 7200
 CMDS="Bird.Script $SCRIPT record=$FRAMES warm=${WARM:-75} quit"
 [ -n "$PRE" ] && CMDS="$(echo "$PRE" | tr ';' ',')",$CMDS
 "$UE" "$ROOT/unreal/Lyudmilovsk/Lyudmilovsk.uproject" "$MAP" -game -RenderOffscreen -ResX=1280 -ResY=720 -windowed \
