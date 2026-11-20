@@ -501,6 +501,38 @@ def follow_spot(ctx, label, poses_pick, nseg):
     return q
 
 
+@spot("gait")
+def sp_gait(ctx):
+    """A walker made to walk (lyud.People.Order <key> stroll, or sit_bench far off), followed through the GaitCover
+    segments: the townsfolk 'walking' at noon often stand stuck, so take one the sim sends on a long way."""
+    def setup(w):
+        c = CENTRES[int(os.environ.get("GAIT_CENTRE", "0"))]
+        look(w, (c[0] - 700.0, c[1], c[2] + 300.0), (c[0], c[1], c[2] + 100.0))
+
+    def order(w, i):
+        b = pick_person(w, ("STAND", "LOOK", "WALK", "TALK"))
+        if not b:
+            log("gait: nobody near")
+            return
+        ctx["key"] = b[2]
+        st["used"].add(b[2])
+        act = os.environ.get("GAIT_ACT", "stroll")
+        cmd(w, "lyud.People.Order %s %s" % (b[2], act))
+        ctx["subj"] = b[0]
+        log("gait subject %s ordered to %s (pose %s)" % (b[2], act, b[1]))
+
+    def get(w):
+        a = ctx.get("subj")
+        if not a:
+            return None
+        for b in people(w):
+            if b[0] == a:
+                return b
+        return None
+
+    return [("do", setup), ("wait", 120, None), ("wait", 1, order), ("wait", 90, None)] + follow_spot(ctx, "gait", get, NF)
+
+
 @spot("follow")
 def sp_follow(ctx):
     return [("wait", 1, snap), ("wait", 15, None)] + follow_spot(ctx, "follow", lambda w: moving_walker(w) or moving_walker(w, 15000.0)
