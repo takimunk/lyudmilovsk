@@ -630,6 +630,7 @@
   },
   "library_scope": {
    "prompt": "city.do.telescope.prompt",
+   "screen": "scope",
    "minutes": 5,
    "target": "telescope",
    "lines": [

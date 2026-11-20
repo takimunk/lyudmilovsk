@@ -872,7 +872,7 @@ TSharedRef<SWidget> SLyudDiarySpread::BirdCard(FName Species)
 	}
 	// when and where it was first met, and how
 	const FText Where = Seen->Place.IsNone() ? FText::GetEmpty() : ULyudQuests::PlaceName(Seen->Place);
-	const TCHAR* HowKey = Seen->How == TEXT("binoculars") ? TEXT("ui.birds.how_binoculars") : Seen->How == TEXT("bird") ? TEXT("ui.birds.how_bird") : TEXT("ui.birds.how_hand");
+	const TCHAR* HowKey = Seen->How == TEXT("binoculars") ? TEXT("ui.birds.how_binoculars") : Seen->How == TEXT("telescope") ? TEXT("ui.birds.how_telescope") : Seen->How == TEXT("bird") ? TEXT("ui.birds.how_bird") : TEXT("ui.birds.how_hand");
 	Text->AddSlot().AutoHeight().Padding(0, 6, 0, 0)
 	[
 		Words(LyudText::Get(Where.IsEmpty() ? TEXT("ui.birds.first") : TEXT("ui.birds.first_at"),

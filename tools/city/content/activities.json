@@ -20,7 +20,7 @@
   "eye_chart": {"prompt": "city.do.eye_chart.prompt", "lines": "city.do.eye_chart", "minutes": 5},
   "checkup": {"prompt": "city.do.checkup.prompt", "lines": "city.do.checkup", "minutes": 15, "pose": "sit", "needs_staff": "doctor"},
   "photo_booth": {"prompt": "city.do.photo_booth.prompt", "lines": "city.do.photo_booth", "minutes": 5, "price": 20, "sound": "camera_flash"},
-  "telescope": {"prompt": "city.do.telescope.prompt", "lines": [{"k": "city.do.telescope.*", "h": [6, 21]}, {"k": "city.night.telescope.*", "h": [21, 6]}], "minutes": 5, "price": 1, "sound": "coin_drop"},
+  "telescope": {"prompt": "city.do.telescope.prompt", "lines": [{"k": "city.do.telescope.*", "h": [6, 21]}, {"k": "city.night.telescope.*", "h": [21, 6]}], "minutes": 5, "price": 1, "sound": "coin_drop", "screen": "scope_coin"},
   "binoculars_post": {"prompt": "city.do.binoculars_post.prompt", "lines": [{"k": "city.do.binoculars_post.*", "h": [6, 21]}, {"k": "city.night.binoculars.*", "h": [21, 6]}], "minutes": 5},
   "payphone": {"prompt": "city.do.payphone.prompt", "lines": "city.do.payphone", "minutes": 2, "price": 1, "sound": "phone_dial"},
   "fountain": {"prompt": "city.do.fountain.prompt", "lines": "city.do.fountain", "minutes": 1, "sound": "water_sip"},

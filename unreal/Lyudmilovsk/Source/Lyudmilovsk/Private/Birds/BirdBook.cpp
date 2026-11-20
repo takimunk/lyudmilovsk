@@ -110,7 +110,7 @@ bool ULyudBirdBook::NoteSeen(const UObject* WorldContext, FName Species, bool bF
 	const FString NameKey = FString(TEXT("@bird.")) + Snake(Species.ToString()) + TEXT(".name");
 	if (ULyudQuests* Q = ULyudQuests::Get(WorldContext))
 	{
-		Q->AddNote(How == TEXT("binoculars") ? TEXT("journal.bird.seen_binoculars") : TEXT("journal.bird.seen"), { NameKey });
+		Q->AddNote(How == TEXT("binoculars") ? TEXT("journal.bird.seen_binoculars") : How == TEXT("telescope") ? TEXT("journal.bird.seen_telescope") : TEXT("journal.bird.seen"), { NameKey });
 	}
 	ULyudQuests::Notify(WorldContext, TEXT("bird_seen"), Species.ToString());
 	OnChanged.Broadcast();

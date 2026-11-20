@@ -1985,7 +1985,8 @@ namespace LyudCity
 		}
 
 		/** Is this act a screen show (a film, a play, the TV: the page in the screen style, its line as subtitles)? */
-		static bool IsScreen(const FAct& A) { return !A.Screen.empty(); }
+		/** A show to watch from a seat (a telescope's "scope..." is looked into, not watched). */
+		static bool IsScreen(const FAct& A) { return !A.Screen.empty() && A.Screen.rfind("scope", 0) != 0; }
 		/** Does the hero sit on the thing itself (a seat, a bed, or anything with a seat height: the cinema's hall seats)? */
 		static bool IsSeatThing(const FThing& T) { return T.Kind == "seat" || T.Kind == "bed" || T.Props.count("height") > 0; }
 

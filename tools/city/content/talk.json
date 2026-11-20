@@ -1583,6 +1583,59 @@
     "gives": {
      "collect": "staff/market"
     }
+   },
+   {
+    "id": "market.sky",
+    "k": "city.ask.market.sky",
+    "h": [
+     7,
+     13
+    ],
+    "lines": [
+     "city.ask.market.sky.1",
+     "city.ask.market.sky.2",
+     {
+      "k": "city.ask.market.sky.3",
+      "have": "sky/saturn_ring"
+     }
+    ]
+   },
+   {
+    "id": "market.log",
+    "k": "city.ask.market.log",
+    "h": [
+     7,
+     13
+    ],
+    "heard": "market.sky",
+    "lines": [
+     "city.ask.market.log.1",
+     {
+      "k": "city.ask.market.log.2",
+      "have": "sky/jupiter"
+     },
+     "city.ask.market.log.3",
+     {
+      "k": "city.ask.market.log.4",
+      "count": [
+       "sky",
+       7
+      ]
+     }
+    ]
+   },
+   {
+    "id": "market.moons",
+    "k": "city.ask.market.moons",
+    "h": [
+     7,
+     13
+    ],
+    "have": "sky/jupiter_four",
+    "lines": [
+     "city.ask.market.moons.1",
+     "city.ask.market.moons.2"
+    ]
    }
   ],
   "buy_market_sweets": [

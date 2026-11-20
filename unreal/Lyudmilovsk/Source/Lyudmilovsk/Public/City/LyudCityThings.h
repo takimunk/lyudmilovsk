@@ -112,6 +112,8 @@ public:
 	virtual ~ULyudCityThings() override;
 
 	static ULyudCityThings* Get(const UObject* WorldContext);
+	/** A stamp ("set/piece") from outside the town's things (the telescopes' "sky"): given and announced; false if he had it. */
+	bool GiveStamp(const FString& Stamp);
 
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Deinitialize() override;

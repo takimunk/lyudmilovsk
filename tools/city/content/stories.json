@@ -35,7 +35,7 @@
   "_home_record": {"prompt": "city.do.record_player.prompt", "minutes": 10, "sound": "vinyl_crackle", "any_hour": true},
   "_home_window": {"prompt": "city.act.look_out.prompt", "minutes": 5, "sound": "wind_soft", "any_hour": true},
   "_home_canvas": {"prompt": "city.home.canvas.prompt", "minutes": 3, "any_hour": true},
-  "_home_scope": {"prompt": "city.home.telescope.prompt", "minutes": 10, "any_hour": true},
+  "_home_scope": {"prompt": "city.home.telescope.prompt", "minutes": 10, "any_hour": true, "screen": "scope"},
   "_home_listen": {"prompt": "city.home.listen.prompt", "minutes": 15, "pose": "sit", "sound": "morse_beep", "any_hour": true},
 
   "holm_painting": {"like": "_home_look", "lines": "city.home.holm.painting"},
@@ -123,7 +123,7 @@
   "santos_sea": {"like": "_home_look", "lines": "city.home.santos.sea"},
 
   "girma_shelf": {"like": "_home_read", "lines": "city.home.girma.shelf"},
-  "girma_telescope": {"like": "_home_scope", "lines": ["city.home.girma.telescope.1", {"k": "city.home.girma.telescope.2", "h": [7, 19]}, "city.home.girma.telescope.3", "city.home.girma.telescope.4"]},
+  "girma_telescope": {"like": "_home_scope", "screen": "scope_sun", "lines": ["city.home.girma.telescope.1", {"k": "city.home.girma.telescope.2", "h": [7, 19]}, "city.home.girma.telescope.3", "city.home.girma.telescope.4"]},
   "girma_calendar": {"like": "_home_look", "lines": "city.home.girma.calendar"},
   "girma_chart": {"like": "_home_look", "lines": "city.home.girma.chart"},
   "girma_picture": {"like": "_home_look", "lines": "city.home.girma.picture"},

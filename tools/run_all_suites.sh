@@ -166,6 +166,7 @@ fi
 suite sea.test                    - bash tools/sea/run.sh test
 suite sea.days                    - bash tools/sea/run.sh days
 suite sea.field                   - bash tools/sea/run.sh field
+suite telescopesim.test           - bash tools/telescopesim/run.sh test
 suite transportsim.test           - bash tools/transportsim/run.sh test
 suite underwater.test             - bash tools/underwater/run.sh test
 suite underwater.eco              - bash tools/underwater/run.sh eco -v

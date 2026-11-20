@@ -200,7 +200,7 @@ An act is what happens when the hero presses E at a thing:
 | `event`/`target` | reported to the quests: always `do` + the act id |
 | `daily` | how many times a day it gives its reward (0: no limit) |
 | `shop` | opens the trade screen with this stock of `shops` when `needs_staff` is on shift |
-| `screen` | a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
+| `screen` | `scope`, `scope_coin`, `scope_sun`: a telescope, the act opens the eyepiece (docs/telescopes.md; its line is the caption, its minutes do not pass, it is never watched from a seat). Otherwise a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
 | `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
 | `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |

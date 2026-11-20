@@ -33,6 +33,7 @@
   },
   "tarelka_telescope": {
    "like": "telescope",
+   "screen": "scope",
    "target": "telescope",
    "lines": [
     {

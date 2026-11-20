@@ -38,6 +38,7 @@
 #include "Sound/SoundBase.h"
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
+#include "Sky/LyudTelescope.h"
 #include "Plants/GameCalendar.h"
 #include "Tasks/Task.h"
 #include "UI/LyudGameScreen.h"
@@ -1180,6 +1181,17 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	const FText Title = O.Title.empty() ? FText::GetEmpty() : LyudText::Get(LyudCityThingsImpl::Str(O.Title));
 	// sitting and lying only when the hero is at the thing (a console run from across town doesn't carry him there)
 	const bool bNear = Hero && FVector::Dist(Hero->GetActorLocation(), At) < 400.f;
+	if (O.Screen.rfind("scope", 0) == 0)
+	{
+		// a telescope (docs/telescopes.md): the eyepiece instead of a page
+		if (ULyudTelescope* Scope = ULyudTelescope::Get(this))
+		{
+			ClosePage();
+			SetPrompted(-1);
+			Scope->Begin(At, T.Yaw, LyudCityThingsImpl::Str(O.Screen), O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line)));
+			return;
+		}
+	}
 	if (!O.Screen.empty())
 	{
 		// a show: seated on the thing itself when it is a seat (a cinema's hall seat), else where he is (a sofa, standing)
@@ -1568,6 +1580,16 @@ void ULyudCityThings::Tick(float DeltaTime)
 }
 
 // --- collections
+
+bool ULyudCityThings::GiveStamp(const FString& Stamp)
+{
+	if (!Model || !Model->GiveStamp(std::string(TCHAR_TO_UTF8(*Stamp))))
+	{
+		return false;
+	}
+	AnnounceStamps({ Stamp });
+	return true;
+}
 
 void ULyudCityThings::AnnounceStamps(const TArray<FString>& Stamps)
 {

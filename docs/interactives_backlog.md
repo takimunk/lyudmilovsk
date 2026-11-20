@@ -120,7 +120,7 @@ citysim + questsim tests of each job, quest audit clean.
 
 ## 5. Telescopes that show the sky
 
-`[ ]` **Brief (Fable 5.2):** Today the telescopes (the café «Тарелка»'s gallery, the lighthouse gallery, the Santos
+`[~] «Сделать телескопы с настоящим небом» 2026-11-20 (branch `telescopes`, docs/telescopes.md)` **Brief (Fable 5.2):** Today the telescopes (the café «Тарелка»'s gallery, the lighthouse gallery, the Santos
 family's loft, `home_santos`) are a line of text. Make looking through one a view: a round eyepiece view with a slow
 manual aim (mouse, inertia), focus, magnification steps, the real sky of the game (`ALyudSky`, the sun motif, the moon
 phase from the festival calendar's Meeus code, the planets the sky already places, the rare sky: aurora, noctilucent
