@@ -168,7 +168,7 @@ a small quest "Янтарный берег". Done: offline tests of the skip cou
 
 ## 9. An allotment
 
-`[ ]` **Brief (Fable 5.2):** Give the hero a garden bed: a strip of the allotments (or the commune slab's roof garden,
+`[x] allotment 2026-11-20 (branch allotment, docs/allotment.md; awaits a Mac build, icons cut, shots and a bench)` **Brief (Fable 5.2):** Give the hero a garden bed: a strip of the allotments (or the commune slab's roof garden,
 whichever the city plan has room for: ask the coordinator before touching `city_plan.json`) rented from the house
 committee. Seeds from the market and the hardware shop, dig (a spade), sow, water (the watering can, the sanatorium already
 has an act `sanatorium_watering`), weed, then the plants grow by the game calendar and weather with the **procedural plant

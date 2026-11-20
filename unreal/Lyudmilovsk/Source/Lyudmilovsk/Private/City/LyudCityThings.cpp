@@ -32,6 +32,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Letters/LyudLetters.h"
 #include "People/LyudFriends.h"
+#include "Garden/LyudGarden.h"
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudSave.h"
@@ -1490,6 +1491,14 @@ void ULyudCityThings::Tick(float DeltaTime)
 		if (const ULyudFriends* Friends = ULyudFriends::Get(World))
 		{
 			if (Friends->IsOffering() || Friends->HasModeUp())
+			{
+				Picked = -1;
+			}
+		}
+		// and so has the allotment (docs/allotment.md)
+		if (const ULyudGarden* Garden = ULyudGarden::Get(World))
+		{
+			if (Garden->IsPrompting())
 			{
 				Picked = -1;
 			}
