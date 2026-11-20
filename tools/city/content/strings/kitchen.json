@@ -1,0 +1,363 @@
+{
+ "_doc": "Cooking from the bed and the catch (docs/kitchen.md, ULyudKitchen): the four dishes' item words, the stove's page and prompts (ui.cook.*), the diary's lines (cook.diary.*), the «Янтарь» kitchen's buying of vegetables, the collection \"cook\", the canteen cook's talk (city.ask.canteen.*) and the quest \"Supper of my own\" (quest.own_supper.*).",
+ "item.dish_ukha.name": {
+  "ru": "Уха",
+  "en": "Ukha",
+  "ja": "ウハー"
+ },
+ "item.dish_ukha.desc": {
+  "ru": "Миска ухи из своей рыбы, со своей картошкой и укропом. Пахнет костром, хотя варилась на плите.",
+  "en": "A bowl of fish soup from my own catch, with my own potatoes and dill. It smells of a campfire, though it was cooked on a stove.",
+  "ja": "自分で釣った魚と、自分の畑のじゃがいもとディルのスープ。コンロで作ったのに、たき火のにおいがする。"
+ },
+ "item.dish_fried_potatoes.name": {
+  "ru": "Жареная картошка с укропом",
+  "en": "Fried potatoes with dill",
+  "ja": "じゃがいものディル炒め"
+ },
+ "item.dish_fried_potatoes.desc": {
+  "ru": "Картошка со своей грядки, с корочкой. Укроп сверху, пока горячая.",
+  "en": "Potatoes from my own bed, with a crust. Dill on top while it is hot.",
+  "ja": "自分の畑のじゃがいも、こんがり焼けている。熱いうちにディルをのせる。"
+ },
+ "item.dish_fried_fish.name": {
+  "ru": "Жареная рыба",
+  "en": "Fried fish",
+  "ja": "魚のソテー"
+ },
+ "item.dish_fried_fish.desc": {
+  "ru": "Сам поймал, сам пожарил. Хвост хрустит.",
+  "en": "Caught it myself, fried it myself. The tail is crisp.",
+  "ja": "自分で釣って、自分で焼いた。しっぽがぱりぱり。"
+ },
+ "item.dish_salad.name": {
+  "ru": "Салат с грядки",
+  "en": "Salad from the bed",
+  "ja": "畑のサラダ"
+ },
+ "item.dish_salad.desc": {
+  "ru": "Помидоры, редиска и укроп, всё час назад росло. Соль и больше ничего.",
+  "en": "Tomatoes, radishes and dill, all of it growing an hour ago. Salt and nothing else.",
+  "ja": "トマトとラディッシュとディル。一時間前まで畑に生えていた。塩だけ。"
+ },
+ "ui.cook.title": {
+  "ru": "У плиты",
+  "en": "At the stove",
+  "ja": "コンロの前で"
+ },
+ "ui.cook.title_plate": {
+  "ru": "Плитка на одну конфорку",
+  "en": "A one-ring hot plate",
+  "ja": "一口の電熱器"
+ },
+ "ui.cook.keys": {
+  "ru": "1–5 — готовить · Esc — отойти",
+  "en": "1–5: cook · Esc: step away",
+  "ja": "1〜5：作る · Esc：離れる"
+ },
+ "ui.cook.recipe.ukha": {
+  "ru": "Уха",
+  "en": "Ukha",
+  "ja": "ウハー"
+ },
+ "ui.cook.recipe.fried_potatoes": {
+  "ru": "Жареная картошка с укропом",
+  "en": "Fried potatoes with dill",
+  "ja": "じゃがいものディル炒め"
+ },
+ "ui.cook.recipe.fried_fish": {
+  "ru": "Жареная рыба",
+  "en": "Fried fish",
+  "ja": "魚のソテー"
+ },
+ "ui.cook.recipe.salad": {
+  "ru": "Салат с грядки",
+  "en": "Salad from the bed",
+  "ja": "畑のサラダ"
+ },
+ "ui.cook.recipe.jam": {
+  "ru": "Клубничное варенье",
+  "en": "Strawberry jam",
+  "ja": "いちごジャム"
+ },
+ "ui.cook.fish": {
+  "ru": "рыба",
+  "en": "fish",
+  "ja": "魚"
+ },
+ "ui.cook.need": {
+  "ru": "{0} × {1}",
+  "en": "{0} × {1}",
+  "ja": "{0} × {1}"
+ },
+ "ui.cook.line_ok": {
+  "ru": "{0}. {1}: {2}. Всё есть",
+  "en": "{0}. {1}: {2}. All here",
+  "ja": "{0}. {1}：{2}。そろっている"
+ },
+ "ui.cook.line_lack": {
+  "ru": "{0}. {1}: {2}. Не хватает: {3}",
+  "en": "{0}. {1}: {2}. Missing: {3}",
+  "ja": "{0}. {1}：{2}。足りない：{3}"
+ },
+ "ui.cook.line_stove": {
+  "ru": "{0}. {1}: {2}. Нужна большая плита и таз",
+  "en": "{0}. {1}: {2}. Needs a big stove and a pan",
+  "ja": "{0}. {1}：{2}。大きなコンロと鍋がいる"
+ },
+ "ui.cook.hint": {
+  "ru": "Y — к плите: готовить из своего",
+  "en": "Y: to the stove, cook from my own",
+  "ja": "Y：コンロへ（自分の材料で作る）"
+ },
+ "ui.cook.hint_plate": {
+  "ru": "Y — к плитке: готовить из своего",
+  "en": "Y: to the hot plate, cook from my own",
+  "ja": "Y：電熱器へ（自分の材料で作る）"
+ },
+ "ui.cook.busy": {
+  "ru": "Сначала сниму с огня то, что уже стоит.",
+  "en": "First I take off what is on the fire already.",
+  "ja": "まず火にかけてあるものを下ろす。"
+ },
+ "ui.cook.lack": {
+  "ru": "Не хватает: {0}",
+  "en": "Missing: {0}",
+  "ja": "足りない：{0}"
+ },
+ "ui.cook.begun": {
+  "ru": "На огне: {0}. От плиты лучше не отходить.",
+  "en": "On the fire: {0}. Better not to leave the stove.",
+  "ja": "火にかけた：{0}。コンロから離れないほうがいい。"
+ },
+ "ui.cook.begun_cold": {
+  "ru": "Режу: {0}.",
+  "en": "Cutting up: {0}.",
+  "ja": "切っている：{0}。"
+ },
+ "ui.cook.cooking": {
+  "ru": "{0} на огне…",
+  "en": "{0} is on the fire…",
+  "ja": "{0}を火にかけている…"
+ },
+ "ui.cook.step.skim": {
+  "ru": "Пена поднялась!   Y — снять пену",
+  "en": "The froth is up!   Y: skim it",
+  "ja": "あくが浮いた！   Y：あくを取る"
+ },
+ "ui.cook.step.stir": {
+  "ru": "Пристаёт ко дну!   Y — помешать",
+  "en": "It is sticking!   Y: stir",
+  "ja": "底にくっつく！   Y：かき混ぜる"
+ },
+ "ui.cook.step.turn": {
+  "ru": "Одна сторона готова!   Y — перевернуть",
+  "en": "One side is done!   Y: turn it over",
+  "ja": "片面が焼けた！   Y：ひっくり返す"
+ },
+ "ui.cook.step.salt": {
+  "ru": "Пора солить!   Y — посолить",
+  "en": "Time for salt!   Y: salt it",
+  "ja": "塩の入れどき！   Y：塩をふる"
+ },
+ "ui.cook.tended": {
+  "ru": "Вовремя.",
+  "en": "Just in time.",
+  "ja": "間に合った。"
+ },
+ "ui.cook.missed": {
+  "ru": "Упустил момент…",
+  "en": "Missed the moment…",
+  "ja": "タイミングを逃した…"
+ },
+ "ui.cook.ready": {
+  "ru": "Готово!   Y — снять с огня",
+  "en": "Done!   Y: take it off the fire",
+  "ja": "できた！   Y：火から下ろす"
+ },
+ "ui.cook.over": {
+  "ru": "Перестаивает!   Y — снять с огня скорее",
+  "en": "It is overcooking!   Y: take it off, quick",
+  "ja": "煮すぎ！   Y：早く火から下ろす"
+ },
+ "ui.cook.burnt": {
+  "ru": "Сгорело.   Y — выбросить и вымыть посуду",
+  "en": "Burnt.   Y: throw it out and wash up",
+  "ja": "焦げた。   Y：捨てて鍋を洗う"
+ },
+ "ui.cook.away": {
+  "ru": "{0} всё ещё на огне, а я ушёл!",
+  "en": "{0} is still on the fire, and I have walked off!",
+  "ja": "{0}を火にかけたまま離れてしまった！"
+ },
+ "ui.cook.result.3": {
+  "ru": "{0}: удалось на славу. Порций: {1}",
+  "en": "{0}: it came out splendid. Portions: {1}",
+  "ja": "{0}：最高の出来。{1}人前"
+ },
+ "ui.cook.result.2": {
+  "ru": "{0}: получилось хорошо. Порций: {1}",
+  "en": "{0}: it came out well. Portions: {1}",
+  "ja": "{0}：うまくできた。{1}人前"
+ },
+ "ui.cook.result.1": {
+  "ru": "{0}: есть можно. Порций: {1}",
+  "en": "{0}: edible. Portions: {1}",
+  "ja": "{0}：食べられる。{1}人前"
+ },
+ "ui.cook.result.0": {
+  "ru": "Всё сгорело. Сковородку пришлось отскребать.",
+  "en": "All of it burnt. I had to scrape the pan.",
+  "ja": "全部焦げた。フライパンをこすって洗うはめになった。"
+ },
+ "ui.cook.jam_jar": {
+  "ru": "Банка своего варенья. Такую не стыдно отнести на воскресный конкурс.",
+  "en": "A jar of my own jam. One I need not be ashamed to take to the Sunday contest.",
+  "ja": "自分で煮たジャムのびん。日曜のコンクールに出しても恥ずかしくない。"
+ },
+ "ui.cook.closed": {
+  "ru": "Кухня открыта с {0}:00 до {1}:00",
+  "en": "The kitchen is open from {0}:00 to {1}:00",
+  "ja": "台所は{0}時から{1}時まで"
+ },
+ "ui.cook.kitchen_offer_veg": {
+  "ru": "Кухня «Янтаря»   Y — сдать повару овощи с грядки ({0} шт., {1} руб.)",
+  "en": "The Yantar's kitchen   Y: sell the cook vegetables from the bed ({0}, {1} rub.)",
+  "ja": "「ヤンターリ」の厨房   Y：畑の野菜をコックに売る（{0}個、{1}ルーブル）"
+ },
+ "ui.cook.kitchen_offer_both": {
+  "ru": "Кухня «Янтаря»   Y — сдать повару рыбу ({0} шт.) и овощи ({1} шт.): {2} руб.",
+  "en": "The Yantar's kitchen   Y: sell the cook fish ({0}) and vegetables ({1}): {2} rub.",
+  "ja": "「ヤンターリ」の厨房   Y：魚（{0}匹）と野菜（{1}個）をコックに売る：{2}ルーブル"
+ },
+ "ui.cook.kitchen_sold_veg": {
+  "ru": "Повар забрал овощи: {0} шт. за {1} руб. «Вот это с грядки, а не со склада!»",
+  "en": "The cook took the vegetables: {0} for {1} rub. \"Now that is from a bed, not from a warehouse!\"",
+  "ja": "コックが野菜を買い取った：{0}個で{1}ルーブル。「これぞ畑の味、倉庫のとは違う！」"
+ },
+ "cook.diary.first": {
+  "ru": "Сам приготовил: {0}. Оказывается, еда бывает не только из буфета.",
+  "en": "Cooked it myself: {0}. It turns out food does not only come from a buffet.",
+  "ja": "自分で作った：{0}。食べ物は売店から出てくるだけじゃなかった。"
+ },
+ "cook.diary.burnt": {
+  "ru": "Первый раз что-то сжёг. Повариха сказала: «С почином». Кажется, это поздравление.",
+  "en": "Burnt something for the first time. The cook said: \"That's a start.\" I think it was congratulations.",
+  "ja": "はじめて料理を焦がした。食堂のおばさんは「これで一人前」と言った。お祝いらしい。"
+ },
+ "cook.diary.all": {
+  "ru": "Приготовил всё, что умею: уху, картошку, рыбу, салат и варенье. Пять блюд. Больше, чем умеет папа.",
+  "en": "I have cooked everything I know: ukha, potatoes, fish, salad and jam. Five dishes. More than Dad can.",
+  "ja": "作れるものは全部作った。ウハー、じゃがいも、魚、サラダ、ジャム。五品。お父さんより多い。"
+ },
+ "cook.diary.veg": {
+  "ru": "Сдал овощи на кухню «Янтаря». Теперь в ресторане едят то, что я поливал.",
+  "en": "Sold vegetables to the Yantar's kitchen. Now people in the restaurant eat what I watered.",
+  "ja": "「ヤンターリ」の厨房に野菜を売った。レストランのお客が、ぼくが水をやった野菜を食べている。"
+ },
+ "dev.group.kitchen": {
+  "ru": "Кухня",
+  "en": "Kitchen",
+  "ja": "台所"
+ },
+ "dev.action.kitchen.kit": {
+  "ru": "Кухня: продукты на все пять блюд",
+  "en": "Kitchen: ingredients for all five dishes",
+  "ja": "台所：五品ぶんの材料"
+ },
+ "dev.action.kitchen.cook": {
+  "ru": "Кухня: приготовить следующее блюдо сразу",
+  "en": "Kitchen: cook the next dish at once",
+  "ja": "台所：次の料理をすぐ作る"
+ },
+ "city.coll.cook.title": {
+  "ru": "Поварская книжка",
+  "en": "The cook's book",
+  "ja": "料理の記録"
+ },
+ "city.do.hot_plate.prompt": {
+  "ru": "E — плитка: готовить из своего",
+  "en": "E: the hot plate, cook from my own",
+  "ja": "E：電熱器（自分の材料で作る）"
+ },
+ "city.do.hot_plate.1": {
+  "ru": "Плитка на одну конфорку, спираль краснеет не сразу. Рядом сковородка и кастрюлька.",
+  "en": "A one-ring hot plate, the coil takes its time to redden. A frying pan and a small pot beside it.",
+  "ja": "一口の電熱器。コイルが赤くなるまで少しかかる。横にフライパンと小鍋。"
+ },
+ "city.ask.canteen.stove": {
+  "ru": "А можно мне к вашей плите?",
+  "en": "May I use your stove?",
+  "ja": "コンロを借りてもいいですか？"
+ },
+ "city.ask.canteen.stove.1": {
+  "ru": "Со своим приходи, казённое не дам. Рыбу поймал, картошку вырастил, тогда становись: вторая конфорка свободна. У стойки нажми Y.",
+  "en": "Bring your own, I will not give you the canteen's. Catch a fish, grow your potatoes, then step up: the second ring is free. At the counter press Y.",
+  "ja": "材料は自分で持っておいで、食堂のは出さないよ。魚を釣って、じゃがいもを育てたら、どうぞ。二つ目の火が空いてる。カウンターでYを押しな。"
+ },
+ "city.ask.canteen.stove.2": {
+  "ru": "Пену снимай, как поднимется. Картошку мешай, а то пристанет. И от плиты не отходи: уха ждать не умеет.",
+  "en": "Skim the froth when it rises. Stir the potatoes or they will stick. And do not leave the stove: ukha does not know how to wait.",
+  "ja": "あくは浮いたら取る。じゃがいもは混ぜないとくっつく。それからコンロを離れない。ウハーは待ってくれないよ。"
+ },
+ "city.ask.canteen.taste": {
+  "ru": "Попробуйте, я сам готовил",
+  "en": "Have a taste, I cooked it myself",
+  "ja": "味見してください、自分で作りました"
+ },
+ "city.ask.canteen.taste.1": {
+  "ru": "Ну-ка… Посолил вовремя. Пену снял. Кто учил? Никто? Тогда руки правильные.",
+  "en": "Let me see… Salted in time. Skimmed. Who taught you? Nobody? Then the hands are right.",
+  "ja": "どれ…塩のタイミングよし。あくも取ってある。誰に習った？誰にも？なら、いい手をしてる。"
+ },
+ "city.ask.canteen.taste.2": {
+  "ru": "Держи фартук, он тут лишний висит. И заходи: в субботу картошки на всех чистить некому.",
+  "en": "Take this apron, it hangs here spare. And drop in: on Saturday there is nobody to peel potatoes for everyone.",
+  "ja": "このエプロンを持っていきな、余ってるから。また来るんだよ。土曜はみんなのぶんのじゃがいもをむく人がいないんだ。"
+ },
+ "quest.own_supper.title": {
+  "ru": "Ужин своими руками",
+  "en": "Supper of my own",
+  "ja": "自分で作る晩ごはん"
+ },
+ "quest.own_supper.desc": {
+  "ru": "Повариха коммуны пускает к плите тех, кто приходит со своим: с рыбой, которую поймал, и с тем, что вырастил.",
+  "en": "The commune's cook lets to the stove those who bring their own: the fish they caught and what they grew.",
+  "ja": "コミューンの食堂のおばさんは、自分の材料を持ってきた人にコンロを貸してくれる。釣った魚と、育てた野菜。"
+ },
+ "quest.own_supper.first.log": {
+  "ru": "Проще всего начать с рыбы: поймать, принести к плите в столовой коммуны и пожарить. Главное, вовремя перевернуть.",
+  "en": "Fish is the easiest start: catch one, bring it to the stove in the commune's canteen and fry it. The main thing is to turn it in time.",
+  "ja": "まずは魚から。釣って、コミューンの食堂のコンロで焼く。大事なのは、ひっくり返すタイミング。"
+ },
+ "quest.own_supper.first.obj": {
+  "ru": "Приготовить что-нибудь самому",
+  "en": "Cook something myself",
+  "ja": "自分で何か作る"
+ },
+ "quest.own_supper.three.log": {
+  "ru": "Одно блюдо есть. Для ухи нужны картошка и укроп с грядки, для салата помидоры и редиска. Попробую ещё.",
+  "en": "One dish done. Ukha wants potatoes and dill from the bed, a salad wants tomatoes and radishes. I will try more.",
+  "ja": "一品できた。ウハーには畑のじゃがいもとディル、サラダにはトマトとラディッシュ。もっと作ってみる。"
+ },
+ "quest.own_supper.three.obj": {
+  "ru": "Приготовить ещё три блюда",
+  "en": "Cook three more dishes",
+  "ja": "あと三品作る"
+ },
+ "quest.own_supper.taste.log": {
+  "ru": "Теперь не стыдно показать поварихе. Только блюдо должно удаться на славу: без единой промашки.",
+  "en": "Now I need not be ashamed to show the cook. Only the dish has to come out splendid: not one slip.",
+  "ja": "もう食堂のおばさんに見せても恥ずかしくない。ただし最高の出来でないと。一度も失敗せずに。"
+ },
+ "quest.own_supper.tell.obj": {
+  "ru": "Приготовить блюдо без промашек и дать попробовать поварихе",
+  "en": "Cook a dish without a slip and let the cook taste it",
+  "ja": "失敗なしで一品作って、食堂のおばさんに味見してもらう"
+ },
+ "quest.own_supper.done": {
+  "ru": "Повариха сказала, что руки у меня правильные, и дала фартук. Фартук большой. Я в нём как в палатке, но это мой фартук.",
+  "en": "The cook said my hands are right and gave me an apron. The apron is big. I am in it as in a tent, but it is my apron.",
+  "ja": "食堂のおばさんは、いい手をしてると言ってエプロンをくれた。大きい。テントみたいだけど、ぼくのエプロンだ。"
+ }
+}

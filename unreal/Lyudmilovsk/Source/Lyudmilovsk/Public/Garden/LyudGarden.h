@@ -56,6 +56,11 @@ public:
 	/** Something of the garden is on the prompt line now (or its chooser is up): others who use E step aside. */
 	bool IsPrompting() const { return Prompt != EPrompt::None || Page.IsValid(); }
 
+	/** The quality (1 .. 3) of his last picking of a crop's item ("strawberries"); 2 when he never picked it. */
+	int32 HarvestQuality(const FString& Item) const;
+	/** He cooked a jar of jam himself (ULyudKitchen): the market's contest tastes this one like the neighbour's. */
+	void OwnJam(int32 Quality);
+
 	/** A friend greeted him (ULyudFriends): now and then they hand him a seed packet if he keeps a bed. */
 	void OnFriendGreeted(int32 PersonId, int32 Level);
 
