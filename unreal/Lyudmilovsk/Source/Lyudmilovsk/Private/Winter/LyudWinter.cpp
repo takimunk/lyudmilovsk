@@ -1126,8 +1126,50 @@ void ULyudWinterSubsystem::StepIce(float DeltaTime)
 	CameraLocation(Cam);
 	const LyudWinter::FIceParams IP = S.IceP;
 	const LyudWinter::FIceMask& Mask = S.Ice;
-	Ice->Drive(SeaZ + 0.1f * S.IceP.ThicknessCm + 12.f, S.IceP.ThicknessCm, Cam,
-		[&Mask, &IP](double X, double Y) { return Mask.Walkable(X, Y, IP); }, false);
+	IceTopZ = SeaZ + 0.1f * S.IceP.ThicknessCm + 12.f;
+	const bool bHoles = bIceHolesChanged;
+	bIceHolesChanged = false;
+	Ice->Drive(IceTopZ, S.IceP.ThicknessCm, Cam,
+		[&Mask, &IP, this](double X, double Y) { return !InIceHole(X, Y) && Mask.Walkable(X, Y, IP); }, bHoles);
+}
+
+bool ULyudWinterSubsystem::InIceHole(double X, double Y) const
+{
+	// strictly inside a tile's half: the hole's own tile goes, its neighbours (whose corners are on its edge) stay
+	const double Half = 149.0;
+	for (const TPair<FName, FVector>& H : IceHoles)
+	{
+		if (FMath::Abs(X - H.Value.X) < Half && FMath::Abs(Y - H.Value.Y) < Half)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void ULyudWinterSubsystem::SetIceHole(FName Id, const FVector& Center, bool bOn)
+{
+	const FVector* Was = IceHoles.Find(Id);
+	if (bOn && (!Was || !Was->Equals(Center, 1.0)))
+	{
+		IceHoles.Add(Id, Center);
+		bIceHolesChanged = true;
+	}
+	else if (!bOn && Was)
+	{
+		IceHoles.Remove(Id);
+		bIceHolesChanged = true;
+	}
+}
+
+bool ULyudWinterSubsystem::GetIceTop(float& OutZ) const
+{
+	if (!Ice || Ice->IsHidden())
+	{
+		return false;
+	}
+	OutZ = IceTopZ;
+	return true;
 }
 
 // -------------------------------------------------------------------------------------------------------------- look
@@ -1407,7 +1449,7 @@ float ULyudWinterSubsystem::GetIceAt(const FVector& Location) const
 
 bool ULyudWinterSubsystem::IsIceWalkable(const FVector& Location) const
 {
-	return IsReady() && State->bIceUploaded && State->Ice.Walkable(Location.X, Location.Y, State->IceP);
+	return IsReady() && State->bIceUploaded && !InIceHole(Location.X, Location.Y) && State->Ice.Walkable(Location.X, Location.Y, State->IceP);
 }
 
 int32 ULyudWinterSubsystem::NumPatches() const

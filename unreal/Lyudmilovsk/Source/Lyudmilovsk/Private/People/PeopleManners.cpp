@@ -1062,7 +1062,7 @@ namespace LyudPeople
 			S.bTurn = false;
 		}
 		const bool bAwake = Mannered(P) && P.Pose != EPose::Sleep && P.Pose != EPose::Hidden && P.Pose != EPose::Computer
-			&& P.Pose != EPose::Work && P.Pose != EPose::Shovel;
+			&& P.Pose != EPose::Work && P.Pose != EPose::Shovel && P.Pose != EPose::Skate && P.Pose != EPose::Walrus;
 		const V3 To = Hero.Pos - P.Pos;
 		const float D = To.Len2D();
 		// in the water: seen from the promenade above too, and from further off

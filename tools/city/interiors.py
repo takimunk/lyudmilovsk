@@ -1728,16 +1728,33 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
         if title not in strings and title not in MAIN:
             err("collection %s: title string %s is missing" % (sid, title))
         for k in c:
-            if k not in ("title", "pieces", "by"):
+            if k not in ("title", "pieces", "by", "code"):
                 err("collection %s: unknown field %s" % (sid, k))
         if c.get("by") and not c.get("pieces"):
             err("collection %s: given by %s: list its pieces" % (sid, c["by"]))
         pieces = [str(p) for p in c["pieces"]] if c.get("pieces") else sorted(given.get(sid, ()), key=lambda p: (len(p), p))
         if len(set(pieces)) != len(pieces):
             err("collection %s: a piece twice" % sid)
+        # "code": [source files]: the engine gives these pieces itself (ULyudCityThings::GiveStamp); each piece must be
+        # named in one of the files (as "<piece>" or "<set>/<piece>")
+        code_text = None
+        if c.get("code"):
+            code_text = ""
+            for rel in c["code"]:
+                path = os.path.join(ROOT, rel)
+                if not os.path.exists(path):
+                    err("collection %s: code file %s is missing" % (sid, rel))
+                    continue
+                with open(path, encoding="utf-8") as f:
+                    code_text += f.read()
+            if not c.get("pieces"):
+                err("collection %s: a collection given by code lists its pieces" % sid)
         for p in pieces:
+            if code_text is not None:
+                if '"%s"' % p not in code_text and '"%s/%s"' % (sid, p) not in code_text:
+                    err("collection %s: piece %s is not named in its code files" % (sid, p))
             # "by": the engine gives its pieces (the kites': ULyudKiteFlying stamps a flight), not a thing in town
-            if p not in given.get(sid, ()) and not c.get("by"):
+            elif p not in given.get(sid, ()) and not c.get("by"):
                 err("collection %s: nothing in town gives piece %s" % (sid, p))
         if not pieces:
             err("collection %s: no pieces (nothing in town gives one)" % sid)
