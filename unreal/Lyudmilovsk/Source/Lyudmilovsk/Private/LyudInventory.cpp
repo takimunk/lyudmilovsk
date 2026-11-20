@@ -117,6 +117,8 @@ namespace
 		Good(TEXT("fish_book"), K::Misc, L::Flat, FVector(1.6f, 12.f, 18.f), FLinearColor(0.2f, 0.26f, 0.33f), 40, 4.f);
 		// a classic on loan from the town library (docs/books.md): one per book, ULyudBooks keeps which ones; never sold
 		Good(TEXT("library_book"), K::Misc, L::Flat, FVector(2.4f, 13.f, 20.f), FLinearColor(0.42f, 0.16f, 0.12f), 0, 4.f);
+		// the hero's guitar (docs/instruments.md): bought at the «Волна» records shop, played from the diary ("Play"), best by a bonfire
+		Good(TEXT("guitar"), K::Misc, L::Flat, FVector(10.f, 36.f, 100.f), FLinearColor(0.72f, 0.42f, 0.18f), 180, 4.f);
 		// records (docs/music.md): a long-playing record in its sleeve, one track of the game's music each (tools/music/content.json);
 		// bought at the «Волна» records shop and the department store, played on record players (ULyudMusic)
 		Good(TEXT("record_dawn_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.85f, 0.62f, 0.42f), 45, 4.f);

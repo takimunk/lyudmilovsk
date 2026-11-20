@@ -67,7 +67,7 @@ ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
               "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
 # screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics
-OPEN_SCREENS = ("books",)
+OPEN_SCREENS = ("books", "piano")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of

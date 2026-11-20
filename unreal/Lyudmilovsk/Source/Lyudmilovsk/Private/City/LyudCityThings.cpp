@@ -1210,7 +1210,16 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	}
 	if (!O.Open.empty())
 	{
-		// another system's screen (the library's classics: ULyudBookScreen listens); the act's line stays unsaid
+		// another system's screen (the library's classics: ULyudBookScreen listens; a piano: ULyudInstruments); the act's line
+		// stays unsaid. An act that sits (a piano's stool) seats the hero first when he is at the thing.
+		if (Hero && O.Pose == "sit" && !Hero->IsSeated() && FVector::Dist(Hero->GetActorLocation(), At) < 400.f)
+		{
+			const int OpenSeat = Model->SeatFor(Thing, SeatedOn);
+			if (OpenSeat >= 0)
+			{
+				Sit(OpenSeat, Hero, false);
+			}
+		}
 		OnOpen.Broadcast(FName(*LyudCityThingsImpl::Str(O.Open)), Thing);
 		return;
 	}
@@ -1283,7 +1292,7 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	// a system that adds to this act (the music: a record goes on, a radio is switched) may say its own words instead
 	FText Line = O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line));
 	bool bHooked = false;
-	if (!O.bClosed && O.Act >= 0 && ActHook.IsBound())
+	if (!O.bClosed && O.Act >= 0 && (ActHook.IsBound() || MoreActHooks.Num() > 0))
 	{
 		FCityActInfo Info;
 		Info.Thing = LyudCityThingsImpl::Str(T.Id);
@@ -1292,7 +1301,14 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		Info.Plot = LyudCityThingsImpl::Str(T.Plot);
 		Info.At = At;
 		Info.bFromConsole = bFromConsole;
-		bHooked = ActHook.Execute(Info, Line);
+		bHooked = ActHook.IsBound() && ActHook.Execute(Info, Line);
+		for (int32 H = 0; !bHooked && H < MoreActHooks.Num(); ++H)
+		{
+			if (MoreActHooks[H].IsBound())
+			{
+				bHooked = MoreActHooks[H].Execute(Info, Line);
+			}
+		}
 	}
 	if (!Line.IsEmpty())
 	{

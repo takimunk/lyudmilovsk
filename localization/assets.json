@@ -793,6 +793,13 @@
    "prompt": "See design/fishing/icons_grid_4.json (cell of fish_book).",
    "source": "design/fishing/icons_grid_4.json: a Higgsfield picture, cut by tools/fishing_icons.py (the game-assets rule)"
   },
+  "icon_guitar": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "See design/instruments/icon_grid.json (cell of guitar).",
+   "source": "design/instruments/icon_grid.json: a Higgsfield picture, cut by tools/instruments/guitar_icon.py (the game-assets rule)"
+  },
   "icon_library_book": {
    "kind": "icon",
    "style": "icon",

@@ -239,7 +239,7 @@ of two regulars at a chess table.
 
 ## 15. A playable piano and guitar
 
-`[ ]` **Brief (Opus 5.5):** The pianos (the hall «Своды», the school's music room, the sanatorium lobby) are a line today.
+`[x]` (branch instruments, docs/instruments.md; Mac compile, recording and bench by the merge thread) **Brief (Opus 5.5):** The pianos (the hall «Своды», the school's music room, the sanatorium lobby) are a line today.
 Let the hero play: a keyboard view (a row of keys mapped to the keyboard, one octave and a half, sustain on Shift),
 sampled or synthesised notes (procedural like `tools/festival_sounds.py`, seeded, no paid audio), and "known tunes" he learns
 from sheet music found in the town (the music room, the library) that then play by pressing E in rhythm (an easy rhythm
