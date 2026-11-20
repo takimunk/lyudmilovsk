@@ -192,7 +192,7 @@ Done: an offline schedule test, the jukebox and radio play in game, a stamp set 
 
 ## 11. Letters, postcards and pen friends
 
-`[ ]` **Brief (Opus 5.5):** Postcards are sold at the kiosk; let the hero send them. Write a postcard (choose the picture,
+`[x] letters 2026-11-20 (branch letters, docs/letters.md; awaits a Mac build)` **Brief (Opus 5.5):** Postcards are sold at the kiosk; let the hero send them. Write a postcard (choose the picture,
 pick two phrases from a list of warm sentences, the address of a resident from the town data), drop it in a postbox
 (postboxes on the street spots); the resident gets it the next day (the bond grows, they mention it in a bark, the
 postcard stands on their shelf in the open home). Letters come to the hero too: a mailbox in the club (the hero's address),

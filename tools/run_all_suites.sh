@@ -152,6 +152,8 @@ suite railsim.table               - bash tools/railsim/run.sh table
 if wanted peoplesim; then
 	[ -f "$RAIL" ] || python3 tools/railway.py > /dev/null 2>&1
 fi
+suite lettersim.test              - bash tools/lettersim/run.sh
+suite lettersim.story             - bash tools/lettersim/run.sh story ru
 suite peoplesim.test              - bash tools/peoplesim/run.sh test
 suite peoplesim.town              - bash tools/peoplesim/run.sh town
 suite peoplesim.day               - bash tools/peoplesim/run.sh day 6 2
@@ -188,6 +190,7 @@ generator gen.academ_wires    "$CONTENT/BirdsData/wires.json"                   
 generator gen.restaurant_seats "$CONTENT/Restaurant/seats.json"                  python3 tools/restaurant/seats.py
 generator gen.town_life       "$CONTENT/PeopleData $CONTENT/Localization/town"   python3 tools/town/town_life.py
 generator gen.barks           "$CONTENT/Dialogue/town_barks.txt $CONTENT/Localization/barks" python3 tools/barks/build_barks.py
+generator gen.letters         "$CONTENT/Letters/letters.json $CONTENT/Localization/letters" python3 tools/letters/build_letters.py
 generator gen.strings         "$CONTENT/Localization/strings_ru.json $CONTENT/Localization/strings_en.json $CONTENT/Localization/strings_ja.json" \
 	bash -c 'python3 tools/restaurant/strings.py && python3 tools/lobby_strings.py && python3 tools/smoking_strings.py && python3 tools/characters/nao_strings.py'
 if wanted barks; then

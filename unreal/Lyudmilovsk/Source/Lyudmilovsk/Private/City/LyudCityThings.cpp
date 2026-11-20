@@ -29,6 +29,7 @@
 #include "HeroCharacter.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
+#include "Letters/LyudLetters.h"
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudSave.h"
@@ -1433,6 +1434,14 @@ void ULyudCityThings::Tick(float DeltaTime)
 		DropDeadHolds();
 		bOutside = !Hero || !Model->InBounds(LyudCityThingsImpl::Vec(Hero->GetActorLocation()), LyudCityThingsImpl::TownMargin);
 		Picked = bOutside ? -1 : PickInView(Hero, PC);
+		// a postbox on the prompt line or the post's chooser up has the E (docs/letters.md): one E, one thing
+		if (const ULyudLetters* Letters = ULyudLetters::Get(World))
+		{
+			if (Letters->IsOffering() || Letters->HasModeUp())
+			{
+				Picked = -1;
+			}
+		}
 		if (!bOutside)
 		{
 			TrackPlot(Hero);
