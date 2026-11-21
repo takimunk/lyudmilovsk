@@ -830,6 +830,17 @@
  "lamps": [
   {
    "pos": [
+    0.545,
+    19.226,
+    5.77
+   ],
+   "lumens": 260,
+   "colour": "#FFD9A0",
+   "kind": "closed",
+   "radius": 5.0
+  },
+  {
+   "pos": [
     4.898,
     10.285,
     5.7
@@ -1098,6 +1109,32 @@
    }
   },
   {
+   "id": "stool_1",
+   "kind": "seat",
+   "pos": [
+    2.488,
+    17.68,
+    5.05
+   ],
+   "yaw": 238.6,
+   "props": {
+    "height": 0.75
+   }
+  },
+  {
+   "id": "stool_5",
+   "kind": "seat",
+   "pos": [
+    -2.488,
+    17.68,
+    5.05
+   ],
+   "yaw": 121.4,
+   "props": {
+    "height": 0.75
+   }
+  },
+  {
    "id": "table_seat_1",
    "kind": "seat",
    "pos": [
@@ -1241,19 +1278,6 @@
    }
   },
   {
-   "id": "stool_1",
-   "kind": "seat",
-   "pos": [
-    2.488,
-    17.68,
-    5.05
-   ],
-   "yaw": 238.6,
-   "props": {
-    "height": 0.75
-   }
-  },
-  {
    "id": "stool_2",
    "kind": "seat",
    "pos": [
@@ -1288,19 +1312,6 @@
     5.05
    ],
    "yaw": 129.5,
-   "props": {
-    "height": 0.75
-   }
-  },
-  {
-   "id": "stool_5",
-   "kind": "seat",
-   "pos": [
-    -2.488,
-    17.68,
-    5.05
-   ],
-   "yaw": 121.4,
    "props": {
     "height": 0.75
    }
@@ -3278,13 +3289,52 @@
  ],
  "dress": [
   {
+   "id": "day_tables",
+   "when": {
+    "open": true
+   },
+   "tris": 6268,
+   "bounds": [
+    [
+     -9.213,
+     4.031,
+     4.298
+    ],
+    [
+     9.442,
+     19.188,
+     5.535
+    ]
+   ]
+  },
+  {
+   "id": "night_tables",
+   "when": {
+    "open": false
+   },
+   "tris": 3650,
+   "bounds": [
+    [
+     -8.826,
+     4.641,
+     4.64
+    ],
+    [
+     8.867,
+     19.391,
+     6.102
+    ]
+   ]
+  },
+  {
    "id": "paper_a",
    "when": {
     "hours": [
      7.0,
      21.0
     ],
-    "chance": 0.7
+    "chance": 0.7,
+    "open": true
    },
    "tris": 30,
    "bounds": [
@@ -3307,7 +3357,8 @@
      7.0,
      21.0
     ],
-    "chance": 0.7
+    "chance": 0.7,
+    "open": true
    },
    "tris": 30,
    "bounds": [
@@ -3330,7 +3381,8 @@
      7.0,
      21.0
     ],
-    "chance": 0.7
+    "chance": 0.7,
+    "open": true
    },
    "tris": 20,
    "bounds": [
@@ -3464,7 +3516,8 @@
   {
    "id": "holiday_flowers",
    "when": {
-    "festival": "any"
+    "festival": "any",
+    "open": true
    },
    "tris": 720,
    "bounds": [
@@ -3528,6 +3581,29 @@
    ]
   },
   {
+   "id": "night_cleaner",
+   "when": {
+    "hours": [
+     7.0,
+     10.0
+    ],
+    "open": false
+   },
+   "tris": 296,
+   "bounds": [
+    [
+     1.334,
+     5.376,
+     4.3
+    ],
+    [
+     3.45,
+     6.424,
+     5.605
+    ]
+   ]
+  },
+  {
    "id": "towel_summer",
    "when": {
     "weather": [
@@ -3557,8 +3633,8 @@
  ],
  "tris": {
   "shell": 3072,
-  "detail": 24950,
+  "detail": 18750,
   "windows": 296,
-  "dress": 7185
+  "dress": 17399
  }
 }

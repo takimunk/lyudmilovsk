@@ -1,0 +1,34 @@
+{
+ "_doc": "The rental (docs/city_interiors.md \"The rental's beach set\"): the stays its hires are. The beach set is the key board's act pu_rental_keys (x_w1_units.json), on the sand ULyudBeachHire. The boat for the day is the oars' act below: ALyudRowBoat at the mooring asks the stay boat_day before it asks the rent.",
+ "stays": {
+  "beach_set": {
+   "plot": "W1-U03"
+  },
+  "boat_day": {
+   "plot": "W1-U03"
+  }
+ },
+ "acts": {
+  "pu_rental_boat": {
+   "prompt": "city.rental.boat.prompt",
+   "lines": [
+    "city.rental.boat.1",
+    "city.rental.boat.2"
+   ],
+   "minutes": 3,
+   "price": 25,
+   "needs_staff": "renter",
+   "daily": 1,
+   "stay": {
+    "id": "boat_day",
+    "days": 1
+   },
+   "closed": "city.pu.closed.rental.*"
+  }
+ },
+ "rules": {
+  "promenade_unit/rental_oars": {
+   "act": "pu_rental_boat"
+  }
+ }
+}

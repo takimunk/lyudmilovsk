@@ -1052,6 +1052,16 @@ namespace LyudTransport
 		return true;
 	}
 
+	int FNetwork::CabinsBetweenStations() const
+	{
+		int N = 0;
+		for (const FCabin& C : Cabins)
+		{
+			N += C.State == ECabinState::Moving ? 1 : 0;
+		}
+		return N;
+	}
+
 	void FNetwork::Dispatch()
 	{
 		for (int RI = 0; RI < (int)Riders.size(); RI++)
@@ -1072,6 +1082,38 @@ namespace LyudTransport
 		{
 			Time += H;
 			Dispatch();
+			if (bWindHold != bWindHoldApplied)
+			{
+				bWindHoldApplied = bWindHold;
+				if (bWindHold)
+				{
+					// the wind stop: every cabin on the rope stops at the next station it can still stop at
+					for (FCabin& C : Cabins)
+					{
+						if (C.State != ECabinState::Moving)
+						{
+							continue;
+						}
+						const FLine& L = Lines[C.Line];
+						const float Brake = C.Speed * C.Speed / (2.f * 0.6f * P.Accel) + 1.f;
+						float Best = 1e30f;
+						int K0 = -1;
+						for (int K = 0; K < (int)L.Stops.size(); K++)
+						{
+							const float D = L.Ahead(C.S, L.Stops[K].S);
+							if (D >= Brake && D < Best)
+							{
+								Best = D;
+								K0 = K;
+							}
+						}
+						if (K0 >= 0 && std::find(C.Targets.begin(), C.Targets.end(), K0) == C.Targets.end())
+						{
+							C.Targets.push_back(K0);
+						}
+					}
+				}
+			}
 			for (int CI = 0; CI < (int)Cabins.size(); CI++)
 			{
 				FCabin& C = Cabins[CI];
@@ -1080,7 +1122,7 @@ namespace LyudTransport
 				{
 				case ECabinState::Depot:
 				{
-					if (C.Targets.empty())
+					if (C.Targets.empty() || bWindHold)
 					{
 						break;
 					}
@@ -1125,6 +1167,10 @@ namespace LyudTransport
 						{
 							ArriveAt(CI, C.AtStop);
 						}
+						else if (bWindHold)
+						{
+							C.Door = std::min(1.f, C.Door + H / P.DoorTime);     // the wind stop: stands open
+						}
 						else if (C.Door <= 0.f && Clear(CI, C.S))
 						{
 							Leave(C, CI);       // off the siding onto the rope when it is clear
@@ -1141,7 +1187,7 @@ namespace LyudTransport
 							bKeeper = false;
 						}
 					}
-					if (!bKeeper && !C.bPlayerAboard && Time - C.IdleSince > P.IdleReturn)
+					if (!bKeeper && !C.bPlayerAboard && !bWindHold && Time - C.IdleSince > P.IdleReturn)
 					{
 						C.bToDepot = true;
 						if (C.AtStop == L.DepotStop)
@@ -1164,7 +1210,7 @@ namespace LyudTransport
 					break;
 				}
 				case ECabinState::Dwelling:
-					if ((Time < C.DwellUntil && !C.bShutReq) || C.bHold)
+					if ((Time < C.DwellUntil && !C.bShutReq) || C.bHold || bWindHold)
 					{
 						C.Door = std::min(1.f, C.Door + H / P.DoorTime);
 						break;

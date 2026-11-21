@@ -923,7 +923,8 @@
   },
   "t3_ag_window": {
    "like": "look_misc",
-   "prompt": "city.t3.p.window",
+   "prompt": "city.act.window_look.prompt",
+   "window": 0.5,
    "minutes": 3,
    "lines": [
     {

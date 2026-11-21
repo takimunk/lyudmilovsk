@@ -98,11 +98,13 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
   the photo studio's portrait (`photo_portrait`), the photo booth, darts, the workbench (2026-11-13); the photo desk's own
   talk (`photo_desk`), the bookstalls' sale tables (`read_poetry_sale`). Still to do: the portrait as a diary item, the
   haircut changing the hero's look
-- [ ] Rental: deck chairs, a rowing boat ticket (fishing thread), bicycles (bikes thread): the room has them on show,
-  the counter only talks (`rentals`)
-- [ ] Unit windows: see into the lit room from the promenade (today the wall's opaque shop-glass card and the lit pane)
-- [ ] Signboards for the trades the atlas has no word for (fish, rental, workshop, souvenirs: `sign_*` cells in
-  `tools/city/atlas.py`)
+- [x] Rental (2026-11-21, city_interiors.md "The rental's beach set"): the key board hires a deck chair and a parasol
+  for the day (set up on the beach, sat in, a sunbath), the oars hire the rowing boat for the day (the mooring asks no
+  rent then). Bicycles stay free to ride (no hire in the bikes' code); the counter still talks (`rentals`)
+- [x] Unit windows (2026-11-21, city_interiors.md "Shop windows"): see-through shop glass, the real room behind it; the
+  lit pane only from far. Awaits the Mac: world mesh re-import, a look at dusk, a bench along the promenade
+- [x] Signboards for fish, rental, workshop, souvenirs (2026-11-21: the atlas' late cells `sign_fish`, `sign_rental`,
+  `sign_workshop`, `sign_souvenirs`, `tools/city/atlas.py` `SIGNS_LATE`; the Mac regenerates the atlas)
 
 ## P4: small quests and stories (after the rooms exist)
 
@@ -164,8 +166,9 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
   (the building modules' things), no ticking sound (no file), the lamp's fitting does not change, only its light
 - [~] Night state of public rooms (closed: chairs on tables, a single lamp, the cleaner at work 7-10). 2026-11-13: by data
   (`closed` on a rule or an act, `closed_by` per plot, type or plot kind): the café, both clubs, the library, the market
-  and the store say what is closed instead of refusing (149 things); still open: geometry (chairs really on the tables), the
-  single lamp, the cleaner
+  and the store say what is closed instead of refusing (149 things). 2026-11-21 (item 29, docs/city_night.md): chairs up
+  on the tables, the one lamp left on (lamp kind "closed"), the cleaner's bucket and damp floor, two cleaners and the
+  store's night watchman in town life; still open: Mac build and shots, the market and the school
 - [ ] Seasonal dressing (wet umbrellas by doors on rain days, coats on racks in winter)
 - [ ] Townsfolk use every new seat, table and counter (spots follow the furniture)
 - [ ] New goods with their own icons (needs the paid icon generation to be approved): stationery, toys, records,

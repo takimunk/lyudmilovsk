@@ -51,6 +51,7 @@ struct LYUDMILOVSK_API FBirdLifeInfo
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBirdLifeEvent, int32, BirdId);
 /** Something at a nest: BuildStart, Material, Lay, Hatch, Feed, Fledge, Fail, Alarm, Dive, Song, Beg (docs/bird_nests.md). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FBirdNestEvent, int32, NestId, FName, What);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FBirdVoiceEvent, int32, BirdId, FName, Voice);
 
 /** A cat or dog the birds watch out for (the animal life's, docs/animals.md). */
 USTRUCT(BlueprintType)
@@ -186,6 +187,13 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdLifeEvent OnBirdWatch;
 	/** A call (contact, alarm, song); the species' sound plays at the bird when there is one. */
 	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdLifeEvent OnBirdCall;
+	/** The same call with what it means (docs/bird_voices.md): contact, song, alarm, beg, chatter, long_call. */
+	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdVoiceEvent OnBirdVoice;
+	/** What a species near the player last said, if it was no longer than MaxAge seconds ago (the bird guide's "Voice" line). */
+	bool LastVoiceOf(FName Species, FName& OutVoice, float MaxAge = 12.f) const;
+	/** Developer mode: the nearest perched bird that scolds gives the alarm as if a cat sat under it (its neighbours take it up).
+	 *  False when there is no such bird within 60 m. Console: lyud.Birds.Alarm. */
+	bool DevAlarm();
 	/** It is coming to the food in the hand. */
 	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdLifeEvent OnBirdApproach;
 	/** First peck on the palm. */
@@ -278,6 +286,9 @@ private:
 	int32 SoundsThisSecond = 0;
 	int32 CallsPlayed = 0;
 	double SoundSecond = 0.0;
+	/** Per species: the last voice heard near the player and when (world seconds). */
+	TMap<FName, TPair<FName, double>> LastVoice;
+	float WeatherTimer = 0.f;
 
 	bool Start();
 	bool StartEmpty(float GroundZ);
@@ -288,7 +299,7 @@ private:
 	void UpdateClock();
 	void UpdatePlayer(float DeltaTime);
 	void DispatchEvents();
-	void PlayCall(int32 Id);
+	void PlayCall(int32 Id, uint8 Voice);
 	void SyncTrust(bool bToSave);
 };
 

@@ -467,6 +467,11 @@ MATERIALS = {
     ASPHALT: ((0.3, 0.3, 0.3), 0.9, "textures/academ/asphalt_D.jpg", 4.0),
     TIMBER: ((0.36, 0.26, 0.17), 0.8, None, 1.0),
 }
+# see-through materials (name -> alpha; world_mesh writes them as glTF alphaMode BLEND). The shop windows of W1's units:
+# the real room stands right behind the glass with its lamp lit while the unit is open, so from the promenade the glass
+# shows it; from far ALyudCityWindows covers it with the lit pane as before (docs/city_interiors.md "Shop windows").
+# Take the entry out to get the old opaque dark card back.
+ALPHA = {SHOPGLASS: 0.22}
 
 
 if __name__ == "__main__":
