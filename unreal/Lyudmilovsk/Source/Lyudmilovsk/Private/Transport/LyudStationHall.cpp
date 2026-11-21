@@ -5,6 +5,7 @@
 
 #include "Transport/LyudCableway.h"
 #include "Transport/LyudTransport.h"
+#include "StationLife.h"
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
@@ -319,13 +320,62 @@ FString ALyudStationHall::PickModel(int32 Salt) const
 
 bool ALyudStationHall::StaffOnDuty() const
 {
+	// the station life's rota: the attendant opens the hall and locks it at night
+	if (const ULyudTransportSubsystem* T = ULyudTransportSubsystem::Get(this); T && T->GetLife())
+	{
+		return T->GetLife()->OnShift(Station, "attendant", T->LifeWeekday(), T->LifeHour()) >= 0;
+	}
 	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
 	const float H = Now.GetHour() + Now.GetMinute() / 60.f;
 	return H >= 6.f;
 }
 
+bool ALyudStationHall::LifeOpen() const
+{
+	const ULyudTransportSubsystem* T = ULyudTransportSubsystem::Get(this);
+	return !T || !T->GetLife() || T->GetLife()->IsOpen(T->LifeHour());
+}
+
+FString ALyudStationHall::LifeModel(const FString& Key, const FString& Mesh, int32& OutPid) const
+{
+	// their own face: the model the town shows them by (their body, or the stand-in nobody else wears), else the pool's
+	OutPid = -1;
+	if (UPeopleLifeSubsystem* PeopleLife = UPeopleLifeSubsystem::Get(GetWorld()))
+	{
+		OutPid = PeopleLife->FindPerson(Key);
+		const FString Shown = OutPid >= 0 ? PeopleLife->ShownModel(OutPid) : FString();
+		if (ModelExists(Shown))
+		{
+			return Shown;
+		}
+	}
+	return ModelExists(Mesh) ? Mesh : FString();
+}
+
+void ALyudStationHall::Unpresent(FPerson& P)
+{
+	if (P.Pid >= 0)
+	{
+		if (UPeopleLifeSubsystem* PeopleLife = UPeopleLifeSubsystem::Get(GetWorld()))
+		{
+			PeopleLife->SetPresentedExternally(P.Pid, false);
+		}
+		P.Pid = -1;
+	}
+}
+
 int32 ALyudStationHall::WantPassengers() const
 {
+	if (const ULyudTransportSubsystem* T = ULyudTransportSubsystem::Get(this); T && T->GetLife())
+	{
+		// the riders come by the station life (SyncLife); a passer-by or two besides (in for the buffet, out of the rain)
+		if (!LifeOpen())
+		{
+			return 0;
+		}
+		const int32 H = (int32)T->LifeHour();
+		return H < 7 || H >= 23 ? 0 : (int32)((Seed + (uint32)T->LifeWeekday() * 7u + (uint32)H) % 3u);
+	}
 	// by the hour: the morning and the evening rush, a quiet afternoon, almost nobody at night
 	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
 	const int32 H = Now.GetHour();
@@ -354,17 +404,43 @@ bool ALyudStationHall::SpawnPerson(FPerson& P)
 	B->Drive(P.At, P.Yaw, (EPersonPose)P.Pose, 0, 0.f, P.SeatHeight, 0.f, true);
 	P.Body = B;
 	Bodies.Add(B);
+	if (P.Pid >= 0)
+	{
+		if (UPeopleLifeSubsystem* PeopleLife = UPeopleLifeSubsystem::Get(GetWorld()))
+		{
+			PeopleLife->SetPresentedExternally(P.Pid, true);
+		}
+	}
+	P.BaseYaw = P.Yaw;
+	P.BasePose = P.Pose;
 	return true;
 }
 
 void ALyudStationHall::SpawnPeople()
 {
 	bPeopleOn = true;
+	const ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this);
+	const LyudTransport::FStationLife* Life = Tr ? Tr->GetLife() : nullptr;
 	if (StaffOnDuty())
 	{
 		for (const FPerson& Plan : StaffPlan)
 		{
 			FPerson P = Plan;
+			if (Life)
+			{
+				// whoever's shift it is (the barista's buffet opens at 6:30)
+				P.StaffIndex = Life->OnShift(Station, TCHAR_TO_UTF8(*P.Role.ToString()), Tr->LifeWeekday(), Tr->LifeHour());
+				if (P.StaffIndex < 0)
+				{
+					continue;
+				}
+				const LyudTransport::FLifeStaff& St = Life->Staff[P.StaffIndex];
+				const FString M = LifeModel(UTF8_TO_TCHAR(St.Key.c_str()), UTF8_TO_TCHAR(St.Mesh.c_str()), P.Pid);
+				if (!M.IsEmpty())
+				{
+					P.Model = M;
+				}
+			}
 			if (SpawnPerson(P))
 			{
 				People.Add(P);
@@ -410,11 +486,16 @@ void ALyudStationHall::SpawnPeople()
 		}
 	}
 	ChurnTimer = R.FRandRange(35.f, 80.f);
+	LifeTimer = 0.f;
 }
 
 void ALyudStationHall::ClearPeople()
 {
 	bPeopleOn = false;
+	for (FPerson& P : People)
+	{
+		Unpresent(P);
+	}
 	for (ANpcBody* B : Bodies)
 	{
 		if (IsValid(B))
@@ -450,7 +531,7 @@ void ALyudStationHall::Churn(const FVector& Cam, const FVector& Look)
 	int32 Have = 0;
 	for (const FPerson& P : People)
 	{
-		Have += P.Role == TEXT("passenger") && P.Body.IsValid() ? 1 : 0;
+		Have += P.Role == TEXT("passenger") && P.Run < 0 && P.Body.IsValid() ? 1 : 0;
 	}
 	const int32 Want = WantPassengers();
 	FRandomStream R(Seed ^ (uint32)(Clock * 100.f));
@@ -459,7 +540,7 @@ void ALyudStationHall::Churn(const FVector& Cam, const FVector& Look)
 		for (int32 Tries = 0; Tries < 6; Tries++)
 		{
 			const int32 I = R.RandRange(0, People.Num() - 1);
-			if (People.IsValidIndex(I) && People[I].Role == TEXT("passenger") && People[I].Body.IsValid() && Unseen(People[I].At))
+			if (People.IsValidIndex(I) && People[I].Role == TEXT("passenger") && People[I].Run < 0 && People[I].Body.IsValid() && Unseen(People[I].At))
 			{
 				People[I].Body->Destroy();
 				People[I].Body = nullptr;
@@ -516,6 +597,204 @@ void ALyudStationHall::Churn(const FVector& Cam, const FVector& Look)
 			}
 		}
 		People = MoveTemp(Kept);
+	}
+}
+
+void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
+{
+	const ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this);
+	const LyudTransport::FStationLife* Life = Tr ? Tr->GetLife() : nullptr;
+	if (!Life)
+	{
+		return;
+	}
+	UWorld* World = GetWorld();
+	const double Now = World->GetTimeSeconds();
+	auto Unseen = [&](const FVector& P)
+	{
+		const FVector D = P + FVector(0, 0, 100.f) - Cam;
+		return FVector::DotProduct(D.GetSafeNormal(), Look) < 0.35f || D.Size() > 2500.f;
+	};
+	// the staff: the next shift takes over (out of the player's sight)
+	for (FPerson& P : People)
+	{
+		if (P.Role == TEXT("passenger") || !P.Body.IsValid() || P.StaffIndex < 0)
+		{
+			continue;
+		}
+		const int32 Want = Life->OnShift(Station, TCHAR_TO_UTF8(*P.Role.ToString()), Tr->LifeWeekday(), Tr->LifeHour());
+		if (Want != P.StaffIndex && Unseen(P.At))
+		{
+			P.Body->Destroy();
+			P.Body = nullptr;
+			Unpresent(P);
+			if (Want >= 0)
+			{
+				const LyudTransport::FLifeStaff& St = Life->Staff[Want];
+				P.StaffIndex = Want;
+				P.bGreeted = false;
+				const FString M = LifeModel(UTF8_TO_TCHAR(St.Key.c_str()), UTF8_TO_TCHAR(St.Mesh.c_str()), P.Pid);
+				if (!M.IsEmpty())
+				{
+					P.Model = M;
+				}
+				SpawnPerson(P);
+			}
+		}
+	}
+	// the riders: those waiting here before the platform and those walking out from a cabin
+	std::vector<int> Here;
+	Life->InHall(Station, Here);
+	TSet<int32> Want;
+	for (const int I : Here)
+	{
+		Want.Add(I);
+	}
+	TSet<int32> Have;
+	for (FPerson& P : People)
+	{
+		if (P.Run < 0 || !P.Body.IsValid())
+		{
+			continue;
+		}
+		Have.Add(P.Run);
+		if (Want.Contains(P.Run))
+		{
+			P.GoneSince = -1.0;
+			continue;
+		}
+		// gone to the platform, or out into the town: when the player doesn't see (or after a while anyway)
+		if (P.GoneSince < 0.0)
+		{
+			P.GoneSince = Now;
+		}
+		if (Unseen(P.At) || Now - P.GoneSince > 25.0)
+		{
+			P.Body->Destroy();
+			P.Body = nullptr;
+			Unpresent(P);
+			if (Slots.IsValidIndex(P.Slot))
+			{
+				Slots[P.Slot].Who = -1;
+			}
+		}
+	}
+	const bool bBuffet = Life->OnShift(Station, "barista", Tr->LifeWeekday(), Tr->LifeHour()) >= 0;
+	for (const int I : Here)
+	{
+		if (Have.Contains(I))
+		{
+			continue;
+		}
+		const LyudTransport::FLifeRun& R = Life->Today[I];
+		const LyudTransport::FLifeTrip& T = Life->Trips[R.Trip];
+		const LyudTransport::FLifeRider& Rd = Life->Riders[T.Rider];
+		const bool bOut = R.Phase == LyudTransport::ELifePhase::Out;
+		// a place: the one their name picks first, else the next free one (walking out: a standing place by the door side)
+		int32 K = -1;
+		const uint32 H0 = GetTypeHash(FString(UTF8_TO_TCHAR(Rd.Key.c_str())));
+		for (int32 J = 0; J < Slots.Num() && K < 0; J++)
+		{
+			const int32 C = (int32)((H0 + (uint32)J * 7u) % (uint32)Slots.Num());
+			const FSlot& S = Slots[C];
+			if (S.Who >= 0 || (S.Kind == 2 && !bBuffet) || (bOut && S.SeatHeight > 0.f) || !Unseen(S.At))
+			{
+				continue;
+			}
+			K = C;
+		}
+		if (K < 0)
+		{
+			continue;       // full, or every free place in sight: next time
+		}
+		FPerson P;
+		P.Role = TEXT("passenger");
+		P.Run = I;
+		P.Slot = K;
+		P.At = Slots[K].At;
+		P.Yaw = Slots[K].Yaw;
+		P.SeatHeight = Slots[K].SeatHeight;
+		const float Roll = LyudTransport::LifeHash(Rd.Key, 53u + (uint32)I);
+		P.Pose = (uint8)(P.SeatHeight > 0.f ? (Slots[K].Kind == 1 ? (Roll < 0.5f ? EPersonPose::Eat : EPersonPose::Read)
+			: (Roll < 0.35f ? EPersonPose::Read : EPersonPose::Sit))
+			: (Slots[K].Kind == 6 || Slots[K].Kind == 5 ? EPersonPose::Look : (Roll < 0.2f ? EPersonPose::Talk : EPersonPose::Stand)));
+		P.Model = LifeModel(UTF8_TO_TCHAR(Rd.Key.c_str()), UTF8_TO_TCHAR(Rd.Mesh.c_str()), P.Pid);
+		if (P.Model.IsEmpty())
+		{
+			P.Model = PickModel(K * 13 + I);
+			P.Pid = -1;
+		}
+		if (!SpawnPerson(P))
+		{
+			continue;
+		}
+		Slots[K].Who = People.Add(P);
+		// a regular: the attendant turns to them for a word (once a day each)
+		if (Rd.bRegular && !bOut && !GreetedRegulars.Contains(T.Rider))
+		{
+			for (FPerson& A : People)
+			{
+				if (A.Role == TEXT("attendant") && A.Body.IsValid() && A.TalkLeft <= 0.f && FVector::Dist(A.At, P.At) < 1200.f)
+				{
+					GreetedRegulars.Add(T.Rider);
+					A.TalkLeft = 6.f;
+					A.Yaw = (P.At - A.At).Rotation().Yaw;
+					A.Pose = (uint8)EPersonPose::Talk;
+					if (ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this))
+					{
+						Talk->SayLine(A.Body.Get(), FString::Printf(TEXT("line.transport.attendant.regular.%d"), 1 + (int32)(H0 % 4u)));
+					}
+					break;
+				}
+			}
+		}
+	}
+}
+
+void ALyudStationHall::TickBarks(float DeltaTime, const FVector& Cam)
+{
+	// the people waiting say a word now and then while the player is in the hall: the wind, the cabins, the day
+	BarkTimer -= DeltaTime;
+	if (BarkTimer > 0.f || FVector::Dist(Cam, Middle) > 1500.f)
+	{
+		return;
+	}
+	BarkTimer = 35.f + (float)((Seed + (uint32)Clock * 7u) % 40u);
+	const ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this);
+	const LyudTransport::FStationLife* Life = Tr ? Tr->GetLife() : nullptr;
+	const TCHAR* What = TEXT("any");
+	if (Life && Life->IsWindStopped())
+	{
+		What = TEXT("stopped");
+	}
+	else if (Life && Life->LastWind() >= Life->WindWarn)
+	{
+		What = TEXT("wind");
+	}
+	else if (Tr && Tr->LifeHour() < 9.5f)
+	{
+		What = TEXT("morning");
+	}
+	else if (Tr && Tr->LifeHour() > 20.5f)
+	{
+		What = TEXT("evening");
+	}
+	TArray<FPerson*> Can;
+	for (FPerson& P : People)
+	{
+		if (P.Role == TEXT("passenger") && P.Body.IsValid() && P.GoneSince < 0.0 && FVector::Dist(P.At, Cam) < 1400.f)
+		{
+			Can.Add(&P);
+		}
+	}
+	if (Can.Num() == 0)
+	{
+		return;
+	}
+	FPerson* P = Can[(int32)((Seed + (uint32)Clock) % (uint32)Can.Num())];
+	if (ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this))
+	{
+		Talk->SayLine(P->Body.Get(), FString::Printf(TEXT("line.transport.wait.%s.%d"), What, 1 + (int32)(((uint32)Clock / 3u) % 4u)));
 	}
 }
 
@@ -653,9 +932,25 @@ void ALyudStationHall::Tick(float DeltaTime)
 		SpawnPeople();
 		return;
 	}
+	// the station life: riders in and out, the next shift
+	LifeTimer -= DeltaTime;
+	if (LifeTimer <= 0.f)
+	{
+		LifeTimer = 1.f;
+		SyncLife(Cam, PC->PlayerCameraManager->GetCameraRotation().Vector());
+	}
 	// the bodies hold their pose (the clip's variants change by themselves); a tick keeps their animation's clock going
 	for (FPerson& P : People)
 	{
+		if (P.TalkLeft > 0.f)
+		{
+			P.TalkLeft -= DeltaTime;
+			if (P.TalkLeft <= 0.f)
+			{
+				P.Yaw = P.BaseYaw;
+				P.Pose = P.BasePose;
+			}
+		}
 		if (ANpcBody* B = P.Body.Get())
 		{
 			if (B->WasRecentlyRendered(0.5f))
@@ -671,6 +966,7 @@ void ALyudStationHall::Tick(float DeltaTime)
 		Churn(Cam, PC->PlayerCameraManager->GetCameraRotation().Vector());
 	}
 	TickPrompt(DeltaTime);
+	TickBarks(DeltaTime, Cam);
 }
 
 void ALyudStationHall::EndPlay(const EEndPlayReason::Type Reason)
@@ -689,9 +985,26 @@ FString ALyudStationHall::Report() const
 			(P.Role == TEXT("passenger") ? Pass : Staff)++;
 		}
 	}
-	return FString::Printf(TEXT("hall %d %s: dressing %s, cores %s, %d lamps (%s), %d places, staff %d/%d, passengers %d (want %d)"),
+	int32 Riders = 0;
+	FString Who;
+	for (const FPerson& P : People)
+	{
+		if (P.Body.IsValid() && (P.Run >= 0 || P.StaffIndex >= 0))
+		{
+			Riders += P.Run >= 0 ? 1 : 0;
+			Who += FString::Printf(TEXT(" %s%s"), *P.Role.ToString().Left(1), P.Pid >= 0 ? TEXT("*") : TEXT(""));
+		}
+	}
+	std::vector<int> Here;
+	const ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this);
+	if (Tr && Tr->GetLife())
+	{
+		Tr->GetLife()->InHall(Station, Here);
+	}
+	return FString::Printf(TEXT("hall %d %s: dressing %s, cores %s, %d lamps (%s), %d places, staff %d/%d, passengers %d (%d riders of the station life, %d in the hall by it, filler want %d)%s; open %s%s"),
 		Station, *Style, Detail ? TEXT("yes") : TEXT("no"), Cores ? TEXT("yes") : TEXT("no"), Lights.Num(), bLightsOn ? TEXT("on") : TEXT("off"),
-		Slots.Num(), Staff, StaffPlan.Num(), Pass, WantPassengers());
+		Slots.Num(), Staff, StaffPlan.Num(), Pass, Riders, (int32)Here.size(), WantPassengers(), *Who, LifeOpen() ? TEXT("yes") : TEXT("no"),
+		Tr && Tr->GetLife() ? *FString::Printf(TEXT(", %s"), UTF8_TO_TCHAR(Tr->GetLife()->Report(*Tr->GetNet()).c_str())) : TEXT(""));
 }
 
 static FAutoConsoleCommandWithWorldAndArgs GTransportHall(TEXT("Transport.Hall"),

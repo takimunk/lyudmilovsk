@@ -153,6 +153,12 @@ namespace LyudTransport
 			switch (R.Phase)
 			{
 			case ELifePhase::Pending:
+				if (Hour > R.At + R.HallMinutes / 60.f + 0.25f)
+				{
+					R.Phase = ELifePhase::Skipped;      // the clock jumped past it (a sleep, a skip): missed
+					Missed++;
+					break;
+				}
 				if (Hour >= R.At)
 				{
 					// a trip that would end after closing (a festival running late): they walk instead

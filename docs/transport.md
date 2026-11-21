@@ -341,6 +341,51 @@ ring like a real station hall with the town's interior kit (`blender/city/interi
   (`line.transport.barista|attendant.*`). The old kiosk box, bench box and the grid of room lights are off in a v3 hall.
 - Console: `Transport.Hall [station]`, `lyud.Transport.HallPeople 0|1`.
 
+## Station life: the stations by the town's day (2026-11-21, backlog item 41)
+
+The cable car carries the town: the same faces ride at the same hours, the halls have their own staff on a rota, and a
+gale stops the line.
+
+- `tools/station_life.py` -> `Content/Transport/station_life.json` (committed; rerun after the town or the network change).
+  From `townsfolk.json` (homes, jobs, tempers), `town_places.json` and `network.json`:
+  - **staff**: per hall an attendant (5:30..14:45, 14:30..24:00) and a barista (6:15..14:45, 14:30..23:45), two people a
+    shift on a rota that covers every day (Mon-Fri / Sat-Wed), chosen among the townsfolk who work out of town, nearest
+    their station first. Their duty in `townsfolk.json` becomes `work_station` (activities.json: hidden from the town while
+    at work, holidays too) with `station`, `role`, `shift`; their sleep fits the shift; occupation
+    `station_attendant|station_barista` (roles in `Localization/town/strings_<lang>.json`). `town_life.py` calls
+    `station_life.apply()`, so a regenerated town keeps them.
+  - **researchers**: the out-of-town workers with a studious temper work at the Akademgorodok (`work_away` + `commute:
+    academ`, out 7:36..8:36, back 17:24..18:48 on weekdays).
+  - **riders**: everyone's trips where the ride suits them better than walking (the way x 1.3, the terraces' stairs 10 s/m
+    up, the ride at 6 m/s plus 2.5 min of lift and platform, 3.3 min to change at Zenith; a seeded liking for the ride, more
+    for the old and the children; nobody rides for a way under 7 min): out-of-town workers via Aton, the researchers, the
+    staff to the far halls, pupils to the school's stop, pensioners to the market on Saturday mornings, the beach on warm
+    days (`if: warm`, 60 % of those days), the cinema's last show (12 % of evenings), a festival's end (`if:
+    festival_end`, half of them). 301 riders, ~340 trips on a weekday (peak 8:00), ~125 on a warm Saturday.
+- `Private/Transport/StationLife.{h,cpp}` (plain C++, the game and transportsim alike): each trip starts in the `from`
+  hall (2..8 min there), then is a real trip of the network (`FNetwork::Travel`, rider ids from 200000), and ends with a
+  minute or two walking out of the `to` hall; the rota (`OnShift`); the halls open 5:45..24:00, no trip starts after
+  23:42, a trip the clock jumped past is missed. **The wind stop**: over 17 m/s (the weather's wind with its gusts) the line
+  stops (`FNetwork::bWindHold`: nothing leaves a station or the depot, the cabins on the rope stop at the next station and
+  stand open, calls wait), and goes again after 5 minutes under 12 m/s.
+- Game: `ULyudTransportSubsystem` owns it (`GetLife()`, `LifeHour()`: the day turns at 4:00), starts the day's trips
+  (a warm day: 20 C and dry at 13:00), feeds the wind, tells it a festival's end; the riders aboard cabins within 90 m get
+  bodies (their town model, `ShownModel`, else their pool mesh; the town doesn't draw them meanwhile,
+  `SetPresentedExternally`). `ALyudStationHall`: the attendant and the barista on shift now (their own faces; the next
+  shift takes over out of sight; no attendant: the hall is shut, nobody in it), the riders waiting in or walking out of it
+  in free places (seats, the counter while the buffet is open, standing by the railing, the windows, the diagram), a
+  passer-by or two besides; the attendant turns to a regular (8 trips a week or more) for a word once a day
+  (`line.transport.attendant.regular.*`); the waiting people talk now and then (`line.transport.wait.any|morning|evening|
+  wind|stopped.*`). In the player's cabin: the next station (as before), the view on each hop 20 s out
+  (`line.transport.view_<from>_<to>.1`), the wind stop and the going again (`wind_stop`, `wind_go`); text first, voices
+  are item 36's.
+- Tests: `tools/transportsim/run.sh town` (the rota every quarter hour of every day; a weekday, a warm festival Saturday and
+  a gale morning on the real network: nobody left unfinished or in a hall at closing, no departure during the stop, waits
+  under 15 min on a calm weekday), `python3 tools/station_life.py --check`, `tools/peoplesim/run.sh week`.
+- Not yet: the attendant's rounds with a broom (no clip), riders walking the town's way to the station (the town still
+  hides an out-of-town worker at its square; the station shows them from their home station), voices.
+- Console: `Transport.Hall [station]` (the hall's people and the day's life in one line).
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a

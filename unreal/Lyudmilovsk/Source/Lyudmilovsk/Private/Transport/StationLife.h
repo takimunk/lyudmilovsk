@@ -68,13 +68,13 @@ namespace LyudTransport
 		int Day = -1;
 		std::string LastError;
 		// stats (tests, the report)
-		int Started = 0, Finished = 0, Cut = 0;
+		int Started = 0, Finished = 0, Cut = 0, Missed = 0;
 		double MaxWait = 0.0, SumWait = 0.0;
 		int WindStops = 0;
 
 		bool Load(const std::string& JsonText, const FNetwork& N);
 		/** A new day (Weekday 0 Monday; bWarm: a beach day): today's trips, by their chance seeded by the day. */
-		void StartDay(int InDay, int Weekday, bool bWarm);
+		void StartDay(int InDay, int InWeekday, bool bWarm);
 		/** A festival's evening ended at Hour: its crowd goes home. */
 		void FestivalEnded(float Hour);
 		/** Runs today's trips at Hour (today's, may pass 24) against the network. */

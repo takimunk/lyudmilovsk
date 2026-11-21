@@ -2,7 +2,7 @@
  "_doc": "The stations' day (tools/station_life.py, docs/transport.md 'Station life'): the halls' staff rota (staff: townsfolk whose out-of-town job is the hall; hours as in townsfolk.json) and the riders' trips (at: the hour they walk into the 'from' hall; days 0 Monday; if: warm | festival_end (at = hours after the evening's end) | ''; chance: the share of those days). Generated: rerun after the town or the network change.",
  "open": [
   5.75,
-  24.25
+  24.0
  ],
  "staff": [
   {
@@ -48,7 +48,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     0,
@@ -66,7 +66,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     5,
@@ -192,7 +192,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     0,
@@ -210,7 +210,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     5,
@@ -336,7 +336,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     0,
@@ -354,7 +354,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     5,
@@ -480,7 +480,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     0,
@@ -498,7 +498,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     5,
@@ -624,7 +624,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     0,
@@ -642,7 +642,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     5,
@@ -768,7 +768,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     0,
@@ -786,7 +786,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     5,
@@ -912,7 +912,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     0,
@@ -930,7 +930,7 @@
    "shift": "late",
    "hours": [
     14.5,
-    0.25
+    24.0
    ],
    "days": [
     5,
@@ -2100,20 +2100,6 @@
      "from": "academ",
      "to": "aton",
      "at": 14.384,
-     "days": [
-      0,
-      1,
-      2,
-      3,
-      4
-     ],
-     "if": "",
-     "chance": 1.0
-    },
-    {
-     "from": "aton",
-     "to": "academ",
-     "at": 23.85,
      "days": [
       0,
       1,
@@ -4166,20 +4152,6 @@
      ],
      "if": "",
      "chance": 1.0
-    },
-    {
-     "from": "horizon",
-     "to": "zenit",
-     "at": 23.85,
-     "days": [
-      5,
-      6,
-      0,
-      1,
-      2
-     ],
-     "if": "",
-     "chance": 1.0
     }
    ]
   },
@@ -5847,20 +5819,6 @@
      ],
      "if": "",
      "chance": 1.0
-    },
-    {
-     "from": "mayak",
-     "to": "zenit",
-     "at": 23.85,
-     "days": [
-      5,
-      6,
-      0,
-      1,
-      2
-     ],
-     "if": "",
-     "chance": 1.0
     }
    ]
   },
@@ -7373,20 +7331,6 @@
      "from": "academ",
      "to": "aton",
      "at": 14.384,
-     "days": [
-      5,
-      6,
-      0,
-      1,
-      2
-     ],
-     "if": "",
-     "chance": 1.0
-    },
-    {
-     "from": "aton",
-     "to": "academ",
-     "at": 23.85,
      "days": [
       5,
       6,
@@ -9681,20 +9625,6 @@
      ],
      "if": "",
      "chance": 1.0
-    },
-    {
-     "from": "amber",
-     "to": "zenit",
-     "at": 23.85,
-     "days": [
-      0,
-      1,
-      2,
-      3,
-      4
-     ],
-     "if": "",
-     "chance": 1.0
     }
    ]
   },
@@ -9839,20 +9769,6 @@
      "from": "zenit",
      "to": "amber",
      "at": 14.375,
-     "days": [
-      5,
-      6,
-      0,
-      1,
-      2
-     ],
-     "if": "",
-     "chance": 1.0
-    },
-    {
-     "from": "amber",
-     "to": "zenit",
-     "at": 23.85,
      "days": [
       5,
       6,
@@ -10049,20 +9965,6 @@
      "from": "zenit",
      "to": "mayak",
      "at": 14.316,
-     "days": [
-      0,
-      1,
-      2,
-      3,
-      4
-     ],
-     "if": "",
-     "chance": 1.0
-    },
-    {
-     "from": "mayak",
-     "to": "zenit",
-     "at": 23.85,
      "days": [
       0,
       1,
@@ -10638,7 +10540,6 @@
   "t_bautista_meiling",
   "t_bautista_tyler",
   "t_bekele_ilze",
-  "t_bergstrom_hanna",
   "t_bergstrom_lyudmila",
   "t_bergstrom_minh",
   "t_berzins_marketa",
@@ -10648,7 +10549,6 @@
   "t_cerny_freja",
   "t_cerny_jukka",
   "t_cerny_minh",
-  "t_chen_ines",
   "t_choi_kaisa",
   "t_cohen_hakon",
   "t_costa_beatriz",
@@ -10698,9 +10598,7 @@
   "t_kim_haoran",
   "t_korhonen_ingrid",
   "t_kovacs_mette",
-  "t_krause_maarten",
   "t_lebedev_jihoon",
-  "t_lebedev_solomiya",
   "t_lee_brandon",
   "t_lefebvre_gennady",
   "t_lindqvist_zuzana",
@@ -10712,13 +10610,11 @@
   "t_mendoza_siobhan",
   "t_mensah_tesfaye",
   "t_mizrahi_alesya",
-  "t_mizrahi_inigo",
   "t_moreau_shira",
   "t_mortensen_ingrid",
   "t_mortensen_mehmet",
   "t_muller_bence",
   "t_nakamura_ilya",
-  "t_nascimento_duc",
   "t_nascimento_levan",
   "t_nasser_taras",
   "t_nielsen_kenji",
@@ -10739,7 +10635,6 @@
   "t_papadopoulos_sanne",
   "t_pereira_sanne",
   "t_petrauskas_femke",
-  "t_petrauskas_guadalupe",
   "t_pham_solveig",
   "t_prochazka_aigerim",
   "t_reyes_mehmet",

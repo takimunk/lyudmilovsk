@@ -5,7 +5,7 @@
 #include "Templates/PimplPtr.h"
 #include "LyudTransport.generated.h"
 
-namespace LyudTransport { class FNetwork; }
+namespace LyudTransport { class FNetwork; class FStationLife; }
 class ALyudCableway;
 class ALyudCabin;
 class ACharacter;
@@ -132,6 +132,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Transport") bool TestRide(FName From, FName To);
 
 	LyudTransport::FNetwork* GetNet() const { return Net.Get(); }
+	/** The stations' day (docs/transport.md "Station life"): the riders of station_life.json, the halls' staff, the wind
+	 *  stop; null without the file. */
+	const LyudTransport::FStationLife* GetLife() const { return Life.Get(); }
+	/** The hour the stations' day runs by (hours since its 00:00; the day turns at 4:00, so 0:15 is 24.25) and its weekday. */
+	float LifeHour() const { return LifeClock; }
+	int32 LifeWeekday() const { return LifeDayOfWeek; }
 	ALyudCableway* GetCableway() const { return Cableway; }
 	const TArray<TObjectPtr<ALyudCabin>>& GetCabinActors() const { return Cabins; }
 
@@ -150,6 +156,21 @@ public:
 
 private:
 	TPimplPtr<LyudTransport::FNetwork> Net;
+	TPimplPtr<LyudTransport::FStationLife> Life;
+	float LifeClock = 12.f;
+	int32 LifeDayOfWeek = 0;
+	int32 LifeDayIndex = -1;
+	bool bFestivalWasOn = false;
+	bool bWindWasStopped = false;
+	float LifeSlow = 0.f;
+	/** The line about the view from the player's cabin (line.transport.view_<from>_<to>), said a while after it leaves. */
+	float ViewTimer = -1.f;
+	FName ViewWhat;
+	/** The station life's riders aboard cabins near the player: their bodies (network rider id -> body). */
+	TMap<int32, TWeakObjectPtr<AActor>> LifeBodies;
+	void StartLife();
+	void StepLife(float DeltaTime);
+	void DrawLifeRiders(const FVector& View, float DeltaTime);
 	UPROPERTY(Transient) TObjectPtr<ALyudCableway> Cableway;
 	UPROPERTY(Transient) TArray<TObjectPtr<ALyudCabin>> Cabins;
 	TSharedPtr<SLyudTransitScreen> Screen;

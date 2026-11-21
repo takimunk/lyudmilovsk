@@ -23,6 +23,9 @@ class FJsonObject;
  *    railing, the windows, the diagram; now and then one leaves and another comes, never in the player's sight;
  *  - T at the barista opens the buffet (lobby.json stock "buffet"); E at the attendant opens the route diagram; both greet
  *    the player once a visit (line.transport.barista|attendant.*, over their heads).
+ * With the station life (docs/transport.md "Station life", ULyudTransportSubsystem::GetLife()): the staff by station_life.json's
+ * rota (their own faces, the hall shut without an attendant), the riders waiting in it or walking out of it, a regular greeted
+ * by the attendant, the waiting people's words (the wind, the stop, the hour).
  * Console: Transport.Hall [station] (report), lyud.Transport.HallPeople 0/1.
  */
 UCLASS(NotPlaceable, Transient)
@@ -69,6 +72,13 @@ private:
 		FName Role;                         // barista, attendant, passenger
 		FString Model;
 		bool bGreeted = false;
+		int32 Run = -1;                     // the station life's run (ULyudTransportSubsystem::GetLife()->Today), -1: none
+		int32 Pid = -1;                     // their id in the town's life (shown here: the town doesn't draw them), -1
+		int32 StaffIndex = -1;              // staff: their place in station_life.json's rota
+		float TalkLeft = 0.f;               // the attendant turned to a regular for a word
+		float BaseYaw = 0.f;
+		uint8 BasePose = 0;
+		double GoneSince = -1.0;            // their run left the hall at (the body goes once unseen)
 	};
 
 	UPROPERTY(Transient) TObjectPtr<ALyudCableway> Way;
@@ -100,4 +110,14 @@ private:
 	bool StaffOnDuty() const;
 	void TickPrompt(float DeltaTime);
 	FString PickModel(int32 Salt) const;
+	/** The station life (docs/transport.md "Station life"): the riders now in this hall in and out, the staff by the rota,
+	 *  the waiting people's words. */
+	void SyncLife(const FVector& Cam, const FVector& Look);
+	void TickBarks(float DeltaTime, const FVector& Cam);
+	bool LifeOpen() const;
+	FString LifeModel(const FString& Key, const FString& Mesh, int32& OutPid) const;
+	void Unpresent(FPerson& P);
+	float LifeTimer = 0.f;
+	float BarkTimer = 20.f;
+	TSet<int32> GreetedRegulars;
 };
