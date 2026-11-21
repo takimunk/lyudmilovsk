@@ -103,11 +103,42 @@ along every trail and reed and sedge along the brook's lower reach (`south.grass
   that into the planks' angles for `tools/south_signs.py` `PLANKS` (words) and `props_land.py` (geometry).
 - Places are plain map places (`ULyudQuests`): `reach` events and the "new place" note work as for the others.
 
+## People
+
+Townsfolk walk and use the coast (backlog item 37). `python3 tools/town/south_people.py` adds them to the town's data (like
+`tools/town/town_activities.py`: idempotent, `--check`; `tools/town/town_life.py` runs it after itself). It reads
+`south.json` (things, trails) and the meshes' manifests (`seats`, the hide's stair), and writes six places into
+`Content/PeopleData/town_places.json` (just before town_activities' own), eight rows into `activities.json` and a few likes
+into `townsfolk.json`:
+
+| Place | Slots | Activity | Who, when |
+|---|---|---|---|
+| `S-ATON-SHED` | the shed's bench, the net racks, the boats | `mend_nets`, `boats_evening` | three old fishermen (men of 58+ who like the shore): nets 6:00-11:00 by day, the boats 16:00-19:30 |
+| `S-ATON-ORCHARD` | a place at each hive, the picnic table's 4 seats | `tend_hives`, `orchard_picnic` | the beekeeper (a pensioner fond of nature, not one of the allotment's keepers) 9-17 at 13 °C and over; anybody at the table on warm Saturdays and Sundays |
+| `S-ATON-HIDE` | the hide's 2 seats (in at the stair's foot, up to the landing) | `watch_starlings` | eight birdwatchers (the studious who love the open air) and the odd passer-by, only round sunset |
+| `S-ATON-VIEW` | the rotunda's 4 seats, the brow benches by it and on the shoulder's last bend | `sit_belvedere` | anybody, by day, more at the weekend |
+| `S-ATON-WALK` | a spot every 16 m up the `town` trail and out to the belvedere, then the same back down | `walk_aton` (a round: spot to spot in order, so the walk keeps to the trail) | anybody of 8+, by day, more at the weekend |
+| `S-ATON-BROOK` | the stones by the footbridge, the spring's trough | `play_brook` | children of 6-13 after school (14:00-18:30, not Sunday) |
+
+The life's own rules do the rest: nobody chooses the open air in the rain and whoever is caught by it goes home, nobody
+is out there after dark (all but the hide's sunset are `daylight`), the frost and the cold keep the bees and the picnic
+away. Lines: `tools/barks/lines/16_aton_coast.txt` (`doing = <activity>`; rebuilt by `tools/barks/build_barks.py`).
+Checks: `tools/peoplesim/run.sh town` (struct `AtonWatch`): the places on the town's side of the walk grid, walkers and
+sitters on a cool weekday and none of them over 15 m off the trail, fishermen only in the morning, the hide only round
+sunset, children only after school, nobody between 22:00 and 05:00, no bees or picnic on a cool weekday; a warm Saturday
+(bees, picnic, the trail walked) and a rainy Sunday (all but empty). `LYUD_ATON_DEBUG=1` prints whoever strays off the
+trail.
+
+Not done: the hero's seats here (`ALyudSouthSpot`) are not claimed against the townsfolk yet, so the hero can sit down on
+a fisherman's bench while he is on it (the city's way is `ULyudCityThings::ClaimThing` through a slot's `"thing"`); the
+ornithologist of `quest/ornithologist` has no duty at the hide; nobody walks the cliff walk or the sea trail yet.
+
 ## After a change here
 
 `python3 tools/south.py --check && python3 tools/south.py`, `python3 tools/transport.py` (the pylons are resolved
 against the ground), `python3 tools/ui_map.py` and `tools/ui_map_ink.py` (restore `textures/ui/binoculars_mask.png`
-if the cloud rewrote it), then the level's build (`unreal/scripts/build_scene01.sh`).
+if the cloud rewrote it), then `python3 tools/town/south_people.py` (the townsfolk's places follow the things and trails) and the level's build
+(`unreal/scripts/build_scene01.sh`).
 
 ## Not done yet
 

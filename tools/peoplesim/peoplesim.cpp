@@ -985,6 +985,78 @@ static int Test()
 
 
 /** The town's life (docs/town_life.md): the townsfolk of townsfolk.json in the town's places, a day and a night. */
+/** The Aton coast's people (tools/town/south_people.py): minutes by activity at its places, and what must never happen there. */
+struct AtonWatch
+{
+	std::map<std::string, double> Min;
+	std::vector<int> Places;
+	int Walk = -1, Islands = 0, OffTrail = 0, Night = 0, LateNets = 0, HideOff = 0, BrookSchool = 0;
+	float Farthest = 0.f;
+	std::vector<V3> Trail;
+	std::set<int> OnWalk;       // walkers who have reached the trail (on their way up to it they are still in the streets)
+	explicit AtonWatch(const FWorld& W)
+	{
+		const int Square = W.FindPlace("S-SQUARE");
+		for (const char* Id : {"S-ATON-SHED", "S-ATON-ORCHARD", "S-ATON-HIDE", "S-ATON-VIEW", "S-ATON-WALK", "S-ATON-BROOK"})
+		{
+			const int I = W.FindPlace(Id);
+			if (I < 0) continue;
+			Places.push_back(I);
+			Islands += Square >= 0 && W.Places[(size_t)I].Island != W.Places[(size_t)Square].Island ? 1 : 0;
+		}
+		Walk = W.FindPlace("S-ATON-WALK");
+		if (Walk >= 0)
+		{
+			for (int S : W.Places[(size_t)Walk].Slots) Trail.push_back(W.Slots[(size_t)S].Pos);
+		}
+	}
+	float ToTrail(const V3& P) const
+	{
+		float Best = 1e9f;
+		for (size_t I = 0; I + 1 < Trail.size(); I++)
+		{
+			const V3 A = Trail[I], B = Trail[I + 1];
+			const float Dx = B.X - A.X, Dy = B.Y - A.Y, L2 = Dx * Dx + Dy * Dy;
+			const float T = L2 > 0.f ? std::max(0.f, std::min(1.f, ((P.X - A.X) * Dx + (P.Y - A.Y) * Dy) / L2)) : 0.f;
+			Best = std::min(Best, std::hypot(P.X - (A.X + T * Dx), P.Y - (A.Y + T * Dy)));
+		}
+		return Best;
+	}
+	void Minute(const FWorld& W, const FPerson& P)
+	{
+		const bool bHere = P.Place >= 0 && std::find(Places.begin(), Places.end(), P.Place) != Places.end();
+		const std::string Act = P.Activity >= 0 ? W.Activities[(size_t)P.Activity].Id : std::string();
+		if (Act != "walk_aton") OnWalk.erase(P.Id);
+		if (!bHere || P.Activity < 0) return;
+		if (P.State == EState::Doing)
+		{
+			Min[Act] += 1.0;
+			Night += W.Hour >= 22.f || W.Hour < 5.f ? 1 : 0;
+			LateNets += Act == "mend_nets" && W.Hour > 13.f ? 1 : 0;
+			HideOff += Act == "watch_starlings" && std::fabs(W.Hour - W.Sunset) > 1.5f ? 1 : 0;
+			BrookSchool += Act == "play_brook" && W.Weekday < 5 && W.Hour < 13.5f ? 1 : 0;
+			if (Act == "walk_aton") OnWalk.insert(P.Id);
+		}
+		if (Act == "walk_aton" && P.Place == Walk && OnWalk.count(P.Id))
+		{
+			const float D = ToTrail(P.Pos);
+			Farthest = std::max(Farthest, D);
+			OffTrail += D > 15.f ? 1 : 0;
+			if (D > 15.f && std::getenv("LYUD_ATON_DEBUG"))
+			{
+				std::printf("    off the trail: %s %.1f m at (%.1f, %.1f) state %d slot %d path %d/%d hour %.2f\n", P.Key.c_str(), D, P.Pos.X, P.Pos.Y, (int)P.State, P.Slot, P.PathI, (int)P.Path.size(), W.Hour);
+			}
+		}
+	}
+	double Total() const { double T = 0.0; for (const auto& M : Min) T += M.second; return T; }
+	void Report(const char* When) const
+	{
+		std::printf("  the Aton coast, %s:", When);
+		for (const auto& M : Min) std::printf(" %s %.0f", M.first.c_str(), M.second);
+		std::printf("\n");
+	}
+};
+
 static int Town()
 {
 	FWorld W;
@@ -1064,6 +1136,9 @@ static int Town()
 	// the town's new things to do (tools/town/town_activities.py, docs/town_life.md "The new activities")
 	int CinemaNow = 0, CinemaPeak = 0, CinemaOff = 0, BedStrangers = 0, PianoNow = 0, PianoTwo = 0, StonesDark = 0, StonesGale = 0, PaperLate = 0;
 	std::set<int> PostStops, CinemaGoers;
+	// the Aton coast (tools/town/south_people.py, docs/south.md "People"): who does what there, nobody at night, the walkers
+	// keep to the trail (the round's spots in order are the trail's line)
+	AtonWatch Aton(W);
 	for (double T = 0.0; T < 36.0 * 3600.0; T += Dt)
 	{
 		C.Seconds += Dt;
@@ -1171,6 +1246,7 @@ static int Town()
 				{
 					continue;
 				}
+				Aton.Minute(W, P);
 				if (P.Activity >= 0 && P.State == EState::Doing)
 				{
 					const std::string& Id = W.Activities[P.Activity].Id;
@@ -1301,6 +1377,22 @@ static int Town()
 		CHECK(Minutes["play_piano"] < 400 && PianoTwo == 0, "the piano in the hall is played now and then, by one at a time (%.0f person-minutes)", Minutes["play_piano"]);
 		CHECK(PostStops.size() >= 12, "the postman's round goes from door to door (%zu doors in 36 h, %.0f person-minutes)", PostStops.size(), Minutes["post_round"]);
 	}
+	if (W.FindPlace("S-ATON-WALK") >= 0)
+	{
+		Aton.Report("Wednesday-Thursday");
+		CHECK(Aton.Islands == 0, "the Aton coast's places are on the town's side of the walk grid (%d cut off)", Aton.Islands);
+		CHECK(Aton.Min["walk_aton"] > 60 && Aton.Min["sit_belvedere"] > 20, "people walk the shoulder trail and sit at the belvedere (%.0f, %.0f person-minutes)",
+			Aton.Min["walk_aton"], Aton.Min["sit_belvedere"]);
+		CHECK(Aton.OffTrail == 0, "... and keep to the trail (%d person-minutes over 15 m off it; farthest %.1f m)", Aton.OffTrail, Aton.Farthest);
+		CHECK(Aton.Min["mend_nets"] > 30 && Aton.LateNets == 0, "old fishermen mend nets by the boat shed in the morning (%.0f person-minutes, %d after 13:00)",
+			Aton.Min["mend_nets"], Aton.LateNets);
+		CHECK(Aton.Min["watch_starlings"] > 0 && Aton.HideOff == 0, "birdwatchers sit in the hide only round sunset (%.0f person-minutes, %d away from it)",
+			Aton.Min["watch_starlings"], Aton.HideOff);
+		CHECK(Aton.Min["play_brook"] > 0 && Aton.BrookSchool == 0, "children play at the brook's stones after school (%.0f person-minutes, %d in school hours)",
+			Aton.Min["play_brook"], Aton.BrookSchool);
+		CHECK(Aton.Night == 0, "nobody on the Aton coast at night (%d person-minutes between 22:00 and 05:00)", Aton.Night);
+		CHECK(Aton.Min["tend_hives"] == 0 && Aton.Min["orchard_picnic"] == 0, "... no bees or picnics on a cool weekday (%.0f, %.0f)", Aton.Min["tend_hives"], Aton.Min["orchard_picnic"]);
+	}
 	CHECK(Minutes["watch_sunrise"] > 0, "early risers watch the sunrise (%.0f person-minutes)", Minutes["watch_sunrise"]);
 	CHECK(Minutes["night_walk"] > 0, "somebody walks at night (%.0f person-minutes)", Minutes["night_walk"]);
 	CHECK(Minutes["sit_bench"] > 300, "people sit on the benches (%.0f person-minutes)", Minutes["sit_bench"]);
@@ -1378,6 +1470,47 @@ static int Town()
 		W.ClearGathering("test_dance");
 		CHECK(Dancing > 40, "a festival night: at 01:30 the square still dances (%d)", Dancing);
 		CHECK(KidsUp < 10, "... but the small children are in bed (%d up)", KidsUp);
+	}
+	if (W.FindPlace("S-ATON-WALK") >= 0)
+	{
+		// a warm Saturday on the Aton coast, then a rainy Sunday: the bees and the picnic come out, the rain sends all home
+		auto Spell = [&W](int Weekday, float From, float Hours, float TempC, bool bRain, AtonWatch& Watch)
+		{
+			W.Opt.SettleBatch = 0;
+			W.TempC = TempC;
+			W.bRain = bRain;
+			W.Rain = bRain ? 0.7f : 0.f;
+			FClock S = FClock::At(Weekday, From);
+			S.Set(W);
+			W.Resettle();
+			const double End = S.Seconds + Hours * 3600.0;
+			int Tick = 0;
+			while (S.Seconds < End)
+			{
+				S.Seconds += 1.0;
+				S.Set(W);
+				W.Step(1.f);
+				if (++Tick % 60 == 0 && Tick > 30 * 60)       // after the first half hour (those already out go home)
+				{
+					for (const FPerson& P : W.People) if (P.bTown) Watch.Minute(W, P);
+				}
+			}
+			W.TempC = 12.f;
+			W.bRain = false;
+			W.Rain = 0.f;
+		};
+		AtonWatch Warm(W), Wet(W);
+		Spell(5, 9.f, 8.f, 21.f, false, Warm);
+		Warm.Report("a warm Saturday");
+		CHECK(Warm.Min["tend_hives"] > 20 && Warm.Min["orchard_picnic"] > 20, "a warm Saturday: the beekeeper at the hives, families at the orchard's table (%.0f, %.0f person-minutes)",
+			Warm.Min["tend_hives"], Warm.Min["orchard_picnic"]);
+		CHECK(Warm.Min["walk_aton"] > Aton.Min["walk_aton"] * 0.25f && Warm.OffTrail == 0, "... and the trail is walked (%.0f person-minutes, %d off it; farthest %.1f m)", Warm.Min["walk_aton"], Warm.OffTrail, Warm.Farthest);
+		Spell(6, 9.f, 6.f, 14.f, true, Wet);
+		Wet.Report("a rainy Sunday");
+		// (the life's rain rule: nobody chooses the open air gladly in the rain, and whoever is caught by it goes home; a few
+		// who love the open air still try a short walk and turn back)
+		CHECK(Wet.Total() < Warm.Total() * 0.06, "a rainy Sunday: the Aton coast all but empties (%.0f person-minutes after the first half hour against %.0f on the warm day)",
+			Wet.Total(), Warm.Total());
 	}
 	std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 	return Failures ? 1 : 0;

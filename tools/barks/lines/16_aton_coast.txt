@@ -1,0 +1,78 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The Aton coast's people (docs/south.md "People", tools/town/south_people.py): the old fishermen at the boat shed by
+## the brook's mouth, the beekeeper in the old orchard, families at its table, birdwatchers in the hide at dusk, walkers
+## on the shoulder trail, people on the belvedere's benches, children at the brook's stones. The places' names are the
+## map's (place.<id>.name): Атон, Отрог, Смотровая, Старый сад, Скрадок, Устье, Родник.
+## ---------------------------------------------------------------------------------------------------------------
+
+[aton_nets]
+doing = mend_nets
+weight = 2
+say town.aton_nets.1 | Сеть как память: где порвалось, там и было интересное. | A net's like a memory: where it tore is where something happened. | 網は記憶みたいなもんだ。破れたところに何かがあった。
+say town.aton_nets.2 | Узел, ещё узел. До обеда как раз. | A knot, another knot. That'll take me to lunch. | 結び目、また結び目。昼までちょうどだ。
+say town.aton_nets.3 | Тридцать лет в море, теперь на лавке. Сеть та же. | Thirty years at sea, now on a bench. Same net. | 海で三十年、今はベンチの上。網は同じだ。
+say town.aton_nets.4 | Ветер с запада. Завтра ещё сушить. | Wind from the west. More drying tomorrow. | 西風だ。明日もまた干さなきゃ。
+say town.aton_nets.5 | Это не дырка. Это вход для салаки, а выхода нет. | That's no hole. It's the herring's way in, with no way out. | これは穴じゃない。ニシンの入口で、出口はない。
+
+[aton_nets_hero]
+to = hero
+doing = mend_nets
+say town.aton_nets_hero.1 | Иглу не трогай, она у меня одна. | Don't touch the needle, it's the only one I've got. | 針には触るなよ、一本しかないんだ。
+say town.aton_nets_hero.2 | Садись, если не торопишься. Тут никто не торопится. | Sit down if you're not in a hurry. Nobody's in a hurry here. | 急いでないなら座りな。ここじゃ誰も急がない。
+
+[aton_boats]
+doing = boats_evening
+weight = 2
+say town.aton_boats.1 | Лодки как старики: лежат кверху пузом и смотрят на море. | Boats are like old men: lying belly up, watching the sea. | 舟は年寄りと同じだ。腹を上にして海を眺めてる。
+say town.aton_boats.2 | Эту ещё отец смолил. Держит. | My father tarred this one. It still holds. | これは親父がタールを塗った舟だ。まだもってる。
+say town.aton_boats.3 | Вечером море тише. Слышно, как ручей в него входит. | The sea's quieter in the evening. You can hear the brook going into it. | 夕方は海が静かだ。小川が流れ込む音が聞こえる。
+
+[aton_hives]
+doing = tend_hives
+weight = 2
+say town.aton_hives.1 | Тихо подходи. Они не злые, они занятые. | Come quietly. They're not angry, they're busy. | 静かに来な。怒ってるんじゃない、忙しいんだ。
+say town.aton_hives.2 | Пчела летит туда, где яблоня цвела. Помнит. | A bee flies to where the apple tree was in bloom. It remembers. | 蜂はリンゴの花が咲いてた所へ飛ぶ。覚えてるんだ。
+say town.aton_hives.3 | Без дыма к ним не ходят. Это как постучать. | You don't go to them without smoke. It's like knocking. | 煙なしで近づくもんじゃない。ノックみたいなもんだ。
+say town.aton_hives.4 | Мёд в этом году с вереском. Горчит чуть-чуть. | The honey's got heather in it this year. A touch bitter. | 今年の蜜はヒースが混じってる。少しほろ苦い。
+
+[aton_picnic]
+doing = orchard_picnic
+say town.aton_picnic.1 | Яблоки тут ничьи. Значит, общие. | The apples here are nobody's. So they're everybody's. | ここのリンゴは誰のものでもない。だからみんなのものだ。
+say town.aton_picnic.2 | Подайте соль. Нет, огурцы потом. | Pass the salt. No, the cucumbers later. | 塩取って。いや、きゅうりは後で。
+say town.aton_picnic.3 | Шли от города всего полчаса, а будто уехали. | Only half an hour's walk from town, and it's like we went away. | 町から三十分歩いただけなのに、遠くへ来たみたい。
+
+[aton_hide]
+doing = watch_starlings
+weight = 2
+say town.aton_hide.1 | Тише. Сейчас начнут. | Quiet. They're about to start. | 静かに。もうすぐ始まる。
+say town.aton_hide.2 | Каждый вечер одно и то же, и каждый вечер по-другому. | The same every evening, and different every evening. | 毎晩同じで、毎晩ちがう。
+say town.aton_hide.3 | Сокол уже здесь. Видишь, они сжались? | The falcon's here already. See how they've closed up? | ハヤブサがもう来てる。群れが縮まったのが見える？
+say town.aton_hide.4 | Записываю: туман, шесть градусов, тысяча с лишним. | Writing it down: fog, six degrees, a thousand and more. | 記録しておこう。霧、六度、千羽以上。
+
+[aton_walk]
+doing = walk_aton
+say town.aton_walk.1 | Отсюда весь город как на ладони. | You can see the whole town from here. | ここから町全体が見渡せる。
+say town.aton_walk.2 | Подъём короткий, а дышится по-другому. | A short climb, but the air's different. | 登りは短いのに、空気がちがう。
+say town.aton_walk.3 | Раньше тут только на канатке ездили. А пешком лучше. | People used to just ride the cable car up here. Walking's better. | 前はロープウェイで来るだけだった。歩くほうがいい。
+say town.aton_walk.4 | До берёзы и обратно. Это у нас так называется. | To the birch and back. That's what we call it. | 白樺まで行って帰る。うちではそう呼んでる。
+
+[aton_walk_hero]
+to = hero
+doing = walk_aton
+say town.aton_walk_hero.1 | Добрый день. До смотровой уже недалеко. | Good afternoon. The lookout's not far now. | こんにちは。展望台まであと少しよ。
+say town.aton_walk_hero.2 | С Атона идёшь? Ну, вниз-то легче. | Coming from Aton? Well, it's easier going down. | アトンから？まあ、下りのほうが楽だよ。
+
+[aton_view]
+doing = sit_belvedere
+say town.aton_view.1 | Вон наша крыша. Третья терраса, где антенна. | That's our roof. Third terrace, with the aerial. | あれがうちの屋根。三段目のテラス、アンテナのあるところ。
+say town.aton_view.2 | Море сегодня серое. Значит, к вечеру разъяснит. | The sea's grey today. So it'll clear by evening. | 今日は海が灰色だ。夕方には晴れるな。
+say town.aton_view.3 | Посидим, пока кабинка не пройдёт. Люблю смотреть. | Let's sit till the cabin goes by. I like watching it. | ゴンドラが通るまで座ってよう。見るのが好きなんだ。
+say town.aton_view.4 | Здесь ветер всегда. Даже когда в городе тихо. | There's always wind up here. Even when the town is still. | ここはいつも風がある。町が静かな時でも。
+
+[aton_brook]
+doing = play_brook
+age = kid teen
+say town.aton_brook.1 | Кто первый по камням — тот капитан! | First across the stones is captain! | 先に石を渡った人が船長！
+say town.aton_brook.2 | Тут рыбка была! Вот такая! | There was a fish here! This big! | ここに魚がいた！こんなに大きいの！
+say town.aton_brook.3 | Не говори маме, что я ногу намочил. | Don't tell Mum I got my foot wet. | 足が濡れたってママに言わないでよ。
+say town.aton_brook.4 | Давай запрудим! Будет море. | Let's dam it! It'll be a sea. | せき止めようよ！海になるよ。

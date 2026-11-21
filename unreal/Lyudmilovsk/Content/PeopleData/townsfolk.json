@@ -574,7 +574,9 @@
     "fish_shore": 1.0,
     "watch_sunrise": 1.1,
     "sea_air": 0.45,
-    "eat_out": 0.25
+    "eat_out": 0.25,
+    "mend_nets": 2.9,
+    "boats_evening": 2.7
    },
    "body": "Town/R_sorokin_gennady"
   },
@@ -6620,7 +6622,8 @@
     "play_club": 0.77,
     "play_town_club": 0.22,
     "sea_air": 0.75,
-    "fish_shore": 0.4
+    "fish_shore": 0.4,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_lee_brandon"
   },
@@ -9073,7 +9076,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "shop_town": 0.37,
-    "coffee": 0.54
+    "coffee": 0.54,
+    "tend_hives": 3.6
    },
    "body": "Town/R_virtanen_xiaoming"
   },
@@ -15626,7 +15630,8 @@
    "occupation": "away",
    "likes": {
     "swim_look": 0.23,
-    "sea_air": 0.2
+    "sea_air": 0.2,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_romano_duc"
   },
@@ -18895,7 +18900,8 @@
    "occupation": "musician",
    "likes": {
     "shop_town": 0.55,
-    "sea_air": 0.76
+    "sea_air": 0.76,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_kobayashi_zeynep"
   },
@@ -20385,7 +20391,8 @@
    "likes": {
     "watch_sunrise": 0.66,
     "shop_town": 0.39,
-    "swim_look": 0.69
+    "swim_look": 0.69,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_rousseau_hiroshi"
   },
@@ -24554,7 +24561,8 @@
    "occupation": "away",
    "likes": {
     "coffee": 0.54,
-    "stroll": 0.76
+    "stroll": 0.76,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_novotny_milagros"
   },
@@ -25006,7 +25014,9 @@
     "night_walk": 0.58,
     "fish_shore": 1.05,
     "eat_out": 0.22,
-    "fair_visit": 0.76
+    "fair_visit": 0.76,
+    "mend_nets": 2.9,
+    "boats_evening": 2.7
    },
    "body": "Town/R_demir_jukka"
   },
@@ -27431,7 +27441,8 @@
     "play_town_club": 0.31,
     "read_library": 0.44,
     "fair_visit": 0.65,
-    "stroll": 0.77
+    "stroll": 0.77,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_zhou_tunde"
   },
@@ -28086,7 +28097,9 @@
     "fish_shore": 0.83,
     "watch_sunrise": 0.96,
     "shop_town": 0.65,
-    "read_library": 0.26
+    "read_library": 0.26,
+    "mend_nets": 2.9,
+    "boats_evening": 2.7
    },
    "body": "Town/R_le_duc"
   },
@@ -32741,7 +32754,8 @@
    "occupation": "away",
    "likes": {
     "fish_shore": 0.41,
-    "coffee": 0.46
+    "coffee": 0.46,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_dubovik_thibault"
   },
@@ -37028,7 +37042,8 @@
    "likes": {
     "watch_sunrise": 1.0,
     "sea_air": 0.37,
-    "read_library": 0.4
+    "read_library": 0.4,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_bianchi_lyudmila"
   },

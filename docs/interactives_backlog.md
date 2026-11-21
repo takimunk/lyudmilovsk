@@ -532,7 +532,7 @@ rebased on it (both in the bird-life model); 46 owns `tools/animal_map.py` for t
 
 ## 37. People on the Aton trails
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The Aton coast (`docs/south.md`, branch `aton-coast`) has five trails and twelve
+`[~] aton-people 2026-11-21 (branch ready on aton-coast, docs/south.md "People")` **Cloud-only. Brief (Opus 5.5):** The Aton coast (`docs/south.md`, branch `aton-coast`) has five trails and twelve
 places, and nobody walks them (`docs/south_backlog.md` "People do not walk it"). Give it people, the townsfolk we already
 have, by persona, weekday and weather: a fisherman mending nets at the boat shed by the brook's mouth (`brook_mouth`)
 mornings, going out in the evening; a beekeeper in the old orchard in warm months (the hives); the birdwatcher in the

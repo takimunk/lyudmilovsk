@@ -95,6 +95,15 @@ Not done: the pianist is silent (the instruments' synth has no way to be played 
 walk along with the hero, and the cinema's house does not follow the programme (people sit through the two fixed
 sessions whatever is on).
 
+## The Aton coast
+
+Backlog item 37: the coast between the club and the town (docs/south.md "People") has its people too, added by
+`tools/town/south_people.py` in the same manner (idempotent, `--check`, run by `town_life.py` after `town_activities.py`;
+its places and rows go just before town_activities' own so that either script can run again). Three old fishermen at the
+boat shed, a beekeeper at the old orchard, eight birdwatchers at the hide at sunset, walkers up the shoulder trail and
+back (a round of spots along the trail), the belvedere's benches, children at the brook. `tools/peoplesim/run.sh town`
+checks it (`AtonWatch`).
+
 ## How it works
 
 - **Places**: the restaurant (its `seats.json` has an entrance) is walked: diners and staff go in by its front door to
