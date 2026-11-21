@@ -14,6 +14,7 @@
   "hall_evenings": {"item": "pastry", "count": 2},
   "kiosk_pass": {"item": "eskimo", "count": 2},
   "kiosks": {"free": "daily_paper", "days": 30},
+  "bird_habits": {"pay": 120},
   "kites": {"pay": 60},
   "lg_towers": {"pay": 40},
   "library_diary": {"item": "magazine_science"},

@@ -1,0 +1,318 @@
+{
+ "_doc": "The telescopes (docs/telescopes.md): the eyepiece's keys, hints and notes (scope.*), the diary's lines of the observation log (journal.sky.<sight>; jupiter_moons and jupiter_night take {0} the moons' drawing and {1} the number of nights), the collection \"sky\", the fruit stall's talk about the sky (city.ask.market.sky|log|moons) and the quest \"Four moons of Jupiter\" (quest.jupiter_moons.*).",
+ "scope.keys": {
+  "ru": "Мышь — вести трубу · колесо или A / D — резкость · W / S — окуляр · E — отойти",
+  "en": "Mouse: aim · wheel or A / D: focus · W / S: eyepiece · E: step back",
+  "ja": "マウス：向きを変える · ホイール／A・D：ピント · W・S：接眼レンズ · E：離れる"
+ },
+ "scope.sun": {
+  "ru": "Солнце! В глазу белое пятно. Я отдёрнул голову. В трубу на солнце — никогда.",
+  "en": "The sun! A white blot in my eye. I jerked my head away. Never the sun through a telescope.",
+  "ja": "太陽だ！目の中が真っ白になった。あわてて顔を離した。望遠鏡で太陽は、絶対にだめだ。"
+ },
+ "scope.hint.focus": {
+  "ru": "Нерезко. Покрутить колёсико.",
+  "en": "Blurred. Turn the focus wheel.",
+  "ja": "ぼやけている。ピントを回そう。"
+ },
+ "scope.hint.power": {
+  "ru": "Мелко. Нужен окуляр посильнее (W).",
+  "en": "Too small. A stronger eyepiece is needed (W).",
+  "ja": "小さすぎる。もっと倍率の高い接眼レンズを（W）。"
+ },
+ "scope.hint.bright": {
+  "ru": "Небо ещё светлое, почти не видно.",
+  "en": "The sky is still too bright to see it.",
+  "ja": "空がまだ明るくて、ほとんど見えない。"
+ },
+ "scope.hint.cloud": {
+  "ru": "Облака. Подождать просвета.",
+  "en": "Clouds. Wait for a gap.",
+  "ja": "雲だ。切れ間を待とう。"
+ },
+ "scope.seen.moon_crescent": {
+  "ru": "Тонкий серп Луны. Зарисовал.",
+  "en": "A thin crescent Moon. Drew it.",
+  "ja": "細い三日月。スケッチした。"
+ },
+ "scope.seen.moon_quarter": {
+  "ru": "Половинка Луны, кратеры вдоль тени. Зарисовал.",
+  "en": "A half Moon, craters along the shadow. Drew it.",
+  "ja": "半月。影のきわにクレーター。スケッチした。"
+ },
+ "scope.seen.moon_gibbous": {
+  "ru": "Луна почти полная, с одного бока подтаяла. Зарисовал.",
+  "en": "The Moon nearly full, melted a little on one side. Drew it.",
+  "ja": "満月まであと少し、片側だけ欠けた月。スケッチした。"
+ },
+ "scope.seen.moon_full": {
+  "ru": "Полная Луна. Слепит, как фонарь. Зарисовал.",
+  "en": "The full Moon. Dazzling as a lamp. Drew it.",
+  "ja": "満月。街灯みたいにまぶしい。スケッチした。"
+ },
+ "scope.seen.venus": {
+  "ru": "Венера. Белая и ровная, не мигает. Записал.",
+  "en": "Venus. White and steady, no twinkle. Noted.",
+  "ja": "金星。白くて、またたかない。書きとめた。"
+ },
+ "scope.seen.venus_phase": {
+  "ru": "У Венеры серп, как у маленькой Луны! Зарисовал.",
+  "en": "Venus is a crescent, like a tiny Moon! Drew it.",
+  "ja": "金星が欠けている、小さな月みたいに！スケッチした。"
+ },
+ "scope.seen.mars": {
+  "ru": "Марс. Рыжий кружок, меньше горошины. Записал.",
+  "en": "Mars. A rusty little disc, smaller than a pea. Noted.",
+  "ja": "火星。さび色の小さな円、豆粒より小さい。書きとめた。"
+ },
+ "scope.seen.jupiter": {
+  "ru": "Юпитер. Кружок, а не точка, и на нём две полоски. Записал.",
+  "en": "Jupiter. A disc, not a point, with two stripes on it. Noted.",
+  "ja": "木星。点じゃなくて円で、縞が二本ある。書きとめた。"
+ },
+ "scope.seen.jupiter_moons": {
+  "ru": "Рядом с Юпитером звёздочки в ряд — это его луны! Зарисовал, где стоят.",
+  "en": "Little stars in a row beside Jupiter: its moons! Drew where they stand.",
+  "ja": "木星の横に小さな星が一列に。衛星だ！位置をスケッチした。"
+ },
+ "scope.seen.saturn": {
+  "ru": "Сатурн. Жёлтый и какой-то вытянутый. Записал.",
+  "en": "Saturn. Yellow and somehow stretched. Noted.",
+  "ja": "土星。黄色くて、なんだか横に長い。書きとめた。"
+ },
+ "scope.seen.saturn_ring": {
+  "ru": "У Сатурна кольцо. Настоящее. Как на картинке, только живое. Зарисовал.",
+  "en": "Saturn has a ring. A real one. Like the picture, only alive. Drew it.",
+  "ja": "土星に環がある。本物だ。図鑑のとおり、でも生きている。スケッチした。"
+ },
+ "scope.seen.sunspots": {
+  "ru": "Солнце через фильтр: оранжевый круг и на нём тёмные точки. Зарисовал пятна.",
+  "en": "The sun through the filter: an orange disc with dark dots. Drew the spots.",
+  "ja": "フィルター越しの太陽：オレンジの円に黒い点。黒点をスケッチした。"
+ },
+ "scope.seen.aurora": {
+  "ru": "Сияние в окуляре: зелёные занавески, и они шевелятся. Записал.",
+  "en": "The aurora in the eyepiece: green curtains, and they move. Noted.",
+  "ja": "接眼レンズの中のオーロラ：緑のカーテンが揺れている。書きとめた。"
+ },
+ "scope.seen.noctilucent": {
+  "ru": "Серебристые облака: светятся сами, когда всё небо уже тёмное. Записал.",
+  "en": "Noctilucent clouds: shining by themselves when the whole sky is dark. Noted.",
+  "ja": "夜光雲：空がすっかり暗いのに、ひとりで光っている。書きとめた。"
+ },
+ "scope.again.jupiter_moons": {
+  "ru": "Луны Юпитера сегодня стоят иначе. Зарисовал новую ночь.",
+  "en": "Jupiter's moons stand differently tonight. Drew the new night.",
+  "ja": "木星の衛星は今夜、並びが違う。新しい夜をスケッチした。"
+ },
+ "journal.sky.moon_crescent": {
+  "ru": "Смотрел в телескоп на Луну. Тонкий серп, а тёмная часть всё равно чуть видна — пепельная.",
+  "en": "Looked at the Moon through a telescope. A thin crescent, and the dark part still shows faintly, ash-grey.",
+  "ja": "望遠鏡で月を見た。細い三日月。暗い側も灰色にうっすら見える。"
+ },
+ "journal.sky.moon_quarter": {
+  "ru": "Луна в телескоп: ровно половина. Вдоль края тени кратеры как следы от дождя на песке.",
+  "en": "The Moon through a telescope: exactly half. Along the edge of the shadow the craters look like rain marks in sand.",
+  "ja": "望遠鏡の月：ちょうど半分。影のきわのクレーターは、砂に落ちた雨粒のあとみたいだ。"
+ },
+ "journal.sky.moon_gibbous": {
+  "ru": "Луна в телескоп, почти полная. Одного края не хватает, будто кто-то стёр ластиком.",
+  "en": "The Moon through a telescope, nearly full. One edge is missing, as if somebody rubbed it out.",
+  "ja": "望遠鏡の月、ほぼ満月。片方の端だけ、消しゴムで消したみたいに欠けている。"
+ },
+ "journal.sky.moon_full": {
+  "ru": "Полная Луна в телескоп. Такая яркая, что потом в глазу долго плавал круг.",
+  "en": "The full Moon through a telescope. So bright that a disc swam in my eye long afterwards.",
+  "ja": "望遠鏡の満月。まぶしくて、しばらく目の中に円が浮いていた。"
+ },
+ "journal.sky.venus": {
+  "ru": "Нашёл в телескоп Венеру. Низко, у самой зари.",
+  "en": "Found Venus in a telescope. Low, right by the glow of the sun.",
+  "ja": "望遠鏡で金星を見つけた。低く、朝焼け夕焼けのすぐそば。"
+ },
+ "journal.sky.venus_phase": {
+  "ru": "У Венеры есть фазы, как у Луны. Сегодня сам видел серп. В учебнике не врут.",
+  "en": "Venus has phases like the Moon. Saw the crescent myself today. The textbook does not lie.",
+  "ja": "金星には月のような満ち欠けがある。今日、自分の目で見た。教科書は嘘をついていない。"
+ },
+ "journal.sky.mars": {
+  "ru": "Марс в телескоп: маленький рыжий кружок. Каналов не видел. Марсиан тоже.",
+  "en": "Mars through a telescope: a small rusty disc. Saw no canals. No Martians either.",
+  "ja": "望遠鏡の火星：小さなさび色の円。運河は見えなかった。火星人も。"
+ },
+ "journal.sky.jupiter": {
+  "ru": "Юпитер в телескоп. Не звезда, а кружок с двумя тёмными полосами.",
+  "en": "Jupiter through a telescope. Not a star but a disc with two dark stripes.",
+  "ja": "望遠鏡の木星。星じゃなく、暗い縞が二本ある円。"
+ },
+ "journal.sky.jupiter_moons": {
+  "ru": "Луны Юпитера! Зарисовал: {0}. Ночей с рисунком: {1}.",
+  "en": "Jupiter's moons! Drew them: {0}. Nights drawn: {1}.",
+  "ja": "木星の衛星！スケッチ：{0}。描いた夜：{1}。"
+ },
+ "journal.sky.saturn": {
+  "ru": "Сатурн в телескоп. Жёлтый, с ушками по бокам. Нужно увеличение побольше.",
+  "en": "Saturn through a telescope. Yellow, with little ears on the sides. Needs more power.",
+  "ja": "望遠鏡の土星。黄色くて、両側に耳がある。もっと倍率がいる。"
+ },
+ "journal.sky.saturn_ring": {
+  "ru": "Видел кольцо Сатурна. Оно сейчас почти ребром, тонкое, как поля у шляпы.",
+  "en": "Saw Saturn's ring. It is nearly edge-on now, thin as a hat brim.",
+  "ja": "土星の環を見た。今はほとんど真横向きで、帽子のつばみたいに細い。"
+ },
+ "journal.sky.sunspots": {
+  "ru": "Смотрел на солнце через тёмный фильтр. На нём пятна, как веснушки. Без фильтра — никогда.",
+  "en": "Looked at the sun through a dark filter. It has spots like freckles. Without the filter: never.",
+  "ja": "濃いフィルター越しに太陽を見た。そばかすみたいな黒点がある。フィルターなしでは絶対に見ない。"
+ },
+ "journal.sky.aurora": {
+  "ru": "Поймал в телескоп северное сияние. В окуляр оно не помещается, зато видно, как дрожат лучи.",
+  "en": "Caught the aurora in a telescope. It does not fit in the eyepiece, but you can see the rays tremble.",
+  "ja": "望遠鏡でオーロラをとらえた。視野には収まらないけれど、光の筋が震えるのが見える。"
+ },
+ "journal.sky.noctilucent": {
+  "ru": "Серебристые облака в телескоп: тонкая голубая рябь, выше всех других облаков.",
+  "en": "Noctilucent clouds through a telescope: a thin blue ripple, higher than any other cloud.",
+  "ja": "望遠鏡の夜光雲：ほかのどの雲よりも高い、細く青いさざ波。"
+ },
+ "journal.sky.jupiter_night": {
+  "ru": "Юпитер, новая ночь: {0}. Луны переехали. Ночей с рисунком: {1}.",
+  "en": "Jupiter, a new night: {0}. The moons have moved. Nights drawn: {1}.",
+  "ja": "木星、新しい夜：{0}。衛星が動いた。描いた夜：{1}。"
+ },
+ "journal.sky.sun": {
+  "ru": "Навёл телескоп на солнце. Глупость. Белое пятно в глазу держалось полдня. Больше никогда.",
+  "en": "Pointed a telescope at the sun. Stupid. The white blot stayed in my eye half the day. Never again.",
+  "ja": "望遠鏡を太陽に向けた。ばかだった。白いしみが半日、目から消えなかった。二度としない。"
+ },
+ "ui.birds.how_telescope": {
+  "ru": "в телескоп",
+  "en": "through a telescope",
+  "ja": "望遠鏡で"
+ },
+ "journal.bird.seen_telescope": {
+  "ru": "Разглядел в телескоп: {0}. Записал.",
+  "en": "Made it out through a telescope: the {0}. Noted it down.",
+  "ja": "望遠鏡で見分けた：{0}。書きとめた。"
+ },
+ "dev.action.scope.look": {
+  "ru": "Телескоп: смотреть отсюда / отойти",
+  "en": "Telescope: look from here / step back",
+  "ja": "望遠鏡：ここから覗く／離れる"
+ },
+ "dev.action.scope.best": {
+  "ru": "Телескоп: навести на планету, что сейчас видна",
+  "en": "Telescope: aim at a planet that is up now",
+  "ja": "望遠鏡：いま見える惑星に向ける"
+ },
+ "city.coll.sky.title": {
+  "ru": "Небо в окуляре",
+  "en": "The sky in the eyepiece",
+  "ja": "接眼レンズの空"
+ },
+ "city.ask.market.sky": {
+  "ru": "Вы правда каждый день рисуете солнце?",
+  "en": "Do you really draw the sun every day?",
+  "ja": "本当に毎日、太陽を描いているんですか？"
+ },
+ "city.ask.market.sky.1": {
+  "ru": "— Каждый. Через тёмный фильтр, иначе нельзя: солнце в трубу без фильтра смотрят один раз в жизни. А ночное небо я оставил сыну. И тебе советую.",
+  "en": "\"Every day. Through a dark filter, there is no other way: you look at the sun through a bare telescope once in a lifetime. The night sky I left to my son. I recommend it to you too.\"",
+  "ja": "「毎日だよ。濃いフィルター越しにね。フィルターなしで太陽を覗けるのは、一生に一度きりだ。夜空は息子にゆずった。きみにもすすめるよ」"
+ },
+ "city.ask.market.sky.2": {
+  "ru": "— Вечером на юге Сатурн: при шестидесяти кратах видно кольцо. А Юпитер встаёт на востоке после часа ночи. Рядом с ним четыре звёздочки в ряд — его луны. Зарисуй, где стоят, четыре ночи подряд или вразбивку. Сам бы смотрел, да мне в пять на рынок.",
+  "en": "\"In the evening Saturn is in the south: at sixty power you can see the ring. Jupiter rises in the east after one in the morning. Beside it, four little stars in a row: its moons. Draw where they stand on four nights, in a row or not. I would watch myself, but I am at the market by five.\"",
+  "ja": "「夕方は南に土星。六十倍なら環が見える。木星は夜中の一時すぎに東から昇る。そばに小さな星が四つ並んでいる。衛星だ。四晩ぶん、位置を描いてごらん。続けてでなくていい。わたしは五時には市場だから、見られないんだ」"
+ },
+ "city.ask.market.sky.3": {
+  "ru": "— Кольцо уже видел? Оно сейчас почти ребром. Лет через пятнадцать развернётся во всю ширь. Приходи, сравним.",
+  "en": "\"Seen the ring already? It is nearly edge-on now. In fifteen years or so it will open wide. Come back and we will compare.\"",
+  "ja": "「環はもう見たかい？今はほとんど真横だ。十五年もすれば大きく開く。そのとき比べよう」"
+ },
+ "city.ask.market.log": {
+  "ru": "Что ещё посмотреть в телескоп?",
+  "en": "What else is worth a look in a telescope?",
+  "ja": "望遠鏡でほかに何を見るといいですか？"
+ },
+ "city.ask.market.log.1": {
+  "ru": "— Луну, пока она не полная: кратеры видно там, где тень. В полнолуние она плоская, как блин. Монетные трубы на набережной дают шестьдесят крат, а четыреста ищи в «Тарелке», на маяке и в библиотеке.",
+  "en": "\"The Moon while it is not full: the craters show where the shadow is. At full Moon it is flat as a pancake. The coin telescopes on the promenade give sixty power; for four hundred try the Saucer café, the lighthouse and the library.\"",
+  "ja": "「満月になる前の月だね。クレーターは影のきわに見える。満月はホットケーキみたいに平らだ。海岸通りのコイン望遠鏡は六十倍まで。四百倍は『タレールカ』、灯台、図書館にある」"
+ },
+ "city.ask.market.log.2": {
+  "ru": "— Марс под утро рядом с Юпитером. Маленький, рыжий, зато свой собственный цвет. Не перепутаешь.",
+  "en": "\"Mars is near Jupiter before dawn. Small and rusty, but a colour all its own. You will not mix it up.\"",
+  "ja": "「火星は明け方、木星の近くだ。小さくてさび色だが、あの色は火星だけ。まちがえないよ」"
+ },
+ "city.ask.market.log.3": {
+  "ru": "— Венера сейчас прячется у самого солнца, её не трогай. К зиме выйдет утренней звездой, тогда и увидишь серп.",
+  "en": "\"Venus is hiding right by the sun now, leave her alone. By winter she comes out as the morning star, and then you will see the crescent.\"",
+  "ja": "「金星は今、太陽のすぐそばに隠れている。そっとしておきなさい。冬には明けの明星になる。そのとき欠けた姿が見られる」"
+ },
+ "city.ask.market.log.4": {
+  "ru": "— Половину неба уже записал? Тогда ты наблюдатель, а не прохожий. Яблоко за счёт заведения. Шучу. Два рубля.",
+  "en": "\"Half the sky written down already? Then you are an observer, not a passer-by. An apple on the house. Joking. Two roubles.\"",
+  "ja": "「もう空の半分を書きとめたのか。なら通りすがりじゃない、観測者だ。りんごはおごり。冗談だよ、二ルーブル」"
+ },
+ "city.ask.market.moons": {
+  "ru": "Я зарисовал луны Юпитера. Четыре ночи.",
+  "en": "I drew Jupiter's moons. Four nights.",
+  "ja": "木星の衛星を描きました。四晩ぶんです。"
+ },
+ "city.ask.market.moons.1": {
+  "ru": "— Покажи. Вот эта бегает быстрее всех, это Ио. Эта дальняя — Каллисто. Галилей увидел то же самое в январе 1610-го и понял, что не всё на свете вертится вокруг нас.",
+  "en": "\"Show me. This one runs fastest: that is Io. The far one is Callisto. Galileo saw the very same in January 1610 and understood that not everything in the world turns around us.\"",
+  "ja": "「見せてごらん。いちばん速く動くのがイオ。遠いのがカリスト。ガリレオは一六一〇年の一月に同じものを見て、すべてがわたしたちのまわりを回っているわけじゃないと知ったんだ」"
+ },
+ "city.ask.market.moons.2": {
+  "ru": "— Четыре рисунка, и ни один не похож на другой. Томо повесит их рядом со своим солнцем. Держи: за работу наблюдателя. И яблоки, они с южной стороны сада.",
+  "en": "\"Four drawings and no two alike. Tomo will pin them up next to his sun. Here: an observer's wages. And apples, from the south side of the orchard.\"",
+  "ja": "「四枚とも、どれも違う。トモが自分の太陽の絵の横に貼るよ。はい、観測者の手間賃。それとりんご、果樹園の南側のだ」"
+ },
+ "quest.jupiter_moons.title": {
+  "ru": "Четыре луны Юпитера",
+  "en": "Four moons of Jupiter",
+  "ja": "木星の四つの月"
+ },
+ "quest.jupiter_moons.desc": {
+  "ru": "Дайсукэ Гирма по утрам торгует яблоками на рынке, а днём рисует солнечные пятна. На ночное небо у него не остаётся сил. Он попросил меня зарисовать луны Юпитера.",
+  "en": "Daisuke Girma sells apples at the market in the mornings and draws sunspots in the afternoons. He has no strength left for the night sky. He asked me to draw Jupiter's moons.",
+  "ja": "ギルマ大介さんは朝は市場でりんごを売り、昼は太陽の黒点を描いている。夜空を見る力は残らない。木星の衛星を描いてほしいと頼まれた。"
+ },
+ "quest.jupiter_moons.find.log": {
+  "ru": "Юпитер встаёт на востоке после часа ночи и к рассвету стоит высоко на юго-востоке. Самая яркая «звезда» в той стороне. Нужен телескоп и окуляр от двенадцати крат. Навести, поймать резкость и подержать.",
+  "en": "Jupiter rises in the east after one in the morning and stands high in the south-east by dawn. The brightest \"star\" on that side. I need a telescope and an eyepiece of twelve power or more. Aim, focus and hold.",
+  "ja": "木星は夜中の一時すぎに東から昇り、夜明けには南東の高いところにいる。そちら側でいちばん明るい「星」。望遠鏡と十二倍以上の接眼レンズがいる。向けて、ピントを合わせて、じっと保つ。"
+ },
+ "quest.jupiter_moons.first.obj": {
+  "ru": "Найти в телескоп луны Юпитера и зарисовать их",
+  "en": "Find Jupiter's moons in a telescope and draw them",
+  "ja": "望遠鏡で木星の衛星を見つけて描く"
+ },
+ "quest.jupiter_moons.nights.log": {
+  "ru": "Первая ночь есть. Луны бегают быстро: завтра они встанут иначе. Нужно ещё три ночи. Ночи не обязательно подряд, облака тоже считаются уважительной причиной.",
+  "en": "The first night is done. The moons run fast: tomorrow they will stand differently. Three more nights are needed. They need not be in a row; clouds count as a fair excuse.",
+  "ja": "最初の夜はできた。衛星は速い。明日には並びが変わる。あと三晩いる。続けてでなくていいし、雲はちゃんとした言い訳になる。"
+ },
+ "quest.jupiter_moons.more.obj": {
+  "ru": "Зарисовать луны Юпитера ещё в три ночи",
+  "en": "Draw Jupiter's moons on three more nights",
+  "ja": "さらに三晩、木星の衛星を描く"
+ },
+ "quest.jupiter_moons.show.log": {
+  "ru": "Четыре ночи, четыре рисунка. Отнесу их Дайсукэ на рынок: он у фруктового прилавка с семи утра до полудня.",
+  "en": "Four nights, four drawings. I will take them to Daisuke at the market: he is at the fruit stall from seven in the morning till noon.",
+  "ja": "四晩、四枚のスケッチ。市場の大介さんに持っていこう。朝七時から昼まで果物の売り場にいる。"
+ },
+ "quest.jupiter_moons.tell.obj": {
+  "ru": "Показать рисунки Дайсукэ у фруктового прилавка (утром)",
+  "en": "Show the drawings to Daisuke at the fruit stall (in the morning)",
+  "ja": "果物売り場の大介さんにスケッチを見せる（朝）"
+ },
+ "quest.jupiter_moons.done": {
+  "ru": "Дайсукэ долго смотрел на мои четыре рисунка, потом достал свою тетрадь с пятнами и положил рядом. «Днём солнце, ночью Юпитер. Теперь у нас в городе полные сутки наблюдений». Я не стал говорить, что на третьем рисунке одну луну сначала принял за соринку.",
+  "en": "Daisuke looked at my four drawings for a long time, then took out his sunspot notebook and laid it beside them. \"The sun by day, Jupiter by night. Now our town has a full day and night of observations.\" I did not say that on the third drawing I first took one moon for a speck of dust.",
+  "ja": "大介さんはわたしの四枚のスケッチを長いこと見て、それから黒点のノートを出して横に並べた。「昼は太陽、夜は木星。これでこの町の観測は一日ぶんそろった」。三枚目で衛星のひとつを最初はごみだと思ったことは、言わなかった。"
+ }
+}
