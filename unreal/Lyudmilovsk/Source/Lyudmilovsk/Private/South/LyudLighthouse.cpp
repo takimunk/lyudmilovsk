@@ -903,11 +903,11 @@ void ULyudLighthouseSubsystem::Spawn(UWorld& World)
 			(S->bUp ? Up : Down) = S;
 		}
 	}
-	const TSharedPtr<FJsonObject>* LogObj = nullptr;
-	if (Root->TryGetObjectField(TEXT("log"), LogObj))
+	const TSharedPtr<FJsonObject>* LogField = nullptr;
+	if (Root->TryGetObjectField(TEXT("log"), LogField))
 	{
-		const FVector At = LhVec(*LogObj, TEXT("at"));
-		const FRotator Rot(0.0, (*LogObj)->GetNumberField(TEXT("yaw")), 0.0);
+		const FVector At = LhVec(*LogField, TEXT("at"));
+		const FRotator Rot(0.0, (*LogField)->GetNumberField(TEXT("yaw")), 0.0);
 		Log = World.SpawnActor<ALyudLighthouseLog>(ALyudLighthouseLog::StaticClass(), FTransform(Rot, At));
 	}
 	// the gallery's view over the sea: the coast's own viewer spot (E holds the binoculars' view), no stand on the narrow deck
