@@ -702,7 +702,7 @@ fills on Thursdays, not on festival days), barksim for the lines, questsim for t
 
 ## 49. The sanatorium's procedures
 
-`[ ]` **Brief (Fable 5.2):** The course at «Корона» (`sanatorium-cure`, `docs/city_interiors.md` "Stays") stamps the
+`[~] san-procedures 2026-11-21 (branch san-procedures, docs/sanatorium_procedures.md; scenes, wing, guests and citysim done; Mac compile, shots of three procedures and bench owed)` **Brief (Fable 5.2):** The course at «Корона» (`sanatorium-cure`, `docs/city_interiors.md` "Stays") stamps the
 hero's book, but the procedures happen as a word and a fade. Make each a short hands-on scene in the room where it
 happens: the pump room (pick a cup, fill it at the brass tap, sip it slowly while the clock ticks; the water's taste line
 changes by spring), the inhalation room (sit, a mask, breathe in time with a slow ring on the screen), the mud bath and
