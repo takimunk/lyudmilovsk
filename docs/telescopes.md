@@ -66,7 +66,7 @@ stall, 7 to 13 (`buy_market_fruit` topics in talk.json): `market.sky` (what is u
 `market.log` (what else to look at; lines that follow the stamps), `market.moons` (offered with `sky/jupiter_four`).
 
 Quest `jupiter_moons` «Четыре луны Юпитера» (tools/city/content/x_telescope.json): find the moons (`observe
-jupiter_night`), three more nights, show the drawings (`ask market.moons`); 40 roubles and two apples.
+jupiter_night`), three more nights (`observe jupiter_next`: a new night that is not the log's first), show the drawings (`ask market.moons`); 40 roubles and two apples.
 
 ## Console and developer mode
 

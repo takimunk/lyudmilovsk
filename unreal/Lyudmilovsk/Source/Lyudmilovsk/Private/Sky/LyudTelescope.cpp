@@ -958,6 +958,12 @@ void ULyudTelescope::Noted(int32 SightIndex, bool bFirst, bool bNewNight)
 	}
 	if (bNewNight)
 	{
+		// a night after the first is "jupiter_next" too, told first: the quest's stage "nights" counts those, its stage "find" the
+		// plain "jupiter_night" (one event for both stages would let the first night skip a stage)
+		if (Log->JupiterNights >= 2)
+		{
+			ULyudQuests::Notify(this, TEXT("observe"), TEXT("jupiter_next"));
+		}
 		ULyudQuests::Notify(this, TEXT("observe"), TEXT("jupiter_night"));
 		if (Log->JupiterNights >= 4)
 		{
