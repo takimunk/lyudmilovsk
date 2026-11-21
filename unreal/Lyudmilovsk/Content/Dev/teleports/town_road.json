@@ -1,0 +1,7 @@
+{
+ "teleports": [
+  {"id": "town_road.alley", "group": "south", "name": "dev.tp.town_road.alley", "x": -20.5, "y": 119.0, "yaw": 60.0},
+  {"id": "town_road.square", "group": "south", "name": "dev.tp.town_road.square", "place": "square", "yaw": 200.0},
+  {"id": "town_road.market", "group": "south", "name": "dev.tp.town_road.market", "x": -70.0, "y": 873.0, "z": -3620.0, "yaw": 175.7}
+ ]
+}

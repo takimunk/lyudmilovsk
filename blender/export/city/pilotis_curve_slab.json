@@ -987,6 +987,19 @@
    }
   },
   {
+   "id": "flat_wardrobe",
+   "kind": "board",
+   "pos": [
+    -25.767,
+    7.428,
+    4.605
+   ],
+   "yaw": 103.7,
+   "props": {
+    "what": "wardrobe"
+   }
+  },
+  {
    "id": "flat_bed",
    "kind": "bed",
    "pos": [
@@ -998,6 +1011,45 @@
    "props": {
     "rest": "private",
     "height": 0.5
+   }
+  },
+  {
+   "id": "flat_photo",
+   "kind": "take",
+   "pos": [
+    -24.106,
+    10.415,
+    4.055
+   ],
+   "yaw": 11.4,
+   "props": {
+    "what": "photo"
+   }
+  },
+  {
+   "id": "flat_cupboard",
+   "kind": "board",
+   "pos": [
+    -21.322,
+    10.67,
+    4.005
+   ],
+   "yaw": 11.4,
+   "props": {
+    "what": "cupboard"
+   }
+  },
+  {
+   "id": "flat_kettle",
+   "kind": "machine",
+   "pos": [
+    -20.851,
+    10.714,
+    4.455
+   ],
+   "yaw": 11.4,
+   "props": {
+    "what": "kettle"
    }
   },
   {
@@ -1038,6 +1090,19 @@
    "yaw": 192.5,
    "props": {
     "what": "window"
+   }
+  },
+  {
+   "id": "flat_note",
+   "kind": "take",
+   "pos": [
+    -21.443,
+    9.526,
+    4.205
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "note"
    }
   },
   {
@@ -3504,7 +3569,7 @@
  ],
  "tris": {
   "shell": 8886,
-  "detail": 27274,
+  "detail": 27467,
   "windows": 344,
   "dress": 2781
  }

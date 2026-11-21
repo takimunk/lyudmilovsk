@@ -1,0 +1,76 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Animals that live with people (docs/animals.md "With people"): the owners out with their dogs on the leash, what
+## they say to the dog and about it, the answer to "may I stroke it?", the lady with the bowls for the yard cats,
+## the flats' cats, the hedgehogs at dusk.
+## Events (on = ...), sent by ULyudPets: pet_talk (the owner to the dog on the walk), pet_stroke_yes / pet_stroke_no
+## (the hero asked to stroke the dog), cat_call (the lady puts the bowls down), cat_sill (the hero stops under a
+## window with the flat's cat on the sill, its owner near), hedgehog (somebody near a hedgehog at dusk).
+## ---------------------------------------------------------------------------------------------------------------
+
+[dog_owner_walk]
+doing = walk_dog walk_dog_late
+say town.dog_owner_walk.1 | Гуляем. Два раза в день, в любую погоду. Это он меня выгуливает. | Out for our walk. Twice a day, any weather. It's him who walks me. | 散歩中です。日に二回、どんな天気でも。散歩させられてるのは私のほう。
+say town.dog_owner_walk.2 | Не бойся, не кусается. Разве что залижет. | Don't be afraid, no biting. A licking, at worst. | 怖がらないで、かみません。なめ回されるくらいで。
+say town.dog_owner_walk.3 | Каждый столб надо прочитать. У него там газета. | Every post has to be read. That's his newspaper. | 電柱は一本ずつ読まないと。あれがこの子の新聞なんです。
+say town.dog_owner_walk.4 | Без собаки я бы и набережной не видел. А так каждое утро. | Without the dog I'd never see the promenade. As it is, every morning. | 犬がいなかったら海岸通りなんて歩きません。おかげで毎朝です。
+say town.dog_owner_walk.5 | На поводке, да. На террасах чайки, а у нас характер. | On the lead, yes. There are gulls on the terraces, and we have a temper. | リードはつけてます。テラスにはカモメがいて、うちのは気が強いので。
+say town.dog_owner_walk.6 | Дома он тихий. Это на улице у него дела. | At home he's quiet. It's outside that he has business. | 家ではおとなしいんです。外に出ると用事が多くて。
+say town.dog_owner_walk.7 | В дождь тоже гуляем. Потом в подъезде отряхивается, соседи счастливы. | We walk in the rain too. Then a shake in the stairwell, and the neighbours are delighted. | 雨でも散歩です。帰ると階段でぶるぶるして、ご近所は大喜び。
+
+[dog_owner_walk_evening]
+doing = walk_dog_late
+say town.dog_owner_walk_evening.1 | Вечерний круг. Он знает маршрут лучше меня. | The evening round. He knows the route better than I do. | 夕方のひと回り。道はこの子のほうがよく知ってます。
+say town.dog_owner_walk_evening.2 | На закате он всегда садится и смотрит на солнце. Я тоже привык. | At sunset he always sits and looks at the sun. I've got used to it too. | 日の入りになると、いつも座って太陽を見るんです。私もつられて。
+
+[pet_talk]
+on = pet_talk
+say town.pet_talk.1 | Рядом. Рядом, кому говорю. | Heel. Heel, I said. | つけ。つけ、って言ってるでしょ。
+say town.pet_talk.2 | Ну что ты там нашёл? Пойдём, пойдём. | Now what have you found there? Come on, come on. | 何を見つけたの？ほら、行くよ。
+say town.pet_talk.3 | Это не едят. Фу. | That is not food. Leave it. | それは食べ物じゃないの。だめ。
+say town.pet_talk.4 | Чайки тебе ничего не сделали. | The gulls have done nothing to you. | カモメは何もしてないでしょ。
+say town.pet_talk.5 | Хороший, хороший. Дома получишь. | Good boy, good boy. You'll get something at home. | いい子、いい子。帰ったらあげるからね。
+say town.pet_talk.6 | Не тяни. Мы никуда не опаздываем. | Don't pull. We aren't late for anything. | 引っぱらないの。急ぐ用事はないんだから。
+say town.pet_talk.7 | Поздоровался? Всё, идём дальше. | Said hello? Right, on we go. | ごあいさつは済んだ？じゃあ行こう。
+say town.pet_talk.8 | Лапы потом мыть, учти. | Paws get washed afterwards, mind. | あとで足を洗うからね。
+
+[pet_stroke_yes]
+on = pet_stroke_yes
+say town.pet_stroke_yes.1 | Можно, можно. Только руку сначала дай понюхать. | You may, you may. Just let him sniff your hand first. | どうぞ、どうぞ。まず手のにおいをかがせてやって。
+say town.pet_stroke_yes.2 | Гладь, он это любит. Потом от тебя не отойдёт. | Go on, he loves it. He won't leave your side after. | なでてやって、大好きだから。もう離れなくなるよ。
+say town.pet_stroke_yes.3 | Конечно. За ухом чеши, там самое место. | Of course. Scratch behind the ear, that's the spot. | もちろん。耳のうしろをかいてやって、そこが一番。
+say town.pet_stroke_yes.4 | Можно. Он у нас общительный. | You may. He's the sociable one in the family. | いいですよ。うちで一番の社交家なので。
+
+[pet_stroke_no]
+on = pet_stroke_no
+say town.pet_stroke_no.1 | Лучше не надо. Он сегодня не в духе. | Better not. He's out of sorts today. | やめておいて。今日はごきげんななめで。
+say town.pet_stroke_no.2 | Не сейчас, мы торопимся. Вечером подходи. | Not now, we're in a hurry. Come up in the evening. | 今はちょっと、急いでるので。夕方にまたどうぞ。
+say town.pet_stroke_no.3 | Он чужих стесняется. Ты приходи почаще, привыкнет. | He's shy of strangers. Come by more often, he'll get used to you. | 知らない人が苦手で。ちょくちょく会えば慣れますよ。
+
+[cat_call]
+on = cat_call
+say town.cat_call.1 | Кис-кис-кис! Завтрак, хвостатые! | Puss-puss-puss! Breakfast, you tails! | おいで、おいで！ごはんだよ、しっぽたち！
+say town.cat_call.2 | Кис-кис! Всем хватит, не толкаться. | Puss-puss! There's enough for all, no shoving. | おいで！みんなの分あるから、押さないの。
+say town.cat_call.3 | Рыжий, ты вчера ел за двоих. Сегодня по-честному. | Ginger, you ate for two yesterday. Fair shares today. | 茶トラ、きのうは二匹分食べたでしょ。今日は公平にね。
+say town.cat_call.4 | Идите, идите. Сорок лет кормлю, ни разу не опоздала. | Come on, come on. Forty years I've fed you lot, never once late. | おいで、おいで。四十年やってるけど、遅れたことは一度もないよ。
+say town.cat_call.5 | Кис-кис! А серая где? Опять на крыше? | Puss-puss! And where's the grey one? On the roof again? | おいで！灰色の子は？また屋根の上？
+
+[cat_lady_round]
+doing = feed_cats feed_cats_late
+say town.cat_lady_round.1 | В восемь и в полшестого. Они часы по мне сверяют. | At eight and at half past six. They set their clocks by me. | 八時と六時半。あの子たちは私で時計を合わせてるの。
+say town.cat_lady_round.2 | Дворовые, а каждого знаю. Вон тот полосатый ещё котёнком пришёл. | Yard cats, but I know each one. That tabby there came as a kitten. | 庭の猫だけど、みんな知ってるよ。あのしまの子は子猫のときに来たの。
+say town.cat_lady_round.3 | Ты их не бойся и не гоняй. Посиди тихо, сами подойдут. | Don't fear them and don't chase them. Sit quietly, they'll come themselves. | 怖がらないで、追いかけないで。静かに座っていれば、向こうから来るから。
+say town.cat_lady_round.4 | Миски я вечером забираю. А то ёжики доедают. | I take the bowls in at night. Else the hedgehogs finish them off. | お皿は夜に片づけるの。でないとハリネズミが食べちゃうから。
+
+[cat_sill]
+on = cat_sill
+say town.cat_sill.1 | Это наш. С утра на подоконнике, двор сторожит. | That's ours. On the sill since morning, guarding the yard. | うちの子です。朝から窓辺で庭の見張り番。
+say town.cat_sill.2 | Сидит, как хозяин. А к ужину первый у двери. | Sits there like the landlord. And first at the door for supper. | 大家さんみたいな顔で座ってるでしょ。夕飯になると真っ先にドアの前。
+say town.cat_sill.3 | На улицу не идёт. Говорит, ему и оттуда всё видно. | Won't go out. Says he can see it all from there. | 外には出ないんです。あそこから全部見えるからって。
+say town.cat_sill.4 | Не стучи в стекло, обидится. Он злопамятный. | Don't tap on the glass, he'll take offence. He bears grudges. | ガラスをたたかないで、すねるから。根に持つタイプなんです。
+
+[hedgehog_seen]
+on = hedgehog
+say town.hedgehog_seen.1 | Тише. Ёж вышел. Каждый вечер тут топает. | Quiet. The hedgehog's out. Stomps about here every evening. | 静かに。ハリネズミが出てきた。毎晩ここをとことこ歩くんだ。
+say town.hedgehog_seen.2 | Не трогай, он свернётся и будет обижаться полчаса. | Don't touch, he'll curl up and sulk for half an hour. | さわらないで。丸くなって三十分はすねるから。
+say town.hedgehog_seen.3 | Слышишь, пыхтит? Маленький, а шуму как от паровоза. | Hear him puffing? So small, and noisy as a steam engine. | ふうふう言ってるの、聞こえる？小さいのに機関車みたいな音。
+say town.hedgehog_seen.4 | Коты к нему уже не лезут. Один раз понюхали, хватило. | The cats leave him be now. One sniff was enough. | 猫はもう近づかないよ。一度においをかいで、こりたんだ。

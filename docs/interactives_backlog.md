@@ -540,7 +540,7 @@ rebased on it (both in the bird-life model); 46 owns `tools/animal_map.py` for t
 
 ## 37. People on the Aton trails
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The Aton coast (`docs/south.md`, branch `aton-coast`) has five trails and twelve
+`[~] aton-people 2026-11-21 (branch ready on aton-coast, docs/south.md "People")` **Cloud-only. Brief (Opus 5.5):** The Aton coast (`docs/south.md`, branch `aton-coast`) has five trails and twelve
 places, and nobody walks them (`docs/south_backlog.md` "People do not walk it"). Give it people, the townsfolk we already
 have, by persona, weekday and weather: a fisherman mending nets at the boat shed by the brook's mouth (`brook_mouth`)
 mornings, going out in the evening; a beekeeper in the old orchard in warm months (the hives); the birdwatcher in the
@@ -557,7 +557,7 @@ rain and at night, nobody leaves the trails), `--check` of the post-step, lines 
 
 ## 38. The first walk to the town
 
-`[ ]` **Brief (Opus 5.5):** Make the half-kilometre walk from the club to the town (`south.trails()` `town`) the game's
+`[~] town-road 2026-11-21 (branch on aton-uses, docs/south.md "The first walk"; Mac: sign textures + south GLB, map build, shots)` **Brief (Opus 5.5):** Make the half-kilometre walk from the club to the town (`south.trails()` `town`) the game's
 natural first trip. Signposts at the forks (the alley's end, the shoulder's foot, the footbridge) with arrows and
 distances in metres and minutes ("Город 350 м", "Пляж", "Родник", "Станция «Атон»"), built from the North's kit sign
 (`set: "north"`) with words from `tools/south_signs.py`. A small quest "Дорога в город" for the first day: Maru (or the
@@ -570,7 +570,7 @@ questsim walk-through, `south.py --check`, Mac: the map pictures rebuilt (LFS), 
 
 ## 39. Things to do on the way
 
-`[ ]` **Brief (Opus 5.5):** The Aton coast's places can only be sat at and looked through (`docs/south_backlog.md`
+`[~] aton-uses 2026-11-21 (branch on aton-people, docs/south.md "Things to do")` **Brief (Opus 5.5):** The Aton coast's places can only be sat at and looked through (`docs/south_backlog.md`
 "Game"). Make each one do something, in the existing systems: drink at the spring with the hands (E: the hero kneels,
 a sip sound, thirst/"refreshed" like the soda) and fill the empty bottle from the vending machines (a new item state
 "spring water", sold to nobody, given to the sanatorium's doctor for a line); pick apples in the old orchard
@@ -666,7 +666,7 @@ the soundscape mix unchanged at night.
 
 ## 46. Animals with people
 
-`[ ]` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
+`[x] animals-with-people 2026-11-21 (model, data, lines, hedgehog model and offline checks done; engine side never compiled or seen: Mac build, hedgehog.py + import_props.sh hedgehog hedgehog_ball, shots, bench owed)` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
 some households have a dog that a resident walks on a leash morning and evening along their usual paths (the town-life
 walk activity carries an animal id; the dog follows at the owner's heel, sniffs, greets other dogs; the leash a simple
 cable between hand and collar, out of Lumen), cats that belong to a flat and sit on its window sill by day (the flats'
@@ -717,7 +717,7 @@ of three procedures, bench.
 
 ## 50. Sanatorium guests come and go
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The four sanatorium guests (`tools/town/sanatorium_guests.py`) live there for
+`[~] sanatorium-rotation 2026-11-21` **Cloud-only. Brief (Opus 5.5):** The four sanatorium guests (`tools/town/sanatorium_guests.py`) live there for
 ever. Make the sanatorium a place people come to: a nine-day stay (the same as the hero's course) with arrivals and
 departures on Saturdays by the train (item 21's passengers: they get off with a suitcase and walk to «Корона», the
 departing ones wait on the platform), a pool of a dozen guests from the residents generator's spare bodies who rotate,

@@ -1390,6 +1390,19 @@
    }
   },
   {
+   "id": "bauer_cupboard",
+   "kind": "board",
+   "pos": [
+    15.166,
+    10.767,
+    3.81
+   ],
+   "yaw": 358.6,
+   "props": {
+    "what": "cupboard"
+   }
+  },
+  {
    "id": "bauer_sink",
    "kind": "machine",
    "pos": [
@@ -1413,6 +1426,19 @@
    "yaw": 358.6,
    "props": {
     "what": "stove"
+   }
+  },
+  {
+   "id": "bauer_note",
+   "kind": "take",
+   "pos": [
+    17.893,
+    9.8,
+    4.01
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "note"
    }
   },
   {
@@ -1453,6 +1479,32 @@
    "props": {
     "rest": "private",
     "height": 0.5
+   }
+  },
+  {
+   "id": "bauer_photo",
+   "kind": "take",
+   "pos": [
+    13.239,
+    6.812,
+    3.86
+   ],
+   "yaw": 358.6,
+   "props": {
+    "what": "photo"
+   }
+  },
+  {
+   "id": "bauer_wardrobe",
+   "kind": "board",
+   "pos": [
+    12.383,
+    3.282,
+    4.41
+   ],
+   "yaw": 88.6,
+   "props": {
+    "what": "wardrobe"
    }
   },
   {
@@ -22803,7 +22855,7 @@
  ],
  "tris": {
   "shell": 31490,
-  "detail": 61877,
+  "detail": 61901,
   "windows": 3324,
   "dress": 3858
  }

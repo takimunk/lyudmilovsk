@@ -15,6 +15,7 @@
 #include "LyudInventory.h"
 #include "LyudText.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Photo/LyudPhoto.h"
 #include "Sound/SoundBase.h"
 #include "UI/LyudQuests.h"
 
@@ -216,7 +217,8 @@ void ULyudBiteSubsystem::Tick(float DeltaTime)
 	}
 	// the button, polled (never consumed); no eating while a screen is up
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
-	const bool bDown = PC->IsInputKeyDown(EKeys::LeftMouseButton) && !(UI && UI->IsOpen());
+	// (nor with the camera at the eye: the left button is its shutter)
+	const bool bDown = PC->IsInputKeyDown(EKeys::LeftMouseButton) && !(UI && UI->IsOpen()) && !ULyudPhoto::IsUp(World);
 	ChewLeft = FMath::Max(0.f, ChewLeft - DeltaTime);
 
 	PhaseT += DeltaTime;
