@@ -105,6 +105,8 @@ namespace
 		Good(TEXT("magazine_science"), K::Misc, L::Flat, FVector(0.6f, 20.f, 27.f), FLinearColor(0.2f, 0.3f, 0.55f), 40, 4.f);
 		Good(TEXT("magazine_travel"), K::Misc, L::Flat, FVector(0.6f, 20.f, 27.f), FLinearColor(0.15f, 0.45f, 0.5f), 40, 4.f);
 		Good(TEXT("daily_paper"), K::Misc, L::Flat, FVector(0.5f, 24.f, 32.f), FLinearColor(0.75f, 0.72f, 0.65f), 5, 4.f);
+		// the Mayak lighthouse keeper's errand (docs/lighthouse.md): a litre tin of lamp paraffin, sold at the hardware shop
+		Good(TEXT("paraffin"), K::Misc, L::Bottle, FVector(9.f, 9.f, 17.f), FLinearColor(0.62f, 0.12f, 0.08f), 25, 4.5f);
 		Good(TEXT("postcard"), K::Misc, L::Flat, FVector(0.2f, 10.f, 15.f), FLinearColor(0.8f, 0.78f, 0.7f), 4, 3.f);
 		Good(TEXT("badge"), K::Misc, L::Flat, FVector(0.5f, 3.f, 3.5f), FLinearColor(0.8f, 0.6f, 0.15f), 12, 2.f);
 		Good(TEXT("amber_charm"), K::Misc, L::Flat, FVector(1.2f, 3.5f, 4.5f), FLinearColor(0.9f, 0.5f, 0.05f), 90, 2.f);

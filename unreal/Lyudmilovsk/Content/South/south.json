@@ -1086,6 +1086,168 @@
    "set": "south"
   },
   {
+   "id": "picket_fence_1",
+   "kind": "picket_fence",
+   "x": 107.29,
+   "y": -428.05,
+   "yaw": 140.0,
+   "variant": 1,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_2",
+   "kind": "picket_fence",
+   "x": 106.18,
+   "y": -430.02,
+   "yaw": 161.2,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_3",
+   "kind": "picket_fence",
+   "x": 105.85,
+   "y": -432.25,
+   "yaw": 182.4,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_4",
+   "kind": "picket_fence",
+   "x": 106.36,
+   "y": -434.46,
+   "yaw": 203.5,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_5",
+   "kind": "picket_fence",
+   "x": 107.63,
+   "y": -436.33,
+   "yaw": 224.7,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_6",
+   "kind": "picket_fence",
+   "x": 109.49,
+   "y": -437.61,
+   "yaw": 245.9,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_7",
+   "kind": "picket_fence",
+   "x": 111.68,
+   "y": -438.14,
+   "yaw": 267.1,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_8",
+   "kind": "picket_fence",
+   "x": 113.93,
+   "y": -437.84,
+   "yaw": 288.2,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_9",
+   "kind": "picket_fence",
+   "x": 115.91,
+   "y": -436.75,
+   "yaw": 309.4,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_10",
+   "kind": "picket_fence",
+   "x": 117.36,
+   "y": -435.02,
+   "yaw": 330.6,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_11",
+   "kind": "picket_fence",
+   "x": 118.09,
+   "y": -432.88,
+   "yaw": 351.8,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_12",
+   "kind": "picket_fence",
+   "x": 118.0,
+   "y": -430.62,
+   "yaw": 12.9,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_13",
+   "kind": "picket_fence",
+   "x": 117.09,
+   "y": -428.55,
+   "yaw": 34.1,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_14",
+   "kind": "picket_fence",
+   "x": 115.5,
+   "y": -426.94,
+   "yaw": 55.3,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_15",
+   "kind": "picket_fence",
+   "x": 113.44,
+   "y": -426.02,
+   "yaw": 76.5,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_16",
+   "kind": "picket_fence",
+   "x": 111.18,
+   "y": -425.9,
+   "yaw": 97.6,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "picket_fence_17",
+   "kind": "picket_fence",
+   "x": 109.03,
+   "y": -426.61,
+   "yaw": 118.8,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "meteo_screen_1",
+   "kind": "meteo_screen",
+   "x": 109.43,
+   "y": -435.06,
+   "yaw": 230.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
    "id": "bunker_1",
    "kind": "bunker",
    "x": 69.0,

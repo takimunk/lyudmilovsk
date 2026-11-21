@@ -74,6 +74,7 @@ atlas, no new textures but the words): `python3 blender/south/build_south.py` (o
 | `props_places.py` | `belvedere`, `viewer`, `bird_hide`, `fisher_shed`, `net_rack`, `picnic_table` |
 | `props_land.py` | `town_stele`, `spring_trough`, `trail_sign` (four junctions), `info_board` (two), `hay_stack`, `beehive`, `wattle_fence`, `scarecrow`, `orchard_ladder` |
 | `props_marks.py` | `lighthouse` (manifest `lamp`: the lantern's centre for a future light), `bunker`, `shipwreck`, `erratic` (whole, split) |
+| `props_light.py` | `lighthouse_lens`, `lighthouse_beam`, `picket_fence` (plain, with a gate), `meteo_screen` (see "Lighthouse meshes") |
 | `props_alley.py` | `park_lamp` (one globe, two; `lamps`), `park_bench` (3 seats), `flower_bed`, `litter_urn`, `bike_rack`, `halt_shelter` (3 seats), `drinking_fountain` |
 
 Words on boards and posts: `tools/south_signs.py` -> `textures/localized/<lang>/south_<id>.png`, material slots
@@ -82,6 +83,20 @@ Words on boards and posts: `tools/south_signs.py` -> `textures/localized/<lang>/
 In Unreal: `unreal/scripts/import_south.sh` (`STEPS="build signs materials import place"`); `import_world.py` calls
 `import_south.place_safe` after the North's. Meshes `/Game/South/Meshes/SM_South_<Kind>[_V<n>]`, actors tagged `South`
 in `Outside/South`. A thing whose mesh is not imported is skipped, not replaced by a cube.
+
+## Lighthouse meshes
+
+Backlog item 42 (the lighthouse and its keeper). `props_marks.py` `lighthouse`: the 12 lantern panes are quads in their own slot
+`M_South_LanternGlass` (UV 0..1, one-sided, the game makes it see-through dark glass), the lantern floor (z 20.92) and the cap's
+underside (z 22.5) are closed discs, so only the lens (`lighthouse_lens`, origin at the manifest's `lamp`/`lens`, z 21.71) is inside.
+A hatch in the gallery deck on the front (-Y, x 0, y -1.765: iron coaming, dark hole, lid open on the drum, two grab stiles). The
+gallery is walkable: collision boxes = deck slab (top z 20.0, no hole at the hatch), 32 rail posts to z 21.06, the lantern as two crossed
+boxes from the deck up. Manifest points (mesh frame, yaw = degrees counter-clockwise from -Y): `hatch`, `gallery_view` (sea side:
+map +X is the sea, so toward mesh (0.643, 0.766) at the thing's yaw 140), `door_stand` (on the first step, facing the door).
+`props_light.py`: `lighthouse_lens` (glass slot `M_South_LensGlass`, panels UV 0..1, the bullseyes on +-X UV centre (0.5, 0.5);
+no collision), `lighthouse_beam` (6 quads, 1 m, slot `M_South_Beam`, U 0 at the origin to 1 at the end), `picket_fence` (2.4 m along
+X, variant 1 = a closed gate, not solid), `meteo_screen` (manifest `read_at`). `south.things()` rings the tower with 17 fence segments at
+6.1 m (the gate, `picket_fence_1`, on the door's bearing 140 where the track comes in) and puts the screen at bearing 230, 4 m out.
 
 ## The alley and the halt
 

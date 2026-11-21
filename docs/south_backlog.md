@@ -11,8 +11,8 @@ What [south.md](south.md) leaves open, the nearest first. Everything here is a p
   and east brows wander. The railway's cutting sits in it, so it needs the railway's thread.
 - **Words on the boards** follow the game's language only when the level starts (`LocalizeSouthBoards`); a change in
   the menu shows after a reload.
-- **Lamps do not shine**: `park_lamp` (manifest `lamps`) and the lighthouse (`lamp`, an opaque lantern) are meshes
-  only. Night lights through the town's street-light system and a turning beam are the next step.
+- **Lamps do not shine**: `park_lamp` (manifest `lamps`) is a mesh only; night lights through the town's street-light
+  system are the next step. The lighthouse shines (branch `lighthouse`, docs/lighthouse.md).
 - The lichen on the boulders is a pale cloth tile with hard edges (the atlas has no moss); the flower bowl's flowers are
   simple low-poly tufts, not procedural plants.
 

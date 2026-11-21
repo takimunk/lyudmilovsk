@@ -609,7 +609,8 @@ lines through the localization skill, the hall staff in town data.
 
 ## 42. A lighthouse at Mayak
 
-`[ ]` **Brief (Opus 5.5):** The south end of the Aton coast is the Mayak station on the cliff (`south.places()`
+`[~]` *(branch `lighthouse`, docs/lighthouse.md: light, stairs, log, gallery view, keeper Ветров Гордей, quest
+`lighthouse_paraffin`; offline tests pass; the Mac import, build, night shots and bench are still owed)* **Brief (Opus 5.5):** The south end of the Aton coast is the Mayak station on the cliff (`south.places()`
 `mayak_station`, `cliff_lookout`) and there is no lighthouse ("Маяк") there (`docs/south_backlog.md` "Looks"). Build one
 in Blender with the North's kit and atlas (`blender/south/`, a white tower with a red band, a gallery, the lantern room,
 a keeper's cottage, a fence), place it on the headland beyond the station, and light it: a rotating lens like the

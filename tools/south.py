@@ -860,6 +860,18 @@ def things():
     # cliff walk, the wreck on the beach (its keel along the shore), the Devil's stone on the meadow
     put("lighthouse", LIGHT[0], LIGHT[1], 140.0)
     put("park_bench", LIGHT[0] + 7.0, LIGHT[1] + 9.0, 0.0, 1)
+    # the lighthouse's yard (backlog item 42): a ring of 17 picket-fence segments (2.3 m chords, posts side by side) round the
+    # tower, 6.1 m from its axis (the pad is flat to 7); the gate segment on the door's bearing (140), where the track
+    # comes in; the pickets face outward (a thing's yaw is the bearing of its front). The keeper's annex is on the tower's
+    # local +X (bearing 50), so the weather station stands on the other side (bearing 230), its front outward
+    n_fence = 17
+    r_fence = 2.3 / (2.0 * math.sin(math.pi / n_fence)) * math.cos(math.pi / n_fence)
+    for k in range(n_fence):
+        bearing = 140.0 + 360.0 * k / n_fence
+        a = math.radians(bearing)
+        put("picket_fence", LIGHT[0] + r_fence * math.cos(a), LIGHT[1] + r_fence * math.sin(a), bearing, 1 if k == 0 else 0)
+    a = math.radians(230.0)
+    put("meteo_screen", LIGHT[0] + 4.0 * math.cos(a), LIGHT[1] + 4.0 * math.sin(a), 230.0)
     put("bunker", BUNKER[0], BUNKER[1], 0.0)
     put("erratic", SPLIT_STONE[0], SPLIT_STONE[1], 35.0, 1)
     put("shipwreck", WRECK[0], WRECK[1], 12.0)

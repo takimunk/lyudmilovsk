@@ -128017,6 +128017,154 @@
    ]
   },
   {
+   "id": "S-MAYAK-HOME",
+   "kind": "flat",
+   "door": [
+    112.74,
+    -419.76,
+    18.0
+   ],
+   "yaw": 140.0,
+   "island": 0,
+   "shell": 1,
+   "private": 1,
+   "building": "S-MAYAK",
+   "slots": [
+    {
+     "kind": "bed",
+     "tag": "bedroom"
+    },
+    {
+     "kind": "armchair",
+     "tag": "living"
+    },
+    {
+     "kind": "desk_seat",
+     "tag": "living"
+    },
+    {
+     "kind": "kitchen_seat",
+     "tag": "kitchen"
+    },
+    {
+     "kind": "stove",
+     "tag": "kitchen"
+    }
+   ]
+  },
+  {
+   "id": "S-MAYAK-TOWER",
+   "kind": "mayak_tower",
+   "door": [
+    109.72,
+    -422.18,
+    18.2
+   ],
+   "yaw": 140.0,
+   "island": 0,
+   "roles": [],
+   "path": [
+    [
+     112.0,
+     -424.1,
+     18.3
+    ]
+   ],
+   "slots": [
+    {
+     "kind": "staff",
+     "tag": "keeper",
+     "pos": [
+      112.0,
+      -424.1,
+      18.3
+     ],
+     "yaw": 320.0,
+     "height": 0.0
+    }
+   ]
+  },
+  {
+   "id": "S-MAYAK-METEO",
+   "kind": "mayak_meteo",
+   "pos": [
+    108.68,
+    -427.64,
+    18.0
+   ],
+   "yaw": 50.0,
+   "open": 1,
+   "slots": [
+    {
+     "kind": "staff",
+     "tag": "keeper",
+     "pos": [
+      108.68,
+      -427.64,
+      18.0
+     ],
+     "yaw": 50.0
+    }
+   ]
+  },
+  {
+   "id": "S-MAYAK-BENCH",
+   "kind": "mayak_bench",
+   "pos": [
+    119.0,
+    -415.1,
+    18.0
+   ],
+   "yaw": 0.0,
+   "slots": [
+    {
+     "kind": "bench",
+     "pos": [
+      119.02,
+      -414.54,
+      18.0
+     ],
+     "yaw": 0.0,
+     "height": 0.45,
+     "approach": [
+      119.57,
+      -414.54,
+      18.0
+     ]
+    },
+    {
+     "kind": "bench",
+     "pos": [
+      119.02,
+      -415.1,
+      18.0
+     ],
+     "yaw": 0.0,
+     "height": 0.45,
+     "approach": [
+      119.57,
+      -415.1,
+      18.0
+     ]
+    },
+    {
+     "kind": "bench",
+     "pos": [
+      119.02,
+      -415.66,
+      18.0
+     ],
+     "yaw": 0.0,
+     "height": 0.45,
+     "approach": [
+      119.57,
+      -415.66,
+      18.0
+     ]
+    }
+   ]
+  },
+  {
    "id": "S-ATON-SHED",
    "kind": "aton_shed",
    "pos": [
@@ -133475,6 +133623,15 @@
       -8.0
      ],
      "yaw": 173.6
+    },
+    {
+     "kind": "stand",
+     "pos": [
+      112.74,
+      -419.76,
+      18.0
+     ],
+     "yaw": 320.0
     }
    ]
   }
