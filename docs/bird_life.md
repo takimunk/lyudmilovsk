@@ -201,6 +201,40 @@ and every species its sprint and wind limit from `BirdBio.cpp` (docs/bird_flight
 
 `tools/birdsim/run.sh test` checks it (BIRD_ONLY=wind for the gale alone; BIRD_WIND_ACTS=1 prints what everybody is doing).
 
+## Weather
+
+What the birds do about rain, gusts and a steady wind (BirdSim.cpp "the weather"; `FBird::Weather` holds an
+`EWeathering` for the game's pose). All of it is the model's; the game already fills `Rain`, `Wind` and `Gustiness`.
+
+- **Rain sends the small land birds under cover.** `RainStress(species)` is 0 below 0.5 mm/h and full from 4 mm/h
+  (whole for birds under 30 cm, 0.6 up to 60 cm, 0.3 for the big ones), and always 0 for the gulls, everything that
+  rests or feeds on the sea, the hawks and the swallows, swifts and martins. A site under the open sky (the exposed
+  kinds and the street) is worth up to 85% less to a species that minds, one under leaves, needles, a hedge or reeds
+  up to 2.2 times more, so the flocks drift into cover as they move (nobody is teleported). Under cover in the rain
+  a bird mostly sits tight between its moves (`Hunched`). On the map in 6 mm/h the 22 species that mind go from 925 of
+  1751 under the open sky to 256; half an hour after a shower starts over a dry morning 341 are left out.
+- **A gust is sat out.** `GustAt(bird)` is the mean wind with gusts and lulls a few seconds long that sweep over the
+  land (birds side by side feel the same one). On a perch in the open, when the gust passes 0.7 of the species' wind
+  limit, a bird that would have flitted crouches and waits (`Crouched`, `GustHolds`) and goes in the lull. The soarers
+  never mind. Sparrows on a roof ridge in a gusty 5 m/s: 700 flits in a quarter of an hour, none into a gust, crouched
+  an eighth of the time.
+- **Heads to the wind.** From 5 m/s a bird sitting in the open (not on the sea, not one watching the hero) turns into
+  the wind at 1.5 rad/s, each up to 14 degrees off the line; on a wire they sit square across it on the side the wind
+  comes from. Under cover they sit as they like. On the map at 8 m/s 210 of 212 birds sitting in the open face it.
+- **Gulls ride the cliff's updraft.** `CliffOut(site)` is the way a cliff's face looks (from the ground's grid),
+  `RidgeLift` the wind blowing onto it (none under 4 m/s, full from 9), `RidgeNear` the nearest such cliff. A gull that
+  goes up to soar within 300 m of one does not circle: it beats some 50 m up and down the rim, 3 to 9 m out from the
+  face and 4 to 14 m over the rim (`Ridge`), twice as long as a circling spell, its body turned into the wind while it
+  slides along (the heading of its flight through the air). From the beach it climbs out in front of the face first.
+  With the wind off the land, or a light air, nobody rides and they circle as before. In a 9 m/s onshore wind some
+  twenty gulls hang along the club's cliff at any moment.
+
+**Owed on the Mac**: `BodyState` showing `Hunched` (fluffed, head drawn in) and `Crouched` (low on the perch) with poses
+of their own (the animations thread; until then they look like any sitting bird), and a look at the gulls on the cliff.
+
+Checks: `BIRD_ONLY=weather` (tools/birdsim/weather_test.cpp, 18 checks: rain on the map and a shower coming on, gusts
+on a roof, facing on a beach, in a crown, on a wire and on the map, the updraft with the wind on, off and light).
+
 ## LOD and cost
 
 Birds within 40 m of the camera think every frame (perception with line of sight, each other, the hand),
