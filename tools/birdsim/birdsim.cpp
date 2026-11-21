@@ -755,10 +755,21 @@ namespace
 			std::stringstream SS;
 			SS << F.rdbuf();
 			const std::string T = SS.str();
-			const size_t At = T.find("\"water\"");
-			const char* P = At == std::string::npos ? "" : T.c_str() + At + 7;
-			while (*P && *P != '[') P++;
-			if (*P) P++;
+			// the key "water" with a list after it (the places' icons are called "water" too)
+			const char* P = "";
+			for (size_t At = T.find("\"water\""); At != std::string::npos; At = T.find("\"water\"", At + 7))
+			{
+				const char* Q = T.c_str() + At + 7;
+				while (*Q == ' ' || *Q == '\n' || *Q == '\r' || *Q == '\t') Q++;
+				if (*Q != ':') continue;
+				Q++;
+				while (*Q == ' ' || *Q == '\n' || *Q == '\r' || *Q == '\t') Q++;
+				if (*Q == '[')
+				{
+					P = Q + 1;
+					break;
+				}
+			}
 			while (*P && *P != ']')
 			{
 				while (*P && *P != '[' && *P != ']') P++;
