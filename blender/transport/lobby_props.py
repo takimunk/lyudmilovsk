@@ -51,7 +51,7 @@ def vending():
     D = xf - xb
     box(bm, (xb + D / 2, 0, 0.04), (D, 1.0, 0.08), DK)                                       # plinth
     # the front: panels round the window (y -0.46..0.28, z 0.5..1.78), the flap recess (y -0.10..0.30, z 0.08..0.34), the panel right
-    box(bm, (xb + 0.02, 0, 1.0), (0.04, 1.0, 1.9), SKIN)                                     # back
+    box(bm, (xb + 0.02, 0, 1.005), (0.04, 1.0, 1.85), SKIN)                                  # back (z 0.08..1.93: on the plinth, under the top)
     for sy in (-1, 1):
         box(bm, (xb + D / 2, sy * 0.49, 0.99), (D, 0.02, 1.82), SKIN)                       # sides
     box(bm, (xb + D / 2, 0, 1.91), (D, 1.0, 0.04), SKIN)                                     # top
@@ -68,11 +68,12 @@ def vending():
     for z in (0.555, 0.935, 1.315):
         box(bm, (0.06, -0.09, z), (0.72, 0.72, 0.02), STEEL)
         box(bm, (0.40 - 0.07, -0.09, z + 0.01), (0.012, 0.72, 0.015), CH)                    # the shelf's front lip
-    for z in (0.93, 1.31, 1.75):
-        box(bm, (0.19, -0.09, z), (0.05, 0.7, 0.012), GLOW)                                  # light strips under the shelves above
-    box(bm, (xf - 0.005, -0.09, 1.14), (0.006, 0.74, 1.28), GLS)                             # the glass
+    for z in (0.918, 1.298, 1.75):
+        # light strips just under the shelves above (a millimetre clear of the shelf's underside, not inside it)
+        box(bm, (0.19, -0.09, z), (0.05, 0.7, 0.012), GLOW)
+    box(bm, (xf - 0.005, -0.06, 1.14), (0.006, 0.68, 1.28), GLS)                             # the glass, between the left post and the chrome strip (y -0.40..0.28)
     # the flap: a recess behind a swing door of smoked plastic, the tray is the code's
-    box(bm, (xf - 0.1, 0.10, 0.21), (0.2, 0.4, 0.26), DK)
+    box(bm, (xf - 0.115, 0.10, 0.21), (0.19, 0.4, 0.26), DK)                                 # the recess ends behind the flap's door
     box(bm, (xf - 0.015, 0.10, 0.215), (0.02, 0.4, 0.26), GLS)
     # the panel: nine buttons in three rows, a coin slot, a display
     for i in range(9):
@@ -82,9 +83,9 @@ def vending():
     box(bm, (xf + 0.004, 0.39, 1.1), (0.012, 0.12, 0.2), DK)                                  # coin plate
     box(bm, (xf + 0.01, 0.39, 1.14), (0.012, 0.012, 0.09), CH)                                # the slot
     # the header: a lit box over the window
-    box(bm, (xf - 0.012, 0.0, 1.855), (0.06, 0.9, 0.09), GLOW)
+    box(bm, (xf + 0.02, 0.0, 1.855), (0.04, 0.9, 0.09), GLOW)                                 # proud of the front, not inside its panel
     for sy in (-1, 1):
-        box(bm, (xf - 0.01, sy * 0.455, 1.855), (0.07, 0.02, 0.1), CH)
+        box(bm, (xf + 0.02, sy * 0.46, 1.855), (0.042, 0.02, 0.1), CH)
     return bm
 
 
