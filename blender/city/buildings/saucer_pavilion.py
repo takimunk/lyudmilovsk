@@ -27,6 +27,7 @@ from _furn1 import rbox, cyl, blob, goods_row
 import furn_int3 as fu
 import interior_kit as kit
 import dress_kit as dk
+import night_kit as nk
 
 INFO = {
     "name_ru": "Кафе «Летающая тарелка»", "name_en": "Saucer Café",
@@ -167,7 +168,7 @@ def _tp(ti, j, r, off=0.0):
 
 def _dress(B, zf):
     """Today's paper, what the breakfast and lunch crowds left, wet umbrellas, coats, a towel, flowers on holidays."""
-    open_ = dict(hours=(7, 21))
+    open_ = dict(hours=(7, 21), open=True)     # open=True: not on the tables while the chairs are up (city_night)
     for sid, tabs in (("paper_a", (0, 3, 6)), ("paper_b", (1, 4, 9)), ("paper_c", (7, 10))):
         with B.dress(sid, chance=0.7, **open_):
             for ti in tabs:
@@ -186,7 +187,7 @@ def _dress(B, zf):
     with B.dress("book_left", hours=(10, 20), chance=0.5):
         x, y, z, a = _tp(7, 0, 0.22)
         dk.book_face_down(B, x, y, z, a + 20.0, seed=3)
-    with B.dress("holiday_flowers", festival="any"):
+    with B.dress("holiday_flowers", festival="any", open=True):     # off the tables when the chairs go up (city_night)
         for ti in (0, 3, 6, 9):
             kit.vase(B, _TBL[ti]["c"][0], _TBL[ti]["c"][1], _TBL[ti]["top"], 0.0, seed=ti + 50)
     # rain: a wet mat, a stand and an open umbrella in the glass tunnel, a stand by the coat rail upstairs
@@ -203,6 +204,22 @@ def _dress(B, zf):
         rx, ry, rz, ryaw, rw = _ANCH["rack"]
         with B.dress("coats_cold", season="cold_months"):
             dk.coats_on_rail(B, rx, ry, rz, ryaw, w=rw, share=0.85, season="winter", seed=2)
+    # the cleaner's hour before the doors open (7..8): the floor between the tables half mopped, the bucket by it
+    with B.dress("night_cleaner", hours=(7, 10), open=False):
+        best = None
+        for r_ in (6.6, 7.0, 6.2, 7.4):
+            for a_ in range(0, 360, 6):
+                if 40 <= a_ <= 140:
+                    continue                    # behind the bar: the guests' side is what gets mopped first
+                x, y, _ = P(r_, a_)
+                gap = min(math.hypot(x - t["c"][0], y - t["c"][1]) for t in _TBL)
+                if gap > 1.25 and _free(B, x, y, 0.9, zf) and (best is None or gap > best[0]):
+                    best = (gap, x, y, a_)
+        if best:
+            _, x, y, a_ = best
+            nk.wet_floor(B, x, y, zf, a_ + 90.0, w=1.8, d=1.2, seed=4)
+            bx, by, _ = P(math.hypot(x - CX, y - CY) + 0.2, a_ + 7.0)
+            nk.mop_bucket(B, bx, by, zf, a_ + 20.0, seed=4)
     with B.dress("towel_summer", season="summer", weather=("warm", "clear")):
         for ti, si in ((3, 0), (8, 1)):
             sx, sy, sz, syaw = _TBL[ti]["seats"][min(si, len(_TBL[ti]["seats"]) - 1)]
@@ -519,6 +536,7 @@ def _hall(B, rnd, zf):
     # ------------------------------------------------------------------ tables and chairs
     layout = [(8.4, a) for a in (-32, 4, 38, 160, 178, 214, 250)] + [(4.8, a) for a in (150, 195, 345, 20)]
     cols = ["CT_SteelRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen"]
+    day = []        # what stands at the tables in the open hours (dress "day_tables"); after hours the chairs go up
     for ti, (r_, a_) in enumerate(layout):
         c = P(r_, a_, zf)
         if r_ < 6:
@@ -527,34 +545,58 @@ def _hall(B, rnd, zf):
         B.spot("table_%d" % (ti + 1), "table", (c[0], c[1], zf), 0.0)
         ns = 3 if ti % 3 else 2
         a_chair = rnd.uniform(0, 360)
-        first = None
         _TBL.append(dict(c=c, a=a_chair, ns=ns, top=t["top"], seats=[]))
+        chairs = []
         for si in range(ns):
             ac = a_chair + 360.0 * si / ns
             sp = (c[0] + 0.85 * math.cos(math.radians(ac)), c[1] + 0.85 * math.sin(math.radians(ac)))
             yw = yaw_to(sp, c)
-            ch = kit.chair(B, sp[0], sp[1], zf, yw, kind="tube", mat=cols[(ti + si) % 4])
-            first = first or ch
-            _TBL[-1]["seats"].append(ch["seats"][0])
+            chairs.append((sp, yw, ac, cols[(ti + si) % 4]))
             B.spot("seat_%d_%d" % (ti + 1, si + 1), "seat", (sp[0], sp[1], zf), yw)
-            ox, oy = c[0] + 0.28 * math.cos(math.radians(ac)), c[1] + 0.28 * math.sin(math.radians(ac))
-            if (ti + si) % 3 == 0:
-                kit.glass(B, ox, oy, t["top"])
-            else:
-                kit.cup(B, ox, oy, t["top"], math.degrees(math.radians(ac)) )
-        if ti % 3 == 1:
-            kit.vase(B, c[0], c[1], t["top"], seed=ti)
-        elif ti % 3 == 2:
-            kit.newspaper(B, c[0] + 0.05, c[1] + 0.05, t["top"], rnd.uniform(0, 360), seed=ti)
-        _seat_thing(B, "table_seat_%d" % (ti + 1), first)
-
-    # ------------------------------------------------------------------ bar stools
+        day.append((ti, c, t["top"], ns, a_chair, chairs, rnd.uniform(0, 360) if ti % 3 == 2 else 0.0))   # the paper: the draw as before
+    # the bar stools: the middle three go up on the bar after hours, the end two stay on the floor
+    stools = []
     for si, a_ in enumerate((62, 76, 90, 104, 118)):
         sp = P(5.3, a_, zf)
         yw = yaw_to(sp, (CX, CY + 6.2))
-        s_ = kit.bar_stool(B, sp[0], sp[1], zf, yw)
         B.spot("stool_%d" % (si + 1), "seat", (sp[0], sp[1], zf), yw)
+        if si in (1, 2, 3):
+            stools.append((si, sp, yw))
+        else:
+            _seat_thing(B, "stool_%d" % (si + 1), kit.bar_stool(B, sp[0], sp[1], zf, yw), 0.75)
+    firsts, ups = [], []
+    with B.dress("day_tables", open=True):
+        for ti, c, top, ns, a_chair, chairs, pa in day:
+            first = None
+            for si, (sp, yw, ac, mt) in enumerate(chairs):
+                ch = kit.chair(B, sp[0], sp[1], zf, yw, kind="tube", mat=mt)
+                first = first or ch
+                _TBL[ti]["seats"].append(ch["seats"][0])
+                ox, oy = c[0] + 0.28 * math.cos(math.radians(ac)), c[1] + 0.28 * math.sin(math.radians(ac))
+                if (ti + si) % 3 == 0:
+                    kit.glass(B, ox, oy, top)
+                else:
+                    kit.cup(B, ox, oy, top, math.degrees(math.radians(ac)) )
+            if ti % 3 == 1:
+                kit.vase(B, c[0], c[1], top, seed=ti)
+            elif ti % 3 == 2:
+                kit.newspaper(B, c[0] + 0.05, c[1] + 0.05, top, pa, seed=ti)
+            firsts.append(first)
+        for si, sp, yw in stools:
+            ups.append((si, kit.bar_stool(B, sp[0], sp[1], zf, yw)))
+    for ti, first in enumerate(firsts):
+        _seat_thing(B, "table_seat_%d" % (ti + 1), first)
+    for si, s_ in ups:
         _seat_thing(B, "stool_%d" % (si + 1), s_, 0.75)
+    # closed (before 8 and after 22): the chairs up on the tables, legs in the air, three stools up on the bar
+    # (docs/city_night.md)
+    with B.dress("night_tables", open=False):
+        for ti, c, top, ns, a_chair, chairs, pa in day:
+            nk.chairs_up_round(B, c[0], c[1], top, n=ns, r=0.5, kind="tube", mats=[ch[3] for ch in chairs], a0=a_chair, seed=ti)
+        for k, a_ in enumerate((71, 92, 113)):
+            q = P(6.2, a_, zf + 1.05)
+            nk.stool_up(B, q[0], q[1], zf + 1.05, a_ + 90.0 + 7.0 * k, kind="bar")
+
     bar_top = zf + 1.05
     bp = P(6.2, 90, bar_top)
     B.thing("bar", "counter", (bp[0], bp[1], bar_top), 0.0, role="barista", service="bar", shop="cafe_tarelka")
@@ -563,6 +605,8 @@ def _hall(B, rnd, zf):
         (kit.glass if kind_ == "g" else kit.cup)(B, q[0], q[1], bar_top, 0.0)
     kit.plates(B, *P(6.2, 80, bar_top)[:2], bar_top, 0.0, n=3)
     kit.bottles(B, *P(6.55, 100, bar_top)[:2], bar_top, 0.0, n=3, seed=2)
+    nl = P(6.25, 85, bar_top)
+    nk.lone_lamp(B, nl[0], nl[1], bar_top, yaw_to(nl, (CX, CY)), lumens=260)     # left on when the café is shut
 
     # ------------------------------------------------------------------ ice-cream counter (west of the entrance)
     a_i = 300

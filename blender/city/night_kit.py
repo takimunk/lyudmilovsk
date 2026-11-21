@@ -35,6 +35,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import interior_kit as kit  # noqa: E402
 from interior_kit import _P, _rng  # noqa: E402
+from citykit import Mesh  # noqa: E402
 
 GALV = "CT_Aluminium"      # a galvanised bucket (light zinc grey)
 WATER = "CT_Glass"         # the mopped film (glossy)
@@ -219,3 +220,43 @@ def night_lamp(B, x, y, z, yaw=0.0):
     """A lone desk lamp left on (a green-shaded kit lamp): pair it with B.lamp((x, y, z + 0.4), kind="closed") outside
     the dress block so the room has the one light of a closed place."""
     return kit.lamp_green(B, x, y, z, yaw, light=False, solid=False)
+
+
+def lone_lamp(B, x, y, z, yaw=0.0, lumens=240.0, colour="#FFD9A0", radius=5.0):
+    """The one light a shut room keeps (docs/city_night.md): the green desk lamp on a counter or a desk at height z, and
+    its real light, kind "closed" (Unreal: on from dusk to dawn while the building is closed; the room's public windows
+    glow faintly then). Call it OUTSIDE any dress block (a set may hold no lamps)."""
+    r = night_lamp(B, x, y, z, yaw)
+    B.lamp((x, y, z + 0.42), lumens=lumens, colour=colour, kind="closed", radius=radius, fixture=False)
+    return r
+
+
+class Gather:
+    """Builds pieces into a mesh of their own instead of B.detail, for a dress set written later in one block (a set's
+    block may hold no spots or things, but the code that makes the day's chairs often makes the seats' spots too):
+
+        g = nk.Gather(B)
+        for t in tables:
+            with g:
+                chs = kit.around_table(B, ...)        # the chairs go into g.mesh
+            B.spot(...)                               # spots and things as before, outside
+        g.dress("day_reading", open=True)
+
+    Pieces must be solid=False (the shell is not redirected: what goes to B.m stays in the building)."""
+
+    def __init__(self, B):
+        self.B, self.mesh, self._keep = B, Mesh(), None
+
+    def __enter__(self):
+        if self.B._dressing is not None:
+            raise RuntimeError("nk.Gather inside the dress block %s" % self.B._dressing)
+        self._keep, self.B.detail = self.B.detail, self.mesh
+        return self.mesh
+
+    def __exit__(self, et, ev, tb):
+        self.B.detail, self._keep = self._keep, None
+        return False
+
+    def dress(self, did, **when):
+        with self.B.dress(did, **when):
+            self.B.detail.extend(self.mesh)
