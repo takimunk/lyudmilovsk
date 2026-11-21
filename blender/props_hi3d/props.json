@@ -1,0 +1,378 @@
+{
+ "_doc": "Town props made with hi3d (docs/city/hi3d_props.md). sheet/col: which Higgsfield reference sheet (blender/props_hi3d/sheets.json) and column; views: what goes to hi3d (right = the left profile mirrored, only for mirror-symmetric things); height: real height in metres after optimizing; origin: base (centre of the bottom) or top (centre of the top: hangs from a ceiling); tris/tex: LOD0 budget; metallic: scales the metal mask baked from hi3d's metallic (stone parts stay 0); collide: simple collision for the game; priority: order of hi3d runs.",
+ "props": {
+  "sundial": {
+   "sheet": 1,
+   "col": 3,
+   "views": [
+    "front",
+    "back",
+    "left",
+    "right"
+   ],
+   "height": 1.55,
+   "origin": "base",
+   "tris": 6000,
+   "tex": 2048,
+   "metallic": 0.85,
+   "collide": true,
+   "priority": 1,
+   "name_en": "Sundial",
+   "name_ru": "Солнечные часы",
+   "name_ja": "日時計"
+  },
+  "girl_dove": {
+   "sheet": 4,
+   "col": 1,
+   "views": [
+    "front",
+    "back",
+    "left"
+   ],
+   "views_note": "run 1 (sheet 0) went with front+back only (its left cell disagreed with the 3/4 front); run 2 (sheet 4) uses front, back, left",
+   "height": 3.3,
+   "origin": "base",
+   "tris": 9000,
+   "tex": 2048,
+   "metallic": 0.8,
+   "collide": true,
+   "priority": 9,
+   "name_en": "Girl with a Dove",
+   "name_ru": "Девочка с голубем",
+   "name_ja": "鳩を放つ少女",
+   "rerun_note": "run 1 (sheet 0, front+back) came back as the figure alone; run 2 from sheet 4. If run 2 still lacks the plinth, put back plinth {size [1.0,1.0,1.3], colour [0.32,0.09,0.06], roughness 0.25} and height 1.9"
+  },
+  "chandelier": {
+   "sheet": 0,
+   "col": 3,
+   "views": [
+    "front",
+    "back",
+    "left",
+    "right"
+   ],
+   "height": 1.5,
+   "origin": "top",
+   "tris": 8000,
+   "tex": 2048,
+   "metallic": 0.9,
+   "collide": false,
+   "priority": 3,
+   "name_en": "Chandelier",
+   "name_ru": "Люстра",
+   "name_ja": "シャンデリア"
+  },
+  "fisherman": {
+   "sheet": 0,
+   "col": 2,
+   "views": [
+    "front",
+    "back",
+    "left"
+   ],
+   "height": 3.8,
+   "origin": "base",
+   "tris": 9000,
+   "tex": 2048,
+   "metallic": 0.8,
+   "collide": true,
+   "priority": 4,
+   "name_en": "Monument to the Fishermen",
+   "name_ru": "Памятник рыбакам",
+   "name_ja": "漁師の記念碑"
+  },
+  "drink_fountain": {
+   "sheet": 0,
+   "col": 4,
+   "views": [
+    "front",
+    "back",
+    "left"
+   ],
+   "height": 1.05,
+   "origin": "base",
+   "tris": 3000,
+   "tex": 1024,
+   "metallic": 0.3,
+   "collide": true,
+   "priority": 5,
+   "name_en": "Drinking Fountain",
+   "name_ru": "Питьевой фонтанчик",
+   "name_ja": "水飲み場"
+  },
+  "astronomer_bust": {
+   "sheet": 1,
+   "col": 2,
+   "views": [
+    "front",
+    "back",
+    "left",
+    "right"
+   ],
+   "height": 2.6,
+   "origin": "base",
+   "tris": 7000,
+   "tex": 2048,
+   "metallic": 0.75,
+   "collide": true,
+   "priority": 6,
+   "name_en": "Bust of an Astronomer",
+   "name_ru": "Бюст астронома",
+   "name_ja": "天文学者の胸像"
+  },
+  "gull_stele": {
+   "sheet": 1,
+   "col": 1,
+   "views": [
+    "front",
+    "back",
+    "left",
+    "right"
+   ],
+   "height": 6.5,
+   "origin": "base",
+   "tris": 6000,
+   "tex": 2048,
+   "metallic": 0.0,
+   "collide": true,
+   "priority": 7,
+   "name_en": "Seagulls Stele",
+   "name_ru": "Стела «Чайки»",
+   "name_ja": "カモメの碑"
+  },
+  "pioneer": {
+   "sheet": 1,
+   "col": 4,
+   "views": [
+    "front",
+    "back",
+    "left"
+   ],
+   "height": 2.3,
+   "origin": "base",
+   "tris": 7000,
+   "tex": 2048,
+   "metallic": 0.0,
+   "collide": true,
+   "priority": 8,
+   "name_en": "Pioneer Bugler",
+   "name_ru": "Пионер-горнист",
+   "name_ja": "ラッパを吹くピオネール"
+  },
+  "cosmonaut": {
+   "sheet": 2,
+   "col": 1,
+   "views": [
+    "front",
+    "back",
+    "left"
+   ],
+   "height": 3.8,
+   "origin": "base",
+   "tris": 9000,
+   "tex": 2048,
+   "metallic": 0.8,
+   "collide": true,
+   "priority": 10,
+   "name_en": "Cosmonaut Monument",
+   "name_ru": "Памятник космонавту",
+   "name_ja": "宇宙飛行士の記念碑"
+  },
+  "anchor": {
+   "sheet": 2,
+   "col": 2,
+   "views": [
+    "front",
+    "back",
+    "left"
+   ],
+   "height": 1.9,
+   "origin": "base",
+   "tris": 5000,
+   "tex": 2048,
+   "metallic": 0.6,
+   "collide": true,
+   "priority": 11,
+   "name_en": "Anchor Monument",
+   "name_ru": "Памятный якорь",
+   "name_ja": "記念の錨"
+  },
+  "bear_cub": {
+   "sheet": 2,
+   "col": 3,
+   "views": [
+    "front",
+    "back",
+    "left",
+    "right"
+   ],
+   "height": 1.1,
+   "origin": "base",
+   "tris": 5000,
+   "tex": 1024,
+   "metallic": 0.85,
+   "collide": true,
+   "priority": 12,
+   "name_en": "Bear Cub with a Ball",
+   "name_ru": "Медвежонок с мячом",
+   "name_ja": "ボールを持つ子熊"
+  },
+  "deer": {
+   "sheet": 2,
+   "col": 4,
+   "views": [
+    "front",
+    "back",
+    "left"
+   ],
+   "height": 2.1,
+   "origin": "base",
+   "tris": 6000,
+   "tex": 2048,
+   "metallic": 0.0,
+   "collide": true,
+   "priority": 13,
+   "name_en": "Deer Sculpture",
+   "name_ru": "Скульптура «Олень»",
+   "name_ja": "鹿の彫刻"
+  },
+  "muse": {
+   "sheet": 3,
+   "col": 4,
+   "views": [
+    "front",
+    "back",
+    "left"
+   ],
+   "height": 2.5,
+   "origin": "base",
+   "tris": 8000,
+   "tex": 2048,
+   "metallic": 0.0,
+   "collide": true,
+   "priority": 14,
+   "name_en": "Muse with a Lyre",
+   "name_ru": "Муза с лирой",
+   "name_ja": "竪琴を持つミューズ"
+  },
+  "grandfather_clock": {
+   "sheet": 3,
+   "col": 3,
+   "views": [
+    "front",
+    "back",
+    "left",
+    "right"
+   ],
+   "height": 2.2,
+   "origin": "base",
+   "tris": 4000,
+   "tex": 1024,
+   "metallic": 0.2,
+   "collide": true,
+   "priority": 15,
+   "name_en": "Grandfather Clock",
+   "name_ru": "Напольные часы",
+   "name_ja": "振り子時計"
+  },
+  "ship_model": {
+   "sheet": 3,
+   "col": 1,
+   "views": [
+    "front",
+    "back",
+    "left"
+   ],
+   "height": 1.5,
+   "hold": "not in the game yet: hi3d made the glass case's panes solid with the view through them baked in (an opaque black/grey box hiding the ship); cutting the panes out opens the case and the voxel remesh melts it. Needs a glass-less reference (ship on its stand) or a hand-built case",
+   "origin": "base",
+   "tris": 7000,
+   "tex": 2048,
+   "metallic": 0.0,
+   "collide": true,
+   "priority": 16,
+   "name_en": "Ship Model",
+   "name_ru": "Модель парусника",
+   "name_ja": "帆船の模型"
+  },
+  "poet_bust": {
+   "sheet": 4,
+   "col": 2,
+   "views": [
+    "front",
+    "back",
+    "left",
+    "right"
+   ],
+   "height": 2.2,
+   "origin": "base",
+   "tris": 7000,
+   "tex": 2048,
+   "metallic": 0.75,
+   "collide": true,
+   "priority": 17,
+   "name_en": "Bust of a Poet",
+   "name_ru": "Бюст поэта",
+   "name_ja": "詩人の胸像"
+  },
+  "seal": {
+   "sheet": 4,
+   "col": 3,
+   "views": [
+    "front",
+    "back",
+    "left"
+   ],
+   "height": 1.1,
+   "origin": "base",
+   "tris": 6000,
+   "tex": 2048,
+   "metallic": 0.8,
+   "collide": true,
+   "priority": 18,
+   "name_en": "Seal on a Rock",
+   "name_ru": "Тюлень на камне",
+   "name_ja": "岩の上のアザラシ"
+  },
+  "samovar": {
+   "sheet": 3,
+   "col": 2,
+   "views": [
+    "front",
+    "back",
+    "left",
+    "right"
+   ],
+   "height": 0.75,
+   "origin": "base",
+   "tris": 4000,
+   "tex": 1024,
+   "metallic": 0.95,
+   "collide": false,
+   "priority": 19,
+   "name_en": "Samovar",
+   "name_ru": "Самовар",
+   "name_ja": "サモワール"
+  },
+  "park_vase": {
+   "sheet": 4,
+   "col": 4,
+   "views": [
+    "front",
+    "back",
+    "left",
+    "right"
+   ],
+   "height": 1.3,
+   "origin": "base",
+   "tris": 3000,
+   "tex": 1024,
+   "metallic": 0.3,
+   "collide": true,
+   "priority": 20,
+   "name_en": "Park Vase",
+   "name_ru": "Парковая ваза",
+   "name_ja": "公園の花瓶"
+  }
+ }
+}

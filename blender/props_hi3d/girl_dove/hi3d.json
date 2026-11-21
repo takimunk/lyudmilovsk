@@ -1,0 +1,85 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "095d1d71b13b4d278a6a59505f18f7f4",
+  "points": 45.0,
+  "arguments": {
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private",
+   "file_tokens": "(uploaded views, see inputs)"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/props_hi3d/raw/girl_dove/views/front.png",
+    "sha256": "23a84d0fe83304d89d842d98bdda4ad3acef385f263257315ac2a1f802d0ea08"
+   },
+   {
+    "view": "back",
+    "file": "blender/props_hi3d/raw/girl_dove/views/back.png",
+    "sha256": "86d85b62517ad1d8801b06241841a9dd5302a29c1658a6fb85caae8a34a31300"
+   }
+  ],
+  "reference": "blender/props_hi3d/sheets.json",
+  "submitted": "2026-11-20T20:41:06+00:00",
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/79ce6064ec1e4115a5957c34e2df6bf9/target/model/original/GLB0.glb?auth_key=7fb50384e7edbda68c9d6cab23670dd5&t=1795211587",
+    "file": "blender/props_hi3d/raw/girl_dove/model.glb",
+    "bytes": 35679012,
+    "sha256": "aada5d401508cb020713de896ef8e40f327e024634342ec8520c0dd370b40211"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/095d1d71b13b4d278a6a59505f18f7f4",
+  "fetched": "2026-11-20T20:49:36+00:00"
+ },
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "cc839d10b57243bcb7200a460f0b5695",
+  "points": 45.0,
+  "arguments": {
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private",
+   "file_tokens": "(uploaded views, see inputs)"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/props_hi3d/raw/girl_dove/views/front.png",
+    "sha256": "767c934c711fb28850e1a76051dd88cac84269d4edadc6cd664c60ac5436d137"
+   },
+   {
+    "view": "back",
+    "file": "blender/props_hi3d/raw/girl_dove/views/back.png",
+    "sha256": "c0f48110967444917a62e3a0772691ff2541ed3b14139eee98eaaebe1f7333c8"
+   },
+   {
+    "view": "left",
+    "file": "blender/props_hi3d/raw/girl_dove/views/left.png",
+    "sha256": "8d0cfaa1d2e1a63523e7a56db7ed7da0e8a5bc682249e9c3f84416dc6e713173"
+   }
+  ],
+  "reference": "blender/props_hi3d/sheets.json",
+  "submitted": "2026-11-20T21:30:52+00:00",
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/9ad8924d783446969eaf9f9b4a685776/target/model/original/GLB0.glb?auth_key=f0d9bbf0c0d67b8731be1479e374c91f&t=1795214557",
+    "file": "blender/props_hi3d/raw/girl_dove/model.glb",
+    "bytes": 46397492,
+    "sha256": "9482066ccca6c4e691e7e8fa60bd71fd010b3cd690d106e13afce0adf1bc11be"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/cc839d10b57243bcb7200a460f0b5695",
+  "fetched": "2026-11-20T21:45:13+00:00"
+ }
+]
