@@ -9,8 +9,9 @@ Writes
   unreal/Lyudmilovsk/Content/Transport/station_life.json   the halls' staff rota and the riders' trips (ALyudStationHall,
                                                            ULyudStationLife; tools/transportsim/run.sh town)
   and puts the hall staff and the Akademgorodok's researchers into the town's data (apply(), also called by town_life.py
-  so a regenerated town keeps them): their job's duty stays work_away (out of the town's sight while at work, so the
-  station halls can show them) with "station"/"role" or "commute" added, the hours and their sleep fitted to the shift;
+  so a regenerated town keeps them): the staff's job becomes work_station (activities.json: out of the town's sight while
+  at work, so the station halls can show them; holidays too) with "station"/"role", the researchers' stays work_away with
+  "commute"; the hours and their sleep fitted to the shift;
   occupation station_attendant / station_barista / researcher, their role in Content/Localization/town/strings_<lang>.json.
 
 Who rides (every trip only when riding is quicker than walking: from home to the nearest good station, the ride, on foot
@@ -45,11 +46,11 @@ OUT = os.path.join(CONTENT, "Transport", "station_life.json")
 STRINGS = os.path.join(CONTENT, "Localization", "town", "strings_%s.json")
 FACE_Y = 7.9                    # UE metres of map y = 0 (city_plan.json portal_face_y / 100)
 
-OPEN, CLOSE = 5.75, 24.25       # the halls: the attendant opens at 5:45, locks up at 0:15
-LAST_RIDE = 23.85               # no trip starts later (everyone is home before the hall shuts)
+OPEN, CLOSE = 5.75, 24.0        # the halls: the attendant opens at 5:45, locks up at midnight
+LAST_RIDE = 23.7                # no trip starts later (everyone is home before the hall shuts)
 SHIFTS = {
     # role: [(shift, hours, wake, bed)]  (bed < wake: after midnight)
-    "attendant": [("early", (5.5, 14.75), 4.6, 21.4), ("late", (14.5, 24.25), 9.2, 1.2)],
+    "attendant": [("early", (5.5, 14.75), 4.6, 21.4), ("late", (14.5, 24.0), 9.2, 1.0)],
     "barista": [("early", (6.25, 14.75), 5.2, 21.9), ("late", (14.5, 23.75), 9.0, 0.9)],
 }
 # two people a shift: one works Monday to Friday, the other the weekend and three weekdays, so every day is covered
@@ -170,7 +171,8 @@ def taste(p):
 
 
 def work_away_duty(p):
-    ds = [d for d in p.get("duties", []) if d["activity"] == "work_away"]
+    """Their one duty when it is a job out of the town's sight (work_away; the halls' staff: work_station), else None."""
+    ds = [d for d in p.get("duties", []) if d["activity"] in ("work_away", "work_station")]
     return ds[0] if len(ds) == 1 and len(p.get("duties", [])) == 1 else None
 
 
@@ -218,7 +220,7 @@ def apply(folk, places, network, strings=None):
         sh = next(s for s in SHIFTS[role] if s[0] == shift)
         _, hours, wake, bed = sh
         j = (h01(p["key"], "wake") - 0.5) * 0.3
-        p["duties"] = [{"activity": "work_away", "station": st, "role": role, "shift": shift,
+        p["duties"] = [{"activity": "work_station", "station": st, "role": role, "shift": shift,
                         "hours": [hours[0], hours[1] if hours[1] <= 24.0 else round(hours[1] - 24.0, 2)],
                         "days": ROTA[rota]}]
         p["wake"] = round(wake + j, 2)

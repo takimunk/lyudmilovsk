@@ -780,7 +780,7 @@
    "spread": 0.63,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "academ",
      "role": "barista",
      "shift": "early",
@@ -3629,7 +3629,7 @@
    "spread": 0.6,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "academ",
      "role": "attendant",
      "shift": "early",
@@ -4478,17 +4478,17 @@
    "home": "P-T1H2/2-01",
    "chronotype": "owl",
    "wake": 9.31,
-   "bed": 1.31,
+   "bed": 1.11,
    "spread": 0.62,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "aton",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       0,
@@ -4637,7 +4637,7 @@
    "spread": 0.87,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "zenit",
      "role": "attendant",
      "shift": "early",
@@ -4685,17 +4685,17 @@
    "home": "P-RISER2/1-02",
    "chronotype": "owl",
    "wake": 9.09,
-   "bed": 1.09,
+   "bed": 0.89,
    "spread": 0.68,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "zenit",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       0,
@@ -4915,17 +4915,17 @@
    "home": "W2-D079",
    "chronotype": "owl",
    "wake": 9.2,
-   "bed": 1.2,
+   "bed": 1.0,
    "spread": 0.53,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "amber",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       5,
@@ -5074,7 +5074,7 @@
    "spread": 0.51,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "aton",
      "role": "barista",
      "shift": "late",
@@ -5784,7 +5784,7 @@
    "spread": 0.52,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "polar",
      "role": "attendant",
      "shift": "early",
@@ -7048,7 +7048,7 @@
    "spread": 0.93,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "horizon",
      "role": "attendant",
      "shift": "early",
@@ -7100,7 +7100,7 @@
    "spread": 0.84,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "horizon",
      "role": "barista",
      "shift": "early",
@@ -8196,17 +8196,17 @@
    "home": "P-RISER2/0-06",
    "chronotype": "owl",
    "wake": 9.29,
-   "bed": 1.29,
+   "bed": 1.09,
    "spread": 0.62,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "zenit",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       5,
@@ -8805,7 +8805,7 @@
    "spread": 0.45,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "amber",
      "role": "attendant",
      "shift": "early",
@@ -9013,7 +9013,7 @@
    "spread": 0.46,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "polar",
      "role": "barista",
      "shift": "late",
@@ -9565,7 +9565,7 @@
    "spread": 0.85,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "mayak",
      "role": "attendant",
      "shift": "early",
@@ -9618,7 +9618,7 @@
    "spread": 0.65,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "mayak",
      "role": "attendant",
      "shift": "early",
@@ -11113,17 +11113,17 @@
    "home": "P-BRIDGEHOUSE/1-04",
    "chronotype": "owl",
    "wake": 9.09,
-   "bed": 1.09,
+   "bed": 0.89,
    "spread": 0.51,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "horizon",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       5,
@@ -12187,7 +12187,7 @@
    "spread": 0.49,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "zenit",
      "role": "barista",
      "shift": "early",
@@ -13448,7 +13448,7 @@
    "spread": 1.08,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "horizon",
      "role": "barista",
      "shift": "late",
@@ -13956,7 +13956,7 @@
    "spread": 0.75,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "amber",
      "role": "barista",
      "shift": "early",
@@ -14785,7 +14785,7 @@
    "spread": 0.58,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "horizon",
      "role": "barista",
      "shift": "late",
@@ -14837,7 +14837,7 @@
    "spread": 0.86,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "horizon",
      "role": "barista",
      "shift": "early",
@@ -18353,7 +18353,7 @@
    "spread": 0.61,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "academ",
      "role": "barista",
      "shift": "early",
@@ -18538,17 +18538,17 @@
    "home": "W2-D035",
    "chronotype": "owl",
    "wake": 9.11,
-   "bed": 1.11,
+   "bed": 0.91,
    "spread": 1.06,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "academ",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       5,
@@ -18592,17 +18592,17 @@
    "home": "W2-D035",
    "chronotype": "owl",
    "wake": 9.28,
-   "bed": 1.28,
+   "bed": 1.08,
    "spread": 0.7,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "academ",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       0,
@@ -18730,7 +18730,7 @@
    "spread": 0.98,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "mayak",
      "role": "barista",
      "shift": "early",
@@ -19378,7 +19378,7 @@
    "spread": 0.42,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "academ",
      "role": "barista",
      "shift": "late",
@@ -19430,7 +19430,7 @@
    "spread": 0.62,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "academ",
      "role": "barista",
      "shift": "late",
@@ -19782,17 +19782,17 @@
    "home": "P-T4H2/4-02",
    "chronotype": "owl",
    "wake": 9.1,
-   "bed": 1.1,
+   "bed": 0.9,
    "spread": 0.74,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "polar",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       0,
@@ -20493,17 +20493,17 @@
    "home": "P-T4H2/3-08",
    "chronotype": "owl",
    "wake": 9.2,
-   "bed": 1.2,
+   "bed": 1.0,
    "spread": 0.76,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "polar",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       5,
@@ -20904,7 +20904,7 @@
    "spread": 0.4,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "mayak",
      "role": "barista",
      "shift": "late",
@@ -22912,7 +22912,7 @@
    "spread": 0.48,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "amber",
      "role": "barista",
      "shift": "early",
@@ -23410,7 +23410,7 @@
    "spread": 0.7,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "zenit",
      "role": "barista",
      "shift": "early",
@@ -23716,7 +23716,7 @@
    "spread": 0.65,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "zenit",
      "role": "attendant",
      "shift": "early",
@@ -24185,17 +24185,17 @@
    "home": "W2-D078",
    "chronotype": "owl",
    "wake": 9.11,
-   "bed": 1.11,
+   "bed": 0.91,
    "spread": 0.96,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "amber",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       0,
@@ -24390,17 +24390,17 @@
    "home": "P-T1H4/1-03",
    "chronotype": "owl",
    "wake": 9.14,
-   "bed": 1.14,
+   "bed": 0.94,
    "spread": 0.71,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "mayak",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       5,
@@ -24445,7 +24445,7 @@
    "spread": 0.98,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "horizon",
      "role": "attendant",
      "shift": "early",
@@ -26766,7 +26766,7 @@
    "spread": 0.76,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "aton",
      "role": "barista",
      "shift": "late",
@@ -27752,7 +27752,7 @@
    "spread": 0.81,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "aton",
      "role": "barista",
      "shift": "early",
@@ -27804,7 +27804,7 @@
    "spread": 0.95,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "aton",
      "role": "barista",
      "shift": "early",
@@ -28468,7 +28468,7 @@
    "spread": 0.97,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "zenit",
      "role": "barista",
      "shift": "late",
@@ -29670,7 +29670,7 @@
    "spread": 0.64,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "polar",
      "role": "attendant",
      "shift": "early",
@@ -30190,7 +30190,7 @@
    "spread": 0.54,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "zenit",
      "role": "barista",
      "shift": "late",
@@ -31057,17 +31057,17 @@
    "home": "P-T1H2/1-01",
    "chronotype": "owl",
    "wake": 9.19,
-   "bed": 1.19,
+   "bed": 0.99,
    "spread": 0.52,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "aton",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       5,
@@ -31201,7 +31201,7 @@
    "spread": 0.65,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "polar",
      "role": "barista",
      "shift": "early",
@@ -32293,7 +32293,7 @@
    "spread": 1.06,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "aton",
      "role": "attendant",
      "shift": "early",
@@ -32666,7 +32666,7 @@
    "spread": 0.91,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "academ",
      "role": "attendant",
      "shift": "early",
@@ -34133,7 +34133,7 @@
    "spread": 0.84,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "amber",
      "role": "attendant",
      "shift": "early",
@@ -35611,7 +35611,7 @@
    "spread": 0.76,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "aton",
      "role": "attendant",
      "shift": "early",
@@ -35749,7 +35749,7 @@
    "spread": 0.65,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "polar",
      "role": "barista",
      "shift": "late",
@@ -36231,17 +36231,17 @@
    "home": "W3-D007",
    "chronotype": "owl",
    "wake": 9.22,
-   "bed": 1.22,
+   "bed": 1.02,
    "spread": 0.54,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "mayak",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       0,
@@ -36496,7 +36496,7 @@
    "spread": 0.76,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "polar",
      "role": "barista",
      "shift": "early",
@@ -37245,7 +37245,7 @@
    "spread": 0.84,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "amber",
      "role": "barista",
      "shift": "late",
@@ -37905,7 +37905,7 @@
    "spread": 0.96,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "amber",
      "role": "barista",
      "shift": "late",
@@ -38791,7 +38791,7 @@
    "spread": 0.99,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "mayak",
      "role": "barista",
      "shift": "late",
@@ -39024,17 +39024,17 @@
    "home": "P-BRIDGEHOUSE/6-05",
    "chronotype": "owl",
    "wake": 9.32,
-   "bed": 1.32,
+   "bed": 1.12,
    "spread": 1.05,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "horizon",
      "role": "attendant",
      "shift": "late",
      "hours": [
       14.5,
-      0.25
+      24.0
      ],
      "days": [
       0,
@@ -39313,7 +39313,7 @@
    "spread": 0.47,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
      "station": "mayak",
      "role": "barista",
      "shift": "early",
