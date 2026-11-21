@@ -1,0 +1,213 @@
+{
+ "_doc": "Things to open and pick up in the homes (docs/city_interiors.md \"Things to open and pick up\"): wardrobes and kitchen cupboards that open, a kettle to put on (tea once a day), each home's photo on the bedside table (picked up, then turned over: its back), a note left on the kitchen table (a new one each day). The things come from blender/city/buildings/_homekit.py (wardrobe_thing, cupboard_thing, kettle, photo_frame, note_left).",
+ "acts": {
+  "open_wardrobe": {
+   "prompt": "city.act.wardrobe.prompt",
+   "minutes": 0,
+   "sound": "wood_creak",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.wardrobe.cold.1",
+     "weather": "cold"
+    },
+    {
+     "k": "city.wardrobe.rain.1",
+     "weather": "rain"
+    },
+    {
+     "k": "city.wardrobe.warm.1",
+     "weather": "warm"
+    },
+    "city.wardrobe.1",
+    "city.wardrobe.2",
+    "city.wardrobe.3"
+   ]
+  },
+  "open_cupboard": {
+   "prompt": "city.act.cupboard.prompt",
+   "minutes": 0,
+   "sound": "drawer_slide",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.cupboard.festival.1",
+     "festival": "any"
+    },
+    {
+     "k": "city.cupboard.cold.1",
+     "weather": "cold"
+    },
+    {
+     "k": "city.cupboard.morning.1",
+     "h": [
+      6,
+      11
+     ]
+    },
+    "city.cupboard.1",
+    "city.cupboard.2",
+    "city.cupboard.3"
+   ]
+  },
+  "put_kettle": {
+   "prompt": "city.act.kettle.prompt",
+   "minutes": 5,
+   "sound": "kettle_whistle",
+   "any_hour": true,
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "lines": [
+    {
+     "k": "city.kettle.cold.1",
+     "weather": "cold"
+    },
+    {
+     "k": "city.kettle.night.1",
+     "h": [
+      22,
+      6
+     ]
+    },
+    "city.kettle.1",
+    "city.kettle.2"
+   ]
+  },
+  "photo_holm": {
+   "prompt": "city.act.photo.prompt",
+   "minutes": 1,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.home_photo.holm.1",
+    "city.home_photo.holm.2"
+   ]
+  },
+  "note_holm": {
+   "prompt": "city.act.note.prompt",
+   "minutes": 0,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "rotate": "daily",
+   "lines": [
+    "city.home_note.holm.1",
+    "city.home_note.holm.2",
+    "city.home_note.holm.3",
+    "city.home_note.holm.4",
+    "city.home_note.holm.5"
+   ]
+  },
+  "photo_lev": {
+   "prompt": "city.act.photo.prompt",
+   "minutes": 1,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.home_photo.lev.1",
+    "city.home_photo.lev.2"
+   ]
+  },
+  "note_lev": {
+   "prompt": "city.act.note.prompt",
+   "minutes": 0,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "rotate": "daily",
+   "lines": [
+    "city.home_note.lev.1",
+    "city.home_note.lev.2",
+    "city.home_note.lev.3",
+    "city.home_note.lev.4",
+    "city.home_note.lev.5"
+   ]
+  },
+  "photo_bauer": {
+   "prompt": "city.act.photo.prompt",
+   "minutes": 1,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.home_photo.bauer.1",
+    "city.home_photo.bauer.2"
+   ]
+  },
+  "note_bauer": {
+   "prompt": "city.act.note.prompt",
+   "minutes": 0,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "rotate": "daily",
+   "lines": [
+    "city.home_note.bauer.1",
+    "city.home_note.bauer.2",
+    "city.home_note.bauer.3",
+    "city.home_note.bauer.4",
+    "city.home_note.bauer.5"
+   ]
+  },
+  "photo_priya": {
+   "prompt": "city.act.photo.prompt",
+   "minutes": 1,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.home_photo.priya.1",
+    "city.home_photo.priya.2"
+   ]
+  },
+  "note_priya": {
+   "prompt": "city.act.note.prompt",
+   "minutes": 0,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "rotate": "daily",
+   "lines": [
+    "city.home_note.priya.1",
+    "city.home_note.priya.2",
+    "city.home_note.priya.3",
+    "city.home_note.priya.4",
+    "city.home_note.priya.5"
+   ]
+  }
+ },
+ "rules": {
+  "*:what=wardrobe": {
+   "act": "open_wardrobe"
+  },
+  "*:what=cupboard": {
+   "act": "open_cupboard"
+  },
+  "*:what=kettle": {
+   "act": "put_kettle"
+  },
+  "P-T1H2/flat_photo": {
+   "act": "photo_holm"
+  },
+  "P-T1H2/flat_note": {
+   "act": "note_holm"
+  },
+  "P-T4H1/flat_photo": {
+   "act": "photo_lev"
+  },
+  "P-T4H1/flat_note": {
+   "act": "note_lev"
+  },
+  "P-SERPENTINE/bauer_photo": {
+   "act": "photo_bauer"
+  },
+  "P-SERPENTINE/bauer_note": {
+   "act": "note_bauer"
+  },
+  "P-UNITE/tul_photo": {
+   "act": "photo_priya"
+  },
+  "P-UNITE/tul_note": {
+   "act": "note_priya"
+  }
+ }
+}

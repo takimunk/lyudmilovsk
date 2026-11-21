@@ -8,5 +8,5 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private"
 mkdir -p "$ROOT/Saved/BarkSim"
 clang++ -std=c++17 -O2 $EXTRA_CXXFLAGS -Wall -Wshadow -Wunreachable-code-loop-increment -Wno-unused-function -o "$ROOT/Saved/BarkSim/barksim" \
-	"$ROOT/tools/barksim/barksim.cpp" "$SRC/People/TownBarks.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Animals/AnimalFriendSim.cpp" "$SRC/Railway/RailRun.cpp"
+	"$ROOT/tools/barksim/barksim.cpp" "$SRC/People/TownBarks.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Animals/AnimalFriendSim.cpp" "$SRC/Animals/AnimalPetsSim.cpp" "$SRC/Railway/RailRun.cpp"
 cd "$ROOT" && exec "$ROOT/Saved/BarkSim/barksim" "$@"

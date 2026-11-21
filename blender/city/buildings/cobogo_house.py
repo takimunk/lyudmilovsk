@@ -26,6 +26,7 @@ import random
 import dress_kit as dk
 import furn_int3 as fu
 import interior_kit as kit
+import _homekit as hk
 import geom
 from citykit import box, prism, DOOR_W, DOOR_H
 from geom import Facade, extrude_profile
@@ -530,7 +531,9 @@ def _furnish_flat(B):
     B.thing("flat_bed", "bed", (-8.3, 4.85, 0.5), 180.0, rest="private", height=0.5)
     B.spot("flat_bed_spot", "bench", (-8.3, 5.9, 0.0), 180)
     kit.bedside_table(B, -9.35, 3.95, 0.0, 180.0, lamp=True)
+    hk.photo_frame(B, "flat_photo", -9.35, 3.95, 180.0)
     kit.wardrobe(B, -9.85, 6.9, 0.0, 90.0, w=1.0)
+    hk.wardrobe_thing(B, "flat_wardrobe", -9.85, 6.9, 90.0)
     kit.mirror(B, -7.7, 6.4, 0.0, 270.0, zc=1.45, w=0.5, h=0.9)
     kit.rug(B, -8.75, 6.6, 0.0, 0.0, w=0.9, d=1.5, name="rug_2")
     # hall by the door (door at x -13.2..-12.3, back wall)
@@ -539,6 +542,7 @@ def _furnish_flat(B):
     kit.mirror(B, -13.7, 12.2, 0.0, 90.0, zc=1.5, w=0.5, h=0.9)
     # kitchen
     kit.kitchen_unit(B, -9.6, 12.74, 0.0, 0.0, modules="cupboard,stove,sink,fridge", wall_cupboards=False)
+    hk.cupboard_thing(B, "flat_cupboard", -9.6, 12.74, 0.0, modules="cupboard,stove,sink,fridge", k=0)
     for a_ in (-9.6, -9.0):      # wall cupboards only over the sink and fridge: the back window (x -11.4..-9.8) stays clear
         box(B.detail, "CT_TileWhite", a_, a_ + 0.6, 12.41, 12.74, 1.45, 2.15)
         box(B.detail, "CT_TileWhite", a_ + 0.03, a_ + 0.57, 12.398, 12.41, 1.48, 2.12)
@@ -548,6 +552,7 @@ def _furnish_flat(B):
     tb = kit.table(B, -9.4, 10.6, 0.0, 0.0, w=0.9, d=0.7)
     kit.plates(B, -9.4, 10.6, tb["top"], 0.0, n=2)
     kit.vase(B, -9.1, 10.75, tb["top"], 0.0, seed=4)
+    hk.note_left(B, "flat_note", -9.72, 10.42, tb["top"])
     kit.around_table(B, -9.4, 10.6, 0.9, 0.7, 0.0, per_side=(1, 1, 0, 0), kind="wood")
     B.thing("flat_kitchen_seat", "seat", (-9.4, 9.95, 0.45), 180.0, height=0.45)
     kit.bookshelf(B, -7.7, 11.6, 0.0, 270.0, w=0.8, h=1.6, topic="cooking", seed=12)

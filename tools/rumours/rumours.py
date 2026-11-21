@@ -114,7 +114,7 @@ PAPER = {
     ],
     "radio": [
         ("«Волна Людмиловска» сыграла заявку юного слушателя. Город слушал и подпевал.",
-         "«Volna Lyudmilovska» played a young listener's request. The town listened and sang along.",
+         "“Volna Lyudmilovska” played a young listener's request. The town listened and sang along.",
          "「ヴォルナ・リュドミロフスカ」が若い聴取者のリクエストを流した。町じゅうが聴き、口ずさんだ。"),
     ],
     "fine": [

@@ -61,13 +61,13 @@ ROWS = [
     # the vestibule
     ("transport.vestibule.kiosk", "Касса", "Tickets", "きっぷ売り場"),
     # prompts
-    ("transport.prompt.call", "E — схема и вызов кабины", "E: route map and call a cabin", "E：路線図・キャビンを呼ぶ"),
-    ("transport.prompt.cabin_open", "E — открыть дверь кабины «{0}»", "E: open the door of cabin {0}", "E：キャビン「{0}」のドアを開ける"),
-    ("transport.prompt.cabin_shut", "E — закрыть дверь кабины «{0}»", "E: shut the door of cabin {0}", "E：キャビン「{0}」のドアを閉める"),
-    ("transport.prompt.seat_sit", "E — сесть", "E: sit down", "E：座る"),
-    ("transport.prompt.seat_up", "E — встать", "E: stand up", "E：立つ"),
-    ("transport.prompt.cabin_where", "E — куда ехать (схема)", "E: where to (route map)", "E：行き先（路線図）"),
-    ("transport.prompt.board", "E — схема канатных дорог", "E: cable car route map", "E：ロープウェイ路線図"),
+    ("transport.prompt.call", "E — схема и вызов кабины", "E — route map and call a cabin", "E：路線図・キャビンを呼ぶ"),
+    ("transport.prompt.cabin_open", "E — открыть дверь кабины «{0}»", "E — open the door of cabin {0}", "E：キャビン「{0}」のドアを開ける"),
+    ("transport.prompt.cabin_shut", "E — закрыть дверь кабины «{0}»", "E — shut the door of cabin {0}", "E：キャビン「{0}」のドアを閉める"),
+    ("transport.prompt.seat_sit", "E — сесть", "E — sit down", "E：座る"),
+    ("transport.prompt.seat_up", "E — встать", "E — stand up", "E：立つ"),
+    ("transport.prompt.cabin_where", "E — куда ехать (схема)", "E — where to (route map)", "E：行き先（路線図）"),
+    ("transport.prompt.board", "E — схема канатных дорог", "E — cable car route map", "E：ロープウェイ路線図"),
     ("transport.prompt.ride", "Кабина «{0}» → {1}", "Cabin {0} → {1}", "キャビン「{0}」→ {1}"),
     # announcements (spoken: localization/voice.json speaker "transport"; the same words as a note on screen)
     # the station halls' announcements (LyudStationFurnish.cpp: now and then while the player is in a hall)
@@ -96,7 +96,7 @@ ROWS = [
     ("line.transport.arrive_horizon.1", "Горизонт. Просим освободить кабину.", "Horizon. Please leave the cabin.", "地平線です。キャビンからお降りください。"),
     # halls v3 (docs/transport.md "Halls v3"): the buffet, the attendant, their greetings
     ("ui.shop.title_station_buffet", "Буфет станции «{0}»", "Station buffet, {0}", "{0}駅のビュッフェ"),
-    ("transport.hall.attendant_prompt", "E — спросить дежурную по станции", "E: ask the station attendant", "E：駅員にたずねる"),
+    ("transport.hall.attendant_prompt", "E — спросить дежурную по станции", "E — ask the station attendant", "E：駅員にたずねる"),
     ("line.transport.barista.hello.1", "Здравствуйте! Кофе, чай, пирожки — всё свежее.", "Hello! Coffee, tea, pies, all fresh.", "いらっしゃいませ！コーヒー、紅茶、ピロシキ、全部できたてですよ。"),
     ("line.transport.barista.hello.2", "Заходите, пока кабина едет, — успеете выпить чаю.", "Come in, you've time for a tea before the cabin comes.", "キャビンが来るまでにお茶を一杯どうぞ。"),
     ("line.transport.barista.hello.3", "Пирожки с капустой только из печи.", "Cabbage pies, straight from the oven.", "キャベツのピロシキ、焼きたてです。"),

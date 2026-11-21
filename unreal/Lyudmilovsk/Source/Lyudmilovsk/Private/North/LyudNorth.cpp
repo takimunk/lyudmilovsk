@@ -4,13 +4,18 @@
 #include "CollisionQueryParams.h"
 #include "Dom/JsonObject.h"
 #include "Engine/Engine.h"
+#include "Components/StaticMeshComponent.h"
 #include "Engine/HitResult.h"
+#include "Engine/StaticMeshActor.h"
+#include "Engine/Texture2D.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
+#include "LyudText.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "North/LyudCampfire.h"
@@ -179,6 +184,8 @@ void ULyudNorthSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	bWakeAll = CVarNorthWakeAll.GetValueOnGameThread() != 0;
 	SpawnPlumes();
 	SpawnRiver();
+	SpawnBrook();
+	LocalizeSouthBoards();
 	UpdateAir();
 	// the steam pool's material, card and instances now, where a few ms cost nothing, not at the first vent in play
 	if (Things.Num() > 0 || Fumaroles.Num() > 0)
@@ -197,6 +204,7 @@ void ULyudNorthSubsystem::Deinitialize()
 	SteamFx = nullptr;
 	Plumes.Reset();
 	River = nullptr;
+	Brook = nullptr;
 	Super::Deinitialize();
 }
 
@@ -368,6 +376,97 @@ void ULyudNorthSubsystem::SpawnRiver()
 		NewRiver->SetActorHiddenInGame(!bShown);
 		River = NewRiver;
 	}
+}
+
+void ULyudNorthSubsystem::SpawnBrook()
+{
+	// the brook of the Aton coast (docs/south.md): south.json "brook": {"water": [[x, y, z, half], ...]} in map metres,
+	// downstream, the same samples as the river's; this subsystem wakes and sleeps it with the North's things
+	UWorld* World = GetWorld();
+	if (!World)
+	{
+		return;
+	}
+	FString Text;
+	TSharedPtr<FJsonObject> Root;
+	const FString Path = FPaths::ProjectContentDir() / TEXT("South/south.json");
+	if (!FFileHelper::LoadFileToString(Text, *Path) || !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Root) || !Root.IsValid())
+	{
+		return;
+	}
+	TArray<FVector4> BrookWater;
+	const TSharedPtr<FJsonObject>* BrookObj = nullptr;
+	const TArray<TSharedPtr<FJsonValue>>* WaterArr = nullptr;
+	if (Root->TryGetObjectField(TEXT("brook"), BrookObj) && BrookObj && BrookObj->IsValid() && (*BrookObj)->TryGetArrayField(TEXT("water"), WaterArr))
+	{
+		for (const TSharedPtr<FJsonValue>& V : *WaterArr)
+		{
+			const TArray<TSharedPtr<FJsonValue>>* Sample = nullptr;
+			if (V.IsValid() && V->TryGetArray(Sample) && Sample->Num() >= 4)
+			{
+				const FVector At = NorthMapToWorld((*Sample)[0]->AsNumber(), (*Sample)[1]->AsNumber(), (*Sample)[2]->AsNumber());
+				BrookWater.Add(FVector4(At, 100.0 * (*Sample)[3]->AsNumber()));
+			}
+		}
+	}
+	if (BrookWater.Num() < 2)
+	{
+		return;
+	}
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	const FVector First(BrookWater[0]);
+	if (ALyudNorthRiver* NewBrook = World->SpawnActor<ALyudNorthRiver>(First, FRotator::ZeroRotator, Params))
+	{
+		// a calm sheet: by the river's rule (narrow = fast) the whole brook was foam, white blotches over the bed; with none of it the thin sheet does not show at all
+		NewBrook->FoamScale = 0.4f;
+		NewBrook->Setup(BrookWater);
+		NewBrook->SetActorHiddenInGame(!bShown);
+		NewBrook->Tags.Add(TEXT("South"));
+		Brook = NewBrook;
+		UE_LOG(LogTemp, Display, TEXT("SOUTH brook: %d samples, %.0f m"), BrookWater.Num(), NewBrook->LengthM());
+	}
+}
+
+void ULyudNorthSubsystem::LocalizeSouthBoards()
+{
+	// the Aton coast's boards, finger-posts and stele (actors tagged Text:south, unreal/scripts/import_south.py): their
+	// text slots M_South_Text_<id> show the Russian texture; in another language the slot gets
+	// /Game/South/Localized/<lang>/T_South_Text_<id> (once, when the level starts)
+	UWorld* World = GetWorld();
+	if (!World || LyudText::Language() == TEXT("ru"))
+	{
+		return;
+	}
+	static const FName TextTag(TEXT("Text:south"));
+	static const FString Prefix(TEXT("M_South_Text_"));
+	int32 Slots = 0;
+	for (TActorIterator<AStaticMeshActor> It(World); It; ++It)
+	{
+		UStaticMeshComponent* Comp = It->ActorHasTag(TextTag) ? It->GetStaticMeshComponent() : nullptr;
+		if (!Comp)
+		{
+			continue;
+		}
+		const TArray<FName> Names = Comp->GetMaterialSlotNames();
+		for (int32 I = 0; I < Names.Num(); ++I)
+		{
+			const FString Slot = Names[I].ToString();
+			if (!Slot.StartsWith(Prefix))
+			{
+				continue;
+			}
+			if (UTexture2D* Tex = LyudText::LoadTexture(TEXT("South"), TEXT("T_South_Text_") + Slot.RightChop(Prefix.Len())))
+			{
+				if (UMaterialInstanceDynamic* Mid = Comp->CreateDynamicMaterialInstance(I))
+				{
+					Mid->SetTextureParameterValue(TEXT("Image"), Tex);
+					++Slots;
+				}
+			}
+		}
+	}
+	UE_LOG(LogTemp, Display, TEXT("SOUTH boards: %d text slots in %s"), Slots, *LyudText::Language());
 }
 
 void ULyudNorthSubsystem::Register(ALyudNorthThing* Thing)

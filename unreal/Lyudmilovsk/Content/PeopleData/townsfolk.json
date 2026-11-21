@@ -574,7 +574,9 @@
     "fish_shore": 1.0,
     "watch_sunrise": 1.1,
     "sea_air": 0.45,
-    "eat_out": 0.25
+    "eat_out": 0.25,
+    "mend_nets": 2.9,
+    "boats_evening": 2.7
    },
    "body": "Town/R_sorokin_gennady"
   },
@@ -6678,7 +6680,8 @@
     "play_club": 0.77,
     "play_town_club": 0.22,
     "sea_air": 0.75,
-    "fish_shore": 0.4
+    "fish_shore": 0.4,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_lee_brandon"
   },
@@ -9150,7 +9153,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "shop_town": 0.37,
-    "coffee": 0.54
+    "coffee": 0.54,
+    "tend_hives": 3.6
    },
    "body": "Town/R_virtanen_xiaoming"
   },
@@ -10301,6 +10305,20 @@
       4,
       5,
       6
+     ]
+    },
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
      ]
     }
    ],
@@ -11484,7 +11502,22 @@
    "wake": 5.68,
    "bed": 20.94,
    "spread": 0.54,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_fontaine_nino",
     "t_obrien_zhanar",
@@ -11840,7 +11873,22 @@
    "wake": 4.68,
    "bed": 21.18,
    "spread": 0.33,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_ferrari_arkady",
     "t_saar_oksana"
@@ -15679,7 +15727,22 @@
    "wake": 5.17,
    "bed": 20.75,
    "spread": 0.41,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_choi_francesca",
     "t_hernandez_tyler",
@@ -15748,7 +15811,8 @@
    "occupation": "researcher",
    "likes": {
     "swim_look": 0.23,
-    "sea_air": 0.2
+    "sea_air": 0.2,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_romano_duc"
   },
@@ -18781,7 +18845,22 @@
    "wake": 5.06,
    "bed": 21.93,
    "spread": 0.38,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_dubois_xiaoming",
     "t_hernandez_lyudmila"
@@ -19066,7 +19145,8 @@
    "occupation": "musician",
    "likes": {
     "shop_town": 0.55,
-    "sea_air": 0.76
+    "sea_air": 0.76,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_kobayashi_zeynep"
   },
@@ -20566,7 +20646,8 @@
    "likes": {
     "watch_sunrise": 0.66,
     "shop_town": 0.39,
-    "swim_look": 0.69
+    "swim_look": 0.69,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_rousseau_hiroshi"
   },
@@ -21646,6 +21727,20 @@
       4,
       5,
       6
+     ]
+    },
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
      ]
     }
    ],
@@ -24839,7 +24934,8 @@
    "occupation": "researcher",
    "likes": {
     "coffee": 0.54,
-    "stroll": 0.76
+    "stroll": 0.76,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_novotny_milagros"
   },
@@ -25291,7 +25387,9 @@
     "night_walk": 0.58,
     "fish_shore": 1.05,
     "eat_out": 0.22,
-    "fair_visit": 0.76
+    "fair_visit": 0.76,
+    "mend_nets": 2.9,
+    "boats_evening": 2.7
    },
    "body": "Town/R_demir_jukka"
   },
@@ -27405,6 +27503,20 @@
       3,
       4
      ]
+    },
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
     }
    ],
    "friends": [
@@ -27723,7 +27835,8 @@
     "play_town_club": 0.31,
     "read_library": 0.44,
     "fair_visit": 0.65,
-    "stroll": 0.77
+    "stroll": 0.77,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_zhou_tunde"
   },
@@ -28396,7 +28509,9 @@
     "fish_shore": 0.83,
     "watch_sunrise": 0.96,
     "shop_town": 0.65,
-    "read_library": 0.26
+    "read_library": 0.26,
+    "mend_nets": 2.9,
+    "boats_evening": 2.7
    },
    "body": "Town/R_le_duc"
   },
@@ -33079,7 +33194,8 @@
    "occupation": "researcher",
    "likes": {
     "fish_shore": 0.41,
-    "coffee": 0.46
+    "coffee": 0.46,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_dubovik_thibault"
   },
@@ -33289,7 +33405,22 @@
    "wake": 6.48,
    "bed": 22.93,
    "spread": 0.5,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_obrien_arjun",
     "t_obrien_lilit"
@@ -35669,7 +35800,22 @@
    "wake": 6.69,
    "bed": 23.65,
    "spread": 0.65,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_papadopoulos_priya"
    ],
@@ -37023,7 +37169,22 @@
    "wake": 4.8,
    "bed": 20.9,
    "spread": 0.34,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_adeyemi_eleni",
     "t_bautista_tiago",
@@ -37385,7 +37546,8 @@
    "likes": {
     "watch_sunrise": 1.0,
     "sea_air": 0.37,
-    "read_library": 0.4
+    "read_library": 0.4,
+    "watch_starlings": 2.4
    },
    "body": "Town/R_bianchi_lyudmila"
   },
@@ -41013,17 +41175,62 @@
    "mesh": "Korneev_ivan",
    "age": 78,
    "female": 0,
-   "household": "t_p-sanatorium_1-01",
+   "household": "t_guest_gromov",
    "home": "P-SANATORIUM/1-01",
    "chronotype": "lark",
    "wake": 6.5,
    "bed": 22.25,
    "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 12,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
    "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_gromov",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_gromov",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
     {
      "activity": "eat_sanatorium_breakfast",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_gromov_pyotr",
+     "role": "guest_seat_1a",
      "hours": [
       8.5,
       9.25
@@ -41041,7 +41248,7 @@
     {
      "activity": "eat_sanatorium_lunch",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_gromov_pyotr",
+     "role": "guest_seat_1a",
      "hours": [
       13.5,
       14.25
@@ -41059,7 +41266,7 @@
     {
      "activity": "eat_sanatorium_supper",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_gromov_pyotr",
+     "role": "guest_seat_1a",
      "hours": [
       18.5,
       19.25
@@ -41111,7 +41318,9 @@
     "watch_sunrise": 0.8,
     "read_library": 0.5,
     "san_cure": 0.9,
-    "read_paper": 0.6
+    "read_paper": 0.6,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
    }
   },
   {
@@ -41120,17 +41329,62 @@
    "mesh": "Frolova_masha",
    "age": 16,
    "female": 1,
-   "household": "t_p-sanatorium_1-02",
+   "household": "t_guest_mironova_b",
    "home": "P-SANATORIUM/1-02",
    "chronotype": "lark",
    "wake": 7.5,
    "bed": 22.75,
    "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 12,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
    "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_mironova",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_mironova",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
     {
      "activity": "eat_sanatorium_breakfast",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_mironova_sonya",
+     "role": "guest_seat_1b",
      "hours": [
       8.5,
       9.25
@@ -41148,7 +41402,7 @@
     {
      "activity": "eat_sanatorium_lunch",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_mironova_sonya",
+     "role": "guest_seat_1b",
      "hours": [
       13.5,
       14.25
@@ -41166,7 +41420,7 @@
     {
      "activity": "eat_sanatorium_supper",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_mironova_sonya",
+     "role": "guest_seat_1b",
      "hours": [
       18.5,
       19.25
@@ -41217,7 +41471,9 @@
     "read_library": 1.0,
     "coffee": 0.5,
     "swim_look": 0.6,
-    "cinema_evening": 0.8
+    "cinema_evening": 0.8,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
    }
   },
   {
@@ -41226,17 +41482,62 @@
    "mesh": "Sorokin_oleg",
    "age": 81,
    "female": 0,
-   "household": "t_p-sanatorium_1-03",
+   "household": "t_guest_tamm",
    "home": "P-SANATORIUM/1-03",
    "chronotype": "lark",
    "wake": 6.75,
    "bed": 22.5,
    "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 5,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
    "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_tamm",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_tamm",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
     {
      "activity": "eat_sanatorium_breakfast",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_tamm_boris",
+     "role": "guest_seat_2a",
      "hours": [
       8.5,
       9.25
@@ -41254,7 +41555,7 @@
     {
      "activity": "eat_sanatorium_lunch",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_tamm_boris",
+     "role": "guest_seat_2a",
      "hours": [
       13.5,
       14.25
@@ -41272,7 +41573,7 @@
     {
      "activity": "eat_sanatorium_supper",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_tamm_boris",
+     "role": "guest_seat_2a",
      "hours": [
       18.5,
       19.25
@@ -41324,7 +41625,9 @@
     "fish_shore": 0.7,
     "chat": 0.6,
     "dominoes": 1.1,
-    "san_cure": 0.6
+    "san_cure": 0.6,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
    }
   },
   {
@@ -41333,17 +41636,62 @@
    "mesh": "Zotov_lev",
    "age": 80,
    "female": 0,
-   "household": "t_p-sanatorium_1-04",
+   "household": "t_guest_sazonov_b",
    "home": "P-SANATORIUM/1-04",
    "chronotype": "lark",
    "wake": 7.0,
    "bed": 22.5,
    "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 5,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
    "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_sazonov",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_sazonov",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
     {
      "activity": "eat_sanatorium_breakfast",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_sazonov_nikolai",
+     "role": "guest_seat_2b",
      "hours": [
       8.5,
       9.25
@@ -41361,7 +41709,7 @@
     {
      "activity": "eat_sanatorium_lunch",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_sazonov_nikolai",
+     "role": "guest_seat_2b",
      "hours": [
       13.5,
       14.25
@@ -41379,7 +41727,7 @@
     {
      "activity": "eat_sanatorium_supper",
      "place": "P-SANATORIUM-DINING",
-     "role": "guest_sazonov_nikolai",
+     "role": "guest_seat_2b",
      "hours": [
       18.5,
       19.25
@@ -41431,7 +41779,1241 @@
     "sit_bench": 0.6,
     "chat": 0.5,
     "dominoes": 1.1,
-    "san_cure": 0.6
+    "san_cure": 0.6,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
+   }
+  },
+  {
+   "key": "t_krylova_zinaida",
+   "town": 1,
+   "mesh": "Guseva_valentina",
+   "age": 71,
+   "female": 1,
+   "household": "t_guest_krylova",
+   "home": "P-SANATORIUM/1-03",
+   "chronotype": "lark",
+   "wake": 6.5,
+   "bed": 22.0,
+   "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 19,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
+   "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_krylova",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_krylova",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2a",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2a",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2a",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_1",
+     "hours": [
+      12.0,
+      12.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
+   "friends": [
+    "t_abdullina_raisa"
+   ],
+   "temper": {
+    "social": 0.8,
+    "active": 0.35,
+    "studious": 0.5,
+    "gamer": 0.3,
+    "nature": 0.6,
+    "sun": 0.6
+   },
+   "walk_speed": 0.95,
+   "occupation": "guest",
+   "likes": {
+    "chat": 0.9,
+    "sit_bench": 0.8,
+    "san_cure": 1.0,
+    "dominoes": 0.6,
+    "cinema_day": 0.6,
+    "sea_air": 0.6,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
+   }
+  },
+  {
+   "key": "t_abdullina_raisa",
+   "town": 1,
+   "mesh": "Zotova_galina",
+   "age": 68,
+   "female": 1,
+   "household": "t_guest_abdullina_b",
+   "home": "P-SANATORIUM/1-04",
+   "chronotype": "lark",
+   "wake": 6.75,
+   "bed": 22.25,
+   "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 19,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
+   "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_abdullina",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_abdullina",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2b",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2b",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2b",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_2",
+     "hours": [
+      12.0,
+      12.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
+   "friends": [
+    "t_krylova_zinaida"
+   ],
+   "temper": {
+    "social": 0.6,
+    "active": 0.45,
+    "studious": 0.6,
+    "gamer": 0.2,
+    "nature": 0.7,
+    "sun": 0.6
+   },
+   "walk_speed": 1.0,
+   "occupation": "guest",
+   "likes": {
+    "stroll": 0.8,
+    "shop_town": 0.7,
+    "san_cure": 0.9,
+    "sit_bench": 0.6,
+    "read_paper": 0.5,
+    "cinema_evening": 0.5,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
+   }
+  },
+  {
+   "key": "t_levin_arkady",
+   "town": 1,
+   "mesh": "Owner",
+   "age": 74,
+   "female": 0,
+   "household": "t_guest_levin",
+   "home": "P-SANATORIUM/1-01",
+   "chronotype": "lark",
+   "wake": 6.0,
+   "bed": 22.0,
+   "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 26,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
+   "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_levin",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_levin",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1a",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1a",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1a",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_1",
+     "hours": [
+      15.0,
+      15.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
+   "friends": [
+    "t_levina_tamara"
+   ],
+   "temper": {
+    "social": 0.5,
+    "active": 0.5,
+    "studious": 0.6,
+    "gamer": 0.4,
+    "nature": 0.8,
+    "sun": 0.6
+   },
+   "walk_speed": 0.95,
+   "occupation": "guest",
+   "likes": {
+    "sea_air": 1.1,
+    "watch_sunrise": 1.0,
+    "fish_shore": 0.6,
+    "san_cure": 0.8,
+    "sit_bench": 0.7,
+    "read_paper": 0.7,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
+   }
+  },
+  {
+   "key": "t_levina_tamara",
+   "town": 1,
+   "mesh": "Korneeva_nina",
+   "age": 70,
+   "female": 1,
+   "household": "t_guest_levina_b",
+   "home": "P-SANATORIUM/1-02",
+   "chronotype": "lark",
+   "wake": 6.75,
+   "bed": 22.25,
+   "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 26,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
+   "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_levina",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_levina",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1b",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1b",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1b",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_2",
+     "hours": [
+      15.0,
+      15.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
+   "friends": [
+    "t_levin_arkady"
+   ],
+   "temper": {
+    "social": 0.65,
+    "active": 0.4,
+    "studious": 0.8,
+    "gamer": 0.2,
+    "nature": 0.6,
+    "sun": 0.5
+   },
+   "walk_speed": 0.95,
+   "occupation": "guest",
+   "likes": {
+    "read_library": 0.8,
+    "culture_evening": 0.9,
+    "play_piano": 1.9,
+    "san_cure": 0.8,
+    "stroll": 0.7,
+    "cinema_evening": 0.6,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
+   }
+  },
+  {
+   "key": "t_beketov_yuri",
+   "town": 1,
+   "mesh": "Zotov_lev",
+   "age": 66,
+   "female": 0,
+   "household": "t_guest_beketov",
+   "home": "P-SANATORIUM/1-03",
+   "chronotype": "lark",
+   "wake": 6.25,
+   "bed": 22.5,
+   "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 33,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
+   "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_beketov",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_beketov",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2a",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2a",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2a",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_1",
+     "hours": [
+      16.0,
+      16.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
+   "friends": [
+    "t_matsumoto_haruo"
+   ],
+   "temper": {
+    "social": 0.45,
+    "active": 0.6,
+    "studious": 0.7,
+    "gamer": 0.5,
+    "nature": 0.7,
+    "sun": 0.4
+   },
+   "walk_speed": 1.05,
+   "occupation": "guest",
+   "likes": {
+    "walk": 0.8,
+    "lookout_view": 0.9,
+    "san_cure": 0.7,
+    "play_club": 0.6,
+    "read_paper": 0.8,
+    "sea_air": 0.7,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
+   }
+  },
+  {
+   "key": "t_matsumoto_haruo",
+   "town": 1,
+   "mesh": "Sorokin_oleg",
+   "age": 69,
+   "female": 0,
+   "household": "t_guest_matsumoto_b",
+   "home": "P-SANATORIUM/1-04",
+   "chronotype": "lark",
+   "wake": 6.0,
+   "bed": 21.75,
+   "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 33,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
+   "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_matsumoto",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_matsumoto",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2b",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2b",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_2b",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_2",
+     "hours": [
+      16.0,
+      16.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
+   "friends": [
+    "t_beketov_yuri"
+   ],
+   "temper": {
+    "social": 0.4,
+    "active": 0.4,
+    "studious": 0.8,
+    "gamer": 0.5,
+    "nature": 0.7,
+    "sun": 0.6
+   },
+   "walk_speed": 0.95,
+   "occupation": "guest",
+   "likes": {
+    "watch_sunrise": 1.0,
+    "sit_bench": 0.8,
+    "san_cure": 0.9,
+    "read_library": 0.6,
+    "play_club": 0.6,
+    "sea_air": 0.8,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
+   }
+  },
+  {
+   "key": "t_kovalchuk_lidia",
+   "town": 1,
+   "mesh": "Orlova_tanya",
+   "age": 60,
+   "female": 1,
+   "household": "t_guest_kovalchuk",
+   "home": "P-SANATORIUM/1-01",
+   "chronotype": "lark",
+   "wake": 6.25,
+   "bed": 22.25,
+   "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 40,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
+   "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_kovalchuk",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_kovalchuk",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1a",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1a",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1a",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_1",
+     "hours": [
+      17.0,
+      17.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
+   "friends": [
+    "t_kovalchuk_asya"
+   ],
+   "temper": {
+    "social": 0.75,
+    "active": 0.55,
+    "studious": 0.4,
+    "gamer": 0.3,
+    "nature": 0.6,
+    "sun": 0.6
+   },
+   "walk_speed": 1.1,
+   "occupation": "guest",
+   "likes": {
+    "chat": 0.9,
+    "coffee": 0.7,
+    "san_cure": 0.9,
+    "sit_bench": 0.6,
+    "shop_town": 0.6,
+    "cinema_day": 0.7,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
+   }
+  },
+  {
+   "key": "t_kovalchuk_asya",
+   "town": 1,
+   "mesh": "Kid_girl",
+   "age": 12,
+   "female": 1,
+   "household": "t_guest_kovalchuk_b",
+   "home": "P-SANATORIUM/1-02",
+   "chronotype": "lark",
+   "wake": 7.5,
+   "bed": 21.5,
+   "spread": 0.25,
+   "stay": {
+    "cycle": 42,
+    "from": 40,
+    "days": 14,
+    "arrive": 11.0,
+    "leave": 10.75
+   },
+   "duties": [
+    {
+     "activity": "san_depart",
+     "place": "S-RAIL-GUESTS",
+     "role": "guest_kovalchuk",
+     "hours": [
+      9.45,
+      10.75
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 14
+    },
+    {
+     "activity": "san_arrive",
+     "place": "P-SANATORIUM",
+     "role": "guest_kovalchuk",
+     "hours": [
+      11.0,
+      12.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "stay_day": 0
+    },
+    {
+     "activity": "eat_sanatorium_breakfast",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1b",
+     "hours": [
+      8.5,
+      9.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_lunch",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1b",
+     "hours": [
+      13.5,
+      14.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "eat_sanatorium_supper",
+     "place": "P-SANATORIUM-DINING",
+     "role": "guest_seat_1b",
+     "hours": [
+      18.5,
+      19.25
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_2",
+     "hours": [
+      17.0,
+      17.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
+   "friends": [
+    "t_kovalchuk_lidia"
+   ],
+   "temper": {
+    "social": 0.6,
+    "active": 0.8,
+    "studious": 0.5,
+    "gamer": 0.5,
+    "nature": 0.7,
+    "sun": 0.7
+   },
+   "walk_speed": 1.35,
+   "occupation": "guest",
+   "likes": {
+    "skip_stones": 1.2,
+    "fly_kite": 0.9,
+    "playground": 0.7,
+    "swim_look": 0.7,
+    "cinema_day": 0.9,
+    "read_library": 0.4,
+    "san_promenade": 4.2,
+    "san_postcards": 3.4
    }
   }
  ]

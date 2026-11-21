@@ -657,6 +657,58 @@
    }
   },
   {
+   "id": "flat_photo",
+   "kind": "take",
+   "pos": [
+    -9.47,
+    4.25,
+    0.65
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "photo"
+   }
+  },
+  {
+   "id": "flat_wardrobe",
+   "kind": "board",
+   "pos": [
+    -9.15,
+    6.9,
+    1.2
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "wardrobe"
+   }
+  },
+  {
+   "id": "flat_cupboard",
+   "kind": "board",
+   "pos": [
+    -10.5,
+    11.99,
+    0.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "cupboard"
+   }
+  },
+  {
+   "id": "flat_note",
+   "kind": "take",
+   "pos": [
+    -9.72,
+    10.42,
+    0.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "note"
+   }
+  },
+  {
    "id": "flat_kitchen_seat",
    "kind": "seat",
    "pos": [
@@ -3297,7 +3349,7 @@
  ],
  "tris": {
   "shell": 9042,
-  "detail": 29392,
+  "detail": 29416,
   "windows": 328,
   "dress": 2242
  }

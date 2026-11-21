@@ -2281,6 +2281,20 @@
    ],
    "note": "The owner in his booth 12-02 by the club's entrance; said the next time the hero passes within 4 m after drinking from the hall's machine.",
    "diary": "journal.heard.owner_machine_honest"
+  },
+  {
+   "id": "aslan_town_road",
+   "person": "khuazhev_aslan",
+   "quest": "town_road",
+   "stages": [
+    "done"
+   ],
+   "within_m": 6,
+   "lines": [
+    "khuazhev_aslan.road_braid.1"
+   ],
+   "note": "the hero comes back to the club after his first walk to the town and passes Aslan's cheese tent by the club door (Tue-Sun till 20:00); said once, the braid's offer leads into the owner's supper if it is still open",
+   "diary": "journal.heard.khuazhev_aslan.town_road"
   }
  ]
 }

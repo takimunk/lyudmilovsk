@@ -2,7 +2,7 @@
  "city.film.card": "{0}　{1}（{2}年）",
  "city.film.newsreel": "上映前のニュース映画：{0}。",
  "city.film.lector": "映写技師：「{0}」",
- "city.film.leave": "E — 席を立つ",
+ "city.film.leave": "E：席を立つ",
  "city.film.missing": "ニュース映画のフィルムが届かなかったので、すぐ本編です。",
  "city.film.seen": "古い映画：{0}／{1}",
  "city.film.title": "「ラスヴェート」のニュース映画",

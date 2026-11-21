@@ -190,6 +190,51 @@ namespace LyudAnimals
 	};
 	const char* FriendName(EFriend F);
 
+	/** An animal that belongs to somebody (AnimalPetsSim.cpp): what it is doing as a pet, on top of Act. */
+	enum class EPet : uint8_t
+	{
+		None,       // nobody's: the yard cats and the street dogs
+		Indoors,    // at home behind the door: not drawn, met by nobody
+		Leash,      // a dog out with its owner, on the leash
+		Sill,       // a flat's cat on its window sill
+		Door,       // ... waiting at the flat's door at feeding time
+		Num
+	};
+	const char* PetName(EPet P);
+
+	/** A hedgehog of the yards and the old orchard (AnimalPetsSim.cpp): out at dusk from April to October. */
+	enum class EHog : uint8_t { Away, Shuffle, Sniff, Curl, Num };
+	struct FHedgehog
+	{
+		int Id = -1;
+		V3 Home, Pos, Goal;
+		float Yaw = 0.f, Speed = 0.f;
+		float Range = 16.f;         // m it shuffles from home
+		EHog State = EHog::Away;
+		float Timer = 0.f;          // s left of the state (Sniff), s since the danger went (Curl)
+		float Curl = 0.f;           // 0 open .. 1 a ball (drawing)
+		float Phase = 0.f;          // gait phase (drawing)
+		int Cat = -1;               // the cat that has come to sniff it
+		float CatTime = 0.f;
+		float NoCat = 0.f;          // s before another cat bothers
+		uint32_t Rng = 1;
+	};
+
+	/** A dog's walk on the leash: where its owner is (the wrapper fills it from the town's life every frame). */
+	struct FLeash
+	{
+		int Dog = -1;
+		bool bOut = false;
+		V3 Owner, Vel, Hand;        // the owner's feet, velocity and the hand that holds the leash
+		std::vector<V3> Trail;      // where the owner has just walked (newest last): the dog's way round a corner
+		float Sniff = 0.f;          // s left of a sniff stop
+		float NextSniff = 6.f;      // s to the next one
+		float Greet = 0.f;          // s left of greeting another dog
+		int GreetDog = -1;
+		float NoGreet = 0.f;
+		float Still = 0.f;          // s the owner has stood
+	};
+
 	struct FAnimal
 	{
 		int Id = -1;
@@ -275,6 +320,15 @@ namespace LyudAnimals
 		float Still = 0.f;          // s at heel with the player standing
 		float Repath = 0.f;
 		float PurrTimer = 0.f;
+
+		// pets (AnimalPetsSim.cpp)
+		EPet Pet = EPet::None;
+		int Owner = -1;             // whose it is: the wrapper's id of the resident (or household); -1 nobody's
+		V3 DoorPos;                 // the home's door (a dog comes out here, a flat's cat waits here to be fed)
+		V3 SillPos;                 // a flat's cat: its window sill (world, the cat's feet)
+		float SillYaw = 0.f;        // ... the way out of the window
+		float PetTime = 0.f;        // s in the pet state
+		int Hog = -1;               // the hedgehog this cat has gone to sniff (FWorld::Hedgehogs), -1 none
 	};
 
 	struct FPack
@@ -378,6 +432,33 @@ namespace LyudAnimals
 		int Walker = -1;
 		/** The cat on the player's lap, -1 none. */
 		int LapCat = -1;
+		// --- pets and hedgehogs (AnimalPetsSim.cpp) ---
+		/** How long a leash is, hand to collar along the ground, m. */
+		static constexpr float LeashLen = 2.4f;
+		/** The dog becomes Owner's: it lives indoors (Door) and comes out only on the leash (OwnerWalk). */
+		bool AdoptDog(int Dog, int Owner, const V3& Door);
+		/** The cat becomes a flat's: by day on its window sill, at feeding time at the door, else indoors. */
+		bool AdoptCat(int Cat, int Owner, const V3& Sill, float SillYaw, const V3& Door);
+		/** Every frame while the owner is out with the dog (bOut), once with bOut false when they are home again. */
+		void OwnerWalk(int Dog, bool bOut, const V3& Feet, const V3& Vel, const V3& Hand);
+		const FLeash* LeashOf(int Dog) const;
+		/** The owner said yes to "may I stroke it?": the dog lets the player's hand come for Seconds. False: not out. */
+		bool AllowStroke(int Dog, float Seconds = 40.f);
+		/** True: the feeders are filled by a person (PutFood, the lady with her bowls), not by the clock. */
+		bool bFeedByPerson = false;
+		/** The lady has put her bowls down at that feeder. */
+		void PutFood(int Place);
+		/** The feeders the lady walks to (place ids), nearest first from P. */
+		void FeedersNear(const V3& P, float R, std::vector<int>& Out) const;
+		std::vector<FLeash> Leashes;
+		std::vector<FHedgehog> Hedgehogs;
+		int AddHedgehog(const V3& Home, float Range = 16.f);
+		/** The calendar's month 1..12 (the wrapper sets it): hedgehogs sleep from November to March. */
+		int Month = 7;
+		bool HedgehogsOut() const;
+		/** Hours a flat's cat waits at the door (the same as the feeders': 8:00 and 18:30). */
+		static bool FeedingTime(float Hour) { return (Hour >= 7.5f && Hour < 8.25f) || (Hour >= 18.f && Hour < 18.75f); }
+
 		/** Hour (local) after which a walking dog goes home to sleep, and before which it won't set off. */
 		float BedHour = 22.5f, UpHour = 6.f;
 		/** How far from the shore a dog swims after the player, m. */
@@ -466,6 +547,14 @@ namespace LyudAnimals
 		void FriendStep(float Dt);
 		void FriendEnd(FAnimal& A, EAct Then, float Len);
 		void AddBond(FAnimal& A, float D);
+		// pets (AnimalPetsSim.cpp)
+		bool PetThink(FAnimal& A, float Dt);
+		bool PetMove(FAnimal& A, float Dt);
+		void PetStep(float Dt);
+		void LeashMove(FAnimal& A, FLeash& L, float Dt);
+		void LeashHold(FAnimal& A, FLeash& L);
+		void HedgehogStep(float Dt);
+		FLeash* LeashFor(int Dog);
 		bool Steer(FAnimal& A, const V3& To, float Speed, float Dt, bool bAnyGround = false);
 		bool PlayerOnGround() const;
 		V3 Route(FAnimal& A, const V3& To, float Dt, bool& bNoWay);

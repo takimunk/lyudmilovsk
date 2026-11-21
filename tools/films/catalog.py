@@ -228,7 +228,7 @@ S = [
     ("city.film.card", "{0}. {1}, {2}", "{0}. {1}, {2}", "{0}　{1}（{2}年）"),
     ("city.film.newsreel", "Перед сеансом — киножурнал: {0}.", "Before the film, the newsreel: {0}.", "上映前のニュース映画：{0}。"),
     ("city.film.lector", "Киномеханик: «{0}»", "The projectionist: “{0}”", "映写技師：「{0}」"),
-    ("city.film.leave", "E — встать и уйти", "E — get up and leave", "E — 席を立つ"),
+    ("city.film.leave", "E — встать и уйти", "E — get up and leave", "E：席を立つ"),
     ("city.film.missing", "Плёнка киножурнала не пришла: сразу фильм.", "The newsreel's reel didn't arrive: straight to the film.",
      "ニュース映画のフィルムが届かなかったので、すぐ本編です。"),
     ("city.film.seen", "Старое кино: {0} из {1}", "Old films: {0} of {1}", "古い映画：{0}／{1}"),

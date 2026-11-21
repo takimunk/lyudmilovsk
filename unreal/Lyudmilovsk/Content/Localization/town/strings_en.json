@@ -1802,5 +1802,21 @@
  "npc.t_tamm_boris.name": "Boris Tamm",
  "npc.t_tamm_boris.role": "sanatorium guest",
  "npc.t_sazonov_nikolai.name": "Nikolai Sazonov",
- "npc.t_sazonov_nikolai.role": "sanatorium guest"
+ "npc.t_sazonov_nikolai.role": "sanatorium guest",
+ "npc.t_krylova_zinaida.name": "Zinaida Krylova",
+ "npc.t_krylova_zinaida.role": "sanatorium guest",
+ "npc.t_abdullina_raisa.name": "Raisa Abdullina",
+ "npc.t_abdullina_raisa.role": "sanatorium guest",
+ "npc.t_levin_arkady.name": "Arkady Levin",
+ "npc.t_levin_arkady.role": "sanatorium guest",
+ "npc.t_levina_tamara.name": "Tamara Levina",
+ "npc.t_levina_tamara.role": "sanatorium guest",
+ "npc.t_beketov_yuri.name": "Yuri Beketov",
+ "npc.t_beketov_yuri.role": "sanatorium guest",
+ "npc.t_matsumoto_haruo.name": "Haruo Matsumoto",
+ "npc.t_matsumoto_haruo.role": "sanatorium guest",
+ "npc.t_kovalchuk_lidia.name": "Lidia Kovalchuk",
+ "npc.t_kovalchuk_lidia.role": "sanatorium guest",
+ "npc.t_kovalchuk_asya.name": "Asya Kovalchuk",
+ "npc.t_kovalchuk_asya.role": "sanatorium guest"
 }

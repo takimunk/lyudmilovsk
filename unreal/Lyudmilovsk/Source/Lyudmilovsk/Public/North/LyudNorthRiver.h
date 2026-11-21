@@ -34,6 +34,10 @@ class LYUDMILOVSK_API ALyudNorthRiver : public ALyudNorthThing
 public:
 	ALyudNorthRiver();
 
+	/** How much of the fast water's foam and roughness this sheet shows, 0..1 (set before Setup). 1 for the river; a
+	 *  brook a few metres wide is "fast" by the river's rule along its whole length and would be all foam. */
+	float FoamScale = 1.f;
+
 	/** The centre line, world cm (X, Y, water surface Z) and W = the sheet's half width in cm; downstream order. Builds
 	 *  the sheet (once: a second call does nothing). */
 	void Setup(const TArray<FVector4>& InSamples);

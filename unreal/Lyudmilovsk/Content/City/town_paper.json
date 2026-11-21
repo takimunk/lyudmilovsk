@@ -557,6 +557,11 @@
  ],
  "birthdays": [
   {
+   "who": "t_abdullina_raisa",
+   "md": "02-27",
+   "born": 1958
+  },
+  {
    "who": "t_abenov_caio",
    "md": "12-26",
    "born": 1988
@@ -875,6 +880,11 @@
    "who": "t_bekele_wei",
    "md": "02-16",
    "born": 1951
+  },
+  {
+   "who": "t_beketov_yuri",
+   "md": "03-25",
+   "born": 1960
   },
   {
    "who": "t_belousov_alejandro",
@@ -2467,6 +2477,16 @@
    "born": 1947
   },
   {
+   "who": "t_kovalchuk_asya",
+   "md": "10-30",
+   "born": 2013
+  },
+  {
+   "who": "t_kovalchuk_lidia",
+   "md": "03-18",
+   "born": 1966
+  },
+  {
    "who": "t_kovalenko_arturs",
    "md": "03-22",
    "born": 1996
@@ -2565,6 +2585,11 @@
    "who": "t_krause_yasmin",
    "md": "07-22",
    "born": 2019
+  },
+  {
+   "who": "t_krylova_zinaida",
+   "md": "10-22",
+   "born": 1954
   },
   {
    "who": "t_laaksonen_francesca",
@@ -2670,6 +2695,16 @@
    "who": "t_levi_eero",
    "md": "05-15",
    "born": 2001
+  },
+  {
+   "who": "t_levin_arkady",
+   "md": "04-14",
+   "born": 1952
+  },
+  {
+   "who": "t_levina_tamara",
+   "md": "08-07",
+   "born": 1956
   },
   {
    "who": "t_liepa_klaus",
@@ -2890,6 +2925,11 @@
    "who": "t_mansour_soren",
    "md": "01-17",
    "born": 1992
+  },
+  {
+   "who": "t_matsumoto_haruo",
+   "md": "09-15",
+   "born": 1957
   },
   {
    "who": "t_mcmartin_pyotr",
