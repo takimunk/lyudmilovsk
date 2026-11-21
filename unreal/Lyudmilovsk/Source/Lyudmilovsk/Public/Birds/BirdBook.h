@@ -22,6 +22,19 @@ struct FLyudBirdSeen
 	UPROPERTY(SaveGame) uint8 Sexes = 0;
 };
 
+/** A signature behaviour of a species the hero has watched (docs/bird_habits.md): the book's "Habits" lines. */
+USTRUCT()
+struct FLyudBirdHabitSeen
+{
+	GENERATED_BODY()
+
+	/** The habit's name (wagtail_dash): its line is bird.habit.<name>. */
+	UPROPERTY(SaveGame) FName Habit;
+	UPROPERTY(SaveGame) FName Species;
+	UPROPERTY(SaveGame) FDateTime When;
+	UPROPERTY(SaveGame) FName Place;
+};
+
 /** One bird (bird life's id) that ate from the hero's hand: it knows him and comes when called from the diary. */
 USTRUCT()
 struct FLyudBirdFriend
@@ -62,6 +75,8 @@ public:
 
 	UPROPERTY(SaveGame) TArray<FLyudBirdSeen> Seen;
 	UPROPERTY(SaveGame) TArray<FLyudBirdFriend> Friends;
+	/** The habits he has watched, in the order he saw them. */
+	UPROPERTY(SaveGame) TArray<FLyudBirdHabitSeen> Habits;
 
 	/** A new game: an empty book. */
 	void Reset();
@@ -70,6 +85,20 @@ public:
 	bool NoteSeen(const UObject* WorldContext, FName Species, bool bFemale, FName How, const FVector& Where);
 	/** Bird BirdId ate from the hand (or came to it when called): a friend from now on. True if it is a new friend. */
 	bool NoteTamed(const UObject* WorldContext, int32 BirdId, FName Species, bool bFemale, const FVector& Where);
+
+	/**
+	 * He watched a bird of Species at one of its habits at Where (cm): a line on its page with the day, a note in the journal,
+	 * quests hear "bird_habit <habit>", and when every habit of every species of its family is in the book, the family's
+	 * stamp (bird_habits/<family>). The species is met by it too. False if the habit was in the book already.
+	 */
+	bool NoteHabit(const UObject* WorldContext, FName Species, FName Habit, const FVector& Where);
+	const FLyudBirdHabitSeen* FindHabit(FName Habit) const;
+	/** The habits a species has (their names, the table's order): the lines of its page, seen or not. */
+	static TArray<FName> HabitsOfSpecies(FName Species);
+	/** The stamp family of a species (crows, wings, water, garden, singers, raptors). */
+	static FName FamilyOfSpecies(FName Species);
+	/** Habits seen and habits there are in a family. */
+	void FamilyCount(FName Family, int32& OutSeen, int32& OutAll) const;
 
 	const FLyudBirdSeen* FindSeen(FName Species) const;
 	const FLyudBirdFriend* FindFriend(int32 BirdId) const;

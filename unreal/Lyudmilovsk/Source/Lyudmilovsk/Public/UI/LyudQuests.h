@@ -24,6 +24,9 @@
  *   bird_tamed <Species>       a bird ate from the palm (ULyudBirdBook), bird_seen <Species> the first sight of one
  *   bird_call <Species>.<Npc>  the hero, as a bird of that species, sat down near somebody who listens for birds and called
  *                              (F; quest_scenes.json "listeners", ULyudQuestDirector)
+ *   film_watched <film id>     a film at the cinema watched to its end (ULyudCinema)
+ *   kite_flown                 the hero's kite stayed up for twenty seconds (ULyudKiteFlying)
+ * Every event also goes to the diary's day (ULyudDayLog, docs/diary.md "Days").
  * An objective's event may list alternatives ("leave_computer|walk"). An event a later stage waits for finishes the stages before
  * it (a teleport, a load, steps done out of order never leave a quest stuck on an old step); a talk never does (a quest may
  * send the hero back to the one who gave it).

@@ -71,6 +71,9 @@ namespace LyudPeople
 		Dig,            // a spade worked into the bed (FMannerDef::Prop spade)
 		Water,          // the watering can over the bed (prop watering_can)
 		Weed,           // bent over the bed, a hand pulling weeds
+		// the night state of the public rooms (docs/city_night.md, backlog item 29)
+		Mop,            // the cleaner's mop swept side to side over the floor (prop mop; the bucket stands by them)
+		Torch,          // the night watchman's torch held out ahead, its beam swung over the dark floor (prop torch)
 		Num
 	};
 	const char* MannerName(EManner M);
@@ -81,7 +84,7 @@ namespace LyudPeople
 	enum class EProp : uint8_t
 	{
 		None, Phone, Cigarette, Camera, Umbrella, Rod, Brush, Binoculars, Newspaper, Book, Knitting, IceCream, Cup, Bag,
-		Spade, WateringCan, Num
+		Spade, WateringCan, Mop, Torch, Suitcase, Num
 	};
 	const char* PropName(EProp P);
 	EProp PropFromName(const std::string& S);       // Num if unknown

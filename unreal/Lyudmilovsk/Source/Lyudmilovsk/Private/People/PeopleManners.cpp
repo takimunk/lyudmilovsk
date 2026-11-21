@@ -13,9 +13,9 @@ namespace LyudPeople
 			"check_watch", "look_sky", "shade_eyes", "rub_hands", "hug_self", "wave", "nod", "point", "clap", "sway", "doze",
 			"cover_head", "phone_call", "phone_scroll", "smoke", "photo", "feed_birds", "umbrella", "fish", "paint", "binoculars",
 			"newspaper", "book", "knit", "ice_cream", "drink", "carry_bag", "point_sky", "skip_stone", "dominoes", "piano", "dig",
-			"water", "weed" };
+			"water", "weed", "mop", "torch" };
 		const char* PropNames[(int)EProp::Num] = { "none", "phone", "cigarette", "camera", "umbrella", "rod", "brush", "binoculars",
-			"newspaper", "book", "knitting", "ice_cream", "cup", "bag", "spade", "watering_can" };
+			"newspaper", "book", "knitting", "ice_cream", "cup", "bag", "spade", "watering_can", "mop", "torch", "suitcase" };
 		const char* HabitNames[] = { "smoker", "phone", "reader", "feeder", "photographer", "knitter", "umbrella", "sweet", "dozer",
 			"hands_back" };
 		constexpr int NumHabits = (int)(sizeof(HabitNames) / sizeof(HabitNames[0]));

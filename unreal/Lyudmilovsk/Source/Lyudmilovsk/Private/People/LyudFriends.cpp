@@ -1295,6 +1295,28 @@ void ULyudFriends::TickMode(APlayerController* PC, float DeltaTime)
 
 // --- the diary -------------------------------------------------------------------------------------------------------------
 
+void ULyudFriends::FriendKeys(int32 MinLevel, TArray<FString>& Out) const
+{
+	Out.Reset();
+	if (!bLoaded || !Model)
+	{
+		return;
+	}
+	TArray<TPair<int32, FString>> Order;
+	for (const auto& KV : Model->Bonds)
+	{
+		if (Model->Level(KV.first) >= MinLevel)
+		{
+			Order.Add({ KV.second.Points, Str(KV.first) });
+		}
+	}
+	Order.Sort([](const TPair<int32, FString>& A, const TPair<int32, FString>& B) { return A.Key > B.Key; });
+	for (const TPair<int32, FString>& O : Order)
+	{
+		Out.Add(O.Value);
+	}
+}
+
 void ULyudFriends::DiaryFriends(TArray<FDiaryFriend>& Out) const
 {
 	Out.Reset();

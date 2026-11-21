@@ -311,6 +311,84 @@ machine:
   by `tools/lobby_strings.py`): water, coffee, tea, chips, chocolate, biscuits, ice cream, pie, seeds, candy, two magazines, a paper,
   a postcard, a badge, an amber pendant. New item: see the `game-items` skill; to sell it add it to a stock in `lobby.json`.
 
+## Halls v3: a real station hall (2026-11-20)
+
+The front-door layer on top of the halls (the buffet's line and the regulars' usual, the punch and travel card on every desk, Aton's
+departures board and lost and found, the dusk lamps with the club's sign) is in [front_door.md](front_door.md).
+
+Dima: "inside the stations it is crude, dark and empty; there is a cafe and nobody to buy from". Each hall is a ring 1.5..2.8 m
+wide round the tower's core (the lift and the stair come up through the railed opening in its middle), so v3 dresses that
+ring like a real station hall with the town's interior kit (`blender/city/interior_kit.py`, CT_* materials, the picture atlas):
+
+- `blender/transport/halls.py` (pip's bpy in the cloud, or Blender): per vestibule style, from `vestibules.json` and, when the
+  vestibule GLBs are at hand (`HALL_VEST=<dir>`; the vestibules.py export), rays at the room's wall (solid / window / door).
+  The exit side stays a clear concourse; the attendant's desk at the old kiosk spot; on the other three sides of the core a
+  **buffet** (counter with a samovar, cups, a till, shelves and the menu behind, the BUFFET sign hung over, two lamps; at
+  Aton the existing coffee bar is the buffet), a **waiting corner** (rows of seats along the wall and one with its back to
+  the railing, a rug, a clock, planters) and a **cafe corner** (round tables with chairs, newspapers, a magazine rack, a
+  stand-up table by the railing); a wooden wainscot with a brass rail along every solid stretch of wall, posters and mosaic
+  panels between the windows, a stone border round the stairwell, a dark band along the wall, a wooden cove with a glowing
+  underside round the opening (low halls), pendants over every corner and round the stairwell. The vending machine, the
+  signature piece and the route diagram keep their places and are kept clear.
+- Writes `blender/export/city/tr_hall__<style>.glb` (built per checkout, not committed: import like a town building,
+  `TYPES=tr_hall__wing,... STEPS=import unreal/scripts/import_city.sh` -> `/Game/City/Buildings/tr_hall__<style>/`), the
+  committed `Content/Transport/halls.json` (lamps, planters, staff, seats, stands, counter, models) and previews
+  `renders/transport/halls/<style>_<n>.jpg` with the vestibule.
+- Game: `ALyudStationHall` (`LyudStationHall.cpp`), spawned by `FurnishVestibule` when the hall's dressing is imported (else
+  the old furniture stays): the dressing and its hidden collision cores, the lamps (lumens, shadowless, on only within 45 m),
+  live plants in the planters, and people only within 35 m: the barista and the station attendant 6:00..24:00, passengers by
+  the hour (rush hours up to 9, at night 0..1) seated (some reading, eating at the tables) or standing at the railing, the
+  windows, the diagram, the counter; one now and then leaves and another comes, never in sight. Bodies are townsfolk who are
+  "away" (never met in town), each with its pool model as fallback. T at the barista: the buffet (`lobby.json` stock
+  `buffet`, title `ui.shop.title_station_buffet`); E at the attendant: the route diagram; both greet once a visit
+  (`line.transport.barista|attendant.*`). The old kiosk box, bench box and the grid of room lights are off in a v3 hall.
+- Console: `Transport.Hall [station]`, `lyud.Transport.HallPeople 0|1`.
+
+## Station life: the stations by the town's day (2026-11-21, backlog item 41)
+
+The cable car carries the town: the same faces ride at the same hours, the halls have their own staff on a rota, and a
+gale stops the line.
+
+- `tools/station_life.py` -> `Content/Transport/station_life.json` (committed; rerun after the town or the network change).
+  From `townsfolk.json` (homes, jobs, tempers), `town_places.json` and `network.json`:
+  - **staff**: per hall an attendant (5:30..14:45, 14:30..24:00) and a barista (6:15..14:45, 14:30..23:45), two people a
+    shift on a rota that covers every day (Mon-Fri / Sat-Wed), chosen among the townsfolk who work out of town, nearest
+    their station first. Their duty in `townsfolk.json` becomes `work_station` (activities.json: hidden from the town while
+    at work, holidays too) with `station`, `role`, `shift`; their sleep fits the shift; occupation
+    `station_attendant|station_barista` (roles in `Localization/town/strings_<lang>.json`). `town_life.py` calls
+    `station_life.apply()`, so a regenerated town keeps them.
+  - **researchers**: the out-of-town workers with a studious temper work at the Akademgorodok (`work_away` + `commute:
+    academ`, out 7:36..8:36, back 17:24..18:48 on weekdays).
+  - **riders**: everyone's trips where the ride suits them better than walking (the way x 1.3, the terraces' stairs 10 s/m
+    up, the ride at 6 m/s plus 2.5 min of lift and platform, 3.3 min to change at Zenith; a seeded liking for the ride, more
+    for the old and the children; nobody rides for a way under 7 min): out-of-town workers via Aton, the researchers, the
+    staff to the far halls, pupils to the school's stop, pensioners to the market on Saturday mornings, the beach on warm
+    days (`if: warm`, 60 % of those days), the cinema's last show (12 % of evenings), a festival's end (`if:
+    festival_end`, half of them). 301 riders, ~340 trips on a weekday (peak 8:00), ~125 on a warm Saturday.
+- `Private/Transport/StationLife.{h,cpp}` (plain C++, the game and transportsim alike): each trip starts in the `from`
+  hall (2..8 min there), then is a real trip of the network (`FNetwork::Travel`, rider ids from 200000), and ends with a
+  minute or two walking out of the `to` hall; the rota (`OnShift`); the halls open 5:45..24:00, no trip starts after
+  23:42, a trip the clock jumped past is missed. **The wind stop**: over 17 m/s (the weather's wind with its gusts) the line
+  stops (`FNetwork::bWindHold`: nothing leaves a station or the depot, the cabins on the rope stop at the next station and
+  stand open, calls wait), and goes again after 5 minutes under 12 m/s.
+- Game: `ULyudTransportSubsystem` owns it (`GetLife()`, `LifeHour()`: the day turns at 4:00), starts the day's trips
+  (a warm day: 20 C and dry at 13:00), feeds the wind, tells it a festival's end; the riders aboard cabins within 90 m get
+  bodies (their town model, `ShownModel`, else their pool mesh; the town doesn't draw them meanwhile,
+  `SetPresentedExternally`). `ALyudStationHall`: the attendant and the barista on shift now (their own faces; the next
+  shift takes over out of sight; no attendant: the hall is shut, nobody in it), the riders waiting in or walking out of it
+  in free places (seats, the counter while the buffet is open, standing by the railing, the windows, the diagram), a
+  passer-by or two besides; the attendant turns to a regular (8 trips a week or more) for a word once a day
+  (`line.transport.attendant.regular.*`); the waiting people talk now and then (`line.transport.wait.any|morning|evening|
+  wind|stopped.*`). In the player's cabin: the next station (as before), the view on each hop 20 s out
+  (`line.transport.view_<from>_<to>.1`), the wind stop and the going again (`wind_stop`, `wind_go`); text first, voices
+  are item 36's.
+- Tests: `tools/transportsim/run.sh town` (the rota every quarter hour of every day; a weekday, a warm festival Saturday and
+  a gale morning on the real network: nobody left unfinished or in a hall at closing, no departure during the stop, waits
+  under 15 min on a calm weekday), `python3 tools/station_life.py --check`, `tools/peoplesim/run.sh week`.
+- Not yet: the attendant's rounds with a broom (no clip), riders walking the town's way to the station (the town still
+  hides an out-of-town worker at its square; the station shows them from their home station), voices.
+- Console: `Transport.Hall [station]` (the hall's people and the day's life in one line).
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a

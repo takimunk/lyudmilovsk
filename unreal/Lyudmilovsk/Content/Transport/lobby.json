@@ -1,5 +1,5 @@
 {
- "_doc": "The station lobbies (docs/transport.md 'Lobbies'). stock: what a universal vending machine (AVendingMachine Preset) sells, slot by slot (keys 1-9; item = a row of the item table in LyudInventory.cpp, price 0 = the item's own, count units per purchase). layout: per vestibule style, which furniture record becomes which lobby piece (blender/transport/lobby_layout.py rewrites vestibules.json 'furniture', and gives the hall its 'lobby' centre piece).",
+ "_doc": "The station lobbies (docs/transport.md 'Lobbies'). stock: what a universal vending machine (AVendingMachine Preset) sells, slot by slot (keys 1-9; item = a row of the item table in LyudInventory.cpp, price 0 = the item's own, count units per purchase). layout: per vestibule style, which furniture record becomes which lobby piece (blender/transport/lobby_layout.py rewrites vestibules.json 'furniture', and gives the hall its 'lobby' centre piece). buffet: what the station halls' baristas sell over the counter (halls v3, ALyudStationHall).",
  "stock": {
   "drinks": [
    {
@@ -153,6 +153,44 @@
    {
     "item": "lighter",
     "price": 12
+   }
+  ],
+  "buffet": [
+   {
+    "item": "coffee",
+    "price": 30
+   },
+   {
+    "item": "tea",
+    "price": 15
+   },
+   {
+    "item": "pie",
+    "price": 18
+   },
+   {
+    "item": "cookies",
+    "price": 20
+   },
+   {
+    "item": "chocolate",
+    "price": 25
+   },
+   {
+    "item": "candy",
+    "price": 8
+   },
+   {
+    "item": "water",
+    "price": 20
+   },
+   {
+    "item": "drink_baikal",
+    "price": 25
+   },
+   {
+    "item": "ice_cream",
+    "price": 30
    }
   ]
  },

@@ -51,6 +51,9 @@ struct LYUDMILOVSK_API FBirdLifeInfo
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBirdLifeEvent, int32, BirdId);
 /** Something at a nest: BuildStart, Material, Lay, Hatch, Feed, Fledge, Fail, Alarm, Dive, Song, Beg (docs/bird_nests.md). */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FBirdNestEvent, int32, NestId, FName, What);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FBirdVoiceEvent, int32, BirdId, FName, Voice);
+/** A species' signature behaviour (docs/bird_habits.md): Habit is its name (wagtail_dash), What is start, beat or end. */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FBirdHabitEvent, int32, BirdId, FName, Habit, FName, What);
 
 /** A cat or dog the birds watch out for (the animal life's, docs/animals.md). */
 USTRUCT(BlueprintType)
@@ -186,6 +189,35 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdLifeEvent OnBirdWatch;
 	/** A call (contact, alarm, song); the species' sound plays at the bird when there is one. */
 	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdLifeEvent OnBirdCall;
+	/** The same call with what it means (docs/bird_voices.md): contact, song, alarm, beg, chatter, long_call. */
+	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdVoiceEvent OnBirdVoice;
+	/** What a species near the player last said, if it was no longer than MaxAge seconds ago (the bird guide's "Voice" line). */
+	bool LastVoiceOf(FName Species, FName& OutVoice, float MaxAge = 12.f) const;
+	/** Developer mode: the nearest perched bird that scolds gives the alarm as if a cat sat under it (its neighbours take it up).
+	 *  False when there is no such bird within 60 m. Console: lyud.Birds.Alarm. */
+	bool DevAlarm();
+
+	/** A bird near the player started, is in the middle of (a beat: a strike, a toss, a knock) or ended one of its species'
+	 *  signature behaviours (docs/bird_habits.md). */
+	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdHabitEvent OnBirdHabit;
+	/** The habit a bird is in now (its name, wagtail_dash); none when it is in none. */
+	UFUNCTION(BlueprintPure, Category = "Birds")
+	FName HabitOf(int32 Id) const;
+	/** Fresh water swallows dip to (the brook's pools, a fountain; world cm). Replaces the last list. */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	void SetHabitWaters(const TArray<FVector>& Waters);
+	/** Food in the open a herring gull may snatch (a snack on a bench, a fisherman's catch; world cm): the snatch comes as
+	 *  OnBirdHabit(gull, gull_snatch, beat) and the morsel is taken off the list (LastSnatched tells which). */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	void AddMorsel(int32 MorselId, FVector Location, bool bFish);
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	void ClearMorsels();
+	/** The morsel the last gull_snatch beat took (-1 none yet). */
+	UFUNCTION(BlueprintPure, Category = "Birds")
+	int32 LastSnatched() const { return LastSnatchedMorsel; }
+	/** Developer mode: the nearest bird that can starts a habit of its species now (the hour, season, weather and the day's
+	 *  budget don't count); Habit none = any. False when no bird within 80 m can. Console: lyud.Birds.Habit [name]. */
+	bool DevHabit(FName Habit = NAME_None);
 	/** It is coming to the food in the hand. */
 	UPROPERTY(BlueprintAssignable, Category = "Birds") FBirdLifeEvent OnBirdApproach;
 	/** First peck on the palm. */
@@ -278,6 +310,13 @@ private:
 	int32 SoundsThisSecond = 0;
 	int32 CallsPlayed = 0;
 	double SoundSecond = 0.0;
+	/** Per species: the last voice heard near the player and when (world seconds). */
+	TMap<FName, TPair<FName, double>> LastVoice;
+	float WeatherTimer = 0.f;
+	/** Habits being watched: bird id -> seconds the hero has had it in view (WatchHabits). */
+	TMap<int32, float> HabitWatch;
+	float HabitWatchTimer = 0.f;
+	int32 LastSnatchedMorsel = -1;
 
 	bool Start();
 	bool StartEmpty(float GroundZ);
@@ -288,7 +327,9 @@ private:
 	void UpdateClock();
 	void UpdatePlayer(float DeltaTime);
 	void DispatchEvents();
-	void PlayCall(int32 Id);
+	/** The hero looking at a bird in a habit (close by, or through the binoculars) writes it in the bird book. */
+	void WatchHabits(float DeltaTime);
+	void PlayCall(int32 Id, uint8 Voice);
 	void SyncTrust(bool bToSave);
 };
 

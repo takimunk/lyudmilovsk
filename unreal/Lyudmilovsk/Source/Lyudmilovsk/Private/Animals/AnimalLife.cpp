@@ -917,6 +917,10 @@ void AAnimalLifeRenderer::Draw(const FWorld& World, const FVector& Camera)
 	TArray<TPair<float, int32>> Want;
 	for (const FAnimal& A : World.Animals)
 	{
+		if (A.Pet == EPet::Indoors)
+		{
+			continue;       // somebody's pet behind its door (AnimalPetsSim.cpp)
+		}
 		const float D = (float)FVector::Dist(ToUE(World.RenderPos(A)), Camera);
 		const float Lim = A.Kind == EKind::Cat ? CatDist : CatDist * 1.6f;
 		if (D < Lim)
@@ -1002,6 +1006,7 @@ void AAnimalLifeRenderer::Draw(const FWorld& World, const FVector& Camera)
 			else
 			{
 				Body->Size = A.Size;
+				Body->ResetPlace();
 				Body->SetActorTransform(At);
 				if (Body->Coat != A.Coat)
 				{
@@ -1052,7 +1057,7 @@ void AAnimalLifeRenderer::Drive(AAnimalActor* Body, const FWorld& World, int32 I
 			Pitch += 3.f * Ease;
 		}
 	}
-	Body->SetActorLocationAndRotation(At, FRotator(-Pitch, FMath::RadiansToDegrees(A.Yaw), Roll));
+	Body->Place(At, FMath::RadiansToDegrees(A.Yaw), -Pitch, Roll, A.Tier >= 2);
 	Body->SetActivity((EAnimalActivity)(uint8)A.Act, A.Speed * 100.f);
 	if (A.bLook)
 	{

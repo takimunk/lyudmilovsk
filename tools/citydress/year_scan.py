@@ -36,7 +36,7 @@ def scan(path):
     for day in range(0, 365, 1):
         date = START + datetime.timedelta(days=day)
         fests = {"new_year"} if (date.month, date.day) in ((12, 31), (1, 1)) else set()
-        for hour in (6.25, 8.75, 10.25, 12.5, 15.25, 18.5, 21.25, 23.5):
+        for hour in (6.25, 7.5, 8.75, 10.25, 12.5, 15.25, 18.5, 21.25, 23.5):     # 7.5: the cleaners before opening
             wx = WEATHERS[(day * 3 + int(hour)) % len(WEATHERS)]
             now = {"since": day, "day": 20381 + day, "hour": hour, "weekday": date.weekday(), "month": date.month,
                    "weather": wx, "festivals": fests, "festival_today": bool(fests),

@@ -74,6 +74,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Sound") void SetUmbrella(float Amount);
 	/** Windows near the player indoors 0..1 (rain ticks on the glass; a place that knows it has them calls this). */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void SetNearWindows(float Amount);
+	/** An open window in the room the listener is in 0..1 (ULyudCityThings: how wide): part of the open air comes in (the
+	 *  wind, the sea, the rain, the birds less muffled, the room tone quieter), never so much that the room counts as outdoors. */
+	UFUNCTION(BlueprintCallable, Category = "Sound") void SetOpenAir(float Amount);
 	/** No air around the listener (Europa, ULyudEuropaSubsystem): the bed, the far sounds, the steps and the music
 	 *  go quiet; what is heard there its own system plays. */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void SetVacuum(bool bOn) { bVacuum = bOn; }
@@ -124,7 +127,7 @@ private:
 	float SurfHeight = 0.f, SurfPeriod = 6.f;
 	float Roof = 0.f;
 	// the weather's own voices: the umbrella and windows hooks, the air's cooling, the lighthouse, the feet
-	float Umbrella = 0.f, NearWindows = 0.f;
+	float Umbrella = 0.f, NearWindows = 0.f, OpenAir = 0.f;
 	double LastWeatherHours = -1e9;
 	float LastWeatherTemp = 0.f, TempRate = 0.f;
 	bool bLighthouseLooked = false, bHaveLighthouse = false;

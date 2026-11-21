@@ -47,6 +47,12 @@ really works there.
   face (`city_plan.W1_RAMP_START`, `W1_RAMP`), and W1's block is 9.5 m deep (`W1_DEPTH`) so the step stays hidden.
 * `tools/city_mesh.py` leaves a unit's doorway open (no door panel, a concrete threshold, the plinth cut) and keeps the
   shop window's glass (`W1-Uxx-w1`, lit by `ALyudCityWindows`); from inside, the window hole looks out through it.
+* Shop windows: the glass is see-through (`city_mesh.ALPHA`: `City_ShopGlass` at 0.22, written by `world_mesh.py` as glTF
+  `alphaMode: BLEND`; take the entry out for the old opaque card), so from the promenade one looks into the real room,
+  lit by its own pendant while the unit is open. From far the lit pane of `ALyudCityWindows` still covers it (one instance,
+  no room to draw); within `lyud.CityWindows.RoomDistance` (45 m, 6 m of slack, 0 = never) of the viewer the pane is put
+  away. Checked with the windows every 2 s, never per frame. Not yet seen in the engine: if Interchange's translucent
+  glTF material sorts badly against the room, set the alpha to 1 and the distance to 0 and it is as before.
 * `unreal/scripts/import_city.py place` puts an `ALyudCityBuilding` per unit (`place_units`: at `front`, yaw like a plot,
   tags City/NoGrass/NoTree/Roof, lamp hours from the unit's staff, no door actor).
 * Each dressing declares its things with stable ids, the same in every unit of a trade (`cafe_bar`, `fish_counter`,
@@ -200,11 +206,12 @@ An act is what happens when the hero presses E at a thing:
 | `event`/`target` | reported to the quests: always `do` + the act id |
 | `daily` | how many times a day it gives its reward (0: no limit) |
 | `shop` | opens the trade screen with this stock of `shops` when `needs_staff` is on shift |
-| `screen` | a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
+| `screen` | `scope`, `scope_coin`, `scope_sun`: a telescope, the act opens the eyepiece (docs/telescopes.md; its line is the caption, its minutes do not pass, it is never watched from a seat). Otherwise a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
 | `open` | another system's screen opens instead of the act's page (`ULyudCityThings::OnOpen(screen, thing)`; one of `OPEN_SCREENS` in `interiors.py`): `books` (the library's classics, `ULyudBookScreen`), `photo_lab` (the photo studio takes films in and gives prints out), `photo_darkroom` (the hero develops his own film), `photo_contest` (the photo club's monthly contest at its table: hand a print in, hear the result) and `photo_wall` (the wall of the contest's winners; all four `Private/Photo/LyudPhoto.cpp`, docs/photo.md). The act still takes its price, gives its items, plays its sound and reports its event; its line is taken but not shown, its `minutes` do not pass, and a counter's staff talk is not offered |
 | `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
 | `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
+| `proc` | a procedure: a short hands-on scene (pick, pour, sip on the clock, breathe with a ring, tap, cuts, the doctor's numbers, a guest's word) played first, the act running when it is over with the result's words on top (docs/sanatorium_procedures.md); not with `game` |
 | `read` | `{"texts": ["<text id>", ...], "rotate": "use"|"daily"}`: the reading view opens one of these texts instead of the lines (in turn at each use, or one a game day); only on a `shelf`, `board`, `seat` or `take` (see "The reading page") |
 | `sleep` | `true` (with `pose: lie`): the hero chooses the hour he wakes at instead of the act's `minutes`/`until` (which give the first hour offered; see "Sitting and lying") |
 | `stay` | `{"id": "<stay>", "days": 1..60}`: running it puts the hero on that stay for so many days (added to the days left of one he is on): a sanatorium's voucher (see "Stays") |
@@ -258,6 +265,24 @@ save: the day). The game (`ULyudCityThings::PayCollections`, after every stamp's
 once after a save is loaded, so a set completed before rewards existed pays then) gives the item or roubles, says
 `city.coll.reward.toast`, writes the diary's entry `city.coll.reward.diary` and sends the quest event `collection <set>`.
 `lyud.City.Collections clear <set>` forgets the payment with the stamps.
+
+### The rental's beach set
+
+Backlog item 35. The rental units (`promenade_unit:rental`, W1-U03, U15, U27) hire things out, each a one-day stay
+(`tools/city/content/x_rental.json`, words in `strings/x_rental.json`):
+
+* **A deck chair and a parasol** at the key board (`rental_keys`, act `pu_rental_keys`: 15 roubles, once a day, the
+  attendant must be in; stay `beach_set`). `ULyudBeachHire` (`Source/.../City/LyudBeachHire.*`) then offers, on the beach
+  (within 30 m of a `beach` seat of the public spaces, on its level), `city.rental.set.prompt`: E stands the kit's lounger
+  and umbrella where the hero is (one transient actor, no collision, out of Lumen, nothing per frame beyond the prompt's
+  check), E by it sits him in the chair, E from further off moves it. Seated for 25 s between 9 and 19 on a clear day: a
+  sunbath (toast, diary note, event `do sunbathe`), once a day. The set is gone when the stay ends (`city.rental.taken_back`).
+  Console `lyud.Beach.Hire [days]`, `lyud.Beach.Set`, `lyud.Beach.Sit`; dev action `interiors.beach_set`.
+* **The rowing boat** at the oars on the back wall (`rental_oars`, act `pu_rental_boat`: 25 roubles against the mooring's
+  30; stay `boat_day`). `ALyudRowBoat::Board` at the mooring takes the day as paid and its prompt says board, not hire.
+* Bicycles are free to ride in the bikes' code, so the rental hires none; its bicycles stay on show.
+
+Checks: `tools/citysim/rentalchecks.h` (prices, once a day, the attendant away, the save, the words in three tables).
 
 **The diary's «Коллекции» pages** come after its «Люди» pages (`SLyudDiarySpread::CollectionsPage`, six sets a page): the
 count of complete sets, then every set with its `n of m`, a box for every piece (ticked when he has it), and its keepsake:
@@ -458,8 +483,45 @@ a text {"gen": "cup:<id>", "kind": "notice", "pages": [fallback]} read on some t
   (1.5 m under to 4 m over it) is lit, all go off, else all on, whatever the hours say (`ULyudWindowLights::SwitchLampsNear`:
   flags read by the lamp pool, no components, no windows). Back to the hours when the hero walks into another plot or starts
   over. `city.act.switch.on|off|none` on the prompt line.
-* No building declares either yet: the building modules add `B.thing(..., "board", topic="clock")` or
-  `B.thing(..., "machine", what="switch", switch="room")` by a door.
+* Most buildings declare them now (the building modules: `B.thing(..., "board", topic="clock")`,
+  `B.thing(..., "machine", what="switch", switch="room")` by a door, or `_homekit.switch(B, id, x, y, yaw, z=floor)`, which
+  draws the plate too).
+
+### Small things that answer a touch
+
+Backlog item 31: content `tools/city/content/x_touch.json` (+ `strings/x_touch.json`), helpers in
+`blender/city/buildings/_homekit.py` (each draws its piece and declares its thing):
+
+| Thing (`what`) | Helper | Act | What happens |
+|---|---|---|---|
+| `window`, `vent`, `balcony_door` | `window_latch(B, id, near, z=floor, what=..., room=test)`: the window card nearest `near`, a handle on the wall's inner face | `open_window` (0.5), `open_vent` (0.3), `open_balcony` (0.8) | opens, see below |
+| `mailbox` | `mailbox_thing(B, id, x, y, yaw, z, rows)` beside `mailboxes(...)` | `peek_mailbox` | a peek through the slots: the morning paper on weekdays, postcards on holidays, damp papers in the rain, flyers, a child's note |
+| `tap` | `tap_thing(B, id, x, y, yaw, z)` at a kitchen unit's sink module | `kitchen_tap` | lines by the weather (icy in the cold, a splash on a hot day) and the hour |
+| `switch` | `switch(B, id, x, y, yaw, z)` | `light_switch` | the room's lamps (above) |
+
+In 2026-11 they were added to the houses that had none: the twin cylinders (P-T1H3, P-T3H1: mailboxes, a switch either
+side of the studio doorway, the kitchenette's tap, a hexagon's vent), the origami row (P-T1H5: switches on both floors,
+the kitchen tap, the children's window), the pilotis slab (P-T4H1: mailboxes, switches in the lobby, the common room, the
+caretaker's room and Lev Markovich's flat, two taps, the flat's window) and the terrace risers (P-RISER1/2: the stair's
+mailboxes, the maisonette's switch, tap and window). The rest of the town already had its switches, clocks, radios (the
+station plays: docs/music.md), lifts (the unite block, the stacked beam tower, both capsule towers) and cats.
+
+After changing a module: `python3 blender/city/build_city.py -- <type> --no-render` (the json and the glb; works with
+pip's `bpy` in the cloud too), `python3 tools/city/interiors.py`, `python3 tools/city/reach_audit.py <type>`; on the Mac
+also `unreal/scripts/import_city.py` for the meshes.
+
+### Windows that open
+
+Any act with `"window": 0.1..1` (how wide: a vent 0.3, a casement 0.5, a balcony door 0.8) is a window that opens. E on a
+shut one runs the act as usual (a look-out act keeps its lines and minutes: `city.act.window_look.prompt`, «открыть окно и
+выглянуть») and opens it; E on an open one shuts it at once (the prompt says `city.act.window.shut_prompt`). The prompt
+line says how it feels by the weather and the hour (`city.window.<open|shut>.<rain|snow|fog|cold|warm|night|day>`,
+`FModel::WindowNote`), with the sound `rest_door`. While a window of this visit is open, the soundscape hears the widest one
+(`ULyudSoundscapeSubsystem::SetOpenAir`): its indoor/outdoor mix leans toward the outside by up to 0.35 (the wind, the
+sea, the rain and the birds come in less muffled, the room tone goes quieter), never far enough to change the music's mood.
+The windows shut behind him when he walks into another plot or starts over (`FModel::ShutWindows`, like the switches'
+lamps); not saved. The windows are not drawn open (no moving sash yet). Developer mode: `interiors.window_nearest`.
+Checked in citysim ("small things that answer a touch").
 
 ### Sitting and lying
 
@@ -568,6 +630,10 @@ A text with `gen` is set by the game each day (`ULyudTownPaper`, docs/town_paper
 notice boards (`look_lost`, `look_club`, `look_health`, `look_wallpaper` and the acts like them without lines of their own)
 read `notices_<board>` (`tools/city/content/x_notices.json`, written by `tools/paper/paper.py`): dated notices by the calendar.
 
+
+The course's procedures are played as scenes on the voucher (the pump room, inhalation, the mud bath, the Charcot shower,
+massage, the doctor's check, the evening waltz): docs/sanatorium_procedures.md.
+
 ### Lifts and storey links
 
 Upper rooms behind solid cores (the shopping street of the unite block at z ~24 m, its flat at ~19 m and roof at ~52 m,
@@ -600,7 +666,7 @@ back to) the ground floor's. Captions are the building's own string keys (`city.
 (`FFloor`, `FThing::Floors`/`bOneWay`, `IsLift`, `FindLiftTarget`, `LiftSpots`, `LiftFloorOk`, `LiftReturns`) is checked in
 citysim, with a real-data check that every stop has a way back. Console `lyud.City.Go <thing id>` (to any thing, as a lift
 would put him there); developer mode `interiors.lift_nearest` (the nearest lift door within reach of the list: its chooser,
-or at once). Now: no building declares a link yet (the building modules' doors).
+or at once). Declared by the unite block, the stacked beam tower, both capsule towers, the cube houses, the wave tower and the lifeguard towers (`lifts: 26 doors` in the interiors.py summary).
 
 ### Reach audit
 
@@ -829,7 +895,7 @@ the list (their ids play nothing from an act).
   nearest game of that type, from anywhere), `interiors.game_win` (win the game being played), `interiors.regulars` (the
   regulars' page; the log lists each one's style, skill, games, plots), `interiors.sit_nearest`, `interiors.lie_nearest`,
   `interiors.read_nearest`, `interiors.read_all` (toggle), `interiors.read_list`, `interiors.topics`, `interiors.topics_reset`,
-  `interiors.ask_nearest`, `interiors.tone`, `interiors.lift_nearest`. Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
+  `interiors.ask_nearest`, `interiors.tone`, `interiors.lift_nearest`, `interiors.window_nearest`. Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
   that makes its first objective (`city.q.<quest>.<n>`), the clock an hour after it opens, `lyud.City.Weekday` to a day it is
   open, `Inventory.Earn` for its price, the items a later stage only checks; a stage's own `dev` in
   `tools/city/content/quests.json` wins key by key.

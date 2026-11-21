@@ -70,9 +70,12 @@ PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer", "ask",
                "round_start", "round_done", "photo")  # round_*: the bicycle rounds (ULyudRounds, docs/rounds.md); photo: the film camera
 # (photo <map place | maru | resident key>: a sharp developed frame taken there, or of the dog, or of that resident)
+# the telescopes' own quest event (ULyudTelescope, docs/telescopes.md): observe <sight> | jupiter_night
+QUEST_EVENTS += ("observe",)
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
-              "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
+              "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open",
+              "window", "proc")
 # screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics, the
 # photo studio's counter service, the darkroom where the hero develops his own film, the photo club's monthly contest (its
 # table: hand a print in, hear the result) and the wall of its winners (Private/Photo/LyudPhoto.cpp, docs/photo.md)
@@ -759,6 +762,119 @@ def opponents_at(regs, vs, plot):
     return here or [rid for rid, r in regs.items() if vs in r["plays"]]
 
 
+# procedures (docs/sanatorium_procedures.md): an act's "proc" is played as a short hands-on scene before the act runs
+PROC_STEPS = ("say", "pick", "pour", "sip", "breathe", "tap", "cut", "measure", "guest", "news")
+PROC_FIELDS = ("id", "title", "keys", "when", "steps", "good", "fair", "poor", "good_share", "fair_share", "collect", "vitals")
+PROC_STEP_FIELDS = ("do", "lines", "guests", "by_pick", "secs", "count", "every", "window", "in", "out", "mark", "minutes")
+PROC_RANGES = {"secs": (0.5, 60), "count": (1, 24), "every": (0.4, 4.0), "window": (0.05, 1.8), "in": (1.0, 10.0), "out": (1.0, 12.0),
+               "minutes": (0, 120)}
+# hands-on steps (the scene's result is the share of them done well)
+PROC_SCORED = ("pour", "sip", "breathe", "tap")
+
+
+def build_proc(where, pr, strings):
+    """An act's "proc" as the game reads it (CityThingsModel FProcDef), or None (an error is recorded)."""
+    if not isinstance(pr, dict):
+        err("%s: proc must be an object" % where)
+        return None
+    for k in pr:
+        if k not in PROC_FIELDS:
+            err("%s: proc: unknown field %s" % (where, k))
+    out = {"title": pr.get("title") or "city.proc.title", "keys": pr.get("keys", "")}
+    if pr.get("id"):
+        out["id"] = pr["id"]
+    for key in [out["title"]] + ([out["keys"]] if out["keys"] else []):
+        if not has_string(key, strings):
+            err("%s: proc string %s is missing" % (where, key))
+    if pr.get("when"):
+        if not isinstance(pr["when"], dict):
+            err("%s: proc when must be line conditions {\"h\": ..., \"festival\": ...}" % where)
+        else:
+            check_line_conds(where + " proc when", pr["when"])
+            out["when"] = dict({"k": "when"}, **pr["when"])
+    for k, dv in (("good_share", 0.7), ("fair_share", 0.35)):
+        v = pr.get(k, dv)
+        if isinstance(v, bool) or not isinstance(v, (int, float)) or not 0 <= v <= 1:
+            err("%s: proc %s must be 0..1" % (where, k))
+            v = dv
+        out[k] = float(v)
+    if out["fair_share"] > out["good_share"]:
+        err("%s: proc fair_share is over good_share" % where)
+    steps = []
+    scored = 0
+    for i, st in enumerate(pr.get("steps") or []):
+        w = "%s proc step %d" % (where, i + 1)
+        if not isinstance(st, dict) or st.get("do") not in PROC_STEPS:
+            err("%s: a step is {\"do\": one of %s, ...}" % (w, ", ".join(PROC_STEPS)))
+            continue
+        for k in st:
+            if k not in PROC_STEP_FIELDS:
+                err("%s: unknown field %s" % (w, k))
+        o = {"do": st["do"]}
+        lines = expand_lines(st.get("lines") or [], strings, w)
+        for l in lines:
+            if not has_string(line_key(l), strings):
+                err("%s: line %s is missing" % (w, line_key(l)))
+        if lines:
+            o["lines"] = lines
+        if st["do"] in ("say", "cut", "measure", "pick") and not lines:
+            err("%s: a %s step needs lines" % (w, st["do"]))
+        if st["do"] == "pick" and len(lines) < 3:
+            err("%s: a pick needs a prompt and two or three options (lines)" % w)
+        if st["do"] == "guest":
+            g = st.get("guests")
+            if not isinstance(g, dict) or "" not in g:
+                err("%s: a guest step needs \"guests\": {\"<guest key>\": lines, \"\": lines for anyone ({0} the name)}" % w)
+                g = {}
+            o["guests"] = {}
+            for gk, gl in g.items():
+                gl2 = expand_lines(gl, strings, w + " guest " + gk)
+                for l in gl2:
+                    if not has_string(line_key(l), strings):
+                        err("%s: guest line %s is missing" % (w, line_key(l)))
+                o["guests"][gk] = gl2
+        if st.get("by_pick"):
+            o["by_pick"] = True
+        for k, (lo, hi) in PROC_RANGES.items():
+            if k in st:
+                v = st[k]
+                if isinstance(v, bool) or not isinstance(v, (int, float)) or not lo <= v <= hi:
+                    err("%s: %s must be %s..%s" % (w, k, lo, hi))
+                    continue
+                o[k] = int(v) if k in ("count", "minutes") else float(v)
+        if "mark" in st:
+            m = st["mark"]
+            if not (isinstance(m, list) and len(m) == 2 and all(isinstance(x, (int, float)) for x in m) and 0.2 <= m[0] < m[1] <= 0.98):
+                err("%s: mark must be [low, high] of the cup, 0.2..0.98" % w)
+            else:
+                o["mark"] = [float(m[0]), float(m[1])]
+        if st["do"] == "sip" and o.get("window", 0.3) > o.get("every", 1.0) * 0.45:
+            err("%s: the sip window must be under half the tick" % w)
+        scored += st["do"] in PROC_SCORED
+        steps.append(o)
+    if not steps:
+        err("%s: proc needs steps" % where)
+        return None
+    out["steps"] = steps
+    for res in ("good", "fair", "poor"):
+        lines = expand_lines(pr.get(res) or [], strings, "%s proc %s" % (where, res))
+        if not lines and (res == "fair" or scored):
+            err("%s: proc needs %s lines" % (where, res))
+        for l in lines:
+            if not has_string(line_key(l), strings):
+                err("%s: proc %s line %s is missing" % (where, res, line_key(l)))
+            if isinstance(l, dict) and l.get("collect"):
+                STAMPS_USED.append(("%s proc %s line %s" % (where, res, l["k"]), l["collect"]))
+        out[res] = lines
+    out["collect"] = pr.get("collect", "")
+    if out["collect"]:
+        check_line_conds(where + " proc", {"collect": out["collect"]})
+        STAMPS_USED.append((where + " proc", out["collect"]))
+    if pr.get("vitals"):
+        out["vitals"] = True
+    return out
+
+
 def build_acts(acts_src, shops, strings, items):
     """Every act with all its fields (inheriting from `like`), plus buy_<shop> for every shop and take_any."""
     src = dict(acts_src)
@@ -812,6 +928,12 @@ def build_acts(acts_src, shops, strings, items):
             g = build_game("act " + aid, a["game"], strings, items)
             if g:
                 act["game"] = g
+        if a.get("proc"):
+            if a.get("game"):
+                err("act %s: an act has a game or a proc, not both" % aid)
+            pr = build_proc("act " + aid, a["proc"], strings)
+            if pr:
+                act["proc"] = pr
         if a.get("read"):
             r = a["read"]
             texts = r.get("texts") if isinstance(r, dict) else None
@@ -850,6 +972,13 @@ def build_acts(acts_src, shops, strings, items):
         lift = {k: a[k] for k in ("to", "floors", "oneway") if k in a}
         if lift:
             ACT_LIFTS[aid] = lift
+        if "window" in a:
+            # a window that opens (docs/city_interiors.md "Windows that open"): how wide, the open air let into the room
+            w = a["window"]
+            if isinstance(w, bool) or not isinstance(w, (int, float)) or not 0.1 <= w <= 1.0:
+                err("act %s: window must be a number 0.1..1 (how wide it opens: a vent 0.3, a casement 0.5, a balcony door 0.8)" % aid)
+            else:
+                act["window"] = round(float(w), 2)
         if "sleep" in a:
             if not isinstance(a["sleep"], bool):
                 err("act %s: sleep must be true or false" % aid)
@@ -1851,7 +1980,10 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
                 for l in page:
                     if isinstance(l, dict) and l.get("collect"):
                         given[l["collect"].partition("/")[0]].add(l["collect"].partition("/")[2])
-        for c in [a.get("collect", "")] + [l.get("collect", "") for l in a["lines"] if isinstance(l, dict)]:
+        pr = a.get("proc") or {}
+        proc_collects = [pr.get("collect", "")] + [l.get("collect", "") for res in ("good", "fair", "poor")
+                                                    for l in pr.get(res, []) if isinstance(l, dict)]
+        for c in [a.get("collect", "")] + [l.get("collect", "") for l in a["lines"] if isinstance(l, dict)] + proc_collects:
             if c.endswith("/{line}"):
                 # every line it shows is a piece of its own (the films of a programme, the records of a jukebox)
                 given[c.partition("/")[0]].update(line_key(l) for l in a["lines"])

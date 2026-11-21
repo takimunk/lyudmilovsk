@@ -48,19 +48,66 @@ spots), `blender/export/city/<type>[__<plot>].json` (the buildings' flats, beds,
 - **Bodies**: for now the townsfolk borrow the current human models from a pool (many people of one look); a generator
   will give them their own. The story's people keep their unique bodies (one model, one person).
 
-## Pinned guests: the sanatorium
+## The sanatorium's guests
 
-The sanatorium «Корона»'s four guests of the table stories (docs/city_interiors.md "Stays") are townsfolk the generator
-doesn't make: `python3 tools/town/sanatorium_guests.py` adds them to its output (idempotent; run it after every
-regeneration, `--check` says whether the files are up to date). Pyotr Gromov (78) and Sonya Mironova (16) at the window
-table, Boris Tamm (81) and Nikolai Sazonov (80) at the chess table; each has a room on the sanatorium's first floor
-(`P-SANATORIUM/1-01..04`), goes to bed by the curfew and gets up early. Three duties a day (`eat_sanatorium_breakfast|lunch|supper`, one activity a meal since the life finds a duty by its activity; pose eat:
+The sanatorium «Корона» is a place people come to (item 50 of `docs/interactives_backlog.md`): a dozen guests, two by
+two, a fortnight each. They are townsfolk the generator doesn't make: `python3 tools/town/sanatorium_guests.py` adds
+them to its output (idempotent; run it after every regeneration, `--check` says whether the files are up to date).
+
+| pair | week of the cycle | table, rooms | who |
+|---|---|---|---|
+| tamm | 0 | chess table, 1-03 / 1-04 | Boris Tamm (81, Tallinn), Nikolai Sazonov (80, Pskov): the hero's table story `city.san.tf.*` |
+| gromov | 1 | window table, 1-01 / 1-02 | Pyotr Gromov (78), Sonya Mironova (16): `city.san.tg.*` |
+| krylova | 2 | chess table | Zinaida Krylova (71, Vologda, a telephone operator), Raisa Abdullina (68, Kazan, a seamstress) |
+| levin | 3 | window table | Arkady Levin (74, an icebreaker's navigator) and Tamara Levina (70, a music teacher who plays the hall's piano), Murmansk |
+| beketov | 4 | chess table | Yuri Beketov (66, Norilsk, a mining engineer), Haruo Matsumoto (69, Otaru, a watchmaker) |
+| kovalchuk | 5 | window table | Lidia Kovalchuk (60, Irkutsk, a train conductor) and her granddaughter Asya (12) |
+
+**The stay.** A person's `"stay": {cycle, from, days, arrive, leave}` (`FPerson::StayCycle`): they are in the town from
+the hour `arrive` of day `from` of every `cycle` days till the hour `leave` `days` days later; day 0 is the Monday of
+calendar week 0 (`FWorld::Week`: the game counts weeks from Monday 1 January 2001, `UPeopleLifeSubsystem::UpdateClock`;
+the tools from their own Monday). The cycle is six weeks, a pair comes on the Saturday of its week and leaves on the
+Saturday a fortnight later, so the pair of one table goes and the next pair of that table comes on the same Saturday and
+four guests are here at any time: on the game's first day (Tuesday 20 October 2026, week 2 of the cycle) Tamm and Sazonov
+are in their second week and Gromov and Sonya in their first, as the hero's table stories have them. Outside the stay
+`FWorld::Gone` is true and `DutyNow` gives the away activity `stay_gone` before anything else, sleep too: they stand
+hidden (state Away) at the guests' end of the railway platform (`S-RAIL-GUESTS`, kind `guest_platform`, up the beach
+halt's own way), need nothing, are never interrupted, and come back there, a little hungry and tired, at the hour of
+their train. A duty with `"stay_day": n` holds only on that day of the stay.
+
+**The Saturday.** The pair that leaves has breakfast, then the duty `san_depart` (day 14, 9:27 to 10:45): the walk to
+the halt with the suitcase and the wait on the platform; at 10:45 the train has taken them. The pair that comes is on
+the platform at 11:00 and has the duty `san_arrive` (day 0, to 12:24): the walk to «Корона» and a stand at the
+reception; lunch at 13:30 is their first meal. The suitcase is the manner `carry_bag` forced with the prop `suitcase`
+(`SM_Prop_suitcase`, `blender/humans/props.py`; the bag while the mesh is missing).
+
+**The day.** Each has a room on the sanatorium's first floor (`P-SANATORIUM/1-01..04`, one after another: the data check
+holds no two stays in a room or on a chair at once), goes to bed by the curfew and gets up early. Three duties a day
+(`eat_sanatorium_breakfast|lunch|supper`, one activity a meal since the life finds a duty by its activity; pose eat:
 breakfast 8:30, lunch 13:30, supper 18:30, 45 minutes) at the walked place `P-SANATORIUM-DINING`: in by the sanatorium's
-door, one slot a guest at his or her own chair (the city things `dining_table_1`, `dining_1_c`, `dining_table_2`,
-`dining_2_c`: the acts `san_seat_<name>`). The rest of the day they are free like anybody (benches, the sea air, the club's
-chess for the two old friends). A slot with `"thing"` holds that city thing while somebody sits or sits down there
-(`UPeopleLifeSubsystem::UpdateThingHolds`, once a second, `ULyudCityThings::ClaimThing` / `ReleaseThing`): the hero gets
-"taken" instead of sitting on a guest. `tools/peoplesim/run.sh town` checks them at lunch on Wednesday.
+door, one slot a chair tagged `guest_seat_1a|1b|2a|2b` (the city things `dining_table_1`, `dining_1_c`,
+`dining_table_2`, `dining_2_c`: the acts `san_seat_<name>`), the duty's role the chair of their table. The regime's
+outings are two activities only the guests like enough to do: `san_promenade` (the promenade and the pier after lunch,
+14:25 to 16:35, by day and not in the rain) and `san_postcards` (a kiosk before lunch on Tuesdays, Fridays and Sundays). They take the waters
+(`san_cure`), play dominoes, and the rest of the day are free like anybody. A slot with `"thing"` holds that city thing
+while somebody sits or sits down there (`UPeopleLifeSubsystem::UpdateThingHolds`, once a second,
+`ULyudCityThings::ClaimThing` / `ReleaseThing`): the hero gets "taken" instead of sitting on a guest.
+
+**The stories.** `tools/barks/lines/16_sanatorium_guests.txt`: every guest has a job of their own for the lines
+(`job = guest_<name>`, the role of their coming and going duties) and one story in four pieces told at the table, over
+the dominoes and at the pump room, a piece by the days of the week (Saturday and Sunday, Monday and Tuesday, Wednesday
+and Thursday, Friday); lines for the reception, the platform, the promenade and the kiosk; a goodbye to the hero on the
+platform from those who knew him (`bond`).
+
+`tools/peoplesim/run.sh guests` runs three weeks (four here at any time, the Saturdays' platform, train, reception and
+first night, no room or chair with two, lunch at their chairs, the regime); `run.sh town` checks whoever is here at lunch
+on Wednesday; `check_town_data.py` checks the stays against each other.
+
+Not done: the trains are fixed hours (10:45 out, 11:00 in), not the timetable's, and the guests appear on and vanish
+from the platform instead of riding the carriage; the Aton coast's belvedere and spring are not places of the life yet,
+so nobody goes there; letters home are a line at the kiosk, not the post office; the hero's table stories
+(`city.san.tg.*`, `tf.*`) are still told at the two tables whoever sits there now; `SM_Prop_suitcase` is not built or
+imported (Mac).
 
 ## The new activities
 
@@ -72,6 +119,7 @@ the add-on is what brings these back).
 
 | activity | who, when | where |
 |---|---|---|
+| `book_club` (a duty, `"when": "book_club"`) | the five club members (`tools/reading/build_reading.py`), Thursdays 18:10–20:00 while the game holds the condition on; not on festivals or holidays | `P-LIBRARY-CLUB`: the library lounge's armchairs and sofa, a seat each (docs/books.md "The book club") |
 | `cinema_day`, `cinema_evening` | anybody who likes it (the curious, the warm), going in before the 15:00 and 19:00 sessions | `P-CLUB2-CINEMA`: 145 of the hall's seats, each walked to along its aisle; six of them are the hero's seats and are held through the slot's `thing` |
 | `san_cure` | 60 and over and the sanatorium's guests, mornings but Sunday | `P-SANATORIUM-PUMP`: the pump room's bench and stool, the lobby's benches; the drink manner with a cup |
 | `dominoes` | 58 and over, 15:00 to 20:00, a talk | `P-SANATORIUM-LOUNGE`: the lounge's four seats |
@@ -94,6 +142,27 @@ round of the doors now.
 Not done: the pianist is silent (the instruments' synth has no way to be played by somebody else yet), friends do not
 walk along with the hero, and the cinema's house does not follow the programme (people sit through the two fixed
 sessions whatever is on).
+
+## Pets
+
+Item 46 (`docs/animals.md` "With people"): `tools/town/town_pets.py`, the last add-on `town_life.py` runs, gives ten
+residents a dog and two duties a day (`walk_dog`, `walk_dog_late`), Nina Korneeva the yard cats' two rounds
+(`feed_cats`, `feed_cats_late` at `S-CAT-FEEDERS`), fourteen flats a cat, and writes `Content/AnimalsData/pets.json`.
+Its rows go before `town_night.py`'s in `activities.json` and `town_places.json`. `"on_time": 1` on an activity ends
+a duty of it at the duty's hour (without it a duty lasts its length from the arrival).
+
+## The night jobs
+
+Item 29 (`docs/city_night.md`): `tools/town/town_night.py`, an add-on like `town_activities.py` (and run after it by
+`town_life.py`), gives three residents without work the shut rooms' jobs:
+
+| activity | who, when | where |
+|---|---|---|
+| `mop_floor`, `mop_floor_late` (the day's second building) | cleaner A: the café 7:00-7:50, the Rassvet 8:05-9:55; cleaner B: the store 7:00-8:50 (Mon-Sat), the library 21:05-22:25 | `P-CAFE-CLEAN` (up the spiral stair), `P-CLUB2-CLEAN`, `P-STORE-CLEAN`, `P-LIBRARY-CLEAN`: floor spots in round order; the mop manner with the bucket by them |
+| `night_watch` | the watchman (occupation `guard`), 20:30-6:30, sleeps by day | `P-STORE-WATCH`: the store's ground floor, up the runner and out to the side halls; the torch manner and its beam |
+
+A round in an indoor place now goes from spot to spot by the place's own ways (`Route` within the place) instead of the
+street grid. Who has a job is kept in townsfolk.json (`night_job`), so a rerun keeps the same people.
 
 ## How it works
 

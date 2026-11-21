@@ -1089,6 +1089,46 @@
    }
   },
   {
+   "id": "home_switch",
+   "kind": "machine",
+   "pos": [
+    17.27,
+    14.9,
+    10.63
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "home_tap",
+   "kind": "machine",
+   "pos": [
+    16.1,
+    17.38,
+    10.28
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "home_window",
+   "kind": "board",
+   "pos": [
+    7.737,
+    13.4,
+    10.53
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "window"
+   }
+  },
+  {
    "id": "stair_board_lost",
    "kind": "board",
    "pos": [
@@ -1125,6 +1165,19 @@
    "yaw": 90.0,
    "props": {
     "what": "payphone"
+   }
+  },
+  {
+   "id": "stair_mailboxes",
+   "kind": "board",
+   "pos": [
+    1.8,
+    1.7,
+    1.814
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "mailbox"
    }
   }
  ],
@@ -3092,7 +3145,7 @@
  ],
  "tris": {
   "shell": 3800,
-  "detail": 37956,
+  "detail": 37996,
   "windows": 248,
   "dress": 3176
  }

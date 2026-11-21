@@ -178,8 +178,11 @@ namespace LyudGesture
 		case EProp::Book:
 		case EProp::Knitting: return EHold::TwoHands;
 		case EProp::Rod: return EHold::Pointing;
-		case EProp::Spade: return EHold::Shaft;
+		case EProp::Spade:
+		case EProp::Mop: return EHold::Shaft;
+		case EProp::Torch: return EHold::Pointing;
 		case EProp::Bag: return EHold::Hanging;
+		case EProp::Suitcase: return EHold::Hanging;
 		default: return EHold::Upright;
 		}
 	}
@@ -481,6 +484,28 @@ namespace LyudGesture
 			Hand(G, O, E, Pelvis, { 15.f, 10.f, -8.f }, { 0.2f, 0.3f, -0.9f }, { -1.f, 0.f, 0.f }, 0.3f);
 			G.SpinePitch = (26.f - 7.f * Pull) * E;
 			G.HeadPitch = -5.f * E;
+			break;
+		}
+		case EManner::Mop:
+		{
+			// the mop: the main hand high on the shaft, the other lower and further out; standing, the head swept side to
+			// side over the floor in a slow figure of eight; walking on, the mop carried still
+			const float Sw = Body.bWalking ? 0.f : FMath::Sin((T + Ph) * 1.6f);
+			const float Lift = Body.bWalking ? 0.f : 0.5f - 0.5f * FMath::Cos((T + Ph) * 3.2f);
+			Hand(G, M, E, Pelvis, { 5.f + 10.f * Sw, 22.f, 20.f + 3.f * Lift }, { 0.1f, 0.45f, -0.9f }, { -1.f, 0.f, 0.f }, 0.9f);
+			Hand(G, O, E, Pelvis, { 3.f + 18.f * Sw, 40.f, -8.f + 3.f * Lift }, { 0.1f, 0.45f, -0.9f }, { -1.f, 0.f, 0.f }, 0.9f);
+			G.SpinePitch = (Body.bWalking ? 4.f : 12.f) * E;
+			G.SpineRoll = -4.f * Sw * E;
+			G.HeadPitch = -16.f * E;
+			break;
+		}
+		case EManner::Torch:
+		{
+			// the torch held out ahead at the chest, the beam swung slowly over the floor and into the corners
+			const float Sw = FMath::Sin((T + Ph) * (Body.bWalking ? 0.5f : 0.35f));
+			Hand(G, M, E, Chest, { 6.f + 12.f * Sw, 34.f, -10.f }, { 0.f, 1.f, -0.35f }, { 0.f, 0.f, -1.f }, 0.9f);
+			G.HeadYaw = 14.f * Sw * MainSide * E;
+			G.HeadPitch = -10.f * E;
 			break;
 		}
 		default:

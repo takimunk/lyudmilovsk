@@ -76,6 +76,8 @@ public:
 	};
 	/** Everybody of level 1 and up, the closest first. */
 	void DiaryFriends(TArray<FDiaryFriend>& Out) const;
+	/** The keys of everybody of MinLevel and up (friends.level.<n>), the closest first (the book club's advice). */
+	void FriendKeys(int32 MinLevel, TArray<FString>& Out) const;
 
 	// --- console and developer mode
 	FString Report() const;

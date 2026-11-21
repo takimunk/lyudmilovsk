@@ -45,7 +45,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "City") TArray<FString> WindowFlats;
 
 	/** Real lamps inside the enterable rooms (B.lamp in blender/city), in the actor's local space (cm); kind 0 = on in the
-	 * open hours, 1 = dusk to dawn. The building makes no light components: ULyudWindowLights lends the nearest lit
+	 * open hours, 1 = dusk to dawn, 2 = the night lamp of a shut public room (dusk to dawn while closed). The building makes no light components: ULyudWindowLights lends the nearest lit
 	 * lamps around the camera a small shared pool of point lights (lyud.City.LampBudget, no shadows). */
 	UPROPERTY(EditAnywhere, Category = "City") TArray<FVector> LampPositions;
 	UPROPERTY(EditAnywhere, Category = "City") TArray<float> LampLumens;
@@ -61,7 +61,7 @@ public:
 			return LampSwitched[Lamp] == 1;     // the hero's light switch, for now
 		}
 		const uint8 K = LampKinds.IsValidIndex(Lamp) ? LampKinds[Lamp] : 0;
-		return K <= 1 && LampState[K] == 1;
+		return K <= 2 && LampState[K] == 1;
 	}
 	/** The hero's light switch (ULyudWindowLights::SwitchLampsNear): this lamp on (1), off (0) or as the hours say (-1). A flag
 	 *  only, like SetLamps. Not saved. */
@@ -109,7 +109,7 @@ private:
 	void MakeLightTexture();
 
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> LightTex;
-	int8 LampState[2] = {-1, -1};
+	int8 LampState[3] = {-1, -1, -1};
 	/** Per lamp, made on the first switch (empty: none switched): -1 as the hours say, 0 off, 1 on. */
 	TArray<int8> LampSwitched;
 	TBitArray<> Owned;

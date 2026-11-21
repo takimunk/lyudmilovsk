@@ -16,10 +16,11 @@ class UAudioComponent;
 class USoundBase;
 class SLyudCityBook;
 class SLyudCityGame;
+class SLyudCityProc;
 class SLyudCityPage;
 class USceneComponent;
 struct FLyudCityLoad;
-namespace LyudCity { class FModel; class FCups; struct FGameState; struct FPageTurn; }
+namespace LyudCity { class FModel; class FCups; struct FGameState; struct FPageTurn; struct FProcState; }
 
 /** A club tournament as the town paper prints it (ULyudCityThings::GetCupNews): its name, venue and first round (keys, minutes
  *  from midnight) and, once it is over, the champion and the runner-up (name keys; empty: the hero) and how far the hero got
@@ -121,6 +122,7 @@ struct FCityActInfo
  *
  * Console: lyud.City.Go <thing id>, lyud.City.Things, lyud.City.Do <thing id>, lyud.City.Ask <thing id> [topic id] | list | reset, lyud.City.Tone, lyud.City.Things.Show 0|1, lyud.City.Weekday <mon..sun>,
  * lyud.City.Collections [grant|clear <set|*>], lyud.City.Game <thing id> | press [1-3] | win | quit | regulars,
+ * lyud.City.Proc <thing id> | press [1-3] | quit,
  * lyud.City.Sit [thing id], lyud.City.Lie [thing id], lyud.City.Sleep <hour>, lyud.City.Read <text id> | next | prev | close |
  * list | all | clear.
  */
@@ -194,6 +196,12 @@ public:
 	};
 	/** Every collection for the diary: the paid ones first, then the ones begun (the fullest first), then the rest. */
 	void CollectionViews(TArray<FCollectionView>& Out) const;
+	/** Is the hero on that stay today (docs/city_interiors.md "Stays": the sanatorium's voucher, the rental's beach set)? */
+	bool IsOnStay(const FString& Id) const;
+	/** Puts him on a stay for so many days from today (added to the days left; 0 ends it): the console's and developer mode's hire. */
+	void StartStay(const FString& Id, int32 Days);
+	/** The lines' weather word "clear" now: few clouds, dry, no fog. */
+	bool IsClearNow() const;
 	/** Gives what every newly complete collection pays, once (the keepsake's toast, the diary's note, the item or roubles). */
 	void PayCollections();
 
@@ -213,6 +221,19 @@ public:
 	bool IsPlayingGame() const;
 	/** Logs the regulars (name, style, games, where); with bPage also on the page. */
 	void ShowRegulars(bool bPage);
+
+	// --- procedures (docs/sanatorium_procedures.md): an act with a "proc" is played as a short hands-on scene first
+
+	/** Starts the procedure of a thing's act at once (console, developer mode: its "when" and the stay are not asked); false: no
+	 *  such thing or its act has no procedure. */
+	bool StartProcAt(const FString& ThingId);
+	/** Developer mode: the procedure on the thing nearest the hero. */
+	bool StartNearestProc();
+	/** A key of the procedure: E (Choice -1: a press; console lyud.City.Proc press) or a pick's 0..2. */
+	void PressProc(int32 Choice);
+	/** Ends the procedure without a result (nothing marked, the act not run). */
+	void QuitProc();
+	bool IsInProc() const;
 
 	// --- sitting, lying, sleeping
 
@@ -263,6 +284,8 @@ public:
 	bool GoToThing(const FString& ThingId);
 	/** Developer mode: uses the nearest lift door (its chooser, or at once). */
 	bool UseNearestLift();
+	/** Developer mode: opens or shuts the nearest window that opens (docs/city_interiors.md "Windows that open"). */
+	bool ToggleNearestWindow();
 	bool IsUsingLift() const { return LiftDest >= 0 || LiftThing >= 0; }
 	/** Has one of our modes the keys (a page, a show, a game, a text, the talk's chooser, a lift, lying, the sleep chooser)? The
 	 *  NPC talk should step aside meanwhile (docs/city_interiors.md "Open points for other threads"); seated alone is not one. */
@@ -372,6 +395,10 @@ private:
 	FText LineText(const FString& Key) const;
 	/** A thing with "switch": the lamps of its room on or off for the hero's visit (all back when he leaves the plot). */
 	void FlipSwitch(int32 Thing);
+	/** A window that opens (its act's "window"): open or shut it, the open air in the room follows (ApplyOpenAir). */
+	void ToggleWindow(int32 Thing);
+	/** The soundscape hears the widest open window of this visit (ULyudSoundscapeSubsystem::SetOpenAir). */
+	void ApplyOpenAir();
 	/** A short word on the prompt line for a moment (the switch's "lights on"), like a refusal but not one. */
 	void Note(const FText& What);
 
@@ -384,6 +411,22 @@ private:
 	void FinishGame();
 	/** The panel away and the state cleared (bFinished false: walked off, no result). */
 	void EndGame(bool bFinished);
+
+	// --- procedures
+	/** The scene of Thing's procedure (Model->ProcNow gave it): seated or laid down when the act sits or lies and he is at it,
+	 *  the guests at the same procedure found, the panel up. */
+	void BeginProcedure(int32 Thing);
+	void TickProcedure(AHeroCharacter* Hero, APlayerController* PC, bool bTalk, float DeltaTime);
+	/** The panel's texts (on a beat) and its gauge (every frame). */
+	void UpdateProcPanel(bool bTexts, bool bHeld);
+	/** The scene is over: the result line and the numbers, then the act runs as usual (Run with bRunAfterProc). */
+	void FinishProcedure();
+	/** The panel away, the dark of a cut lifted, the state cleared (bFinished false: walked off; up from the bed too). */
+	void EndProcedure(bool bFinished);
+	/** Who else is at the procedure now: the sanatorium's guests (home P-SANATORIUM/...) within a few metres of Thing. */
+	void FindProcCompanions(int32 Thing, TArray<TPair<FString, FString>>& Out) const;
+	/** A procedure line's text: "{0}".. from the args ("@key" args are text keys). */
+	FText ProcLineText(const FString& Key, const TArray<FString>& Args) const;
 
 	// --- sitting and lying
 	/** Where the hero stands up to from a seat, in its frame (cm): in front, beside, behind, the first spot his capsule fits on
@@ -562,6 +605,23 @@ private:
 	int32 GameBeatShown = -1;
 	FText GameTitle;
 	FText GameOpponent;
+	/** The procedure being played (Def < 0: none; made once), its panel (made once, collapsed between scenes), where the hero
+	 *  stood, whether he sat or lay for it, the frame it began, the beat the panel shows, a cut's dark is down; and for the act's
+	 *  run after it: the flag Run reads (no procedure asked again, no talk chooser), the result's words on top of the act's line,
+	 *  the minutes the cuts already let pass. */
+	TPimplPtr<LyudCity::FProcState> Proc;
+	TSharedPtr<SLyudCityProc> ProcPanel;
+	bool bProcPanelAdded = false;
+	FVector ProcFrom = FVector::ZeroVector;
+	bool bProcSeated = false;
+	bool bProcLying = false;
+	uint64 ProcFrame = 0;
+	int32 ProcBeatShown = -1;
+	bool bProcDark = false;
+	FText ProcTitle;
+	bool bRunAfterProc = false;
+	FText ProcResult;
+	int32 ProcCutMinutes = 0;
 	/** Plots whose lamps the hero switched (cleared when he walks into another plot). */
 	FName SwitchedPlot;
 

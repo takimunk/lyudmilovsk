@@ -1,5 +1,7 @@
 // The cable-car metro outside the engine: behaviour checks and a busy day (tools/transportsim/run.sh).
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Transport/CablewaySim.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Transport/StationLife.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Transport/FrontDoor.h"
 
 #include <algorithm>
 #include <cmath>
@@ -203,6 +205,399 @@ static int Test()
 	return Fails ? 1 : 0;
 }
 
+// --- the stations' day (station_life.json: tools/station_life.py; docs/transport.md "Station life") ----------------------
+
+// One day of the town's trips on the real network from 5:30 to 0:45; Wind(hour) the wind over the line (m/s).
+struct FDayResult
+{
+	int Today = 0, Started = 0, Finished = 0, Cut = 0, Unfinished = 0, DepartsInStop = 0, MaxWaiting = 0, MaxAboard = 0;
+	int StuckInHall = 0;
+	double MaxWait = 0.0, AvgWait = 0.0;
+	int PeakHour = -1, PeakTrips = 0;
+};
+
+template <typename FWind>
+static FDayResult RunDay(const std::string& LifeText, int Weekday, bool bWarm, float FestivalEnd, FWind Wind, const char* Name)
+{
+	FNetwork N;
+	FDayResult Out;
+	if (!Load(N))
+	{
+		Fails++;
+		return Out;
+	}
+	N.bReuseRiders = true;
+	FStationLife L;
+	if (!L.Load(LifeText, N))
+	{
+		std::printf("station_life.json: %s\n", L.LastError.c_str());
+		Fails++;
+		return Out;
+	}
+	N.Reset();
+	L.StartDay(Weekday, Weekday, bWarm);
+	bool bFest = false;
+	int ByHour[26] = {};
+	const float Dt = 0.5f;
+	for (double T = 5.5 * 3600.0; T < 24.75 * 3600.0; T += Dt)
+	{
+		const float Hour = (float)(T / 3600.0);
+		if (FestivalEnd > 0.f && !bFest && Hour >= FestivalEnd)
+		{
+			L.FestivalEnded(Hour);
+			bFest = true;
+		}
+		L.SetWind(N, Wind(Hour));
+		const bool bHeld = N.bWindHold;
+		N.Step(Dt);
+		L.Step(N, Hour);
+		int Waiting = 0;
+		for (const FRider& R : N.Riders)
+		{
+			Waiting += R.State == ERiderState::Waiting && !R.bFree ? 1 : 0;
+		}
+		Out.MaxWaiting = std::max(Out.MaxWaiting, Waiting);
+		for (const FCabin& C : N.Cabins)
+		{
+			Out.MaxAboard = std::max(Out.MaxAboard, (int)C.Riders.size());
+		}
+		for (const FEvent& E : N.Events)
+		{
+			if (E.Kind == EEvent::Depart && bHeld)
+			{
+				Out.DepartsInStop++;
+			}
+			if (E.Kind == EEvent::Done || E.Kind == EEvent::Alight)
+			{
+				N.ReleaseRider(E.Rider);
+			}
+		}
+		N.Events.clear();
+	}
+	for (const FLifeRun& R : L.Today)
+	{
+		if (R.Phase == ELifePhase::Riding || R.Phase == ELifePhase::InHall || R.Phase == ELifePhase::Pending)
+		{
+			Out.Unfinished++;
+			if (std::getenv("TR_DEBUG_LIFE"))
+			{
+				const FLifeTrip& Tr = L.Trips[R.Trip];
+				std::printf("  unfinished %s %s -> %s at %.2f phase %d\n", L.Riders[Tr.Rider].Key.c_str(), N.Stations[Tr.From].Id.c_str(),
+					N.Stations[Tr.To].Id.c_str(), R.At, (int)R.Phase);
+			}
+		}
+		if (R.Phase != ELifePhase::Skipped)
+		{
+			ByHour[std::min(25, (int)R.At)]++;
+		}
+	}
+	// at closing (0:15) nobody is left in a hall
+	std::vector<int> In;
+	for (int S = 0; S < (int)N.Stations.size(); S++)
+	{
+		L.InHall(S, In);
+		Out.StuckInHall += (int)In.size();
+	}
+	for (int H = 0; H < 26; H++)
+	{
+		if (ByHour[H] > Out.PeakTrips)
+		{
+			Out.PeakTrips = ByHour[H];
+			Out.PeakHour = H;
+		}
+	}
+	Out.Today = (int)L.Today.size();
+	Out.Started = L.Started;
+	Out.Finished = L.Finished;
+	Out.Cut = L.Cut;
+	Out.MaxWait = L.MaxWait;
+	Out.AvgWait = L.Finished ? L.SumWait / L.Finished : 0.0;
+	std::printf("%-28s %3d trips today, %3d ridden, %d cut; peak %02d:00 (%d trips); wait avg %3.0f s, max %4.0f s; up to %d waiting, "
+		"%d aboard; %d unfinished, %d in a hall at closing; wind stops %d, departures during one %d\n",
+		Name, Out.Today, Out.Finished, Out.Cut, Out.PeakHour, Out.PeakTrips, Out.AvgWait, Out.MaxWait, Out.MaxWaiting, Out.MaxAboard,
+		Out.Unfinished, Out.StuckInHall, L.WindStops, Out.DepartsInStop);
+	return Out;
+}
+
+static int Town()
+{
+	const std::string Life = ReadFile("unreal/Lyudmilovsk/Content/Transport/station_life.json");
+	if (Life.empty())
+	{
+		std::printf("no station_life.json (python3 tools/station_life.py)\n");
+		return 1;
+	}
+	FNetwork N;
+	if (!Load(N))
+	{
+		return 1;
+	}
+	FStationLife L;
+	CHECK(L.Load(Life, N), "load: %s", L.LastError.c_str());
+	std::printf("%zu riders, %zu trips, %zu staff\n", L.Riders.size(), L.Trips.size(), L.Staff.size());
+	// the rota: an attendant in every hall every open hour, a barista 6:30..23:30, every day
+	for (int S = 0; S < (int)N.Stations.size(); S++)
+	{
+		for (int D = 0; D < 7; D++)
+		{
+			for (float H = 6.f; H < 23.5f; H += 0.25f)
+			{
+				CHECK(L.OnShift(S, "attendant", D, H) >= 0, "%s: no attendant on day %d at %.2f", N.Stations[S].Id.c_str(), D, H);
+				CHECK(H < 6.5f || L.OnShift(S, "barista", D, H) >= 0, "%s: no barista on day %d at %.2f", N.Stations[S].Id.c_str(), D, H);
+			}
+			CHECK(L.OnShift(S, "attendant", D, 3.f) < 0, "%s: an attendant at 3:00", N.Stations[S].Id.c_str());
+		}
+	}
+	auto Calm = [](float) { return 4.f; };
+	// a weekday: the researchers and the out-of-town workers in the morning and the evening
+	const FDayResult Mon = RunDay(Life, 0, false, 0.f, Calm, "Monday");
+	CHECK(Mon.Unfinished == 0 && Mon.StuckInHall == 0, "Monday: %d unfinished, %d in a hall at closing", Mon.Unfinished, Mon.StuckInHall);
+	CHECK(Mon.Finished > 100, "Monday: only %d trips ridden", Mon.Finished);
+	CHECK(Mon.PeakHour >= 6 && Mon.PeakHour <= 9 || Mon.PeakHour >= 14 && Mon.PeakHour <= 18, "Monday's peak at %d:00", Mon.PeakHour);
+	CHECK(Mon.MaxWait < 15 * 60.0, "Monday: somebody waited %.0f s for a cabin", Mon.MaxWait);
+	CHECK(Mon.MaxAboard <= 4, "a cabin with %d aboard", Mon.MaxAboard);
+	// Saturday, warm: the market and the beach; a festival ends at 22:30
+	const FDayResult Sat = RunDay(Life, 5, true, 22.5f, Calm, "Saturday, warm, festival");
+	CHECK(Sat.Unfinished == 0 && Sat.StuckInHall == 0, "Saturday: %d unfinished, %d in a hall at closing", Sat.Unfinished, Sat.StuckInHall);
+	CHECK(Sat.Finished > 30, "Saturday: only %d trips ridden", Sat.Finished);
+	CHECK(Sat.MaxWait < 20 * 60.0, "Saturday: somebody waited %.0f s", Sat.MaxWait);
+	// a gale on a weekday morning (8:00..9:10 over the stop): nothing leaves a station while it blows, everyone gets
+	// home in the end
+	auto Gale = [](float H) { return H > 8.f && H < 9.1f ? 21.f : (H > 7.8f && H < 9.4f ? 13.f : 5.f); };
+	const FDayResult Windy = RunDay(Life, 1, false, 0.f, Gale, "Tuesday, a gale 8:00-9:10");
+	CHECK(Windy.DepartsInStop == 0, "%d cabins left a station during the wind stop", Windy.DepartsInStop);
+	CHECK(Windy.Unfinished == 0 && Windy.StuckInHall == 0, "the gale day: %d unfinished, %d in a hall at closing", Windy.Unfinished, Windy.StuckInHall);
+	CHECK(Windy.MaxWait > Mon.MaxWait, "the gale kept nobody waiting longer (%.0f s vs %.0f s)", Windy.MaxWait, Mon.MaxWait);
+	// the stop's own rule: on above 17 m/s, off only after 5 minutes under 12
+	{
+		FNetwork M;
+		Load(M);
+		FStationLife W;
+		W.SetWind(M, 18.f);
+		CHECK(M.bWindHold, "18 m/s: no stop");
+		M.Time += 200.0;
+		W.SetWind(M, 11.f);
+		M.Time += 200.0;
+		W.SetWind(M, 11.f);
+		CHECK(M.bWindHold, "going again after 200 s of calm");
+		M.Time += 200.0;
+		W.SetWind(M, 11.f);
+		CHECK(!M.bWindHold, "still stopped after 400 s under 12 m/s");
+	}
+	std::printf(Fails ? "%d FAILED\n" : "all ok\n", Fails);
+	return Fails ? 1 : 0;
+}
+
+
+// --- the Aton station as the club's front door (docs/front_door.md): the board, the line, the usual, the lost things --------
+
+static int Board()
+{
+	using namespace LyudFrontDoor;
+	const std::string LifeText = ReadFile("unreal/Lyudmilovsk/Content/Transport/station_life.json");
+	FNetwork N;
+	FStationLife L;
+	if (LifeText.empty() || !Load(N) || !L.Load(LifeText, N))
+	{
+		std::printf("no network or station life\n");
+		return 1;
+	}
+	const int Aton = N.FindStation("aton"), Sun = N.FindLine("sun");
+	CHECK(Aton >= 0 && Sun >= 0, "no aton or sun");
+	N.bReuseRiders = true;
+	N.Reset();
+	L.StartDay(0, 0, false);
+	std::vector<FDeparture> Rows;
+	// a prediction made ten minutes before the riders go up, and when they really got on
+	std::vector<float> Predicted(L.Today.size(), -1.f);
+	int Samples = 0, Unsorted = 0, OutOfWindow = 0, Empty = 0, BoardingSeen = 0, BoardingMissed = 0, Planned = 0, Arriving = 0;
+	int MaxRows = 0;
+	const float Dt = 0.5f;
+	for (double T = 5.5 * 3600.0; T < 23.5 * 3600.0; T += Dt)
+	{
+		const float Hour = (float)(T / 3600.0);
+		N.Step(Dt);
+		L.Step(N, Hour);
+		for (const FEvent& E : N.Events)
+		{
+			if (E.Kind == EEvent::Done || E.Kind == EEvent::Alight)
+			{
+				N.ReleaseRider(E.Rider);
+			}
+		}
+		N.Events.clear();
+		const int Sec = (int)std::lround(T);
+		if (Sec % 30 != 0 || Hour < 6.f)
+		{
+			continue;
+		}
+		Departures(N, &L, Aton, Sun, Hour, 6, Rows);
+		Samples++;
+		MaxRows = std::max(MaxRows, (int)Rows.size());
+		Empty += Rows.empty() ? 1 : 0;
+		for (size_t I = 0; I < Rows.size(); I++)
+		{
+			Unsorted += I > 0 && Rows[I].Hour < Rows[I - 1].Hour ? 1 : 0;
+			OutOfWindow += Rows[I].Hour < Hour - 0.01f || Rows[I].Hour > Hour + 1.6f ? 1 : 0;
+			OutOfWindow += Rows[I].To == Aton || Rows[I].To < 0 ? 1 : 0;
+			Planned += Rows[I].Kind == EDepKind::Planned ? 1 : 0;
+			Arriving += Rows[I].Kind == EDepKind::Arriving ? 1 : 0;
+		}
+		// a cabin standing at Aton with its doors open and riders aboard is on the board as boarding
+		for (int CI = 0; CI < (int)N.Cabins.size(); CI++)
+		{
+			const FCabin& C = N.Cabins[(size_t)CI];
+			if (C.Line != Sun || C.State == ECabinState::Moving || C.AtStop < 0 || N.Lines[Sun].Stops[C.AtStop].Station != Aton || C.Riders.empty() || C.Door < 0.5f)
+			{
+				continue;
+			}
+			bool bOn = false;
+			for (const FDeparture& D : Rows)
+			{
+				bOn |= D.Cabin == CI && D.Kind == EDepKind::Boarding;
+			}
+			BoardingSeen += bOn ? 1 : 0;
+			BoardingMissed += bOn ? 0 : 1;
+		}
+		for (size_t RI = 0; RI < L.Today.size(); RI++)
+		{
+			const FLifeRun& R = L.Today[RI];
+			const float Ask = R.At + R.HallMinutes / 60.f;
+			if (L.Trips[R.Trip].From != Aton || Predicted[RI] >= 0.f || Ask - Hour > 10.f / 60.f || Ask < Hour)
+			{
+				continue;
+			}
+			// the planned row nearest their going up
+			float Best = -1.f;
+			for (const FDeparture& D : Rows)
+			{
+				if (D.Kind == EDepKind::Planned && (Best < 0.f || std::fabs(D.Hour - Ask) < std::fabs(Best - Ask)))
+				{
+					Best = D.Hour;
+				}
+			}
+			Predicted[RI] = Best >= 0.f ? Best : -2.f;
+		}
+	}
+	int Compared = 0, Late = 0, NotShown = 0;
+	double SumErr = 0.0, MaxErr = 0.0;
+	for (size_t RI = 0; RI < L.Today.size(); RI++)
+	{
+		const FLifeRun& R = L.Today[RI];
+		if (L.Trips[R.Trip].From != Aton || R.Wait <= 0.0)
+		{
+			continue;
+		}
+		if (Predicted[RI] < -1.f)
+		{
+			NotShown++;
+			continue;
+		}
+		if (Predicted[RI] < 0.f)
+		{
+			continue;
+		}
+		const double Boarded = 5.5 + (R.RideStart + R.Wait) / 3600.0;
+		const double Err = std::fabs(Boarded - Predicted[RI]) * 60.0;
+		SumErr += Err;
+		MaxErr = std::max(MaxErr, Err);
+		Late += Err > 5.0 ? 1 : 0;
+		Compared++;
+	}
+	const double Mean = Compared ? SumErr / Compared : 0.0;
+	std::printf("Aton's board, Monday: %d looks, up to %d rows, %d planned and %d arriving rows seen; %d riders' departures foretold 10 min ahead "
+		"(mean error %.1f min, worst %.1f, %d over 5 min, %d not on the board); boarding shown %d of %d looks\n",
+		Samples, MaxRows, Planned, Arriving, Compared, Mean, MaxErr, Late, NotShown, BoardingSeen, BoardingSeen + BoardingMissed);
+	CHECK(Empty == 0, "the board was empty %d times", Empty);
+	CHECK(Unsorted == 0 && OutOfWindow == 0, "rows out of order %d, out of the hour or to nowhere %d", Unsorted, OutOfWindow);
+	CHECK(Planned > 0 && Arriving > 0, "the board shows riders' cabins (%d) and cabins on their way (%d)", Planned, Arriving);
+	CHECK(Compared > 20 && Mean < 3.0 && Late * 10 <= Compared, "the board's time ten minutes ahead: mean %.1f min over %d, %d late by over 5",
+		Mean, Compared, Late);
+	CHECK(NotShown * 10 <= Compared, "riders' departures missing from the board: %d", NotShown);
+	CHECK(BoardingMissed == 0 && BoardingSeen > 0, "a cabin boarding at Aton not on the board: %d of %d", BoardingMissed, BoardingSeen + BoardingMissed);
+	CHECK(Clock(7.7f) == "07:42" && Clock(24.25f) == "00:15", "the clock: %s %s", Clock(7.7f).c_str(), Clock(24.25f).c_str());
+
+	// the counter's line: the front first, the hero's held spot taken, stepping up
+	CHECK(JoinSpot({ -1, -1, -1 }) == 0 && JoinSpot({ 5, -1, -1 }) == 1 && JoinSpot({ -2, -1, -1 }) == 1 && JoinSpot({ 5, 6, 7 }) == -1,
+		"joining a line at its first free spot");
+	int To = -1;
+	CHECK(StepUp({ -1, 5, 6 }, To) == 1 && To == 0, "the second steps up to a free front");
+	CHECK(StepUp({ -2, -1, 6 }, To) == 2 && To == 1, "behind the hero they step up to him");
+	CHECK(StepUp({ -2, 5, 6 }, To) == -1, "nobody steps past the hero");
+
+	// the usual: three times the same at a counter
+	FUsual U;
+	U.Add("hall:aton", "coffee");
+	U.Add("hall:aton", "coffee");
+	U.Add("hall:aton", "pie");
+	CHECK(U.Of("hall:aton").empty(), "twice is not the usual yet");
+	U.Add("hall:aton", "coffee");
+	int Times = 0;
+	CHECK(U.Of("hall:aton", &Times) == "coffee" && Times == 3 && U.Visits("hall:aton") == 4 && U.Of("hall:zenit").empty(), "coffee is the usual at Aton");
+	FUsual U2;
+	U2.Load(U.Save());
+	CHECK(U2.Of("hall:aton") == "coffee" && U2.Visits("hall:aton") == 4, "the usual is saved");
+
+	// the lost and found: things come, wait, go; one of a person's at a time; handed back for a gift
+	FLostFound F;
+	std::vector<float> Hours;
+	OwnersAt(L, Aton, F.Owners, Hours);
+	CHECK(F.Owners.size() > 20 && Hours.size() == F.Owners.size(), "owners through Aton: %zu", F.Owners.size());
+	int Found = 0, MaxShelf = 0;
+	for (int D = 0; D < 30; D++)
+	{
+		const size_t Before = F.Shelf.size();
+		F.StartDay(D);
+		Found += (int)F.Shelf.size() > (int)Before ? (int)(F.Shelf.size() - Before) : 0;
+		MaxShelf = std::max(MaxShelf, (int)F.Shelf.size());
+		for (const FLost& X : F.Shelf)
+		{
+			CHECK(D - X.Day < FLostFound::KeepDays, "a thing on the shelf %d days", D - X.Day);
+		}
+	}
+	CHECK(Found >= 10 && MaxShelf <= FLostFound::MaxShelf, "a month of finds: %d, the shelf holds at most %d", Found, MaxShelf);
+	FLost Took;
+	if (!F.Shelf.empty())
+	{
+		CHECK(F.Take(0, Took) && F.Carried.size() == 1, "he takes a thing");
+		const std::string Owner = F.Owners[(size_t)Took.Owner];
+		CHECK(F.CarriedFor(Owner) == 0 && F.CarriedFor("nobody") == -1, "it is the owner's");
+		FLostFound G;
+		G.Owners = F.Owners;
+		G.Load(F.Save());
+		CHECK(G.Carried.size() == 1 && G.Shelf.size() == F.Shelf.size() && G.Day == F.Day, "the lost and found is saved");
+		const std::string Gift = F.GiveBack(0);
+		bool bKnown = false;
+		for (int K = 0; K < NumGifts; K++)
+		{
+			bKnown |= Gift == Gifts[K];
+		}
+		CHECK(bKnown && F.Carried.empty() && F.Returned == 1, "handed back for a gift (%s)", Gift.c_str());
+		F.StartDay(31);
+		for (const FLost& X : F.Shelf)
+		{
+			CHECK(F.Owners[(size_t)X.Owner] != Owner || X.Day == 31, "the same thing again on the shelf");
+		}
+	}
+
+	// the travel card: seven stamps, each once
+	FTravelCard Card;
+	CHECK(!Card.Punch("aton"), "no card, no stamp");
+	Card.bHave = true;
+	int New = 0;
+	for (const FStation& S : N.Stations)
+	{
+		New += Card.Punch(S.Id) ? 1 : 0;
+		New += Card.Punch(S.Id) ? 1 : 0;
+	}
+	FTravelCard Card2;
+	Card2.Load(Card.Save());
+	CHECK(New == (int)N.Stations.size() && N.Stations.size() == 7 && Card2.Stamps.size() == 7 && Card2.bHave, "seven stations, seven stamps (%d)", New);
+
+	std::printf(Fails ? "%d FAILED\n" : "all ok\n", Fails);
+	return Fails ? 1 : 0;
+}
+
 int main(int Argc, char** Argv)
 {
 	const std::string Cmd = Argc > 1 ? Argv[1] : "test";
@@ -210,6 +605,14 @@ int main(int Argc, char** Argv)
 	{
 		return Test();
 	}
-	std::printf("usage: run.sh test\n");
+	if (Cmd == "town")
+	{
+		return Town();
+	}
+	if (Cmd == "board")
+	{
+		return Board();
+	}
+	std::printf("usage: run.sh test | town | board\n");
 	return 2;
 }

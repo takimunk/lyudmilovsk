@@ -713,7 +713,8 @@
    ]
   },
   "un_t_window": {
-   "prompt": "city.act.look_out.prompt",
+   "prompt": "city.act.window_look.prompt",
+   "window": 0.5,
    "lines": [
     {
      "k": "city.un.twin.1",
