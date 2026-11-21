@@ -634,10 +634,15 @@ loaded once when the file is adopted (`LoadObject`, a handful).
 
 ```
 "tones":   {"<id>": {"loop": "<sound id>", "volume": 0..1, "shots": ["<sound id>"], "every": [min, max] s (12..30, 2..600),
-                     "shot_volume": 0..1, "closed": "<tone id>", "about": "..."}}
+                     "shot_volume": 0..1, "closed": "<tone id>", "weather": {"<weather word>": "<tone id>"},
+                     "windows": 0..1, "about": "..."}}
 "tone_by": {"<plot id>" | "unit:<variant>" | "<building type>" | "<plot kind>": "<tone id>"}     (first match in that order)
 "sound_alias": {"<id an act uses>": "<soundscape id>"}                                           (page_turn -> diary_page ...)
 ```
+
+`weather` and `windows` (docs/indoor_weather.md): while open and a weather word holds, that tone plays instead (a full cafe
+in the rain, the keeper's radio in the lighthouse); `windows` is how much of the rain on the glass is heard inside
+(`ULyudSoundscapeSubsystem::SetNearWindows`, set with each tone, 0 outside).
 
 interiors.py writes `tones` (with the loop's asset path, `/Game/Audio/<Group>/S_<id>_01`) and `plot_tones`. Now: ten tones
 (`hall_quiet`, `reading_room`, `cafe_room`, `bar_room`, `kitchen_shop`, `shop_room`, `cold_counter`, `empty_room`,

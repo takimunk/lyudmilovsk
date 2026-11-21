@@ -1527,6 +1527,7 @@ static int Day(int Argc, char** Argv, const char* TraceKey, bool bSummary = fals
 
 #include "town_week.h"
 #include "winter_people.h"
+#include "indoor_weather.h"
 
 int main(int Argc, char** Argv)
 {
@@ -1548,6 +1549,10 @@ int main(int Argc, char** Argv)
 		const int R = Winter();
 		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 		return R;
+	}
+	if (Mode == "weather")
+	{
+		return IndoorWeather();
 	}
 	if (Mode == "day")
 	{
