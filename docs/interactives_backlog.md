@@ -471,7 +471,7 @@ game-items skill for each new item (icons), citysim of recipes, Mac shot of cook
 
 ## 35. Rental and promenade windows
 
-`[ ]` **Brief (Opus 5.5):** Two open items of P3: the rental unit only talks (rent deck chairs and parasols for the beach,
+`[~] rental-windows 2026-11-21` **Brief (Opus 5.5):** Two open items of P3: the rental unit only talks (rent deck chairs and parasols for the beach,
 place them, lie in the sun; tie the rowing boat hire `ALyudRowBoat` and bicycles to the same counter), and the promenade
 units are opaque from outside (make the lit room readable through the glass: an interior cubemap card or the real room
 behind glass with cheap lighting, by distance). Signboards for fish, rental, workshop, souvenirs (`sign_*` cells in
