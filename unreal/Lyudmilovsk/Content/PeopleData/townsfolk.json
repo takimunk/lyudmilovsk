@@ -644,9 +644,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      15.19
+      8.22,
+      17.42
      ],
      "days": [
       0,
@@ -669,7 +670,7 @@
     "sun": 0.41
    },
    "walk_speed": 1.16,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "fish_shore": 0.21,
     "read_library": 0.78
@@ -774,15 +775,18 @@
    "household": "t_p-t2h2_1-03",
    "home": "P-T2H2/1-03",
    "chronotype": "lark",
-   "wake": 5.13,
-   "bed": 21.14,
+   "wake": 5.16,
+   "bed": 21.86,
    "spread": 0.63,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "academ",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      9.0,
-      17.56
+      6.25,
+      14.75
      ],
      "days": [
       0,
@@ -806,7 +810,7 @@
     "sun": 1.0
    },
    "walk_speed": 1.28,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "watch_sunrise": 0.42,
     "read_library": 0.23,
@@ -829,9 +833,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      15.79
+      8.25,
+      17.77
      ],
      "days": [
       0,
@@ -854,7 +859,7 @@
     "sun": 0.57
    },
    "walk_speed": 1.25,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "play_club": 0.74,
     "play_town_club": 0.72,
@@ -1301,9 +1306,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.5,
-      16.43
+      8.04,
+      18.71
      ],
      "days": [
       0,
@@ -1329,7 +1335,7 @@
     "sun": 0.67
    },
    "walk_speed": 1.3,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "fair_visit": 0.48,
     "fish_shore": 0.3
@@ -1517,9 +1523,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      15.24
+      8.48,
+      17.61
      ],
      "days": [
       0,
@@ -1542,7 +1549,7 @@
     "sun": 0.86
    },
    "walk_speed": 1.23,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.27,
     "sea_air": 0.73,
@@ -2058,15 +2065,16 @@
    "household": "t_p-unite_1-19",
    "home": "P-UNITE/1-19",
    "chronotype": "owl",
-   "wake": 7.68,
+   "wake": 7.47,
    "bed": 0.18,
    "spread": 0.82,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.5,
-      16.15
+      8.37,
+      17.76
      ],
      "days": [
       0,
@@ -2092,7 +2100,7 @@
     "sun": 0.68
    },
    "walk_speed": 1.19,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.58,
     "play_club": 0.73,
@@ -2630,15 +2638,16 @@
    "household": "t_p-t3h2_3-06",
    "home": "P-T3H2/3-06",
    "chronotype": "owl",
-   "wake": 7.31,
-   "bed": 23.81,
+   "wake": 6.87,
+   "bed": 22.57,
    "spread": 0.72,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.5,
-      16.14
+      7.77,
+      17.6
      ],
      "days": [
       0,
@@ -2663,7 +2672,7 @@
     "sun": 0.45
    },
    "walk_speed": 1.34,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.42,
     "play_club": 0.47,
@@ -2741,9 +2750,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      15.79
+      7.61,
+      18.23
      ],
      "days": [
       0,
@@ -2766,7 +2776,7 @@
     "sun": 0.32
    },
    "walk_speed": 1.23,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.22,
     "stroll": 0.41,
@@ -3026,14 +3036,15 @@
    "home": "P-SERPENTINE/3-24",
    "chronotype": "lark",
    "wake": 5.25,
-   "bed": 22.2,
+   "bed": 20.95,
    "spread": 0.36,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.5,
-      17.16
+      7.78,
+      18.48
      ],
      "days": [
       0,
@@ -3058,7 +3069,7 @@
     "sun": 0.66
    },
    "walk_speed": 1.23,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 0.52,
     "play_club": 0.4,
@@ -3618,23 +3629,26 @@
    "female": 1,
    "household": "t_w2-d004",
    "home": "W2-D004",
-   "chronotype": "usual",
-   "wake": 5.9,
-   "bed": 22.4,
+   "chronotype": "lark",
+   "wake": 4.57,
+   "bed": 21.37,
    "spread": 0.6,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "academ",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      7.0,
-      16.0
+      5.5,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -3650,7 +3664,7 @@
     "sun": 0.71
    },
    "walk_speed": 1.28,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "fair_visit": 0.49,
     "sea_air": 0.54
@@ -3860,15 +3874,16 @@
    "household": "t_p-unite_9-14",
    "home": "P-UNITE/9-14",
    "chronotype": "usual",
-   "wake": 7.29,
+   "wake": 7.04,
    "bed": 23.78,
    "spread": 0.41,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      17.56
+      7.94,
+      18.53
      ],
      "days": [
       0,
@@ -3894,7 +3909,7 @@
     "sun": 0.73
    },
    "walk_speed": 1.18,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "read_library": 0.29,
     "sea_air": 0.4
@@ -4469,15 +4484,18 @@
    "household": "t_p-t1h2_2-01",
    "home": "P-T1H2/2-01",
    "chronotype": "owl",
-   "wake": 7.58,
-   "bed": 0.08,
+   "wake": 9.31,
+   "bed": 1.11,
    "spread": 0.62,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "aton",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      8.5,
-      16.15
+      14.5,
+      24.0
      ],
      "days": [
       0,
@@ -4501,7 +4519,7 @@
     "sun": 1.0
    },
    "walk_speed": 1.16,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 0.46,
     "coffee": 0.21,
@@ -4620,23 +4638,26 @@
    "female": 0,
    "household": "t_p-riser2_1-02",
    "home": "P-RISER2/1-02",
-   "chronotype": "owl",
-   "wake": 7.55,
-   "bed": 0.05,
+   "chronotype": "lark",
+   "wake": 4.71,
+   "bed": 21.51,
    "spread": 0.87,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "zenit",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      8.5,
-      16.44
+      5.5,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -4653,7 +4674,7 @@
     "sun": 0.72
    },
    "walk_speed": 1.28,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 0.25,
     "read_library": 0.46,
@@ -4669,16 +4690,19 @@
    "female": 1,
    "household": "t_p-riser2_1-02",
    "home": "P-RISER2/1-02",
-   "chronotype": "usual",
-   "wake": 6.74,
-   "bed": 23.24,
+   "chronotype": "owl",
+   "wake": 9.09,
+   "bed": 0.89,
    "spread": 0.68,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "zenit",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      9.0,
-      16.81
+      14.5,
+      24.0
      ],
      "days": [
       0,
@@ -4704,7 +4728,7 @@
     "sun": 0.53
    },
    "walk_speed": 1.21,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "shop_town": 0.44,
     "coffee": 0.55
@@ -4897,22 +4921,25 @@
    "household": "t_w2-d079",
    "home": "W2-D079",
    "chronotype": "owl",
-   "wake": 7.99,
-   "bed": 0.97,
+   "wake": 9.2,
+   "bed": 1.0,
    "spread": 0.53,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "amber",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      9.0,
-      17.2
+      14.5,
+      24.0
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -4928,7 +4955,7 @@
     "sun": 0.77
    },
    "walk_speed": 1.36,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 0.28,
     "read_library": 0.21,
@@ -5049,16 +5076,19 @@
    "female": 1,
    "household": "t_p-t1h3_0-01",
    "home": "P-T1H3/0-01",
-   "chronotype": "usual",
-   "wake": 6.59,
-   "bed": 23.09,
+   "chronotype": "owl",
+   "wake": 8.96,
+   "bed": 0.86,
    "spread": 0.51,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "aton",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      8.5,
-      16.52
+      14.5,
+      23.75
      ],
      "days": [
       0,
@@ -5081,7 +5111,7 @@
     "sun": 0.46
    },
    "walk_speed": 1.19,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "coffee": 0.34,
     "eat_out": 0.67
@@ -5097,15 +5127,16 @@
    "household": "t_p-t4h2_4-10",
    "home": "P-T4H2/4-10",
    "chronotype": "usual",
-   "wake": 7.62,
-   "bed": 0.37,
+   "wake": 6.95,
+   "bed": 22.65,
    "spread": 0.47,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.5,
-      15.73
+      7.85,
+      18.19
      ],
      "days": [
       0,
@@ -5131,7 +5162,7 @@
     "sun": 0.22
    },
    "walk_speed": 1.2,
-   "occupation": "student",
+   "occupation": "researcher",
    "likes": {
     "fish_shore": 0.27,
     "shop_town": 0.35
@@ -5372,9 +5403,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      16.11
+      8.53,
+      18.04
      ],
      "days": [
       0,
@@ -5397,7 +5429,7 @@
     "sun": 0.56
    },
    "walk_speed": 1.23,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.59,
     "sea_air": 0.22,
@@ -5754,23 +5786,26 @@
    "female": 1,
    "household": "t_p-t4h2_2-02",
    "home": "P-T4H2/2-02",
-   "chronotype": "usual",
-   "wake": 7.2,
-   "bed": 0.13,
+   "chronotype": "lark",
+   "wake": 4.71,
+   "bed": 21.51,
    "spread": 0.52,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "polar",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      9.0,
-      17.18
+      5.5,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -5789,7 +5824,7 @@
     "sun": 0.44
    },
    "walk_speed": 1.23,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "eat_out": 0.56,
     "swim_look": 0.75
@@ -6842,9 +6877,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.5,
-      16.08
+      7.66,
+      18.66
      ],
      "days": [
       0,
@@ -6867,7 +6903,7 @@
     "sun": 0.51
    },
    "walk_speed": 1.38,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "coffee": 0.73,
     "shop_town": 0.56
@@ -7015,23 +7051,26 @@
    "female": 0,
    "household": "t_p-bridgehouse_6-01",
    "home": "P-BRIDGEHOUSE/6-01",
-   "chronotype": "usual",
-   "wake": 6.67,
-   "bed": 23.17,
+   "chronotype": "lark",
+   "wake": 4.55,
+   "bed": 21.35,
    "spread": 0.93,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "horizon",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      7.5,
-      15.22
+      5.5,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -7049,7 +7088,7 @@
     "sun": 0.83
    },
    "walk_speed": 1.22,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "fish_shore": 0.68,
     "eat_out": 0.48
@@ -7064,16 +7103,19 @@
    "female": 1,
    "household": "t_p-bridgehouse_6-01",
    "home": "P-BRIDGEHOUSE/6-01",
-   "chronotype": "usual",
-   "wake": 8.06,
-   "bed": 22.86,
+   "chronotype": "lark",
+   "wake": 5.11,
+   "bed": 21.81,
    "spread": 0.84,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "horizon",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      9.0,
-      17.82
+      6.25,
+      14.75
      ],
      "days": [
       0,
@@ -7098,7 +7140,7 @@
     "sun": 0.71
    },
    "walk_speed": 1.17,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "stroll": 0.34,
     "fish_shore": 0.75
@@ -7835,9 +7877,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      16.22
+      8.12,
+      18.78
      ],
      "days": [
       0,
@@ -7863,7 +7906,7 @@
     "sun": 0.63
    },
    "walk_speed": 1.19,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 0.78,
     "stroll": 0.63,
@@ -8165,22 +8208,25 @@
    "household": "t_p-riser2_0-06",
    "home": "P-RISER2/0-06",
    "chronotype": "owl",
-   "wake": 6.3,
-   "bed": 22.8,
+   "wake": 9.29,
+   "bed": 1.09,
    "spread": 0.62,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "zenit",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      7.5,
-      16.32
+      14.5,
+      24.0
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -8198,7 +8244,7 @@
     "sun": 0.41
    },
    "walk_speed": 1.27,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 0.22,
     "play_club": 0.59,
@@ -8324,9 +8370,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      15.57
+      8.35,
+      18.5
      ],
      "days": [
       0,
@@ -8352,7 +8399,7 @@
     "sun": 0.93
    },
    "walk_speed": 1.22,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "stroll": 0.24,
     "fair_visit": 0.58
@@ -8766,16 +8813,19 @@
    "female": 1,
    "household": "t_w2-d072",
    "home": "W2-D072",
-   "chronotype": "night",
-   "wake": 7.56,
-   "bed": 0.06,
+   "chronotype": "lark",
+   "wake": 4.69,
+   "bed": 21.49,
    "spread": 0.45,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "amber",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      8.5,
-      16.83
+      5.5,
+      14.75
      ],
      "days": [
       0,
@@ -8799,7 +8849,7 @@
     "sun": 0.39
    },
    "walk_speed": 1.29,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 1.32,
     "play_club": 0.84,
@@ -8824,9 +8874,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      16.15
+      8.49,
+      18.37
      ],
      "days": [
       0,
@@ -8852,7 +8903,7 @@
     "sun": 1.0
    },
    "walk_speed": 1.19,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 0.95,
     "coffee": 0.49,
@@ -8970,16 +9021,19 @@
    "female": 0,
    "household": "t_w5-d127",
    "home": "W5-D127",
-   "chronotype": "usual",
-   "wake": 7.17,
-   "bed": 23.75,
+   "chronotype": "owl",
+   "wake": 8.97,
+   "bed": 0.87,
    "spread": 0.46,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "polar",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      8.5,
-      16.87
+      14.5,
+      23.75
      ],
      "days": [
       0,
@@ -9002,7 +9056,7 @@
     "sun": 0.0
    },
    "walk_speed": 1.23,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "coffee": 0.69,
     "fair_visit": 0.56
@@ -9520,23 +9574,26 @@
    "female": 0,
    "household": "t_w3-d005",
    "home": "W3-D005",
-   "chronotype": "usual",
-   "wake": 7.42,
-   "bed": 22.54,
+   "chronotype": "lark",
+   "wake": 4.48,
+   "bed": 21.28,
    "spread": 0.85,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "mayak",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      8.5,
-      17.26
+      5.5,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -9555,7 +9612,7 @@
     "sun": 0.37
    },
    "walk_speed": 1.28,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "swim_look": 0.33,
     "fair_visit": 0.26
@@ -9570,16 +9627,19 @@
    "female": 1,
    "household": "t_w3-d005",
    "home": "W3-D005",
-   "chronotype": "usual",
-   "wake": 6.55,
-   "bed": 22.63,
+   "chronotype": "lark",
+   "wake": 4.51,
+   "bed": 21.31,
    "spread": 0.65,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "mayak",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      7.5,
-      16.24
+      5.5,
+      14.75
      ],
      "days": [
       0,
@@ -9605,7 +9665,7 @@
     "sun": 0.32
    },
    "walk_speed": 1.31,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "fair_visit": 0.22,
     "swim_look": 0.58
@@ -9937,9 +9997,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      16.89
+      8.44,
+      17.7
      ],
      "days": [
       0,
@@ -9963,7 +10024,7 @@
     "sun": 0.68
    },
    "walk_speed": 1.34,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "swim_look": 0.74,
     "stroll": 0.2
@@ -10774,9 +10835,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.5,
-      15.23
+      7.9,
+      18.29
      ],
      "days": [
       0,
@@ -10799,7 +10861,7 @@
     "sun": 0.09
    },
    "walk_speed": 1.33,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "swim_look": 0.56,
     "coffee": 0.68
@@ -11065,23 +11127,26 @@
    "female": 1,
    "household": "t_p-bridgehouse_1-04",
    "home": "P-BRIDGEHOUSE/1-04",
-   "chronotype": "usual",
-   "wake": 6.34,
-   "bed": 22.84,
+   "chronotype": "owl",
+   "wake": 9.09,
+   "bed": 0.89,
    "spread": 0.51,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "horizon",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      7.5,
-      15.56
+      14.5,
+      24.0
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -11099,7 +11164,7 @@
     "sun": 0.54
    },
    "walk_speed": 1.25,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "coffee": 0.37,
     "fair_visit": 0.52
@@ -11566,9 +11631,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      14.58
+      8.31,
+      18.58
      ],
      "days": [
       0,
@@ -11594,7 +11660,7 @@
     "sun": 0.57
    },
    "walk_speed": 1.18,
-   "occupation": "student",
+   "occupation": "researcher",
    "likes": {
     "coffee": 0.49,
     "swim_look": 0.27
@@ -12132,16 +12198,19 @@
    "female": 1,
    "household": "t_w4-d061",
    "home": "W4-D061",
-   "chronotype": "night",
-   "wake": 6.51,
-   "bed": 23.01,
+   "chronotype": "lark",
+   "wake": 5.24,
+   "bed": 21.94,
    "spread": 0.49,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "zenit",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      7.5,
-      16.07
+      6.25,
+      14.75
      ],
      "days": [
       0,
@@ -12164,7 +12233,7 @@
     "sun": 0.67
    },
    "walk_speed": 1.4,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "night_walk": 1.25,
     "sea_air": 0.6,
@@ -13107,9 +13176,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.5,
-      17.42
+      8.58,
+      18.49
      ],
      "days": [
       0,
@@ -13135,7 +13205,7 @@
     "sun": 0.8
    },
    "walk_speed": 1.24,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 0.68,
     "swim_look": 0.5,
@@ -13390,22 +13460,25 @@
    "household": "t_w5-d081",
    "home": "W5-D081",
    "chronotype": "owl",
-   "wake": 6.25,
-   "bed": 22.75,
+   "wake": 9.03,
+   "bed": 0.93,
    "spread": 1.08,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "horizon",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      7.0,
-      15.92
+      14.5,
+      23.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -13424,7 +13497,7 @@
     "sun": 0.54
    },
    "walk_speed": 1.18,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "night_walk": 0.52,
     "play_club": 0.71,
@@ -13551,9 +13624,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      14.57
+      8.05,
+      18.1
      ],
      "days": [
       0,
@@ -13578,7 +13652,7 @@
     "sun": 0.52
    },
    "walk_speed": 1.27,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "eat_out": 0.77,
     "fair_visit": 0.43
@@ -13894,16 +13968,19 @@
    "female": 0,
    "household": "t_w3-d066",
    "home": "W3-D066",
-   "chronotype": "usual",
-   "wake": 6.67,
-   "bed": 23.17,
+   "chronotype": "lark",
+   "wake": 5.28,
+   "bed": 21.98,
    "spread": 0.75,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "amber",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      8.5,
-      16.53
+      6.25,
+      14.75
      ],
      "days": [
       0,
@@ -13928,7 +14005,7 @@
     "sun": 0.27
    },
    "walk_speed": 1.19,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "eat_out": 0.69,
     "coffee": 0.49
@@ -14050,9 +14127,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      15.83
+      8.46,
+      18.22
      ],
      "days": [
       0,
@@ -14077,7 +14155,7 @@
     "sun": 0.78
    },
    "walk_speed": 1.16,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "coffee": 0.52,
     "read_library": 0.78
@@ -14673,9 +14751,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.5,
-      15.74
+      8.55,
+      17.54
      ],
      "days": [
       0,
@@ -14701,7 +14780,7 @@
     "sun": 0.75
    },
    "walk_speed": 1.23,
-   "occupation": "student",
+   "occupation": "researcher",
    "likes": {
     "play_club": 0.67,
     "play_town_club": 0.36,
@@ -14719,15 +14798,18 @@
    "household": "t_w5-d035",
    "home": "W5-D035",
    "chronotype": "owl",
-   "wake": 7.87,
-   "bed": 0.37,
+   "wake": 9.03,
+   "bed": 0.93,
    "spread": 0.58,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "horizon",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      9.0,
-      16.74
+      14.5,
+      23.75
      ],
      "days": [
       0,
@@ -14751,7 +14833,7 @@
     "sun": 0.87
    },
    "walk_speed": 1.18,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "night_walk": 0.36,
     "fish_shore": 0.55,
@@ -14767,23 +14849,26 @@
    "female": 1,
    "household": "t_w5-d035",
    "home": "W5-D035",
-   "chronotype": "usual",
-   "wake": 7.11,
-   "bed": 23.13,
+   "chronotype": "lark",
+   "wake": 5.27,
+   "bed": 21.97,
    "spread": 0.86,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "horizon",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      8.0,
-      16.23
+      6.25,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -14800,7 +14885,7 @@
     "sun": 0.34
    },
    "walk_speed": 1.18,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "swim_look": 0.33,
     "sea_air": 0.43
@@ -15087,9 +15172,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      16.76
+      8.07,
+      17.86
      ],
      "days": [
       0,
@@ -15115,7 +15201,7 @@
     "sun": 0.15
    },
    "walk_speed": 1.25,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "fish_shore": 0.36,
     "shop_town": 0.61
@@ -15596,9 +15682,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      16.61
+      8.13,
+      18.43
      ],
      "days": [
       0,
@@ -15623,7 +15710,7 @@
     "sun": 0.67
    },
    "walk_speed": 1.36,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "swim_look": 0.23,
     "sea_air": 0.2
@@ -16495,15 +16582,16 @@
    "household": "t_w4-d036",
    "home": "W4-D036",
    "chronotype": "usual",
-   "wake": 7.84,
-   "bed": 0.37,
+   "wake": 7.5,
+   "bed": 23.2,
    "spread": 0.69,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      17.08
+      8.4,
+      18.48
      ],
      "days": [
       0,
@@ -16528,7 +16616,7 @@
     "sun": 0.41
    },
    "walk_speed": 1.19,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "fair_visit": 0.46,
     "swim_look": 0.62
@@ -17025,9 +17113,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      14.89
+      7.83,
+      18.11
      ],
      "days": [
       0,
@@ -17050,7 +17139,7 @@
     "sun": 0.34
    },
    "walk_speed": 1.33,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "sea_air": 0.25,
     "eat_out": 0.35
@@ -17072,9 +17161,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      16.63
+      7.7,
+      17.58
      ],
      "days": [
       0,
@@ -17100,7 +17190,7 @@
     "sun": 0.32
    },
    "walk_speed": 1.3,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 0.96,
     "coffee": 0.75,
@@ -17361,9 +17451,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.5,
-      17.49
+      8.35,
+      18.01
      ],
      "days": [
       0,
@@ -17389,7 +17480,7 @@
     "sun": 0.13
    },
    "walk_speed": 1.15,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.14,
     "swim_look": 0.65,
@@ -17573,15 +17664,16 @@
    "household": "t_p-capsule_7-07",
    "home": "P-CAPSULE/7-07",
    "chronotype": "usual",
-   "wake": 7.44,
+   "wake": 6.94,
    "bed": 23.67,
    "spread": 0.86,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      17.33
+      7.84,
+      17.88
      ],
      "days": [
       0,
@@ -17605,7 +17697,7 @@
     "sun": 0.35
    },
    "walk_speed": 1.24,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "shop_town": 0.69,
     "stroll": 0.32
@@ -17747,9 +17839,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.5,
-      16.94
+      8.38,
+      18.67
      ],
      "days": [
       0,
@@ -17773,7 +17866,7 @@
     "sun": 0.64
    },
    "walk_speed": 1.23,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 1.03,
     "play_club": 0.34,
@@ -17798,9 +17891,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      15.8
+      7.89,
+      18.52
      ],
      "days": [
       0,
@@ -17826,7 +17920,7 @@
     "sun": 0.92
    },
    "walk_speed": 1.37,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 0.89,
     "shop_town": 0.78,
@@ -18274,23 +18368,26 @@
    "female": 1,
    "household": "t_p-t2h2_3-03",
    "home": "P-T2H2/3-03",
-   "chronotype": "usual",
-   "wake": 7.87,
-   "bed": 22.74,
+   "chronotype": "lark",
+   "wake": 5.18,
+   "bed": 21.88,
    "spread": 0.61,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "academ",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      9.0,
-      17.45
+      6.25,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -18306,7 +18403,7 @@
     "sun": 0.43
    },
    "walk_speed": 1.31,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "swim_look": 0.37,
     "fair_visit": 0.39
@@ -18481,22 +18578,25 @@
    "household": "t_w2-d035",
    "home": "W2-D035",
    "chronotype": "owl",
-   "wake": 6.23,
-   "bed": 22.73,
+   "wake": 9.11,
+   "bed": 0.91,
    "spread": 1.06,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "academ",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      7.0,
-      15.16
+      14.5,
+      24.0
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -18515,7 +18615,7 @@
     "sun": 0.1
    },
    "walk_speed": 1.4,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 0.17,
     "shop_town": 0.49,
@@ -18531,16 +18631,19 @@
    "female": 1,
    "household": "t_w2-d035",
    "home": "W2-D035",
-   "chronotype": "usual",
-   "wake": 6.42,
-   "bed": 23.12,
+   "chronotype": "owl",
+   "wake": 9.28,
+   "bed": 1.08,
    "spread": 0.7,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "academ",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      7.5,
-      16.32
+      14.5,
+      24.0
      ],
      "days": [
       0,
@@ -18563,7 +18666,7 @@
     "sun": 0.79
    },
    "walk_speed": 1.35,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "eat_out": 0.23,
     "fish_shore": 0.25
@@ -18662,23 +18765,26 @@
    "female": 1,
    "household": "t_p-t1h4_4-03",
    "home": "P-T1H4/4-03",
-   "chronotype": "usual",
-   "wake": 6.39,
-   "bed": 23.24,
+   "chronotype": "lark",
+   "wake": 5.31,
+   "bed": 22.01,
    "spread": 0.98,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "mayak",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      7.5,
-      15.88
+      6.25,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -18696,7 +18802,7 @@
     "sun": 1.0
    },
    "walk_speed": 1.4,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "shop_town": 0.25,
     "stroll": 0.48
@@ -19307,16 +19413,19 @@
    "female": 0,
    "household": "t_w2-d049",
    "home": "W2-D049",
-   "chronotype": "usual",
-   "wake": 8.19,
-   "bed": 23.6,
+   "chronotype": "owl",
+   "wake": 8.92,
+   "bed": 0.82,
    "spread": 0.42,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "academ",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      10.0,
-      14.93
+      14.5,
+      23.75
      ],
      "days": [
       0,
@@ -19339,7 +19448,7 @@
     "sun": 0.48
    },
    "walk_speed": 1.32,
-   "occupation": "student",
+   "occupation": "station_barista",
    "likes": {
     "play_club": 0.82,
     "play_town_club": 0.71,
@@ -19357,22 +19466,25 @@
    "household": "t_w2-d049",
    "home": "W2-D049",
    "chronotype": "owl",
-   "wake": 9.82,
-   "bed": 2.6,
+   "wake": 9.11,
+   "bed": 1.01,
    "spread": 0.62,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "academ",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      10.0,
-      13.54
+      14.5,
+      23.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -19388,7 +19500,7 @@
     "sun": 0.32
    },
    "walk_speed": 1.15,
-   "occupation": "student",
+   "occupation": "station_barista",
    "likes": {
     "night_walk": 0.37,
     "sea_air": 0.52,
@@ -19709,16 +19821,19 @@
    "female": 0,
    "household": "t_p-t4h2_4-02",
    "home": "P-T4H2/4-02",
-   "chronotype": "usual",
-   "wake": 6.9,
-   "bed": 22.9,
+   "chronotype": "owl",
+   "wake": 9.1,
+   "bed": 0.9,
    "spread": 0.74,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "polar",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      9.0,
-      17.44
+      14.5,
+      24.0
      ],
      "days": [
       0,
@@ -19741,7 +19856,7 @@
     "sun": 0.16
    },
    "walk_speed": 1.22,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "shop_town": 0.76,
     "read_library": 0.21
@@ -19960,14 +20075,15 @@
    "home": "P-T3H2/3-14",
    "chronotype": "usual",
    "wake": 6.53,
-   "bed": 23.36,
+   "bed": 22.23,
    "spread": 0.54,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.5,
-      15.15
+      8.56,
+      18.78
      ],
      "days": [
       0,
@@ -19991,7 +20107,7 @@
     "sun": 0.59
    },
    "walk_speed": 1.15,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "shop_town": 0.22,
     "eat_out": 0.7
@@ -20416,23 +20532,26 @@
    "female": 1,
    "household": "t_p-t4h2_3-08",
    "home": "P-T4H2/3-08",
-   "chronotype": "usual",
-   "wake": 6.92,
-   "bed": 22.64,
+   "chronotype": "owl",
+   "wake": 9.2,
+   "bed": 1.0,
    "spread": 0.76,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "polar",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      9.0,
-      16.87
+      14.5,
+      24.0
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -20450,7 +20569,7 @@
     "sun": 0.33
    },
    "walk_speed": 1.37,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "stroll": 0.58,
     "fair_visit": 0.26,
@@ -20821,23 +20940,26 @@
    "female": 1,
    "household": "t_w3-d034",
    "home": "W3-D034",
-   "chronotype": "usual",
-   "wake": 6.56,
-   "bed": 22.81,
+   "chronotype": "owl",
+   "wake": 9.08,
+   "bed": 0.98,
    "spread": 0.4,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "mayak",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      7.5,
-      16.14
+      14.5,
+      23.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -20855,7 +20977,7 @@
     "sun": 0.74
    },
    "walk_speed": 1.33,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "swim_look": 0.58,
     "coffee": 0.43
@@ -21519,9 +21641,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      17.5
+      8.49,
+      18.56
      ],
      "days": [
       0,
@@ -21546,7 +21669,7 @@
     "sun": 0.93
    },
    "walk_speed": 1.28,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 1.21,
     "play_club": 0.66,
@@ -21565,15 +21688,16 @@
    "household": "t_p-unite_9-03",
    "home": "P-UNITE/9-03",
    "chronotype": "owl",
-   "wake": 8.3,
-   "bed": 0.8,
+   "wake": 6.98,
+   "bed": 22.68,
    "spread": 0.67,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      17.35
+      7.88,
+      18.28
      ],
      "days": [
       0,
@@ -21596,7 +21720,7 @@
     "sun": 0.51
    },
    "walk_speed": 1.35,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.52,
     "read_library": 0.54,
@@ -21619,9 +21743,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.5,
-      15.08
+      8.43,
+      18.04
      ],
      "days": [
       0,
@@ -21645,7 +21770,7 @@
     "sun": 0.6
    },
    "walk_speed": 1.21,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "read_library": 0.32,
     "sea_air": 0.57
@@ -22859,23 +22984,26 @@
    "female": 1,
    "household": "t_w3-d072",
    "home": "W3-D072",
-   "chronotype": "usual",
-   "wake": 7.81,
-   "bed": 0.33,
+   "chronotype": "lark",
+   "wake": 5.34,
+   "bed": 22.04,
    "spread": 0.48,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "amber",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      9.0,
-      16.82
+      6.25,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -22891,7 +23019,7 @@
     "sun": 0.71
    },
    "walk_speed": 1.29,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "eat_out": 0.6,
     "read_library": 0.65
@@ -22913,9 +23041,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      15.48
+      8.22,
+      17.88
      ],
      "days": [
       0,
@@ -22941,7 +23070,7 @@
     "sun": 0.09
    },
    "walk_speed": 1.25,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.22,
     "play_club": 0.4,
@@ -23185,9 +23314,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      16.96
+      8.26,
+      17.55
      ],
      "days": [
       0,
@@ -23212,7 +23342,7 @@
     "sun": 0.15
    },
    "walk_speed": 1.27,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "sea_air": 0.46,
     "coffee": 0.22
@@ -23388,23 +23518,26 @@
    "female": 1,
    "household": "t_p-unite_13-23",
    "home": "P-UNITE/13-23",
-   "chronotype": "usual",
-   "wake": 6.11,
-   "bed": 22.9,
+   "chronotype": "lark",
+   "wake": 5.32,
+   "bed": 22.02,
    "spread": 0.7,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "zenit",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      7.0,
-      15.02
+      6.25,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -23422,7 +23555,7 @@
     "sun": 0.37
    },
    "walk_speed": 1.32,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "swim_look": 0.53,
     "eat_out": 0.27
@@ -23691,16 +23824,19 @@
    "female": 1,
    "household": "t_w4-d068",
    "home": "W4-D068",
-   "chronotype": "owl",
-   "wake": 6.35,
-   "bed": 22.85,
+   "chronotype": "lark",
+   "wake": 4.61,
+   "bed": 21.41,
    "spread": 0.65,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "zenit",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      7.5,
-      15.96
+      5.5,
+      14.75
      ],
      "days": [
       0,
@@ -23724,7 +23860,7 @@
     "sun": 0.31
    },
    "walk_speed": 1.23,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 0.51,
     "stroll": 0.3,
@@ -23933,9 +24069,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      15.98
+      8.36,
+      18.13
      ],
      "days": [
       0,
@@ -23958,7 +24095,7 @@
     "sun": 1.0
    },
    "walk_speed": 1.33,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 0.67,
     "fair_visit": 0.26,
@@ -24161,15 +24298,18 @@
    "household": "t_w2-d078",
    "home": "W2-D078",
    "chronotype": "owl",
-   "wake": 7.53,
-   "bed": 0.03,
+   "wake": 9.11,
+   "bed": 0.91,
    "spread": 0.96,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "amber",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      8.5,
-      17.37
+      14.5,
+      24.0
      ],
      "days": [
       0,
@@ -24193,7 +24333,7 @@
     "sun": 0.45
    },
    "walk_speed": 1.33,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 0.19,
     "sea_air": 0.55,
@@ -24267,9 +24407,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.5,
-      16.45
+      8.13,
+      18.35
      ],
      "days": [
       0,
@@ -24295,7 +24436,7 @@
     "sun": 0.08
    },
    "walk_speed": 1.2,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.21,
     "sea_air": 0.57,
@@ -24361,23 +24502,26 @@
    "female": 0,
    "household": "t_p-t1h4_1-03",
    "home": "P-T1H4/1-03",
-   "chronotype": "usual",
-   "wake": 6.18,
-   "bed": 22.6,
+   "chronotype": "owl",
+   "wake": 9.14,
+   "bed": 0.94,
    "spread": 0.71,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "mayak",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      7.0,
-      15.05
+      14.5,
+      24.0
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -24394,7 +24538,7 @@
     "sun": 0.71
    },
    "walk_speed": 1.29,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "fish_shore": 0.72,
     "shop_town": 0.74
@@ -24409,16 +24553,19 @@
    "female": 0,
    "household": "t_w5-d039",
    "home": "W5-D039",
-   "chronotype": "usual",
-   "wake": 6.64,
-   "bed": 23.14,
+   "chronotype": "lark",
+   "wake": 4.62,
+   "bed": 21.42,
    "spread": 0.98,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "horizon",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      7.5,
-      15.9
+      5.5,
+      14.75
      ],
      "days": [
       0,
@@ -24441,7 +24588,7 @@
     "sun": 0.74
    },
    "walk_speed": 1.26,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "play_club": 0.66,
     "play_town_club": 0.72,
@@ -24510,14 +24657,15 @@
    "home": "P-CAPSULE/4-01",
    "chronotype": "usual",
    "wake": 6.54,
-   "bed": 23.43,
+   "bed": 22.24,
    "spread": 0.57,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.5,
-      16.15
+      7.92,
+      17.73
      ],
      "days": [
       0,
@@ -24542,7 +24690,7 @@
     "sun": 0.0
    },
    "walk_speed": 1.37,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "play_club": 0.5,
     "play_town_club": 0.2,
@@ -24614,9 +24762,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      15.17
+      8.23,
+      18.38
      ],
      "days": [
       0,
@@ -24641,7 +24790,7 @@
     "sun": 0.61
    },
    "walk_speed": 1.24,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "coffee": 0.54,
     "stroll": 0.76
@@ -25782,9 +25931,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      14.28
+      8.52,
+      18.37
      ],
      "days": [
       0,
@@ -25808,7 +25958,7 @@
     "sun": 0.78
    },
    "walk_speed": 1.28,
-   "occupation": "student",
+   "occupation": "researcher",
    "likes": {
     "shop_town": 0.49,
     "fair_visit": 0.76,
@@ -25831,9 +25981,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.5,
-      15.19
+      8.48,
+      18.73
      ],
      "days": [
       0,
@@ -25857,7 +26008,7 @@
     "sun": 0.39
    },
    "walk_speed": 1.27,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.59,
     "play_club": 0.23,
@@ -26645,15 +26796,16 @@
    "household": "t_p-t5h1_9-02",
    "home": "P-T5H1/9-02",
    "chronotype": "usual",
-   "wake": 7.35,
-   "bed": 23.99,
+   "wake": 7.17,
+   "bed": 22.87,
    "spread": 0.57,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      16.55
+      8.07,
+      18.5
      ],
      "days": [
       0,
@@ -26679,7 +26831,7 @@
     "sun": 0.3
    },
    "walk_speed": 1.4,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "swim_look": 0.49,
     "eat_out": 0.49
@@ -26728,23 +26880,26 @@
    "female": 1,
    "household": "t_w2-d001",
    "home": "W2-D001",
-   "chronotype": "usual",
-   "wake": 6.72,
-   "bed": 23.22,
+   "chronotype": "owl",
+   "wake": 9.05,
+   "bed": 0.95,
    "spread": 0.76,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "aton",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      7.5,
-      16.41
+      14.5,
+      23.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -26762,7 +26917,7 @@
     "sun": 0.54
    },
    "walk_speed": 1.33,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "sea_air": 0.56,
     "fair_visit": 0.65
@@ -27138,15 +27293,16 @@
    "household": "t_p-t3h2_3-17",
    "home": "P-T3H2/3-17",
    "chronotype": "usual",
-   "wake": 7.27,
-   "bed": 0.15,
+   "wake": 7.01,
+   "bed": 22.71,
    "spread": 0.5,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.5,
-      14.21
+      7.91,
+      17.55
      ],
      "days": [
       0,
@@ -27170,7 +27326,7 @@
     "sun": 0.81
    },
    "walk_speed": 1.17,
-   "occupation": "student",
+   "occupation": "researcher",
    "likes": {
     "shop_town": 0.73,
     "eat_out": 0.38
@@ -27713,23 +27869,26 @@
    "female": 0,
    "household": "t_p-t1h1_0-02",
    "home": "P-T1H1/0-02",
-   "chronotype": "usual",
-   "wake": 6.64,
-   "bed": 23.6,
+   "chronotype": "lark",
+   "wake": 5.21,
+   "bed": 21.91,
    "spread": 0.81,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "aton",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      7.5,
-      15.28
+      6.25,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -27745,7 +27904,7 @@
     "sun": 0.56
    },
    "walk_speed": 1.18,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "play_club": 0.45,
     "play_town_club": 0.61,
@@ -27762,16 +27921,19 @@
    "female": 0,
    "household": "t_p-t1h1_0-02",
    "home": "P-T1H1/0-02",
-   "chronotype": "usual",
-   "wake": 6.6,
-   "bed": 22.59,
+   "chronotype": "lark",
+   "wake": 5.31,
+   "bed": 22.01,
    "spread": 0.95,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "aton",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      7.5,
-      15.25
+      6.25,
+      14.75
      ],
      "days": [
       0,
@@ -27794,7 +27956,7 @@
     "sun": 0.45
    },
    "walk_speed": 1.33,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "coffee": 0.45,
     "shop_town": 0.67
@@ -28423,23 +28585,26 @@
    "female": 1,
    "household": "t_p-unite_5-25",
    "home": "P-UNITE/5-25",
-   "chronotype": "usual",
-   "wake": 7.06,
-   "bed": 23.04,
+   "chronotype": "owl",
+   "wake": 9.03,
+   "bed": 0.93,
    "spread": 0.97,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "zenit",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      8.0,
-      16.85
+      14.5,
+      23.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -28456,7 +28621,7 @@
     "sun": 0.33
    },
    "walk_speed": 1.39,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "fair_visit": 0.5,
     "shop_town": 0.4
@@ -28934,15 +29099,16 @@
    "household": "t_p-capsule_5-02",
    "home": "P-CAPSULE/5-02",
    "chronotype": "usual",
-   "wake": 6.91,
+   "wake": 6.82,
    "bed": 23.32,
    "spread": 0.4,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      15.72
+      7.72,
+      17.64
      ],
      "days": [
       0,
@@ -28966,7 +29132,7 @@
     "sun": 0.94
    },
    "walk_speed": 1.17,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "play_club": 0.66,
     "play_town_club": 0.44,
@@ -29623,15 +29789,18 @@
    "household": "t_w3-d130",
    "home": "W3-D130",
    "chronotype": "lark",
-   "wake": 4.77,
-   "bed": 21.27,
+   "wake": 4.54,
+   "bed": 21.34,
    "spread": 0.64,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "polar",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      7.5,
-      15.46
+      5.5,
+      14.75
      ],
      "days": [
       0,
@@ -29654,7 +29823,7 @@
     "sun": 0.74
    },
    "walk_speed": 1.19,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "watch_sunrise": 1.28,
     "eat_out": 0.21,
@@ -30140,16 +30309,19 @@
    "female": 0,
    "household": "t_p-unite_1-22",
    "home": "P-UNITE/1-22",
-   "chronotype": "usual",
-   "wake": 6.43,
-   "bed": 23.41,
+   "chronotype": "owl",
+   "wake": 9.0,
+   "bed": 0.9,
    "spread": 0.54,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "zenit",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      7.5,
-      16.16
+      14.5,
+      23.75
      ],
      "days": [
       0,
@@ -30174,7 +30346,7 @@
     "sun": 0.68
    },
    "walk_speed": 1.24,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "fish_shore": 0.21,
     "coffee": 0.5
@@ -30334,9 +30506,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      16.98
+      7.85,
+      18.35
      ],
      "days": [
       0,
@@ -30361,7 +30534,7 @@
     "sun": 0.5
    },
    "walk_speed": 1.2,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "read_library": 0.63,
     "fish_shore": 0.27
@@ -30875,9 +31048,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.5,
-      15.97
+      8.41,
+      18.64
      ],
      "days": [
       0,
@@ -30903,7 +31077,7 @@
     "sun": 0.6
    },
    "walk_speed": 1.18,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 1.18,
     "swim_look": 0.4,
@@ -30926,9 +31100,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      15.74
+      7.65,
+      18.63
      ],
      "days": [
       0,
@@ -30953,7 +31128,7 @@
     "sun": 0.32
    },
    "walk_speed": 1.4,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "coffee": 0.59,
     "read_library": 0.4,
@@ -31008,22 +31183,25 @@
    "household": "t_p-t1h2_1-01",
    "home": "P-T1H2/1-01",
    "chronotype": "owl",
-   "wake": 9.25,
-   "bed": 1.12,
+   "wake": 9.19,
+   "bed": 0.99,
    "spread": 0.52,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "aton",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      10.0,
-      14.92
+      14.5,
+      24.0
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -31040,7 +31218,7 @@
     "sun": 0.53
    },
    "walk_speed": 1.38,
-   "occupation": "student",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 0.6,
     "coffee": 0.45,
@@ -31144,23 +31322,26 @@
    "female": 1,
    "household": "t_w2-d129",
    "home": "W2-D129",
-   "chronotype": "owl",
-   "wake": 6.97,
-   "bed": 23.47,
+   "chronotype": "lark",
+   "wake": 5.1,
+   "bed": 21.8,
    "spread": 0.65,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "polar",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      8.0,
-      16.68
+      6.25,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -31178,7 +31359,7 @@
     "sun": 0.6
    },
    "walk_speed": 1.28,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "night_walk": 0.24,
     "play_club": 0.44,
@@ -31831,9 +32012,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      15.67
+      8.26,
+      17.59
      ],
      "days": [
       0,
@@ -31859,7 +32041,7 @@
     "sun": 0.67
    },
    "walk_speed": 1.3,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 1.54,
     "fish_shore": 0.79,
@@ -32234,16 +32416,19 @@
    "female": 1,
    "household": "t_p-t1h1_0-04",
    "home": "P-T1H1/0-04",
-   "chronotype": "owl",
-   "wake": 6.83,
-   "bed": 23.33,
+   "chronotype": "lark",
+   "wake": 4.65,
+   "bed": 21.45,
    "spread": 1.06,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "aton",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      8.0,
-      16.76
+      5.5,
+      14.75
      ],
      "days": [
       0,
@@ -32264,7 +32449,7 @@
     "sun": 0.62
    },
    "walk_speed": 1.18,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 0.16,
     "eat_out": 0.23,
@@ -32287,9 +32472,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      16.92
+      8.37,
+      17.49
      ],
      "days": [
       0,
@@ -32314,7 +32500,7 @@
     "sun": 0.61
    },
    "walk_speed": 1.29,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 1.01,
     "eat_out": 0.32,
@@ -32605,16 +32791,19 @@
    "female": 1,
    "household": "t_w2-d011",
    "home": "W2-D011",
-   "chronotype": "usual",
-   "wake": 6.68,
-   "bed": 23.18,
+   "chronotype": "lark",
+   "wake": 4.6,
+   "bed": 21.4,
    "spread": 0.91,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "academ",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      9.5,
-      14.13
+      5.5,
+      14.75
      ],
      "days": [
       0,
@@ -32640,7 +32829,7 @@
     "sun": 0.24
    },
    "walk_speed": 1.17,
-   "occupation": "student",
+   "occupation": "station_attendant",
    "likes": {
     "play_club": 0.52,
     "play_town_club": 0.4,
@@ -32805,9 +32994,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.0,
-      14.79
+      8.41,
+      18.55
      ],
      "days": [
       0,
@@ -32828,7 +33018,7 @@
     "sun": 0.62
    },
    "walk_speed": 1.39,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "fish_shore": 0.41,
     "coffee": 0.46
@@ -32945,9 +33135,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      15.41
+      7.67,
+      18.29
      ],
      "days": [
       0,
@@ -32970,7 +33161,7 @@
     "sun": 1.0
    },
    "walk_speed": 1.15,
-   "occupation": "student",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 0.82,
     "eat_out": 0.34,
@@ -33517,9 +33708,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      15.75
+      8.21,
+      18.25
      ],
      "days": [
       0,
@@ -33545,7 +33737,7 @@
     "sun": 0.57
    },
    "walk_speed": 1.35,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 1.31,
     "eat_out": 0.21,
@@ -34069,23 +34261,26 @@
    "female": 1,
    "household": "t_w2-d077",
    "home": "W2-D077",
-   "chronotype": "usual",
-   "wake": 7.81,
-   "bed": 23.88,
+   "chronotype": "lark",
+   "wake": 4.56,
+   "bed": 21.36,
    "spread": 0.84,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "amber",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      9.0,
-      17.67
+      5.5,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -34102,7 +34297,7 @@
     "sun": 0.35
    },
    "walk_speed": 1.21,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "swim_look": 0.72,
     "coffee": 0.48
@@ -35228,15 +35423,16 @@
    "household": "t_w5-d013",
    "home": "W5-D013",
    "chronotype": "usual",
-   "wake": 7.39,
+   "wake": 7.37,
    "bed": 23.31,
    "spread": 0.97,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.5,
-      16.62
+      8.27,
+      17.6
      ],
      "days": [
       0,
@@ -35260,7 +35456,7 @@
     "sun": 0.25
    },
    "walk_speed": 1.16,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "fish_shore": 0.78,
     "read_library": 0.64
@@ -35310,14 +35506,15 @@
    "home": "W2-D116",
    "chronotype": "lark",
    "wake": 5.38,
-   "bed": 22.2,
+   "bed": 21.08,
    "spread": 0.55,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.5,
-      16.45
+      7.91,
+      18.29
      ],
      "days": [
       0,
@@ -35342,7 +35539,7 @@
     "sun": 0.76
    },
    "walk_speed": 1.17,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 0.73,
     "swim_look": 0.45,
@@ -35544,23 +35741,26 @@
    "female": 0,
    "household": "t_p-t1h2_2-04",
    "home": "P-T1H2/2-04",
-   "chronotype": "usual",
-   "wake": 7.47,
-   "bed": 23.03,
+   "chronotype": "lark",
+   "wake": 4.68,
+   "bed": 21.48,
    "spread": 0.76,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "aton",
+     "role": "attendant",
+     "shift": "early",
      "hours": [
-      8.5,
-      17.02
+      5.5,
+      14.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -35579,7 +35779,7 @@
     "sun": 0.62
    },
    "walk_speed": 1.28,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "read_library": 0.54,
     "stroll": 0.41
@@ -35679,23 +35879,26 @@
    "female": 1,
    "household": "t_p-t4h2_1-04",
    "home": "P-T4H2/1-04",
-   "chronotype": "lark",
-   "wake": 5.62,
-   "bed": 22.22,
+   "chronotype": "owl",
+   "wake": 8.95,
+   "bed": 0.85,
    "spread": 0.65,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "polar",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      8.5,
-      16.68
+      14.5,
+      23.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -35713,7 +35916,7 @@
     "sun": 0.42
    },
    "walk_speed": 1.19,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "watch_sunrise": 0.8,
     "shop_town": 0.38,
@@ -36162,16 +36365,19 @@
    "female": 1,
    "household": "t_w3-d007",
    "home": "W3-D007",
-   "chronotype": "usual",
-   "wake": 7.44,
-   "bed": 23.35,
+   "chronotype": "owl",
+   "wake": 9.22,
+   "bed": 1.02,
    "spread": 0.54,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "mayak",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      9.0,
-      16.64
+      14.5,
+      24.0
      ],
      "days": [
       0,
@@ -36197,7 +36403,7 @@
     "sun": 0.4
    },
    "walk_speed": 1.32,
-   "occupation": "away",
+   "occupation": "station_attendant",
    "likes": {
     "stroll": 0.7,
     "fair_visit": 0.76
@@ -36420,16 +36626,19 @@
    "female": 0,
    "household": "t_p-t4h2_4-03",
    "home": "P-T4H2/4-03",
-   "chronotype": "night",
-   "wake": 8.25,
-   "bed": 0.75,
+   "chronotype": "lark",
+   "wake": 5.15,
+   "bed": 21.85,
    "spread": 0.76,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "polar",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      9.0,
-      15.97
+      6.25,
+      14.75
      ],
      "days": [
       0,
@@ -36455,7 +36664,7 @@
     "sun": 0.35
    },
    "walk_speed": 1.33,
-   "occupation": "student",
+   "occupation": "station_barista",
    "likes": {
     "night_walk": 1.35,
     "shop_town": 0.7,
@@ -37167,16 +37376,19 @@
    "female": 0,
    "household": "t_p-serpentine_2-26",
    "home": "P-SERPENTINE/2-26",
-   "chronotype": "usual",
-   "wake": 7.4,
-   "bed": 0.28,
+   "chronotype": "owl",
+   "wake": 9.11,
+   "bed": 1.01,
    "spread": 0.84,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "amber",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      9.0,
-      16.88
+      14.5,
+      23.75
      ],
      "days": [
       0,
@@ -37202,7 +37414,7 @@
     "sun": 0.47
    },
    "walk_speed": 1.26,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "read_library": 0.78,
     "stroll": 0.58
@@ -37774,15 +37986,16 @@
    "household": "t_p-wave_6-04",
    "home": "P-WAVE/6-04",
    "chronotype": "night",
-   "wake": 9.25,
-   "bed": 1.75,
+   "wake": 7.08,
+   "bed": 22.78,
    "spread": 0.79,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      10.0,
-      14.45
+      7.98,
+      18.54
      ],
      "days": [
       0,
@@ -37807,7 +38020,7 @@
     "sun": 0.29
    },
    "walk_speed": 1.18,
-   "occupation": "student",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 1.12,
     "play_club": 0.48,
@@ -37826,22 +38039,25 @@
    "household": "t_p-serpentine_3-23",
    "home": "P-SERPENTINE/3-23",
    "chronotype": "owl",
-   "wake": 6.5,
-   "bed": 23.0,
+   "wake": 8.96,
+   "bed": 0.86,
    "spread": 0.96,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "amber",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      7.5,
-      15.71
+      14.5,
+      23.75
      ],
      "days": [
+      5,
+      6,
       0,
       1,
-      2,
-      3,
-      4
+      2
      ]
     }
    ],
@@ -37859,7 +38075,7 @@
     "sun": 0.26
    },
    "walk_speed": 1.3,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "night_walk": 0.51,
     "play_club": 0.32,
@@ -38209,9 +38425,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      15.93
+      8.38,
+      17.97
      ],
      "days": [
       0,
@@ -38236,7 +38453,7 @@
     "sun": 1.0
    },
    "walk_speed": 1.4,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 1.19,
     "swim_look": 0.57,
@@ -38426,9 +38643,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      16.41
+      8.53,
+      18.15
      ],
      "days": [
       0,
@@ -38452,7 +38670,7 @@
     "sun": 0.33
    },
    "walk_speed": 1.28,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "stroll": 0.24,
     "fish_shore": 0.8
@@ -38553,15 +38771,16 @@
    "household": "t_p-serpentine_1-08",
    "home": "P-SERPENTINE/1-08",
    "chronotype": "owl",
-   "wake": 7.03,
-   "bed": 23.53,
+   "wake": 6.73,
+   "bed": 22.43,
    "spread": 0.65,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      15.8
+      7.63,
+      17.88
      ],
      "days": [
       0,
@@ -38586,7 +38805,7 @@
     "sun": 0.54
    },
    "walk_speed": 1.23,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 0.42,
     "play_club": 0.61,
@@ -38706,16 +38925,19 @@
    "female": 0,
    "household": "t_w2-d041",
    "home": "W2-D041",
-   "chronotype": "usual",
-   "wake": 6.59,
-   "bed": 22.42,
+   "chronotype": "owl",
+   "wake": 9.13,
+   "bed": 1.03,
    "spread": 0.99,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "mayak",
+     "role": "barista",
+     "shift": "late",
      "hours": [
-      9.5,
-      15.01
+      14.5,
+      23.75
      ],
      "days": [
       0,
@@ -38739,7 +38961,7 @@
     "sun": 0.4
    },
    "walk_speed": 1.17,
-   "occupation": "student",
+   "occupation": "station_barista",
    "likes": {
     "play_club": 0.89,
     "play_town_club": 0.44,
@@ -38854,9 +39076,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      8.0,
-      16.98
+      8.31,
+      17.55
      ],
      "days": [
       0,
@@ -38880,7 +39103,7 @@
     "sun": 0.46
    },
    "walk_speed": 1.0,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "sit_bench": 0.62,
     "chat": 0.28,
@@ -38940,15 +39163,18 @@
    "household": "t_p-bridgehouse_6-05",
    "home": "P-BRIDGEHOUSE/6-05",
    "chronotype": "owl",
-   "wake": 9.49,
-   "bed": 1.99,
+   "wake": 9.32,
+   "bed": 1.12,
    "spread": 1.05,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "horizon",
+     "role": "attendant",
+     "shift": "late",
      "hours": [
-      10.0,
-      13.91
+      14.5,
+      24.0
      ],
      "days": [
       0,
@@ -38972,7 +39198,7 @@
     "sun": 0.6
    },
    "walk_speed": 1.17,
-   "occupation": "student",
+   "occupation": "station_attendant",
    "likes": {
     "night_walk": 0.39,
     "play_club": 0.67,
@@ -39140,9 +39366,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      16.79
+      7.93,
+      18.12
      ],
      "days": [
       0,
@@ -39165,7 +39392,7 @@
     "sun": 0.59
    },
    "walk_speed": 1.38,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "watch_sunrise": 1.23,
     "play_club": 0.5,
@@ -39221,15 +39448,18 @@
    "household": "t_p-t1h4_1-02",
    "home": "P-T1H4/1-02",
    "chronotype": "lark",
-   "wake": 5.43,
-   "bed": 21.27,
+   "wake": 5.09,
+   "bed": 21.79,
    "spread": 0.47,
    "duties": [
     {
-     "activity": "work_away",
+     "activity": "work_station",
+     "station": "mayak",
+     "role": "barista",
+     "shift": "early",
      "hours": [
-      8.0,
-      16.47
+      6.25,
+      14.75
      ],
      "days": [
       0,
@@ -39254,7 +39484,7 @@
     "sun": 0.64
    },
    "walk_speed": 1.31,
-   "occupation": "away",
+   "occupation": "station_barista",
    "likes": {
     "watch_sunrise": 0.58,
     "stroll": 0.43,
@@ -39313,9 +39543,10 @@
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      7.5,
-      15.23
+      8.2,
+      17.81
      ],
      "days": [
       0,
@@ -39341,7 +39572,7 @@
     "sun": 0.78
    },
    "walk_speed": 1.33,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "shop_town": 0.25,
     "stroll": 0.45
@@ -39746,15 +39977,16 @@
    "household": "t_p-t3h2_6-04",
    "home": "P-T3H2/6-04",
    "chronotype": "night",
-   "wake": 8.25,
-   "bed": 0.75,
+   "wake": 7.25,
+   "bed": 22.95,
    "spread": 0.76,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      15.89
+      8.15,
+      18.44
      ],
      "days": [
       0,
@@ -39780,7 +40012,7 @@
     "sun": 0.0
    },
    "walk_speed": 1.4,
-   "occupation": "student",
+   "occupation": "researcher",
    "likes": {
     "night_walk": 1.32,
     "shop_town": 0.29,
@@ -40345,15 +40577,16 @@
    "household": "t_w5-d088",
    "home": "W5-D088",
    "chronotype": "usual",
-   "wake": 8.13,
+   "wake": 6.7,
    "bed": 23.12,
    "spread": 0.51,
    "duties": [
     {
      "activity": "work_away",
+     "commute": "academ",
      "hours": [
-      9.0,
-      16.71
+      7.6,
+      18.23
      ],
      "days": [
       0,
@@ -40378,7 +40611,7 @@
     "sun": 0.54
    },
    "walk_speed": 1.22,
-   "occupation": "away",
+   "occupation": "researcher",
    "likes": {
     "sea_air": 0.78,
     "eat_out": 0.67

@@ -7,6 +7,10 @@
 
 #include "Audio/LyudSoundscape.h"
 #include "CablewaySim.h"
+#include "StationLife.h"
+#include "Festival/LyudFestival.h"
+#include "Plants/GameCalendar.h"
+#include "Weather/LyudWeather.h"
 #include "Components/AudioComponent.h"
 #include "Components/PointLightComponent.h"
 #include "Components/WidgetComponent.h"
@@ -278,6 +282,7 @@ bool ULyudTransportSubsystem::Start(UWorld& World)
 		A->Setup(Cableway, I, C.Number, LyudText::Get(Key(C.Name)), LineColor(Net->Lines[C.Line]));
 		Cabins.Add(A);
 	}
+	StartLife();
 	Tick(0.f);
 	UE_LOG(LogTemp, Display, TEXT("Transport: %d stations, %d lines, %d cabins\n%s"), SimNum(Net->Stations), SimNum(Net->Lines), SimNum(Net->Cabins), *Report());
 	return true;
@@ -294,6 +299,15 @@ void ULyudTransportSubsystem::Deinitialize()
 	{
 		People->GetSim()->RideHook = nullptr;
 	}
+	for (const TPair<int32, TWeakObjectPtr<AActor>>& B : LifeBodies)
+	{
+		if (AActor* A = B.Value.Get())
+		{
+			A->Destroy();
+		}
+	}
+	LifeBodies.Reset();
+	Life.Reset();
 	Net.Reset();
 	Super::Deinitialize();
 }
@@ -567,6 +581,179 @@ bool ULyudTransportSubsystem::RiderPose(int32 Person, FVector& Location, float& 
 	return false;
 }
 
+// --- the stations' day (docs/transport.md "Station life") ------------------------------------------------------
+
+void ULyudTransportSubsystem::StartLife()
+{
+	FString Text;
+	if (!Net || !FFileHelper::LoadFileToString(Text, *FPaths::Combine(FPaths::ProjectContentDir(), TEXT("Transport/station_life.json"))))
+	{
+		return;
+	}
+	TPimplPtr<LT::FStationLife> L = MakePimpl<LT::FStationLife>();
+	if (!L->Load(TCHAR_TO_UTF8(*Text), *Net))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Transport: station_life.json: %s"), UTF8_TO_TCHAR(L->LastError.c_str()));
+		return;
+	}
+	Life = MoveTemp(L);
+	UE_LOG(LogTemp, Display, TEXT("Transport: station life: %d riders, %d trips, %d staff"), SimNum(Life->Riders), SimNum(Life->Trips), SimNum(Life->Staff));
+}
+
+void ULyudTransportSubsystem::StepLife(float DeltaTime)
+{
+	if (!Life || !Net)
+	{
+		return;
+	}
+	UWorld* World = GetWorld();
+	// the stations' day turns at 4:00 (the halls shut at 0:15, the last rides are home by then)
+	const FDateTime Now = UGameCalendar::NowIn(World);
+	const FDateTime DayStart = (Now - FTimespan::FromHours(4.0)).GetDate();
+	LifeClock = (float)(Now - DayStart).GetTotalHours();
+	LifeDayOfWeek = (int32)DayStart.GetDayOfWeek();     // Monday = 0
+	const int32 DayIndex = (int32)(DayStart.GetTicks() / ETimespan::TicksPerDay);
+	const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(this);
+	if (DayIndex != LifeDayIndex)
+	{
+		LifeDayIndex = DayIndex;
+		bool bWarm = false;
+		if (Weather)
+		{
+			// a beach day: warm and dry around noon
+			const FLyudWeatherState Noon = Weather->GetStateAt(DayStart + FTimespan::FromHours(13.0));
+			bWarm = Noon.TempC >= 20.f && Noon.PrecipRate < 0.1f;
+		}
+		Life->StartDay(DayIndex, LifeDayOfWeek, bWarm);
+		UE_LOG(LogTemp, Display, TEXT("Transport: station life: day %d (weekday %d%s), %d trips today"), DayIndex, LifeDayOfWeek,
+			bWarm ? TEXT(", warm") : TEXT(""), SimNum(Life->Today));
+	}
+	// the slow parts four times a second: the wind, the festival's end
+	LifeSlow -= DeltaTime;
+	if (LifeSlow <= 0.f)
+	{
+		LifeSlow = 0.25f;
+		if (Weather)
+		{
+			const FLyudWeatherState W = Weather->GetState();
+			Life->SetWind(*Net, W.WindSpeed * (1.f + 0.35f * W.WindGustiness));
+		}
+		if (const ULyudFestivalSubsystem* Fest = ULyudFestivalSubsystem::Get(this))
+		{
+			const bool bOn = Fest->ActiveFestivals().Num() > 0;
+			if (bFestivalWasOn && !bOn && LifeClock > 17.f)
+			{
+				Life->FestivalEnded(LifeClock);
+				UE_LOG(LogTemp, Display, TEXT("Transport: station life: a festival ended at %.2f, its crowd rides home"), LifeClock);
+			}
+			bFestivalWasOn = bOn;
+		}
+		// the wind stop: said in the player's cabin
+		if (Life->IsWindStopped() != bWindWasStopped)
+		{
+			bWindWasStopped = Life->IsWindStopped();
+			UE_LOG(LogTemp, Display, TEXT("Transport: wind %.1f m/s: the line %s"), Life->LastWind(), bWindWasStopped ? TEXT("STOPS") : TEXT("goes again"));
+			if (RidingCabin >= 0)
+			{
+				Announce(RidingCabin, bWindWasStopped ? FName(TEXT("wind_stop")) : FName(TEXT("wind_go")), -1);
+			}
+		}
+	}
+	Life->Step(*Net, LifeClock);
+}
+
+void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTime)
+{
+	if (!Life || !Net)
+	{
+		return;
+	}
+	// the riders of the stations' day aboard the cabins near the player (the life's own people are drawn by
+	// UPeopleLifeSubsystem through RiderPose; these are townsfolk out of the town's sight on their trip)
+	constexpr float Draw = 9000.f;
+	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	TSet<int32>& Seen = LifeSeen;      // kept between frames (no allocation each frame)
+	Seen.Reset();
+	for (int32 C = 0; C < Cabins.Num() && C < SimNum(Net->Cabins); C++)
+	{
+		ALyudCabin* A = Cabins[C];
+		if (!A || FVector::Dist(A->GetActorLocation(), View) > Draw)
+		{
+			continue;
+		}
+		for (const int RI : Net->Cabins[C].Riders)
+		{
+			if (!SimValid(Net->Riders, RI) || Net->Riders[RI].Who < LT::FStationLife::Base)
+			{
+				continue;
+			}
+			const int32 Who = Net->Riders[RI].Who;
+			const int32 Rider = Who - LT::FStationLife::Base;
+			if (!SimValid(Life->Riders, Rider))
+			{
+				continue;
+			}
+			Seen.Add(Who);
+			TWeakObjectPtr<AActor>& Slot = LifeBodies.FindOrAdd(Who);
+			ANpcBody* Body = Cast<ANpcBody>(Slot.Get());
+			const FTransform T = A->Seat(FMath::Max(0, Net->Riders[RI].Seat) % 4);
+			if (!Body)
+			{
+				// their own face: the model the town shows them by, else their pool model
+				const FString Key = UTF8_TO_TCHAR(Life->Riders[Rider].Key.c_str());
+				const int32 Pid = People ? People->FindPerson(Key) : -1;
+				FString Model = Pid >= 0 ? People->ShownModel(Pid) : FString();
+				if (Model.IsEmpty())
+				{
+					Model = UTF8_TO_TCHAR(Life->Riders[Rider].Mesh.c_str());
+				}
+				FActorSpawnParameters SP;
+				SP.ObjectFlags |= RF_Transient;
+				SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+				Body = GetWorld()->SpawnActor<ANpcBody>(T.GetLocation(), T.Rotator(), SP);
+				if (Body && !Body->Setup(Model, FString()))
+				{
+					Body->Destroy();
+					Body = nullptr;
+				}
+				if (!Body)
+				{
+					continue;
+				}
+				Body->Tags.Add(TEXT("StationLife"));
+				Slot = Body;
+				if (Pid >= 0)
+				{
+					People->SetPresentedExternally(Pid, true);
+				}
+				Body->Drive(T.GetLocation(), T.Rotator().Yaw, EPersonPose::Sit, 0, 0.f, 44.f, 0.f, true);
+			}
+			Body->Drive(T.GetLocation(), T.Rotator().Yaw, EPersonPose::Sit, 0, 0.f, 44.f, DeltaTime, true);
+		}
+	}
+	// the ones off the cabins (or out of range): gone
+	for (auto It = LifeBodies.CreateIterator(); It; ++It)
+	{
+		if (!Seen.Contains(It.Key()))
+		{
+			if (AActor* B = It.Value().Get())
+			{
+				B->Destroy();
+			}
+			const int32 Rider = It.Key() - LT::FStationLife::Base;
+			if (People && SimValid(Life->Riders, Rider))
+			{
+				const int32 Pid = People->FindPerson(UTF8_TO_TCHAR(Life->Riders[Rider].Key.c_str()));
+				if (Pid >= 0)
+				{
+					People->SetPresentedExternally(Pid, false);
+				}
+			}
+			It.RemoveCurrent();
+		}
+	}
+}
+
 // --- running -----------------------------------------------------------------------------------------------
 
 void ULyudTransportSubsystem::Tick(float DeltaTime)
@@ -591,6 +778,7 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 	if (Dt > 0.f)
 	{
 		Net->Step(Dt);
+		StepLife(Dt);
 		// the ropes sag and sway, the cabins swing: in the wind over the viewer
 		FVector Wind = FVector::ZeroVector;
 		if (const ULyudWindSubsystem* WS = ULyudWindSubsystem::Get(this))
@@ -613,6 +801,15 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 	if (PC)
 	{
 		PC->GetPlayerViewPoint(View, ViewRot);
+	}
+	DrawLifeRiders(View, DeltaTime);
+	if (ViewTimer > 0.f)
+	{
+		ViewTimer -= DeltaTime;
+		if (ViewTimer <= 0.f && RidingCabin >= 0 && Net->Cabins[RidingCabin].State == LT::ECabinState::Moving)
+		{
+			Announce(RidingCabin, ViewWhat, -1);
+		}
 	}
 	ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this);
 	for (int32 I = 0; I < Cabins.Num() && I < SimNum(Net->Cabins); I++)
@@ -860,6 +1057,11 @@ void ULyudTransportSubsystem::HandleEvents()
 				if (Next >= 0)
 				{
 					Announce(E.Cabin, FName(*FString::Printf(TEXT("next_%s"), *Key(Net->Stations[Next].Id))), Next);
+					if (SimValid(Net->Stations, E.Station))
+					{
+						ViewWhat = FName(*FString::Printf(TEXT("view_%s_%s"), *Key(Net->Stations[E.Station].Id), *Key(Net->Stations[Next].Id)));
+						ViewTimer = 20.f;
+					}
 				}
 			}
 			else if (E.Kind == LT::EEvent::Arrive && SimValid(Net->Stations, E.Station))
