@@ -150,6 +150,11 @@ GIFTS = [
     ("tomatoes", ["adult", "warm"]),
     ("strawberries", ["kid", "sweet", "teen"]),
     ("jam_strawberry", ["elder", "sweet", "warm", "reader"]),
+    # cooked by the hero himself (docs/kitchen.md)
+    ("dish_ukha", ["elder", "adult", "warm", "sea"]),
+    ("dish_fried_potatoes", ["teen", "adult", "warm"]),
+    ("dish_fried_fish", ["elder", "adult", "sea"]),
+    ("dish_salad", ["adult", "tidy", "artist"]),
 ]
 
 # --- tea at home: the ten open-home owners (their homes: tools/city/content/strings/homes.json) ----------------------

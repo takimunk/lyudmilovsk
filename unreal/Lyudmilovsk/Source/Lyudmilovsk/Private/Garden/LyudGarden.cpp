@@ -1446,6 +1446,19 @@ void ULyudGarden::CloseSow()
 	SowItems.Reset();
 }
 
+int32 ULyudGarden::HarvestQuality(const FString& Item) const
+{
+	return Model ? FMath::Clamp(Model->LastQuality(Std(Item)), 1, 3) : 2;
+}
+
+void ULyudGarden::OwnJam(int32 Quality)
+{
+	if (Model)
+	{
+		Model->JamJarQuality = FMath::Clamp(Quality, 1, 3);
+	}
+}
+
 void ULyudGarden::Toast(const FText& Text) const
 {
 	if (ULyudGameScreen* Screen = ULyudGameScreen::Get(this))

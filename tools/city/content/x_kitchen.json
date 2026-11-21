@@ -1,0 +1,103 @@
+{
+ "_doc": "Cooking from the bed and the catch (docs/kitchen.md). The act \"hot_plate\" opens ULyudKitchen's page (\"open\": \"cook\") for any thing with what=hot_plate (a room's ring); the canteens' and the sanatorium's stoves are reached with Y at their counters (ULyudKitchen's own spots). The collection \"cook\": its stamps come from ULyudKitchen. The quest \"Supper of my own\": events cook dish | <recipe id> from ULyudKitchen; the canteen cook's topics. Words: strings/kitchen.json.",
+ "acts": {
+  "hot_plate": {
+   "prompt": "city.do.hot_plate.prompt",
+   "lines": [
+    "city.do.hot_plate.1"
+   ],
+   "open": "cook"
+  }
+ },
+ "rules": {
+  "*:what=hot_plate": {
+   "act": "hot_plate"
+  }
+ },
+ "collections": {
+  "cook": {
+   "title": "city.coll.cook.title",
+   "by": "ULyudKitchen (Private/Kitchen/LyudKitchen.cpp): cooked, not found in town",
+   "pieces": [
+    "ukha",
+    "fried_potatoes",
+    "fried_fish",
+    "salad",
+    "jam",
+    "fine",
+    "burnt",
+    "veg"
+   ]
+  }
+ },
+ "topics": {
+  "buy_canteen": [
+   {
+    "id": "canteen.stove",
+    "k": "city.ask.canteen.stove",
+    "lines": [
+     "city.ask.canteen.stove.1",
+     "city.ask.canteen.stove.2"
+    ]
+   },
+   {
+    "id": "canteen.taste",
+    "k": "city.ask.canteen.taste",
+    "have": "cook/fine",
+    "lines": [
+     "city.ask.canteen.taste.1",
+     "city.ask.canteen.taste.2"
+    ]
+   }
+  ]
+ },
+ "quests": [
+  {
+   "id": "own_supper",
+   "kind": "side",
+   "start_on": {
+    "event": "ask",
+    "target": "canteen.stove"
+   },
+   "stages": [
+    {
+     "id": "first",
+     "objectives": [
+      {
+       "id": "first",
+       "event": "cook",
+       "target": "dish"
+      }
+     ]
+    },
+    {
+     "id": "three",
+     "objectives": [
+      {
+       "id": "three",
+       "event": "cook",
+       "target": "more",
+       "need": 3
+      }
+     ]
+    },
+    {
+     "id": "taste",
+     "objectives": [
+      {
+       "id": "tell",
+       "event": "ask",
+       "target": "canteen.taste"
+      }
+     ],
+     "reward": {
+      "rubles": 40,
+      "items": {
+       "bread_loaf": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
