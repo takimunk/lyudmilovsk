@@ -24,6 +24,10 @@ class UStaticMeshComponent;
  *  * "May I stroke it?": UAnimalFriendSubsystem asks here before a hand goes out to a dog on a leash; the owner answers
  *    (lines pet_stroke_yes / pet_stroke_no), yes lets the hand come (FWorld::AllowStroke).
  *
+ *  * Yard cats and the townsfolk (docs/animals.md "Town cats"): a cat sees the resident it likes home (friends in pets.json),
+ *    cats beg at the market's fish stalls while a fishmonger stands there (a scrap now and then, or a "shoo"), cleaners and
+ *    the watchman send a cat out of their way, and the flats' cats keep their sills by the weather (FWorld::Weather).
+ *
  * Nothing is saved: the pets are made from pets.json after the animals' life has started, at the end of its list, so the
  * strays' ids (and the friendships saved by them) stay as they were. Console: lyud.Pets.Report, lyud.Pets.Walk <n> (the
  * n-th owner goes out with the dog now), lyud.Pets.Hedgehogs (they come out now, wherever the clock is).
@@ -67,6 +71,33 @@ private:
 		int32 Animal = -1;
 		int32 Person = -1;
 	};
+	/** A resident a yard cat likes: it sees them home (FWorld::FavouriteHome). */
+	struct FCatFriend
+	{
+		int32 Person = -1;
+		int32 Animal = -1;
+		FVector Door = FVector::ZeroVector;
+		FVector LastAt = FVector::ZeroVector;
+		bool bSeen = false;
+		bool bWith = false;
+		double NextSay = 0.0;
+	};
+	/** A fish stall of the market: open while a fishmonger stands at it (FWorld::Stalls). */
+	struct FFishStall
+	{
+		int32 Stall = -1;
+		FVector At = FVector::ZeroVector;
+		int32 Seller = -1;          // who stands there now
+		double NextThrow = 0.0;
+	};
+	TArray<FCatFriend> CatFriends;
+	TArray<FFishStall> FishStalls;
+	TArray<int32> Fishmongers;
+	/** Cleaners and the watchman, and the activities at which they send a cat out of the way. */
+	TArray<int32> Shooers;
+	TArray<int32> ShooActs;
+	double NextTownCats = 0.0;
+	double NextShooSay = 0.0;
 	TArray<FDog> Dogs;
 	TArray<FCat> Cats;
 	int32 Lady = -1;
@@ -92,6 +123,9 @@ private:
 	UStaticMeshComponent* NewPart(UStaticMesh* Mesh);
 	void TickDogs(float DeltaTime, const FVector& Camera);
 	void TickLady();
+	/** The yard cats and the townsfolk, four times a second: the weather on the sills, who is seen home, the fish stalls, the brooms. */
+	void TickTownCats(float Dt);
+	void Say(int32 Person, const TCHAR* Event);
 	void TickHedgehogs(const FVector& Camera);
 	void TickRemarks(const FVector& HeroAt);
 };

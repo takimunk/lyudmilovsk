@@ -43,6 +43,10 @@ OD = collections.OrderedDict
 
 DOGS = 10
 CATS = 14
+CAT_FRIENDS = 12                            # residents a yard cat sees home
+STALL_FRONT = 1.9                           # m from the fishmonger to where a cat sits, on the buyers' side of the counter
+# whose work sends a cat out of the way when it comes within a broom's reach (activities; who has them as duties)
+SHOO_ACTS = ["mop_floor", "mop_floor_late", "night_watch"]
 WALKS = ((7.0, 7.55), (19.0, 19.6))         # the dog's morning and evening walk, hours
 ROUNDS = ((7.9, 8.35), (18.4, 18.85))       # the lady's rounds: the bowls are down at 8:00 and 18:30
 LADY = "korneeva_nina"                      # Nina Korneeva, 71, of Novikova 1 (people.json): "the lady from the second stair"
@@ -124,6 +128,23 @@ def pick_dogs(people, homes, cat_households):
     return out
 
 
+def pick_friends(people, homes, taken):
+    """Residents a yard cat likes and sees home: older people of households without a pet, one a building."""
+    fit = [p for p in people if p["age"] >= 55 and p.get("occupation") not in ("away",) and p.get("home") in homes
+           and p["household"] not in taken]
+    fit.sort(key=lambda p: crc("catfriend:" + p["key"]))
+    out, buildings = [], set()
+    for p in fit:
+        b = homes[p["home"]].get("building", p["home"])
+        if b in buildings:
+            continue
+        buildings.add(b)
+        out.append(p)
+        if len(out) == CAT_FRIENDS:
+            break
+    return out
+
+
 def pick_cats(people, homes, dwellings):
     by_house = OD()
     for p in people:
@@ -169,7 +190,9 @@ def build():
     pets = OD([("_doc", "Animals that live with people (tools/town/town_pets.py, docs/animals.md \"With people\"). Unreal metres, yaw "
                         "radians (the animals' frame). dogs: owner = the resident who walks it (townsfolk key) while their activity is "
                         "walk; cats: by day on the sill, at feeding time at the door; lady: who fills the feeders on her round "
-                        "(activity feed); hedgehogs: where they come out at dusk from April to October."),
+                        "(activity feed); hedgehogs: where they come out at dusk from April to October; friends: residents a yard cat "
+                        "sees home to their door; stalls: where cats beg while a fishmonger stands there; shoo: activities at which the "
+                        "shooers send a cat out of their way."),
                ("walk", ["walk_dog", "walk_dog_late"]), ("feed", ["feed_cats", "feed_cats_late"]), ("lady", LADY)])
     rows = []
     used = set()
@@ -236,6 +259,25 @@ def build():
             pos = [off[0], off[1], feeders[0][3]]
         hogs.append(OD([("id", hid), ("pos", r2(pos)), ("range", rng)]))
     pets["hedgehogs"] = hogs
+
+    # the yard cats and the townsfolk (docs/animals.md "Town cats"): who is seen home, the fish stalls, the brooms
+    taken = {p["household"] for p in dogs} | {c[0] for c in cats}
+    pets["friends"] = [OD([("person", p["key"]), ("home", p["home"]), ("door", r2(homes[p["home"]]["door"]))])
+                       for p in pick_friends(people, homes, taken)]
+    stalls, mongers = [], []
+    markets = [pl for pl in places if pl["kind"] == "market"]       # the open market only: no cat walks into a shop
+    for pl in markets:
+        for sl in pl.get("slots", []):
+            if sl.get("kind") == "staff" and sl.get("tag") == "fishmonger":
+                stalls.append(OD([("place", pl["id"]), ("pos", r2(sl["pos"])), ("yaw", round(math.radians(sl.get("yaw", 0.0)), 3)),
+                                  ("front", STALL_FRONT)]))
+    for p in people:
+        if any(d.get("role") == "fishmonger" and d.get("place") in {pl["id"] for pl in markets} for d in p.get("duties", [])):
+            mongers.append(p["key"])
+    pets["stalls"] = stalls
+    pets["fishmongers"] = mongers
+    pets["shoo"] = SHOO_ACTS
+    pets["shooers"] = [p["key"] for p in people if any(d.get("activity") in SHOO_ACTS for d in p.get("duties", []))]
     out[PETS] = dump(pets)
     out[FOLK] = dump(fd)
 

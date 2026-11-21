@@ -116,6 +116,12 @@ namespace LyudAnimals
 		Rejoin,         // it catches the player up (out of a door, from afar)
 		LapUp,          // a cat jumps onto the seated player's lap
 		LapDown,
+		// yard cats and the townsfolk (AnimalPetsSim.cpp)
+		Tail,           // a cat falls in behind the resident it likes, tail up (Other = -1)
+		SeeIn,          // ... and sits down at their door when they have gone in
+		BegStall,       // sits down in front of the fish stall, looking up
+		Scrap,          // gets a scrap thrown from the stall
+		Shooed,         // somebody with a broom wants it out of the way: it trots off and looks back
 		Num };
 	const char* EventName(EEvent E);
 
@@ -201,6 +207,38 @@ namespace LyudAnimals
 		Num
 	};
 	const char* PetName(EPet P);
+
+	/** What a yard cat is up to with the townsfolk (AnimalPetsSim.cpp), on top of Act. */
+	enum class ECatDo : uint8_t
+	{
+		None,
+		Tail,       // trotting after the resident it likes, on their way home
+		SeeIn,      // sitting at their door after they went in
+		Beg,        // going to the open fish stall and begging there
+		Scrap,      // eating what the seller threw it
+		Shooed,     // sent off by somebody sweeping or mopping: away, then a look back
+		Num
+	};
+	const char* CatDoName(ECatDo D);
+
+	/** A stall the cats beg at (the market's fish). */
+	struct FStall
+	{
+		int Id = -1;
+		V3 Pos;                     // where the seller stands
+		float Yaw = 0.f;            // the way the counter faces (the cats sit on that side)
+		float Front = 1.3f;         // m from the seller to where the cats sit (the buyers' side of the counter)
+		bool bOpen = false;
+		float Next = 0.f;           // s to the next look for a cat to call over
+	};
+
+	/** The weather as a flat's cat minds it (the wrapper sets it). */
+	struct FPetWeather
+	{
+		bool bRain = false;
+		float TempC = 15.f;
+		float Sun = 0.5f;           // 0 overcast or night .. 1 full sun
+	};
 
 	/** A hedgehog of the yards and the old orchard (AnimalPetsSim.cpp): out at dusk from April to October. */
 	enum class EHog : uint8_t { Away, Shuffle, Sniff, Curl, Num };
@@ -329,6 +367,17 @@ namespace LyudAnimals
 		float SillYaw = 0.f;        // ... the way out of the window
 		float PetTime = 0.f;        // s in the pet state
 		int Hog = -1;               // the hedgehog this cat has gone to sniff (FWorld::Hedgehogs), -1 none
+		// a yard cat and the townsfolk (AnimalPetsSim.cpp)
+		ECatDo Do = ECatDo::None;
+		float DoTime = 0.f;         // s in it
+		float DoFresh = 0.f;        // Tail: s since the wrapper last said where the person is
+		V3 DoPos, DoVel;            // the person followed (feet, velocity); who shooed it
+		V3 DoGoal;                  // the person's door (Tail, SeeIn); where it runs off to (Shooed)
+		bool bDoThere = false;      // arrived (at the door, at the stall)
+		int Favourite = -1;         // the resident this cat likes (the wrapper's id), -1 nobody
+		int Stall = -1;             // the stall it begs at
+		float NoDo = 0.f;           // s before it follows anybody again
+		float NoStall = 0.f;        // s before it begs at a stall again
 	};
 
 	struct FPack
@@ -456,6 +505,25 @@ namespace LyudAnimals
 		/** The calendar's month 1..12 (the wrapper sets it): hedgehogs sleep from November to March. */
 		int Month = 7;
 		bool HedgehogsOut() const;
+		// --- yard cats and the townsfolk ---
+		/** The cat likes that resident: it sees them home when they pass (FavouriteHome). */
+		void SetFavourite(int Cat, int Person);
+		/** Every frame while the resident the cat likes walks home within its sight. True: it is with them (or sets off). */
+		bool FavouriteHome(int Cat, const V3& Feet, const V3& Vel, const V3& Door);
+		std::vector<FStall> Stalls;
+		int AddStall(const V3& Pos, float Yaw, float Front = 1.3f);
+		/** The seller is at the counter (or gone): cats come to beg only at an open stall. */
+		void StallOpen(int Stall, bool bOpen);
+		/** The seller throws a scrap: the nearest cat begging there gets it. False: nobody is begging. */
+		bool ThrowScrap(int Stall);
+		/** How many cats sit begging at the stall now. */
+		int Begging(int Stall) const;
+		/** Somebody sweeping or mopping at P: the cats within R get out of the way (not a fright). Returns how many.
+		 *  Not through a wall (a cleaner indoors, a cat under the window) unless bAnyGround (over a counter). */
+		int Shoo(const V3& P, float R, bool bAnyGround = false);
+		FPetWeather Weather;
+		/** A flat's cat keeps its sill only in the dry, and in the cold only in the sun. */
+		bool SillWeather() const { return !Weather.bRain && (Weather.TempC >= 8.f || (Weather.Sun > 0.5f && Weather.TempC >= 0.f)); }
 		/** Hours a flat's cat waits at the door (the same as the feeders': 8:00 and 18:30). */
 		static bool FeedingTime(float Hour) { return (Hour >= 7.5f && Hour < 8.25f) || (Hour >= 18.f && Hour < 18.75f); }
 
@@ -554,6 +622,9 @@ namespace LyudAnimals
 		void LeashMove(FAnimal& A, FLeash& L, float Dt);
 		void LeashHold(FAnimal& A, FLeash& L);
 		void HedgehogStep(float Dt);
+		bool CatDoMove(FAnimal& A, float Dt);
+		void CatDoEnd(FAnimal& A, float NoDo);
+		void StallStep(float Dt);
 		FLeash* LeashFor(int Dog);
 		bool Steer(FAnimal& A, const V3& To, float Speed, float Dt, bool bAnyGround = false);
 		bool PlayerOnGround() const;
