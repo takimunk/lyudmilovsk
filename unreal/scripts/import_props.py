@@ -14,7 +14,9 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 SRC = os.path.join(ROOT, "Saved", "ClipSources", "props")
 DEST = "/Game/Characters/Humans/Props"
 NAMES = ["phone", "cigarette", "camera", "umbrella", "rod", "brush", "binoculars", "newspaper", "book", "knitting",
-         "ice_cream", "cup", "bag", "easel", "spade", "watering_can", "suitcase"]
+         "ice_cream", "cup", "bag", "easel", "spade", "watering_can", "suitcase",
+         # the hedgehog, walking and curled up (blender/animals/hedgehog.py writes them into the same folder; ULyudPets draws them)
+         "hedgehog", "hedgehog_ball"]
 if os.environ.get("PROPS"):
     NAMES = [n for n in os.environ["PROPS"].split(",") if n]
 eal = unreal.EditorAssetLibrary
@@ -23,7 +25,7 @@ done = 0
 for name in NAMES:
     glb = os.path.join(SRC, name + ".glb")
     if not os.path.exists(glb):
-        unreal.log_error("PROPS no %s (run blender/humans/props.py)" % glb)
+        unreal.log_error("PROPS no %s (run blender/humans/props.py; the hedgehog: blender/animals/hedgehog.py)" % glb)
         continue
     tmp = DEST + "/_import_" + name
     if eal.does_directory_exist(tmp):

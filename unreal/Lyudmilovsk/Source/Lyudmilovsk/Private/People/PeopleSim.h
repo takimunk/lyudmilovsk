@@ -204,6 +204,7 @@ namespace LyudPeople
 		bool bStaff = false;                // a workplace duty: at their own workplace (FDuty::Place), at a slot of their role
 		float Pace = 1.f;                   // "pace": how fast they go within it against their walk (a jog, children at play: 2)
 		bool bRainOk = false;               // "rain": "ok": chosen and kept up in the rain too (outdoors)
+		bool bOnTime = false;               // "on_time": 1: a duty of it ends at the duty's hour, however long the way there took (the dogs' walks)
 		bool bShelter = false;              // "shelter": 1: only where the weather pulls now (weather_pull.json: under a roof in the rain)
 		float WindMin = -1.f, WindMax = 99.f;   // "wind": [min, max] m/s: chosen only in such a wind (a kite: a breeze, not a calm or a gale)
 		std::string When;                   // "when": only while this condition is on (FWorld::SetCondition: rink, walrus, banya);

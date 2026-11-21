@@ -1252,6 +1252,8 @@ static int Town()
 	// the town's new things to do (tools/town/town_activities.py, docs/town_life.md "The new activities")
 	int CinemaNow = 0, CinemaPeak = 0, CinemaOff = 0, BedStrangers = 0, PianoNow = 0, PianoTwo = 0, StonesDark = 0, StonesGale = 0, PaperLate = 0;
 	std::set<int> PostStops, CinemaGoers;
+	std::set<int> DogWalkers;      // who was out with the dog (tools/town/town_pets.py)
+	int DogOff = 0;                 // ... and person-minutes of it off its hours
 	for (double T = 0.0; T < 36.0 * 3600.0; T += Dt)
 	{
 		C.Seconds += Dt;
@@ -1390,6 +1392,11 @@ static int Town()
 					{
 						PostStops.insert(P.Slot);
 					}
+					else if (Id == "walk_dog" || Id == "walk_dog_late")
+					{
+						DogWalkers.insert(P.Id);
+						DogOff += (W.Hour > 6.4f && W.Hour < 7.8f) || (W.Hour > 18.4f && W.Hour < 19.8f) ? 0 : 1;   // they set off a quarter of an hour ahead and are back on time
+					}
 				}
 				if (P.Activity >= 0 && (P.State == EState::Doing || P.State == EState::Away))
 				{
@@ -1488,6 +1495,11 @@ static int Town()
 			Minutes["skip_stones"], StonesDark, StonesGale);
 		CHECK(Minutes["play_piano"] < 400 && PianoTwo == 0, "the piano in the hall is played now and then, by one at a time (%.0f person-minutes)", Minutes["play_piano"]);
 		CHECK(PostStops.size() >= 12, "the postman's round goes from door to door (%zu doors in 36 h, %.0f person-minutes)", PostStops.size(), Minutes["post_round"]);
+	}
+	if (W.FindActivity("walk_dog") >= 0)
+	{
+		CHECK(DogWalkers.size() >= 8 && Minutes["walk_dog"] > 150 && Minutes["walk_dog_late"] > 100 && DogOff == 0,
+			"the dogs' owners take them out morning and evening (%zu owners, %.0f + %.0f person-minutes, %d off the hours)", DogWalkers.size(), Minutes["walk_dog"], Minutes["walk_dog_late"], DogOff);
 	}
 	CHECK(Minutes["watch_sunrise"] > 0, "early risers watch the sunrise (%.0f person-minutes)", Minutes["watch_sunrise"]);
 	CHECK(Minutes["night_walk"] > 0, "somebody walks at night (%.0f person-minutes)", Minutes["night_walk"]);

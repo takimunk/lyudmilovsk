@@ -10302,6 +10302,20 @@
       5,
       6
      ]
+    },
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
     }
    ],
    "friends": [
@@ -11484,7 +11498,22 @@
    "wake": 5.68,
    "bed": 20.94,
    "spread": 0.54,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_fontaine_nino",
     "t_obrien_zhanar",
@@ -11840,7 +11869,22 @@
    "wake": 4.68,
    "bed": 21.18,
    "spread": 0.33,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_ferrari_arkady",
     "t_saar_oksana"
@@ -15679,7 +15723,22 @@
    "wake": 5.17,
    "bed": 20.75,
    "spread": 0.41,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_choi_francesca",
     "t_hernandez_tyler",
@@ -18781,7 +18840,22 @@
    "wake": 5.06,
    "bed": 21.93,
    "spread": 0.38,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_dubois_xiaoming",
     "t_hernandez_lyudmila"
@@ -21646,6 +21720,20 @@
       4,
       5,
       6
+     ]
+    },
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
      ]
     }
    ],
@@ -27404,6 +27492,20 @@
       2,
       3,
       4
+     ]
+    },
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
      ]
     }
    ],
@@ -33289,7 +33391,22 @@
    "wake": 6.48,
    "bed": 22.93,
    "spread": 0.5,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_obrien_arjun",
     "t_obrien_lilit"
@@ -35669,7 +35786,22 @@
    "wake": 6.69,
    "bed": 23.65,
    "spread": 0.65,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_papadopoulos_priya"
    ],
@@ -37023,7 +37155,22 @@
    "wake": 4.8,
    "bed": 20.9,
    "spread": 0.34,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "walk_dog",
+     "hours": [
+      7.0,
+      7.55
+     ]
+    },
+    {
+     "activity": "walk_dog_late",
+     "hours": [
+      19.0,
+      19.6
+     ]
+    }
+   ],
    "friends": [
     "t_adeyemi_eleni",
     "t_bautista_tiago",

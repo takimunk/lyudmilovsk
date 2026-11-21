@@ -143,6 +143,14 @@ Not done: the pianist is silent (the instruments' synth has no way to be played 
 walk along with the hero, and the cinema's house does not follow the programme (people sit through the two fixed
 sessions whatever is on).
 
+## Pets
+
+Item 46 (`docs/animals.md` "With people"): `tools/town/town_pets.py`, the last add-on `town_life.py` runs, gives ten
+residents a dog and two duties a day (`walk_dog`, `walk_dog_late`), Nina Korneeva the yard cats' two rounds
+(`feed_cats`, `feed_cats_late` at `S-CAT-FEEDERS`), fourteen flats a cat, and writes `Content/AnimalsData/pets.json`.
+Its rows go before `town_night.py`'s in `activities.json` and `town_places.json`. `"on_time": 1` on an activity ends
+a duty of it at the duty's hour (without it a duty lasts its length from the arrival).
+
 ## The night jobs
 
 Item 29 (`docs/city_night.md`): `tools/town/town_night.py`, an add-on like `town_activities.py` (and run after it by

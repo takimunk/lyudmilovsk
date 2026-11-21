@@ -128220,6 +128220,39 @@
    ]
   },
   {
+   "id": "S-CAT-FEEDERS",
+   "kind": "cat_feeder",
+   "pos": [
+    -229.52,
+    620.52,
+    -36.16
+   ],
+   "yaw": 0.0,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "stand",
+     "pos": [
+      -229.52,
+      620.52,
+      -36.16
+     ],
+     "yaw": 180.0,
+     "tag": "bowls"
+    },
+    {
+     "kind": "stand",
+     "pos": [
+      -227.82,
+      621.92,
+      -36.16
+     ],
+     "yaw": -152.0,
+     "tag": "watch"
+    }
+   ]
+  },
+  {
    "id": "P-CAFE-CLEAN",
    "kind": "clean_round",
    "door": [

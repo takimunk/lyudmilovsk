@@ -664,7 +664,7 @@ the soundscape mix unchanged at night.
 
 ## 46. Animals with people
 
-`[ ]` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
+`[x] animals-with-people 2026-11-21 (model, data, lines, hedgehog model and offline checks done; engine side never compiled or seen: Mac build, hedgehog.py + import_props.sh hedgehog hedgehog_ball, shots, bench owed)` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
 some households have a dog that a resident walks on a leash morning and evening along their usual paths (the town-life
 walk activity carries an animal id; the dog follows at the owner's heel, sniffs, greets other dogs; the leash a simple
 cable between hand and collar, out of Lumen), cats that belong to a flat and sit on its window sill by day (the flats'
