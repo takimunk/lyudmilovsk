@@ -114,10 +114,9 @@ bool ULyudReading::CanReadHere(FText* Why, float* Bright, bool bWhileOpen) const
 	}
 	if (World)
 	{
-		for (TActorIterator<ALyudSky> It(World); It; ++It)
+		if (TActorIterator<ALyudSky> It(World); It)
 		{
 			In.SunAltDeg = It->SunAltitude();
-			break;
 		}
 	}
 	if (const ULyudGameScreen* Screen = ULyudGameScreen::Get(World))
@@ -127,14 +126,13 @@ bool ULyudReading::CanReadHere(FText* Why, float* Bright, bool bWhileOpen) const
 	const FVector At = PC && PC->PlayerCameraManager ? PC->PlayerCameraManager->GetCameraLocation() : FVector::ZeroVector;
 	if (World)
 	{
-		for (TActorIterator<ALyudPublicSpaces> It(World); It; ++It)
+		if (TActorIterator<ALyudPublicSpaces> It(World); It)
 		{
 			const float Cm = It->NearestLitLampCm(At);
 			if (Cm >= 0.f)
 			{
 				In.LampM = Cm / 100.f;
 			}
-			break;
 		}
 	}
 	const LyudReading::FLight L = LyudReading::Judge(In);
@@ -403,7 +401,7 @@ void ULyudReading::TickClub(AHeroCharacter* Hero, APlayerController* PC, float D
 			if (Talk && Seated.Num() > 0)
 			{
 				// the librarian (else whoever is there) asks him in
-				const LyudReading::FMember* Lib = Club->MemberOf(TEXT("librarian"));
+				const LyudReading::FMember* Lib = Club->MemberOf("librarian");
 				const int32 LibId = Lib ? People->FindPerson(LyudReadingImpl::Str(Lib->Key)) : -1;
 				const TPair<int32, AActor*>* Who = Seated.FindByPredicate([LibId](const TPair<int32, AActor*>& S) { return S.Key == LibId; });
 				Talk->SayLine(Who ? Who->Value : Seated[0].Value, TEXT("line.town.bookclub_welcome"), Who ? LibId : Seated[0].Key);
@@ -572,16 +570,16 @@ void ULyudReading::PaperLines(const FDateTime& Date, TArray<TPair<FString, TArra
 		return;
 	}
 	const FString Work = ClubBook(Date);
-	Out.Add({ TEXT("reading.paper.title"), {} });
-	Out.Add({ TEXT("reading.paper.book"), { LyudReadingImpl::TitleArg(Work), LyudReadingImpl::AuthorArg(Work) } });
+	Out.Emplace(TEXT("reading.paper.title"), TArray<FString>());
+	Out.Emplace(TEXT("reading.paper.book"), TArray<FString>{ LyudReadingImpl::TitleArg(Work), LyudReadingImpl::AuthorArg(Work) });
 	if (Club->MeetsOn((int32)Date.GetDayOfWeek(), false, false))
 	{
-		Out.Add({ TEXT("reading.paper.tonight"), {} });
+		Out.Emplace(TEXT("reading.paper.tonight"), TArray<FString>());
 	}
 	if (Date.GetDay() > FDateTime::DaysInMonth(Date.GetYear(), Date.GetMonth()) - 7)
 	{
 		const FString Next = LyudReadingImpl::Str(Club->BookOf(Date.GetMonth() % 12 + 1));
-		Out.Add({ TEXT("reading.paper.next"), { LyudReadingImpl::TitleArg(Next), LyudReadingImpl::AuthorArg(Next) } });
+		Out.Emplace(TEXT("reading.paper.next"), TArray<FString>{ LyudReadingImpl::TitleArg(Next), LyudReadingImpl::AuthorArg(Next) });
 	}
 }
 

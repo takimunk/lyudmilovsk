@@ -202,7 +202,7 @@ void SLyudBookReader::QuoteStep(int32 By)
 
 bool SLyudBookReader::ChosenQuote(FString& OutText, int32& OutOffset) const
 {
-	if (!bQuote || !U16.IsValid() || !QuoteSpans.IsValidIndex(QuoteIx))
+	if (!bQuote || !U16.IsValid() || (QuoteIx < 0 || QuoteIx >= (int32)QuoteSpans.size()))
 	{
 		return false;
 	}
@@ -216,7 +216,7 @@ bool SLyudBookReader::ChosenQuote(FString& OutText, int32& OutOffset) const
 void SLyudBookReader::PaintQuote(int32 Page, const FGeometry& G, FVector2f PageOrigin, FSlateWindowElementList& Out, int32 Layer) const
 {
 	using namespace LyudBookDraw;
-	if (!bQuote || !QuoteSpans.IsValidIndex(QuoteIx) || Page >= (int32)Layout->Pages.size())
+	if (!bQuote || (QuoteIx < 0 || QuoteIx >= (int32)QuoteSpans.size()) || Page >= (int32)Layout->Pages.size())
 	{
 		return;
 	}

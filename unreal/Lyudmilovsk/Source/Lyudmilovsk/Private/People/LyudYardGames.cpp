@@ -1103,7 +1103,7 @@ bool ULyudYardGames::StartNearHero(const FString& Kind, int32 Players)
 	{
 		return false;
 	}
-	const EGame G = LyudYard::GameFromName(TCHAR_TO_UTF8(*Kind));
+	const LyudYard::EGame G = LyudYard::GameFromName(TCHAR_TO_UTF8(*Kind));
 	const uint32 Mask = G == LyudYard::EGame::Num ? 0xffu : (1u << (int)G);
 	const int32 Area = NearestArea(HeroLocation(), Mask);
 	if (Area < 0)
@@ -1111,10 +1111,10 @@ bool ULyudYardGames::StartNearHero(const FString& Kind, int32 Players)
 		return false;
 	}
 	const LyudYard::FArea& A = Model->Areas[(size_t)Area];
-	EGame Pick = G;
+	LyudYard::EGame Pick = G;
 	if (Pick == LyudYard::EGame::Num)
 	{
-		for (int32 I = 0; I < (int32)LyudYard::EGame::Num; I++) if (A.Fits((EGame)I)) Pick = (EGame)I;
+		for (int32 I = 0; I < (int32)LyudYard::EGame::Num; I++) if (A.Fits((LyudYard::EGame)I)) Pick = (LyudYard::EGame)I;
 	}
 	TArray<LyudYard::FCandidate> Kids = NearestChildren(LyudYardDraw::ToUE(A.C, 0.f), FMath::Max(Players, LyudYard::FYard::MinPlayers(Pick)));
 	// they come running from round the area's edge
