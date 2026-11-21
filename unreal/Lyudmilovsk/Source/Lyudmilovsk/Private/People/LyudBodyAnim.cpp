@@ -1,5 +1,6 @@
 #include "People/LyudBodyAnim.h"
 #include "BodyGestures.h"
+#include "LyudMotion.h"
 
 #include "Animation/AnimSequence.h"
 #include "Animation/AnimationPoseData.h"
@@ -178,7 +179,54 @@ bool FLyudBodyAnimProxy::Evaluate(FPoseContext& Output)
 		return true;
 	}
 	Sample(Cur, Output);
-	if (Alpha < 1.f && Prev.Seq)
+	if (bTakeOffset || bOffset || !Prev.Seq)
+	{
+		// the new clip from its first frame, plus what is left of the difference to the pose it started from
+		const FBoneContainer& BC = Output.Pose.GetBoneContainer();
+		const int32 N = Output.Pose.GetNumBones();
+		const bool bSame = PoseFor == &BC && PoseSerial == BC.GetSerialNumber() && LastClip.Num() == N;
+		if (bTakeOffset)
+		{
+			bTakeOffset = false;
+			bOffset = bSame && Alpha < 1.f;
+			if (bOffset)
+			{
+				Offset.SetNumUninitialized(N, EAllowShrinking::No);
+				for (int32 I = 0; I < N; I++)
+				{
+					const FTransform& Now = Output.Pose[FCompactPoseBoneIndex(I)];
+					FQuat Q = LastClip[I].GetRotation() * Now.GetRotation().Inverse();
+					if (Q.W < 0.0)
+					{
+						Q = Q * -1.0;                             // the short way round
+					}
+					Offset[I].SetComponents(Q, LastClip[I].GetTranslation() - Now.GetTranslation(), LastClip[I].GetScale3D() - Now.GetScale3D());
+				}
+			}
+		}
+		bOffset &= bSame && Alpha < 1.f;
+		if (bOffset)
+		{
+			// smootherstep: the pose leaves where it was without a jolt and arrives without one
+			const float A = Alpha;
+			const float W = 1.f - A * A * A * (A * (A * 6.f - 15.f) + 10.f);
+			for (int32 I = 0; I < N; I++)
+			{
+				FTransform& T = Output.Pose[FCompactPoseBoneIndex(I)];
+				T.SetRotation((FQuat::Slerp(FQuat::Identity, Offset[I].GetRotation(), W) * T.GetRotation()).GetNormalized());
+				T.SetTranslation(T.GetTranslation() + Offset[I].GetTranslation() * W);
+				T.SetScale3D(T.GetScale3D() + Offset[I].GetScale3D() * W);
+			}
+		}
+		LastClip.SetNumUninitialized(N, EAllowShrinking::No);
+		for (int32 I = 0; I < N; I++)
+		{
+			LastClip[I] = Output.Pose[FCompactPoseBoneIndex(I)];
+		}
+		PoseFor = &BC;
+		PoseSerial = BC.GetSerialNumber();
+	}
+	else if (Alpha < 1.f && Prev.Seq)
 	{
 		FPoseContext From(Output);
 		Sample(Prev, From);
@@ -257,7 +305,70 @@ void FLyudBodyAnimProxy::Procedural(FPoseContext& Output)
 				bOk &= Leg[S][J].IsValid();
 			}
 		}
-		if (bOk)
+		if (bOk && LyudMotion::Smooth())
+		{
+			// the legs as the clip has them; how planted each foot is in it (a lifted foot in mid-stride follows the
+			// difference between the two feet's ground half as much)
+			FTransform Hip[2], Knee[2], Ankle[2];
+			float Plant[2], Reach[2];
+			FVector Want[2];
+			const float A = FMath::Clamp(FootIKAlpha, 0.f, 1.f);
+			const float Stride = FMath::Lerp(1.f, FMath::Clamp(StrideScale, 0.3f, 1.4f), A);
+			// the hips go to the lower foot's ground, down or up (a body whose own height is a little off its ground, a
+			// terrace's edge, the far people nobody traces the ground for, stands on it and doesn't crouch into it)
+			float Shift = FMath::Clamp(FMath::Min(FootOffset[0], FootOffset[1]), -40.f, 25.f) * A;
+			for (int32 S = 0; S < 2; S++)
+			{
+				Hip[S] = CS.GetComponentSpaceTransform(Leg[S][0]);
+				Knee[S] = CS.GetComponentSpaceTransform(Leg[S][1]);
+				Ankle[S] = CS.GetComponentSpaceTransform(Leg[S][2]);
+				Plant[S] = FMath::Clamp(1.f - ((float)Ankle[S].GetLocation().Z - 10.f) / 15.f, 0.5f, 1.f);
+				Reach[S] = 0.985f * (float)((Knee[S].GetLocation() - Hip[S].GetLocation()).Size() + (Ankle[S].GetLocation() - Knee[S].GetLocation()).Size());
+				// longer or shorter steps: the foot's place fore and aft of its hip (the mesh faces +Y), scaled
+				Want[S] = Ankle[S].GetLocation() + FVector(0.f, (Ankle[S].GetLocation().Y - Hip[S].GetLocation().Y) * (Stride - 1.f),
+					Shift + (FootOffset[S] * A - Shift) * Plant[S]);
+			}
+			// a leg can't stretch: the hips come down as far as the longer reach asks (a long step lowers the body a little)
+			float Drop = 0.f;
+			for (int32 S = 0; S < 2; S++)
+			{
+				const FVector D = Want[S] - (Hip[S].GetLocation() + FVector(0.f, 0.f, Shift));
+				const float Flat2 = (float)(D.X * D.X + D.Y * D.Y);
+				if (D.SizeSquared() > Reach[S] * Reach[S] && Flat2 < Reach[S] * Reach[S])
+				{
+					Drop = FMath::Max(Drop, (float)-D.Z - FMath::Sqrt(Reach[S] * Reach[S] - Flat2));
+				}
+			}
+			Shift -= FMath::Clamp(Drop, 0.f, 12.f);
+			const FVector Move(0.f, 0.f, Shift);
+			FTransform P = CS.GetComponentSpaceTransform(Pelvis);
+			P.AddToTranslation(Move);
+			CS.SetComponentSpaceTransform(Pelvis, P);
+			for (int32 S = 0; S < 2; S++)
+			{
+				// (the legs are in component space already: they don't follow the pelvis by themselves)
+				Hip[S].AddToTranslation(Move);
+				Knee[S].AddToTranslation(Move);
+				Ankle[S].AddToTranslation(Move);
+				// the knee bends the way it already bends
+				const FVector Mid = (Hip[S].GetLocation() + Ankle[S].GetLocation()) * 0.5f;
+				FVector Bend = Knee[S].GetLocation() - Mid;
+				if (Bend.SizeSquared() < 1.f)
+				{
+					Bend = FVector(0.f, 10.f, 0.f);
+				}
+				const FVector Pole = Knee[S].GetLocation() + Bend.GetSafeNormal() * 60.f;
+				const FQuat FootRot = Ankle[S].GetRotation();
+				AnimationCore::SolveTwoBoneIK(Hip[S], Knee[S], Ankle[S], Pole, Want[S], false, 1.0, 1.0);
+				// the foot keeps its clip's turn, tilted onto the slope as far as it is planted
+				const FQuat Slope = FQuat::FindBetweenNormals(FVector::UpVector, FootNormal[S]);
+				Ankle[S].SetRotation(FQuat::Slerp(FQuat::Identity, Slope, Plant[S] * A) * FootRot);
+				CS.SetComponentSpaceTransform(Leg[S][0], Hip[S]);
+				CS.SetComponentSpaceTransform(Leg[S][1], Knee[S]);
+				CS.SetComponentSpaceTransform(Leg[S][2], Ankle[S]);
+			}
+		}
+		else if (bOk)
 		{
 			// how planted each foot is in the clip (a lifted foot in mid-stride still follows the ground, half as much)
 			float Plant[2];
@@ -383,15 +494,24 @@ void ULyudBodyAnimInstance::PlayClip(UAnimSequence* Seq, bool bLoop, float Rate,
 		P.Cur.bLoop = bLoop;
 		return;
 	}
-	if (P.Cur.Seq && BlendTime > 0.f)
+	if (P.Cur.Seq && BlendTime > 0.f && LyudMotion::Smooth())
+	{
+		// from the pose on screen, whatever made it (FLyudBodyAnimProxy::Offset)
+		P.Prev = FLyudBodyClip();
+		P.bTakeOffset = true;
+		P.Alpha = 0.f;
+	}
+	else if (P.Cur.Seq && BlendTime > 0.f)
 	{
 		// blending from a blend: keep whichever weighs more as the old pose
 		P.Prev = P.Alpha >= 0.5f ? P.Cur : P.Prev;
+		P.bTakeOffset = P.bOffset = false;
 		P.Alpha = 0.f;
 	}
 	else
 	{
 		P.Alpha = 1.f;
+		P.bTakeOffset = P.bOffset = false;
 	}
 	P.BlendTime = BlendTime;
 	P.Cur = FLyudBodyClip{ Seq, StartTime, Rate, bLoop };
@@ -672,15 +792,24 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 	// motion: smoothed velocity and turn rate (cm/s, deg/s)
 	if (bHasLast && Dt > 1e-4f)
 	{
+		const bool bSmooth = LyudMotion::Smooth();
 		const FVector V = (Pos - LastPos) / Dt;
-		const FVector Acc = (V - Vel) / FMath::Max(Dt, 0.016f);
+		const FVector VelWas = Vel;
+		FVector Acc = (V - Vel) / FMath::Max(Dt, 0.016f);
 		Vel += (V - Vel) * FMath::Min(1.f, Dt * 6.f);
+		if (bSmooth)
+		{
+			// how the smoothed velocity changes, smoothed again: one frame's jitter of the position is not a push
+			Accel += ((Vel - VelWas) / FMath::Max(Dt, 0.008f) - Accel) * FMath::Min(1.f, Dt * 5.f);
+			Acc = Accel;
+		}
 		YawRate += (FMath::FindDeltaAngleDegrees(LastYaw, Yaw) / Dt - YawRate) * FMath::Min(1.f, Dt * 5.f);
 		const float Speed = Vel.Size2D();
 		// teleports (a person placed, a snap into a seat) aren't motion
 		if (Speed > 800.f)
 		{
 			Vel = FVector::ZeroVector;
+			Accel = FVector::ZeroVector;
 		}
 		// breathless after walking (a little) and running (a lot)
 		Exertion = FMath::Clamp(Exertion + Dt * (Speed > 250.f ? 0.06f : Speed > 60.f ? 0.006f : -0.03f), 0.f, 1.f);
@@ -689,7 +818,7 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 			const FVector Fwd = C.GetRotation().RotateVector(FVector::YAxisVector);     // the mesh faces +Y
 			const float FwdAcc = FMath::Clamp((float)FVector::DotProduct(Acc, Fwd), -300.f, 300.f);
 			const FVector2D Want(FMath::Clamp(FwdAcc * 0.012f + Speed * 0.006f, -4.f, 6.f),
-				FMath::Clamp(-YawRate * Speed * 0.0009f, -7.f, 7.f));
+				bSmooth ? FMath::Clamp(-YawRate * Speed * 0.0006f, -4.f, 4.f) : FMath::Clamp(-YawRate * Speed * 0.0009f, -7.f, 7.f));
 			Lean += (Want - Lean) * FMath::Min(1.f, Dt * 4.f);
 		}
 		else
@@ -709,6 +838,7 @@ void ULyudBodyAnimInstance::UpdateBody(USkeletalMeshComponent* Mesh, float Dt)
 	P.BreathDepth = 1.f + 1.6f * Exertion;
 	P.LeanPitch = Lean.X;
 	P.LeanRoll = Lean.Y;
+	P.StrideScale += ((LyudMotion::Smooth() ? StrideWant : 1.f) - P.StrideScale) * FMath::Min(1.f, Dt * 6.f);
 	// the feet on the ground: a trace under each foot (where it was last frame)
 	static const IConsoleVariable* FeetIK = IConsoleManager::Get().RegisterConsoleVariable(TEXT("lyud.Body.FeetIK"), 1,
 		TEXT("0: no body plants its feet on the ground by traces (checks: is a pose's foot lifted by what is under it?)"));

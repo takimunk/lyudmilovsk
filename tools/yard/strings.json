@@ -1,0 +1,239 @@
+{
+ "yard.game.hopscotch": {
+  "ru": "Классики",
+  "en": "Hopscotch",
+  "ja": "けんけんぱ"
+ },
+ "yard.game.rope": {
+  "ru": "Скакалка",
+  "en": "Skipping rope",
+  "ja": "大縄跳び"
+ },
+ "yard.game.hide": {
+  "ru": "Прятки",
+  "en": "Hide-and-seek",
+  "ja": "かくれんぼ"
+ },
+ "yard.game.football": {
+  "ru": "Футбол",
+  "en": "Football",
+  "ja": "サッカー"
+ },
+ "yard.game.tag": {
+  "ru": "Салки",
+  "en": "Tag",
+  "ja": "鬼ごっこ"
+ },
+ "yard.area.yard": {
+  "ru": "Двор",
+  "en": "Yard",
+  "ja": "中庭"
+ },
+ "yard.area.playground": {
+  "ru": "Детская площадка",
+  "en": "Playground",
+  "ja": "児童遊園"
+ },
+ "yard.area.park": {
+  "ru": "Лужайка в парке",
+  "en": "Park lawn",
+  "ja": "公園の芝生"
+ },
+ "yard.area.square": {
+  "ru": "Площадь, северная сторона",
+  "en": "Square, north side",
+  "ja": "広場の北側"
+ },
+ "yard.area.beach": {
+  "ru": "Пляж, игры у воды",
+  "en": "Beach, games by the water",
+  "ja": "浜辺の遊び場"
+ },
+ "yard.prompt.join": {
+  "ru": "E — попроситься в прятки",
+  "en": "E — ask to join hide-and-seek",
+  "ja": "E — かくれんぼに入れてもらう"
+ },
+ "yard.prompt.find": {
+  "ru": "E — «Туки-туки!»: нашёл",
+  "en": "E — \"Found you!\"",
+  "ja": "E — 「みーつけた！」"
+ },
+ "yard.toast.joined": {
+  "ru": "Тебя взяли в прятки. Прячься, пока {0} считает!",
+  "en": "They let you in. Hide while {0} counts!",
+  "ja": "かくれんぼに入れてもらった。{0}が数えている間に隠れよう！"
+ },
+ "yard.toast.wait_round": {
+  "ru": "Тебя возьмут со следующего кона.",
+  "en": "You're in from the next round.",
+  "ja": "次の回から入れてもらえる。"
+ },
+ "yard.toast.you_seek": {
+  "ru": "Теперь ты водишь: считай у стены, потом ищи. Найдёшь — подойди и нажми E.",
+  "en": "You're it: count at the wall, then seek. When you find someone, walk up and press E.",
+  "ja": "君が鬼だ。壁に向かって数えてから探そう。見つけたら近づいてEを押す。"
+ },
+ "yard.toast.counting": {
+  "ru": "Считаешь… {0}",
+  "en": "Counting… {0}",
+  "ja": "数えている…{0}"
+ },
+ "yard.toast.go": {
+  "ru": "Кто не спрятался — я не виноват! Ищи.",
+  "en": "Ready or not! Go and look.",
+  "ja": "もういいよ！探しに行こう。"
+ },
+ "yard.toast.found_you": {
+  "ru": "Тебя нашли! Первый найденный водит следующим.",
+  "en": "You've been found! The first one found is it next.",
+  "ja": "見つかった！最初に見つかった人が次の鬼。"
+ },
+ "yard.toast.you_found": {
+  "ru": "Нашёл: {0}. Ещё прячутся: {1}.",
+  "en": "Found {0}. Still hiding: {1}.",
+  "ja": "{0}を見つけた。まだ隠れている人：{1}。"
+ },
+ "yard.toast.all_found": {
+  "ru": "Все найдены! {0} водит следующим.",
+  "en": "Everyone's found! {0} is it next.",
+  "ja": "全員見つけた！次の鬼は{0}。"
+ },
+ "yard.toast.not_found": {
+  "ru": "Тебя так и не нашли: этот кон твой!",
+  "en": "Nobody found you: this round is yours!",
+  "ja": "最後まで見つからなかった。この回は君の勝ち！"
+ },
+ "yard.toast.seek_timeout": {
+  "ru": "Не всех нашёл — остальные выходят сами. Водишь ещё раз.",
+  "en": "You didn't find everyone: the rest come out on their own. You're it again.",
+  "ja": "全員は見つからなかった。残りの子は自分から出てきた。もう一度鬼だ。"
+ },
+ "yard.toast.left": {
+  "ru": "Ты ушёл из игры.",
+  "en": "You left the game.",
+  "ja": "遊びを抜けた。"
+ },
+ "yard.toast.over": {
+  "ru": "Игра кончилась: детей зовут домой.",
+  "en": "The game is over: the children are called home.",
+  "ja": "遊びはおしまい。子どもたちは家に呼ばれた。"
+ },
+ "line.yard.start.hopscotch": {
+  "ru": "Давайте в классики! Чур, я первый!",
+  "ru_f": "Давайте в классики! Чур, я первая!",
+  "en": "Let's play hopscotch! I go first!",
+  "ja": "けんけんぱしよう！ぼく一番！",
+  "ja_f": "けんけんぱしよう！わたし一番！"
+ },
+ "line.yard.start.rope": {
+  "ru": "Давайте прыгать! Кто крутит?",
+  "en": "Let's skip! Who's turning?",
+  "ja": "大縄やろう！だれが回す？"
+ },
+ "line.yard.start.hide": {
+  "ru": "Давайте в прятки! Чур, не я вожу!",
+  "en": "Hide-and-seek! Not it!",
+  "ja": "かくれんぼしよう！鬼はやだ！"
+ },
+ "line.yard.start.football": {
+  "ru": "Пошли в футбол! Делимся на команды!",
+  "en": "Football! Pick teams!",
+  "ja": "サッカーしよう！チーム分けだ！"
+ },
+ "line.yard.start.tag": {
+  "ru": "Давайте в салки! Чур, не я!",
+  "en": "Let's play tag! Not it!",
+  "ja": "鬼ごっこしよう！鬼はやだ！"
+ },
+ "line.yard.count": {
+  "ru": "Раз, два, три, четыре, пять…",
+  "en": "One, two, three, four, five…",
+  "ja": "いーち、にーい、さーん…"
+ },
+ "line.yard.go": {
+  "ru": "Я иду искать! Кто не спрятался — я не виноват!",
+  "ru_f": "Я иду искать! Кто не спрятался — я не виновата!",
+  "en": "Ready or not, here I come!",
+  "ja": "もういいかい？いくよー！"
+ },
+ "line.yard.found": {
+  "ru": "Туки-туки, нашёл!",
+  "ru_f": "Туки-туки, нашла!",
+  "en": "Found you!",
+  "ja": "みーつけた！"
+ },
+ "line.yard.tagged": {
+  "ru": "Осалил! Ты водишь!",
+  "ru_f": "Осалила! Ты водишь!",
+  "en": "Tag, you're it!",
+  "ja": "タッチ！次は鬼ね！"
+ },
+ "line.yard.goal": {
+  "ru": "Гол!",
+  "en": "Goal!",
+  "ja": "ゴール！"
+ },
+ "line.yard.miss.hopscotch": {
+  "ru": "Ой, на черту наступил!",
+  "ru_f": "Ой, на черту наступила!",
+  "en": "Oops, on the line!",
+  "ja": "あっ、線ふんだ！"
+ },
+ "line.yard.miss.rope": {
+  "ru": "Сбился! Моя очередь крутить.",
+  "ru_f": "Сбилась! Моя очередь крутить.",
+  "en": "Tripped! My turn to turn.",
+  "ja": "引っかかった！回す番だ。"
+ },
+ "line.yard.end": {
+  "ru": "Меня домой зовут!",
+  "en": "I've got to go home!",
+  "ja": "もう帰らなきゃ！"
+ },
+ "line.yard.hero_join": {
+  "ru": "Давай с нами! Прячься скорей!",
+  "en": "Come on, play with us! Quick, hide!",
+  "ja": "いっしょにやろう！早く隠れて！"
+ },
+ "dev.group.yard": {
+  "ru": "Дворовые игры",
+  "en": "Yard games",
+  "ja": "外遊び"
+ },
+ "dev.action.yard.start_hide": {
+  "ru": "Дворы: прятки у героя",
+  "en": "Yards: hide-and-seek by the hero",
+  "ja": "外遊び：主人公のそばでかくれんぼ"
+ },
+ "dev.action.yard.start_football": {
+  "ru": "Дворы: футбол у героя",
+  "en": "Yards: football by the hero",
+  "ja": "外遊び：主人公のそばでサッカー"
+ },
+ "dev.action.yard.start_three": {
+  "ru": "Дворы: три игры у героя (замер)",
+  "en": "Yards: three games by the hero (bench)",
+  "ja": "外遊び：主人公のそばで三つの遊び（計測）"
+ },
+ "dev.action.yard.hero_seek": {
+  "ru": "Дворы: герой водит в прятках",
+  "en": "Yards: the hero is it in hide-and-seek",
+  "ja": "外遊び：主人公がかくれんぼの鬼"
+ },
+ "dev.action.yard.end_all": {
+  "ru": "Дворы: закончить все игры",
+  "en": "Yards: end every game",
+  "ja": "外遊び：遊びをすべて終える"
+ },
+ "dev.action.yard.report": {
+  "ru": "Дворы: отчёт в лог",
+  "en": "Yards: report to the log",
+  "ja": "外遊び：ログに報告"
+ },
+ "yard.toast.seek_over": {
+  "ru": "Время вышло — остальные выходят сами. Водит {0}.",
+  "en": "Time's up: the rest come out on their own. {0} is it next.",
+  "ja": "時間切れ。残りの子は自分から出てきた。次の鬼は{0}。"
+ }
+}

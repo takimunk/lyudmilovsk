@@ -44,6 +44,10 @@ struct FLyudDiaryState
 	TArray<ULyudCityThings::FCollectionView> Collections;
 	TArray<TArray<int32>> CollectionPages;
 	int32 PeopleSpreads = 1;
+	/** The «Книги» pages between the people's and the collections' (docs/books.md "Reading anywhere"): indices into
+	 *  ULyudBooks::GetQuotes on each page, and how many spreads they take. */
+	TArray<TArray<int32>> QuotePages;
+	int32 BookSpreads = 1;
 	/** The friends' pages after the birds' (the cats and dogs, ULyudAnimalFriends order): animal ids on each. */
 	TArray<TArray<int32>> FriendPages;
 };
@@ -136,6 +140,7 @@ private:
 	TSharedRef<SWidget> BirdsPage(int32 PageIndex);
 	TSharedRef<SWidget> PeoplePage(int32 PageIndex);
 	TSharedRef<SWidget> CollectionsPage(int32 PageIndex);
+	TSharedRef<SWidget> BooksPage(int32 PageIndex);
 	TSharedRef<SWidget> BirdCard(FName Species);
 	TSharedRef<SWidget> FriendsPage(int32 PageIndex);
 	TSharedRef<SWidget> FriendCard(int32 AnimalId);
@@ -235,6 +240,7 @@ private:
 	void PaginateBirds();
 	void PaginatePeople();
 	void PaginateCollections();
+	void PaginateQuotes();
 	void PaginateFriends();
 	void Refresh();
 	FVector2D LocalPos() const;

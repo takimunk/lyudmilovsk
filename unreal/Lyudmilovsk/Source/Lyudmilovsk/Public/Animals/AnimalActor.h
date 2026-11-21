@@ -72,10 +72,19 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Animal")
 	bool IsCat() const { return Breed == TEXT("Cat"); }
 
+	/** Where its life has it this frame (the renderer, every frame): with lyud.Anim.Smooth the body follows through
+	 *  springs (LyudMotion.h): the height and the lie on the slope ease (a kerb, bumpy ground), far off (bFar: its life
+	 *  moves it in steps of a fraction of a second) the place and the heading too. ResetPlace: the next one is a jump. */
+	void Place(const FVector& Location, float YawDeg, float PitchDeg, float RollDeg, bool bFar);
+	void ResetPlace() { bPlaced = false; }
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
+	bool bPlaced = false;
+	FVector ShownPos = FVector::ZeroVector, ShownVel = FVector::ZeroVector;
+	float ShownYaw = 0.f, ShownPitch = 0.f, ShownRoll = 0.f, YawVel = 0.f, PitchVel = 0.f, RollVel = 0.f;
 	EAnimalActivity Act = EAnimalActivity::Stand;
 	float Speed = 0.f;
 	FName PlayingClip;

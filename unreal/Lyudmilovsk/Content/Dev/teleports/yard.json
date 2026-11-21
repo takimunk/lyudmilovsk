@@ -1,0 +1,131 @@
+{
+ "about": "Written by tools/yard/yard_areas.py: x/y map metres (docs/world_map.md), yaw Unreal degrees; outdoors, dropped onto the ground.",
+ "teleports": [
+  {
+   "id": "yard.s-yard-01",
+   "group": "yard",
+   "name": "dev.tp.yard.s-yard-01",
+   "x": -565.64,
+   "y": 1055.3,
+   "yaw": 174.5,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-yard-02",
+   "group": "yard",
+   "name": "dev.tp.yard.s-yard-02",
+   "x": -622.7,
+   "y": 1016.0,
+   "yaw": 177.0,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-yard-03",
+   "group": "yard",
+   "name": "dev.tp.yard.s-yard-03",
+   "x": -550.13,
+   "y": 976.45,
+   "yaw": 174.5,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-yard-04",
+   "group": "yard",
+   "name": "dev.tp.yard.s-yard-04",
+   "x": -554.73,
+   "y": 928.68,
+   "yaw": 174.5,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-yard-05",
+   "group": "yard",
+   "name": "dev.tp.yard.s-yard-05",
+   "x": -240.21,
+   "y": 1056.33,
+   "yaw": 174.3,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-yard-06",
+   "group": "yard",
+   "name": "dev.tp.yard.s-yard-06",
+   "x": -463.41,
+   "y": 1143.06,
+   "yaw": 177.0,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-yard-07",
+   "group": "yard",
+   "name": "dev.tp.yard.s-yard-07",
+   "x": -246.17,
+   "y": 996.62,
+   "yaw": 174.3,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-yard-08",
+   "group": "yard",
+   "name": "dev.tp.yard.s-yard-08",
+   "x": -402.29,
+   "y": 1199.5,
+   "yaw": 173.7,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-yard-09",
+   "group": "yard",
+   "name": "dev.tp.yard.s-yard-09",
+   "x": -250.94,
+   "y": 948.86,
+   "yaw": 174.3,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-playground",
+   "group": "yard",
+   "name": "dev.tp.yard.s-playground",
+   "x": -27.49,
+   "y": 1148.73,
+   "yaw": 174.4,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-park-lawn",
+   "group": "yard",
+   "name": "dev.tp.yard.s-park-lawn",
+   "x": -22.35,
+   "y": 1220.3,
+   "yaw": 173.9,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-square-north",
+   "group": "yard",
+   "name": "dev.tp.yard.s-square-north",
+   "x": 33.3,
+   "y": 933.93,
+   "yaw": 175.3,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-beach-play1",
+   "group": "yard",
+   "name": "dev.tp.yard.s-beach-play1",
+   "x": 182.11,
+   "y": 991.0,
+   "yaw": 180.0,
+   "time": "16:30"
+  },
+  {
+   "id": "yard.s-beach-play2",
+   "group": "yard",
+   "name": "dev.tp.yard.s-beach-play2",
+   "x": 204.46,
+   "y": 1159.0,
+   "yaw": 180.0,
+   "time": "16:30"
+  }
+ ]
+}
