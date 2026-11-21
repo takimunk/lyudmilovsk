@@ -1,0 +1,8 @@
+{
+ "ui.counter.change": "{0} rub. altogether. From {1} rub.: {2} rub. change.",
+ "ui.counter.exact": "{0} rub. altogether, no change.",
+ "ui.counter.ahead": "Ahead of you in the queue: {0}.",
+ "dev.group.counters": "Counters and queues",
+ "dev.action.counters.crowd": "A queue at the nearest counter (3 people)",
+ "dev.action.counters.status": "Queues: to the log"
+}

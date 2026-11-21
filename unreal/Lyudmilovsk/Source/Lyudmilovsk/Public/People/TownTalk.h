@@ -25,6 +25,9 @@ struct FTownTalkView;
  * townsfolk speak (lyud.Barks.Residents 1: the story's people too); only people drawn near the camera and in view; one
  * line on one's own every ~9 s at most (lyud.Barks.Every), one exchange at a time, four lines on screen at most. The
  * speaker's mouth moves while the line is up (ANpcBody::Chatter). Lines aren't voiced yet. lyud.Barks 0 turns it off.
+ *
+ * The talk of the town (docs/town_rumours.md): a resident who heard of something the player did (ULyudTownRumours) may bring
+ * it up in a greeting, a line near him or an exchange (the sets' heard_of =; {1} the rumour's detail): calm and rare.
  */
 UCLASS()
 class LYUDMILOVSK_API ULyudTownTalkSubsystem : public UTickableWorldSubsystem
@@ -107,6 +110,8 @@ private:
 		int32 Next = 0;
 		float NextAt = 0.f;
 		int32 First = 0;
+		/** A talk about the player's doings (heard_of): the rumour's detail for its lines' {1}. */
+		FString Detail;
 	};
 	FExchange Exchange;
 
@@ -116,6 +121,8 @@ private:
 	float ScanTimer = 0.f;
 	float NextBarkAt = 6.f;
 	float NextGreetAt = 0.f;
+	/** The talk of the town about the player (docs/town_rumours.md): the rumour's detail for the next line's {1}. */
+	FString PendingDetail;
 	/** No word about the player running past, standing too close or the lamp before this (the manners' notice events). */
 	float NextNoticeAt = 0.f;
 	/** The life's events: somebody noticed the player (hero_runs, hero_close, hero_lamp: docs/town_manners.md). */

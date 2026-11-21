@@ -178,6 +178,9 @@ namespace LyudGesture
 		case EProp::Book:
 		case EProp::Knitting: return EHold::TwoHands;
 		case EProp::Rod: return EHold::Pointing;
+		case EProp::Spade:
+		case EProp::Mop: return EHold::Shaft;
+		case EProp::Torch: return EHold::Pointing;
 		case EProp::Bag: return EHold::Hanging;
 		default: return EHold::Upright;
 		}
@@ -421,6 +424,89 @@ namespace LyudGesture
 			Hand(G, M, 0.85f * E, Pelvis, { 25.f, 2.f, -24.f }, { 0.f, 0.1f, -1.f }, { -1.f, 0.f, 0.f }, 0.85f);
 			G.SpineRoll = -MainSide * 2.f * E;
 			break;
+		case EManner::SkipStone:
+		{
+			// a flat stone: the arm back and low at the side, the body bent, a whip forward at hip height, a look after it
+			const float W = Envelope(T, Left, 0.35f, 0.6f);
+			const float Throw = FMath::SmoothStep(0.95f, 1.2f, T);
+			Hand(G, M, W, Pelvis, Mix({ 30.f, -24.f, 2.f }, { 18.f, 56.f, 6.f }, Throw), Mix({ 0.4f, -0.5f, -0.4f }, { 0.1f, 1.f, 0.1f }, Throw),
+				{ 0.f, 0.f, -1.f }, 0.55f * (1.f - Throw));
+			G.SpinePitch = (9.f + 6.f * Throw) * W;
+			G.SpineRoll = -MainSide * 7.f * (1.f - Throw) * W;
+			G.HeadPitch = 5.f * Throw * W;
+			break;
+		}
+		case EManner::Dominoes:
+		{
+			// the tile lifted over the table and put down with a slap, the hand left on it a moment
+			const float W = Envelope(T, Left, 0.3f, 0.45f);
+			const float Down = FMath::SmoothStep(0.75f, 0.92f, T);
+			Hand(G, M, W, Chest, Mix({ 12.f, 30.f, 4.f }, { 6.f, 42.f, -19.f }, Down), { 0.f, 1.f, -0.2f }, { 0.f, 0.f, -1.f }, 0.3f * (1.f - Down));
+			G.SpinePitch = 5.f * Down * W;
+			G.HeadPitch = -15.f * W;
+			break;
+		}
+		case EManner::Piano:
+			// both hands on the keys, wandering along them, the fingers going down in turn; the back sways with the phrase
+			for (int32 S = 0; S < 2; S++)
+			{
+				const float Along = 13.f + 8.f * FMath::Sin(T * (S == M ? 1.3f : 0.8f) + Ph + 2.1f * S);
+				const float Key = 1.6f * FMath::Abs(FMath::Sin(T * (S == M ? 7.f : 4.5f) + Ph + 1.7f * S));
+				Hand(G, S, E, Chest, { Along, 37.f, -23.f + Key }, { 0.f, 1.f, -0.15f }, { 0.f, 0.f, -1.f }, 0.28f);
+			}
+			G.SpinePitch = (4.f + 2.f * FMath::Sin(T * 0.6f + Ph)) * E;
+			G.SpineRoll = 2.f * FMath::Sin(T * 0.45f + Ph) * E;
+			G.HeadPitch = -11.f * E;
+			break;
+		case EManner::Dig:
+		{
+			// the spade: the main hand on the handle's top, the other low on the shaft; pushed in, levered back, lifted
+			const float C = 0.5f - 0.5f * FMath::Cos((T + Ph) * 1.8f);
+			Hand(G, M, E, Pelvis, { 6.f, 20.f + 8.f * C, 24.f - 18.f * C }, { 0.1f, 0.45f, -0.9f }, { -1.f, 0.f, 0.f }, 0.9f);
+			Hand(G, O, E, Pelvis, { 3.f, 40.f + 8.f * C, -8.f - 18.f * C }, { 0.1f, 0.45f, -0.9f }, { -1.f, 0.f, 0.f }, 0.9f);
+			G.SpinePitch = (10.f + 14.f * C) * E;
+			G.HeadPitch = -12.f * E;
+			break;
+		}
+		case EManner::Water:
+			// the can held out over the bed, swung slowly along the row
+			Hand(G, M, E, Pelvis, { 14.f + 9.f * FMath::Sin(T * 0.8f + Ph), 44.f, 12.f }, { 0.1f, 1.f, -0.25f }, { -1.f, 0.f, 0.f }, 0.9f);
+			G.SpinePitch = 8.f * E;
+			G.HeadPitch = -17.f * E;
+			break;
+		case EManner::Weed:
+		{
+			// bent over the bed: a hand down among the leaves, a weed pulled up, thrown aside; the other hand on the knee
+			const float Pull = Trip(T + Ph, 3.4f, 1.3f, 0.5f, 0.5f);
+			Hand(G, M, E, Pelvis, { 10.f + 14.f * Pull, 46.f - 10.f * Pull, -34.f + 18.f * Pull }, { 0.f, 0.5f, -0.85f }, { 0.f, -1.f, 0.f },
+				0.25f + 0.6f * Pull);
+			Hand(G, O, E, Pelvis, { 15.f, 10.f, -8.f }, { 0.2f, 0.3f, -0.9f }, { -1.f, 0.f, 0.f }, 0.3f);
+			G.SpinePitch = (26.f - 7.f * Pull) * E;
+			G.HeadPitch = -5.f * E;
+			break;
+		}
+		case EManner::Mop:
+		{
+			// the mop: the main hand high on the shaft, the other lower and further out; standing, the head swept side to
+			// side over the floor in a slow figure of eight; walking on, the mop carried still
+			const float Sw = Body.bWalking ? 0.f : FMath::Sin((T + Ph) * 1.6f);
+			const float Lift = Body.bWalking ? 0.f : 0.5f - 0.5f * FMath::Cos((T + Ph) * 3.2f);
+			Hand(G, M, E, Pelvis, { 5.f + 10.f * Sw, 22.f, 20.f + 3.f * Lift }, { 0.1f, 0.45f, -0.9f }, { -1.f, 0.f, 0.f }, 0.9f);
+			Hand(G, O, E, Pelvis, { 3.f + 18.f * Sw, 40.f, -8.f + 3.f * Lift }, { 0.1f, 0.45f, -0.9f }, { -1.f, 0.f, 0.f }, 0.9f);
+			G.SpinePitch = (Body.bWalking ? 4.f : 12.f) * E;
+			G.SpineRoll = -4.f * Sw * E;
+			G.HeadPitch = -16.f * E;
+			break;
+		}
+		case EManner::Torch:
+		{
+			// the torch held out ahead at the chest, the beam swung slowly over the floor and into the corners
+			const float Sw = FMath::Sin((T + Ph) * (Body.bWalking ? 0.5f : 0.35f));
+			Hand(G, M, E, Chest, { 6.f + 12.f * Sw, 34.f, -10.f }, { 0.f, 1.f, -0.35f }, { 0.f, 0.f, -1.f }, 0.9f);
+			G.HeadYaw = 14.f * Sw * MainSide * E;
+			G.HeadPitch = -10.f * E;
+			break;
+		}
 		default:
 			break;
 		}

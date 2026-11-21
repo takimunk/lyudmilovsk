@@ -1,0 +1,40 @@
+{
+ "_doc": "Small things that answer a touch (backlog item 31, docs/city_interiors.md \"Small things that answer a touch\"): windows that open (the act's window: how wide; ULyudCityThings::ToggleWindow lets the open air into the room), the houses' mailboxes, kitchen taps. The building modules declare the things (what=window|vent|balcony_door|mailbox|tap: blender/city/buildings/_homekit.py).",
+ "acts": {
+  "open_window": {"prompt": "city.act.window.prompt", "minutes": 0, "window": 0.5, "sound": "", "any_hour": true},
+  "open_vent": {"prompt": "city.act.vent.prompt", "minutes": 0, "window": 0.3, "sound": "", "any_hour": true},
+  "open_balcony": {"prompt": "city.act.balcony.prompt", "minutes": 0, "window": 0.8, "sound": "", "any_hour": true},
+  "peek_mailbox": {"prompt": "city.act.mailbox.prompt", "minutes": 0, "sound": "diary_page", "any_hour": true,
+   "lines": [
+    {"k": "city.mailbox.paper.1", "h": [6, 11], "d": "mon-fri"},
+    {"k": "city.mailbox.paper.2", "h": [7, 12], "d": "sat"},
+    {"k": "city.mailbox.festival.1", "festival": "any"},
+    {"k": "city.mailbox.new_year.1", "festival": "new_year"},
+    {"k": "city.mailbox.rain.1", "weather": "rain"},
+    {"k": "city.mailbox.snow.1", "weather": "snow"},
+    {"k": "city.mailbox.night.1", "h": [22, 6]},
+    {"k": "city.mailbox.day.1", "h": [11, 22]},
+    {"k": "city.mailbox.day.2", "h": [11, 22]},
+    {"k": "city.mailbox.day.3", "h": [6, 22]},
+    {"k": "city.mailbox.day.4", "h": [6, 22], "after": 3},
+    {"k": "city.mailbox.day.5", "h": [6, 22], "d": "mon-fri"}
+   ]},
+  "kitchen_tap": {"prompt": "city.act.tap.prompt", "minutes": 1, "sound": "rest_pour", "any_hour": true,
+   "lines": [
+    {"k": "city.tap.cold.1", "weather": "cold"},
+    {"k": "city.tap.snow.1", "weather": "snow"},
+    {"k": "city.tap.warm.1", "weather": "warm"},
+    {"k": "city.tap.warm.2", "weather": "warm"},
+    {"k": "city.tap.night.1", "h": [23, 6]},
+    {"k": "city.tap.morning.1", "h": [6, 10]},
+    "city.tap.1", "city.tap.2", "city.tap.3"
+   ]}
+ },
+ "rules": {
+  "*:what=window": {"act": "open_window"},
+  "*:what=vent": {"act": "open_vent"},
+  "*:what=balcony_door": {"act": "open_balcony"},
+  "*:what=mailbox": {"act": "peek_mailbox"},
+  "*:what=tap": {"act": "kitchen_tap"}
+ }
+}

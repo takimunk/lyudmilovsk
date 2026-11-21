@@ -5,6 +5,8 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
+#include "GameFramework/PlayerController.h"
+#include "Camera/PlayerCameraManager.h"
 #include "HAL/IConsoleManager.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
@@ -19,6 +21,9 @@ static TAutoConsoleVariable<int32> CVarCityWindows(TEXT("lyud.CityWindows"), 1,
 		 "lyud.CityWindows.All 1 lights every window (a look at them all), 0 back to normal."));
 static TAutoConsoleVariable<int32> CVarCityWindowsAll(TEXT("lyud.CityWindows.All"), 0,
 	TEXT("1: every town window lit (a check), 0: the schedule or the town's life decides."));
+static TAutoConsoleVariable<float> CVarCityWindowsRoom(TEXT("lyud.CityWindows.RoomDistance"), 45.f,
+	TEXT("Metres: nearer than this a promenade unit's lit pane steps aside and the real room shows through the shop "
+		 "glass (back 6 m further out). 0: the pane always covers the glass."));
 
 namespace
 {
@@ -236,8 +241,33 @@ void ALyudCityWindows::Refresh(bool bForceRebuild)
 		SunAlt = It->SunAltitude();
 	}
 	const bool bAll = CVarCityWindowsAll.GetValueOnGameThread() != 0;
+	// the shop windows near the viewer: the pane steps aside so the lit room behind the glass is what he sees
+	// (checked here, every CheckSeconds, never per frame; 6 m of slack so a window on the edge does not flicker)
+	const float RoomCm = CVarCityWindowsRoom.GetValueOnGameThread() * 100.f;
+	FVector Eye = FVector::ZeroVector;
+	bool bEye = false;
+	if (const APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr)
+	{
+		if (PC->PlayerCameraManager)
+		{
+			Eye = PC->PlayerCameraManager->GetCameraLocation();
+			bEye = RoomCm > 0.f;
+		}
+	}
 	for (FWindow& W : Windows)
 	{
+		if (W.bShop)
+		{
+			const double D2 = bEye ? FVector::DistSquared(Eye, W.Pane.GetLocation()) : TNumericLimits<double>::Max();
+			const double Limit = W.bNear ? RoomCm + 600.0 : RoomCm;
+			const bool bNear = bEye && D2 < Limit * Limit;
+			if (bNear != W.bNear)
+			{
+				W.bNear = bNear;
+				W.bChanged = true;
+				bDirty = true;
+			}
+		}
 		// a window the town's life has set stays as it set it; every other window (and every lamp) keeps the schedule
 		const bool bLit = bAll || (W.External >= 0 ? W.External == 1 : ScheduleLit(W, Now, SunAlt));
 		if (bLit != W.bLit)
@@ -271,7 +301,7 @@ void ALyudCityWindows::ApplyChanges()
 			continue;
 		}
 		W.bChanged = false;
-		Panes[W.Tint]->UpdateInstanceTransform(W.Instance, W.bLit ? W.Pane : Hidden(W.Pane), true, false, true);
+		Panes[W.Tint]->UpdateInstanceTransform(W.Instance, W.bLit && !W.bNear ? W.Pane : Hidden(W.Pane), true, false, true);
 	}
 }
 
@@ -291,7 +321,7 @@ void ALyudCityWindows::RebuildInstances()
 		W.bChanged = false;
 		if (Panes.IsValidIndex(W.Tint))
 		{
-			W.Instance = ByTint[W.Tint].Add(W.bLit ? W.Pane : Hidden(W.Pane));
+			W.Instance = ByTint[W.Tint].Add(W.bLit && !W.bNear ? W.Pane : Hidden(W.Pane));
 		}
 	}
 	for (int32 T = 0; T < Panes.Num(); T++)

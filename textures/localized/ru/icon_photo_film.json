@@ -1,0 +1,10 @@
+{
+ "id": "icon_photo_film",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small faded blue-and-white cardboard box of 35 mm black-and-white photographic film standing upright, and beside it a black metal film cassette with a short tongue of dark film sticking out, without readable lettering.",
+ "source": "design/photo/icons_photo_1.png (sidecar design/photo/icons_photo_1.json), cell 2 (row 1, right), cut into 2x2 equal cells, resized to 512x512",
+ "sha256": "a8b2a310ae5c1538155a20f13a73cabb90151718d2f6166b795ffe3c8fc7e953",
+ "strings": {}
+}

@@ -23,7 +23,12 @@
     "job_id": "ac8a3159-e324-4890-95e8-9e18efbe3a54",
     "date": "2026-11-20",
     "credits": 3,
-    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_205536_ac8a3159-e324-4890-95e8-9e18efbe3a54.png"
+    "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_205536_ac8a3159-e324-4890-95e8-9e18efbe3a54.png",
+    "sha256": "36fe8c0dd48b26444edd26856eed1ca245945abf078cd09f685e075bba950496",
+    "size": [
+     5056,
+     3392
+    ]
    }
   }
  ]

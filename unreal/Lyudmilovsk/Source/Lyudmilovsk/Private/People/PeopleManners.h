@@ -64,6 +64,16 @@ namespace LyudPeople
 		CarryBag,
 		// empty hands again (new ones go at the end: the numbers stay)
 		PointSky,       // an arm up at something in the sky, the head back
+		// the town's new things to do (docs/town_life.md "The new activities")
+		SkipStone,      // a flat stone skipped off the water: the arm back and low, a whip forward
+		Dominoes,       // a tile put down on the table with a slap
+		Piano,          // both hands on the keys
+		Dig,            // a spade worked into the bed (FMannerDef::Prop spade)
+		Water,          // the watering can over the bed (prop watering_can)
+		Weed,           // bent over the bed, a hand pulling weeds
+		// the night state of the public rooms (docs/city_night.md, backlog item 29)
+		Mop,            // the cleaner's mop swept side to side over the floor (prop mop; the bucket stands by them)
+		Torch,          // the night watchman's torch held out ahead, its beam swung over the dark floor (prop torch)
 		Num
 	};
 	const char* MannerName(EManner M);
@@ -73,7 +83,8 @@ namespace LyudPeople
 	/** What a manner puts in the hands. */
 	enum class EProp : uint8_t
 	{
-		None, Phone, Cigarette, Camera, Umbrella, Rod, Brush, Binoculars, Newspaper, Book, Knitting, IceCream, Cup, Bag, Num
+		None, Phone, Cigarette, Camera, Umbrella, Rod, Brush, Binoculars, Newspaper, Book, Knitting, IceCream, Cup, Bag,
+		Spade, WateringCan, Mop, Torch, Num
 	};
 	const char* PropName(EProp P);
 	EProp PropFromName(const std::string& S);       // Num if unknown

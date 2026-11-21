@@ -25,6 +25,7 @@ Kit notes: windows are placed with B.window() and explicit CCW corners (hex hole
 """
 import math
 
+import dress_kit as dk
 import interior_kit as kit
 from citykit import prism, triangulate, DOOR_W
 from _surrounds import add_surrounds
@@ -601,7 +602,53 @@ def _interior(B, outline_cut):
     else:
         B.thing("studio_aquarium", "screen", wh["pos"][:2] + (1.0,), wh["yaw"], what="aquarium")
     B.spot("studio_easel", "work", ea["front"][:2] + (0.0,), (ea["yaw"] + 0.0) % 360)
+    # ---- small things that answer a touch (backlog item 31): the mailboxes, a switch either side of the doorway, the
+    # kitchenette's tap, a hexagon's vent that opens
+    hk.mailbox_thing(B, "lobby_mailboxes", *wall_l(-12), rows=3)
+    lx, ly = S(dw + 0.32, -TP / 2)
+    hk.switch(B, "lobby_switch", lx, ly, Y(0.0, -1.0))
+    sx, sy = S(-dw - 0.32, TP / 2)
+    hk.switch(B, "studio_switch", sx, sy, Y(0.0, 1.0))
+    kx, ky, kyw = wall_s(90, back=0.2)
+    r = math.radians(kyw)
+    hk.tap_thing(B, "studio_tap", kx - 0.3 * math.cos(r), ky - 0.3 * math.sin(r), kyw)
+    hk.window_latch(B, "studio_vent", free_s(150, SR, 0)[:2], what="vent", room=lambda x_, y_: inside(x_, y_, 0.02))
+    _dress(B, locals())
     H.check("twin")
+
+
+def _dress(B, L):
+    """Swappable sets (docs/city_dress.md): the painter's breakfast, flowers and a book on the lobby coffee table, mittens
+    on the lobby radiator, a wet day by the door, boots by the season. Positions come from _interior's own frame."""
+    tb, wall_l = L["tb"], L["wall_l"]
+    ttop, ctop = 0.75, 0.42                     # kit.table(h 0.75) in the studio; the coffee table in the lobby
+    with B.dress("studio_breakfast", weekdays=(0, 1, 2, 3, 4), hours=(7.5, 10.0)):
+        dk.plate_crumbs(B, tb[0] - 0.2, tb[1] - 0.12, ttop, 0.0, seed=1)
+        kit.newspaper(B, tb[0] - 0.02, tb[1] + 0.26, ttop, 20.0, seed=3)
+    with B.dress("studio_weekend", weekdays=(5, 6), hours=(9.0, 12.5)):
+        dk.plate_crumbs(B, tb[0] - 0.2, tb[1] - 0.12, ttop, 90.0, seed=2)
+        kit.glass(B, tb[0] + 0.15, tb[1] - 0.2, ttop, 0.0)
+    per = 7 if ALT == "tank" else 9              # a different flower week in each variant's home
+    for nm, (a, b) in (("fresh", (0, per - 3)), ("wilt", (per - 3, per - 1)), ("empty", (per - 1, per))):
+        with B.dress("lobby_flowers_" + nm, phase=(per, a, b)):
+            if nm == "wilt":
+                dk.vase_wilted(B, -0.85, 5.88, ctop, 0.0, seed=4)
+            else:
+                kit.vase(B, -0.85, 5.88, ctop, 0.0, flowers=(nm == "fresh"), seed=4)
+    with B.dress("lobby_book", chance=0.5):
+        dk.book_face_down(B, -0.85, 5.2, ctop, 100.0, seed=2)
+    x, y, yw = wall_l(168)                      # the radiator: top z 0.72, 0.08 out from the wall
+    ry = math.radians(yw)
+    with B.dress("lobby_mittens", season="cold_months"):
+        dk.mitten_pair(B, x + 0.08 * math.sin(ry) - 0.33 * math.cos(ry), y - 0.08 * math.cos(ry) - 0.33 * math.sin(ry), 0.72, yw, seed=3)
+    with B.dress("lobby_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, 2.0, 3.55, 0.01, 0.0)
+        dk.umbrella_open(B, 3.35, 3.95, 0.01, 30, seed=1)
+        dk.umbrella_open(B, 0.7, 4.2, 0.01, 200, seed=2)
+    for nm, months, kind in (("winter", (12, 1, 2), "felt"), ("mild", (3, 4, 5, 9, 10, 11), "rubber"),
+                             ("summer", (6, 7, 8), "sandals")):
+        with B.dress("lobby_boots_" + nm, months=months):
+            dk.boots(B, 4.0, 3.85, 0.01, 15.0, kind=kind, seed=5)
 
 
 from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)

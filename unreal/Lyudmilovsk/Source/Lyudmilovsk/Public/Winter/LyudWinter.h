@@ -116,6 +116,13 @@ public:
 	/** How far the clearing has swept 0..1; at 1 the patch is clear and its snow is in the berms. */
 	UFUNCTION(BlueprintCallable, Category = "Winter") void SetPatchProgress(int32 Patch, float Progress);
 
+	// --- holes in the sea ice (the walruses' hole off the pier: ULyudWinterPlay, docs/winter_play.md)
+	/** A hole kept open in the ice: the solid tile whose middle is within a tile's half of Center (cm) is left out, so put
+	 *  Center on the tiles' world grid (multiples of ALyudSeaIce::TileCm) to open exactly one. bOn false closes it. */
+	void SetIceHole(FName Id, const FVector& Center, bool bOn);
+	/** The sea ice's top now (world Z cm) when the sheet is shown; false when there is no ice. */
+	bool GetIceTop(float& OutZ) const;
+
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Deinitialize() override;
 	virtual void Tick(float DeltaTime) override;
@@ -141,6 +148,11 @@ private:
 	float SeaWindScale = -1.f;
 	float WadeSpeed = -1.f;
 	float SweepTimer = 0.f;
+	/** SetIceHole's holes (centres, cm), and whether the tiles must be laid again for a change. */
+	TMap<FName, FVector> IceHoles;
+	bool bIceHolesChanged = false;
+	float IceTopZ = 0.f;
+	bool InIceHole(double X, double Y) const;
 
 	void ReadWeather(float DeltaTime);
 	void LowWater();

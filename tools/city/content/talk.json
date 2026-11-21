@@ -2251,6 +2251,29 @@
     "gives": {
      "collect": "staff/photo"
     }
+   },
+   {
+    "id": "photo.city",
+    "k": "city.ask.photo.city",
+    "lines": [
+     "city.ask.photo.city.1",
+     "city.ask.photo.city.2",
+     "city.ask.photo.city.3"
+    ],
+    "gives": {
+     "collect": "staff/photo"
+    }
+   },
+   {
+    "id": "photo.city.done",
+    "k": "city.ask.photo.city.done",
+    "lines": [
+     "city.ask.photo.city.done.1"
+    ],
+    "heard": "photo.city",
+    "gives": {
+     "collect": "staff/photo"
+    }
    }
   ],
   "clinic_registry_x": [
@@ -2938,7 +2961,8 @@
   "hall_quiet": {
    "about": "a quiet public hall: soft room tone, a far murmur, a slow wall clock (the cable car station's hall loop)",
    "loop": "station_hall",
-   "volume": 0.22
+   "volume": 0.22,
+   "windows": 0.4
   },
   "reading_room": {
    "about": "a library or a reading room: the hall's hush quieter, now and then a page (diary_page: the wav is in audio/sfx, plays once imported)",
@@ -2951,7 +2975,8 @@
     14,
     40
    ],
-   "shot_volume": 0.35
+   "shot_volume": 0.35,
+   "windows": 0.7
   },
   "cafe_room": {
    "about": "a café or a canteen: murmur, cutlery, now and then a cup or a plate",
@@ -2967,7 +2992,11 @@
     18
    ],
    "shot_volume": 0.4,
-   "closed": "empty_room"
+   "closed": "empty_room",
+   "weather": {
+    "rain": "cafe_full"
+   },
+   "windows": 0.5
   },
   "bar_room": {
    "about": "a bar or a dumpling house: the room's murmur over a kitchen through the wall",
@@ -2983,7 +3012,11 @@
     20
    ],
    "shot_volume": 0.4,
-   "closed": "empty_room"
+   "closed": "empty_room",
+   "weather": {
+    "rain": "bar_full"
+   },
+   "windows": 0.4
   },
   "kitchen_shop": {
    "about": "a bakery or a pasty bar: the kitchen through the wall, the till now and then",
@@ -3040,12 +3073,89 @@
     5,
     12
    ],
-   "shot_volume": 0.4
+   "shot_volume": 0.4,
+   "windows": 0.3
   },
   "clock_room": {
    "about": "a clockmaker's or a keeper's room: ticking (clock_tick does not exist yet: silent until made)",
    "loop": "clock_tick",
-   "volume": 0.18
+   "volume": 0.18,
+   "windows": 0.3
+  },
+  "cafe_full": {
+   "about": "a cafe full in the rain (docs/indoor_weather.md): the murmur louder, cups and plates more often, the rain on the windows",
+   "loop": "rest_room",
+   "volume": 0.42,
+   "shots": [
+    "rest_clink",
+    "rest_plate",
+    "rest_glass",
+    "rest_coins"
+   ],
+   "every": [
+    4,
+    10
+   ],
+   "shot_volume": 0.45,
+   "closed": "empty_room",
+   "windows": 0.6
+  },
+  "bar_full": {
+   "about": "a bar or a dumpling house full in the rain: louder, glasses and coins more often",
+   "loop": "rest_room",
+   "volume": 0.44,
+   "shots": [
+    "rest_glass",
+    "rest_clink",
+    "rest_coins"
+   ],
+   "every": [
+    5,
+    12
+   ],
+   "shot_volume": 0.45,
+   "closed": "empty_room",
+   "windows": 0.5
+  },
+  "lighthouse_room": {
+   "about": "the lighthouse keeper's room (P-PIER): a hush high over the sea, the keeper's cat purring, the buoy's bell and a far foghorn now and then, the wind at the glass",
+   "loop": "station_hall",
+   "volume": 0.08,
+   "shots": [
+    "cat_purr",
+    "buoy_bell",
+    "foghorn_far",
+    "ship_horn_far"
+   ],
+   "every": [
+    16,
+    45
+   ],
+   "shot_volume": 0.3,
+   "windows": 1.0,
+   "weather": {
+    "rain": "lighthouse_storm"
+   }
+  },
+  "lighthouse_storm": {
+   "about": "the lighthouse in the rain and the storm: the keeper's radio crackles with ship talk (static, the dial, morse), the wind and the rain on every pane",
+   "loop": "station_hall",
+   "volume": 0.1,
+   "shots": [
+    "radio_static",
+    "radio_tune",
+    "radio_static",
+    "radio_pips",
+    "foghorn_far",
+    "ship_horn_far",
+    "buoy_bell"
+   ],
+   "every": [
+    5,
+    14
+   ],
+   "shot_volume": 0.42,
+   "windows": 1.0
   }
  },
  "tone_by": {
@@ -3065,7 +3175,7 @@
   "P-T3H3": "cafe_room",
   "P-T3SPORT": "sport_hall",
   "P-SCHOOL": "hall_quiet",
-  "P-PIER": "clock_room",
+  "P-PIER": "lighthouse_room",
   "P-KIOSK6": "clock_room",
   "P-KIOSK2": "cold_counter",
   "unit:cafe": "cafe_room",

@@ -67,7 +67,9 @@ class Building:
         self.height = 0.0
         self.notes = []
         self.inside_windows = "all"        # which windows get a room-side card: "all" | "public" | None | {ids}
+        self.dresses = []                  # {id, when, mesh}: swappable room dressing (B.dress, docs/city_dress.md)
         self._wn = {}
+        self._dressing = None
 
     # ---------------------------------------------------------------- windows and flats
     def window(self, corners, flat=None, kind=None, inset=WINDOW_INSET, cols=1, rows=1, frame=0.05, shape="rect",
@@ -215,10 +217,28 @@ class Building:
         return [t for t in self.things if not t["id"].startswith("kit_clock_")
                 or all(math.dist(t["pos"], o["pos"]) >= 0.35 for o in own)]
 
+    # ---------------------------------------------------------------- swappable dressing (docs/city_dress.md)
+    def dress(self, did, **when):
+        """A set of small props that comes and goes with the days (a cup left after breakfast, wet umbrellas on rain days,
+        coats on the rack in winter, a jigsaw that grows): use as a context manager,
+
+            with B.dress("cafe_paper", hours=(7, 20), chance=0.8):
+                kit.newspaper(B, 1.2, 4.0, 0.75)
+
+        Everything the kit puts into B.detail inside the block goes into the set's own mesh instead
+        (SM_<type>_Dress_<id>, no collision); the game shows or hides that mesh as a whole when the condition changes
+        (ALyudCityBuilding, never per frame). Nothing may go into B.m (no collision: pass solid=False), no lamps, no things.
+        when: see dress_when() (weather, months/season, weekdays, hours, festival, chance, phase, open). Ids are unique
+        in the building, [a-z0-9_]."""
+        return _DressBlock(self, did, dress_when(when))
+
+    # ---------------------------------------------------------------- lights
     def lamp(self, pos, lumens=900.0, colour="#FFD9A8", kind="public", radius=7.0, fixture=True):
         """A real light inside an enterable room (Unreal: a point light, no shadow, drawn within ~40 m). pos = the
         light's centre (put it ~0.3 m under the ceiling). kind "public": on in the building's open hours (all day
-        long: interiors need it), "stair"/"lobby": dusk to dawn. fixture: a small opal globe/pendant into B.detail
+        long: interiors need it), "stair"/"lobby": dusk to dawn, "closed": the one lamp left burning in a shut public room
+        (on from dusk to dawn while the building is closed; its public windows then glow faintly; see docs/city_night.md
+        and night_kit.night_lamp). fixture: a small opal globe/pendant into B.detail
         (material CT_Opal, which glows)."""
         self.lamps.append({"pos": [round(v, 3) for v in pos], "lumens": lumens, "colour": colour, "kind": kind,
                            "radius": radius})
@@ -276,8 +296,177 @@ class Building:
             "entrances": self.entrances, "spots": self.spots, "lamps": self.lamps, "things": self._things_out(),
             "flats": sorted(self.flats.values(), key=lambda f: f["flat"]),
             "windows": self.windows, "light_tex": LIGHT_TEX, "notes": self.notes,
-            "tris": {"shell": self.m.tri_count(), "detail": self.detail.tri_count(), "windows": self.win.tri_count()},
+            "dress": [{"id": d["id"], "when": d["when"], "tris": d["mesh"].tri_count(), "bounds": d["bounds"]}
+                      for d in self.dresses],
+            "tris": {"shell": self.m.tri_count(), "detail": self.detail.tri_count(), "windows": self.win.tri_count(),
+                     "dress": sum(d["mesh"].tri_count() for d in self.dresses)},
         }
+
+
+# ------------------------------------------------------------------------------------------------ dressing conditions
+WEATHER_WORDS = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")   # LyudCity::WeatherBits, same order
+SEASONS = {"winter": (12, 1, 2), "spring": (3, 4, 5), "summer": (6, 7, 8), "autumn": (9, 10, 11),
+           "cold_months": (11, 12, 1, 2, 3)}
+DRESS_KEYS = ("weather", "weather_not", "months", "season", "weekdays", "hours", "festival", "chance", "phase", "open")
+
+
+def dress_when(w):
+    """Checks and normalises a dressing condition (all given keys must hold):
+        weather=("rain", "wet")   any of these weather words now (WEATHER_WORDS: wet = the ground is still wet after rain)
+        weather_not=("snow",)     none of these
+        months=(11, 12, 1)        or season="winter" | "spring" | "summer" | "autumn" | "cold_months" (Nov..Mar)
+        weekdays=(0, 1, 2, 3, 4)  Monday = 0
+        hours=(8, 10.5)           from..to on a 24 h clock (to may pass midnight: (22, 6))
+        festival="any" | "none" | "<festival id>"
+        chance=0.6                shown on that share of days (a stable die per plot, set and day)
+        phase=(7, 3, 7)           (period, from, to) in days since the game began: shown when days % period is in
+                                  [from, to). Weekly drawings: four sets phase=(28, 0, 7), (28, 7, 14)...; a jigsaw that
+                                  grows one stage a day for six days: stage k phase=(9, k, 9)
+        open=True | False         the building's public open hours (ALyudCityBuilding OpenHour..CloseHour)
+    Returns a plain dict with only lists and numbers (the export json; the game's LyudCity::FDressWhen reads the same)."""
+    bad = [k for k in w if k not in DRESS_KEYS]
+    if bad:
+        raise ValueError("dress condition: unknown %s (one of %s)" % (bad, ", ".join(DRESS_KEYS)))
+    out = {}
+    for k in ("weather", "weather_not"):
+        if k in w:
+            v = [w[k]] if isinstance(w[k], str) else list(w[k])
+            for x in v:
+                if x not in WEATHER_WORDS:
+                    raise ValueError("dress %s: %r (one of %s)" % (k, x, ", ".join(WEATHER_WORDS)))
+            out[k] = v
+    months = set()
+    if "season" in w:
+        for sname in ([w["season"]] if isinstance(w["season"], str) else w["season"]):
+            months |= set(SEASONS[sname])
+    if "months" in w:
+        months |= {int(m) for m in w["months"]}
+    if months:
+        if not all(1 <= m <= 12 for m in months):
+            raise ValueError("dress months 1..12: %r" % sorted(months))
+        out["months"] = sorted(months)
+    if "weekdays" in w:
+        d = sorted({int(x) for x in w["weekdays"]})
+        if not all(0 <= x <= 6 for x in d):
+            raise ValueError("dress weekdays 0..6: %r" % d)
+        out["weekdays"] = d
+    if "hours" in w:
+        a, b = w["hours"]
+        if not (0 <= a <= 24 and 0 <= b <= 24):
+            raise ValueError("dress hours 0..24: %r" % (w["hours"],))
+        out["hours"] = [float(a), float(b)]
+    if "festival" in w:
+        out["festival"] = str(w["festival"])
+    if "chance" in w:
+        c = float(w["chance"])
+        if not 0.0 < c <= 1.0:
+            raise ValueError("dress chance (0, 1]: %r" % c)
+        out["chance"] = c
+    if "phase" in w:
+        per, a, b = (int(x) for x in w["phase"])
+        if not (per >= 1 and 0 <= a < b <= per):
+            raise ValueError("dress phase (period, from, to) with 0 <= from < to <= period: %r" % (w["phase"],))
+        out["phase"] = [per, a, b]
+    if "open" in w:
+        out["open"] = bool(w["open"])
+    return out
+
+
+def dress_hash01(plot, did, day):
+    """The stable die of a dressing set on a day (FNV-1a over "<plot>/<id>@<day>"): mirrors LyudCity::DressHash01."""
+    h = 2166136261
+    for ch in ("%s/%s@%d" % (plot, did, day)).encode("utf-8"):
+        h ^= ch
+        h = (h * 16777619) & 0xFFFFFFFF
+    h ^= h >> 15
+    h = (h * 2246822519) & 0xFFFFFFFF
+    h ^= h >> 13
+    return (h & 0xFFFFFF) / float(1 << 24)
+
+
+def dress_in_hours(h, o, c):
+    """LyudCity::InHours: is h in [o, c) on a 24 h clock (c below o runs past midnight; a full day or o == c is always)."""
+    if c - o >= 24 or (o <= 0 and c >= 24):
+        return True
+    o, c = math.fmod(o + 48.0, 24.0), math.fmod(c + 48.0, 24.0)
+    if o == c:
+        return True
+    return (o <= h < c) if o < c else (h >= o or h < c)
+
+
+def dress_visible(when, plot, did, now):
+    """Is a set with condition `when` shown? now: {"since": days since the game began, "day": absolute day number,
+    "hour", "weekday", "month", "weather": set of WEATHER_WORDS, "festivals": set of ids, "festival_today": bool,
+    "open": bool}. Mirrors LyudCity::DressVisible (tools/citydress checks they agree)."""
+    wx = now.get("weather", set())
+    if "weather" in when and not any(x in wx for x in when["weather"]):
+        return False
+    if "weather_not" in when and any(x in wx for x in when["weather_not"]):
+        return False
+    if "months" in when and now["month"] not in when["months"]:
+        return False
+    if "weekdays" in when and now["weekday"] not in when["weekdays"]:
+        return False
+    if "hours" in when and not dress_in_hours(now["hour"], when["hours"][0], when["hours"][1]):
+        return False
+    if "festival" in when:
+        f = when["festival"]
+        today = now.get("festival_today", False)
+        if f == "any" and not today:
+            return False
+        if f == "none" and today:
+            return False
+        if f not in ("any", "none") and f not in now.get("festivals", set()):
+            return False
+    if "phase" in when:
+        per, a, b = when["phase"]
+        k = now["since"] % per
+        if not (a <= k < b):
+            return False
+    if "open" in when and bool(now.get("open", True)) != when["open"]:
+        return False
+    if "chance" in when and dress_hash01(plot, did, now["day"]) >= when["chance"]:
+        return False
+    return True
+
+
+class _DressBlock:
+    def __init__(self, B, did, when):
+        import re
+        if not re.fullmatch(r"[a-z0-9_]+", did):
+            raise ValueError("dress id %r: [a-z0-9_] only" % did)
+        if any(d["id"] == did for d in B.dresses):
+            raise ValueError("dress id %r used twice in %s" % (did, B.type))
+        self.B, self.did, self.when = B, did, when
+
+    def __enter__(self):
+        B = self.B
+        if B._dressing is not None:
+            raise RuntimeError("B.dress blocks do not nest (%s inside %s)" % (self.did, B._dressing))
+        B._dressing = self.did
+        self._keep = (B.detail, B.m, len(B.lamps), len(B.things), len(B.spots))
+        self.mesh = Mesh()
+        self._shell = Mesh()
+        B.detail, B.m = self.mesh, self._shell
+        return self.mesh
+
+    def __exit__(self, et, ev, tb):
+        B = self.B
+        detail, shell, nl, nt, ns = self._keep
+        B.detail, B.m = detail, shell
+        B._dressing = None
+        if et is not None:
+            return False
+        if self._shell.faces:
+            raise ValueError("dress %r: %d faces went to the shell (collision): pass solid=False" % (self.did, len(self._shell.faces)))
+        if (len(B.lamps), len(B.things), len(B.spots)) != (nl, nt, ns):
+            raise ValueError("dress %r: no lamps, things or spots inside a dress block" % self.did)
+        if not self.mesh.faces:
+            raise ValueError("dress %r is empty" % self.did)
+        vs = self.mesh.verts
+        bounds = [[round(min(v[i] for v in vs), 3) for i in range(3)], [round(max(v[i] for v in vs), 3) for i in range(3)]]
+        B.dresses.append({"id": self.did, "when": self.when, "mesh": self.mesh, "bounds": bounds})
+        return False
 
 
 def quad_bar(m, mat, a0, a1, b0, b1, z0, z1):

@@ -57,6 +57,28 @@ Setup: `clang++`, `python3` (PIL for `underwater.bed`), and the two LFS worlds t
 4. **`tools/check_localization.py`**: the string tables (same keys and placeholders in ru/en/ja, every item's icon
    source picture).
 
+## Tonight's features together (tools/togethersim)
+
+`tools/togethersim/run.sh` plays one game week, Monday 7 to Sunday 13 June 2027, with everything of the 2026-11-20 night on
+at once: Big Sun Day on the Saturday (a day off, the eve on Friday), the children's kites in the calendar's wind, the three
+cups, the small jobs, the post round, the allotment's neighbour, the hero on the sanatorium's course. The week runs on the
+real people's life, festivals, city things and cups (`togethersim.cpp`) and checks, minute by minute, that a job with hours
+of its own has its boss really at work, that a cup's bracket seats nobody at work, at school, asleep or at a festival, that
+the postman and the neighbour are free in their hours, and that the day off does what the others assume.
+`check_together.py` (`run.sh data`, seconds) checks the data side: nobody named by two systems for the same hours, the
+boards' jobs staffed by the shifts, a planned week of the hero that holds all of it with the walks between, no selling at a
+profit, the week's pay against what tonight's things cost, the icons pinned, the quests' events sent by code.
+`run_all_suites.sh` runs both (`togethersim.data`, and `togethersim.week` outside `--quick`: about four minutes).
+
+## Children's games in the yards (tools/yardsim)
+
+`tools/yardsim/run.sh` (docs/yard_games.md) checks that the generated yard data is up to date (`tools/yard/yard_areas.py
+--check`), plays each game's rules from a script (hopscotch turns and misses, rope swaps, hide-and-seek rounds, goals,
+tags, leaving, the end), the hero hiding and seeking, then a Monday and a Saturday afternoon (13:00–20:30) of the real
+town's children on the real people's life: they go out to the yards, games start and end, roles hold, nobody is in two
+games. `run.sh rules` is the seconds-long part; `run_all_suites.sh` runs it as `yardsim.rules`, and the whole thing as
+`yardsim.town` outside `--quick` (about a minute).
+
 Known failures on main (2026-11-13): `audiosim.test` (2: thunderstorm peak, far-storm rumble), `check_data` and
 `check_localization` (the fishing gear, the fish, the diner's fish and the restaurant's dishes have no imported icon).
 

@@ -32,7 +32,13 @@ void UAnimalAnimInstance::Play(FName Clip, UAnimSequence* Seq, float Rate, bool 
 		// a locomotion clip coming in picks up the phase of the one going out (no stumble on a gait change)
 		if (bLoop && Seq && Layers.Num() > 1)
 		{
-			const FAnimalClipLayer& Prev = Layers[0];
+			// (the one leading till now: the heaviest of the others, not whichever is oldest)
+			int32 Lead = 0;
+			for (int32 I = 1; I < Layers.Num() - 1; I++)
+			{
+				Lead = Layers[I].Weight > Layers[Lead].Weight ? I : Lead;
+			}
+			const FAnimalClipLayer& Prev = Layers[Lead];
 			if (Prev.Seq && Prev.bLoop)
 			{
 				const double PL = FMath::Max(1e-3, (double)Prev.Seq->GetPlayLength());
