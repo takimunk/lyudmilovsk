@@ -418,6 +418,8 @@ void ULyudNorthSubsystem::SpawnBrook()
 	const FVector First(BrookWater[0]);
 	if (ALyudNorthRiver* NewBrook = World->SpawnActor<ALyudNorthRiver>(First, FRotator::ZeroRotator, Params))
 	{
+		// a calm sheet: by the river's rule (narrow = fast) the whole brook was foam, white blotches over the bed
+		NewBrook->FoamScale = 0.12f;
 		NewBrook->Setup(BrookWater);
 		NewBrook->SetActorHiddenInGame(!bShown);
 		NewBrook->Tags.Add(TEXT("South"));

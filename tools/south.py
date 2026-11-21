@@ -317,7 +317,8 @@ def brook_water():
         if c["kind"][k] == "bank" and c["bed"][k] + 0.1 < W.SEA_Z - 0.2:
             break
         depth = 0.26 if c["kind"][k] == "ravine" else 0.24 if c["kind"][k] == "bank" else BROOK_WATER
-        half = c["half"][k] * (0.75 if c["kind"][k] == "ravine" else 1.08) + depth / max(c["side"][k], 0.2)
+        # across the beach a rill, not a band: the cut widens there and a wide shallow sheet lay on the sand like a ribbon
+        half = c["half"][k] * {"ravine": 0.75, "bank": 0.5}.get(c["kind"][k], 1.08) + depth / max(c["side"][k], 0.2)
         # by the coast the bank's own fall (world_map._height0) lowers the cut further: the water lies on the real bed
         # (and everywhere the water is measured from the land as it is, not from the designed bed: the cut's blend
         # leaves the real bed a hand higher, and a sheet at the bed's own level does not show)
