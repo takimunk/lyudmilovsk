@@ -85,6 +85,26 @@ redrawn only when their look changes (a key per picture); the field stars are re
 into arrays kept between frames; the bird search runs five times a second. The frame is the game's frame with a narrow
 field (fewer things in view than on foot).
 
+## Checking it on the Mac
+
+`unreal/scripts/shoot_telescope.sh` (through the UE queue, offscreen, `shoot_telescope.py`): the hero 25 m over where
+he starts (`SCOPE_UP`), shots on foot and through the eyepiece of Jupiter at 04:00 (x3, x12, x60, x60 out of focus), the
+moon at the night's highest hour (x12, x60), Saturn at 21:00 (x60, x400) and the sea by day (`SCOPE_SEA_AZ`, 270 = +X).
+`shot showui`, so the eyepiece's Slate is in them (`HighResShot` leaves it out); Saved/Screenshots/MacEditor.
+`SCOPE_BENCH=<seconds>` measures instead: on foot, x3 and x60 at the same place and aim, in rounds, in one process
+(`--exclusive`). `SCOPE_SHOTS=a,b` picks shots.
+
+Found on the first Mac run (2026-11-21) and fixed:
+* The level's exposure is manual with the physical camera on, so the f-number the depth of field sets changed the
+  brightness too (f/1 at x3: the night sky day-bright; f/10 at x60: darker). `CameraISO` now keeps N^2 / ISO the
+  level's (`BaseFstop`, `BaseIso` read from the unbound volumes at Begin).
+* `StarBrightness` only seeds the dome's material instance: the eyepiece now sets the parameter, so the dome's star
+  blobs really go while the field stars are drawn.
+* Saturn at x60 (a 4 px ball) was a dot: a picture is drawn when the whole picture (ring included) is over 6 px.
+
+Known limits: the moon is Europa, 14 degrees across, so from x12 its surface fills the field and the phase shows only
+at x3; at x60 its 4096 px map is blocky. The tube's horizon at x12 by day is mostly haze.
+
 ## Not done yet
 
-The comet (the brief's "if added"). Verified on the Mac: see the branch's notes.
+The comet (the brief's "if added").
