@@ -173,6 +173,7 @@ if wanted peoplesim.test.norail && [ -f "$RAIL" ]; then
 	trap - EXIT INT TERM
 fi
 suite sea.test                    - bash tools/sea/run.sh test
+suite skyeventsim.test            - bash tools/skyeventsim/run.sh test
 suite sea.days                    - bash tools/sea/run.sh days
 suite sea.field                   - bash tools/sea/run.sh field
 suite telescopesim.test           - bash tools/telescopesim/run.sh test
