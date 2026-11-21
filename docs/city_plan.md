@@ -67,7 +67,9 @@ Cascade (Y 760). Windows: warm light at night when the flat is occupied (`UPeopl
   lit window panes. The town's life drives them with `ULyudCityWindowsSubsystem::SetWindowLit(WindowId, bLit)` or
   `SetFlatLit(FlatId, bLit)`; every window it has not set keeps its own evening schedule (dusk to a bedtime 21:30..01:30,
   some again before dawn; shops lit 9..21 in the dark). Console: `lyud.CityWindows 0` off, `lyud.CityWindows.All 1`
-  every window lit. Nothing per frame: checked every 2 s, instance buffers rebuilt only on a change.
+  every window lit. Nothing per frame: checked every 2 s, instance buffers rebuilt only on a change. A promenade
+  unit's pane steps aside within `lyud.CityWindows.RoomDistance` (45 m) of the viewer, so the real room shows through the
+  see-through shop glass (city_interiors.md "Shop windows").
 
 ### Lanes and lamps
 

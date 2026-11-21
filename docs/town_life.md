@@ -104,6 +104,19 @@ boat shed, a beekeeper at the old orchard, eight birdwatchers at the hide at sun
 back (a round of spots along the trail), the belvedere's benches, children at the brook. `tools/peoplesim/run.sh town`
 checks it (`AtonWatch`).
 
+## The night jobs
+
+Item 29 (`docs/city_night.md`): `tools/town/town_night.py`, an add-on like `town_activities.py` (and run after it by
+`town_life.py`), gives three residents without work the shut rooms' jobs:
+
+| activity | who, when | where |
+|---|---|---|
+| `mop_floor`, `mop_floor_late` (the day's second building) | cleaner A: the café 7:00-7:50, the Rassvet 8:05-9:55; cleaner B: the store 7:00-8:50 (Mon-Sat), the library 21:05-22:25 | `P-CAFE-CLEAN` (up the spiral stair), `P-CLUB2-CLEAN`, `P-STORE-CLEAN`, `P-LIBRARY-CLEAN`: floor spots in round order; the mop manner with the bucket by them |
+| `night_watch` | the watchman (occupation `guard`), 20:30-6:30, sleeps by day | `P-STORE-WATCH`: the store's ground floor, up the runner and out to the side halls; the torch manner and its beam |
+
+A round in an indoor place now goes from spot to spot by the place's own ways (`Route` within the place) instead of the
+street grid. Who has a job is kept in townsfolk.json (`night_job`), so a rerun keeps the same people.
+
 ## How it works
 
 - **Places**: the restaurant (its `seats.json` has an entrance) is walked: diners and staff go in by its front door to

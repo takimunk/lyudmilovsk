@@ -1011,6 +1011,13 @@ def main():
     extra = read_input(os.path.relpath(EXTRA, ROOT)) or {}
     places, flats, workplaces = build_places(plan, extra, args)
     people = build_people(plan, places, flats, workplaces, args, rnd)
+    # the cable car's hall staff and the Akademgorodok's researchers (tools/station_life.py; its own seeds, so the town
+    # above is the same with or without it)
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import station_life
+    with open(station_life.NETWORK, encoding="utf-8") as f:
+        station_life.apply(people, places, json.load(f))
+    ROLES.update(station_life.ROLES)
 
     # the stairs between the terraces: the people's ways up and down (PeopleSim's town ground)
     levels = [{"id": "B", "z": -41.5}] + [{"id": t["id"], "z": t["z"]} for t in plan["terraces"]]
@@ -1045,8 +1052,9 @@ def main():
     write_counters(people, workplaces)
     # the market's stalls and the queues at the counters (docs/counters.md): a post-pass on town_places.json
     subprocess.check_call([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "counters.py")])
-    # what is added to the town after it is made: the sanatorium's guests, the new things to do, the Aton coast's people (all idempotent)
-    for extra_script in ("sanatorium_guests.py", "town_activities.py", "south_people.py"):
+    # what is added to the town after it is made: the sanatorium's guests, the new things to do, the Aton coast's people,
+    # the night jobs (all idempotent)
+    for extra_script in ("sanatorium_guests.py", "town_activities.py", "south_people.py", "town_night.py"):
         subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), extra_script)], check=True)
 
     jobs = sum(1 for p in people if any(d.get("place") for d in p["duties"]) and p["occupation"] != "pupil")
