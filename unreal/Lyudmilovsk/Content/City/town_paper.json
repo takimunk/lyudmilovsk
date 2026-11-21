@@ -80,6 +80,8 @@
   "front.weather_frost": 2,
   "front.weather_fog": 2,
   "front.cup": 3,
+  "front.contest": 3,
+  "front.contest_noplace": 2,
   "fest.bird_day": 2,
   "fest.blossom": 2,
   "fest.children_day": 2,

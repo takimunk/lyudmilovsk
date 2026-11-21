@@ -39,7 +39,8 @@ DEST = "/Game/South"
 MATS = DEST + "/Materials"
 TAG = "South"
 FOLDER = "Outside/South"
-FAR_THINGS = ("cliff_stair", "belvedere", "town_stele", "bird_hide", "fisher_shed", "hay_stack", "rowboat")
+FAR_THINGS = ("cliff_stair", "belvedere", "town_stele", "bird_hide", "fisher_shed", "hay_stack", "rowboat", "lighthouse",
+              "bunker", "shipwreck", "erratic", "halt_shelter")
 SOUTH = {"EXPORT": EXPORT, "DEST": DEST, "MESHES": DEST + "/Meshes", "MATS": MATS, "IMPORTED": DEST + "/Imported",
          "PREFIX": "SM_South_", "LABEL": "South_", "TAG": TAG, "FOLDER": FOLDER}
 NORTH_KIT = {"LABEL": "South_", "TAG": TAG, "FOLDER": FOLDER}       # the North's meshes, standing here

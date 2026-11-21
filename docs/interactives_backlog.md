@@ -414,7 +414,7 @@ queue at the bakery and the market.
 
 ## 28. Weather and night indoors
 
-`[ ]` **Brief (Opus 5.5):** On rain days the cafés, the library, the clubs and the sanatorium lounge fill up; on stormy
+`[x] indoor-weather 2026-11-20 (branch indoor-weather, docs/indoor_weather.md; awaits a Mac build and a rain-day walk)` **Brief (Opus 5.5):** On rain days the cafés, the library, the clubs and the sanatorium lounge fill up; on stormy
 nights the lighthouse keeper's radio crackles with ship talk; on hot days the ice cream counter has a queue and the café's
 windows open. Lines exist by weather; extend to who is where (town-life weights by weather per plot kind), room tones
 (`tones`, `tone_by`: rain on the roof, the wind in the lighthouse), lamps on earlier on dark days. Done: peoplesim test of
@@ -429,7 +429,7 @@ with it: same `B.dress` mechanism, one of you writes it). Done: Blender previews
 
 ## 30. Collections pay off
 
-`[ ]` **Brief (Opus 5.5):** Stamp sets exist (library shelves, films, jukebox records, kiosks, chess wins, the sanatorium
+`[~] collections-payoff 2026-11-21 (model, data, diary pages, citysim and quest audit done; never compiled or seen in the engine)` **Brief (Opus 5.5):** Stamp sets exist (library shelves, films, jukebox records, kiosks, chess wins, the sanatorium
 card, tonight's new sets) but a complete set gives nothing (backlog P4). Give each set a reward that fits: a library reader's
 card with a photo, a framed film poster for the hero's room (item 19), a record of your choice, the kiosk keepers' free
 paper for a month, a chess club badge on the jacket, the sanatorium diploma. A diary page "Коллекции" with all sets, filled
@@ -455,7 +455,7 @@ test of a game's start, roles and end, Mac shots, bench with three groups playin
 
 ## 33. Photo quests and the photo contest
 
-`[ ]` **Brief (Opus 5.5):** On top of the camera (item 2): the photo club at «Шестерня» runs a monthly contest with a theme
+`[~] photo-contest 2026-11-20` **Brief (Opus 5.5):** On top of the camera (item 2): the photo club at «Шестерня» runs a monthly contest with a theme
 (the sea, birds, people at work, the festival) announced in the paper; the hero hands in one print, residents of the club
 judge (a score from what is in the frame: subject tags from the capture, light by sun height, sharpness), the winners' prints
 hang in the club and the paper prints the hero's photo. Three photo quests from residents (a portrait of a pensioner for his
@@ -671,7 +671,7 @@ model (owner and dog keep together, leash never stretched through a wall), peopl
 
 ## 47. Reading anywhere
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The classics (`docs/books.md`, `SLyudBookReader`, `ULyudBenchSit`) can be read
+`[~] book-club 2026-11-21 (branch book-club)` **Cloud-only. Brief (Opus 5.5):** The classics (`docs/books.md`, `SLyudBookReader`, `ULyudBenchSit`) can be read
 only on a park bench. Let a book on loan be read wherever the hero sits or rides: any public seat (`ULyudPublicSpots`
 "bench" and "chair" spots, the sanatorium lounge, the café tables), the beach towel, the cable car cabin and the train's
 window seat (the clock moves as he reads, so a ride passes in pages), the hero's own room (item 19). Light matters: after
@@ -684,7 +684,7 @@ and the hero gets a polite postcard (item 11's letters). Done: unit tests of the
 
 ## 48. The book club
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** Give the library a social side. A reading circle meets on Thursday evenings in
+`[~] book-club 2026-11-21 (branch book-club)` **Cloud-only. Brief (Opus 5.5):** Give the library a social side. A reading circle meets on Thursday evenings in
 the reading room (a town-life gathering of four or five residents by persona: the retired teacher, the student, the
 librarian, a scientist from Academgorodok), each month one book from the catalogue (`tools/books/catalog.json`, in all
 three languages); they sit, talk in turns (bark lines about the month's book, written for each of twelve books, ru/en/ja,

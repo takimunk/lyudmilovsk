@@ -1,0 +1,19 @@
+{
+ "id": "drink_fountain",
+ "tris": 3000,
+ "raw_tris": 1405709,
+ "tex": 1024,
+ "origin": "base",
+ "front_yaw": 0.0,
+ "min": [
+  -0.22,
+  -0.23,
+  -0.0
+ ],
+ "max": [
+  0.22,
+  0.331,
+  1.051
+ ],
+ "radius": 0.337
+}

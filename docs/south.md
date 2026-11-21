@@ -56,6 +56,10 @@ trails replace them), and the brook's bed in the `gravel` mask (`south.gravel`: 
 | `cliff_stair` | Лестница к морю | 73, 38 | the timber stair down the 41 m cliff |
 | `cliff_lookout` | Обрыв | 88, -236 | a bench and a lone pine on the cliff's edge |
 | `mayak_station` | Станция «Маяк» | 88, -384 | the Sea line's southern end |
+| `mayak_lighthouse` | Маяк | 105, -426 | the lighthouse past the Mayak station: white with two red bands, 24 m, a keeper's annex |
+| `coast_bunker` | Старый дот | 64, -128 | a half-sunk concrete pillbox on the cliff walk, its slit to the sea, moss on the roof |
+| `boat_wreck` | Остов баркаса | 116, 132 | the ribs of a fishing boat in the sand between the brook's mouth and the stair |
+| `devils_stone` | Чёртов камень | -299, 256 | a glacial boulder on the meadow by the spring trail (a split one stands on the cliff walk) |
 
 ## Things
 
@@ -69,6 +73,8 @@ atlas, no new textures but the words): `python3 blender/south/build_south.py` (o
 | `props_walk.py` | `cliff_stair`, `plank_bridge` (6 and 9 m), `boardwalk` (plain, with a rail, with a bay and bench, end ramp) |
 | `props_places.py` | `belvedere`, `viewer`, `bird_hide`, `fisher_shed`, `net_rack`, `picnic_table` |
 | `props_land.py` | `town_stele`, `spring_trough`, `trail_sign` (four junctions), `info_board` (two), `hay_stack`, `beehive`, `wattle_fence`, `scarecrow`, `orchard_ladder` |
+| `props_marks.py` | `lighthouse` (manifest `lamp`: the lantern's centre for a future light), `bunker`, `shipwreck`, `erratic` (whole, split) |
+| `props_alley.py` | `park_lamp` (one globe, two; `lamps`), `park_bench` (3 seats), `flower_bed`, `litter_urn`, `bike_rack`, `halt_shelter` (3 seats), `drinking_fountain` |
 
 Words on boards and posts: `tools/south_signs.py` -> `textures/localized/<lang>/south_<id>.png`, material slots
 `M_South_Text_<id>`.
@@ -76,6 +82,14 @@ Words on boards and posts: `tools/south_signs.py` -> `textures/localized/<lang>/
 In Unreal: `unreal/scripts/import_south.sh` (`STEPS="build signs materials import place"`); `import_world.py` calls
 `import_south.place_safe` after the North's. Meshes `/Game/South/Meshes/SM_South_<Kind>[_V<n>]`, actors tagged `South`
 in `Outside/South`. A thing whose mesh is not imported is skipped, not replaced by a cube.
+
+## The alley and the halt
+
+The club's alley (door to station, `world_map.alley_trees`) is dressed by `south.things()`: lamps in the trees' line
+between the pairs, taking sides in turn; benches across the path from a lamp with an urn by each; two flower bowls; at
+its end a two-globe lamp, a drinking fountain and a bike rack, all clear of the station's 9 m footprint (`--check`
+tests it). A lamp and a bench at the lookout, a lamp at the stair's top. On the beach's top by the stair's foot the
+halt's shelter (open to the sea) with a lamp. The lamps do not shine yet (meshes only).
 
 ## Plants
 

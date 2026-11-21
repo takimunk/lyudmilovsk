@@ -148,6 +148,18 @@ static FFacts MakeFacts(int Since, FDie& Die, const std::vector<std::string>& Qu
 	if (Die.U() < 0.10f) F.Deeds.push_back({ Die.U() < 0.3f ? "record" : "catch", Fish[Die.I(6)], 200 + Die.I(4000) });
 	if (Die.U() < 0.05f && !Quests.empty()) F.Deeds.push_back({ "quest", Quests[(size_t)Die.I((int)Quests.size())], 0 });
 	if (Die.U() < 0.3f) F.BiteFish = Fish[Die.I(6)];
+	// the photo club's contest: judged on the 26th, so the issue of the 27th may tell the hero's place (a die of its own: the
+	// other days' deeds stay as they were)
+	if (F.Date.D == FPaper::ContestJuryDay + 1)
+	{
+		FDie Shot(977u + (uint32_t)Since);
+		if (Shot.U() < 0.8f)
+		{
+			static const char* Spots[] = { "pier", "promenade", "beach", "" };
+			const int Spot = Shot.I(4);
+			F.Deeds.push_back({ "contest", Spots[Spot], 1 + Shot.I(6) });
+		}
+	}
 	// the talk of the town about the hero (ULyudTownRumours::PaperColumn): now and then a line or two
 	for (int T = 0; T < 2 && !TalkKinds.empty() && Die.U() < 0.2f; ++T)
 	{
@@ -338,6 +350,148 @@ int main(int Argc, char** Argv)
 	}
 	CHECK(FrontKinds["paper.front.cup"] > 0 && CupWon > 100 && CupToday > 300, "tournaments: the hero's cup on %d fronts (+%d inside), %d results, %d of today's",
 		FrontKinds["paper.front.cup"], HeroWins, CupWon, CupToday);
+	// the photo club's contest (docs/photo.md): the theme is announced on the 1st, the hero's place is told on the 27th
+	{
+		static const char* const Themes[4] = { "sea", "birds", "work", "festival" };
+		int Firsts = 0, OpenRight = 0, OpenElsewhere = 0;
+		for (const FIssue& I : All)
+		{
+			int Opens = 0;
+			bool bRight = false;
+			for (const FLine& L : I.Pages[3])
+			{
+				if (L.Key == "paper.contest.open")
+				{
+					++Opens;
+					bRight = L.Args.size() == 4 && L.Args[0] == std::string("@paper.contest.theme.") + Themes[(I.Date.M - 1) % 4] && L.Args[1] == "25"
+						&& L.Args[2] == "26" && L.Args[3] == "@paper.month.gen." + std::to_string(I.Date.M);
+				}
+			}
+			for (size_t Pg = 0; Pg < 3; ++Pg)
+			{
+				for (const FLine& L : I.Pages[Pg]) Opens += L.Key == "paper.contest.open" ? 10 : 0;
+			}
+			if (I.Date.D == 1)
+			{
+				++Firsts;
+				OpenRight += Opens == 1 && bRight ? 1 : 0;
+			}
+			else
+			{
+				OpenElsewhere += Opens;
+			}
+		}
+		CHECK(Firsts >= 26 && OpenRight == Firsts && OpenElsewhere == 0, "the photo contest opens on every 1st with the month's theme, the 25th and the 26th, and on no other day (%d of %d, %d elsewhere)",
+			OpenRight, Firsts, OpenElsewhere);
+		CHECK(std::string(FPaper::ContestTheme(1)) == "sea" && std::string(FPaper::ContestTheme(2)) == "birds" && std::string(FPaper::ContestTheme(3)) == "work"
+			&& std::string(FPaper::ContestTheme(4)) == "festival" && std::string(FPaper::ContestTheme(10)) == "birds" && std::string(FPaper::ContestTheme(11)) == "work"
+			&& std::string(FPaper::ContestTheme(12)) == "festival", "the themes by the month: sea, birds, work, festival, and round again");
+		// a made-up deed of each place: the issue of the 27th of a month (the jury sat on the 26th)
+		auto Issue27 = [&](int Year, int Month, int Place, const char* Spot, const std::string& PrevFront, bool bSwan)
+		{
+			FFacts F;
+			F.Date = LyudFest::FDate{ Year, Month, 27 };
+			F.Since = LyudFest::DaysFromCivil(F.Date) - LyudFest::DaysFromCivil(LyudFest::FDate{ 2026, 10, 20 });
+			F.PrevFront = PrevFront;
+			if (Place > 0) F.Deeds.push_back({ "contest", Spot, Place });
+			if (bSwan) F.Deeds.push_back({ "tamed", "MuteSwan", 0 });
+			return Paper.Build(F);
+		};
+		auto Has = [](const FPage& P, const std::string& Prefix)
+		{
+			int N = 0;
+			for (const FLine& L : P) N += L.Key.rfind(Prefix, 0) == 0 ? 1 : 0;
+			return N;
+		};
+		auto Sound = [&](const FIssue& I)
+		{
+			// every key and argument in the three tables, every placeholder filled, the save's round trip
+			int Bad = 0;
+			for (const FPage& P : I.Pages)
+			{
+				for (const FLine& L : P)
+				{
+					for (int Lg = 0; Lg < 3; ++Lg)
+					{
+						const auto It = Table[Lg].find(L.Key);
+						Bad += It == Table[Lg].end() || MaxPlaceholder(It->second) >= (int)L.Args.size() ? 1 : 0;
+						for (const std::string& A : L.Args) Bad += !A.empty() && A[0] == '@' && !Table[Lg].count(A.substr(1)) ? 1 : 0;
+					}
+				}
+			}
+			FIssue Back;
+			Bad += !FPaper::Unpack(FPaper::Pack(I), Back) || FPaper::Pack(Back) != FPaper::Pack(I) ? 1 : 0;
+			FPaper::Keys(I, Used);
+			return Bad == 0;
+		};
+		int FrontOk = 0, NoPlaceOk = 0, Unsound = 0;
+		std::set<std::string> FrontKeys;
+		for (int Mo = 1; Mo <= 12; ++Mo)
+		{
+			const std::string Theme = std::string("@paper.contest.theme.") + Themes[(Mo - 1) % 4];
+			const FIssue A = Issue27(2027, Mo, 1, "pier", "", false);
+			const FLine* FA = FPaper::FrontLine(A);
+			FrontOk += FA && FA->Key.rfind("paper.front.contest.", 0) == 0 && FA->Args.size() == 2 && FA->Args[0] == Theme && FA->Args[1] == "@place.pier.name"
+				&& Has(A.Pages[1], "paper.brief.contest") == 0 ? 1 : 0;
+			const FIssue B = Issue27(2027, Mo, 1, "", "", false);
+			const FLine* FB = FPaper::FrontLine(B);
+			NoPlaceOk += FB && FB->Key.rfind("paper.front.contest_noplace.", 0) == 0 && FB->Args.size() == 1 && FB->Args[0] == Theme
+				&& Has(B.Pages[1], "paper.brief.contest") == 0 ? 1 : 0;
+			if (FA) FrontKeys.insert(FA->Key);
+			if (FB) FrontKeys.insert(FB->Key);
+			Unsound += (Sound(A) ? 0 : 1) + (Sound(B) ? 0 : 1);
+		}
+		CHECK(FrontOk == 12 && NoPlaceOk == 12, "the first place is the front story of the 27th in every month, with the theme and the place when it is known (%d and %d of 12)", FrontOk, NoPlaceOk);
+		CHECK((int)FrontKeys.size() == Paper.VariantsOf("front.contest") + Paper.VariantsOf("front.contest_noplace") && FrontKeys.size() == 5,
+			"its wordings take turns: three with the place, two without (%d seen)", (int)FrontKeys.size());
+		// yesterday's front was this very story: another wording of it, never the same one
+		const FIssue First = Issue27(2027, 1, 1, "pier", "", false);
+		const FIssue Again = Issue27(2027, 1, 1, "pier", First.Front, false);
+		const FLine* FAgain = FPaper::FrontLine(Again);
+		CHECK(FAgain && FAgain->Key.rfind("paper.front.contest.", 0) == 0 && Again.Front != First.Front, "a front that would repeat yesterday's takes the next wording");
+		// a swan tamed the same day keeps the front; the contest is then a brief
+		const FIssue Swan = Issue27(2027, 1, 1, "pier", "", true);
+		const FLine* FSwan = FPaper::FrontLine(Swan);
+		CHECK(FSwan && FSwan->Key.rfind("paper.front.tamed_swan.", 0) == 0 && Has(Swan.Pages[1], "paper.brief.contest_1") == 1 && Sound(Swan),
+			"a tamed swan keeps the front: the first place is then a brief in the chronicle");
+		int BriefOk = 0;
+		for (int Place = 2; Place <= 3; ++Place)
+		{
+			const FIssue I = Issue27(2027, 2, Place, "beach", "", false);
+			const FLine* F = FPaper::FrontLine(I);
+			const std::string Key = "paper.brief.contest_" + std::to_string(Place);
+			bool bArg = false;
+			for (const FLine& L : I.Pages[1]) bArg = bArg || (L.Key == Key && L.Args.size() == 1 && L.Args[0] == "@paper.contest.theme.birds");
+			BriefOk += F && F->Key.find("contest") == std::string::npos && Has(I.Pages[1], "paper.brief.contest") == 1 && bArg && Sound(I) ? 1 : 0;
+		}
+		CHECK(BriefOk == 2, "the second and the third place are a brief in the chronicle with February's theme, never the front (%d of 2)", BriefOk);
+		int Silent = 0;
+		for (int Place = 4; Place <= 6; ++Place)
+		{
+			const FIssue I = Issue27(2027, 3, Place, "promenade", "", false);
+			int Mentions = 0;
+			for (const FPage& P : I.Pages)
+			{
+				for (const FLine& L : P) Mentions += L.Key.find("contest") != std::string::npos ? 1 : 0;
+			}
+			Silent += Mentions == 0 && I.Pages.size() == 4 ? 1 : 0;
+		}
+		const FIssue None = Issue27(2027, 3, 0, "", "", false);
+		CHECK(Silent == 3 && None.Pages.size() == 4, "places four to six are no news, and a month the hero sat out is an ordinary issue (%d of 3)", Silent);
+		CHECK(Unsound == 0, "every contest issue has its words in ru, en and ja and survives the save (%d do not)", Unsound);
+		// an issue kept by a save made before the contest existed reads as it was (the archive holds keys, not deeds)
+		// (the save's line written out by hand, as the model before the contest wrote it)
+		const std::string Old = std::string("7\x1f" "12008\x1f" "2026\x1f" "10\x1f" "27\x1f" "paper.front.record.1|@fish.cod.name|2300")
+			+ "\x1d" "paper.masthead\x1f" "12008\x1f" "27\x1f" "@paper.month.gen.10\x1f" "2026\x1f" "@paper.dow.1"
+			+ "\x1e" "paper.front.record.1\x1f" "@fish.cod.name\x1f" "2300" + "\x1e" "paper.inside"
+			+ "\x1d" "paper.head.town" "\x1e" "paper.brief.quest\x1f" "@quest.city_portrait.title"
+			+ "\x1d" "paper.head.weather" "\x1e" "paper.weather.unknown" + "\x1d" "paper.head.bills" "\x1e" "paper.soon.none";
+		FIssue OldBack;
+		const bool bOld = FPaper::Unpack(Old, OldBack);
+		CHECK(bOld && FPaper::Pack(OldBack) == Old && OldBack.Since == 7 && OldBack.Number == 12008 && OldBack.Date.M == 10 && OldBack.Date.D == 27
+			&& OldBack.Pages.size() == 4 && OldBack.Pages[0].size() == 3 && OldBack.Pages[0][1].Args.size() == 2 && OldBack.Pages[1][1].Key == "paper.brief.quest"
+			&& OldBack.Front == "paper.front.record.1|@fish.cod.name|2300", "an issue from an old save unpacks as it was packed");
+	}
 	// every string the paper owns is used by some day (dead text is a sign of a broken rule)
 	int Unused = 0;
 	std::string FirstUnused;

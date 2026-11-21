@@ -385,6 +385,21 @@
   "en": "Darkness, only the beam touching the water once every twenty seconds. Between beams the dark is so thick it seems alive and very attentive.",
   "ja": "闇の中、二十秒に一度だけ光の筋が水面に触れる。光と光のあいだの闇は濃く、生きていて、とても注意深いように思える。"
  },
+ "city.px.ships.radio.1": {
+  "ru": "Сквозь шорох из приёмника на полке: «Сейнер „Мария“, „Мария“, ответьте маяку…» Помехи. Потом далёкое: «…слышу, идём к молу, волна три балла». Огни в таблице вдруг кажутся ближе.",
+  "en": "Through the hiss from the receiver on the shelf: \"Seiner Maria, Maria, answer the lighthouse...\" Static. Then, far off: \"...reading you, heading for the mole, sea state three.\" The lights in the table suddenly seem closer.",
+  "ja": "棚の受信機のざわめきの向こうから。「巻き網船マリヤ、マリヤ、灯台に応答せよ……」雑音。それから遠い声。「……聞こえる、防波堤へ向かう、波は三」。表の灯火が急に近く感じられる。"
+ },
+ "city.px.ships.radio.2": {
+  "ru": "В дождь приёмник смотрителя не выключают. Голоса с моря перебивают друг друга: координаты, ветер, чей-то смех. Огни на воде расплываются, и я сверяю их почти наугад.",
+  "en": "In the rain the keeper never turns the receiver off. Voices from the sea talk over each other: positions, the wind, somebody laughing. The lights on the water blur, and I check them almost by guesswork.",
+  "ja": "雨の夜、灯台守は受信機を切らない。海からの声が重なり合う。位置、風、誰かの笑い声。水の上の灯はにじんで、僕はほとんど勘で照合する。"
+ },
+ "city.px.ships.radio.3": {
+  "ru": "Треск, свист настройки и ясный голос диспетчера порта: «Всем судам: шторм с северо-запада, укрыться в гавани». Красный и зелёный огонь на воде медленно поворачивают к берегу.",
+  "en": "Crackle, the whistle of the dial, and the harbour master's clear voice: \"All vessels: storm from the north-west, take shelter in the harbour.\" A red and a green light on the water slowly turn toward the shore.",
+  "ja": "雑音、選局の口笛のような音、そして港の管制のはっきりした声。「全船舶へ。北西より嵐、港内に避難せよ」。水の上の赤と緑の灯が、ゆっくり岸のほうへ向きを変える。"
+ },
  "city.px.keeper_ships.prompt": {
   "ru": "E — сверить огни кораблей",
   "en": "E — check the ships' lights",
