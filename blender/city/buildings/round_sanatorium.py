@@ -30,6 +30,7 @@ from citykit import box, prism, ring, Facade, Mesh, wall_with_holes, DOOR_W
 import geom
 from furn_int2 import Furn
 import interior_kit
+import _homekit as hk
 import dress_kit as dk
 
 INFO = {
@@ -672,6 +673,8 @@ def _depth(B, q, desk, th_r, dc):
     kit.radio(B, rx, ry, dc["top"], yaw=_yin(tc))
     B.thing("night_radio", "machine", (rx, ry, dc["top"] + 0.15), (_yin(tc) + 270.0) % 360.0, what="night_radio")   # QA: stand on the free floor beside the cabinet
     kit.table_lamp(B, *_at(16.9, tc, -0.9), z=dc["top"], yaw=0, light=True)
+    hk.photo_frame(B, "guest_photo", *_at(16.9, tc, -1.29), _yin(tc), top=dc["top"], side=0.0)
+    hk.note_left(B, "guest_note", *_at(14.6, tc, -0.85), 0.8, yaw=tc)
 
 
 # ====================================================================================================== third pass

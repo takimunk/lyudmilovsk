@@ -30,6 +30,7 @@ import math
 
 import furn_int3 as fu
 import interior_kit as kit
+import _homekit as hk
 import dress_kit as dk
 import night_kit as nk
 from citykit import box, prism
@@ -433,6 +434,10 @@ def _foyer(B):
     kit.chair(B, -8.0, 6.1, 0.0, 0.0, kind="school")
     B.thing("radio_club_table", "craft", (-8.6, 5.4, 0.78), 180.0, what="workbench")
     B.thing("radio_seat", "seat", (-9.0, 6.1, 0.45), 0.0, height=0.45)
+    # things to touch (docs/city_interiors.md "Things to open and pick up"): the radio amateurs' kettle and the note
+    # they leave each other, the dance teacher's photo by the record player
+    hk.table_kettle(B, "radio_kettle", -7.25, 5.68, 0.75, 180.0)
+    hk.note_left(B, "radio_note", -8.25, 5.12, 0.75, yaw=180.0)
     kit.plant(B, -16.5, 8.7, 0.0, 0.0, kind="ficus", pot="CT_PlasterBlue", h=1.6)
     kit.plant(B, -10.5, 4.1, 0.0, 0.0, kind="fern", pot="CT_PlasterGreen", h=0.7)
     # ---------------------------------------------------------------- east: dance floor, piano, lounge
@@ -443,6 +448,7 @@ def _foyer(B):
     box(det, "CT_ConcreteDark", 16.84, 16.9, 4.4, 8.6, 0.02, 0.025, faces="Z")
     kit.table(B, 15.0, 3.75, 0.0, 0.0, w=0.8, d=0.5, h=0.65, mat="CT_WoodLight")
     kit.record_player(B, 15.0, 3.75, 0.65, 0.0)
+    hk.photo_frame(B, "dance_photo", 15.0, 3.75, 180.0, top=0.65, side=0.3)
     kit.piano(B, X1 - 0.43, 4.2, 0.0, 270.0)
     kit.stool(B, 16.0, 4.2, 0.0, 90.0)
     kit.mirror(B, X1 - 0.4, 5.55, 0.0, 270.0, zc=1.5, w=0.8, h=1.7)
