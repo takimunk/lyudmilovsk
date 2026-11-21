@@ -73,7 +73,7 @@
    },
    {
     "at": [
-     483.4,
+     425.4,
      -20.9,
      243.1
     ],
@@ -126,88 +126,88 @@
   "models": {
    "attendant": [
     {
-     "body": "Town/R_abenov_nour",
-     "female": 1,
-     "mesh": "Nishimura_aya"
+     "body": "Town/R_bautista_tyler",
+     "female": 0,
+     "mesh": "Guy_a"
     }
    ],
    "barista": [
     {
-     "body": "Town/R_abenov_caio",
-     "female": 0,
-     "mesh": "Sato_kei"
+     "body": "Town/R_bautista_meiling",
+     "female": 1,
+     "mesh": "Zhukova_lena"
     }
    ],
    "passengers": [
     {
-     "body": "Town/R_bergstrom_hanna",
+     "body": "Town/R_costa_beatriz",
+     "female": 1,
+     "mesh": "Nao"
+    },
+    {
+     "body": "Town/R_ferreira_kenji",
+     "female": 0,
+     "mesh": "Guy_a"
+    },
+    {
+     "body": "Town/R_fontaine_bence",
+     "female": 0,
+     "mesh": "Guy_a"
+    },
+    {
+     "body": "Town/R_fraser_maricel",
+     "female": 1,
+     "mesh": "Li_vika"
+    },
+    {
+     "body": "Town/R_girard_subin",
+     "female": 1,
+     "mesh": "Nao"
+    },
+    {
+     "body": "Town/R_girma_nino",
      "female": 1,
      "mesh": "Sato_mila"
     },
     {
-     "body": "Town/R_bergstrom_lyudmila",
+     "body": "Town/R_gonzalez_astrid",
      "female": 1,
-     "mesh": "Nishimura_aya"
+     "mesh": "Guseva_valentina"
     },
     {
-     "body": "Town/R_bergstrom_minh",
-     "female": 0,
-     "mesh": "Lange_pyotr"
-    },
-    {
-     "body": "Town/R_beridze_ursula",
+     "body": "Town/R_haddad_shira",
      "female": 1,
-     "mesh": "Sato_mila"
+     "mesh": "Girl_a"
     },
     {
-     "body": "Town/R_bondarenko_agustina",
+     "body": "Town/R_haile_chiara",
      "female": 1,
-     "mesh": "Frolova_masha"
+     "mesh": "Hayashi_rina"
     },
     {
-     "body": "Town/R_bondarenko_mindaugas",
-     "female": 0,
-     "mesh": "Belov_misha"
-    },
-    {
-     "body": "Town/R_carvalho_akosua",
-     "female": 1,
-     "mesh": "Girl_b"
-    },
-    {
-     "body": "Town/R_celik_duc",
-     "female": 0,
-     "mesh": "Crowd_11"
-    },
-    {
-     "body": "Town/R_cerny_freja",
-     "female": 1,
-     "mesh": "Crowd_12"
-    },
-    {
-     "body": "Town/R_cerny_jukka",
+     "body": "Town/R_haile_kaveh",
      "female": 0,
      "mesh": "Zotov_lev"
     },
     {
-     "body": "Town/R_cerny_minh",
+     "body": "Town/R_haugen_krzysztof",
      "female": 0,
-     "mesh": "Valiev_rustam"
+     "mesh": "Clerk"
     },
     {
-     "body": "Town/R_chen_ines",
-     "female": 1,
-     "mesh": "Crowd_12"
-    },
-    {
-     "body": "Town/R_choi_kaisa",
-     "female": 1,
-     "mesh": "Nishimura_aya"
-    },
-    {
-     "body": "Town/R_cohen_hakon",
+     "body": "Town/R_henderson_inigo",
      "female": 0,
      "mesh": "Belov_misha"
+    },
+    {
+     "body": "Town/R_hernandez_arjun",
+     "female": 0,
+     "mesh": "Sato_kei"
+    },
+    {
+     "body": "Town/R_hernandez_thibault",
+     "female": 0,
+     "mesh": "Zotov_lev"
     }
    ]
   },
@@ -232,7 +232,7 @@
      265.2,
      0.0
     ],
-    "plant": "Sansevieria",
+    "plant": "SnakePlant",
     "yaw": 35.5
    },
    {
@@ -268,7 +268,7 @@
      -370.1,
      0.0
     ],
-    "plant": "Ficus",
+    "plant": "RubberPlant",
     "yaw": 315.0
    }
   ],
@@ -380,7 +380,7 @@
    },
    {
     "at": [
-     539.4,
+     481.4,
      -20.9,
      0.0
     ],
@@ -522,8 +522,8 @@
    },
    {
     "at": [
-     -145.7,
-     -532.2,
+     -130.4,
+     -475.1,
      278.0
     ],
     "colour": "#FFE2B8",
@@ -575,88 +575,88 @@
   "models": {
    "attendant": [
     {
-     "body": "Town/R_acosta_nurlan",
-     "female": 0,
-     "mesh": "Belov_misha"
+     "body": "Town/R_bergstrom_lyudmila",
+     "female": 1,
+     "mesh": "Nishimura_aya"
     }
    ],
    "barista": [
     {
-     "body": "Town/R_acosta_klaus",
-     "female": 0,
-     "mesh": "Valiev_rustam"
+     "body": "Town/R_bekele_ilze",
+     "female": 1,
+     "mesh": "Crowd_12"
     }
    ],
    "passengers": [
     {
-     "body": "Town/R_cohen_milagros",
-     "female": 1,
-     "mesh": "Girl_a"
-    },
-    {
-     "body": "Town/R_costa_beatriz",
-     "female": 1,
-     "mesh": "Nao"
-    },
-    {
-     "body": "Town/R_dahl_tunde",
+     "body": "Town/R_horvath_dariush",
      "female": 0,
-     "mesh": "Clerk"
+     "mesh": "Crowd_13"
     },
     {
-     "body": "Town/R_delacruz_dawit",
-     "female": 0,
-     "mesh": "Valiev_rustam"
-    },
-    {
-     "body": "Town/R_dubovik_ananya",
+     "body": "Town/R_huang_astrid",
      "female": 1,
-     "mesh": "Sato_mila"
+     "mesh": "Nishimura_aya"
     },
     {
-     "body": "Town/R_dubovik_hakon",
+     "body": "Town/R_lebedev_jihoon",
      "female": 0,
      "mesh": "Guy_b"
     },
     {
-     "body": "Town/R_dubovik_thibault",
-     "female": 0,
-     "mesh": "Crowd_11"
-    },
-    {
-     "body": "Town/R_esposito_aiko",
+     "body": "Town/R_lindqvist_zuzana",
      "female": 1,
-     "mesh": "Korneeva_nina"
+     "mesh": "Zhukova_lena"
     },
     {
-     "body": "Town/R_esposito_arkady",
-     "female": 0,
-     "mesh": "Belov_misha"
-    },
-    {
-     "body": "Town/R_esposito_chiara",
+     "body": "Town/R_lukashevich_laima",
      "female": 1,
-     "mesh": "Streamer"
+     "mesh": "Sato_mila"
     },
     {
-     "body": "Town/R_ferrari_noriko",
+     "body": "Town/R_lukashevich_lilit",
      "female": 1,
      "mesh": "Orlova_tanya"
     },
     {
-     "body": "Town/R_ferreira_dariush",
-     "female": 0,
-     "mesh": "Valiev_rustam"
-    },
-    {
-     "body": "Town/R_ferreira_isla",
+     "body": "Town/R_lund_aiko",
      "female": 1,
-     "mesh": "Hayashi_rina"
+     "mesh": "Nao"
     },
     {
-     "body": "Town/R_ferreira_joao",
+     "body": "Town/R_mensah_tesfaye",
      "female": 0,
-     "mesh": "Belov_misha"
+     "mesh": "Sato_kei"
+    },
+    {
+     "body": "Town/R_moreau_shira",
+     "female": 1,
+     "mesh": "Girl_b"
+    },
+    {
+     "body": "Town/R_mortensen_ingrid",
+     "female": 1,
+     "mesh": "Girl_b"
+    },
+    {
+     "body": "Town/R_mortensen_mehmet",
+     "female": 0,
+     "mesh": "Crowd_13"
+    },
+    {
+     "body": "Town/R_muller_bence",
+     "female": 0,
+     "mesh": "Sato_kei"
+    },
+    {
+     "body": "Town/R_nakamura_ilya",
+     "female": 0,
+     "mesh": "Lange_pyotr"
+    },
+    {
+     "body": "Town/R_nielsen_kenji",
+     "female": 0,
+     "mesh": "Lange_pyotr"
     }
    ]
   },
@@ -690,7 +690,7 @@
      322.8,
      0.0
     ],
-    "plant": "Ficus",
+    "plant": "RubberPlant",
     "yaw": 35.5
    },
    {
@@ -708,7 +708,7 @@
      394.2,
      0.0
     ],
-    "plant": "Ficus",
+    "plant": "RubberPlant",
     "yaw": 45.0
    },
    {
@@ -726,7 +726,7 @@
      -393.7,
      0.0
     ],
-    "plant": "Sansevieria",
+    "plant": "SnakePlant",
     "yaw": 225.0
    }
   ],
@@ -854,8 +854,8 @@
    },
    {
     "at": [
-     -160.2,
-     -586.3,
+     -144.9,
+     -529.2,
      0.0
     ],
     "role": "attendant",
@@ -988,8 +988,8 @@
    },
    {
     "at": [
-     145.5,
-     -421.9,
+     130.5,
+     -365.9,
      243.0
     ],
     "colour": "#FFE2B8",
@@ -1041,88 +1041,88 @@
   "models": {
    "attendant": [
     {
-     "body": "Town/R_amada_eleni",
-     "female": 1,
-     "mesh": "Zotova_galina"
+     "body": "Town/R_cerny_jukka",
+     "female": 0,
+     "mesh": "Zotov_lev"
     }
    ],
    "barista": [
     {
-     "body": "Town/R_adeyemi_rodel",
+     "body": "Town/R_bergstrom_minh",
      "female": 0,
-     "mesh": "Clerk"
+     "mesh": "Lange_pyotr"
     }
    ],
    "passengers": [
     {
-     "body": "Town/R_ferreira_kalev",
+     "body": "Town/R_okafor_daisuke",
      "female": 0,
-     "mesh": "Guy_a"
+     "mesh": "Crowd_11"
     },
     {
-     "body": "Town/R_ferreira_kenji",
+     "body": "Town/R_okonkwo_mads",
      "female": 0,
-     "mesh": "Guy_a"
+     "mesh": "Lange_pyotr"
     },
     {
-     "body": "Town/R_ferreira_nils",
-     "female": 0,
-     "mesh": "Belov_misha"
-    },
-    {
-     "body": "Town/R_fontaine_bence",
-     "female": 0,
-     "mesh": "Guy_a"
-    },
-    {
-     "body": "Town/R_fraser_eoin",
-     "female": 0,
-     "mesh": "Guy_b"
-    },
-    {
-     "body": "Town/R_fraser_maricel",
+     "body": "Town/R_oliveira_yael",
      "female": 1,
-     "mesh": "Li_vika"
+     "mesh": "Zotova_galina"
     },
     {
-     "body": "Town/R_fujita_luana",
-     "female": 1,
-     "mesh": "Orlova_tanya"
-    },
-    {
-     "body": "Town/R_girard_selam",
-     "female": 1,
-     "mesh": "Frolova_masha"
-    },
-    {
-     "body": "Town/R_girard_subin",
-     "female": 1,
-     "mesh": "Nao"
-    },
-    {
-     "body": "Town/R_girma_nino",
-     "female": 1,
-     "mesh": "Sato_mila"
-    },
-    {
-     "body": "Town/R_gonzalez_astrid",
-     "female": 1,
-     "mesh": "Guseva_valentina"
-    },
-    {
-     "body": "Town/R_grabowski_dawit",
-     "female": 0,
-     "mesh": "Sato_kei"
-    },
-    {
-     "body": "Town/R_haddad_shira",
+     "body": "Town/R_ortega_akosua",
      "female": 1,
      "mesh": "Girl_a"
     },
     {
-     "body": "Town/R_haile_chiara",
+     "body": "Town/R_ozols_hanna",
      "female": 1,
-     "mesh": "Hayashi_rina"
+     "mesh": "Girl_b"
+    },
+    {
+     "body": "Town/R_pham_solveig",
+     "female": 1,
+     "mesh": "Girl_b"
+    },
+    {
+     "body": "Town/R_prochazka_aigerim",
+     "female": 1,
+     "mesh": "Li_vika"
+    },
+    {
+     "body": "Town/R_romano_folake",
+     "female": 1,
+     "mesh": "Orlova_tanya"
+    },
+    {
+     "body": "Town/R_romano_reka",
+     "female": 1,
+     "mesh": "Zhukova_lena"
+    },
+    {
+     "body": "Town/R_sargsyan_elif",
+     "female": 1,
+     "mesh": "Nishimura_aya"
+    },
+    {
+     "body": "Town/R_schneider_astrid",
+     "female": 1,
+     "mesh": "Nishimura_aya"
+    },
+    {
+     "body": "Town/R_shevchuk_jiri",
+     "female": 0,
+     "mesh": "Guy_a"
+    },
+    {
+     "body": "Town/R_solberg_kofi",
+     "female": 0,
+     "mesh": "Belov_misha"
+    },
+    {
+     "body": "Town/R_sousa_emiliano",
+     "female": 0,
+     "mesh": "Sato_kei"
     }
    ]
   },
@@ -1137,7 +1137,7 @@
      515.6,
      0.0
     ],
-    "plant": "Ficus",
+    "plant": "RubberPlant",
     "yaw": 71.9
    },
    {
@@ -1155,7 +1155,7 @@
      397.3,
      0.0
     ],
-    "plant": "Ficus",
+    "plant": "RubberPlant",
     "yaw": 135.0
    }
   ],
@@ -1265,8 +1265,8 @@
    },
    {
     "at": [
-     160.0,
-     -476.0,
+     145.0,
+     -420.0,
      0.0
     ],
     "role": "attendant",
@@ -1408,8 +1408,8 @@
    },
    {
     "at": [
-     188.3,
-     451.4,
+     169.6,
+     399.8,
      278.0
     ],
     "colour": "#FFE2B8",
@@ -1461,86 +1461,86 @@
   "models": {
    "attendant": [
     {
-     "body": "Town/R_bakker_margaux",
-     "female": 1,
-     "mesh": "Crowd_12"
+     "body": "Town/R_delacruz_dawit",
+     "female": 0,
+     "mesh": "Valiev_rustam"
     }
    ],
    "barista": [
     {
-     "body": "Town/R_asante_tatiana",
+     "body": "Town/R_choi_kaisa",
      "female": 1,
-     "mesh": "Hayashi_rina"
+     "mesh": "Nishimura_aya"
     }
    ],
    "passengers": [
     {
-     "body": "Town/R_haile_kaveh",
-     "female": 0,
-     "mesh": "Zotov_lev"
-    },
-    {
-     "body": "Town/R_hargreaves_ales",
-     "female": 0,
-     "mesh": "Lange_pyotr"
-    },
-    {
-     "body": "Town/R_haugen_krzysztof",
-     "female": 0,
-     "mesh": "Clerk"
-    },
-    {
-     "body": "Town/R_heikkinen_lan",
+     "body": "Town/R_szabo_tamar",
      "female": 1,
-     "mesh": "Sato_mila"
+     "mesh": "Streamer"
     },
     {
-     "body": "Town/R_henderson_inigo",
+     "body": "Town/R_tamm_sanne",
+     "female": 1,
+     "mesh": "Girl_b"
+    },
+    {
+     "body": "Town/R_tamm_seoyeon",
+     "female": 1,
+     "mesh": "Girl_b"
+    },
+    {
+     "body": "Town/R_tanaka_mads",
+     "female": 0,
+     "mesh": "Crowd_11"
+    },
+    {
+     "body": "Town/R_tehrani_harriet",
+     "female": 1,
+     "mesh": "Girl_a"
+    },
+    {
+     "body": "Town/R_tehrani_malgorzata",
+     "female": 1,
+     "mesh": "Kimura_dasha"
+    },
+    {
+     "body": "Town/R_tsvetkov_padraig",
      "female": 0,
      "mesh": "Belov_misha"
     },
     {
-     "body": "Town/R_henderson_reka",
+     "body": "Town/R_tsvetkov_siobhan",
      "female": 1,
-     "mesh": "Girl_a"
+     "mesh": "Streamer"
     },
     {
-     "body": "Town/R_hernandez_arjun",
+     "body": "Town/R_villanueva_jihoon",
      "female": 0,
-     "mesh": "Sato_kei"
+     "mesh": "Guy_b"
     },
     {
-     "body": "Town/R_hernandez_thibault",
-     "female": 0,
-     "mesh": "Zotov_lev"
-    },
-    {
-     "body": "Town/R_hernandez_tyler",
-     "female": 0,
-     "mesh": "Crowd_11"
-    },
-    {
-     "body": "Town/R_horvath_dariush",
-     "female": 0,
-     "mesh": "Crowd_13"
-    },
-    {
-     "body": "Town/R_huang_astrid",
+     "body": "Town/R_vinogradov_milagros",
      "female": 1,
      "mesh": "Nishimura_aya"
     },
     {
-     "body": "Town/R_huang_solomiya",
-     "female": 1,
-     "mesh": "Girl_a"
+     "body": "Town/R_vinogradov_nigel",
+     "female": 0,
+     "mesh": "Sato_kei"
     },
     {
-     "body": "Town/R_iglesias_jukka",
+     "body": "Town/R_yanushkevich_etienne",
      "female": 0,
      "mesh": "Crowd_11"
     },
     {
-     "body": "Town/R_ishikawa_klaus",
+     "body": "Town/R_yanushkevich_ingrid",
+     "female": 1,
+     "mesh": "Girl_b"
+    },
+    {
+     "body": "Town/R_yanushkevich_rafael",
      "female": 0,
      "mesh": "Clerk"
     }
@@ -1566,7 +1566,7 @@
      135.8,
      0.0
     ],
-    "plant": "Sansevieria",
+    "plant": "SnakePlant",
     "yaw": 162.3
    },
    {
@@ -1575,7 +1575,7 @@
      -431.7,
      0.0
     ],
-    "plant": "Ficus",
+    "plant": "RubberPlant",
     "yaw": 305.5
    },
    {
@@ -1584,7 +1584,7 @@
      -391.1,
      0.0
     ],
-    "plant": "Sansevieria",
+    "plant": "SnakePlant",
     "yaw": 225.0
    },
    {
@@ -1593,7 +1593,7 @@
      349.1,
      0.0
     ],
-    "plant": "Sansevieria",
+    "plant": "SnakePlant",
     "yaw": 45.0
    }
   ],
@@ -1723,8 +1723,8 @@
    },
    {
     "at": [
-     207.5,
-     504.0,
+     188.7,
+     452.5,
      0.0
     ],
     "role": "attendant",
@@ -1902,8 +1902,8 @@
    },
    {
     "at": [
-     280.3,
-     -400.7,
+     243.0,
+     -356.3,
      238.0
     ],
     "colour": "#FFE2B8",
@@ -1955,88 +1955,58 @@
   "models": {
    "attendant": [
     {
-     "body": "Town/R_bautista_meiling",
-     "female": 1,
-     "mesh": "Zhukova_lena"
+     "body": "Town/R_esposito_arkady",
+     "female": 0,
+     "mesh": "Belov_misha"
     }
    ],
    "barista": [
     {
-     "body": "Town/R_barbosa_eoin",
-     "female": 0,
-     "mesh": "Clerk"
+     "body": "Town/R_dubovik_ananya",
+     "female": 1,
+     "mesh": "Sato_mila"
     }
    ],
    "passengers": [
     {
-     "body": "Town/R_karagiannis_arkady",
-     "female": 0,
-     "mesh": "Clerk"
-    },
-    {
-     "body": "Town/R_karimi_rafael",
-     "female": 0,
-     "mesh": "Zotov_lev"
-    },
-    {
-     "body": "Town/R_karimi_selam",
+     "body": "Town/R_yavorsky_almaz",
      "female": 1,
-     "mesh": "Crowd_12"
+     "mesh": "Li_vika"
     },
     {
-     "body": "Town/R_karimi_zsofia",
-     "female": 1,
-     "mesh": "Orlova_tanya"
-    },
-    {
-     "body": "Town/R_kazlauskas_eleni",
-     "female": 1,
-     "mesh": "Orlova_tanya"
-    },
-    {
-     "body": "Town/R_kovacs_mette",
+     "body": "Town/R_yavorsky_tamar",
      "female": 1,
      "mesh": "Frolova_masha"
     },
     {
-     "body": "Town/R_kovalenko_solveig",
+     "body": "Town/R_zhaksybekov_nino",
      "female": 1,
-     "mesh": "Sato_mila"
+     "mesh": "Girl_a"
     },
     {
-     "body": "Town/R_kowalski_yanka",
+     "body": "Town/R_zhang_madison",
+     "female": 1,
+     "mesh": "Girl_b"
+    },
+    {
+     "body": "Town/R_zhang_noriko",
+     "female": 1,
+     "mesh": "Girl_b"
+    },
+    {
+     "body": "Town/R_zhou_tigran",
      "female": 0,
-     "mesh": "Clerk"
+     "mesh": "Lange_pyotr"
     },
     {
-     "body": "Town/R_krause_etienne",
-     "female": 0,
-     "mesh": "Clerk"
-    },
-    {
-     "body": "Town/R_krause_maarten",
-     "female": 0,
-     "mesh": "Crowd_11"
-    },
-    {
-     "body": "Town/R_lebedev_jihoon",
-     "female": 0,
-     "mesh": "Guy_b"
-    },
-    {
-     "body": "Town/R_lebedev_solomiya",
+     "body": "Town/R_zhuravlev_oksana",
      "female": 1,
      "mesh": "Orlova_tanya"
     },
     {
-     "body": "Town/R_lefebvre_gennady",
-     "female": 0,
-     "mesh": "Guy_b"
-    },
-    {
-     "body": "Town/R_lefebvre_lan",
+     "body": "Town/R_zielinski_carmen",
      "female": 1,
-     "mesh": "Zotova_galina"
+     "mesh": "Sato_mila"
     }
    ]
   },
@@ -2051,7 +2021,7 @@
      475.7,
      0.0
     ],
-    "plant": "Sansevieria",
+    "plant": "SnakePlant",
     "yaw": 107.4
    },
    {
@@ -2069,7 +2039,7 @@
      -429.5,
      0.0
     ],
-    "plant": "Sansevieria",
+    "plant": "SnakePlant",
     "yaw": 234.5
    },
    {
@@ -2087,7 +2057,7 @@
      350.8,
      0.0
     ],
-    "plant": "Sansevieria",
+    "plant": "SnakePlant",
     "yaw": 45.0
    },
    {
@@ -2208,8 +2178,8 @@
    },
    {
     "at": [
-     316.2,
-     -443.6,
+     279.0,
+     -399.2,
      0.0
     ],
     "role": "attendant",
@@ -2360,8 +2330,8 @@
    },
    {
     "at": [
-     192.9,
-     -440.5,
+     168.4,
+     -387.9,
      248.0
     ],
     "colour": "#FFE2B8",
@@ -2413,90 +2383,19 @@
   "models": {
    "attendant": [
     {
-     "body": "Town/R_bautista_tyler",
-     "female": 0,
-     "mesh": "Guy_a"
+     "body": "Town/R_ferrari_noriko",
+     "female": 1,
+     "mesh": "Orlova_tanya"
     }
    ],
    "barista": [
     {
-     "body": "Town/R_bautista_santiago",
-     "female": 0,
-     "mesh": "Lange_pyotr"
-    }
-   ],
-   "passengers": [
-    {
-     "body": "Town/R_levi_eero",
-     "female": 0,
-     "mesh": "Crowd_13"
-    },
-    {
-     "body": "Town/R_lindqvist_zuzana",
-     "female": 1,
-     "mesh": "Zhukova_lena"
-    },
-    {
-     "body": "Town/R_lukashevich_laima",
-     "female": 1,
-     "mesh": "Sato_mila"
-    },
-    {
-     "body": "Town/R_lukashevich_lilit",
-     "female": 1,
-     "mesh": "Orlova_tanya"
-    },
-    {
-     "body": "Town/R_lund_aiko",
-     "female": 1,
-     "mesh": "Nao"
-    },
-    {
-     "body": "Town/R_makinen_nino",
+     "body": "Town/R_esposito_chiara",
      "female": 1,
      "mesh": "Streamer"
-    },
-    {
-     "body": "Town/R_mamedov_mette",
-     "female": 1,
-     "mesh": "Girl_a"
-    },
-    {
-     "body": "Town/R_mansour_beatriz",
-     "female": 1,
-     "mesh": "Sato_mila"
-    },
-    {
-     "body": "Town/R_mendoza_ama",
-     "female": 1,
-     "mesh": "Orlova_tanya"
-    },
-    {
-     "body": "Town/R_mendoza_siobhan",
-     "female": 1,
-     "mesh": "Nishimura_aya"
-    },
-    {
-     "body": "Town/R_mensah_tesfaye",
-     "female": 0,
-     "mesh": "Sato_kei"
-    },
-    {
-     "body": "Town/R_mizrahi_alesya",
-     "female": 1,
-     "mesh": "Li_vika"
-    },
-    {
-     "body": "Town/R_moreau_shira",
-     "female": 1,
-     "mesh": "Girl_b"
-    },
-    {
-     "body": "Town/R_mortensen_ingrid",
-     "female": 1,
-     "mesh": "Girl_b"
     }
-   ]
+   ],
+   "passengers": []
   },
   "notes": [
    "overlap: table_round at (2.4, -3.8) and chair at (2.0, -4.1)",
@@ -2518,7 +2417,7 @@
      467.9,
      0.0
     ],
-    "plant": "Ficus",
+    "plant": "RubberPlant",
     "yaw": 71.9
    },
    {
@@ -2527,7 +2426,7 @@
      -284.8,
      0.0
     ],
-    "plant": "Ficus",
+    "plant": "RubberPlant",
     "yaw": 324.5
    },
    {
@@ -2536,7 +2435,7 @@
      388.9,
      0.0
     ],
-    "plant": "Ficus",
+    "plant": "RubberPlant",
     "yaw": 128.1
    },
    {
@@ -2646,8 +2545,8 @@
    },
    {
     "at": [
-     216.6,
-     -491.3,
+     192.1,
+     -438.7,
      0.0
     ],
     "role": "attendant",
@@ -2761,8 +2660,8 @@
    },
    {
     "at": [
-     443.0,
-     147.9,
+     388.5,
+     128.1,
      268.0
     ],
     "colour": "#FFE2B8",
@@ -2814,90 +2713,19 @@
   "models": {
    "attendant": [
     {
-     "body": "Town/R_belousov_alejandro",
+     "body": "Town/R_ferreira_nils",
      "female": 0,
-     "mesh": "Clerk"
+     "mesh": "Belov_misha"
     }
    ],
    "barista": [
     {
-     "body": "Town/R_bekele_ilze",
-     "female": 1,
-     "mesh": "Crowd_12"
+     "body": "Town/R_ferreira_kalev",
+     "female": 0,
+     "mesh": "Guy_a"
     }
    ],
-   "passengers": [
-    {
-     "body": "Town/R_mortensen_mehmet",
-     "female": 0,
-     "mesh": "Crowd_13"
-    },
-    {
-     "body": "Town/R_muller_bence",
-     "female": 0,
-     "mesh": "Sato_kei"
-    },
-    {
-     "body": "Town/R_nagy_selam",
-     "female": 1,
-     "mesh": "Crowd_12"
-    },
-    {
-     "body": "Town/R_nakamura_ilya",
-     "female": 0,
-     "mesh": "Lange_pyotr"
-    },
-    {
-     "body": "Town/R_nascimento_duc",
-     "female": 0,
-     "mesh": "Valiev_rustam"
-    },
-    {
-     "body": "Town/R_navarro_selam",
-     "female": 1,
-     "mesh": "Hayashi_rina"
-    },
-    {
-     "body": "Town/R_nielsen_kenji",
-     "female": 0,
-     "mesh": "Lange_pyotr"
-    },
-    {
-     "body": "Town/R_nielsen_lilit",
-     "female": 1,
-     "mesh": "Girl_a"
-    },
-    {
-     "body": "Town/R_nielsen_milagros",
-     "female": 1,
-     "mesh": "Orlova_tanya"
-    },
-    {
-     "body": "Town/R_nikolaidis_nils",
-     "female": 0,
-     "mesh": "Valiev_rustam"
-    },
-    {
-     "body": "Town/R_novotny_milagros",
-     "female": 1,
-     "mesh": "Orlova_tanya"
-    },
-    {
-     "body": "Town/R_nowak_tomohiko",
-     "female": 0,
-     "mesh": "Clerk"
-    },
-    {
-     "body": "Town/R_nowak_tunde",
-     "female": 0,
-     "mesh": "Zotov_lev"
-    },
-    {
-     "body": "Town/R_obrien_jolene",
-     "female": 1,
-     "mesh": "Girl_a"
-    }
-   ]
+   "passengers": []
   },
   "notes": [
    "overlap: table_round at (-4.2, -1.5) and chair at (-4.4, -1.0)",
@@ -2919,7 +2747,7 @@
      357.2,
      0.0
     ],
-    "plant": "Sansevieria",
+    "plant": "SnakePlant",
     "yaw": 45.0
    },
    {
@@ -3011,8 +2839,8 @@
    },
    {
     "at": [
-     495.6,
-     167.1,
+     441.1,
+     147.2,
      0.0
     ],
     "role": "attendant",

@@ -59,7 +59,8 @@ STYLES = ["arches", "dome", "folded", "lantern", "saucer", "star", "wing"]
 KEEP = ("Vending", "CoffeeBar", "Stove", "AmberCase", "Aquarium")
 # the signature pieces' footprint radius (m) to keep clear round them (lobby_props.py sizes)
 KEEP_R = {"Vending": 0.75, "CoffeeBar": 1.6, "Stove": 1.0, "AmberCase": 0.9, "Aquarium": 1.0}
-PLANTS = ["Monstera", "KentiaPalm", "Aspidistra", "Ficus", "Dracaena", "Sansevieria"]
+# species of the plant library (PlantSpeciesHerbs.cpp Indoor): an unknown name grows the default tree
+PLANTS = ["Monstera", "KentiaPalm", "Aspidistra", "RubberPlant", "Dracaena", "SnakePlant"]
 RAIL = 0.12          # the railing round the stairwell's opening, its thickness and a hand's clearance
 WALK = 0.95          # the narrowest walk left between anything and the railing
 
@@ -469,6 +470,15 @@ class Dresser:
         f = (math.cos(math.radians(yaw_ue)), -math.sin(math.radians(yaw_ue)))
         yaw = facing_yaw(*f)
         x, y = p[0] - f[0] * 0.35, p[1] - f[1] * 0.35
+        # the attendant stands 0.76 m behind the desk's middle: keep that spot 0.35 m off the wall (the kiosk stood
+        # against it, and a desk set back from it put her inside the wall)
+        for _ in range(8):
+            sx, sy = x - f[0] * 0.76, y - f[1] * 0.76
+            rs = math.hypot(sx - h.rc[0], sy - h.rc[1])
+            lim = h.wall(h.ang((sx, sy))) - 0.35
+            if rs <= lim:
+                break
+            x, y = x + f[0] * (rs - lim + 0.02), y + f[1] * (rs - lim + 0.02)
         r = kit.reception_desk(B, x, y, 0.0, yaw, w=1.3, d=0.62, front=self.look["front"] if self.look["front"] != "CT_Leather" else "CT_PlasterBlue")
         kit.telephone(B, *r["on"][:2], r["top"] - 0.35, yaw) if hasattr(kit, "telephone") else None
         st = r["staff"]
