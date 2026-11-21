@@ -5,7 +5,7 @@ What [south.md](south.md) leaves open, the nearest first. Everything here is a p
 ## Looks
 
 - **The brook is a calm sheet**: the river's ribbon calls anything narrow "fast" and drew the whole brook as foam
-  (white blotches); the brook now shows 12% of that (`ALyudNorthRiver::FoamScale`). A material of its own for shallow
+  (white blotches); the brook now shows 40% of that (`ALyudNorthRiver::FoamScale`). A material of its own for shallow
   water (the bed seen through it, a wet edge) is the real answer.
 - **The stair's corridor** down the sea cliff still has straight sides, and the bowl between the shoulder and the
   headland's east face reads as a round crater from the air; the reedbed has no open water or mud.
