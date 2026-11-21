@@ -530,6 +530,8 @@ static int Week()
 				for (const FPerson& P : S.People)
 				{
 					if (!P.bTown) continue;
+					// a guest on a stay: not here, or come or gone within the day (a night on the train)
+					if (P.StayCycle > 0 && (S.Gone(P) || S.StayAt(P) < 1.6f || S.StayAt(P) > (float)P.StayDays - 0.1f)) continue;
 					SleepDays++;
 					if (SleptMin[P.Id] < 4 * 60)
 					{
@@ -627,7 +629,7 @@ static int Week()
 						Limit = std::max(Limit, std::fmod(D.To - D.From + 24.f, 24.f) + 3.f);
 					}
 				}
-				if (S.Time - St.Since > Limit * 3600.0)
+				if (S.Time - St.Since > Limit * 3600.0 && P.Activity != S.GoneAct)     // (gone from the town for weeks: a stay)
 				{
 					if (Stuck++ < 4)
 					{
