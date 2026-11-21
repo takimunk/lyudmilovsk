@@ -10830,6 +10830,219 @@
      "chance": 1.0
     }
    ]
+  },
+  {
+   "key": "t_mansour_minh",
+   "group": "family",
+   "mesh": "Kid_boy",
+   "age": 7,
+   "with": "t_mansour_etienne",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.151,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.702,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_ostrovsky_rafael",
+   "group": "family",
+   "mesh": "Kid_boy",
+   "age": 7,
+   "with": "t_ostrovsky_elif",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.576,
+     "days": [
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.355,
+     "days": [
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_jansen_despina",
+   "group": "family",
+   "mesh": "Kid_girl",
+   "age": 7,
+   "with": "t_jansen_hakon",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.331,
+     "days": [
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 18.5,
+     "days": [
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_zhou_eoin",
+   "group": "family",
+   "mesh": "Kid_boy",
+   "age": 7,
+   "with": "t_zhou_tomohiko",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.258,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.082,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_zhou_lilit",
+   "group": "family",
+   "mesh": "Sato_yuki",
+   "age": 11,
+   "with": "t_zhou_tomohiko",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.258,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.082,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_okafor_nurlan",
+   "group": "family",
+   "mesh": "Kid_boy",
+   "age": 13,
+   "with": "t_okafor_isla",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.005,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.965,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_romano_tiago",
+   "group": "family",
+   "mesh": "Kid_boy",
+   "age": 8,
+   "with": "t_romano_olga",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.437,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 17.854,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
   }
  ],
  "regulars": [

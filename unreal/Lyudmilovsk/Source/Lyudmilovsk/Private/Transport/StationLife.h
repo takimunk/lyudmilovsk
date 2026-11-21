@@ -19,6 +19,7 @@ namespace LyudTransport
 	struct FLifeRider
 	{
 		std::string Key, Group, Mesh;
+		std::string With;           // a child along with a parent: the day's chance is drawn by the parent's key
 		int Age = 35;
 		bool bRegular = false;
 	};
@@ -142,6 +143,23 @@ namespace LyudTransport
 	EHallPose AttendantPose(int Waiting, const FHallMood& Mood, float Roll);
 	/** The bark category of the waiting people's words (line.transport.wait.<it>.N). */
 	const char* HallBark(const FHallMood& Mood);
+
+	/** A ride's weather and hour as the people aboard feel it (docs/transport.md "Cabin life"). */
+	struct FCabinMood
+	{
+		float Hour = 12.f;
+		bool bFog = false;          // visibility under 1.5 km: the bay gone, the next pylon a shadow
+		bool bRain = false;         // drops running down the glass
+		bool IsDark() const { return Hour < 6.5f || Hour >= 20.5f; }
+	};
+	/** What a rider does on the way: sits, reads, or stands at the side glass (a child's nose to it, an adult at the view). */
+	enum class ECabinAct : uint8_t { Sit, Read, Window };
+	/** Their act for this ride (Roll 0..1: theirs and the ride's); Aboard: how many ride with them. */
+	ECabinAct CabinAct(int Age, int Aboard, const FCabinMood& Mood, float Roll);
+	/** At most two at the glass (one each side): the acts of the riders aboard (ages; rolls) with the extras sat down. */
+	void CabinActs(const std::vector<int>& Ages, const std::vector<float>& Rolls, const FCabinMood& Mood, std::vector<ECabinAct>& Out);
+	/** The words aboard: line.transport.ride.<it>.N (a child at the glass: "kid"). */
+	const char* CabinBark(const FCabinMood& Mood, bool bKidAtGlass, float Roll);
 
 	/** A number 0..1 from a string and a salt (the same in the tool, the game and the tests). */
 	float LifeHash(const std::string& S, uint32_t Salt);

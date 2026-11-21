@@ -54,6 +54,7 @@ namespace LyudTransport
 			Rd.Group = R["group"].S();
 			Rd.Mesh = R["mesh"].S();
 			Rd.Age = R["age"].I(35);
+			Rd.With = R["with"].S();
 			Rd.bRegular = std::find(Regulars.begin(), Regulars.end(), Rd.Key) != Regulars.end();
 			const int RI = (int)Riders.size();
 			bool bAny = false;
@@ -111,7 +112,8 @@ namespace LyudTransport
 				continue;
 			}
 			// the chance by the rider and the day (both trips of a beach day go or neither: the rider's draw, not the trip's)
-			if (Tr.Chance < 1.f && LifeHash(Riders[Tr.Rider].Key, 7919u * (uint32_t)(InDay + 1)) >= Tr.Chance)
+			const FLifeRider& Rd = Riders[Tr.Rider];
+			if (Tr.Chance < 1.f && LifeHash(Rd.With.empty() ? Rd.Key : Rd.With, 7919u * (uint32_t)(InDay + 1)) >= Tr.Chance)
 			{
 				continue;
 			}
@@ -120,6 +122,23 @@ namespace LyudTransport
 			R.At = Tr.At;
 			R.HallMinutes = 2.f + 6.f * LifeHash(Riders[Tr.Rider].Key, 31u + (uint32_t)T);
 			Today.push_back(R);
+		}
+		// a child along with a parent keeps to the parent's minutes in the hall: the same cabin
+		for (FLifeRun& K : Today)
+		{
+			const FLifeTrip& KT = Trips[K.Trip];
+			if (Riders[KT.Rider].With.empty())
+			{
+				continue;
+			}
+			for (const FLifeRun& P : Today)
+			{
+				const FLifeTrip& PT = Trips[P.Trip];
+				if (Riders[PT.Rider].Key == Riders[KT.Rider].With && PT.From == KT.From && PT.To == KT.To && PT.At == KT.At)
+				{
+					K.HallMinutes = P.HallMinutes;
+				}
+			}
 		}
 	}
 
@@ -514,5 +533,65 @@ namespace LyudTransport
 	const char* HallBark(const FHallMood& M)
 	{
 		return M.bStopped ? "stopped" : M.bWindy ? "wind" : M.bRain ? "rain" : M.Hour < 9.5f ? "morning" : M.Hour > 20.5f ? "evening" : "any";
+	}
+
+	// --- the cabins' life (docs/transport.md "Cabin life") ---
+
+	ECabinAct CabinAct(int Age, int Aboard, const FCabinMood& M, float Roll)
+	{
+		const bool bKid = Age < 13, bTeen = Age < 18, bOld = Age >= 65;
+		// the glass: children nearly always (the rain on it too, the fog a wonder), the young often, the grown-ups for the
+		// bay on a clear day, few in the dark (only their own faces in the glass) and fewer in a full cabin
+		float Glass = bKid ? 0.9f : bTeen ? 0.45f : bOld ? 0.08f : 0.18f;
+		if (!bKid)
+		{
+			Glass *= M.bFog ? 0.3f : M.bRain ? 0.6f : 1.3f;
+			Glass *= M.IsDark() ? 0.35f : 1.f;
+			Glass *= Aboard >= 4 ? 0.6f : 1.f;
+		}
+		if (Roll < Glass)
+		{
+			return ECabinAct::Window;
+		}
+		// the paper: in the morning, the old, a dull grey ride
+		float Read = bKid ? 0.05f : bOld ? 0.45f : 0.22f;
+		Read *= M.Hour < 10.f ? 1.5f : 1.f;
+		Read *= M.bFog || M.bRain ? 1.4f : 1.f;
+		return Roll < Glass + (1.f - Glass) * Read ? ECabinAct::Read : ECabinAct::Sit;
+	}
+
+	void CabinActs(const std::vector<int>& Ages, const std::vector<float>& Rolls, const FCabinMood& M, std::vector<ECabinAct>& Out)
+	{
+		const int N = (int)Ages.size();
+		Out.assign(N, ECabinAct::Sit);
+		for (int I = 0; I < N; I++)
+		{
+			Out[I] = CabinAct(Ages[I], N, M, I < (int)Rolls.size() ? Rolls[I] : 0.5f);
+		}
+		// two sides of glass: the youngest keep them, the rest sit back down
+		int AtGlass = 0;
+		for (int Pass = 0; Pass < 2; Pass++)
+		{
+			for (int I = 0; I < N; I++)
+			{
+				if (Out[I] != ECabinAct::Window || ((Ages[I] < 13) != (Pass == 0)))
+				{
+					continue;
+				}
+				if (++AtGlass > 2)
+				{
+					Out[I] = ECabinAct::Sit;
+				}
+			}
+		}
+	}
+
+	const char* CabinBark(const FCabinMood& M, bool bKidAtGlass, float Roll)
+	{
+		if (bKidAtGlass && Roll < 0.5f)
+		{
+			return "kid";
+		}
+		return M.bFog ? "fog" : M.bRain ? "rain" : M.IsDark() ? "night" : Roll < 0.75f ? "sea" : "any";
 	}
 }
