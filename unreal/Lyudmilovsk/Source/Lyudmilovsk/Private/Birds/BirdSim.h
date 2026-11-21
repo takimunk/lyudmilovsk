@@ -37,8 +37,10 @@ namespace LyudBirds
 		V3 Flat() const { return { X, Y, 0.f }; }
 	};
 
-	/** Habitat kinds; tools/bird_habitats.py KINDS has the same order. */
-	enum class EHabitat : uint8_t { Sea, Beach, Cliff, Meadow, Reed, Street, Roof, Tower, Wire, Garden, Broadleaf, Conifer, ForestFloor, Num };
+	/** Habitat kinds; tools/bird_habitats.py KINDS has the same order (new kinds go at the end: the habitats file stores the
+	 *  index). Brook: the brook's shallow edges and stones (tools/south.py), never its water. Mouth: the brook's fan across the
+	 *  beach, wet sand and shallows that the tide lays bare and covers like the beach. */
+	enum class EHabitat : uint8_t { Sea, Beach, Cliff, Meadow, Reed, Street, Roof, Tower, Wire, Garden, Broadleaf, Conifer, ForestFloor, Brook, Mouth, Num };
 	constexpr int NumHabitats = (int)EHabitat::Num;
 	const char* HabitatName(EHabitat H);
 	/** Birds stand on the ground or water here (walk, hop, peck, swim) rather than sit on a perch. */
@@ -430,6 +432,9 @@ namespace LyudBirds
 		std::shared_ptr<FNesting> Nest;
 		friend class FNesting;
 		std::vector<int> NearScratch;
+		/** The brook's mouth: a handful of sites among thousands, so ChooseSite always weighs them (as it does the feeders)
+		 *  instead of hoping its sample finds one. Filled by Populate. */
+		std::vector<int> MouthSites;
 		float StepAcc[4] = {};
 		double LastThink[4] = {};
 		struct FPredator { int Bird = -1; int Prey = -1; float Timer = 0.f; float Mobbed = 0.f; };
