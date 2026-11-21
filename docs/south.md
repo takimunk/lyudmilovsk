@@ -60,6 +60,11 @@ trails replace them), and the brook's bed in the `gravel` mask (`south.gravel`: 
 | `coast_bunker` | Старый дот | 64, -128 | a half-sunk concrete pillbox on the cliff walk, its slit to the sea, moss on the roof |
 | `boat_wreck` | Остов баркаса | 116, 132 | the ribs of a fishing boat in the sand between the brook's mouth and the stair |
 | `devils_stone` | Чёртов камень | -299, 256 | a glacial boulder on the meadow by the spring trail (a split one stands on the cliff walk) |
+| `town_gate` | Первая терраса | -213, 382 | where the town trail comes out onto the town's first terrace |
+
+Each place has an `icon` (`south.PLACE_ICONS`: view, trail, bridge, stele, birds, boats, orchard, water, stair, lighthouse,
+bunker, stone, station, gate), drawn beside its ring on the map once found. `tools/ui_map.py` adds two town places for the
+walk's end: `square` (Площадь Солнца, S-SQUARE) and `market` (Рынок, its bakers' row).
 
 ## Things
 
@@ -173,11 +178,40 @@ Not done: the hero's seats here (`ALyudSouthSpot`) are not claimed against the t
 a fisherman's bench while he is on it (the city's way is `ULyudCityThings::ClaimThing` through a slot's `"thing"`); the
 ornithologist of `quest/ornithologist` has no duty at the hide; nobody walks the cliff walk or the sea trail yet.
 
+## The first walk (backlog item 38)
+
+The town trail is the game's natural first trip, as the quest **«Дорога в город»** (`town_road`, side). It begins with
+`explore` when the awakening ends at the Aton station, and its seven steps are the places on the way, each one a journal
+line in the hero's voice: `lookout` (reach `aton_belvedere`, where the view can be read as pages, item 39), `descent`
+(`aton_descent`), `bridge` (`brook_bridge`), `stele` (`south_stele`), `terrace` (`town_gate`, `no_skip`: riding the cabin
+into town first never finishes the walk), `square` (`square`), `bread` (`get bread_*`, the market's bakers' row is marked;
+any bakery's bread counts). Out-of-order steps skip ahead as everywhere (straight down the trail skips the lookout).
+While it runs the club's regulars say a word about it once (`aside.town_road.*`: the owner, Timur, Olya, who asks about
+the stele and hears back after), and Aslan at his tent remarks on the hero coming back hungry (`quest_scenes.json`
+`aslan_town_road`). Words in `Localization/quests/`; dev jumps land on the previous step (`Dev/teleports/town_road.json`:
+the alley's end, the square, the market).
+
+**The map** (`map.json`): the places' `icon`s, and `trails` (`south.map_trails()`: each designed trail every ~6 m with its
+name `south.trail.<id>.name`). `ULyudQuests` inks a trail point once the hero passes within 6 m (`Walked`, saved);
+`SLyudMapView` draws the walked stretches over the picture's dots (a brown pencil line in the diary) and writes a trail's
+name beside its middle once he has set foot on it and the map is close. Dev action `south.trails_walked` inks them all or
+clears them.
+
+**The finger-posts**: a plank's distance is walked along the trail network (`south.trail_walk`, `sign_rows`) where the post
+stands on a trail, in metres and minutes at 4.5 km/h (`350 м · 5 мин`, keys `south.sign.trail.dist.<m>m_<n>min`, added by
+`tools/south_signs.py --strings`); posts off the trails (the boardwalk's end, the forecourt) keep their written words. The
+plank textures and the posts' GLB are rebuilt on the Mac (`python3 tools/south_signs.py`, then blender/south and the import:
+LFS).
+
+**Offline**: `python3 tools/town_road_walk.py` walks the hero metre by metre through the quest engine with every place's
+radius and the trail ink (the plain walk, straight down without the lookout, by cabin first), and checks the post at the
+alley's end says the quest's five minutes.
+
 ## After a change here
 
 `python3 tools/south.py --check && python3 tools/south.py`, `python3 tools/transport.py` (the pylons are resolved
 against the ground), `python3 tools/ui_map.py` and `tools/ui_map_ink.py` (restore `textures/ui/binoculars_mask.png`
-if the cloud rewrote it), then `python3 tools/town/south_people.py` (the townsfolk's places follow the things and trails), `python3 tools/south_uses.py` and the level's build
+if the cloud rewrote it), then `python3 tools/town/south_people.py` (the townsfolk's places follow the things and trails), `python3 tools/south_uses.py`, `python3 tools/town_road_walk.py` and the level's build
 (`unreal/scripts/build_scene01.sh`).
 
 ## Not done yet

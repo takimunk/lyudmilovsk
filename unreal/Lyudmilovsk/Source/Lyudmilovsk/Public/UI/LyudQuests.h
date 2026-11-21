@@ -124,6 +124,20 @@ struct FLyudMapPlace
 	FName Kind;
 	/** Known from the start (the club, the sea). */
 	bool bKnown = false;
+	/** A little picture beside its ring once found (SLyudMapView): view, bridge, stele, birds, boats, water, ... ; none: just the ring. */
+	FName Icon;
+};
+
+/**
+ * A designed footpath (map.json "trails", tools/south.py map_trails: the Aton coast's town trail and its branches): its name's
+ * string key and its points every ~6 m in the map frame. The map writes the name along it, and inks in the part the hero has
+ * walked (ULyudQuests::Walked).
+ */
+struct FLyudMapTrail
+{
+	FName Id;
+	FString NameKey;
+	TArray<FVector2D> Pts;
 };
 
 /** The map frame (docs/world_map.md): X west, Y north, metres from the club's portal face. */
@@ -164,6 +178,17 @@ public:
 	UPROPERTY(SaveGame) TArray<FLyudJournalEntry> Entries;
 	UPROPERTY(SaveGame) TArray<FName> Found;
 	UPROPERTY(SaveGame) FName Tracked;
+	/**
+	 * The footpaths walked (map.json trails): per trail one character per point, '1' once the hero has passed within
+	 * TrailReach metres of it. A trail whose point count changed with the data is started afresh (the old string is dropped).
+	 */
+	UPROPERTY(SaveGame) TMap<FName, FString> Walked;
+	static constexpr float TrailReach = 6.f;
+	bool IsWalked(FName Trail, int32 Point) const
+	{
+		const FString* W = Walked.Find(Trail);
+		return W && W->IsValidIndex(Point) && (*W)[Point] == TCHAR('1');
+	}
 
 	/** A new game: nothing done, the auto-start quests begun. */
 	void Reset();
@@ -216,6 +241,7 @@ public:
 	static const TArray<FLyudQuestDef>& Defs();
 	static const FLyudQuestDef* FindDef(FName Quest);
 	static const TArray<FLyudMapPlace>& Places();
+	static const TArray<FLyudMapTrail>& Trails();
 	static const FLyudMapPlace* FindPlace(FName Place);
 	static const FLyudMapFrame& Frame();
 	/** Drops the parsed quests.json / map.json (re-read at every level start, like the strings). */

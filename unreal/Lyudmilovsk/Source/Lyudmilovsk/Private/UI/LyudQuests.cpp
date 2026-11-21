@@ -2,6 +2,7 @@
 #include "People/LyudTownRumours.h"
 #include "UI/LyudDayLog.h"
 
+#include "Dev/LyudDev.h"
 #include "Dom/JsonObject.h"
 #include "Engine/GameInstance.h"
 #include "Engine/World.h"
@@ -24,6 +25,7 @@ namespace
 		bool bLoaded = false;
 		TArray<FLyudQuestDef> Quests;
 		TArray<FLyudMapPlace> Places;
+		TArray<FLyudMapTrail> Trails;
 		FLyudMapFrame Frame;
 	};
 
@@ -157,10 +159,41 @@ namespace
 				Place.Radius = R;
 				Place.Kind = *P->GetStringField(TEXT("kind"));
 				P->TryGetBoolField(TEXT("known"), Place.bKnown);
+				FString Icon;
+				if (P->TryGetStringField(TEXT("icon"), Icon) && !Icon.IsEmpty())
+				{
+					Place.Icon = *Icon;
+				}
 				D.Places.Add(Place);
 			}
+			const TArray<TSharedPtr<FJsonValue>>* Trails = nullptr;
+			Root->TryGetArrayField(TEXT("trails"), Trails);
+			for (const TSharedPtr<FJsonValue>& TV : Trails ? *Trails : TArray<TSharedPtr<FJsonValue>>())
+			{
+				const TSharedPtr<FJsonObject> T = TV->AsObject();
+				const TArray<TSharedPtr<FJsonValue>>* Pts = nullptr;
+				if (!T || !T->TryGetArrayField(TEXT("pts"), Pts))
+				{
+					continue;
+				}
+				FLyudMapTrail Trail;
+				Trail.Id = *T->GetStringField(TEXT("id"));
+				T->TryGetStringField(TEXT("name"), Trail.NameKey);
+				for (const TSharedPtr<FJsonValue>& XY : *Pts)
+				{
+					const TArray<TSharedPtr<FJsonValue>>& A = XY->AsArray();
+					if (A.Num() >= 2)
+					{
+						Trail.Pts.Add(FVector2D(A[0]->AsNumber(), A[1]->AsNumber()));
+					}
+				}
+				if (Trail.Pts.Num() >= 2)
+				{
+					D.Trails.Add(MoveTemp(Trail));
+				}
+			}
 		}
-		UE_LOG(LogTemp, Log, TEXT("LyudQuests: %d quests, %d places"), D.Quests.Num(), D.Places.Num());
+		UE_LOG(LogTemp, Log, TEXT("LyudQuests: %d quests, %d places, %d trails"), D.Quests.Num(), D.Places.Num(), D.Trails.Num());
 	}
 
 	/** An objective's event may list alternatives: "leave_computer|walk". */
@@ -227,6 +260,12 @@ const TArray<FLyudMapPlace>& ULyudQuests::Places()
 {
 	Load();
 	return Data().Places;
+}
+
+const TArray<FLyudMapTrail>& ULyudQuests::Trails()
+{
+	Load();
+	return Data().Trails;
 }
 
 const FLyudMapPlace* ULyudQuests::FindPlace(FName Place)
@@ -331,6 +370,7 @@ void ULyudQuests::Reset()
 	Progress.Reset();
 	Entries.Reset();
 	Found.Reset();
+	Walked.Reset();
 	Flags.Reset();
 	Tracked = NAME_None;
 	Queue.Reset();
@@ -826,6 +866,27 @@ void ULyudQuests::DevForget(FName Quest)
 void ULyudQuests::UpdatePosition(const UObject* WorldContext, const FVector& P)
 {
 	const FVector2D M = Frame().FromWorld(P);
+	// the footpaths walked: each point passed within TrailReach is inked on the map (a cheap box test per trail first)
+	for (const FLyudMapTrail& T : Trails())
+	{
+		FBox2D Box(T.Pts);
+		if (!Box.ExpandBy(TrailReach).IsInside(M))
+		{
+			continue;
+		}
+		FString& W = Walked.FindOrAdd(T.Id);
+		if (W.Len() != T.Pts.Num())
+		{
+			W = FString::ChrN(T.Pts.Num(), TCHAR('0'));
+		}
+		for (int32 I = 0; I < T.Pts.Num(); ++I)
+		{
+			if (W[I] != TCHAR('1') && FVector2D::DistSquared(M, T.Pts[I]) < FMath::Square(TrailReach))
+			{
+				W[I] = TCHAR('1');
+			}
+		}
+	}
 	for (const FLyudMapPlace& Place : Places())
 	{
 		if (Place.Radius <= 0.f)
@@ -989,3 +1050,45 @@ static FAutoConsoleCommandWithWorldAndArgs GQuestDump(TEXT("Quest.Dump"), TEXT("
 		}
 		UE_LOG(LogTemp, Warning, TEXT("QUESTTEST entries %d found %d tracked %s"), Q->Entries.Num(), Q->Found.Num(), *Q->Tracked.ToString());
 	}));
+
+namespace
+{
+	// developer mode: every designed footpath inked on the map as walked, or none (docs/south.md "The first walk")
+	bool AllTrailsWalked(UWorld* W)
+	{
+		const ULyudQuests* Q = ULyudQuests::Get(W);
+		if (!Q || ULyudQuests::Trails().Num() == 0)
+		{
+			return false;
+		}
+		for (const FLyudMapTrail& T : ULyudQuests::Trails())
+		{
+			const FString* S = Q->Walked.Find(T.Id);
+			if (!S || S->Len() != T.Pts.Num() || S->Contains(TEXT("0")))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	LyudDev::FAutoAction GTrailsWalked(TEXT("south.trails_walked"), TEXT("south"), TEXT("dev.action.south.trails_walked"),
+		[](UWorld* W)
+		{
+			ULyudQuests* Q = ULyudQuests::Get(W);
+			if (!Q)
+			{
+				return;
+			}
+			const bool bOn = AllTrailsWalked(W);
+			Q->Walked.Reset();
+			if (!bOn)
+			{
+				for (const FLyudMapTrail& T : ULyudQuests::Trails())
+				{
+					Q->Walked.Add(T.Id, FString::ChrN(T.Pts.Num(), TCHAR('1')));
+				}
+			}
+			Q->OnChanged.Broadcast();
+		},
+		[](UWorld* W) { return AllTrailsWalked(W); });
+}

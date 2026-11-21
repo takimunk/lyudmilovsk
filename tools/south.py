@@ -691,9 +691,38 @@ def places():
         ("boat_wreck", WRECK[0] - 5.0, WRECK[1], 10.0, "nature", 0.0),
         ("devils_stone", STONE[0] + 5.0, STONE[1] + 2.0, 9.0, "nature", 200.0),
         ("mayak_station", MAYAK[0], MAYAK[1], 18.0, "transport", 270.0),
+        # where the town trail meets the town's first terrace (the quest "town_road", docs/south.md "The first walk")
+        ("town_gate", GATE[0] + 1.0, GATE[1] - 4.0, 12.0, "building", 75.0),
     ]
-    return [{"id": i, "name": "place.%s.name" % i, "x": round(x, 1), "y": round(y, 1), "r": r, "kind": k, "yaw": yaw}
-            for i, x, y, r, k, yaw in P]
+    return [{"id": i, "name": "place.%s.name" % i, "x": round(x, 1), "y": round(y, 1), "r": r, "kind": k, "yaw": yaw,
+             "icon": PLACE_ICONS.get(i, "")} for i, x, y, r, k, yaw in P]
+
+
+# the map's little pictures beside a found place's ring (SLyudMapView draws them as pen strokes, no texture)
+PLACE_ICONS = {"aton_belvedere": "view", "aton_descent": "trail", "brook_bridge": "bridge", "south_stele": "stele",
+               "bird_hide": "birds", "brook_mouth": "boats", "old_orchard": "orchard", "south_spring": "water",
+               "spring_ravine": "water", "cliff_stair": "stair", "cliff_lookout": "view", "mayak_lighthouse": "lighthouse",
+               "coast_bunker": "bunker", "boat_wreck": "boats", "devils_stone": "stone", "mayak_station": "station",
+               "town_gate": "gate"}
+
+# the designed trails' names on the map (strings south.trail.<id>.name, Localization/south): the order is the map's
+TRAIL_NAMES = ("town", "belvedere", "sea", "hide", "spring")
+
+
+def map_trails(step=6.0):
+    """The trails for the game's map (map.json "trails", tools/ui_map.py): [{id, name, pts every ~step m}], each trail's
+    points also what the walked trail is inked by (ULyudQuests marks a point the hero passed within a few metres)."""
+    out = []
+    for k in TRAIL_NAMES:
+        pts = trails()[k]
+        keep = [pts[0]]
+        for p in pts[1:]:
+            if math.hypot(p[0] - keep[-1][0], p[1] - keep[-1][1]) >= step:
+                keep.append(p)
+        if keep[-1] != pts[-1]:
+            keep.append(pts[-1])
+        out.append({"id": k, "name": "south.trail.%s.name" % k, "pts": [[round(x, 1), round(y, 1)] for x, y in keep]})
+    return out
 
 
 def _boardwalk():
@@ -743,11 +772,90 @@ SIGNS = {
 }
 
 
+# where a plank's place word leads when the way there is a designed trail: its distance is then walked along the trails
+# (trail_walk) instead of the word written in SIGNS; a post more than SIGN_ON_TRAIL m from every trail keeps its words
+SIGN_DEST = {"town": lambda: GATE, "lookout": lambda: trails()["belvedere"][-1], "sea": lambda: trails()["sea"][-1],
+             "aton": lambda: ALLEY_END, "spring": lambda: trails()["spring"][-1], "hide": lambda: trails()["hide"][-1]}
+SIGN_ON_TRAIL = 6.0
+WALK_M_PER_MIN = 75.0           # an unhurried 4.5 km/h, the minutes on the planks
+
+
+@functools.lru_cache(maxsize=1)
+def _trail_graph():
+    """The designed trails as one network: every point a node, joined to the next along its trail and to any point of
+    another trail within 2.5 m (where they branch)."""
+    nodes, adj = [], {}
+    for k, pts in trails().items():
+        base = len(nodes)
+        nodes += [(k, p) for p in pts]
+        for i in range(len(pts) - 1):
+            d = math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1])
+            adj.setdefault(base + i, []).append((base + i + 1, d))
+            adj.setdefault(base + i + 1, []).append((base + i, d))
+    for i, (ki, pi) in enumerate(nodes):
+        for j in range(i + 1, len(nodes)):
+            kj, pj = nodes[j]
+            if kj != ki and abs(pi[0] - pj[0]) < 2.5 and abs(pi[1] - pj[1]) < 2.5:
+                d = math.hypot(pi[0] - pj[0], pi[1] - pj[1])
+                if d < 2.5:
+                    adj.setdefault(i, []).append((j, d))
+                    adj.setdefault(j, []).append((i, d))
+    return nodes, adj
+
+
+def _nearest_node(p):
+    nodes, _ = _trail_graph()
+    k = min(range(len(nodes)), key=lambda i: (nodes[i][1][0] - p[0]) ** 2 + (nodes[i][1][1] - p[1]) ** 2)
+    return k, math.hypot(nodes[k][1][0] - p[0], nodes[k][1][1] - p[1])
+
+
+def trail_walk(a, b):
+    """Metres walked from a to b along the designed trails (to the nearest trail point at each end and along the network)."""
+    import heapq
+    nodes, adj = _trail_graph()
+    (s, da), (t, db) = _nearest_node(a), _nearest_node(b)
+    best, heap = {s: 0.0}, [(0.0, s)]
+    while heap:
+        d, u = heapq.heappop(heap)
+        if u == t:
+            return d + da + db
+        if d > best[u]:
+            continue
+        for v, w in adj.get(u, ()):
+            if d + w < best.get(v, 1e18):
+                best[v] = d + w
+                heapq.heappush(heap, (d + w, v))
+    return None
+
+
+def sign_distance_word(m):
+    """A plank's distance key (tools/south_signs.py south.sign.trail.dist.<word>): metres to the nearest 10 (under 200 m)
+    or 50, and the minutes on foot."""
+    r = int(round(m / 10.0) * 10) if m < 200 else int(round(m / 50.0) * 50)
+    return "%dm_%dmin" % (r, max(1, int(round(m / WALK_M_PER_MIN))))
+
+
+def sign_rows():
+    """SIGNS with each plank's distance word walked along the trails where the post stands on one (variant -> ((x, y), rows))."""
+    out = {}
+    for v, ((x, y), rows) in SIGNS.items():
+        on_trail = _nearest_node((x, y))[1] <= SIGN_ON_TRAIL
+        new = []
+        for name, dist, aim in rows:
+            if on_trail and name in SIGN_DEST:
+                m = trail_walk((x, y), SIGN_DEST[name]())
+                if m is not None:
+                    dist = sign_distance_word(m)
+            new.append((name, dist, aim))
+        out[v] = ((x, y), new)
+    return out
+
+
 def sign_planks():
     """{variant: [(place word, distance word, yaw_deg)]}: yaw_deg is the plank's turn on its post in the mesh's frame
     (counter-clockwise seen from above, 0 = the post's front): the front's yaw minus the bearing to the place."""
     out = {}
-    for v, ((x, y), rows) in SIGNS.items():
+    for v, ((x, y), rows) in sign_rows().items():
         px, py = _beside(x, y, BESIDE["trail_sign"])
         out[v] = [(name, dist, round((SIGN_YAW - math.degrees(math.atan2(ty - py, tx - px)) + 180.0) % 360.0 - 180.0, 0))
                   for name, dist, (tx, ty) in rows]

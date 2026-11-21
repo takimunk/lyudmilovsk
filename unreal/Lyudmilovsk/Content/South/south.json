@@ -8,7 +8,8 @@
    "y": 187.0,
    "r": 9.0,
    "kind": "building",
-   "yaw": 90.0
+   "yaw": 90.0,
+   "icon": "view"
   },
   {
    "id": "aton_descent",
@@ -17,7 +18,8 @@
    "y": 222.0,
    "r": 16.0,
    "kind": "nature",
-   "yaw": 120.0
+   "yaw": 120.0,
+   "icon": "trail"
   },
   {
    "id": "brook_bridge",
@@ -26,7 +28,8 @@
    "y": 315.7,
    "r": 9.0,
    "kind": "nature",
-   "yaw": 110.0
+   "yaw": 110.0,
+   "icon": "bridge"
   },
   {
    "id": "south_stele",
@@ -35,7 +38,8 @@
    "y": 348.0,
    "r": 12.0,
    "kind": "building",
-   "yaw": 80.0
+   "yaw": 80.0,
+   "icon": "stele"
   },
   {
    "id": "bird_hide",
@@ -44,7 +48,8 @@
    "y": 277.0,
    "r": 9.0,
    "kind": "building",
-   "yaw": 0.0
+   "yaw": 0.0,
+   "icon": "birds"
   },
   {
    "id": "brook_mouth",
@@ -53,7 +58,8 @@
    "y": 247.0,
    "r": 16.0,
    "kind": "nature",
-   "yaw": 60.0
+   "yaw": 60.0,
+   "icon": "boats"
   },
   {
    "id": "old_orchard",
@@ -62,7 +68,8 @@
    "y": 196.0,
    "r": 38.0,
    "kind": "nature",
-   "yaw": 180.0
+   "yaw": 180.0,
+   "icon": "orchard"
   },
   {
    "id": "south_spring",
@@ -71,7 +78,8 @@
    "y": 130.0,
    "r": 9.0,
    "kind": "nature",
-   "yaw": 200.0
+   "yaw": 200.0,
+   "icon": "water"
   },
   {
    "id": "spring_ravine",
@@ -80,7 +88,8 @@
    "y": 104.0,
    "r": 18.0,
    "kind": "nature",
-   "yaw": 225.0
+   "yaw": 225.0,
+   "icon": "water"
   },
   {
    "id": "cliff_stair",
@@ -89,7 +98,8 @@
    "y": 38.0,
    "r": 7.0,
    "kind": "building",
-   "yaw": 0.0
+   "yaw": 0.0,
+   "icon": "stair"
   },
   {
    "id": "cliff_lookout",
@@ -98,7 +108,8 @@
    "y": -236.0,
    "r": 9.0,
    "kind": "nature",
-   "yaw": 0.0
+   "yaw": 0.0,
+   "icon": "view"
   },
   {
    "id": "mayak_lighthouse",
@@ -107,7 +118,8 @@
    "y": -426.0,
    "r": 14.0,
    "kind": "building",
-   "yaw": 300.0
+   "yaw": 300.0,
+   "icon": "lighthouse"
   },
   {
    "id": "coast_bunker",
@@ -116,7 +128,8 @@
    "y": -128.0,
    "r": 9.0,
    "kind": "building",
-   "yaw": 0.0
+   "yaw": 0.0,
+   "icon": "bunker"
   },
   {
    "id": "boat_wreck",
@@ -125,7 +138,8 @@
    "y": 132.0,
    "r": 10.0,
    "kind": "nature",
-   "yaw": 0.0
+   "yaw": 0.0,
+   "icon": "boats"
   },
   {
    "id": "devils_stone",
@@ -134,7 +148,8 @@
    "y": 256.0,
    "r": 9.0,
    "kind": "nature",
-   "yaw": 200.0
+   "yaw": 200.0,
+   "icon": "stone"
   },
   {
    "id": "mayak_station",
@@ -143,7 +158,18 @@
    "y": -384.0,
    "r": 18.0,
    "kind": "transport",
-   "yaw": 270.0
+   "yaw": 270.0,
+   "icon": "station"
+  },
+  {
+   "id": "town_gate",
+   "name": "place.town_gate.name",
+   "x": -213.0,
+   "y": 382.0,
+   "r": 12.0,
+   "kind": "building",
+   "yaw": 75.0,
+   "icon": "gate"
   }
  ],
  "things": [

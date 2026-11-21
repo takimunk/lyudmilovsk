@@ -318,13 +318,21 @@ def places(out_json):
         # (the photo quest "old_pier", docs/photo.md)
         ("pier", 224.0, 905.0, 85.0, "building", False),
     ]
+    # the town's first places on foot: the square and the market hall beside it (the quest "town_road" ends there;
+    # Content/City/city_plan.json S-SQUARE, the market's bakery stalls P-MARKET/counter4)
+    P += [("square", 16.3, 905.0, 24.0, "building", False), ("market", -92.0, 866.0, 16.0, "building", False)]
     # the Aton coast between the club and the town (tools/south.py, docs/south.md)
     P += [(p["id"], p["x"], p["y"], p["r"], p["kind"], False) for p in W._south().places()]
+    icons = {p["id"]: p.get("icon", "") for p in W._south().places()}
+    icons.update({"square": "square", "market": "bread", "beach": "", "promenade": ""})
     data = {
         "comment": "Written by tools/ui_map.py from tools/world_map.py: do not edit by hand. Metres in the map frame (docs/world_map.md).",
         "frame": {"x_min": W.X_MIN, "x_max": W.X_MAX, "y_min": W.Y_MIN, "y_max": W.SHEET_Y_MAX, "portal_face_y": portal_face_y,
                   "metres_per_pixel": PX},
-        "places": [{"id": i, "x": round(x, 1), "y": round(y, 1), "r": r, "kind": k, "known": kn} for i, x, y, r, k, kn in P],
+        "places": [dict({"id": i, "x": round(x, 1), "y": round(y, 1), "r": r, "kind": k, "known": kn},
+                        **({"icon": icons[i]} if icons.get(i) else {})) for i, x, y, r, k, kn in P],
+        # the designed footpaths with their names, drawn and inked as walked by the game (SLyudMapView, ULyudQuests)
+        "trails": W._south().map_trails(),
     }
     with open(out_json, "w") as f:
         json.dump(data, f, indent=1, ensure_ascii=False)

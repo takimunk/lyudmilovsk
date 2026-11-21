@@ -64,5 +64,22 @@
  "place.boat_wreck.name": "Остов баркаса",
  "dev.tp.boat_wreck": "Остов баркаса",
  "place.devils_stone.name": "Чёртов камень",
- "dev.tp.devils_stone": "Чёртов камень"
+ "dev.tp.devils_stone": "Чёртов камень",
+ "place.town_gate.name": "Первая терраса",
+ "dev.tp.town_gate": "Первая терраса (конец тропы)",
+ "south.trail.town.name": "Тропа Атона",
+ "south.trail.belvedere.name": "К смотровой",
+ "south.trail.sea.name": "К морю",
+ "south.trail.hide.name": "Камышовая тропа",
+ "south.trail.spring.name": "Родниковая тропа",
+ "dev.tp.town_road.alley": "Дорога в город: у станции «Атон»",
+ "dev.tp.town_road.square": "Дорога в город: площадь Солнца",
+ "dev.tp.town_road.market": "Дорога в город: хлебный ряд",
+ "dev.action.south.trails_walked": "Карта: все тропы пройдены",
+ "south.sign.trail.dist.350m_5min": "350 м · 5 мин",
+ "south.sign.trail.dist.70m_1min": "70 м · 1 мин",
+ "south.sign.trail.dist.130m_2min": "130 м · 2 мин",
+ "south.sign.trail.dist.250m_3min": "250 м · 3 мин",
+ "south.sign.trail.dist.100m_1min": "100 м · 1 мин",
+ "south.sign.trail.dist.400m_5min": "400 м · 5 мин"
 }
