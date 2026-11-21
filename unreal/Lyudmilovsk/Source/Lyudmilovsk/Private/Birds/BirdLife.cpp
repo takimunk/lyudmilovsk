@@ -764,7 +764,7 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 		if (const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(this))
 		{
 			const FLyudWeatherState State = Weather->GetState();
-			S.Rain = State.Rain;
+			S.Rain = State.PrecipRate;   // mm/h of falling water, snow included (BirdSim.h: Rain)
 			S.TempC = State.TempC;
 		}
 	}
