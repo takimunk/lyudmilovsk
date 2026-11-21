@@ -574,6 +574,10 @@ namespace LyudAnimals
 		CellNext.assign(Animals.size(), -1);
 		for (int I = 0; I < (int)Animals.size(); I++)
 		{
+			if (Animals[I].Pet == EPet::Indoors || Animals[I].Pet == EPet::Sill)
+			{
+				continue;       // behind a door, up on a sill: nobody meets it
+			}
 			const V3& P = Animals[I].Pos;
 			const int CX = (int)Clamp((P.X - HashX0) / HashCell, 0.f, HashNX - 1.f);
 			const int CY = (int)Clamp((P.Y - HashY0) / HashCell, 0.f, HashNY - 1.f);
@@ -1157,7 +1161,7 @@ namespace LyudAnimals
 			switch (P.Kind)
 			{
 			case EPlace::Feeder:
-				if (Passed(8.f) || Passed(18.5f))
+				if (!bFeedByPerson && (Passed(8.f) || Passed(18.5f)))      // else the lady brings it (PutFood)
 				{
 					P.FoodLeft = (float)P.Capacity;
 				}
@@ -2254,6 +2258,10 @@ namespace LyudAnimals
 		{
 			return;     // busy with the player's hand, or walking with them: FriendThink minds the rest
 		}
+		if (A.Pet != EPet::None)
+		{
+			return;     // on the leash, on its sill, at its door: PetThink minds it
+		}
 		PerceivePlayer(A, Dt);
 		if (A.Act == EAct::Flee && A.ActTime < 0.05f)
 		{
@@ -2276,6 +2284,10 @@ namespace LyudAnimals
 		UpdateNeeds(A, Dt);
 		Perceive(A, Dt);
 		if (FriendThink(A, Dt))
+		{
+			return;
+		}
+		if (PetThink(A, Dt))
 		{
 			return;
 		}
@@ -2491,6 +2503,10 @@ namespace LyudAnimals
 		A.ActTime += Dt;
 		A.Phase += Dt * (0.4f + A.Speed * (bCat ? 2.2f : 1.4f));
 		if (FriendMove(A, Dt))
+		{
+			return;
+		}
+		if (PetMove(A, Dt))
 		{
 			return;
 		}
@@ -3023,6 +3039,7 @@ namespace LyudAnimals
 		{
 			StepAcc[3] = 0.f;
 		}
+		PetStep(Dt);
 	}
 
 	V3 FWorld::RenderPos(const FAnimal& A) const
