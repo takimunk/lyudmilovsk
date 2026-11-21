@@ -539,6 +539,17 @@ Colette Bauer (P-SERPENTINE, serpentine_slab), Priya Tulegenova (P-UNITE, unite_
 "store" board). Reach audit clean; citysim "things to open and pick up in the homes". The Mac reimports the four types
 (the frames, notes and the kettle are new meshes).
 
+The same in the club rooms and the sanatorium (`tools/city/content/x_room_touch.json`, `strings/x_room_touch.json`, all by
+id rule): in the Rassvet (P-CLUB2, workers_club) the radio amateurs' electric kettle (`radio_kettle`, a tea once a day, a
+night line when someone was on the air late) and the note they leave each other (`radio_note`), the dance teacher's 1979
+recital photo by the record player (`dance_photo`); in the Cog club (P-CLUB3, cog_club) a reader's note on the second
+reading table (`cart_note`), the model makers' kettle (`workshop_kettle`, a cold-day line) and their glider photo
+(`workshop_photo`) on the workshop benches; in the sanatorium (P-SANATORIUM) the paid-couch guest's photo on the cabinet
+and their note on the blanket (`guest_photo`, `guest_note`). `_homekit.table_kettle` is a free-standing electric kettle
+on a table top. Citysim "things to pick up in the club rooms and the sanatorium". The Mac reimports the three types. The
+Aton club's own rooms, the station halls' staff corners and the Mayak keeper's annex are built by other systems (club
+hall, `ALyudStationHall`, `south.py`) and do not take city things yet.
+
 ### Sitting and lying
 
 What is a real pose and what is a stand-in:

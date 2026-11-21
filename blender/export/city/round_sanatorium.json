@@ -1643,6 +1643,32 @@
    }
   },
   {
+   "id": "guest_photo",
+   "kind": "take",
+   "pos": [
+    9.293,
+    12.185,
+    1.1
+   ],
+   "yaw": 218.4,
+   "props": {
+    "what": "photo"
+   }
+  },
+  {
+   "id": "guest_note",
+   "kind": "take",
+   "pos": [
+    8.397,
+    14.026,
+    0.85
+   ],
+   "yaw": -51.6,
+   "props": {
+    "what": "note"
+   }
+  },
+  {
    "id": "couch_lamp",
    "kind": "machine",
    "pos": [
@@ -14576,7 +14602,7 @@
  ],
  "tris": {
   "shell": 16488,
-  "detail": 43605,
+  "detail": 43629,
   "windows": 1996,
   "dress": 3131
  }
