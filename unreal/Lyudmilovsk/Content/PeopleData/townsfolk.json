@@ -1259,7 +1259,19 @@
    "wake": 7.4,
    "bed": 0.32,
    "spread": 0.77,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "book_club",
+     "place": "P-LIBRARY-CLUB",
+     "hours": [
+      18.17,
+      20.0
+     ],
+     "days": [
+      3
+     ]
+    }
+   ],
    "friends": [
     "t_berzins_yumiko",
     "t_eze_wei",
@@ -14635,7 +14647,19 @@
    "wake": 7.3,
    "bed": 23.73,
    "spread": 0.87,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "book_club",
+     "place": "P-LIBRARY-CLUB",
+     "hours": [
+      18.17,
+      20.0
+     ],
+     "days": [
+      3
+     ]
+    }
+   ],
    "friends": [
     "t_araujo_ama",
     "t_lund_aiko"
@@ -15791,6 +15815,17 @@
       4,
       5,
       6
+     ]
+    },
+    {
+     "activity": "book_club",
+     "place": "P-LIBRARY-CLUB",
+     "hours": [
+      18.17,
+      20.0
+     ],
+     "days": [
+      3
      ]
     }
    ],
@@ -27981,7 +28016,19 @@
    "wake": 6.76,
    "bed": 22.47,
    "spread": 0.86,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "book_club",
+     "place": "P-LIBRARY-CLUB",
+     "hours": [
+      18.17,
+      20.0
+     ],
+     "days": [
+      3
+     ]
+    }
+   ],
    "friends": [
     "t_esposito_chiara"
    ],
@@ -30934,6 +30981,17 @@
       2,
       3,
       4
+     ]
+    },
+    {
+     "activity": "book_club",
+     "place": "P-LIBRARY-CLUB",
+     "hours": [
+      18.17,
+      20.0
+     ],
+     "days": [
+      3
      ]
     }
    ],

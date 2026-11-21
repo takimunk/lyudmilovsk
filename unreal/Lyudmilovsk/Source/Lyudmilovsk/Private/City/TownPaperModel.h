@@ -108,6 +108,9 @@ namespace LyudPaper
 		/** The talk of the town about the hero the day before (ULyudTownRumours::PaperColumn, docs/town_rumours.md): lines made
 		 *  already (a key and its arguments), printed on the town page under «Говорят в городе». */
 		std::vector<FLine> Talk;
+		/** The library's book club (ULyudReading::PaperLines, docs/books.md "The book club"): its heading, the month's book,
+		 *  tonight's meeting; printed on the holidays page after the cinema. */
+		std::vector<FLine> Club;
 	};
 
 	struct FPoolEntry
@@ -879,6 +882,11 @@ namespace LyudPaper
 					}
 				}
 				Page.push_back({ "paper.newsreel", { "@" + (!Own.empty() ? Own : (bFest && NewsreelKeys.size() > 7 ? NewsreelKeys[7] : NewsreelKeys[(size_t)Wd])) } });
+			}
+			// the readers' club: the month's book (and tonight's meeting, next month's book near the month's end)
+			for (const FLine& L : F.Club)
+			{
+				Page.push_back(L);
 			}
 			// three small ads of the season, turning by day
 			std::vector<const FPoolEntry*> Season;

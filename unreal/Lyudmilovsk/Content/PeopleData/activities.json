@@ -102,6 +102,7 @@
     {"id": "water_allotment", "places": ["allotment"], "slots": ["bed_side"], "pose": "stand", "minutes": [15, 30], "hours": [14.5, 20.5], "daylight": 1, "temp": [5, 40], "meets": {"nature": 0.8, "fun": 0.2}, "costs": {"tired": 0.04}, "base": -1.6, "trait": "nature"},
     {"id": "read_paper", "places": ["park", "pond", "fountain", "promenade", "promenade_bench", "town_bench", "bench"], "slots": ["bench"], "pose": "sit", "minutes": [20, 45], "hours": [7, 11.5], "daylight": 1, "temp": [4, 40], "ages": [30, 200], "meets": {"mind": 0.55, "nature": 0.3, "sun": 0.2}, "base": -0.2, "trait": "studious"},
     {"id": "skip_stones", "places": ["beach"], "pose": "look", "minutes": [10, 25], "hours": [9, 20], "ages": [6, 70], "daylight": 1, "wind": [0, 7.5], "temp": [3, 40], "meets": {"fun": 0.8, "nature": 0.6, "sun": 0.2}, "costs": {"tired": 0.03}, "base": -0.25, "trait": "active"},
-    {"id": "post_round", "places": ["post_round"], "slots": ["stand"], "pose": "stand", "wander": 1, "round": 1, "wander_pause": [50, 130], "minutes": [60, 60], "meets": {"social": 0.4, "nature": 0.5, "sun": 0.3}, "costs": {"hunger": 0.05, "tired": 0.03}, "free": 0, "rain": "ok"}
+    {"id": "post_round", "places": ["post_round"], "slots": ["stand"], "pose": "stand", "wander": 1, "round": 1, "wander_pause": [50, 130], "minutes": [60, 60], "meets": {"social": 0.4, "nature": 0.5, "sun": 0.3}, "costs": {"hunger": 0.05, "tired": 0.03}, "free": 0, "rain": "ok"},
+    {"id": "book_club", "places": ["book_club"], "slots": ["club_seat"], "pose": "sit", "minutes": [100, 110], "when": "book_club", "holiday": "off", "free": 0, "meets": {"social": 0.9, "mind": 0.9, "fun": 0.4}, "talk": 1}
   ]
 }
