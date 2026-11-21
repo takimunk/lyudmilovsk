@@ -1,0 +1,9 @@
+{
+ "teleports": [
+  {"id": "lighthouse_base", "group": "lighthouse", "name": "dev.tp.lighthouse_base", "x": 108.2, "y": -428.8, "yaw": 320},
+  {"id": "lighthouse_gallery", "group": "lighthouse", "name": "dev.tp.lighthouse_gallery", "x": 110.78, "y": -429.93, "z": 3810.0, "yaw": 0},
+  {"id": "lighthouse_log", "group": "lighthouse", "name": "dev.tp.lighthouse_log", "x": 108.68, "y": -435.54, "yaw": 50},
+  {"id": "lighthouse_night_beach", "group": "lighthouse", "name": "dev.tp.lighthouse_night_beach", "x": 122.0, "y": 40.0, "yaw": 268.8, "time": "22:00"},
+  {"id": "lighthouse_night_town", "group": "lighthouse", "name": "dev.tp.lighthouse_night_town", "x": 321.0, "y": 905.0, "yaw": 261.1, "time": "22:00"}
+ ]
+}

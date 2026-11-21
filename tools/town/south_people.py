@@ -35,6 +35,8 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import terrain as T         # noqa: E402  (the built ground: the same heights the things stand on)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import town_activities as TA     # noqa: E402  (its places and rows stay last)
+import town_night as TN           # noqa: E402  (its places and rows stay after ours, before town_activities')
+import town_pets as PETS          # noqa: E402  (its place and rows stay after ours, before town_night's)
 
 CONTENT = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content")
 FOLK = os.path.join(CONTENT, "PeopleData", "townsfolk.json")
@@ -277,8 +279,10 @@ def build():
     places = [p for p in pd["places"] if p["id"] not in PLACE_IDS]
     new = [shed(c), orchard(c), hide(c), view(c), walk(c), brook(c)]
     assert [p["id"] for p in new] == PLACE_IDS
-    # before town_activities.py's places and rows, which that script keeps last: either script run again leaves the other's
-    at = next((i for i, p in enumerate(places) if p["id"] in TA.PLACE_IDS), len(places))
+    # before town_night.py's and town_activities.py's places and rows (the order is south_people, town_night, town_activities,
+    # each keeping the later ones after its own): any of the three run again leaves the others' in place
+    at = next((i for i, p in enumerate(places) if p["id"] in TA.PLACE_IDS or p["id"] in TN.PLACE_IDS or p["id"] == PETS.FEED_PLACE),
+              len(places))
     pd["places"] = places[:at] + new + places[at:]
     out[PLACES] = dump(pd)
 
@@ -307,7 +311,7 @@ def build():
     # activities.json is written by hand, one activity a line: ours after the last row
     text = open(ACTIVITIES, encoding="utf-8").read()
     lines = [l for l in text.split("\n") if not any('"id": "%s"' % a in l for a in ACT_IDS)]
-    first_ta = next((i for i, l in enumerate(lines) if any('"id": "%s"' % a in l for a in TA.ACT_IDS)), None)
+    first_ta = next((i for i, l in enumerate(lines) if any('"id": "%s"' % a in l for a in TA.ACT_IDS + TN.ACT_IDS + PETS.ACT_IDS)), None)
     rows = ["    " + r + "," for r in ACTIVITIES_ROWS]
     if first_ta is not None:
         lines[first_ta:first_ta] = rows

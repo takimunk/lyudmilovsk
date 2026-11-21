@@ -1190,7 +1190,11 @@ struct AtonWatch
 			const int I = W.FindPlace(Id);
 			if (I < 0) continue;
 			Places.push_back(I);
-			Islands += Square >= 0 && W.Places[(size_t)I].Island != W.Places[(size_t)Square].Island ? 1 : 0;
+			if (Square >= 0 && W.Places[(size_t)I].Island != W.Places[(size_t)Square].Island)
+			{
+				Islands++;
+				std::printf("    cut off from the square: %s (island %d, the square's %d)\n", Id, W.Places[(size_t)I].Island, W.Places[(size_t)Square].Island);
+			}
 		}
 		Walk = W.FindPlace("S-ATON-WALK");
 		if (Walk >= 0)
@@ -1324,11 +1328,16 @@ static int Town()
 	// the town's new things to do (tools/town/town_activities.py, docs/town_life.md "The new activities")
 	int CinemaNow = 0, CinemaPeak = 0, CinemaOff = 0, BedStrangers = 0, PianoNow = 0, PianoTwo = 0, StonesDark = 0, StonesGale = 0, PaperLate = 0;
 	std::set<int> PostStops, CinemaGoers;
-	std::set<int> DogWalkers;      // who was out with the dog (tools/town/town_pets.py)
-	int DogOff = 0;                 // ... and person-minutes of it off its hours
 	// the Aton coast (tools/town/south_people.py, docs/south.md "People"): who does what there, nobody at night, the walkers
 	// keep to the trail (the round's spots in order are the trail's line)
 	AtonWatch Aton(W);
+	// the Mayak lighthouse's keeper (tools/town/lighthouse_keeper.py, docs/lighthouse.md): the lamp lit round sunset, the
+	// readings at 08, 14 and 20, the watch in the tower late
+	std::map<std::string, double> Keeper;
+	int KeeperLampOff = 0, KeeperObsOff = 0;
+	const bool bKeeper = std::any_of(W.People.begin(), W.People.end(), [](const FPerson& P) { return P.Key == "vetrov_gordey"; });
+	std::set<int> DogWalkers;      // who was out with the dog (tools/town/town_pets.py)
+	int DogOff = 0;                 // ... and person-minutes of it off its hours
 	for (double T = 0.0; T < 36.0 * 3600.0; T += Dt)
 	{
 		C.Seconds += Dt;
@@ -1432,6 +1441,17 @@ static int Town()
 			}
 			for (const FPerson& P : W.People)
 			{
+				if (P.Key == "vetrov_gordey" && P.Activity >= 0 && P.State == EState::Doing)
+				{
+					const std::string& A = W.Activities[(size_t)P.Activity].Id;
+					Keeper[A] += 1.0;
+					// (he may go up a little before the duty, when the walk is short)
+					KeeperLampOff += A == "lamp_light" && (W.Hour < W.Sunset - 1.f || W.Hour > W.Sunset + 0.75f) ? 1 : 0;
+					if (A.rfind("weather_obs_", 0) == 0)
+					{
+						KeeperObsOff += std::fabs(W.Hour - std::atof(A.c_str() + 12)) > 0.5f ? 1 : 0;
+					}
+				}
 				if (!P.bTown)
 				{
 					continue;
@@ -1572,11 +1592,6 @@ static int Town()
 		CHECK(Minutes["play_piano"] < 400 && PianoTwo == 0, "the piano in the hall is played now and then, by one at a time (%.0f person-minutes)", Minutes["play_piano"]);
 		CHECK(PostStops.size() >= 12, "the postman's round goes from door to door (%zu doors in 36 h, %.0f person-minutes)", PostStops.size(), Minutes["post_round"]);
 	}
-	if (W.FindActivity("walk_dog") >= 0)
-	{
-		CHECK(DogWalkers.size() >= 8 && Minutes["walk_dog"] > 150 && Minutes["walk_dog_late"] > 100 && DogOff == 0,
-			"the dogs' owners take them out morning and evening (%zu owners, %.0f + %.0f person-minutes, %d off the hours)", DogWalkers.size(), Minutes["walk_dog"], Minutes["walk_dog_late"], DogOff);
-	}
 	if (W.FindPlace("S-ATON-WALK") >= 0)
 	{
 		Aton.Report("Wednesday-Thursday");
@@ -1592,6 +1607,21 @@ static int Town()
 			Aton.Min["play_brook"], Aton.BrookSchool);
 		CHECK(Aton.Night == 0, "nobody on the Aton coast at night (%d person-minutes between 22:00 and 05:00)", Aton.Night);
 		CHECK(Aton.Min["tend_hives"] == 0 && Aton.Min["orchard_picnic"] == 0, "... no bees or picnics on a cool weekday (%.0f, %.0f)", Aton.Min["tend_hives"], Aton.Min["orchard_picnic"]);
+	}
+	if (bKeeper)
+	{
+		std::printf("  the keeper: lamp_light %.0f, lamp_watch %.0f, lamp_out %.0f, lens_polish %.0f, obs %.0f/%.0f/%.0f min\n", Keeper["lamp_light"],
+			Keeper["lamp_watch"], Keeper["lamp_out"], Keeper["lens_polish"], Keeper["weather_obs_8"], Keeper["weather_obs_14"], Keeper["weather_obs_20"]);
+		CHECK(Keeper["lamp_light"] > 20 && KeeperLampOff == 0, "the lighthouse keeper lights the lamp round sunset (%.0f min, %d away from it)",
+			Keeper["lamp_light"], KeeperLampOff);
+		CHECK(Keeper["weather_obs_14"] + Keeper["weather_obs_20"] > 0 && KeeperObsOff == 0, "... reads the weather screen at its hours (%.0f min, %d off the hour)",
+			Keeper["weather_obs_8"] + Keeper["weather_obs_14"] + Keeper["weather_obs_20"], KeeperObsOff);
+		CHECK(Keeper["lamp_watch"] > 20, "... and keeps the evening watch in the tower (%.0f min)", Keeper["lamp_watch"]);
+	}
+	if (W.FindActivity("walk_dog") >= 0)
+	{
+		CHECK(DogWalkers.size() >= 8 && Minutes["walk_dog"] > 150 && Minutes["walk_dog_late"] > 100 && DogOff == 0,
+			"the dogs' owners take them out morning and evening (%zu owners, %.0f + %.0f person-minutes, %d off the hours)", DogWalkers.size(), Minutes["walk_dog"], Minutes["walk_dog_late"], DogOff);
 	}
 	CHECK(Minutes["watch_sunrise"] > 0, "early risers watch the sunrise (%.0f person-minutes)", Minutes["watch_sunrise"]);
 	CHECK(Minutes["night_walk"] > 0, "somebody walks at night (%.0f person-minutes)", Minutes["night_walk"]);

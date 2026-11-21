@@ -143,9 +143,18 @@ Not done: the pianist is silent (the instruments' synth has no way to be played 
 walk along with the hero, and the cinema's house does not follow the programme (people sit through the two fixed
 sessions whatever is on).
 
+## The Aton coast
+
+Backlog item 37: the coast between the club and the town (docs/south.md "People") has its people too, added by
+`tools/town/south_people.py` in the same manner (idempotent, `--check`, run by `town_life.py` after `town_activities.py`;
+its places and rows go just before town_activities' own so that either script can run again). Three old fishermen at the
+boat shed, a beekeeper at the old orchard, eight birdwatchers at the hide at sunset, walkers up the shoulder trail and
+back (a round of spots along the trail), the belvedere's benches, children at the brook. `tools/peoplesim/run.sh town`
+checks it (`AtonWatch`).
+
 ## Pets
 
-Item 46 (`docs/animals.md` "With people"): `tools/town/town_pets.py`, the last add-on `town_life.py` runs, gives ten
+Item 46 (`docs/animals.md` "With people"): `tools/town/town_pets.py`, an add-on `town_life.py` runs, gives ten
 residents a dog and two duties a day (`walk_dog`, `walk_dog_late`), Nina Korneeva the yard cats' two rounds
 (`feed_cats`, `feed_cats_late` at `S-CAT-FEEDERS`), fourteen flats a cat, and writes `Content/AnimalsData/pets.json`.
 Its rows go before `town_night.py`'s in `activities.json` and `town_places.json`. `"on_time": 1` on an activity ends
@@ -163,15 +172,6 @@ Item 29 (`docs/city_night.md`): `tools/town/town_night.py`, an add-on like `town
 
 A round in an indoor place now goes from spot to spot by the place's own ways (`Route` within the place) instead of the
 street grid. Who has a job is kept in townsfolk.json (`night_job`), so a rerun keeps the same people.
-
-## The Aton coast
-
-Backlog item 37: the coast between the club and the town (docs/south.md "People") has its people too, added by
-`tools/town/south_people.py` in the same manner (idempotent, `--check`, run by `town_life.py` after `town_activities.py`;
-its places and rows go just before town_activities' own so that either script can run again). Three old fishermen at the
-boat shed, a beekeeper at the old orchard, eight birdwatchers at the hide at sunset, walkers up the shoulder trail and
-back (a round of spots along the trail), the belvedere's benches, children at the brook. `tools/peoplesim/run.sh town`
-checks it (`AtonWatch`).
 
 ## How it works
 
