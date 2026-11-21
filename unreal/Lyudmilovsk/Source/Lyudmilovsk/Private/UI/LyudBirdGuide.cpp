@@ -235,7 +235,7 @@ private:
 
 	void RebuildLegend()
 	{
-		struct FRow { FName Species; int32 N = 0; int32 Flying = 0; FLinearColor Color; };
+		struct FRow { FName Species; int32 N = 0; int32 Flying = 0; FLinearColor Color; FName Voice; };
 		TArray<FRow> Rows;
 		const TArray<FLyudGuideBird> Birds = ULyudBirdGuide::BirdsNearHero(Screen.Get());
 		for (const FLyudGuideBird& B : Birds)
@@ -251,11 +251,19 @@ private:
 			Row->Flying += B.bFlying ? 1 : 0;
 		}
 		Rows.Sort([](const FRow& A, const FRow& B) { return A.N != B.N ? A.N > B.N : A.Species.LexicalLess(B.Species); });
+		// what each species here last said, and what it means (docs/bird_voices.md)
+		if (const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(Screen.Get()))
+		{
+			for (FRow& Row : Rows)
+			{
+				Life->LastVoiceOf(Row.Species, Row.Voice);
+			}
+		}
 		// the same rows as last time (the usual case): keep the widgets, don't rebuild them every half second
 		FString Shown = LyudText::Language();
 		for (const FRow& Row : Rows)
 		{
-			Shown += FString::Printf(TEXT("|%s %d %d %s"), *Row.Species.ToString(), Row.N, Row.Flying, *Row.Color.ToString());
+			Shown += FString::Printf(TEXT("|%s %d %d %s %s"), *Row.Species.ToString(), Row.N, Row.Flying, *Row.Color.ToString(), *Row.Voice.ToString());
 		}
 		if (bLegendBuilt && Shown == LegendShown)
 		{
@@ -281,6 +289,7 @@ private:
 			// a fixed wrap width: the rows are rebuilt twice a second, and an auto-wrapping text sizes itself a frame late
 			constexpr float NameWidth = 200.f;
 			const FText Flying = Row.Flying > 0 ? LyudText::Get(TEXT("ui.guide.n_flying"), { FStringFormatArg(Row.Flying) }) : FText::GetEmpty();
+			const FText Voice = Row.Voice.IsNone() ? FText::GetEmpty() : LyudText::Get(*FString::Printf(TEXT("ui.guide.voice.%s"), *Row.Voice.ToString()));
 			Legend->AddSlot().AutoHeight().Padding(0, 0, 0, 8)
 			[
 				SNew(SHorizontalBox)
@@ -293,6 +302,11 @@ private:
 					SNew(SVerticalBox)
 					+ SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Font(LyudUI::Font(16, "Bold")).ColorAndOpacity(GuideInk).WrapTextAt(NameWidth).Text(Name)]
 					+ SVerticalBox::Slot().AutoHeight()[SNew(STextBlock).Font(LyudUI::Font(12, "Italic")).ColorAndOpacity(GuideInkSoft).WrapTextAt(NameWidth).Text(Latin)]
+					+ SVerticalBox::Slot().AutoHeight()
+					[
+						SNew(STextBlock).Font(LyudUI::Font(12)).ColorAndOpacity(GuideInk).WrapTextAt(NameWidth).Text(Voice)
+						.Visibility(Row.Voice.IsNone() ? EVisibility::Collapsed : EVisibility::HitTestInvisible)
+					]
 				]
 				+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8, 0, 14, 0)
 				[
