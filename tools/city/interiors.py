@@ -72,7 +72,8 @@ QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "ta
 # (photo <map place | maru | resident key>: a sharp developed frame taken there, or of the dog, or of that resident)
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
-              "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
+              "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open",
+              "window")
 # screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics, the
 # photo studio's counter service, the darkroom where the hero develops his own film, the photo club's monthly contest (its
 # table: hand a print in, hear the result) and the wall of its winners (Private/Photo/LyudPhoto.cpp, docs/photo.md)
@@ -856,6 +857,13 @@ def build_acts(acts_src, shops, strings, items):
         lift = {k: a[k] for k in ("to", "floors", "oneway") if k in a}
         if lift:
             ACT_LIFTS[aid] = lift
+        if "window" in a:
+            # a window that opens (docs/city_interiors.md "Windows that open"): how wide, the open air let into the room
+            w = a["window"]
+            if isinstance(w, bool) or not isinstance(w, (int, float)) or not 0.1 <= w <= 1.0:
+                err("act %s: window must be a number 0.1..1 (how wide it opens: a vent 0.3, a casement 0.5, a balcony door 0.8)" % aid)
+            else:
+                act["window"] = round(float(w), 2)
         if "sleep" in a:
             if not isinstance(a["sleep"], bool):
                 err("act %s: sleep must be true or false" % aid)

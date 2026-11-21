@@ -194,6 +194,12 @@ public:
 	};
 	/** Every collection for the diary: the paid ones first, then the ones begun (the fullest first), then the rest. */
 	void CollectionViews(TArray<FCollectionView>& Out) const;
+	/** Is the hero on that stay today (docs/city_interiors.md "Stays": the sanatorium's voucher, the rental's beach set)? */
+	bool IsOnStay(const FString& Id) const;
+	/** Puts him on a stay for so many days from today (added to the days left; 0 ends it): the console's and developer mode's hire. */
+	void StartStay(const FString& Id, int32 Days);
+	/** The lines' weather word "clear" now: few clouds, dry, no fog. */
+	bool IsClearNow() const;
 	/** Gives what every newly complete collection pays, once (the keepsake's toast, the diary's note, the item or roubles). */
 	void PayCollections();
 
@@ -263,6 +269,8 @@ public:
 	bool GoToThing(const FString& ThingId);
 	/** Developer mode: uses the nearest lift door (its chooser, or at once). */
 	bool UseNearestLift();
+	/** Developer mode: opens or shuts the nearest window that opens (docs/city_interiors.md "Windows that open"). */
+	bool ToggleNearestWindow();
 	bool IsUsingLift() const { return LiftDest >= 0 || LiftThing >= 0; }
 	/** Has one of our modes the keys (a page, a show, a game, a text, the talk's chooser, a lift, lying, the sleep chooser)? The
 	 *  NPC talk should step aside meanwhile (docs/city_interiors.md "Open points for other threads"); seated alone is not one. */
@@ -376,6 +384,10 @@ private:
 	FText LineText(const FString& Key) const;
 	/** A thing with "switch": the lamps of its room on or off for the hero's visit (all back when he leaves the plot). */
 	void FlipSwitch(int32 Thing);
+	/** A window that opens (its act's "window"): open or shut it, the open air in the room follows (ApplyOpenAir). */
+	void ToggleWindow(int32 Thing);
+	/** The soundscape hears the widest open window of this visit (ULyudSoundscapeSubsystem::SetOpenAir). */
+	void ApplyOpenAir();
 	/** A short word on the prompt line for a moment (the switch's "lights on"), like a refusal but not one. */
 	void Note(const FText& What);
 

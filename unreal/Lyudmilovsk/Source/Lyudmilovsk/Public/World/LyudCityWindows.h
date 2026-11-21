@@ -13,6 +13,8 @@ class UMaterialInstanceDynamic;
  * the shop units in W1 have their windows listed in Content/City/city_plan.json (tools/city_plan.py); the glass itself
  * is drawn dark by the wall meshes (tools/city_mesh.py). A lit window is an emissive pane just in front of the glass,
  * one instance in one of a few instanced meshes (warm lamp, cool lamp, TV flicker colour, shop light).
+ * The promenade units' shop glass is see-through and the real room stands behind it: within
+ * lyud.CityWindows.RoomDistance of the viewer the pane steps aside and the room with its own lamp shows.
  *
  * Who decides which windows burn: whoever calls ULyudCityWindowsSubsystem::SetWindowLit / SetFlatLit (the town's
  * life: a flat lights up when its people are home and awake) decides for the windows it sets; every other window keeps
@@ -64,6 +66,7 @@ private:
 		bool bLamp = false;        // a street lamp's head (city_plan.json "lamps"): lit in the dark, not the life's
 		bool bUpper = false;
 		bool bLit = false;
+		bool bNear = false;        // a shop window the viewer stands near: its pane is put away, the room shows (the glass is see-through)
 		int8 Tint = 0;            // which instanced mesh when lit
 		int8 External = -1;       // -1 = schedule, 0 / 1 = set from outside
 		bool bChanged = false;    // lit state changed since the instances were last updated
