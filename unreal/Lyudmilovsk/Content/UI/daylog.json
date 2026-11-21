@@ -152,6 +152,21 @@
   },
   {
    "event": "reach",
+   "target": "mayak_*",
+   "topic": "lighthouse"
+  },
+  {
+   "event": "reach",
+   "target": "brook_*",
+   "topic": "brook"
+  },
+  {
+   "event": "reach",
+   "target": "cable_*",
+   "topic": "cablecar"
+  },
+  {
+   "event": "reach",
    "target": "",
    "topic": "place"
   },
@@ -159,6 +174,247 @@
    "event": "eat",
    "target": "",
    "topic": "eat"
+  },
+  {
+   "event": "animal_friend",
+   "target": "Maru",
+   "topic": "maru"
+  },
+  {
+   "event": "animal_named",
+   "target": "Maru",
+   "topic": "maru"
+  },
+  {
+   "event": "animal_walk",
+   "target": "Maru",
+   "topic": "maru"
+  },
+  {
+   "event": "animal_home",
+   "target": "Maru",
+   "topic": "maru"
+  },
+  {
+   "event": "animal_walk_reach",
+   "target": "",
+   "topic": "animal_friend"
+  },
+  {
+   "event": "animal_lap",
+   "target": "Maru",
+   "topic": "maru"
+  },
+  {
+   "event": "animal_stroked",
+   "target": "Maru",
+   "topic": "maru"
+  },
+  {
+   "event": "animal_fed",
+   "target": "Maru",
+   "topic": "maru"
+  },
+  {
+   "event": "animal_sniffed",
+   "target": "Maru",
+   "topic": "maru"
+  },
+  {
+   "event": "animal_friend",
+   "target": "",
+   "topic": "animal_friend"
+  },
+  {
+   "event": "animal_named",
+   "target": "",
+   "topic": "animal_friend"
+  },
+  {
+   "event": "animal_home",
+   "target": "",
+   "topic": "animal_friend"
+  },
+  {
+   "event": "animal_walk",
+   "target": "",
+   "topic": "animal_friend"
+  },
+  {
+   "event": "animal_lap",
+   "target": "Cat",
+   "topic": "cat"
+  },
+  {
+   "event": "animal_stroked",
+   "target": "Cat",
+   "topic": "cat"
+  },
+  {
+   "event": "animal_fed",
+   "target": "Cat",
+   "topic": "cat"
+  },
+  {
+   "event": "animal_sniffed",
+   "target": "Cat",
+   "topic": "cat"
+  },
+  {
+   "event": "animal_lap",
+   "target": "Dog",
+   "topic": "dog"
+  },
+  {
+   "event": "animal_stroked",
+   "target": "Dog",
+   "topic": "dog"
+  },
+  {
+   "event": "animal_fed",
+   "target": "Dog",
+   "topic": "dog"
+  },
+  {
+   "event": "animal_sniffed",
+   "target": "Dog",
+   "topic": "dog"
+  },
+  {
+   "event": "procedure",
+   "target": "",
+   "topic": "cure"
+  },
+  {
+   "event": "observe",
+   "target": "jupiter_*",
+   "topic": "jupiter"
+  },
+  {
+   "event": "observe",
+   "target": "",
+   "topic": "sky"
+  },
+  {
+   "event": "bird_habit",
+   "target": "",
+   "topic": "bird_habit"
+  },
+  {
+   "event": "cup_won",
+   "target": "",
+   "topic": "cup"
+  },
+  {
+   "event": "beat",
+   "target": "",
+   "topic": "win"
+  },
+  {
+   "event": "quote",
+   "target": "",
+   "topic": "quote"
+  },
+  {
+   "event": "book_club",
+   "target": "",
+   "topic": "book_club"
+  },
+  {
+   "event": "round_done",
+   "target": "",
+   "topic": "rounds"
+  },
+  {
+   "event": "winter",
+   "target": "snowman*",
+   "topic": "snow_play"
+  },
+  {
+   "event": "winter",
+   "target": "snowball*",
+   "topic": "snow_play"
+  },
+  {
+   "event": "winter",
+   "target": "skate",
+   "topic": "skate"
+  },
+  {
+   "event": "winter",
+   "target": "long_glide",
+   "topic": "skate"
+  },
+  {
+   "event": "winter",
+   "target": "fall",
+   "topic": "skate"
+  },
+  {
+   "event": "winter",
+   "target": "banya*",
+   "topic": "banya"
+  },
+  {
+   "event": "winter",
+   "target": "venik",
+   "topic": "banya"
+  },
+  {
+   "event": "winter",
+   "target": "swim",
+   "topic": "walrus"
+  },
+  {
+   "event": "winter",
+   "target": "new_year_swim",
+   "topic": "walrus"
+  },
+  {
+   "event": "winter",
+   "target": "walrus_club",
+   "topic": "walrus"
+  },
+  {
+   "event": "fined",
+   "target": "",
+   "topic": "fined"
+  },
+  {
+   "event": "stamp_set",
+   "target": "",
+   "topic": "collection"
+  },
+  {
+   "event": "collection",
+   "target": "",
+   "topic": "collection"
+  },
+  {
+   "event": "do",
+   "target": "keeper_*",
+   "topic": "lighthouse"
+  },
+  {
+   "event": "do",
+   "target": "~cablecar",
+   "topic": "cablecar"
+  },
+  {
+   "event": "do",
+   "target": "cap_lift",
+   "topic": "cablecar"
+  },
+  {
+   "event": "do",
+   "target": "~_cat",
+   "topic": "cat",
+   "except": [
+    "mk_catch",
+    "pu_fish_catch",
+    "look_catalogue",
+    "do_catalogue"
+   ]
   },
   {
    "event": "do",
@@ -603,6 +859,226 @@
   {
    "id": "computer",
    "rank": 20,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "maru",
+   "rank": 82,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 4
+  },
+  {
+   "id": "animal_friend",
+   "rank": 72,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "cat",
+   "rank": 48,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "dog",
+   "rank": 48,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "lighthouse",
+   "rank": 62,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 4
+  },
+  {
+   "id": "brook",
+   "rank": 44,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "cablecar",
+   "rank": 36,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "cure",
+   "rank": 52,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "jupiter",
+   "rank": 78,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "bird_habit",
+   "rank": 66,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "cup",
+   "rank": 76,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "quote",
+   "rank": 40,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "book_club",
+   "rank": 54,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "rounds",
+   "rank": 58,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "snow_play",
+   "rank": 56,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "skate",
+   "rank": 56,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "banya",
+   "rank": 55,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "walrus",
+   "rank": 70,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "fined",
+   "rank": 46,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "collection",
+   "rank": 60,
    "slot": "",
    "doodle": "",
    "once": false,
