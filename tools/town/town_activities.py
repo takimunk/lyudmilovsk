@@ -266,16 +266,24 @@ def build():
     garden = load(GARDEN)
     pd = load(PLACES)
     places = [p for p in pd["places"] if p["id"] not in PLACE_IDS]
+    was = [p["id"] for p in pd["places"]]
     by_id = {p["id"]: p for p in places}
     fd = load(FOLK)
     people = fd["people"]
     keys = {p["key"] for p in people}
     new = [cinema(plan, things, by_id)] + sanatorium(plan, things, by_id) + [hall(plan, things, by_id), allotment(garden, keys), post_round(places)]
     assert [p["id"] for p in new] == PLACE_IDS
-    pd["places"] = places + new
+    # each stays where it stands in the file (other add-ons put their places after ours); a new one goes to the end
+    fresh = {p["id"]: p for p in new}
+    if all(i in was for i in PLACE_IDS):
+        pd["places"] = [fresh.get(p["id"], p) for p in pd["places"]]
+    else:
+        pd["places"] = places + new
     out[PLACES] = dump(pd)
 
     # the people: the beds' keepers, those who play, the postman
+    # (the sanatorium's guests are sanatorium_guests.py's own: their likes are left as it wrote them)
+    people = [p for p in people if p.get("occupation") != "guest"]
     for p in people:
         for a in OWN_LIKES:
             (p.get("likes") or {}).pop(a, None)
@@ -304,14 +312,22 @@ def build():
 
     # activities.json is written by hand, one activity a line: ours after the last row
     text = open(ACTIVITIES, encoding="utf-8").read()
-    lines = [l for l in text.split("\n") if not any('"id": "%s"' % a in l for a in ACT_IDS)]
-    end = max(i for i, l in enumerate(lines) if l.strip() == "]")
-    last = max(i for i in range(end) if lines[i].strip())
-    if not lines[last].rstrip().endswith(","):
-        lines[last] = lines[last].rstrip() + ","
-    rows = ["    " + r + "," for r in ACTIVITIES_ROWS]
-    rows[-1] = rows[-1][:-1]
-    lines[last + 1:end] = rows
+    lines = text.split("\n")
+    have = {a: next((i for i, l in enumerate(lines) if '"id": "%s"' % a in l), -1) for a in ACT_IDS}
+    if all(i >= 0 for i in have.values()):
+        # each row stays where it stands in the file (other add-ons put their rows after ours), with its comma as it is
+        for a, r in zip(ACT_IDS, ACTIVITIES_ROWS):
+            comma = "," if lines[have[a]].rstrip().endswith(",") else ""
+            lines[have[a]] = "    " + r + comma
+    else:
+        lines = [l for l in lines if not any('"id": "%s"' % a in l for a in ACT_IDS)]
+        end = max(i for i, l in enumerate(lines) if l.strip() == "]")
+        last = max(i for i in range(end) if lines[i].strip())
+        if not lines[last].rstrip().endswith(","):
+            lines[last] = lines[last].rstrip() + ","
+        rows = ["    " + r + "," for r in ACTIVITIES_ROWS]
+        rows[-1] = rows[-1][:-1]
+        lines[last + 1:end] = rows
     out[ACTIVITIES] = "\n".join(lines)
     json.loads(out[ACTIVITIES])
     return out, postman, new

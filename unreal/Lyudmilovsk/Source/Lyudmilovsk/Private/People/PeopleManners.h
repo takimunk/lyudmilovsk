@@ -84,7 +84,7 @@ namespace LyudPeople
 	enum class EProp : uint8_t
 	{
 		None, Phone, Cigarette, Camera, Umbrella, Rod, Brush, Binoculars, Newspaper, Book, Knitting, IceCream, Cup, Bag,
-		Spade, WateringCan, Mop, Torch, Num
+		Spade, WateringCan, Mop, Torch, Suitcase, Num
 	};
 	const char* PropName(EProp P);
 	EProp PropFromName(const std::string& S);       // Num if unknown
