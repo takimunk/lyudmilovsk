@@ -34,6 +34,8 @@
 #include "Plants/ProceduralForest.h"
 #include "Plants/ProceduralPlant.h"
 #include "Sky/Ephemeris.h"
+#include "Dev/LyudDev.h"
+#include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
@@ -754,6 +756,18 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 		S.Wind = LyudBirds::V3((float)W.X, (float)W.Y, 0.f);
 		S.Gustiness = Wind->GetGustiness();
 	}
+	// the rain and the air's temperature (birds sing little in rain and in the midday heat); it changes slowly
+	WeatherTimer -= DeltaTime;
+	if (WeatherTimer <= 0.f)
+	{
+		WeatherTimer = 5.f;
+		if (const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(this))
+		{
+			const FLyudWeatherState State = Weather->GetState();
+			S.Rain = State.Rain;
+			S.TempC = State.TempC;
+		}
+	}
 	MigrationTimer -= DeltaTime;
 	if (MigrationTimer <= 0.f)
 	{
@@ -806,7 +820,7 @@ void UBirdLifeSubsystem::DispatchEvents()
 		case EEvent::Watch: OnBirdWatch.Broadcast(E.Bird); break;
 		case EEvent::Call:
 		case EEvent::Song:
-			PlayCall(E.Bird);
+			PlayCall(E.Bird, (uint8)E.Voice);
 			if (ABirdActor* Body = Renderer ? Cast<ABirdActor>(Renderer->BodyOf(E.Bird)) : nullptr)
 			{
 				if (!IsAirborne(S.Birds[E.Bird].Act))
@@ -815,6 +829,14 @@ void UBirdLifeSubsystem::DispatchEvents()
 				}
 			}
 			OnBirdCall.Broadcast(E.Bird);
+			{
+				const FName VoiceId(LyudBirds::VoiceName(E.Voice));
+				if (const FBirdSpecies* Sp = Row(S.Birds[E.Bird].Species))
+				{
+					LastVoice.Add(Sp->Id, TPair<FName, double>(VoiceId, GetWorld()->GetTimeSeconds()));
+				}
+				OnBirdVoice.Broadcast(E.Bird, VoiceId);
+			}
 			break;
 		case EEvent::Approach:
 			// not before its species is loaded in the background (Draw makes it then): made now it would load on the spot
@@ -846,7 +868,52 @@ void UBirdLifeSubsystem::DispatchEvents()
 }
 
 /** The species' call at the bird, when the species thread has sounds for it (not too many at once). */
-void UBirdLifeSubsystem::PlayCall(int32 Id)
+bool UBirdLifeSubsystem::LastVoiceOf(FName Species, FName& OutVoice, float MaxAge) const
+{
+	const TPair<FName, double>* Found = LastVoice.Find(Species);
+	if (!Found || !GetWorld() || GetWorld()->GetTimeSeconds() - Found->Value > MaxAge)
+	{
+		return false;
+	}
+	OutVoice = Found->Key;
+	return true;
+}
+
+bool UBirdLifeSubsystem::DevAlarm()
+{
+	if (!Sim)
+	{
+		return false;
+	}
+	FWorld& S = *Sim;
+	int32 Best = -1;
+	float BestDist = 60.f;
+	for (const FBird& B : S.Birds)
+	{
+		const float Dist = (B.Pos - S.Camera).Len();
+		if (!B.bGone && B.Tier <= 1 && !IsAirborne(B.Act) && B.Act != EAct::Sleep && LyudBirds::VoiceTraits(B.Species).bScolds && Dist < BestDist)
+		{
+			Best = B.Id;
+			BestDist = Dist;
+		}
+	}
+	if (Best < 0)
+	{
+		return false;
+	}
+	FBird& B = S.Birds[Best];
+	S.RaiseAlarm(B, LyudBirds::V3(B.Pos.X, B.Pos.Y, S.GroundZ(B.Pos.X, B.Pos.Y)));
+	B.AlarmT = 12.f;
+	UE_LOG(LogTemp, Display, TEXT("BIRD voices: alarm raised by bird %d, %.0f m from the camera"), Best, BestDist);
+	return true;
+}
+
+static FAutoConsoleCommandWithWorldAndArgs GBirdAlarmCmd(TEXT("lyud.Birds.Alarm"), TEXT("The nearest scolding bird gives the alarm; its neighbours take it up."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* W) { if (UBirdLifeSubsystem* L = UBirdLifeSubsystem::Get(W)) { L->DevAlarm(); } }));
+static LyudDev::FAutoAction GDevBirdAlarm(TEXT("birdvoices.alarm"), TEXT("birdvoices"), TEXT("dev.action.birdvoices.alarm"),
+	[](UWorld* W) { if (UBirdLifeSubsystem* L = UBirdLifeSubsystem::Get(W)) { L->DevAlarm(); } });
+
+void UBirdLifeSubsystem::PlayCall(int32 Id, uint8 Voice)
 {
 	const FWorld& S = *Sim;
 	const FBird& B = S.Birds[Id];
@@ -860,7 +927,8 @@ void UBirdLifeSubsystem::PlayCall(int32 Id)
 		SoundSecond = Now;
 		SoundsThisSecond = 0;
 	}
-	if (SoundsThisSecond >= 4)
+	// (the model keeps the voice budget, FWorld::MaxVoices; this is only a guard against a burst)
+	if (SoundsThisSecond >= 8)
 	{
 		return;
 	}
@@ -906,9 +974,28 @@ void UBirdLifeSubsystem::PlayCall(int32 Id)
 		A.LPFRadiusMin = 1000.f;
 		A.LPFRadiusMax = 7000.f;
 	}
-	USoundBase* Sound = (*Found)[FMath::RandRange(0, Found->Num() - 1)];
-	const float Loud = SpeciesTable()[B.Species].Length > 0.3f ? 1.f : 0.75f;
-	UGameplayStatics::PlaySoundAtLocation(this, Sound, ToUE(B.Pos), Loud, FMath::FRandRange(0.94f, 1.06f), 0.f, Attenuation);
+	// the voice's own call when the species has one for it (species.json "voices"), else any of its calls
+	const LyudBirds::EVoice What = (LyudBirds::EVoice)FMath::Min<uint8>(Voice, (uint8)LyudBirds::EVoice::Num - 1);
+	USoundBase* Sound = nullptr;
+	if (const FName* Call = R->Voices.Find(FName(LyudBirds::VoiceName(What))))
+	{
+		Sound = CallSound(R->Id, *Call);
+	}
+	if (!Sound)
+	{
+		Sound = (*Found)[FMath::RandRange(0, Found->Num() - 1)];
+	}
+	float Loud = SpeciesTable()[B.Species].Length > 0.3f ? 1.f : 0.75f;
+	float PitchLo = 0.94f, PitchHi = 1.06f;
+	switch (What)
+	{
+	case LyudBirds::EVoice::Alarm: Loud *= 1.15f; PitchLo = 1.02f; PitchHi = 1.12f; break;    // sharper, more urgent
+	case LyudBirds::EVoice::Beg: Loud *= 0.6f; PitchLo = 1.25f; PitchHi = 1.4f; break;        // thin young voices
+	case LyudBirds::EVoice::Chatter: Loud *= 0.7f; PitchLo = 0.9f; PitchHi = 1.15f; break;    // a jumble
+	case LyudBirds::EVoice::Contact: Loud *= 0.85f; break;
+	default: break;
+	}
+	UGameplayStatics::PlaySoundAtLocation(this, Sound, ToUE(B.Pos), Loud, FMath::FRandRange(PitchLo, PitchHi), 0.f, Attenuation);
 	SoundsThisSecond++;
 	CallsPlayed++;
 }

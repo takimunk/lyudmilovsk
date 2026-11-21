@@ -81,6 +81,18 @@ namespace
 			{
 				S.Calls.Add(FName(C->AsString()));
 			}
+			const TSharedPtr<FJsonObject>* VoiceMap;
+			if (O->TryGetObjectField(TEXT("voices"), VoiceMap))
+			{
+				for (const TCHAR* Voice : { TEXT("contact"), TEXT("song"), TEXT("alarm"), TEXT("beg"), TEXT("chatter"), TEXT("long_call") })
+				{
+					FString Call;
+					if ((*VoiceMap)->TryGetStringField(Voice, Call))
+					{
+						S.Voices.Add(FName(Voice), FName(*Call));
+					}
+				}
+			}
 			const TArray<TSharedPtr<FJsonValue>>* Diet;
 			if (O->TryGetArrayField(TEXT("diet"), Diet))
 			{

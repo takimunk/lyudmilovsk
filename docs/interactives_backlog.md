@@ -644,7 +644,7 @@ front of a wall, no per-frame cost when far), the book page shot on the Mac, ben
 
 ## 45. Bird voices that mean something
 
-`[ ]` **Cloud-only (the model; new recordings or synth renders go through the Mac). Brief (Opus 5.5):** Bird calls come
+`[~] bird flight thread 2026-11-21 (branch bird-voices, docs/bird_voices.md; the model, the guide's line and the dev action are done, awaits a Mac build; new synth calls not done)` **Cloud-only (the model; new recordings or synth renders go through the Mac). Brief (Opus 5.5):** Bird calls come
 from `tools/birdsim/bird_calls.py` and play by species. Make them follow what the bird is doing: songs only from
 singing perches in the breeding months and the dawn chorus (species by species in their real order from an hour before
 sunrise: robin, blackbird, song thrush, then tits and finches), quiet in midday heat and in rain; contact calls in
