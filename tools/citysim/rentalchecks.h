@@ -50,12 +50,28 @@ inline void RentalChecks(const std::string& Path)
 	M2.Load(Text, Error);
 	M2.LoadState(Saved);
 	CHECK(Saved.count("s:beach_set") && M2.OnStay("beach_set", 23) && !M2.OnStay("beach_set", 24), "the hire is in the save");
+	// the boat for the day: the oars on the rental's back wall (the mooring's ALyudRowBoat asks the stay boat_day)
+	const int Oars = M.FindThing("W1-U03/rental_oars");
+	const FStayDef* BoatDef = M.FindStayDef("boat_day");
+	CHECK(Oars >= 0 && BoatDef && BoatDef->CurfewAct < 0, "the rental has oars to take and the stay boat_day");
+	if (Oars >= 0)
+	{
+		CHECK(M.Check(Oars, Day(30, 11.f), Poor) == EVerdict::NoMoney && !M.OnStay("boat_day", 30), "ten roubles do not hire the boat");
+		const FOutcome Boat = M.Run(Oars, Day(30, 11.f), Ask);
+		CHECK(Boat.Verdict == EVerdict::Ok && !Boat.bClosed && Boat.Price == 25 && Boat.Line == "city.rental.boat.1" && M.OnStay("boat_day", 30)
+			&& !M.OnStay("boat_day", 31) && !M.OnStay("beach_set", 30),
+			"the oars hire the boat for 25 roubles, for that day only, and it is not the beach set (%s)", Boat.Line.c_str());
+		CHECK(M.Check(Oars, Day(30, 14.f), Ask) == EVerdict::DailyDone, "one boat a day");
+		const FOutcome Set = M.Run(Boards[0], Day(30, 15.f), Ask);
+		CHECK(Set.Verdict == EVerdict::Ok && M.OnStay("beach_set", 30) && M.OnStay("boat_day", 30), "the boat and the beach set go together on one day");
+	}
 	const std::set<std::string> Ru = RewardTest::KeysOf("unreal/Lyudmilovsk/Content/Localization/city/strings_ru.json");
 	const std::set<std::string> En = RewardTest::KeysOf("unreal/Lyudmilovsk/Content/Localization/city/strings_en.json");
 	const std::set<std::string> Ja = RewardTest::KeysOf("unreal/Lyudmilovsk/Content/Localization/city/strings_ja.json");
 	int Missing = 0;
 	for (const char* K : { "city.rental.hire.prompt", "city.rental.hire.1", "city.rental.hire.2", "city.rental.set.prompt", "city.rental.sit.prompt",
-		"city.rental.move.prompt", "city.rental.taken_back", "city.rental.sunbath.toast", "city.rental.sunbath.diary", "dev.action.interiors.beach_set" })
+		"city.rental.move.prompt", "city.rental.taken_back", "city.rental.sunbath.toast", "city.rental.sunbath.diary", "dev.action.interiors.beach_set",
+		"city.rental.boat.prompt", "city.rental.boat.1", "city.rental.boat.2" })
 	{
 		Missing += Ru.count(K) && En.count(K) && Ja.count(K) ? 0 : 1;
 	}

@@ -222,6 +222,10 @@ def write_glb(out, meshes, tex_dir):
             # world materials stay as they were (white factor)
             k = [min(1.0, c / 0.6) for c in rgb] if name.startswith("City_") else [1, 1, 1]
             m["pbrMetallicRoughness"]["baseColorFactor"] = k + [1]
+        alpha = city_mesh.ALPHA.get(name)
+        if alpha is not None:                       # glass one sees through (the promenade units' shop windows)
+            m["pbrMetallicRoughness"]["baseColorFactor"][3] = alpha
+            m["alphaMode"] = "BLEND"
         gl["materials"].append(m)
         mat_ids[name] = len(gl["materials"]) - 1
         return mat_ids[name]
