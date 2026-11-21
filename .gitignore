@@ -88,3 +88,5 @@ renders/city/interior/
 unreal/Lyudmilovsk/Content/Books/
 # the Rassvet's films: fetched by tools/films/fetch_films.py (public domain, from Wikimedia Commons), never in git or LFS
 unreal/Lyudmilovsk/Content/Films/
+blender/props_hi3d/raw/
+__pycache__/

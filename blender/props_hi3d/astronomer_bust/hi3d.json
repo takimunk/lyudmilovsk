@@ -1,0 +1,51 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "6b0d56423d4d43a49ec1ba98c5ef8b2a",
+  "points": 45.0,
+  "arguments": {
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private",
+   "file_tokens": "(uploaded views, see inputs)"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/props_hi3d/raw/astronomer_bust/views/front.png",
+    "sha256": "cce3251d4eb297d491a20832f75fb12aabb649e25a6ba3576258b0747f5e5f36"
+   },
+   {
+    "view": "back",
+    "file": "blender/props_hi3d/raw/astronomer_bust/views/back.png",
+    "sha256": "6ed10bdffb6f849342a6c7cd3d3f8c0e017100d3c6eca6ea4bc04836da49978a"
+   },
+   {
+    "view": "left",
+    "file": "blender/props_hi3d/raw/astronomer_bust/views/left.png",
+    "sha256": "2900d97387124cf2b2d75d9205692bb23eb6f55a6bf576a8c62e8c5d4e52c7f6"
+   },
+   {
+    "view": "right",
+    "file": "blender/props_hi3d/raw/astronomer_bust/views/right.png",
+    "sha256": "290731f62937e3da6bb148d151e87d2d469d1c23d56ed1ec5bf349f40dc7e08a"
+   }
+  ],
+  "reference": "blender/props_hi3d/sheets.json",
+  "submitted": "2026-11-20T20:45:22+00:00",
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/44c4625c41034a6e90851777b9b7566f/target/model/original/GLB0.glb?auth_key=65f0765074101efd3c859952720c7451&t=1795211821",
+    "file": "blender/props_hi3d/raw/astronomer_bust/model.glb",
+    "bytes": 49964584,
+    "sha256": "e394d84a0879aea8c1036e12ff217164bfb53f8f31b75ca6d04026d6f797f8c7"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/6b0d56423d4d43a49ec1ba98c5ef8b2a",
+  "fetched": "2026-11-20T20:54:58+00:00"
+ }
+]

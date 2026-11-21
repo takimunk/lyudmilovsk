@@ -171,7 +171,7 @@ bond = friend close
 age = elder
 weather = cold snow
 say town.friend_bench_elder_cold.1 | Холодно, а дома не сидится. Шарф двойной, носки шерстяные — и к морю. | It's cold, but there's no staying in. Double scarf, woollen socks, and off to the sea. | 寒いけど、家にじっとしていられなくてね。マフラーを二重に、毛糸の靴下をはいて、海へ。
-say town.friend_bench_elder_cold.2 | Утром на окне узоры, как в детстве. Полчаса смотрю — лучше газеты. | Frost patterns on the window this morning, like when I was small. Half an hour I watched: better than the papers. | 今朝は窓に霜の模様。子どものころみたい。三十分もながめてた。新聞よりいい。
+say town.friend_bench_elder_cold.2 | Утром на окне узоры, как в детстве. Полчаса смотрю — лучше газеты. | Frost on the window this morning, like when I was little. Watched it half an hour: beats the paper. | 今朝は窓に霜の模様。子どものころみたい。三十分もながめてた。新聞よりいい。
 
 [friend_bench_elder_rain]
 on = friend_bench

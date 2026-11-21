@@ -337,6 +337,21 @@ int main()
 		Off("HouseSparrow", EStyle::Bounding, 30, 23, 15, 9);
 		Off("FeralPigeon", EStyle::Clapping, 330, 65, 7, 17);
 	}
+	// 19. a glide too slow to last: just above the stall with the gaze near level and no beats, the bird lets the nose down
+	// and settles in a slow glide well clear of the stall (it does not mush down at the stall speed)
+	{
+		auto Slow = [](const char* Id, EStyle Style, double MassG, double SpanCm, double Hz, double Cruise)
+		{
+			const FParams P = MakeSpeciesParams(Id, Style, MassG, SpanCm, Hz, Cruise);
+			FState S = Flying(P, P.Stall * 1.05);
+			Run(P, S, 6, [&](double, FInput& In) { In.AimPitch = -0.07; });
+			const double V = BirdFlight::Speed(S);
+			Check(V > P.Stall * 1.35 && V < P.BestGlide * 1.2 && -S.Vel.Z < 0.3 * V, F("%s slow glide: settles at %.1f m/s sinking %.1f (stall %.1f, best glide %.1f)", Id, V, -S.Vel.Z, P.Stall, P.BestGlide));
+		};
+		Slow("HouseSparrow", EStyle::Bounding, 30, 23, 15, 9);
+		Slow("Starling", EStyle::Flapping, 75, 38, 12, 17);
+		Slow("HerringGull", EStyle::Soaring, 1000, 140, 3, 12);
+	}
 	std::printf(Failures ? "%d FAILED\n" : "all passed\n", Failures);
 	return Failures ? 1 : 0;
 }

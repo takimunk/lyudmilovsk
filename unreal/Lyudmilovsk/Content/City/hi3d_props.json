@@ -1,0 +1,461 @@
+{
+ "_doc": "Built by tools/city/hi3d_props.py (docs/city/hi3d_props.md); do not edit by hand. Unreal metres, yaw Unreal degrees (the way the prop's front looks). meshes: prop -> static mesh, cast_shadow, collide, cull (m); items: one instance each.",
+ "meshes": {
+  "anchor": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_anchor.SM_Hi3d_anchor",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "astronomer_bust": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_astronomer_bust.SM_Hi3d_astronomer_bust",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "bear_cub": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_bear_cub.SM_Hi3d_bear_cub",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "chandelier": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_chandelier.SM_Hi3d_chandelier",
+   "collide": false,
+   "cast_shadow": true,
+   "cull": 90.0,
+   "indoor": true
+  },
+  "cosmonaut": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_cosmonaut.SM_Hi3d_cosmonaut",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "deer": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_deer.SM_Hi3d_deer",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "drink_fountain": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_drink_fountain.SM_Hi3d_drink_fountain",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "fisherman": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_fisherman.SM_Hi3d_fisherman",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "girl_dove": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_girl_dove.SM_Hi3d_girl_dove",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "grandfather_clock": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_grandfather_clock.SM_Hi3d_grandfather_clock",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 90.0,
+   "indoor": true
+  },
+  "gull_stele": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_gull_stele.SM_Hi3d_gull_stele",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "muse": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_muse.SM_Hi3d_muse",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 90.0,
+   "indoor": true
+  },
+  "park_vase": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_park_vase.SM_Hi3d_park_vase",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "pioneer": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_pioneer.SM_Hi3d_pioneer",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "poet_bust": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_poet_bust.SM_Hi3d_poet_bust",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "samovar": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_samovar.SM_Hi3d_samovar",
+   "collide": false,
+   "cast_shadow": true,
+   "cull": 90.0,
+   "indoor": true
+  },
+  "seal": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_seal.SM_Hi3d_seal",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  },
+  "ship_model": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_ship_model.SM_Hi3d_ship_model",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 90.0,
+   "indoor": true
+  },
+  "sundial": {
+   "mesh": "/Game/City/Hi3D/SM_Hi3d_sundial.SM_Hi3d_sundial",
+   "collide": true,
+   "cast_shadow": true,
+   "cull": 250.0,
+   "indoor": false
+  }
+ },
+ "items": [
+  {
+   "id": "sundial_square",
+   "prop": "sundial",
+   "at": [
+    44.34,
+    912.9,
+    -36.16
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "girl_dove_pond",
+   "prop": "girl_dove",
+   "at": [
+    -68.83,
+    1242.4,
+    -36.17
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "fisherman_pier",
+   "prop": "fisherman",
+   "at": [
+    134.838,
+    902.9,
+    -39.46
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "gull_stele_prom",
+   "prop": "gull_stele",
+   "at": [
+    120.68,
+    706.7,
+    -39.46
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "drink_square_n",
+   "prop": "drink_fountain",
+   "at": [
+    24.34,
+    938.9,
+    -36.16
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "drink_square_s",
+   "prop": "drink_fountain",
+   "at": [
+    24.34,
+    886.9,
+    -36.16
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "drink_playground",
+   "prop": "drink_fountain",
+   "at": [
+    -33.042,
+    1148.451,
+    -36.16
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "drink_promenade",
+   "prop": "drink_fountain",
+   "at": [
+    135.136,
+    940.7,
+    -39.46
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bust_library",
+   "prop": "astronomer_bust",
+   "at": [
+    -403.508,
+    1001.728,
+    -22.0
+   ],
+   "yaw": -5.6
+  },
+  {
+   "id": "pioneer_school",
+   "prop": "pioneer",
+   "at": [
+    -152.34,
+    1295.263,
+    -29.0
+   ],
+   "yaw": -7.1
+  },
+  {
+   "id": "cosmonaut_club",
+   "prop": "cosmonaut",
+   "at": [
+    -51.591,
+    1072.275,
+    -36.2
+   ],
+   "yaw": -5.5
+  },
+  {
+   "id": "anchor_pier",
+   "prop": "anchor",
+   "at": [
+    134.838,
+    924.9,
+    -39.46
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "bear_cub_playground",
+   "prop": "bear_cub",
+   "at": [
+    -46.43,
+    1166.9,
+    -36.16
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "deer_park",
+   "prop": "deer",
+   "at": [
+    -48.26,
+    1205.9,
+    -36.2
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "poet_bust_park",
+   "prop": "poet_bust",
+   "at": [
+    -72.26,
+    1187.9,
+    -36.2
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "seal_promenade",
+   "prop": "seal",
+   "at": [
+    140.626,
+    967.1,
+    -39.46
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "vase_square_nw",
+   "prop": "park_vase",
+   "at": [
+    -5.66,
+    936.9,
+    -36.16
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "vase_square_sw",
+   "prop": "park_vase",
+   "at": [
+    -5.66,
+    888.9,
+    -36.16
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "vase_square_ne",
+   "prop": "park_vase",
+   "at": [
+    56.34,
+    936.9,
+    -36.16
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "vase_square_se",
+   "prop": "park_vase",
+   "at": [
+    56.34,
+    888.9,
+    -36.16
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "chandelier_P-CLUB2_1",
+   "prop": "chandelier",
+   "at": [
+    -77.644,
+    1067.751,
+    -25.7
+   ],
+   "yaw": -5.5,
+   "plot": "P-CLUB2"
+  },
+  {
+   "id": "chandelier_P-CLUB2_2",
+   "prop": "chandelier",
+   "at": [
+    -82.621,
+    1068.231,
+    -25.7
+   ],
+   "yaw": -5.5,
+   "plot": "P-CLUB2"
+  },
+  {
+   "id": "chandelier_P-CLUB2_3",
+   "prop": "chandelier",
+   "at": [
+    -87.598,
+    1068.71,
+    -25.7
+   ],
+   "yaw": -5.5,
+   "plot": "P-CLUB2"
+  },
+  {
+   "id": "chandelier_P-STORE_1",
+   "prop": "chandelier",
+   "at": [
+    -71.368,
+    972.725,
+    -26.8
+   ],
+   "yaw": -5.3,
+   "plot": "P-STORE"
+  },
+  {
+   "id": "chandelier_P-STORE_2",
+   "prop": "chandelier",
+   "at": [
+    -72.384,
+    961.772,
+    -26.8
+   ],
+   "yaw": -5.3,
+   "plot": "P-STORE"
+  },
+  {
+   "id": "chandelier_P-STORE_3",
+   "prop": "chandelier",
+   "at": [
+    -79.831,
+    973.511,
+    -26.8
+   ],
+   "yaw": -5.3,
+   "plot": "P-STORE"
+  },
+  {
+   "id": "chandelier_P-STORE_4",
+   "prop": "chandelier",
+   "at": [
+    -80.847,
+    962.558,
+    -26.8
+   ],
+   "yaw": -5.3,
+   "plot": "P-STORE"
+  },
+  {
+   "id": "muse_P-CLUB2",
+   "prop": "muse",
+   "at": [
+    -73.356,
+    1056.991,
+    -36.2
+   ],
+   "yaw": -5.5,
+   "plot": "P-CLUB2"
+  },
+  {
+   "id": "grandfather_clock_P-LIBRARY",
+   "prop": "grandfather_clock",
+   "at": [
+    -429.764,
+    1010.633,
+    -22.0
+   ],
+   "yaw": -95.6,
+   "plot": "P-LIBRARY"
+  },
+  {
+   "id": "ship_model_P-LIBRARY",
+   "prop": "ship_model",
+   "at": [
+    -433.184,
+    985.999,
+    -22.0
+   ],
+   "yaw": 84.4,
+   "plot": "P-LIBRARY"
+  },
+  {
+   "id": "samovar_P-CLUB2",
+   "prop": "samovar",
+   "at": [
+    -71.697,
+    1065.873,
+    -35.15
+   ],
+   "yaw": -5.5,
+   "plot": "P-CLUB2"
+  }
+ ]
+}

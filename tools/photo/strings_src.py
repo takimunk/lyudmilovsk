@@ -50,6 +50,39 @@ t("ui.photo.album.page", "{0} / {1}", "{0} / {1}", "{0} / {1}")
 t("ui.photo.album.caption", "{0}, {1}", "{0}, {1}", "{0}　{1}")
 t("ui.photo.album.nowhere", "где-то в пути", "somewhere on the way", "どこかの道で")
 
+# the photo club's monthly contest (docs/photo.md "The contest"); {0} of the theme lines is a theme's name below
+t("ui.photo.contest.theme.sea", "«Море»", "“The Sea”", "「海」")
+t("ui.photo.contest.theme.birds", "«Птицы»", "“Birds”", "「鳥」")
+t("ui.photo.contest.theme.work", "«Люди за работой»", "“People at Work”", "「働く人びと」")
+t("ui.photo.contest.theme.festival", "«Праздник»", "“The Festival”", "「祭り」")
+t("ui.photo.contest.no_prints", "Тема месяца — {0}. Отпечатки принимают до {1}-го числа, а в альбоме пока пусто.",
+  "This month's theme is {0}. Prints are taken until the {1}th, and the album is still empty.",
+  "今月のテーマは{0}。プリントの受付は{1}日まで。アルバムはまだ空だ。")
+t("ui.photo.contest.pick.title", "На конкурс: {0}", "For the contest: {0}", "コンテストに出す：{0}")
+t("ui.photo.contest.pick.caption", "[{0}]  {1}", "[{0}]  {1}", "[{0}]  {1}")
+t("ui.photo.contest.pick.keys", "1–4 — отдать этот отпечаток   ·   A, D — листать   ·   P — не сейчас",
+  "1–4 — hand in that print   ·   A, D — turn pages   ·   P — not now", "1〜4：そのプリントを出す   ·   A・D：ページをめくる   ·   P：やめておく")
+t("ui.photo.contest.entered", "Отпечаток опустили в ящик конкурса. Жюри соберётся {0}-го числа.",
+  "The print is in the contest box. The jury sits on the {0}th.", "プリントをコンテストの箱に入れた。審査は{0}日。")
+t("ui.photo.contest.wait", "Отпечаток уже в ящике. Жюри соберётся {0}-го числа.", "The print is already in the box. The jury sits on the {0}th.",
+  "プリントはもう箱の中。審査は{0}日。")
+t("ui.photo.contest.closed", "Приём на этот месяц окончен. Тема следующего — {0}.", "Entries for this month are closed. Next month's theme is {0}.",
+  "今月の受付は終わった。来月のテーマは{0}。")
+t("ui.photo.contest.won", "Конкурс {0}: первое место! Приз {2} руб., отпечаток повесили на стену клуба.",
+  "The {0} contest: first place! The prize is {2} roubles, and the print hangs on the club's wall.",
+  "コンテスト{0}：1位！賞金{2}ルーブル。プリントはクラブの壁に飾られた。")
+t("ui.photo.contest.prize", "Конкурс {0}: {1}-е место. Приз {2} руб., отпечаток повесили на стену клуба.",
+  "The {0} contest: place {1}. The prize is {2} roubles, and the print hangs on the club's wall.",
+  "コンテスト{0}：{1}位。賞金{2}ルーブル。プリントはクラブの壁に飾られた。")
+t("ui.photo.contest.placed", "Конкурс {0}: {1}-е место из {2}. Жюри советует: ближе к теме, резче, и снимать при низком солнце.",
+  "The {0} contest: place {1} of {2}. The jury's advice: closer to the theme, sharper, and shoot when the sun is low.",
+  "コンテスト{0}：{2}人中{1}位。審査員の助言：テーマに近く、もっとシャープに、日の低い時間に撮ること。")
+t("ui.photo.contest.wall.title", "Стена фотоклуба", "The photo club's wall", "写真クラブの壁")
+t("ui.photo.contest.wall.caption", "{0}-е место, {1}. {2}", "Place {0}, {1}. {2}", "{0}位　{1}　{2}")
+t("ui.photo.contest.wall.empty", "Твоих отпечатков здесь пока нет.", "None of your prints hang here yet.", "ここにはまだ自分のプリントがない。")
+
+t("dev.action.photo.contest", "Ящик фотоконкурса", "The photo contest box", "写真コンテストの箱")
+t("dev.action.photo.wall", "Стена фотоклуба", "The photo club's wall", "写真クラブの壁")
 t("dev.group.photo", "Фотоаппарат", "Camera", "カメラ")
 t("dev.action.photo.give", "Дать фотоаппарат, 3 плёнки и 200 руб.", "Give a camera, 3 films and 200 roubles", "カメラ、フィルム3本、200ルーブルをもらう")
 t("dev.action.photo.develop", "Проявить все плёнки сейчас", "Develop every film now", "すべてのフィルムを今すぐ現像")
