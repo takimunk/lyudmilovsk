@@ -6658,6 +6658,20 @@
      "days": [
       3
      ]
+    },
+    {
+     "activity": "watch_starlings",
+     "sun": "set",
+     "hours": [
+      -0.6,
+      0.25
+     ],
+     "place": "S-ATON-HIDE",
+     "days": [
+      1,
+      2,
+      4
+     ]
     }
    ],
    "friends": [
@@ -15792,6 +15806,19 @@
       3,
       4
      ]
+    },
+    {
+     "activity": "watch_starlings",
+     "sun": "set",
+     "hours": [
+      -0.6,
+      0.25
+     ],
+     "place": "S-ATON-HIDE",
+     "days": [
+      5,
+      6
+     ]
     }
    ],
    "friends": [
@@ -19128,7 +19155,22 @@
    "wake": 8.01,
    "bed": 23.89,
    "spread": 0.85,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "watch_starlings",
+     "sun": "set",
+     "hours": [
+      -0.6,
+      0.25
+     ],
+     "place": "S-ATON-HIDE",
+     "days": [
+      0,
+      2,
+      3
+     ]
+    }
+   ],
    "friends": [
     "t_hakobyan_gennady",
     "t_rousseau_mads"
@@ -24914,6 +24956,19 @@
       2,
       3,
       4
+     ]
+    },
+    {
+     "activity": "watch_starlings",
+     "sun": "set",
+     "hours": [
+      -0.6,
+      0.25
+     ],
+     "place": "S-ATON-HIDE",
+     "days": [
+      5,
+      6
      ]
     }
    ],
@@ -33178,6 +33233,19 @@
       2,
       3,
       4
+     ]
+    },
+    {
+     "activity": "watch_starlings",
+     "sun": "set",
+     "hours": [
+      -0.6,
+      0.25
+     ],
+     "place": "S-ATON-HIDE",
+     "days": [
+      5,
+      6
      ]
     }
    ],
