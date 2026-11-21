@@ -41073,6 +41073,23 @@
       5,
       6
      ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_1",
+     "hours": [
+      10.0,
+      10.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
     }
    ],
    "friends": [
@@ -41163,6 +41180,23 @@
       5,
       6
      ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_2",
+     "hours": [
+      10.0,
+      10.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
     }
    ],
    "friends": [
@@ -41251,6 +41285,23 @@
       4,
       5,
       6
+     ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_1",
+     "hours": [
+      11.0,
+      11.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
      ]
     }
    ],
@@ -41341,6 +41392,23 @@
       4,
       5,
       6
+     ]
+    },
+    {
+     "activity": "cure_sanatorium_inhale",
+     "place": "P-SANATORIUM-INHALE",
+     "role": "inhale_2",
+     "hours": [
+      11.0,
+      11.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
      ]
     }
    ],

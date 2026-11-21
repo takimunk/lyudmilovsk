@@ -29601,6 +29601,72 @@
    ]
   },
   {
+   "id": "P-SANATORIUM-INHALE",
+   "kind": "sanatorium_inhale",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "staff",
+     "tag": "inhale_1",
+     "pos": [
+      -717.59,
+      1243.07,
+      -8.0
+     ],
+     "yaw": 302.2,
+     "height": 0.45,
+     "thing": "P-SANATORIUM/inhale_2"
+    },
+    {
+     "kind": "staff",
+     "tag": "inhale_2",
+     "pos": [
+      -718.43,
+      1242.54,
+      -8.0
+     ],
+     "yaw": 302.2,
+     "height": 0.45,
+     "thing": "P-SANATORIUM/inhale_3"
+    }
+   ],
+   "roles": [],
+   "building": "P-SANATORIUM",
+   "path": [
+    [
+     -711.6,
+     1253.22,
+     -8.0
+    ],
+    [
+     -713.61,
+     1248.98,
+     -8.0
+    ],
+    [
+     -715.09,
+     1246.02,
+     -8.0
+    ],
+    [
+     -715.41,
+     1244.21,
+     -8.0
+    ],
+    [
+     -716.68,
+     1243.96,
+     -8.0
+    ]
+   ]
+  },
+  {
    "id": "P-BRIDGEHOUSE",
    "kind": "office",
    "door": [

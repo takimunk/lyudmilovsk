@@ -848,6 +848,13 @@
    "prompt": "A conductor's ticket punch clicking through a paper ticket, one firm metallic crunch, close"
   },
   {
+   "id": "board_flap",
+   "group": "city",
+   "variants": 3,
+   "duration": 1.5,
+   "prompt": "A split-flap departures board at a small station updating one row: a quick rattling cascade of thin plastic flaps clacking over, then a last soft clack, indoors, close"
+  },
+  {
    "id": "train_clack",
    "group": "city",
    "variants": 2,

@@ -558,7 +558,79 @@
      ],
      "stay": "san"
     }
-   ]
+   ],
+   "proc": {
+    "title": "city.san.p.dance.title",
+    "when": {
+     "h": [
+      19,
+      23
+     ],
+     "stay": "san"
+    },
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       {
+        "k": "city.san.p.dance.fest.1",
+        "festival": "any"
+       },
+       {
+        "k": "city.san.p.dance.start.1",
+        "festival": "none"
+       }
+      ],
+      "secs": 4
+     },
+     {
+      "do": "guest",
+      "guests": {
+       "": [
+        "city.san.p.dance.guest.any"
+       ],
+       "gromov": [
+        "city.san.p.dance.guest.gromov"
+       ],
+       "sonya": [
+        "city.san.p.dance.guest.sonya"
+       ],
+       "tamm": [
+        "city.san.p.dance.guest.tamm"
+       ],
+       "sazonov": [
+        "city.san.p.dance.guest.tamm"
+       ]
+      },
+      "secs": 5
+     },
+     {
+      "do": "sip",
+      "lines": [
+       "city.san.p.dance.waltz.1"
+      ],
+      "count": 8,
+      "every": 1.8,
+      "window": 0.35
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.san.p.dance.end.1"
+      ],
+      "secs": 3.5
+     }
+    ],
+    "good": [
+     "city.san.p.dance.good.1"
+    ],
+    "fair": [
+     "city.san.p.dance.fair.1"
+    ],
+    "poor": [
+     "city.san.p.dance.poor.1"
+    ]
+   }
   },
   "sanatorium_clock_lobby": {
    "like": "look_clock",
@@ -1172,7 +1244,56 @@
      ],
      "stay": "san"
     }
-   ]
+   ],
+   "proc": {
+    "title": "city.san.p.pump.title",
+    "when": {
+     "stay": "san"
+    },
+    "steps": [
+     {
+      "do": "pick",
+      "lines": [
+       "city.san.p.pump.pick",
+       "city.san.p.pump.cup.1",
+       "city.san.p.pump.cup.2",
+       "city.san.p.pump.cup.3"
+      ]
+     },
+     {
+      "do": "pour",
+      "lines": [
+       "city.san.p.pump.pour.1",
+       "city.san.p.pump.pour.2",
+       "city.san.p.pump.pour.3"
+      ],
+      "by_pick": true,
+      "secs": 4.5,
+      "mark": [
+       0.7,
+       0.85
+      ]
+     },
+     {
+      "do": "sip",
+      "lines": [
+       "city.san.p.pump.sip.1"
+      ],
+      "count": 6,
+      "every": 1.2,
+      "window": 0.3
+     }
+    ],
+    "good": [
+     "city.san.p.pump.good.1"
+    ],
+    "fair": [
+     "city.san.p.pump.fair.1"
+    ],
+    "poor": [
+     "city.san.p.pump.poor.1"
+    ]
+   }
   },
   "san_walk": {
    "prompt": "city.san.walk.prompt",
@@ -1387,6 +1508,444 @@
    "pose": "sit",
    "any_hour": true,
    "lines": "city.san.sz"
+  },
+  "san_inhale": {
+   "prompt": "city.san.p.inh.prompt",
+   "minutes": 15,
+   "pose": "sit",
+   "sound": "aquarium_bubbles",
+   "needs_stay": "san",
+   "no_stay": "city.san.p.inh.nostay.*",
+   "lines": [
+    "city.san.p.inh.book.1"
+   ],
+   "proc": {
+    "title": "city.san.p.inh.title",
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       {
+        "k": "city.san.p.inh.herb.mon",
+        "d": "mon,thu"
+       },
+       {
+        "k": "city.san.p.inh.herb.tue",
+        "d": "tue,fri"
+       },
+       {
+        "k": "city.san.p.inh.herb.wed",
+        "d": "wed,sat"
+       },
+       {
+        "k": "city.san.p.inh.herb.sun",
+        "d": "sun"
+       }
+      ],
+      "secs": 5
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.san.p.inh.mask.1"
+      ],
+      "secs": 4
+     },
+     {
+      "do": "breathe",
+      "lines": [
+       "city.san.p.inh.breathe.1"
+      ],
+      "count": 5,
+      "in": 3.5,
+      "out": 4.5
+     },
+     {
+      "do": "guest",
+      "guests": {
+       "": [
+        "city.san.p.inh.guest.any"
+       ],
+       "gromov": [
+        "city.san.p.inh.guest.gromov"
+       ],
+       "sonya": [
+        "city.san.p.inh.guest.sonya"
+       ],
+       "tamm": [
+        "city.san.p.inh.guest.tamm"
+       ],
+       "sazonov": [
+        "city.san.p.inh.guest.sazonov"
+       ]
+      },
+      "secs": 5
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.san.p.inh.end.1"
+      ],
+      "secs": 4
+     }
+    ],
+    "good": [
+     "city.san.p.inh.good.1"
+    ],
+    "fair": [
+     "city.san.p.inh.fair.1"
+    ],
+    "poor": [
+     "city.san.p.inh.poor.1"
+    ],
+    "collect": "san_proc/inhale"
+   }
+  },
+  "san_mud": {
+   "prompt": "city.san.p.mud.prompt",
+   "minutes": 30,
+   "pose": "lie",
+   "sound": "sheets_rustle",
+   "needs_stay": "san",
+   "no_stay": "city.san.p.mud.nostay.*",
+   "lines": [
+    "city.san.p.mud.book.1"
+   ],
+   "proc": {
+    "title": "city.san.p.mud.title",
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       "city.san.p.mud.curtain.1"
+      ],
+      "secs": 4
+     },
+     {
+      "do": "cut",
+      "lines": [
+       "city.san.p.mud.robe.1"
+      ],
+      "secs": 3,
+      "minutes": 5
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.san.p.mud.spread.1"
+      ],
+      "secs": 5
+     },
+     {
+      "do": "breathe",
+      "lines": [
+       "city.san.p.mud.still.1"
+      ],
+      "count": 4,
+      "in": 4,
+      "out": 5
+     },
+     {
+      "do": "guest",
+      "guests": {
+       "": [
+        "city.san.p.mud.guest.any"
+       ],
+       "gromov": [
+        "city.san.p.mud.guest.gromov"
+       ],
+       "sonya": [
+        "city.san.p.mud.guest.sonya"
+       ],
+       "tamm": [
+        "city.san.p.mud.guest.tamm"
+       ],
+       "sazonov": [
+        "city.san.p.mud.guest.tamm"
+       ]
+      },
+      "secs": 5
+     },
+     {
+      "do": "cut",
+      "lines": [
+       "city.san.p.mud.rinse.1"
+      ],
+      "secs": 3.5,
+      "minutes": 20
+     }
+    ],
+    "good": [
+     "city.san.p.mud.good.1"
+    ],
+    "fair": [
+     "city.san.p.mud.fair.1"
+    ],
+    "poor": [
+     "city.san.p.mud.poor.1"
+    ],
+    "collect": "san_proc/mud"
+   }
+  },
+  "san_charcot": {
+   "prompt": "city.san.p.ch.prompt",
+   "minutes": 15,
+   "pose": "stand",
+   "sound": "water_pour",
+   "needs_stay": "san",
+   "no_stay": "city.san.p.ch.nostay.*",
+   "lines": [
+    "city.san.p.ch.book.1"
+   ],
+   "proc": {
+    "title": "city.san.p.ch.title",
+    "steps": [
+     {
+      "do": "cut",
+      "lines": [
+       "city.san.p.ch.robe.1"
+      ],
+      "secs": 3,
+      "minutes": 3
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.san.p.ch.desk.1"
+      ],
+      "secs": 5
+     },
+     {
+      "do": "sip",
+      "lines": [
+       "city.san.p.ch.turn.1"
+      ],
+      "count": 4,
+      "every": 2.2,
+      "window": 0.6
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.san.p.ch.fan.1"
+      ],
+      "secs": 4
+     },
+     {
+      "do": "guest",
+      "guests": {
+       "": [
+        "city.san.p.ch.guest.any"
+       ],
+       "gromov": [
+        "city.san.p.ch.guest.gromov"
+       ],
+       "sonya": [
+        "city.san.p.ch.guest.sonya"
+       ],
+       "tamm": [
+        "city.san.p.ch.guest.tamm"
+       ],
+       "sazonov": [
+        "city.san.p.ch.guest.sazonov"
+       ]
+      },
+      "secs": 5
+     },
+     {
+      "do": "cut",
+      "lines": [
+       "city.san.p.ch.after.1"
+      ],
+      "secs": 3,
+      "minutes": 3
+     }
+    ],
+    "good": [
+     "city.san.p.ch.good.1"
+    ],
+    "fair": [
+     "city.san.p.ch.fair.1"
+    ],
+    "poor": [
+     "city.san.p.ch.poor.1"
+    ],
+    "collect": "san_proc/charcot"
+   }
+  },
+  "san_massage": {
+   "prompt": "city.san.p.mas.prompt",
+   "minutes": 25,
+   "pose": "lie",
+   "sound": "sheets_rustle",
+   "needs_stay": "san",
+   "no_stay": "city.san.p.mas.nostay.*",
+   "lines": [
+    "city.san.p.mas.book.1"
+   ],
+   "proc": {
+    "title": "city.san.p.mas.title",
+    "steps": [
+     {
+      "do": "cut",
+      "lines": [
+       "city.san.p.mas.lie.1"
+      ],
+      "secs": 3,
+      "minutes": 2
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.san.p.mas.hands.1"
+      ],
+      "secs": 4.5
+     },
+     {
+      "do": "news",
+      "lines": [
+       "city.san.p.mas.news.1",
+       "city.san.p.mas.news.2"
+      ],
+      "secs": 6
+     },
+     {
+      "do": "breathe",
+      "lines": [
+       "city.san.p.mas.breathe.1"
+      ],
+      "count": 3,
+      "in": 4,
+      "out": 6
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.san.p.mas.end.1"
+      ],
+      "secs": 3.5
+     }
+    ],
+    "good": [
+     "city.san.p.mas.good.1"
+    ],
+    "fair": [
+     "city.san.p.mas.fair.1"
+    ],
+    "poor": [
+     "city.san.p.mas.poor.1"
+    ],
+    "collect": "san_proc/massage"
+   }
+  },
+  "san_checkup": {
+   "like": "checkup",
+   "proc": {
+    "title": "city.san.p.doc.title",
+    "when": {
+     "stay": "san"
+    },
+    "vitals": true,
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       "city.san.p.doc.scales.1"
+      ],
+      "secs": 4
+     },
+     {
+      "do": "measure",
+      "lines": [
+       "city.san.p.doc.weight.1"
+      ],
+      "secs": 4
+     },
+     {
+      "do": "tap",
+      "lines": [
+       "city.san.p.doc.cuff.1"
+      ],
+      "count": 8,
+      "secs": 7
+     },
+     {
+      "do": "measure",
+      "lines": [
+       "city.san.p.doc.pressure.1"
+      ],
+      "secs": 5
+     },
+     {
+      "do": "breathe",
+      "lines": [
+       "city.san.p.doc.spiro.1"
+      ],
+      "count": 1,
+      "in": 3.5,
+      "out": 5
+     },
+     {
+      "do": "measure",
+      "lines": [
+       "city.san.p.doc.card.1"
+      ],
+      "secs": 7
+     }
+    ],
+    "good": [
+     "city.san.p.doc.good.1"
+    ],
+    "fair": [
+     "city.san.p.doc.fair.1"
+    ],
+    "poor": [
+     "city.san.p.doc.poor.1"
+    ],
+    "collect": "san_proc/checkup"
+   }
+  },
+  "san_film": {
+   "like": "cinema",
+   "prompt": "city.san.p.film.prompt",
+   "title": "city.san.p.film.title",
+   "price": 0,
+   "give": [],
+   "needs_staff": "",
+   "closed": "city.san.p.film.closed.*"
+  },
+  "san_screen": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    "city.san.p.screen.1"
+   ]
+  },
+  "san_robes": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    "city.san.p.robes.1"
+   ]
+  },
+  "san_oils": {
+   "like": "look_misc",
+   "minutes": 2,
+   "lines": [
+    "city.san.p.shelf.1"
+   ]
+  },
+  "san_proc_clock": {
+   "like": "look_clock",
+   "lines": [
+    "city.san.p.clock.1"
+   ]
+  },
+  "san_massage_radio": {
+   "like": "couch_radio",
+   "lines": [
+    "city.san.p.radio.1"
+   ]
   }
  },
  "rules": {
@@ -1488,7 +2047,8 @@
   },
   "round_sanatorium/treat_checkup": {
    "collect": "san_cure/checkup",
-   "closed": "city.san.checkup.closed"
+   "closed": "city.san.checkup.closed",
+   "act": "san_checkup"
   },
   "round_sanatorium/garden_canary": {
    "act": "sanatorium_canary"
@@ -1538,6 +2098,71 @@
   },
   "round_sanatorium/dining_2_c": {
    "act": "san_seat_sazonov"
+  },
+  "round_sanatorium/inhale_1": {
+   "act": "san_inhale",
+   "hours": [
+    9,
+    18
+   ]
+  },
+  "round_sanatorium/inhale_2": {
+   "act": "san_inhale",
+   "hours": [
+    9,
+    18
+   ]
+  },
+  "round_sanatorium/inhale_3": {
+   "act": "san_inhale",
+   "hours": [
+    9,
+    18
+   ]
+  },
+  "round_sanatorium/hydro_mud": {
+   "act": "san_mud",
+   "hours": [
+    9,
+    17
+   ]
+  },
+  "round_sanatorium/hydro_charcot": {
+   "act": "san_charcot",
+   "hours": [
+    9,
+    17
+   ]
+  },
+  "round_sanatorium/massage_table": {
+   "act": "san_massage",
+   "hours": [
+    10,
+    19
+   ]
+  },
+  "round_sanatorium/lounge_projector": {
+   "act": "san_film",
+   "hours": [
+    20,
+    23
+   ],
+   "days": "wed,sat"
+  },
+  "round_sanatorium/lounge_screen": {
+   "act": "san_screen"
+  },
+  "round_sanatorium/hydro_robes": {
+   "act": "san_robes"
+  },
+  "round_sanatorium/massage_shelf": {
+   "act": "san_oils"
+  },
+  "round_sanatorium/inhale_clock": {
+   "act": "san_proc_clock"
+  },
+  "round_sanatorium/massage_radio": {
+   "act": "san_massage_radio"
   }
  },
  "quests": [
@@ -2047,6 +2672,16 @@
     "quiet",
     "dance"
    ]
+  },
+  "san_proc": {
+   "title": "city.san.coll.proc.title",
+   "pieces": [
+    "inhale",
+    "mud",
+    "charcot",
+    "massage",
+    "checkup"
+   ]
   }
  },
  "texts": {
@@ -2281,7 +2916,8 @@
     "sanatorium_clock_lobby",
     "sanatorium_clock_dining",
     "sanatorium_clock_garden",
-    "sanatorium_clock_treat"
+    "sanatorium_clock_treat",
+    "san_massage_radio"
    ]
   }
  }

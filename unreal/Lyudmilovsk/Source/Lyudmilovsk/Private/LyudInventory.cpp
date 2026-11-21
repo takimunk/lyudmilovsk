@@ -143,6 +143,15 @@ namespace
 		Good(TEXT("rail_ticket_punched"), K::Misc, L::Flat, FVector(0.1f, 3.f, 5.7f), FLinearColor(0.72f, 0.8f, 0.58f), 0, 2.f);
 		// the Rassvet's ticket stub: torn at the door of every session, kept (docs/cinema.md)
 		Good(TEXT("ticket_stub"), K::Misc, L::Flat, FVector(0.1f, 3.5f, 6.f), FLinearColor(0.86f, 0.56f, 0.6f), 0, 2.f);
+		// the cable car's travel card, a stamp per station punched on the halls' desks; the lost and found's things, carried to their
+		// owners (docs/front_door.md)
+		Good(TEXT("travel_card"), K::Misc, L::Flat, FVector(0.1f, 5.5f, 8.5f), FLinearColor(0.88f, 0.8f, 0.6f), 0, 2.f);
+		Good(TEXT("lost_umbrella"), K::Misc, L::Pack, FVector(5.f, 5.f, 34.f), FLinearColor(0.12f, 0.23f, 0.37f), 0, 4.f);
+		Good(TEXT("lost_mitten"), K::Misc, L::Flat, FVector(2.f, 10.f, 14.f), FLinearColor(0.69f, 0.19f, 0.19f), 0, 3.f);
+		Good(TEXT("lost_scarf"), K::Misc, L::Pack, FVector(6.f, 16.f, 20.f), FLinearColor(0.85f, 0.64f, 0.25f), 0, 4.f);
+		Good(TEXT("lost_glasses"), K::Misc, L::Flat, FVector(1.5f, 6.f, 14.f), FLinearColor(0.12f, 0.12f, 0.12f), 0, 3.f);
+		Good(TEXT("lost_keys"), K::Misc, L::Flat, FVector(1.f, 4.f, 7.f), FLinearColor(0.72f, 0.63f, 0.25f), 0, 2.f);
+		Good(TEXT("lost_bear"), K::Misc, L::Pack, FVector(10.f, 12.f, 18.f), FLinearColor(0.54f, 0.35f, 0.17f), 0, 5.f);
 		Good(TEXT("record_club_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.25f, 0.15f, 0.35f), 60, 4.f);
 		Good(TEXT("record_club_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.10f, 0.45f, 0.42f), 60, 4.f);
 		Good(TEXT("record_club_3"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.15f, 0.20f, 0.25f), 60, 4.f);
