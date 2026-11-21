@@ -1005,6 +1005,13 @@ def main():
     extra = read_input(os.path.relpath(EXTRA, ROOT)) or {}
     places, flats, workplaces = build_places(plan, extra, args)
     people = build_people(plan, places, flats, workplaces, args, rnd)
+    # the cable car's hall staff and the Akademgorodok's researchers (tools/station_life.py; its own seeds, so the town
+    # above is the same with or without it)
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import station_life
+    with open(station_life.NETWORK, encoding="utf-8") as f:
+        station_life.apply(people, places, json.load(f))
+    ROLES.update(station_life.ROLES)
 
     # the stairs between the terraces: the people's ways up and down (PeopleSim's town ground)
     levels = [{"id": "B", "z": -41.5}] + [{"id": t["id"], "z": t["z"]} for t in plan["terraces"]]

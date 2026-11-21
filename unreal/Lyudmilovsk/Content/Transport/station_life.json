@@ -1,0 +1,10801 @@
+{
+ "_doc": "The stations' day (tools/station_life.py, docs/transport.md 'Station life'): the halls' staff rota (staff: townsfolk whose out-of-town job is the hall; hours as in townsfolk.json) and the riders' trips (at: the hour they walk into the 'from' hall; days 0 Monday; if: warm | festival_end (at = hours after the evening's end) | ''; chance: the share of those days). Generated: rerun after the town or the network change.",
+ "open": [
+  5.75,
+  24.25
+ ],
+ "staff": [
+  {
+   "key": "t_amada_eleni",
+   "station": "aton",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Zotova_galina"
+  },
+  {
+   "key": "t_bautista_santiago",
+   "station": "aton",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Lange_pyotr"
+  },
+  {
+   "key": "t_belousov_alejandro",
+   "station": "aton",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Clerk"
+  },
+  {
+   "key": "t_nowak_beatriz",
+   "station": "aton",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Zhukova_lena"
+  },
+  {
+   "key": "t_lefebvre_gennady",
+   "station": "aton",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Guy_b"
+  },
+  {
+   "key": "t_cohen_hakon",
+   "station": "aton",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Belov_misha"
+  },
+  {
+   "key": "t_bergstrom_hanna",
+   "station": "aton",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Sato_mila"
+  },
+  {
+   "key": "t_lebedev_solomiya",
+   "station": "aton",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Orlova_tanya"
+  },
+  {
+   "key": "t_solberg_liis",
+   "station": "academ",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Frolova_masha"
+  },
+  {
+   "key": "t_solberg_aigerim",
+   "station": "academ",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Orlova_tanya"
+  },
+  {
+   "key": "t_villanueva_akosua",
+   "station": "academ",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Sato_mila"
+  },
+  {
+   "key": "t_dahl_tunde",
+   "station": "academ",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Clerk"
+  },
+  {
+   "key": "t_zimmermann_isla",
+   "station": "academ",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Li_vika"
+  },
+  {
+   "key": "t_walker_eleni",
+   "station": "academ",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Crowd_12"
+  },
+  {
+   "key": "t_watanabe_yerlan",
+   "station": "academ",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Crowd_13"
+  },
+  {
+   "key": "t_friedman_olga",
+   "station": "academ",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Streamer"
+  },
+  {
+   "key": "t_nagy_selam",
+   "station": "zenit",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Crowd_12"
+  },
+  {
+   "key": "t_ferreira_joao",
+   "station": "zenit",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Belov_misha"
+  },
+  {
+   "key": "t_ferreira_isla",
+   "station": "zenit",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Hayashi_rina"
+  },
+  {
+   "key": "t_svoboda_oksana",
+   "station": "zenit",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Girl_b"
+  },
+  {
+   "key": "t_mamedov_mette",
+   "station": "zenit",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Girl_a"
+  },
+  {
+   "key": "t_svoboda_luana",
+   "station": "zenit",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Zhukova_lena"
+  },
+  {
+   "key": "t_ferreira_dariush",
+   "station": "zenit",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Valiev_rustam"
+  },
+  {
+   "key": "t_zhou_lihua",
+   "station": "zenit",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Sato_mila"
+  },
+  {
+   "key": "t_nikolaidis_nils",
+   "station": "polar",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Valiev_rustam"
+  },
+  {
+   "key": "t_kovalenko_solveig",
+   "station": "polar",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Sato_mila"
+  },
+  {
+   "key": "t_adeyemi_rodel",
+   "station": "polar",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Clerk"
+  },
+  {
+   "key": "t_henderson_reka",
+   "station": "polar",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Girl_a"
+  },
+  {
+   "key": "t_lindqvist_facundo",
+   "station": "polar",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Guy_a"
+  },
+  {
+   "key": "t_makinen_nino",
+   "station": "polar",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Streamer"
+  },
+  {
+   "key": "t_toth_minh",
+   "station": "polar",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Clerk"
+  },
+  {
+   "key": "t_esposito_aiko",
+   "station": "polar",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Korneeva_nina"
+  },
+  {
+   "key": "t_girard_selam",
+   "station": "mayak",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Frolova_masha"
+  },
+  {
+   "key": "t_celik_duc",
+   "station": "mayak",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Crowd_11"
+  },
+  {
+   "key": "t_mendoza_ama",
+   "station": "mayak",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Orlova_tanya"
+  },
+  {
+   "key": "t_acosta_nurlan",
+   "station": "mayak",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Belov_misha"
+  },
+  {
+   "key": "t_kazlauskas_eleni",
+   "station": "mayak",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Orlova_tanya"
+  },
+  {
+   "key": "t_tehrani_seoyeon",
+   "station": "mayak",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Zotova_galina"
+  },
+  {
+   "key": "t_mizrahi_inigo",
+   "station": "mayak",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Crowd_13"
+  },
+  {
+   "key": "t_petrauskas_guadalupe",
+   "station": "mayak",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Nishimura_aya"
+  },
+  {
+   "key": "t_takahashi_reka",
+   "station": "amber",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Frolova_masha"
+  },
+  {
+   "key": "t_rossi_egle",
+   "station": "amber",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Crowd_12"
+  },
+  {
+   "key": "t_obrien_jolene",
+   "station": "amber",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Girl_a"
+  },
+  {
+   "key": "t_levi_eero",
+   "station": "amber",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Crowd_13"
+  },
+  {
+   "key": "t_zhang_dawit",
+   "station": "amber",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Valiev_rustam"
+  },
+  {
+   "key": "t_heikkinen_lan",
+   "station": "amber",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Sato_mila"
+  },
+  {
+   "key": "t_nascimento_duc",
+   "station": "amber",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Valiev_rustam"
+  },
+  {
+   "key": "t_krause_maarten",
+   "station": "amber",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Crowd_11"
+  },
+  {
+   "key": "t_iglesias_jukka",
+   "station": "horizon",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Crowd_11"
+  },
+  {
+   "key": "t_abenov_caio",
+   "station": "horizon",
+   "role": "attendant",
+   "shift": "early",
+   "hours": [
+    5.5,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Sato_kei"
+  },
+  {
+   "key": "t_savitsky_shirin",
+   "station": "horizon",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Kimura_dasha"
+  },
+  {
+   "key": "t_yilmaz_zeynep",
+   "station": "horizon",
+   "role": "attendant",
+   "shift": "late",
+   "hours": [
+    14.5,
+    0.25
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Orlova_tanya"
+  },
+  {
+   "key": "t_abenov_nour",
+   "station": "horizon",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Nishimura_aya"
+  },
+  {
+   "key": "t_beridze_ursula",
+   "station": "horizon",
+   "role": "barista",
+   "shift": "early",
+   "hours": [
+    6.25,
+    14.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Sato_mila"
+  },
+  {
+   "key": "t_krause_etienne",
+   "station": "horizon",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    0,
+    1,
+    2,
+    3,
+    4
+   ],
+   "mesh": "Clerk"
+  },
+  {
+   "key": "t_chen_ines",
+   "station": "horizon",
+   "role": "barista",
+   "shift": "late",
+   "hours": [
+    14.5,
+    23.75
+   ],
+   "days": [
+    5,
+    6,
+    0,
+    1,
+    2
+   ],
+   "mesh": "Crowd_12"
+  }
+ ],
+ "riders": [
+  {
+   "key": "t_lukashevich_laima",
+   "group": "away",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.575,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.081,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_amada_tigran",
+   "group": "pensioners",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.818,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.969,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sorokin_gennady",
+   "group": "pensioners",
+   "mesh": "Owner",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.977,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 12.134,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zaitsev_omar",
+   "group": "festival",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.434,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_zaitsev_lilit",
+   "group": "researchers",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.271,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.304,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bautista_tyler",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.098,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.269,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_yavorsky_bohdan",
+   "group": "researchers",
+   "mesh": "Guy_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.346,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.609,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_yavorsky_tamar",
+   "group": "away",
+   "mesh": "Frolova_masha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.613,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.884,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_romano_minh",
+   "group": "researchers",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.133,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.552,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_esposito_arkady",
+   "group": "away",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.088,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.909,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_lindqvist_zuzana",
+   "group": "away",
+   "mesh": "Zhukova_lena",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.586,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.98,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_okonkwo_lars",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 10.05,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.527,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_mansour_etienne",
+   "group": "beach",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.151,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.702,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_mansour_beatriz",
+   "group": "researchers",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.412,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.653,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kowalski_eitan",
+   "group": "beach",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.326,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 14.907,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_kowalski_milagros",
+   "group": "beach",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.729,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.879,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_bakker_margaux",
+   "group": "researchers",
+   "mesh": "Crowd_12",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.865,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.44,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zhang_arjun",
+   "group": "researchers",
+   "mesh": "Guy_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.651,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.124,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zhang_oksana",
+   "group": "festival",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.396,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_ostrovsky_elif",
+   "group": "beach",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.576,
+     "days": [
+      0,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.355,
+     "days": [
+      0,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_macleod_thibault",
+   "group": "pupils",
+   "mesh": "Kid_boy",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 8.004,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 13.639,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_oliveira_omar",
+   "group": "researchers",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.852,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.343,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_fontaine_levan",
+   "group": "pensioners",
+   "mesh": "Sorokin_oleg",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 8.995,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 10.651,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_makinen_tyler",
+   "group": "festival",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.226,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_oliveira_yael",
+   "group": "away",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.048,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.649,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zimmermann_levan",
+   "group": "beach",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.715,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.718,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_balogun_shirin",
+   "group": "beach",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.316,
+     "days": [
+      1,
+      5
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 14.805,
+     "days": [
+      1,
+      5
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_papadopoulos_tesfaye",
+   "group": "beach",
+   "mesh": "Owner",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.426,
+     "days": [
+      0,
+      5
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 14.046,
+     "days": [
+      0,
+      5
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_papadopoulos_sanne",
+   "group": "researchers",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.99,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.415,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_beridze_zuzana",
+   "group": "beach",
+   "mesh": "Nao",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.018,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.615,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_mortensen_mehmet",
+   "group": "away",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.182,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.964,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sousa_emiliano",
+   "group": "away",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.582,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.014,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sokolov_beatriz",
+   "group": "festival",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.217,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_belousov_alejandro",
+   "group": "staff",
+   "mesh": "Clerk",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 14.384,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bergstrom_hanna",
+   "group": "staff",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 14.384,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 23.85,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_korhonen_ingrid",
+   "group": "researchers",
+   "mesh": "Zhukova_lena",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.993,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.981,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_benitez_rafael",
+   "group": "pensioners",
+   "mesh": "Sorokin_oleg",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.921,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.599,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_papadopoulos_zinaida",
+   "group": "pensioners",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.579,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 12.036,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tehrani_giuseppe",
+   "group": "researchers",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.627,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.878,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tehrani_harriet",
+   "group": "away",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.602,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.495,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_owusu_caio",
+   "group": "pensioners",
+   "mesh": "Korneev_ivan",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.444,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.071,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_haddad_oksana",
+   "group": "pensioners",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 8.935,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 10.585,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kovalenko_arturs",
+   "group": "festival",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.102,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_prochazka_aigerim",
+   "group": "away",
+   "mesh": "Li_vika",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.946,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tsvetkov_siobhan",
+   "group": "away",
+   "mesh": "Streamer",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.597,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.01,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_lee_brandon",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 10.096,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.12,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tsvetkov_padraig",
+   "group": "away",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.546,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.9,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_ozols_hanna",
+   "group": "away",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.546,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.621,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_karagiannis_arkady",
+   "group": "researchers",
+   "mesh": "Clerk",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.785,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.469,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_mortensen_joao",
+   "group": "festival",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.172,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_kazlauskas_lilit",
+   "group": "beach",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.736,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 17.449,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_abenov_caio",
+   "group": "staff",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "horizon",
+     "to": "zenit",
+     "at": 14.85,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_abenov_nour",
+   "group": "staff",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "horizon",
+     "at": 6.123,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "horizon",
+     "to": "zenit",
+     "at": 14.85,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_yanushkevich_rafael",
+   "group": "away",
+   "mesh": "Clerk",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.067,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.699,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_henderson_subin",
+   "group": "pensioners",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.685,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 12.09,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_fraser_elif",
+   "group": "festival",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.174,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_lebedev_jihoon",
+   "group": "away",
+   "mesh": "Guy_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.631,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.245,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_devries_kaisa",
+   "group": "festival",
+   "mesh": "Crowd_12",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.443,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_okonkwo_ivan",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 10.042,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.005,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_virtanen_joao",
+   "group": "festival",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.249,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_nielsen_kenji",
+   "group": "away",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.074,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.413,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_nielsen_milagros",
+   "group": "researchers",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.193,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.642,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sharma_ruta",
+   "group": "away",
+   "mesh": "Zhukova_lena",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.161,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.335,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tkachuk_tigran",
+   "group": "pensioners",
+   "mesh": "Sorokin_oleg",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.935,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 12.257,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sokolov_yanka",
+   "group": "festival",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.1,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_sokolov_sanne",
+   "group": "cinema",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 22.939,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "",
+     "chance": 0.12
+    }
+   ]
+  },
+  {
+   "key": "t_ortega_despina",
+   "group": "researchers",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.491,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.294,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_fraser_eoin",
+   "group": "researchers",
+   "mesh": "Guy_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.548,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.247,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_fraser_maricel",
+   "group": "away",
+   "mesh": "Li_vika",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.556,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.85,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_watanabe_minjun",
+   "group": "away",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.067,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.17,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_lund_selam",
+   "group": "festival",
+   "mesh": "Kimura_dasha",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.41,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_johansson_marketa",
+   "group": "away",
+   "mesh": "Nao",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.58,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.226,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_virtanen_yanka",
+   "group": "beach",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.698,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.804,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_celik_duc",
+   "group": "staff",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "mayak",
+     "to": "zenit",
+     "at": 14.85,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_girard_selam",
+   "group": "staff",
+   "mesh": "Frolova_masha",
+   "trips": [
+    {
+     "from": "mayak",
+     "to": "zenit",
+     "at": 14.85,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_liepa_nurlan",
+   "group": "beach",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.24,
+     "days": [
+      0,
+      1,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.398,
+     "days": [
+      0,
+      1,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_nowak_tunde",
+   "group": "researchers",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.485,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.59,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_nowak_agnieszka",
+   "group": "beach",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.43,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.672,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_seitkali_ales",
+   "group": "festival",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.327,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_seitkali_chiara",
+   "group": "festival",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.312,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_carvalho_jericho",
+   "group": "beach",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.749,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.403,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_haile_kaveh",
+   "group": "away",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.643,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.714,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_yilmaz_mehmet",
+   "group": "researchers",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.03,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.095,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_romano_brandon",
+   "group": "pupils",
+   "mesh": "Kid_boy",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 8.004,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 12.639,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_yilmaz_etienne",
+   "group": "beach",
+   "mesh": "Clerk",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.306,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.253,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_yilmaz_zeynep",
+   "group": "staff",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "horizon",
+     "at": 14.373,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_haile_maarja",
+   "group": "beach",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.272,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.845,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_ferreira_nils",
+   "group": "away",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.049,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.768,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_reddy_zinaida",
+   "group": "pensioners",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.207,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.791,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_nasser_omar",
+   "group": "cinema",
+   "mesh": "Sorokin_oleg",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "horizon",
+     "at": 22.961,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "",
+     "chance": 0.12
+    }
+   ]
+  },
+  {
+   "key": "t_zaitsev_aiko",
+   "group": "away",
+   "mesh": "Kimura_dasha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.661,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 13.625,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_araujo_dawit",
+   "group": "festival",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.403,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_mensah_inigo",
+   "group": "festival",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.269,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_okafor_daisuke",
+   "group": "away",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.045,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.241,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_ozols_zsofia",
+   "group": "pensioners",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.473,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.216,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_mamedov_kenji",
+   "group": "beach",
+   "mesh": "Owner",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.803,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.466,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_nasser_taras",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 10.051,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.885,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_ferreira_kalev",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.548,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.139,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_mensah_tesfaye",
+   "group": "away",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.059,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.617,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_pereira_arturs",
+   "group": "festival",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.354,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_esposito_chiara",
+   "group": "away",
+   "mesh": "Streamer",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.047,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.779,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_chen_ines",
+   "group": "staff",
+   "mesh": "Crowd_12",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "horizon",
+     "at": 14.373,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "horizon",
+     "to": "zenit",
+     "at": 23.85,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_henderson_inigo",
+   "group": "away",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.094,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.483,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_fujita_luana",
+   "group": "researchers",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.118,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.967,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_jansen_kwame",
+   "group": "away",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 10.08,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 13.786,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_mensah_dmitry",
+   "group": "cinema",
+   "mesh": "Sorokin_oleg",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 22.985,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "",
+     "chance": 0.12
+    }
+   ]
+  },
+  {
+   "key": "t_zhang_dawit",
+   "group": "staff",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 6.125,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 14.85,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zielinski_carmen",
+   "group": "away",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.597,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.049,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_nowak_tomohiko",
+   "group": "researchers",
+   "mesh": "Clerk",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.54,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.075,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sharma_solveig",
+   "group": "festival",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.089,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_kowalski_ilya",
+   "group": "festival",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.341,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_haugen_oksana",
+   "group": "festival",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.404,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_choi_kaisa",
+   "group": "away",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.581,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.935,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_berzins_marketa",
+   "group": "pupils",
+   "mesh": "Kid_girl",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 8.011,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 13.639,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tamm_sanne",
+   "group": "away",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.588,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.128,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_wang_krzysztof",
+   "group": "researchers",
+   "mesh": "Guy_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.639,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.386,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kovacs_nino",
+   "group": "pensioners",
+   "mesh": "Korneeva_nina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.399,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.98,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bondarenko_freja",
+   "group": "festival",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.379,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_costa_beatriz",
+   "group": "away",
+   "mesh": "Nao",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.083,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.254,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_romano_duc",
+   "group": "researchers",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.187,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.308,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_berzins_zeynep",
+   "group": "beach",
+   "mesh": "Korneeva_nina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.412,
+     "days": [
+      2,
+      3,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 14.762,
+     "days": [
+      2,
+      3,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_mensah_beatriz",
+   "group": "beach",
+   "mesh": "Hayashi_rina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.629,
+     "days": [
+      0,
+      2,
+      3
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 17.863,
+     "days": [
+      0,
+      2,
+      3
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_delacruz_dawit",
+   "group": "away",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.095,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.292,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_levi_aiko",
+   "group": "cinema",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 23.026,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "",
+     "chance": 0.12
+    }
+   ]
+  },
+  {
+   "key": "t_kask_aram",
+   "group": "away",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.576,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 13.891,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_fujita_zuzana",
+   "group": "festival",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.1,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_asante_tatiana",
+   "group": "researchers",
+   "mesh": "Hayashi_rina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.498,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.316,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_yanushkevich_etienne",
+   "group": "away",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 7.151,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 15.653,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_yanushkevich_ingrid",
+   "group": "away",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 9.154,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 16.521,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zhaksybekov_nino",
+   "group": "away",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.565,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.332,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_hernandez_arjun",
+   "group": "away",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.053,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.033,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_owusu_colette",
+   "group": "researchers",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.91,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.965,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_pereira_sanne",
+   "group": "researchers",
+   "mesh": "Li_vika",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.828,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.387,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tanaka_mads",
+   "group": "away",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.071,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.596,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tanaka_laima",
+   "group": "cinema",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 22.991,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "",
+     "chance": 0.12
+    }
+   ]
+  },
+  {
+   "key": "t_carvalho_akosua",
+   "group": "researchers",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.495,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.8,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_ramirez_shira",
+   "group": "beach",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.306,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 18.586,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_hargreaves_ales",
+   "group": "researchers",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.928,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.727,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_vinogradov_milagros",
+   "group": "away",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.576,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.171,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bondarenko_mindaugas",
+   "group": "researchers",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.421,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.564,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bondarenko_agustina",
+   "group": "researchers",
+   "mesh": "Frolova_masha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.927,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.417,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_okonkwo_mads",
+   "group": "away",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.112,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.714,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_hernandez_thibault",
+   "group": "away",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.081,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.005,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tehrani_seoyeon",
+   "group": "staff",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "mayak",
+     "at": 6.103,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "mayak",
+     "to": "amber",
+     "at": 14.85,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_lund_facundo",
+   "group": "festival",
+   "mesh": "Owner",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.12,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_kobayashi_arkady",
+   "group": "festival",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.114,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_acosta_kaisa",
+   "group": "beach",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.245,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 17.342,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_jung_inigo",
+   "group": "beach",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.239,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 17.177,
+     "days": [
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_georgiou_madison",
+   "group": "pensioners",
+   "mesh": "Korneeva_nina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.049,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.52,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_park_kaveh",
+   "group": "festival",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.211,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_acosta_klaus",
+   "group": "researchers",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.666,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.609,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_haile_chiara",
+   "group": "away",
+   "mesh": "Hayashi_rina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.594,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.253,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_jansen_hakon",
+   "group": "beach",
+   "mesh": "Guy_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.331,
+     "days": [
+      0,
+      1,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 18.5,
+     "days": [
+      0,
+      1,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_fraser_jericho",
+   "group": "beach",
+   "mesh": "Sorokin_oleg",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.05,
+     "days": [
+      0,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.966,
+     "days": [
+      0,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_petrauskas_guadalupe",
+   "group": "staff",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "mayak",
+     "at": 14.316,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "mayak",
+     "to": "zenit",
+     "at": 23.85,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bauer_eleni",
+   "group": "pensioners",
+   "mesh": "Korneeva_nina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.049,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.598,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kask_mette",
+   "group": "pensioners",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 8.685,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 10.088,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_hrytsenko_rodel",
+   "group": "beach",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.25,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.731,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_mortensen_ingrid",
+   "group": "away",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.546,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.351,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sharma_despina",
+   "group": "researchers",
+   "mesh": "Frolova_masha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.576,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.409,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_cerny_minh",
+   "group": "researchers",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.924,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.17,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_cerny_freja",
+   "group": "researchers",
+   "mesh": "Crowd_12",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.479,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.926,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_nascimento_levan",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 10.08,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.216,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_korhonen_daisuke",
+   "group": "festival",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.402,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_jankauskas_marketa",
+   "group": "festival",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "horizon",
+     "at": 0.389,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_bekele_ilze",
+   "group": "away",
+   "mesh": "Crowd_12",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.037,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.53,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_araujo_ama",
+   "group": "beach",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.678,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 17.622,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_muller_bence",
+   "group": "away",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.585,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.042,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_reddy_ruta",
+   "group": "pensioners",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 8.774,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 10.701,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_reyes_mehmet",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.567,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.34,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_heikkinen_lan",
+   "group": "staff",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 6.125,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 14.85,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sato_aram",
+   "group": "researchers",
+   "mesh": "Guy_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.275,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.76,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_korhonen_lars",
+   "group": "beach",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.026,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.431,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_korhonen_solveig",
+   "group": "beach",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.763,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 18.762,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_mizrahi_alesya",
+   "group": "researchers",
+   "mesh": "Li_vika",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.3,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.445,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_dubovik_elif",
+   "group": "pensioners",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.648,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.797,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_horvath_jihoon",
+   "group": "cinema",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "horizon",
+     "at": 23.036,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "",
+     "chance": 0.12
+    }
+   ]
+  },
+  {
+   "key": "t_reyes_almaz",
+   "group": "festival",
+   "mesh": "Hayashi_rina",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.27,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_tolmachev_tyler",
+   "group": "beach",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.713,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.298,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_zaitsev_duc",
+   "group": "festival",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "horizon",
+     "at": 0.257,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_huang_solomiya",
+   "group": "researchers",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.405,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.02,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_moreau_shira",
+   "group": "away",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 8.084,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 15.4,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_rousseau_mads",
+   "group": "beach",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.984,
+     "days": [
+      4,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.932,
+     "days": [
+      4,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_rousseau_seoyeon",
+   "group": "researchers",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.2,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.215,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_acosta_nurlan",
+   "group": "staff",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "mayak",
+     "at": 14.353,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kovacs_mette",
+   "group": "researchers",
+   "mesh": "Frolova_masha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.0,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.584,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_novotny_milagros",
+   "group": "researchers",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.31,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.235,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tehrani_ondrej",
+   "group": "beach",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.454,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.798,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_tehrani_malgorzata",
+   "group": "away",
+   "mesh": "Kimura_dasha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.048,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.499,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_girard_hiroshi",
+   "group": "pensioners",
+   "mesh": "Korneev_ivan",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 8.825,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.015,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bergstrom_minh",
+   "group": "away",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.545,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.831,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bergstrom_lyudmila",
+   "group": "away",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.046,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.171,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_gonzalez_astrid",
+   "group": "away",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.555,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.871,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_lund_aiko",
+   "group": "away",
+   "mesh": "Nao",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.161,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.345,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bianchi_krzysztof",
+   "group": "beach",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.199,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.218,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_romano_reka",
+   "group": "away",
+   "mesh": "Zhukova_lena",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.16,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.677,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_girma_nino",
+   "group": "away",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.119,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.118,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zhang_noriko",
+   "group": "away",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.567,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.03,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_novotny_chiara",
+   "group": "beach",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.733,
+     "days": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.76,
+     "days": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_hakobyan_gennady",
+   "group": "beach",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.722,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.362,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_lefebvre_mette",
+   "group": "beach",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.058,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 18.067,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_lebedev_solomiya",
+   "group": "staff",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 14.384,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 23.85,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_nasser_hanna",
+   "group": "pensioners",
+   "mesh": "Korneeva_nina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.229,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.769,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tamm_daisuke",
+   "group": "festival",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.43,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_barbosa_parisa",
+   "group": "beach",
+   "mesh": "Hayashi_rina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.525,
+     "days": [
+      0,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.396,
+     "days": [
+      0,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_kazlauskas_aram",
+   "group": "researchers",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.009,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.386,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_fontaine_elif",
+   "group": "away",
+   "mesh": "Streamer",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.096,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.091,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zhaksybekov_fernanda",
+   "group": "away",
+   "mesh": "Streamer",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.557,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.279,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_villanueva_zsofia",
+   "group": "festival",
+   "mesh": "Li_vika",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "horizon",
+     "at": 0.425,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_zhou_tamar",
+   "group": "beach",
+   "mesh": "Kimura_dasha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.471,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.285,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_cohen_hakon",
+   "group": "staff",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 6.134,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 14.85,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_lefebvre_gennady",
+   "group": "staff",
+   "mesh": "Guy_b",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 6.134,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 14.85,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_ortega_akosua",
+   "group": "away",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.596,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.711,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_beridze_omar",
+   "group": "beach",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.295,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.625,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_watanabe_alejandro",
+   "group": "festival",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.106,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_tulegenov_sigurd",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.086,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.301,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sargsyan_elif",
+   "group": "away",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.046,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.321,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_romano_folake",
+   "group": "away",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.068,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.579,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zhou_tomohiko",
+   "group": "beach",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.258,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.082,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_colombo_aiko",
+   "group": "festival",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.158,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_walker_lihua",
+   "group": "beach",
+   "mesh": "Streamer",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.312,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 14.991,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_johnson_agnieszka",
+   "group": "away",
+   "mesh": "Zhukova_lena",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 9.182,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 15.302,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_karimi_selam",
+   "group": "researchers",
+   "mesh": "Crowd_12",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.813,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.482,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kapanadze_nour",
+   "group": "away",
+   "mesh": "Streamer",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.049,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.718,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zimmermann_imogen",
+   "group": "away",
+   "mesh": "Zhukova_lena",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.047,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.18,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zhang_madison",
+   "group": "away",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.582,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.695,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zhuravlev_giuseppe",
+   "group": "beach",
+   "mesh": "Clerk",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.721,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 17.496,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_zhuravlev_oksana",
+   "group": "away",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.55,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.076,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_fontaine_bence",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.075,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.552,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_yavorsky_elif",
+   "group": "festival",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.404,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_lukashevich_lilit",
+   "group": "away",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.589,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.447,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_ferreira_carmen",
+   "group": "festival",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.196,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_ferrari_noriko",
+   "group": "away",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 9.183,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 16.411,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_yavorsky_almaz",
+   "group": "away",
+   "mesh": "Li_vika",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.601,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.915,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_karimi_rafael",
+   "group": "researchers",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.483,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.502,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_karimi_zsofia",
+   "group": "researchers",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.712,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.503,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_beridze_tiago",
+   "group": "beach",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.627,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.499,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_nowak_beatriz",
+   "group": "staff",
+   "mesh": "Zhukova_lena",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 14.384,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_nasser_oksana",
+   "group": "festival",
+   "mesh": "Li_vika",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "horizon",
+     "at": 0.465,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_haddad_shira",
+   "group": "away",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.552,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.465,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kim_haoran",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.068,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 14.589,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_schneider_astrid",
+   "group": "away",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.079,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.638,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zhaksybekov_francesca",
+   "group": "away",
+   "mesh": "Kimura_dasha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 10.185,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.621,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_mendoza_siobhan",
+   "group": "researchers",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.32,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.465,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_amada_eleni",
+   "group": "staff",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 14.85,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_georgiou_joao",
+   "group": "beach",
+   "mesh": "Owner",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.698,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.847,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_dubovik_thibault",
+   "group": "researchers",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.526,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.368,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_dubovik_ananya",
+   "group": "away",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.119,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.767,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tamm_egle",
+   "group": "researchers",
+   "mesh": "Frolova_masha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.765,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.13,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_ostrovsky_tatiana",
+   "group": "beach",
+   "mesh": "Hayashi_rina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.586,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.687,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_bauer_anahit",
+   "group": "festival",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.326,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_kang_maarja",
+   "group": "pensioners",
+   "mesh": "Zotova_galina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.187,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.387,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_villanueva_jihoon",
+   "group": "away",
+   "mesh": "Guy_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.066,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.091,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_zhou_tigran",
+   "group": "away",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.051,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.376,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bautista_meiling",
+   "group": "away",
+   "mesh": "Zhukova_lena",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.095,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.742,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_haugen_krzysztof",
+   "group": "away",
+   "mesh": "Clerk",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.599,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.268,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_lomidze_valentina",
+   "group": "beach",
+   "mesh": "Zhukova_lena",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.469,
+     "days": [
+      2,
+      3
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 15.898,
+     "days": [
+      2,
+      3
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_girma_padraig",
+   "group": "beach",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.033,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 17.195,
+     "days": [
+      0,
+      1
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_ek_yael",
+   "group": "festival",
+   "mesh": "Frolova_masha",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "horizon",
+     "at": 0.229,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_nakamura_ilya",
+   "group": "away",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.078,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.638,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_lefebvre_kaveh",
+   "group": "beach",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.877,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 17.857,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_bautista_santiago",
+   "group": "staff",
+   "mesh": "Lange_pyotr",
+   "trips": [
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 14.85,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_iyer_pyotr",
+   "group": "away",
+   "mesh": "Guy_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 10.064,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 13.643,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kovalenko_ursula",
+   "group": "beach",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.324,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 18.272,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_szabo_tamar",
+   "group": "away",
+   "mesh": "Streamer",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.581,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.905,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_mendoza_ama",
+   "group": "staff",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "mayak",
+     "at": 14.316,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_girard_subin",
+   "group": "away",
+   "mesh": "Nao",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.558,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.128,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_shevchuk_jiri",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.138,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.409,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kavanagh_femke",
+   "group": "beach",
+   "mesh": "Streamer",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.827,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.534,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_hargreaves_rohan",
+   "group": "pensioners",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.439,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.472,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_cerny_shirin",
+   "group": "festival",
+   "mesh": "Streamer",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "horizon",
+     "at": 0.255,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_chen_facundo",
+   "group": "festival",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "horizon",
+     "at": 0.451,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_nascimento_duc",
+   "group": "staff",
+   "mesh": "Valiev_rustam",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 14.375,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 23.85,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_ozturk_yael",
+   "group": "pensioners",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.142,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 12.246,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_tamm_seoyeon",
+   "group": "away",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.108,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.469,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_ferreira_kenji",
+   "group": "away",
+   "mesh": "Guy_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 9.084,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.312,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kavanagh_freja",
+   "group": "researchers",
+   "mesh": "Nao",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.046,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.409,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_krause_maarten",
+   "group": "staff",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 14.375,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 23.85,
+     "days": [
+      5,
+      6,
+      0,
+      1,
+      2
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_cerny_jukka",
+   "group": "away",
+   "mesh": "Zotov_lev",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.595,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.612,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_horvath_dariush",
+   "group": "away",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "academ",
+     "to": "aton",
+     "at": 8.185,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "academ",
+     "at": 15.619,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_barbosa_eoin",
+   "group": "researchers",
+   "mesh": "Clerk",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.411,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.874,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_pham_solveig",
+   "group": "away",
+   "mesh": "Girl_b",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.091,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.326,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sousa_tamar",
+   "group": "researchers",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.727,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.718,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_mizrahi_inigo",
+   "group": "staff",
+   "mesh": "Crowd_13",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "mayak",
+     "at": 14.316,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "mayak",
+     "to": "zenit",
+     "at": 23.85,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_petrauskas_femke",
+   "group": "researchers",
+   "mesh": "Guseva_valentina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.405,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.39,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_savitsky_shirin",
+   "group": "staff",
+   "mesh": "Kimura_dasha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "horizon",
+     "at": 14.373,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_kazlauskas_eleni",
+   "group": "staff",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "mayak",
+     "at": 6.103,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "mayak",
+     "to": "amber",
+     "at": 14.85,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_reddy_ama",
+   "group": "beach",
+   "mesh": "Orlova_tanya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.2,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.419,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_hernandez_tyler",
+   "group": "researchers",
+   "mesh": "Crowd_11",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.276,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 17.669,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_bauer_lucia",
+   "group": "beach",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 10.7,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 14.294,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_romero_zinaida",
+   "group": "researchers",
+   "mesh": "Hayashi_rina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 8.237,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.288,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_sokolov_lihua",
+   "group": "cinema",
+   "mesh": "Li_vika",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "horizon",
+     "at": 23.06,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "",
+     "chance": 0.12
+    }
+   ]
+  },
+  {
+   "key": "t_okafor_isla",
+   "group": "beach",
+   "mesh": "Girl_a",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 11.005,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 16.965,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_romano_olga",
+   "group": "beach",
+   "mesh": "Crowd_12",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 12.437,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 17.854,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "warm",
+     "chance": 0.6
+    }
+   ]
+  },
+  {
+   "key": "t_huang_astrid",
+   "group": "away",
+   "mesh": "Nishimura_aya",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.127,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 15.589,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_delacruz_yael",
+   "group": "pensioners",
+   "mesh": "Korneeva_nina",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 8.932,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.445,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_vinogradov_nigel",
+   "group": "away",
+   "mesh": "Sato_kei",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 8.571,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 17.326,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_vinogradov_almaz",
+   "group": "researchers",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "academ",
+     "at": 7.678,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "academ",
+     "to": "zenit",
+     "at": 18.087,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_karagiannis_maricel",
+   "group": "festival",
+   "mesh": "Sato_mila",
+   "trips": [
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 0.117,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "if": "festival_end",
+     "chance": 0.5
+    }
+   ]
+  },
+  {
+   "key": "t_romero_chinedu",
+   "group": "pensioners",
+   "mesh": "Sorokin_oleg",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "amber",
+     "at": 9.537,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "amber",
+     "to": "zenit",
+     "at": 11.834,
+     "days": [
+      5
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  },
+  {
+   "key": "t_solberg_kofi",
+   "group": "away",
+   "mesh": "Belov_misha",
+   "trips": [
+    {
+     "from": "zenit",
+     "to": "aton",
+     "at": 7.587,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    },
+    {
+     "from": "aton",
+     "to": "zenit",
+     "at": 16.14,
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "if": "",
+     "chance": 1.0
+    }
+   ]
+  }
+ ],
+ "regulars": [
+  "t_abenov_nour",
+  "t_acosta_klaus",
+  "t_asante_tatiana",
+  "t_bakker_margaux",
+  "t_barbosa_eoin",
+  "t_bautista_meiling",
+  "t_bautista_tyler",
+  "t_bekele_ilze",
+  "t_bergstrom_hanna",
+  "t_bergstrom_lyudmila",
+  "t_bergstrom_minh",
+  "t_berzins_marketa",
+  "t_bondarenko_agustina",
+  "t_bondarenko_mindaugas",
+  "t_carvalho_akosua",
+  "t_cerny_freja",
+  "t_cerny_jukka",
+  "t_cerny_minh",
+  "t_chen_ines",
+  "t_choi_kaisa",
+  "t_cohen_hakon",
+  "t_costa_beatriz",
+  "t_delacruz_dawit",
+  "t_dubovik_ananya",
+  "t_dubovik_thibault",
+  "t_esposito_arkady",
+  "t_esposito_chiara",
+  "t_ferrari_noriko",
+  "t_ferreira_kalev",
+  "t_ferreira_kenji",
+  "t_ferreira_nils",
+  "t_fontaine_bence",
+  "t_fontaine_elif",
+  "t_fraser_eoin",
+  "t_fraser_maricel",
+  "t_fujita_luana",
+  "t_girard_subin",
+  "t_girma_nino",
+  "t_gonzalez_astrid",
+  "t_haddad_shira",
+  "t_haile_chiara",
+  "t_haile_kaveh",
+  "t_hargreaves_ales",
+  "t_haugen_krzysztof",
+  "t_heikkinen_lan",
+  "t_henderson_inigo",
+  "t_hernandez_arjun",
+  "t_hernandez_thibault",
+  "t_hernandez_tyler",
+  "t_horvath_dariush",
+  "t_huang_astrid",
+  "t_huang_solomiya",
+  "t_iyer_pyotr",
+  "t_jansen_kwame",
+  "t_johansson_marketa",
+  "t_johnson_agnieszka",
+  "t_kapanadze_nour",
+  "t_karagiannis_arkady",
+  "t_karimi_rafael",
+  "t_karimi_selam",
+  "t_karimi_zsofia",
+  "t_kask_aram",
+  "t_kavanagh_freja",
+  "t_kazlauskas_aram",
+  "t_kazlauskas_eleni",
+  "t_kim_haoran",
+  "t_korhonen_ingrid",
+  "t_kovacs_mette",
+  "t_krause_maarten",
+  "t_lebedev_jihoon",
+  "t_lebedev_solomiya",
+  "t_lee_brandon",
+  "t_lefebvre_gennady",
+  "t_lindqvist_zuzana",
+  "t_lukashevich_laima",
+  "t_lukashevich_lilit",
+  "t_lund_aiko",
+  "t_macleod_thibault",
+  "t_mansour_beatriz",
+  "t_mendoza_siobhan",
+  "t_mensah_tesfaye",
+  "t_mizrahi_alesya",
+  "t_mizrahi_inigo",
+  "t_moreau_shira",
+  "t_mortensen_ingrid",
+  "t_mortensen_mehmet",
+  "t_muller_bence",
+  "t_nakamura_ilya",
+  "t_nascimento_duc",
+  "t_nascimento_levan",
+  "t_nasser_taras",
+  "t_nielsen_kenji",
+  "t_nielsen_milagros",
+  "t_novotny_milagros",
+  "t_nowak_tomohiko",
+  "t_nowak_tunde",
+  "t_okafor_daisuke",
+  "t_okonkwo_ivan",
+  "t_okonkwo_lars",
+  "t_okonkwo_mads",
+  "t_oliveira_omar",
+  "t_oliveira_yael",
+  "t_ortega_akosua",
+  "t_ortega_despina",
+  "t_owusu_colette",
+  "t_ozols_hanna",
+  "t_papadopoulos_sanne",
+  "t_pereira_sanne",
+  "t_petrauskas_femke",
+  "t_petrauskas_guadalupe",
+  "t_pham_solveig",
+  "t_prochazka_aigerim",
+  "t_reyes_mehmet",
+  "t_romano_brandon",
+  "t_romano_duc",
+  "t_romano_folake",
+  "t_romano_minh",
+  "t_romano_reka",
+  "t_romero_zinaida",
+  "t_rousseau_seoyeon",
+  "t_sargsyan_elif",
+  "t_sato_aram",
+  "t_schneider_astrid",
+  "t_sharma_despina",
+  "t_sharma_ruta",
+  "t_shevchuk_jiri",
+  "t_solberg_kofi",
+  "t_sousa_emiliano",
+  "t_sousa_tamar",
+  "t_szabo_tamar",
+  "t_tamm_egle",
+  "t_tamm_sanne",
+  "t_tamm_seoyeon",
+  "t_tanaka_mads",
+  "t_tehrani_giuseppe",
+  "t_tehrani_harriet",
+  "t_tehrani_malgorzata",
+  "t_tehrani_seoyeon",
+  "t_tsvetkov_padraig",
+  "t_tsvetkov_siobhan",
+  "t_tulegenov_sigurd",
+  "t_villanueva_jihoon",
+  "t_vinogradov_almaz",
+  "t_vinogradov_milagros",
+  "t_vinogradov_nigel",
+  "t_wang_krzysztof",
+  "t_watanabe_minjun",
+  "t_yanushkevich_etienne",
+  "t_yanushkevich_ingrid",
+  "t_yanushkevich_rafael",
+  "t_yavorsky_almaz",
+  "t_yavorsky_bohdan",
+  "t_yavorsky_tamar",
+  "t_yilmaz_mehmet",
+  "t_zaitsev_aiko",
+  "t_zaitsev_lilit",
+  "t_zhaksybekov_fernanda",
+  "t_zhaksybekov_francesca",
+  "t_zhaksybekov_nino",
+  "t_zhang_arjun",
+  "t_zhang_dawit",
+  "t_zhang_madison",
+  "t_zhang_noriko",
+  "t_zhou_tigran",
+  "t_zhuravlev_oksana",
+  "t_zielinski_carmen",
+  "t_zimmermann_imogen"
+ ]
+}
