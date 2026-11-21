@@ -11,11 +11,14 @@ it runs again after every regeneration:
     python3 tools/town/sanatorium_guests.py --check    exit 1 when the files are not as this script makes them
 
 What it writes: Content/PeopleData/townsfolk.json (the four people), town_places.json (the walked dining room
-P-SANATORIUM-DINING: in by the sanatorium's door, one place a guest at his or her chair), activities.json (eat_sanatorium_<meal>,
-the meals as duties), Content/Localization/town/strings_<lang>.json (names and "guest").
+P-SANATORIUM-DINING: in by the sanatorium's door, one place a guest at his or her chair; the inhalation room
+P-SANATORIUM-INHALE: two of its three chairs, the first left for the hero), activities.json (eat_sanatorium_<meal>, the meals
+as duties; cure_sanatorium_inhale, the morning's inhalation as a duty: docs/sanatorium_procedures.md, the guest at the same
+procedure talks to the hero), Content/Localization/town/strings_<lang>.json (names and "guest").
 """
 import collections
 import json
+import math
 import os
 import re
 import sys
@@ -39,6 +42,19 @@ EVERY_DAY = [0, 1, 2, 3, 4, 5, 6]
 # would all read as the first (breakfast) and the guests would sit on past its end
 ACTIVITY_LINES = ['    {"id": "eat_sanatorium_%s", "places": ["%s"], "slots": ["staff"], "pose": "eat", "minutes": [45, 45], '
                   '"meets": {"hunger": 2.6, "social": 0.4, "tired": 0.15}, "free": 0, "staff": 1},' % (m, PLACE_KIND) for m, _h in MEALS]
+
+# the inhalation room of the hydrotherapy wing (docs/sanatorium_procedures.md): the guests take turns on two of its chairs (the
+# first, by the door, stays free for the hero), half an hour each, Monday to Saturday; the n-th guest at INHALE_HOURS[n // 2]
+INHALE_PLACE = "P-SANATORIUM-INHALE"
+INHALE_KIND = "sanatorium_inhale"
+INHALE_CHAIRS = ("P-SANATORIUM/inhale_2", "P-SANATORIUM/inhale_3")
+INHALE_HOURS = (10.0, 11.0, 12.0, 15.0, 16.0, 17.0)
+INHALE_DAYS = [0, 1, 2, 3, 4, 5]
+# the way in, in the building's ring (export frame: the ring's centre at (0, 26)): along the ground hall from the lobby to the
+# treatment room, through the wing's door at -45 degrees, into the inhalation room (angle in degrees, radius in metres)
+INHALE_WAY = ((-80.0, 15.0), (-62.0, 15.0), (-50.0, 15.8), (-45.0, 16.95), (-41.0, 16.4))
+INHALE_LINE = ('    {"id": "cure_sanatorium_inhale", "places": ["%s"], "slots": ["staff"], "pose": "sit", "minutes": [30, 30], '
+               '"meets": {"tired": 0.1, "social": 0.25}, "free": 0, "staff": 1},' % INHALE_KIND)
 
 GUESTS = [
     {"key": "t_gromov_pyotr", "thing": "P-SANATORIUM/dining_table_1", "home": "P-SANATORIUM/1-01", "mesh": "Korneev_ivan",
@@ -81,7 +97,7 @@ def person(g):
         ("household", "t_" + g["home"].lower().replace("/", "_")), ("home", g["home"]), ("chronotype", "lark"),
         ("wake", g["wake"]), ("bed", g["bed"]), ("spread", 0.25),
         ("duties", [OD([("activity", "eat_sanatorium_" + m), ("place", PLACE_ID), ("role", "guest_" + g["key"][2:]),
-                        ("hours", list(h)), ("days", EVERY_DAY)]) for m, h in MEALS]),
+                        ("hours", list(h)), ("days", EVERY_DAY)]) for m, h in MEALS] + [inhale_duty(GUESTS.index(g))]),
         ("friends", list(g["friends"])), ("temper", OD(g["temper"])), ("walk_speed", g["walk_speed"]),
         ("occupation", "guest"), ("likes", OD(g["likes"])),
     ])
@@ -105,19 +121,53 @@ def dining_place(things, door, yaw):
                ("roles", []), ("building", "P-SANATORIUM"), ("path", [inside])])
 
 
+def inhale_duty(n):
+    """The n-th guest's turn in the inhalation room: a chair (by n), an hour (by n // 2)."""
+    h = INHALE_HOURS[(n // len(INHALE_CHAIRS)) % len(INHALE_HOURS)]
+    return OD([("activity", "cure_sanatorium_inhale"), ("place", INHALE_PLACE), ("role", "inhale_%d" % (n % len(INHALE_CHAIRS) + 1)),
+               ("hours", [h, h + 0.5]), ("days", INHALE_DAYS)])
+
+
+def inhale_place(things, door, yaw):
+    """The inhalation room: in by the sanatorium's door, along the hall and through the wing's door (the building's frame from
+    its export and interiors.json, as tools/town/town_activities.py finds it), a slot at each of the guests' chairs."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import town_activities
+    frame = town_activities.Frame("P-SANATORIUM", load(town_activities.PLAN), things)
+    slots = []
+    for i, tid in enumerate(INHALE_CHAIRS):
+        t = things[tid]
+        h = float((t.get("props") or {}).get("height", 0.45))
+        x, y, z = (round(v / 100.0, 2) for v in t["ue"])
+        slots.append(OD([("kind", "staff"), ("tag", "inhale_%d" % (i + 1)), ("pos", [x, y, round(z - h, 2)]),
+                         ("yaw", round(t["yaw"] % 360.0, 1)), ("height", h), ("thing", tid)]))
+    floor = slots[0]["pos"][2]
+    way = []
+    for ang, r in INHALE_WAY:
+        a = math.radians(ang)
+        w = frame.world((r * math.cos(a), 26.0 + r * math.sin(a), 0.0))
+        way.append([round(w[0], 2), round(w[1], 2), floor])
+    return OD([("id", INHALE_PLACE), ("kind", INHALE_KIND), ("door", list(door)), ("yaw", yaw), ("island", 0), ("slots", slots),
+               ("roles", []), ("building", "P-SANATORIUM"), ("path", way)])
+
+
 def build():
     """{path: new text} for every file this script owns a part of."""
     out = {}
     things = {t["id"]: t for t in load(INTERIORS)["things"] if t["plot"] == "P-SANATORIUM"}
+    for tid in [g["thing"] for g in GUESTS] + list(INHALE_CHAIRS):
+        if tid not in things:
+            sys.exit("sanatorium_guests: %s is not a thing in interiors.json (python3 tools/city/interiors.py)" % tid)
     for g in GUESTS:
         if g["thing"] not in things:
             sys.exit("sanatorium_guests: %s is not a thing in interiors.json (python3 tools/city/interiors.py)" % g["thing"])
     # the places: the dining room after the sanatorium itself
     pd = load(PLACES)
-    places = [p for p in pd["places"] if p["id"] != PLACE_ID]
+    places = [p for p in pd["places"] if p["id"] not in (PLACE_ID, INHALE_PLACE)]
     at = next(i for i, p in enumerate(places) if p["id"] == "P-SANATORIUM")
     san = places[at]
     places.insert(at + 1, dining_place(things, san["door"], san["yaw"]))
+    places.insert(at + 2, inhale_place(things, san["door"], san["yaw"]))
     for g in GUESTS:
         flat = next((p for p in places if p["id"] == g["home"]), None)
         if not flat or flat["kind"] != "flat":
@@ -144,9 +194,9 @@ def build():
         out[STRINGS % lang] = dump(sd)
     # the meal as a duty (activities.json is written by hand, one activity a line: after work_town)
     text = open(ACTIVITIES, encoding="utf-8").read()
-    lines = [l for l in text.split("\n") if '"id": "eat_sanatorium' not in l]
+    lines = [l for l in text.split("\n") if '"id": "eat_sanatorium' not in l and '"id": "cure_sanatorium' not in l]
     at = next(i for i, l in enumerate(lines) if '"id": "work_town"' in l)
-    lines[at + 1:at + 1] = ACTIVITY_LINES
+    lines[at + 1:at + 1] = ACTIVITY_LINES + [INHALE_LINE]
     out[ACTIVITIES] = "\n".join(lines)
     json.loads(out[ACTIVITIES])
     return out
@@ -163,7 +213,7 @@ def main():
         with open(p, "w", encoding="utf-8") as f:
             f.write(out[p])
         print("wrote", os.path.relpath(p, ROOT))
-    print("sanatorium guests: %d people, %d meals a day at %s" % (len(GUESTS), len(MEALS), PLACE_ID))
+    print("sanatorium guests: %d people, %d meals a day at %s, inhalations at %s" % (len(GUESTS), len(MEALS), PLACE_ID, INHALE_PLACE))
 
 
 if __name__ == "__main__":

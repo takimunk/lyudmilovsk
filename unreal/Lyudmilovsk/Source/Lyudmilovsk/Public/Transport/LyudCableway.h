@@ -162,6 +162,8 @@ private:
 public:
 	/** The route board by the club's exit (where it stands), for the E prompt. */
 	bool ClubBoardNear(const FVector& P, float R) const { return ClubBoard && FVector::Dist(ClubBoardAt.GetLocation() + FVector(0, 0, 150.f), P) < R; }
+	/** Where the route board by the club's exit stands (false: none): the club's sign hangs over it (ULyudFrontDoor). */
+	bool GetClubBoard(FTransform& Out) const { Out = ClubBoardAt; return ClubBoard != nullptr; }
 	/** The route diagram on a vestibule's wall near P: its station, -1 none. */
 	int32 VestibuleBoardNear(const FVector& P, float R) const
 	{

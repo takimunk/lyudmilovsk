@@ -175,6 +175,7 @@ fi
 suite sea.test                    - bash tools/sea/run.sh test
 suite sea.days                    - bash tools/sea/run.sh days
 suite sea.field                   - bash tools/sea/run.sh field
+suite telescopesim.test           - bash tools/telescopesim/run.sh test
 suite transportsim.test           - bash tools/transportsim/run.sh test
 suite togethersim.data            - bash tools/togethersim/run.sh data
 suite togethersim.week            slow bash tools/togethersim/run.sh brief

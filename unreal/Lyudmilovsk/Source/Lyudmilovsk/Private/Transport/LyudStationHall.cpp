@@ -5,7 +5,12 @@
 
 #include "Transport/LyudCableway.h"
 #include "Transport/LyudTransport.h"
+#include "Transport/LyudFrontDoor.h"
+#include "Audio/LyudSoundscape.h"
+#include "FrontDoor.h"
+#include "SLyudFrontDoorWidgets.h"
 #include "StationLife.h"
+#include "People/CounterService.h"
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
@@ -17,6 +22,7 @@
 #include "Components/PointLightComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
 #include "Dom/JsonObject.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
@@ -404,6 +410,11 @@ bool ALyudStationHall::SpawnPerson(FPerson& P)
 	B->Drive(P.At, P.Yaw, (EPersonPose)P.Pose, 0, 0.f, P.SeatHeight, 0.f, true);
 	P.Body = B;
 	Bodies.Add(B);
+	// the counter service knows them (who serves, who is whom): the barista sells through it, owners are found by it
+	if (ULyudCounterService* CounterService = ULyudCounterService::Get(this))
+	{
+		CounterService->RegisterBody(B, P.Pid, P.Role == TEXT("barista"));
+	}
 	if (P.Pid >= 0)
 	{
 		if (UPeopleLifeSubsystem* PeopleLife = UPeopleLifeSubsystem::Get(GetWorld()))
@@ -465,9 +476,9 @@ void ALyudStationHall::SpawnPeople()
 	for (int32 K = 0; K < Order.Num() && Made < Want; K++)
 	{
 		FSlot& S = Slots[Order[K]];
-		if (S.Kind == 2 && !StaffOnDuty())
+		if ((S.Kind == 2 && !StaffOnDuty()) || S.Kind == 8)
 		{
-			continue;          // nobody queues at a shut buffet
+			continue;          // nobody queues at a shut buffet; the line's places behind the counter fill by the line itself
 		}
 		FPerson P;
 		P.Role = TEXT("passenger");
@@ -497,10 +508,15 @@ void ALyudStationHall::ClearPeople()
 	{
 		Unpresent(P);
 	}
+	ULyudCounterService* CounterService = ULyudCounterService::Get(this);
 	for (ANpcBody* B : Bodies)
 	{
 		if (IsValid(B))
 		{
+			if (CounterService)
+			{
+				CounterService->UnregisterBody(B);
+			}
 			B->Destroy();
 		}
 	}
@@ -559,7 +575,7 @@ void ALyudStationHall::Churn(const FVector& Cam, const FVector& Look)
 		for (int32 Tries = 0; Tries < 8; Tries++)
 		{
 			const int32 K = R.RandRange(0, Slots.Num() - 1);
-			if (!Slots.IsValidIndex(K) || Slots[K].Who >= 0 || !Unseen(Slots[K].At) || (Slots[K].Kind == 2 && !StaffOnDuty()))
+			if (!Slots.IsValidIndex(K) || Slots[K].Who >= 0 || Slots[K].Kind == 8 || !Unseen(Slots[K].At) || (Slots[K].Kind == 2 && !StaffOnDuty()))
 			{
 				continue;
 			}
@@ -702,11 +718,23 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 		// a place: the one their name picks first, else the next free one (walking out: a standing place by the door side)
 		int32 K = -1;
 		const uint32 H0 = GetTypeHash(FString(UTF8_TO_TCHAR(Rd.Key.c_str())));
+		// the morning rush: most of them queue for a coffee first (behind whoever is at the counter, never before the hero)
+		if (!bOut && bBuffet && LineSlots.Num() > 1 && Tr->LifeHour() < 10.5f && LyudTransport::LifeHash(Rd.Key, 211u + (uint32)I) < 0.6f)
+		{
+			TArray<int32> State;
+			LineState(State);
+			const std::vector<int> V(State.GetData(), State.GetData() + State.Num());
+			const int J = LyudFrontDoor::JoinSpot(V);
+			if (J >= 0 && Unseen(Slots[LineSlots[J]].At))
+			{
+				K = LineSlots[J];
+			}
+		}
 		for (int32 J = 0; J < Slots.Num() && K < 0; J++)
 		{
 			const int32 C = (int32)((H0 + (uint32)J * 7u) % (uint32)Slots.Num());
 			const FSlot& S = Slots[C];
-			if (S.Who >= 0 || (S.Kind == 2 && !bBuffet) || (bOut && S.SeatHeight > 0.f) || !Unseen(S.At))
+			if (S.Who >= 0 || S.Kind == 8 || (S.Kind == 2 && !bBuffet) || (bOut && S.SeatHeight > 0.f) || !Unseen(S.At))
 			{
 				continue;
 			}
@@ -726,7 +754,7 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 		const float Roll = LyudTransport::LifeHash(Rd.Key, 53u + (uint32)I);
 		P.Pose = (uint8)(P.SeatHeight > 0.f ? (Slots[K].Kind == 1 ? (Roll < 0.5f ? EPersonPose::Eat : EPersonPose::Read)
 			: (Roll < 0.35f ? EPersonPose::Read : EPersonPose::Sit))
-			: (Slots[K].Kind == 6 || Slots[K].Kind == 5 ? EPersonPose::Look : (Roll < 0.2f ? EPersonPose::Talk : EPersonPose::Stand)));
+			: (Slots[K].Kind == 6 || Slots[K].Kind == 5 ? EPersonPose::Look : (Roll < 0.2f && Slots[K].Line < 0 ? EPersonPose::Talk : EPersonPose::Stand)));
 		P.Model = LifeModel(UTF8_TO_TCHAR(Rd.Key.c_str()), UTF8_TO_TCHAR(Rd.Mesh.c_str()), P.Pid);
 		if (P.Model.IsEmpty())
 		{
@@ -821,33 +849,49 @@ void ALyudStationHall::SetLights(bool bOn)
 
 void ALyudStationHall::TickPrompt(float DeltaTime)
 {
-	// the barista sells over the counter (T); the attendant shows the route diagram (E); each greets the player once a visit
+	// the barista sells over the counter (T) and pours a regular's usual (E); the attendant shows the route diagram (E), and at
+	// the front door gives the travel card first; the punch on the desk (E) stamps the card; the lost and found shelf (E): the
+	// attendant hands over what lies there. Each greets the player once a visit.
 	UWorld* World = GetWorld();
 	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0);
 	APlayerController* PC = Pawn ? Cast<APlayerController>(Pawn->GetController()) : nullptr;
 	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	ULyudFrontDoor* FrontDoor = ULyudFrontDoor::Get(this);
 	int32 Best = -1;
 	FPerson* BestP = nullptr;
+	FPerson* Attendant = nullptr;
 	if (PC && UI && !UI->IsOpen() && Pawn->IsA<AHeroCharacter>() && !Pawn->IsHidden())
 	{
 		const FVector Eye = Pawn->GetPawnViewLocation();
 		const FVector Look = PC->GetControlRotation().Vector();
+		const FVector Feet = Pawn->GetActorLocation();
 		for (FPerson& P : People)
 		{
 			if (P.Role == TEXT("passenger") || !P.Body.IsValid())
 			{
 				continue;
 			}
-			const float Dist = FVector::Dist2D(Pawn->GetActorLocation(), P.At);
+			Attendant = P.Role == TEXT("attendant") ? &P : Attendant;
+			const float Dist = FVector::Dist2D(Feet, P.At);
 			const FVector To = (P.At + FVector(0, 0, 140.f) - Eye).GetSafeNormal();
 			const bool bLooks = FVector::DotProduct(Look, To) > 0.6f;
-			if (!P.bGreeted && Dist < 600.f && bLooks && FMath::Abs(Pawn->GetActorLocation().Z - P.At.Z) < 250.f)
+			if (!P.bGreeted && Dist < 600.f && bLooks && FMath::Abs(Feet.Z - P.At.Z) < 250.f)
 			{
 				P.bGreeted = true;
 				if (ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this))
 				{
 					const int32 N = 1 + (int32)((Seed + (uint32)Clock) % 3);
-					Talk->SayLine(P.Body.Get(), FString::Printf(TEXT("line.transport.%s.hello.%d"), *P.Role.ToString(), N));
+					// a regular of the buffet (he has a usual here): the barista says so
+					const bool bKnown = P.Role == TEXT("barista") && FrontDoor && !CounterKey.IsEmpty() && FrontDoor->UsualAt(CounterKey) != NAME_None;
+					Talk->SayLine(P.Body.Get(), bKnown ? FString::Printf(TEXT("line.frontdoor.barista_regular.%d"), 1 + (N % 2))
+						: FString::Printf(TEXT("line.transport.%s.hello.%d"), *P.Role.ToString(), N));
+				}
+				if (P.Role == TEXT("barista"))
+				{
+					if (ULyudCounterService* CounterService = ULyudCounterService::Get(this))
+					{
+						CounterService->NoteGreeted(P.Body.Get());
+					}
 				}
 			}
 			if (Dist < 330.f && bLooks)
@@ -856,16 +900,71 @@ void ALyudStationHall::TickPrompt(float DeltaTime)
 				BestP = &P;
 			}
 		}
+		// the small things win over the people behind them: the punch on the desk, the shelf by it
+		auto Aimed = [&](const FVector& At, float Reach)
+		{
+			return !At.IsZero() && FVector::Dist2D(Feet, At) < Reach && FMath::Abs(Feet.Z - At.Z) < 200.f &&
+				FVector::DotProduct(Look, (At - Eye).GetSafeNormal()) > 0.8f;
+		};
+		if (FrontDoor && Aimed(PunchAt, 170.f))
+		{
+			Best = 2;
+		}
+		else if (FrontDoor && bFront && Aimed(ShelfAt + FVector(0, 0, 90.f), 190.f))
+		{
+			Best = 3;
+		}
 	}
-	if (Best != Prompted && UI)
+	// the barista's prompt names his usual; the attendant's is the card's until he has one
+	FName Usual = NAME_None;
+	int32 UsualPrice = 0;
+	if (Best == 0 && FrontDoor && !CounterKey.IsEmpty())
 	{
-		Prompted = Best;
-		UI->SetPrompt(this, Best == 0 ? LyudText::Get(TEXT("ui.shop.prompt")) : Best == 1 ? LyudText::Get(TEXT("transport.hall.attendant_prompt")) : FText::GetEmpty());
+		Usual = FrontDoor->UsualAt(CounterKey);
+		if (Usual != NAME_None)
+		{
+			bool bSold = false;
+			for (const FLyudShopGood& G : StockOf(Shop))
+			{
+				if (G.Item == Usual)
+				{
+					UsualPrice = G.Price;
+					bSold = true;
+				}
+			}
+			Usual = bSold ? Usual : NAME_None;
+		}
+	}
+	const bool bCardFirst = Best == 1 && bFront && FrontDoor && !FrontDoor->HasCard();
+	const int32 Shown = Best == 0 && Usual != NAME_None ? 10 : Best == 1 && bCardFirst ? 11 : Best;
+	if (Shown != Prompted && UI)
+	{
+		Prompted = Shown;
+		FText Text = FText::GetEmpty();
+		switch (Shown)
+		{
+		case 0: Text = LyudText::Get(TEXT("ui.shop.prompt")); break;
+		case 10:
+			Text = FText::FromString(LyudText::Get(TEXT("ui.shop.prompt")).ToString() + TEXT("\n") + LyudText::Get(TEXT("frontdoor.usual.prompt"),
+				{ FStringFormatArg(LyudText::Get(FString::Printf(TEXT("item.%s.name"), *Usual.ToString())).ToString()), FStringFormatArg(UsualPrice) }).ToString());
+			break;
+		case 1: Text = LyudText::Get(TEXT("transport.hall.attendant_prompt")); break;
+		case 11: Text = LyudText::Get(TEXT("frontdoor.card.prompt")); break;
+		case 2: Text = LyudText::Get(TEXT("frontdoor.punch.prompt")); break;
+		case 3: Text = LyudText::Get(TEXT("frontdoor.shelf.prompt")); break;
+		default: break;
+		}
+		UI->SetPrompt(this, Text);
 	}
 	if (!PC || Best < 0)
 	{
 		return;
 	}
+	auto Done = [&]()
+	{
+		Prompted = -1;
+		UI->SetPrompt(this, FText::GetEmpty());
+	};
 	if (Best == 0 && PC->WasInputKeyJustPressed(EKeys::T))
 	{
 		const TArray<FLyudShopGood> Goods = StockOf(Shop);
@@ -876,23 +975,56 @@ void ALyudStationHall::TickPrompt(float DeltaTime)
 			{
 				StationName = T->StationName(Station);
 			}
+			// the counter service serves it as a scene (the cup on the counter, the change), and the front door counts his usual
+			if (ULyudCounterService* CounterService = ULyudCounterService::Get(this))
+			{
+				CounterService->OpenedAt(CounterKey, BestP->Body.Get(), BestP->Pid);
+			}
 			UI->OpenShop(LyudText::Get(TEXT("ui.shop.title_station_buffet"), { FStringFormatArg(StationName.ToString()) }), Goods);
-			Prompted = -1;
-			UI->SetPrompt(this, FText::GetEmpty());
+			Done();
 		}
+	}
+	else if (Best == 0 && Usual != NAME_None && PC->WasInputKeyJustPressed(EKeys::E))
+	{
+		FrontDoor->BuyUsual(CounterKey, Usual, UsualPrice, BestP->Body.Get(), BestP->Pid);
+		if (BestP->Body.IsValid())
+		{
+			BestP->TalkLeft = 3.f;
+			BestP->Yaw = (Pawn->GetActorLocation() - BestP->At).Rotation().Yaw;
+			BestP->Pose = (uint8)EPersonPose::Talk;
+		}
+		Done();
 	}
 	else if (Best == 1 && PC->WasInputKeyJustPressed(EKeys::E))
 	{
-		if (ULyudTransportSubsystem* T = ULyudTransportSubsystem::Get(this))
+		if (bCardFirst)
 		{
-			T->OpenDiagram(Station);
+			FrontDoor->GiveCard(BestP->Body.Get(), BestP->Pid);
 		}
-		if (ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this))
+		else
 		{
-			Talk->SayLine(BestP->Body.Get(), FString::Printf(TEXT("line.transport.attendant.help.%d"), 1 + (int32)((uint32)Clock % 3)));
+			if (ULyudTransportSubsystem* T = ULyudTransportSubsystem::Get(this))
+			{
+				T->OpenDiagram(Station);
+			}
+			if (ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this))
+			{
+				Talk->SayLine(BestP->Body.Get(), FString::Printf(TEXT("line.transport.attendant.help.%d"), 1 + (int32)((uint32)Clock % 3)));
+			}
 		}
-		Prompted = -1;
-		UI->SetPrompt(this, FText::GetEmpty());
+		Done();
+	}
+	else if (Best == 2 && PC->WasInputKeyJustPressed(EKeys::E))
+	{
+		FrontDoor->Punch(Station, PunchAt);
+		Done();
+	}
+	else if (Best == 3 && PC->WasInputKeyJustPressed(EKeys::E))
+	{
+		// the attendant (when on shift) says whose it is; without them he takes it all the same
+		FrontDoor->TakeFromShelf(Attendant ? Attendant->Body.Get() : nullptr, Attendant ? Attendant->Pid : -1);
+		ShelfShown = -1;
+		Done();
 	}
 }
 
@@ -908,10 +1040,22 @@ void ALyudStationHall::Tick(float DeltaTime)
 	const FVector Cam = PC->PlayerCameraManager->GetCameraLocation();
 	const float D = FVector::Dist2D(Cam, Middle);
 	const bool bLevel = FMath::Abs(Cam.Z - Middle.Z) < LevelBand;
-	const bool bWantLights = D < LightsOn && FMath::Abs(Cam.Z - Middle.Z) < LevelBand * 2.f;
+	// the front door's lamps at dusk: seen from across the forecourt (docs/front_door.md)
+	const ULyudFrontDoor* FrontDoor = bFront ? ULyudFrontDoor::Get(this) : nullptr;
+	const float LightsReach = FrontDoor && FrontDoor->IsDusk() ? 25000.f : LightsOn;
+	const bool bWantLights = D < LightsReach && FMath::Abs(Cam.Z - Middle.Z) < (FrontDoor && FrontDoor->IsDusk() ? 6000.f : LevelBand * 2.f);
 	if (bWantLights != bLightsOn)
 	{
 		SetLights(bWantLights);
+	}
+	// the line, the punch, the board and the shelf: placed once the player first comes near (the cores are there to test against)
+	if (!bFrontBuilt && D < LightsOn)
+	{
+		BuildFrontDoor();
+	}
+	if (bFrontBuilt)
+	{
+		TickFront(DeltaTime, Cam, PC->PlayerCameraManager->GetCameraRotation().Vector());
 	}
 	const bool bAllowed = CVarHallPeople.GetValueOnGameThread() != 0;
 	if (!bPeopleOn && bAllowed && D < PeopleOn && bLevel)
@@ -956,7 +1100,7 @@ void ALyudStationHall::Tick(float DeltaTime)
 				P.Pose = P.BasePose;
 			}
 		}
-		if (ANpcBody* B = P.Body.Get())
+		if (ANpcBody* B = P.Body.Get(); B && !P.bWalking)
 		{
 			if (B->WasRecentlyRendered(0.5f))
 			{
@@ -970,6 +1114,7 @@ void ALyudStationHall::Tick(float DeltaTime)
 		ChurnTimer = 40.f + (float)((Seed + (uint32)Clock) % 50);
 		Churn(Cam, PC->PlayerCameraManager->GetCameraRotation().Vector());
 	}
+	TickWalks(DeltaTime);
 	TickPrompt(DeltaTime);
 	TickBarks(DeltaTime, Cam);
 }
@@ -978,6 +1123,531 @@ void ALyudStationHall::EndPlay(const EEndPlayReason::Type Reason)
 {
 	ClearPeople();
 	Super::EndPlay(Reason);
+}
+
+// --- the club's front door (docs/front_door.md) -----------------------------------------------------------------------
+
+namespace LyudHallFront
+{
+	constexpr float LineGap = 85.f;         // cm between people in the counter's line
+	constexpr int32 LineMax = 4;            // places behind the counter place
+	constexpr float WalkSpeed = 110.f;      // cm/s stepping up or off with the cup
+	constexpr float BoardNear = 4000.f;     // the board is drawn within this of the camera
+	constexpr float ClackNear = 2500.f;
+
+	FString Paint(FName Lost)
+	{
+		// the lost things' looks on the shelf (LyudInventory's tints, roughly)
+		static const TMap<FName, FString> Paints = {
+			{ TEXT("lost_umbrella"), TEXT("#1F3A5F") }, { TEXT("lost_mitten"), TEXT("#B03030") }, { TEXT("lost_scarf"), TEXT("#D9A441") },
+			{ TEXT("lost_glasses"), TEXT("#202020") }, { TEXT("lost_keys"), TEXT("#B8A040") }, { TEXT("lost_bear"), TEXT("#8A5A2B") },
+		};
+		const FString* P = Paints.Find(Lost);
+		return P ? *P : FString(TEXT("#888888"));
+	}
+
+	FVector Size(FName Lost)
+	{
+		static const TMap<FName, FVector> Sizes = {
+			{ TEXT("lost_umbrella"), FVector(8.f, 34.f, 8.f) }, { TEXT("lost_mitten"), FVector(10.f, 14.f, 5.f) }, { TEXT("lost_scarf"), FVector(16.f, 26.f, 7.f) },
+			{ TEXT("lost_glasses"), FVector(6.f, 14.f, 4.f) }, { TEXT("lost_keys"), FVector(6.f, 8.f, 2.f) }, { TEXT("lost_bear"), FVector(14.f, 14.f, 20.f) },
+		};
+		const FVector* S = Sizes.Find(Lost);
+		return S ? *S : FVector(10.f);
+	}
+}
+
+UStaticMeshComponent* ALyudStationHall::PropBox(const FVector& At, const FRotator& R, const FVector& SizeCm, const FString& Paint, bool bCollide)
+{
+	UStaticMesh* Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+	if (!Cube)
+	{
+		return nullptr;
+	}
+	UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(this);
+	C->SetupAttachment(RootComponent);
+	C->SetMobility(EComponentMobility::Static);
+	C->SetStaticMesh(Cube);
+	C->SetWorldLocationAndRotation(At, R);
+	C->SetWorldScale3D(SizeCm / 100.f);
+	if (Way)
+	{
+		C->SetMaterial(0, Way->Mat(FName(*Paint)));
+	}
+	C->SetCollisionEnabled(bCollide ? ECollisionEnabled::QueryAndPhysics : ECollisionEnabled::NoCollision);
+	if (bCollide)
+	{
+		C->SetCollisionResponseToAllChannels(ECR_Block);
+	}
+	C->SetCastShadow(SizeCm.GetMax() > 40.f);
+	C->bAffectDistanceFieldLighting = false;
+	C->RegisterComponent();
+	Props.Add(C);
+	return C;
+}
+
+bool ALyudStationHall::Clear(const FVector& Floor, float Radius) const
+{
+	// room for somebody standing here: nothing of the hall in the way (its cores, walls), floor under the feet
+	UWorld* World = GetWorld();
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(HallFrontClear), false, this);
+	for (ANpcBody* B : Bodies)
+	{
+		Q.AddIgnoredActor(B);
+	}
+	if (APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0))
+	{
+		Q.AddIgnoredActor(Pawn);
+	}
+	if (World->OverlapAnyTestByChannel(Floor + FVector(0, 0, 100.f), FQuat::Identity, ECC_WorldStatic, FCollisionShape::MakeCapsule(Radius, 80.f), Q))
+	{
+		return false;
+	}
+	FHitResult H;
+	return World->LineTraceSingleByChannel(H, Floor + FVector(0, 0, 40.f), Floor - FVector(0, 0, 60.f), ECC_WorldStatic, Q);
+}
+
+void ALyudStationHall::BuildLine()
+{
+	// the counter's line: the counter place first, then spots behind it, one way that is clear of the furniture and of the
+	// hall's other places (away from the counter, or along it)
+	LineSlots.Reset();
+	int32 Front = -1;
+	for (int32 I = 0; I < Slots.Num() && Front < 0; I++)
+	{
+		Front = Slots[I].Kind == 2 ? I : -1;
+	}
+	if (Front < 0)
+	{
+		return;
+	}
+	Slots[Front].Line = 0;
+	LineSlots.Add(Front);
+	const FVector Customer = Slots[Front].At;
+	FVector Away = Customer - CounterAt;
+	Away.Z = 0.f;
+	if (CounterAt.IsZero() || Away.Size() < 10.f)
+	{
+		Away = -FRotator(0.f, Slots[Front].Yaw, 0.f).Vector();
+	}
+	Away = Away.GetSafeNormal2D();
+	const FVector Side = FRotator(0.f, Slots[Front].Yaw + 90.f, 0.f).Vector();
+	const FVector Ways[] = { Away, Side, -Side, (Away + Side).GetSafeNormal2D(), (Away - Side).GetSafeNormal2D() };
+	auto FarFromPlaces = [&](const FVector& P)
+	{
+		for (int32 I = 0; I < Slots.Num(); I++)
+		{
+			if (I != Front && FVector::Dist2D(Slots[I].At, P) < 60.f)
+			{
+				return false;
+			}
+		}
+		for (const FPerson& S : StaffPlan)
+		{
+			if (FVector::Dist2D(S.At, P) < 70.f)
+			{
+				return false;
+			}
+		}
+		return true;
+	};
+	int32 BestWay = -1, BestCount = 0;
+	for (int32 W = 0; W < (int32)UE_ARRAY_COUNT(Ways); W++)
+	{
+		int32 N = 0;
+		while (N < LyudHallFront::LineMax)
+		{
+			const FVector P = Customer + Ways[W] * LyudHallFront::LineGap * (N + 1);
+			if (!FarFromPlaces(P) || !Clear(P, 28.f))
+			{
+				break;
+			}
+			N++;
+		}
+		if (N > BestCount)
+		{
+			BestCount = N;
+			BestWay = W;
+		}
+	}
+	for (int32 N = 0; N < BestCount; N++)
+	{
+		FSlot S;
+		S.At = Customer + Ways[BestWay] * LyudHallFront::LineGap * (N + 1);
+		S.Yaw = (-Ways[BestWay]).Rotation().Yaw;
+		S.Kind = 8;
+		S.Line = N + 1;
+		LineSlots.Add(Slots.Add(S));
+	}
+}
+
+void ALyudStationHall::BuildFrontDoor()
+{
+	bFrontBuilt = true;
+	CounterKey = FString::Printf(TEXT("hall:%d"), Station);
+	BuildLine();
+	const FPerson* Desk = nullptr;
+	for (const FPerson& P : StaffPlan)
+	{
+		Desk = P.Role == TEXT("attendant") ? &P : Desk;
+	}
+	ULyudFrontDoor* FrontDoor = ULyudFrontDoor::Get(this);
+	bFront = FrontDoor && FrontDoor->FrontStation() == Station;
+	if (!Desk)
+	{
+		return;
+	}
+	const FRotator Facing(0.f, Desk->Yaw, 0.f);
+	const FVector Fwd = Facing.Vector();
+	const FVector Right = FRotator(0.f, Desk->Yaw + 90.f, 0.f).Vector();
+	// the punch on the attendant's desk: on the desk's top where the cores have one, else at a desk's height
+	{
+		const FVector Over = Desk->At + Fwd * 55.f + Right * 45.f;
+		float Top = Desk->At.Z + 95.f;
+		FHitResult H;
+		FCollisionQueryParams Q(SCENE_QUERY_STAT(HallPunch), false);
+		if (GetWorld()->LineTraceSingleByChannel(H, Over + FVector(0, 0, 150.f), Over + FVector(0, 0, 40.f), ECC_WorldStatic, Q) &&
+			H.ImpactPoint.Z - Desk->At.Z > 60.f && H.ImpactPoint.Z - Desk->At.Z < 130.f)
+		{
+			Top = H.ImpactPoint.Z;
+		}
+		PunchAt = FVector(Over.X, Over.Y, Top);
+		PropBox(PunchAt + FVector(0, 0, 6.f), Facing, FVector(9.f, 13.f, 12.f), TEXT("#2E4A3A"), false);
+		PropBox(PunchAt + FVector(0, 0, 13.f) + Fwd * 3.f, Facing + FRotator(-12.f, 0.f, 0.f), FVector(16.f, 2.5f, 2.5f), TEXT("#B4B4B0"), false);
+		PropBox(PunchAt + FVector(0, 0, 0.6f) - Right * 14.f, Facing, FVector(6.f, 9.f, 1.2f), TEXT("#E8D9B0"), false);   // a card blank
+	}
+	if (!bFront)
+	{
+		return;
+	}
+	// the departures board over the desk, facing the hall
+	if (const ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this); Tr && Tr->GetNet())
+	{
+		const int32 SunLine = Tr->GetNet()->FindLine("sun");
+		BoardAt = Desk->At + Fwd * 30.f + FVector(0, 0, 238.f);
+		Board = NewObject<UWidgetComponent>(this, TEXT("FlapBoard"));
+		Board->SetupAttachment(RootComponent);
+		Board->SetMobility(EComponentMobility::Movable);
+		Board->SetWidgetSpace(EWidgetSpace::World);
+		Board->SetDrawSize(FVector2D(1200.f, 560.f));
+		Board->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		Board->SetBlendMode(EWidgetBlendMode::Opaque);
+		Board->SetCastShadow(false);
+		Board->bAffectDistanceFieldLighting = false;
+		Board->RegisterComponent();
+		Board->SetWorldLocationAndRotation(BoardAt, Facing);
+		Board->SetWorldScale3D(FVector(0.12f));
+		FlapBoard = SNew(SLyudFlapBoard).Station(Station).Line(SunLine);
+		Board->SetSlateWidget(FlapBoard);
+		Board->SetRedrawTime(1.f);
+		Board->SetVisibility(false);
+		// its frame and the two rods it hangs by
+		PropBox(BoardAt - Fwd * 2.f, Facing, FVector(2.f, 150.f, 73.f), TEXT("#2A2A2C"), false);
+		for (const float Y : { -60.f, 60.f })
+		{
+			PropBox(BoardAt - Fwd * 2.f + Right * Y + FVector(0, 0, 55.f), Facing, FVector(1.5f, 1.5f, 40.f), TEXT("#5A5A5E"), false);
+		}
+	}
+	// the lost and found: a little rack beside the desk, where there is room for it
+	const FVector Tries[] = { Right * 120.f, -Right * 120.f, Right * 160.f - Fwd * 20.f, -Right * 160.f - Fwd * 20.f, Fwd * 140.f + Right * 120.f };
+	for (const FVector& T : Tries)
+	{
+		const FVector P = Desk->At + T;
+		if (Clear(P, 40.f))
+		{
+			ShelfAt = P;
+			break;
+		}
+	}
+	if (ShelfAt.IsZero())
+	{
+		return;
+	}
+	const TCHAR* Wood = TEXT("#6B4A2E");
+	PropBox(ShelfAt - Fwd * 16.f + FVector(0, 0, 75.f), Facing, FVector(3.f, 92.f, 150.f), Wood, true);
+	for (const float Y : { -45.f, 45.f })
+	{
+		PropBox(ShelfAt + Right * Y + FVector(0, 0, 75.f), Facing, FVector(34.f, 2.5f, 150.f), Wood, true);
+	}
+	for (const float Z : { 12.f, 72.f, 122.f })
+	{
+		PropBox(ShelfAt + FVector(0, 0, Z), Facing, FVector(32.f, 88.f, 2.5f), TEXT("#7A5636"), false);
+	}
+	// its card: «Бюро находок» is painted on the rack's top (a plain plate; the words are the prompt's)
+	PropBox(ShelfAt - Fwd * 14.f + FVector(0, 0, 160.f), Facing, FVector(2.f, 70.f, 18.f), TEXT("#E8E0C8"), false);
+	ShelfShown = -1;
+}
+
+bool ALyudStationHall::HeroHolds(const FVector& At) const
+{
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Pawn || !Pawn->IsA<AHeroCharacter>() || Pawn->IsHidden())
+	{
+		return false;
+	}
+	const FVector H = Pawn->GetActorLocation();
+	return FVector::Dist2D(H, At) < 60.f && FMath::Abs(H.Z - At.Z) < 150.f;
+}
+
+int32 ALyudStationHall::PersonIndexAt(int32 SlotIndex) const
+{
+	if (!Slots.IsValidIndex(SlotIndex))
+	{
+		return -1;
+	}
+	const int32 W = Slots[SlotIndex].Who;
+	return People.IsValidIndex(W) && People[W].Body.IsValid() && People[W].Slot == SlotIndex ? W : -1;
+}
+
+void ALyudStationHall::LineState(TArray<int32>& Out) const
+{
+	Out.Reset();
+	for (const int32 S : LineSlots)
+	{
+		const int32 W = PersonIndexAt(S);
+		Out.Add(W >= 0 ? W : HeroHolds(Slots[S].At) ? -2 : -1);
+	}
+}
+
+void ALyudStationHall::StartWalk(FPerson& P, const FVector& To, float Yaw, uint8 Pose)
+{
+	P.WalkFrom = P.bWalking ? FMath::Lerp(P.WalkFrom, P.At, FMath::Clamp(P.WalkT, 0.f, 1.f)) : P.At;
+	P.At = To;
+	P.Yaw = Yaw;
+	P.BaseYaw = Yaw;
+	P.WalkPose = Pose;
+	P.BasePose = Pose;
+	P.WalkT = 0.f;
+	P.bWalking = true;
+	P.SeatHeight = 0.f;
+	P.TalkLeft = 0.f;
+}
+
+void ALyudStationHall::TickWalks(float DeltaTime)
+{
+	for (FPerson& P : People)
+	{
+		ANpcBody* B = P.Body.Get();
+		if (!P.bWalking || !B)
+		{
+			continue;
+		}
+		const float Len = FVector::Dist(P.WalkFrom, P.At);
+		P.WalkT = Len < 1.f ? 1.f : P.WalkT + DeltaTime * LyudHallFront::WalkSpeed / Len;
+		if (P.WalkT >= 1.f)
+		{
+			P.bWalking = false;
+			P.Pose = P.WalkPose;
+			P.SeatHeight = Slots.IsValidIndex(P.Slot) ? Slots[P.Slot].SeatHeight : 0.f;
+			B->Drive(P.At, P.Yaw, (EPersonPose)P.Pose, 0, 0.f, P.SeatHeight, DeltaTime, false);
+			continue;
+		}
+		const FVector Now = FMath::Lerp(P.WalkFrom, P.At, P.WalkT);
+		B->Drive(Now, (P.At - P.WalkFrom).Rotation().Yaw, EPersonPose::Walk, 0, LyudHallFront::WalkSpeed, 0.f, DeltaTime, false);
+	}
+}
+
+void ALyudStationHall::StepLine(const FVector& Cam, const FVector& Look)
+{
+	if (LineSlots.Num() == 0)
+	{
+		return;
+	}
+	auto Unseen = [&](const FVector& P)
+	{
+		const FVector D = P + FVector(0, 0, 100.f) - Cam;
+		return FVector::DotProduct(D.GetSafeNormal(), Look) < 0.35f || D.Size() > 2500.f;
+	};
+	// one step up a look: whoever has a free spot before them moves into it (never past the hero's spot)
+	TArray<int32> State;
+	LineState(State);
+	std::vector<int> V(State.GetData(), State.GetData() + State.Num());
+	int To = -1;
+	const int From = LyudFrontDoor::StepUp(V, To);
+	if (From >= 0 && To >= 0 && People.IsValidIndex(State[From]))
+	{
+		const int32 W = State[From];
+		FPerson& P = People[W];
+		Slots[LineSlots[From]].Who = -1;
+		Slots[LineSlots[To]].Who = W;
+		P.Slot = LineSlots[To];
+		P.FrontSince = -1.0;
+		StartWalk(P, Slots[P.Slot].At, Slots[P.Slot].Yaw, (uint8)EPersonPose::Stand);
+	}
+	// the front: the barista serves them in a minute or so, then they take their cup to a free table (or a standing place)
+	const int32 W = PersonIndexAt(LineSlots[0]);
+	if (W < 0 || People[W].bWalking || People[W].bServed || People[W].Role != TEXT("passenger"))
+	{
+		return;
+	}
+	const double Now = GetWorld()->GetTimeSeconds();
+	FPerson* Barista = nullptr;
+	for (FPerson& S : People)
+	{
+		Barista = S.Role == TEXT("barista") && S.Body.IsValid() ? &S : Barista;
+	}
+	FPerson& P = People[W];
+	const uint32 H = GetTypeHash(P.Model) ^ (uint32)(W * 2654435761u);
+	if (P.FrontSince < 0.0)
+	{
+		P.FrontSince = Now;
+		if (Barista)
+		{
+			Barista->TalkLeft = 4.f;
+			Barista->Yaw = (P.At - Barista->At).Rotation().Yaw;
+			Barista->Pose = (uint8)EPersonPose::Talk;
+		}
+		// a regular at the front: the barista knows what they'll have
+		const ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this);
+		const LyudTransport::FStationLife* Life = Tr ? Tr->GetLife() : nullptr;
+		if (Barista && Life && P.Run >= 0 && P.Run < (int32)Life->Today.size() && Now >= NextUsualBark && FVector::Dist(Cam, P.At) < 1500.f)
+		{
+			const LyudTransport::FLifeTrip& T = Life->Trips[Life->Today[P.Run].Trip];
+			if (Life->Riders[T.Rider].bRegular)
+			{
+				NextUsualBark = Now + 90.0;
+				if (ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this))
+				{
+					Talk->SayLine(Barista->Body.Get(), FString::Printf(TEXT("line.frontdoor.usual_regular.%d"), 1 + (int32)(H % 3u)));
+				}
+			}
+		}
+		return;
+	}
+	if (Now - P.FrontSince < 45.0 + (double)(H % 40u))
+	{
+		return;
+	}
+	int32 Best = -1;
+	float BestD = 2000.f;
+	for (int32 I = 0; I < Slots.Num(); I++)
+	{
+		const FSlot& S = Slots[I];
+		if (S.Who >= 0 || S.Kind == 2 || S.Kind == 8 || S.Kind == 5 || S.Kind == 6)
+		{
+			continue;
+		}
+		const float D = FVector::Dist(S.At, P.At) * (S.Kind == 1 || S.Kind == 7 ? 0.6f : 1.f);   // a table first
+		if (D < BestD)
+		{
+			BestD = D;
+			Best = I;
+		}
+	}
+	if (Best < 0)
+	{
+		// nowhere to sit: out to the platform (when nobody sees them go)
+		if (Unseen(P.At) && P.Run < 0)
+		{
+			P.Body->Destroy();
+			P.Body = nullptr;
+			Unpresent(P);
+			Slots[LineSlots[0]].Who = -1;
+		}
+		return;
+	}
+	P.bServed = true;
+	Slots[LineSlots[0]].Who = -1;
+	Slots[Best].Who = W;
+	P.Slot = Best;
+	const FSlot& S = Slots[Best];
+	StartWalk(P, S.At, S.Yaw, (uint8)(S.Kind == 1 ? EPersonPose::Eat : S.SeatHeight > 0.f ? EPersonPose::Sit : EPersonPose::Stand));
+	if (Barista)
+	{
+		Barista->TalkLeft = 3.f;
+		Barista->Pose = (uint8)EPersonPose::Talk;
+	}
+}
+
+void ALyudStationHall::ShowShelf()
+{
+	ULyudFrontDoor* FrontDoor = ULyudFrontDoor::Get(this);
+	if (!FrontDoor || ShelfAt.IsZero())
+	{
+		return;
+	}
+	TArray<FName> Items;
+	FrontDoor->ShelfItems(Items);
+	uint32 H = (uint32)Items.Num();
+	for (const FName& N : Items)
+	{
+		H = HashCombineFast(H, GetTypeHash(N));
+	}
+	if ((int32)H == ShelfShown)
+	{
+		return;
+	}
+	ShelfShown = (int32)H;
+	for (UStaticMeshComponent* C : ShelfThings)
+	{
+		if (C)
+		{
+			Props.Remove(C);
+			C->DestroyComponent();
+		}
+	}
+	ShelfThings.Reset();
+	const FPerson* Desk = nullptr;
+	for (const FPerson& P : StaffPlan)
+	{
+		Desk = P.Role == TEXT("attendant") ? &P : Desk;
+	}
+	const float DeskYaw = Desk ? Desk->Yaw : 0.f;
+	const FVector Right = FRotator(0.f, DeskYaw + 90.f, 0.f).Vector();
+	for (int32 I = 0; I < Items.Num() && I < 4; I++)
+	{
+		// two on the middle board, two on the top one, the long umbrella lying along it
+		const FVector Sz = LyudHallFront::Size(Items[I]);
+		const float Z = (I < 2 ? 72.f : 122.f) + 1.25f + Sz.Z * 0.5f;
+		const FVector At = ShelfAt + Right * ((I % 2) ? 22.f : -20.f) + FVector(0, 0, Z);
+		if (UStaticMeshComponent* C = PropBox(At, FRotator(0.f, DeskYaw + (float)(I * 17 % 23) - 11.f, 0.f), Sz, LyudHallFront::Paint(Items[I]), false))
+		{
+			ShelfThings.Add(C);
+		}
+	}
+}
+
+void ALyudStationHall::TickFront(float DeltaTime, const FVector& Cam, const FVector& Look)
+{
+	// the board: drawn while near, redrawn every frame while its letters turn, a clack when a row starts turning
+	if (Board && FlapBoard.IsValid())
+	{
+		const bool bNear = FVector::Dist(Cam, BoardAt) < LyudHallFront::BoardNear;
+		if (Board->IsVisible() != bNear)
+		{
+			Board->SetVisibility(bNear);
+			Board->SetTickMode(bNear ? ETickMode::Enabled : ETickMode::Disabled);
+		}
+		if (bNear)
+		{
+			Board->SetRedrawTime(FlapBoard->IsFlipping() ? 0.f : 1.f);
+			if (FlapBoard->Flips() > BoardFlips)
+			{
+				BoardFlips = FlapBoard->Flips();
+				if (FVector::Dist(Cam, BoardAt) < LyudHallFront::ClackNear)
+				{
+					if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+					{
+						Sound->PlayEffect(TEXT("board_flap"), BoardAt, 0.8f);
+					}
+				}
+			}
+		}
+	}
+	FrontClock -= DeltaTime;
+	if (FrontClock > 0.f)
+	{
+		return;
+	}
+	FrontClock = 0.5f;
+	if (bPeopleOn)
+	{
+		StepLine(Cam, Look);
+	}
+	if (bFront)
+	{
+		ShowShelf();
+	}
 }
 
 FString ALyudStationHall::Report() const
@@ -1006,10 +1676,20 @@ FString ALyudStationHall::Report() const
 	{
 		Tr->GetLife()->InHall(Station, Here);
 	}
-	return FString::Printf(TEXT("hall %d %s: dressing %s, cores %s, %d lamps (%s), %d places, staff %d/%d, passengers %d (%d riders of the station life, %d in the hall by it, filler want %d)%s; open %s%s"),
+	TArray<int32> State;
+	LineState(State);
+	FString LineWords;
+	for (const int32 W : State)
+	{
+		LineWords += W >= 0 ? TEXT("P") : W == -2 ? TEXT("H") : TEXT(".");
+	}
+	const FString FrontWords = FString::Printf(TEXT("; front door: %s, counter %s, line [%s], punch %s, board %s (%d flips), shelf %s"),
+		bFront ? TEXT("yes") : TEXT("no"), CounterKey.IsEmpty() ? TEXT("-") : *CounterKey, *LineWords, PunchAt.IsZero() ? TEXT("no") : TEXT("yes"),
+		Board ? TEXT("yes") : TEXT("no"), FlapBoard.IsValid() ? FlapBoard->Flips() : 0, ShelfAt.IsZero() ? TEXT("no") : TEXT("yes"));
+	return FString::Printf(TEXT("hall %d %s: dressing %s, cores %s, %d lamps (%s), %d places, staff %d/%d, passengers %d (%d riders of the station life, %d in the hall by it, filler want %d)%s; open %s%s%s"),
 		Station, *Style, Detail ? TEXT("yes") : TEXT("no"), Cores ? TEXT("yes") : TEXT("no"), Lights.Num(), bLightsOn ? TEXT("on") : TEXT("off"),
 		Slots.Num(), Staff, StaffPlan.Num(), Pass, Riders, (int32)Here.size(), WantPassengers(), *Who, LifeOpen() ? TEXT("yes") : TEXT("no"),
-		Tr && Tr->GetLife() ? *FString::Printf(TEXT(", %s"), UTF8_TO_TCHAR(Tr->GetLife()->Report(*Tr->GetNet()).c_str())) : TEXT(""));
+		Tr && Tr->GetLife() ? *FString::Printf(TEXT(", %s"), UTF8_TO_TCHAR(Tr->GetLife()->Report(*Tr->GetNet()).c_str())) : TEXT(""), *FrontWords);
 }
 
 static FAutoConsoleCommandWithWorldAndArgs GTransportHall(TEXT("Transport.Hall"),

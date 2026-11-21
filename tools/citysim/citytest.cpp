@@ -1028,7 +1028,8 @@ static void RealChecks(const std::string& Path)
 	CHECK(NoTitle == 0 && NoAnswer == 0, "%d topics, each with a title and lines; every offered one answers (%d, %d not)", (int)M.Topics.size(), NoTitle, NoAnswer);
 	// six wait on a fresh save: two older ones, and the four photo quests' "I have the print" (photo.city.done,
 	// repair.grandpa.done, keeper.pier.done, cog.cl.maru.done: each heard after the topic that gives its quest)
-	CHECK((int)Reached.size() + 6 >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count)",
+	// + 2: the telescopes' topics that wait for a stamp of the sky log (docs/telescopes.md)
+	CHECK((int)Reached.size() + 6 + 2 >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count)",
 		(int)Reached.size(), (int)M.Topics.size());
 	// the room tones: every tone a plot names is there, a closed tone is a tone, volumes in 0..1, every min <= max
 	int BadTone = 0, Loud = 0;
@@ -1636,6 +1637,218 @@ static void CourseChecks(const std::string& Path)
 	(void)Desk;
 }
 
+// The sanatorium's procedures as scenes (docs/sanatorium_procedures.md): played with scripted keys, a careful hand gets the good
+// result and its collection piece, a careless one the poor words; the guest at it speaks by name; the doctor's numbers get
+// better over the course; without the voucher the treatment rooms only say their words.
+enum class EProcPlay { Good, Poor, Away };
+
+static FProcEnd PlayProc(FModel& M, int Thing, const FWhen& When, const FAsk& Ask, EProcPlay How, const std::vector<FProcCompanion>& With,
+	std::vector<std::string>* Lines = nullptr)
+{
+	FProcState G;
+	if (!M.StartProc(Thing, When, With, G))
+	{
+		return FProcEnd();
+	}
+	const FProcDef* D = M.ProcDef(G.Def);
+	const double Dt = 1.0 / 60.0;
+	int LastStep = -1;
+	for (int Frame = 0; Frame < 60 * 400 && !G.bOver; ++Frame)
+	{
+		const FProcStep& S = D->Steps[(size_t)G.Step];
+		if (G.Step != LastStep)
+		{
+			LastStep = G.Step;
+			if (Lines && !G.Line.empty())
+			{
+				Lines->push_back(G.Line);
+			}
+		}
+		const double T = G.Clock - G.StepFrom;
+		const bool bGood = How == EProcPlay::Good;
+		bool bDown = false;
+		if (!G.bSettled)
+		{
+			switch (S.Do)
+			{
+			case EProcStep::Pick:
+				M.PressProc(G, 1);
+				break;
+			case EProcStep::Pour:
+				// the careful hand lets go in the middle of the mark; the careless one holds on over the brim
+				bDown = bGood ? G.Level < (S.MarkLo + S.MarkHi) * 0.5 : true;
+				break;
+			case EProcStep::Sip:
+			{
+				const double K = (T - FModel::ProcLead) / S.Every;
+				if (bGood && K > -0.01 && std::fabs(K - std::floor(K + 0.5)) * S.Every < Dt * 0.6)
+				{
+					M.PressProc(G, -1);
+				}
+				else if (!bGood && Frame == 1)
+				{
+					M.PressProc(G, -1);     // one press long before the clock, then he forgets
+				}
+				break;
+			}
+			case EProcStep::Breathe:
+				if (bGood && T >= FModel::ProcLead)
+				{
+					bDown = std::fmod(T - FModel::ProcLead, S.In + S.Out) < S.In;
+				}
+				break;
+			case EProcStep::Tap:
+				if (bGood && Frame % 6 == 0)
+				{
+					M.PressProc(G, -1);
+				}
+				break;
+			default:
+				if (T > 1.0)
+				{
+					M.PressProc(G, -1);     // E past the line
+				}
+				break;
+			}
+		}
+		M.TickProc(G, Dt, bDown);
+		if (How == EProcPlay::Away && G.Step >= 1)
+		{
+			return FProcEnd();     // walked off: the game drops the state, nothing is given
+		}
+	}
+	if (!G.bOver)
+	{
+		return FProcEnd();
+	}
+	return M.FinishProc(G, When, Ask);
+}
+
+static void ProcChecks(const std::string& Path)
+{
+	std::string Text, Error;
+	if (!ReadFile(Path, Text))
+	{
+		return;
+	}
+	std::printf("the sanatorium's procedures as scenes (real data)\n");
+	FModel M;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	const char* Ids[] = { "pump_room", "inhale_1", "hydro_mud", "hydro_charcot", "massage_table", "treat_checkup", "lobby_dance",
+		"lounge_projector", "cloakroom" };
+	int T[9];
+	bool bAll = true;
+	for (int I = 0; I < 9; ++I)
+	{
+		T[I] = M.FindThing(std::string("P-SANATORIUM/") + Ids[I]);
+		if (T[I] < 0)
+		{
+			std::printf("  (no P-SANATORIUM/%s)\n", Ids[I]);
+			bAll = false;
+		}
+	}
+	if (!bAll)
+	{
+		CHECK(false, "the treatment rooms' things are there");
+		return;
+	}
+	const int Pump = T[0], Inhale = T[1], Mud = T[2], Charcot = T[3], Massage = T[4], Doctor = T[5], Dance = T[6], Projector = T[7], Window = T[8];
+	FAsk Ask;
+	Ask.Money = 1000;
+	Ask.StaffOnShift = [](const std::string&, const std::string&) { return true; };
+	auto Day = [](int Since, float Hour) { FWhen W = AtDate((int)(Since - 10) % 7, Hour, 1000 + Since, 0, Since); W.Weather = 0x40; return W; };
+	const std::vector<FProcCompanion> Nobody;
+	const std::vector<FProcCompanion> Gromov = { { "gromov", "npc.t_gromov_pyotr.name" } };
+	// no voucher: the plain act (the words for a passer-by), no scene
+	CHECK(M.ProcNow(Pump, Day(10, 8.f), Ask) < 0, "no voucher: the pump room's cup is no scene");
+	const FOutcome NoStay = M.Run(Inhale, Day(10, 10.f), Ask);
+	CHECK(M.ProcNow(Inhale, Day(10, 10.f), Ask) < 0 && NoStay.Line.rfind("city.san.p.inh.nostay.", 0) == 0,
+		"no voucher: the inhaler says its words (%s)", NoStay.Line.c_str());
+	M.Run(Window, Day(10, 9.f), Ask);
+	M.Run(Window, Day(10, 9.5f), Ask);
+	CHECK(M.OnStay("san", 10), "on a voucher now");
+	// every procedure has its scene on the voucher at its hours
+	const int Procs[] = { Pump, Inhale, Mud, Charcot, Massage, Doctor };
+	int Offered = 0;
+	for (const int P : Procs)
+	{
+		Offered += M.ProcNow(P, Day(10, 10.f), Ask) >= 0 ? 1 : 0;
+	}
+	CHECK(Offered == 6, "the six procedures play as scenes on the voucher (%d)", Offered);
+	CHECK(M.ProcNow(Dance, Day(10, 17.f), Ask) < 0 && M.ProcNow(Dance, Day(10, 20.f), Ask) >= 0, "the waltz is a scene only in the evening");
+	// the pump room: the cup picked, filled to the mark, sipped on the clock's ticks
+	std::vector<std::string> Seen;
+	const FProcEnd PumpGood = PlayProc(M, Pump, Day(10, 13.f), Ask, EProcPlay::Good, Nobody, &Seen);
+	CHECK(PumpGood.Result == 0 && PumpGood.Line == "city.san.p.pump.good.1", "a careful hand at the spring: the good words (%d %s)", PumpGood.Result,
+		PumpGood.Line.c_str());
+	CHECK(std::find(Seen.begin(), Seen.end(), "city.san.p.pump.pour.2") != Seen.end(), "the second cup picked: its own pouring words");
+	CHECK(PumpGood.Run.Verdict == EVerdict::Ok && M.HasStamp("san_course/water_13"), "the act runs after the scene: the 13 o'clock drop in the book");
+	const FProcEnd PumpPoor = PlayProc(M, Pump, Day(10, 18.f), Ask, EProcPlay::Poor, Nobody);
+	CHECK(PumpPoor.Result == 2 && PumpPoor.Line == "city.san.p.pump.poor.1", "spilt and gulped: the poor words (%d)", PumpPoor.Result);
+	// the inhaler: poor first (no stamp), good next day with Gromov in the next chair
+	const FProcEnd InhPoor = PlayProc(M, Inhale, Day(10, 10.f), Ask, EProcPlay::Poor, Nobody);
+	CHECK(InhPoor.Result == 2 && !M.HasStamp("san_proc/inhale"), "breathing out of time: poor, no piece for the collection");
+	Seen.clear();
+	const FProcEnd InhGood = PlayProc(M, Inhale, Day(11, 10.f), Ask, EProcPlay::Good, Gromov, &Seen);
+	CHECK(InhGood.Result == 0 && M.HasStamp("san_proc/inhale"), "breathing with the ring: good, the piece san_proc/inhale");
+	CHECK(std::find(Seen.begin(), Seen.end(), "city.san.p.inh.guest.gromov") != Seen.end(), "Gromov in the next chair says his own word");
+	CHECK(std::find(Seen.begin(), Seen.end(), "city.san.p.inh.herb.tue") != Seen.end(), "Tuesday's herb in the inhaler");
+	Seen.clear();
+	PlayProc(M, Inhale, Day(12, 10.f), Ask, EProcPlay::Good, Nobody, &Seen);
+	bool bGuest = false;
+	for (const std::string& L : Seen)
+	{
+		bGuest |= L.rfind("city.san.p.inh.guest.", 0) == 0;
+	}
+	CHECK(!bGuest, "alone in the room: no guest's word");
+	// walked off: nothing counted, nothing run
+	const int Before = M.ProcCount("san_inhale");
+	PlayProc(M, Inhale, Day(13, 10.f), Ask, EProcPlay::Away, Nobody);
+	CHECK(M.ProcCount("san_inhale") == Before, "walked off mid-scene: not counted");
+	// mud, Charcot, massage: the good result's pieces; the cuts' minutes come off the act's
+	const FProcEnd MudGood = PlayProc(M, Mud, Day(11, 11.f), Ask, EProcPlay::Good, Gromov);
+	const FProcEnd ChGood = PlayProc(M, Charcot, Day(11, 12.f), Ask, EProcPlay::Good, Nobody);
+	const FProcEnd MasGood = PlayProc(M, Massage, Day(11, 15.f), Ask, EProcPlay::Good, Nobody);
+	CHECK(MudGood.Result == 0 && ChGood.Result == 0 && MasGood.Result == 0, "mud, Charcot shower and massage done well (%d %d %d)", MudGood.Result,
+		ChGood.Result, MasGood.Result);
+	CHECK(M.HasStamp("san_proc/mud") && M.HasStamp("san_proc/charcot") && M.HasStamp("san_proc/massage"), "their pieces of the collection");
+	CHECK(MudGood.Run.Minutes < M.Acts[(size_t)M.Things[(size_t)Mud].Act].Minutes, "the mud's cuts pass part of its half hour (%d left)",
+		MudGood.Run.Minutes);
+	// the doctor: the numbers on the card get better over the course
+	const FProcEnd Doc1 = PlayProc(M, Doctor, Day(11, 10.f), Ask, EProcPlay::Good, Nobody);
+	CHECK(Doc1.Vitals.Valid() && Doc1.Args.size() == 10, "the doctor's card: weight, pressure, pulse, lungs (%.1f kg %d/%d %d %d ml)",
+		Doc1.Vitals.Weight, Doc1.Vitals.Sys, Doc1.Vitals.Dia, Doc1.Vitals.Pulse, Doc1.Vitals.Lungs);
+	for (int D = 12; D < 16; ++D)
+	{
+		PlayProc(M, Pump, Day(D, 8.f), Ask, EProcPlay::Good, Nobody);
+		PlayProc(M, Inhale, Day(D, 10.f), Ask, EProcPlay::Good, Nobody);
+		PlayProc(M, Massage, Day(D, 15.f), Ask, EProcPlay::Good, Nobody);
+	}
+	const FProcEnd Doc2 = PlayProc(M, Doctor, Day(16, 10.f), Ask, EProcPlay::Good, Nobody);
+	CHECK(Doc2.Vitals.Valid() && Doc2.Vitals.Sys < Doc1.Vitals.Sys && Doc2.Vitals.Pulse < Doc1.Vitals.Pulse && Doc2.Vitals.Lungs > Doc1.Vitals.Lungs,
+		"five days on: pressure %d -> %d, pulse %d -> %d, lungs %d -> %d", Doc1.Vitals.Sys, Doc2.Vitals.Sys, Doc1.Vitals.Pulse, Doc2.Vitals.Pulse,
+		Doc1.Vitals.Lungs, Doc2.Vitals.Lungs);
+	CHECK(Doc2.First.Sys == Doc1.Vitals.Sys && M.FirstVitals().Sys == Doc1.Vitals.Sys, "the card keeps the first numbers to compare");
+	CHECK(M.HasStamp("san_proc/checkup"), "the checkup's piece");
+	CHECK(M.Collections.size() > 0 && M.CountStamps("san_proc") == 5, "the procedures' collection complete (%d of 5)", M.CountStamps("san_proc"));
+	// saved and loaded: the counts and the first numbers stay
+	FModel M2;
+	std::map<std::string, std::string> Saved;
+	M.SaveState(Saved);
+	M2.Load(Text, Error);
+	M2.LoadState(Saved);
+	CHECK(M2.ProcCount("san_inhale") == M.ProcCount("san_inhale") && M2.FirstVitals().Sys == Doc1.Vitals.Sys, "saved: %d inhalations, first pressure %d",
+		M2.ProcCount("san_inhale"), M2.FirstVitals().Sys);
+	// the waltz in the evening with a guest; the film night in the lounge on its evenings
+	Seen.clear();
+	const std::vector<FProcCompanion> Sonya = { { "sonya", "npc.t_mironova_sonya.name" } };
+	const FProcEnd Waltz = PlayProc(M, Dance, Day(13, 20.f), Ask, EProcPlay::Good, Sonya, &Seen);
+	CHECK(Waltz.Result == 0 && std::find(Seen.begin(), Seen.end(), "city.san.p.dance.guest.sonya") != Seen.end(), "the waltz with Sonya (%d)", Waltz.Result);
+	const FOutcome FilmWed = M.Run(Projector, Day(12, 21.f), Ask), FilmMon = M.Run(Projector, Day(10, 21.f), Ask);
+	CHECK(!FilmWed.Screen.empty() && FilmMon.Screen.empty(), "the lounge's film night: Wednesday's yes, Monday's no (%s / %s)", FilmWed.Line.c_str(),
+		FilmMon.Line.c_str());
+}
+
 // The small jobs on the real data (docs/city_interiors.md "Small jobs"): each job pays once a day by its result inside its
 // hours and days, gives its page of the work record book, and outside them the thing only says its old words, unpaid.
 static void JobChecks(const std::string& Path)
@@ -1988,6 +2201,7 @@ int main(int Argc, char** Argv)
 	StayChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	CourseChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	ProcChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	JobChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	CupChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	TouchChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
