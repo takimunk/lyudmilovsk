@@ -1,0 +1,46 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "20267085bfa54194935c928d5f34b54e",
+  "points": 45.0,
+  "arguments": {
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private",
+   "file_tokens": "(uploaded views, see inputs)"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/props_hi3d/raw/cosmonaut/views/front.png",
+    "sha256": "4c3f64aefab2868360f8b715f5f49e064cc988c0758cded8e3efa1e88dfc4c55"
+   },
+   {
+    "view": "back",
+    "file": "blender/props_hi3d/raw/cosmonaut/views/back.png",
+    "sha256": "ebfff8f4e157d01703ae22140444cab3abaedae5ac6b4532eac363a3ddc7184a"
+   },
+   {
+    "view": "left",
+    "file": "blender/props_hi3d/raw/cosmonaut/views/left.png",
+    "sha256": "e6ea3394debcced804ddd27d893ebfcef914090f53c7ff8782b6ed94efb50ac7"
+   }
+  ],
+  "reference": "blender/props_hi3d/sheets.json",
+  "submitted": "2026-11-20T21:32:44+00:00",
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/ab8569c2dabf4f87ad7df15c98a4eb46/target/model/original/GLB0.glb?auth_key=605b63ef24c71b45de0dd62ca9650d58&t=1795214688",
+    "file": "blender/props_hi3d/raw/cosmonaut/model.glb",
+    "bytes": 49082072,
+    "sha256": "deb17c76507196c1dd704714fd535c601541a615c1d7a1aea09480e74b3a21e1"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/20267085bfa54194935c928d5f34b54e",
+  "fetched": "2026-11-20T21:52:41+00:00"
+ }
+]

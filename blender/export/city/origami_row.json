@@ -2441,9 +2441,319 @@
  "notes": [
   "7 flats over 3 storeys, one folded concrete plate roof, rear stairs; house 3 furnished (a family with three children)"
  ],
+ "dress": [
+  {
+   "id": "santos_breakfast",
+   "when": {
+    "weekdays": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "hours": [
+     7.0,
+     9.5
+    ]
+   },
+   "tris": 570,
+   "bounds": [
+    [
+     -4.655,
+     8.74,
+     0.75
+    ],
+    [
+     -3.84,
+     10.067,
+     0.82
+    ]
+   ]
+  },
+  {
+   "id": "santos_weekend",
+   "when": {
+    "weekdays": [
+     5,
+     6
+    ],
+    "hours": [
+     9.0,
+     12.5
+    ]
+   },
+   "tris": 404,
+   "bounds": [
+    [
+     -4.655,
+     8.74,
+     0.75
+    ],
+    [
+     -3.84,
+     10.11,
+     0.86
+    ]
+   ]
+  },
+  {
+   "id": "santos_flowers_fresh",
+   "when": {
+    "phase": [
+     8,
+     0,
+     5
+    ]
+   },
+   "tris": 180,
+   "bounds": [
+    [
+     -3.174,
+     11.419,
+     0.8
+    ],
+    [
+     -2.955,
+     11.627,
+     1.285
+    ]
+   ]
+  },
+  {
+   "id": "santos_flowers_wilt",
+   "when": {
+    "phase": [
+     8,
+     5,
+     7
+    ]
+   },
+   "tris": 202,
+   "bounds": [
+    [
+     -3.199,
+     11.378,
+     0.8
+    ],
+    [
+     -2.915,
+     11.711,
+     1.132
+    ]
+   ]
+  },
+  {
+   "id": "santos_flowers_empty",
+   "when": {
+    "phase": [
+     8,
+     7,
+     8
+    ]
+   },
+   "tris": 80,
+   "bounds": [
+    [
+     -3.146,
+     11.444,
+     0.8
+    ],
+    [
+     -2.994,
+     11.596,
+     1.04
+    ]
+   ]
+  },
+  {
+   "id": "santos_book",
+   "when": {
+    "chance": 0.5
+   },
+   "tris": 48,
+   "bounds": [
+    [
+     -4.22,
+     5.15,
+     0.42
+    ],
+    [
+     -4.02,
+     5.41,
+     0.455
+    ]
+   ]
+  },
+  {
+   "id": "santos_drawings_0",
+   "when": {
+    "phase": [
+     28,
+     0,
+     7
+    ]
+   },
+   "tris": 2,
+   "bounds": [
+    [
+     -7.926,
+     5.79,
+     1.34
+    ],
+    [
+     -7.926,
+     6.21,
+     1.76
+    ]
+   ]
+  },
+  {
+   "id": "santos_drawings_1",
+   "when": {
+    "phase": [
+     28,
+     7,
+     14
+    ]
+   },
+   "tris": 2,
+   "bounds": [
+    [
+     -7.926,
+     5.79,
+     1.298
+    ],
+    [
+     -7.926,
+     6.21,
+     1.802
+    ]
+   ]
+  },
+  {
+   "id": "santos_drawings_2",
+   "when": {
+    "phase": [
+     28,
+     14,
+     21
+    ]
+   },
+   "tris": 2,
+   "bounds": [
+    [
+     -7.926,
+     5.79,
+     1.34
+    ],
+    [
+     -7.926,
+     6.21,
+     1.76
+    ]
+   ]
+  },
+  {
+   "id": "santos_drawings_3",
+   "when": {
+    "phase": [
+     28,
+     21,
+     28
+    ]
+   },
+   "tris": 2,
+   "bounds": [
+    [
+     -7.926,
+     5.79,
+     1.298
+    ],
+    [
+     -7.926,
+     6.21,
+     1.802
+    ]
+   ]
+  },
+  {
+   "id": "santos_hall_winter",
+   "when": {
+    "months": [
+     1,
+     2,
+     12
+    ]
+   },
+   "tris": 530,
+   "bounds": [
+    [
+     -7.98,
+     3.039,
+     0.0
+    ],
+    [
+     -5.301,
+     5.6,
+     2.02
+    ]
+   ]
+  },
+  {
+   "id": "santos_hall_mild",
+   "when": {
+    "months": [
+     3,
+     4,
+     5,
+     9,
+     10,
+     11
+    ]
+   },
+   "tris": 452,
+   "bounds": [
+    [
+     -8.037,
+     3.05,
+     0.0
+    ],
+    [
+     -5.31,
+     5.652,
+     1.885
+    ]
+   ]
+  },
+  {
+   "id": "santos_hall_summer",
+   "when": {
+    "months": [
+     6,
+     7,
+     8
+    ]
+   },
+   "tris": 474,
+   "bounds": [
+    [
+     -7.98,
+     3.06,
+     0.0
+    ],
+    [
+     -5.316,
+     5.6,
+     1.975
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 7168,
   "detail": 14278,
-  "windows": 280
+  "windows": 280,
+  "dress": 2948
  }
 }

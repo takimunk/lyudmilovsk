@@ -782,7 +782,7 @@ namespace LyudLetters
 		{
 			const FLetter& L = Letters[I];
 			Out["letter." + std::to_string(I)] = Join({ L.Id, L.From, L.Kind, L.Body, Join(L.Args, '\x1f'), L.Ack, Join(L.AckArgs, '\x1f'), std::to_string(L.Arrive),
-				L.bArrived ? "1" : "0", L.bRead ? "1" : "0", std::to_string(L.ReadDay) }, '\t');
+				L.bArrived ? "1" : "0", L.bRead ? "1" : "0", std::to_string(L.ReadDay), L.Ps, Join(L.PsArgs, '\x1f') }, '\t');
 		}
 		for (const auto& G : Got)
 		{
@@ -851,6 +851,8 @@ namespace LyudLetters
 			L.bArrived = Field(F, 8) == "1";
 			L.bRead = Field(F, 9) == "1";
 			L.ReadDay = ToInt(Field(F, 10));
+			L.Ps = Field(F, 11);
+			L.PsArgs = Split(Field(F, 12), '\x1f');
 			Letters.push_back(L);
 		}
 		for (const auto& KV : In)

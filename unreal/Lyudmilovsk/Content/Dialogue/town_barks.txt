@@ -20,6 +20,8 @@
 # met =       how well the speaker knows the player: new (never greeted him), seen (on 1-4 days), known (5 and more)
 # bond =      how close a friend of his the speaker is (docs/friends.md): friendly, friend, close; lines of a set with
 #             bond = friend or close may hold {0}: the nickname the friend gave him
+# heard_of =  a rumour about the player the speaker would bring up now (docs/town_rumours.md: cup, beat, job, tamed, ...);
+#             lines may hold {1}: the rumour's detail (the cup, the regular beaten, the bird, the fish, the tune, the job)
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
@@ -1426,6 +1428,9 @@ talk = town.chat_kids3.1 | town.chat_kids3.2 | town.chat_kids3.3
 
 # Counters of the town's buildings (docs/city_interiors.md): the person on shift says hello once a visit, when the
 # hero steps up to the counter. Event (on = ...): counter_hello, sent by ULyudCityThings.
+# --- the counter knows him (docs/counters.md): met = known after days of greetings, bond = friends (docs/friends.md) ---
+# The service scene (ULyudCounterService, docs/counters.md). counter_give: the item is put on the counter for him.
+# queue_next: the one on shift calls the next in line. queue_join: a resident who has just joined a line behind somebody.
 
 [counter_hello]
 on = counter_hello
@@ -1448,6 +1453,48 @@ on = counter_hello
 festival = any
 weight = 2
 say = town.counter_hello_festival.1
+
+[counter_hello_noon]
+on = counter_hello
+hours = 12-15
+weight = 2
+say = town.counter_hello_noon.1..2
+
+[counter_hello_known]
+on = counter_hello
+met = known
+weight = 3
+say = town.counter_hello_known.1..3
+
+[counter_hello_friendly]
+on = counter_hello
+bond = friendly
+weight = 4
+say = town.counter_hello_friendly.1..2
+
+[counter_hello_friend]
+on = counter_hello
+bond = friend close
+weight = 6
+say = town.counter_hello_friend.1..3
+
+[counter_give]
+on = counter_give
+say = town.counter_give.1..4
+
+[counter_give_friend]
+on = counter_give
+bond = friend close
+weight = 3
+say = town.counter_give_friend.1..2
+
+[queue_next]
+on = queue_next
+say = town.queue_next.1..4
+
+[queue_join]
+on = queue_join
+say = town.queue_join.1..4
 
 # The North (docs/north.md "People"): the ranger at the river, the footbridges and the brow; the campers in the hot
 # spring and at the overlook. The North's people are not townsfolk: they speak only with lyud.Barks.Residents 1 until
@@ -1986,6 +2033,19 @@ age = teen adult elder
 weight = 3
 say = town.evening_front_warm.1..2
 
+# The hero's animal friends (docs/animals.md "Friends"): what the townsfolk say when he walks past with a dog at his
+# heel. Event (on = ...): dog_walk (UAnimalFriendSubsystem: a friend dog at heel, a resident within a few metres).
+
+[notice_dog_walk]
+on = dog_walk
+age = adult elder
+say = town.notice_dog_walk.1..6
+
+[notice_dog_walk_kid]
+on = dog_walk
+age = kid teen
+say = town.notice_dog_walk_kid.1..4
+
 # Friends among the townsfolk (backlog item 12; the words of the feature: tools/friends/content.py).
 # bond = friendly | friend | close: how close the speaker is to the hero (absent: anyone). {0} is the nickname the
 # friend gave him (friends.nick.*), only in sets with bond = friend close. Greetings (to = hero), a wave from afar
@@ -2376,3 +2436,428 @@ say = town.kite_watch.1..3
 doing = fly_kite
 near = hero
 say = town.kite_hero.1..2
+
+# The hero plays (docs/instruments.md): somebody near the piano or the guitar notices (on = hero_plays), a tune played to
+# its end gets a word (on = hero_played), and by a bonfire the circle sings the tune's words with him (on = hero_sing_<tune>,
+# one line at a time, a voice after a voice).
+# Words that are sung: Jane Taylor's «Twinkle» (d. 1824), the Hill sisters' «Happy Birthday» (public domain), Nekrasov's
+# «Коробейники» (d. 1878), Pierpont's «Jingle Bells» (d. 1893) and the traditional «さくら さくら» in their own language;
+# every other language is our own translation (never a published one still under copyright).
+# ---- the bonfire's songs: each line one singer's turn
+
+[notice_plays]
+on = hero_plays
+say = town.notice_plays.1..6
+
+[notice_plays_kid]
+on = hero_plays
+age = kid
+weight = 2
+say = town.notice_plays_kid.1..2
+
+[played_tune]
+on = hero_played
+say = town.played_tune.1..5
+
+[played_tune_kid]
+on = hero_played
+age = kid
+weight = 2
+say = town.played_tune_kid.1
+
+[sing_twinkle]
+on = hero_sing_twinkle
+say = town.sing_twinkle.1..3
+
+[sing_happy_birthday]
+on = hero_sing_happy_birthday
+say = town.sing_happy_birthday.1..3
+
+[sing_korobeiniki]
+on = hero_sing_korobeiniki
+say = town.sing_korobeiniki.1..4
+
+[sing_jingle_bells]
+on = hero_sing_jingle_bells
+say = town.sing_jingle_bells.1..4
+
+[sing_sakura]
+on = hero_sing_sakura
+say = town.sing_sakura.1..3
+
+# Holidays and the town's new toys (backlog item 24, docs/festivals.md "The new toys"): a friend asks the hero to come
+# along (to = hero, bond = friend close, on a holiday; {0} is the nickname they gave him), finds him in the crowd
+# (on = friend_festival), and the town talks of the day's cup, the Rassvet's programme, the radio, the kites and the
+# harvest fair's judges. Russian: the speaker's own words never agree in gender; the hero is a boy.
+
+[friend_fest_invite]
+to = hero
+bond = friend close
+festival = any
+weight = 5
+say = town.friend_fest_invite.1..3
+
+[friend_fest_invite_kid]
+to = hero
+bond = friend close
+festival = any
+age = kid
+weight = 6
+say = town.friend_fest_invite_kid.1..2
+
+[friend_festival]
+on = friend_festival
+bond = friend close
+weight = 5
+say = town.friend_festival.1..3
+
+[friend_festival_kid]
+on = friend_festival
+bond = friend close
+age = kid
+weight = 6
+say = town.friend_festival_kid.1
+
+[fest_toys_cup]
+at = outdoors
+festival = any
+age = teen adult elder
+weight = 2
+say = town.fest_toys_cup.1..2
+
+[fest_toys_cinema]
+at = outdoors
+festival = any
+weight = 2
+say = town.fest_toys_cinema.1..2
+
+[fest_toys_kites]
+at = outdoors
+festival = children_day blossom
+weight = 3
+say = town.fest_toys_kites.1..2
+
+[fest_toys_harvest]
+at = outdoors
+festival = harvest_fair
+age = adult elder
+weight = 4
+say = town.fest_toys_harvest.1..2
+
+[fest_toys_skipping]
+at = outdoors
+festival = fisherman_day
+weight = 3
+say = town.fest_toys_skipping.1..2
+
+# The talk of the town about the hero (backlog item 22, docs/town_rumours.md; kinds and rules: tools/rumours/rumours.py).
+# heard_of = <kind>: the speaker heard of something he did (saw it, or heard it from their household, workmates or a
+# friend: a far terrace a day later) and would bring it up now. At most one such remark per resident a day, each rumour
+# once per resident, and the game keeps a long pause between any two (calm and rare). {1}: the rumour's detail (the cup,
+# the regular beaten, the bird, the fish, the tune, the job as a place); {0} in bond sets: the friend's nickname for him.
+# Russian: the speaker never speaks of themselves in the past tense (no gender); the hero is a boy.
+# --- a cup won (detail: the cup)
+# --- a regular beaten at a club's game (detail: the regular's name)
+# --- a garden prize
+# --- the sanatorium course seen through
+# --- a first shift at a job (detail: the job as a place)
+# --- a bird that eats from his hand (detail: the bird)
+# --- his request played on the radio (heard by the town)
+# --- fined on the train (the passengers told it)
+# --- the crows bring him presents
+# --- a catch (detail: the fish)
+# --- his kite seen over the cliff
+# --- a tune played on a piano or the guitar (detail: the tune)
+# --- songs to his guitar by the bonfire
+# --- seen at the Rassvet's old films
+# --- two of them talking about him (A has heard of it)
+
+[rumour_cup_greet]
+to = hero
+heard_of = cup
+age = adult elder
+weight = 8
+say = town.rumour_cup_greet.1..3
+
+[rumour_cup_greet_young]
+to = hero
+heard_of = cup
+age = kid teen
+weight = 8
+say = town.rumour_cup_greet_young.1..2
+
+[rumour_cup_friend]
+to = hero
+heard_of = cup
+bond = friend close
+weight = 9
+say = town.rumour_cup_friend.1
+
+[rumour_cup_near]
+near = hero
+heard_of = cup
+age = adult elder
+weight = 6
+say = town.rumour_cup_near.1..2
+
+[rumour_beat_greet]
+to = hero
+heard_of = beat
+age = adult elder
+weight = 8
+say = town.rumour_beat_greet.1..3
+
+[rumour_beat_greet_young]
+to = hero
+heard_of = beat
+age = kid teen
+weight = 8
+say = town.rumour_beat_greet_young.1
+
+[rumour_beat_friend]
+to = hero
+heard_of = beat
+bond = friend close
+weight = 9
+say = town.rumour_beat_friend.1
+
+[rumour_beat_near]
+near = hero
+heard_of = beat
+age = adult elder
+weight = 6
+say = town.rumour_beat_near.1
+
+[rumour_garden_greet]
+to = hero
+heard_of = garden
+age = adult elder
+weight = 8
+say = town.rumour_garden_greet.1..2
+
+[rumour_garden_near]
+near = hero
+heard_of = garden
+age = elder
+weight = 6
+say = town.rumour_garden_near.1
+
+[rumour_cure_greet]
+to = hero
+heard_of = cure
+age = adult elder
+weight = 8
+say = town.rumour_cure_greet.1..2
+
+[rumour_job_greet]
+to = hero
+heard_of = job
+age = adult elder
+weight = 8
+say = town.rumour_job_greet.1..2
+
+[rumour_job_greet_young]
+to = hero
+heard_of = job
+age = kid teen
+weight = 8
+say = town.rumour_job_greet_young.1
+
+[rumour_job_near]
+near = hero
+heard_of = job
+age = adult elder
+weight = 6
+say = town.rumour_job_near.1
+
+[rumour_tamed_greet]
+to = hero
+heard_of = tamed
+age = adult elder
+weight = 8
+say = town.rumour_tamed_greet.1..2
+
+[rumour_tamed_greet_young]
+to = hero
+heard_of = tamed
+age = kid teen
+weight = 8
+say = town.rumour_tamed_greet_young.1
+
+[rumour_tamed_friend]
+to = hero
+heard_of = tamed
+bond = friend close
+weight = 9
+say = town.rumour_tamed_friend.1
+
+[rumour_radio_greet]
+to = hero
+heard_of = radio
+weight = 8
+say = town.rumour_radio_greet.1..2
+
+[rumour_fine_greet]
+to = hero
+heard_of = fine
+age = adult elder
+weight = 8
+say = town.rumour_fine_greet.1..2
+
+[rumour_fine_greet_young]
+to = hero
+heard_of = fine
+age = kid teen
+weight = 8
+say = town.rumour_fine_greet_young.1
+
+[rumour_crows_greet]
+to = hero
+heard_of = crows
+age = adult elder
+weight = 8
+say = town.rumour_crows_greet.1..2
+
+[rumour_crows_greet_young]
+to = hero
+heard_of = crows
+age = kid teen
+weight = 8
+say = town.rumour_crows_greet_young.1
+
+[rumour_catch_greet]
+to = hero
+heard_of = catch
+age = adult elder
+weight = 7
+say = town.rumour_catch_greet.1..2
+
+[rumour_catch_near]
+near = hero
+heard_of = catch
+job = pensioner
+weight = 5
+say = town.rumour_catch_near.1
+
+[rumour_kite_greet]
+to = hero
+heard_of = kite
+weight = 7
+say = town.rumour_kite_greet.1..2
+
+[rumour_tune_greet]
+to = hero
+heard_of = tune
+age = adult elder
+weight = 7
+say = town.rumour_tune_greet.1..2
+
+[rumour_tune_near]
+near = hero
+heard_of = tune
+age = elder
+weight = 5
+say = town.rumour_tune_near.1
+
+[rumour_sing_greet]
+to = hero
+heard_of = sing
+weight = 7
+say = town.rumour_sing_greet.1..2
+
+[rumour_film_greet]
+to = hero
+heard_of = film
+weight = 6
+say = town.rumour_film_greet.1
+
+[rumour_talk_cup]
+heard_of = cup
+age = adult elder
+age2 = adult elder
+weight = 7
+talk = town.rumour_talk_cup.1 | town.rumour_talk_cup.2 | town.rumour_talk_cup.3
+
+[rumour_talk_beat]
+heard_of = beat
+age = adult elder
+age2 = adult elder
+weight = 7
+talk = town.rumour_talk_beat.1 | town.rumour_talk_beat.2 | town.rumour_talk_beat.3
+
+[rumour_talk_job]
+heard_of = job
+age = adult elder
+age2 = adult elder
+weight = 7
+talk = town.rumour_talk_job.1 | town.rumour_talk_job.2 | town.rumour_talk_job.3
+
+[rumour_talk_fine]
+heard_of = fine
+age = adult elder
+age2 = adult elder
+weight = 6
+talk = town.rumour_talk_fine.1 | town.rumour_talk_fine.2
+
+[rumour_talk_young]
+heard_of = cup beat tamed crows kite
+age = kid teen
+age2 = kid teen
+weight = 6
+talk = town.rumour_talk_young.1 | town.rumour_talk_young.2
+
+# The town at the evening's new things (docs/town_life.md, "The new activities"): the cinema's house, the
+# sanatorium's pump room and its dominoes, the paper on the benches, flat stones on the water, the allotment
+# neighbours at their beds, the post round, the piano in the hall
+
+[stones_kid]
+doing = skip_stones
+age = kid teen
+say = town.stones_kid.1..5
+
+[stones_grown]
+doing = skip_stones
+age = adult elder
+say = town.stones_grown.1..2
+
+[paper_bench]
+doing = read_paper
+say = town.paper_bench.1..5
+
+[dominoes_table]
+doing = dominoes
+say = town.dominoes.1..6
+
+[cure_pump]
+doing = san_cure
+say = town.cure.1..4
+
+[allotment_dig]
+doing = tend_allotment
+say = town.allotment_dig.1..4
+
+[allotment_water]
+doing = water_allotment
+say = town.allotment_water.1..3
+
+[allotment_hero]
+doing = tend_allotment water_allotment
+near = hero
+say = town.allotment_hero.1..2
+
+[post_round]
+doing = post_round
+say = town.post_round.1..4
+
+[post_round_hero]
+doing = post_round
+near = hero
+say = town.post_round_hero.1
+
+[cinema_house]
+doing = cinema_day cinema_evening
+say = town.cinema_house.1..4
+
+[piano_hall]
+doing = play_piano
+say = town.piano_hall.1..3

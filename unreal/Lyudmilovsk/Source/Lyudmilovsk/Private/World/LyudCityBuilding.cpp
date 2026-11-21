@@ -143,6 +143,13 @@ void ALyudCityBuilding::BeginPlay()
 	{
 		L->Register(this);
 	}
+	if (NumDress() > 0)
+	{
+		if (ULyudCityDress* D = ULyudCityDress::Get(this))
+		{
+			D->Register(this);
+		}
+	}
 	if (CVarCity.GetValueOnGameThread() == 0)
 	{
 		SetActorHiddenInGame(true);
@@ -155,6 +162,10 @@ void ALyudCityBuilding::EndPlay(const EEndPlayReason::Type Reason)
 	if (ULyudWindowLights* L = ULyudWindowLights::Get(this))
 	{
 		L->Unregister(this);
+	}
+	if (ULyudCityDress* D = ULyudCityDress::Get(this))
+	{
+		D->Unregister(this);
 	}
 	Super::EndPlay(Reason);
 }

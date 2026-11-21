@@ -1,0 +1,10 @@
+{
+ "id": "icon_kite_diamond",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5",
+ "aspect": "1:1",
+ "prompt": "A homemade-style diamond kite of red and yellow cloth halves on thin wooden cross spars, a tail of small blue ribbon bows, a small wooden line reel with white string beside it.",
+ "source": "design/kites/icon_kites_grid.png (sidecar design/kites/icon_kites_grid.json), cell 1 (top left) of a 2x2 grid, resized to 512x512",
+ "sha256": "f2aaa2a18aba2463e41ce22f14b0ab44f9032497ea5331852949a2c89c916768",
+ "strings": {}
+}

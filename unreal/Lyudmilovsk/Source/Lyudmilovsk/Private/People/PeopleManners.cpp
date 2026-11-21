@@ -12,9 +12,10 @@ namespace LyudPeople
 		const char* MannerNames[NumManners] = { "none", "fold_arms", "hands_hips", "hands_back", "stretch", "yawn", "scratch_head",
 			"check_watch", "look_sky", "shade_eyes", "rub_hands", "hug_self", "wave", "nod", "point", "clap", "sway", "doze",
 			"cover_head", "phone_call", "phone_scroll", "smoke", "photo", "feed_birds", "umbrella", "fish", "paint", "binoculars",
-			"newspaper", "book", "knit", "ice_cream", "drink", "carry_bag", "point_sky" };
+			"newspaper", "book", "knit", "ice_cream", "drink", "carry_bag", "point_sky", "skip_stone", "dominoes", "piano", "dig",
+			"water", "weed" };
 		const char* PropNames[(int)EProp::Num] = { "none", "phone", "cigarette", "camera", "umbrella", "rod", "brush", "binoculars",
-			"newspaper", "book", "knitting", "ice_cream", "cup", "bag" };
+			"newspaper", "book", "knitting", "ice_cream", "cup", "bag", "spade", "watering_can" };
 		const char* HabitNames[] = { "smoker", "phone", "reader", "feeder", "photographer", "knitter", "umbrella", "sweet", "dozer",
 			"hands_back" };
 		constexpr int NumHabits = (int)(sizeof(HabitNames) / sizeof(HabitNames[0]));
@@ -429,7 +430,7 @@ namespace LyudPeople
 	{
 		struct FLike { uint32_t Habit; const char* Activity; float More; };
 		static const FLike Table[] = { { HabitFeeder, "feed_birds", 0.55f }, { HabitReader, "read_bench", 0.35f },
-			{ HabitDozer, "sit_bench", 0.1f }, { HabitPhotographer, "sun_watch", 0.2f } };
+			{ HabitDozer, "sit_bench", 0.1f }, { HabitPhotographer, "sun_watch", 0.2f }, { HabitReader, "read_paper", 0.5f } };
 		for (size_t I = 0; I < W.People.size() && I < Personas.size(); I++)
 		{
 			for (const FLike& L : Table)
@@ -450,6 +451,41 @@ namespace LyudPeople
 				if (!bHas)
 				{
 					W.People[I].Likes.emplace_back(L.Activity, L.More);
+				}
+			}
+		}
+		// the town's new things to do, by who they are (docs/town_life.md "The new activities"): children and the restless skip
+		// stones, the sociable old play dominoes at the sanatorium, the nervy old take its waters, the curious go to the pictures
+		struct FTaste { const char* Activity; const char* Trait; float Over; float More; int MinAge, MaxAge; };
+		static const FTaste Tastes[] = {
+			{ "skip_stones", "", 0.f, 0.45f, 6, 15 }, { "skip_stones", "nerve", 0.62f, 0.2f, 6, 40 },
+			{ "dominoes", "warmth", 0.6f, 0.3f, 58, 200 }, { "san_cure", "tidy", 0.6f, 0.25f, 60, 200 },
+			{ "san_cure", "nerve", 0.6f, 0.15f, 60, 200 },
+			{ "cinema_day", "curiosity", 0.55f, 0.2f, 6, 200 }, { "cinema_evening", "curiosity", 0.5f, 0.22f, 12, 200 },
+			{ "cinema_evening", "warmth", 0.65f, 0.12f, 12, 200 },
+		};
+		for (size_t I = 0; I < W.People.size() && I < Personas.size(); I++)
+		{
+			FPerson& P = W.People[I];
+			for (const FTaste& T : Tastes)
+			{
+				if (P.Age < T.MinAge || P.Age > T.MaxAge || (T.Trait[0] && PersonaTrait(Personas[I], T.Trait) < T.Over)
+					|| W.FindActivity(T.Activity) < 0)
+				{
+					continue;
+				}
+				bool bHas = false;
+				for (auto& Like : P.Likes)
+				{
+					if (Like.first == T.Activity)
+					{
+						Like.second += T.More;
+						bHas = true;
+					}
+				}
+				if (!bHas)
+				{
+					P.Likes.emplace_back(T.Activity, T.More);
 				}
 			}
 		}
@@ -1062,7 +1098,7 @@ namespace LyudPeople
 			S.bTurn = false;
 		}
 		const bool bAwake = Mannered(P) && P.Pose != EPose::Sleep && P.Pose != EPose::Hidden && P.Pose != EPose::Computer
-			&& P.Pose != EPose::Work && P.Pose != EPose::Shovel;
+			&& P.Pose != EPose::Work && P.Pose != EPose::Shovel && P.Pose != EPose::Skate && P.Pose != EPose::Walrus;
 		const V3 To = Hero.Pos - P.Pos;
 		const float D = To.Len2D();
 		// in the water: seen from the promenade above too, and from further off

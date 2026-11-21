@@ -20,6 +20,8 @@
   "bench": 6,
   "tea": 12,
   "outing": 12,
+  "festival": 8,
+  "festival_level": 3,
   "tea_level": 2,
   "tea_every": 7,
   "tea_ahead": 2,
@@ -410,6 +412,44 @@
     "feeder",
     "tidy"
    ]
+  },
+  {
+   "item": "radish",
+   "hints": [
+    "elder",
+    "adult"
+   ]
+  },
+  {
+   "item": "dill",
+   "hints": [
+    "elder",
+    "warm"
+   ]
+  },
+  {
+   "item": "tomatoes",
+   "hints": [
+    "adult",
+    "warm"
+   ]
+  },
+  {
+   "item": "strawberries",
+   "hints": [
+    "kid",
+    "sweet",
+    "teen"
+   ]
+  },
+  {
+   "item": "jam_strawberry",
+   "hints": [
+    "elder",
+    "sweet",
+    "warm",
+    "reader"
+   ]
   }
  ],
  "hosts": [
@@ -677,6 +717,7 @@
   "nurse": "friends.job.nurse",
   "pensioner": "friends.job.pensioner",
   "photographer": "friends.job.photographer",
+  "postman": "friends.job.postman",
   "programmer": "friends.job.programmer",
   "projectionist": "friends.job.projectionist",
   "pupil": "friends.job.pupil",

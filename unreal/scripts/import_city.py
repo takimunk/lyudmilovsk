@@ -267,7 +267,7 @@ def import_type(type_id, mats):
             continue
         name = sm.get_name()
         windows = name.endswith("_Windows")
-        detail = name.endswith("_Detail")
+        detail = name.endswith("_Detail") or "_Dress_" in name      # dressing sets (docs/city_dress.md): no collision either
         for i, sl in enumerate(sm.get_editor_property("static_materials")):
             key = str(sl.material_slot_name)
             # exact slot name, else the longest slot it starts with ("CT_WindowIn.001" is CT_WindowIn, not CT_Window)
@@ -301,6 +301,48 @@ def import_all(types=None):
     for t in (types or built_types()):
         import_type(t, mats)
     eal.save_directory(DEST)
+
+
+# ------------------------------------------------------------------------------------------------ dressing
+WEATHER_BITS = {"rain": 1, "snow": 2, "fog": 4, "cold": 8, "warm": 16, "clear": 32, "wet": 64, "dry": 128}
+
+
+def dress_when(w):
+    """The export json's "when" (blender/city/citykit.py dress_when) as an FLyudDressWhen."""
+    s = unreal.LyudDressWhen()
+    s.set_editor_property("weather_any", sum(WEATHER_BITS[x] for x in w.get("weather", [])))
+    s.set_editor_property("weather_none", sum(WEATHER_BITS[x] for x in w.get("weather_not", [])))
+    s.set_editor_property("months", sum(1 << (m - 1) for m in w.get("months", [])))
+    s.set_editor_property("weekdays", sum(1 << d for d in w.get("weekdays", [])))
+    h = w.get("hours", [0.0, 24.0])
+    s.set_editor_property("hour_from", float(h[0]))
+    s.set_editor_property("hour_to", float(h[1]))
+    s.set_editor_property("festival", w.get("festival", ""))
+    s.set_editor_property("chance", float(w.get("chance", 1.0)))
+    ph = w.get("phase", [0, 0, 0])
+    s.set_editor_property("phase_period", int(ph[0]))
+    s.set_editor_property("phase_from", int(ph[1]))
+    s.set_editor_property("phase_to", int(ph[2]))
+    s.set_editor_property("open", -1 if "open" not in w else (1 if w["open"] else 0))
+    return s
+
+
+def set_dress(b, data, dest, t):
+    """The building's dressing sets from its export json: ids, the SM_<t>_Dress_<id> meshes, the conditions. A set whose mesh
+    was not imported is left out (logged)."""
+    ids, meshes, whens = [], [], []
+    for d in data.get("dress", []):
+        path = "%s/SM_%s_Dress_%s" % (dest, t, d["id"])
+        if not eal.does_asset_exist(path):
+            log("%s: dress %s not imported, skipped" % (t, d["id"]))
+            continue
+        ids.append(d["id"])
+        meshes.append(eal.load_asset(path))
+        whens.append(dress_when(d.get("when", {})))
+    b.set_editor_property("dress_ids", ids)
+    b.set_editor_property("dress_meshes", meshes)
+    b.set_editor_property("dress_when", whens)
+    return len(ids)
 
 
 # ------------------------------------------------------------------------------------------------ place
@@ -370,6 +412,7 @@ def place(face_y):
         oh = HOURS.get(t.split("__")[0], (8, 21))
         b.set_editor_property("open_hour", float(oh[0]))
         b.set_editor_property("close_hour", float(oh[1]))
+        set_dress(b, data, dest, t)
         n += 1
         for e in data.get("entrances", []):
             if e.get("kind") not in ("street", None):
@@ -438,6 +481,7 @@ def place_units(face_y, eas, cls, kinds):
         oh = (min(s[2][0] for s in staff), max(s[2][1] for s in staff)) if staff else (8, 21)
         b.set_editor_property("open_hour", float(oh[0]))
         b.set_editor_property("close_hour", float(oh[1]))
+        set_dress(b, data, dest, t)
         n += 1
     return n
 

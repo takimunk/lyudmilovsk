@@ -1,0 +1,10 @@
+{
+ "id": "icon_camera",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A compact Soviet 35 mm rangefinder camera of the 1960s: a black leatherette body with a satin chrome top plate, a small lens with a knurled focusing ring, two little rangefinder windows above it, sitting half out of its worn brown leather case with the strap coiled beside, without readable lettering.",
+ "source": "design/photo/icons_photo_1.png (sidecar design/photo/icons_photo_1.json), cell 1 (row 1, left), cut into 2x2 equal cells, resized to 512x512",
+ "sha256": "efb258710f55f5bca74024c6ebcc9cb0934418ae7256633c42b9fbbf8f457122",
+ "strings": {}
+}

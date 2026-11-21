@@ -152,7 +152,7 @@ python3 tools/city/interiors.py --check    # write nothing; fail on broken conte
 * **Auto things.** While a building declares no `things`, its `spots` become things flagged `"auto": 1`: `seat`/`bench`/
   `table` → seat, `counter` → counter (role: the plot's first selling role), `view` → board `topic=view`; a rule
   (`tools/city/content/plots.json`) may give any other spot (a `stand`, a `work` place) a kind, or `skip` one. A promenade
-  unit whose variant is not built gets one counter at its door; built ones use their room's things (see "Promenade units"). As soon as a building exports one `thing`, its spots are no longer used.
+  unit whose variant is not built gets one counter at its door; built ones use their room's things (see "Promenade units"). As soon as a building exports one `thing`, its spots are no longer used, except a spot a rule names with `"spot": "<thing id>"` and a `kind`: that makes a thing of that id at the spot's look point (not `auto`; its act and props come from the rules naming the new id). It is for a use the model has a prop for but the building's script declared no thing: `"P-CLUB3/photo_seat_2": {"spot": "contest_box", "kind": "take"}` puts the photo contest's box at the lab's table (`spot_things` in `interiors.py`).
 * `Content/Dev/teleports/interiors.json`: one teleport per public building (1.5 m inside its main street door, facing
   in; kiosks and open halls: 2 m in front, facing them) and one per upper storey that has things; x/y map metres
   (docs/world_map.md), z world cm = the floor (feet), names `dev.tp.city.<plot>[.<storey>]` in the city strings. The floor
@@ -201,6 +201,7 @@ An act is what happens when the hero presses E at a thing:
 | `daily` | how many times a day it gives its reward (0: no limit) |
 | `shop` | opens the trade screen with this stock of `shops` when `needs_staff` is on shift |
 | `screen` | a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
+| `open` | another system's screen opens instead of the act's page (`ULyudCityThings::OnOpen(screen, thing)`; one of `OPEN_SCREENS` in `interiors.py`): `books` (the library's classics, `ULyudBookScreen`), `photo_lab` (the photo studio takes films in and gives prints out), `photo_darkroom` (the hero develops his own film), `photo_contest` (the photo club's monthly contest at its table: hand a print in, hear the result) and `photo_wall` (the wall of the contest's winners; all four `Private/Photo/LyudPhoto.cpp`, docs/photo.md). The act still takes its price, gives its items, plays its sound and reports its event; its line is taken but not shown, its `minutes` do not pass, and a counter's staff talk is not offered |
 | `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
 | `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
@@ -214,7 +215,8 @@ An act is what happens when the hero presses E at a thing:
 A thing record of `interiors.json` has `id`, `plot`, `kind`, `ue`, `yaw`, `props`, `act`, `hours`, `days`, and when they
 apply `auto`, `collect` (the stamp using it gives: a rule's `"collect": "kiosks/{plot}"` with the plot filled in) and `closed`
 (the act it does while its plot is shut). A `<plot|type>/<id>` rule may give `kind`, `props`, `act`, `hours`, `days`,
-`collect`, `closed`. The file's `collections` section: `{"<set>": {"title": key, "pieces": [...]}}`.
+`collect`, `closed`. The file's `collections` section: `{"<set>": {"title": key, "pieces": [...]}}` (and `"by": "code"` on a
+set whose stamps the game's code gives).
 
 ### Collections
 
@@ -224,10 +226,48 @@ acts `like` it, `"films/{line}"`), the jukebox records heard (`records`: `jukebo
 visited (`kiosks`: the rule `bus_stop_kiosk/counter`, `"kiosks/{plot}"`). Declared in a content file's `collections` section
 (`tools/city/content/collections.json`): `{"<set>": {"title": "<key>", "pieces": [...]}}`; without `pieces` the set is every
 piece something in town gives (a building's new lines grow it by themselves). `--check` fails on a stamp of an undeclared set
-or piece, a declared piece nothing gives, a missing title. The first time a stamp comes the HUD says `city.coll.got`
+or piece, a declared piece nothing gives, a missing title. A set with `"by": "code"` is given by the game's code, not by a
+thing in town (`ULyudCityThings::GiveStamp("<set>/<piece>")`): it must write its `pieces` out, and neither `--check` nor
+`quest_audit.py` asks that something in town gives them (the photo album's `photo_birds`, `photo_sky`, `photo_life` in
+`tools/city/content/photo.json`: a sharp frame of the subject on a developed film). The first time a stamp comes the HUD says `city.coll.got`
 («Фильмы «Рассвета»»: 3 из 16), at the last one `city.coll.complete`. Lines may ask for stamps (`have`, `count`). Console
 `lyud.City.Collections` (each set "n of m" to the log and on the page; `grant|clear <set|*>`); developer mode
 `interiors.collections` (the page) and `interiors.collections_all` (toggle: every set complete / cleared).
+
+### A complete set pays
+
+Every collection gives something once, at its last stamp (backlog item 30). A content file's `rewards` section
+(`tools/city/content/x_rewards.json`, words in `strings/x_rewards.json`):
+
+```
+"rewards": {"<set>": {"pay": roubles | "item": "<item id>", "count": n | "item_from": "<shop id>", "like": "<id prefix>", "pay": n
+                      | "free": "<item id>", "days": n}}
+```
+
+A reward is a keepsake with a name and a diary sentence (`city.coll.reward.<set>.name` / `.note`: the reader's card with a
+photograph, the framed Rassvet poster, the chess club's badge) and one thing to hold: roubles, an existing item, the first
+good of a shop the hero has none of (`item_from`; with `like` only the goods whose id begins so: a record of the Wave, never
+its guitar; `pay` when he owns them all), or a good that costs nothing for some days (`free`: the bus-stop kiosks' daily
+paper for 30 days; `ULyudCityThings::OpenShopOf` asks `FModel::PriceOn`). Keepsakes are not items: they live on the
+diary's page, so none needs an icon. `interiors.py` writes each reward into its collection (`"reward"`); a set with none
+(a branch that brings a new set) still pays roubles by its size under the default words, with a warning; a reward whose set
+does not exist yet is a warning too.
+
+The model (`FModel::TakeRewards(day)`) hands back the sets complete and not yet paid and marks them (`g:<set>` in the
+save: the day). The game (`ULyudCityThings::PayCollections`, after every stamp's HUD note, after a developer grant, and
+once after a save is loaded, so a set completed before rewards existed pays then) gives the item or roubles, says
+`city.coll.reward.toast`, writes the diary's entry `city.coll.reward.diary` and sends the quest event `collection <set>`.
+`lyud.City.Collections clear <set>` forgets the payment with the stamps.
+
+**The diary's «Коллекции» pages** come after its «Люди» pages (`SLyudDiarySpread::CollectionsPage`, six sets a page): the
+count of complete sets, then every set with its `n of m`, a box for every piece (ticked when he has it), and its keepsake:
+`city.coll.page.reward` once paid, `city.coll.page.promise` before, the days left of a free good. Order
+(`FModel::CollectionRows`): the paid sets (oldest first), the ones begun (the fullest first), the untouched. The console
+page of `lyud.City.Collections` stays as the developer's plain list.
+
+Checks: `tools/citysim/rewardchecks.h` (each of the sets one stamp short pays nothing and pays itself once at the last;
+the words in three languages; the paper's price over the month; the save; the page's order), `quest_audit.py` (0 errors:
+a set given by code or by the tournaments is marked `by`, an event the code sends by name is known from the source).
 
 ### Closed
 
@@ -329,6 +369,9 @@ who plays it), by the seed. A win `Notify("win", <act target>)` for the quests b
 
 ### Small jobs
 
+The bicycle rounds (the morning papers from kiosk 1, the post round for the old postman) are run by the engine, not by an
+act: `docs/rounds.md`. The boards carry their sheet (`city.text.jobs.rounds`), and `x_rounds.json` holds their stamp set and quest.
+
 Short paid shifts (`tools/city/content/x_jobs.json`, strings `strings/x_jobs.json`): the hero earns roubles by the result of a
 real loop of acts, at most once a day (or so many entries a day), with a resident of the town as the boss on shift (the act's
 `needs_staff`). No job block in the model: a job is an ordinary act whose lines carry `pay`, or a game with `pay` a point and
@@ -339,7 +382,7 @@ always said, unpaid. Every job's lines give the piece of the stamp set `work_boo
 | job | thing | when | boss (role) | how it pays |
 |---|---|---|---|---|
 | the morning papers | `P-KIOSK1/price_board` | wed-sun 8-10 | Yerlan Romero (seller) | 25, rain 35, cold 30 |
-| the crates | `P-MARKET/market_scales_2` | sat 6-10 | Parisa Petrosyan (seller) | 20, rain 25 |
+| the crates | `P-MARKET/market_scales_2` | sat 7-10 (the sellers come at seven) | Parisa Petrosyan (seller) | 20, rain 25 |
 | the scales | `P-MARKET/market_scales` | sat 7-13 | the same | aim: 3 a point + win 20 / draw 10 / lose 5 |
 | the flag | `P-LIFEGUARD1/flag_halyard` | wed-sun 10-19 | Eitan Kowalski (lifeguard) | 10; the line is the right flag: fog red, rain or cold yellow, calm green, drizzle yellow |
 | the watch | `P-LIFEGUARD1/whistle` | wed-sun 10-19 | the same | rally: 3 a whistle in time + 25 / 15 / 8 |
@@ -366,10 +409,15 @@ Three weekly knock-out cups of eight (`tools/city/content/x_tournaments.json`, w
 
 ```
 "tournaments": {"<id>": {"title": key, "venue": key, "game": "<vs>", "plot": "P-…", "days": "sat", "start": 13, "step": 1.5,
-                         "collect": "cups/<id>"}}
+                         "collect": "cups/<id>", "fest_title": key, "fest_collect": "fest_cups/<id>"}}
 a text {"gen": "cup:<id>", "kind": "notice", "pages": [fallback]} read on some thing of the town (the bracket board)
 ```
 
+* **A holiday's cup** (docs/festivals.md "The new toys"): when the tournament's weekday falls on a holiday
+  (`FWhen::bFestival`), the board is headed with `fest_title` and says so (`city.cup.fest`), the bracket keeps the label
+  afterwards (`city.cup.fest_bracket`; remembered under `k:f:<cup>@<day>` once a match of that day is recorded), and the
+  champion takes a second stamp, `fest_collect` (the collection `fest_cups`), beside the weekly cup. Only on a holiday
+  that is not a public day off: on a day off there is no cup at all (**Holidays** below), and `IsFestDay` is false.
 * **The field**: every regular who plays the game (the clubs' ten, the x_ files' own, and 15 guests in x_tournaments.json:
   real residents free at those hours, each with a style, a skill and three lines; they also sit down at their venue's
   tables any day). Eight are drawn by a hash of the cup and the day and seated by it, so a day's bracket is the same
@@ -385,6 +433,10 @@ a text {"gen": "cup:<id>", "kind": "notice", "pages": [fallback]} read on some t
 * **The board** (`FCups::Pages`): the tournament (weekday and venue, the rounds' hours, the game's rule, the sheet: "your name
   is on the list"), today's bracket from its start or the last one (the hero as «новичок (вы)», "(to be decided)" for the
   winners to come, no-shows), the cup case (the last six champions, the hero's cups).
+* **Holidays**: no cup is played on a public holiday (a festival's day off: Big Sun Day falls on the chess cup's Saturday).
+  The game hands `FCups::IsHoliday` the festivals' calendar; the sheet then signs up for the week after, the board's first
+  page says why (`city.cup.holiday`), there is no match, no news, and the board shows the last cup before it.
+  tools/togethersim found the regulars watching the zenith on the square while their bracket played.
 * **The paper** (`ULyudCityThings::GetCupNews`): the morning after, the champion and runner-up and how far the hero got; his
   cup is a front story; the day's tournament is announced on the bills page.
 * **Saved** with the model's map: `k:s:<cup>@<day>` signed up, `k:r:<cup>@<day>` his results (`W`/`L`), so brackets of past
@@ -598,7 +650,9 @@ market, its bird/bait/tea stalls, fish shop, bakery, «Чайка», dumplings, 
 the photo desk, the clinic, the sanatorium, the hall bar, the fair, the sports café, «Шестерня»'s lending desk, the
 lifeguards and the keeper), 93 topics, 218 answer lines, ru/en/ja. They point at each other: the film of the day at
 «Рассвет» (one topic shared by the buffet and the cashiers), the library's stamp diary, the potter's week at the culture
-block, Kesha the parrot, the chess regulars, the morning paper. `--check` fails on an unknown act or topic, a topic without
+block, Kesha the parrot, the chess regulars, the morning paper. The four photo quests' topics are in `photo.json` (topic sets
+`photo_grandpa`, `photo_pier`, `photo_maru` on the workshop W1-U04, the lighthouse desk and the Cog's cloakroom; each has
+a second topic, "I have the print", offered once the first is heard). `--check` fails on an unknown act or topic, a topic without
 a plain line, more than 8, an unknown `did` target or `heard` topic. Console `lyud.City.Ask <thing id> [topic id] | list |
 reset` (from anywhere, whatever the hour and staff); developer mode `interiors.topics` (heard, on the page and the log),
 `interiors.topics_reset` (every topic new again), `interiors.ask_nearest`.
@@ -617,10 +671,15 @@ loaded once when the file is adopted (`LoadObject`, a handful).
 
 ```
 "tones":   {"<id>": {"loop": "<sound id>", "volume": 0..1, "shots": ["<sound id>"], "every": [min, max] s (12..30, 2..600),
-                     "shot_volume": 0..1, "closed": "<tone id>", "about": "..."}}
+                     "shot_volume": 0..1, "closed": "<tone id>", "weather": {"<weather word>": "<tone id>"},
+                     "windows": 0..1, "about": "..."}}
 "tone_by": {"<plot id>" | "unit:<variant>" | "<building type>" | "<plot kind>": "<tone id>"}     (first match in that order)
 "sound_alias": {"<id an act uses>": "<soundscape id>"}                                           (page_turn -> diary_page ...)
 ```
+
+`weather` and `windows` (docs/indoor_weather.md): while open and a weather word holds, that tone plays instead (a full cafe
+in the rain, the keeper's radio in the lighthouse); `windows` is how much of the rain on the glass is heard inside
+(`ULyudSoundscapeSubsystem::SetNearWindows`, set with each tone, 0 outside).
 
 interiors.py writes `tones` (with the loop's asset path, `/Game/Audio/<Group>/S_<id>_01`) and `plot_tones`. Now: ten tones
 (`hall_quiet`, `reading_room`, `cafe_room`, `bar_room`, `kitchen_shop`, `shop_room`, `cold_counter`, `empty_room`,

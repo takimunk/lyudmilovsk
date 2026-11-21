@@ -177,6 +177,13 @@ namespace LyudMusic
 		std::string TideTime;       // "HH:MM" of the next high (rising) or low (falling) water
 		std::string PaperHeadline;  // literal text, empty without the paper
 		int Season = 0;             // 0 winter, 1 spring, 2 summer, 3 autumn
+		int Rink = 0;               // the park rink (ULyudWinterPlay::RinkReport): 0 none, 1 open, 2 thin, 3 slush
+		float RinkCm = 0.f;         // its ice, cm
+		int Walrus = 0;             // the walruses' call: 1 tomorrow's Sunday swim (Saturday's broadcasts), 2 New Year's Day
+		/** Today's holiday: its name key (festival.<id>.name); empty on an ordinary day. The station then runs its holiday
+		 *  broadcast (docs/festivals.md "The new toys"): greets the town at sign-on and in every bulletin, and the music
+		 *  hours go out as the holiday programme. */
+		std::string Festival;
 	};
 
 	/** One segment laid out: what plays when, what is said when. */
@@ -712,6 +719,23 @@ namespace LyudMusic
 				T.Args = { Lit(F.TideTime) };
 				Out.push_back(T);
 			}
+			// winter: the rink and the walruses (docs/winter_play.md "The radio")
+			if (F.Rink >= 1 && F.Rink <= 3)
+			{
+				FCaption R;
+				R.Key = F.Rink == 1 ? "winter.radio.rink_open" : (F.Rink == 2 ? "winter.radio.rink_thin" : "winter.radio.rink_slush");
+				if (F.Rink != 3)
+				{
+					R.Args = { Lit(Num(F.RinkCm)) };
+				}
+				Out.push_back(R);
+			}
+			if (F.Walrus == 1 || F.Walrus == 2)
+			{
+				FCaption W;
+				W.Key = F.Walrus == 1 ? "winter.radio.walrus" : "winter.radio.new_year";
+				Out.push_back(W);
+			}
 			FCaption A;
 			if (F.Thunder > 0.3f) { A.Key = "music.radio.weather.advice.storm"; }
 			else if (F.Rain > 0.2f && F.Snow >= 0.5f) { A.Key = "music.radio.weather.advice.snow"; }
@@ -814,6 +838,10 @@ namespace LyudMusic
 				T = Start + 4.0;
 				Say("music.radio.cap.sign_on.1", { Key(StationName) });
 				Say("music.radio.cap.sign_on.2");
+				if (!F.Festival.empty())
+				{
+					Say("music.radio.fest.sign_on", { Key(F.Festival) });
+				}
 				Pips(T);
 				T += 6.0;
 				Say("music.radio.cap.time", { Lit(Clock(T)) });
@@ -838,6 +866,10 @@ namespace LyudMusic
 				Chime(T);
 				T += 3.0;
 				Say("music.radio.news.intro");
+				if (!F.Festival.empty())
+				{
+					Say("music.radio.fest.news", { Key(F.Festival) });
+				}
 				const int Bulletin = S.AtMin < 10 * 60 ? 0 : (S.AtMin < 16 * 60 ? 1 : 2);
 				if (Bulletin == 0 && !F.PaperHeadline.empty())
 				{
@@ -897,6 +929,17 @@ namespace LyudMusic
 			case EKind::Music:
 			{
 				LayMusic(S, SegDay, SegIndex, Start, End, F, Out.Plays);
+				if (!F.Festival.empty())
+				{
+					// the holiday programme: the hour's own name gives way, the presenter greets the town after the first record's name
+					Out.Show = "music.radio.show.festival";
+					FCaption Hello;
+					Hello.Start = Start + CaptionSeconds;
+					Hello.Dur = CaptionSeconds;
+					Hello.Key = "music.radio.fest.hour";
+					Hello.Args = { Key(F.Festival) };
+					Out.Caps.push_back(Hello);
+				}
 				// each record announced as it starts
 				for (const FPlay& P : Out.Plays)
 				{
@@ -904,7 +947,7 @@ namespace LyudMusic
 					C.Start = P.Start;
 					C.Dur = CaptionSeconds;
 					C.Key = "music.radio.cap.track";
-					C.Args = { Key(S.Show), Key(Tracks[P.Track].Title), Key(Tracks[P.Track].Artist) };
+					C.Args = { Key(Out.Show), Key(Tracks[P.Track].Title), Key(Tracks[P.Track].Artist) };
 					Out.Caps.push_back(C);
 				}
 				break;

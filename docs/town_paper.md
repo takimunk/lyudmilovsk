@@ -38,12 +38,35 @@ Four pages, keys and arguments only (so a save shows it in the language of the m
    his big deeds).
 4. **Holidays and cinema**: today's club tournament (its start and venue: sign up at the bracket), up to three festivals of the next two weeks with their dates (`festivals.json` through
    `LyudFest::FCalendar`, weekly and trigger ones left out), the Rassvet's poster of the weekday (`city.rassvet.poster.<day>`, the
-   festival one on a holiday), three small ads of the season.
+   festival one on a holiday), three small ads of the season. On the 1st of a month also the photo club's contest
+   (`paper.contest.open`: the month's theme, prints until the 25th, the jury on the 26th; see "The photo contest").
 
 The hero's deeds are read from what the game already keeps with dates: `ULyudBirdBook` (`Friends[].Tamed`, `Seen[].When`; rare
 species in `town_paper.json` `rare_birds`), `ULyudFishingState::Journal` (a record when it equals the species' biggest and the
-hero has caught three or more of it), `ULyudQuests::Entries` (`quest.<id>.done`) and the tournaments
-(`ULyudCityThings::GetCupNews`, worked out again from the hero's saved results). No other system reports to the paper.
+hero has caught three or more of it), `ULyudQuests::Entries` (`quest.<id>.done`), the tournaments
+(`ULyudCityThings::GetCupNews`, worked out again from the hero's saved results) and the photo contest
+(`ULyudPhoto::ContestNews`, on the 27th). No other system reports to the paper.
+
+## The photo contest
+
+The photo circle at «Шестерня» runs a contest by the month (docs/photo.md; the entries, the jury and the wall are the
+camera's code). The theme goes by the calendar month, `(month - 1) % 4`: `sea`, `birds`, `work`, `festival`
+(`LyudPaper::FPaper::ContestTheme`; names `paper.contest.theme.<id>`). The paper's part:
+
+- **The 1st**: page 4 opens the contest (`paper.contest.open`: theme, the last day 25, the jury's day 26, the month).
+- **The 27th** (the jury sat on the 26th): `ULyudTownPaper::BuildFacts` asks `ULyudPhoto::ContestNews(World, Year, Month,
+  Place, ShotPlace)` for yesterday's month when yesterday was the 26th; true gives the deed `contest` (`N` = the hero's
+  place 1..6, `What` = the map place the print was taken at, or empty). Place 1 is a front story among the hero's big deeds,
+  after the swan, a record fish and a cup ("the paper prints the photograph": `paper.front.contest.1..3` with the theme and
+  `place.<id>.name`, `paper.front.contest_noplace.1..2` when the place is not known); if a bigger story keeps the front it
+  is a brief (`paper.brief.contest_1`). Places 2 and 3 are a brief on the town page (`paper.brief.contest_2`, `_3`, with
+  the theme). Places 4 to 6 and a month the hero sat out: nothing. The archive keeps lines, not deeds, so old saves read
+  as before.
+- **The boards**: dated notices on every club board in town (`notices_club`) and on the circle's own sheet (text
+  `notices_photo`: the notice of the day, then the rules; read at `P-CLUB3/photo_board` in turn with the lab's guide):
+  the month's theme from the 1st to the 19th (`city.note.club.contest_sea|birds|work|festival`), a reminder from the 20th
+  to the 25th (`contest_soon`), the jury's day on the 26th (`contest_jury`), the results to the month's end
+  (`contest_done`). A notice's window in `strings_src.py` may be a list of windows (the notice comes back).
 
 ## Code and data
 
@@ -65,12 +88,12 @@ Console: `lyud.Paper.Print [days]` (today's issue, or N days ahead, to the log),
 
 ## Notices
 
-`tools/paper/strings_src.py` NOTICES: (board, id, yearly window `("MM-DD", "MM-DD")` or first game days `(after, before)`,
-ru, en, ja). `paper.py` makes a text per board: a holiday page (`festival: any`), pages of dated notices (packed so that two
+`tools/paper/strings_src.py` NOTICES: (board, id, yearly window `("MM-DD", "MM-DD")` (or a list of such windows) or first
+game days `(after, before)`, ru, en, ja). `paper.py` makes a text per board: a holiday page (`festival: any`), pages of dated notices (packed so that two
 notices on one page never share a day: a page shows one notice or none), last the board's own five lines (one a day). The
-reading view leaves out pages with nothing holding, so a board shows today's notices and the board's line. 37 notices now
+reading view leaves out pages with nothing holding, so a board shows today's notices and the board's line. 44 notices now
 (lost cat Ryzhik and its finding, keys, flat swap, the choir, the chess tournament, kites, dancing, the Perseids, flu jabs,
-ticks, black ice, nest boxes, exams, the first of September, the herbarium contest, the summer camp...).
+ticks, black ice, nest boxes, exams, the first of September, the herbarium contest, the summer camp, the photo contest's seven...).
 
 ## Checks
 
@@ -78,9 +101,14 @@ ticks, black ice, nest boxes, exams, the first of September, the herbarium conte
 
 - 800 made-up days (season temperatures, skies, tides, deeds by a seeded die, the real festival calendar): four pages a day,
   nothing empty, no front or town story two days running, every key and `@` argument in ru/en/ja, every placeholder has an
-  argument, Pack/Unpack round trip, festivals and the hero's swan and records reach the front, birthdays sane;
+  argument, Pack/Unpack round trip, festivals and the hero's swan and records reach the front, birthdays sane; the photo
+  contest: it opens on every 1st with the month's theme and on no other day, a made-up deed of each place on the 27th
+  (the first place on the front in every month with and without the shot's place, its five wordings, the next wording
+  when yesterday's front was the same, a brief when a swan keeps the front; the second and third a brief; the fourth to
+  sixth nothing), an issue packed by hand in the old save's form unpacks;
 - `check_notices.py`: two years of days, every board shows something, no two dated notices on one page on any day, every notice
-  shows on some day, no board without a dated notice for longer than 40–70 days;
+  shows on some day, no board without a dated notice for longer than 40–70 days, the photo contest's notice of the day
+  on `notices_club` and `notices_photo` (the theme by the month, the reminder, the jury's day, the results);
 - `paper.py --check`: the generated files are current.
 
 Also `python3 tools/city/interiors.py --check` and `tools/citysim/run.sh` (the boards' texts, the `gen` field).
@@ -90,3 +118,7 @@ Also `python3 tools/city/interiors.py --check` and `tools/citysim/run.sh` (the b
 Nothing to import: the paper is text. Build, then: `lyud.Paper.Print 3`; buy a paper at a kiosk and read it (E/D through four
 pages; the last page toasts "Read an issue … 1 of N"); `Dev.Do time.plus_day`, read again (a different front); the library
 rack shows both issues with their marks; `lyud.Language en` / `ja` and look for raw keys.
+
+## «Говорят в городе»
+
+The morning paper prints up to two lines about the day before's talk of the town (ULyudTownRumours::PaperColumn, FFacts.Talk), before the birthdays. Words: tools/rumours/rumours.py (PAPER), docs/town_rumours.md.

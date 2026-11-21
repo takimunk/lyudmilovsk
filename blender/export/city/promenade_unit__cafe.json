@@ -497,9 +497,112 @@
  "notes": [
   "promenade unit room, variant cafe: placed at each W1 unit whose plan variant is cafe"
  ],
+ "dress": [
+  {
+   "id": "unit_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 291,
+   "bounds": [
+    [
+     0.715,
+     0.73,
+     0.02
+    ],
+    [
+     3.8,
+     1.664,
+     0.89
+    ]
+   ]
+  },
+  {
+   "id": "cafe_paper",
+   "when": {
+    "weekdays": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "hours": [
+     7.5,
+     11.5
+    ]
+   },
+   "tris": 10,
+   "bounds": [
+    [
+     -1.684,
+     3.58,
+     0.75
+    ],
+    [
+     -1.316,
+     4.02,
+     0.753
+    ]
+   ]
+  },
+  {
+   "id": "cafe_used",
+   "when": {
+    "hours": [
+     9.5,
+     12.5
+    ]
+   },
+   "tris": 654,
+   "bounds": [
+    [
+     -3.872,
+     1.36,
+     0.75
+    ],
+    [
+     1.167,
+     4.567,
+     1.12
+    ]
+   ]
+  },
+  {
+   "id": "cafe_summer",
+   "when": {
+    "weather": [
+     "warm",
+     "clear"
+    ],
+    "months": [
+     6,
+     7,
+     8
+    ]
+   },
+   "tris": 116,
+   "bounds": [
+    [
+     -1.6,
+     4.15,
+     0.45
+    ],
+    [
+     -1.198,
+     4.49,
+     0.585
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 238,
   "detail": 6876,
-  "windows": 0
+  "windows": 0,
+  "dress": 1071
  }
 }

@@ -179,6 +179,23 @@ public:
 	bool EditCollections(const FString& Verb, const FString& Set);
 	/** Is every collection complete (the developer toggle's light)? */
 	bool AreCollectionsComplete() const;
+	/** A collection as the diary's «Коллекции» pages show it (docs/city_interiors.md "A complete set pays"). */
+	struct FCollectionView
+	{
+		FText Title;
+		/** The keepsake a complete set gives. */
+		FText Reward;
+		/** Its slots in the data's order: filled or empty. */
+		TArray<bool> Slots;
+		int32 Got = 0;
+		bool bRewarded = false;
+		/** Days left of a reward that makes a good free (0: none, or over). */
+		int32 FreeDays = 0;
+	};
+	/** Every collection for the diary: the paid ones first, then the ones begun (the fullest first), then the rest. */
+	void CollectionViews(TArray<FCollectionView>& Out) const;
+	/** Gives what every newly complete collection pays, once (the keepsake's toast, the diary's note, the item or roubles). */
+	void PayCollections();
 
 	// --- mini-games
 
@@ -288,6 +305,9 @@ public:
 	 *  page shows (true + Line set; an empty Line shows no page). One listener (ULyudMusic), bound with a weak object. */
 	DECLARE_DELEGATE_RetVal_TwoParams(bool, FActHook, const FCityActInfo& /*Info*/, FText& /*Line*/);
 	FActHook ActHook;
+	/** More listeners asked after ActHook (when it didn't take the act): the instruments' sheet music (docs/instruments.md). */
+	void AddActHook(FActHook Hook) { MoreActHooks.Add(MoveTemp(Hook)); }
+	void RemoveActHooks(const void* Object) { MoreActHooks.RemoveAll([Object](const FActHook& H) { return H.IsBoundToObject(Object); }); }
 	/** Every thing whose act Match accepts (the act id with its "@role"), appended to Out. A pass over all things: call once. */
 	void GetThingsByAct(TFunctionRef<bool(const FString& Act)> Match, TArray<FCityThingRef>& Out) const;
 	/** The act id of a thing ("<plot>/<thing id>"); empty when unknown. */
@@ -304,6 +324,8 @@ protected:
 
 	/** The model's state as a flat map ("CityThings"): counts, pages, uses, plots visited. */
 	UPROPERTY(SaveGame) TMap<FString, FString> Saved;
+
+	TArray<FActHook> MoreActHooks;
 
 private:
 	void StartLoad();
@@ -341,6 +363,8 @@ private:
 	void AnnouncePay(int32 Rubles);
 	/** A note on the HUD for every stamp got for the first time ("Films at «Рассвет»: 3 of 12"). */
 	void AnnounceStamps(const TArray<FString>& Stamps);
+	/** A save was loaded: its complete sets are looked over at the next tick (a set completed before rewards existed pays then). */
+	bool bPayCollections = false;
 	void FillRef(int32 Thing, FCityThingRef& Out) const;
 	/** The holds of townsfolk whose holder is gone are let go (a few times a second). */
 	void DropDeadHolds();

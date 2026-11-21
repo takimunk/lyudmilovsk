@@ -1,0 +1,56 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a well-used Soviet digging spade with a pointed steel blade dusted with dark soil and a pale wooden handle worn smooth, lying diagonally. Row 1, middle: a green-painted tin watering can with a long spout ending in a round perforated rose, a few scuffs on the paint. Row 1, right: a small tied sack of coarse brown paper, its top folded open to show dark crumbly compost. Row 2, left: a plain paper seed packet with a printed picture of red round radishes with green tops and white tips, no letters. Row 2, middle: a plain paper seed packet with a printed picture of feathery green dill and yellow umbrella flowers, no letters. Row 2, right: a plain paper seed packet with a printed picture of a big yellow sunflower head, a few striped seeds spilled beside it, no letters. Row 3, left: a string net bag of small yellow-brown seed potatoes with short pale sprouts. Row 3, middle: a young tomato seedling with fuzzy serrated leaves in a plain brown paper cup of dark soil. Row 3, right: a small strawberry plant with three-lobed leaves and a trailing runner in a plain brown paper cup of soil."
+ },
+ "job_id": "266b7c39-0d56-4090-8365-e70438d07487",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_224146_266b7c39-0d56-4090-8365-e70438d07487.png",
+ "credits": 1,
+ "generated": "2026-11-20",
+ "cells_row_major": [
+  "spade",
+  "watering_can",
+  "garden_compost",
+  "seeds_radish",
+  "seeds_dill",
+  "seeds_sunflower",
+  "seed_potatoes",
+  "seedling_tomato",
+  "seedling_strawberry"
+ ],
+ "sha256": "9d926f0b8cd5ebf4599c1ea81f7ae3ea9c34759ee7026ec80b7ba8f4cccb15c7",
+ "recut_by_hand": {
+  "seed_potatoes": {
+   "box_px": [
+    0,
+    1312,
+    730,
+    2042
+   ],
+   "why": "the net's knot / the tomato seedling's top crossed the row edge: an equal-cell cut clipped it or showed it as a sliver"
+  },
+  "seeds_radish": {
+   "box_px": [
+    20,
+    660,
+    660,
+    1300
+   ],
+   "why": "the net's knot / the tomato seedling's top crossed the row edge: an equal-cell cut clipped it or showed it as a sliver"
+  },
+  "seeds_dill": {
+   "box_px": [
+    705,
+    660,
+    1345,
+    1300
+   ],
+   "why": "the net's knot / the tomato seedling's top crossed the row edge: an equal-cell cut clipped it or showed it as a sliver"
+  }
+ }
+}

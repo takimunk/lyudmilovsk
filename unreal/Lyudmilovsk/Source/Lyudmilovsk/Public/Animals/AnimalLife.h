@@ -17,7 +17,9 @@ UENUM(BlueprintType)
 enum class EAnimalActivity : uint8
 {
 	Sleep, Rest, Sit, Groom, Stand, Walk, Trot, Run, Sniff, Eat, Watch, Approach, Greet, Beg, Rub, PlayBow, Play, Stalk, Crouch, Pounce,
-	Chase, Flee, Climb, Perch, Hiss, Bark, Follow
+	Chase, Flee, Climb, Perch, Hiss, Bark, Follow,
+	/** With a friend (docs/animals.md "Friends"): nose at the hand held out, stroked, belly up, asleep on the lap, in the water. */
+	SniffHand, Petted, RollOver, Lap, Swim
 };
 
 USTRUCT(BlueprintType)
@@ -48,8 +50,9 @@ struct LYUDMILOVSK_API FAnimalInfo
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") float Fear = 0.f;
 	/** 0..1 toward the player: grows when the player is calm near it. */
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") float Trust = 0.f;
-	/** Reserved for taming (a dog walking with the player): not grown by anything yet. */
+	/** 0..1 friendship: grown by stroking and treats (a friend from 0.5: UAnimalLifeSubsystem::IsFriend). */
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") float Bond = 0.f;
+	UPROPERTY(BlueprintReadOnly, Category = "Animals") bool bFriend = false;
 	/** Its name as shown: the one the player gave it, else its own (NameKey in the player's language), else empty. */
 	UPROPERTY(BlueprintReadOnly, Category = "Animals") FString Name;
 	/** The localization key of the name it already has (animal.maru.name), empty for the nameless. */
@@ -85,7 +88,9 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FAnimalLifeEvent, int32, AnimalId, 
  * they walk on and their places come from Content/AnimalsData (tools/animal_map.py). Near the camera the animals are
  * AAnimalActor bodies (furred, LODs); far ones aren't drawn and think less often.
  *
- * Taming is not built yet; FAnimalInfo::Bond, Name and EAnimalActivity::Follow are its hooks (SetAnimalName, the save).
+ * Friends (docs/animals.md "Friends"): a hand held out and sniffed, stroking, treats grow FAnimalInfo::Bond; a friend dog walks
+ * at the player's heel (Follow), waits outside doors, swims after them, sits by their bench; a friend cat comes to sleep on
+ * their lap. The model is Private/Animals/AnimalFriendSim.cpp; the player's keys, hand and diary are UAnimalFriendSubsystem.
  * Starts by itself in Lvl_Scene01 (or any map with lyud.Animals.AnyMap 1); lyud.Animals 0 turns it off.
  */
 UCLASS()
@@ -125,9 +130,42 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Animals")
 	bool Hail(int32 Id);
 
-	/** Reserved for taming: the name the player gave it (kept with the save). */
+	/** The name the player gave it (kept with the save). */
 	UFUNCTION(BlueprintCallable, Category = "Animals")
 	void SetAnimalName(int32 Id, const FString& InName);
+
+	// --- friends (docs/animals.md "Friends"; the player's side of it is UAnimalFriendSubsystem) ---
+
+	/** The player (crouched) holds a hand out to it: true if it comes to sniff it (HandSniff), false if it will not yet (HandRefuse). */
+	UFUNCTION(BlueprintCallable, Category = "Animals|Friends")
+	bool OfferHand(int32 Id);
+	/** One stroke (a few seconds): only one that has sniffed the hand, or a friend. EndStroke: the hand left early. */
+	UFUNCTION(BlueprintCallable, Category = "Animals|Friends")
+	bool StrokeAnimal(int32 Id);
+	UFUNCTION(BlueprintCallable, Category = "Animals|Friends")
+	void EndStroke(int32 Id);
+	/** Food on the palm (SetPlayerHand with bOffer): Like 0..1 is how much its kind wants that food. It comes, sniffs, eats (Ate) or leaves it. */
+	UFUNCTION(BlueprintCallable, Category = "Animals|Friends")
+	bool OfferFood(int32 Id, float Like);
+	/** A friend dog comes along at the player's heel (one at a time; not at night); EndWalk leaves it there or sends it home. */
+	UFUNCTION(BlueprintCallable, Category = "Animals|Friends")
+	bool StartWalk(int32 Id);
+	UFUNCTION(BlueprintCallable, Category = "Animals|Friends")
+	void EndWalk(bool bHome);
+	/** The dog walking with the player, the cat on (or coming to) their lap; -1 none. */
+	UFUNCTION(BlueprintPure, Category = "Animals|Friends")
+	int32 Walker() const;
+	UFUNCTION(BlueprintPure, Category = "Animals|Friends")
+	int32 LapCat() const;
+	UFUNCTION(BlueprintPure, Category = "Animals|Friends")
+	bool IsFriend(int32 Id) const;
+	/** Where the player's hand is held out (world, cm) and whether food lies on it; bSet false: the hand is down again. */
+	void SetPlayerHand(bool bSet, const FVector& Palm = FVector::ZeroVector, bool bOffer = false);
+	/** Its body near the camera, null far away (no strings made, unlike GetAnimal). */
+	AAnimalActor* BodyOf(int32 Id) const;
+	/** Tests and developer mode: makes it a friend at once (Befriended is sent like any other time). */
+	UFUNCTION(BlueprintCallable, Category = "Animals|Friends")
+	void Befriend(int32 Id);
 
 	UFUNCTION(BlueprintPure, Category = "Animals")
 	bool IsRunning() const { return Sim.IsValid(); }
@@ -175,6 +213,9 @@ private:
 	struct FSightCache { double Time = -1.0; bool bClear = true; };
 	TMap<uint64, FSightCache> Sight;
 	TMap<int32, double> ProbeTime;
+	bool bHandSet = false;
+	bool bHandOffer = false;
+	FVector HandPalm = FVector::ZeroVector;
 
 	bool Start();
 	bool StartEmpty(float GroundZ);

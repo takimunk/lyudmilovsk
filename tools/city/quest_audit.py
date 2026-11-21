@@ -9,7 +9,7 @@ staff (Content/City/city_plan.json), the item table and the strings, and proves 
 
 * do/win <act>: a thing in town runs an act with that target, its staff works at the plot, the thing is open at least one
   hour a week; a needs_item has a source; win: the act has a game, and a regular plays it (or it is played alone);
-* visit <plot>: the plot has things;  reach <place>: in map.json;
+* visit <plot>: the plot has things;  reach <place>: in map.json;  photo <place | maru | resident key>: in map.json (or the dog, or a key of people.json/townsfolk.json), and a camera can be had;
 * have/get/use <item>: something gives it (an act's give, a shop's goods, a game prize, an earlier stage's or another
   quest's reward) on an open, staffed thing;
 * ask <topic>: the topic is on a counter (act or thing topics) whose staff works there and is open, its conditions can
@@ -19,8 +19,9 @@ staff (Content/City/city_plan.json), the item table and the strings, and proves 
   docs/city_interiors.md "A quest's last stage should wait for a do"), a last stage on a bare visit;
 * rewards are known items; a `use` of an item only one quest reward gives, by two quests;
 * the first step is discoverable: the quest starts on something that exists, and the first stage's journal line exists;
-* collections: every declared piece has a source on an open thing (act/thing/line/game/text/topic stamps), every given
-  piece is declared, a `count` condition never asks for more than the pieces.
+* collections: every declared piece has a source on an open thing (act/thing/line/game/text/topic stamps; not asked of a
+  set "by": "code", whose stamps the game's code gives), every given piece is declared, a `count` condition never asks
+  for more than the pieces.
 """
 import collections
 import json
@@ -33,6 +34,24 @@ sys.path.insert(0, HERE)
 import interiors as I  # noqa: E402  (main() is guarded; we only use its readers)
 
 DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+
+_CODE_EVENTS = None
+
+
+def code_events():
+    """The quest events the game's code sends by name: every ULyudQuests::Notify(<context>, TEXT("<event>"), ...) of the
+    source tree (the town's things send theirs from the data: do, win, visit, ask, read are checked against it instead)."""
+    global _CODE_EVENTS
+    if _CODE_EVENTS is None:
+        _CODE_EVENTS = set()
+        src = os.path.join(HERE, "..", "..", "unreal", "Lyudmilovsk", "Source")
+        for base, _, names in os.walk(src):
+            for name in names:
+                if name.endswith(".cpp"):
+                    with open(os.path.join(base, name), encoding="utf-8", errors="replace") as f:
+                        _CODE_EVENTS.update(re.findall(r'Quests::Notify\(\s*[\w()*.>-]+\s*,\s*TEXT\("(\w+)"\)', f.read()))
+    return _CODE_EVENTS
 ERRORS, WARNINGS = [], []
 
 
@@ -76,6 +95,7 @@ def main():
     qfile = json.load(open(I.QUESTS, encoding="utf-8"))
     plan = json.load(open(I.PLAN, encoding="utf-8"))
     map_places = {p["id"] for p in json.load(open(os.path.join(I.CONTENT, "UI", "map.json"), encoding="utf-8"))["places"]}
+    photo_of = I.photo_subjects()  # what a photo may be of besides a map place: maru, a resident's key
     items = I.item_ids()
     strings = {}
     for lang in I.LANGS:
@@ -269,7 +289,7 @@ def main():
         if len(set(declared)) != len(declared):
             err("collection %s: a piece declared twice: %s" % (cid, [p for p, n in collections.Counter(declared).items() if n > 1]))
         for p in declared:
-            if p not in got:
+            if p not in got and not cdef.get("by"):  # by code: the game gives the stamps itself (GiveStamp)
                 if p in all_given:
                     err("collection %s: piece %s: given only under conditions that never hold" % (cid, p))
                 else:
@@ -416,9 +436,17 @@ def main():
                         err("%s: no such text" % where)
                     elif tgt not in read_ok:
                         err("%s: the text is on no open thing or has no plain page" % where)
-                elif ev == "reach":
-                    if tgt not in map_places:
+                elif ev in ("reach", "photo"):
+                    if ev == "photo" and tgt not in map_places and tgt not in photo_of:
+                        err("%s: not a map place, maru or a resident's key" % where)
+                    elif ev == "reach" and tgt not in map_places:
                         err("%s: not a map place" % where)
+                    elif ev == "photo" and not item_ok("camera", qid, n):
+                        err("%s: nothing open in town gives a camera" % where)
+                elif ev in code_events():
+                    # an event the game's own code reports (ULyudQuests::Notify(.., TEXT("round_done"), ..)): no thing in town
+                    # has to make it, so there is nothing here to walk to
+                    pass
                 else:
                     err("%s: event not checked by the audit" % where)
                 # a later stage's step raised by an earlier one: the engine skips ahead (stage n done too soon)

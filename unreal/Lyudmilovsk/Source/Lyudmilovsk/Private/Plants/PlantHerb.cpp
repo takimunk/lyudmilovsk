@@ -317,6 +317,41 @@ namespace
 		}
 	}
 
+	/** A smooth low-poly ball (a berry, a tomato, a radish's root) of radius R about P, a little flattened, in one colour (U, V). */
+	void HerbBall(FHerbGeometry& G, const FVector3f& P, float R, float U, float V)
+	{
+		// 8 round, 5 bands (four rings and two pole fans): 34 vertices, 64 triangles
+		constexpr int32 Sides = 8, Rings = 4;
+		const int32 Top = G.Add((P + Up * (0.92f * R)) * 100.f, Up, FVector3f(1.f, 0.f, 0.f), FVector2f(U, V));
+		const int32 First = G.Pos.Num();
+		for (int32 J = 1; J <= Rings; J++)
+		{
+			const float Lat = PI * J / (Rings + 1);
+			const float Rr = FMath::Sin(Lat), Z = FMath::Cos(Lat);
+			for (int32 I = 0; I < Sides; I++)
+			{
+				const float A = 2.f * PI * I / Sides;
+				const FVector3f Rd(FMath::Cos(A), FMath::Sin(A), 0.f);
+				const FVector3f N = Rd * Rr + Up * Z;
+				G.Add((P + Rd * (R * Rr) + Up * (0.92f * R * Z)) * 100.f, N, FVector3f(-Rd.Y, Rd.X, 0.f), FVector2f(U, V));
+			}
+		}
+		const int32 Bottom = G.Add((P - Up * (0.92f * R)) * 100.f, -Up, FVector3f(1.f, 0.f, 0.f), FVector2f(U, V));
+		for (int32 I = 0; I < Sides; I++)
+		{
+			const int32 I1 = (I + 1) % Sides;
+			G.Tris[Flowers].Add(FIntVector3(Top, First + I1, First + I));
+			for (int32 J = 0; J + 1 < Rings; J++)
+			{
+				const int32 A0 = First + J * Sides + I, A1 = First + J * Sides + I1, B0 = A0 + Sides, B1 = A1 + Sides;
+				G.Tris[Flowers].Add(FIntVector3(A0, A1, B1));
+				G.Tris[Flowers].Add(FIntVector3(A0, B1, B0));
+			}
+			const int32 L = First + (Rings - 1) * Sides;
+			G.Tris[Flowers].Add(FIntVector3(Bottom, L + I, L + I1));
+		}
+	}
+
 	void Flower(FHerbGeometry& G, const FPlantHerb& H, uint32 Seed, uint32 Key, const FVector3f& P, const FVector3f& Axis, float Size)
 	{
 		const int32 NumColours = FMath::Max(1, H.FlowerColours.Num());
@@ -329,14 +364,43 @@ namespace
 		{
 		case EPlantFlowerForm::Daisy:
 		{
-			const float Rc = 0.15f * Size;
-			Disc(G, P, Axis, Rc, 0.06f * Size, UV);
+			// a big head (a sunflower's, past 15 cm) has a broad seed disc and nods to the side under its weight
+			const bool bBig = Size > 0.15f;
+			const FVector3f Ax = bBig ? (X + Axis * 0.45f).GetSafeNormal() : Axis;
+			const FVector3f Xd = SideOf(Ax, Spin), Yd = FVector3f::CrossProduct(Ax, Xd);
+			auto RadialD = [&](float A) { return bBig ? Xd * FMath::Cos(A) + Yd * FMath::Sin(A) : Radial(A); };
+			const float Rc = (bBig ? 0.3f : 0.15f) * Size;
+			Disc(G, P, Ax, Rc, 0.06f * Size, UV);
 			const int32 N = FMath::Max(5, H.Petals);
 			for (int32 K = 0; K < N; K++)
 			{
-				const FVector3f D = (Radial(2.f * PI * (K + 0.3f * Hash01(Seed, Key, K, 64)) / N) - Axis * 0.12f).GetSafeNormal();
-				Petal(G, P + D * (0.8f * Rc), D, Axis, 0.5f * Size - Rc, FMath::Min(0.13f * Size, 2.6f * Size / N), -0.15f, UV, 0.5f);
+				const FVector3f D = (RadialD(2.f * PI * (K + 0.3f * Hash01(Seed, Key, K, 64)) / N) - Ax * 0.12f).GetSafeNormal();
+				Petal(G, P + D * (0.8f * Rc), D, Ax, 0.5f * Size - Rc, FMath::Min(0.13f * Size, 2.6f * Size / N), -0.15f, UV, 0.5f);
 			}
+			break;
+		}
+		case EPlantFlowerForm::Berry:
+		{
+			if (Hash01(Seed, Key, 0, 67) * 10.f < (float)FMath::Clamp(H.Petals, 0, 10))
+			{
+				// a small open flower, still to set fruit: a flat five-pointed star in the centre colour, facing out along Axis
+				const FVector3f Ax = (Axis + Up * 0.5f).GetSafeNormal();
+				const FVector3f Sx = SideOf(Ax, Spin), Sy = FVector3f::CrossProduct(Ax, Sx);
+				const float Uc = 0.5f * (UV.U0 + UV.U1);
+				const int32 C = G.Add(P * 100.f, Ax, Sx, FVector2f(Uc, 0.84f));
+				constexpr int32 Points = 10;
+				for (int32 I = 0; I <= Points; I++)
+				{
+					const float A = 2.f * PI * I / Points + Spin;
+					const float R = (I % 2 ? 0.2f : 0.5f) * Size;
+					G.Add((P + (Sx * FMath::Cos(A) + Sy * FMath::Sin(A)) * R) * 100.f, Ax, Sx, FVector2f(Uc, 0.84f));
+					if (I > 0) G.Tris[Flowers].Add(FIntVector3(C, C + I, C + I + 1));
+				}
+				break;
+			}
+			// the fruit hangs a little under the end of its stalk, in its colour (the petals' column of the atlas)
+			const float R = 0.5f * Size;
+			HerbBall(G, P - Up * (0.6f * R), R, 0.5f * (UV.U0 + UV.U1), 0.2f);
 			break;
 		}
 		case EPlantFlowerForm::Trumpet:
@@ -810,6 +874,31 @@ FState PlantHerbs::State(const FPlantSpecies& S, uint32 Seed, float Age, float D
 	return St;
 }
 
+FState PlantHerbs::GrownState(const FPlantSpecies& S, uint32 Seed, float Growth01, float Day)
+{
+	const FPlantHerb& H = S.Herb;
+	const float Gr = FMath::Clamp(Growth01, 0.f, 1.f);
+	if (H.Form == EPlantHerbForm::Alga)
+	{
+		return PlantAlgae::State(S, Seed, Gr * FMath::Max(H.MatureYears, 0.05f) * 3.f, Day);
+	}
+	// no sowing day, no frost, no season: the leaves are out and green, the plant as big as its growth, flowering (and
+	// fruiting) by its growth
+	FState St;
+	St.bAlive = true;
+	St.Maturity = FMath::Lerp(0.08f, 1.f, Gr);
+	St.LeafScale = 1.f;
+	St.Present = 1.f;
+	St.Wither = 0.f;
+	St.Bloom = H.Flower == EPlantFlowerForm::None ? 0.f : Smooth(0.4f, 0.9f, Gr);
+	St.LeafColour = FMath::Lerp(S.SpringLeafColour, S.SummerLeafColour, Smooth(0.1f, 0.6f, Gr));
+	// the builders never draw a stem under a third of its height: a sprout is the young plant made smaller
+	St.Scale = FMath::Lerp(0.35f, 1.f, Smooth(0.f, 0.6f, Gr));
+	auto Q = [](float V, float Steps) { return (uint32)FMath::RoundToInt(FMath::Clamp(V, 0.f, 1.f) * Steps); };
+	St.Key = HashCombineFast(HashCombineFast(Q(St.Maturity, 40.f), Q(St.LeafScale, 20.f)), HashCombineFast(HashCombineFast(Q(St.Present, 20.f), Q(St.Bloom, 20.f)), St.bAlive ? 1u : 0u));
+	return St;
+}
+
 void PlantHerbs::Build(const FPlantSpecies& S, uint32 Seed, const FState& St, FHerbGeometry& Out, float& OutHeight, float& OutRadius)
 {
 	if (St.bAlive)
@@ -851,6 +940,10 @@ void PlantHerbs::Build(const FPlantSpecies& S, uint32 Seed, const FState& St, FH
 		const float Zs = Hi > MaxH ? MaxH / Hi : 1.f, Rs = Ri > MaxR ? MaxR / Ri : 1.f;
 		if (Zs < 1.f || Rs < 1.f)
 			for (FVector3f& P : Out.Pos) { P.X *= Rs; P.Y *= Rs; if (P.Z > 0.f) P.Z *= Zs; }
+	}
+	if (St.Scale != 1.f)
+	{
+		for (FVector3f& P : Out.Pos) P *= St.Scale;
 	}
 	OutHeight = OutRadius = 0.f;
 	for (const FVector3f& P : Out.Pos)

@@ -65,7 +65,7 @@ T("friends.nick.colleague", "коллега", "colleague", "同僚くん")
 # --- gifts: the hero gives a pocket item ({0}: the nickname, where it's used) ----------------------------------------
 
 T("friends.gift.loved.1", "Ой! Откуда ты знаешь, что я это обожаю? Вот спасибо!",
-  "Oh! How did you know I adore this? Thank you!", "わあ！これ大好物なんだ、なんでわかったの？ありがとう！")
+  "Oh! How did you know I adore this? Thank you!", "わあ！これ大好きなんだ、なんでわかったの？ありがとう！")
 T("friends.gift.loved.2", "{0}, ну ты меня балуешь! Это же самое любимое.",
   "{0}, you do spoil me! This is my very favourite.", "{0}、うれしいなあ！これ、いちばん好きなものだよ。")
 T("friends.gift.loved.3", "Вот это подарок! Прямо в сердце попал.",
@@ -144,6 +144,12 @@ GIFTS = [
     ("shell_box", ["artist", "kid", "sea"]),
     ("amber_charm", ["warm", "artist", "photographer"]),
     ("seeds", ["elder", "feeder", "tidy"]),
+    # from the hero's own bed (docs/allotment.md)
+    ("radish", ["elder", "adult"]),
+    ("dill", ["elder", "warm"]),
+    ("tomatoes", ["adult", "warm"]),
+    ("strawberries", ["kid", "sweet", "teen"]),
+    ("jam_strawberry", ["elder", "sweet", "warm", "reader"]),
 ]
 
 # --- tea at home: the ten open-home owners (their homes: tools/city/content/strings/homes.json) ----------------------
@@ -158,7 +164,7 @@ HOSTS = [dict(id=h, name="friends.host.%s.name" % h, topics=3)
 T("friends.host.holm.name", "Виктор Сергеевич Холм", "Viktor Sergeyevich Holm", "ヴィクトル・セルゲーエヴィチ・ホルム")
 T("friends.tea.holm.welcome",
   "Холм ставит на стол два стакана в подстаканниках и миску сухарей. Чай он заваривает крепко, по-штурмански, и поворачивает стол так, чтобы обоим было видно восток. «Сахара на борту нет. Есть сухари и прогноз».",
-  "Holm sets two glasses in metal holders on the table and a bowl of ship's biscuit. He brews the tea strong, the navigator's way, and turns the table so that both of you can see the east. \"No sugar aboard. There's biscuit and there's the forecast.\"",
+  "Holm sets two glasses in metal holders on the table and a bowl of ship's biscuit. He brews the tea strong, the navigator's way, and turns the table so that we can both see the east. \"No sugar aboard. There's biscuit and there's the forecast.\"",
   "ホルムは金属のホルダーに入れたグラスを二つと、乾パンの鉢を置く。お茶は航海士流に濃くいれ、ふたりとも東が見えるようにテーブルの向きを変える。「砂糖は積んでいない。乾パンと天気予報ならある」")
 T("friends.tea.holm.q1", "Про шторм на картине", "About the storm in the painting", "絵の嵐のこと")
 T("friends.tea.holm.q2", "Про шахматы с «К.» из Мурманска", "About the chess with \"K.\"", "「K」とのチェスのこと")
@@ -169,7 +175,7 @@ T("friends.tea.holm.a1",
   "七十四年のビスケー湾だ。三日三晩、波はマストより高く、それでも古ぼけた「ラドガ」は進みつづけた。私は舵を握って祈っていた。青年同盟員だったのにね。「全員無事」と書き足したのは、帰ってからだ。人生でいちばん大事な一行だよ、{0}。")
 T("friends.tea.holm.a2",
   "Костя. Мы вместе учились в мореходке. Сорок лет играем по почте, по ходу в месяц, а иногда и в два. Последняя открытка пришла давно, и я каждый день смотрю в ящик. Он не болен, нет. Просто думает. Костя всегда долго думал над ферзём.",
-  "Kostya. We were at the naval college together. Forty years we've played by post, a move a month, sometimes one in two. His last card came a long while ago, and I look in the box every day. He isn't ill, no. He's thinking. Kostya always took his time over the queen.",
+  "Kostya. We were at the naval college together. Forty years we've played by post, a move a month, sometimes one every two months. His last card came a long while ago, and I look in the box every day. He isn't ill, no. He's thinking. Kostya always took his time over the queen.",
   "コースチャだ。商船学校の同期でね。四十年、郵便で指している。一か月に一手、ときには二か月に一手。最後のはがきはだいぶ前で、毎日ポストをのぞいている。病気じゃない、ちがう。考えているだけだ。コースチャはクイーンのことになると、いつも長考するんだ。")
 T("friends.tea.holm.a3",
   "Нина. Мы танцевали в Риге, в шестьдесят первом, а через год я ушёл в первый рейс. Она тридцать лет ждала меня на берегу, а я всё приходил и уходил. Теперь я на берегу насовсем, а ждать некому. Поэтому я и смотрю восход: хоть кто-то приходит вовремя.",
@@ -192,7 +198,7 @@ T("friends.tea.okada.welcome",
   "オカダは「きいろ」と「もっときいろ」の絵の具をテーブルの端に寄せて、カップを二つ置く。青い縁のものと、取っ手の欠けたもの。欠けたほうは自分用だ。小皿には小さな輪のパンとレモンがひと切れ。「アーシャはいつもレモンを入れた。私も入れる。好きじゃないんだがね」")
 T("friends.tea.okada.q1", "Зачем писать одно окно 1112 раз?", "Why paint one window 1112 times?", "なぜ同じ窓を千百十二枚？")
 T("friends.tea.okada.q2", "Про женщину на портрете у окна", "About the woman at the window", "窓辺の女の人の絵のこと")
-T("friends.tea.okada.q3", "Про выставку в «Рассвете», 1979", "About the Rassvet show, 1979", "七九年の「ラスヴェト」展")
+T("friends.tea.okada.q3", "Про выставку в «Рассвете», 1979", "About the Rassvet show, 1979", "七九年の「ラスヴェート」展")
 T("friends.tea.okada.a1",
   "Потому что оно каждый раз другое, {0}. Сегодня море с прозеленью, завтра будет как олово. Я пишу не окно, я пишу день, который в нём стоял. А ещё... однажды солнце сядет иначе, и я хочу в этот момент быть у окна с кистью в руке.",
   "Because it's different every time, {0}. Today the sea has a green tinge; tomorrow it'll be like tin. I don't paint the window, I paint the day that stood in it. And besides... one day the sun will set differently, and I want to be at the window with a brush in my hand.",
@@ -236,7 +242,7 @@ T("friends.tea.singh.a3",
   "On midsummer day the sun sets exactly into that mark. I wait for it with a watch, like a call sign on the air. Twelve years running, it hasn't been a minute late. If only everybody I talk to were that punctual, {0}...",
   "夏至の日、太陽はちょうどあの印のところに沈みます。無線の呼び出し符号を待つみたいに、時計を持って待つんです。十二年続けて、一分も遅れたことがない。話し相手がみんな、あれくらい時間に正確ならね、{0}…")
 T("friends.tea.singh.bye", "Конец связи, {0}. Но не совсем: частота 7055, если что.",
-  "Over and out, {0}. But not quite: frequency 7055, if you need me.", "交信終了、{0}。でも完全にじゃない。何かあったら7055で。")
+  "Over and out, {0}. But not quite: frequency 7055, if you need me.", "交信終了です、{0}。といっても、完全にではありません。何かあれば周波数7055で。")
 T("friends.tea.singh.invite",
   "Приём!\n\nПриглашаю на чай в капсульную башню {0}, к {1}. Поднимайтесь на мой этаж, дверь будет приоткрыта, эфир включён. Кружек у меня ровно две, и вторая с этого дня ваша.\n\nИльмар",
   "Come in!\n\nI invite you to tea at the Capsule Tower {0}, at {1}. Come up to my floor: the door will be ajar and the radio on. I have exactly two mugs, and from today the second one is yours.\n\nIlmar",
@@ -262,7 +268,7 @@ T("friends.tea.kravets.a2",
   "海辺で過ごした一日ごとに一羽。千羽折ったら願いがかなうって、おばあちゃんが言ってた。何をお願いするかはまだ決めてないの。お母さんが心配しなくなるように、かな。海に飽きないように、かな。いまのところ、ちっとも飽きてないよ、{0}。")
 T("friends.tea.kravets.a3",
   "Это наш хор, из посёлка. Мама поёт там вторым голосом, вон она, если очень прислушаться. Я ставлю пластинку, когда скучаю, а потом сразу кассету с морем. Получается, как будто горы спускаются к воде. Так, наверное, и выглядит мой дом теперь.",
-  "That's our choir, from the village. Mum sings second voice; you can hear her if you listen really hard. I put the record on when I'm homesick, and then straight away the tape of the sea. It's as if the mountains come down to the water. I suppose that's what my home looks like now.",
+  "That's our choir, from the village. Mum sings the second part; you can hear her if you listen really hard. I put the record on when I'm homesick, and then straight away the tape of the sea. It's as if the mountains come down to the water. I suppose that's what my home looks like now.",
   "村の合唱団なの。お母さんはアルトで歌ってる。すごく耳をすますと聞こえるよ。さみしいときはこのレコードをかけて、すぐに海を録音したカセットをかけるの。そうすると、山が海まで下りてくるみたい。いまの私の家って、きっとそんな形なんだと思う。")
 T("friends.tea.kravets.bye", "Спасибо, что зашёл, {0}. Сегодня сложу журавлика с твоим именем.",
   "Thanks for coming, {0}. Tonight I'll fold a crane with your name on it.", "来てくれてありがとう、{0}。今夜はあなたの名前を書いた鶴を折るね。")
@@ -287,8 +293,8 @@ T("friends.tea.okafor.a1",
   "音楽も天気みたいなものだからさ、{0}。雨にはショパン、風には行進曲、晴れには何でもいい、トランペットが入っていればね。合わないのをかけると一日がゆがむ。実証ずみだ。「太陽のための」棚がいちばん分厚いのは、バルト海に住んでいても楽天家だからさ。")
 T("friends.tea.okafor.a2",
   "Полгода я искал её по всему миру: спрашивал Тикси, спрашивал Вальпараисо. А она играла в «Тарелке», в автомате, за углом. Так часто бывает: самое нужное звучит рядом, только помехи мешают расслышать. Теперь включаю её, когда Ильмар болеет.",
-  "Half a year I searched the world for it: I asked Tiksi, I asked Valparaíso. And it was playing in the jukebox at the Tarelka, round the corner. That's how it often goes: the thing you need is playing close by, only the interference keeps you from hearing it. Now I put it on when Ilmar's ill.",
-  "半年、世界じゅうを探した。ティクシにも、バルパライソにも聞いた。なのに、角を曲がった「タレルカ」のジュークボックスで鳴っていたんだ。よくあることさ。いちばん大事なものはすぐそばで鳴っているのに、雑音で聞こえない。いまはイルマルが寝こんだときに、あれをかけるんだ。")
+  "Half a year I searched the world for it: I asked Tiksi, I asked Valparaíso. And it was playing in the jukebox at the Saucer, round the corner. That's how it often goes: the thing you need is playing close by, only the interference keeps you from hearing it. Now I put it on when Ilmar's ill.",
+  "半年、世界じゅうを探した。ティクシにも、バルパライソにも聞いた。なのに、角を曲がったカフェ「ソーサー」のジュークボックスで鳴っていたんだ。よくあることさ。いちばん大事なものはすぐそばで鳴っているのに、雑音で聞こえない。いまはイルマルが寝こんだときに、あれをかけるんだ。")
 T("friends.tea.okafor.a3",
   "Я десять лет был радистом на сухогрузе. Шарф подарил штурман, когда я списывался на берег: «Чтобы спалось, как в качку». На берегу мне долго не спалось совсем. Потом я поставил антенну, и мир опять стал качаться, как надо.",
   "I was a radio operator on a cargo ship for ten years. The navigator gave me the scarf when I signed off ashore: \"So you'll sleep like in a swell.\" Ashore I couldn't sleep at all for a long time. Then I put up an aerial, and the world started rocking again, the way it should.",
@@ -302,11 +308,11 @@ T("friends.tea.okafor.invite",
 
 # Valentina Tadesse: a painter of fish (79), with Hamish (77), who fishes; the aquarium with 54 names for 8 fish,
 # the blank canvas "For the sun. When I dare", the portrait "Hamish. First date. Nothing biting", Hamish's lemon drops.
-T("friends.host.tadesse.name", "Валентина Тадессе", "Valentina Tadesse", "ヴァレンチナ・タデッセ")
+T("friends.host.tadesse.name", "Валентина Тадессе", "Valentina Tadesse", "ワレンチナ・タデッセ")
 T("friends.tea.tadesse.welcome",
   "Валентина ставит чашки с нарисованными рыбками, у каждой своё имя на донышке. Хэмиш приносит из кухни бутерброды и жёлтую банку: «Это мои леденцы. Но гостям можно». Аквариум пускает пузыри, будто тоже хочет за стол.",
-  "Valentina sets out cups with painted fish, each with its own name on the bottom. Hamish brings sandwiches from the kitchen and the yellow jar: \"These are my lemon drops. But guests may.\" The aquarium blows bubbles as if it wants to join the table too.",
-  "ヴァレンチナが魚の絵のカップを並べる。どれも底にそれぞれの名前が書いてある。ハミッシュが台所からサンドイッチと黄色いびんを持ってくる。「これはぼくのドロップ。でもお客さんならいいよ」。水槽が泡を立てる。自分も席につきたいみたいに。")
+  "Valentina sets out cups with painted fish, each with its own name on the bottom. Hamish brings sandwiches from the kitchen and the yellow jar: \"These are my lemon drops. But guests are allowed.\" The aquarium blows bubbles as if it wants to join the table too.",
+  "ワレンチナが魚の絵のカップを並べる。どれも底にそれぞれの名前が書いてある。ヘイミッシュが台所からサンドイッチと黄色いびんを持ってくる。「これはぼくのドロップ。でもお客さんならいいよ」。水槽が泡を立てる。自分も席につきたいみたいに。")
 T("friends.tea.tadesse.q1", "Почему у восьми рыб 54 имени?", "Why 54 names for eight fish?", "八匹に名前が五十四個？")
 T("friends.tea.tadesse.q2", "Про чистый холст «Для солнца»", "About the canvas \"For the sun\"", "「太陽のための」画布")
 T("friends.tea.tadesse.q3", "Про портрет с удочкой", "About the portrait with the rod", "釣りざおの肖像画のこと")
@@ -317,17 +323,17 @@ T("friends.tea.tadesse.a1",
 T("friends.tea.tadesse.a2",
   "Пятьдесят лет я пишу рыб, потому что рыбы не спрашивают, похоже ли. А солнце спросит. Внучка просит: «Бабушка, нарисуй солнце». Грунт уже пожелтел от ожидания. Хэмиш говорит, что холст сам скоро станет солнцем, без меня.",
   "Fifty years I've painted fish, because fish don't ask whether it's a likeness. The sun will. My granddaughter asks: \"Granny, paint the sun.\" The ground on the canvas has gone yellow with waiting. Hamish says it'll turn into the sun by itself soon, without me.",
-  "五十年、魚を描いてきたのは、魚は似ているかなんて聞かないから。でも太陽は聞いてくる。孫は「おばあちゃん、太陽を描いて」って言うの。下地はもう待ちくたびれて黄ばんでしまった。ハミッシュは、そのうち私がいなくても勝手に太陽になるって言うのよ。")
+  "五十年、魚を描いてきたのは、魚は似ているかなんて聞かないから。でも太陽は聞いてくる。孫は「おばあちゃん、太陽を描いて」って言うの。下地はもう待ちくたびれて黄ばんでしまった。ヘイミッシュは、そのうち私がいなくても勝手に太陽になるって言うのよ。")
 T("friends.tea.tadesse.a3",
   "Наше первое свидание. Он позвал меня на рыбалку, три часа не клевало, а он всё улыбался, будто клюёт. Я тогда подумала: с таким человеком не страшно и пятьдесят лет без улова. Так и вышло. Хэмиш, не слушай, это я не тебе.",
   "Our first date. He invited me fishing; nothing bit for three hours, and he kept smiling as if something was biting. I thought then: with a man like that, even fifty years without a catch wouldn't be frightening. And that's how it turned out. Hamish, don't listen, I'm not talking to you.",
-  "最初のデートよ。釣りに誘われて、三時間まったく釣れないのに、この人はずっと、かかったみたいににこにこしていた。そのとき思ったの。こんな人となら、五十年釣れなくてもこわくないって。そのとおりになった。ハミッシュ、聞かないで。あなたに言ってるんじゃないの。")
+  "最初のデートよ。釣りに誘われて、三時間まったく釣れないのに、この人はずっと、かかったみたいににこにこしていた。そのとき思ったの。こんな人となら、五十年釣れなくてもこわくないって。そのとおりになった。ヘイミッシュ、聞かないで。あなたに言ってるんじゃないの。")
 T("friends.tea.tadesse.bye", "Заходи, {0}, когда захочешь. Звонить не надо. И рыб не кормить!",
   "Come whenever you like, {0}. No need to ring. And don't feed the fish!", "いつでもいらっしゃい、{0}。呼び鈴はいらないわ。それから、魚にえさはあげないでね！")
 T("friends.tea.tadesse.invite",
   "Дорогой мальчик!\n\nЖдём вас на чай в мастерской {0}, к {1}. Хэмиш обещает уху, если клюнет, и бутерброды, если нет. Леденцы он тоже обещает, но тут я ему не верю.\n\nВ. Тадессе",
   "Dear boy,\n\nWe'll expect you to tea in the studio {0}, at {1}. Hamish promises fish soup if they bite and sandwiches if they don't. He promises lemon drops too, but there I don't believe him.\n\nV. Tadesse",
-  "やさしい坊やへ\n\n{0}、{1}にアトリエでお茶をしましょう。ハミッシュは、釣れたら魚のスープ、釣れなかったらサンドイッチを約束しています。ドロップも約束していますけれど、それは信用していません。\n\nV・タデッセ")
+  "親愛なる坊やへ\n\n{0}、{1}にアトリエでお茶をしましょう。ヘイミッシュは、釣れたら魚のスープ、釣れなかったらサンドイッチを約束しています。ドロップも約束していますけれど、それは信用していません。\n\nV・タデッセ")
 
 # Yasmin Okonkwo: a barber on the promenade (37); her husband Mads, a potter, works away two weeks in three; their son
 # Emiliano (8) made a clay whale for the wheel, "fire it when you come"; the portrait "Yasmin at work", the calendar.
@@ -335,22 +341,22 @@ T("friends.host.okonkwo.name", "Ясмин Оконкво", "Yasmin Okonkwo", "�
 T("friends.tea.okonkwo.welcome",
   "Ясмин ставит на стол глиняные чашки, кривоватые и все разные: Мадс лепил, Эмилиано помогал. На тарелке печенье в форме китов, у одного два хвоста. Эмилиано садится рядом и строго следит, чтобы я взял именно этого.",
   "Yasmin sets clay cups on the table, a little lopsided and all different: Mads made them, Emiliano helped. On the plate, whale-shaped biscuits, one with two tails. Emiliano sits down beside me and watches sternly to make sure I take that one.",
-  "ヤスミンが、少しゆがんだ、ひとつずつ形のちがう陶器のカップを並べる。マスが作って、エミリアーノが手伝ったものだ。お皿にはクジラの形のクッキー。一枚だけ尾が二本ある。エミリアーノがとなりに座って、僕がちゃんとそれを取るか、真剣に見張っている。")
+  "ヤスミンが、少しゆがんだ、ひとつずつ形のちがう陶器のカップを並べる。マッツが作って、エミリアーノが手伝ったものだ。お皿にはクジラの形のクッキー。一枚だけ尾が二本ある。エミリアーノがとなりに座って、僕がちゃんとそれを取るか、真剣に見張っている。")
 T("friends.tea.okonkwo.q1", "Про кита на гончарном круге", "About the whale on the wheel", "ろくろの上のクジラ")
 T("friends.tea.okonkwo.q2", "Про портрет «Ясмин на работе»", "About \"Yasmin at work\"", "「仕事中のヤスミン」の絵")
 T("friends.tea.okonkwo.q3", "Сколько дней до субботы?", "How many days to Saturday?", "土曜日まであと何日？")
 T("friends.tea.okonkwo.a1",
   "Кит ждёт папу, а мы ждём вместе с китом. Я поливаю его каждое утро, как цветок, чтобы не треснул. Эмилиано хотел ему второй хвост, Мадс сказал «ладно, пусть два». Когда обожгут, он будет самым кривым и самым любимым китом на свете.",
   "The whale is waiting for Dad, and we wait along with the whale. I water it every morning like a flower so it won't crack. Emiliano wanted it to have a second tail; Mads said, \"All right, let it have two.\" Once it's fired, it'll be the most crooked and most loved whale in the world.",
-  "クジラはパパを待っていて、私たちもクジラといっしょに待っているの。ひびが入らないように、毎朝お花みたいに水をやってる。エミリアーノが尾をもう一本ほしがって、マスは「いいよ、二本にしよう」って。焼き上がったら、世界でいちばんゆがんでいて、いちばん愛されるクジラになるわ。")
+  "クジラはパパを待っていて、私たちもクジラといっしょに待っているの。ひびが入らないように、毎朝お花みたいに水をやってる。エミリアーノが尾をもう一本ほしがって、マッツは「いいよ、二本にしよう」って。焼き上がったら、世界でいちばんゆがんでいて、いちばん愛されるクジラになるわ。")
 T("friends.tea.okonkwo.a2",
   "Мадс писал его, пока я стригла его самого. Я велела не шевелиться, а он шевелил кистью. Похоже вышло, правда? Он не художник, он просто долго смотрел. Мне никто никогда не дарил ничего лучше, {0}.",
   "Mads painted it while I was cutting his hair. I told him to keep still, and he kept his brush moving. It's a good likeness, isn't it? He's no artist, he just looked for a long time. Nobody has ever given me anything better, {0}.",
-  "マスが描いたの。私があの人の髪を切っているあいだにね。動かないでって言ったのに、筆だけは動かしてた。似てるでしょう？画家じゃないの、ただ長いこと見ていただけ。あれよりすてきな贈り物はもらったことがないわ、{0}。")
+  "マッツが描いたの。私があの人の髪を切っているあいだにね。動かないでって言ったのに、筆だけは動かしてた。似てるでしょう？画家じゃないの、ただ長いこと見ていただけ。あれよりすてきな贈り物はもらったことがないわ、{0}。")
 T("friends.tea.okonkwo.a3",
   "Эмилиано зачёркивает клетки каждый вечер, а иногда и утром, на всякий случай. Две недели — это триста тридцать шесть часов, Мадс их тоже считает. Ничего, мы привыкли. Зато когда он приезжает, у нас праздник на целые выходные, и глина на всех полах.",
   "Emiliano crosses off a square every evening, and sometimes in the morning too, just in case. Two weeks is three hundred and thirty-six hours; Mads counts them too. Never mind, we're used to it. But when he comes home, we have a holiday all weekend, and clay on every floor.",
-  "エミリアーノは毎晩マス目を消すの。念のために朝も消すことがあるわ。二週間は三百三十六時間。マスも数えてる。平気よ、慣れてるから。そのかわり帰ってきたら週末じゅうお祭りで、床という床が粘土だらけ。")
+  "エミリアーノは毎晩、カレンダーのマスに×をつけるの。念のために朝もつけることがあるわ。二週間は三百三十六時間。マッツも数えてる。平気よ、慣れてるから。そのかわり帰ってきたら週末じゅうお祭りで、床という床が粘土だらけ。")
 T("friends.tea.okonkwo.bye", "Заходи ещё, {0}. И если надо подстричься — набережная, кресло у окна, без очереди.",
   "Come again, {0}. And if you need a haircut: the promenade, the chair by the window, no queue for you.",
   "また来てね、{0}。髪を切りたくなったら、遊歩道のお店の窓ぎわの椅子へ。あなたは並ばなくていいわ。")
@@ -391,14 +397,14 @@ T("friends.tea.santos.invite",
 
 # Daisuke Girma: sells apples at the market (38), watches sunspots through a filter every day; his wife Nino works away
 # (home on Fridays), their son Tomohiko, "Tomo" (8), drew the sun on the night chart; the still life with the teapot.
-T("friends.host.girma.name", "Дайсукэ Гирма", "Daisuke Girma", "大輔・ギルマ")
+T("friends.host.girma.name", "Дайсукэ Гирма", "Daisuke Girma", "ギルマ大輔")
 T("friends.tea.girma.welcome",
   "Дайсукэ ставит на стол чайник — тот самый, с натюрморта, — и режет яблоки, красные с жёлтым боком. Томо приносит третью чашку и ставит её на мамино место: «Это на пятницу. Но пусть пока стоит».",
   "Daisuke puts the teapot on the table, the very one from the still life, and slices apples, red with a yellow cheek. Tomo brings a third cup and sets it at his mum's place: \"That's for Friday. But it can stand there for now.\"",
   "大輔が、静物画に描かれていたあのティーポットをテーブルに置き、黄色いほっぺの赤いリンゴを切る。智彦が三つめのカップを持ってきて、ママの席に置く。「これは金曜日の分。でも、いまから置いとくの」")
 T("friends.tea.girma.q1", "Про солнце на ночной карте", "About the sun on the night chart", "夜の星図の太陽のこと")
 T("friends.tea.girma.q2", "Про тетрадь «Пятна»", "About the \"Spots\" notebook", "「黒点」ノートのこと")
-T("friends.tea.girma.q3", "Когда приезжает мама?", "When does Tomo's mum come home?", "ママはいつ帰るの？")
+T("friends.tea.girma.q3", "Когда приезжает мама?", "When does Tomo's mum come home?", "智彦のお母さんはいつ帰るの？")
 T("friends.tea.girma.a1",
   "Томо было пять. Я сказал, что ночью солнца нет, и он обиделся и нарисовал его прямо посреди созвездий. Я потом полночи думал: а ведь он прав. Оно есть всегда, просто с другой стороны. Так и с теми, кто далеко, {0}.",
   "Tomo was five. I told him there's no sun at night, and he got upset and drew it right in the middle of the constellations. Afterwards I lay awake half the night thinking: he's right, you know. It's always there, just on the other side. It's like that with people who are far away too, {0}.",
@@ -480,11 +486,11 @@ T("friends.outing.invite.sea_air",
 T("friends.outing.invite.stroll",
   "Привет!\n\n{0} у нас семейная прогулка по террасам, медленная, с остановками на каждой скамейке. Выходим в {1}. Присоединяйся, без тебя уже как-то не то.\n\n{2}",
   "Hi!\n\n{0} we're having a family walk along the terraces: a slow one, stopping at every bench. We set off at {1}. Come along: it isn't quite the same without you now.\n\n{2}",
-  "やあ！\n\n{0}は家族で段丘をお散歩。ベンチごとにひと休みする、のんびりしたやつ。出発は{1}。いっしょにおいでよ。君がいないと、もうなんだか物足りないんだ。\n\n{2}")
+  "やあ！\n\n{0}は家族でテラスをお散歩。ベンチごとにひと休みする、のんびりしたやつ。出発は{1}。いっしょにおいでよ。君がいないと、もうなんだか物足りないんだ。\n\n{2}")
 T("friends.outing.invite.fair_visit",
   "Здравствуй!\n\nМы всей семьёй собираемся на ярмарку {0}: карусель, сладкая вата, всё как положено. Ждём тебя у входа в {1}. Приходи, на карусели место найдётся.\n\n{2}",
   "Hello!\n\nThe whole family is off to the fair {0}: the carousel, candy floss, everything as it should be. We'll wait for you at the entrance at {1}. Do come: there's room on the carousel.\n\n{2}",
-  "こんにちは！\n\n{0}、家族みんなで市に行きます。メリーゴーラウンドに綿あめ、お決まりのコース。{1}に入口で待ってるね。おいでよ、メリーゴーラウンドの席はちゃんとあるから。\n\n{2}")
+  "こんにちは！\n\n{0}、家族みんなで市場広場の市に行きます。メリーゴーラウンドに綿あめ、お決まりのコース。{1}に入口で待ってるね。おいでよ、メリーゴーラウンドの席はちゃんとあるから。\n\n{2}")
 T("friends.outing.invite.feed_birds",
   "Привет!\n\n{0} мы всей семьёй идём кормить птиц. Хлеба набрали столько, что хватит на всех чаек побережья. Встречаемся в {1}. Кто лучше тебя расскажет, кто к нам прилетел?\n\n{2}",
   "Hi!\n\n{0} the whole family is going to feed the birds. We've got enough bread for every gull on the coast. We meet at {1}. Who better than you to tell us who's come to visit?\n\n{2}",
@@ -499,6 +505,12 @@ T("friends.outing.invite.coffee",
   "やあ！\n\n{0}、家族みんなでカフェに行きます。大人はコーヒー、子どもはココア、みんなにケーキ。{1}に待ち合わせ。いっしょに座って、鳥たちの近況を聞かせてよ。\n\n{2}")
 T("friends.outing.diary", "Выходные с семьёй друга. Кто позвал: {0}.", "A weekend with a friend's family. Who asked me: {0}.",
   "友だちの家族と週末をすごした。誘ってくれた人：{0}。")
+# --- a holiday together (docs/festivals.md "The new toys"; {0}: the friend, {1}: the holiday) ---------------------------
+T("friends.festival.toast", "{0} машет тебе из толпы: {1} встречаете вместе.", "{0} waves to you from the crowd: you keep {1} together.",
+  "{0}が人ごみの中から手をふっている。{1}をいっしょに過ごす。")
+T("friends.festival.diary", "{1}. В толпе меня нашёл друг: {0}. Дальше ходили вместе, и праздник стал вдвое короче и вдвое лучше.",
+  "{1}. A friend found me in the crowd: {0}. We went round together after that, and the holiday became twice as short and twice as good.",
+  "{1}。人ごみの中で友だちが見つけてくれた：{0}。それからはいっしょに回った。祝日は半分の短さになり、二倍よくなった。")
 T("friends.outing.toast", "{0} машет тебе: вся семья в сборе.", "{0} waves to you: the whole family's here.", "{0}が手をふっている。家族がそろった。")
 
 # --- the diary page "People" (pencil notes about each friend) --------------------------------------------------------
@@ -516,7 +528,7 @@ T("friends.fact.job", "{0}", "{0}", "{0}")
 T("friends.fact.nick", "зовёт меня «{0}»", "calls me \"{0}\"", "僕の呼び名：「{0}」")
 T("friends.fact.likes", "любит: {0}", "likes: {0}", "好きなもの：{0}")
 T("friends.fact.cards", "открыток от меня: {0}", "postcards from me: {0}", "僕が出したはがき：{0}枚")
-T("friends.fact.teas", "чаепитий: {0}", "teas together: {0}", "お茶によばれた回数：{0}")
+T("friends.fact.teas", "чаепитий: {0}", "teas together: {0}", "お茶によばれた回数：{0}回")
 T("friends.fact.outing", "по выходным с семьёй: {0}", "weekends with the family: {0}", "週末は家族と：{0}")
 T("friends.fact.met", "знакомство: {0}", "met: {0}", "知り合った日：{0}")
 T("friends.fact.family", "семья: {0}", "family: {0}", "家族：{0}")
@@ -528,7 +540,7 @@ for job, ru, en, ja in [
         ("pupil", "учится в школе", "at school", "学校に通っている"),
         ("fisherman", "рыбачит", "fishes for a living", "漁師"),
         ("writer", "пишет книги", "writes books", "本を書いている"),
-        ("seller", "торгует", "sells things", "物売り"),
+        ("seller", "торгует", "sells things", "商売をしている"),
         ("student", "учится в институте", "a student", "大学生"),
         ("programmer", "пишет программы", "writes software", "プログラマー"),
         ("unemployed", "ищет работу", "looking for work", "仕事を探している"),
@@ -568,7 +580,8 @@ for job, ru, en, ja in [
         ("butcher", "торгует мясом", "sells meat", "肉屋さん"),
         ("choir_leader", "руководит хором", "leads a choir", "合唱の指揮者"),
         ("director", "директорствует", "a director", "所長さん"),
-        ("guest", "отдыхает в санатории", "is staying at the sanatorium", "サナトリウムで療養中"),
+        ("guest", "отдыхает в санатории", "is staying at the sanatorium", "療養所で療養中"),
+        ("postman", "разносит почту", "delivers the post", "郵便配達の仕事"),
 ]:
     T("friends.job.%s" % job, ru, en, ja)
 
