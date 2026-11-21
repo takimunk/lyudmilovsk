@@ -21,6 +21,7 @@
 #include "Plants/GameCalendar.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
+#include "UI/LyudQuests.h"
 #include "Weather/LyudWeather.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogLyudPets, Log, All);
@@ -493,9 +494,41 @@ void ULyudPets::TickTownCats(float Dt)
 	{
 		const FLyudWeatherState St = Weather->GetState();
 		const bool bDay = Sim->Hour > Sim->Sunrise + 0.5f && Sim->Hour < Sim->Sunset - 0.5f;
+		Sim->Weather.bThunder = St.PrecipRate > 4.f;       // a downpour stands for the storm (the state has no thunder of its own)
 		Sim->Weather.bRain = St.PrecipRate > 0.05f;
 		Sim->Weather.TempC = St.TempC;
 		Sim->Weather.Sun = bDay ? FMath::Clamp(1.f - St.CloudCover, 0.f, 1.f) : 0.f;
+	}
+	// the hero's dog (Maru) and her moments with him (docs/animals.md "Maru's moments"): what happened goes into the journal,
+	// each kind once a day
+	if (Sim->HeroDog < 0)
+	{
+		for (const FAnimal& A : Sim->Animals)
+		{
+			if (A.Kind == LyudAnimals::EKind::Dog && A.NameKey == "animal.maru.name")
+			{
+				Sim->HeroDog = A.Id;
+				break;
+			}
+		}
+	}
+	if (!Sim->MomentNotes.empty())
+	{
+		const int32 Day = LyudPetsImpl::DayOf(GetWorld());
+		for (const std::string& Note : Sim->MomentNotes)
+		{
+			const FString Key = FString(TEXT("journal.maru.")) + UTF8_TO_TCHAR(Note.c_str());
+			int32& Last = MaruNoted.FindOrAdd(Key, -1);
+			if (Last != Day)
+			{
+				Last = Day;
+				if (ULyudQuests* Quests = ULyudQuests::Get(this))
+				{
+					Quests->AddNote(Key);
+				}
+			}
+		}
+		Sim->MomentNotes.clear();
 	}
 	auto Where = [&](int32 Person, int32& Act, bool& bDoing, FVector& At)
 	{

@@ -96,6 +96,8 @@ private:
 	/** Cleaners and the watchman, and the activities at which they send a cat out of the way. */
 	TArray<int32> Shooers;
 	TArray<int32> ShooActs;
+	/** The journal's lines about Maru's moments: the day each was last written. */
+	TMap<FString, int32> MaruNoted;
 	double NextTownCats = 0.0;
 	double NextShooSay = 0.0;
 	TArray<FDog> Dogs;
