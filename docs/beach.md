@@ -83,6 +83,22 @@ Four times a second: where the hero stands (ten depth lookups). Away from the se
 while it shows: the stone in the air (one mesh), the buoys within 250 m (two meshes each), the swing bar. The shapes
 are kept out of Lumen's scene and the distance fields, made once, hidden when not needed.
 
+## Checking it on the Mac
+
+`unreal/scripts/shoot_beach.sh` (UE queue, offscreen, `shoot_beach.py`): the hero on the waterline by the first lifeguard
+tower (`BEACH_X`/`BEACH_Y`, the ground 3 to 12 cm over the water: `BEACH_LO`/`BEACH_HI`), hands emptied with
+`Inventory.Equip none` (a new game starts with the bird feed in hand, and the beach wants them empty), `lyud.Beach.Info`,
+a stone thrown, a castle built and the tide pinned over it, a storm's waterline walked cell by cell, the post and the buoy.
+
+First Mac run (2026-11-21): sand 1 damp 1 water ahead 1 on the waterline; the throw 13 skips, 24 m; "castle washed
+away"; finds 3, then 8 to 9 with `lyud.Beach.Storm 1`, 1.5 cm over the sand; two posts with buoys 170 m out (this beach
+is very flat: about 1.3 cm a metre). Fixed: the moat was a near-black disc 1.7 m across, wider than the castle; now a ring
+of wet sand 1.15 m across, and the castle's colours are lifted to meet the beach's sand.
+
+Noted, not changed: 25 m off the waterline the sea is too shallow for "the sea within 25 m" (over 10 cm deep), so on this
+flat beach the damp sand higher up (where castles are allowed) reads as not the beach. A piece of amber (3.5 cm) is
+hard to see from standing height.
+
 ## Not done yet
 
 * The two icons (`icon_seashell`, `icon_amber_piece`) are pinned in `localization/assets.json` and not generated.

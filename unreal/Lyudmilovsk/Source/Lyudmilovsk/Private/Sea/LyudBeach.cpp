@@ -443,7 +443,8 @@ void ULyudBeach::MakeProps()
 	Props->SetRootComponent(Root);
 	Root->RegisterComponent();
 
-	const FLinearColor Stone(0.23f, 0.23f, 0.24f), Sand(0.46f, 0.38f, 0.25f), Wet(0.2f, 0.16f, 0.1f), Red(0.7f, 0.06f, 0.04f), White(0.85f, 0.85f, 0.8f),
+	// the basic shapes' material reads darker than the beach's own sand: the castle's colours are lifted to meet it
+	const FLinearColor Stone(0.23f, 0.23f, 0.24f), Sand(0.56f, 0.45f, 0.29f), Wet(0.36f, 0.28f, 0.17f), Red(0.7f, 0.06f, 0.04f), White(0.85f, 0.85f, 0.8f),
 		Wood(0.3f, 0.2f, 0.1f);
 	StoneMesh = AddShape(Root, Sphere, Stone, FVector::ZeroVector, FVector(0.07f, 0.06f, 0.018f));
 	for (int32 I = 0; I < LyudBeachImpl::MaxFinds; ++I)
@@ -457,7 +458,7 @@ void ULyudBeach::MakeProps()
 	CastleRoot->SetMobility(EComponentMobility::Movable);
 	CastleRoot->SetupAttachment(Root);
 	CastleRoot->RegisterComponent();
-	CastleMeshes.Add(AddShape(CastleRoot, Cylinder, Wet, FVector(0.f, 0.f, 0.6f), FVector(1.7f, 1.7f, 0.012f)));
+	CastleMeshes.Add(AddShape(CastleRoot, Cylinder, Wet, FVector(0.f, 0.f, 0.6f), FVector(1.15f, 1.15f, 0.012f)));     // the moat: a ring of dug wet sand just round the walls
 	CastleMeshes.Add(AddShape(CastleRoot, Cone, Sand, FVector(0.f, 0.f, 13.f), FVector(1.0f, 1.0f, 0.26f)));
 	CastleMeshes.Add(AddShape(CastleRoot, Cylinder, Sand, FVector(0.f, 0.f, 26.f), FVector(0.34f, 0.34f, 0.3f)));
 	for (const FVector2D Corner : { FVector2D(30.0, 30.0), FVector2D(30.0, -30.0), FVector2D(-30.0, -30.0), FVector2D(-30.0, 30.0) })
