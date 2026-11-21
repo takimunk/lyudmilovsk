@@ -1643,6 +1643,27 @@ for _i in range(len(SIGNS)):
     CELLS.append((nm, 384, 96, (lambda i: lambda img, d, rnd, W, H: draw_sign(img, d, rnd, W, H, i))(_i)))
 
 
+# the promenade units' trades the first signs had no word for (docs/city_backlog.md P3): packed last (LATE), see pack()
+# NOTE: text is rasterized a little differently from one machine to another (72 older cells came out changed in the cloud),
+# so the committed atlas_D.jpg of 2026-11-21 is the Mac's atlas with only this bottom strip (y 3988..4096) pasted in from a
+# cloud run. A full run on the Mac gives the same layout; commit its picture whole when one is made there.
+SIGNS_LATE = [("fish", "РЫБА", hx("2E6E8E"), hx("F3EEE2")), ("rental", "ПРОКАТ", hx("E8B23A"), hx("23395B")),
+              ("workshop", "МАСТЕРСКАЯ", hx("1E1B18"), hx("F2D59A")), ("souvenirs", "СУВЕНИРЫ", hx("8C2B22"), hx("F2D59A"))]
+LATE = ["sign_" + s[0] for s in SIGNS_LATE]
+
+
+def draw_sign_late(img, d, rnd, W, H, i):
+    _, t, bg, fg = SIGNS_LATE[i]
+    d.rectangle((0, 0, W, H), fill=bg)
+    d.rectangle((W * 0.015, H * 0.08, W * 0.985, H * 0.92), outline=fg, width=max(2, int(H * 0.04)))
+    text_c(d, t, "dela" if i % 2 == 0 else "mpb", W / 2, H * 0.5, W * 0.88, H * 0.6, fg)
+    return grain(img, 3, 990 + i)
+
+
+for _i in range(len(SIGNS_LATE)):
+    CELLS.append((LATE[_i], 384, 96, (lambda i: lambda img, d, rnd, W, H: draw_sign_late(img, d, rnd, W, H, i))(_i)))
+
+
 @cell("exit_sign", 192, 96)
 def exit_sign(img, d, rnd, W, H):
     d.rectangle((0, 0, W, H), fill=hx("2E8B57"))
@@ -1846,7 +1867,10 @@ def grille(img, d, rnd, W, H):
 # ------------------------------------------------------------------------------------------------ pack and write
 def pack(cells):
     """Shelf packing, tallest first (stable by name); returns {name: (x, y, w, h)} of the drawn rects."""
-    order = sorted(cells, key=lambda c: (-(c[2] + 2 * PAD), -(c[1] + 2 * PAD), c[0]))
+    order = sorted([c for c in cells if c[0] not in LATE], key=lambda c: (-(c[2] + 2 * PAD), -(c[1] + 2 * PAD), c[0]))
+    # cells added after the buildings were exported go last, in the order they were added, so no older cell moves (a moved
+    # cell would ask for every building that uses it to be exported again)
+    order += [c for name in LATE for c in cells if c[0] == name]
     out = {}
     x = y = 0
     shelf_h = 0

@@ -704,7 +704,8 @@
    "daily": 1
   },
   "sp_b_window": {
-   "prompt": "city.act.look_out.prompt",
+   "prompt": "city.act.window_look.prompt",
+   "window": 0.5,
    "lines": [
     {
      "k": "city.sp.bwindow.1",

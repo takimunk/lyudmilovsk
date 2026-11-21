@@ -277,6 +277,7 @@ private:
 	/** The props' meshes by LyudPeople::EProp (null: not made or not loaded yet; such manners aren't picked), the easel. */
 	UPROPERTY(Transient) TArray<TObjectPtr<class UStaticMesh>> PropMeshes;
 	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> EaselMesh;
+	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> BucketMesh;     // the cleaner's bucket by them while they mop
 	TSharedPtr<struct FStreamableHandle> PropLoad;
 	/** Present's scratch: the people drawn this frame. */
 	TArray<int32> ShownIds;
@@ -456,6 +457,8 @@ public:
 	/** What a manner puts in the hands (SM_Prop_*), and what stands before them. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerProp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerStand;
+	/** The night watchman's torch beam: made the first time this body holds a torch (one or two in the town), no shadows. */
+	UPROPERTY(Transient) TObjectPtr<class USpotLightComponent> TorchLight;
 
 	FString MeshName;
 	/** Who they are in npc_dialogue.txt (their own body's id, whatever model shows them now). */
@@ -501,6 +504,7 @@ private:
 	 *  its own was played for it. Then the prop into the hands. */
 	bool DriveManner(EPersonPose Pose, int32 Transit, float Speed);
 	void PlaceMannerProp(bool bShow);
+	void PlaceTorchLight(bool bOn, const FVector& Loc, const FRotator& Rot);
 	class UAnimSequence* Clip(FName Name);
 	/** Lays the pusher between the hands and the ground ahead (or hides it). */
 	void PlacePusher(bool bShow);
