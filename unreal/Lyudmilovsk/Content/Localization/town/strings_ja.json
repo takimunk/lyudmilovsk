@@ -1802,5 +1802,21 @@
  "npc.t_tamm_boris.name": "ボリス・タム",
  "npc.t_tamm_boris.role": "療養所の滞在客",
  "npc.t_sazonov_nikolai.name": "ニコライ・サゾーノフ",
- "npc.t_sazonov_nikolai.role": "療養所の滞在客"
+ "npc.t_sazonov_nikolai.role": "療養所の滞在客",
+ "npc.t_krylova_zinaida.name": "ジナイーダ・クルィロワ",
+ "npc.t_krylova_zinaida.role": "療養所の滞在客",
+ "npc.t_abdullina_raisa.name": "ライーサ・アブドゥリナ",
+ "npc.t_abdullina_raisa.role": "療養所の滞在客",
+ "npc.t_levin_arkady.name": "アルカージー・レーヴィン",
+ "npc.t_levin_arkady.role": "療養所の滞在客",
+ "npc.t_levina_tamara.name": "タマーラ・レーヴィナ",
+ "npc.t_levina_tamara.role": "療養所の滞在客",
+ "npc.t_beketov_yuri.name": "ユーリー・ベケトフ",
+ "npc.t_beketov_yuri.role": "療養所の滞在客",
+ "npc.t_matsumoto_haruo.name": "松本 春雄",
+ "npc.t_matsumoto_haruo.role": "療養所の滞在客",
+ "npc.t_kovalchuk_lidia.name": "リディヤ・コワリチュク",
+ "npc.t_kovalchuk_lidia.role": "療養所の滞在客",
+ "npc.t_kovalchuk_asya.name": "アーシャ・コワリチュク",
+ "npc.t_kovalchuk_asya.role": "療養所の滞在客"
 }

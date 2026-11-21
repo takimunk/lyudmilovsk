@@ -204,6 +204,7 @@ namespace LyudPeople
 		bool bStaff = false;                // a workplace duty: at their own workplace (FDuty::Place), at a slot of their role
 		float Pace = 1.f;                   // "pace": how fast they go within it against their walk (a jog, children at play: 2)
 		bool bRainOk = false;               // "rain": "ok": chosen and kept up in the rain too (outdoors)
+		bool bOnTime = false;               // "on_time": 1: a duty of it ends at the duty's hour, however long the way there took (the dogs' walks)
 		bool bShelter = false;              // "shelter": 1: only where the weather pulls now (weather_pull.json: under a roof in the rain)
 		float WindMin = -1.f, WindMax = 99.f;   // "wind": [min, max] m/s: chosen only in such a wind (a kite: a breeze, not a calm or a gale)
 		std::string When;                   // "when": only while this condition is on (FWorld::SetCondition: rink, walrus, banya);
@@ -247,6 +248,7 @@ namespace LyudPeople
 		std::string Role;           // their job there (waiter, cook): slots tagged with it, else any staff slot
 		int Place = -1;
 		int Act = -1;               // Activity's index (Index())
+		int StayDay = -1;           // "stay_day": only on this day of their stay (0 the day they come; FPerson::StayCycle)
 	};
 
 	struct FPerson
@@ -291,6 +293,11 @@ namespace LyudPeople
 		float OutingHour = 0.f;
 		// their standing date with a friend (the same ApplyLikes): one weekday a week, round this hour, the two of them
 		// meet at this activity at this place (a bench after work on Thursdays, the cafe, the playground after school)
+		// A stay ("stay": {cycle, from, days, arrive, leave}): they are in the town only from the hour Arrive of day From of
+		// every Cycle days (day 0: the Monday of FWorld::Week 0) till the hour Leave Days days later; the rest of the time
+		// they are gone (the activity stay_gone: away by the railway's platform), needing nothing. Cycle 0: always here.
+		int StayCycle = 0, StayFrom = 0, StayDays = 0;
+		float StayArrive = 11.f, StayLeave = 10.75f;
 		int DateAct = -1, DateDay = -1, DatePlace = -1, DateWith = -1;
 		float DateHour = 0.f;
 		std::string OwnSlot;        // "club:9": a slot only they use
@@ -400,6 +407,7 @@ namespace LyudPeople
 		double Time = 0.0;              // sim seconds
 		float Hour = 16.f;
 		int Weekday = 1;                // 0 Monday .. 6 Sunday
+		int Week = 0;                   // the calendar's week (Mondays counted from any fixed day): who is here on a stay (FPerson::StayCycle)
 		float Sunrise = 7.5f, Sunset = 17.f;
 		float SunYaw = 225.f;           // where the sun sets/stands, yaw (deg) in the UE frame
 		float SunriseYaw = 45.f;        // where it comes up (the early risers face it)
@@ -576,6 +584,13 @@ namespace LyudPeople
 		int FindActivity(const std::string& Id) const;
 		int ActOf(const FDuty& D) const { return D.Act >= 0 ? D.Act : FindActivity(D.Activity); }
 		int SleepAct = -1, RestHomeAct = -1;   // Index()
+		int GoneAct = -1;               // stay_gone (Index())
+		/** Days since the midnight their stay's day 0 began, in [0, StayCycle) (people with a stay only). */
+		float StayAt(const FPerson& P) const;
+		/** Somebody with a stay who is not in the town now. */
+		bool Gone(const FPerson& P) const;
+		/** The day of their stay today (0 the day they come), -1 with no stay. */
+		int StayDayOf(const FPerson& P) const { return P.StayCycle > 0 ? (int)StayAt(P) : -1; }
 		int MindAct = -1, PlayActs[2] = { -1, -1 };     // mind_child; playground, play_run (Index())
 		/** The household's child (under 12) out at play whom P could keep an eye on: nobody else of the household does
 		 *  already. -1 none. */

@@ -182,6 +182,7 @@ namespace LyudGesture
 		case EProp::Mop: return EHold::Shaft;
 		case EProp::Torch: return EHold::Pointing;
 		case EProp::Bag: return EHold::Hanging;
+		case EProp::Suitcase: return EHold::Hanging;
 		default: return EHold::Upright;
 		}
 	}

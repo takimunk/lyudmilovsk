@@ -46,6 +46,138 @@ namespace
 		return LyudUI::Font(13);
 	}
 
+	/** A unit arc (radius 1 round C, angles in degrees, screen y down) into Out. */
+	void Arc(TArray<FVector2D>& Out, const FVector2D& C, float R, float A0, float A1, int32 N = 10)
+	{
+		for (int32 I = 0; I <= N; ++I)
+		{
+			const float A = FMath::DegreesToRadians(FMath::Lerp(A0, A1, float(I) / N));
+			Out.Add(C + R * FVector2D(FMath::Cos(A), FMath::Sin(A)));
+		}
+	}
+
+	/**
+	 * The little pictures beside a found place's ring (map.json "icon", tools/south.py PLACE_ICONS): pen strokes in a box of
+	 * -1..1 (screen y down), built once per icon. Unknown icons draw nothing.
+	 */
+	const TArray<TArray<FVector2D>>& IconStrokes(FName Icon)
+	{
+		static TMap<FName, TArray<TArray<FVector2D>>> Cache;
+		if (const TArray<TArray<FVector2D>>* Found = Cache.Find(Icon))
+		{
+			return *Found;
+		}
+		TArray<TArray<FVector2D>> S;
+		auto Line = [&S](std::initializer_list<FVector2D> P) { S.Add(TArray<FVector2D>(P)); };
+		const FString K = Icon.ToString();
+		if (K == TEXT("view"))
+		{
+			// an eye
+			TArray<FVector2D>& Top = S.AddDefaulted_GetRef();
+			Arc(Top, FVector2D(0.0, 0.9), 1.35f, 222.f, 318.f);
+			TArray<FVector2D>& Bottom = S.AddDefaulted_GetRef();
+			Arc(Bottom, FVector2D(0.0, -0.9), 1.35f, 42.f, 138.f);
+			TArray<FVector2D>& Pupil = S.AddDefaulted_GetRef();
+			Arc(Pupil, FVector2D::ZeroVector, 0.32f, 0.f, 360.f, 8);
+		}
+		else if (K == TEXT("bridge"))
+		{
+			Line({ FVector2D(-1, -0.2), FVector2D(1, -0.2) });
+			TArray<FVector2D>& A = S.AddDefaulted_GetRef();
+			Arc(A, FVector2D(0.0, 0.75), 0.85f, 180.f, 360.f);
+		}
+		else if (K == TEXT("stele"))
+		{
+			Line({ FVector2D(-0.3, 0.9), FVector2D(-0.3, -1), FVector2D(0.3, -1), FVector2D(0.3, 0.9) });
+			Line({ FVector2D(-0.75, 0.9), FVector2D(0.75, 0.9) });
+		}
+		else if (K == TEXT("birds"))
+		{
+			Line({ FVector2D(-1, -0.1), FVector2D(-0.5, -0.5), FVector2D(0, 0), FVector2D(0.5, -0.5), FVector2D(1, -0.1) });
+			Line({ FVector2D(-0.3, 0.6), FVector2D(0, 0.35), FVector2D(0.3, 0.6) });
+		}
+		else if (K == TEXT("boats"))
+		{
+			Line({ FVector2D(-1, 0.2), FVector2D(1, 0.2), FVector2D(0.6, 0.8), FVector2D(-0.6, 0.8), FVector2D(-1, 0.2) });
+			Line({ FVector2D(0, 0.2), FVector2D(0, -1), FVector2D(0.65, 0.05), FVector2D(0, 0.05) });
+		}
+		else if (K == TEXT("water"))
+		{
+			TArray<FVector2D>& D = S.AddDefaulted_GetRef();
+			D.Add(FVector2D(0, -1));
+			Arc(D, FVector2D(0.0, 0.35), 0.6f, -30.f, 210.f);
+			D.Add(FVector2D(0, -1));
+		}
+		else if (K == TEXT("orchard"))
+		{
+			TArray<FVector2D>& Crown = S.AddDefaulted_GetRef();
+			Arc(Crown, FVector2D(0.0, -0.35), 0.62f, 0.f, 360.f, 12);
+			Line({ FVector2D(0, 0.27), FVector2D(0, 1) });
+		}
+		else if (K == TEXT("trail"))
+		{
+			Line({ FVector2D(-1, 1), FVector2D(-0.55, 0.45) });
+			Line({ FVector2D(-0.25, 0.1), FVector2D(0.2, -0.4) });
+			Line({ FVector2D(0.5, -0.7), FVector2D(1, -1) });
+		}
+		else if (K == TEXT("stair"))
+		{
+			Line({ FVector2D(-1, 1), FVector2D(-1, 0.5), FVector2D(-0.33, 0.5), FVector2D(-0.33, 0), FVector2D(0.33, 0), FVector2D(0.33, -0.5),
+				FVector2D(1, -0.5), FVector2D(1, -1) });
+		}
+		else if (K == TEXT("lighthouse"))
+		{
+			Line({ FVector2D(-0.4, 1), FVector2D(-0.2, -0.55), FVector2D(0.2, -0.55), FVector2D(0.4, 1), FVector2D(-0.4, 1) });
+			Line({ FVector2D(-0.25, -0.55), FVector2D(-0.25, -1), FVector2D(0.25, -1), FVector2D(0.25, -0.55) });
+			Line({ FVector2D(0.45, -0.8), FVector2D(1, -0.95) });
+			Line({ FVector2D(-0.45, -0.8), FVector2D(-1, -0.95) });
+		}
+		else if (K == TEXT("bunker"))
+		{
+			TArray<FVector2D>& Dome = S.AddDefaulted_GetRef();
+			Arc(Dome, FVector2D(0.0, 0.7), 0.95f, 180.f, 360.f);
+			Line({ FVector2D(-1, 0.7), FVector2D(1, 0.7) });
+			Line({ FVector2D(-0.4, 0.2), FVector2D(0.4, 0.2) });
+		}
+		else if (K == TEXT("stone"))
+		{
+			Line({ FVector2D(-1, 0.7), FVector2D(-0.7, -0.2), FVector2D(-0.1, -0.7), FVector2D(0.6, -0.4), FVector2D(1, 0.7), FVector2D(-1, 0.7) });
+		}
+		else if (K == TEXT("station"))
+		{
+			Line({ FVector2D(-1, -0.8), FVector2D(1, -0.4) });
+			Line({ FVector2D(0, -0.6), FVector2D(0, -0.1) });
+			Line({ FVector2D(-0.6, -0.1), FVector2D(0.6, -0.1), FVector2D(0.6, 0.8), FVector2D(-0.6, 0.8), FVector2D(-0.6, -0.1) });
+		}
+		else if (K == TEXT("gate"))
+		{
+			Line({ FVector2D(-0.7, 1), FVector2D(-0.7, -0.75) });
+			Line({ FVector2D(0.7, 1), FVector2D(0.7, -0.75) });
+			Line({ FVector2D(-1, -0.75), FVector2D(1, -0.75) });
+		}
+		else if (K == TEXT("square"))
+		{
+			TArray<FVector2D>& Sun = S.AddDefaulted_GetRef();
+			Arc(Sun, FVector2D::ZeroVector, 0.42f, 0.f, 360.f, 10);
+			for (int32 I = 0; I < 8; ++I)
+			{
+				const float A = I * PI / 4.f;
+				const FVector2D D(FMath::Cos(A), FMath::Sin(A));
+				Line({ D * 0.62f, D * 1.f });
+			}
+		}
+		else if (K == TEXT("bread"))
+		{
+			TArray<FVector2D>& Loaf = S.AddDefaulted_GetRef();
+			Arc(Loaf, FVector2D(0.0, 0.5), 1.f, 180.f, 360.f);
+			Loaf.Add(FVector2D(-1, 0.5));
+			Line({ FVector2D(-0.45, 0.05), FVector2D(-0.25, -0.3) });
+			Line({ FVector2D(-0.05, 0.05), FVector2D(0.15, -0.3) });
+			Line({ FVector2D(0.35, 0.05), FVector2D(0.55, -0.3) });
+		}
+		return Cache.Add(Icon, MoveTemp(S));
+	}
+
 	FLinearColor PlaceColor(FName Kind, bool bInk)
 	{
 		if (bInk)
@@ -179,8 +311,62 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 		FSlateDrawElement::MakeText(Out, Layer + 1, Box(P, TS), S, Font, ESlateDrawEffect::None, Fade * Color);
 	};
 
-	// places (the guide leaves out the names right by the hero: his arrow is what matters there)
 	TArray<FVector2D> Pts;
+	// the designed footpaths (map.json trails): the stretches the hero has walked inked over the picture's dots, and the
+	// name of a trail he has set foot on written beside its middle once the map is close enough to read it
+	if (!bGuide)
+	{
+		const FLinearColor WalkC = bInk ? FLinearColor(0.42f, 0.24f, 0.12f, 0.9f) : FLinearColor(0.45f, 0.22f, 0.08f, 0.85f);
+		for (const FLyudMapTrail& T : ULyudQuests::Trails())
+		{
+			bool bAny = false;
+			Pts.Reset();
+			auto Flush = [&]()
+			{
+				if (Pts.Num() >= 2)
+				{
+					if (bInk)
+					{
+						LyudDiary::DrawStroke(Out, LayerId + 2, G, Pts, Fade * WalkC, 2.4f, GetTypeHash(T.Id), 0.4f);
+					}
+					else
+					{
+						FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * WalkC, true, 3.f);
+					}
+				}
+				Pts.Reset();
+			};
+			for (int32 I = 0; I < T.Pts.Num(); ++I)
+			{
+				if (Quests && Quests->IsWalked(T.Id, I))
+				{
+					bAny = true;
+					Pts.Add(ToScreen(T.Pts[I], Size));
+				}
+				else
+				{
+					Flush();
+				}
+			}
+			Flush();
+			if (bAny && Zoom >= 0.9f && !T.NameKey.IsEmpty())
+			{
+				// beside the middle point, off to the side of the path so the ink stays readable
+				const int32 Mid = T.Pts.Num() / 2;
+				const FVector2D A = ToScreen(T.Pts[FMath::Max(0, Mid - 1)], Size), B = ToScreen(T.Pts[FMath::Min(T.Pts.Num() - 1, Mid + 1)], Size);
+				FVector2D Normal(-(B - A).Y, (B - A).X);
+				Normal = Normal.IsNearlyZero() ? FVector2D(0, -1) : Normal.GetSafeNormal();
+				if (Normal.Y > 0.0)
+				{
+					Normal = -Normal;
+				}
+				Label(LyudText::Get(T.NameKey).ToString(), ToScreen(T.Pts[Mid], Size) + Normal * (bInk ? 20.f : 13.f),
+					bInk ? LyudDiary::Hand(20.f) : LyudUI::Font(11, "Italic"), WalkC, LayerId + 3);
+			}
+		}
+	}
+
+	// places (the guide leaves out the names right by the hero: his arrow is what matters there)
 	FVector2D HeroAt, HeroFacing;
 	const bool bHideNearHero = bGuide && Owner.IsValid() && Owner->PlayerOnMap(HeroAt, HeroFacing);
 	const FVector2D HeroS = bHideNearHero ? ToScreen(HeroAt, Size) : FVector2D::ZeroVector;
@@ -212,6 +398,22 @@ int32 SLyudMapView::OnPaint(const FPaintArgs& Args, const FGeometry& G, const FS
 			Circle(Pts, S, 3.5f, 10);
 			FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * FLinearColor(0.16f, 0.1f, 0.06f), true, 3.f);
 			At.Y -= 14.f;
+			if (!P.Icon.IsNone() && Zoom > 0.45f)
+			{
+				// its little picture to the right of the ring (pen strokes, drawn bigger on the diary's page)
+				const float IconR = bInk ? 9.f : 6.f;
+				const FVector2D IconAt = S + FVector2D(bInk ? 17.f : 12.f, 0.f);
+				for (const TArray<FVector2D>& Stroke : IconStrokes(P.Icon))
+				{
+					Pts.Reset();
+					for (const FVector2D& U : Stroke)
+					{
+						Pts.Add(IconAt + U * IconR);
+					}
+					FSlateDrawElement::MakeLines(Out, LayerId + 2, G.ToPaintGeometry(), Pts, ESlateDrawEffect::None, Fade * (bInk ? LyudDiary::Ink : InkC), true,
+						bInk ? 1.8f : 1.4f);
+				}
+			}
 		}
 		if (bInk && !bArea)
 		{

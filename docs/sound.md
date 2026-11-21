@@ -54,6 +54,18 @@ turns the state into the bed's inputs.
 Footsteps take the snow underfoot from `ULyudWinterSubsystem::GetSnowDepthAt` (drifts; a cleared path keeps a thin
 crunching crust while the winter's snow lies) and walk on the sea ice where `IsIceWalkable`. Not yet: no umbrella item calls `SetUmbrella` and no place calls `SetNearWindows` yet; footsteps indoors.
 
+## Sound points (data only, not played yet)
+
+Small fixed ambient sources as data: `tools/sound_points.py` -> `Content/Audio/sound_points.json` (map metres, a point a
+line: the `sound` id of `audio/sounds.json`, a `radius` round the point the loop comes from, how far it is `audible`,
+its `volume`, the `months`, `hours` or `night`, `min_temp_c`, `no_rain`). From the Aton coast's data (`tools/south.py`,
+read only): the bees round the old orchard's hives (May-September, 9-19 h, dry, over 14 C) and five points along the
+brook's runnels through the reedbed where frogs croak on warm spring nights (April-June, over 10 C). Still to do: a
+reader in `ULyudSoundscapeSubsystem` (one looping component per point within `audible`, faded by the conditions; the
+pools list in `LoadSounds` needs the group's ids added), and generating `bees_hive` and `frogs_reed` (specs pinned in
+`audio/sounds.json`, group `animals`; `tools/gen_sounds.py --sfx bees_hive frogs_reed` on the Mac, 42 s of sound, ~$0.09). Rerun
+`python3 tools/sound_points.py` when the orchard or the brook moves.
+
 ## Music
 
 Ambient cues (`/Game/Audio/Music/MU_<mood>_<n>`, Stable Audio 2.5, seeded, all in or around D minor / D major / F major

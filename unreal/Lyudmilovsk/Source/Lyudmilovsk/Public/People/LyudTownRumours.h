@@ -89,6 +89,9 @@ private:
 	bool LoadData();
 	/** The town's ties from the people's life (built when first needed, again if the town's people changed). */
 	bool EnsureTies();
+	/** A loaded save still waiting for the town's people (the life starts after the load is applied): read now if they are
+	 *  there. Called by everything that answers from the store, so the saved rumours go round again without a new one. */
+	void ReadPending() const;
 	int32 Today(int32* Minute = nullptr) const;
 	/** A rumour of Kind now, seen by whoever is near the hero (and Witness, or the resident Detail names): its index, -1 none. */
 	int32 Add(int32 Kind, const std::string& Detail, int32 Witness);

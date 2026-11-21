@@ -1,8 +1,8 @@
 {
  "_doc": "Small jobs (tools/city/content/x_jobs.json): the boards, the six jobs' lines and games, the bosses' talk, the quest job_book. Hero's voice; ja: 僕.",
  "city.job.paid": {
-  "ru": "+{0} ₽ за работу",
-  "en": "+{0} roubles for the work",
+  "ru": "+{0} руб. за работу",
+  "en": "+{0} rub. for the work",
   "ja": "仕事の報酬 +{0}ルーブル"
  },
  "city.job.coll.title": {

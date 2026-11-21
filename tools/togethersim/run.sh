@@ -25,7 +25,7 @@ if [ -z "$LYUD_ANIMALS_DIR" ] && [ "$(head -c 7 "$GRID" 2>/dev/null)" = "version
 	export LYUD_ANIMALS_DIR
 fi
 clang++ -std=c++17 -O2 $EXTRA_CXXFLAGS -Wall -Wno-unused-function -include algorithm -o "$ROOT/Saved/TogetherSim/togethersim" \
-	"$ROOT/tools/togethersim/togethersim.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Animals/AnimalFriendSim.cpp" \
+	"$ROOT/tools/togethersim/togethersim.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Animals/AnimalFriendSim.cpp" "$SRC/Animals/AnimalPetsSim.cpp" \
 	"$SRC/Railway/RailRun.cpp" "$SRC/Weather/WindModel.cpp" "$SRC/Weather/WeatherModel.cpp" "$SRC/Weather/RainModel.cpp" \
 	"$SRC/Festival/FestivalCalendar.cpp" -I"$SRC/Weather"
 set +e

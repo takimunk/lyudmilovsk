@@ -58,6 +58,8 @@ IMPORTED = DEST + "/Imported"
 TAG = "North"
 FOLDER = "Outside/North"
 FRONT_YAW = 90.0                 # Unreal yaw of a Blender-built mesh's front (-Y) in its own frame
+PREFIX = "SM_North_"             # asset names (import_south.py borrows this module with its own names and folders)
+LABEL = "North_"
 FAR_THINGS = ("log_bridge", "sea_stack", "rowboat")   # things seen from afar: not culled at NEAR_CM
 NEAR_CM = 20000.0                # small camp things are not drawn farther than this
 # rough sizes (m) for the placeholders of kinds not built yet
@@ -110,17 +112,17 @@ def manifests():
     for r in out:
         kind = r.get("kind", "")
         if kind.startswith("far_"):
-            r["asset"] = "SM_North_Far_" + _cap(str(r.get("id") or kind[4:]))
+            r["asset"] = PREFIX + "Far_" + _cap(str(r.get("id") or kind[4:]))
         elif counts.get(kind, 0) > 1 or int(r.get("variant", 0) or 0) > 0:
-            r["asset"] = "SM_North_%s_V%d" % (_cap(kind), int(r.get("variant", 0) or 0))
+            r["asset"] = "%s%s_V%d" % (PREFIX, _cap(kind), int(r.get("variant", 0) or 0))
         else:
-            r["asset"] = "SM_North_" + _cap(kind)
+            r["asset"] = PREFIX + _cap(kind)
     return out
 
 
 def mesh_for(kind, variant=0):
     """The imported mesh for a kind (and variant), or None."""
-    for name in ("SM_North_%s_V%d" % (_cap(kind), variant), "SM_North_" + _cap(kind), "SM_North_%s_V0" % _cap(kind)):
+    for name in ("%s%s_V%d" % (PREFIX, _cap(kind), variant), PREFIX + _cap(kind), "%s%s_V0" % (PREFIX, _cap(kind))):
         path = "%s/%s" % (MESHES, name)
         if eal.does_asset_exist(path):
             return unreal.load_asset(path)
@@ -597,7 +599,7 @@ def spawn_mesh(kind, variant, x, y, yaw, label, sub, z=None, near=True):
         a = eas.spawn_actor_from_class(unreal.StaticMeshActor, loc + unreal.Vector(0, 0, size[2] * 50.0), _rot(yaw))
         a.static_mesh_component.set_static_mesh(unreal.load_asset("/Engine/BasicShapes/Cube.Cube"))
         a.set_actor_scale3d(unreal.Vector(size[0], size[1], size[2]))
-        _apply_common(a, "North_Missing_" + label, sub, ("NoGrass", "NoTree", "NorthPlaceholder"))
+        _apply_common(a, LABEL + "Missing_" + label, sub, ("NoGrass", "NoTree", "NorthPlaceholder"))
         _CACHE.setdefault("missing", set()).add(kind)
         return a
     a = eas.spawn_actor_from_class(unreal.StaticMeshActor, loc, _rot(yaw - float(row.get("front_yaw", FRONT_YAW))))
@@ -608,7 +610,7 @@ def spawn_mesh(kind, variant, x, y, yaw, label, sub, z=None, near=True):
         c.set_editor_property("ld_max_draw_distance", NEAR_CM)
     if row.get("collision") == "none":
         c.set_collision_profile_name("NoCollision")
-    _apply_common(a, "North_" + label, sub)
+    _apply_common(a, LABEL + label, sub)
     return a
 
 

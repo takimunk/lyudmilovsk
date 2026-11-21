@@ -96,6 +96,11 @@ public:
 	bool IsHeadLampOn() const;
 	/** 0..1 how far the binoculars are up. */
 	float BinocularsAmount() const { return Binoculars; }
+	/** A fixed viewer (a coin telescope on a lookout: ALyudSouthSpot) holds the binoculars' view up for the hero, worn or not,
+	 *  until Release or until By dies. One holder at a time: the last to ask. */
+	void HoldViewer(const UObject* By) { Viewer = By; }
+	void ReleaseViewer(const UObject* By) { if (Viewer.Get() == By) { Viewer.Reset(); } }
+	bool IsViewerHeld(const UObject* By) const { return By && Viewer.Get() == By; }
 
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override
@@ -129,6 +134,7 @@ private:
 	bool bWasBird = false;
 	bool bLampOn = true;
 	float Binoculars = 0.f;
+	TWeakObjectPtr<const UObject> Viewer;
 	float NormalFov = 0.f;
 	/** Seconds after the level starts in which item notes stay quiet (the starting pocket, a load). */
 	float QuietFor = 2.f;
