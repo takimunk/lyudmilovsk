@@ -21,6 +21,7 @@ REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
 TR = os.path.join(REPO, "unreal", "Lyudmilovsk", "Content", "Transport")
 BUILT = json.load(open(os.path.join(TR, "network_built.json")))
 VEST = json.load(open(os.path.join(TR, "vestibules.json")))
+HALLS = json.load(open(os.path.join(TR, "halls.json"))) if os.path.exists(os.path.join(TR, "halls.json")) else {}
 ONLY = [s for s in os.environ.get("STATIONS", "").split(",") if s]
 INDEX = {s["id"]: i for i, s in enumerate(BUILT["stations"])}
 STATIONS = [s for s in BUILT["stations"] if not ONLY or s["id"] in ONLY]
@@ -152,6 +153,17 @@ def top_fix(w, sid):
     go(w, unreal.Vector(l.x, l.y, floor + EYE), -6.0, pc.get_control_rotation().yaw)
 
 
+def staff_view(w, sid, style, role):
+    """2 m in front of a v3 hall's barista or attendant (halls.json staff, station frame), looking at them"""
+    for p in HALLS.get(style, {}).get("staff", []):
+        if p.get("role") == role:
+            a = math.radians(p.get("yaw", 0.0))
+            x, y = p["at"][0] + math.cos(a) * 200.0, p["at"][1] + math.sin(a) * 200.0
+            go(w, world_pt(sid, x, y, EYE), -8.0, world_yaw(sid, p.get("yaw", 0.0) + 180.0))
+            return
+    log("hall %s: no %s in halls.json" % (sid, role))
+
+
 def plan():
     t = 80.0
     out = []
@@ -175,6 +187,12 @@ def plan():
             add(0.3, lambda w, s=sid: cmd(w, "Transport.Goto %s top" % s))
             add(3.2, lambda w, s=sid: top_fix(w, s))
             add(0.5, lambda w, s=sid, g=tag: shot(w, "%s_%s_core" % (s, g)))
+            if HALLS and hour == TIMES[0]:
+                # the v3 hall: its report (dressing, lamps, staff, passengers) and its two staff from 2 m
+                add(0.5, lambda w, s=sid: cmd(w, "Transport.Hall %d" % INDEX[s]))
+                for role in ("barista", "attendant"):
+                    add(3.5, lambda w, s=sid, st=st["style"], r=role: (s in S["frames"]) and staff_view(w, s, st, r))
+                    add(0.5, lambda w, s=sid, g=tag, r=role: shot(w, "%s_%s_%s" % (s, g, r)))
             add(3.5, lambda w, s=sid: (s in S["frames"]) and view(w, s, "corner"))
             add(0.5, lambda w, s=sid, g=tag: shot(w, "%s_%s_corner" % (s, g)))
             # the hall's signature piece: a standing one (piece) or one hanging beside the core (centre)
