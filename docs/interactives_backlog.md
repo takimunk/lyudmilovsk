@@ -635,7 +635,7 @@ unchanged), habitats regenerated after rebase, the sound points as data.
 
 ## 44. Signature behaviours of each bird species
 
-`[ ]` **Brief (Fable 5.2):** Birds feed, rest, bathe and roost by species (`docs/bird_life.md` "Daily routines"), but they
+`[~] bird flight thread 2026-11-21: model, 63 habits, tests, book lines, stamps in (docs/bird_habits.md); own clips, sketches, page shot, bench on the Mac owed` **Brief (Fable 5.2):** Birds feed, rest, bathe and roost by species (`docs/bird_life.md` "Daily routines"), but they
 do it alike. Give each of the 39 species one or two things it alone does, that a patient hero with binoculars sees and
 writes in the bird book (`ULyudBirdBook`, `docs/bird_guide.md`): hooded crows dropping a walnut or a shell on the
 promenade's paving from 5 m and walking down to eat it; herring gulls snatching food from a resident's bench and from the

@@ -1160,6 +1160,27 @@ TSharedRef<SWidget> SLyudDiarySpread::BirdCard(FName Species)
 		Words(LyudText::Get(Where.IsEmpty() ? TEXT("ui.birds.first") : TEXT("ui.birds.first_at"),
 			{ FStringFormatArg(LyudUIText::Date(Seen->When).ToString()), FStringFormatArg(Where.ToString()), FStringFormatArg(LyudText::Get(HowKey).ToString()) }), 26.f, Ink, false, true)
 	];
+	// its habits: the ones he has watched with the day, the others still a blank to fill (docs/bird_habits.md)
+	const TArray<FName> HabitNames = ULyudBirdBook::HabitsOfSpecies(Species);
+	if (HabitNames.Num())
+	{
+		Text->AddSlot().AutoHeight().Padding(0, 8, 0, 0)[Words(LyudText::Get(TEXT("ui.birds.habits")), 24.f, InkSoft, true)];
+		for (const FName Habit : HabitNames)
+		{
+			if (const FLyudBirdHabitSeen* H = Book->FindHabit(Habit))
+			{
+				Text->AddSlot().AutoHeight().Padding(0, 2, 0, 0)
+				[
+					Words(LyudText::Get(TEXT("ui.birds.habit_seen"),
+						{ FStringFormatArg(LyudText::Get(*(FString(TEXT("bird.habit.")) + Habit.ToString())).ToString()), FStringFormatArg(LyudUIText::Date(H->When).ToString()) }), 24.f, Ink, false, true)
+				];
+			}
+			else
+			{
+				Text->AddSlot().AutoHeight().Padding(0, 2, 0, 0)[Words(LyudText::Get(TEXT("ui.birds.habit_unknown")), 24.f, PencilFaint, false, true)];
+			}
+		}
+	}
 	// the friends: when each first ate from the hand, how often it came, and the call
 	for (const FLyudBirdFriend* F : Friends)
 	{
