@@ -76,6 +76,8 @@ public:
 	};
 	/** Everybody of level 1 and up, the closest first. */
 	void DiaryFriends(TArray<FDiaryFriend>& Out) const;
+	/** The keys of everybody of MinLevel and up (friends.level.<n>), the closest first (the book club's advice). */
+	void FriendKeys(int32 MinLevel, TArray<FString>& Out) const;
 
 	// --- console and developer mode
 	FString Report() const;
@@ -111,6 +113,8 @@ private:
 	void TickNear(AHeroCharacter* Hero);
 	void TickBench(AHeroCharacter* Hero);
 	void TickOuting(AHeroCharacter* Hero);
+	/** A holiday's gathering: a friend near him there waves and they keep the holiday together (once a day each). */
+	void TickFestival(AHeroCharacter* Hero);
 	void TickVisits(AHeroCharacter* Hero);
 	void TickTeaChair(AHeroCharacter* Hero);
 	void TickOffer(AHeroCharacter* Hero, APlayerController* PC);
@@ -174,6 +178,9 @@ private:
 	bool bTeaBye = false;
 	int32 TeaPerson = -1;
 	FString TeaNotNowShown;
+	/** The chair whose tea was opened while he still sits on it: not opened again until he gets up (a tea ended without a
+	 *  topic leaves the invitation due, and an open inventory ends the tea every frame). */
+	FString TeaClosedSeat;
 	UPROPERTY(Transient) TArray<TObjectPtr<ALyudGoodsItem>> TeaThings;
 	UPROPERTY(Transient) TObjectPtr<ANpcBody> HostBody;
 };

@@ -46,6 +46,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "City") bool IsNight() const { return bNight; }
 	UFUNCTION(BlueprintCallable, Category = "City") bool IsSummer() const { return bSummer; }
+	/** The nearest street lamp lit now (they are lit at night) from a point, cm; -1 by day or with none. */
+	float NearestLitLampCm(const FVector& From) const;
 	UFUNCTION(BlueprintCallable, Category = "City") FString DebugReport() const;
 	/** Instances of a prop kind (tests). */
 	UFUNCTION(BlueprintCallable, Category = "City") int32 CountProps(const FString& Kind) const;
@@ -68,6 +70,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> GlowMid;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> PropMaterial;
 	UPROPERTY(Transient) TArray<TObjectPtr<UPointLightComponent>> Pool;
+	/** The hi3d props' instanced sets (Content/City/hi3d_props.json), hidden by lyud.City.Hi3d 0 for A/B. */
+	UPROPERTY(Transient) TArray<TObjectPtr<UInstancedStaticMeshComponent>> Hi3dSets;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> PondWater;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> PondIce;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Cascade;
@@ -85,6 +89,7 @@ private:
 
 	TArray<FVector> LampHeads;
 	TArray<FName> LampKinds;
+	bool bHi3dShown = true;
 	bool bShown = true, bNight = false, bNightKnown = false, bSummer = false, bSummerKnown = false, bIce = false, bIceKnown = false;
 	float Glow = 0.f, CheckTimer = 0.f, PoolTimer = 0.f;
 	FVector LastPoolCam = FVector(1e9);

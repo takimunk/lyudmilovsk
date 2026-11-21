@@ -258,7 +258,7 @@ def local_to_world(front, yaw, local):
     """A building's local point (the buildings thread's frame: x along the front to the right of someone in the street facing
     it, y inland away from the street, z up; metres from the plot's front point) -> Unreal metres."""
     a = math.radians(yaw)
-    x, y, z = local
+    x, y, z = (list(local) + [0.0])[:3]     # a spot given on the floor: [x, y]
     return [round(front[0] + x * math.sin(a) - y * math.cos(a), 2), round(front[1] - x * math.cos(a) - y * math.sin(a), 2), round(front[2] + z, 2)]
 
 
@@ -607,6 +607,12 @@ def day_hours(rnd, ctype, age):
     return rnd.uniform(6.4, 8.4), rnd.uniform(22.4, 24.4) % 24.0, rnd.uniform(0.4, 1.0)
 
 
+# posts kept every night of the week by their one holder (the lighthouse is lit every evening: the keeper's log is a small
+# job the "Help wanted" boards offer from six every evening, tools/togethersim found it without a keeper on Mondays and
+# Tuesdays); the night keeper after midnight was already on every day as the extra piece
+NO_DAYS_OFF = {"lighthouse_keeper"}
+
+
 def shifts(role, count, hours, days):
     """A job's posts as one person's shifts each: long hours split into an early and a late shift (a day round the clock
     into three), and staff of a seven-day place take two days off each, in turns."""
@@ -620,7 +626,7 @@ def shifts(role, count, hours, days):
         a = (h0 + span * k / pieces) % 24
         b = (h0 + span * (k + 1) / pieces) % 24
         d = list(week)
-        if len(week) >= 6:
+        if len(week) >= 6 and role not in NO_DAYS_OFF:
             off = {(i * 2) % 7, (i * 2 + 1) % 7}
             d = [x for x in week if x not in off] or week
         out.append({"role": role, "hours": [round(a, 2), round(b, 2)], "days": d})
@@ -1005,6 +1011,13 @@ def main():
     extra = read_input(os.path.relpath(EXTRA, ROOT)) or {}
     places, flats, workplaces = build_places(plan, extra, args)
     people = build_people(plan, places, flats, workplaces, args, rnd)
+    # the cable car's hall staff and the Akademgorodok's researchers (tools/station_life.py; its own seeds, so the town
+    # above is the same with or without it)
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import station_life
+    with open(station_life.NETWORK, encoding="utf-8") as f:
+        station_life.apply(people, places, json.load(f))
+    ROLES.update(station_life.ROLES)
 
     # the stairs between the terraces: the people's ways up and down (PeopleSim's town ground)
     levels = [{"id": "B", "z": -41.5}] + [{"id": t["id"], "z": t["z"]} for t in plan["terraces"]]
@@ -1037,6 +1050,13 @@ def main():
         write(os.path.join(OUT_STRINGS, "strings_%s.json" % lang), table)
 
     write_counters(people, workplaces)
+    # the market's stalls and the queues at the counters (docs/counters.md): a post-pass on town_places.json
+    subprocess.check_call([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "counters.py")])
+    # what is added to the town after it is made: the sanatorium's guests, then the new things to do (both idempotent)
+    for extra_script in ("sanatorium_guests.py", "town_activities.py", "town_night.py"):
+        subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), extra_script)], check=True)
+    # the library's book club (docs/books.md "The book club"): its members, its seats round the lounge's table
+    subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "reading", "build_reading.py")], check=True)
 
     jobs = sum(1 for p in people if any(d.get("place") for d in p["duties"]) and p["occupation"] != "pupil")
     open_posts = sum(sum(c for _, c, _, _ in w["staff"]) for w in workplaces)

@@ -1,5 +1,6 @@
 #include "People/PeopleLife.h"
 #include "World/LyudPrefetch.h"
+#include "LyudMotion.h"
 #include "People/LyudBodyAnim.h"
 #include "Transport/LyudTransport.h"
 #include "Bikes/LyudBike.h"
@@ -19,6 +20,7 @@
 #include "BoothOwner.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SpotLightComponent.h"
 #include "Engine/StaticMesh.h"
 #include "MeshDescription.h"
 #include "StaticMeshAttributes.h"
@@ -47,6 +49,7 @@
 #include "HeroCharacter.h"
 #include "Weather/LyudWeather.h"
 #include "Winter/LyudWinter.h"
+#include "Sea/LyudSea.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -70,6 +73,10 @@
 #include <cmath>
 
 namespace LP = LyudPeople;
+
+// the game's poses are the life's, in the same order (both lists end with Skate, Walrus)
+static_assert((uint8)EPersonPose::Walrus + 1 == (uint8)LP::EPose::Num && (uint8)EPersonPose::Skate == (uint8)LP::EPose::Skate,
+	"EPersonPose (PeopleLife.h) and LyudPeople::EPose (PeopleSim.h) must list the same poses in the same order");
 
 static TAutoConsoleVariable<int32> CVarPeople(TEXT("lyud.People"), 1,
 	TEXT("The people's life (UPeopleLifeSubsystem): 1 on, 0 off (the club's people stay at their stations as placed)."));
@@ -312,6 +319,7 @@ void UPeopleLifeSubsystem::Stop()
 	}
 	PropMeshes.Reset();
 	EaselMesh = nullptr;
+	BucketMesh = nullptr;
 	SetLightsDriven(false);     // the buildings light themselves again (a seeded evening)
 	LightSinks.Reset();
 	bLightSinksBound = false;
@@ -650,6 +658,12 @@ bool UPeopleLifeSubsystem::UpdateClock(bool bFirst)
 	// and choose what to do by the weather (a bench in the drizzle, the beach in the frost: PeopleSim's Score)
 	S.Rain = Weather ? Weather->GetSky().Rain : 0.f;
 	S.TempC = Weather ? Weather->GetSky().TempC : 12.f;
+	// and how dark the day is: the lamps in the flats go on sooner under thick cloud and rain (PeopleSim FlatLitNow)
+	if (Weather)
+	{
+		const FLyudSkyWeather Sky = Weather->GetSky();
+		S.Gloom = FMath::Clamp(0.6f * Sky.Cloud + 0.35f * FMath::Min(1.f, Sky.Rain / 4.f) + 0.25f * Sky.Fog, 0.f, 1.f);
+	}
 	// and the wind (a kite on the beach wants a breeze: activities.json "wind")
 	const ULyudWindSubsystem* WindSys = ULyudWindSubsystem::Get(GetWorld());
 	S.Wind = WindSys ? WindSys->GetMeanSpeed() : 5.f;
@@ -982,6 +996,13 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 			// many of them about: cheaper animation far off, out of Lumen's scene (perf checklist: moving meshes)
 			Body->Tags.Add(TEXT("Townsfolk"));
 			Body->Mesh->bEnableUpdateRateOptimizations = true;
+			if (FAnimUpdateRateParameters* Rate = LyudMotion::Smooth() ? Body->Mesh->AnimUpdateRateParams : nullptr)
+			{
+				// every frame within ~20 m, every second one to ~45 m, every third beyond, the frames between interpolated
+				// (the engine's own thresholds drop to every third from ~8 m: a street of people moving in jerks)
+				Rate->BaseVisibleDistanceFactorThesholds = { 0.05f, 0.022f };
+				Rate->MaxEvalRateForInterpolation = 4;
+			}
 			Body->Mesh->bAffectDynamicIndirectLighting = false;
 			Body->Mesh->bAffectDistanceFieldLighting = false;
 			TownBodies.Add(Body);
@@ -1088,7 +1109,8 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 				Body->SetActorHiddenInGame(!bShowRider);
 				if (bShowRider)
 				{
-					Body->Drive(RideAt, RideYaw, bSeated ? EPersonPose::Sit : EPersonPose::Stand, 0, 0.f, bSeated ? 44.f : 0.f, DeltaTime, bWasHidden || bSeated);
+					Body->Drive(RideAt, RideYaw, bSeated ? EPersonPose::Sit : EPersonPose::Stand, 0, 0.f, bSeated ? 44.f : 0.f, DeltaTime,
+						bWasHidden || bSeated || LyudMotion::Smooth());      // (what carries them moves: no spring behind it)
 				}
 			}
 			continue;
@@ -1125,7 +1147,23 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 			Transit = P.Pose == LP::EPose::Sleep ? 4 : 2;
 		}
 		FVector At = Loc;
-		if (!P.bIndoors && Dist < 6000.f)
+		if (P.Pose == LP::EPose::Walrus)
+		{
+			// in the ice hole: the water's surface now (the sea's level with the tide; the slot stands on the sea's datum),
+			// the body stands in it to the shoulders (Drive)
+			if (!SeaActor.IsValid() && --SeaSeek < 0)
+			{
+				SeaSeek = 120;
+				TActorIterator<ALyudSea> It(World);
+				SeaActor = It ? *It : nullptr;
+			}
+			if (SeaActor.IsValid())
+			{
+				At.Z = SeaActor->SeaLevel();
+			}
+		}
+		// (on the rink's ice, in the hole's water: the life's own height, not whatever a trace finds under the ice)
+		else if (!P.bIndoors && P.OffGrid < 0 && Dist < 6000.f)
 		{
 			// exact ground under them near the camera (steps, kerbs); someone standing still on the same spot keeps the last
 			// trace's ground for a little while
@@ -1135,13 +1173,35 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 			}
 			FGroundCache& G = GroundCache[P.Id];
 			G.Age += DeltaTime;
-			if (!G.At.Equals(Loc, 0.5f) || G.Age > 0.25f)
+			// on a seat or a bed the trace from above finds the seat itself (they were then lifted the seat's height
+			// again: sitting in the air over a bench): the ground is looked for a step in front of it and a step behind,
+			// the lower of the two
+			const bool bOnSeat = LyudMotion::Smooth() && Sl && P.State != LP::EState::Going && P.Pose != LP::EPose::Stand && P.Pose != LP::EPose::Walk
+				&& P.Pose != LP::EPose::Talk && P.Pose != LP::EPose::Look;
+			if (!G.At.Equals(Loc, 0.5f) || G.Age > (bOnSeat ? 3.f : 0.25f))
 			{
 				FHitResult Hit;
 				FCollisionQueryParams Q(SCENE_QUERY_STAT(PeopleGround), false);
 				Q.AddIgnoredActor(Body);
-				G.bHit = World->LineTraceSingleByChannel(Hit, Loc + FVector(0, 0, 120), Loc - FVector(0, 0, 250), ECC_Visibility, Q);
-				G.Z = G.bHit ? (float)Hit.ImpactPoint.Z : 0.f;
+				if (bOnSeat)
+				{
+					const FVector Ahead = FRotator(0.f, P.Yaw, 0.f).Vector() * 75.f;
+					G.bHit = false;
+					for (const FVector& From : { Loc + Ahead, Loc - Ahead })
+					{
+						if (World->LineTraceSingleByChannel(Hit, From + FVector(0, 0, 120), From - FVector(0, 0, 250), ECC_Visibility, Q)
+							&& (!G.bHit || Hit.ImpactPoint.Z < G.Z))
+						{
+							G.bHit = true;
+							G.Z = (float)Hit.ImpactPoint.Z;
+						}
+					}
+				}
+				else
+				{
+					G.bHit = World->LineTraceSingleByChannel(Hit, Loc + FVector(0, 0, 120), Loc - FVector(0, 0, 250), ECC_Visibility, Q);
+					G.Z = G.bHit ? (float)Hit.ImpactPoint.Z : 0.f;
+				}
 				G.At = Loc;
 				G.Age = 0.f;
 			}
@@ -1169,7 +1229,7 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 				const int32 Prop = Def ? (int32)Def->Prop : 0;
 				const bool bNoEnd = (Def && Def->bForce) || Mn->Forced != LP::EManner::Num;
 				Body->SetManner((uint8)St.Cur, (uint8)Prop, MNow.Clock - St.Start, bNoEnd ? -1.f : St.Until - MNow.Clock, Mn->Personas[P.Id].bLeftHanded,
-					PropMeshes.IsValidIndex(Prop) ? PropMeshes[Prop].Get() : nullptr, St.Cur == LP::EManner::Paint ? EaselMesh.Get() : nullptr);
+					PropMeshes.IsValidIndex(Prop) ? PropMeshes[Prop].Get() : nullptr, St.Cur == LP::EManner::Paint ? EaselMesh.Get() : (St.Cur == LP::EManner::Mop ? BucketMesh.Get() : nullptr));
 				// what they noticed: the head goes there; a child (or anybody run at) turns round to look
 				if (St.LookAt >= -1 && MNow.Clock < St.LookUntil)
 				{
@@ -1203,6 +1263,31 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		}
 	}
 	UpdateManners(DeltaTime);
+	// lyud.Anim.Probe N: every frame, the N drawn bodies nearest the camera into the log (where the body is, its facing,
+	// its feet and hips as last posed): tools/anim_probe.py makes jerk and foot-slide figures of it
+	static const IConsoleVariable* Probe = IConsoleManager::Get().RegisterConsoleVariable(TEXT("lyud.Anim.Probe"), 0,
+		TEXT("N > 0: each frame logs the N nearest drawn people's place, facing, feet and hips (ANIMPROBE lines; tools/anim_probe.py)."));
+	if (const int32 ProbeN = Probe->GetInt())
+	{
+		TArray<TPair<float, int32>, TInlineAllocator<64>> NearBodies;
+		for (int32 Id = 0; Id < Bodies.Num(); Id++)
+		{
+			if (Bodies[Id] && !Bodies[Id]->IsHidden())
+			{
+				NearBodies.Emplace((float)FVector::DistSquared(Bodies[Id]->GetActorLocation(), Cam), Id);
+			}
+		}
+		NearBodies.Sort([](const TPair<float, int32>& One, const TPair<float, int32>& Other) { return One.Key < Other.Key; });
+		for (int32 K = 0; K < NearBodies.Num() && K < ProbeN; K++)
+		{
+			const ANpcBody* B = Bodies[NearBodies[K].Value];
+			const FVector At = B->GetActorLocation(), Fl = B->Mesh->GetBoneLocation(TEXT("foot_l")), Fr = B->Mesh->GetBoneLocation(TEXT("foot_r")),
+				Pv = B->Mesh->GetBoneLocation(TEXT("pelvis")), Hd = B->Mesh->GetBoneLocation(TEXT("hand_r"));
+			UE_LOG(LogTemp, Display, TEXT("ANIMPROBE %.4f %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %d %.0f"),
+				World->GetTimeSeconds(), NearBodies[K].Value, At.X, At.Y, At.Z, B->GetActorRotation().Yaw, Fl.X, Fl.Y, Fl.Z, Fr.X, Fr.Y, Fr.Z,
+				Pv.X, Pv.Y, Pv.Z, Hd.X, Hd.Y, Hd.Z, (int32)S.People[NearBodies[K].Value].Pose, FMath::Sqrt(NearBodies[K].Key));
+		}
+	}
 	for (const TPair<FString, TObjectPtr<AActor>>& Pair : ClubActors)
 	{
 		ShowPlaced(Pair.Value, PlacedShown.Contains(Pair.Value.Get()));
@@ -1647,6 +1732,32 @@ void UPeopleLifeSubsystem::SetDayOff(bool bOff)
 	}
 }
 
+void UPeopleLifeSubsystem::SetCondition(FName Name, bool bOn)
+{
+	if (Name.IsNone())
+	{
+		return;
+	}
+	// kept for a life that starts later (and one stopped and started again); sent every few seconds, said only when it changes
+	bool& Was = WantedConditions.FindOrAdd(Name, !bOn);
+	const bool bChanged = Was != bOn;
+	Was = bOn;
+	if (Sim)
+	{
+		Sim->SetCondition(TCHAR_TO_UTF8(*Name.ToString()), bOn);
+	}
+	if (bChanged)
+	{
+		UE_LOG(LogTemp, Display, TEXT("PeopleLife: condition %s %s"), *Name.ToString(), bOn ? TEXT("on") : TEXT("off"));
+	}
+}
+
+bool UPeopleLifeSubsystem::IsCondition(FName Name) const
+{
+	const bool* On = WantedConditions.Find(Name);
+	return On && *On;
+}
+
 void UPeopleLifeSubsystem::SetStayUpUntil(float Hour)
 {
 	// the night's end on the calendar (Hour counts from today's 00:00), for a life that starts before it
@@ -1663,6 +1774,10 @@ void UPeopleLifeSubsystem::ApplyWanted()
 	// what the festivals asked while there was no life (or of the one before): a new life starts with it
 	LP::FWorld& S = *Sim;
 	S.bDayOff = bWantedDayOff;
+	for (const TPair<FName, bool>& Cond : WantedConditions)
+	{
+		S.SetCondition(TCHAR_TO_UTF8(*Cond.Key.ToString()), Cond.Value);
+	}
 	for (const TPair<FName, FWantedGathering>& G : WantedGatherings)
 	{
 		const FWantedGathering& W = G.Value;
@@ -1919,6 +2034,7 @@ void UPeopleLifeSubsystem::LoadManners()
 		Want(UTF8_TO_TCHAR(LP::PropName((LP::EProp)I)));
 	}
 	Want(TEXT("easel"));
+	Want(TEXT("bucket"));
 	if (Paths.Num() == 0)
 	{
 		return;
@@ -1941,6 +2057,7 @@ void UPeopleLifeSubsystem::LoadManners()
 			}
 		}
 		EaselMesh = FindObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Prop_easel.SM_Prop_easel"));
+		BucketMesh = FindObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Prop_bucket.SM_Prop_bucket"));
 		UE_LOG(LogTemp, Display, TEXT("PeopleLife: %d of %d manner props"), Got, (int32)LP::EProp::Num - 1);
 	}));
 }
@@ -2252,7 +2369,7 @@ bool ANpcBody::DriveManner(EPersonPose Pose, int32 Transit, float Speed)
 	using LyudPeople::EManner;
 	const EManner M = Manner < (uint8)EManner::Num ? (EManner)Manner : EManner::None;
 	const bool bCan = M != EManner::None && Transit == 0 && Pose != EPersonPose::Hidden && Pose != EPersonPose::Sleep && Pose != EPersonPose::Computer
-		&& Pose != EPersonPose::Work && Pose != EPersonPose::Shovel;
+		&& Pose != EPersonPose::Work && Pose != EPersonPose::Shovel && Pose != EPersonPose::Skate && Pose != EPersonPose::Walrus;
 	FLyudGesturePose G;
 	if (bCan)
 	{
@@ -2287,10 +2404,18 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 	const bool bStand = bShow && MannerStand->GetStaticMesh() != nullptr;
 	if (bStand && !bStandPlaced)
 	{
-		// the easel a step ahead of the painter, its face to them (it stays where it was put while they paint)
+		// the easel a step ahead of the painter, its face to them (it stays where it was put while they paint); the
+		// cleaner's bucket on the floor at their side, a little ahead
 		const FQuat Q = GetActorQuat();
-		MannerStand->SetWorldLocationAndRotation(GetActorLocation() + Q.GetAxisY() * (62.f * BodyScale),
-			FRotationMatrix::MakeFromXZ(-Q.GetAxisY(), FVector::UpVector).Rotator());
+		const bool bBucket = (LyudPeople::EProp)MannerPropKind == LyudPeople::EProp::Mop;
+		const FVector Off = bBucket ? Q.GetAxisX() * ((bMannerLeft ? 42.f : -42.f) * BodyScale) + Q.GetAxisY() * (30.f * BodyScale)
+			: Q.GetAxisY() * (62.f * BodyScale);
+		FVector Foot = GetActorLocation() + Off;
+		if (bBucket)
+		{
+			Foot.Z = Mesh->GetComponentLocation().Z;      // the actor stands at the capsule's middle: the bucket on the floor
+		}
+		MannerStand->SetWorldLocationAndRotation(Foot, FRotationMatrix::MakeFromXZ(-Q.GetAxisY(), FVector::UpVector).Rotator());
 		bStandPlaced = true;
 	}
 	bStandPlaced &= bStand;
@@ -2305,6 +2430,7 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 	}
 	if (!bProp)
 	{
+		PlaceTorchLight(false, FVector::ZeroVector, FRotator::ZeroRotator);
 		return;
 	}
 	// the hands as the last pose left them: where each grips (the middle of the palm), which way its fingers run, where
@@ -2350,12 +2476,59 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 		break;
 	}
 	case EHold::Pointing:
+		if ((LyudPeople::EProp)MannerPropKind == LyudPeople::EProp::Torch)
+		{
+			// a torch: along the main hand's fingers, tipped down at the floor a few metres ahead
+			Rot = FRotationMatrix::MakeFromXZ((Fingers[M] * 0.5f + Fwd * 0.7f - Up * 0.45f).GetSafeNormal(), Up).Rotator();
+			break;
+		}
 		Rot = FRotationMatrix::MakeFromXZ((Fwd * 0.85f + Up * 0.5f).GetSafeNormal(), Up).Rotator();
+		break;
+	case EHold::Shaft:
+		// a spade: its handle's top in the main hand, the shaft down through the other hand to the blade
+		Rot = FRotationMatrix::MakeFromXZ((At[1 - M] - At[M]).GetSafeNormal(UE_SMALL_NUMBER, (Fwd * 0.5f - Up * 0.85f).GetSafeNormal()), Fwd).Rotator();
 		break;
 	default:
 		break;
 	}
 	MannerProp->SetWorldLocationAndRotation(Loc, Rot);
+	PlaceTorchLight((LyudPeople::EProp)MannerPropKind == LyudPeople::EProp::Torch, Loc, Rot);
+}
+
+void ANpcBody::PlaceTorchLight(bool bOn, const FVector& Loc, const FRotator& Rot)
+{
+	if (!bOn)
+	{
+		if (TorchLight && TorchLight->IsVisible())
+		{
+			TorchLight->SetVisibility(false);
+		}
+		return;
+	}
+	if (!TorchLight)
+	{
+		// a small warm beam: no shadows, out of the volumetric fog, ~12 m (one watchman in the town: one light)
+		TorchLight = NewObject<USpotLightComponent>(this, TEXT("TorchLight"));
+		TorchLight->SetMobility(EComponentMobility::Movable);
+		TorchLight->SetCastShadows(false);
+		TorchLight->SetIntensityUnits(ELightUnits::Lumens);
+		TorchLight->SetIntensity(160.f);
+		TorchLight->SetLightColor(FLinearColor(1.f, 0.88f, 0.7f));
+		TorchLight->SetAttenuationRadius(1200.f);
+		TorchLight->SetInnerConeAngle(9.f);
+		TorchLight->SetOuterConeAngle(22.f);
+		TorchLight->SetVolumetricScatteringIntensity(0.f);
+		TorchLight->bAffectTranslucentLighting = false;
+		TorchLight->SetupAttachment(GetRootComponent());
+		TorchLight->RegisterComponent();
+	}
+	// the lens is at the far end of the prop (0.2 m along its +X)
+	const FVector Dir = Rot.Vector();
+	TorchLight->SetWorldLocationAndRotation(Loc + Dir * (20.f * BodyScale), Dir.Rotation());
+	if (!TorchLight->IsVisible())
+	{
+		TorchLight->SetVisibility(true);
+	}
 }
 
 void ANpcBody::PlacePusher(bool bShow)
@@ -2494,7 +2667,7 @@ UAnimSequence* ANpcBody::Clip(FName Name)
 	return A;
 }
 
-void ANpcBody::Play(FName Name, bool bLoop, float Rate)
+void ANpcBody::Play(FName Name, bool bLoop, float Rate, float BlendTime)
 {
 	ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance());
 	if (Playing != Name)
@@ -2517,7 +2690,24 @@ void ANpcBody::Play(FName Name, bool bLoop, float Rate)
 						: GetUniqueID() * 0.6180339f;
 					Start = FMath::Frac(Phase) * A->GetPlayLength();
 				}
-				Anim->PlayClip(A, bLoop, Rate, 0.3f, Start);
+				if (BlendTime < 0.f)
+				{
+					BlendTime = 0.3f;
+					if (LyudMotion::Smooth())
+					{
+						// one way of standing or sitting into another (arms folding, a nod) takes its time; a step into a
+						// step, a step out of standing and the sitting down and getting up stay quick
+						static const FName Quick[] = { TEXT("Walk"), TEXT("Run"), TEXT("Push"), TEXT("SitDown"), TEXT("StandUp"), TEXT("LieDown"), TEXT("GetUp") };
+						bool bQuick = Was.IsNone();
+						for (const FName& Q : Quick)
+						{
+							bQuick |= Q == Name || Q == Was;
+						}
+						const bool bStop = (Was == Quick[0] || Was == Quick[1]) && Name != Quick[0] && Name != Quick[1];
+						BlendTime = bStop ? 0.4f : (bQuick ? 0.3f : 0.7f);
+					}
+				}
+				Anim->PlayClip(A, bLoop, Rate, BlendTime, Start);
 			}
 			else
 			{
@@ -2562,16 +2752,95 @@ void ANpcBody::PlayVaried(FName InRole, std::initializer_list<FName> Variants, f
 	Play(bOurs && Clip(Playing) ? Playing : *Variants.begin(), true, Rate);
 }
 
-void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap)
+void ANpcBody::Drive(const FVector& InLocation, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap)
 {
+	const bool bSmooth = LyudMotion::Smooth();
+	FVector Location = InLocation;
+	// the seat clips stand 30 cm in front of the seat's point (SitDown's first frame, StandUp's last; life_anims.py), which
+	// is where the life has them arrive and leave from (a slot's approach)
+	const float LeadCm = 30.f * BodyScale;
+	// the life has them at the seat while the body is still finishing its last step up to it: the step is finished first
+	// (the sit-down clip then starts a moment late and is cut that much short at its seated end)
+	if (bSmooth && Transit == 1 && !bSnap && bPlaced && bShownValid && (Playing == TEXT("Walk") || Playing == TEXT("Run")))
+	{
+		const FVector Front = Location + FRotator(0.f, Yaw, 0.f).Vector() * LeadCm;
+		if (FVector::DistSquared2D(ShownPos, Front) > FMath::Square(9.f * BodyScale) && FVector::DistSquared2D(ShownPos, Front) < 150.0 * 150.0)
+		{
+			Location = Front;
+			Transit = 0;
+			Pose = EPersonPose::Walk;
+			SeatHeight = 0.f;
+		}
+	}
 	if (bOnBike)
 	{
 		DriveBike(nullptr, FLyudBikeRide(), FVector::ZeroVector, 0.f, 0.f, DeltaTime);
+		bShownValid = false;                // from where the bike left them
 	}
-	// turn smoothly, except into a seat or a bed (the clip starts from the slot's facing)
-	if (bSnap || Transit != 0 || !bPlaced)
+	const bool bBed = Pose == EPersonPose::Sleep || Transit == 3 || Transit == 4;
+	const bool bSeat = !bBed && (Transit == 1 || Transit == 2 || Pose == EPersonPose::Sit || Pose == EPersonPose::Computer
+		|| Pose == EPersonPose::Eat || Pose == EPersonPose::Read);
+	const bool bFeet = Transit == 0 && !bBed && !bSeat && Pose != EPersonPose::Hidden;
+	const float S = BodyScale;
+	// where they are shown: on their life's point through a spring (a jump of more than a few steps is a jump)
+	FVector Shown = Location;
+	float GaitSpeed = Speed;
+	// what is followed and turned about on a seat is the clips' standing point, so somebody who walks up turns round where
+	// they stand and sits back with no step of the whole body; the actor goes back under the seat as the clip blends in
+	// (and comes forward again as the standing one does), so the body itself stays where it is through both
+	const FVector Target = Location + FRotator(0.f, Yaw, 0.f).Vector() * (bSmooth && bSeat ? LeadCm : 0.f);
+	if (!bSmooth)
+	{
+		SeatLeadK = 0.f;
+	}
+	else if (bSnap || !bPlaced || !bShownValid || DeltaTime <= 0.f)
+	{
+		SeatLeadK = bSeat ? 1.f : 0.f;
+	}
+	else
+	{
+		SeatLeadK = FMath::Clamp(SeatLeadK + (bSeat ? DeltaTime / 0.3f : -DeltaTime / 0.5f), 0.f, 1.f);
+	}
+	const float SeatLead = LeadCm * SeatLeadK * SeatLeadK * SeatLeadK * (SeatLeadK * (SeatLeadK * 6.f - 15.f) + 10.f);   // smootherstep (FMath has none in 5.8)
+	if (bSmooth)
+	{
+		if (bSnap || !bPlaced || !bShownValid || bBed || DeltaTime <= 0.f || FVector::DistSquared(ShownPos, Target) > 300.0 * 300.0)
+		{
+			ShownPos = Target;
+			ShownVel = FVector::ZeroVector;
+			ShownZVel = 0.f;
+		}
+		else
+		{
+			// on their feet a fifth of a second behind (a corner rounds off over ~half a metre, a start takes two steps);
+			// into a seat quicker; the height by itself, quicker still (a kerb, a stair's step)
+			FVector2D Flat(ShownPos.X, ShownPos.Y), FlatVel(ShownVel.X, ShownVel.Y);
+			Flat = LyudMotion::Damp(Flat, FVector2D(Target.X, Target.Y), FlatVel, bFeet ? 0.2f : 0.12f, DeltaTime);
+			float Z = (float)ShownPos.Z;
+			Z = LyudMotion::Damp(Z, (float)Target.Z, ShownZVel, 0.09f, DeltaTime);
+			ShownPos = FVector(Flat.X, Flat.Y, Z);
+			ShownVel = FVector(FlatVel.X, FlatVel.Y, ShownZVel);
+		}
+		bShownValid = true;
+		Shown = ShownPos;
+		// the gait goes by the ground really covered, never faster than the life moved them lately allows for
+		RecentSpeed = FMath::Max(Speed, RecentSpeed - 300.f * DeltaTime);
+		GaitSpeed = bFeet ? FMath::Min((float)ShownVel.Size2D(), RecentSpeed * 1.3f) : 0.f;
+	}
+	// turn smoothly, except into a bed (the clip starts from the slot's facing); into a seat they turn round on the spot
+	// as the clip begins (it stands for its first third)
+	const bool bSeatTurn = bSmooth && (Transit == 1 || Transit == 2);
+	if (bSnap || (Transit != 0 && !bSeatTurn) || !bPlaced)
 	{
 		Facing = Yaw;
+		FacingVel = 0.f;
+	}
+	else if (bSmooth)
+	{
+		// walking, they face the way they really go (round the corner with the path); the turn has a beginning and an end
+		const bool bGoing = bFeet && Pose == EPersonPose::Walk && GaitSpeed > 35.f * S;
+		const float Want = bGoing ? FMath::RadiansToDegrees(FMath::Atan2((float)ShownVel.Y, (float)ShownVel.X)) : Yaw;
+		Facing = FRotator::NormalizeAxis(LyudMotion::DampAngle(Facing, Want, FacingVel, bGoing ? 0.14f : (bSeatTurn ? 0.3f : 0.22f), DeltaTime));
 	}
 	else
 	{
@@ -2580,10 +2849,6 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	}
 	bPlaced = true;
 	Clock += DeltaTime;
-	const bool bBed = Pose == EPersonPose::Sleep || Transit == 3 || Transit == 4;
-	const bool bSeat = !bBed && (Transit == 1 || Transit == 2 || Pose == EPersonPose::Sit || Pose == EPersonPose::Computer
-		|| Pose == EPersonPose::Eat || Pose == EPersonPose::Read);
-	const float S = BodyScale;
 	if (bBed)
 	{
 		// the lying clips: the actor stands beside the bed facing away from it (+Y), the mattress (top 50 cm) behind it,
@@ -2591,7 +2856,7 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		// Yaw the bed's head-to-foot: the actor turns so local -X runs head to foot.
 		const float MeshYaw = Yaw + 180.f;
 		const FRotator R(0.f, MeshYaw, 0.f);
-		FVector At = Location - R.RotateVector(FVector(-5.f, -55.f, 0.f) * S);
+		FVector At = Shown - R.RotateVector(FVector(-5.f, -55.f, 0.f) * S);
 		At.Z += (SeatHeight > 0.f ? SeatHeight : 50.f) - 50.f * S;
 		SetActorLocationAndRotation(At, R);
 		BedCenter = Location;
@@ -2601,13 +2866,38 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	else
 	{
 		// seated clips: the origin under the seat's centre (top 47 cm), facing local +Y; a smaller body sits higher
-		FVector At = Location;
+		FVector At = Shown - FRotator(0.f, Facing, 0.f).Vector() * SeatLead;
 		if (bSeat)
 		{
 			At.Z += (SeatHeight > 0.f ? SeatHeight : 47.f) - 47.f * S;
 		}
+		// in the ice hole: Location is the water's surface, and the water comes up to the shoulders
+		if (Pose == EPersonPose::Walrus && Transit == 0)
+		{
+			At.Z -= 125.f * S;
+		}
 		// the model faces +Y at yaw 0
-		SetActorLocationAndRotation(At, FRotator(0.f, Facing - 90.f, 0.f));
+		FQuat Turn = FRotator(0.f, Facing - 90.f, 0.f).Quaternion();
+		// on skates: leaning into the glide (more the faster), the body swinging a little from side to side with each long
+		// stroke (in time with the walk clip's steps, played slowly: Skate below)
+		const float Glide = Pose == EPersonPose::Skate && Transit == 0 ? FMath::Clamp((Speed - 40.f) / 200.f, 0.f, 1.f) : 0.f;
+		SkateLean = FMath::FInterpTo(SkateLean, Glide, DeltaTime, 3.f);
+		if (SkateLean > 0.01f)
+		{
+			float Phase = 0.f;
+			if (const ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
+			{
+				Phase = Anim->CurrentClipPhase();
+			}
+			// (a stroke a step: the walk cycle is two steps, the swing once each way per cycle)
+			const float Swing = FMath::Sin(Phase * 2.f * PI);
+			const FVector Fwd = FRotator(0.f, Facing, 0.f).Vector();
+			const FVector Right = FVector::CrossProduct(FVector::UpVector, Fwd);
+			const FVector Up = (FVector::UpVector + Fwd * FMath::Tan(FMath::DegreesToRadians(14.f * SkateLean))
+				+ Right * FMath::Tan(FMath::DegreesToRadians(3.f * SkateLean * Swing))).GetSafeNormal();
+			Turn = FQuat::FindBetweenNormals(FVector::UpVector, Up) * FRotator(0.f, Facing - 90.f + 6.f * SkateLean * Swing, 0.f).Quaternion();
+		}
+		SetActorLocationAndRotation(At, Turn);
 	}
 	// under the blanket once they lie still; it goes when they get up
 	const bool bAsleep = Pose == EPersonPose::Sleep && Transit == 0;
@@ -2630,8 +2920,9 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		{
 			Anim->SetComputer(NAME_None);
 		}
+		// (not in the ice hole: no ground under the feet there)
 		Anim->SetOnFeet(Transit == 0 && (Pose == EPersonPose::Walk || Pose == EPersonPose::Stand || Pose == EPersonPose::Look
-			|| Pose == EPersonPose::Talk || Pose == EPersonPose::Shovel));
+			|| Pose == EPersonPose::Talk || Pose == EPersonPose::Shovel || Pose == EPersonPose::Skate));
 	}
 	PlacePusher(Transit == 0 && Pose == EPersonPose::Shovel && Clip(TEXT("Push")) != nullptr);
 	const bool bMannerClip = DriveManner(Pose, Transit, Speed);
@@ -2643,9 +2934,27 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 	case 4: Play(TEXT("GetUp"), false); return;
 	default: break;
 	}
+	ULyudBodyAnimInstance* Legs = bSmooth ? Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()) : nullptr;
+	if (Legs)
+	{
+		Legs->SetStride(1.f);
+	}
 	if (bMannerClip)
 	{
 		return;
+	}
+	if (bSmooth && Pose != EPersonPose::Shovel)
+	{
+		// the legs go by what the body really does: walking where the life stands a moment (getting their breath, waiting
+		// for one of theirs) they stand; standing where the body still glides its last half-step in, they finish it
+		static const FName NameWalk(TEXT("Walk")), NameRun(TEXT("Run"));
+		const bool bWasGait = Playing == NameWalk || Playing == NameRun;
+		const bool bMoving = GaitSpeed > (bWasGait ? 9.f : 18.f) * S;
+		const bool bStandPose = Pose == EPersonPose::Stand || Pose == EPersonPose::Look || Pose == EPersonPose::Talk;
+		if (Pose == EPersonPose::Walk ? !bMoving : (bFeet && bStandPose && bMoving && bWasGait))
+		{
+			Pose = Pose == EPersonPose::Walk ? EPersonPose::Stand : EPersonPose::Walk;
+		}
 	}
 	switch (Pose)
 	{
@@ -2660,8 +2969,25 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		}
 		const bool bShared = SharedWalk == 1;
 		// a run (UAL Jog_Fwd_Loop, ~2.6 m/s at rate 1) from ~1.9 m/s, back to the walk under ~1.6 (a body's size scales both)
-		const bool bRun = Clip(TEXT("Run")) && Speed > (Playing == TEXT("Run") ? 160.f : 190.f) * S;
-		if (bRun)
+		const bool bRun = Clip(TEXT("Run")) && GaitSpeed > (Playing == TEXT("Run") ? 160.f : 190.f) * S;
+		if (bSmooth)
+		{
+			// the speed is the steps' length times their rate: quicker, a person does both in about equal parts (never
+			// the clip merely played fast: a child's 1.35 m/s was the grown-up's walk at double speed); slower, the steps
+			// shorten more than they slow, down to the shuffle of setting off and of stopping
+			static const IConsoleVariable* Cover = IConsoleManager::Get().RegisterConsoleVariable(TEXT("lyud.Anim.GaitCover"), 1.f,
+				TEXT("Scales the ground the walk and run clips are taken to cover at rate 1 (93 and 260 cm/s for a grown-up): tuning against foot slide."));
+			const float Ratio = GaitSpeed / (Cover->GetFloat() * (bRun ? 260.f * S : (bShared ? 93.f * S : 75.f)));
+			float Rate = FMath::Clamp(FMath::Sqrt(FMath::Max(Ratio, 0.f)), bRun ? 0.85f : 0.8f, bRun ? 1.25f : 1.3f);
+			const float Stride = FMath::Clamp(Ratio / Rate, 0.4f, 1.3f);
+			Rate = FMath::Clamp(Ratio / Stride, 0.3f, 2.2f);
+			Play(bRun ? TEXT("Run") : TEXT("Walk"), true, Rate);
+			if (Legs)
+			{
+				Legs->SetStride(Stride);
+			}
+		}
+		else if (bRun)
 		{
 			Play(TEXT("Run"), true, FMath::Clamp(Speed / (260.f * S), 0.6f, 1.6f));
 		}
@@ -2693,6 +3019,27 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		{
 			Play(TEXT("Walk"), true, 0.4f);
 		}
+		break;
+	case EPersonPose::Skate:
+		// TODO(Mac): a real skating clip (a long push and glide on each leg); for now the shared walk, slowly: long strokes,
+		// about a third of the walk's cadence for the speed, with the lean and the side-to-side swing above. Standing on the
+		// ice (a breath at a slot): the idle.
+		if (Speed > 40.f)
+		{
+			if (SharedWalk < 0)
+			{
+				if (const UAnimSequence* W = Clip(TEXT("Walk"))) SharedWalk = W->GetName().StartsWith(TEXT("A_Human")) ? 1 : 0;
+			}
+			Play(TEXT("Walk"), true, FMath::Clamp(Speed / ((SharedWalk == 1 ? 93.f * S : 75.f) * 3.f), 0.3f, 1.6f));
+		}
+		else
+		{
+			PlayVaried(TEXT("Stand"), { TEXT("StandIdle"), TEXT("StandIdle"), TEXT("FoldArms") });
+		}
+		break;
+	case EPersonPose::Walrus:
+		// in the water to the shoulders (Location lowered above): the idle, standing still
+		Play(TEXT("StandIdle"), true);
 		break;
 	case EPersonPose::Eat: Play(TEXT("Eat"), true); break;
 	case EPersonPose::Read: Play(TEXT("Read"), true); break;
@@ -2918,6 +3265,25 @@ static FAutoConsoleCommandWithWorldAndArgs GPeopleOrder(TEXT("lyud.People.Order"
 		{
 			const bool bOk = People->Order(People->FindPerson(Args[0]), Args[1], Args.Num() > 2 ? Args[2] : FString());
 			UE_LOG(LogTemp, Warning, TEXT("People: order %s %s: %s"), *Args[0], *Args[1], bOk ? TEXT("going") : TEXT("can't"));
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GPeopleCondition(TEXT("lyud.People.Condition"),
+	TEXT("lyud.People.Condition [name 0|1]: switches a condition (rink, rink_busy, walrus, banya: docs/people.md \"Winter play\"; the winter sends them again every few seconds), or lists them."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World);
+		if (!People)
+		{
+			return;
+		}
+		if (Args.Num() >= 2)
+		{
+			People->SetCondition(FName(*Args[0]), FCString::Atoi(*Args[1]) != 0);
+		}
+		for (const TCHAR* Name : { TEXT("rink"), TEXT("rink_busy"), TEXT("walrus"), TEXT("banya") })
+		{
+			UE_LOG(LogTemp, Warning, TEXT("People: condition %s %s"), Name, People->IsCondition(FName(Name)) ? TEXT("on") : TEXT("off"));
 		}
 	}));
 

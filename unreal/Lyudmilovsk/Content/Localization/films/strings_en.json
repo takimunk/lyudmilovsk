@@ -1,6 +1,6 @@
 {
  "city.film.card": "{0}. {1}, {2}",
- "city.film.newsreel": "Before the session, the newsreel: {0}.",
+ "city.film.newsreel": "Before the film, the newsreel: {0}.",
  "city.film.lector": "The projectionist: “{0}”",
  "city.film.leave": "E — get up and leave",
  "city.film.missing": "The newsreel's reel didn't arrive: straight to the film.",
@@ -8,7 +8,7 @@
  "city.film.title": "The Rassvet newsreel",
  "item.ticket_stub.name": "Ticket stub",
  "item.ticket_stub.desc": "A pink stub from the Rassvet, torn along the line. A stamp on the back: row and seat.",
- "dev.action.cinema.play": "Cinema: the day's newsreel at the Rassvet now (no session)",
+ "dev.action.cinema.play": "Cinema: the day's newsreel at the Rassvet now (no film)",
  "film.lumiere_train.title": "The Arrival of a Train at La Ciotat",
  "film.lumiere_train.maker": "Auguste and Louis Lumière",
  "film.lumiere_train.l1": "Look: the station of a little town by the sea. The engine will appear in a moment.",
@@ -26,7 +26,7 @@
  "film.lumiere_baby.title": "Baby's Meal",
  "film.lumiere_baby.maker": "Louis Lumière",
  "film.lumiere_baby.l1": "Auguste Lumière and his wife feed their little daughter. The first home movie.",
- "film.lumiere_baby.l2": "Look at the leaves behind them: the wind. Back then people marvelled at the leaves more than at the people.",
+ "film.lumiere_baby.l2": "Look at the leaves behind them: the wind. Back then audiences marvelled at the leaves more than at the people.",
  "film.cohl_fantasmagorie.title": "Fantasmagorie",
  "film.cohl_fantasmagorie.maker": "Émile Cohl",
  "film.cohl_fantasmagorie.l1": "The first drawn cartoon. Chalk on a blackboard, and the artist's hand.",
@@ -51,7 +51,7 @@
  "film.porter_robbery.title": "The Great Train Robbery",
  "film.porter_robbery.maker": "Edwin S. Porter",
  "film.porter_robbery.l1": "The first western. Bandits tie up the telegraph operator at the station.",
- "film.porter_robbery.l2": "A fight on the roof of the car. That's a dummy instead of a man, of course: look closely.",
+ "film.porter_robbery.l2": "A fight on the roof of the carriage. That's a dummy instead of a man, of course: look closely.",
  "film.porter_robbery.l3": "A girl finds the tied-up operator, and there's dancing in the saloon. The chase!",
  "film.porter_robbery.l4": "And in those days this shot went at the beginning or the end, as the projectionist liked.",
  "film.programme.mon": "“Workers Leaving the Lumière Factory in Lyon” and “The Arrival of a Train at La Ciotat” (1895–1896)",
@@ -61,5 +61,11 @@
  "film.programme.fri": "“The Arrival of a Train at La Ciotat” and “The Sprinkler Sprinkled” (1895–1896)",
  "film.programme.sat": "“A Trip to the Moon” (1902)",
  "film.programme.sun": "“The Great Train Robbery” (1903)",
- "film.programme.fest": "“A Trip to the Moon” (1902)"
+ "film.programme.fest": "“A Trip to the Moon” (1902)",
+ "film.programme.fest.children_day": "“Fantasmagorie” and “The Sprinkler Sprinkled” and “Baby's Meal” (1895–1908)",
+ "film.programme.fest.christmas": "“Fantasmagorie” and “A Trip to the Moon” (1902–1908)",
+ "film.programme.fest.city_day": "“Workers Leaving the Lumière Factory in Lyon” and “The Arrival of a Train at La Ciotat” and “The Sprinkler Sprinkled” (1895–1896)",
+ "film.programme.fest.halloween": "“The Man with the Rubber Head” and “The Electric Hotel” (1901–1908)",
+ "film.programme.fest.new_year": "“Fantasmagorie” and “The Man with the Rubber Head” and “A Trip to the Moon” (1901–1908)",
+ "film.programme.fest.sea_festival": "“A Trip to the Moon” and “The Electric Hotel” (1902–1908)"
 }

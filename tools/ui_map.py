@@ -313,6 +313,10 @@ def places(out_json):
         ("europa_hatch", 573.0, 100.0, 12.0, "building", True),
         # where Topi's sand begins, on the map's east edge behind the town (docs/topi.md); the river Ural lies off the map
         ("topi", -1225.0, 905.0, 70.0, "nature", True),
+        # the old pier on the town's main axis: its deck runs from the promenade (x 141) to the lighthouse on its head
+        # (x 306..317; tools/city_plan.py P-PIER, S-PIER-HEAD); the circle takes in the whole deck and the sand by its root
+        # (the photo quest "old_pier", docs/photo.md)
+        ("pier", 224.0, 905.0, 85.0, "building", False),
     ]
     # the Aton coast between the club and the town (tools/south.py, docs/south.md)
     P += [(p["id"], p["x"], p["y"], p["r"], p["kind"], False) for p in W._south().places()]

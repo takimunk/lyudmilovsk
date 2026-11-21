@@ -495,6 +495,7 @@ namespace LyudDevTabs
 				[SNew(STextBlock).Font(Font(10)).ColorAndOpacity(FLinearColor::White).Text(FText::FromString(Name + TEXT("  ·  ") + S.Latin))]
 				+ SHorizontalBox::Slot().AutoWidth()[Button(LyudText::Get(TEXT("ui.dev.birds.become")), [Run, Id]() { Run(TEXT("Bird.Become ") + Id); }, nullptr, 9)]
 				+ SHorizontalBox::Slot().AutoWidth().Padding(3, 0, 0, 0)[Button(LyudText::Get(TEXT("ui.dev.birds.fly")), [Run, Id]() { Run(TEXT("Bird.Become ") + Id + TEXT(" air")); }, nullptr, 9)]
+				+ SHorizontalBox::Slot().AutoWidth().Padding(3, 0, 0, 0)[Button(LyudText::Get(TEXT("ui.dev.birds.high")), [Run, Id]() { Run(TEXT("Bird.Become ") + Id + TEXT(" high")); }, nullptr, 9)]
 				+ SHorizontalBox::Slot().AutoWidth().Padding(3, 0, 0, 0)[Button(LyudText::Get(TEXT("ui.dev.birds.spawn")), [Run, Id]() { Run(TEXT("Birds.SpawnNear ") + Id); }, nullptr, 9)]
 				+ SHorizontalBox::Slot().AutoWidth().Padding(3, 0, 0, 0)[Button(LyudText::Get(TEXT("ui.dev.birds.befriend")), [Run, Id]()
 					{

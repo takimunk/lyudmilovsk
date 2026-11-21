@@ -329,6 +329,11 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Topi"), TEXT("topi_heart") }, { TEXT("Topi"), TEXT("ural_hum") },
 		// the town radio «Волна Людмиловска» (ULyudMusic, tools/music/sounds.py): the call sign, the time pips, the hiss off air
 		{ TEXT("Radio"), TEXT("radio_chime") }, { TEXT("Radio"), TEXT("radio_pips") }, { TEXT("Radio"), TEXT("radio_static") },
+		// winter play (ULyudWinterPlay, tools/winter_play/sounds.py): skates on the pond's ice, the banya, snowballs
+		{ TEXT("Winter"), TEXT("skate_stroke") }, { TEXT("Winter"), TEXT("skate_stop") }, { TEXT("Winter"), TEXT("ice_crack") },
+		{ TEXT("Winter"), TEXT("ice_fall") }, { TEXT("Winter"), TEXT("banya_ladle") }, { TEXT("Winter"), TEXT("venik_swish") },
+		{ TEXT("Winter"), TEXT("banya_door") }, { TEXT("Winter"), TEXT("snow_scoop") }, { TEXT("Winter"), TEXT("snowball_throw") },
+		{ TEXT("Winter"), TEXT("snowball_hit") }, { TEXT("Winter"), TEXT("snow_pat") },
 	};
 	for (const auto& G : Groups)
 	{
@@ -611,7 +616,9 @@ void ULyudSoundscapeSubsystem::UpdateBed()
 	{
 		bOutdoorsNow = bHaveSky;
 	}
-	Outdoors = FMath::FInterpTo(Outdoors, bOutdoorsNow ? 1.f : 0.f, 0.1f, 1.2f);
+	// an open window lets part of the outside in (at most 0.35: under the 0.4 at which the music leaves the room's mood)
+	const float WindowAir = FMath::Clamp(OpenAir, 0.f, 1.f) * 0.35f;
+	Outdoors = FMath::FInterpTo(Outdoors, bOutdoorsNow ? 1.f : WindowAir, 0.1f, 1.2f);
 	P.Enclosure = 1.f - Outdoors;
 	ALyudSea* Sea = ALyudSea::Get(World);
 	if (Sea && Sea->IsCameraUnderwater())
@@ -827,6 +834,11 @@ void ULyudSoundscapeSubsystem::SetUmbrella(float Amount)
 void ULyudSoundscapeSubsystem::SetNearWindows(float Amount)
 {
 	NearWindows = FMath::Clamp(Amount, 0.f, 1.f);
+}
+
+void ULyudSoundscapeSubsystem::SetOpenAir(float Amount)
+{
+	OpenAir = FMath::Clamp(Amount, 0.f, 1.f);
 }
 
 void ULyudSoundscapeSubsystem::OnLightning(FVector Location, float DistanceFromViewM)

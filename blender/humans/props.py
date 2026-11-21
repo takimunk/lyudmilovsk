@@ -1,6 +1,6 @@
 """The things the townsfolk's manners put in their hands (docs/town_manners.md): a phone, a cigarette, a camera, an
 umbrella, a fishing rod, a brush, binoculars, a newspaper, a book, knitting, an ice cream, a paper cup, a shopping
-bag, and the painter's easel.
+bag, the painter's easel, the allotment's spade and watering can, the cleaner's mop and bucket, the night watchman's torch.
 
     Blender -b -P blender/humans/props.py [-- --preview]
         -> Saved/ClipSources/props/<name>.glb (unreal/scripts/import_props.py -> /Game/Characters/Humans/Props/SM_Prop_<name>)
@@ -17,6 +17,11 @@ Metres. How each lies in its own frame is what ANpcBody::PlaceMannerProp expects
     camera, binoculars         between the hands along X, the side the holder looks into +Z (the lens -Z), the top +Y
     newspaper, book, knitting  between the hands along X, the pages the holder reads +Z, the top edge +Y
     easel                      origin on the ground under it, the canvas faces +X (the painter stands at +X)
+    spade                      the handle's grip at the origin, the shaft along +X to the blade (the other hand at ~0.5 m)
+    watering_can               origin at the top handle's grip, +Z up, the spout along +X
+    mop                        the shaft's top at the origin, along +X to the head (1.32 m), the strands' face +Z
+    torch                      the grip at the origin, the lens along +X (0.2 m)
+    bucket                     origin on the ground under it, +Z up (stands by the cleaner like the easel)
 """
 import math
 import os
@@ -385,6 +390,95 @@ def bag():
     return p
 
 
+def spade():
+    """A garden spade for the allotment (EHold::Shaft): the D-handle's grip at the origin, the shaft along +X, the blade's
+    edge at 1.08 m; the blade's face is +Z (the digger's side)."""
+    p = Prop("spade")
+    wood = p.mat("wood", (0.55, 0.4, 0.22), 0.75)
+    steel = p.mat("steel", (0.42, 0.44, 0.46), 0.4)
+    # the D-handle: a grip across, two cheeks to the shaft
+    p.rod(wood, (0.0, -0.055, 0.0), (0.0, 0.055, 0.0), 0.014, seg=8)
+    for y in (-0.055, 0.055):
+        p.rod(steel, (0.0, y, 0.0), (0.1, y * 0.25, 0.0), 0.007, seg=6)
+    p.rod(wood, (0.09, 0.0, 0.0), (0.78, 0.0, 0.0), 0.016, 0.017, seg=8)
+    p.rod(steel, (0.74, 0.0, 0.0), (0.84, 0.0, 0.0), 0.019, 0.022, seg=8)
+    # the blade: a slightly dished plate, a tread at its top
+    p.box(steel, (0.82, -0.09, -0.004), (1.08, 0.09, 0.004))
+    p.box(steel, (0.815, -0.095, -0.004), (0.835, 0.095, 0.012))
+    return p
+
+
+def watering_can():
+    """A tin watering can (EHold::Upright): the top handle's grip at the origin, the can hanging under it, the spout out
+    along +X (ahead of the holder) with its rose."""
+    p = Prop("watering_can")
+    tin = p.mat("tin", (0.3, 0.46, 0.36), 0.5)
+    dark = p.mat("rose", (0.2, 0.3, 0.24), 0.5)
+    top, bot = -0.07, -0.33
+    p.rod(tin, (0.0, 0.0, bot), (0.0, 0.0, top), 0.105, 0.095, seg=14)
+    # the handle over the top: two posts and the grip
+    for x in (-0.07, 0.07):
+        p.rod(tin, (x, 0.0, top), (x * 0.9, 0.0, 0.0), 0.007, seg=6)
+    p.rod(tin, (-0.065, 0.0, 0.0), (0.065, 0.0, 0.0), 0.011, seg=8)
+    # the spout from low on the front, up and out; the rose
+    p.rod(tin, (0.09, 0.0, bot + 0.05), (0.36, 0.0, top + 0.02), 0.02, 0.012, seg=8)
+    p.rod(dark, (0.35, 0.0, top + 0.01), (0.4, 0.0, top + 0.045), 0.014, 0.034, seg=10)
+    return p
+
+
+def mop():
+    """The cleaner's mop (EHold::Shaft): the shaft's top at the origin, the shaft along +X, a clamp and a head of grey
+    cotton strands at 1.2-1.32 m, splayed a little (it has been on the floor)."""
+    p = Prop("mop")
+    wood = p.mat("wood", (0.62, 0.47, 0.28), 0.7)
+    clamp = p.mat("clamp", (0.6, 0.62, 0.64), 0.4)
+    cotton = p.mat("cotton", (0.72, 0.71, 0.66), 0.95)
+    p.rod(wood, (0.0, 0.0, 0.0), (1.2, 0.0, 0.0), 0.014, 0.015, seg=8)
+    p.rod(clamp, (1.17, 0.0, 0.0), (1.23, 0.0, 0.0), 0.024, seg=8)
+    # the strands: a ring of flat twisted cords hanging past the clamp, splayed outward
+    n = 14
+    for k in range(n):
+        a = 2.0 * math.pi * k / n
+        cy, cz = math.cos(a), math.sin(a)
+        p.rod(cotton, (1.2, 0.02 * cy, 0.02 * cz), (1.32 + 0.015 * math.sin(3 * a), 0.075 * cy, 0.075 * cz), 0.009, 0.007, seg=5)
+    return p
+
+
+def torch():
+    """The night watchman's torch (EHold::Pointing, along +X): a black rubber tube, a chrome head with a pale lens at
+    the far end, a red switch on top."""
+    p = Prop("torch")
+    rubber = p.mat("rubber", (0.05, 0.05, 0.05), 0.85)
+    chrome = p.mat("chrome", (0.75, 0.76, 0.78), 0.2)
+    lens = p.mat("lens", (1.0, 0.95, 0.8), 0.1, emit=3.0)
+    switch = p.mat("switch", (0.7, 0.08, 0.06), 0.5)
+    p.rod(rubber, (-0.05, 0.0, 0.0), (0.12, 0.0, 0.0), 0.017, seg=10)
+    p.rod(chrome, (0.12, 0.0, 0.0), (0.18, 0.0, 0.0), 0.019, 0.026, seg=12)
+    p.rod(lens, (0.18, 0.0, 0.0), (0.186, 0.0, 0.0), 0.023, seg=12)
+    p.box(switch, (0.0, -0.007, 0.015), (0.025, 0.007, 0.022))
+    return p
+
+
+def bucket():
+    """The cleaner's galvanised bucket on the floor by them (a stand piece, like the easel): 0.3 m tall, a little grey
+    water in it, the wire handle down on one side."""
+    p = Prop("bucket")
+    zinc = p.mat("zinc", (0.62, 0.64, 0.66), 0.45)
+    water = p.mat("water", (0.28, 0.3, 0.3), 0.08)
+    p.rod(zinc, (0.0, 0.0, 0.0), (0.0, 0.0, 0.3), 0.11, 0.145, seg=14, caps=False)
+    p.rod(zinc, (0.0, 0.0, 0.0), (0.0, 0.0, 0.004), 0.11, seg=14, caps=True)                  # the bottom
+    inner = p.rod(zinc, (0.0, 0.0, 0.004), (0.0, 0.0, 0.3), 0.105, 0.14, seg=14, caps=False)  # the inside, facing in
+    bmesh.ops.reverse_faces(p.bm, faces=list({f for v in inner for f in v.link_faces}))
+    p.rod(zinc, (0.0, 0.0, 0.27), (0.0, 0.0, 0.3), 0.148, 0.15, seg=14, caps=False)     # the rolled rim
+    p.rod(water, (0.0, 0.0, 0.18), (0.0, 0.0, 0.181), 0.134, seg=14)
+    for y in (-0.148, 0.148):
+        p.ball(zinc, (0.0, y, 0.27), 0.012, seg=6)
+    p.rod(zinc, (0.0, -0.148, 0.27), (0.13, -0.07, 0.3), 0.004, seg=5)
+    p.rod(zinc, (0.13, -0.07, 0.3), (0.13, 0.07, 0.3), 0.004, seg=5)
+    p.rod(zinc, (0.13, 0.07, 0.3), (0.0, 0.148, 0.27), 0.004, seg=5)
+    return p
+
+
 def easel():
     p = Prop("easel")
     wood = p.mat("wood", (0.5, 0.36, 0.2), 0.7)
@@ -416,7 +510,8 @@ def easel():
     return p
 
 
-MAKERS = [phone, cigarette, camera, umbrella, rod, brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, easel]
+MAKERS = [phone, cigarette, camera, umbrella, rod, brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, easel,
+          spade, watering_can, mop, torch, bucket]
 
 
 def preview(o, name):

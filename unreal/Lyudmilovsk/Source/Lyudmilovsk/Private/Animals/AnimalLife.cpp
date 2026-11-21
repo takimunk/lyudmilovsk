@@ -12,6 +12,9 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
+#include "HeroCharacter.h"
+#include "Sea/LyudSea.h"
+#include "Sea/LyudSwim.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudSave.h"
 #include "Misc/FileHelper.h"
@@ -393,6 +396,27 @@ void UAnimalLifeSubsystem::UpdatePlayer()
 	{
 		S.Camera = P.Eye;
 	}
+	// the friends' side: the hand held out, the bench, the water
+	P.bOffer = bHandSet && bHandOffer;
+	P.Palm = bHandSet ? FromUE(HandPalm) : P.Feet + V3(P.Facing.X, P.Facing.Y, 0.f).Norm() * 0.45f + V3(0.f, 0.f, P.bCrouched ? 0.35f : 0.8f);
+	const AHeroCharacter* Hero = Cast<AHeroCharacter>(Pawn);
+	P.bSeated = Hero && Hero->IsSeated() && !Hero->IsOnBike();
+	if (P.bSeated)
+	{
+		// the seat's frame: origin on the floor under the cushion's front edge, X the way the sitter faces
+		const FTransform Seat = Hero->SeatWorld();
+		const FVector Fwd = Seat.GetUnitAxis(EAxis::X);
+		P.Lap = FromUE(Seat.GetLocation() - Fwd * 16.0 + FVector(0.0, 0.0, 57.0));
+		P.SeatYaw = FMath::DegreesToRadians((float)Fwd.Rotation().Yaw);
+		P.Feet = FromUE(Seat.GetLocation() + Fwd * 12.0);
+	}
+	const ULyudSwimComponent* Swim = ULyudSwimComponent::Get(World);
+	P.bSwimming = Swim && Swim->IsSwimming();
+	if (P.bSwimming)
+	{
+		const ALyudSea* Sea = ALyudSea::Get(World);
+		P.WaterZ = Sea ? Sea->SurfaceZ(Pawn->GetActorLocation()) * 0.01f : P.Feet.Z + 1.2f;
+	}
 }
 
 /** Birds on the ground near the cats and dogs go to the animals as prey; the cats and dogs go to the bird life as
@@ -597,6 +621,7 @@ bool UAnimalLifeSubsystem::GetAnimal(int32 Id, FAnimalInfo& Out) const
 	Out.Fear = A.Fear;
 	Out.Trust = A.Trust;
 	Out.Bond = A.Bond;
+	Out.bFriend = A.Bond >= FWorld::FriendBond;
 	Out.NameKey = UTF8_TO_TCHAR(A.NameKey.c_str());
 	Out.Name = !A.Name.empty() ? FString(UTF8_TO_TCHAR(A.Name.c_str())) : (!A.NameKey.empty() ? LyudText::Get(Out.NameKey).ToString() : FString());
 	Out.bNoticedPlayer = A.bNoticed;
@@ -655,6 +680,57 @@ int32 UAnimalLifeSubsystem::SpawnAnimal(FName Breed, int32 Coat, FVector Locatio
 bool UAnimalLifeSubsystem::Hail(int32 Id)
 {
 	return Sim && Sim->Hail(Id);
+}
+
+bool UAnimalLifeSubsystem::OfferHand(int32 Id) { return Sim && Sim->OfferHand(Id); }
+bool UAnimalLifeSubsystem::StrokeAnimal(int32 Id) { return Sim && Sim->Stroke(Id); }
+void UAnimalLifeSubsystem::EndStroke(int32 Id) { if (Sim) { Sim->EndStroke(Id); } }
+bool UAnimalLifeSubsystem::OfferFood(int32 Id, float Like)
+{
+	if (!Sim)
+	{
+		return false;
+	}
+	Sim->Player.bOffer = true;      // asked before this frame's UpdatePlayer saw the hand
+	return Sim->OfferFood(Id, Like);
+}
+bool UAnimalLifeSubsystem::StartWalk(int32 Id) { return Sim && Sim->StartWalk(Id); }
+void UAnimalLifeSubsystem::EndWalk(bool bHome) { if (Sim) { Sim->EndWalk(bHome); } }
+int32 UAnimalLifeSubsystem::Walker() const { return Sim ? Sim->Walker : -1; }
+int32 UAnimalLifeSubsystem::LapCat() const { return Sim ? Sim->LapCat : -1; }
+bool UAnimalLifeSubsystem::IsFriend(int32 Id) const { return Sim && Sim->IsFriend(Id); }
+
+void UAnimalLifeSubsystem::SetPlayerHand(bool bSet, const FVector& Palm, bool bOffer)
+{
+	bHandSet = bSet;
+	HandPalm = Palm;
+	bHandOffer = bSet && bOffer;
+}
+
+AAnimalActor* UAnimalLifeSubsystem::BodyOf(int32 Id) const
+{
+	return Renderer ? Renderer->BodyOf(Id) : nullptr;
+}
+
+void UAnimalLifeSubsystem::Befriend(int32 Id)
+{
+	if (Sim && Id >= 0 && Id < (int32)Sim->Animals.size())
+	{
+		FAnimal& A = Sim->Animals[Id];
+		A.Trust = FMath::Max(A.Trust, 0.8f);
+		A.Fear = 0.f;
+		if (A.Bond < FWorld::FriendBond)
+		{
+			A.Bond = FWorld::FriendBond + 0.1f;
+			LyudAnimals::FEvent E;
+			E.Kind = LyudAnimals::EEvent::Befriended;
+			E.Animal = Id;
+			E.Other = -1;
+			E.Pos = A.Pos;
+			Sim->Events.push_back(E);
+		}
+		SyncMemory(true);
+	}
 }
 
 void UAnimalLifeSubsystem::SetAnimalName(int32 Id, const FString& InName)
@@ -926,6 +1002,7 @@ void AAnimalLifeRenderer::Draw(const FWorld& World, const FVector& Camera)
 			else
 			{
 				Body->Size = A.Size;
+				Body->ResetPlace();
 				Body->SetActorTransform(At);
 				if (Body->Coat != A.Coat)
 				{
@@ -949,7 +1026,8 @@ void AAnimalLifeRenderer::Drive(AAnimalActor* Body, const FWorld& World, int32 I
 	const V3 P = World.RenderPos(A);
 	// the body follows the ground's slope a little (pitch along its heading, roll across), not when up a tree
 	float Pitch = 0.f, Roll = 0.f;
-	if (A.Up <= 0.f && A.Act != EAct::Sleep)
+	const bool bOwnPose = A.Act == EAct::Lap || A.Act == EAct::RollOver || A.Act == EAct::Swim;
+	if (A.Up <= 0.f && A.Act != EAct::Sleep && !bOwnPose)
 	{
 		const float C = std::cos(A.Yaw), Sn = std::sin(A.Yaw);
 		const float L = A.Kind == EKind::Cat ? 0.22f : 0.38f;
@@ -958,7 +1036,24 @@ void AAnimalLifeRenderer::Drive(AAnimalActor* Body, const FWorld& World, int32 I
 		Pitch = FMath::Clamp(FMath::RadiansToDegrees(std::atan2(Zf - Zb, 2.f * L)) * 0.7f, -25.f, 25.f);
 		Roll = FMath::Clamp(FMath::RadiansToDegrees(std::atan2(Zl - Zr, 0.2f)) * 0.4f, -12.f, 12.f);
 	}
-	Body->SetActorLocationAndRotation(ToUE(P), FRotator(-Pitch, FMath::RadiansToDegrees(A.Yaw), Roll));
+	// stroked: it leans into the hand (toward the player's side); belly up: over onto its side and back
+	FVector At = ToUE(P);
+	if (A.Lean > 0.01f && World.Player.bPresent)
+	{
+		const float Side = std::cos(A.Yaw) * (World.Player.Palm.Y - P.Y) - std::sin(A.Yaw) * (World.Player.Palm.X - P.X);     // > 0: the hand is on its left
+		const float Ease = A.Lean * A.Lean * (3.f - 2.f * A.Lean);
+		if (A.Act == EAct::RollOver)
+		{
+			Roll += (Side > 0.f ? 1.f : -1.f) * 78.f * Ease;
+			At.Z += (A.Kind == EKind::Cat ? 7.0 : 13.0) * Ease;
+		}
+		else if (A.Act == EAct::Petted)
+		{
+			Roll += (Side > 0.f ? -1.f : 1.f) * 7.f * Ease;
+			Pitch += 3.f * Ease;
+		}
+	}
+	Body->Place(At, FMath::RadiansToDegrees(A.Yaw), -Pitch, Roll, A.Tier >= 2);
 	Body->SetActivity((EAnimalActivity)(uint8)A.Act, A.Speed * 100.f);
 	if (A.bLook)
 	{

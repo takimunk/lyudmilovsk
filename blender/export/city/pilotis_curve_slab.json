@@ -396,6 +396,19 @@
  ],
  "things": [
   {
+   "id": "lobby_mailboxes",
+   "kind": "board",
+   "pos": [
+    0.857,
+    10.576,
+    1.46
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "mailbox"
+   }
+  },
+  {
    "id": "house_notices",
    "kind": "board",
    "pos": [
@@ -459,6 +472,20 @@
    "props": {
     "role": "concierge",
     "service": "reception"
+   }
+  },
+  {
+   "id": "lobby_switch",
+   "kind": "machine",
+   "pos": [
+    0.23,
+    5.95,
+    1.31
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
    }
   },
   {
@@ -709,6 +736,20 @@
    }
   },
   {
+   "id": "common_switch",
+   "kind": "machine",
+   "pos": [
+    -17.027,
+    4.86,
+    1.31
+   ],
+   "yaw": 99.1,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
    "id": "common_armchair",
    "kind": "seat",
    "pos": [
@@ -772,6 +813,33 @@
    "yaw": 168.6,
    "props": {
     "height": 0.45
+   }
+  },
+  {
+   "id": "caretaker_tap",
+   "kind": "machine",
+   "pos": [
+    18.176,
+    7.41,
+    0.96
+   ],
+   "yaw": 80.9,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "caretaker_switch",
+   "kind": "machine",
+   "pos": [
+    17.513,
+    4.984,
+    1.31
+   ],
+   "yaw": 80.9,
+   "props": {
+    "what": "switch",
+    "switch": "room"
    }
   },
   {
@@ -930,6 +998,46 @@
    "props": {
     "rest": "private",
     "height": 0.5
+   }
+  },
+  {
+   "id": "flat_tap",
+   "kind": "machine",
+   "pos": [
+    -20.234,
+    11.349,
+    4.355
+   ],
+   "yaw": 11.4,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "flat_switch",
+   "kind": "machine",
+   "pos": [
+    -26.846,
+    8.606,
+    4.705
+   ],
+   "yaw": 103.7,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "flat_window",
+   "kind": "board",
+   "pos": [
+    -23.576,
+    3.337,
+    4.825
+   ],
+   "yaw": 192.5,
+   "props": {
+    "what": "window"
    }
   },
   {
@@ -3093,9 +3201,311 @@
  "notes": [
   "20 flats, 247 cobogo blocks on the core front"
  ],
+ "dress": [
+  {
+   "id": "lobby_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 875,
+   "bounds": [
+    [
+     2.12,
+     5.7,
+     0.01
+    ],
+    [
+     4.737,
+     7.32,
+     1.02
+    ]
+   ]
+  },
+  {
+   "id": "lobby_paper",
+   "when": {
+    "weekdays": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "hours": [
+     8.0,
+     18.0
+    ],
+    "chance": 0.5
+   },
+   "tris": 10,
+   "bounds": [
+    [
+     8.491,
+     11.817,
+     0.46
+    ],
+    [
+     8.892,
+     12.126,
+     0.463
+    ]
+   ]
+  },
+  {
+   "id": "common_cups",
+   "when": {
+    "weekdays": [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    "hours": [
+     9.5,
+     12.0
+    ],
+    "chance": 0.7
+   },
+   "tris": 374,
+   "bounds": [
+    [
+     -14.434,
+     8.307,
+     0.76
+    ],
+    [
+     -13.655,
+     9.139,
+     0.83
+    ]
+   ]
+  },
+  {
+   "id": "okada_breakfast",
+   "when": {
+    "weekdays": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "hours": [
+     8.0,
+     11.0
+    ]
+   },
+   "tris": 290,
+   "bounds": [
+    [
+     -21.983,
+     8.249,
+     3.825
+    ],
+    [
+     -19.822,
+     9.495,
+     4.225
+    ]
+   ]
+  },
+  {
+   "id": "okada_weekend",
+   "when": {
+    "weekdays": [
+     5,
+     6
+    ],
+    "hours": [
+     9.5,
+     13.0
+    ]
+   },
+   "tris": 350,
+   "bounds": [
+    [
+     -21.988,
+     9.03,
+     4.155
+    ],
+    [
+     -21.307,
+     9.595,
+     4.305
+    ]
+   ]
+  },
+  {
+   "id": "okada_flowers_fresh",
+   "when": {
+    "phase": [
+     7,
+     0,
+     4
+    ]
+   },
+   "tris": 180,
+   "bounds": [
+    [
+     -19.817,
+     8.682,
+     3.825
+    ],
+    [
+     -19.598,
+     8.891,
+     4.31
+    ]
+   ]
+  },
+  {
+   "id": "okada_flowers_wilt",
+   "when": {
+    "phase": [
+     7,
+     4,
+     6
+    ]
+   },
+   "tris": 202,
+   "bounds": [
+    [
+     -19.835,
+     8.636,
+     3.825
+    ],
+    [
+     -19.561,
+     8.963,
+     4.157
+    ]
+   ]
+  },
+  {
+   "id": "okada_flowers_empty",
+   "when": {
+    "phase": [
+     7,
+     6,
+     7
+    ]
+   },
+   "tris": 80,
+   "bounds": [
+    [
+     -19.789,
+     8.708,
+     3.825
+    ],
+    [
+     -19.638,
+     8.859,
+     4.065
+    ]
+   ]
+  },
+  {
+   "id": "okada_book",
+   "when": {
+    "chance": 0.5
+   },
+   "tris": 48,
+   "bounds": [
+    [
+     -18.504,
+     8.122,
+     3.855
+    ],
+    [
+     -18.216,
+     8.36,
+     3.89
+    ]
+   ]
+  },
+  {
+   "id": "okada_boots_winter",
+   "when": {
+    "months": [
+     1,
+     2,
+     12
+    ]
+   },
+   "tris": 168,
+   "bounds": [
+    [
+     -25.893,
+     8.476,
+     3.405
+    ],
+    [
+     -25.584,
+     8.768,
+     3.855
+    ]
+   ]
+  },
+  {
+   "id": "okada_boots_mild",
+   "when": {
+    "months": [
+     3,
+     4,
+     5,
+     9,
+     10,
+     11
+    ]
+   },
+   "tris": 136,
+   "bounds": [
+    [
+     -25.882,
+     8.483,
+     3.405
+    ],
+    [
+     -25.595,
+     8.761,
+     3.745
+    ]
+   ]
+  },
+  {
+   "id": "okada_boots_summer",
+   "when": {
+    "months": [
+     6,
+     7,
+     8
+    ]
+   },
+   "tris": 68,
+   "bounds": [
+    [
+     -25.891,
+     8.485,
+     3.405
+    ],
+    [
+     -25.606,
+     8.754,
+     3.432
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 8886,
-  "detail": 27174,
-  "windows": 344
+  "detail": 27274,
+  "windows": 344,
+  "dress": 2781
  }
 }

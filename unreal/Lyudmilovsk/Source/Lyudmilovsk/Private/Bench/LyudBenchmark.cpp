@@ -201,6 +201,11 @@ void ULyudBenchmark::Start(const TArray<int32>& InPresets)
 		Value.ParseIntoArray(Keep, TEXT(","));
 		Route.RemoveAll([&Keep](const FSegment& S) { return !Keep.Contains(S.Name); });
 	}
+	else
+	{
+		// opt-in segments run only when named (the default route stays comparable with older results)
+		Route.RemoveAll([](const FSegment& S) { return S.Name == TEXT("square"); });
+	}
 	Passes.Reset();
 	if (FParse::Value(Cmd, TEXT("LyudBenchPasses="), Value, false))
 	{
@@ -276,6 +281,13 @@ void ULyudBenchmark::BuildRoute()
 		{ Map(10, -45, 2500), FRotator(-8, 90, 0), 0.f },
 		{ Map(10, -45, 2500), FRotator(-8, 45, 0), 5.f },
 		{ Map(10, -45, 2500), FRotator(-8, 135, 0), 10.f } });
+	// opt-in (-LyudBenchSegments=square): a walk over Sun Square past the hi3d props (sundial, drinking fountains,
+	// vases), ending looking at the pier root (fisherman, anchor); Unreal cm, eye height over the square's paving
+	Seg(TEXT("square"), false, {
+		{ FVector(7000, 90500, -3446), FRotator(-3, 180, 0), 0.f },
+		{ FVector(3000, 89000, -3446), FRotator(-3, 150, 0), 6.f },
+		{ FVector(1000, 93500, -3446), FRotator(-3, 60, 0), 12.f },
+		{ FVector(5500, 94000, -3446), FRotator(-5, -30, 0), 18.f } });
 	// a bird's flight 25 m over the ground: over the upland's old forest, down the slope, across the town
 	Seg(TEXT("flight"), true, {
 		{ Map(-60, -120, 2500), FRotator(-12, 100, 0), 0.f },

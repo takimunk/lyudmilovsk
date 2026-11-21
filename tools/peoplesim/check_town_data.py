@@ -6,12 +6,15 @@
 
 keys and place ids unique, every home a flat that exists and holds its household in its beds, every duty at a place that
 exists, of a kind its activity goes to, in a role it has a slot for and with room for everybody on shift at once, a
-night's sleep that no duty cuts into, friends and counter sellers who exist, names and jobs in the three languages.
+night's sleep that no duty cuts into, friends and counter sellers who exist, names and jobs in the three languages; no
+seat slot of a public space (Content/City/public_spaces.json) inside the space's own solid geometry, and the town's copy
+of those slots where the spot puts them.
 
     python3 tools/peoplesim/check_town_data.py          (run.sh week runs it first)
 """
 import collections
 import json
+import math
 import os
 import re
 import sys
@@ -112,6 +115,8 @@ for p in folk:
             continue
         if pl["kind"] not in a.get("places", []):
             bad_duty.append("%s: %s at a %s (%s goes to %s)" % (p["key"], d["place"], pl["kind"], d["activity"], a.get("places")))
+        if a.get("round") or a.get("when"):
+            continue        # a round's workplace is its doors, one after another; a meeting (the book club) has its members' own seats
         staff = [s for s in pl.get("slots", []) if s.get("kind") == "staff"]
         tagged = [s for s in staff if s.get("tag") == d.get("role")]
         if not (tagged or staff):
@@ -196,6 +201,41 @@ for k in keys:
 check(not script, "names are written in each language's script (Cyrillic, Latin, kana) (%d not)" % len(script), *script)
 dupname = [n for n, c in collections.Counter(strings["en"].get("npc.%s.name" % k) for k in keys).items() if c > 1]
 check(not dupname, "no two townsfolk share a full name (%d do)" % len(dupname), *dupname)
+
+# --- seats in the public spaces (tools/public_spaces.py): a slot inside a solid box (a basin's kerb, a parapet, a wall)
+# puts the sitter inside its collision; the game's ground trace then stands them on top and they never sit
+spaces = load(os.path.join(CONTENT, "City", "public_spaces.json"))
+solid = [b for b in spaces["boxes"] if b.get("size")]
+
+
+def in_box(b, x, y, inset=0.02):
+    a = math.radians(b.get("yaw", 0.0))
+    dx, dy = x - b["c"][0], y - b["c"][1]
+    u, v = dx * math.cos(a) + dy * math.sin(a), -dx * math.sin(a) + dy * math.cos(a)
+    return abs(u) < b["size"][0] / 2 - inset and abs(v) < b["size"][1] / 2 - inset
+
+
+buried, nslots = [], 0
+for sp in spaces["spots"]:
+    for i, sl in enumerate(sp.get("slots", [])):
+        nslots += 1
+        x, y, z = sl["pos"]
+        feet = z - sl.get("height", 0.0)
+        for b in solid:
+            if b["c"][2] + b["size"][2] / 2 > feet + 0.1 and b["c"][2] - b["size"][2] / 2 < z + 1.0 and in_box(b, x, y):
+                buried.append("%s slot %d at (%.2f, %.2f) inside a %s" % (sp["id"], i, x, y, b["kind"]))
+                break
+check(not buried, "no public-space seat slot is inside solid geometry (%d slots, %d inside)" % (nslots, len(buried)), *buried)
+spot_xy = {sp["id"]: [tuple(sl["pos"][:2]) for sl in sp.get("slots", [])] for sp in spaces["spots"]}
+moved = []
+for p in places:
+    want = spot_xy.get(p["id"])
+    if want is None:
+        continue
+    got = [tuple(sl["pos"][:2]) for sl in p.get("slots", [])]
+    if len(got) != len(want) or any(math.hypot(a[0] - b[0], a[1] - b[1]) > 0.01 for a, b in zip(got, want)):
+        moved.append(p["id"])
+check(not moved, "the town's places keep their public spots' seat slots (%d differ)" % len(moved), *moved)
 
 print("all ok" if not fails else "%d FAILED" % fails)
 sys.exit(1 if fails else 0)

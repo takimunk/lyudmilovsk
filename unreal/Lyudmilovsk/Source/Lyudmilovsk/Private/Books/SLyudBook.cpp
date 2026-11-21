@@ -4,6 +4,7 @@
 #include "Brushes/SlateRoundedBoxBrush.h"
 #include "Fonts/FontMeasure.h"
 #include "Framework/Application/SlateApplication.h"
+#include "Books/LyudReading.h"
 #include "LyudText.h"
 #include "Misc/FileHelper.h"
 #include "Rendering/DrawElements.h"
@@ -59,8 +60,9 @@ namespace LyudBookDraw
 	TSharedPtr<const FWidths, ESPMode::ThreadSafe> MeasureFont(const FSlateFontInfo& Font)
 	{
 		// one table per face and size for the whole run (the reader opens many books at a few sizes)
-		static TMap<FString, TSharedPtr<const FWidths, ESPMode::ThreadSafe>> Cache;
-		const FString Key = FString::Printf(TEXT("%s/%d"), *Font.TypefaceFontName.ToString(), (int32)Font.Size);
+		// (keyed without a string: this is asked for every page drawn, every frame)
+		static TMap<TPair<FName, int32>, TSharedPtr<const FWidths, ESPMode::ThreadSafe>> Cache;
+		const TPair<FName, int32> Key(Font.TypefaceFontName, (int32)Font.Size);
 		if (const TSharedPtr<const FWidths, ESPMode::ThreadSafe>* Hit = Cache.Find(Key))
 		{
 			return *Hit;
@@ -105,7 +107,8 @@ void SLyudBookReader::Construct(const FArguments& InArgs)
 	SetCanTick(true);
 	LoadingText = LyudText::Get(TEXT("ui.books.loading")).ToString();
 	MissingText = LyudText::Get(TEXT("ui.books.missing")).ToString();
-	KeysText = LyudText::Get(TEXT("ui.books.keys")).ToString();
+	KeysText = LyudText::Get(TEXT("reading.keys")).ToString();
+	QuoteKeysText = LyudText::Get(TEXT("reading.quote.keys")).ToString();
 	ContentsTitle = LyudText::Get(TEXT("ui.books.contents")).ToString();
 	CreditsEnd = LyudText::Get(TEXT("ui.books.the_end")).ToString();
 	CreditsLicense = LyudText::Get(TEXT("ui.books.credit.license"), { FStringFormatArg(Book.License) }).ToString();
@@ -162,6 +165,7 @@ int32 SLyudBookReader::Turn(int32 Spreads)
 	const int32 Per = PagesPerSpread();
 	const int32 LastStart = FMath::Max(0, ((NumPages() - 1) / Per) * Per);
 	const int32 Was = PageIndex;
+	bQuote = false;
 	PageIndex = FMath::Clamp(PageIndex + Spreads * Per, 0, LastStart);
 	if (PageIndex <= Was)
 	{
@@ -175,8 +179,71 @@ int32 SLyudBookReader::Turn(int32 Spreads)
 	return Chars;
 }
 
+bool SLyudBookReader::EnterQuote()
+{
+	if (!Layout.IsValid() || !U16.IsValid() || bContents || Layout->Pages.empty() || PageIndex >= (int32)Layout->Pages.size())
+	{
+		return false;
+	}
+	const int32 Last = FMath::Min(PageIndex + PagesPerSpread(), (int32)Layout->Pages.size()) - 1;
+	QuoteSpans = LyudReading::SentencesIn(*U16, Layout->Pages[(size_t)PageIndex].Start, Layout->Pages[(size_t)Last].End);
+	QuoteIx = 0;
+	bQuote = !QuoteSpans.empty();
+	return bQuote;
+}
+
+void SLyudBookReader::QuoteStep(int32 By)
+{
+	if (bQuote && !QuoteSpans.empty())
+	{
+		QuoteIx = FMath::Clamp(QuoteIx + By, 0, (int32)QuoteSpans.size() - 1);
+	}
+}
+
+bool SLyudBookReader::ChosenQuote(FString& OutText, int32& OutOffset) const
+{
+	if (!bQuote || !U16.IsValid() || (QuoteIx < 0 || QuoteIx >= (int32)QuoteSpans.size()))
+	{
+		return false;
+	}
+	const LyudReading::FSpan Sp = QuoteSpans[(size_t)QuoteIx];
+	const std::u16string Clean = LyudReading::QuoteText(*U16, Sp);
+	OutText = FString((int32)Clean.size(), (const TCHAR*)Clean.data());
+	OutOffset = Sp.Start;
+	return !OutText.IsEmpty();
+}
+
+void SLyudBookReader::PaintQuote(int32 Page, const FGeometry& G, FVector2f PageOrigin, FSlateWindowElementList& Out, int32 Layer) const
+{
+	using namespace LyudBookDraw;
+	if (!bQuote || (QuoteIx < 0 || QuoteIx >= (int32)QuoteSpans.size()) || Page >= (int32)Layout->Pages.size())
+	{
+		return;
+	}
+	const LyudReading::FSpan Sp = QuoteSpans[(size_t)QuoteIx];
+	const int32 A = Sp.Start, B = Sp.Start + Sp.Len;
+	const LyudBooks::FPage& Pg = Layout->Pages[(size_t)Page];
+	const float Indent = MeasureFont(BodyFont)->Em * 1.4f;
+	const FVector2f TextOrigin = PageOrigin + Spread.TextOffset;
+	static const FLinearColor Marker(1.f, 0.86f, 0.25f, 0.45f);
+	for (int32 K = 0; K < Pg.NumLines; ++K)
+	{
+		const LyudBooks::FLine& Ln = Layout->Lines[(size_t)(Pg.FirstLine + K)];
+		const int32 S = FMath::Max(A, Ln.Start), E = FMath::Min(B, Ln.Start + Ln.Len);
+		if (E <= S || Ln.Kind == LyudBooks::ELineKind::Heading)
+		{
+			continue;
+		}
+		const float X0 = (Ln.Kind == LyudBooks::ELineKind::First ? Indent : 0.f) + LineWidth(Ln.Start, S - Ln.Start, false);
+		const float W = LineWidth(S, E - S, false);
+		FSlateDrawElement::MakeBox(Out, Layer, G.ToPaintGeometry(FVector2f(W + 4.f, Spread.LineH * 0.92f),
+			FSlateLayoutTransform(TextOrigin + FVector2f(X0 - 2.f, Ln.Row * Spread.LineH + Spread.LineH * 0.04f))), White(), ESlateDrawEffect::None, Marker);
+	}
+}
+
 void SLyudBookReader::GoToOffset(int32 InOffset)
 {
+	bQuote = false;
 	WantOffset = InOffset;
 	if (Layout.IsValid())
 	{
@@ -306,6 +373,7 @@ void SLyudBookReader::Tick(const FGeometry& AllottedGeometry, const double InCur
 		}
 		bLayingOut = false;
 		Layout = LayoutTask.GetResult();
+		FolioFor = -2;  // the running heads and folios come from the new layout
 		ComputeSpread();
 		const int32 Per = PagesPerSpread();
 		PageIndex = (Layout->PageOf(WantOffset) / Per) * Per;
@@ -494,6 +562,7 @@ int32 SLyudBookReader::OnPaint(const FPaintArgs& Args, const FGeometry& G, const
 	{
 		const int32 P = PageIndex + K;
 		const FVector2f O = Spread.Origin + FVector2f(K * Spread.PageSize.X, 0.f);
+		PaintQuote(P, G, O, Out, TextLayer - 1);
 		PaintPage(P, G, O, Out, TextLayer, K == 0);
 		if (P < NumPages())
 		{
@@ -513,9 +582,15 @@ int32 SLyudBookReader::OnPaint(const FPaintArgs& Args, const FGeometry& G, const
 	{
 		PaintContents(G, Out, TextLayer + 1);
 	}
-	FSlateDrawElement::MakeText(Out, TextLayer, G.ToPaintGeometry(FVector2f(Size.X, 30.f), FSlateLayoutTransform(FVector2f(Spread.Origin.X,
-		Spread.Origin.Y + Spread.PageSize.Y + 12.f))), KeysText, SmallFont, ESlateDrawEffect::None, Hint);
-	return TextLayer + 2;
+	if (Bright < 0.99f)
+	{
+		// the dusk outdoors: the spread in a shade (ULyudReading::CanReadHere's brightness)
+		FSlateDrawElement::MakeBox(Out, TextLayer + 2, G.ToPaintGeometry(FVector2f(Spread.PageSize.X * Per, Spread.PageSize.Y), FSlateLayoutTransform(Spread.Origin)),
+			White(), ESlateDrawEffect::None, FLinearColor(0.02f, 0.03f, 0.08f, (1.f - Bright) * 0.85f));
+	}
+	FSlateDrawElement::MakeText(Out, TextLayer + 3, G.ToPaintGeometry(FVector2f(Size.X, 30.f), FSlateLayoutTransform(FVector2f(Spread.Origin.X,
+		Spread.Origin.Y + Spread.PageSize.Y + 12.f))), bQuote ? QuoteKeysText : KeysText, SmallFont, ESlateDrawEffect::None, Hint);
+	return TextLayer + 4;
 }
 
 FReply SLyudBookReader::OnMouseButtonDown(const FGeometry& MyGeometry, const FPointerEvent& MouseEvent)
@@ -538,6 +613,10 @@ FReply SLyudBookReader::OnMouseButtonDown(const FGeometry& MyGeometry, const FPo
 		}
 		bContents = false;
 		return FReply::Handled();
+	}
+	if (bQuote)
+	{
+		return FReply::Handled();   // choosing a sentence: W/S, E, C (a click doesn't turn the page under it)
 	}
 	const float Mid = Spread.Origin.X + (Spread.bTwo ? Spread.PageSize.X : Spread.PageSize.X * 0.5f);
 	AskedTurns += P.X >= Mid ? 1 : -1;
@@ -566,6 +645,10 @@ void SLyudBookCatalog::Construct(const FArguments& InArgs)
 	OnRead = InArgs._OnRead;
 	OnClose = InArgs._OnClose;
 	LangFilter = bAtDesk ? LyudText::Language() : FString();
+	if (const ULyudReading* Reading = bAtDesk && Books.IsValid() ? ULyudReading::Get(Books.Get()) : nullptr)
+	{
+		Note = Reading->Advice();
+	}
 	const FSlateFontInfo Big = LyudUI::Font(22, "Bold");
 	const FSlateFontInfo Normal = LyudUI::Font(15);
 	TWeakPtr<SLyudBookCatalog> WeakSelf = SharedThis(this);
@@ -623,6 +706,12 @@ void SLyudBookCatalog::Construct(const FArguments& InArgs)
 					[
 						SAssignNew(Status, STextBlock).Font(LyudUI::Font(13)).ColorAndOpacity(LyudUI::Dim)
 						.Text_Lambda([WeakSelf] { TSharedPtr<SLyudBookCatalog> S = WeakSelf.Pin(); return S ? S->StatusText() : FText::GetEmpty(); })
+					]
+					+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 10)
+					[
+						SNew(STextBlock).Font(LyudUI::Font(14)).ColorAndOpacity(LyudUI::Good).AutoWrapText(true)
+						.Text_Lambda([WeakSelf] { TSharedPtr<SLyudBookCatalog> S = WeakSelf.Pin(); return S ? S->Note : FText::GetEmpty(); })
+						.Visibility_Lambda([WeakSelf] { TSharedPtr<SLyudBookCatalog> S = WeakSelf.Pin(); return S && !S->Note.IsEmpty() ? EVisibility::Visible : EVisibility::Collapsed; })
 					]
 					+ SVerticalBox::Slot().AutoHeight().Padding(0, 0, 0, 12)[Langs]
 					+ SVerticalBox::Slot().FillHeight(1.f)
@@ -765,7 +854,19 @@ TSharedRef<ITableRow> SLyudBookCatalog::MakeRow(TSharedPtr<FString> Key, const T
 			}, true)];
 		}
 	}
-	else
+	if (bAtDesk && B->IsFinished(BookKey))
+	{
+		// a book he read to its end: the closest friend borrows it on his word (ULyudReading::Recommend)
+		Actions->AddSlot().AutoWidth().Padding(4, 0)[ActionButton(TEXT("reading.desk.recommend"), [WeakSelf, Work = Bk->Work]
+		{
+			TSharedPtr<SLyudBookCatalog> S = WeakSelf.Pin();
+			if (ULyudReading* Reading = S && S->Books.IsValid() ? ULyudReading::Get(S->Books.Get()) : nullptr)
+			{
+				S->Note = Reading->Recommend(Work);
+			}
+		}, true)];
+	}
+	if (!bMine)
 	{
 		Actions->AddSlot().AutoWidth().Padding(4, 0)[ActionButton(TEXT("ui.books.take"), [WeakSelf, BookKey]
 		{
@@ -806,8 +907,9 @@ TSharedRef<ITableRow> SLyudBookCatalog::MakeRow(TSharedPtr<FString> Key, const T
 			]
 			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(8, 0)
 			[
-				SNew(STextBlock).Font(LyudUI::Font(12)).ColorAndOpacity(LyudUI::Good)
-				.Text(B->IsFinished(BookKey) ? LyudText::Get(TEXT("ui.books.finished")) : FText::GetEmpty())
+				SNew(STextBlock).Font(LyudUI::Font(12)).ColorAndOpacity(bMine && LyudReading::IsOverdue(B->BorrowedOn(BookKey), B->Today()) ? LyudUI::Bad : LyudUI::Good)
+				.Text(bMine && LyudReading::IsOverdue(B->BorrowedOn(BookKey), B->Today()) ? LyudText::Get(TEXT("reading.desk.overdue"))
+					: B->IsFinished(BookKey) ? LyudText::Get(TEXT("ui.books.finished")) : FText::GetEmpty())
 			]
 			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center)[Actions]
 		]

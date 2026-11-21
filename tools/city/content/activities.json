@@ -1,7 +1,7 @@
 {
  "_doc": "Things to do: machines, games, sport, crafts, screens, services. A thing gets one of these by `what` (any kind: '*:what=piano'); the act id is the what word, so quests wait for `do <what>`. Prompt city.do.<what>.prompt, results city.do.<what>.<n>.",
  "acts": {
-  "piano": {"prompt": "city.do.piano.prompt", "lines": "city.do.piano", "minutes": 15, "pose": "sit", "sound": "piano_chord"},
+  "piano": {"prompt": "city.do.piano.prompt", "lines": "city.do.piano", "minutes": 15, "pose": "sit", "sound": "piano_chord", "open": "piano"},
   "chess": {"prompt": "city.do.chess.prompt", "lines": "city.do.chess", "minutes": 40, "pose": "sit", "sound": "chess_piece", "game": {"type": "duel", "vs": "chess", "title": "city.game.chess.title", "moves": [{"k": "city.game.chess.move.1", "power": 2, "tell": "city.game.chess.tell.1"}, {"k": "city.game.chess.move.2", "power": 1, "tell": "city.game.chess.tell.2"}, {"k": "city.game.chess.move.3", "power": 2, "tell": "city.game.chess.tell.3"}], "win": "city.game.chess.win", "lose": "city.game.chess.lose", "draw": "city.game.chess.draw", "collect": "chess_wins/{opponent}", "daily": 3}},
   "table_tennis": {"prompt": "city.do.table_tennis.prompt", "lines": "city.do.table_tennis", "minutes": 20, "sound": "pingpong_ball", "game": {"type": "rally", "vs": "table_tennis", "title": "city.game.table_tennis.title", "need": 3, "speed": 0.9, "zone": 0.5, "shrink": 0.88, "pace": 1.05, "win": "city.game.table_tennis.win", "lose": "city.game.table_tennis.lose", "draw": "city.game.table_tennis.draw"}},
   "billiards": {"prompt": "city.do.billiards.prompt", "lines": "city.do.billiards", "minutes": 30, "sound": "billiard_click", "game": {"type": "aim", "vs": "billiards", "title": "city.game.billiards.title", "keys": "city.game.keys.cue", "rounds": 3, "speed": 0.5, "zone": 0.16, "win": "city.game.billiards.win", "lose": "city.game.billiards.lose", "draw": "city.game.billiards.draw"}},
@@ -40,7 +40,7 @@
   "potters_wheel": {"prompt": "city.do.potters_wheel.prompt", "lines": "city.do.potters_wheel", "minutes": 40, "pose": "sit", "sound": "wheel_hum"},
   "workbench": {"prompt": "city.do.workbench.prompt", "lines": "city.do.workbench", "minutes": 30, "sound": "plane_wood"},
   "sewing_machine": {"prompt": "city.do.sewing_machine.prompt", "lines": "city.do.sewing_machine", "minutes": 30, "pose": "sit", "sound": "sewing_rattle"},
-  "darkroom": {"prompt": "city.do.darkroom.prompt", "lines": "city.do.darkroom", "minutes": 30},
+  "darkroom": {"prompt": "city.do.darkroom.prompt", "lines": "city.do.darkroom", "minutes": 30, "open": "photo_darkroom"},
   "school_desk": {"prompt": "city.do.school_desk.prompt", "lines": "city.do.school_desk", "minutes": 45, "pose": "sit", "fade": true, "needs_staff": "teacher", "sound": "school_bell"},
   "blackboard": {"prompt": "city.do.blackboard.prompt", "lines": "city.do.blackboard", "minutes": 5, "sound": "chalk"},
 

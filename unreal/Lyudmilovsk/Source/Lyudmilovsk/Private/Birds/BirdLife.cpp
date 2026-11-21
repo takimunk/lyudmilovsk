@@ -3,6 +3,9 @@
 #include "World/LyudPrefetch.h"
 
 #include "BirdSim.h"
+#include "BirdHabit.h"
+#include "Birds/BirdBook.h"
+#include "UI/LyudGameScreen.h"
 #include "BirdMurmur.h"
 #include "BirdNest.h"
 #include "Birds/BirdNests.h"
@@ -34,6 +37,8 @@
 #include "Plants/ProceduralForest.h"
 #include "Plants/ProceduralPlant.h"
 #include "Sky/Ephemeris.h"
+#include "Dev/LyudDev.h"
+#include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
@@ -67,6 +72,8 @@ static TAutoConsoleVariable<int32> CVarBirdsNests(TEXT("lyud.Birds.Nests"), 1,
 	TEXT("The breeding year (docs/bird_nests.md): nests, eggs, chicks, fledglings; 0 = none (switching it restarts the bird life; A/B)."));
 static TAutoConsoleVariable<int32> CVarBirdsCorvids(TEXT("lyud.Birds.Corvids"), 1,
 	TEXT("The crow family's minds and items (docs/corvids.md): 0 = they live like the other birds and their items go (switches while running; tools/bench_systems.sh nocorvids)."));
+static TAutoConsoleVariable<int32> CVarBirdsHabits(TEXT("lyud.Birds.Habits"), 1,
+	TEXT("The species' signature behaviours near the hero (docs/bird_habits.md): 0 = none (switching it restarts the bird life; A/B)."));
 static TAutoConsoleVariable<int32> CVarBirdsSteady(TEXT("lyud.Birds.Steady"), 1,
 	TEXT("1: birds fade out at the edge of their draw range and bodies hand over with some slack; 0: the old hard cuts (A/B of popping)."));
 
@@ -124,6 +131,18 @@ namespace
 	/** The body's animation state for what a bird does. */
 	EBirdState BodyState(const FBird& B, const FSpecies& S)
 	{
+		// in a habit of its species: the clip the habit names, until it has one of its own (docs/bird_habits.md)
+		if (B.Habit != 0 && !IsAirborne(B.Act) && B.Act != EAct::Forage)
+		{
+			const char* Clip = LyudBirds::HabitDef((LyudBirds::EHabit)B.Habit).Clip;
+			const auto Is = [Clip](const char* Name) { return FCStringAnsi::Strcmp(Clip, Name) == 0; };
+			if (Is("Preen") || Is("WingsOut")) return EBirdState::Preen;
+			if (Is("Peck")) return EBirdState::Peck;
+			if (Is("Look")) return EBirdState::Look;
+			if (Is("Call")) return EBirdState::Perch;
+			if (Is("Walk")) return EBirdState::Walk;
+			if (Is("Hop")) return EBirdState::Hop;
+		}
 		switch (B.Act)
 		{
 		case EAct::Sleep: return EBirdState::Sleep;
@@ -202,6 +221,7 @@ bool UBirdLifeSubsystem::Start()
 	S.Opt.Seed = 20261024u;
 	S.Opt.bNests = CVarBirdsNests.GetValueOnGameThread() != 0;
 	S.Opt.bCorvids = CVarBirdsCorvids.GetValueOnGameThread() != 0;
+	S.Opt.bHabits = CVarBirdsHabits.GetValueOnGameThread() != 0;
 
 	FillSpeciesFromTable();
 	S.Opt.bMigration = CVarBirdsMigration.GetValueOnGameThread() != 0;
@@ -726,7 +746,7 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	}
 	FWorld& S = *Sim;
 	// lyud.Birds.Nests switched while running (the benchmark's passes): start over with or without them
-	if ((CVarBirdsNests.GetValueOnGameThread() != 0) != S.Opt.bNests)
+	if ((CVarBirdsNests.GetValueOnGameThread() != 0) != S.Opt.bNests || (CVarBirdsHabits.GetValueOnGameThread() != 0) != S.Opt.bHabits)
 	{
 		Stop();
 		bWantStart = true;
@@ -754,6 +774,18 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 		S.Wind = LyudBirds::V3((float)W.X, (float)W.Y, 0.f);
 		S.Gustiness = Wind->GetGustiness();
 	}
+	// the rain and the air's temperature (birds sing little in rain and in the midday heat); it changes slowly
+	WeatherTimer -= DeltaTime;
+	if (WeatherTimer <= 0.f)
+	{
+		WeatherTimer = 5.f;
+		if (const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(this))
+		{
+			const FLyudWeatherState State = Weather->GetState();
+			S.Rain = State.PrecipRate;   // mm/h of falling water, snow included (BirdSim.h: Rain)
+			S.TempC = State.TempC;
+		}
+	}
 	MigrationTimer -= DeltaTime;
 	if (MigrationTimer <= 0.f)
 	{
@@ -762,6 +794,7 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	}
 	S.Step(DeltaTime);
 	DispatchEvents();
+	WatchHabits(DeltaTime);
 	if (Renderer)
 	{
 		Renderer->Draw(S, ToUE(S.Camera), 1.f);
@@ -806,7 +839,7 @@ void UBirdLifeSubsystem::DispatchEvents()
 		case EEvent::Watch: OnBirdWatch.Broadcast(E.Bird); break;
 		case EEvent::Call:
 		case EEvent::Song:
-			PlayCall(E.Bird);
+			PlayCall(E.Bird, (uint8)E.Voice);
 			if (ABirdActor* Body = Renderer ? Cast<ABirdActor>(Renderer->BodyOf(E.Bird)) : nullptr)
 			{
 				if (!IsAirborne(S.Birds[E.Bird].Act))
@@ -815,6 +848,14 @@ void UBirdLifeSubsystem::DispatchEvents()
 				}
 			}
 			OnBirdCall.Broadcast(E.Bird);
+			{
+				const FName VoiceId(LyudBirds::VoiceName(E.Voice));
+				if (const FBirdSpecies* Sp = Row(S.Birds[E.Bird].Species))
+				{
+					LastVoice.Add(Sp->Id, TPair<FName, double>(VoiceId, GetWorld()->GetTimeSeconds()));
+				}
+				OnBirdVoice.Broadcast(E.Bird, VoiceId);
+			}
 			break;
 		case EEvent::Approach:
 			// not before its species is loaded in the background (Draw makes it then): made now it would load on the spot
@@ -843,10 +884,257 @@ void UBirdLifeSubsystem::DispatchEvents()
 			OnNestEvent.Broadcast(E.Nest, FName(NestEventName(E.Kind)));
 		}
 	}
+	// the species' habits: who listens gets the start, the beats and the end; a habit with a voice sounds on its beats
+	if (LyudBirds::FHabits* H = S.Habits())
+	{
+		static const FName Whats[] = { TEXT("start"), TEXT("beat"), TEXT("end") };
+		const std::vector<LyudBirds::FHabitEvent> HabitEvents = H->Events;
+		for (const LyudBirds::FHabitEvent& E : HabitEvents)
+		{
+			if (E.Bird < 0 || E.Bird >= (int32)S.Birds.size())
+			{
+				continue;
+			}
+			if (E.Kind == LyudBirds::EHabitEvent::Beat)
+			{
+				if (E.Habit == LyudBirds::EHabit::GullSnatch)
+				{
+					LastSnatchedMorsel = E.Arg;
+				}
+				if (FCStringAnsi::Strcmp(LyudBirds::HabitDef(E.Habit).Clip, "Call") == 0)
+				{
+					PlayCall(E.Bird, (uint8)(E.Habit == LyudBirds::EHabit::StarlingMimic ? EVoice::Chatter : EVoice::Contact));
+					if (ABirdActor* Body = Renderer ? Cast<ABirdActor>(Renderer->BodyOf(E.Bird)) : nullptr)
+					{
+						Body->PlayCall();
+					}
+				}
+			}
+			else if (E.Kind == LyudBirds::EHabitEvent::End)
+			{
+				HabitWatch.Remove(E.Bird);
+			}
+			OnBirdHabit.Broadcast(E.Bird, FName(LyudBirds::HabitName(E.Habit)), Whats[(int32)E.Kind]);
+		}
+		H->Events.clear();
+	}
 }
 
+FName UBirdLifeSubsystem::HabitOf(int32 Id) const
+{
+	if (!Sim || Id < 0 || Id >= (int32)Sim->Birds.size() || Sim->Birds[Id].Habit == 0)
+	{
+		return NAME_None;
+	}
+	return FName(LyudBirds::HabitName((LyudBirds::EHabit)Sim->Birds[Id].Habit));
+}
+
+void UBirdLifeSubsystem::SetHabitWaters(const TArray<FVector>& Waters)
+{
+	if (LyudBirds::FHabits* H = Sim ? Sim->Habits() : nullptr)
+	{
+		H->Waters.clear();
+		for (const FVector& P : Waters)
+		{
+			H->Waters.push_back(FromUE(P));
+		}
+	}
+}
+
+void UBirdLifeSubsystem::AddMorsel(int32 MorselId, FVector Location, bool bFish)
+{
+	if (LyudBirds::FHabits* H = Sim ? Sim->Habits() : nullptr)
+	{
+		for (LyudBirds::FMorsel& M : H->Morsels)
+		{
+			if (M.Id == MorselId)
+			{
+				M.Pos = FromUE(Location);
+				return;
+			}
+		}
+		if (H->Morsels.size() < 32)
+		{
+			H->Morsels.push_back(LyudBirds::FMorsel{ MorselId, FromUE(Location), (uint8)(bFish ? 1 : 0) });
+		}
+	}
+}
+
+void UBirdLifeSubsystem::ClearMorsels()
+{
+	if (LyudBirds::FHabits* H = Sim ? Sim->Habits() : nullptr)
+	{
+		H->Morsels.clear();
+	}
+}
+
+void UBirdLifeSubsystem::WatchHabits(float DeltaTime)
+{
+	HabitWatchTimer -= DeltaTime;
+	LyudBirds::FHabits* H = Sim ? Sim->Habits() : nullptr;
+	if (!H || HabitWatchTimer > 0.f)
+	{
+		return;
+	}
+	const float Every = 0.25f;
+	HabitWatchTimer = Every;
+	if (H->Active.empty())
+	{
+		HabitWatch.Reset();
+		return;
+	}
+	const APlayerController* PC = GetWorld()->GetFirstPlayerController();
+	ULyudBirdBook* Book = ULyudBirdBook::Get(this);
+	if (!PC || !PC->PlayerCameraManager || !Book || Sim->Player.bClaimedBird)
+	{
+		return;
+	}
+	const ULyudGameScreen* Screen = ULyudGameScreen::Get(this);
+	const bool bGlass = Screen && Screen->BinocularsAmount() > 0.6f;
+	const FVector Eye = PC->PlayerCameraManager->GetCameraLocation();
+	const FVector Fwd = PC->PlayerCameraManager->GetCameraRotation().Vector();
+	const FWorld& S = *Sim;
+	for (const LyudBirds::FHabitRun& R : H->Active)
+	{
+		if (R.Bird < 0 || R.Bird >= (int32)S.Birds.size())
+		{
+			continue;
+		}
+		const FBird& B = S.Birds[R.Bird];
+		const FBirdSpecies* Sp = Row(B.Species);
+		const FName Habit(LyudBirds::HabitName(R.Habit));
+		if (!Sp || Book->FindHabit(Habit))
+		{
+			continue;
+		}
+		// in view: with the naked eye a few steps off (farther for a big bird), through the binoculars across the square
+		const FVector At = ToUE(S.RenderPos(B));
+		const FVector To = At - Eye;
+		const float Dist = To.Size();
+		const float Far = bGlass ? 25000.f : 1200.f + 5000.f * SpeciesTable()[B.Species].Length;
+		const float Cos = FMath::Cos(FMath::DegreesToRadians(bGlass ? 4.f : 22.f));
+		if (Dist < 50.f || Dist > Far || FVector::DotProduct(To / Dist, Fwd) < Cos)
+		{
+			continue;
+		}
+		float& Watched = HabitWatch.FindOrAdd(R.Bird);
+		Watched += Every;
+		if (Watched < 1.f)
+		{
+			continue;
+		}
+		FHitResult Hit;
+		FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdHabitWatch), false, PC->GetPawn());
+		if (AActor* Body = Renderer ? Renderer->BodyOf(R.Bird) : nullptr)
+		{
+			Q.AddIgnoredActor(Body);
+		}
+		if (!GetWorld()->LineTraceSingleByChannel(Hit, Eye, At + FVector(0.f, 0.f, 5.f), ECC_Visibility, Q))
+		{
+			Book->NoteHabit(this, Sp->Id, Habit, At);
+		}
+		Watched = 0.f;
+	}
+}
+
+bool UBirdLifeSubsystem::DevHabit(FName Habit)
+{
+	LyudBirds::FHabits* H = Sim ? Sim->Habits() : nullptr;
+	if (!H)
+	{
+		return false;
+	}
+	FWorld& S = *Sim;
+	const LyudBirds::EHabit Want = Habit.IsNone() ? LyudBirds::EHabit::None : LyudBirds::FindHabit(TCHAR_TO_UTF8(*Habit.ToString()));
+	if (!Habit.IsNone() && Want == LyudBirds::EHabit::None)
+	{
+		return false;
+	}
+	// the nearest first
+	TArray<int32> Near;
+	for (const FBird& B : S.Birds)
+	{
+		if (!B.bGone && B.Tier <= 1 && B.Habit == 0 && B.Act != EAct::Claimed && B.Act != EAct::Sleep && (B.Pos - S.Camera).Len() < 80.f)
+		{
+			Near.Add(B.Id);
+		}
+	}
+	Near.Sort([&S](int32 L, int32 R) { return (S.Birds[L].Pos - S.Camera).Len() < (S.Birds[R].Pos - S.Camera).Len(); });
+	for (const int32 Id : Near)
+	{
+		FBird& B = S.Birds[Id];
+		for (const int Di : LyudBirds::HabitsOf(B.Species))
+		{
+			const LyudBirds::FHabitDef& D = LyudBirds::HabitTable()[Di];
+			if ((Want == LyudBirds::EHabit::None ? D.From == LyudBirds::EHabitFrom::Dice : D.Id == Want) && H->Start(S, B, D.Id, true))
+			{
+				UE_LOG(LogTemp, Display, TEXT("Birds: bird %d starts %s, %.0f m off"), Id, UTF8_TO_TCHAR(D.Name), (B.Pos - S.Camera).Len());
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+static FAutoConsoleCommandWithWorldAndArgs GBirdHabitCmd(TEXT("lyud.Birds.Habit"), TEXT("lyud.Birds.Habit [name]: the nearest bird that can starts a habit of its species (docs/bird_habits.md)."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* W)
+	{
+		if (UBirdLifeSubsystem* L = UBirdLifeSubsystem::Get(W))
+		{
+			const bool bOk = L->DevHabit(Args.Num() ? FName(*Args[0]) : NAME_None);
+			UE_LOG(LogTemp, Display, TEXT("lyud.Birds.Habit: %s"), bOk ? TEXT("started") : TEXT("no bird near can do it here"));
+		}
+	}));
+static LyudDev::FAutoAction GDevBirdHabit(TEXT("birdhabits.show"), TEXT("birdhabits"), TEXT("dev.action.birdhabits.show"),
+	[](UWorld* W) { if (UBirdLifeSubsystem* L = UBirdLifeSubsystem::Get(W)) { L->DevHabit(); } });
+
 /** The species' call at the bird, when the species thread has sounds for it (not too many at once). */
-void UBirdLifeSubsystem::PlayCall(int32 Id)
+bool UBirdLifeSubsystem::LastVoiceOf(FName Species, FName& OutVoice, float MaxAge) const
+{
+	const TPair<FName, double>* Found = LastVoice.Find(Species);
+	if (!Found || !GetWorld() || GetWorld()->GetTimeSeconds() - Found->Value > MaxAge)
+	{
+		return false;
+	}
+	OutVoice = Found->Key;
+	return true;
+}
+
+bool UBirdLifeSubsystem::DevAlarm()
+{
+	if (!Sim)
+	{
+		return false;
+	}
+	FWorld& S = *Sim;
+	int32 Best = -1;
+	float BestDist = 60.f;
+	for (const FBird& B : S.Birds)
+	{
+		const float Dist = (B.Pos - S.Camera).Len();
+		if (!B.bGone && B.Tier <= 1 && !IsAirborne(B.Act) && B.Act != EAct::Sleep && LyudBirds::VoiceTraits(B.Species).bScolds && Dist < BestDist)
+		{
+			Best = B.Id;
+			BestDist = Dist;
+		}
+	}
+	if (Best < 0)
+	{
+		return false;
+	}
+	FBird& B = S.Birds[Best];
+	S.RaiseAlarm(B, LyudBirds::V3(B.Pos.X, B.Pos.Y, S.GroundZ(B.Pos.X, B.Pos.Y)));
+	B.AlarmT = 12.f;
+	UE_LOG(LogTemp, Display, TEXT("BIRD voices: alarm raised by bird %d, %.0f m from the camera"), Best, BestDist);
+	return true;
+}
+
+static FAutoConsoleCommandWithWorldAndArgs GBirdAlarmCmd(TEXT("lyud.Birds.Alarm"), TEXT("The nearest scolding bird gives the alarm; its neighbours take it up."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* W) { if (UBirdLifeSubsystem* L = UBirdLifeSubsystem::Get(W)) { L->DevAlarm(); } }));
+static LyudDev::FAutoAction GDevBirdAlarm(TEXT("birdvoices.alarm"), TEXT("birdvoices"), TEXT("dev.action.birdvoices.alarm"),
+	[](UWorld* W) { if (UBirdLifeSubsystem* L = UBirdLifeSubsystem::Get(W)) { L->DevAlarm(); } });
+
+void UBirdLifeSubsystem::PlayCall(int32 Id, uint8 Voice)
 {
 	const FWorld& S = *Sim;
 	const FBird& B = S.Birds[Id];
@@ -860,7 +1148,8 @@ void UBirdLifeSubsystem::PlayCall(int32 Id)
 		SoundSecond = Now;
 		SoundsThisSecond = 0;
 	}
-	if (SoundsThisSecond >= 4)
+	// (the model keeps the voice budget, FWorld::MaxVoices; this is only a guard against a burst)
+	if (SoundsThisSecond >= 8)
 	{
 		return;
 	}
@@ -906,9 +1195,27 @@ void UBirdLifeSubsystem::PlayCall(int32 Id)
 		A.LPFRadiusMin = 1000.f;
 		A.LPFRadiusMax = 7000.f;
 	}
-	USoundBase* Sound = (*Found)[FMath::RandRange(0, Found->Num() - 1)];
-	const float Loud = SpeciesTable()[B.Species].Length > 0.3f ? 1.f : 0.75f;
-	UGameplayStatics::PlaySoundAtLocation(this, Sound, ToUE(B.Pos), Loud, FMath::FRandRange(0.94f, 1.06f), 0.f, Attenuation);
+	// the voice's own call when the species has one for it (species.json "voices"), else any of its calls
+	const LyudBirds::EVoice What = (LyudBirds::EVoice)FMath::Min<uint8>(Voice, (uint8)LyudBirds::EVoice::Num - 1);
+	USoundBase* Sound = nullptr;
+	if (const FName* Call = R->Voices.Find(FName(LyudBirds::VoiceName(What))))
+	{
+		Sound = CallSound(R->Id, *Call);
+	}
+	if (!Sound)
+	{
+		Sound = (*Found)[FMath::RandRange(0, Found->Num() - 1)];
+	}
+	float Loud = SpeciesTable()[B.Species].Length > 0.3f ? 1.f : 0.75f;
+	float PitchLo = 0.94f, PitchHi = 1.06f;
+	switch (What)
+	{
+	case LyudBirds::EVoice::Alarm: Loud *= 1.15f; PitchLo = 1.02f; PitchHi = 1.12f; break;    // sharper, more urgent
+	case LyudBirds::EVoice::Beg: Loud *= 0.6f; PitchLo = 1.25f; PitchHi = 1.4f; break;        // thin young voices
+	case LyudBirds::EVoice::Chatter: Loud *= 0.7f; PitchLo = 0.9f; PitchHi = 1.15f; break;    // a jumble
+	default: break;
+	}
+	UGameplayStatics::PlaySoundAtLocation(this, Sound, ToUE(B.Pos), Loud, FMath::FRandRange(PitchLo, PitchHi), 0.f, Attenuation);
 	SoundsThisSecond++;
 	CallsPlayed++;
 }
@@ -1808,7 +2115,7 @@ void ABirdLifeRenderer::DriveBody(AActor* Body, const FWorld& World, int32 Id)
 	{
 		Pitch = FMath::RadiansToDegrees(FMath::Atan2(B.Vel.Z, FMath::Max(B.Vel.Len2D(), 0.1f))) * 0.6f;
 	}
-	Bird->SetActorLocationAndRotation(ToUE(World.RenderPos(B)), FRotator(Pitch, FMath::RadiansToDegrees(B.Yaw), 0.f));
+	Bird->Place(ToUE(World.RenderPos(B)), FMath::RadiansToDegrees(B.Yaw), Pitch, IsAirborne(B.Act));
 	// a new state (or a new peck) only when the bird starts it: the body plays its own clips in between
 	float& Started = BodyActs.FindOrAdd(Id);
 	const float Key = (float)(uint8)B.Act * 1000.f + B.ActLen;

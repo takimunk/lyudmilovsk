@@ -22,7 +22,9 @@ Material requests: none (CT_Tile, CT_TileWhite, CT_Cobogo, CT_Louvre cover it).
 import math
 import random
 
+import dress_kit as dk
 import furn_int3 as fu
+import _homekit as hk
 import interior_kit as kit
 import geom
 from citykit import box, prism, DOOR_W, DOOR_H
@@ -361,6 +363,8 @@ def build(B):
     hface(m, "CT_Floor", [W2(0, 0), W2(LC, 0), W2(ubr, VB), W2(ubl, VB)], 0.01, True)
     # lobby furniture: letter boxes on the west wall, mat, bench, plant, lamps
     fu.mailboxes(B, fu.Fr(W(0.5, 5.2)[0], W(0.5, 5.2)[1], 90, 0.01), 0.0, 0.95, cols=5, rows=3)
+    # their thing (backlog item 31: a peek through the slots, docs/city_interiors.md "Small things that answer a touch")
+    B.thing("lobby_mailboxes", "board", (W(0.5, 5.2)[0] + 0.15, W(0.5, 5.2)[1], 1.46), 90.0, what="mailbox")
     fu.doormat(B, fu.Fr(W(mid, 0.9)[0], W(mid, 0.9)[1], 0, 0.01), 0.0, 0.0)
     bx, by, _ = W(LC - 0.6, 3.0)
     B.spot("lobby_bench", "bench", (bx, by, 0.0), yaw_of(Fc.n) + 270)
@@ -583,9 +587,16 @@ def _furnish(B, th, Fc, W, LC, VB, f0):
     xl, yl = Rw.p(-1.0, 7.4)
     kit.table_lamp(B, xl, yl, d["top"] + Z, 0.0)
     B.thing("concierge_desk", "counter", (*Rw.p(-1.0, 6.9), 1.0), Rw.yaw(-1, 0), role="concierge", service="reception")
+    hk.switch(B, "lobby_switch", *Lw.p(0.2, 0.55), Lw.yaw(1, 0), z=Z)
     B.spot("concierge_chair", "seat", (*Rw.p(-0.45, 6.9), Z), Rw.yaw(-1, 0))
     x, y = Rw.p(-0.5, 7.95)
     kit.plant(B, x, y, Z, 0.0, kind="fern", pot="CT_PlasterRed", h=1.0, seed=4)
+    with B.dress("lobby_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, *C.p(mid, 0.8), Z, C.yaw(0, -1))
+        dk.umbrella_open(B, *C.p(mid - 1.3, 1.5), Z, 40, seed=1)
+        dk.umbrella_stand(B, *C.p(mid - 2.0, 0.6), Z, 0, n=3, seed=2)
+    with B.dress("lobby_paper", weekdays=(0, 1, 2, 3, 4), hours=(8.0, 18.0), chance=0.5):
+        kit.newspaper(B, x2, y2, 0.46, Rw.yaw(-1, 0), seed=6)
     # back wall: pictures either side of the rear door, clock, radio shelf
     for k, (nm, w_) in enumerate((("painting_dunes", 0.9), ("painting_pines", 0.9))):
         x, y = C.p(mid + (-1.25 if k == 0 else 1.25), yb)
@@ -676,6 +687,10 @@ def _common_room(B, th, Z):
         a = math.radians(90 * k + 45)
         cx, cy = x + 1.2 * math.cos(a), y + 1.2 * math.sin(a)
         kit.chair(B, cx, cy, Z, math.degrees(math.atan2(x - cx, -(y - cy))), kind="wood")
+    with B.dress("common_cups", weekdays=(0, 1, 2, 3, 4, 5, 6), hours=(9.5, 12.0), chance=0.7):
+        kit.cup(B, x - 0.3, y - 0.2, 0.75 + Z, 40.0)
+        kit.cup(B, x - 0.1, y + 0.35, 0.75 + Z, 200.0)
+        dk.plate_crumbs(B, x + 0.2, y - 0.3, 0.75 + Z, 0.0, seed=3)
     B.thing("common_table_seats", "seat", (x - 0.7, y - 0.7, 0.45 + Z), 45.0, height=0.45)
     B.thing("common_table_cards", "play", (x, y, 0.75 + Z), 0.0, what="chess")
     # right side: sofa and coffee table, TV, armchair
@@ -689,6 +704,7 @@ def _common_room(B, th, Z):
     tv = kit.table(B, x, y, Z, Rw.yaw(-1, 0), w=1.0, d=0.5, h=0.5)
     kit.tv_set(B, x, y, tv["top"] + Z, Rw.yaw(-1, 0))
     B.thing("common_tv", "screen", (x, y, 0.9 + Z), Rw.yaw(-1, 0), what="tv")
+    hk.switch(B, "common_switch", *Lw.p(0.2, 0.8), Lw.yaw(1, 0), z=Z)
     x, y = Rw.p(-0.7, 2.0)
     kit.armchair(B, x, y, Z, Rw.yaw(-1, 1), mat="CT_PlasterGreen")
     B.thing("common_armchair", "seat", (x, y, 0.45 + Z), Rw.yaw(-1, 1), height=0.45)
@@ -737,6 +753,9 @@ def _caretaker_room(B, th, Z):
     # left wall: kitchenette, radio shelf, picture
     x, y = Lw.p(0.2, 2.9)
     kit.kitchen_unit(B, x, y, Z, Lw.yaw(1, 0), modules="cupboard,stove,sink", wall_cupboards=False)
+    r_ = math.radians(Lw.yaw(1, 0))
+    hk.tap_thing(B, "caretaker_tap", x + 0.6 * math.cos(r_), y + 0.6 * math.sin(r_), Lw.yaw(1, 0), z=Z)
+    hk.switch(B, "caretaker_switch", *Lw.p(0.2, 1.0), Lw.yaw(1, 0), z=Z)
     kit.samovar(B, *Lw.p(0.4, 2.3), 0.9 + Z, 0.0)
     kit.teapot(B, *Lw.p(0.4, 3.4), 0.9 + Z, 0.0)
     x, y = Lw.p(0.2, 5.0)
@@ -817,6 +836,7 @@ def _flat(B, th):
     B.thing("flat_paintings", "board", (*Rw.p(-0.25, 4.8), ZS[0] + 1.8), Rw.yaw(-1, 0), topic="painting")
     x, y = Rw.p(-1.8, 4.8)
     ct = kit.coffee_table(B, x, y, Z, Rw.yaw(-1, 0))
+    ct_pos = (x + (Rw.eu[0]) * -0.3, y + Rw.eu[1] * -0.3)           # a free corner of the coffee table
     kit.books_stack(B, x, y, ct["top"], 0.0, n=3, seed=4)
     x, y = Rw.p(-0.3, 7.0)
     sb = kit.table(B, x, y, Z, Rw.yaw(-1, 0), w=1.2, d=0.45, h=0.75)
@@ -848,6 +868,10 @@ def _flat(B, th):
     kit.picture(B, x, y, Z, st, name="painting_pines", w=0.6, zc=1.8)
     x, y = M.p(2.4, 8.0)
     kit.kitchen_unit(B, x, y, Z, st, modules="cupboard,stove,sink,fridge", wall_cupboards=False)
+    r_ = math.radians(st)
+    hk.tap_thing(B, "flat_tap", x + 0.3 * math.cos(r_), y + 0.3 * math.sin(r_), st, z=Z)
+    hk.switch(B, "flat_switch", *Lw.p(0.2, 6.4), Lw.yaw(1, 0), z=Z)
+    hk.window_latch(B, "flat_window", M.p(-2.2, 0.0), z=ZS[0], reach=3.0)
     kit.samovar(B, *M.p(1.5, 8.0), ZS[0] + 0.9, 0.0)
     kit.teapot(B, *M.p(2.6, 8.0), ZS[0] + 0.9, 0.0)
     x, y = M.p(0.9, 6.0)
@@ -859,6 +883,28 @@ def _flat(B, th):
     B.thing("flat_dining_seat", "seat", (*M.p(0.9, 5.25), ZS[0] + 0.45), into, height=0.45)
     x, y = M.p(3.7, yb - 0.08)
     kit.wall_clock(B, x, y, Z, st, zc=2.1, face="clock_2")
+    # ---- lived-in sets (docs/city_dress.md): Okada's mornings, his flowers, a book on the sofa, boots by the door
+    with B.dress("okada_breakfast", weekdays=(0, 1, 2, 3, 4), hours=(8.0, 11.0)):
+        dk.plate_crumbs(B, *M.p(0.9 - 0.2, 6.0 + 0.1), tb["top"], 0.0, seed=1)
+        kit.cup(B, *M.p(0.9 + 0.22, 6.0 - 0.05), tb["top"], 0.0)
+        kit.newspaper(B, *ct_pos, ct["top"], 0.0, seed=5)
+    with B.dress("okada_weekend", weekdays=(5, 6), hours=(9.5, 13.0)):
+        dk.plate_crumbs(B, *M.p(0.9 - 0.2, 6.0 + 0.1), tb["top"], 90.0, seed=2)
+        kit.teapot(B, *M.p(0.9 + 0.2, 6.0 - 0.05), tb["top"], 0.0)
+        kit.glass(B, *M.p(0.9 + 0.05, 6.0 - 0.28), tb["top"], 0.0)
+    for nm, (a, b) in (("fresh", (0, 4)), ("wilt", (4, 6)), ("empty", (6, 7))):
+        vx, vy = Rw.p(-1.8, 5.1)
+        with B.dress("okada_flowers_" + nm, phase=(7, a, b)):
+            if nm == "wilt":
+                dk.vase_wilted(B, vx, vy, ct["top"], 0.0, seed=8)
+            else:
+                kit.vase(B, vx, vy, ct["top"], 0.0, flowers=(nm == "fresh"), seed=8)
+    with B.dress("okada_book", chance=0.5):
+        dk.book_face_down(B, *Rw.p(-0.55, 4.35), Z + 0.45, Rw.yaw(-1, 0) + 90.0, seed=2)
+    for nm, months, kind in (("winter", (12, 1, 2), "felt"), ("mild", (3, 4, 5, 9, 10, 11), "rubber"),
+                             ("summer", (6, 7, 8), "sandals")):
+        with B.dress("okada_boots_" + nm, months=months):
+            dk.boots(B, *Lw.p(1.3, 6.15), Z, Lw.yaw(1, 0), kind=kind, seed=6)
 
 
 from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)

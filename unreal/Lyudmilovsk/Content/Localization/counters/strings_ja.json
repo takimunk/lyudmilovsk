@@ -1,0 +1,8 @@
+{
+ "ui.counter.change": "合計{0}ルーブル。{1}ルーブルから、おつり{2}ルーブル。",
+ "ui.counter.exact": "合計{0}ルーブル、おつりなし。",
+ "ui.counter.ahead": "前に並んでいる人：{0}人。",
+ "dev.group.counters": "カウンターと行列",
+ "dev.action.counters.crowd": "近くのカウンターに行列（3人）",
+ "dev.action.counters.status": "行列をログへ"
+}

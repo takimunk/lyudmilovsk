@@ -186,6 +186,16 @@ namespace LyudBirds
 		float Boldness = 1.f;       // 0.6..1.4 personal
 		float Phase = 0.f;          // wing-beat / gait phase
 		float CallTimer = 5.f;
+		// the alarm it is giving (BirdVoice.cpp): s left of it, s before it takes up a neighbour's, s before it can be
+		// taken in again, how many birds the alarm has passed through, and where the danger is
+		float AlarmT = 0.f, AlarmWait = 0.f, AlarmCool = 0.f;
+		uint8_t AlarmHop = 0;
+		uint32_t VoiceRng = 0;      // the voice's own dice: what a bird says never changes what it does
+		V3 AlarmFrom;
+		// its signature behaviour now (BirdHabit.h: EHabit, 0 = none), the seconds into it, and the rest before the next
+		uint8_t Habit = 0;
+		bool bHabitMoves = false;   // the habit flies it; Move keeps off
+		float HabitT = 0.f, HabitCool = 0.f;
 		float ThinkTimer = 0.f;
 		float Seen = 0.f;           // how long it has watched the player
 		float Unseen = 0.f;         // s since it last perceived the player
@@ -272,16 +282,42 @@ namespace LyudBirds
 	enum class EEvent : uint8_t { Notice, Turn, Watch, Call, Approach, Eat, Flee, Alarm, Song, Supplant, ChaseStart, Num };
 	const char* EventName(EEvent E);
 
+	/**
+	 * What a bird's voice means when it calls (BirdVoice.cpp, docs/bird_voices.md): every Call and Song event carries one.
+	 * Contact: where are you, here I am (denser in a bigger flock). Song: a male on a singing perch in the breeding months,
+	 * at dawn in his species' turn. Alarm: a cat or a hawk is here (the neighbours take it up). Beg: young wanting food.
+	 * Chatter: starlings and the like talking at the roost. LongCall: a gull's long call on the morning beach.
+	 */
+	enum class EVoice : uint8_t { Contact, Song, Alarm, Beg, Chatter, LongCall, Num };
+	const char* VoiceName(EVoice V);
+
+	/** How a species uses its voice (the table is in BirdVoice.cpp). */
+	struct FVoiceTraits
+	{
+		bool bSings = false;
+		float ChorusMin = 0.f;          // it joins the dawn chorus this many minutes before sunrise (negative: after)
+		float SongFrom = 60.f, SongTo = 191.f;   // days of the year it sings between
+		bool bEvening = false;          // sings again round sunset
+		bool bAutumn = false;           // the robin: sings in autumn and winter too
+		bool bScolds = false;           // gives the alarm at a cat or a hawk, and takes up a neighbour's
+		bool bChatters = false;         // talks at the roost
+		bool bLongCalls = false;        // gulls
+		float Loud = 0.7f;              // 0..1: how far it carries (1 = the whole hearing range)
+	};
+	const FVoiceTraits& VoiceTraits(int Species);
+
 	struct FEvent
 	{
 		EEvent Kind;
 		int Bird;
 		V3 Pos;
+		EVoice Voice = EVoice::Contact;   // for Call and Song
 	};
 
 	class FMurmuration;
 	class FCorvids;
 	class FNesting;
+	class FHabits;
 
 	struct FOptions
 	{
@@ -304,6 +340,8 @@ namespace LyudBirds
 		bool bCorvids = true;
 		/** The breeding year: nests, eggs, chicks, fledglings (BirdNest.h); off = no nests (A/B, lyud.Birds.Nests 0). */
 		bool bNests = true;
+		/** The species' signature behaviours near the hero (BirdHabit.h); off = none (A/B, lyud.Birds.Habits 0). */
+		bool bHabits = true;
 	};
 
 	/** Line-of-sight test from the wrapper (true = clear); null = always clear. */
@@ -336,7 +374,26 @@ namespace LyudBirds
 		 *  filled by the game; flying birds drift with it, and in a gale the small ones keep to shelter. */
 		V3 Wind;
 		float Gustiness = 0.25f;
-		/** How hard the wind is for a species now: 1 = its WindLimit. */
+		/** The weather, filled by the game: falling water (mm/h) and the air's temperature (C). Birds sing little in rain
+		 *  and in the midday heat. */
+		float Rain = 0.f;
+		float TempC = 15.f;
+
+		// ---- voices (BirdVoice.cpp) ----
+		/** At most this many bird voices sound near the camera at once; with more of them sounding, only nearer and louder
+		 *  ones get in. Voices further than HearDist are not made at all. */
+		int MaxVoices = 6;
+		float HearDist = 70.f;
+		/** A bird's voice: true when it is heard (within earshot and the budget), and then a Call or Song event is out. */
+		bool Say(const FBird& B, EVoice V);
+		/** B gives the alarm at a danger it sees (a cat, a hawk): it scolds for some seconds, its neighbours take it up. */
+		void RaiseAlarm(FBird& B, const V3& Danger);
+		/** What B would say now and how often (a minute); 0 = it keeps quiet. */
+		float VoiceNow(const FBird& B, EVoice& V) const;
+		/** Voices sounding now. */
+		int VoicesNow() const;
+		int VoicesSaid = 0, VoicesDropped = 0, VoicesPeak = 0;
+
 		float WindStress(const FSpecies& S) const;
 		/** 1 when a bird that flies on the wind alone (the albatross: dynamic soaring) has none, 0 from a fresh breeze up and for
 		 *  every other species: becalmed, it sits on the sea and goes nowhere far. */
@@ -370,6 +427,8 @@ namespace LyudBirds
 		FCorvids* Corvids() const { return Corv.get(); }
 		/** The breeding year: nests and their birds (BirdNest.h). */
 		FNesting* Nesting() const { return Nest.get(); }
+		/** The species' signature behaviours (BirdHabit.h). */
+		FHabits* Habits() const { return Hab.get(); }
 		/** Turns the corvids' minds on or off while running (off: their items go, they live like the other birds; A/B). */
 		void SetCorvids(bool bOn);
 		/** One calm bird on the ground at P that keeps to that spot (tests, tutorials); returns its id. */
@@ -431,6 +490,8 @@ namespace LyudBirds
 		friend class FCorvids;
 		std::shared_ptr<FNesting> Nest;
 		friend class FNesting;
+		std::shared_ptr<FHabits> Hab;
+		friend class FHabits;
 		std::vector<int> NearScratch;
 		/** The brook's mouth: a handful of sites among thousands, so ChooseSite always weighs them (as it does the feeders)
 		 *  instead of hoping its sample finds one. Filled by Populate. */
@@ -474,8 +535,20 @@ namespace LyudBirds
 		void Flush(FBird& B, const V3& From, int Cause);
 		void Settle(FBird& B);
 		void Cling(FBird& B, const FSite& Site);
-		void Emit(EEvent E, const FBird& B) { Events.push_back({ E, B.Id, B.Pos }); }
+		void Emit(EEvent E, const FBird& B)
+		{
+			if (E == EEvent::Call || E == EEvent::Song)
+			{
+				Say(B, E == EEvent::Song ? EVoice::Song : EVoice::Contact);
+				return;
+			}
+			Events.push_back({ E, B.Id, B.Pos });
+		}
 		void Alarm(const FBird& From, float Radius, float Strength);
+		void ThinkVoice(FBird& B, float Dt);
+		void SpreadAlarm(const FBird& From);
+		struct FVoiceSlot { double Until = -1.0; };
+		FVoiceSlot VoiceSlots[16];
 		float Rand(uint32_t& S) const;
 		float Danger(const FBird& B, float Dist, bool bSeen) const;
 		void PlaceAtStart(FBird& B, FGroup& G);

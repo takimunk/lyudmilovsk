@@ -75,6 +75,15 @@ big birds): add a sheet, generate, rerun.
 Console: `Birds.Book`, `Birds.Meet <Species> [tame]`, `Birds.Call [n]`, `Birds.Forget`, `Screen.Open birds`, `Screen.Turn [n]`.
 Check: `unreal/scripts/test_bird_diary.sh`.
 
+After the birds' pages come the friends among the cats and dogs (`ULyudAnimalFriends`, `Public/Animals/AnimalFriends.h`, saved as
+"AnimalFriends"; `docs/animals.md` "Friends"): a title page "Friends" and a card each, three to a page: the portrait
+(`/Game/UI/Diary/Friends/T_Friend_<Breed>`, optional), the name (or "a cat", "a dog" while it has none), the day and place they became
+friends and how, the strokes, treats and walks so far, and for one without a name of its own the link "give a name" (the diary shuts and
+a box to type it in opens).
+
+The diary's own section ends with the «Коллекции» pages, after the people (`docs/city_interiors.md` "A complete set pays"):
+every set of stamps with a box for each piece and the keepsake its complete set gave or will give.
+
 ## Assets
 
 | Asset | Made by | Import |

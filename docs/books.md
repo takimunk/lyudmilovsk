@@ -54,6 +54,63 @@ contents lists and `[Illustration]` notes are dropped; Aozora's ruby and notes a
   minute, 450 for Japanese, at most 5 game minutes a turn). The bookmark and "read to the end" are saved ("Books").
 - Quests can listen to `borrow` and `read_book` notifications (`ULyudQuests::Notify`).
 
+## Reading anywhere
+
+Item 47 of `docs/interactives_backlog.md`. `ULyudReading` (`Public/Books/LyudReading.h`, a tickable world subsystem) and
+the engine-free rules in `Private/Books/ReadingModel.h`.
+
+- **Any seat, any ride.** Seated anywhere other than a park bench (benches keep their own `E — read`): a café's or the
+  sanatorium lounge's chair (`ULyudCityThings::IsSittingOnThing`), a public spot's seat, the train's window seat, a cable car
+  cabin's bench, the rowing boat (`AHeroCharacter::IsSeated`), with a library book on loan, `E — read` shows while no other
+  prompt holds the line (`ULyudInventory::GetPromptOwner`). Reading moves the clock as it always did, so a train ride passes
+  in pages.
+- **The light** (`LyudReading::Judge`): under a roof (open sky below 0.3) always; outdoors by day; through the dusk (sun
+  3° down to −6°) the page dims (an overlay on the reader); at night only with the headlamp (L) on or a lit street lamp
+  within 6 m (dim to 11 m, `ALyudPublicSpaces::NearestLitLampCm`); never outdoors in rain (0.3 mm/h, snow doesn't count). It
+  is asked when a book opens (benches and the shelf too) and every 2 s while one is open: rain starting or night falling
+  shuts it with a line.
+- **Quotes.** In the reader, C: the sentences of the spread are marked; W/S/A/D or arrows move, E / Enter / Space copy the
+  chosen one into the diary's «Цитаты» (book, author, date; at most 200, never the same sentence twice; in the book's own
+  language). Esc or C leaves quote mode.
+- **The diary** (`SLyudDiary`, after the people's pages): reading stats (pages read in standard pages, 1800 characters or
+  800 for Japanese; books finished; the longest; what he is reading now; the club evenings he joined), then the quotes,
+  newest first. The day's journal gets a line for a reading session of 2 pages or more (once a book a day) and for a book
+  read to its end.
+- **Overdue loans.** A book kept a week brings the librarian's polite postcard (`ULyudLetters::PostTownLetter`, once a
+  loan); the catalogue marks it red.
+
+## The book club
+
+Item 48. Thursdays 18:30–20:00 in the library lounge (place `P-LIBRARY-CLUB`: the two armchairs and three sofa places, each
+a member's own seat), never on a festival day or a public holiday.
+
+- **Members** (picked by `tools/reading/build_reading.py` from `townsfolk.json`, the same while the town is the same): the
+  librarian, a retired teacher (a pensioner, 62–84), a student, a programmer and a writer, all free on Thursday evenings.
+  They hold the duty `book_club` (activity row with `"when": "book_club"`, `"holiday": "off"`); `ULyudReading` switches the
+  condition `book_club` on from 18:10 to 20:00 (a "when" duty is held only while its condition is on: `PeopleSim.cpp`).
+- **The month's book**: 12 books, one a month (January Faust .. December A Christmas Carol), each with five lines in turns,
+  no spoilers, ru/en/ja (`line.town.bookclub.<work>.<n>`, bubbles through `ULyudTownTalkSubsystem::SayLine` while the hero
+  is within 12 m). If he has read it to its end (any language), `E — join the talk`: a welcome, his two lines
+  (`reading.club.hero.<work>.<n>`), the stamp `book_club/<work>` (collection «Книжный клуб»), a journal line, the quest
+  notification `book_club`.
+- **The librarian's advice** at the lending desk: the first "if you liked X" pair (42 pairs) whose book he hasn't read and
+  the shelf has, newest finished first; else the month's book; else a starter.
+- **Recommend** (desk, a finished book's row): to his closest friend (bond 2+) who hasn't had that book from him yet; 4–8 days
+  later the friend's letter says what they thought (six wordings).
+- **The paper** (page 4, before the ads): «Книга месяца», with "tonight" on a club Thursday and the next month's book in the
+  last week.
+
+All the words are in `tools/reading/content.py`; `python3 tools/reading/build_reading.py` writes `Content/Reading/reading.json`,
+`Content/Localization/reading/strings_*.json`, the place, the activity row and the duties (safe to run twice; `--check`;
+`town_life.py` runs it at the end). The collection is declared in `tools/city/content/collections.json` (`"by"`: code), so
+rerun `tools/city/interiors.py` after changing the books.
+
+Developer mode, Books group: finish the month's book, go to the club now (Thursday 18:40, the lounge), make a loan overdue,
+recommend. Console: `lyud.Reading.Report | Light | Club [on|off|auto] | Quote | Recommend <work>`, `lyud.Books quote`.
+
+Not done: a beach towel (there is no towel seat in the game yet) and the hero's room (item 19, not in main) get the prompt
+as soon as they seat him through `IsSeated` / `IsSittingOnThing`.
+
 ## Developer mode and console
 
 F7 → Books group: go to the lending desk, read a book (borrows one if he has none), sit on the nearest bench, return
@@ -63,4 +120,7 @@ desk | mine | turn <n> | close | reset | stats`, `lyud.Bench.Sit [metres]`.
 ## Tests
 
 `tools/booksim/run.sh`: the layout engine without Unreal (line breaking, kinsoku, headings, verse, page lookup, the
-real books when Content/Books exists). `tools/citysim` covers the desk's act.
+real books when Content/Books exists). `tools/booksim/run.sh reading`: the light rule, the quote mode's sentences, the quote
+store, standard pages, overdue loans and the club from `reading.json` (70 checks). `tools/peoplesim/run.sh bookclub`: the
+members sit at their own seats on a Thursday evening, nobody else, nobody on a festival Thursday or another weekday.
+`tools/citysim` covers the desk's act.

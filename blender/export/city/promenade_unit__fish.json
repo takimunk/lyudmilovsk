@@ -401,9 +401,34 @@
  "notes": [
   "promenade unit room, variant fish: placed at each W1 unit whose plan variant is fish"
  ],
+ "dress": [
+  {
+   "id": "unit_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 291,
+   "bounds": [
+    [
+     0.715,
+     0.73,
+     0.02
+    ],
+    [
+     3.8,
+     1.664,
+     0.89
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 190,
-  "detail": 7806,
-  "windows": 0
+  "detail": 7818,
+  "windows": 0,
+  "dress": 291
  }
 }

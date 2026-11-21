@@ -1573,7 +1573,7 @@ namespace LyudBirds
 				if (R.SongTimer <= 0.f)
 				{
 					R.SongTimer = 1.5f + W.Rand(B.Rng) * 2.5f;
-					W.Emit(EEvent::Call, B);
+					W.Say(B, EVoice::Alarm);
 					Emit(ENestEvent::Alarm, Nest.Id, B.Id, B.Pos);
 				}
 				if (B.ActTime > B.ActLen)
@@ -1717,7 +1717,7 @@ namespace LyudBirds
 				R.Step = 1;
 				const V3 Away = (B.Vel.Flat().Len2D() > 0.1f ? B.Vel.Flat().Norm() : V3(1.f, 0.f, 0.f));
 				R.Goal = W.Player.Eye + Away * (12.f + W.Rand(B.Rng) * 8.f) + V3(0.f, 0.f, 8.f + W.Rand(B.Rng) * 6.f);
-				W.Emit(EEvent::Call, B);
+				W.Say(B, EVoice::Alarm);
 				Emit(ENestEvent::Dive, R.Nest, B.Id, B.Pos);
 			}
 		}
@@ -1933,7 +1933,7 @@ namespace LyudBirds
 		{
 			R.SongTimer = (bParentNear ? 0.8f : 6.f) + W.Rand(B.Rng) * 2.f;
 			Emit(ENestEvent::Beg, Nest.Id, B.Id, B.Pos);
-			W.Emit(EEvent::Call, B);
+			W.Say(B, EVoice::Beg);
 		}
 		if (B.ActTime > B.ActLen)
 		{

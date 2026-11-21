@@ -161,6 +161,31 @@ Sound: the running gear's loops and the horn, joints, doors and gulls have their
 horn ~2.5 km) and are muffled to 6 % for a listener indoors (`ULyudSoundscapeSubsystem::GetOutdoors`); the loops stop
 when the train is hidden (in the tunnel, under the club).
 
+## Riding as a passenger
+
+Backlog item 21. `ULyudTrainPassenger` (`Public/Railway/LyudTrainPassenger.h`), rules in plain C++ `Private/Railway/RailTicketModel.h`,
+data `Content/Railway/passenger.json` and words `Content/Localization/rail/` from `tools/rail_passenger/passenger.py`
+(checks: `tools/railsim/tickets.sh`).
+
+- **The ticket box**: one on each halt's deck against the railing, 4.5 m before the halt's middle (between the nameboard and
+  the shelter), built in code from the public spaces' kit (`CityKit`, `M_CityProp`: a post, a green cabinet with a cream face,
+  the coin slot, the ticket's mouth, an amber lamp). Facing it within 1.7 m: `[E] Купить билет — 5 ₽`; E pays and a
+  `rail_ticket` goes into the pocket (a card Edmondson ticket, one ride).
+- **The conductor**: once the doors have shut and the train has left a halt (12 s later), the day's conductor walks down the
+  car's aisle from the end farther from the hero (a shared crowd body, `ANpcBody`, along the line's centre at the floor) and
+  stops a step short of them: "Ваш билет?". Then the check (`FModel::Check`): a ticket is punched (`ticket_punch`; it becomes
+  `rail_ticket_punched`, a keepsake), one punched this ride is waved on, no ticket gets a stern word for the conductor's first
+  `warns` rides of the game, then the 20 ₽ fine, or (not enough money) the order to get off at the next halt. Then back the
+  way they came and out. Three conductors, one a day by the day's number: Auntie Valya (one warning, warm), Timofeich (fines
+  at once, curt), Sato (two warnings, apologetic). Without their model loaded the conductor is a voice in the subtitles.
+- **Announcements** in the car (subtitles, the screen-style page): the doors closing, the next stop on leaving a halt, the halt on
+  arriving (a chime), the end of the line at the beach inbound.
+- Saved (`TrainPassenger`): rides without a ticket (each makes the next check stricter) and tickets punched.
+- Console: `lyud.Rail.Conductor` (the conductor to the hero now, inside a car), `lyud.Rail.Passenger`. Dev action
+  `rail.conductor` (Transport).
+- Open: the two ticket icons (`icon_rail_ticket`, `icon_rail_ticket_punched`), Mac shots on the train; a look-out view from a
+  window seat (the seats face across the car: the sea is seen through the far windows).
+
 ## Open
 
 - The landscape hole at the mouth needs a scene rebuild (`build_scene01.sh`) in a checkout to show.

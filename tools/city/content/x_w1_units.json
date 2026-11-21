@@ -271,13 +271,21 @@
    "minutes": 3
   },
   "pu_rental_keys": {
-   "prompt": "city.act.look.prompt",
+   "prompt": "city.rental.hire.prompt",
    "lines": [
+    "city.rental.hire.1",
     "city.pu.pu_rental_keys.1",
+    "city.rental.hire.2",
     "city.pu.pu_rental_keys.2"
    ],
-   "minutes": 2,
-   "rotate": "daily"
+   "minutes": 3,
+   "price": 15,
+   "needs_staff": "renter",
+   "daily": 1,
+   "stay": {
+    "id": "beach_set",
+    "days": 1
+   }
   },
   "pu_rental_tariff": {
    "like": "look_misc",

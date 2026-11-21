@@ -1,5 +1,5 @@
 {
-  "_doc": "The townsfolk's manners (docs/town_manners.md): small things done with the hands and the head on top of the life's pose. id: Private/People/PeopleManners.h EManner; poses: the life's poses it goes with (stand walk talk look sit read); doing: only at these activities ('!x': not at x); at: only at places of these kinds; after + after_s: only for a while (game seconds) after one of these activities; habit: only people with it (smoker phone reader feeder photographer knitter umbrella sweet dozer hands_back); ages; hours [from, to) of the game's clock; outdoors 1/0; rain 1/0 (only in it / only out of it); sun_up 1/0; sun_low 1 (low and not behind clouds); clear 1 (not overcast); sky_show 1 (only outdoors while there is something to see in the sky: northern lights, a rainbow, fireworks; likelier the more of it); temp_below / temp_above (C, felt outdoors); need + need_over; gather (mingle watch sit fair: at a holiday's gathering); waiting 1 (for the train); trait (warmth nerve curiosity tidy: the more of it, the likelier); weight; seconds [min, max] it lasts; cooldown (s before the same person does it again); prop: what it puts in the hands; force 1: while it fits it is what they do (the first such row wins); react 1: never picked, only started by the game (a wave to a friend). idle_weight: how often people do nothing in particular.",
+  "_doc": "The townsfolk's manners (docs/town_manners.md): small things done with the hands and the head on top of the life's pose. id: Private/People/PeopleManners.h EManner; poses: the life's poses it goes with (stand walk talk look sit read); doing: only at these activities ('!x': not at x); at: only at places of these kinds; after + after_s: only for a while (game seconds) after one of these activities; habit: only people with it (smoker phone reader feeder photographer knitter umbrella sweet dozer hands_back); ages; hours [from, to) of the game's clock; outdoors 1/0; rain 1/0 (only in it / only out of it); sun_up 1/0; sun_low 1 (low and not behind clouds); clear 1 (not overcast); sky_show 1 (only outdoors while there is something to see in the sky: northern lights, a rainbow, fireworks; likelier the more of it); temp_below / temp_above (C, felt outdoors); need + need_over; gather (mingle watch sit fair: at a holiday's gathering); waiting 1 (for the train); trait (warmth nerve curiosity tidy: the more of it, the likelier); weight; seconds [min, max] it lasts; cooldown (s before the same person does it again); prop: what it puts in the hands (phone cigarette camera umbrella rod brush binoculars newspaper book knitting ice_cream cup bag spade watering_can mop torch); force 1: while it fits it is what they do (the first such row wins); react 1: never picked, only started by the game (a wave to a friend). idle_weight: how often people do nothing in particular.",
   "idle_weight": 3.0,
   "manners": [
     {"id": "umbrella", "poses": ["stand", "look", "walk", "talk", "sit"], "outdoors": 1, "rain": 1, "habit": "umbrella", "force": 1, "prop": "umbrella"},
@@ -9,6 +9,11 @@
     {"id": "paint", "poses": ["look"], "doing": ["paint_island"], "force": 1, "prop": "brush"},
     {"id": "feed_birds", "poses": ["sit"], "doing": ["feed_birds"], "force": 1},
     {"id": "book", "poses": ["read"], "force": 1, "prop": "book"},
+    {"id": "newspaper", "poses": ["sit"], "doing": ["read_paper"], "force": 1, "prop": "newspaper"},
+    {"id": "piano", "poses": ["sit"], "doing": ["play_piano"], "force": 1},
+    {"id": "carry_bag", "poses": ["walk", "stand", "look"], "doing": ["post_round"], "force": 1, "prop": "bag"},
+    {"id": "mop", "poses": ["stand", "walk", "look"], "doing": ["mop_floor", "mop_floor_late"], "force": 1, "prop": "mop"},
+    {"id": "torch", "poses": ["stand", "walk", "look"], "doing": ["night_watch"], "force": 1, "prop": "torch"},
     {"id": "carry_bag", "poses": ["walk", "stand", "look"], "after": ["shop_town", "shop"], "after_s": 2400, "doing": ["!fish_shore", "!paint_island", "!birdwatch", "!jog", "!play_run"], "force": 1, "prop": "bag"},
 
     {"id": "binoculars", "poses": ["look"], "doing": ["birdwatch"], "seconds": [10, 30], "weight": 8.0, "cooldown": 12, "prop": "binoculars"},
@@ -36,13 +41,20 @@
 
     {"id": "feed_birds", "poses": ["sit"], "habit": "feeder", "doing": ["sit_bench"], "sun_up": 1, "rain": 0, "temp_above": -2, "seconds": [60, 180], "weight": 2.0, "cooldown": 900},
     {"id": "phone_call", "poses": ["stand", "look", "walk"], "habit": "phone", "ages": [14, 200], "doing": ["!jog", "!play_run", "!sun_watch", "!watch_sunrise"], "seconds": [20, 70], "weight": 0.5, "cooldown": 900, "prop": "phone"},
-    {"id": "phone_scroll", "poses": ["stand", "look", "sit"], "habit": "phone", "doing": ["!sun_watch", "!watch_sunrise"], "rain": 0, "seconds": [20, 90], "weight": 1.6, "cooldown": 150, "prop": "phone"},
+    {"id": "phone_scroll", "poses": ["stand", "look", "sit"], "habit": "phone", "doing": ["!sun_watch", "!watch_sunrise", "!cinema_day", "!cinema_evening", "!play_piano", "!dominoes"], "rain": 0, "seconds": [20, 90], "weight": 1.6, "cooldown": 150, "prop": "phone"},
     {"id": "smoke", "poses": ["stand", "look", "sit", "talk"], "outdoors": 1, "habit": "smoker", "rain": 0, "at": ["bench", "town_bench", "promenade", "promenade_bench", "pier", "beach", "square", "town_square", "lookout", "sunset_point", "club_door", "club_forecourt", "fair", "park", "pond", "fountain", "island_spot", "rail_stop", "station_lower", "station_upper", "sunrise_point"], "seconds": [100, 200], "weight": 1.8, "cooldown": 1500, "prop": "cigarette"},
     {"id": "photo", "poses": ["stand", "look"], "outdoors": 1, "habit": "photographer", "sun_up": 1, "rain": 0, "seconds": [6, 14], "weight": 1.6, "cooldown": 120, "prop": "camera"},
     {"id": "newspaper", "poses": ["sit"], "habit": "reader", "doing": ["sit_bench", "rest_home", "gather_sit"], "rain": 0, "sun_up": 1, "seconds": [120, 400], "weight": 2.2, "cooldown": 600, "prop": "newspaper"},
     {"id": "knit", "poses": ["sit"], "habit": "knitter", "doing": ["sit_bench", "rest_home", "gather_sit"], "rain": 0, "seconds": [180, 600], "weight": 3.0, "cooldown": 600, "prop": "knitting"},
     {"id": "ice_cream", "poses": ["stand", "look", "walk", "sit"], "outdoors": 1, "habit": "sweet", "temp_above": 15, "sun_up": 1, "rain": 0, "doing": ["walk", "stroll", "sit_bench", "sea_air", "swim_look", "fair_visit", "gather_fair", "gather_mingle", "playground"], "seconds": [90, 180], "weight": 0.5, "cooldown": 3600, "prop": "ice_cream"},
     {"id": "drink", "poses": ["stand", "look", "sit"], "outdoors": 1, "temp_below": 12, "ages": [14, 200], "doing": ["sit_bench", "sea_air", "fair_visit", "gather_fair", "gather_mingle", "gather_watch", "watch_sunrise"], "rain": 0, "seconds": [60, 150], "weight": 0.4, "cooldown": 1800, "prop": "cup"},
+
+    {"id": "skip_stone", "poses": ["look"], "doing": ["skip_stones"], "seconds": [3.2, 4], "weight": 12.0, "cooldown": 5},
+    {"id": "dominoes", "poses": ["sit"], "doing": ["dominoes"], "seconds": [2.4, 3.2], "weight": 6.0, "cooldown": 9},
+    {"id": "drink", "poses": ["sit"], "doing": ["san_cure"], "at": ["sanatorium_pump"], "seconds": [40, 110], "weight": 6.0, "cooldown": 60, "prop": "cup"},
+    {"id": "dig", "poses": ["stand"], "doing": ["tend_allotment"], "seconds": [20, 45], "weight": 9.0, "cooldown": 8, "prop": "spade"},
+    {"id": "water", "poses": ["stand"], "doing": ["water_allotment"], "seconds": [25, 60], "weight": 9.0, "cooldown": 5, "prop": "watering_can"},
+    {"id": "weed", "poses": ["stand"], "doing": ["tend_allotment", "water_allotment"], "seconds": [10, 25], "weight": 6.0, "cooldown": 8},
 
     {"id": "wave", "react": 1, "cooldown": 90},
     {"id": "nod", "react": 1, "cooldown": 90}

@@ -174,9 +174,9 @@ namespace
 	{
 		FTransform T = CS.GetComponentSpaceTransform(B);
 		T.SetRotation((Delta * T.GetRotation()).GetNormalized());
-		TArray<FBoneTransform> Out;
-		Out.Add(FBoneTransform(B, T));
-		CS.SafeSetCSBoneTransforms(Out);
+		// one bone: from the stack, no array allocated per call (a flying bird makes dozens of these a frame)
+		const FBoneTransform Out(B, T);
+		CS.SafeSetCSBoneTransforms(TConstArrayView<FBoneTransform>(&Out, 1));
 	}
 }
 
@@ -298,6 +298,25 @@ void FBirdAnimProxy::ApplyWingsCS(FCSPose<FCompactPose>& CS) const
 		const float Elev = Wings.StrokeAmp * (FMath::DegreesToRadians(55.f) * FMath::Cos(2.f * PI * Phase) + FMath::DegreesToRadians(8.f));
 		const FCompactPoseBoneIndex Hum = FindBone(Bones, *FString::Printf(TEXT("humerus_%s"), Side));
 		const FCompactPoseBoneIndex Hand = FindBone(Bones, *FString::Printf(TEXT("hand_%s"), Side));
+		// in the air a part-folded wing is not half way to the standing fold (dropped down the flank): the shoulder rolls it
+		// back up, so the arm stays out to the side in the wing's own plane and the fold is a sweep back (a falcon's "M")
+		// (right in, it closes against the body as the standing fold has it: a finch's bound, a falcon's teardrop)
+		const float Level = Wings.Level * (1.f - FMath::SmoothStep(0.6f, 0.9f, Spread)) * FMath::SmoothStep(0.06f, 0.16f, Spread);
+		const FCompactPoseBoneIndex HumOther = FindBone(Bones, bL ? TEXT("humerus_R") : TEXT("humerus_L"));
+		if (Level > 1e-3f && Hum.IsValid() && Hand.IsValid() && HumOther.IsValid())
+		{
+			const FVector Shoulder = CS.GetComponentSpaceTransform(Hum).GetLocation();
+			auto Frontal = [&](const FVector& V) { return V - Fwd * FVector::DotProduct(V, Fwd); };
+			// the arm (shoulder to wrist) and the way out to this side, both seen from ahead
+			const FVector Arm = Frontal(CS.GetComponentSpaceTransform(Hand).GetLocation() - Shoulder);
+			FVector Out = Frontal(Shoulder - CS.GetComponentSpaceTransform(HumOther).GetLocation());
+			Out -= UpV * FVector::DotProduct(Out, UpV);
+			if (Arm.SizeSquared() > 1e-4f && Out.SizeSquared() > 1e-6f)
+			{
+				const FQuat Roll = FQuat::FindBetweenVectors(Arm, Out);
+				RotateCS(CS, Hum, FQuat::Slerp(FQuat::Identity, Roll, Level * W));
+			}
+		}
 		// first person sweep and droop, the flare's forward reach
 		const float Sweep = FMath::DegreesToRadians(Wings.SweepDeg + 25.f * Wings.Flare) * Spread;
 		Turn(Hum, UpV, S * Sweep);

@@ -203,7 +203,7 @@ namespace AtonLabUI
 			Body->AddSlot().AutoHeight().Padding(0, 8, 0, 0)
 			[
 				SNew(STextBlock).Font(AtonStyle::Font(14)).ColorAndOpacity(AtonStyle::C(0xA0, 0x30, 0x20)).AutoWrapText(true)
-				.Text_Lambda([this] { return T(Message); })
+				.Text_Lambda([this] { return Message; })
 			];
 		}
 
@@ -214,7 +214,7 @@ namespace AtonLabUI
 			{
 				S.bStaff = true;
 				S.FailedLogins = 0;
-				Message.Reset();
+				Message = FText::GetEmpty();
 				Report(Shell, TEXT("login"));
 				Rebuild();
 				Shell->OpenApp(AtonApps::LabMail);
@@ -222,7 +222,7 @@ namespace AtonLabUI
 			}
 			S.FailedLogins++;
 			// after a couple of misses the machine itself says where to look
-			Message = L(S.FailedLogins >= 2 ? TEXT("ui.aton.lab.session.wrong_hint") : TEXT("ui.aton.lab.session.wrong"));
+			Message = T(L(S.FailedLogins >= 2 ? TEXT("ui.aton.lab.session.wrong_hint") : TEXT("ui.aton.lab.session.wrong")));
 			if (Password.IsValid())
 			{
 				Password->SetText(FText::GetEmpty());
@@ -231,7 +231,7 @@ namespace AtonLabUI
 
 		IAtonShell* Shell = nullptr;
 		bool bShownStaff = false;
-		FString Message;
+		FText Message;
 		TSharedPtr<SVerticalBox> Body;
 		TSharedPtr<SEditableText> Password;
 	};
@@ -610,6 +610,7 @@ namespace AtonLabUI
 			{
 				Game.Reset();
 			}
+			SheetChanged();
 
 			TSharedRef<SUniformGridPanel> Board = SNew(SUniformGridPanel);
 			for (int32 Row = 0; Row < 8; ++Row)
@@ -636,7 +637,7 @@ namespace AtonLabUI
 								[
 									SNew(STextBlock)
 									.Font(AtonStyle::Font(26, true))
-									.Text_Lambda([this, Sq] { return T(PieceText(Sq)); })
+									.Text_Lambda([this, Sq] { return PieceText(Sq); })
 									.ColorAndOpacity_Lambda([this, Sq] { return FSlateColor(FChar::IsUpper(Game.At(Sq)) ? AtonStyle::White : AtonStyle::Ink); })
 									.ShadowOffset(FVector2D(1, 1))
 									.ShadowColorAndOpacity_Lambda([this, Sq] { return FChar::IsUpper(Game.At(Sq)) ? FLinearColor(0, 0, 0, 0.75f) : FLinearColor(1, 1, 1, 0.25f); })
@@ -693,7 +694,7 @@ namespace AtonLabUI
 								+ SScrollBox::Slot().Padding(8, 6)
 								[
 									SNew(STextBlock).Font(AtonStyle::Mono(13)).ColorAndOpacity(AtonStyle::Ink).AutoWrapText(true)
-									.Text_Lambda([this] { return T(FString::Join(Sheet, TEXT("\n"))); })
+									.Text_Lambda([this] { return SheetText; })
 								])
 						]
 						+ SVerticalBox::Slot().AutoHeight().Padding(0, 8, 0, 0)
@@ -762,15 +763,15 @@ namespace AtonLabUI
 			return Color;
 		}
 
-		FString PieceText(int32 Sq) const
+		FText PieceText(int32 Sq) const
 		{
-			const char Piece = Game.At(Sq);
-			if (Piece == '.')
-			{
-				return FString();
-			}
-			// the international letters, the same in every language (the score sheet uses them too)
-			return FString::Chr(TCHAR(FChar::ToUpper(TCHAR(Piece))));
+			// the international letters, the same in every language (the score sheet uses them too); made once, since
+			// the 64 squares ask for their text on every repaint
+			static const FString Kinds(TEXT("KQRBNP"));
+			static const FText PieceLetters[] = { T(TEXT("K")), T(TEXT("Q")), T(TEXT("R")), T(TEXT("B")), T(TEXT("N")), T(TEXT("P")) };
+			int32 Index = INDEX_NONE;
+			Kinds.FindChar(FChar::ToUpper(TCHAR(Game.At(Sq))), Index);
+			return Index == INDEX_NONE ? FText::GetEmpty() : PieceLetters[Index];
 		}
 
 		FString Status() const
@@ -831,6 +832,12 @@ namespace AtonLabUI
 			}
 		}
 
+		/** The score sheet's text, joined when it changes rather than on every repaint. */
+		void SheetChanged()
+		{
+			SheetText = T(FString::Join(Sheet, TEXT("\n")));
+		}
+
 		/** Plays a move of either side: the score sheet, the save, the end of the game, the machine's turn. */
 		void Made(const AtonLab::Chess::FChessMove& Move)
 		{
@@ -854,6 +861,7 @@ namespace AtonLabUI
 			{
 				Sheet.Add(FString::Printf(TEXT("%d. ...  %s"), Number, *San));
 			}
+			SheetChanged();
 			SheetScroll->ScrollToEnd();
 
 			AtonLab::FLabState& S = StateOf(Shell);
@@ -891,6 +899,7 @@ namespace AtonLabUI
 		{
 			Game.Reset();
 			Sheet.Reset();
+			SheetChanged();
 			Selected = -1;
 			Targets.Reset();
 			bThinking = false;
@@ -910,6 +919,7 @@ namespace AtonLabUI
 				if (Sheet.Num() > 0)
 				{
 					Sheet.Pop();
+					SheetChanged();
 				}
 				Selected = -1;
 				Targets.Reset();
@@ -923,6 +933,7 @@ namespace AtonLabUI
 		int32 Selected = -1;
 		TArray<int32> Targets;
 		TArray<FString> Sheet;
+		FText SheetText;
 		bool bThinking = false;
 		double ThinkAt = 0.0;
 		TSharedPtr<SScrollBox> SheetScroll;

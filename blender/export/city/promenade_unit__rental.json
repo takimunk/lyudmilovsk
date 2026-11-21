@@ -239,6 +239,19 @@
    }
   },
   {
+   "id": "rental_oars",
+   "kind": "board",
+   "pos": [
+    -1.4,
+    6.32,
+    1.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "store"
+   }
+  },
+  {
    "id": "rental_stamp",
    "kind": "machine",
    "pos": [
@@ -324,9 +337,34 @@
  "notes": [
   "promenade unit room, variant rental: placed at each W1 unit whose plan variant is rental"
  ],
+ "dress": [
+  {
+   "id": "unit_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 291,
+   "bounds": [
+    [
+     0.715,
+     0.73,
+     0.02
+    ],
+    [
+     3.8,
+     1.664,
+     0.89
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 154,
-  "detail": 3744,
-  "windows": 0
+  "detail": 3756,
+  "windows": 0,
+  "dress": 291
  }
 }

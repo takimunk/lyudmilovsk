@@ -39,13 +39,13 @@
  "film.melies_moon.title": "月世界旅行",
  "film.melies_moon.maker": "ジョルジュ・メリエス",
  "film.melies_moon.l1": "学者たちの会議。バルバンフイエ教授が月への旅を提案します。",
- "film.melies_moon.l2": "屋根の上で砲弾を作り、大砲を鋳造します。ジュール・ヴェルヌのように。本は図書館にあります。",
+ "film.melies_moon.l2": "屋根の上で砲弾を作り、大砲を鋳造します。ジュール・ヴェルヌの小説そのままです。その本はうちの図書館にもありますよ。",
  "film.melies_moon.l3": "目に命中！世界中が知っている場面です。",
  "film.melies_moon.l4": "雲の間から星がのぞきます。月にはセレナイトが住んでいて、客を歓迎しません。",
  "film.melies_moon.l5": "帰りは月の端から落ちるだけ。海の中へ。まるでこの町のようです。",
  "film.chomon_hotel.title": "電気ホテル",
  "film.chomon_hotel.maker": "セグンド・デ・チョモン",
- "film.chomon_hotel.l1": "夫婦が、何でも電気がやってくれるホテルに着きます。かばんがひとりでに荷ほどきします。",
+ "film.chomon_hotel.l1": "夫婦が、何でも電気がやってくれるホテルに着きます。かばんがひとりでに開いて、荷物が片づいていきます。",
  "film.chomon_hotel.l2": "くしがひとりでに髪をとかし、靴がひとりでに磨かれます。チョモンは一コマずつ、何百時間もかけて撮りました。",
  "film.chomon_hotel.l3": "それから機械室の酔っ払った電気係が……ご覧のとおりです。",
  "film.porter_robbery.title": "大列車強盗",
@@ -61,5 +61,11 @@
  "film.programme.fri": "『ラ・シオタ駅への列車の到着』と『水をかけられた散水夫』（1895–1896年）",
  "film.programme.sat": "『月世界旅行』（1902年）",
  "film.programme.sun": "『大列車強盗』（1903年）",
- "film.programme.fest": "『月世界旅行』（1902年）"
+ "film.programme.fest": "『月世界旅行』（1902年）",
+ "film.programme.fest.children_day": "『ファンタスマゴリー』と『水をかけられた散水夫』と『赤ん坊の食事』（1895–1908年）",
+ "film.programme.fest.christmas": "『ファンタスマゴリー』と『月世界旅行』（1902–1908年）",
+ "film.programme.fest.city_day": "『リュミエール工場の出口』と『ラ・シオタ駅への列車の到着』と『水をかけられた散水夫』（1895–1896年）",
+ "film.programme.fest.halloween": "『ゴム頭の男』と『電気ホテル』（1901–1908年）",
+ "film.programme.fest.new_year": "『ファンタスマゴリー』と『ゴム頭の男』と『月世界旅行』（1901–1908年）",
+ "film.programme.fest.sea_festival": "『月世界旅行』と『電気ホテル』（1902–1908年）"
 }

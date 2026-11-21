@@ -1,4 +1,5 @@
 #include "City/LyudCityThings.h"
+#include "People/LyudTownRumours.h"
 
 #include "CityThingsModel.h"
 #include "CityCupsModel.h"
@@ -23,6 +24,7 @@
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "Festival/LyudFestival.h"
+#include "../Festival/FestivalCalendar.h"
 #include "Food/LyudHandUse.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -33,6 +35,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Letters/LyudLetters.h"
 #include "People/LyudFriends.h"
+#include "Garden/LyudGarden.h"
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudSave.h"
@@ -41,6 +44,7 @@
 #include "Misc/Paths.h"
 #include "NpcDialogue.h"
 #include "Sound/SoundBase.h"
+#include "People/CounterService.h"
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
@@ -132,6 +136,18 @@ namespace LyudCityThingsImpl
 
 	/** The game's date for the rules. bFull: also the holidays on now and the weather (an act about to run; it allocates);
 	 *  without it only the clock (the prompt, every frame: nothing allocated). */
+	/** The weather words of now (LyudCity::WeatherBits; 0 without a weather). */
+	uint8 WeatherNow(const UWorld* World)
+	{
+		const ULyudWeatherSubsystem* Wx = World ? ULyudWeatherSubsystem::Get(World) : nullptr;
+		if (!Wx)
+		{
+			return 0;
+		}
+		const FLyudSkyWeather Sky = Wx->GetSky();
+		return LyudCity::WeatherBits(Sky.Cloud, Sky.Rain, Sky.Snow, Sky.Fog, Sky.TempC, Sky.Wet);
+	}
+
 	LyudCity::FWhen When(const UWorld* World, bool bFull = true)
 	{
 		const FDateTime Now = UGameCalendar::NowIn(World);
@@ -155,10 +171,11 @@ namespace LyudCityThingsImpl
 				W.Festivals.push_back(std::string(TCHAR_TO_UTF8(*F.Id.ToString())));
 			}
 		}
-		if (const ULyudWeatherSubsystem* Wx = ULyudWeatherSubsystem::Get(World))
+		W.Weather = WeatherNow(World);
+		// what the town says of the hero now: the staff's topic «Что говорят в городе?» (docs/town_rumours.md)
+		if (ULyudTownRumours* Rumours = ULyudTownRumours::Get(World))
 		{
-			const FLyudSkyWeather Sky = Wx->GetSky();
-			W.Weather = LyudCity::WeatherBits(Sky.Cloud, Sky.Rain, Sky.Snow, Sky.Fog, Sky.TempC, Sky.Wet);
+			W.Rumours = &Rumours->KindsGoingRound();
 		}
 		return W;
 	}
@@ -414,6 +431,7 @@ void ULyudCityThings::ApplySaved()
 	{
 		Cups->LoadState(In);
 	}
+	bPayCollections = true;
 }
 
 void ULyudCityThings::StartOver()
@@ -436,6 +454,7 @@ void ULyudCityThings::StartOver()
 		Lights->ClearSwitched();
 	}
 	SwitchedPlot = NAME_None;
+	ApplyOpenAir();     // ResetState shut the windows
 }
 
 void ULyudCityThings::OnGameSaving_Implementation()
@@ -470,6 +489,7 @@ void ULyudCityThings::OnGameLoaded_Implementation()
 			Model->ResetState();
 		}
 		ApplySaved();
+		ApplyOpenAir();
 	}
 }
 
@@ -545,6 +565,12 @@ void ULyudCityThings::TrackPlot(const AHeroCharacter* Hero)
 		}
 		SwitchedPlot = NAME_None;
 	}
+	if (Model->OpenAir() > 0.f)
+	{
+		// the windows he opened in the last building are shut behind him (somebody closes them)
+		Model->ShutWindows();
+		ApplyOpenAir();
+	}
 	if (!Plot.empty())
 	{
 		UE_LOG(LogLyudCity, Verbose, TEXT("CityThings: in %s"), *LyudCityThingsImpl::Str(Plot));
@@ -565,7 +591,8 @@ void ULyudCityThings::SetPrompted(int32 Thing)
 	FText Line;
 	if (const LyudCity::FAct* A = Model && Act >= 0 ? &Model->Acts[(size_t)Act] : nullptr)
 	{
-		const FText Base = LyudText::Get(LyudCityThingsImpl::Str(A->Prompt));
+		const bool bShutOffer = A->Window > 0.f && Model->IsWindowOpen(Thing);
+		const FText Base = bShutOffer ? LyudText::Get(TEXT("city.act.window.shut_prompt")) : LyudText::Get(LyudCityThingsImpl::Str(A->Prompt));
 		Line = A->Price > 0 ? LyudText::Get(TEXT("city.act.prompt_price"), { FStringFormatArg(Base.ToString()), FStringFormatArg(A->Price) }) : Base;
 	}
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
@@ -1055,6 +1082,10 @@ void ULyudCityThings::Greet(int32 Thing)
 		{
 			GreetedPlot = Plot;
 			Talk->SayEvent(Body, TEXT("counter_hello"), Person, Role);
+			if (ULyudCounterService* Counter = ULyudCounterService::Get(this))
+			{
+				Counter->NoteGreeted(Person);
+			}
 			return;
 		}
 	}
@@ -1077,6 +1108,12 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		return;
 	}
 	EndTalk();
+	// an open window: E shuts it at once (opening ran the act: the look out, its minutes)
+	if (!bShutWords && Model->IsWindowOpen(Thing))
+	{
+		ToggleWindow(Thing);
+		return;
+	}
 	// the staff talk is asked before the act runs (a daily act's count or the money spent must not hide it): its topics now
 	std::vector<int> TalkOffer;
 	if (!bShutWords && Model->HasTopics(Thing))
@@ -1172,6 +1209,10 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	{
 		FlipSwitch(Thing);
 	}
+	if (!O.bClosed && Model->WindowShare(Thing) > 0.f && !Model->IsWindowOpen(Thing))
+	{
+		ToggleWindow(Thing);
+	}
 
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	APlayerController* PC = Hero ? Cast<APlayerController>(Hero->GetController()) : nullptr;
@@ -1230,7 +1271,16 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	}
 	if (!O.Open.empty())
 	{
-		// another system's screen (the library's classics: ULyudBookScreen listens); the act's line stays unsaid
+		// another system's screen (the library's classics: ULyudBookScreen listens; a piano: ULyudInstruments); the act's line
+		// stays unsaid. An act that sits (a piano's stool) seats the hero first when he is at the thing.
+		if (Hero && O.Pose == "sit" && !Hero->IsSeated() && FVector::Dist(Hero->GetActorLocation(), At) < 400.f)
+		{
+			const int OpenSeat = Model->SeatFor(Thing, SeatedOn);
+			if (OpenSeat >= 0)
+			{
+				Sit(OpenSeat, Hero, false);
+			}
+		}
 		OnOpen.Broadcast(FName(*LyudCityThingsImpl::Str(O.Open)), Thing);
 		return;
 	}
@@ -1318,7 +1368,7 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	// a system that adds to this act (the music: a record goes on, a radio is switched) may say its own words instead
 	FText Line = O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line));
 	bool bHooked = false;
-	if (!O.bClosed && O.Act >= 0 && ActHook.IsBound())
+	if (!O.bClosed && O.Act >= 0 && (ActHook.IsBound() || MoreActHooks.Num() > 0))
 	{
 		FCityActInfo Info;
 		Info.Thing = LyudCityThingsImpl::Str(T.Id);
@@ -1327,7 +1377,14 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		Info.Plot = LyudCityThingsImpl::Str(T.Plot);
 		Info.At = At;
 		Info.bFromConsole = bFromConsole;
-		bHooked = ActHook.Execute(Info, Line);
+		bHooked = ActHook.IsBound() && ActHook.Execute(Info, Line);
+		for (int32 H = 0; !bHooked && H < MoreActHooks.Num(); ++H)
+		{
+			if (MoreActHooks[H].IsBound())
+			{
+				bHooked = MoreActHooks[H].Execute(Info, Line);
+			}
+		}
 	}
 	if (!Line.IsEmpty())
 	{
@@ -1439,6 +1496,11 @@ void ULyudCityThings::Tick(float DeltaTime)
 	{
 		return;
 	}
+	if (bPayCollections && UGameplayStatics::GetPlayerPawn(World, 0))
+	{
+		bPayCollections = false;
+		PayCollections();
+	}
 	const double Now = World->GetTimeSeconds();
 	// a fade round a jump of the clock: black, (the pillow's view), the jump, hold a moment, back
 	if (FadeMinutes > 0 && Now >= FadeAt)
@@ -1525,6 +1587,14 @@ void ULyudCityThings::Tick(float DeltaTime)
 		if (const ULyudFriends* Friends = ULyudFriends::Get(World))
 		{
 			if (Friends->IsOffering() || Friends->HasModeUp())
+			{
+				Picked = -1;
+			}
+		}
+		// and so has the allotment (docs/allotment.md)
+		if (const ULyudGarden* Garden = ULyudGarden::Get(World))
+		{
+			if (Garden->IsPrompting())
 			{
 				Picked = -1;
 			}
@@ -1705,11 +1775,129 @@ void ULyudCityThings::AnnounceStamps(const TArray<FString>& Stamps)
 		const int32 Got = Model->CountStamps(Set);
 		const int32 All = (int32)C->Pieces.size();
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: stamp %s (%d of %d)"), *Stamp, Got, All);
+		// the quests (and the talk of the town, docs/town_rumours.md) hear of a stamp, and of a collection made whole
+		ULyudQuests::Notify(this, TEXT("stamp"), Stamp);
+		if (Got >= All)
+		{
+			ULyudQuests::Notify(this, TEXT("stamp_set"), LyudCityThingsImpl::Str(Set));
+		}
 		if (Screen)
 		{
 			const FString Title = LyudText::Get(LyudCityThingsImpl::Str(C->Title)).ToString();
 			Screen->Toast(LyudText::Get(Got >= All ? TEXT("city.coll.complete") : TEXT("city.coll.got"),
 				{ FStringFormatArg(Title), FStringFormatArg(Got), FStringFormatArg(All) }));
+		}
+	}
+	PayCollections();
+}
+
+void ULyudCityThings::PayCollections()
+{
+	if (!Model)
+	{
+		return;
+	}
+	UWorld* World = GetWorld();
+	const LyudCity::FWhen PayNow = LyudCityThingsImpl::When(World, false);
+	const std::vector<const LyudCity::FCollection*> Paid = Model->TakeRewards(PayNow.Since);
+	if (Paid.empty())
+	{
+		return;
+	}
+	ULyudInventory* Inv = ULyudInventory::Get(this);
+	ULyudGameScreen* Screen = ULyudGameScreen::Get(this);
+	ULyudQuests* Quests = ULyudQuests::Get(this);
+	for (const LyudCity::FCollection* C : Paid)
+	{
+		const LyudCity::FReward& R = C->Reward;
+		// what he holds: the item, the first good of the shop he has none of, or the roubles (also when he has every good)
+		FName Held = NAME_None;
+		int32 HeldCount = 0;
+		int32 Rubles = R.Pay;
+		if (!R.ItemFrom.empty())
+		{
+			for (const std::string& Choice : Model->RewardChoices(R))
+			{
+				const FName Item = LyudCityThingsImpl::Name(Choice);
+				if (Inv && ULyudInventory::FindDef(Item) && Inv->Count(Item) == 0)
+				{
+					Held = Item;
+					HeldCount = 1;
+					Rubles = 0;
+					break;
+				}
+			}
+		}
+		else if (!R.Item.empty() && ULyudInventory::FindDef(LyudCityThingsImpl::Name(R.Item)))
+		{
+			Held = LyudCityThingsImpl::Name(R.Item);
+			HeldCount = R.Count;
+		}
+		if (Inv && Held != NAME_None)
+		{
+			Inv->Add(Held, HeldCount);
+		}
+		if (Inv && Rubles > 0)
+		{
+			Inv->Earn(Rubles);
+		}
+		const FString TitleKey = LyudCityThingsImpl::Str(C->Title);
+		const FString NameKey = LyudCityThingsImpl::Str(R.Name);
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: collection %s complete: reward %s (item %s x%d, %d roubles, free %s for %d days)"),
+			*LyudCityThingsImpl::Str(C->Id), *NameKey, *Held.ToString(), HeldCount, Rubles, *LyudCityThingsImpl::Str(R.Free), R.Days);
+		if (Screen)
+		{
+			Screen->Toast(LyudText::Get(TEXT("city.coll.reward.toast"), { FStringFormatArg(LyudText::Get(TitleKey).ToString()), FStringFormatArg(LyudText::Get(NameKey).ToString()) }));
+		}
+		if (Quests)
+		{
+			Quests->AddNote(TEXT("city.coll.reward.diary"), { FString(TEXT("@")) + TitleKey, FString(TEXT("@")) + LyudCityThingsImpl::Str(R.Note) });
+		}
+		ULyudQuests::Notify(this, TEXT("collection"), LyudCityThingsImpl::Str(C->Id));
+	}
+}
+
+bool ULyudCityThings::IsOnStay(const FString& Id) const
+{
+	return Model && Model->OnStay(std::string(TCHAR_TO_UTF8(*Id)), LyudCityThingsImpl::When(GetWorld(), false).Since);
+}
+
+void ULyudCityThings::StartStay(const FString& Id, int32 Days)
+{
+	if (Model)
+	{
+		Model->StartStay(std::string(TCHAR_TO_UTF8(*Id)), Days, LyudCityThingsImpl::When(GetWorld(), false).Since);
+	}
+}
+
+bool ULyudCityThings::IsClearNow() const
+{
+	return (LyudCityThingsImpl::When(GetWorld()).Weather & LyudCity::WeatherClear) != 0;
+}
+
+void ULyudCityThings::CollectionViews(TArray<FCollectionView>& Out) const
+{
+	Out.Reset();
+	if (!Model)
+	{
+		return;
+	}
+	const LyudCity::FWhen ViewNow = LyudCityThingsImpl::When(GetWorld(), false);
+	for (const LyudCity::FCollectionRow& Row : Model->CollectionRows())
+	{
+		FCollectionView& V = Out.AddDefaulted_GetRef();
+		V.Title = LyudText::Get(LyudCityThingsImpl::Str(Row.Of->Title));
+		V.Reward = Row.Of->Reward.Any() ? LyudText::Get(LyudCityThingsImpl::Str(Row.Of->Reward.Name)) : FText::GetEmpty();
+		V.Got = Row.Got;
+		V.bRewarded = Row.bRewarded;
+		for (const bool bHas : Row.Slots)
+		{
+			V.Slots.Add(bHas);
+		}
+		if (Row.bRewarded && !Row.Of->Reward.Free.empty())
+		{
+			const long long Until = Model->FreeUntil(Row.Of->Reward.Free, ViewNow.Since);
+			V.FreeDays = Until > ViewNow.Since ? (int32)(Until - ViewNow.Since) : 0;
 		}
 	}
 }
@@ -1768,7 +1956,9 @@ bool ULyudCityThings::EditCollections(const FString& Verb, const FString& Set)
 	const std::string Which(TCHAR_TO_UTF8(*Set));
 	if (Verb == TEXT("grant"))
 	{
-		return Model->GrantSet(Which);
+		const bool bGranted = Model->GrantSet(Which);
+		PayCollections();
+		return bGranted;
 	}
 	if (Verb == TEXT("clear") && (Which == "*" || Model->FindCollection(Which)))
 	{
@@ -1930,6 +2120,14 @@ FText ULyudCityThings::LineText(const FString& Key) const
 {
 	const FText Text = LyudText::Get(Key);
 	const FString& Words = Text.ToString();
+	// the staff's answer about the talk of the town names what is said ({detail}: city.ask.town_talk.<kind>, docs/town_rumours.md)
+	static const FString TalkHead = TEXT("city.ask.town_talk.");
+	if (Words.Contains(TEXT("{detail}")) && Key.StartsWith(TalkHead))
+	{
+		const ULyudTownRumours* Rumours = ULyudTownRumours::Get(this);
+		const FString Detail = Rumours ? Rumours->DetailOf(Key.Mid(TalkHead.Len())) : FString();
+		return FText::FromString(Words.Replace(TEXT("{detail}"), *Detail));
+	}
 	if (!Words.Contains(TEXT("{time}")))
 	{
 		return Text;
@@ -1978,6 +2176,34 @@ void ULyudCityThings::FlipSwitch(int32 Thing)
 	SwitchedPlot = LyudCityThingsImpl::Name(T.Plot);
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: switch %s: %d lamps %s"), *LyudCityThingsImpl::Str(T.Id), N, bOn ? TEXT("on") : TEXT("off"));
 	Note(LyudText::Get(bOn ? TEXT("city.act.switch.on") : TEXT("city.act.switch.off")));
+}
+
+// --- windows that open (docs/city_interiors.md "Windows that open"): the open air comes into the room for this visit
+
+void ULyudCityThings::ToggleWindow(int32 Thing)
+{
+	if (!Model || Thing < 0 || Thing >= NumThings() || Model->WindowShare(Thing) <= 0.f)
+	{
+		return;
+	}
+	const bool bOpen = Model->ToggleWindow(Thing);
+	ApplyOpenAir();
+	if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+	{
+		Sound->PlayEffect(TEXT("rest_door"), ThingLocation(Thing), 0.5f);
+	}
+	const LyudCity::FWhen Now = LyudCityThingsImpl::When(GetWorld());
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: window %s %s (open air %.2f)"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id),
+		bOpen ? TEXT("open") : TEXT("shut"), Model->OpenAir());
+	Note(LyudText::Get(LyudCityThingsImpl::Str(LyudCity::FModel::WindowNote(bOpen, Now))));
+}
+
+void ULyudCityThings::ApplyOpenAir()
+{
+	if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+	{
+		Sound->SetOpenAir(Model ? Model->OpenAir() : 0.f);
+	}
 }
 
 // --- mini-games (docs/city_interiors.md "Mini-games"): the model plays, this draws the panel, polls the keys and pays out
@@ -2040,7 +2266,8 @@ void ULyudCityThings::BeginGame(int32 Thing, int32 Minutes, bool bSeated)
 	GameTitle = R ? LyudText::Get(TEXT("city.game.title_vs"), { FStringFormatArg(Title.ToString()), FStringFormatArg(GameOpponent.ToString()) }) : Title;
 	if (const LyudCity::FCupDef* Cup = Cups && R && CupMatchCup >= 0 ? Cups->Def(CupMatchCup) : nullptr)
 	{
-		GameTitle = LyudText::Get(TEXT("city.cup.game_title"), { FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(Cup->Title)).ToString()),
+		const LyudCity::FWhen CupNow = LyudCityThingsImpl::When(World);
+		GameTitle = LyudText::Get(TEXT("city.cup.game_title"), { FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(Cups->TitleOn(CupMatchCup, CupMatchDay, &CupNow))).ToString()),
 			FStringFormatArg(LyudText::Get(FString::Printf(TEXT("city.cup.rname.%d"), CupMatchRound)).ToString()), FStringFormatArg(GameOpponent.ToString()) });
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: tournament %s, round %d, against %s"), *LyudCityThingsImpl::Str(Cup->Id), CupMatchRound, *GameOpponent.ToString());
 	}
@@ -2223,16 +2450,24 @@ void ULyudCityThings::FinishGame()
 	FString CupNote;
 	if (Cups && CupMatchCup >= 0)
 	{
-		const LyudCity::FCupResult CR = Cups->Record(*Model, CupMatchCup, CupMatchDay, CupMatchRound, End.Result);
+		// (a holiday today, and the match is today's: the holiday's cup, docs/festivals.md "The new toys")
+		const LyudCity::FWhen CupNow = LyudCityThingsImpl::When(World);
+		const LyudCity::FCupResult CR = Cups->Record(*Model, CupMatchCup, CupMatchDay, CupMatchRound, End.Result, CupNow.bFestival && CupMatchDay == CupNow.Since);
 		End.NewStamps.insert(End.NewStamps.end(), CR.NewStamps.begin(), CR.NewStamps.end());
 		const LyudCity::FCupDef* Cup = Cups->Def(CupMatchCup);
-		const FString CupTitle = Cup ? LyudText::Get(LyudCityThingsImpl::Str(Cup->Title)).ToString() : FString();
+		const FString CupTitle = Cup ? LyudText::Get(LyudCityThingsImpl::Str(Cups->TitleOn(CupMatchCup, CupMatchDay))).ToString() : FString();
 		switch (CR.Note)
 		{
 		case LyudCity::ECupNote::Replay: CupNote = LyudText::Get(TEXT("city.cup.note.replay")).ToString(); break;
 		case LyudCity::ECupNote::Next: CupNote = LyudText::Get(TEXT("city.cup.note.next"), { FStringFormatArg(UTF8_TO_TCHAR(LyudCity::FCups::Hm(CR.NextHour).c_str())) }).ToString(); break;
 		case LyudCity::ECupNote::Out: CupNote = LyudText::Get(TEXT("city.cup.note.out")).ToString(); break;
-		case LyudCity::ECupNote::Champion: CupNote = LyudText::Get(TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString(); break;
+		case LyudCity::ECupNote::Champion:
+			CupNote = LyudText::Get(CR.bFestival ? TEXT("city.cup.note.champion_fest") : TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString();
+			if (Cup)
+			{
+				ULyudQuests::Notify(this, TEXT("cup_won"), LyudCityThingsImpl::Str(Cup->Id));    // the town talks of it (docs/town_rumours.md)
+			}
+			break;
 		default: break;
 		}
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: tournament %s round %d: %s"), Cup ? *LyudCityThingsImpl::Str(Cup->Id) : TEXT("?"), CupMatchRound, *CupNote);
@@ -2275,6 +2510,11 @@ void ULyudCityThings::FinishGame()
 			}
 		}
 		ULyudQuests::Notify(this, TEXT("win"), LyudCityThingsImpl::Str(End.Target));
+		if (!End.Opponent.empty())
+		{
+			// a regular beaten: they tell their friends (the talk of the town, docs/town_rumours.md; the name key: npc.<key>.name)
+			ULyudQuests::Notify(this, TEXT("beat"), LyudCityThingsImpl::Str(End.Opponent));
+		}
 	}
 	const bool bSeated = bGameSeated;
 	const int32 Minutes = GameMinutes;
@@ -3513,6 +3753,25 @@ bool ULyudCityThings::UseNearestLift()
 	return false;
 }
 
+bool ULyudCityThings::ToggleNearestWindow()
+{
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Model || !Pawn)
+	{
+		return false;
+	}
+	for (const std::pair<int, double>& P : Model->Nearest(LyudCityThingsImpl::Vec(Pawn->GetActorLocation()), 256))
+	{
+		if (Model->WindowShare(P.first) > 0.f)
+		{
+			ToggleWindow(P.first);
+			return true;
+		}
+	}
+	UE_LOG(LogLyudCity, Warning, TEXT("CityThings: no window that opens near"));
+	return false;
+}
+
 // --- the staff talk (docs/city_interiors.md "Staff talk"): a chooser on the page, the answers one per E
 
 bool ULyudCityThings::OpenShopOf(const FString& Shop, const FString& TitleKey)
@@ -3525,7 +3784,8 @@ bool ULyudCityThings::OpenShopOf(const FString& Shop, const FString& TitleKey)
 		{
 			FLyudShopGood Good;
 			Good.Item = LyudCityThingsImpl::Name(G.Item);
-			Good.Price = G.Price;
+			// a good a complete collection made free (the kiosks' paper for a month) costs nothing while that lasts
+			Good.Price = Model->PriceOn(G, LyudCityThingsImpl::When(GetWorld(), false).Since);
 			Good.Count = G.Count;
 			if (ULyudInventory::FindDef(Good.Item))
 			{
@@ -3948,6 +4208,11 @@ void ULyudCityThings::SetTone(int32 Tone)
 	const USoundBase* PlayingLoop = ToneAudio ? ToneAudio->Sound.Get() : nullptr;
 	UE_LOG(LogLyudCity, Verbose, TEXT("CityThings: tone %s"), T ? *LyudCityThingsImpl::Str(T->Id) : TEXT("off"));
 	ToneHeard = T ? Tone : -1;
+	// the rain on this room's windows (the soundscape's glass voice): heard inside a room that has them, silent elsewhere
+	if (ULyudSoundscapeSubsystem* Glass = ULyudSoundscapeSubsystem::Get(this))
+	{
+		Glass->SetNearWindows(T ? T->Windows : 0.f);
+	}
 	{
 		LyudCity::FRng Rng;
 		Rng.State = ToneDice;
@@ -3999,7 +4264,10 @@ void ULyudCityThings::TickTone(const AHeroCharacter* Hero, float DeltaTime)
 	if (Hero && !bOutside)
 	{
 		Near = Model->NearestThing(LyudCityThingsImpl::Vec(Hero->GetActorLocation()), LyudCityThingsImpl::ToneRadius, LyudCityThingsImpl::PlotFloor);
-		Want = Near >= 0 ? Model->ToneNow(Near, LyudCityThingsImpl::When(World, false), bOpenAllHours) : -1;
+		// (the weather too: a room may sound otherwise in the rain; docs/indoor_weather.md)
+		LyudCity::FWhen ToneWhen = LyudCityThingsImpl::When(World, false);
+		ToneWhen.Weather = Near >= 0 ? LyudCityThingsImpl::WeatherNow(World) : 0;
+		Want = Near >= 0 ? Model->ToneNow(Near, ToneWhen, bOpenAllHours) : -1;
 	}
 	if (Want != ToneHeard)
 	{
@@ -4109,6 +4377,25 @@ void ULyudCityThings::LoadCups()
 		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: City/tournaments.json unreadable: %s"), *LyudCityThingsImpl::Str(Error));
 		return;
 	}
+	// no cup on a public holiday (Big Sun Day and the festivals' days off): asked of the festivals for a day since the start
+	Cups->IsHoliday = [WeakThis = TWeakObjectPtr<ULyudCityThings>(this)](long long Day) -> bool
+	{
+		const ULyudCityThings* Self = WeakThis.Get();
+		const UWorld* World = Self ? Self->GetWorld() : nullptr;
+		const ULyudFestivalSubsystem* Fest = World ? ULyudFestivalSubsystem::Get(World) : nullptr;
+		const LyudFest::FCalendar* Cal = Fest ? Fest->GetCalendar() : nullptr;
+		if (!Cal)
+		{
+			return false;
+		}
+		const UGameCalendar* GameCal = World->GetSubsystem<UGameCalendar>();
+		const FDateTime Date = (GameCal ? GameCal->StartDate : FDateTime(2026, 10, 20)).GetDate() + FTimespan::FromDays((double)Day);
+		LyudFest::FDate D;
+		D.Y = Date.GetYear();
+		D.M = Date.GetMonth();
+		D.D = Date.GetDay();
+		return Cal->IsDayOff(D);
+	};
 	const bool bAll = Cups->Bind(*Model);
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %d club tournaments%s"), (int32)Cups->Defs.size(), bAll ? TEXT("") : TEXT(" (some with fewer than eight players: not held)"));
 }
@@ -4126,7 +4413,7 @@ void ULyudCityThings::GetCupNews(int32 Since, TArray<FLyudCupNews>& Out) const
 	for (int32 Cup = 0; Cup < (int32)Cups->Defs.size(); ++Cup)
 	{
 		const LyudCity::FCupDef& D = Cups->Defs[(size_t)Cup];
-		if (!Cups->IsUsable(Cup) || LyudCity::FCups::WeekdayOf(Since, Now) != D.Weekday)
+		if (!Cups->IsUsable(Cup) || LyudCity::FCups::WeekdayOf(Since, Now) != D.Weekday || Cups->IsOff(Since))
 		{
 			continue;
 		}
@@ -4642,6 +4929,13 @@ static LyudDev::FAutoAction GCityDevLift(TEXT("interiors.lift_nearest"), TEXT("i
 	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
 	{
 		Things->UseNearestLift();
+	}
+});
+static LyudDev::FAutoAction GCityDevWindow(TEXT("interiors.window_nearest"), TEXT("interiors"), TEXT("dev.action.interiors.window_nearest"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->ToggleNearestWindow();
 	}
 });
 static LyudDev::FAutoAction GCityDevTone(TEXT("interiors.tone"), TEXT("interiors"), TEXT("dev.action.interiors.tone"), [](UWorld* W)

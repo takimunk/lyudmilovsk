@@ -2,7 +2,8 @@
 // through what the game does to the life (UPeopleLifeSubsystem, Private/People/PeopleLife.cpp): a new game, the time
 // scale (longer steps), clock jumps (Resettle, the townsfolk placed SettleBatch a step), a save loaded mid-day and at
 // 02:00 / 03:00 (the townsfolk aren't saved: a fresh world, AssignHomes, Resettle), a public holiday (SetDayOff), a
-// gathering set and cleared (SetGathering / ClearGathering), weekdays and the weekend. Included by peoplesim.cpp.
+// gathering set and cleared (SetGathering / ClearGathering), weekdays and the weekend, winter play's conditions switched
+// on and off (SetCondition: the rink, rink_busy, the walruses' hour, the banya; WinterConditions). Included by peoplesim.cpp.
 //
 // The clock is the game's (UGameCalendar): a plain date and time with no daylight saving (FDateTime), the life's Time
 // counted in seconds from the start date, Tuesday 20 October 2026 16:00. The week runs over Sunday 25 October (the
@@ -118,6 +119,21 @@ namespace TownWeek
 		return H;
 	}
 
+	/** Winter play's conditions (docs/people.md "Winter play") as the game sends them every few seconds, to every life (a
+	 *  loaded one gets them before it places anybody): the rink open 10:00-22:00 but shut a while on Wednesday evening (a
+	 *  thaw), busy (rink_busy) on Thursday's holiday and on Saturday; the walruses' hour on Thursday and Sunday mornings;
+	 *  the banya heated 10:00-22:00 but shut on Monday and early on Tuesday. */
+	static void WinterConditions(FWorld& W, double Abs)
+	{
+		const int Day = (int)std::floor(Abs / 86400.0);
+		const float H = (float)std::fmod(Abs / 3600.0, 24.0);
+		const bool bRink = H >= 10.f && H < 22.f && !(Day == 2 && H >= 18.5f && H < 19.25f);
+		W.SetCondition("rink", bRink);
+		W.SetCondition("rink_busy", bRink && (Day == 3 || Day == 5));
+		W.SetCondition("walrus", (Day == 3 || Day == 6) && H >= 8.f && H < 10.5f);
+		W.SetCondition("banya", Day % 7 != 0 && H >= 10.f && H < (Day == 1 ? 20.f : 22.f));
+	}
+
 	/** A fresh life as UPeopleLifeSubsystem::Start makes it: loaded, homes given, the townsfolk placed over steps. */
 	static bool Boot(FWorld& W, const FGameClock& C)
 	{
@@ -130,6 +146,7 @@ namespace TownWeek
 		W.AssignHomes();
 		AttachRail(W);
 		C.Set(W);
+		WinterConditions(W, C.Abs);
 		W.PrevHour = -1.f;
 		return true;
 	}
@@ -224,7 +241,7 @@ static int Week()
 		for (int I = 0; I < (int)P.Duties.size(); I++)
 		{
 			const FDuty& D = P.Duties[I];
-			if (P.bTown && D.Place >= 0 && D.Role != "pupil")
+			if (P.bTown && D.Place >= 0 && D.Role != "pupil" && W->ActOf(D) >= 0 && W->Activities[(size_t)W->ActOf(D)].bStaff)      // a round (the post) has no counter to man
 			{
 				Staff[{ D.Place, D.Role }].push_back({ P.Id, I });
 			}
@@ -257,6 +274,12 @@ static int Week()
 	int Asleep02 = -1, Asleep03 = -1, Lit02 = -1, Working02 = -1, Occupied = 0;
 	int SettleWorstSteps = 0;
 	double SettleWorstMs = 0.0;
+	// winter play: when each condition last went off (life seconds), person-minutes at each winter activity, people still at
+	// one over a minute and a half after its condition went off
+	std::map<std::string, double> CondOffAt;
+	std::map<std::string, int> WinterMin;
+	int WinterLate = 0;
+	std::string WinterLateWho;
 	int Unplaced = 0;
 	uint64_t HashA = 0, HashB = 0;
 	bool bDeterministic = false;
@@ -433,6 +456,17 @@ static int Week()
 		C.Abs += Dt;
 		C.Set(S);
 		S.Time -= Dt;
+		// winter play's conditions as the game sends them; when each last went off
+		{
+			static const char* const Conds[] = { "rink", "rink_busy", "walrus", "banya" };
+			bool bWas[4];
+			for (int I = 0; I < 4; I++) bWas[I] = S.IsCondition(Conds[I]);
+			WinterConditions(S, C.Abs);
+			for (int I = 0; I < 4; I++)
+			{
+				if (bWas[I] && !S.IsCondition(Conds[I])) CondOffAt[Conds[I]] = S.Time;
+			}
+		}
 		const auto T0 = std::chrono::steady_clock::now();
 		S.Step(Dt);
 		const double StepMs = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - T0).count();
@@ -549,6 +583,16 @@ static int Week()
 			if (bAt && (P.Slot < 0 || P.Activity < 0 || S.Slots[P.Slot].Place != P.Place || (!S.Activities[P.Activity].bAway && P.Reserved != P.Slot)))
 			{
 				if (Incoherent++ == 0) IncoherentWho = P.Key;
+			}
+			if (P.Activity >= 0 && S.Activities[P.Activity].WhenId >= 0 && P.State == EState::Doing)
+			{
+				const FActivity& A = S.Activities[P.Activity];
+				WinterMin[A.Id]++;
+				const auto Off = CondOffAt.find(A.When);
+				if (!S.ConditionOk(A) && (Off == CondOffAt.end() || S.Time - Off->second > 90.0) && WinterLate++ < 3)
+				{
+					WinterLateWho += (WinterLateWho.empty() ? "" : ", ") + P.Key + " at " + A.Id;
+				}
 			}
 			if (!P.bTown) continue;
 			if (P.Pose == EPose::Sleep && P.Place == P.Home && P.State == EState::Doing) SleptMin[P.Id] += 1.0;
@@ -728,6 +772,14 @@ static int Week()
 	CHECK(Asleep02 > Town * 0.8 && Asleep03 > Town * 0.8, "a save loaded at 02:00 / 03:00: most asleep in their own beds (%d / %d of %d)", Asleep02, Asleep03, Town);
 	CHECK(Lit02 >= 0 && Lit02 < Occupied * 0.2, "... few windows lit (%d of %d)", Lit02, Occupied);
 	CHECK(Working02 == 0, "... and nobody at work but the night shifts (%d)", Working02);
+	{
+		char Buf[200];
+		std::snprintf(Buf, sizeof Buf, "skate %d, skate_busy %d, walrus_swim %d, banya_visit %d person-minutes", WinterMin["skate"], WinterMin["skate_busy"],
+			WinterMin["walrus_swim"], WinterMin["banya_visit"]);
+		CHECK(WinterMin["skate"] > 0 && WinterMin["skate_busy"] > 0 && WinterMin["walrus_swim"] > 0 && WinterMin["banya_visit"] > 0 && WinterLate == 0,
+			"winter play with its conditions toggling (the rink shut a while, loads, clock jumps): %s; nobody at one 90 s after its condition went off (%d%s%s)",
+			Buf, WinterLate, WinterLate ? ": " : "", WinterLateWho.c_str());
+	}
 	CHECK(Restless == 0, "nobody starts a new activity every few minutes (13 or more in an hour: %d person-hours%s%s)", Restless, Restless ? "; " : "", RestlessWho.c_str());
 	CHECK(Arrivals > 10000 && BadArrivals == 0, "every trip ends at its place, at the slot (%d arrivals, %d off; worst %.1f m, %s)", Arrivals, BadArrivals, WorstArrive, WorstArriveWho.c_str());
 	CHECK(Steps1 > 0 && Ms / Steps1 < 1.5 && WorstMs < 25.0, "a second's step costs %.3f ms on average, %.1f ms at worst (%ld steps, %zu people)", Steps1 ? Ms / Steps1 : 0.0, WorstMs, Steps1, W->People.size());

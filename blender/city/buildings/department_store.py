@@ -16,6 +16,7 @@ Spots: 8 sales counters + 8 sellers, 2 cashiers (counter + work), 5 stands, benc
 Ideas for later: escalator, a cafeteria on the 1st floor, a flats storey above the back half, rooftop terrace.
 Kit wishes: B.facade with a different material for the inner face (done here with wall()).
 """
+import contextlib
 import math
 import random
 
@@ -23,6 +24,8 @@ from citykit import box, prism, ring, Mesh, Facade, wall_with_holes, reveal
 from _furn1 import rbox, cyl, blob, mannequin
 import furn_int3 as fu
 import interior_kit as kit
+import dress_kit as dk
+import night_kit as nk
 
 INFO = {
     "name_ru": "Универмаг", "name_en": "Department Store",
@@ -257,6 +260,7 @@ def build(B):
             for ly in (8.0, 16.5, 25.0):
                 B.lamp((lx, ly, zc - 0.3), lumens=2300, colour="#FFD2A0", radius=12.0)
 
+    _dress(B)
     B.footprint = [(-HW, -1.0), (HW, -1.0), (HW, D), (-HW, D)]
     B.height = 14.0
     B.note("2 shop halls + roof sign; stair hole at x -1.8..1.8, y 21..27.3; entrances main/west/east")
@@ -578,8 +582,8 @@ def _ground(B, rnd):
 
     # ---- the cloakroom (back wall, east of the stair)
     kit.shop_counter(B, 6.4, 26.4, zf, 0.0, w=3.4, d=0.7, mat=kit.WOODL, top="CT_TileWhite", front="CT_PlasterGreen", till=False)
-    kit.coat_rack(B, 5.0, 28.8, zf, 0.0, w=2.2, coats=0.8, seed=3)
-    kit.coat_rack(B, 7.9, 28.8, zf, 0.0, w=2.2, coats=0.6, seed=4)
+    kit.coat_rack(B, 5.0, 28.8, zf, 0.0, w=2.2, coats=0, seed=3)   # coats come from the cloak_* dressing sets
+    kit.coat_rack(B, 7.9, 28.8, zf, 0.0, w=2.2, coats=0, seed=4)
     kit.cup(B, 7.2, 26.35, zf + 1.05, 0.0)
     kit.newspaper(B, 5.4, 26.4, zf + 1.05, 8.0, seed=5)
     kit.sign_plate(B, 6.4, 26.4, zf, 0.0, name="sign_cloakroom", w=1.4, zc=3.7, hang=True)
@@ -718,20 +722,31 @@ def _first_east(B, zf, rnd):
     B.spot("f1_cafe_work", "work", (22.0, 5.4, zf), 270.0)
     _thing(B, "f1_cafe_counter", "counter", (21.2, 5.4, zf + 1.05), 270.0, service="bar")
     kit.sign_plate(B, 21.2, 5.4, zf, 270.0, name="sign_buffet", w=1.5, zc=3.6, hang=True)
+    # the café's chairs go up on its tables when the store is shut (dress day_cafe / night_cafe, docs/city_night.md);
+    # the draughts table keeps its game and its chairs
+    day_g, night_g = nk.Gather(B), nk.Gather(B)
     for k, (tx, ty) in enumerate(((16.5, 3.4), (16.5, 6.4), (13.3, 4.9), (13.3, 8.2), (19.0, 8.6))):
         t = kit.table_round(B, tx, ty, zf, 0.0, r=0.4, h=0.74)
+        mat = ("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow")[k % 3]
         if k == 3:                                       # a game of draughts instead of the crockery
             _checkers(B, tx, ty, t["top"], 0.0)
             _thing(B, "f1_cafe_checkers", "play", (tx, ty, t["top"] + 0.03), 0.0, what="checkers")
         else:
-            kit.cup(B, tx - 0.1, ty, t["top"], 0.0)
-            kit.plates(B, tx + 0.12, ty + 0.05, t["top"], 0.0, n=1)
+            with day_g:
+                kit.cup(B, tx - 0.1, ty, t["top"], 0.0)
+                kit.plates(B, tx + 0.12, ty + 0.05, t["top"], 0.0, n=1)
+            with night_g:
+                nk.chairs_up_round(B, tx, ty, t["top"], n=2, r=0.4, kind="tube", mats=[mat], a0=0.0, seed=k)
         rs = []
-        for a in (90.0, 270.0):
-            ox = 0.62 if a == 270.0 else -0.62
-            rs.append(kit.chair(B, tx + ox, ty, zf, a, kind="tube", mat=("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow")[k % 3]))
+        with day_g if k != 3 else contextlib.nullcontext():
+            for a in (90.0, 270.0):
+                ox = 0.62 if a == 270.0 else -0.62
+                rs.append(kit.chair(B, tx + ox, ty, zf, a, kind="tube", mat=mat))
         _seat(B, "f1_cafe_seat_%d" % (2 * k + 1), rs[0])
         _seat(B, "f1_cafe_seat_%d" % (2 * k + 2), rs[1])
+    day_g.dress("day_cafe", open=True)
+    night_g.dress("night_cafe", open=False)
+    nk.lone_lamp(B, 21.35, 5.75, zf + 1.05, 270.0, lumens=240)      # left on over the café counter when the store is shut
     kit.plant(B, 11.6, 3.0, zf, 0.0, kind="palm", pot="CT_PlasterYellow", h=1.6)
     # ---- garden and bird feed (east middle): wall bays, feeders, plants, sacks
     for i, g in enumerate(("boxes", "jars", "boxes")):
@@ -836,6 +851,57 @@ def _umbrella(d, x, y, z, mat):
     cyl(d, "CT_Steel", x, y, z, z + 0.8, 0.008, 4)
     cyl(d, mat, x, y, z + 0.08, z + 0.58, 0.012, 6, r1=0.048)
     box(d, "CT_Wood", x - 0.035, x + 0.035, y - 0.012, y + 0.012, z + 0.78, z + 0.82, faces="xXyYZ")
+
+
+def _dress(B):
+    """Lived-in dressing (docs/city_dress.md): the cloakroom's coats by the season, wet mats and umbrellas at the doors
+    on rain days, felt boots in winter, the cafe after lunch, flowers on the cafe tables (fresh, then wilting), a satchel
+    on the window bench after school, flowers on the counters on holidays."""
+    zg, zf = 0.03, Z_SLAB1
+    # the cleaner's morning before the doors open at 9: the café floor upstairs mopped between the tables
+    with B.dress("night_cleaner", hours=(7, 10), open=False):
+        nk.wet_floor(B, 14.9, 6.4, zf, 90.0, w=1.6, d=1.1, seed=14)
+        nk.mop_bucket(B, 14.75, 7.55, zf, 60.0, seed=14)
+    with B.dress("cloak_winter", months=(12, 1, 2)):
+        dk.coats_on_rail(B, 5.0, 28.8, zg, 0.0, w=2.2, share=0.75, season="winter", seed=3)
+    with B.dress("cloak_winter_b", months=(12, 1, 2)):
+        dk.coats_on_rail(B, 7.9, 28.8, zg, 0.0, w=2.2, share=0.55, season="winter", seed=4)
+    with B.dress("cloak_autumn", months=(3, 4, 10, 11)):
+        dk.coats_on_rail(B, 5.0, 28.8, zg, 0.0, w=2.2, share=0.5, season="autumn", seed=3)
+    with B.dress("cloak_autumn_b", months=(3, 4, 10, 11)):
+        dk.coats_on_rail(B, 7.9, 28.8, zg, 0.0, w=2.2, share=0.3, season="autumn", seed=4)
+    with B.dress("cloak_summer", months=(5, 6, 7, 8, 9)):
+        dk.coats_on_rail(B, 5.0, 28.8, zg, 0.0, w=2.2, share=0.12, season="summer", seed=3)
+        dk.coats_on_rail(B, 7.9, 28.8, zg, 0.0, w=2.2, share=0.12, season="summer", seed=4)
+    with B.dress("doors_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, -0.6, 2.2, zg + 0.014, 0.0)
+        dk.doormat_wet(B, 0.6, 2.2, zg + 0.014, 0.0)
+        dk.umbrella_open(B, -2.3, 3.3, zg, 30, seed=1)
+        dk.umbrella_open(B, 2.5, 3.5, zg, 200, seed=2)
+        dk.umbrella_stand(B, 1.9, 2.0, zg, 0, n=4, seed=4)
+    with B.dress("doors_rain_east", weather=("rain", "wet")):
+        dk.doormat_wet(B, 9.0, 2.2, zg + 0.002, 0.0, w=1.2)
+        dk.umbrella_open(B, 11.3, 3.4, zg, 110, seed=3)
+        dk.umbrella_stand(B, 10.6, 2.0, zg, 0, n=3, seed=5)
+    with B.dress("doors_winter", months=(12, 1, 2), weather_not=("rain",)):
+        dk.boots(B, -1.7, 2.1, zg, -4, kind="felt", seed=6)
+        dk.boots(B, 8.0, 2.1, zg, 6, kind="felt", seed=7)
+        dk.boots(B, 10.0, 2.1, zg, 0, kind="galoshes", seed=8)
+    cafe = ((16.5, 3.4), (16.5, 6.4), (13.3, 4.9), (19.0, 8.6))
+    with B.dress("cafe_lunch", hours=(13, 16), chance=0.75):
+        for k, (tx, ty) in enumerate(cafe):
+            dk.plate_crumbs(B, tx + 0.15, ty - 0.2, zf + 0.74, 20.0 * k, seed=k + 1)
+    with B.dress("cafe_flowers", phase=(7, 0, 5), open=True):        # off the tables when the chairs go up (city_night)
+        kit.vase(B, 16.5, 3.65, zf + 0.74, 0.0, seed=51)
+        kit.vase(B, 13.3, 5.15, zf + 0.74, 0.0, seed=52)
+    with B.dress("cafe_wilted", phase=(7, 5, 7), open=True):
+        dk.vase_wilted(B, 16.5, 3.65, zf + 0.74, 0.0, seed=51)
+        dk.vase_wilted(B, 13.3, 5.15, zf + 0.74, 0.0, seed=52)
+    with B.dress("bench_satchel", weekdays=(0, 1, 2, 3, 4), hours=(15, 19), chance=0.6):
+        dk.school_bag(B, 12.7, 2.4, zf + 0.45, 0.0, seed=3)
+    with B.dress("festive_flowers", festival="any"):
+        kit.vase(B, 6.4, 26.45, zg + 1.05, 0.0, seed=61)
+        kit.vase(B, -5.35, 24.1, zf + 1.05, 0.0, seed=62)
 
 
 def _extras(B, rnd):
