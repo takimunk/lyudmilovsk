@@ -601,6 +601,17 @@ def _interior(B, outline_cut):
     else:
         B.thing("studio_aquarium", "screen", wh["pos"][:2] + (1.0,), wh["yaw"], what="aquarium")
     B.spot("studio_easel", "work", ea["front"][:2] + (0.0,), (ea["yaw"] + 0.0) % 360)
+    # ---- small things that answer a touch (backlog item 31): the mailboxes, a switch either side of the doorway, the
+    # kitchenette's tap, a hexagon's vent that opens
+    hk.mailbox_thing(B, "lobby_mailboxes", *wall_l(-12), rows=3)
+    lx, ly = S(dw + 0.32, -TP / 2)
+    hk.switch(B, "lobby_switch", lx, ly, Y(0.0, -1.0))
+    sx, sy = S(-dw - 0.32, TP / 2)
+    hk.switch(B, "studio_switch", sx, sy, Y(0.0, 1.0))
+    kx, ky, kyw = wall_s(90, back=0.2)
+    r = math.radians(kyw)
+    hk.tap_thing(B, "studio_tap", kx - 0.3 * math.cos(r), ky - 0.3 * math.sin(r), kyw)
+    hk.window_latch(B, "studio_vent", free_s(150, SR, 0)[:2], what="vent", room=lambda x_, y_: inside(x_, y_, 0.02))
     H.check("twin")
 
 

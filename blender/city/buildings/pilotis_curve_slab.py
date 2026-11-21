@@ -23,6 +23,7 @@ import math
 import random
 
 import furn_int3 as fu
+import _homekit as hk
 import interior_kit as kit
 import geom
 from citykit import box, prism, DOOR_W, DOOR_H
@@ -361,6 +362,8 @@ def build(B):
     hface(m, "CT_Floor", [W2(0, 0), W2(LC, 0), W2(ubr, VB), W2(ubl, VB)], 0.01, True)
     # lobby furniture: letter boxes on the west wall, mat, bench, plant, lamps
     fu.mailboxes(B, fu.Fr(W(0.5, 5.2)[0], W(0.5, 5.2)[1], 90, 0.01), 0.0, 0.95, cols=5, rows=3)
+    # their thing (backlog item 31: a peek through the slots, docs/city_interiors.md "Small things that answer a touch")
+    B.thing("lobby_mailboxes", "board", (W(0.5, 5.2)[0] + 0.15, W(0.5, 5.2)[1], 1.46), 90.0, what="mailbox")
     fu.doormat(B, fu.Fr(W(mid, 0.9)[0], W(mid, 0.9)[1], 0, 0.01), 0.0, 0.0)
     bx, by, _ = W(LC - 0.6, 3.0)
     B.spot("lobby_bench", "bench", (bx, by, 0.0), yaw_of(Fc.n) + 270)
@@ -583,6 +586,7 @@ def _furnish(B, th, Fc, W, LC, VB, f0):
     xl, yl = Rw.p(-1.0, 7.4)
     kit.table_lamp(B, xl, yl, d["top"] + Z, 0.0)
     B.thing("concierge_desk", "counter", (*Rw.p(-1.0, 6.9), 1.0), Rw.yaw(-1, 0), role="concierge", service="reception")
+    hk.switch(B, "lobby_switch", *Lw.p(0.2, 0.55), Lw.yaw(1, 0), z=Z)
     B.spot("concierge_chair", "seat", (*Rw.p(-0.45, 6.9), Z), Rw.yaw(-1, 0))
     x, y = Rw.p(-0.5, 7.95)
     kit.plant(B, x, y, Z, 0.0, kind="fern", pot="CT_PlasterRed", h=1.0, seed=4)
@@ -689,6 +693,7 @@ def _common_room(B, th, Z):
     tv = kit.table(B, x, y, Z, Rw.yaw(-1, 0), w=1.0, d=0.5, h=0.5)
     kit.tv_set(B, x, y, tv["top"] + Z, Rw.yaw(-1, 0))
     B.thing("common_tv", "screen", (x, y, 0.9 + Z), Rw.yaw(-1, 0), what="tv")
+    hk.switch(B, "common_switch", *Lw.p(0.2, 0.8), Lw.yaw(1, 0), z=Z)
     x, y = Rw.p(-0.7, 2.0)
     kit.armchair(B, x, y, Z, Rw.yaw(-1, 1), mat="CT_PlasterGreen")
     B.thing("common_armchair", "seat", (x, y, 0.45 + Z), Rw.yaw(-1, 1), height=0.45)
@@ -737,6 +742,9 @@ def _caretaker_room(B, th, Z):
     # left wall: kitchenette, radio shelf, picture
     x, y = Lw.p(0.2, 2.9)
     kit.kitchen_unit(B, x, y, Z, Lw.yaw(1, 0), modules="cupboard,stove,sink", wall_cupboards=False)
+    r_ = math.radians(Lw.yaw(1, 0))
+    hk.tap_thing(B, "caretaker_tap", x + 0.6 * math.cos(r_), y + 0.6 * math.sin(r_), Lw.yaw(1, 0), z=Z)
+    hk.switch(B, "caretaker_switch", *Lw.p(0.2, 1.0), Lw.yaw(1, 0), z=Z)
     kit.samovar(B, *Lw.p(0.4, 2.3), 0.9 + Z, 0.0)
     kit.teapot(B, *Lw.p(0.4, 3.4), 0.9 + Z, 0.0)
     x, y = Lw.p(0.2, 5.0)
@@ -848,6 +856,10 @@ def _flat(B, th):
     kit.picture(B, x, y, Z, st, name="painting_pines", w=0.6, zc=1.8)
     x, y = M.p(2.4, 8.0)
     kit.kitchen_unit(B, x, y, Z, st, modules="cupboard,stove,sink,fridge", wall_cupboards=False)
+    r_ = math.radians(st)
+    hk.tap_thing(B, "flat_tap", x + 0.3 * math.cos(r_), y + 0.3 * math.sin(r_), st, z=Z)
+    hk.switch(B, "flat_switch", *Lw.p(0.2, 6.4), Lw.yaw(1, 0), z=Z)
+    hk.window_latch(B, "flat_window", M.p(-2.2, 0.0), z=ZS[0], reach=3.0)
     kit.samovar(B, *M.p(1.5, 8.0), ZS[0] + 0.9, 0.0)
     kit.teapot(B, *M.p(2.6, 8.0), ZS[0] + 0.9, 0.0)
     x, y = M.p(0.9, 6.0)

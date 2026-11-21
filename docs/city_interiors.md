@@ -418,8 +418,45 @@ a text {"gen": "cup:<id>", "kind": "notice", "pages": [fallback]} read on some t
   (1.5 m under to 4 m over it) is lit, all go off, else all on, whatever the hours say (`ULyudWindowLights::SwitchLampsNear`:
   flags read by the lamp pool, no components, no windows). Back to the hours when the hero walks into another plot or starts
   over. `city.act.switch.on|off|none` on the prompt line.
-* No building declares either yet: the building modules add `B.thing(..., "board", topic="clock")` or
-  `B.thing(..., "machine", what="switch", switch="room")` by a door.
+* Most buildings declare them now (the building modules: `B.thing(..., "board", topic="clock")`,
+  `B.thing(..., "machine", what="switch", switch="room")` by a door, or `_homekit.switch(B, id, x, y, yaw, z=floor)`, which
+  draws the plate too).
+
+### Small things that answer a touch
+
+Backlog item 31: content `tools/city/content/x_touch.json` (+ `strings/x_touch.json`), helpers in
+`blender/city/buildings/_homekit.py` (each draws its piece and declares its thing):
+
+| Thing (`what`) | Helper | Act | What happens |
+|---|---|---|---|
+| `window`, `vent`, `balcony_door` | `window_latch(B, id, near, z=floor, what=..., room=test)`: the window card nearest `near`, a handle on the wall's inner face | `open_window` (0.5), `open_vent` (0.3), `open_balcony` (0.8) | opens, see below |
+| `mailbox` | `mailbox_thing(B, id, x, y, yaw, z, rows)` beside `mailboxes(...)` | `peek_mailbox` | a peek through the slots: the morning paper on weekdays, postcards on holidays, damp papers in the rain, flyers, a child's note |
+| `tap` | `tap_thing(B, id, x, y, yaw, z)` at a kitchen unit's sink module | `kitchen_tap` | lines by the weather (icy in the cold, a splash on a hot day) and the hour |
+| `switch` | `switch(B, id, x, y, yaw, z)` | `light_switch` | the room's lamps (above) |
+
+In 2026-11 they were added to the houses that had none: the twin cylinders (P-T1H3, P-T3H1: mailboxes, a switch either
+side of the studio doorway, the kitchenette's tap, a hexagon's vent), the origami row (P-T1H5: switches on both floors,
+the kitchen tap, the children's window), the pilotis slab (P-T4H1: mailboxes, switches in the lobby, the common room, the
+caretaker's room and Lev Markovich's flat, two taps, the flat's window) and the terrace risers (P-RISER1/2: the stair's
+mailboxes, the maisonette's switch, tap and window). The rest of the town already had its switches, clocks, radios (the
+station plays: docs/music.md), lifts (the unite block, the stacked beam tower, both capsule towers) and cats.
+
+After changing a module: `python3 blender/city/build_city.py -- <type> --no-render` (the json and the glb; works with
+pip's `bpy` in the cloud too), `python3 tools/city/interiors.py`, `python3 tools/city/reach_audit.py <type>`; on the Mac
+also `unreal/scripts/import_city.py` for the meshes.
+
+### Windows that open
+
+Any act with `"window": 0.1..1` (how wide: a vent 0.3, a casement 0.5, a balcony door 0.8) is a window that opens. E on a
+shut one runs the act as usual (a look-out act keeps its lines and minutes: `city.act.window_look.prompt`, «открыть окно и
+выглянуть») and opens it; E on an open one shuts it at once (the prompt says `city.act.window.shut_prompt`). The prompt
+line says how it feels by the weather and the hour (`city.window.<open|shut>.<rain|snow|fog|cold|warm|night|day>`,
+`FModel::WindowNote`), with the sound `rest_door`. While a window of this visit is open, the soundscape hears the widest one
+(`ULyudSoundscapeSubsystem::SetOpenAir`): its indoor/outdoor mix leans toward the outside by up to 0.35 (the wind, the
+sea, the rain and the birds come in less muffled, the room tone goes quieter), never far enough to change the music's mood.
+The windows shut behind him when he walks into another plot or starts over (`FModel::ShutWindows`, like the switches'
+lamps); not saved. The windows are not drawn open (no moving sash yet). Developer mode: `interiors.window_nearest`.
+Checked in citysim ("small things that answer a touch").
 
 ### Sitting and lying
 
@@ -560,7 +597,7 @@ back to) the ground floor's. Captions are the building's own string keys (`city.
 (`FFloor`, `FThing::Floors`/`bOneWay`, `IsLift`, `FindLiftTarget`, `LiftSpots`, `LiftFloorOk`, `LiftReturns`) is checked in
 citysim, with a real-data check that every stop has a way back. Console `lyud.City.Go <thing id>` (to any thing, as a lift
 would put him there); developer mode `interiors.lift_nearest` (the nearest lift door within reach of the list: its chooser,
-or at once). Now: no building declares a link yet (the building modules' doors).
+or at once). Declared by the unite block, the stacked beam tower, both capsule towers, the cube houses, the wave tower and the lifeguard towers (`lifts: 26 doors` in the interiors.py summary).
 
 ### Reach audit
 
@@ -787,7 +824,7 @@ the list (their ids play nothing from an act).
   nearest game of that type, from anywhere), `interiors.game_win` (win the game being played), `interiors.regulars` (the
   regulars' page; the log lists each one's style, skill, games, plots), `interiors.sit_nearest`, `interiors.lie_nearest`,
   `interiors.read_nearest`, `interiors.read_all` (toggle), `interiors.read_list`, `interiors.topics`, `interiors.topics_reset`,
-  `interiors.ask_nearest`, `interiors.tone`, `interiors.lift_nearest`. Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
+  `interiors.ask_nearest`, `interiors.tone`, `interiors.lift_nearest`, `interiors.window_nearest`. Console `lyud.City.Game <thing id>|press [1-3]|win|quit|regulars`. Every city quest stage has a `dev` block written by interiors.py (`quest_dev`): a teleport in front of a thing
   that makes its first objective (`city.q.<quest>.<n>`), the clock an hour after it opens, `lyud.City.Weekday` to a day it is
   open, `Inventory.Earn` for its price, the items a later stage only checks; a stage's own `dev` in
   `tools/city/content/quests.json` wins key by key.

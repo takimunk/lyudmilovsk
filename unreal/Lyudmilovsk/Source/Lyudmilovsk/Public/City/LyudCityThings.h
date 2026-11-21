@@ -246,6 +246,8 @@ public:
 	bool GoToThing(const FString& ThingId);
 	/** Developer mode: uses the nearest lift door (its chooser, or at once). */
 	bool UseNearestLift();
+	/** Developer mode: opens or shuts the nearest window that opens (docs/city_interiors.md "Windows that open"). */
+	bool ToggleNearestWindow();
 	bool IsUsingLift() const { return LiftDest >= 0 || LiftThing >= 0; }
 	/** Has one of our modes the keys (a page, a show, a game, a text, the talk's chooser, a lift, lying, the sleep chooser)? The
 	 *  NPC talk should step aside meanwhile (docs/city_interiors.md "Open points for other threads"); seated alone is not one. */
@@ -353,6 +355,10 @@ private:
 	FText LineText(const FString& Key) const;
 	/** A thing with "switch": the lamps of its room on or off for the hero's visit (all back when he leaves the plot). */
 	void FlipSwitch(int32 Thing);
+	/** A window that opens (its act's "window"): open or shut it, the open air in the room follows (ApplyOpenAir). */
+	void ToggleWindow(int32 Thing);
+	/** The soundscape hears the widest open window of this visit (ULyudSoundscapeSubsystem::SetOpenAir). */
+	void ApplyOpenAir();
 	/** A short word on the prompt line for a moment (the switch's "lights on"), like a refusal but not one. */
 	void Note(const FText& What);
 

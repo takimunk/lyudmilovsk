@@ -591,6 +591,33 @@
    }
   },
   {
+   "id": "home_switch",
+   "kind": "machine",
+   "pos": [
+    -2.9,
+    7.4,
+    1.3
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "home_tap",
+   "kind": "machine",
+   "pos": [
+    -4.0,
+    11.98,
+    0.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
    "id": "home_parents_bed",
    "kind": "bed",
    "pos": [
@@ -695,6 +722,33 @@
    "yaw": 270.0,
    "props": {
     "topic": "wallpaper"
+   }
+  },
+  {
+   "id": "home_switch_up",
+   "kind": "machine",
+   "pos": [
+    -7.9,
+    6.5,
+    4.3
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "home_window_kids",
+   "kind": "board",
+   "pos": [
+    -4.25,
+    12.0,
+    4.5
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "window"
    }
   },
   {
@@ -2443,7 +2497,7 @@
  ],
  "tris": {
   "shell": 7168,
-  "detail": 14278,
+  "detail": 14338,
   "windows": 280
  }
 }

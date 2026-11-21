@@ -534,6 +534,7 @@ def _stair_things(B):
     f(kit.notice_board, -SX - 0.02, 3.2, 90.0, z=zs(3.2) - 0.3, w=0.9, zc=1.7, seed=52)
     ph = f(kit.wall_phone, -SX - 0.02, 1.8, 90.0, z=zs(1.8) - 0.3)
     B.thing("stair_payphone", "machine", (-SX, 1.8, zs(1.8) + 1.1), 90.0, what="payphone")
+    hk.mailbox_thing(B, "stair_mailboxes", SX + 0.02, 1.7, 270.0, z=z1_ - 0.4, rows=3)     # backlog item 31
 
 
 def _maisonette(B):
@@ -615,6 +616,10 @@ def _maisonette(B):
     B.thing("home_board_calendar", "board", (5.97, yi0, z + 1.6), 180.0, topic="club")
     B.thing("home_picture", "board", (xi1, 15.2, z + 1.5), 270.0, topic="painting")
     B.thing("home_paper", "take", (11.1, 15.6, z + 0.45), 10.0, item="daily_paper")
+    # small things that answer a touch (backlog item 31): the switch by the door, the kitchen tap, a window that opens
+    hk.switch(B, "home_switch", xi1, 14.9, 270.0, z=z)
+    hk.tap_thing(B, "home_tap", 16.1, yi1 - 0.02, 0.0, z=z)
+    hk.window_latch(B, "home_window", (7.7, yi0), z=z, room=lambda x_, y_: inside(x_, y_, 0.02))
     H.check("riser-maisonette", overlaps=False)
 
 

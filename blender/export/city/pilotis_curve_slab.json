@@ -396,6 +396,19 @@
  ],
  "things": [
   {
+   "id": "lobby_mailboxes",
+   "kind": "board",
+   "pos": [
+    0.857,
+    10.576,
+    1.46
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "mailbox"
+   }
+  },
+  {
    "id": "house_notices",
    "kind": "board",
    "pos": [
@@ -459,6 +472,20 @@
    "props": {
     "role": "concierge",
     "service": "reception"
+   }
+  },
+  {
+   "id": "lobby_switch",
+   "kind": "machine",
+   "pos": [
+    0.23,
+    5.95,
+    1.31
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
    }
   },
   {
@@ -709,6 +736,20 @@
    }
   },
   {
+   "id": "common_switch",
+   "kind": "machine",
+   "pos": [
+    -17.027,
+    4.86,
+    1.31
+   ],
+   "yaw": 99.1,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
    "id": "common_armchair",
    "kind": "seat",
    "pos": [
@@ -772,6 +813,33 @@
    "yaw": 168.6,
    "props": {
     "height": 0.45
+   }
+  },
+  {
+   "id": "caretaker_tap",
+   "kind": "machine",
+   "pos": [
+    18.176,
+    7.41,
+    0.96
+   ],
+   "yaw": 80.9,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "caretaker_switch",
+   "kind": "machine",
+   "pos": [
+    17.513,
+    4.984,
+    1.31
+   ],
+   "yaw": 80.9,
+   "props": {
+    "what": "switch",
+    "switch": "room"
    }
   },
   {
@@ -930,6 +998,46 @@
    "props": {
     "rest": "private",
     "height": 0.5
+   }
+  },
+  {
+   "id": "flat_tap",
+   "kind": "machine",
+   "pos": [
+    -20.234,
+    11.349,
+    4.355
+   ],
+   "yaw": 11.4,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "flat_switch",
+   "kind": "machine",
+   "pos": [
+    -26.846,
+    8.606,
+    4.705
+   ],
+   "yaw": 103.7,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "flat_window",
+   "kind": "board",
+   "pos": [
+    -23.576,
+    3.337,
+    4.825
+   ],
+   "yaw": 192.5,
+   "props": {
+    "what": "window"
    }
   },
   {
@@ -3095,7 +3203,7 @@
  ],
  "tris": {
   "shell": 8886,
-  "detail": 27174,
+  "detail": 27274,
   "windows": 344
  }
 }

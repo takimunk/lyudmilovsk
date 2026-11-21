@@ -386,6 +386,9 @@ namespace LyudCity
 		 *  "no_stay", an act id; -1: refused as closed). */
 		std::string NeedsStay;
 		int NoStayAct = -1;
+		/** "window": a window that opens (0..1, how wide: a vent 0.3, a casement 0.5, a balcony door 0.8); E opens or shuts it
+		 *  and the open air comes into the room (docs/city_interiors.md "Windows that open"). 0: not one. */
+		float Window = 0.f;
 	};
 
 	/**
@@ -2830,6 +2833,62 @@ namespace LyudCity
 			return E;
 		}
 
+		// --- windows that open (docs/city_interiors.md "Windows that open"): for this visit, like the switches' lamps
+
+		/** How wide Thing's window opens (its act's "window"); 0: not a window that opens. */
+		float WindowShare(int Thing) const
+		{
+			if (Thing < 0 || Thing >= (int)Things.size())
+			{
+				return 0.f;
+			}
+			const int A = Things[(size_t)Thing].Act;
+			return A >= 0 && A < (int)Acts.size() ? Acts[(size_t)A].Window : 0.f;
+		}
+
+		/** Opens Thing's window, or shuts it if open: true now open (false also for a thing that is no such window). */
+		bool ToggleWindow(int Thing)
+		{
+			const float Share = WindowShare(Thing);
+			if (Share <= 0.f)
+			{
+				return false;
+			}
+			const auto It = OpenWindows.find(Thing);
+			if (It != OpenWindows.end())
+			{
+				OpenWindows.erase(It);
+				return false;
+			}
+			OpenWindows[Thing] = Share;
+			return true;
+		}
+
+		bool IsWindowOpen(int Thing) const { return OpenWindows.count(Thing) > 0; }
+
+		/** How much of the open air is in the room: the widest open window (0: all shut). */
+		float OpenAir() const
+		{
+			float Most = 0.f;
+			for (const auto& W : OpenWindows)
+			{
+				Most = std::max(Most, W.second);
+			}
+			return Most;
+		}
+
+		/** He walked into another plot (or starts over): the windows he opened are shut behind him. */
+		void ShutWindows() { OpenWindows.clear(); }
+
+		/** The words on the prompt line as a window opens or shuts, by the weather and the hour: city.window.<open|shut>.<rain,
+		 *  snow, fog, cold, warm, night, day>, the first that holds in that order. */
+		static std::string WindowNote(bool bOpen, const FWhen& W)
+		{
+			const char* What = (W.Weather & WeatherRain) ? "rain" : (W.Weather & WeatherSnow) ? "snow" : (W.Weather & WeatherFog) ? "fog"
+				: (W.Weather & WeatherCold) ? "cold" : (W.Weather & WeatherWarm) ? "warm" : (W.Hour >= 21.f || W.Hour < 6.f) ? "night" : "day";
+			return std::string("city.window.") + (bOpen ? "open." : "shut.") + What;
+		}
+
 		/** A light switch's reach (cm): the thing's "switch" prop, "room" 7 m, "hall" 15 m or metres (1..30); a "what": "switch"
 		 *  without it: its room; 0: not a switch. */
 		static double SwitchRadiusCm(const FThing& T)
@@ -2876,6 +2935,7 @@ namespace LyudCity
 		/** A new game: nothing used, nothing read. */
 		void ResetState()
 		{
+			OpenWindows.clear();
 			Today.clear();
 			Uses.clear();
 			LineOf.clear();
@@ -3018,6 +3078,8 @@ namespace LyudCity
 		/** The game day Today counts (a new day clears it). */
 		long long CountDay = 0;
 		std::map<std::string, int> Today;
+		/** The windows he opened on this visit (thing -> how wide; ToggleWindow): not saved. */
+		std::map<int, float> OpenWindows;
 		std::map<std::string, int> Uses;
 		std::map<std::string, int> LineOf;
 		/** A daily act's thing: the game day (+1) its line was last shown. */
@@ -3822,6 +3884,7 @@ namespace LyudCity
 			A.StayId = StayField["id"].S();
 			A.StayDays = A.StayId.empty() ? 0 : std::min(60, std::max(0, StayField["days"].I(0)));
 			A.NeedsStay = V["needs_stay"].S();
+			A.Window = std::min(1.f, std::max(0.f, V["window"].F(0.f)));
 			return A;
 		}
 

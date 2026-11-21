@@ -352,6 +352,9 @@ def _family(B, i):
         B.thing("home_picture_still", "board", (WW, 4.3, 1.75), 90.0, topic="painting")
         B.thing("home_picture_sea", "board", (EW, 8.2, 1.7), 270.0, topic="painting")
         B.thing("home_paper", "take", (-4.25, 5.0, 0.45), 0.0, item="daily_paper")
+        # small things that answer a touch (backlog item 31): the switch between the living room and the kitchen, the tap
+        hk.switch(B, "home_switch", EW, 7.4, 270.0)
+        hk.tap_thing(B, "home_tap", -4.3 + 0.3, RW, 0.0)
     run(0, ground_floor)
 
     # ------------------------------------------------------------------------------------ first floor
@@ -385,6 +388,8 @@ def _family(B, i):
             B.thing("home_school_chair_%d" % j, "seat", c_["seats"][0][:2] + (z + 0.45,), c_["seats"][0][3], height=0.45)
         B.thing("home_children_shelf", "shelf", sh["pos"][:2] + (z + 1.2,), sh["yaw"], topic="kids")
         B.thing("home_wardrobe_poster", "board", (EW, 9.6, z + 1.6), 270.0, topic="wallpaper")
+        hk.switch(B, "home_switch_up", WW, 6.5, 90.0, z=z)
+        hk.window_latch(B, "home_window_kids", (-4.3, RW), z=z, room=lambda x_, y_: tests[1](x_, y_, 0.02))
     run(1, first_floor)
 
     # ------------------------------------------------------------------------------------ the loft
