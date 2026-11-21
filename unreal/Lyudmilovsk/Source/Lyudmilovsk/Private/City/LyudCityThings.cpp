@@ -6,6 +6,7 @@
 #include "City/SLyudCityBook.h"
 #include "City/LyudTownPaper.h"
 #include "City/SLyudCityGame.h"
+#include "City/SLyudCityProc.h"
 #include "City/SLyudCityPage.h"
 #include "City/LyudCinema.h"
 #include "Audio/LyudSoundscape.h"
@@ -287,6 +288,20 @@ void ULyudCityThings::Deinitialize()
 	}
 	GamePanel.Reset();
 	bGamePanelAdded = false;
+	if (Proc.IsValid())
+	{
+		*Proc = LyudCity::FProcState();
+	}
+	if (ProcPanel.IsValid() && bProcPanelAdded)
+	{
+		UWorld* World = GetWorld();
+		if (UGameViewportClient* Viewport = World ? World->GetGameViewport() : nullptr)
+		{
+			Viewport->RemoveViewportWidgetContent(ProcPanel.ToSharedRef());
+		}
+	}
+	ProcPanel.Reset();
+	bProcPanelAdded = false;
 	CloseBook();
 	if (Book.IsValid() && bBookAdded)
 	{
@@ -1115,16 +1130,32 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		ToggleWindow(Thing);
 		return;
 	}
-	// the staff talk is asked before the act runs (a daily act's count or the money spent must not hide it): its topics now
+	// a procedure (docs/sanatorium_procedures.md): its scene first; the act runs when it is over (FinishProcedure runs it again
+	// with bRunAfterProc)
+	if (!bRunAfterProc && !bShutWords && Model->ProcNow(Thing, Now, LyudCityThingsImpl::Ask(this)) >= 0)
+	{
+		EndGame(false);
+		BeginProcedure(Thing);
+		if (IsInProc())
+		{
+			return;
+		}
+	}
+	// the staff talk is asked before the act runs (a daily act's count or the money spent must not hide it): its topics now;
+	// not after a procedure (its result is the page)
 	std::vector<int> TalkOffer;
-	if (!bShutWords && Model->HasTopics(Thing))
+	if (!bRunAfterProc && !bShutWords && Model->HasTopics(Thing))
 	{
 		Model->TalkReady(Thing, Now, LyudCityThingsImpl::Ask(this), TalkOffer);
 	}
 	LyudCity::FAsk RunAsk = LyudCityThingsImpl::Ask(this);
 	// a tournament match is played whatever today's count of games is (CityCupsModel.h)
 	RunAsk.bFreeGame = Cups && Cups->MatchAt(*Model, Thing, Now) >= 0;
-	const LyudCity::FOutcome O = Model->Run(Thing, Now, RunAsk);
+	LyudCity::FOutcome O = Model->Run(Thing, Now, RunAsk);
+	if (bRunAfterProc)
+	{
+		O.Minutes = FMath::Max(0, O.Minutes - ProcCutMinutes);     // the scene's cuts already let them pass
+	}
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: do %s (%s, act %s) -> %s line=%s minutes=%d price=%d shop=%s event=%s/%s%s"),
 		*LyudCityThingsImpl::Str(T.Id), *LyudCityThingsImpl::Str(T.Kind), O.Act >= 0 ? *LyudCityThingsImpl::Str(Model->Acts[O.Act].Id) : TEXT("-"), UTF8_TO_TCHAR(LyudCity::VerdictName(O.Verdict)),
 		*LyudCityThingsImpl::Str(O.Line), O.Minutes, O.Price, *LyudCityThingsImpl::Str(O.Shop), *LyudCityThingsImpl::Str(O.Event), *LyudCityThingsImpl::Str(O.Target),
@@ -1341,7 +1372,8 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		OpenBook(O.Text, Thing, Hero && Hero->IsSeated() && SeatedOn >= 0 && (SeatedOn == Thing || SeatedOn == BookSeat));
 		return;
 	}
-	const bool bLie = bNear && O.Pose == "lie" && Sit(Thing, Hero, true);
+	// (still on the bed from a procedure's scene: he stays down for the act's minutes)
+	const bool bLie = bNear && O.Pose == "lie" && (LyingOn == Thing || Sit(Thing, Hero, true));
 	if (bNear && O.Pose == "sit")
 	{
 		// on the thing itself when it is a seat, else on a free seat by it (never in the middle of a table)
@@ -1397,6 +1429,12 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 				bHooked = MoreActHooks[H].Execute(Info, Line);
 			}
 		}
+	}
+	if (bRunAfterProc && !ProcResult.IsEmpty())
+	{
+		// how the procedure went, over the act's own words
+		Line = Line.IsEmpty() ? ProcResult : FText::FromString(ProcResult.ToString() + TEXT("\n\n") + Line.ToString());
+		ProcResult = FText::GetEmpty();
 	}
 	if (!Line.IsEmpty())
 	{
@@ -1624,6 +1662,13 @@ void ULyudCityThings::Tick(float DeltaTime)
 	}
 	// E is the talk's while he faces somebody or is talking (one press must not both talk and buy)
 	const bool bTalk = TalkDirector.IsValid() && TalkDirector->IsEngaged();
+	// a procedure has the keys before the bed it may lie on (its E must not get him up)
+	if (IsInProc())
+	{
+		SetPrompted(-1);
+		TickProcedure(Hero, PC, bTalk, DeltaTime);
+		return;
+	}
 	if (LyingOn >= 0)
 	{
 		TickLie(Hero, PC, bTalk);
@@ -2227,7 +2272,7 @@ bool ULyudCityThings::IsPlayingGame() const
 
 bool ULyudCityThings::HasModeUp() const
 {
-	return Page.IsValid() || ShowThing >= 0 || IsPlayingGame() || IsReading() || IsTalking() || IsUsingLift() || IsChoosingSleep() || LyingOn >= 0;
+	return Page.IsValid() || ShowThing >= 0 || IsPlayingGame() || IsInProc() || IsReading() || IsTalking() || IsUsingLift() || IsChoosingSleep() || LyingOn >= 0;
 }
 
 void ULyudCityThings::BeginGame(int32 Thing, int32 Minutes, bool bSeated)
@@ -2641,6 +2686,437 @@ void ULyudCityThings::QuitGame()
 	EndGame(false);
 }
 
+// --- procedures (docs/sanatorium_procedures.md): the model plays the scene, this draws the panel, polls the keys, seats the hero
+// and runs the act at the end
+
+namespace LyudCityProcImpl
+{
+	/** How near a guest must be to be "at the same procedure" (cm), and how far the hero may wander from a standing one. */
+	constexpr double CompanionRadius = 1300.0;
+	constexpr float WalkAway = 250.f;
+
+	const TCHAR* KeysWord(LyudCity::EProcStep S)
+	{
+		switch (S)
+		{
+		case LyudCity::EProcStep::Pick: return TEXT("pick");
+		case LyudCity::EProcStep::Pour: return TEXT("pour");
+		case LyudCity::EProcStep::Sip: return TEXT("sip");
+		case LyudCity::EProcStep::Breathe: return TEXT("breathe");
+		case LyudCity::EProcStep::Tap: return TEXT("tap");
+		default: return TEXT("say");
+		}
+	}
+}
+
+bool ULyudCityThings::IsInProc() const
+{
+	return Proc.IsValid() && Proc->Def >= 0;
+}
+
+void ULyudCityThings::FindProcCompanions(int32 Thing, TArray<TPair<FString, FString>>& Out) const
+{
+	Out.Reset();
+	const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	if (!People || Thing < 0 || Thing >= NumThings())
+	{
+		return;
+	}
+	const FVector At = ThingLocation(Thing);
+	// once a scene: the cheap read for everybody, the full one only for the few near
+	for (int32 Id = 0, N = People->NumPeople(); Id < N; ++Id)
+	{
+		int32 Activity = -1;
+		bool bDoing = false;
+		EPersonPose Pose = EPersonPose::Stand;
+		FVector Where = FVector::ZeroVector;
+		if (!People->GetActivityState(Id, Activity, bDoing, Pose, Where) || FVector::DistSquared(Where, At) > FMath::Square(LyudCityProcImpl::CompanionRadius))
+		{
+			continue;
+		}
+		FPersonInfo Info;
+		if (!People->GetPerson(Id, Info) || !Info.Home.StartsWith(TEXT("P-SANATORIUM/")) || Info.State == TEXT("away"))
+		{
+			continue;
+		}
+		// t_gromov_pyotr -> "gromov" (the guest lines' key), npc.t_gromov_pyotr.name (their name)
+		TArray<FString> Parts;
+		Info.Key.ParseIntoArray(Parts, TEXT("_"));
+		Out.Emplace(Parts.Num() >= 2 ? Parts[1] : Info.Key, FString::Printf(TEXT("npc.%s.name"), *Info.Key));
+	}
+}
+
+FText ULyudCityThings::ProcLineText(const FString& Key, const TArray<FString>& Args) const
+{
+	if (Key.IsEmpty())
+	{
+		return FText::GetEmpty();
+	}
+	if (Args.Num() == 0)
+	{
+		return LineText(Key);     // the town's talk ({detail}), a clock ({time})
+	}
+	FFormatOrderedArguments Format;
+	for (const FString& A : Args)
+	{
+		Format.Add(A.StartsWith(TEXT("@")) ? LyudText::Get(A.Mid(1)) : FText::FromString(A));
+	}
+	return FText::Format(LyudText::Get(Key), Format);
+}
+
+void ULyudCityThings::BeginProcedure(int32 Thing)
+{
+	UWorld* World = GetWorld();
+	if (!World || !Model || Thing < 0 || Thing >= NumThings())
+	{
+		return;
+	}
+	if (!Proc.IsValid())
+	{
+		Proc = MakePimpl<LyudCity::FProcState>();
+	}
+	TArray<TPair<FString, FString>> Found;
+	FindProcCompanions(Thing, Found);
+	std::vector<LyudCity::FProcCompanion> Companions;
+	for (const TPair<FString, FString>& C : Found)
+	{
+		LyudCity::FProcCompanion PC;
+		PC.Key = TCHAR_TO_UTF8(*C.Key);
+		PC.Name = TCHAR_TO_UTF8(*C.Value);
+		Companions.push_back(PC);
+	}
+	const LyudCity::FWhen ProcWhen = LyudCityThingsImpl::When(World);
+	if (!Model->StartProc(Thing, ProcWhen, Companions, *Proc))
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: %s has no procedure"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id));
+		return;
+	}
+	EndShow();
+	ClosePage();
+	EndTalk();
+	SetPrompted(-1);
+	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
+	const LyudCity::FAct* A = Model->ActOf(Thing);
+	const FVector At = ThingLocation(Thing);
+	const bool bNear = Hero && FVector::Dist(Hero->GetActorLocation(), At) < 400.f;
+	// the act's pose: on the bed (the mud, the massage) or on its seat (the inhaler's chair) when he is at it
+	bProcLying = false;
+	if (A && bNear && A->Pose == "lie" && !Hero->IsSeated() && Sit(Thing, Hero, true))
+	{
+		BeginLie(Thing, false, false);
+		bProcLying = true;
+	}
+	else if (A && bNear && A->Pose == "sit" && !Hero->IsSeated())
+	{
+		const int32 Seat = Model->SeatFor(Thing, SeatedOn);
+		if (Seat >= 0)
+		{
+			Sit(Seat, Hero, false);
+		}
+	}
+	bProcSeated = Hero && Hero->IsSeated() && SeatedOn >= 0;
+	ProcFrom = Hero ? Hero->GetActorLocation() : FVector::ZeroVector;
+	ProcFrame = GFrameCounter;
+	ProcBeatShown = -1;
+	bProcDark = false;
+	const LyudCity::FProcDef* D = Model->ProcDef(Proc->Def);
+	ProcTitle = LyudText::Get(LyudCityThingsImpl::Str(D->Title.empty() ? std::string("city.proc.title") : D->Title));
+	// the panel: made once, kept in the viewport (collapsed between scenes)
+	UGameViewportClient* Viewport = World->GetGameViewport();
+	if (!ProcPanel.IsValid())
+	{
+		ProcPanel = SNew(SLyudCityProc);
+	}
+	if (Viewport && !bProcPanelAdded)
+	{
+		Viewport->AddViewportWidgetContent(ProcPanel.ToSharedRef(), 61);
+		bProcPanelAdded = true;
+	}
+	ProcPanel->SetVisibility(EVisibility::HitTestInvisible);
+	ProcPanel->SetTitle(ProcTitle);
+	UpdateProcPanel(true, false);
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: procedure %s on %s (%d steps, %d at it, %s)"), *LyudCityThingsImpl::Str(D->Id),
+		*LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id), (int32)D->Steps.size(), Found.Num(),
+		bProcLying ? TEXT("lying") : bProcSeated ? TEXT("seated") : TEXT("standing"));
+}
+
+void ULyudCityThings::TickProcedure(AHeroCharacter* Hero, APlayerController* PC, bool bTalk, float DeltaTime)
+{
+	UWorld* World = GetWorld();
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
+	// over without a result when he walks off, gets up, stops being the hero or a screen comes up
+	if (!World || !Model || !IsInProc() || !Hero || !PC || !UI || UI->IsOpen() || (bProcSeated && !Hero->IsSeated())
+		|| (!bProcSeated && FVector::Dist(Hero->GetActorLocation(), ProcFrom) > LyudCityProcImpl::WalkAway))
+	{
+		EndProcedure(false);
+		Note(LyudText::Get(TEXT("city.proc.walked")));
+		return;
+	}
+	if (GFrameCounter != ProcFrame && PC->WasInputKeyJustPressed(EKeys::Escape))
+	{
+		EndProcedure(false);
+		Note(LyudText::Get(TEXT("city.proc.walked")));
+		return;
+	}
+	LyudCity::FProcState& G = *Proc;
+	// the keys are polled, never consumed; E held pours and breathes (not while somebody in front has the E)
+	const bool bFresh = GFrameCounter != ProcFrame;
+	const bool bHeld = bFresh && !bTalk && PC->IsInputKeyDown(EKeys::E);
+	Model->TickProc(G, (double)DeltaTime, bHeld);
+	if (bFresh && !bTalk && !G.bOver)
+	{
+		const int32 Choice = PC->WasInputKeyJustPressed(EKeys::One) ? 0 : PC->WasInputKeyJustPressed(EKeys::Two) ? 1
+			: PC->WasInputKeyJustPressed(EKeys::Three) ? 2 : -1;
+		if (Choice >= 0)
+		{
+			Model->PressProc(G, Choice);
+		}
+		else if (PC->WasInputKeyJustPressed(EKeys::E))
+		{
+			Model->PressProc(G, -1);
+		}
+	}
+	const bool bBeat = G.BeatSerial != ProcBeatShown;
+	if (bBeat)
+	{
+		const LyudCity::FProcDef* D = Model->ProcDef(G.Def);
+		const LyudCity::FProcStep* S = D && G.Step >= 0 && G.Step < (int32)D->Steps.size() ? &D->Steps[(size_t)G.Step] : nullptr;
+		// a cut: the screen goes dark while the robe and the slippers happen (its minutes pass), and comes back at the next step
+		const bool bCut = G.Beat == LyudCity::EProcBeat::Step && S && S->Do == LyudCity::EProcStep::Cut;
+		if (PC->PlayerCameraManager && bCut != bProcDark && (G.Beat == LyudCity::EProcBeat::Step || G.bOver))
+		{
+			PC->PlayerCameraManager->StartCameraFade(bCut ? 0.f : 1.f, bCut ? 1.f : 0.f, bCut ? 0.5f : 0.8f, FLinearColor::Black, false, bCut);
+			bProcDark = bCut;
+		}
+		if (bCut && S->Minutes > 0)
+		{
+			JumpMinutes(S->Minutes, false);
+		}
+		UE_LOG(LogLyudCity, Verbose, TEXT("CityThings: procedure step %d beat %d score %.2f/%d"), G.Step, (int32)G.Beat, G.Score, G.Scored);
+	}
+	UpdateProcPanel(bBeat, bHeld);
+	if (G.bOver && G.Clock >= G.Wait)
+	{
+		FinishProcedure();
+	}
+}
+
+void ULyudCityThings::UpdateProcPanel(bool bTexts, bool bHeld)
+{
+	if (!ProcPanel.IsValid() || !IsInProc() || !Model)
+	{
+		return;
+	}
+	const LyudCity::FProcState& G = *Proc;
+	const LyudCity::FProcDef* D = Model->ProcDef(G.Def);
+	const LyudCity::FProcStep* S = D && G.Step >= 0 && G.Step < (int32)D->Steps.size() ? &D->Steps[(size_t)G.Step] : nullptr;
+	const LyudCity::EProcStep Do = S ? S->Do : LyudCity::EProcStep::Say;
+	switch (Do)
+	{
+	case LyudCity::EProcStep::Pour:
+		ProcPanel->SetGauge(ELyudProcGauge::Cup, (float)G.Level, (float)S->MarkLo, (float)S->MarkHi, 0, 0, bHeld);
+		break;
+	case LyudCity::EProcStep::Sip:
+		ProcPanel->SetGauge(ELyudProcGauge::Clock, (float)G.Level, 0.f, 0.f, G.Hits, S->Count, bHeld);
+		break;
+	case LyudCity::EProcStep::Breathe:
+		ProcPanel->SetGauge(ELyudProcGauge::Ring, (float)G.Level, 0.f, 0.f, 0, 0, bHeld);
+		break;
+	case LyudCity::EProcStep::Tap:
+		ProcPanel->SetGauge(ELyudProcGauge::Bar, (float)G.Level, 0.f, 0.f, G.Hits, S->Count, bHeld);
+		break;
+	default:
+		ProcPanel->SetGauge(ELyudProcGauge::None, 0.f, 0.f, 0.f, 0, 0, false);
+		break;
+	}
+	if (!bTexts || !D)
+	{
+		return;
+	}
+	// the texts only when something happened (a beat, the start): built here, never per frame
+	ProcBeatShown = G.BeatSerial;
+	TArray<FString> Args;
+	for (const std::string& A : G.Args)
+	{
+		Args.Add(LyudCityThingsImpl::Str(A));
+	}
+	ProcPanel->SetLine(ProcLineText(LyudCityThingsImpl::Str(G.Line), Args));
+	for (int32 I = 0; I < 3; ++I)
+	{
+		const bool bShow = Do == LyudCity::EProcStep::Pick && !G.Options[I].empty();
+		ProcPanel->SetOption(I, bShow ? FText::FromString(FString::Printf(TEXT("%d. %s"), I + 1, *LyudText::Get(LyudCityThingsImpl::Str(G.Options[I])).ToString()))
+			: FText::GetEmpty());
+	}
+	FText Status;
+	if (Do == LyudCity::EProcStep::Sip || Do == LyudCity::EProcStep::Tap)
+	{
+		Status = LyudText::Get(Do == LyudCity::EProcStep::Sip ? TEXT("city.proc.status.sips") : TEXT("city.proc.status.taps"),
+			{ FStringFormatArg(G.Hits), FStringFormatArg(S->Count) });
+	}
+	else if (Do == LyudCity::EProcStep::Breathe)
+	{
+		const double Period = FMath::Max(0.1, S->In + S->Out);
+		const int32 Breath = FMath::Clamp((int32)((G.Clock - G.StepFrom - LyudCity::FModel::ProcLead) / Period) + 1, 1, FMath::Max(1, S->Count));
+		Status = LyudText::Get(TEXT("city.proc.status.breaths"), { FStringFormatArg(Breath), FStringFormatArg(S->Count) });
+	}
+	ProcPanel->SetStatus(Status);
+	FText Hint;
+	if (G.Beat == LyudCity::EProcBeat::Good)
+	{
+		Hint = LyudText::Get(TEXT("city.proc.hint.good"));
+	}
+	else if (G.Beat == LyudCity::EProcBeat::Miss)
+	{
+		Hint = LyudText::Get(Do != LyudCity::EProcStep::Pour ? TEXT("city.proc.hint.miss") : G.Level > S->MarkHi ? TEXT("city.proc.hint.spill") : TEXT("city.proc.hint.short"));
+	}
+	else if (G.Beat == LyudCity::EProcBeat::Step && Do == LyudCity::EProcStep::Pour)
+	{
+		Hint = LyudText::Get(TEXT("city.proc.hint.level"));
+	}
+	ProcPanel->SetHint(Hint);
+	ProcPanel->SetKeys(LyudText::Get(!D->Keys.empty() ? LyudCityThingsImpl::Str(D->Keys) : FString(TEXT("city.proc.keys.")) + LyudCityProcImpl::KeysWord(Do)));
+}
+
+void ULyudCityThings::FinishProcedure()
+{
+	UWorld* World = GetWorld();
+	if (!World || !Model || !IsInProc())
+	{
+		return;
+	}
+	const int32 Thing = Proc->Thing;
+	const int32 Cut = Proc->CutMinutes;
+	const LyudCity::FProcDef* D = Model->ProcDef(Proc->Def);
+	const FString Id = D ? LyudCityThingsImpl::Str(D->Id) : FString();
+	LyudCity::FProcEnd End = Model->EndProc(*Proc, LyudCityThingsImpl::When(World));
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: procedure %s over: result %d line=%s%s"), *Id, End.Result, *LyudCityThingsImpl::Str(End.Line),
+		End.Vitals.Valid() ? *FString::Printf(TEXT(" vitals %.1f kg %d/%d pulse %d lungs %d"), End.Vitals.Weight, End.Vitals.Sys, End.Vitals.Dia, End.Vitals.Pulse, End.Vitals.Lungs) : TEXT(""));
+	if (!End.NewStamps.empty())
+	{
+		TArray<FString> Fresh;
+		for (const std::string& Stamp : End.NewStamps)
+		{
+			Fresh.Add(LyudCityThingsImpl::Str(Stamp));
+		}
+		AnnounceStamps(Fresh);
+	}
+	ULyudQuests::Notify(this, TEXT("procedure"), Id);
+	TArray<FString> Args;
+	for (const std::string& A : End.Args)
+	{
+		Args.Add(LyudCityThingsImpl::Str(A));
+	}
+	const FText Result = ProcLineText(LyudCityThingsImpl::Str(End.Line), Args);
+	// keep him on the bed or the seat: the act's run lies him down for its minutes and stands him up as any act does
+	EndProcedure(true);
+	bRunAfterProc = true;
+	ProcResult = Result;
+	ProcCutMinutes = Cut;
+	Run(Thing, false, bProcSeated);
+	bRunAfterProc = false;
+	ProcCutMinutes = 0;
+	if (!ProcResult.IsEmpty())
+	{
+		// the act said nothing (or was refused): the result alone
+		const APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0);
+		PageThing = -1;
+		PageLeft = 0;
+		PageTitle = ProcTitle;
+		PageFrom = Pawn ? Pawn->GetActorLocation() : FVector::ZeroVector;
+		PageFrame = GFrameCounter;
+		ShowPage(PageTitle, ProcResult, false);
+		SetPrompted(-1);
+		ProcResult = FText::GetEmpty();
+	}
+}
+
+void ULyudCityThings::EndProcedure(bool bFinished)
+{
+	if (bProcDark)
+	{
+		APlayerController* PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+		if (PC && PC->PlayerCameraManager)
+		{
+			PC->PlayerCameraManager->StartCameraFade(1.f, 0.f, 0.6f, FLinearColor::Black, false, false);
+		}
+		bProcDark = false;
+	}
+	if (Proc.IsValid())
+	{
+		if (!bFinished && Proc->Def >= 0)
+		{
+			UE_LOG(LogLyudCity, Display, TEXT("CityThings: procedure left unfinished"));
+		}
+		*Proc = LyudCity::FProcState();
+	}
+	if (!bFinished && bProcLying && LyingOn >= 0)
+	{
+		EndLie(true);
+	}
+	bProcLying = false;
+	if (ProcPanel.IsValid())
+	{
+		ProcPanel->SetVisibility(EVisibility::Collapsed);
+	}
+	ProcBeatShown = -1;
+}
+
+bool ULyudCityThings::StartProcAt(const FString& ThingId)
+{
+	const int32 Thing = Model ? Model->FindThing(std::string(TCHAR_TO_UTF8(*ThingId))) : -1;
+	const LyudCity::FAct* A = Thing >= 0 ? Model->ActOf(Thing) : nullptr;
+	if (!A || A->Proc < 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: %s: no such thing, or its act has no procedure"), *ThingId);
+		return false;
+	}
+	EndGame(false);
+	BeginProcedure(Thing);
+	return IsInProc();
+}
+
+bool ULyudCityThings::StartNearestProc()
+{
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Model || !Pawn)
+	{
+		return false;
+	}
+	const FVector From = Pawn->GetActorLocation();
+	int32 Best = -1;
+	double BestD = 0.0;
+	// developer mode only: one pass over the things
+	for (int32 I = 0; I < NumThings(); ++I)
+	{
+		const LyudCity::FAct* A = Model->ActOf(I);
+		const double Dist = A && A->Proc >= 0 ? FVector::DistSquared(ThingLocation(I), From) : -1.0;
+		if (Dist >= 0.0 && (Best < 0 || Dist < BestD))
+		{
+			Best = I;
+			BestD = Dist;
+		}
+	}
+	if (Best < 0)
+	{
+		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: no procedure anywhere"));
+		return false;
+	}
+	return StartProcAt(LyudCityThingsImpl::Str(Model->Things[(size_t)Best].Id));
+}
+
+void ULyudCityThings::PressProc(int32 Choice)
+{
+	if (IsInProc())
+	{
+		Model->PressProc(*Proc, Choice);
+	}
+}
+
+void ULyudCityThings::QuitProc()
+{
+	EndProcedure(false);
+}
+
 void ULyudCityThings::ShowRegulars(bool bPage)
 {
 	if (!Model)
@@ -2879,6 +3355,7 @@ bool ULyudCityThings::SitOnThing(const FString& Id, bool bLie)
 	CloseBook();
 	EndShow();
 	EndGame(false);
+	EndProcedure(false);
 	ClosePage();
 	EndLie(false);
 	if (Hero->IsSeated())
@@ -2917,6 +3394,7 @@ void ULyudCityThings::ResetHeroState()
 	SleepThing = -1;
 	bSleeping = false;
 	EndGame(false);
+	EndProcedure(false);
 	EndShow();
 	ClosePage();
 	if (FadeMinutes > 0 || bFadingIn)
@@ -4657,6 +5135,29 @@ static FAutoConsoleCommandWithWorldAndArgs GCityGame(TEXT("lyud.City.Game"),
 		}
 	}));
 
+static FAutoConsoleCommandWithWorldAndArgs GCityProc(TEXT("lyud.City.Proc"),
+	TEXT("lyud.City.Proc <thing id> | press [1-3] | quit: starts the procedure of a thing (the pump room's cup, the inhaler, the doctor's check...) wherever the hero is; press E (or a pick's 1..3); leave it"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		ULyudCityThings* Things = ULyudCityThings::Get(World);
+		if (!Things || Args.Num() == 0)
+		{
+			return;
+		}
+		if (Args[0] == TEXT("press"))
+		{
+			Things->PressProc(Args.Num() >= 2 ? FCString::Atoi(*Args[1]) - 1 : -1);
+		}
+		else if (Args[0] == TEXT("quit"))
+		{
+			Things->QuitProc();
+		}
+		else
+		{
+			Things->StartProcAt(Args[0]);
+		}
+	}));
+
 static FAutoConsoleCommandWithWorldAndArgs GCitySit(TEXT("lyud.City.Sit"),
 	TEXT("lyud.City.Sit [thing id]: seats the hero on a seat (the nearest free one without an id), wherever he is: the seated pose, the look cone"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
@@ -4857,6 +5358,13 @@ static LyudDev::FAutoAction GCityDevGameDuel(TEXT("interiors.game_duel"), TEXT("
 	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
 	{
 		Things->StartNearestGame(TEXT("duel"));
+	}
+});
+static LyudDev::FAutoAction GCityDevProc(TEXT("interiors.proc_nearest"), TEXT("interiors"), TEXT("dev.action.interiors.proc_nearest"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->StartNearestProc();
 	}
 });
 static LyudDev::FAutoAction GCityDevGameWin(TEXT("interiors.game_win"), TEXT("interiors"), TEXT("dev.action.interiors.game_win"), [](UWorld* W)

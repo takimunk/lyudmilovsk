@@ -211,6 +211,7 @@ An act is what happens when the hero presses E at a thing:
 | `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
 | `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
+| `proc` | a procedure: a short hands-on scene (pick, pour, sip on the clock, breathe with a ring, tap, cuts, the doctor's numbers, a guest's word) played first, the act running when it is over with the result's words on top (docs/sanatorium_procedures.md); not with `game` |
 | `read` | `{"texts": ["<text id>", ...], "rotate": "use"|"daily"}`: the reading view opens one of these texts instead of the lines (in turn at each use, or one a game day); only on a `shelf`, `board`, `seat` or `take` (see "The reading page") |
 | `sleep` | `true` (with `pose: lie`): the hero chooses the hour he wakes at instead of the act's `minutes`/`until` (which give the first hour offered; see "Sitting and lying") |
 | `stay` | `{"id": "<stay>", "days": 1..60}`: running it puts the hero on that stay for so many days (added to the days left of one he is on): a sanatorium's voucher (see "Stays") |
@@ -628,6 +629,10 @@ A text with `gen` is set by the game each day (`ULyudTownPaper`, docs/town_paper
 (`town_paper`) and the library rack's archive `paper_archive`; its own pages show only when the paper's data is missing. The
 notice boards (`look_lost`, `look_club`, `look_health`, `look_wallpaper` and the acts like them without lines of their own)
 read `notices_<board>` (`tools/city/content/x_notices.json`, written by `tools/paper/paper.py`): dated notices by the calendar.
+
+
+The course's procedures are played as scenes on the voucher (the pump room, inhalation, the mud bath, the Charcot shower,
+massage, the doctor's check, the evening waltz): docs/sanatorium_procedures.md.
 
 ### Lifts and storey links
 
