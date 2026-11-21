@@ -148,7 +148,7 @@ on = friend_bench
 bond = friend close
 job = pensioner
 weight = 2
-say town.friend_bench_pensioner.1 | С утра на рынке. Творог подорожал, зато продавщица подарила яблоко. День в плюсе. | Market this morning. Cheese has gone up, but the stallholder gave me an apple. A good day. | 朝は市場へ。チーズは値上がり、でもリンゴをもらえた。今日は黒字。
+say town.friend_bench_pensioner.1 | С утра на рынке. Творог подорожал, зато продавщица подарила яблоко. День в плюсе. | Market this morning. Cottage cheese has gone up, but the stallholder gave me an apple. A good day. | 朝は市場へ。カッテージチーズは値上がり、でもリンゴをもらえた。今日は黒字。
 say town.friend_bench_pensioner.2 | Внуки звонили, обещают приехать летом. Каждый год обещают. Так и живём. | The grandchildren rang: they'll come in summer. They say so every year. That's life. | 孫から電話。夏に来るって。毎年そう言うんだけどね。
 say town.friend_bench_pensioner.3 | Весь день старые фотографии. Нашлась одна, где наш двор ещё молодой. | Old photographs all day. Found one where our courtyard's still young. | 一日じゅう古い写真の整理。若いころの中庭のが出てきた。
 say town.friend_bench_pensioner.4 | Сижу вот, считаю корабли. Сегодня уже четыре. Раньше было больше, но и четыре — хорошо. | Here I sit, counting ships. Four so far today. There used to be more, but four's good too. | こうして船を数えてるんだ。今日はもう四隻。昔はもっと多かったけど、四隻でも上等さ。
@@ -171,7 +171,7 @@ bond = friend close
 age = elder
 weather = cold snow
 say town.friend_bench_elder_cold.1 | Холодно, а дома не сидится. Шарф двойной, носки шерстяные — и к морю. | It's cold, but there's no staying in. Double scarf, woollen socks, and off to the sea. | 寒いけど、家にじっとしていられなくてね。マフラーを二重に、毛糸の靴下をはいて、海へ。
-say town.friend_bench_elder_cold.2 | Утром на окне узоры, как в детстве. Полчаса смотрю — лучше газеты. | Frost patterns on the window this morning, like when I was small. Better than the papers. | 今朝は窓に霜の模様。子どものころみたい。新聞よりいい。
+say town.friend_bench_elder_cold.2 | Утром на окне узоры, как в детстве. Полчаса смотрю — лучше газеты. | Frost on the window this morning, like when I was little. Watched it half an hour: beats the paper. | 今朝は窓に霜の模様。子どものころみたい。三十分もながめてた。新聞よりいい。
 
 [friend_bench_elder_rain]
 on = friend_bench
@@ -229,7 +229,7 @@ weight = 2
 say town.friend_bench_fisherman.1 | С четырёх утра на воде. Треска капризничала, а камбала пошла. | On the water since four. The cod were fussy, but the flounder came. | 朝四時から海の上。タラはだめ、カレイは上がった。
 say town.friend_bench_fisherman.5 | Руки до сих пор пахнут морем. И хорошо. | My hands still smell of the sea. Good. | 手がまだ海のにおいがする。それでいい。
 say town.friend_bench_fisherman.2 | Сети чинить — полдня, ловить — полчаса. Такая у нас математика. | Half a day mending nets, half an hour fishing. That's our arithmetic. | 網直しに半日、漁は三十分。それがこっちの計算さ。
-say town.friend_bench_fisherman.3 | У буя тюлень всплыл, смотрел на лодку, будто улов проверял. | A seal came up by the buoy and eyed the boat, as if checking the catch. | ブイのそばでアザラシが舟をのぞいていた。検査みたいに。
+say town.friend_bench_fisherman.3 | У буя тюлень всплыл, смотрел на лодку, будто улов проверял. | A seal came up by the buoy and eyed the boat, as if checking the catch. | ブイのそばでアザラシが顔を出して、獲物を調べるみたいに舟をのぞいていた。
 say town.friend_bench_fisherman.4 | Чайки сегодня злые, весь улов пересчитали. Половину пришлось отдать за проезд. | The gulls were fierce today, counted the whole catch. Had to give them half as a toll. | 今日のカモメは気が荒くてね、獲物を全部数えていった。半分は通行料に取られたよ。
 
 [friend_bench_fisherman_rain]
@@ -252,7 +252,7 @@ bond = friend close
 job = seller vendor fishmonger
 say town.friend_bench_seller.1 | С семи за прилавком. Яблоки разобрали к обеду, а капуста скучает. | Behind the counter since seven. The apples sold by lunch; the cabbages are moping. | 七時から店番。リンゴは売り切れ、キャベツはしょんぼり。
 say town.friend_bench_seller.3 | Завтра выложу капусту вперёд. Пусть покажет себя. | Tomorrow the cabbages go out front. Let them show off. | 明日はキャベツを前に並べよう。見せ場をつくってやる。
-say town.friend_bench_seller.2 | Сегодня покупатель торговался за каждую копейку, а потом оставил сдачу «на чай». Люди — загадка. | Today a customer haggled over every kopeck and then left the change as a tip. People are a mystery. | 今日のお客さん、一円まで値切ったくせに、おつりはチップにって置いていった。人ってなぞだね。
+say town.friend_bench_seller.2 | Сегодня покупатель торговался за каждую копейку, а потом оставил сдачу «на чай». Люди — загадка. | Today a customer haggled over every kopeck and then left the change as a tip. People are a mystery. | 今日のお客さん、一コペイカまで値切ったくせに、おつりはチップにって置いていった。人ってなぞだね。
 
 [friend_bench_programmer]
 on = friend_bench
@@ -288,7 +288,7 @@ say town.friend_bench_writer.3 | Старушка сказала: «Море н�
 on = friend_bench
 bond = friend close
 job = cook baker
-say town.friend_bench_cook.1 | С шести у плиты. Уха удалась: рыбак взял две добавки. Лучше любой похвалы. | At the stove since six. The fish soup worked: a fisherman had seconds twice. | 六時からかまどの前。魚のスープ、二回もおかわりされた。
+say town.friend_bench_cook.1 | С шести у плиты. Уха удалась: рыбак взял две добавки. Лучше любой похвалы. | At the stove since six. The fish soup worked: a fisherman had seconds twice. Better than any praise. | 六時からかまどの前。魚のスープ、漁師さんが二回もおかわりしてくれた。どんなほめ言葉よりうれしい。
 say town.friend_bench_cook.2 | Новый пирог с брусникой: половина подгорела, половина — шедевр. | A new lingonberry pie: half burnt, half a masterpiece. | 新作のコケモモパイ。半分焦げて、半分は傑作。
 say town.friend_bench_cook.3 | Шедевр, конечно, съели гости. Так всегда. | The guests ate the masterpiece, of course. They always do. | 傑作はもちろんお客さんが食べた。いつもそう。
 
@@ -297,7 +297,7 @@ on = friend_bench
 bond = friend close
 job = teacher
 say town.friend_bench_teacher.1 | Шесть уроков и тридцать тетрадей на вечер. Работа не кончается. | Six lessons, and thirty exercise books for tonight. The work never ends. | 授業が六つ、今夜はノート三十冊。仕事は終わらない。
-say town.friend_bench_teacher.2 | Сегодня мальчишка спросил, почему море солёное. Полкласса слушало до звонка. | A boy asked today why the sea is salty. Half the class listened till the bell. | 今日、海はなぜしょっぱいのと聞かれた。みんな聞き入ってた。
+say town.friend_bench_teacher.2 | Сегодня мальчишка спросил, почему море солёное. Полкласса слушало до звонка. | A boy asked today why the sea is salty. Half the class listened till the bell. | 今日、男の子に海はなぜしょっぱいのかと聞かれた。チャイムまで、クラスの半分が聞き入ってた。
 
 [friend_bench_doctor]
 on = friend_bench
@@ -325,7 +325,7 @@ on = friend_bench
 bond = friend close
 job = away
 weekday = sat sun
-say town.friend_bench_away.1 | Домой после рабочей недели — лучшее, что есть. Поезд, канатка, море. | Home after a working week is the best thing there is. Train, cable car, sea. | 一週間の仕事から帰るのが一番。汽車、ロープウェイ、海。
+say town.friend_bench_away.1 | Домой после рабочей недели — лучшее, что есть. Поезд, канатка, море. | Home after a working week is the best thing there is. Train, cable car, sea. | 一週間の仕事から帰るのが一番。列車、ロープウェイ、海。
 
 [friend_bench_adult]
 on = friend_bench
@@ -371,7 +371,7 @@ say town.friend_bench_festival.2 | Все на площади, а нам и ту
 on = friend_bench
 bond = friend close
 hours = 6-10
-say town.friend_bench_morning.1 | Утро только началось, а уже чайки, молочник и первое солнце. | The morning's barely begun, and already gulls, the milkman and the first sun. | 朝はまだなのに、カモメと牛乳屋さんと最初のお日さま。
+say town.friend_bench_morning.1 | Утро только началось, а уже чайки, молочник и первое солнце. | The morning's barely begun, and already gulls, the milkman and the first sun. | 朝が始まったばかりなのに、もうカモメと牛乳屋さんと朝いちばんのお日さま。
 say town.friend_bench_morning.2 | Хорошо, что ты тоже ранняя птица. Вдвоём утро длиннее. | Good that you're an early bird too. A morning's longer for two. | 君も早起きでよかった。ふたりだと朝が長い。
 
 [friend_bench_evening]

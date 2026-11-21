@@ -126,6 +126,8 @@ class Tree:
         for f in ('people.json', 'townsfolk.json'):
             d = self.opt_json('PeopleData', f) or {}
             self.people |= {p['key'] for p in d.get('people', []) if 'key' in p}
+        # what a photo may be of besides a map place: the dog Maru, a resident's key
+        self.photo_subjects = {'maru'} | {low(k) for k in self.people}
         self.teleports = set()
         for f in glob.glob(os.path.join(self.content, 'Dev', 'teleports', '*.json')):
             self.teleports |= {low(t['id']) for t in read_json(f).get('teleports', []) if 'id' in t}
@@ -133,6 +135,9 @@ class Tree:
         for k in ('plots', 'spots', 'promenade_units'):
             self.teleports |= {low(o['id']) for o in plan.get(k, []) if isinstance(o, dict) and 'id' in o}
         self.teleports |= set(self.places)
+        # the teleports the code registers (LyudDev::FAutoTeleport: a moving target such as Maru, pets_maru)
+        for text in self.cpp.values():
+            self.teleports |= {low(m) for m in re.findall(r'FAutoTeleport\s+\w+\(TEXT\("(\w+)"\)', text)}
         inter = self.opt_json('City', 'interiors.json') or {}
         self.plots = {low(t['plot']) for t in inter.get('things', []) if t.get('plot')}
         acts = inter.get('acts', {})
@@ -326,6 +331,12 @@ def target_problem(t, ev, target):
         if not p.get('r'):
             return 'reach %s: the place has radius 0, UpdatePosition (LyudQuests.cpp:602) never reports it' % target
         return None
+    if e == 'photo':
+        # a sharp developed frame taken at a map place, or of the dog Maru, or of a resident (FPersonInfo::Key;
+        # Private/Photo/LyudPhoto.cpp)
+        if low(target) in t.places or low(target) in t.photo_subjects:
+            return None
+        return 'photo %s: no such place in map.json, not maru, no such person key (people.json/townsfolk.json)' % target
     if e in ('get', 'have', 'use', 'wear', 'feeder_fill'):
         if '|' in target:
             return '%s %s: a target has no alternatives' % (ev, target)
@@ -514,13 +525,14 @@ def event_alt_match(want, got):
 def concrete_target(t, ev, target):
     e = low(ev)
     if target in ('', '*'):
-        pools = {'talk': t.npcs, 'reach': t.places, 'feeder_visit': t.species, 'feeder_fill': t.feeds}
+        pools = {'talk': t.npcs, 'reach': t.places, 'photo': set(t.places) | t.photo_subjects, 'feeder_visit': t.species,
+                 'feeder_fill': t.feeds}
         pool = sorted(pools.get(e, []))
         return pool[0] if pool and target == '*' else ('x' if target == '*' else '')
     if target.endswith('*'):
         prefix = low(target[:-1])
         pools = {'get': t.items, 'have': t.items, 'use': t.items, 'wear': t.items, 'feeder_fill': t.items,
-                 'reach': t.places, 'talk': t.npcs, 'visit': t.plots}
+                 'reach': t.places, 'photo': set(t.places) | t.photo_subjects, 'talk': t.npcs, 'visit': t.plots}
         cand = sorted(x for x in pools.get(e, []) if x.startswith(prefix))
         return cand[0] if cand else prefix + 'x'
     return target
@@ -615,6 +627,54 @@ def check_playthrough(t):
         sim = engine.Sim(t.defs, t.rules, t.start_items)
         play(sim, t, d.id, probs, warns)
     return probs, sorted(set(warns))
+
+
+def check_photo(t):
+    """The film camera's quests (docs/photo.md): a photo may be of a map place, of the dog Maru or of a resident, of nothing
+    else; a quest that ends by showing the print is not finished by showing it before the frame is taken (its photo stage is
+    no_skip), and is by the frame and then the showing."""
+    probs = []
+    someone = sorted(t.people)[0] if t.people else ''
+    for tgt in ['maru', someone] + [p for p in sorted(t.places)[:1]]:
+        if tgt and target_problem(t, 'photo', tgt):
+            probs.append('photo %s is refused: %s' % (tgt, target_problem(t, 'photo', tgt)))
+    for tgt in ('nobody_at_all', 'P-CLUB3', 'camera'):
+        if not target_problem(t, 'photo', tgt):
+            probs.append('photo %s is taken for a real subject' % tgt)
+    n = 0
+    for d in t.defs:
+        if len(d.stages) < 2 or low(d.start_event) != 'ask':
+            continue
+        shots = [(si, o) for si, st in enumerate(d.stages) for o in st.objectives if low(o.event) == 'photo']
+        last = d.stages[-1].objectives
+        if not shots or len(last) != 1 or low(last[0].event) != 'ask':
+            continue
+        n += 1
+        sim = engine.Sim(t.defs, t.rules, t.start_items)
+        sim.handle_event('ask', d.start_target, 1)
+        if sim.state(d.id) != engine.ACTIVE:
+            probs.append('%s: asking %s does not start it' % (d.id, d.start_target))
+            continue
+        # the print shown before any frame is taken
+        sim.handle_event('ask', last[0].target, 1)
+        if sim.state(d.id) == engine.DONE:
+            probs.append('%s: showing the print (ask %s) finishes it with no photo taken: the photo stage needs no_skip'
+                         % (d.id, last[0].target))
+            continue
+        for si, st in enumerate(d.stages[:-1]):
+            for o in st.objectives:
+                if low(o.event) == 'have':
+                    sim.inv_add(o.target, o.need)
+                else:
+                    sim.handle_event(o.event, concrete_target(t, o.event, o.target), o.need)
+        if sim.state(d.id) != engine.ACTIVE:
+            probs.append('%s: done before the print is shown' % d.id)
+        sim.handle_event('ask', last[0].target, 1)
+        if sim.state(d.id) != engine.DONE:
+            probs.append('%s: the frame and then the showing do not finish it' % d.id)
+    if n < 4:
+        probs.append('only %d quests of a photo shown by asking were found (city_portrait, grandpa_portrait, old_pier, maru_wall)' % n)
+    return probs
 
 
 # ------------------------------------------------------------------ dialogue, scenes, dev blocks
@@ -766,7 +826,7 @@ def check_dev(t):
             if unknown:
                 probs.append('%s: unknown fields %s' % (w, sorted(unknown)))
             if 'tp' in dev and low(dev['tp']) not in t.teleports:
-                probs.append('%s: tp %s is no teleport (Content/Dev/teleports, city_plan.json, map.json place)' % (w, dev['tp']))
+                probs.append('%s: tp %s is no teleport (Content/Dev/teleports, city_plan.json, map.json place, LyudDev::FAutoTeleport)' % (w, dev['tp']))
             if 'time' in dev and not re.fullmatch(r'([01]\d|2[0-3]):[0-5]\d', dev['time']):
                 probs.append('%s: time %r is not HH:MM' % (w, dev['time']))
             for item in (dev.get('give') or {}):
@@ -946,6 +1006,7 @@ def main(argv):
     r.check('a talk stage has the person\'s quest lines (where the dialogue has quest talks)', check_talk_lines(t))
     r.check('no have objective is met by a reward item counted twice', check_reward_double_count(t))
     r.check('stage dev blocks: teleports, items, console commands, people', check_dev(t))
+    r.check('photo quests: a place, Maru or a resident; the print cannot be shown before the frame', check_photo(t))
     for w in warns + play_warns:
         r.warn(w)
     if r.fails:

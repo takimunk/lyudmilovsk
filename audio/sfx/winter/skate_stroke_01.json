@@ -1,0 +1,24 @@
+{
+ "name": "skate_stroke_01",
+ "asset": "/Game/Audio/Winter/S_skate_stroke_01",
+ "pool": "skate_stroke",
+ "file": "audio/sfx/winter/skate_stroke_01.wav",
+ "generator": "tools/winter_play/sounds.py",
+ "seed": 2100,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.55,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -20.66,
+ "params": {
+  "seconds": 0.55,
+  "band_hz": [
+   1680.0,
+   5280.0
+  ]
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -20,7 +20,7 @@
   "look_kiosk6_prices": {"like": "look_misc", "lines": "city.story.kiosk6.prices"},
 
   "sanatorium_night": {"like": "sleep_night", "prompt": "city.story.sanatorium_night.prompt", "lines": "city.story.sanatorium_night", "price": 80, "needs_staff": "receptionist", "daily": 1},
-  "photo_desk": {"prompt": "city.act.ask.prompt", "lines": "city.story.photo_desk", "needs_staff": "photographer", "sound": "camera_flash"},
+  "photo_desk": {"prompt": "city.act.ask.prompt", "lines": "city.story.photo_desk", "needs_staff": "photographer", "sound": "camera_flash", "shop": "photo", "title": "city.shop.photo.title"},
   "read_poetry_sale": {"like": "read_misc", "lines": "city.read.poetry_sale"},
 
   "look_rules_library": {"like": "look_rules", "lines": ["city.look.rules.*", "city.reg.library.*"], "target": "look_rules", "minutes": 4},

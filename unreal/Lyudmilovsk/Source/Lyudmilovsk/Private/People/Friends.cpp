@@ -92,6 +92,8 @@ namespace LyudFriends
 		R.Bench = Ru["bench"].I(R.Bench);
 		R.Tea = Ru["tea"].I(R.Tea);
 		R.Outing = Ru["outing"].I(R.Outing);
+		R.Festival = Ru["festival"].I(R.Festival);
+		R.FestivalLevel = Ru["festival_level"].I(R.FestivalLevel);
 		R.TeaLevel = Ru["tea_level"].I(R.TeaLevel);
 		R.TeaEvery = Ru["tea_every"].I(R.TeaEvery);
 		R.TeaAhead = Ru["tea_ahead"].I(R.TeaAhead);
@@ -492,6 +494,17 @@ namespace LyudFriends
 		return Add(Key, Day, Data.R.Outing);
 	}
 
+	int FModel::Festival(const std::string& Key, int Day)
+	{
+		const auto It = Bonds.find(Key);
+		if (It == Bonds.end() || It->second.FestDay == Day || LevelOf(Data.R, It->second.Points) < Data.R.FestivalLevel)
+		{
+			return 0;
+		}
+		It->second.FestDay = Day;
+		return Add(Key, Day, Data.R.Festival);
+	}
+
 	bool FModel::EnsureNick(const std::string& Key, const FWho& Who)
 	{
 		const auto It = Bonds.find(Key);
@@ -589,9 +602,9 @@ namespace LyudFriends
 		{
 			const FBond& B = KV.second;
 			char Buf[512];
-			std::snprintf(Buf, sizeof Buf, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d", B.Points, B.FirstDay, B.LastDay,
+			std::snprintf(Buf, sizeof Buf, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d", B.Points, B.FirstDay, B.LastDay,
 				B.GreetDay, B.HeardDay, B.HeardToday, B.VisitDay, B.GiftDay, B.BenchDay, B.Cards, B.Teas, B.Outings, B.Benches, B.Gifts,
-				B.CardDay, B.TeaDay, B.TeaHour, B.TeaLast, B.OutingDay, B.OutingLast, B.LevelShown);
+				B.CardDay, B.TeaDay, B.TeaHour, B.TeaLast, B.OutingDay, B.OutingLast, B.LevelShown, B.FestDay);
 			Out["b." + KV.first] = std::string(Buf) + "|" + B.Nick + "|" + Join(B.Quests, ',') + "|" + Join(B.Loves, ',');
 		}
 	}
@@ -621,6 +634,7 @@ namespace LyudFriends
 			B.VisitDay = V[6]; B.GiftDay = V[7]; B.BenchDay = V[8]; B.Cards = V[9]; B.Teas = V[10]; B.Outings = V[11];
 			B.Benches = V[12]; B.Gifts = V[13]; B.CardDay = V[14]; B.TeaDay = V[15]; B.TeaHour = V[16]; B.TeaLast = V[17];
 			B.OutingDay = V[18]; B.OutingLast = V[19]; B.LevelShown = V[20];
+			B.FestDay = N.size() > 21 ? std::atoi(N[21].c_str()) : -1;     // (saves from before the holidays together have 21)
 			if (Parts.size() > 1)
 			{
 				B.Nick = Parts[1];

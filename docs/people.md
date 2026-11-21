@@ -273,7 +273,66 @@ partner, the actor that shows them), `FindPerson(Key)`, `Order(Id, Activity, Pla
 Ride, Away, Back.
 
 Console: `lyud.People 0|1`, `lyud.People.Report [key]`, `lyud.People.Unique`, `lyud.People.Order <key> <activity> [place]`,
-`lyud.People.Flats`, `lyud.People.DrawDistance`, `lyud.People.AnyMap 1`; the clock: `lyud.Birds.Time <h> [m]`.
+`lyud.People.Flats`, `lyud.People.DrawDistance`, `lyud.People.AnyMap 1`, `lyud.People.Condition [name 0|1]`; the clock:
+`lyud.Birds.Time <h> [m]`.
+
+## Winter play
+
+The townsfolk's side of backlog item 18 (the hero's side, the skating, the banya building, the ice hole and the snowballs,
+is `Private/Winter/WinterPlay*`, `tools/winter_play/`, docs/winter_play.md).
+
+**Conditions.** A generic switch the game sets: `UPeopleLifeSubsystem::SetCondition(FName Name, bool bOn)` /
+`IsCondition(FName Name)` (the life: `LyudPeople::FWorld::SetCondition(const std::string&, bool)` / `IsCondition`). An
+activity with `"when": "<condition>"` is chosen only while it is on; whoever is at it finishes within a minute after it
+goes off and walks off (no snapping), and whoever was on the way thinks again where they are. Conditions are kept over
+clock jumps and given to a life that starts later (`ApplyWanted`), not saved: the winter sends them again every ~10 s.
+Winter play's: `rink` (the pond's ice open for skating), `rink_busy` (the first-snow festival or a holiday while it is
+open), `walrus` (the walruses' hour: Sunday mornings December to March, New Year's morning), `banya` (the banya by the
+pier heated, its open hours). `lyud.People.Condition [name 0|1]` switches one by hand (till the winter sends it again).
+
+**Places** (`Content/PeopleData/winter_spots.json`, written by `tools/winter_play/winter_play.py`, `town_plan.json`'s
+spots format): `FWorld::Load` reads it after the town (`LoadSpots`), a place a spot, as `town_life.py` makes places of
+`town_plan.json`'s spots:
+
+| Spot | Kind | Slots | How people get there |
+|---|---|---|---|
+| `S-RINK` | `rink` | 12 `skate` (two each: a word at the kerb, a couple) on the loop | its closed `path` (3 m in from the pond's kerb) is the place's `Loop`, turned anticlockwise seen from above; every slot has a `Reach`: from the kerb 3.5 m outside the loop (or the first walkable cell of the walk grid beyond) straight onto the ice |
+| `S-BANYA` | `banya` | 4 `banya_shelf` (three each) | `"indoor": true`: a shell, whoever is in is unseen, at its door |
+| `S-ICEHOLE` | `ice_hole` | 4 `walrus` in the water, 4 `stand` on the pier's deck (three each) | the deck as the pier's spots; a slot below the spot (the water) has a `Reach` from the nearest deck slot |
+
+`FSlot::Reach` is a way that doesn't depend on the walk grid (the pond's interior is water on it, the hole is in the
+sea): `Route` walks the grid to its first point and then along it as a line in 3D; whoever is on such a place
+(`FPerson::OffGrid`) leaves by the nearest slot's `Reach`, walked back. When the pond isn't frozen the rink's activities
+simply aren't chosen (`rink` off).
+
+**Activities** (`activities.json`; new keys: `when`, `weekend_hours`, `day_more`, `loop`, `dip`, `regulars`):
+
+| Id | When | Who, how long | What they do |
+|---|---|---|---|
+| `skate` | `rink` | 7-68, active; 16:00-21:30, weekends 11:00-21:30 (`weekend_hours`, liked more on Saturday and Sunday: `day_more`), 30-75 min | `loop` [3, 4.5] m/s: round the rink's loop anticlockwise (seen from above), one to four laps at a time, then a stop at the first free slot ahead for 15-60 s (`wander_pause`; two at a slot talk); children and those over 60 a fifth slower; each in a lane of their own a little in or out of the line; whoever of theirs (household, friend, date) is going round already is skated beside (`SkateWith`) |
+| `skate_busy` | `rink_busy` | the same, 10:00-21:30, a stronger base, the sociable | as `skate` |
+| `walrus_swim` | `walrus` | 30-80, active, a fixed handful (`regulars` 0.025: about a dozen of the town, the same every game, more of the active), 15-35 min | `dip` [60, 240] s: in the water to the shoulders at a `walrus` slot (pose `walrus`), out over the deck's edge to a `stand` slot, rubbing down 4-10 min, maybe in once more; first on the deck when the water's four places are taken; nothing calls them away mid-visit; once a morning |
+| `banya_visit` | `banya` | 18-85, social, 60-120 min, meets tired and social | unseen inside (sitting on the shelves); Saturday the busiest (`day_more`) |
+
+**Poses.** `Skate` and `Walrus` end both lists (`LyudPeople::EPose`, `EPersonPose`; a `static_assert` in
+`PeopleLife.cpp` keeps them together; town talk's `pose = skate | walrus`). `ANpcBody::Drive`: `Skate` plays the shared
+walk clip slowly (a third of the walk's cadence for the speed: long strokes) with a forward lean that grows with the speed
+(to 14°) and a small swing of the body's yaw (±6°) and roll (±3°) in time with the clip's steps; standing on the ice, the
+idle (TODO on the Mac: a real skating clip). `Walrus`: the idle with the body lowered so the water line is at the
+shoulders (1.25 m × body scale under the water's surface: `ALyudSea::SeaLevel()` when the sea is in the level, else the
+slot's height, the sea's datum). People on the ice or in the water keep the life's height (no ground trace under the ice);
+no manners or noticing while skating or in the water. Nothing new per frame: the lean is a few multiplications, the sea
+is looked for once every 120 frames till found; the townsfolk's bodies stay out of Lumen and the distance fields as before.
+
+**Tests.** `tools/peoplesim/run.sh test` ends with `winter_people.h` on the whole town (`run.sh winter` alone): nobody
+skates, swims or goes to the banya while their conditions are off; on a Wednesday evening with the rink open ~7 skate at
+once (15 at most), round anticlockwise at 3-4.5 m/s with pauses, children and couples among them; shut, nobody skates a
+minute later and the ice is empty within three minutes; a Saturday ~13, with `rink_busy` ~17 (at least 11 every hour from
+noon); the walruses (12 regulars) only in their hour, dips of 1-4 minutes, 15-35 minutes in all, out of the water within
+90 s of its end; the banya's visitors always unseen, ~25 on a Wednesday and ~85 on a Saturday, never more than its 12
+places. `run.sh week` switches the conditions over the week (the rink 10-22 with a thaw on Wednesday evening, `rink_busy`
+on Thursday's holiday and Saturday, the walruses on Thursday and Sunday mornings, the banya shut on Monday) through its
+loads and clock jumps, and checks nobody is still at one 90 s after its condition went off.
 
 ## Tests
 

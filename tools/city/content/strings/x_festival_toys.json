@@ -1,0 +1,22 @@
+{
+ "city.san.evening.festday": {
+  "ru": "Праздничный день в вестибюле: на рояле ваза с ветками, у патефона стопка пластинок в очереди. На двери объявление от руки: «Сегодня в 19:00 танцевальный вечер. Приглашаются все, в том числе с улицы. Сменная обувь по совести».",
+  "en": "A holiday in the lobby: a vase of branches on the piano, a stack of records queuing by the gramophone. A handwritten notice on the door: \"Dance evening tonight at 19:00. Everyone is invited, people from the street too. Indoor shoes on your honour.\"",
+  "ja": "祝日のロビー。ピアノには枝を生けた花びん、蓄音機のそばには順番を待つレコードの山。扉に手書きの貼り紙。「今夜十九時よりダンスの夕べ。どなたでも、外からの方もどうぞ。室内履きは各自の良心で」。"
+ },
+ "city.san.evening.festdance.1": {
+  "ru": "Праздничный танцевальный вечер. Вестибюль не узнать: кресла сдвинуты к стенам, под люстрой кружат пары, а половина из них пришла с улицы и танцует в пальто нараспашку. Патефону сегодня помогает рояль.",
+  "en": "The holiday dance evening. The lobby is hard to recognise: the armchairs are pushed to the walls, couples circle under the chandelier, and half of them have come in from the street and dance with their coats open. Tonight the piano helps the gramophone.",
+  "ja": "祝日のダンスの夕べ。ロビーは見ちがえるようだ。肘掛け椅子は壁際に寄せられ、シャンデリアの下を何組もが回っている。半分は外から来た人たちで、コートの前を開けたまま踊っている。今夜は蓄音機をピアノが手伝う。"
+ },
+ "city.san.evening.festdance.2": {
+  "ru": "Меня вытянули в круг раньше, чем я успел сказать, что не умею. Оказалось, в праздник это никого не интересует. Врач танцует с буфетчицей и считает вслух: не такты, а пирожки, которые он ей теперь должен.",
+  "en": "I was pulled into the circle before I could say I can't dance. On a holiday, it turns out, nobody cares. The doctor is dancing with the buffet lady and counting aloud: not the beats, but the pies he now owes her.",
+  "ja": "踊れませんと言う前に輪の中へ引っぱりこまれた。祝日にはそんなこと誰も気にしないらしい。医師は売店のおばさんと踊りながら声に出して数えている。拍子ではなく、彼女に借りができたパイの数を。"
+ },
+ "city.san.evening.course.fest": {
+  "ru": "Праздничный вечер засчитали мне как процедуру: «лечебные танцы, один сеанс». Дежурная поставила галочку в курсовке и сказала, что в праздник вальс действует вдвое сильнее, но научных данных пока нет.",
+  "en": "The holiday evening was counted as one of my treatments: \"therapeutic dancing, one session\". The nurse ticked my course card and said that on a holiday a waltz works twice as well, though there is no scientific data yet.",
+  "ja": "祝日の夕べは治療の一回として数えてもらえた。「療養ダンス、一回」。当番の人はコース票に印をつけて言った。祝日のワルツは二倍よく効きます、ただし科学的なデータはまだありません。"
+ }
+}

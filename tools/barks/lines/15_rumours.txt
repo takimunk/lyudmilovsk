@@ -1,0 +1,302 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The talk of the town about the hero (backlog item 22, docs/town_rumours.md; kinds and rules: tools/rumours/rumours.py).
+## heard_of = <kind>: the speaker heard of something he did (saw it, or heard it from their household, workmates or a
+## friend: a far terrace a day later) and would bring it up now. At most one such remark per resident a day, each rumour
+## once per resident, and the game keeps a long pause between any two (calm and rare). {1}: the rumour's detail (the cup,
+## the regular beaten, the bird, the fish, the tune, the job as a place); {0} in bond sets: the friend's nickname for him.
+## Russian: the speaker never speaks of themselves in the past tense (no gender); the hero is a boy.
+## ---------------------------------------------------------------------------------------------------------------
+
+## --- a cup won (detail: the cup)
+
+[rumour_cup_greet]
+to = hero
+heard_of = cup
+age = adult elder
+weight = 8
+say town.rumour_cup_greet.1 | А вот и чемпион! {1} — правда у тебя? | Here comes the champion! {1}: is it really yours? | チャンピオンのお出ましだ！{1}、本当に君が？
+say town.rumour_cup_greet.2 | Поздравляю с кубком! Весь двор только об этом и говорит. | Congratulations on the cup! The whole yard talks of nothing else. | 優勝おめでとう！近所じゅうその話でもちきりだよ。
+say town.rumour_cup_greet.3 | Говорят, {1} теперь твой. Не зазнавайся только! | They say {1} is yours now. Just don't let it go to your head! | {1}は君のものだって？天狗にならないようにね！
+
+[rumour_cup_greet_young]
+to = hero
+heard_of = cup
+age = kid teen
+weight = 8
+say town.rumour_cup_greet_young.1 | Это ты кубок выиграл? Ничего себе! Научишь? | Was it you who won the cup? Wow! Will you teach me? | カップ取ったの君？すごい！教えてくれる？
+say town.rumour_cup_greet_young.2 | Все в школе знают про твой кубок! Покажешь? | Everyone at school knows about your cup! Will you show me? | 学校じゅう君のカップのこと知ってるよ！見せて？
+
+[rumour_cup_friend]
+to = hero
+heard_of = cup
+bond = friend close
+weight = 9
+say town.rumour_cup_friend.1 | {0}! Кубок! Я всем говорю: это мой друг! | {0}! The cup! I tell everyone: that's my friend! | {0}！カップだ！みんなに言ってるんだ、僕の友だちだって！
+
+[rumour_cup_near]
+near = hero
+heard_of = cup
+age = adult elder
+weight = 6
+say town.rumour_cup_near.1 | Вон тот мальчик — это он кубок взял. Такой молодой! | That boy over there: he's the one who took the cup. So young! | あそこの子、あの子がカップを取ったんだって。若いのにねえ。
+say town.rumour_cup_near.2 | Смотри, чемпион идёт. Скромный какой. | Look, there goes the champion. How modest he is. | ほら、チャンピオンが通るよ。謙虚な子だねえ。
+
+## --- a regular beaten at a club's game (detail: the regular's name)
+
+[rumour_beat_greet]
+to = hero
+heard_of = beat
+age = adult elder
+weight = 8
+say town.rumour_beat_greet.1 | Говорят, ты обыграл в клубе завсегдатая: {1}! Ну, молодец. | They say you beat {1}, no less! Well done. | {1}に勝ったんだって？たいしたもんだ。
+say town.rumour_beat_greet.2 | {1} всем рассказывает про вашу партию. Сильно сыграл, говорят! | {1} is telling everyone about your game. You played well, they say! | {1}がみんなに君との対局の話をしてるよ。強かったって！
+say town.rumour_beat_greet.3 | А, тот самый, кто партию выиграл! {1} уже ждёт реванша. | Ah, the one who won against {1}! Expect a rematch. | ああ、{1}に勝った子か！雪辱戦を覚悟しときな。
+
+[rumour_beat_greet_young]
+to = hero
+heard_of = beat
+age = kid teen
+weight = 8
+say town.rumour_beat_greet_young.1 | Ты правда взрослого обыграл? Вот это да! | Did you really beat a grown-up? Wow! | 本当に大人に勝ったの？すごい！
+
+[rumour_beat_friend]
+to = hero
+heard_of = beat
+bond = friend close
+weight = 9
+say town.rumour_beat_friend.1 | {0}, говорят, {1} до сих пор фигуры переставляет! | {0}, they say {1} is still moving the pieces around! | {0}、{1}はいまだに駒を並べ直してるってさ！
+
+[rumour_beat_near]
+near = hero
+heard_of = beat
+age = adult elder
+weight = 6
+say town.rumour_beat_near.1 | Это он партию выиграл. {1} до сих пор вздыхает. | That's the one who won the game. {1} is still sighing over it. | あの子が対局に勝ったんだ。{1}はまだため息ついてる。
+
+## --- a garden prize
+
+[rumour_garden_greet]
+to = hero
+heard_of = garden
+age = adult elder
+weight = 8
+say town.rumour_garden_greet.1 | Говорят, твой огород приз взял! Что сажаешь-то? | They say your plot won a prize! What are you growing? | 君の畑が入賞したって？何を植えてるの？
+say town.rumour_garden_greet.2 | Огородник наш! Поздравляю. Семян не продашь? | Our gardener! Congratulations. Will you sell some seeds? | 菜園名人！おめでとう。種、分けてくれない？
+
+[rumour_garden_near]
+near = hero
+heard_of = garden
+age = elder
+weight = 6
+say town.rumour_garden_near.1 | Вот он, мальчик с призовыми грядками. Руки золотые. | There he is, the boy with the prize beds. Hands of gold. | あの子だよ、入賞した畑の子。器用な手だねえ。
+
+## --- the sanatorium course seen through
+
+[rumour_cure_greet]
+to = hero
+heard_of = cure
+age = adult elder
+weight = 8
+say town.rumour_cure_greet.1 | Говорят, ты весь курс в санатории прошёл. Вид у тебя здоровый! | They say you did the whole course at the sanatorium. You look healthy! | サナトリウムの療養を全部やったんだって？元気そうだね！
+say town.rumour_cure_greet.2 | С дипломом санатория тебя! Девять печатей — не шутка. | Congratulations on the sanatorium diploma! Nine stamps is no joke. | サナトリウムの修了証、おめでとう！スタンプ九つは立派だ。
+
+## --- a first shift at a job (detail: the job as a place)
+
+[rumour_job_greet]
+to = hero
+heard_of = job
+age = adult elder
+weight = 8
+say town.rumour_job_greet.1 | Говорят, ты подрабатываешь {1}. Хорошее дело! | They say you've got a job {1}. Good for you! | {1}働いてるんだって？いいことだ！
+say town.rumour_job_greet.2 | Работник! Слышно, {1} тебя хвалят. | A working man! Word is they praise you {1}. | 働き者だね！{1}評判いいって聞いたよ。
+
+[rumour_job_greet_young]
+to = hero
+heard_of = job
+age = kid teen
+weight = 8
+say town.rumour_job_greet_young.1 | Ты правда работаешь {1}? И деньги платят? | Do you really work {1}? And they pay you? | 本当に{1}働いてるの？お金もらえるの？
+
+[rumour_job_near]
+near = hero
+heard_of = job
+age = adult elder
+weight = 6
+say town.rumour_job_near.1 | Это тот мальчик, что {1} работает. Серьёзный. | That's the boy who works {1}. A serious one. | あの子だよ、{1}働いてる子。しっかりしてる。
+
+## --- a bird that eats from his hand (detail: the bird)
+
+[rumour_tamed_greet]
+to = hero
+heard_of = tamed
+age = adult elder
+weight = 8
+say town.rumour_tamed_greet.1 | Говорят, у тебя с руки ест птица: {1}! Как ты их уговариваешь? | They say a bird eats from your hand: {1}! How do you talk them into it? | 君の手から鳥が食べるんだって？{1}！どうやって仲良くなるの？
+say town.rumour_tamed_greet.2 | А вот и наш птичник! {1}, говорят, тебе доверяет. | Here's our bird boy! {1} trusts you, they say. | 鳥の子のお出ましだ！{1}になつかれてるって？
+
+[rumour_tamed_greet_young]
+to = hero
+heard_of = tamed
+age = kid teen
+weight = 8
+say town.rumour_tamed_greet_young.1 | Это правда, что {1} ест у тебя с руки? Покажи! | Is it true {1} eats from your hand? Show me! | {1}が君の手から食べるって本当？見せて！
+
+[rumour_tamed_friend]
+to = hero
+heard_of = tamed
+bond = friend close
+weight = 9
+say town.rumour_tamed_friend.1 | {0}, весь город знает про твою птицу. Ты теперь знаменитость! | {0}, the whole town knows about your bird. You're famous now! | {0}、町じゅう君の鳥のこと知ってるよ。有名人だね！
+
+## --- his request played on the radio (heard by the town)
+
+[rumour_radio_greet]
+to = hero
+heard_of = radio
+weight = 8
+say town.rumour_radio_greet.1 | Слышали твою заявку по радио! Сделали погромче. | We heard your request on the radio! We turned it up. | ラジオで君のリクエスト聴いたよ！音を大きくしたんだ。
+say town.rumour_radio_greet.2 | А, это твою песню по радио крутили? Хороший вкус! | Ah, was that your song on the radio? Good taste! | ああ、ラジオのあの曲、君のリクエスト？いい趣味だね！
+
+## --- fined on the train (the passengers told it)
+
+[rumour_fine_greet]
+to = hero
+heard_of = fine
+age = adult elder
+weight = 8
+say town.rumour_fine_greet.1 | Говорят, тебя в поезде оштрафовали. Билет — пять рублей, не жадничай! | They say you got fined on the train. A ticket is five roubles, don't be stingy! | 列車で罰金取られたって？切符は五ルーブル、けちっちゃだめ！
+say town.rumour_fine_greet.2 | Заяц ты наш! Ну ничего, с кем не бывает. | Our little fare dodger! Never mind, it happens to us all. | 無賃乗車の常習犯さん！まあ、誰にでもあることさ。
+
+[rumour_fine_greet_young]
+to = hero
+heard_of = fine
+age = kid teen
+weight = 8
+say town.rumour_fine_greet_young.1 | Тебя Тимофеич поймал? Он всех ловит! | Did Timofeich catch you? He catches everyone! | チモフェイチにつかまったの？あの人、誰でもつかまえるんだ！
+
+## --- the crows bring him presents
+
+[rumour_crows_greet]
+to = hero
+heard_of = crows
+age = adult elder
+weight = 8
+say town.rumour_crows_greet.1 | Правда, что вороны тебе подарки носят? Наши ложки не видал? | Is it true the crows bring you presents? Seen our spoons? | カラスが贈り物を運ぶって本当？うちのスプーン見なかった？
+say town.rumour_crows_greet.2 | Говорят, ты с воронами дружишь. Умные птицы, злопамятные. | They say you're friends with the crows. Clever birds, and they hold grudges. | カラスと友だちなんだって？賢い鳥だよ、根に持つけど。
+
+[rumour_crows_greet_young]
+to = hero
+heard_of = crows
+age = kid teen
+weight = 8
+say town.rumour_crows_greet_young.1 | А что тебе вороны принесли? Покажи! А мне принесут? | What did the crows bring you? Show me! Will they bring me something? | カラスに何もらったの？見せて！僕にもくれるかな？
+
+## --- a catch (detail: the fish)
+
+[rumour_catch_greet]
+to = hero
+heard_of = catch
+age = adult elder
+weight = 7
+say town.rumour_catch_greet.1 | Говорят, у тебя улов: {1}! Где клюёт, не скажешь? | They say you've had a catch: {1}! Won't you tell me where they bite? | {1}を釣ったんだって？どこで釣れるか教えてよ。
+say town.rumour_catch_greet.2 | Рыбак! {1}, говорят, был что надо. | The angler! That {1} was a fine one, they say. | 釣り名人！{1}、なかなかの大物だったって？
+
+[rumour_catch_near]
+near = hero
+heard_of = catch
+job = pensioner
+weight = 5
+say town.rumour_catch_near.1 | Это тот, что с пирса таскает. Удачливый, шельмец. | That's the one who keeps landing them off the pier. A lucky rascal. | あの子だよ、桟橋で釣りまくってるの。運のいいやつだ。
+
+## --- his kite seen over the cliff
+
+[rumour_kite_greet]
+to = hero
+heard_of = kite
+weight = 7
+say town.rumour_kite_greet.1 | Видели твоего змея над обрывом! Выше всех держался. | We saw your kite over the cliff! It stayed up higher than all the rest. | 崖の上の君の凧、見たよ！いちばん高かった。
+say town.rumour_kite_greet.2 | Это твой змей у маяка висел? Красота! | Was that your kite hanging by the lighthouse? Beautiful! | 灯台のそばに上がってた凧、君の？きれいだった！
+
+## --- a tune played on a piano or the guitar (detail: the tune)
+
+[rumour_tune_greet]
+to = hero
+heard_of = tune
+age = adult elder
+weight = 7
+say town.rumour_tune_greet.1 | Говорят, ты играешь «{1}». Сыграешь как-нибудь? | They say you play “{1}”. Will you play it some time? | 「{1}」が弾けるんだって？今度弾いてよ。
+say town.rumour_tune_greet.2 | Музыкант! «{1}», говорят, у тебя чисто выходит. | The musician! Your “{1}” comes out clean, they say. | 音楽家だね！「{1}」上手に弾くって聞いたよ。
+
+[rumour_tune_near]
+near = hero
+heard_of = tune
+age = elder
+weight = 5
+say town.rumour_tune_near.1 | Это он «{1}» играл. Слух у мальчика есть. | He's the one who played “{1}”. The boy has an ear. | あの子が「{1}」を弾いたんだよ。耳がいいねえ。
+
+## --- songs to his guitar by the bonfire
+
+[rumour_sing_greet]
+to = hero
+heard_of = sing
+weight = 7
+say town.rumour_sing_greet.1 | Говорят, у костра под твою гитару весь пляж пел! | They say the whole beach sang to your guitar by the bonfire! | たき火で君のギターに合わせて浜じゅう歌ったって？
+say town.rumour_sing_greet.2 | В следующий раз позови к костру, а? Петь люблю. | Next time call me to the bonfire, eh? I love to sing. | 今度たき火のとき呼んでよ。歌うの好きなんだ。
+
+## --- seen at the Rassvet's old films
+
+[rumour_film_greet]
+to = hero
+heard_of = film
+weight = 6
+say town.rumour_film_greet.1 | Видели тебя в «Рассвете». Старый поезд не напугал? | We saw you at the Rassvet. Did the old train frighten you? | 『ラスヴェート』で見かけたよ。昔の列車、怖くなかった？
+
+## --- two of them talking about him (A has heard of it)
+
+[rumour_talk_cup]
+heard_of = cup
+age = adult elder
+age2 = adult elder
+weight = 7
+talk
+- town.rumour_talk_cup.1 | Слышно, кубок-то школьник взял? | Word is a schoolboy took the cup? | カップを取ったの、あの少年だって？
+- town.rumour_talk_cup.2 | Тот, что с биноклем всё ходит? | The one who's always walking about with binoculars? | いつも双眼鏡を持って歩いてる子？
+- town.rumour_talk_cup.3 | Он самый. Завсегдатаи до сих пор в себя не пришли. | That's him. The regulars still haven't got over it. | その子だよ。常連たちはまだ立ち直れてない。
+
+[rumour_talk_beat]
+heard_of = beat
+age = adult elder
+age2 = adult elder
+weight = 7
+talk
+- town.rumour_talk_beat.1 | Слышно, в клубе мальчишка партию выиграл. А против него — {1}! | Word is a boy won a game at the club. And against {1}! | クラブで子どもが勝ったってさ。相手は{1}だよ！
+- town.rumour_talk_beat.2 | Да ну! Там же опыт сорок лет. | Never! There's forty years' experience there. | まさか！四十年の経験があるのに。
+- town.rumour_talk_beat.3 | Опыт опытом, а голова у мальчика светлая. | Experience is experience, but the boy has a clear head. | 経験は経験、でもあの子は頭が切れるんだ。
+
+[rumour_talk_job]
+heard_of = job
+age = adult elder
+age2 = adult elder
+weight = 7
+talk
+- town.rumour_talk_job.1 | Мальчик из клуба теперь {1} подрабатывает. | The boy from the club has a job {1} now. | クラブの子、今は{1}働いてるんだって。
+- town.rumour_talk_job.2 | Вот и правильно. Смолоду работа — лучшая школа. | Quite right. Work young is the best school. | それでいい。若いうちの仕事は一番の学校だ。
+- town.rumour_talk_job.3 | И ведь ещё успевает птиц смотреть. | And he still finds time to watch birds. | しかも鳥を見る暇まであるんだから。
+
+[rumour_talk_fine]
+heard_of = fine
+age = adult elder
+age2 = adult elder
+weight = 6
+talk
+- town.rumour_talk_fine.1 | В поезде, говорят, мальчишку без билета поймали. | They say a boy got caught on the train without a ticket. | 列車で、切符なしの子がつかまったってさ。
+- town.rumour_talk_fine.2 | Тимофеич небось. У него и муха без билета не пролетит. | Timofeich, I bet. Not even a fly gets past him without a ticket. | チモフェイチだろう。あの人の前じゃハエも無賃じゃ飛べない。
+
+[rumour_talk_young]
+heard_of = cup beat tamed crows kite
+age = kid teen
+age2 = kid teen
+weight = 6
+talk
+- town.rumour_talk_young.1 | Знаешь про мальчика из клуба? | Have you heard about the boy from the club? | クラブの子のこと、聞いた？
+- town.rumour_talk_young.2 | Ага! Все слышали. Вот бы так же! | Yeah! Everyone has. I wish I could do that! | うん！みんな知ってるよ。僕もああなりたいな！

@@ -1,5 +1,5 @@
 {
- "_doc": "The club «Шестерня» (P-CLUB3), second pass: the club library lends (cog_lending, the swap rack, the returns trolley, topic shelves with the club's own pencilled margins), billiards and table tennis by weekday, the model-makers' three-day boat and four-day glider, a photo print that takes four days and a tray that shows the hours, the small stage's rehearsal week, and the running story of the lost chess clock told by boards and lines by `after` (found at the photo lab's second bench; the quest cog_clock waits for look_club, exposure_clock and cog_clock_set). Ids refer to the cog_club module's things; all words in strings/x_p_club3.json (also the words of the quests cog_clock and cog_reader, whose JSON is in the report, not in quests.json).",
+ "_doc": "The club «Шестерня» (P-CLUB3), second pass: the club library lends (cog_lending, the swap rack, the returns trolley, topic shelves with the club's own pencilled margins), billiards and table tennis by weekday, the model-makers' three-day boat and four-day glider, a photo print that takes four days and a tray that shows the hours, the small stage's rehearsal week, and the running story of the lost chess clock told by boards and lines by `after` (found at the photo lab's second bench; the quest cog_clock waits for look_club, exposure_clock and cog_clock_set). The photo contest (photo.json, docs/photo.md): the lab's end wall with the line of prints (drying_line) is the wall of winners (act photo_wall of photo.json; cog_prints and its four lines are kept but on no thing now), the photo board reads the lab's guide and the contest sheet notices_photo (x_notices.json, tools/paper) in turn, the cloakroom has the topic set photo_maru (the quest maru_wall). Ids refer to the cog_club module's things; all words in strings/x_p_club3.json (also the words of the quests cog_clock and cog_reader, whose JSON is in the report, not in quests.json).",
  "shops": {
   "cog_lending": {
    "role": "clerk",
@@ -436,6 +436,7 @@
   "cog_darkroom": {
    "like": "darkroom",
    "target": "darkroom",
+   "open": "photo_darkroom",
    "prompt": "city.cog.dark.prompt",
    "lines": [
     {
@@ -758,7 +759,8 @@
    "prompt": "city.act.read.prompt",
    "read": {
     "texts": [
-     "cog_photo_guide"
+     "cog_photo_guide",
+     "notices_photo"
     ]
    },
    "sound": "page_turn"
@@ -931,7 +933,8 @@
   },
   "P-CLUB3/cloak": {
    "topics": [
-    "@x_c_cloak"
+    "@x_c_cloak",
+    "@photo_maru"
    ]
   },
   "cog_club/stack_r_1": {
@@ -1004,7 +1007,7 @@
    "act": "cog_clock"
   },
   "cog_club/drying_line": {
-   "act": "cog_prints"
+   "act": "photo_wall"
   },
   "cog_club/stage": {
    "act": "cog_stage"

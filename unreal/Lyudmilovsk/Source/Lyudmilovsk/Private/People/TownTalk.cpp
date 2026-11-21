@@ -5,6 +5,7 @@
 #include "PeopleManners.h"
 #include "People/PeopleLife.h"
 #include "People/LyudFriends.h"
+#include "People/LyudTownRumours.h"
 #include "HeroCharacter.h"
 #include "LyudText.h"
 #include "Plants/GameCalendar.h"
@@ -457,6 +458,48 @@ namespace TownTalkLocal
 	}
 }
 
+namespace TownTalkLocal
+{
+	/** What somebody would bring up about the player now (docs/town_rumours.md: the sets' heard_of =): the kinds of the rumours
+	 *  they know and haven't remarked on, none while the town's pause between two such remarks runs (after FillWho). */
+	void FillHeard(const UObject* Context, int32 Id, LyudBarks::FWho& W)
+	{
+		W.Heard.clear();
+		const ULyudTownRumours* Rumours = ULyudTownRumours::Get(Context);
+		if (!Rumours || !Rumours->RemarkReady())
+		{
+			return;
+		}
+		TArray<FString> Kinds;
+		Rumours->KindsFor(Id, Kinds);
+		for (const FString& K : Kinds)
+		{
+			const FTCHARToUTF8 Conv(*K);
+			W.Heard.emplace_back(Conv.Get(), (size_t)Conv.Length());
+		}
+	}
+
+	/** A line of Set is about to be said by Id: if it is a remark about the player (heard_of), the rumour is told by them now
+	 *  and its detail (the line's {1}) comes back; else empty. */
+	FString TakeHeard(const UObject* Context, const LyudBarks::FSet& Set, int32 Id, const LyudBarks::FWho& W)
+	{
+		ULyudTownRumours* Rumours = Set.A.Heard.Empty() || W.Heard.empty() ? nullptr : ULyudTownRumours::Get(Context);
+		if (!Rumours)
+		{
+			return FString();
+		}
+		TArray<FString> Kinds;
+		for (const std::string& K : W.Heard)
+		{
+			if (Set.A.Heard.Match(K))
+			{
+				Kinds.Add(FString(UTF8_TO_TCHAR(K.c_str())));
+			}
+		}
+		return Rumours->Remarked(Id, Kinds);
+	}
+}
+
 void ULyudTownTalkSubsystem::Stop()
 {
 	if (Overlay.IsValid() && Viewport.IsValid())
@@ -688,12 +731,14 @@ bool ULyudTownTalkSubsystem::Show(AActor* Actor, int32 Person, const FString& Ke
 	{
 		return false;   // no words for it in any language
 	}
-	// a friend's line calls him by the nickname they gave him (docs/friends.md); somebody who gave him none says "neighbour"
-	if (Text.Contains(TEXT("{0}")))
+	// a friend's line calls him by the nickname they gave him (docs/friends.md); somebody who gave him none says "neighbour";
+	// a remark about something he did names it ({1}: the rumour's detail, docs/town_rumours.md)
+	if (Text.Contains(TEXT("{0}")) || Text.Contains(TEXT("{1}")))
 	{
 		const ULyudFriends* Friends = ULyudFriends::Get(this);
 		const FString Nick = Friends && Person >= 0 ? Friends->NickOf(Person) : FString();
-		Text = LyudText::Get(Full, { FStringFormatArg(Nick.IsEmpty() ? LyudText::Get(TEXT("friends.nick.neighbour")).ToString() : Nick) }).ToString();
+		Text = LyudText::Get(Full, { FStringFormatArg(Nick.IsEmpty() ? LyudText::Get(TEXT("friends.nick.neighbour")).ToString() : Nick),
+			FStringFormatArg(PendingDetail) }).ToString();
 	}
 	// the speaker's own place on screen if they have one up, else a free one
 	int32 Slot = INDEX_NONE;
@@ -834,10 +879,14 @@ void ULyudTownTalkSubsystem::Scan()
 			}
 			LyudBarks::FillWho(*S, P, State->Who);
 			TownTalkLocal::FillManner(Life, Id, State->Who);
+			TownTalkLocal::FillHeard(this, Id, State->Who);
 			State->Who.bHeroNear = true;
 			int SetIx = -1;
 			const std::string* Key = State->Book.PickLine(LyudBarks::EKind::Greet, State->Who, State->Now, nullptr, &SetIx);
-			if (Key && Show(Actor, Id, TownTalkLocal::ToFString(*Key)))
+			PendingDetail = Key && SetIx >= 0 ? TownTalkLocal::TakeHeard(this, State->Book.Sets[(size_t)SetIx], Id, State->Who) : FString();
+			const bool bShown = Key && Show(Actor, Id, TownTalkLocal::ToFString(*Key));
+			PendingDetail.Reset();
+			if (bShown)
 			{
 				// with a wave from the warm, a nod from the rest (if their hands are free)
 				const bool bWave = Warmth > 0.62f || Met >= 5 || bFriend;
@@ -883,9 +932,16 @@ void ULyudTownTalkSubsystem::Scan()
 		LyudBarks::FillWho(*S, P, State->Who);
 		TownTalkLocal::FillManner(Life, Id, State->Who);
 		State->Who.bHeroNear = FVector::Dist(At, HeroAt) < 1000.0;
+		if (State->Who.bHeroNear)
+		{
+			TownTalkLocal::FillHeard(this, Id, State->Who);     // a word about him only within earshot
+		}
 		int SetIx = -1;
 		const std::string* Key = State->Book.PickLine(LyudBarks::EKind::Say, State->Who, State->Now, nullptr, &SetIx);
-		if (Key && Show(Actor, Id, TownTalkLocal::ToFString(*Key)))
+		PendingDetail = Key && SetIx >= 0 ? TownTalkLocal::TakeHeard(this, State->Book.Sets[(size_t)SetIx], Id, State->Who) : FString();
+		const bool bShown = Key && Show(Actor, Id, TownTalkLocal::ToFString(*Key));
+		PendingDetail.Reset();
+		if (bShown)
 		{
 			CountSaid(SetIx);
 			// a line of theirs he heard close by: they come to know him a little (docs/friends.md)
@@ -949,6 +1005,12 @@ bool ULyudTownTalkSubsystem::StartExchange(const FVector& Cam, const FVector& Lo
 			LyudBarks::FillWho(*S, B, State->Other);
 			State->Who.bHeroNear = FVector::Dist(AtA, HeroAt) < 1000.0;
 			State->Other.bHeroNear = FVector::Dist(TownTalkLocal::PersonAt(B), HeroAt) < 1000.0;
+			// two of them talking about the player within his earshot (docs/town_rumours.md)
+			if (State->Who.bHeroNear || State->Other.bHeroNear)
+			{
+				TownTalkLocal::FillHeard(this, A.Id, State->Who);
+				TownTalkLocal::FillHeard(this, B.Id, State->Other);
+			}
 			bool bSwapped = false;
 			int SetIx = -1;
 			const std::vector<std::string>* Talk = State->Book.PickTalk(State->Who, State->Other, State->Now, bSwapped, &SetIx);
@@ -966,6 +1028,7 @@ bool ULyudTownTalkSubsystem::StartExchange(const FVector& Cam, const FVector& Lo
 			Exchange.Talk = (int32)(Talk - Set.Talks.data());
 			Exchange.Next = 0;
 			Exchange.NextAt = Clock;
+			Exchange.Detail = TownTalkLocal::TakeHeard(this, Set, Exchange.Person[0], bSwapped ? State->Other : State->Who);
 			CountSaid(SetIx);
 			return true;
 		}
@@ -1022,7 +1085,10 @@ void ULyudTownTalkSubsystem::TickExchange()
 			B.Life = FMath::Min(B.Life, B.Age + 0.6f);
 		}
 	}
-	if (!Show(Speaker, Exchange.Person[Turn], TownTalkLocal::ToFString(Lines[(size_t)Exchange.Next])))
+	PendingDetail = Exchange.Detail;
+	const bool bShown = Show(Speaker, Exchange.Person[Turn], TownTalkLocal::ToFString(Lines[(size_t)Exchange.Next]));
+	PendingDetail.Reset();
+	if (!bShown)
 	{
 		Exchange.bActive = false;
 		return;

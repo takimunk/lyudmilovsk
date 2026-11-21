@@ -13,5 +13,10 @@
  "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_222011_4a25f4d0-e2c8-4e31-b0cd-bdb25ccff00e.png",
  "date": "2026-11-20",
  "why_2x2": "two new items (kite_diamond, kite_box): two variants of each in one 2x2 grid, the better cell of each row becomes its icon",
- "todo": "the cloud session could not download the output (the egress proxy refuses the CDN): on the Mac download it here as icon_kites_grid.png (add sha256), look at the cells, cut the better top-row cell to textures/localized/ru/icon_kite_diamond.jpg and the better bottom-row cell to icon_kite_box.jpg (512x512, 2x2 equal cells) with sidecars, import with unreal/scripts/import_hall_assets.py, then python3 tools/ui_diary_icons.py kite_diamond kite_box and unreal/scripts/import_diary_assets.py"
+ "todo": "done 2026-11-21 on the Mac: downloaded, cells cut, imported, sketches made",
+ "sha256": "4bfbe589cd50434177b8bf4c209cd0b461379b62bb6ddb24fc55624e90334b6b",
+ "chosen_cells": {
+  "kite_diamond": "1 (top left): compact, the tail and the reel wholly inside",
+  "kite_box": "3 (bottom left): square-on, frame and reel inside"
+ }
 }
