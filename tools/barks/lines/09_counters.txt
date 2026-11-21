@@ -29,3 +29,68 @@ on = counter_hello
 festival = any
 weight = 2
 say town.counter_hello_festival.1 | С праздником! Сегодня у нас людно. | Happy holiday! It's busy here today. | おめでとうございます！今日はにぎやかですよ。
+
+[counter_hello_noon]
+on = counter_hello
+hours = 12-15
+weight = 2
+say town.counter_hello_noon.1 | Добрый день. Пока затишье, выбирайте спокойно. | Good afternoon. It's quiet for now, take your time. | こんにちは。今は空いてるから、ゆっくり選んでね。
+say town.counter_hello_noon.2 | День добрый. На обед что-нибудь? | Afternoon. Something for lunch? | こんにちは。お昼に何か？
+
+## --- the counter knows him (docs/counters.md): met = known after days of greetings, bond = friends (docs/friends.md) ---
+
+[counter_hello_known]
+on = counter_hello
+met = known
+weight = 3
+say town.counter_hello_known.1 | А, постоянный покупатель! Тебе как в прошлый раз? | Ah, a regular! Same as last time? | ああ、常連さん！この前と同じでいい？
+say town.counter_hello_known.2 | Здравствуй. Я уж думаю, куда ты пропал. | Hello. I was starting to wonder where you'd got to. | こんにちは。どこ行っちゃったのかと思ってたよ。
+say town.counter_hello_known.3 | Опять ты? Хорошо. Выбирай, я подожду. | You again? Good. Choose, I'll wait. | また来たね？いいよ。選んで、待ってるから。
+
+[counter_hello_friendly]
+on = counter_hello
+bond = friendly
+weight = 4
+say town.counter_hello_friendly.1 | О, это ты! Для тебя самое свежее отложим. | Oh, it's you! We'll put the freshest aside for you. | おお、君か！一番新しいのを取っておくよ。
+say town.counter_hello_friendly.2 | Привет-привет. Как дома, все здоровы? | Hi there. How's everyone at home, all well? | やあやあ。家のみんなは元気？
+
+[counter_hello_friend]
+on = counter_hello
+bond = friend close
+weight = 6
+say town.counter_hello_friend.1 | {0}! Заходи, заходи. Тебе как всегда? | {0}! Come in, come in. The usual? | {0}！どうぞどうぞ。いつもの？
+say town.counter_hello_friend.2 | Ну здравствуй, {0}. Для тебя всегда найдётся. | Well, hello, {0}. There's always something for you. | やあ、{0}。君の分はいつでもあるよ。
+say town.counter_hello_friend.3 | {0}, ты вовремя: только что привезли. | {0}, you're just in time: it's only just come in. | {0}、ちょうどいいところに。今届いたばかりだよ。
+
+## ---------------------------------------------------------------------------------------------------------------
+## The service scene (ULyudCounterService, docs/counters.md). counter_give: the item is put on the counter for him.
+## queue_next: the one on shift calls the next in line. queue_join: a resident who has just joined a line behind somebody.
+## ---------------------------------------------------------------------------------------------------------------
+
+[counter_give]
+on = counter_give
+say town.counter_give.1 | Пожалуйста. Сдачу не забудь. | Here you are. Don't forget your change. | はい、どうぞ。おつりを忘れないでね。
+say town.counter_give.2 | Держи. Приходи ещё. | There you go. Come again. | はい。また来てね。
+say town.counter_give.3 | Вот, на прилавке. Осторожно, не урони. | There, on the counter. Careful, don't drop it. | はい、カウンターに置いたよ。落とさないでね。
+say town.counter_give.4 | Всё твоё. Хорошего дня! | All yours. Have a good day! | 全部どうぞ。よい一日を！
+
+[counter_give_friend]
+on = counter_give
+bond = friend close
+weight = 3
+say town.counter_give_friend.1 | Держи, {0}. Передавай привет своим. | There you go, {0}. Say hello to your folks. | はい、{0}。みんなによろしくね。
+say town.counter_give_friend.2 | Бери, {0}. Лишнего положить не могу, но с горкой. | Take it, {0}. I can't give you extra, but it's heaped. | どうぞ、{0}。おまけはできないけど、たっぷりにしといたよ。
+
+[queue_next]
+on = queue_next
+say town.queue_next.1 | Следующий! | Next! | 次の方！
+say town.queue_next.2 | Кто следующий? Подходите. | Who's next? Come up. | 次はどなた？どうぞ。
+say town.queue_next.3 | Слушаю вас. | Yes, please? | はい、どうぞ。
+say town.queue_next.4 | Не толпимся, по одному. | No crowding, one at a time. | 押さないで、お一人ずつね。
+
+[queue_join]
+on = queue_join
+say town.queue_join.1 | Кто последний? | Who's last in line? | 最後尾はどちら？
+say town.queue_join.2 | Я за вами. | I'm after you. | あなたの次に並びますね。
+say town.queue_join.3 | Ох, очередь. Ну ничего, постою. | Oh, a queue. Never mind, I'll wait. | ああ、行列か。まあいいや、待とう。
+say town.queue_join.4 | Скажите, а хлеб ещё остался? | Tell me, is there any bread left? | すみません、パンはまだ残ってます？

@@ -42,7 +42,12 @@ OUT_CUPS = os.path.join(CONTENT, "City", "tournaments.json")
 OUT_STRINGS = os.path.join(CONTENT, "Localization", "city")
 QUESTS = os.path.join(CONTENT, "UI", "quests.json")
 MAP = os.path.join(CONTENT, "UI", "map.json")
+# the residents (FPersonInfo::Key of the people sim: the hand-made people and the townsfolk) a quest's photo may be of
+PEOPLE_FILES = (os.path.join(CONTENT, "PeopleData", "people.json"), os.path.join(CONTENT, "PeopleData", "townsfolk.json"))
+# what a quest's `photo <target>` may be besides a map place: the dog Maru, a resident's key (photo_subjects)
+PHOTO_ANIMALS = ("maru",)
 FESTIVALS = os.path.join(CONTENT, "PeopleData", "festivals.json")
+RUMOURS = os.path.join(CONTENT, "PeopleData", "rumours.json")   # the talk of the town's kinds (tools/rumours/rumours.py)
 LANGS = ("ru", "en", "ja")
 
 KINDS = ("seat", "bed", "shelf", "board", "counter", "machine", "play", "sport", "craft", "screen", "take", "door")
@@ -64,30 +69,34 @@ DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer", "ask",
                "round_start", "round_done", "photo")  # round_*: the bicycle rounds (ULyudRounds, docs/rounds.md); photo: the film camera
+# (photo <map place | maru | resident key>: a sharp developed frame taken there, or of the dog, or of that resident)
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
               "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
 # screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics, the
-# photo studio's counter service and the darkroom where the hero develops his own film (Private/Photo/LyudPhoto.cpp), the
-# places of the hero's room (Private/Home/LyudHeroRoom.cpp)
-OPEN_SCREENS = ("books", "home", "piano", "photo_lab", "photo_darkroom")
+# photo studio's counter service, the darkroom where the hero develops his own film, the photo club's monthly contest (its
+# table: hand a print in, hear the result) and the wall of its winners (Private/Photo/LyudPhoto.cpp, docs/photo.md)
+OPEN_SCREENS = ("books", "piano", "photo_lab", "photo_darkroom", "photo_contest", "photo_wall")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
 # them), have ("set/piece"), count (["set", n]); "collect" ("set/piece") is no condition: the stamp the line gives when shown
 # them), have ("set/piece"), count (["set", n]), read (a text read to its end), did (an act's target the hero has done), heard
-# (a staff talk topic asked about)
+# (a staff talk topic asked about), rumour (a kind of the talk of the town about the hero going round now, "any", "!kind":
+# docs/town_rumours.md)
 LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect", "read", "did",
-              "heard", "pay", "stay")
+              "heard", "pay", "stay", "rumour")
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
-            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments")
+            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments", "rewards")
+# what a complete collection gives (docs/city_interiors.md "A complete set pays"): a reward's fields
+REWARD_FIELDS = ("name", "note", "pay", "item", "count", "item_from", "like", "free", "days")
 # the staff talk (docs/city_interiors.md "Staff talk"): a topic's fields besides its line conditions (when it is offered)
-TOPIC_FIELDS = ("id", "k", "lines", "once", "gives")
+TOPIC_FIELDS = ("id", "k", "lines", "once", "gives", "everywhere")
 MAX_TOPICS = 8
 # room tones (docs/city_interiors.md "Room tones")
-TONE_FIELDS = ("loop", "volume", "shots", "every", "shot_volume", "closed", "about")
+TONE_FIELDS = ("loop", "volume", "shots", "every", "shot_volume", "closed", "weather", "windows", "about")
 # the reading view (docs/city_interiors.md "The reading page"): what a text is, how long a page takes, the kinds a reading act is for
 TEXT_KINDS = ("book", "notice", "ledger", "newspaper")
 TEXT_FIELDS = ("title", "kind", "minutes", "pages", "collect", "gen")
@@ -111,6 +120,9 @@ MIN_GAP = 0.3
 # rooms that stand on no plot of the plan (the hero's room in the club, docs/hero_room.md): [{"id", "kind", "building", "front"
 # (Unreal metres), "yaw", "name_ru", "name_en"}]; their things, acts and teleports are made like a plot's
 EXTRA_PLACES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "extra_places.json")
+# the places of the hero's room are his own screen too (Private/Home/LyudHeroRoom.cpp); kept apart from the list above
+# so that the two do not collide in merges
+OPEN_SCREENS += ("home",)
 UNIT_TYPE = "promenade_unit"   # the promenade units' rooms (exports promenade_unit__<variant>.json)
 FOOTPRINT_SLACK = 3.0
 
@@ -293,7 +305,7 @@ def load_strings():
 
 
 CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}, "topics": {}, "topic_sets": {},
-                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}}
+                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}, "rewards": {}}
 
 
 def content_files():
@@ -335,7 +347,7 @@ def load_content():
                               ("topics", CONTENT_EXTRA["topics"]), ("topic_sets", CONTENT_EXTRA["topic_sets"]),
                               ("tones", CONTENT_EXTRA["tones"]), ("tone_by", CONTENT_EXTRA["tone_by"]),
                               ("sound_alias", CONTENT_EXTRA["sound_alias"]), ("stays", CONTENT_EXTRA["stays"]),
-                              ("tournaments", CONTENT_EXTRA["tournaments"])):
+                              ("tournaments", CONTENT_EXTRA["tournaments"]), ("rewards", CONTENT_EXTRA["rewards"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -406,6 +418,40 @@ def prop_rule(rules, kind, props):
         if all(fnmatch.fnmatchcase(str(props.get(a)), b) for a, _, b in conds) and n > best_n:
             best, best_n = v, n
     return best
+
+
+def photo_subjects():
+    """The subjects a quest's `photo <target>` may name besides a place of map.json (Private/Photo/LyudPhoto.cpp sends the
+    event for a sharp developed frame of them): the dog Maru and every resident's key."""
+    out = set(PHOTO_ANIMALS)
+    for path in PEOPLE_FILES:
+        if os.path.exists(path):
+            out |= {p["key"] for p in load(path).get("people", []) if p.get("key")}
+    return out
+
+
+def spot_things(export, rules, plot, btype):
+    """Things a rule makes of a spot in a building that declares its own things: a rule naming the spot (<plot>/<spot id> or
+    <type>/<spot id>) with "spot": "<thing id>" and a "kind" puts a thing of that id at the spot's look point (KIND_LOOK); the
+    thing's act and props come from the rules naming the new id. For a use the building's model has a prop for but its
+    script declared no thing (the photo club's table with the box of contest prints, by the stool photo_seat_2)."""
+    out = []
+    for sp in export.get("spots", []):
+        patch = {}
+        for r in id_rules(rules, plot, btype, sp["id"]):
+            patch.update(r)
+        if not patch.get("spot"):
+            continue
+        kind = patch.get("kind")
+        if kind not in KIND_LOOK:
+            err("%s/%s: a rule with \"spot\" needs a \"kind\" (%s)" % (plot, sp["id"], ", ".join(KINDS)))
+            continue
+        rise, faces_user = KIND_LOOK[kind]
+        x, y, z = sp["pos"]
+        uyaw = sp.get("yaw", 0.0) or 0.0
+        out.append({"id": str(patch["spot"]), "kind": kind, "pos": [x, y, z + rise],
+                    "yaw": (uyaw + 180.0) % 360.0 if faces_user else uyaw, "props": {}})
+    return out
 
 
 def derive_things(export, rules, plot, btype):
@@ -528,6 +574,10 @@ def check_line_conds(where, cond):
                 STAY_USED.append((where, v.lstrip("!")))
             else:
                 err("%s: stay must be a stay id (or \"!id\": not on it)" % where)
+        elif k == "rumour":
+            kinds = set(load(RUMOURS).get("kinds", {})) if os.path.exists(RUMOURS) else set()
+            if not (isinstance(v, str) and (v.lstrip("!") == "any" or v.lstrip("!") in kinds)):
+                err("%s: rumour must be a kind of PeopleData/rumours.json, \"any\" (or \"!kind\")" % where)
 
 
 def expand_lines(spec, strings, where="lines"):
@@ -970,6 +1020,11 @@ def build_topic(where, t, strings):
             STAMPS_USED.append(("%s line %s" % (where, l["k"]), l["collect"]))
     rec = dict({"k": t["k"]}, **cond)
     rec["lines"] = lines
+    if "everywhere" in t:
+        if not isinstance(t["everywhere"], bool):
+            err("%s: everywhere must be true or false" % where)
+        elif t["everywhere"]:
+            rec["everywhere"] = True   # offered by every counter with staff talk (the talk of the town)
     if "once" in t:
         if not isinstance(t["once"], bool):
             err("%s: once must be true or false" % where)
@@ -1162,6 +1217,24 @@ def build_tones(plan_places, reg):
             if t["closed"] not in src:
                 err("%s: closed tone %s is not a tone" % (where, t["closed"]))
             rec["closed"] = t["closed"]
+        # the room in a weather (docs/indoor_weather.md): {"rain": tone id, ...} plays instead while open and so
+        wx = t.get("weather") or {}
+        if not isinstance(wx, dict):
+            err("%s: weather is {word: tone id}" % where)
+            wx = {}
+        for word, alt in wx.items():
+            if word not in WEATHER:
+                err("%s: weather word %s is not one of %s" % (where, word, ", ".join(WEATHER)))
+            elif alt not in src or alt == tid:
+                err("%s: weather %s: %s is not another tone" % (where, word, alt))
+        if wx:
+            rec["weather"] = collections.OrderedDict((w, wx[w]) for w in WEATHER if w in wx)
+        win = t.get("windows", 0)
+        if not isinstance(win, (int, float)) or not 0 <= win <= 1:
+            err("%s: windows is 0..1" % where)
+            win = 0
+        if win:
+            rec["windows"] = float(win)
         out[tid] = rec
     by = {k: v for k, v in CONTENT_EXTRA["tone_by"].items() if not k.startswith("_")}
     for k, v in by.items():
@@ -1466,6 +1539,7 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
         declared = ex.get("things") or []
         if declared:
             raw = [{"id": t["id"], "kind": t["kind"], "pos": list(t["pos"]), "yaw": t.get("yaw", 0.0) or 0.0, "props": thing_props(t)} for t in declared]
+            raw += spot_things(ex, rules, pl["id"], pl["building"])
         else:
             raw = derive_things(ex, rules, pl["id"], pl["building"])
         fp = ex.get("footprint") or []
@@ -1616,7 +1690,7 @@ def given_topic(given, tp):
             given[c.partition("/")[0]].add(c.partition("/")[2])
 
 
-CUP_FIELDS = ("title", "venue", "game", "plot", "days", "start", "step", "collect")
+CUP_FIELDS = ("title", "venue", "game", "plot", "days", "start", "step", "collect", "fest_title", "fest_collect")
 DOW = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 
 
@@ -1668,6 +1742,15 @@ def build_tournaments(src, strings, regs, things, acts, texts, plot_ids):
             STAMPS_USED.append((where, c["collect"]))
         out[cid] = {"title": c.get("title", ""), "venue": c.get("venue", ""), "game": game, "plot": plot, "weekday": wd,
                     "start": float(start), "step": float(step), "collect": c.get("collect", "")}
+        # a holiday's cup (docs/festivals.md "The new toys"): the board's heading and the champion's second stamp on a holiday
+        if c.get("fest_title"):
+            if not has_string(c["fest_title"], strings):
+                err("%s: fest_title string %s is missing" % (where, c["fest_title"]))
+            out[cid]["fest_title"] = c["fest_title"]
+        if c.get("fest_collect"):
+            check_line_conds(where, {"collect": c["fest_collect"]})
+            STAMPS_USED.append((where, c["fest_collect"]))
+            out[cid]["fest_collect"] = c["fest_collect"]
     for tx, t in texts.items():
         g = t.get("gen", "")
         if g.startswith("cup:") and g[4:] not in out:
@@ -1687,7 +1770,66 @@ def day_in(days, wd):
     return False
 
 
-def build_collections(src, things, acts, strings, regs=None, texts=None, cups=None):
+def build_reward(sid, r, strings, items, shops):
+    """A collection's reward (the "rewards" section: {"<set>": {"name": key, "note": key, and one thing to hold: "pay": roubles |
+    "item": id ("count": n) | "item_from": shop id (the first of its goods the hero has none of, with "like": only those whose id begins so; "pay" is
+    given when he has them all) | "free": item id for "days" days}}). The keys default to city.coll.reward.<set>.name / .note."""
+    out = collections.OrderedDict()
+    if not isinstance(r, dict):
+        err("reward %s: an object" % sid)
+        return out
+    for k in r:
+        if k not in REWARD_FIELDS:
+            err("reward %s: unknown field %s (%s)" % (sid, k, ", ".join(REWARD_FIELDS)))
+    for f in ("name", "note"):
+        key = r.get(f, "city.coll.reward.%s.%s" % (sid, f))
+        if key not in strings and key not in MAIN:
+            err("reward %s: %s string %s is missing" % (sid, f, key))
+        out[f] = key
+    held = [f for f in ("item", "item_from", "free") if r.get(f)]
+    if len(held) > 1 or (not held and not r.get("pay")):
+        err("reward %s: one thing to hold: pay, item, item_from or free" % sid)
+    for f in ("pay", "count", "days"):
+        if f in r and (not isinstance(r[f], int) or isinstance(r[f], bool) or r[f] <= 0):
+            err("reward %s: %s is a whole number above 0" % (sid, f))
+    if r.get("pay"):
+        if held and held != ["item_from"]:
+            err("reward %s: pay goes alone, or with item_from as what is given when he has every good" % sid)
+        out["pay"] = r["pay"]
+    for f in ("item", "free"):
+        if r.get(f):
+            if r[f] not in items:
+                err("reward %s: %s %s is not an item" % (sid, f, r[f]))
+            out[f] = r[f]
+    if r.get("item"):
+        out["count"] = r.get("count", 1)
+    elif "count" in r:
+        err("reward %s: count goes with item" % sid)
+    if r.get("free"):
+        if not r.get("days"):
+            err("reward %s: free needs days" % sid)
+        elif not any(g["item"] == r["free"] for sh in shops.values() for g in sh["goods"]):
+            err("reward %s: no shop sells %s" % (sid, r["free"]))
+        out["days"] = r.get("days", 0)
+    elif "days" in r:
+        err("reward %s: days goes with free" % sid)
+    if r.get("item_from"):
+        if r["item_from"] not in shops:
+            err("reward %s: item_from %s is not a shop" % (sid, r["item_from"]))
+        elif not r.get("pay"):
+            err("reward %s: item_from needs pay (given when he has every good of the shop)" % sid)
+        out["item_from"] = r["item_from"]
+        if r.get("like"):
+            # only the goods whose id begins so (the Wave's records, not its guitar)
+            if r["item_from"] in shops and not any(g["item"].startswith(r["like"]) for g in shops[r["item_from"]]["goods"]):
+                err("reward %s: no good of %s begins with %s" % (sid, r["item_from"], r["like"]))
+            out["like"] = r["like"]
+    elif "like" in r:
+        err("reward %s: like goes with item_from" % sid)
+    return out
+
+
+def build_collections(src, things, acts, strings, regs=None, texts=None, cups=None, rewards=None, items=(), shops=None):
     """The collections (docs/city_interiors.md "Collections"): {"<set>": {"title": key, "pieces": [...]}}. Pieces omitted: every
     piece something in town gives. Every stamp named anywhere must be of a declared set (and a declared piece), and every
     declared piece must be given by some thing in town (or the set could never be complete); a set with "by": "code" names
@@ -1734,8 +1876,9 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
             elif c:
                 given[c.partition("/")[0]].add(c.partition("/")[2])
     for c in (cups or {}).values():
-        if c.get("collect"):
-            given[c["collect"].partition("/")[0]].add(c["collect"].partition("/")[2])
+        for st in (c.get("collect"), c.get("fest_collect")):
+            if st:
+                given[st.partition("/")[0]].add(st.partition("/")[2])
     out = collections.OrderedDict()
     for sid in sorted(src):
         if sid.startswith("_"):
@@ -1778,8 +1921,28 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
         if not pieces:
             err("collection %s: no pieces (nothing in town gives one)" % sid)
         out[sid] = {"title": title, "pieces": pieces}
+        cup_given = sorted(cid for cid, cup in (cups or {}).items()
+                           if sid in ((cup.get("collect") or "").partition("/")[0], (cup.get("fest_collect") or "").partition("/")[0]))
         if c.get("by"):
             out[sid]["by"] = str(c["by"])
+        elif c.get("code"):
+            # given by the game's code (its files named in "code"): no thing in town has to give the pieces (quest_audit.py)
+            out[sid]["by"] = "code"
+        elif cup_given:
+            out[sid]["by"] = "the clubs' tournaments (Private/City/CityCupsModel.h): the champion's cup"
+        if rewards is not None:
+            # every set pays when it is complete (backlog P4: a complete set gave nothing)
+            # (a set another branch brings without one still pays: roubles by its size, under the default words)
+            if sid not in rewards:
+                print("warning: collection %s has no reward of its own (a \"rewards\" section): it pays the default" % sid)
+                out[sid]["reward"] = collections.OrderedDict([("name", "city.coll.reward.default.name"), ("note", "city.coll.reward.default.note"),
+                                                              ("pay", max(30, min(150, 10 * len(pieces))))])
+            else:
+                out[sid]["reward"] = build_reward(sid, rewards[sid], strings, items, shops or {})
+    for sid in sorted(rewards or {}):
+        if sid not in out and not sid.startswith("_"):
+            # its collection may live on a branch not merged yet (fest_cups): the words wait for it
+            print("warning: reward %s: no such collection yet" % sid)
     for where, st in STAMPS_USED:
         sid, _, piece = st.partition("/")
         if sid not in out:
@@ -1895,6 +2058,7 @@ def quest_line(q):
 
 def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_ids):
     keys = []
+    photo_of = photo_subjects()
     for q in quests:
         qid = q["id"]
         if qid in existing_ids:
@@ -1926,8 +2090,9 @@ def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_id
                     err("quest %s: %s %s: unknown item" % (qid, ev, tgt))
                 if ev == "reach" and tgt not in map_places:
                     err("quest %s: reach %s: not a map place" % (qid, tgt))
-                if ev == "photo" and tgt not in map_places:
-                    err("quest %s: photo %s: not a map place (a developed frame is of a place of map.json)" % (qid, tgt))
+                if ev == "photo" and tgt not in map_places and tgt not in photo_of:
+                    err("quest %s: photo %s: not a map place, maru or a resident's key (a developed frame is of a place of "
+                        "map.json, of the dog Maru or of a resident of people.json/townsfolk.json)" % (qid, tgt))
                 if ev == "ask" and tgt not in TOPICS:
                     err("quest %s: ask %s: no such topic" % (qid, tgt))
     for k in keys:
@@ -2145,7 +2310,7 @@ def main():
         if g and g["vs"] and not opponents_at(regs, g["vs"], ""):
             err("act %s: game vs %s: no regular plays it" % (aid, g["vs"]))
     cups = build_tournaments(CONTENT_EXTRA["tournaments"], strings, regs, things, acts, texts, all_plots)
-    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs, texts, cups)
+    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs, texts, cups, CONTENT_EXTRA["rewards"], items, shops)
     tones, plot_tones, missing_tone_sounds = build_tones(places(plan), reg)
     targets = {a["target"] for a in acts.values()} | set(acts)
     for where, v in DID_USED:
@@ -2155,6 +2320,8 @@ def main():
         if v.lstrip("!") not in TOPICS:
             err("%s: heard %s is not a topic" % (where, v))
     offered = {tp for t in things for tp in t.get("topics", []) + acts[t["act"]].get("topics", [])}
+    if offered:
+        offered |= {tp for tp, rec in TOPICS.items() if rec.get("everywhere")}
     things.sort(key=lambda t: t["id"])
     used = {t["act"] for t in things}
     gen_strings = {}

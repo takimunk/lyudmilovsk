@@ -24,6 +24,7 @@ import math
 import os
 
 from citykit import box
+import dress_kit as dk
 import interior_kit as kit
 from interior_kit import _P, WOOD, WOODL, STEEL, ALU, BRASS, LAQ
 
@@ -1948,6 +1949,79 @@ def _bakery3(B):
 DEEP3 = {"bakery": _bakery3, "dumplings": _dumplings3, "pasty": _pasty3, "fish": _fish3}
 
 
+# ------------------------------------------------------------------------------------------------ lived-in dressing
+def _dress(B):
+    """Swappable sets (docs/city_dress.md): in every unit a wet mat and an open umbrella on rain days; per trade what the
+    day leaves: today's paper, used cups and plates after the morning rush, a towel and a hat in summer, mittens on the
+    radiator in winter. Tops are the kit's own (table / round table 0.75, counters 1.05, stand-up table 1.08, barrel top
+    1.04, bench and chair seats 0.45)."""
+    with B.dress("unit_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, 3.4, 0.98, FLOOR, 0.0)
+        dk.umbrella_open(B, 1.15, 1.05, FLOOR, 25.0, seed=3)
+    DRESS_EXTRA.get(VARIANT, lambda B: None)(B)
+
+
+def _cafe_dress(B):
+    with B.dress("cafe_paper", weekdays=(0, 1, 2, 3, 4), hours=(7.5, 11.5)):
+        kit.newspaper(B, -1.5, 3.8, 0.75, 15.0, seed=11)
+    with B.dress("cafe_used", hours=(9.5, 12.5)):
+        for tx, ty in ((-3.6, 1.55), (-3.6, 3.65)):
+            dk.plate_crumbs(B, tx + 0.2, ty - 0.08, 0.75, 0.0, seed=int(abs(ty) * 7))
+            kit.cup(B, tx - 0.2, ty + 0.1, 0.75, 200.0)
+        kit.cup(B, 1.1, 4.5, 1.05, 0.0)
+    with B.dress("cafe_summer", season="summer", weather=("warm", "clear")):
+        dk.towel_hat(B, -1.4, 4.3, 0.45, 0.0, seed=2)           # on the chair at the fourth table
+
+
+def _bakery_dress(B):
+    with B.dress("bakery_paper", weekdays=(0, 1, 2, 3, 4), hours=(7.0, 11.0)):
+        kit.newspaper(B, -3.05, 1.55, 0.75, 12.0, seed=21)
+    with B.dress("bakery_used", hours=(9.0, 12.0)):
+        dk.plate_crumbs(B, -3.4, 1.62, 0.75, 0.0, seed=4)
+    with B.dress("bakery_summer", season="summer", weather=("warm", "clear")):
+        dk.towel_hat(B, XR - 0.3, 2.75, 0.45, 270.0, seed=5)     # on the bench by the door
+
+
+def _books_dress(B):
+    with B.dress("books_reader", chance=0.5):
+        dk.book_face_down(B, 0.4, 5.6, 0.46, 20.0, seed=3)         # left on the reading armchair
+    with B.dress("books_cup", hours=(9.5, 12.5)):
+        kit.cup(B, 3.5, 4.3, 1.05, 30.0)
+    with B.dress("books_summer", season="summer", weather=("warm", "clear")):
+        dk.towel_hat(B, 0.45, 5.55, 0.46, 0.0, seed=6)             # a hat on the armchair of a seaside bookstall
+
+
+def _stand_dress(B, tables, name, hours):
+    with B.dress(name + "_used", hours=hours):
+        for tx, ty in tables:
+            dk.plate_crumbs(B, tx + 0.2, ty + 0.05, 1.08, 0.0, seed=int(abs(tx) * 5 + ty))
+
+
+def _dumplings_dress(B):
+    _stand_dress(B, ((-1.7, 1.5), (-1.7, 3.4)), "dumplings", (12.5, 15.5))     # the tables with the glass
+    with B.dress("dumplings_mittens", season="cold_months"):
+        dk.mitten_pair(B, -1.2, YB - 0.08, 0.72, 0.0, seed=2)                    # on the radiator
+
+
+def _pasty_dress(B):
+    with B.dress("pasty_used", hours=(12.5, 15.5)):
+        for tx, ty in ((-3.8, 1.5), (-2.8, 3.4)):
+            kit.glass(B, tx + 0.15, ty - 0.1, 1.08, 0.0)
+    with B.dress("pasty_mittens", season="cold_months"):
+        dk.mitten_pair(B, -1.0, YB - 0.08, 0.72, 0.0, seed=3)
+
+
+def _beer_dress(B):
+    with B.dress("beer_used", hours=(15.0, 23.0)):
+        for bx, by in ((-3.6, 1.5), (-1.5, 1.5), (-3.6, 3.3)):
+            kit.glass(B, bx - 0.14, by + 0.06, 1.04, 0.0)
+            kit.glass(B, bx + 0.02, by - 0.15, 1.04, 0.0)
+
+
+DRESS_EXTRA = {"cafe": _cafe_dress, "bakery": _bakery_dress, "books": _books_dress, "dumplings": _dumplings_dress,
+               "pasty": _pasty_dress, "beer": _beer_dress}
+
+
 def build(B):
     wall, dado, floor = STYLE[VARIANT]
     _shell(B, wall, dado, floor)
@@ -1959,6 +2033,7 @@ def build(B):
         DEEP2[VARIANT](B)
     if VARIANT in DEEP3:
         DEEP3[VARIANT](B)
+    _dress(B)
     B.note("promenade unit room, variant %s: placed at each W1 unit whose plan variant is %s" % (VARIANT, VARIANT))
     if os.environ.get("KIT_CHECK"):
         print("KITCHECK", VARIANT, kit.check(B))

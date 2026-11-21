@@ -97,7 +97,7 @@
       "when": {"rule": "nth_weekday", "month": 5, "nth": 2, "weekday": 6},
       "decor": {"from": 9, "to": 22, "kinds": ["lanterns"], "venues": ["park"]},
       "program": [
-        {"id": "picnic", "hours": [11, 17], "venue": "park", "mode": "mingle", "pull": 0.9},
+        {"id": "picnic", "hours": [11, 17], "venue": "park", "mode": "mingle", "pull": 0.9, "show": ["kites"]},
         {"id": "evening", "hours": [17, 21], "venue": "park", "mode": "mingle", "pull": 0.5, "show": ["music"]}
       ],
       "priority": 2
@@ -120,6 +120,7 @@
       "decor": {"from": 8, "to": 22, "kinds": ["flags", "stalls", "stage"], "venues": ["promenade", "square"]},
       "program": [
         {"id": "fish_fair", "hours": [10, 16], "venue": "promenade", "mode": "fair", "pull": 0.9},
+        {"id": "skipping", "hours": [12, 14], "venue": "beach", "mode": "watch", "face": "sea", "pull": 0.8},
         {"id": "concert", "hours": [16, 19.5], "venue": "square", "mode": "watch", "face": "stage", "pull": 1.0, "show": ["music", "stage_lights"]}
       ],
       "priority": 3
@@ -140,7 +141,8 @@
       "when": {"rule": "nth_weekday", "month": 9, "nth": 4, "weekday": 5},
       "decor": {"from": 7, "to": 18, "kinds": ["stalls", "bunting", "flags"], "venues": ["fair", "square"]},
       "program": [
-        {"id": "fair", "hours": [9, 17], "venue": "fair", "mode": "fair", "pull": 1.0, "show": ["music"]}
+        {"id": "fair", "hours": [9, 15], "venue": "fair", "mode": "fair", "pull": 1.0, "show": ["music"]},
+        {"id": "prizes", "hours": [15, 16.5], "venue": "fair", "mode": "watch", "face": "stage", "pull": 1.2, "show": ["music"]}
       ],
       "priority": 3
     },
@@ -192,7 +194,7 @@
       "menu": ["rs_plombir", "rs_syrniki", "rs_mors"],
       "decor": {"from": 8, "to": 20, "kinds": ["balloons", "flags", "bunting"], "venues": ["park"]},
       "program": [
-        {"id": "games", "hours": [10, 17], "venue": "park", "mode": "mingle", "pull": 0.9, "show": ["music"]}
+        {"id": "games", "hours": [10, 17], "venue": "park", "mode": "mingle", "pull": 0.9, "show": ["music", "kites"]}
       ],
       "priority": 2
     },

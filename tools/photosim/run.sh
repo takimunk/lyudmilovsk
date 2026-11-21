@@ -18,6 +18,8 @@ want() { [ "$WHAT" = test ] || [ "$WHAT" = "$1" ]; }
 if want model; then
 	$CXX $FLAGS -o "$OUT/photo_test" tools/photosim/photo_test.cpp "$SRC/PhotoModel.cpp"
 	"$OUT/photo_test" || RC=1
+	$CXX $FLAGS -o "$OUT/contest_test" tools/photosim/contest_test.cpp "$SRC/PhotoContestModel.cpp" "$SRC/PhotoModel.cpp"
+	"$OUT/contest_test" || RC=1
 fi
 if want strings; then
 	# the words are written by tools/photo/strings.py; a tree without it has nothing to check here

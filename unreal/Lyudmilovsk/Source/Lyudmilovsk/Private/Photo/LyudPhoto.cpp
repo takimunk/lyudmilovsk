@@ -31,12 +31,14 @@
 #include "Misc/Paths.h"
 #include "Modules/ModuleManager.h"
 #include "People/PeopleLife.h"
+#include "Photo/PhotoContestModel.h"
 #include "Photo/PhotoModel.h"
 #include "Plants/GameCalendar.h"
 #include "Rendering/DrawElements.h"
 #include "Sky/LyudRareSky.h"
 #include "Sky/LyudSky.h"
 #include "Sky/LyudSunset.h"
+#include "Sea/LyudSea.h"
 #include "Styling/CoreStyle.h"
 #include "TextureResource.h"
 #include "UI/LyudDiaryStyle.h"
@@ -238,6 +240,24 @@ namespace LyudPhotoDetail
 			}
 		}));
 
+	FAutoConsoleCommandWithWorldAndArgs GPhotoContest(TEXT("lyud.Photo.Contest"), TEXT("The photo club's contest box: the result, or the album to pick a print from."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
+		{
+			if (ULyudPhoto* Photo = ULyudPhoto::Get(World))
+			{
+				Photo->UseContest();
+			}
+		}));
+
+	FAutoConsoleCommandWithWorldAndArgs GPhotoWall(TEXT("lyud.Photo.Wall"), TEXT("The photo club's wall of winners."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
+		{
+			if (ULyudPhoto* Photo = ULyudPhoto::Get(World))
+			{
+				Photo->ShowWall();
+			}
+		}));
+
 	// developer mode (docs/dev_mode.md)
 	LyudDev::FAutoAction GDevGive(TEXT("photo.give"), TEXT("photo"), TEXT("dev.action.photo.give"),
 		[](UWorld* W)
@@ -258,6 +278,22 @@ namespace LyudPhotoDetail
 			if (ULyudPhoto* Photo = ULyudPhoto::Get(W))
 			{
 				Photo->DevelopAllNow();
+			}
+		});
+	LyudDev::FAutoAction GDevContest(TEXT("photo.contest"), TEXT("photo"), TEXT("dev.action.photo.contest"),
+		[](UWorld* W)
+		{
+			if (ULyudPhoto* Photo = ULyudPhoto::Get(W))
+			{
+				Photo->UseContest();
+			}
+		});
+	LyudDev::FAutoAction GDevWall(TEXT("photo.wall"), TEXT("photo"), TEXT("dev.action.photo.wall"),
+		[](UWorld* W)
+		{
+			if (ULyudPhoto* Photo = ULyudPhoto::Get(W))
+			{
+				Photo->ShowWall();
 			}
 		});
 	LyudDev::FAutoAction GDevAlbum(TEXT("photo.album"), TEXT("photo"), TEXT("dev.action.photo.album"),
@@ -293,6 +329,36 @@ PhotoModel::FState& ULyudPhoto::State()
 	return *Model;
 }
 
+PhotoContest::FState& ULyudPhoto::Contest()
+{
+	if (!ContestModel.IsValid())
+	{
+		ContestModel = MakePimpl<PhotoContest::FState>();
+	}
+	return *ContestModel;
+}
+
+void ULyudPhoto::Today(int32& Year, int32& Month, int32& Day) const
+{
+	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
+	Year = Now.GetYear();
+	Month = Now.GetMonth();
+	Day = Now.GetDay();
+}
+
+bool ULyudPhoto::ContestNews(const UObject* WorldContext, int32 Year, int32 Month, int32& OutPlace, FString& OutShotPlace)
+{
+	ULyudPhoto* Photo = Get(WorldContext);
+	const PhotoContest::FEntry* Entry = Photo ? Photo->Contest().Find(PhotoContest::ContestOf(Year, Month)) : nullptr;
+	if (!Entry)
+	{
+		return false;
+	}
+	OutPlace = PhotoContest::PlaceOf(Entry->Contest, Entry->Score);
+	OutShotPlace = LyudPhotoDetail::Wide(Entry->Place);
+	return true;
+}
+
 void ULyudPhoto::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
@@ -316,6 +382,14 @@ void ULyudPhoto::OnWorldBeginPlay(UWorld& InWorld)
 			else if (Screen == TEXT("photo_darkroom"))
 			{
 				StartDarkroom();
+			}
+			else if (Screen == TEXT("photo_contest"))
+			{
+				UseContest();
+			}
+			else if (Screen == TEXT("photo_wall"))
+			{
+				ShowWall();
 			}
 		});
 	}
@@ -347,6 +421,7 @@ void ULyudPhoto::Deinitialize()
 void ULyudPhoto::StartOver()
 {
 	State() = PhotoModel::FState();
+	Contest() = PhotoContest::FState();
 	// a new life gets a folder of its own; the old pictures stay on the disk with their save
 	GameId.Reset();
 	bRaised = false;
@@ -356,6 +431,7 @@ void ULyudPhoto::StartOver()
 void ULyudPhoto::OnGameSaving_Implementation()
 {
 	Saved = LyudPhotoDetail::Wide(State().Save());
+	SavedContest = LyudPhotoDetail::Wide(Contest().Save());
 }
 
 void ULyudPhoto::OnGameLoaded_Implementation()
@@ -369,6 +445,12 @@ void ULyudPhoto::OnGameLoaded_Implementation()
 	{
 		State() = PhotoModel::FState();
 	}
+	PhotoContest::FState Entered;
+	if (SavedContest.IsEmpty() || !Entered.Restore(LyudPhotoDetail::Utf8(SavedContest)))
+	{
+		Entered = PhotoContest::FState();
+	}
+	Contest() = Entered;
 }
 
 double ULyudPhoto::NowHours() const
@@ -570,12 +652,23 @@ void ULyudPhoto::Tick(float DeltaTime)
 		{
 			const int32 Step = (PC->WasInputKeyJustPressed(EKeys::D) || PC->WasInputKeyJustPressed(EKeys::Right) ? 1 : 0)
 				- (PC->WasInputKeyJustPressed(EKeys::A) || PC->WasInputKeyJustPressed(EKeys::Left) ? 1 : 0);
-			const int32 Pages = FMath::Max(1, (int32(State().Album().size()) + LyudPhotoDetail::AlbumPerPage - 1) / LyudPhotoDetail::AlbumPerPage);
-			const int32 Page = FMath::Clamp(AlbumPage + Step, 0, Pages - 1);
-			if (Page != AlbumPage)
+			if (Step != 0)
 			{
-				AlbumPage = Page;
+				// ShowAlbumPage holds the page to what there is
+				AlbumPage = FMath::Max(0, AlbumPage + Step);
 				ShowAlbumPage();
+			}
+			else if (AlbumMode == 1)
+			{
+				const FKey Digits[LyudPhotoDetail::AlbumPerPage] = { EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four };
+				for (int32 I = 0; I < LyudPhotoDetail::AlbumPerPage; ++I)
+				{
+					if (PC->WasInputKeyJustPressed(Digits[I]))
+					{
+						PickPrint(I);
+						return;
+					}
+				}
 			}
 		}
 		return;
@@ -823,7 +916,13 @@ void ULyudPhoto::LookThrough(const AHeroCharacter& Hero, const FVector& Eye, con
 			{
 				continue;
 			}
-			Add(TEXT("person:") + Info.Key, PhotoModel::Sharpness(FocusM, Dist / 100.f, HeroSpeed, 0.f), Dist, true);
+			const float PersonSharp = PhotoModel::Sharpness(FocusM, Dist / 100.f, HeroSpeed, 0.f);
+			Add(TEXT("person:") + Info.Key, PersonSharp, Dist, true);
+			if (bDoing)
+			{
+				// busy with something: "people at work" for the club's contest
+				Add(TEXT("work"), PersonSharp, Dist, false);
+			}
 			if (Dist < LyudPhotoDetail::PoseReach)
 			{
 				const float Warmth = People->GetTrait(Id, TEXT("warmth")), Nerve = People->GetTrait(Id, TEXT("nerve")), Curiosity = People->GetTrait(Id, TEXT("curiosity"));
@@ -843,11 +942,33 @@ void ULyudPhoto::LookThrough(const AHeroCharacter& Hero, const FVector& Eye, con
 			Add(TEXT("fish"), PhotoModel::Sharpness(FocusM, 0.9f, HeroSpeed, 0.f), 90.f, true);
 		}
 	}
-	// the sky: the sunset of this weather when the lens looks toward the sun, the aurora when it looks up at it
+	// the sky: the sun's height for the light of the frame, the sunset of this weather when the lens looks toward the
+	// sun, the aurora when it looks up at it
+	TActorIterator<ALyudSky> SkyIt(World);
+	const ALyudSky* Sky = SkyIt ? *SkyIt : nullptr;
+	if (Sky)
+	{
+		Add(FString::Printf(TEXT("sun:%d"), FMath::RoundToInt(Sky->SunAltitude())), 1.f, 1.e9f, false);
+	}
+	// the sea: the lens looks at open water (the sight line reaches the sea's level with nothing in the way)
+	if (const ALyudSea* SeaActor = ALyudSea::Get(this))
+	{
+		FVector Down = Forward;
+		Down.Z = FMath::Min(Down.Z, -0.05);
+		Down.Normalize();
+		const double Fall = Eye.Z - double(SeaActor->SeaLevel());
+		if (Look.Pitch < 12.f && Fall > 0.0 && Fall / -Down.Z < 200000.0)
+		{
+			const FVector OnWater = Eye + Down * (Fall / -Down.Z);
+			FHitResult Hit;
+			if (!World->LineTraceSingleByChannel(Hit, Eye, OnWater + FVector(0, 0, 30), ECC_Visibility, Params))
+			{
+				Add(TEXT("sea"), SceneSharp, 1.e9f, false);
+			}
+		}
+	}
 	if (const ULyudSunset* Sunset = ULyudSunset::Get(this))
 	{
-		TActorIterator<ALyudSky> SkyIt(World);
-		const ALyudSky* Sky = SkyIt ? *SkyIt : nullptr;
 		const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(this);
 		if (Sky && Weather && Sunset->GetLook().Weight > 0.35f && Sky->SunAltitude() < 12.f
 			&& FVector::DotProduct(Forward, Sky->SunDirection().GetSafeNormal()) > 0.8)
@@ -1049,6 +1170,15 @@ void ULyudPhoto::TellPlaces()
 			{
 				Told.insert(Subject.Tag.substr(6));
 			}
+			else if (Subject.Sharp >= PhotoModel::SharpEnough && Subject.Tag == "maru")
+			{
+				// a sharp print of Maru or of a resident is a quest's "photo maru" / "photo <resident key>"
+				Told.insert(Subject.Tag);
+			}
+			else if (Subject.Sharp >= PhotoModel::SharpEnough && Subject.Tag.compare(0, 7, "person:") == 0 && Subject.Tag.size() > 7)
+			{
+				Told.insert(Subject.Tag.substr(7));
+			}
 		}
 	}
 	for (const std::string& Place : Told)
@@ -1146,13 +1276,99 @@ void ULyudPhoto::ToggleAlbum()
 		CloseAlbum();
 		return;
 	}
-	bRaised = false;
-	const int32 Pages = FMath::Max(1, (int32(State().Album().size()) + LyudPhotoDetail::AlbumPerPage - 1) / LyudPhotoDetail::AlbumPerPage);
-	// it opens on the newest prints
-	AlbumPage = Pages - 1;
-	LockHero(true);
+	OpenPages(0);
 	TellPlaces();
+}
+
+void ULyudPhoto::OpenPages(int32 Mode)
+{
+	bRaised = false;
+	AlbumMode = Mode;
+	// it opens on the newest prints (ShowAlbumPage holds the page to what there is)
+	AlbumPage = MAX_int32 / 2;
+	LockHero(true);
 	ShowAlbumPage();
+}
+
+void ULyudPhoto::ShowWall()
+{
+	if (!Album.IsValid() && Bath < 0)
+	{
+		OpenPages(2);
+	}
+}
+
+void ULyudPhoto::UseContest()
+{
+	if (Album.IsValid() || Bath >= 0)
+	{
+		return;
+	}
+	int32 Year = 0, Month = 0, Day = 0;
+	Today(Year, Month, Day);
+	PhotoContest::FState& C = Contest();
+	if (const PhotoContest::FEntry* Judged = C.Untold(Year, Month, Day))
+	{
+		// the jury has sat: the place and the prize
+		const int32 Place = PhotoContest::PlaceOf(Judged->Contest, Judged->Score);
+		const int32 Prize = PhotoContest::PrizeOf(Place);
+		const FText Was = LyudText::Get(FString(TEXT("ui.photo.contest.theme.")) + UTF8_TO_TCHAR(PhotoContest::ThemeId(PhotoContest::ThemeOf(PhotoContest::MonthOf(Judged->Contest)))));
+		const int32 Of = PhotoContest::Rivals + 1;
+		C.Told(Judged->Contest);
+		if (Prize > 0)
+		{
+			if (ULyudInventory* Inv = ULyudInventory::Get(this))
+			{
+				Inv->Earn(Prize);
+			}
+			Say(Place == 1 ? TEXT("ui.photo.contest.won") : TEXT("ui.photo.contest.prize"),
+				{ FStringFormatArg(Was.ToString()), FStringFormatArg(Place), FStringFormatArg(Prize) });
+		}
+		else
+		{
+			Say(TEXT("ui.photo.contest.placed"), { FStringFormatArg(Was.ToString()), FStringFormatArg(Place), FStringFormatArg(Of) });
+		}
+		ULyudQuests::Notify(this, TEXT("do"), Prize > 0 ? TEXT("photo_contest_prize") : TEXT("photo_contest_result"));
+		return;
+	}
+	const FText Theme = LyudText::Get(FString(TEXT("ui.photo.contest.theme.")) + UTF8_TO_TCHAR(PhotoContest::ThemeId(PhotoContest::ThemeOf(Month))));
+	if (C.CanEnter(Year, Month, Day))
+	{
+		if (State().Album().empty())
+		{
+			Say(TEXT("ui.photo.contest.no_prints"), { FStringFormatArg(Theme.ToString()), FStringFormatArg(PhotoContest::LastEntryDay) });
+			return;
+		}
+		OpenPages(1);
+	}
+	else if (C.Find(PhotoContest::ContestOf(Year, Month)))
+	{
+		Say(TEXT("ui.photo.contest.wait"), { FStringFormatArg(PhotoContest::JudgeDay) });
+	}
+	else
+	{
+		const FText Next = LyudText::Get(FString(TEXT("ui.photo.contest.theme.")) + UTF8_TO_TCHAR(PhotoContest::ThemeId(PhotoContest::ThemeOf(Month % 12 + 1))));
+		Say(TEXT("ui.photo.contest.closed"), { FStringFormatArg(Next.ToString()) });
+	}
+}
+
+void ULyudPhoto::PickPrint(int32 Index)
+{
+	const std::vector<const PhotoModel::FShot*> Shots = State().Album();
+	const int32 At = AlbumPage * LyudPhotoDetail::AlbumPerPage + Index;
+	if (AlbumMode != 1 || At < 0 || At >= (int32)Shots.size())
+	{
+		return;
+	}
+	int32 Year = 0, Month = 0, Day = 0;
+	Today(Year, Month, Day);
+	const bool bEntered = Contest().Enter(Year, Month, Day, *Shots[(size_t)At]);
+	CloseAlbum();
+	if (bEntered)
+	{
+		Say(TEXT("ui.photo.contest.entered"), { FStringFormatArg(PhotoContest::JudgeDay) });
+		ULyudQuests::Notify(this, TEXT("do"), TEXT("photo_contest_enter"));
+	}
 }
 
 void ULyudPhoto::CloseAlbum()
@@ -1180,7 +1396,27 @@ void ULyudPhoto::ShowAlbumPage()
 	}
 	PagePrints.Reset();
 	const PhotoModel::FState& S = State();
-	const std::vector<const PhotoModel::FShot*> Shots = S.Album();
+	std::vector<const PhotoModel::FShot*> Shots = S.Album();
+	// the wall: only the prints that took a prize, each with its place
+	std::vector<const PhotoContest::FEntry*> Hung;
+	if (AlbumMode == 2)
+	{
+		int32 Year = 0, Month = 0, Day = 0;
+		Today(Year, Month, Day);
+		std::vector<const PhotoModel::FShot*> OnWall;
+		for (const PhotoContest::FEntry* Entry : Contest().Wall(Year, Month, Day))
+		{
+			for (const PhotoModel::FShot* Print : Shots)
+			{
+				if (Print->Roll == Entry->Roll && Print->Frame == Entry->Frame)
+				{
+					OnWall.push_back(Print);
+					Hung.push_back(Entry);
+				}
+			}
+		}
+		Shots = OnWall;
+	}
 	const int32 Num = (int32)Shots.size();
 	const int32 Pages = FMath::Max(1, (Num + AlbumPerPage - 1) / AlbumPerPage);
 	AlbumPage = FMath::Clamp(AlbumPage, 0, Pages - 1);
@@ -1226,6 +1462,19 @@ void ULyudPhoto::ShowAlbumPage()
 		}
 		const FDateTime When = Day0 + FTimespan::FromHours(Shot.Hours);
 		const FText Place = Shot.Place.empty() ? LyudText::Get(TEXT("ui.photo.album.nowhere")) : ULyudQuests::PlaceName(FName(*LyudPhotoDetail::Wide(Shot.Place)));
+		FText Caption = LyudText::Get(TEXT("ui.photo.album.caption"), { FStringFormatArg(LyudUIText::Date(When).ToString()), FStringFormatArg(Place.ToString()) });
+		if (AlbumMode == 1)
+		{
+			// the number to press for this print
+			Caption = LyudText::Get(TEXT("ui.photo.contest.pick.caption"), { FStringFormatArg(I - AlbumPage * AlbumPerPage + 1), FStringFormatArg(Caption.ToString()) });
+		}
+		else if (AlbumMode == 2)
+		{
+			const PhotoContest::FEntry& Entry = *Hung[(size_t)I];
+			const FText HungTheme = LyudText::Get(FString(TEXT("ui.photo.contest.theme.")) + UTF8_TO_TCHAR(PhotoContest::ThemeId(PhotoContest::ThemeOf(PhotoContest::MonthOf(Entry.Contest)))));
+			Caption = LyudText::Get(TEXT("ui.photo.contest.wall.caption"), { FStringFormatArg(PhotoContest::PlaceOf(Entry.Contest, Entry.Score)),
+				FStringFormatArg(HungTheme.ToString()), FStringFormatArg(Place.ToString()) });
+		}
 		if (!Row.IsValid() || (I - AlbumPage * AlbumPerPage) % 2 == 0)
 		{
 			Rows->AddSlot().AutoHeight().Padding(0, 6)[SAssignNew(Row, SHorizontalBox)];
@@ -1247,7 +1496,7 @@ void ULyudPhoto::ShowAlbumPage()
 			+ SVerticalBox::Slot().AutoHeight().Padding(4, 4, 0, 0)
 			[
 				SNew(STextBlock).Font(LyudDiary::Hand(20.f)).ColorAndOpacity(LyudDiary::Ink)
-				.Text(LyudText::Get(TEXT("ui.photo.album.caption"), { FStringFormatArg(LyudUIText::Date(When).ToString()), FStringFormatArg(Place.ToString()) }))
+				.Text(Caption)
 			]
 		];
 	}
@@ -1255,10 +1504,22 @@ void ULyudPhoto::ShowAlbumPage()
 	{
 		Rows->AddSlot().AutoHeight().Padding(0, 120).HAlign(HAlign_Center)
 		[
-			SNew(STextBlock).Font(LyudDiary::Hand(26.f)).ColorAndOpacity(LyudDiary::Pencil).Text(LyudText::Get(TEXT("ui.photo.album.empty")))
+			SNew(STextBlock).Font(LyudDiary::Hand(26.f)).ColorAndOpacity(LyudDiary::Pencil)
+			.Text(LyudText::Get(AlbumMode == 2 ? TEXT("ui.photo.contest.wall.empty") : TEXT("ui.photo.album.empty")))
 		];
 	}
 
+	FText Title = LyudText::Get(TEXT("ui.photo.album.title"));
+	if (AlbumMode == 1)
+	{
+		int32 Year = 0, Month = 0, Day = 0;
+		Today(Year, Month, Day);
+		Title = LyudText::Get(TEXT("ui.photo.contest.pick.title"), { FStringFormatArg((LyudText::Get(FString(TEXT("ui.photo.contest.theme.")) + UTF8_TO_TCHAR(PhotoContest::ThemeId(PhotoContest::ThemeOf(Month))))).ToString()) });
+	}
+	else if (AlbumMode == 2)
+	{
+		Title = LyudText::Get(TEXT("ui.photo.contest.wall.title"));
+	}
 	const TSharedRef<SWidget> Page = SNew(SOverlay)
 		+ SOverlay::Slot()
 		[
@@ -1273,7 +1534,7 @@ void ULyudPhoto::ShowAlbumPage()
 					SNew(SVerticalBox)
 					+ SVerticalBox::Slot().AutoHeight()
 					[
-						SNew(STextBlock).Font(LyudDiary::Hand(34.f, true)).ColorAndOpacity(LyudDiary::Ink).Text(LyudText::Get(TEXT("ui.photo.album.title")))
+						SNew(STextBlock).Font(LyudDiary::Hand(34.f, true)).ColorAndOpacity(LyudDiary::Ink).Text(Title)
 					]
 					+ SVerticalBox::Slot().FillHeight(1).HAlign(HAlign_Center)
 					[
@@ -1284,7 +1545,7 @@ void ULyudPhoto::ShowAlbumPage()
 						SNew(SHorizontalBox)
 						+ SHorizontalBox::Slot().FillWidth(1)
 						[
-							SNew(STextBlock).Font(LyudDiary::Hand(18.f)).ColorAndOpacity(LyudDiary::Pencil).Text(LyudText::Get(TEXT("ui.photo.album.keys")))
+							SNew(STextBlock).Font(LyudDiary::Hand(18.f)).ColorAndOpacity(LyudDiary::Pencil).Text(LyudText::Get(AlbumMode == 1 ? TEXT("ui.photo.contest.pick.keys") : TEXT("ui.photo.album.keys")))
 						]
 						+ SHorizontalBox::Slot().AutoWidth()
 						[

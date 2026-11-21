@@ -1090,6 +1090,18 @@ static void Friends()
 		CHECK(F.OutingNow(Fam->Key, OutDay, Fam->OutingHour + 0.2f, Outings[Fam->Key]) && !F.OutingNow(Fam->Key, OutDay - 1, Fam->OutingHour, Outings[Fam->Key]),
 			"the outing is on that day at their hour");
 		CHECK(F.Outing(Fam->Key, OutDay) == F.Data.R.Outing && F.Outing(Fam->Key, OutDay) == 0, "joining it counts, once");
+		{
+			// a holiday together (docs/festivals.md "The new toys"): a friend met at the gathering counts once a day; the save keeps the day
+			const int FestDay = OutDay + 3;
+			const int First = F.Festival(Fam->Key, FestDay), Again = F.Festival(Fam->Key, FestDay);
+			std::map<std::string, std::string> FestSaved;
+			F.Save(FestSaved);
+			LyudFriends::FModel F2;
+			F2.Data = F.Data;
+			F2.LoadState(FestSaved);
+			CHECK(First == F.Data.R.Festival && Again == 0 && F2.Festival(Fam->Key, FestDay) == 0 && F2.Festival(Fam->Key, FestDay + 1) == F.Data.R.Festival
+				&& F.Festival("nobody_at_all", FestDay) == 0, "a holiday spent with a friend counts %d, once a day, after a load too; a stranger's wave counts nothing", F.Data.R.Festival);
+		}
 		auto OutingsOnly = [](const std::vector<LyudFriends::FInvite>& V)
 		{
 			int N = 0;

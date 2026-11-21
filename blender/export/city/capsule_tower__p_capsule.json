@@ -6104,9 +6104,233 @@
   "caretaker's capsule at ground level (x 4.66..7.06): radio",
   "127 capsule flats on 13 storeys; capsules jut 0.0 m over the street line at the front"
  ],
+ "dress": [
+  {
+   "id": "capsule_breakfast",
+   "when": {
+    "weekdays": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "hours": [
+     7.0,
+     9.5
+    ]
+   },
+   "tris": 186,
+   "bounds": [
+    [
+     5.275,
+     2.69,
+     0.75
+    ],
+    [
+     5.59,
+     2.91,
+     0.785
+    ]
+   ]
+  },
+  {
+   "id": "capsule_weekend",
+   "when": {
+    "weekdays": [
+     5,
+     6
+    ],
+    "hours": [
+     9.0,
+     12.0
+    ]
+   },
+   "tris": 16,
+   "bounds": [
+    [
+     5.348,
+     2.768,
+     0.75
+    ],
+    [
+     5.412,
+     2.832,
+     0.86
+    ]
+   ]
+  },
+  {
+   "id": "capsule_book",
+   "when": {
+    "chance": 0.5
+   },
+   "tris": 48,
+   "bounds": [
+    [
+     6.33,
+     3.62,
+     0.5
+    ],
+    [
+     6.53,
+     3.88,
+     0.535
+    ]
+   ]
+  },
+  {
+   "id": "capsule_boots_winter",
+   "when": {
+    "months": [
+     1,
+     2,
+     12
+    ]
+   },
+   "tris": 168,
+   "bounds": [
+    [
+     5.306,
+     5.12,
+     0.0
+    ],
+    [
+     5.592,
+     5.419,
+     0.45
+    ]
+   ]
+  },
+  {
+   "id": "capsule_boots_mild",
+   "when": {
+    "months": [
+     3,
+     4,
+     5,
+     9,
+     10,
+     11
+    ]
+   },
+   "tris": 136,
+   "bounds": [
+    [
+     5.312,
+     5.131,
+     0.0
+    ],
+    [
+     5.597,
+     5.41,
+     0.34
+    ]
+   ]
+  },
+  {
+   "id": "capsule_boots_summer",
+   "when": {
+    "months": [
+     6,
+     7,
+     8
+    ]
+   },
+   "tris": 68,
+   "bounds": [
+    [
+     5.316,
+     5.142,
+     0.0
+    ],
+    [
+     5.591,
+     5.419,
+     0.028
+    ]
+   ]
+  },
+  {
+   "id": "lobby_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 434,
+   "bounds": [
+    [
+     -1.216,
+     2.27,
+     0.01
+    ],
+    [
+     2.651,
+     4.993,
+     0.88
+    ]
+   ]
+  },
+  {
+   "id": "lobby_sledge",
+   "when": {
+    "months": [
+     1,
+     2,
+     12
+    ]
+   },
+   "tris": 198,
+   "bounds": [
+    [
+     -1.19,
+     8.0,
+     0.01
+    ],
+    [
+     -0.802,
+     8.4,
+     0.986
+    ]
+   ]
+  },
+  {
+   "id": "lobby_paper",
+   "when": {
+    "weekdays": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "hours": [
+     8.0,
+     18.0
+    ],
+    "chance": 0.5
+   },
+   "tris": 10,
+   "bounds": [
+    [
+     2.21,
+     4.46,
+     0.45
+    ],
+    [
+     2.59,
+     4.74,
+     0.453
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 2110,
   "detail": 20040,
-  "windows": 632
+  "windows": 632,
+  "dress": 1264
  }
 }
