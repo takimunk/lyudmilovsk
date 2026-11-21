@@ -297,6 +297,21 @@ class Dresser:
             self.out["notes"].append("buffet: no room (%.2f m)" % dep)
             return False
         hw = w / 2
+        # never over a kept piece, a door or the diagram (Horizon's buffet stood in the aquarium, Amber's in the amber
+        # case): slide along the ring to the nearest free angle, else no buffet on this side
+        for k in range(15):
+            da = math.radians(6 * ((k + 1) // 2)) * (1 if k % 2 else -1)
+            if self.free(a + da, math.atan2(hw + 0.25, h.wall(a + da))):
+                break
+        else:
+            self.out["notes"].append("buffet: side %d deg taken" % round(math.degrees(a)))
+            return False
+        if da:
+            a += da
+            dep, R = self.depth(a), h.wall(a)
+            if dep < d + staff + WALK:
+                self.out["notes"].append("buffet: no room (%.2f m)" % dep)
+                return False
         # the counter's back line: the staff's gap to the wall at least `staff` at its ends too
         if h.kind == "cyl" and not h.walls:
             r_back = min(math.sqrt(max(0.0, (R - staff) ** 2 - hw ** 2)), R - staff)
