@@ -329,6 +329,11 @@ namespace
 		// winter play (docs/winter_play.md): skates on the feet (the pond's ice glides under them), the banya's felt hat
 		Wear(TEXT("skates"), ELyudEquipSlot::Feet);
 		Wear(TEXT("banya_hat"), ELyudEquipSlot::Head);
+		// the department store's clothes (docs/look.md, ULyudLook: the outer layer's look, what residents say in the weather)
+		Wear(TEXT("wind_jacket"), ELyudEquipSlot::Outer);
+		Wear(TEXT("raincoat"), ELyudEquipSlot::Outer);
+		Wear(TEXT("winter_coat"), ELyudEquipSlot::Outer);
+		Wear(TEXT("cap"), ELyudEquipSlot::Head);
 		// fishing (docs/fishing.md): the rods (taken in the hand), their baits (a bait taken in the hand goes on the rig; each unit is
 		// one on the hook), the spoon (cast and wound in, lost only with the line), and every fish one can catch (fish_<species>)
 		FLyudItemDef Rod;

@@ -1,0 +1,273 @@
+{
+ "_doc": "The hero's look (docs/look.md, ULyudLook): the barber's haircuts and the department store's clothes: the four items' words, the barber's, the rail's and the fitting room's pages (look.*), what residents say about a new haircut and about clothes that do not suit the weather (line.look.*: bubbles), the diary's lines (look.diary.*), the collection \"looks\".",
+ "item.wind_jacket.name": {
+  "ru": "Ветровка",
+  "en": "Windbreaker",
+  "ja": "ウインドブレーカー"
+ },
+ "item.wind_jacket.desc": {
+  "ru": "Бутылочно-зелёная ветровка на молнии. Шуршит при ходьбе и не пускает ветер с моря.",
+  "en": "A bottle-green zip windbreaker. It rustles as I walk and keeps the sea wind out.",
+  "ja": "深緑のジッパーつきウインドブレーカー。歩くとかさかさ鳴って、海風を通さない。"
+ },
+ "item.raincoat.name": {
+  "ru": "Плащ-дождевик",
+  "en": "Raincoat",
+  "ja": "レインコート"
+ },
+ "item.raincoat.desc": {
+  "ru": "Жёлтый прорезиненный плащ с капюшоном. В дождь сухо, без дождя слышно каждый шаг.",
+  "en": "A yellow rubberised raincoat with a hood. Dry in the rain, and without rain every step is heard.",
+  "ja": "黄色いゴム引きのフードつきレインコート。雨でも濡れない。晴れた日は一歩ごとに音がする。"
+ },
+ "item.winter_coat.name": {
+  "ru": "Зимнее пальто",
+  "en": "Winter coat",
+  "ja": "冬のコート"
+ },
+ "item.winter_coat.desc": {
+  "ru": "Тёмно-синее драповое пальто на вате. Тяжёлое, как одеяло, и пахнет шкафом.",
+  "en": "A navy woollen coat, padded. Heavy as a blanket, and it smells of a wardrobe.",
+  "ja": "紺色の厚いウールの綿入りコート。布団みたいに重くて、たんすのにおいがする。"
+ },
+ "item.cap.name": {
+  "ru": "Кепка",
+  "en": "Flat cap",
+  "ja": "ハンチング帽"
+ },
+ "item.cap.desc": {
+  "ru": "Серая кепка. Козырёк можно повернуть назад, но тогда она перестаёт быть серьёзной.",
+  "en": "A grey flat cap. The peak can be turned to the back, but then it stops being serious.",
+  "ja": "灰色のハンチング帽。つばを後ろに回すこともできるけど、そうすると真面目に見えなくなる。"
+ },
+ "look.cut.shaggy": {
+  "ru": "как отросло",
+  "en": "as it has grown",
+  "ja": "伸びたまま"
+ },
+ "look.cut.crop": {
+  "ru": "под машинку",
+  "en": "a crop, clippers all over",
+  "ja": "バリカンで丸刈り"
+ },
+ "look.cut.short": {
+  "ru": "полубокс",
+  "en": "short back and sides",
+  "ja": "短めの刈り上げ"
+ },
+ "look.cut.parted": {
+  "ru": "с пробором",
+  "en": "a side parting",
+  "ja": "横分け"
+ },
+ "look.barber.title": {
+  "ru": "Парикмахер накинул простыню: «Как стричь будем?»",
+  "en": "The barber throws the sheet over me: \"How shall we cut it?\"",
+  "ja": "床屋さんが布をかけて言う。「どう切ろうか？」"
+ },
+ "look.barber.line": {
+  "ru": "{0}. {1}",
+  "en": "{0}. {1}",
+  "ja": "{0}. {1}"
+ },
+ "look.barber.line_now": {
+  "ru": "{0}. {1} (так сейчас: подровнять)",
+  "en": "{0}. {1} (as it is now: a trim)",
+  "ja": "{0}. {1}（今の髪型：そろえるだけ）"
+ },
+ "look.barber.keys": {
+  "ru": "1–3 — выбрать · Esc — «как-нибудь»",
+  "en": "1–3: choose · Esc: \"any way you like\"",
+  "ja": "1〜3：選ぶ · Esc：「おまかせで」"
+ },
+ "look.barber.done": {
+  "ru": "Постригли: {0}. Шее холодно, голове легко.",
+  "en": "Cut: {0}. My neck is cold and my head is light.",
+  "ja": "切ってもらった：{0}。首がすずしくて、頭が軽い。"
+ },
+ "look.barber.trim": {
+  "ru": "Подровняли. Пахну одеколоном «Шипр».",
+  "en": "A trim. I smell of Chypre cologne.",
+  "ja": "そろえてもらった。「シープル」のコロンのにおいがする。"
+ },
+ "look.grown": {
+  "ru": "Волосы отросли. Опять лезут в глаза.",
+  "en": "My hair has grown out. It is in my eyes again.",
+  "ja": "髪が伸びた。また目にかかる。"
+ },
+ "look.rail.title": {
+  "ru": "Отдел одежды. Продавщица: «Примерочная справа. Носи на здоровье».",
+  "en": "The clothes department. The assistant: \"The fitting room is on the right. Wear it in good health.\"",
+  "ja": "衣料品売り場。店員さん：「試着室は右です。どうぞ大事に着てね」"
+ },
+ "look.rail.line": {
+  "ru": "{0}. {1}: {2} руб.",
+  "en": "{0}. {1}: {2} rub.",
+  "ja": "{0}. {1}：{2}ルーブル"
+ },
+ "look.rail.line_have": {
+  "ru": "{0}. {1}: уже есть",
+  "en": "{0}. {1}: I have one",
+  "ja": "{0}. {1}：もう持っている"
+ },
+ "look.rail.keys": {
+  "ru": "1–4 — купить и надеть · Esc — отойти",
+  "en": "1–4: buy and put on · Esc: step away",
+  "ja": "1〜4：買って着る · Esc：離れる"
+ },
+ "look.rail.bought": {
+  "ru": "Купил и надел: {0}.",
+  "en": "Bought and put on: {0}.",
+  "ja": "買って着た：{0}。"
+ },
+ "look.rail.no_money": {
+  "ru": "Не хватает денег: нужно {0} руб.",
+  "en": "Not enough money: it costs {0} rub.",
+  "ja": "お金が足りない：{0}ルーブルいる。"
+ },
+ "look.fit.title": {
+  "ru": "Примерочная. Занавеска не доходит до пола на ладонь.",
+  "en": "The fitting room. The curtain stops a hand short of the floor.",
+  "ja": "試着室。カーテンは床まで手のひらひとつぶん足りない。"
+ },
+ "look.fit.line": {
+  "ru": "{0}. {1}",
+  "en": "{0}. {1}",
+  "ja": "{0}. {1}"
+ },
+ "look.fit.line_on": {
+  "ru": "{0}. {1} (на мне: снять)",
+  "en": "{0}. {1} (on me: take off)",
+  "ja": "{0}. {1}（着ている：脱ぐ）"
+ },
+ "look.fit.none": {
+  "ru": "Мерить нечего: всё, что есть, на мне.",
+  "en": "Nothing to try on: all I have is on me.",
+  "ja": "試着するものがない。持っているものは全部着ている。"
+ },
+ "look.fit.keys": {
+  "ru": "1–9 — надеть или снять · Esc — выйти",
+  "en": "1–9: put on or take off · Esc: come out",
+  "ja": "1〜9：着る／脱ぐ · Esc：出る"
+ },
+ "look.fit.on": {
+  "ru": "Надел: {0}. В зеркале кто-то незнакомый, но ничего.",
+  "en": "Put on: {0}. Somebody unfamiliar in the mirror, but not bad.",
+  "ja": "着た：{0}。鏡の中は知らない人みたいだけど、悪くない。"
+ },
+ "look.fit.off": {
+  "ru": "Снял: {0}.",
+  "en": "Took off: {0}.",
+  "ja": "脱いだ：{0}。"
+ },
+ "look.diary.first_cut": {
+  "ru": "Первый раз стригся в Людмиловске: {0}. Парикмахер сказал, что с такой головой можно хоть в космос.",
+  "en": "My first haircut in Lyudmilovsk: {0}. The barber said a head like that could go to space.",
+  "ja": "リュドミロフスクではじめて髪を切った：{0}。床屋さんは、この頭なら宇宙にも行けると言った。"
+ },
+ "look.diary.first_clothes": {
+  "ru": "Купил себе вещь сам: {0}. Она пахнет магазином, а не домом. Пока.",
+  "en": "Bought myself a thing of my own: {0}. It smells of the shop, not of home. For now.",
+  "ja": "自分で服を買った：{0}。まだ家じゃなくて店のにおいがする。"
+ },
+ "line.look.cut.crop.1": {
+  "ru": "Ого, под ноль! Теперь уши видно. Хорошие уши.",
+  "en": "Oho, clipped right down! Now your ears show. Good ears.",
+  "ja": "おお、丸刈り！耳が見えるね。いい耳だ。"
+ },
+ "line.look.cut.crop.2": {
+  "ru": "Постригся? Правильно: летом не жарко, зимой шапка лучше сидит.",
+  "en": "Had it cut? Quite right: cool in summer, and a hat sits better in winter.",
+  "ja": "切ったの？正解。夏は涼しいし、冬は帽子がよく合う。"
+ },
+ "line.look.cut.crop.3": {
+  "ru": "Тебя что, в армию забирают? Шучу. Тебе идёт.",
+  "en": "What, are they calling you up? Joking. It suits you.",
+  "ja": "入隊でもするのかい？冗談だよ。似合ってる。"
+ },
+ "line.look.cut.short.1": {
+  "ru": "Полубокс! У меня в твои годы такой же был. Только волос больше.",
+  "en": "Short back and sides! I had the same at your age. Only more hair.",
+  "ja": "刈り上げか！わたしも君の年ごろはそうだった。髪はもっとあったがね。"
+ },
+ "line.look.cut.short.2": {
+  "ru": "О, стриженый. Сразу видно: человек при деле.",
+  "en": "Oh, a haircut. One can see at once: a person with things to do.",
+  "ja": "お、切ったね。ちゃんとした人に見えるよ。"
+ },
+ "line.look.cut.short.3": {
+  "ru": "Тебя наш мастер стриг? Узнаю руку: левый висок всегда чуть выше.",
+  "en": "Did our barber cut you? I know the hand: the left temple is always a little higher.",
+  "ja": "うちの床屋さんに切ってもらった？わかるよ。左のこめかみがいつも少し高いんだ。"
+ },
+ "line.look.cut.parted.1": {
+  "ru": "С пробором! Жених. В клуб на танцы собрался?",
+  "en": "A parting! Quite the bridegroom. Off to the club dance?",
+  "ja": "横分け！花婿さんみたい。クラブのダンスに行くの？"
+ },
+ "line.look.cut.parted.2": {
+  "ru": "Какой аккуратный. Ветер с моря это быстро исправит.",
+  "en": "How neat. The wind off the sea will soon put that right.",
+  "ja": "きちんとしてるねえ。海風がすぐ直してくれるよ。"
+ },
+ "line.look.cut.parted.3": {
+  "ru": "Причесался, смотри-ка. Мама бы обрадовалась.",
+  "en": "Combed, look at that. Your mother would be glad.",
+  "ja": "おや、髪をとかしたね。お母さんが喜ぶよ。"
+ },
+ "line.look.wet.1": {
+  "ru": "Ты чего без плаща? Промокнешь до нитки, беги под навес!",
+  "en": "Why no raincoat? You'll be soaked through, run under the awning!",
+  "ja": "レインコートは？ずぶぬれになるよ、ひさしの下に走りな！"
+ },
+ "line.look.wet.2": {
+  "ru": "В такой дождь и в одной рубашке. В универмаге плащи висят, жёлтые.",
+  "en": "In rain like this, in a shirt. There are raincoats in the department store, yellow ones.",
+  "ja": "こんな雨にシャツ一枚で。デパートに黄色いレインコートがあるよ。"
+ },
+ "line.look.cold.1": {
+  "ru": "Не холодно тебе так? Смотреть зябко.",
+  "en": "Aren't you cold like that? It chills me to look.",
+  "ja": "そんな格好で寒くないの？見てるだけで寒い。"
+ },
+ "line.look.cold.2": {
+  "ru": "Оделся бы потеплее. Море шуток не понимает.",
+  "en": "You should dress warmer. The sea does not understand jokes.",
+  "ja": "もっと暖かくしな。海は冗談が通じないよ。"
+ },
+ "line.look.hot.1": {
+  "ru": "В пальто? Сегодня? Ну, пар костей не ломит.",
+  "en": "In a coat? Today? Well, warmth breaks no bones.",
+  "ja": "コート？今日？まあ、暖かくて骨は折れないけどね。"
+ },
+ "line.look.hot.2": {
+  "ru": "Ты как на Северный полюс собрался. Расстегнись хоть.",
+  "en": "You look bound for the North Pole. Unbutton it at least.",
+  "ja": "北極にでも行くのかい。せめてボタンを外しな。"
+ },
+ "dev.group.look": {
+  "ru": "Вид героя",
+  "en": "The hero's look",
+  "ja": "主人公の見た目"
+ },
+ "dev.action.look.cut": {
+  "ru": "Вид: следующая стрижка",
+  "en": "Look: the next haircut",
+  "ja": "見た目：次の髪型"
+ },
+ "dev.action.look.clothes": {
+  "ru": "Вид: вся одежда из универмага",
+  "en": "Look: all the department store's clothes",
+  "ja": "見た目：デパートの服をすべて"
+ },
+ "dev.action.look.outer": {
+  "ru": "Вид: надеть следующую верхнюю одежду",
+  "en": "Look: put on the next outerwear",
+  "ja": "見た目：次の上着を着る"
+ },
+ "city.coll.looks.title": {
+  "ru": "Перед зеркалом",
+  "en": "In front of the mirror",
+  "ja": "鏡の前で"
+ }
+}
