@@ -22,6 +22,7 @@ Material requests: none (CT_Tile, CT_TileWhite, CT_Cobogo, CT_Louvre cover it).
 import math
 import random
 
+import dress_kit as dk
 import furn_int3 as fu
 import interior_kit as kit
 import geom
@@ -586,6 +587,12 @@ def _furnish(B, th, Fc, W, LC, VB, f0):
     B.spot("concierge_chair", "seat", (*Rw.p(-0.45, 6.9), Z), Rw.yaw(-1, 0))
     x, y = Rw.p(-0.5, 7.95)
     kit.plant(B, x, y, Z, 0.0, kind="fern", pot="CT_PlasterRed", h=1.0, seed=4)
+    with B.dress("lobby_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, *C.p(mid, 0.8), Z, C.yaw(0, -1))
+        dk.umbrella_open(B, *C.p(mid - 1.3, 1.5), Z, 40, seed=1)
+        dk.umbrella_stand(B, *C.p(mid - 2.0, 0.6), Z, 0, n=3, seed=2)
+    with B.dress("lobby_paper", weekdays=(0, 1, 2, 3, 4), hours=(8.0, 18.0), chance=0.5):
+        kit.newspaper(B, x2, y2, 0.46, Rw.yaw(-1, 0), seed=6)
     # back wall: pictures either side of the rear door, clock, radio shelf
     for k, (nm, w_) in enumerate((("painting_dunes", 0.9), ("painting_pines", 0.9))):
         x, y = C.p(mid + (-1.25 if k == 0 else 1.25), yb)
@@ -676,6 +683,10 @@ def _common_room(B, th, Z):
         a = math.radians(90 * k + 45)
         cx, cy = x + 1.2 * math.cos(a), y + 1.2 * math.sin(a)
         kit.chair(B, cx, cy, Z, math.degrees(math.atan2(x - cx, -(y - cy))), kind="wood")
+    with B.dress("common_cups", weekdays=(0, 1, 2, 3, 4, 5, 6), hours=(9.5, 12.0), chance=0.7):
+        kit.cup(B, x - 0.3, y - 0.2, 0.75 + Z, 40.0)
+        kit.cup(B, x - 0.1, y + 0.35, 0.75 + Z, 200.0)
+        dk.plate_crumbs(B, x + 0.2, y - 0.3, 0.75 + Z, 0.0, seed=3)
     B.thing("common_table_seats", "seat", (x - 0.7, y - 0.7, 0.45 + Z), 45.0, height=0.45)
     B.thing("common_table_cards", "play", (x, y, 0.75 + Z), 0.0, what="chess")
     # right side: sofa and coffee table, TV, armchair
@@ -817,6 +828,7 @@ def _flat(B, th):
     B.thing("flat_paintings", "board", (*Rw.p(-0.25, 4.8), ZS[0] + 1.8), Rw.yaw(-1, 0), topic="painting")
     x, y = Rw.p(-1.8, 4.8)
     ct = kit.coffee_table(B, x, y, Z, Rw.yaw(-1, 0))
+    ct_pos = (x + (Rw.eu[0]) * -0.3, y + Rw.eu[1] * -0.3)           # a free corner of the coffee table
     kit.books_stack(B, x, y, ct["top"], 0.0, n=3, seed=4)
     x, y = Rw.p(-0.3, 7.0)
     sb = kit.table(B, x, y, Z, Rw.yaw(-1, 0), w=1.2, d=0.45, h=0.75)
@@ -859,6 +871,28 @@ def _flat(B, th):
     B.thing("flat_dining_seat", "seat", (*M.p(0.9, 5.25), ZS[0] + 0.45), into, height=0.45)
     x, y = M.p(3.7, yb - 0.08)
     kit.wall_clock(B, x, y, Z, st, zc=2.1, face="clock_2")
+    # ---- lived-in sets (docs/city_dress.md): Okada's mornings, his flowers, a book on the sofa, boots by the door
+    with B.dress("okada_breakfast", weekdays=(0, 1, 2, 3, 4), hours=(8.0, 11.0)):
+        dk.plate_crumbs(B, *M.p(0.9 - 0.2, 6.0 + 0.1), tb["top"], 0.0, seed=1)
+        kit.cup(B, *M.p(0.9 + 0.22, 6.0 - 0.05), tb["top"], 0.0)
+        kit.newspaper(B, *ct_pos, ct["top"], 0.0, seed=5)
+    with B.dress("okada_weekend", weekdays=(5, 6), hours=(9.5, 13.0)):
+        dk.plate_crumbs(B, *M.p(0.9 - 0.2, 6.0 + 0.1), tb["top"], 90.0, seed=2)
+        kit.teapot(B, *M.p(0.9 + 0.2, 6.0 - 0.05), tb["top"], 0.0)
+        kit.glass(B, *M.p(0.9 + 0.05, 6.0 - 0.28), tb["top"], 0.0)
+    for nm, (a, b) in (("fresh", (0, 4)), ("wilt", (4, 6)), ("empty", (6, 7))):
+        vx, vy = Rw.p(-1.8, 5.1)
+        with B.dress("okada_flowers_" + nm, phase=(7, a, b)):
+            if nm == "wilt":
+                dk.vase_wilted(B, vx, vy, ct["top"], 0.0, seed=8)
+            else:
+                kit.vase(B, vx, vy, ct["top"], 0.0, flowers=(nm == "fresh"), seed=8)
+    with B.dress("okada_book", chance=0.5):
+        dk.book_face_down(B, *Rw.p(-0.55, 4.35), Z + 0.45, Rw.yaw(-1, 0) + 90.0, seed=2)
+    for nm, months, kind in (("winter", (12, 1, 2), "felt"), ("mild", (3, 4, 5, 9, 10, 11), "rubber"),
+                             ("summer", (6, 7, 8), "sandals")):
+        with B.dress("okada_boots_" + nm, months=months):
+            dk.boots(B, *Lw.p(1.3, 6.15), Z, Lw.yaw(1, 0), kind=kind, seed=6)
 
 
 from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)

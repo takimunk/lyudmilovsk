@@ -1,0 +1,72 @@
+{
+ "_doc": "The staff's topic about the talk of the town (docs/town_rumours.md): offered by every counter with staff talk while something about the hero goes round. Written by tools/rumours/rumours.py: edit there.",
+ "topic_sets": {
+  "town_talk": [
+   {
+    "id": "town_talk",
+    "k": "city.ask.town_talk",
+    "everywhere": true,
+    "rumour": "any",
+    "lines": [
+     "city.ask.town_talk.intro",
+     {
+      "k": "city.ask.town_talk.cup",
+      "rumour": "cup"
+     },
+     {
+      "k": "city.ask.town_talk.garden",
+      "rumour": "garden"
+     },
+     {
+      "k": "city.ask.town_talk.beat",
+      "rumour": "beat"
+     },
+     {
+      "k": "city.ask.town_talk.cure",
+      "rumour": "cure"
+     },
+     {
+      "k": "city.ask.town_talk.job",
+      "rumour": "job"
+     },
+     {
+      "k": "city.ask.town_talk.tamed",
+      "rumour": "tamed"
+     },
+     {
+      "k": "city.ask.town_talk.radio",
+      "rumour": "radio"
+     },
+     {
+      "k": "city.ask.town_talk.fine",
+      "rumour": "fine"
+     },
+     {
+      "k": "city.ask.town_talk.crows",
+      "rumour": "crows"
+     },
+     {
+      "k": "city.ask.town_talk.catch",
+      "rumour": "catch"
+     },
+     {
+      "k": "city.ask.town_talk.kite",
+      "rumour": "kite"
+     },
+     {
+      "k": "city.ask.town_talk.tune",
+      "rumour": "tune"
+     },
+     {
+      "k": "city.ask.town_talk.sing",
+      "rumour": "sing"
+     },
+     {
+      "k": "city.ask.town_talk.film",
+      "rumour": "film"
+     }
+    ]
+   }
+  ]
+ }
+}

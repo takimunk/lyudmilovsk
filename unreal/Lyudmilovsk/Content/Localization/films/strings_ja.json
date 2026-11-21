@@ -61,5 +61,11 @@
  "film.programme.fri": "『ラ・シオタ駅への列車の到着』と『水をかけられた散水夫』（1895–1896年）",
  "film.programme.sat": "『月世界旅行』（1902年）",
  "film.programme.sun": "『大列車強盗』（1903年）",
- "film.programme.fest": "『月世界旅行』（1902年）"
+ "film.programme.fest": "『月世界旅行』（1902年）",
+ "film.programme.fest.children_day": "『ファンタスマゴリー』と『水をかけられた散水夫』と『赤ん坊の食事』（1895–1908年）",
+ "film.programme.fest.christmas": "『ファンタスマゴリー』と『月世界旅行』（1902–1908年）",
+ "film.programme.fest.city_day": "『リュミエール工場の出口』と『ラ・シオタ駅への列車の到着』と『水をかけられた散水夫』（1895–1896年）",
+ "film.programme.fest.halloween": "『ゴム頭の男』と『電気ホテル』（1901–1908年）",
+ "film.programme.fest.new_year": "『ファンタスマゴリー』と『ゴム頭の男』と『月世界旅行』（1901–1908年）",
+ "film.programme.fest.sea_festival": "『月世界旅行』と『電気ホテル』（1902–1908年）"
 }

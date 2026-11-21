@@ -183,6 +183,12 @@ T("garden.toast.contest_entered", "Банка принята на конкурс
   "ジャムを受けつけてもらった。審査は日曜日。")
 T("garden.toast.contest_already", "Твоя банка уже на конкурсе.", "Your jar is already in the contest.", "君のジャムはもう出してある。")
 T("garden.toast.sold", "Урожай сдан: {0} руб.", "Harvest handed in: {0} roubles.", "収穫を引き取ってもらった：{0}ルーブル。")
+T("garden.toast.fair_prize", "Ярмарка урожая: ваш урожай взвесили и для жюри. Итог: {0}, приз {1} руб.",
+  "The harvest fair: your harvest was weighed for the judges too. The result: {0}, a prize of {1} roubles.",
+  "収穫祭：あなたの収穫は審査員の分も量られた。結果：{0}、賞金{1}ルーブル。")
+T("garden.toast.fair_thanks", "Ярмарка урожая: ваш урожай взвесили и для жюри. Итог: {0}.",
+  "The harvest fair: your harvest was weighed for the judges too. The result: {0}.",
+  "収穫祭：あなたの収穫は審査員の分も量られた。結果：{0}。")
 T("garden.toast.friend_seeds", "Подарок от: {0}. {1}.", "A present from {0}: {1}.", "{0}からのおくりもの：{1}。")
 T("garden.toast.compost", "Компост вскопан в грядку.", "The compost is dug into the bed.", "たい肥を畑にすきこんだ。")
 
@@ -200,6 +206,9 @@ T("garden.diary.first_harvest", "Первый урожай: {0}. Сам выра
 T("garden.diary.jam", "Соседка сварила варенье из моей клубники. Банка ещё тёплая.",
   "My neighbour cooked jam from my strawberries. The jar is still warm.",
   "となりのおばあさんが僕のイチゴでジャムを煮てくれた。びんがまだあたたかい。")
+T("garden.diary.fair", "Ярмарка урожая: {0}. Мой урожай лежал на столе жюри рядом с чужими тыквами, и никто не спросил, чей он, пока не взвесили.",
+  "The harvest fair: {0}. My harvest lay on the judges' table next to other people's pumpkins, and nobody asked whose it was until it was weighed.",
+  "収穫祭：{0}。ぼくの収穫はよその人のカボチャと並んで審査の机にのっていて、量り終えるまで誰のものか誰も聞かなかった。")
 T("garden.diary.contest", "Конкурс варенья: {0}. Пахло клубникой на весь рынок.", "The jam contest: {0}. The whole market smelled of strawberries.",
   "ジャムのコンテスト：{0}。市場じゅうイチゴのにおいだった。")
 

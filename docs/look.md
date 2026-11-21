@@ -88,7 +88,8 @@ the cloud could check. **On the real head, look at the previews** (`renders/hero
   `ULyudTownTalkSubsystem` beside the friends' hook; the word is said with `SayLine` 3.2 s later if the resident is still
   within 7 m). Saved under "Look".
 - Stamps: the collection «Перед зеркалом» (`looks`: crop, short, parted, wind_jacket, raincoat, winter_coat, cap). Quest
-  events as before the pages: `do haircut`, `do ps_clothes`, `do ps_fitting_room`. Diary: the first haircut, the first
+  events come from the acts themselves, as before: `do haircut`, `do ps_clothes`, `do ps_fitting_room` (with the price
+  and the act's sound). Diary: the first haircut, the first
   piece bought.
 - Words: `tools/city/content/strings/look.json` (ru, en, ja). Content: `tools/city/content/x_look.json`,
   `activities.json` (haircut), `x_p_store.json` (the two acts). Since the acts open pages, their old lines, the haircut's

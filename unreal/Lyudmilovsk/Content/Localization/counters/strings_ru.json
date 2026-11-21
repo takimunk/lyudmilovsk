@@ -1,0 +1,8 @@
+{
+ "ui.counter.change": "Итого {0} руб. С {1} руб. — сдача {2} руб.",
+ "ui.counter.exact": "Итого {0} руб., без сдачи.",
+ "ui.counter.ahead": "Перед вами в очереди: {0}.",
+ "dev.group.counters": "Прилавки и очереди",
+ "dev.action.counters.crowd": "Очередь у ближайшего прилавка (3 человека)",
+ "dev.action.counters.status": "Очереди: в лог"
+}

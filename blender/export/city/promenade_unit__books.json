@@ -416,9 +416,102 @@
  "notes": [
   "promenade unit room, variant books: placed at each W1 unit whose plan variant is books"
  ],
+ "dress": [
+  {
+   "id": "unit_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 291,
+   "bounds": [
+    [
+     0.715,
+     0.73,
+     0.02
+    ],
+    [
+     3.8,
+     1.664,
+     0.89
+    ]
+   ]
+  },
+  {
+   "id": "books_reader",
+   "when": {
+    "chance": 0.5
+   },
+   "tris": 48,
+   "bounds": [
+    [
+     0.244,
+     5.462,
+     0.46
+    ],
+    [
+     0.556,
+     5.738,
+     0.495
+    ]
+   ]
+  },
+  {
+   "id": "books_cup",
+   "when": {
+    "hours": [
+     9.5,
+     12.5
+    ]
+   },
+   "tris": 94,
+   "bounds": [
+    [
+     3.429,
+     4.229,
+     1.05
+    ],
+    [
+     3.571,
+     4.371,
+     1.12
+    ]
+   ]
+  },
+  {
+   "id": "books_summer",
+   "when": {
+    "weather": [
+     "warm",
+     "clear"
+    ],
+    "months": [
+     6,
+     7,
+     8
+    ]
+   },
+   "tris": 116,
+   "bounds": [
+    [
+     0.25,
+     5.4,
+     0.46
+    ],
+    [
+     0.652,
+     5.74,
+     0.595
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 322,
   "detail": 4348,
-  "windows": 0
+  "windows": 0,
+  "dress": 549
  }
 }

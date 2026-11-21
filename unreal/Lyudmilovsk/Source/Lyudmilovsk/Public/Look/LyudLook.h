@@ -25,7 +25,7 @@ namespace LyudLook { struct FState; }
  * suit the weather (no raincoat in the rain, a shirt in the frost, a winter coat in the warmth).
  *
  * The rules are LyudLook (Private/Look/LookModel, plain C++, tools/looksim). Stamps "looks/<piece>", quest events
- * "do haircut", "do ps_clothes", "do ps_fitting_room" as before the pages, diary notes for the first of each. Nothing is
+ * "do haircut", "do ps_clothes", "do ps_fitting_room" come from the acts themselves; diary notes for the first of each. Nothing is
  * placed in the level; the meshes are optional (missing: the rest works).
  *
  * Console: lyud.Look.Info, lyud.Look.Cut <cut>, lyud.Look.Wear <item>, lyud.Look.Open <barber|clothes|fitting>.
@@ -88,7 +88,7 @@ private:
 	void OpenPage(EPage Which);
 	void ClosePage(bool bChosen);
 	void TickPage(APlayerController* PC);
-	/** The barber's chair: the cut, the quest's event, the scissors. */
+	/** The barber's chair: the cut chosen on the page. */
 	void AtChair(const FString& Cut);
 	void Buy(int32 Index);
 	void PutOn(int32 Index);

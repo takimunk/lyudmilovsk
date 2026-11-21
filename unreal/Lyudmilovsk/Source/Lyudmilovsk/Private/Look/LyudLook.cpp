@@ -517,12 +517,10 @@ void ULyudLook::OnCityOpen(FName Screen, int32)
 	}
 	else if (Screen == TEXT("clothes"))
 	{
-		ULyudQuests::Notify(this, TEXT("do"), TEXT("ps_clothes"));
 		OpenPage(EPage::Clothes);
 	}
 	else if (Screen == TEXT("fitting"))
 	{
-		ULyudQuests::Notify(this, TEXT("do"), TEXT("ps_fitting_room"));
 		OpenPage(EPage::Fitting);
 	}
 }
@@ -675,16 +673,8 @@ void ULyudLook::TickPage(APlayerController* PC)
 
 void ULyudLook::AtChair(const FString& Cut)
 {
-	if (!GiveCut(Cut))
-	{
-		return;
-	}
-	ULyudQuests::Notify(this, TEXT("do"), TEXT("haircut"));
-	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0);
-	if (ULyudSoundscapeSubsystem* Sound = Pawn ? ULyudSoundscapeSubsystem::Get(this) : nullptr)
-	{
-		Sound->PlayEffect(TEXT("scissors"), Pawn->GetActorLocation(), 0.9f);
-	}
+	// the chair's act has taken the money, snipped the scissors and told the quests ("do haircut") before the page
+	GiveCut(Cut);
 }
 
 void ULyudLook::Buy(int32 Index)

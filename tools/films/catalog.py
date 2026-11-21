@@ -201,6 +201,15 @@ PROGRAMME = {
     6: ["porter_robbery"],
 }
 FESTIVAL = ["melies_moon"]
+# A holiday's own programme (festivals.json ids; docs/festivals.md "The new toys"); the others show FESTIVAL.
+FESTIVALS = {
+    "sea_festival": ["melies_moon", "chomon_hotel"],                             # the gala: the two grandest
+    "new_year": ["cohl_fantasmagorie", "melies_rubber_head", "melies_moon"],     # the New Year cartoons and tricks
+    "christmas": ["cohl_fantasmagorie", "melies_moon"],
+    "children_day": ["cohl_fantasmagorie", "lumiere_sprinkler", "lumiere_baby"],
+    "city_day": ["lumiere_factory", "lumiere_train", "lumiere_sprinkler"],       # where cinema began: a town's own day
+    "halloween": ["melies_rubber_head", "chomon_hotel"],                         # the haunted ones
+}
 
 # Where the films are shown: the hall's screen in the building frame (blender/city/buildings/workers_club.py: kit.cinema_screen
 # at (0, YD = 12.6) yaw 180, w 12.2, h 5.6, bottom 2.7; its picture card 6.2 cm in front of the wall). The picture is

@@ -1,0 +1,73 @@
+{
+ "service": "Higgsfield MCP generate_image_batch",
+ "model": "gpt_image_2_6",
+ "args": {
+  "aspect_ratio": "4:3",
+  "quality": "high",
+  "resolution": "4k",
+  "background": "opaque"
+ },
+ "layout": "4 columns = props (blender/props_hi3d/props.json sheet/col), 3 rows = front / left side / back on white",
+ "submitted": "2026-11-20T20:31:30+00:00",
+ "sheets": {
+  "0": {
+   "job": "45a5371a-d29d-4870-9edf-66f53a54088d",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_203234_45a5371a-d29d-4870-9edf-66f53a54088d.png",
+   "columns": [
+    "girl_dove",
+    "fisherman",
+    "chandelier",
+    "drink_fountain"
+   ],
+   "prompt": "Product turnaround reference sheet for 3D modelling, pure white seamless background, flat even studio light, no shadows on the ground, no text, no labels, no borders, no grid lines. Exactly 4 columns and 3 rows of equal cells. Each COLUMN is one object; each ROW is one view: row 1 = straight front view, row 2 = exact left side profile (90 degrees), row 3 = straight back view. Orthographic-looking camera at mid height, the whole object fully inside its cell with margin, same scale for the same object in all three rows, nothing crosses a cell edge. Late-Soviet 1970s Baltic seaside town style, realistic materials.\nColumn 1: bronze statue of a slim girl in a light summer dress standing on tiptoe and releasing a dove from her raised hands, warm patinated bronze, on a square polished red granite plinth (plinth about one third of the total height).\nColumn 2: bronze monument of a Baltic fisherman in oilskin coat and sou'wester hauling a heavy net over his shoulder, dark green-brown patina, on a rough grey granite block plinth.\nColumn 3: large Soviet palace-of-culture ceiling chandelier, polished brass central stem with three stacked rings, many frosted white glass globe shades, short brass suspension rod with a ceiling cup at the top, seen hanging.\nColumn 4: cast-iron public drinking fountain on a fluted column, dark green paint, small round bowl with a brass spout on top, a lower dog bowl at the side, square base.",
+   "note": "girl_dove column superseded by sheet 4 (hi3d dropped the dove and plinth from these views)"
+  },
+  "1": {
+   "job": "39440b25-62f7-49c8-a022-1b5bc6aa96bd",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_203234_39440b25-62f7-49c8-a022-1b5bc6aa96bd.png",
+   "columns": [
+    "gull_stele",
+    "astronomer_bust",
+    "sundial",
+    "pioneer"
+   ],
+   "prompt": "(same header as sheet 0)\nColumn 1: modernist cast-concrete sculpture of three abstract seagulls in flight rising from a tall tapered white concrete stele, smooth weathered concrete with faint board marks.\nColumn 2: bronze bust of an elderly bearded astronomer scientist with round glasses and a high collar, dark patina, on a tall rectangular polished black granite pedestal with a blank front face.\nColumn 3: bronze armillary sundial with a gnomon and engraved hour ring and a small sun face, golden-brown patina, standing on a round fluted light limestone pedestal.\nColumn 4: classic white-painted plaster park statue of a young pioneer boy in shorts and a neckerchief blowing a bugle, standing on a square white plaster plinth, slightly weathered paint."
+  },
+  "2": {
+   "job": "f3cb48c1-660b-43c1-b47c-4abe6b43b59a",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_212510_f3cb48c1-660b-43c1-b47c-4abe6b43b59a.png",
+   "submitted": "2026-11-20T21:25:00+00:00",
+   "columns": [
+    "cosmonaut",
+    "anchor",
+    "bear_cub",
+    "deer"
+   ],
+   "prompt": "Product turnaround reference sheet for 3D modelling, pure white seamless background, flat even studio light, no shadows on the ground, no text, no labels, no borders, no grid lines. Exactly 4 columns and 3 rows of equal cells. Each COLUMN is one object; each ROW is one view: row 1 = straight front view (object facing the camera squarely, not three-quarter), row 2 = exact left side profile (90 degrees), row 3 = straight back view. ...\nColumn 1: bronze monument of a cosmonaut in a spacesuit with the helmet under one arm, standing straight and looking up, on a tall polished grey granite plinth.\nColumn 2: monument of a large old black iron ship anchor with a heavy chain draped over a low rough granite block.\nColumn 3: bronze park sculpture of a bear cub sitting and holding a ball, warm polished patina, on a low round granite base.\nColumn 4: classic Soviet park sculpture of a standing deer with antlers, painted cast concrete in pale cream colour, on a low rectangular concrete base."
+  },
+  "3": {
+   "job": "aa827b56-07a2-4144-a766-48e9b8478d4e",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_212510_aa827b56-07a2-4144-a766-48e9b8478d4e.png",
+   "submitted": "2026-11-20T21:25:00+00:00",
+   "columns": [
+    "ship_model",
+    "samovar",
+    "grandfather_clock",
+    "muse"
+   ],
+   "prompt": "Product turnaround reference sheet for 3D modelling, pure white seamless background, flat even studio light, no shadows on the ground, no text, no labels, no borders, no grid lines. Exactly 4 columns and 3 rows of equal cells. Each COLUMN is one object; each ROW is one view: row 1 = straight front view (object facing the camera squarely, not three-quarter), row 2 = exact left side profile (90 degrees), row 3 = straight back view. Soviet 1970s interior objects, realistic materials.\nColumn 1: detailed wooden model of a three-masted sailing ship with cream sails inside a glass display case on a dark wooden stand with legs.\nColumn 2: large polished brass samovar with turned wooden handles and a small teapot on top, standing on a round brass tray.\nColumn 3: tall dark walnut grandfather clock with a round brass dial, glass door showing the pendulum, carved top.\nColumn 4: white marble statue of a classical muse in a long draped dress holding a lyre, on a square marble pedestal, for a palace of culture foyer."
+  },
+  "4": {
+   "job": "1b0a3f12-1d32-4551-b28d-86589eae9623",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_212510_1b0a3f12-1d32-4551-b28d-86589eae9623.png",
+   "submitted": "2026-11-20T21:25:00+00:00",
+   "columns": [
+    "girl_dove",
+    "poet_bust",
+    "seal",
+    "park_vase"
+   ],
+   "prompt": "Product turnaround reference sheet for 3D modelling, pure white seamless background, flat even studio light, no shadows on the ground, no text, no labels, no borders, no grid lines. Exactly 4 columns and 3 rows of equal cells. Each COLUMN is one object; each ROW is one view: row 1 = straight front view (object facing the camera squarely, not three-quarter), row 2 = exact left side profile (90 degrees), row 3 = straight back view. ...\nColumn 1: bronze statue of a slim girl in a light summer dress standing upright, both arms raised above her head holding a dove with spread wings that is attached to her hands, warm patinated bronze, on a square polished red granite plinth (plinth about one third of the total height). The dove is clearly part of the bronze.\nColumn 2: bronze bust of a young poet with wavy hair and an open-collar shirt, dark patina, on a slim square grey marble pedestal.\nColumn 3: bronze sculpture of a Baltic grey seal lying on a rough granite rock, smooth dark patina, life size.\nColumn 4: cast-iron decorative park vase on a pedestal, wide fluted bowl with handles, painted dark grey, square base."
+  }
+ }
+}

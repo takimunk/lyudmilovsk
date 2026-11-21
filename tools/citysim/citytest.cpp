@@ -994,6 +994,8 @@ static void RealChecks(const std::string& Path)
 		for (int H = 0; H < 24; ++H)
 		{
 			FWhen W = AtDate(H % 7, (float)H + 0.5f, 100, 615, 30);
+			static const std::vector<std::string> TownTalk{"cup"};
+			W.Rumours = H == 12 ? &TownTalk : nullptr; // at noon the town talks of the hero's cup (docs/town_rumours.md)
 			if (M.TalkReady(I, W, Dev, Offer) > 0)
 			{
 				bTalks = true;
@@ -1024,8 +1026,9 @@ static void RealChecks(const std::string& Path)
 	}
 	CHECK(Silent == 0, "%d things with topics, each talks at some hour (%d do not, first %s)", WithTopics, Silent, FirstSilent.c_str());
 	CHECK(NoTitle == 0 && NoAnswer == 0, "%d topics, each with a title and lines; every offered one answers (%d, %d not)", (int)M.Topics.size(), NoTitle, NoAnswer);
-	// three wait on a fresh save: two older ones, and photo.city.done (heard photo.city: the photographer's quest)
-	CHECK((int)Reached.size() + 3 >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count)",
+	// six wait on a fresh save: two older ones, and the four photo quests' "I have the print" (photo.city.done,
+	// repair.grandpa.done, keeper.pier.done, cog.cl.maru.done: each heard after the topic that gives its quest)
+	CHECK((int)Reached.size() + 6 >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count)",
 		(int)Reached.size(), (int)M.Topics.size());
 	// the room tones: every tone a plot names is there, a closed tone is a tone, volumes in 0..1, every min <= max
 	int BadTone = 0, Loud = 0;
@@ -1035,6 +1038,35 @@ static void RealChecks(const std::string& Path)
 		Loud += (T.Volume < 0.f || T.Volume > 1.f || T.ShotVolume < 0.f || T.ShotVolume > 1.f) ? 1 : 0;
 	}
 	CHECK(!M.Tones.empty() && BadTone == 0 && Loud == 0, "%d room tones, each sound (%d bad, %d out of 0..1)", (int)M.Tones.size(), BadTone, Loud);
+	// the rooms in the rain (docs/indoor_weather.md): the keeper's radio in the lighthouse, a full cafe; dry: as ever
+	{
+		int Pier = -1, Cafe = -1, BadAlt = 0;
+		for (int I = 0; I < (int)M.Things.size(); ++I)
+		{
+			Pier = Pier < 0 && M.Things[(size_t)I].Plot == "P-PIER" ? I : Pier;
+			Cafe = Cafe < 0 && M.Things[(size_t)I].Plot == "P-CAFE" ? I : Cafe;
+		}
+		for (const FTone& T : M.Tones)
+		{
+			for (const auto& Alt : T.ByWeather)
+			{
+				BadAlt += Alt.second < 0 || Alt.second >= (int)M.Tones.size() || Alt.first == 0 ? 1 : 0;
+			}
+			BadAlt += T.Windows < 0.f || T.Windows > 1.f ? 1 : 0;
+		}
+		FWhen Wet;
+		Wet.Hour = 23.f;
+		Wet.Weather = WeatherRain | WeatherWet | WeatherCold;
+		FWhen Dry = Wet;
+		Dry.Weather = WeatherDry | WeatherClear;
+		const int Room = M.FindTone("lighthouse_room"), Storm = M.FindTone("lighthouse_storm");
+		CHECK(Pier >= 0 && M.ToneNow(Pier, Dry, true) == Room && M.ToneNow(Pier, Wet, true) == Storm && M.ToneAt(Storm)->Windows > 0.9f,
+			"the lighthouse: its room dry, the keeper's radio in the rain, the rain on every pane");
+		Wet.Hour = Dry.Hour = 13.f;
+		CHECK(Cafe >= 0 && M.ToneNow(Cafe, Dry, true) == M.FindTone("cafe_room") && M.ToneNow(Cafe, Wet, true) == M.FindTone("cafe_full"),
+			"the cafe: its room dry, full in the rain");
+		CHECK(BadAlt == 0, "every weather tone is a tone, every window share in 0..1 (%d bad)", BadAlt);
+	}
 	int Lifts = 0, NoWayBack = 0;
 	std::string FirstOneWay;
 	for (int I = 0; I < (int)M.Things.size(); ++I)
@@ -1742,6 +1774,115 @@ static void JobChecks(const std::string& Path)
 }
 
 #include "cupchecks.h"
+#include "rewardchecks.h"
+
+// The photo club's contest and the photo quests on the real data (docs/photo.md, tools/city/content/photo.json): the table
+// with the box of prints and the wall of winners hand over to the camera's code ("open"), the lab's board reads the guide and
+// the contest's sheet in turn, the sheet's notice follows the calendar (the month's theme, the reminder, the jury's day, the
+// results), and each quest's "I have the print" topic waits for the topic that gives the quest.
+static void PhotoContestChecks(const std::string& Path)
+{
+	std::string Text, Error;
+	if (!ReadFile(Path, Text))
+	{
+		return;
+	}
+	std::printf("the photo club's contest and the photo quests (real data)\n");
+	FModel M;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	const int Box = M.FindThing("P-CLUB3/contest_box"), Wall = M.FindThing("P-CLUB3/drying_line"), Board = M.FindThing("P-CLUB3/photo_board");
+	const int Bench = M.FindThing("P-CLUB3/darkroom_bench"), Cloak = M.FindThing("P-CLUB3/cloak");
+	const int Repair = M.FindThing("W1-U04/repair_counter"), Keeper = M.FindThing("P-PIER/tower_desk");
+	if (!(Box >= 0 && Wall >= 0 && Board >= 0 && Bench >= 0 && Cloak >= 0 && Repair >= 0 && Keeper >= 0))
+	{
+		CHECK(false, "the contest's things and the quests' counters are there");
+		return;
+	}
+	FAsk Ask;
+	Ask.Money = 0;
+	Ask.StaffOnShift = [](const std::string&, const std::string&) { return true; };
+	// a Wednesday afternoon, the club open (12-23)
+	const FWhen Noon = AtDate(2, 15.f, 300, 115, 87);
+	const FOutcome B = M.Run(Box, Noon, Ask);
+	CHECK(B.Verdict == EVerdict::Ok && !B.bClosed && B.Open == "photo_contest" && B.Event == "do" && B.Target == "photo_contest" && B.Text < 0 && B.Price == 0,
+		"the table with the box of prints opens the contest's screen (%s, %s %s)", B.Open.c_str(), B.Event.c_str(), B.Target.c_str());
+	const FOutcome W = M.Run(Wall, Noon, Ask);
+	CHECK(W.Verdict == EVerdict::Ok && !W.bClosed && W.Open == "photo_wall" && W.Target == "photo_wall" && W.Text < 0,
+		"the lab's end wall opens the wall of winners (%s)", W.Open.c_str());
+	CHECK(M.Run(Bench, Noon, Ask).Open == "photo_darkroom", "the darkroom bench still opens the darkroom");
+	CHECK(M.Run(Box, AtDate(2, 9.f, 300, 115, 87), Ask).Open.empty(), "in the morning the club is shut: no contest screen");
+	// the board: the guide and the contest's sheet in turn
+	std::set<std::string> Read;
+	for (int Use = 0; Use < 2; ++Use)
+	{
+		const FOutcome R = M.Run(Board, Noon, Ask);
+		if (R.Text >= 0)
+		{
+			Read.insert(M.Texts[(size_t)R.Text].Id);
+		}
+	}
+	CHECK(Read.count("cog_photo_guide") == 1 && Read.count("notices_photo") == 1, "the photo board reads the lab's guide and the contest's sheet in turn (%d texts)", (int)Read.size());
+	const int Sheet = M.FindText("notices_photo");
+	CHECK(Sheet >= 0, "the contest's sheet is a text");
+	if (Sheet >= 0)
+	{
+		// the sheet through a year: every day one notice of the contest and the rules; the theme by the month
+		static const char* const Themes[4] = { "sea", "birds", "work", "festival" };
+		static const int MonthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+		int Bad = 0, Days = 0;
+		std::string FirstBad;
+		for (int Mo = 1; Mo <= 12; ++Mo)
+		{
+			for (int Dy = 1; Dy <= MonthDays[Mo - 1]; ++Dy)
+			{
+				std::vector<std::string> Pages;
+				M.TextPages(Sheet, AtDate(0, 15.f, 400 + Days, Mo * 100 + Dy, 100 + Days), Pages);
+				const std::string Want = Dy <= 19 ? std::string("city.note.club.contest_") + Themes[(Mo - 1) % 4]
+					: Dy <= 25 ? "city.note.club.contest_soon" : Dy == 26 ? "city.note.club.contest_jury" : "city.note.club.contest_done";
+				if (!(Pages.size() == 2 && Pages[0] == Want && Pages[1] == "city.note.photo.rules"))
+				{
+					++Bad;
+					if (FirstBad.empty())
+					{
+						FirstBad = std::to_string(Mo * 100 + Dy) + ": " + (Pages.empty() ? std::string("nothing") : Pages[0]) + " for " + Want;
+					}
+				}
+				++Days;
+			}
+		}
+		CHECK(Bad == 0, "the sheet through %d days: the month's theme to the 19th, the reminder to the 25th, the jury on the 26th, then the results (%d wrong, first %s)",
+			Days, Bad, FirstBad.c_str());
+	}
+	// the town's club boards carry the same notices
+	const int ClubBoards = M.FindText("notices_club");
+	if (ClubBoards >= 0)
+	{
+		std::vector<std::string> Jan, Feb26;
+		M.TextPages(ClubBoards, AtDate(0, 15.f, 500, 101, 200), Jan);
+		M.TextPages(ClubBoards, AtDate(0, 15.f, 557, 226, 257), Feb26);
+		CHECK(std::find(Jan.begin(), Jan.end(), "city.note.club.contest_sea") != Jan.end()
+			&& std::find(Feb26.begin(), Feb26.end(), "city.note.club.contest_jury") != Feb26.end()
+			&& std::find(Feb26.begin(), Feb26.end(), "city.note.club.contest_birds") == Feb26.end(),
+			"the club boards: the sea on 1 January, the jury's day on 26 February");
+	}
+	// the three quests' topics: the one that gives the quest is offered at once, the print can be shown only after it
+	struct FQuestTalk { int Thing; const char* Topic; FWhen When; };
+	const FQuestTalk Talks[3] = { { Repair, "repair.grandpa", AtDate(2, 11.f, 300, 115, 87) }, { Keeper, "keeper.pier", AtDate(2, 19.f, 300, 115, 87) },
+		{ Cloak, "cog.cl.maru", AtDate(2, 15.f, 300, 115, 87) } };
+	for (const FQuestTalk& Q : Talks)
+	{
+		const int Give = M.FindTopic(Q.Topic), Done = M.FindTopic(std::string(Q.Topic) + ".done");
+		std::vector<int> Now;
+		M.TopicsNow(Q.Thing, Q.When, Now);
+		const bool bGiveFirst = Give >= 0 && Done >= 0 && std::find(Now.begin(), Now.end(), Give) != Now.end() && std::find(Now.begin(), Now.end(), Done) == Now.end();
+		const int Lines = Give >= 0 ? (int)M.AskTopic(Give, Q.When).Lines.size() : 0;
+		Now.clear();
+		M.TopicsNow(Q.Thing, Q.When, Now);
+		const bool bDoneAfter = Done >= 0 && std::find(Now.begin(), Now.end(), Done) != Now.end();
+		CHECK(bGiveFirst && Lines == 3 && bDoneAfter, "%s: asked first (3 lines, %d), then \"I have the print\" is offered (%d, %d)", Q.Topic, Lines, bGiveFirst ? 1 : 0, bDoneAfter ? 1 : 0);
+	}
+	M.ResetState();
+}
 
 int main(int Argc, char** Argv)
 {
@@ -1759,6 +1900,8 @@ int main(int Argc, char** Argv)
 	CourseChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	JobChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	CupChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	RewardChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	PhotoContestChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;
 }

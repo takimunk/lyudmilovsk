@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """The notice boards' texts (tools/city/content/x_notices.json, docs/town_paper.md "Notices") through two years of days:
 on every day each board shows its own line, at most one notice per page (dated notices never collide), every dated notice
-shows on some day, and no board stays without a dated notice for more than MAX_GAP days (it must look alive)."""
+shows on some day, no board stays without a dated notice for more than MAX_GAP days (it must look alive), and the photo
+contest's notices follow the month (the theme, the reminder, the jury's day, the results)."""
 import datetime
 import json
 import os
@@ -63,6 +64,23 @@ def main():
         ok = longest <= MAX_GAP.get(board, 60)
         print("%s %s: longest run without a dated notice %d days (limit %d)" % ("ok  " if ok else "FAIL", tid, longest, MAX_GAP.get(board, 60)))
         fails += 0 if ok else 1
+    # the photo club's contest (docs/photo.md): on the town's club boards and on the photo circle's own sheet the notice of
+    # the day is the month's theme to the 19th (sea, birds, work, festival by (month - 1) % 4), the reminder to the 25th,
+    # the jury's day on the 26th, then the results; never two of them, never another month's theme
+    themes = ("sea", "birds", "work", "festival")
+    for tid in ("notices_club", "notices_photo"):
+        wrong = []
+        for n in range(730):
+            day = START + datetime.timedelta(days=n)
+            want = ("contest_" + themes[(day.month - 1) % 4] if day.day <= 19 else "contest_soon" if day.day <= 25
+                    else "contest_jury" if day.day == 26 else "contest_done")
+            got = sorted(e["k"].rsplit(".", 1)[1] for page in texts.get(tid, {}).get("pages", []) for e in page
+                         if isinstance(e, dict) and ".contest_" in e["k"] and holds(e, day))
+            if got != [want]:
+                wrong.append("%s: %s for %s" % (day, ",".join(got) or "nothing", want))
+        print("%s %s: the photo contest's notice of the day through two years (%d wrong%s)"
+              % ("ok  " if not wrong else "FAIL", tid, len(wrong), ", first " + wrong[0] if wrong else ""))
+        fails += 1 if wrong else 0
     allk = {e["k"] for t in texts.values() for p in t["pages"] for e in p if isinstance(e, dict) and ("date" in e or "after" in e)}
     missing = allk - seen
     print("%s every dated notice shows on some day (%d of %d)" % ("ok  " if not missing else "FAIL", len(allk) - len(missing), len(allk)))

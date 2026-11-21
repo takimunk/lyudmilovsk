@@ -101,9 +101,17 @@ namespace LyudPeople
 		 *  to (front: the kerb, the deck) to the slot (back), walked as a line in 3D; out the same way back (LoadSpots). */
 		std::vector<V3> Reach;
 		int SnowJob = -1;           // a snow place's slot: the stretch of path it stands for (its near end is Pos), -1 none
+		// a counter's queue (tools/town/counters.py, docs/counters.md): which line (FWorld::Queues) and the place in it, 0 the
+		// one being served; bHeld: the hero stands there (FWorld::SetHeroAt), so it counts as taken
+		int Queue = -1;
+		int QueueN = -1;
+		bool bHeld = false;
+		int FrontWho = -1;          // q0: who is being served, since when (sim seconds)
+		double FrontSince = 0.0;
 		V3 SnowTo;                  // and its far end
 		// reservation
 		int Owner = -1;             // only this person (or their household) uses it; -1 anybody
+		std::string OwnerKey;       // "owner" in town_places.json: that person's key (ReserveOwnSlots looks it up: an allotment bed's keeper)
 		std::vector<int> Users;     // who is using or going to it now
 		int K = -1;                 // Kind interned (FWorld::Index; -1 not yet: compared by name)
 		bool Free(int Person) const;
@@ -138,6 +146,8 @@ namespace LyudPeople
 		// the town's buildings (town_places.json, docs/town_life.md): a shell has no rooms to walk; whoever is in it is
 		// inside (not drawn), at its door. A flat's windows light up while somebody is home and awake after dusk.
 		bool bShell = false;
+		bool bOpen = false;         // "open": entered by its gate and walked by its paths like a room, but out of doors (an allotment's
+		                            // fenced yard): the weather counts there
 		std::string Building;       // the plot / building id (T2-05)
 		std::vector<std::string> Windows;   // window ids (T2-05/3-02/w1)
 		std::vector<std::string> Roles;     // a workplace's job roles (waiter, cook, seller, ...)
@@ -147,6 +157,17 @@ namespace LyudPeople
 		std::vector<float> LoopS;
 		float LoopLen = 0.f;
 		int K = -1;                 // Kind interned
+		int Pull = -1;              // its row of weather_pull.json (docs/indoor_weather.md), -1 none
+	};
+
+	/** One row of weather_pull.json (tools/town/weather_pull.py, docs/indoor_weather.md): how much the weather of the moment
+	 *  draws people to the places of these kinds or ids (a choice's score, as the outdoors' rain penalty is; 1 ~ a strong
+	 *  wish). The rain scales with how hard it falls, the cold below 2 C, the heat above 22 C in the dry sun, the storm
+	 *  above 12 m/s; dark: after sunset. */
+	struct FWeatherPull
+	{
+		std::vector<std::string> Kinds, Ids;
+		float Rain = 0.f, Cold = 0.f, Hot = 0.f, Storm = 0.f, Dark = 0.f;
 	};
 
 	/** One row of activities.json: what people can do and what it gives them. */
@@ -182,6 +203,7 @@ namespace LyudPeople
 		bool bStaff = false;                // a workplace duty: at their own workplace (FDuty::Place), at a slot of their role
 		float Pace = 1.f;                   // "pace": how fast they go within it against their walk (a jog, children at play: 2)
 		bool bRainOk = false;               // "rain": "ok": chosen and kept up in the rain too (outdoors)
+		bool bShelter = false;              // "shelter": 1: only where the weather pulls now (weather_pull.json: under a roof in the rain)
 		float WindMin = -1.f, WindMax = 99.f;   // "wind": [min, max] m/s: chosen only in such a wind (a kite: a breeze, not a calm or a gale)
 		std::string When;                   // "when": only while this condition is on (FWorld::SetCondition: rink, walrus, banya);
 		int WhenId = -1;                    // whoever is at it leaves within a minute after it goes off. Its id (ConditionId)
@@ -193,6 +215,7 @@ namespace LyudPeople
 		                                    // the others (the deck) for a few minutes, and maybe in once more; 0 none
 		float Regulars = 0.f;               // "regulars": only a fixed handful do it (this share of whoever could, more of those with
 		                                    // its trait; anybody with a like for it too); 0 everybody
+		float TempMin = -99.f, TempMax = 99.f;  // "temp": [min, max] C: chosen only in such weather (the allotment: not in the frost)
 		std::vector<int> PlaceIdx;          // the places of its kinds (built after loading; "home" and gatherings aside)
 		std::vector<int> SlotK, PlaceK;     // Slots and Places interned
 		bool bHome = false;                 // "home" among its places
@@ -356,6 +379,7 @@ namespace LyudPeople
 		float WalkCostPerHour = 1.6f;   // how much an hour of walking puts people off a choice
 		float Jitter = 0.15f;
 		float OwnSpots = 110.f;         // m: how far out of their way people go for a spot of their own (their bench, their cafe); 0 none
+		float PullMeters = 160.f;       // m: how far out of their way a weather pull of 1 takes people (the cafe in the rain)
 	};
 
 	class FWorld
@@ -385,6 +409,7 @@ namespace LyudPeople
 		float Rain = 0.f;               // 0 dry .. 1 pouring
 		float TempC = 12.f;
 		float Wind = 5.f;               // the mean wind, m/s (the wrapper sets it from ULyudWindSubsystem; kites want 3..13)
+		float Gloom = 0.f;              // 0 a bright sky .. 1 a dark day (thick cloud, rain): lamps go on earlier (FlatLitNow)
 		bool bDayOff = false;           // a public holiday: duties with holiday "off" are skipped (SetDayOff)
 
 		/** A gathering (ULyudFestivalSubsystem's holidays): people free and awake are drawn to a place, or to the places
@@ -428,6 +453,8 @@ namespace LyudPeople
 		bool LoadTownsfolk(const std::string& Text);
 		/** After loading: activities' place lists, duties' workplaces. Load and the town loaders call it. */
 		void Index();
+		/** A place under a roof: indoors and not an open yard (FPlace::bOpen). */
+		bool Roofed(int Place) const { return Places[(size_t)Place].bIndoor && !Places[(size_t)Place].bOpen; }
 		/** Somebody inside a shell (a town building): not drawn. */
 		bool InsideShell(const FPerson& P) const;
 		/** Who works at a place now (in their role, "" any), on their shift and there. */
@@ -437,6 +464,13 @@ namespace LyudPeople
 		void UpdateLights(std::vector<int>& Changed);
 		std::vector<int8_t> FlatLit;    // per place: -1 unknown, 0 dark, 1 lit
 		bool FlatLitNow(int Place) const;
+		/** The weather's pull to a place now (weather_pull.json; 0 none): added to a choice's score, and taken off the
+		 *  metres when choosing between places (PullMeters a unit). */
+		float WeatherPull(int Place) const;
+		std::vector<FWeatherPull> Pulls;
+		/** weather_pull.json: the rows, then each place its row (the first that names its id, else its kind). */
+		bool LoadWeatherPull(const std::string& Text);
+		void IndexPulls();
 		/** Today's wake and bedtime (their usual, moved by the day's roll). */
 		float WakeOf(const FPerson& P) const
 		{
@@ -509,7 +543,8 @@ namespace LyudPeople
 		bool bLoadTown = true;
 		/** activities.json, people.json, people_places.json from Dir; the walk grid from AnimalsDir ("" = no grid). */
 		bool Load(const std::string& Dir, const std::string& AnimalsDir);
-		bool LoadActivities(const std::string& Text);
+		/** Append: add the rows to those there (weather_pull.json's own activities), else replace them. */
+		bool LoadActivities(const std::string& Text, bool bAppend = false);
 		bool LoadPeople(const std::string& Text);
 		bool LoadPlaces(const std::string& Text);
 		/** Gives every household a flat (the saved ones first: SetHome before) and everybody a bed. */
@@ -521,6 +556,19 @@ namespace LyudPeople
 		/** A new game: everybody where the club scene has them (people.json start), the rest as Resettle. */
 		void NewGame();
 		void Step(float Dt);
+		/** The hero stands at P (Unreal metres; bOn false: nowhere near a counter): a queue spot under him counts as taken, so
+		 *  the townsfolk line up behind him (docs/counters.md). */
+		void SetHeroAt(const V3& P, bool bOn);
+		/** A counter's lines (Slots indices, front first), and how often somebody moved up in one (checks). */
+		std::vector<std::vector<int>> Queues;
+		std::vector<std::string> QueueIds;   // their ids ("W1-U02/0", "P-MARKET/3")
+		int QueueMoves = 0;
+		/** Who stands in a line now, front first (-1 a free spot, -2 the hero): checks and the engine's counter scene. */
+		void QueueState(int Queue, std::vector<int>& Out) const;
+		/** Sends up to Count of the townsfolk who are free and near to stand in a line (developer mode, shots); how many went. */
+		int SendToQueue(int Queue, int Count);
+		/** The line whose front spot is nearest P within MaxM metres (-1 none). */
+		int NearestQueue(const V3& P, float MaxM) const;
 
 		int FindPerson(const std::string& Key) const;
 		int FindPlace(const std::string& Id) const;
@@ -686,6 +734,9 @@ namespace LyudPeople
 		void Unreserve(FPerson& P);
 		void TalkPairs();
 		float PairTimer = 0.f;
+		/** The lines move: the front served for a minute or two, the rest wait and step up (docs/counters.md). */
+		void StepQueues();
+		bool QueueOpenFor(int Slot) const;
 		/** Per winter patch (FSnowJob::Job): which side its start is on (IslandOf, a path search), -2 not asked yet. A patch never moves. */
 		std::vector<int8_t> SnowJobIsland;
 		std::vector<int> SettleQueue;   // townsfolk Resettle hasn't placed yet (Opt.SettleBatch)

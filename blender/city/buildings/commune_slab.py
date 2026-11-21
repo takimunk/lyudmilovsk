@@ -26,6 +26,7 @@ Ideas for later: stairs inside the hall to the gym, interior corridors, sliding 
 """
 import math
 
+import dress_kit as dk
 import interior_kit as kit
 
 from citykit import box, prism, ring, DOOR_W
@@ -474,6 +475,7 @@ def _furnish_hall(B, mirror=False):
     for lx, ly in ((-23.4, 6.5), (-28.5, 3.0), (-31.0, 10.0), (-26.5, 10.0)):
         H.lamp(lx, ly, 5.0)
     _depth2(B, H)                 # last: new wall clocks take kit_clock_<n> numbers after the old ones
+    _dress_hall(B, H)             # the swappable sets go after everything else (docs/city_dress.md)
 
 
 def _switch_plate(B, x, y, z=0.0, yaw=0.0, zc=1.3):
@@ -585,6 +587,26 @@ def _depth2(B, H):
         H.p(_jar, -25.9, 2.1, 0.0, z=0.69)
     # ---- a second clock by the door
     H.p(kit.wall_clock, -26.85, 1.4, 180.0, zc=2.3, r=0.2)
+
+
+def _dress_hall(B, H):
+    """Lived-in sets of the communal hall (H mirrors the west-variant coordinates): a wet day at the door, the children's
+    drawings of the week on the west wall, a book left in the reading nook, cups on the dominoes table after lunch."""
+    with B.dress("hall_rain", weather=("rain", "wet")):
+        H.p(dk.doormat_wet, -28.5, 1.95, z=0.015)
+        H.p(dk.umbrella_stand, -27.1, 1.72, n=3, seed=2)
+        H.p(dk.umbrella_open, -30.4, 3.95, 30, seed=1)
+        H.p(dk.umbrella_closed, -27.6, 1.4, 180.0, seed=3)
+    for k in range(4):                           # drawings of the week, round and round (the school group's wall)
+        with B.dress("hall_drawings_%d" % k, phase=(28, 7 * k, 7 * k + 7)):
+            H.p(kit.poster, -34.6, 7.3, 90.0, name="kids_%d" % k, w=0.42, zc=1.7)
+    with B.dress("hall_nook_book", chance=0.5):
+        H.p(dk.book_face_down, -33.75, 2.8, 90.0, z=0.45, seed=2)
+    with B.dress("hall_dominoes_cups", hours=(13.5, 18.0)):
+        H.p(kit.cup, -23.5, 6.88, 20.0, z=0.72)
+        H.p(kit.glass, -24.1, 6.88, 0.0, z=0.72)
+    with B.dress("hall_paper", weekdays=(0, 1, 2, 3, 4), hours=(8.0, 17.0), chance=0.6):
+        H.p(kit.newspaper, -25.2, 2.0, 10.0, z=0.45, seed=3)       # left on the committee bench
 
 
 from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)
