@@ -137,3 +137,74 @@ def cot(B, x, y, z=0.0, yaw=0.0, mat="CT_WoodLight", blanket="CT_PlasterYellow")
             yy = -l + k * (2 * l) / 7
             p.rod(mat, (sx, yy, 0.33), (sx, yy, 0.9), 0.012, 3)
     return p.done(top=0.42)
+
+
+# ---------------------------------------------------------------- small things that answer a touch (backlog item 31)
+
+def _facing(yaw):
+    """The world direction (x, y) a piece of kit yaw `yaw` faces (0 = -y, 90 = +x)."""
+    r = math.radians(yaw)
+    return math.sin(r), -math.cos(r)
+
+
+def switch(B, tid, x, y, yaw, z=0.0, zc=1.3, scope="room"):
+    """[wall] a light switch (docs/city_interiors.md "Wall clocks and light switches"): a white plate with a rocker,
+    (x, y) on the wall, facing yaw, its middle zc over the floor z; the thing `tid` (what=switch) just in front of it."""
+    p = kit._P(B, x, y, z, yaw, "switch")
+    p.kind = "wall"
+    p.box("CT_SteelWhite", -0.04, 0.04, -0.012, 0.0, zc - 0.06, zc + 0.06, f="xXyzZ")
+    p.box("CT_Steel", -0.012, 0.012, -0.02, -0.012, zc - 0.025, zc + 0.03, f="xXyzZ")
+    p.done()
+    fx, fy = _facing(yaw)
+    B.thing(tid, "machine", (x + fx * 0.03, y + fy * 0.03, z + zc), yaw, what="switch", switch=scope)
+
+
+def mailbox_thing(B, tid, x, y, yaw, z=0.0, rows=3):
+    """The thing of a bank of mailboxes() hung at (x, y) facing yaw (what=mailbox: a peek through the slots, the post
+    of the house; docs/city_interiors.md "Small things that answer a touch")."""
+    fx, fy = _facing(yaw)
+    B.thing(tid, "board", (x + fx * 0.12, y + fy * 0.12, z + 1.0 + rows * 0.1), yaw, what="mailbox")
+
+
+def tap_thing(B, tid, x, y, yaw, z=0.0):
+    """The thing of a kitchen sink's tap at (x, y) (the middle of the sink module, its back on the wall), facing yaw."""
+    fx, fy = _facing(yaw)
+    B.thing(tid, "machine", (x + fx * 0.3, y + fy * 0.3, z + 0.95), yaw, what="tap")
+
+
+def window_latch(B, tid, near, z=0.0, what="window", reach=5.0, room=None):
+    """A window that opens (docs/city_interiors.md "Windows that open"): of B's window cards with their middle 0.9..2.6 m
+    over the floor z, the one nearest `near` (x, y) gets a handle on the inner face of its wall and the thing `tid` 0.25 m
+    in front of that face, facing into the room. what: "window" (a casement), "vent" (a top-hung vent), "balcony_door".
+    room: a test (x, y) -> bool, true inside the room (a Home's inside test): the inner face is where it starts to hold
+    along the window's inward normal (without it: 0.3 m in from the card)."""
+    best = None
+    for w_ in B.windows:
+        c, n = w_["centre"], w_["normal"]
+        if abs(n[2]) > 0.3 or not (z + 0.9 <= c[2] <= z + 2.6) or w_.get("shape") == "round":
+            continue
+        depth = 0.3
+        if room is not None:
+            depth = next((k * 0.05 for k in range(1, 25) if room(c[0] - n[0] * k * 0.05, c[1] - n[1] * k * 0.05)), None)
+            if depth is None:
+                continue
+        d = math.hypot(c[0] - near[0], c[1] - near[1])
+        if d <= reach and (best is None or d < best[0]):
+            best = (d, w_, depth)
+    if best is None:
+        raise ValueError("window_latch %s: no window card 0.9..2.6 m over z %.2f within %.1f m of %s" % (tid, z, reach, near))
+    _, w_, depth = best
+    c, n, (ww, wh) = w_["centre"], w_["normal"], w_["size"]
+    yaw = yaw_facing(-n[0], -n[1])
+    # the handle: a short lever on the side of the frame, on the wall's inner face
+    hx, hy = c[0] - n[0] * depth, c[1] - n[1] * depth
+    p = kit._P(B, hx, hy, z, yaw, "window_handle")
+    p.kind = "prop"
+    side = max(0.05, ww / 2 - 0.07)
+    hz = min(c[2], z + 1.45) - z
+    p.box("CT_SteelWhite", side - 0.015, side + 0.015, -0.02, 0.0, hz - 0.04, hz + 0.04, f="xXyzZ")
+    p.box("CT_SteelWhite", side - 0.012, side + 0.012, -0.05, -0.02, hz - 0.11, hz - 0.08, f="xXyzZ")
+    p.done()
+    k = depth + 0.25
+    B.thing(tid, "board", (c[0] - n[0] * k, c[1] - n[1] * k, min(c[2], z + 1.5)), yaw, what=what)
+    return w_["id"]

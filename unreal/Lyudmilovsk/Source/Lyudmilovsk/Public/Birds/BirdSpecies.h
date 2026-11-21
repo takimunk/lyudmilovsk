@@ -88,6 +88,9 @@ struct LYUDMILOVSK_API FBirdSpecies
 	UPROPERTY(BlueprintReadOnly) TArray<FLinearColor> Palette;
 	/** Call ids (sound assets /Game/Birds/<Id>/Sounds/S_<Id>_<call>, when there are any). */
 	UPROPERTY(BlueprintReadOnly) TArray<FName> Calls;
+	/** Which call a voice uses (species.json "voices": contact, song, alarm, beg, chatter, long_call -> a call id); a voice
+	 *  without an entry takes any of the species' calls (docs/bird_voices.md). */
+	UPROPERTY(BlueprintReadOnly) TMap<FName, FName> Voices;
 	UPROPERTY(BlueprintReadOnly) TArray<FName> Diet;
 	/** Months (1-12) the species is in the Baltic; migrants leave. */
 	UPROPERTY(BlueprintReadOnly) TArray<int32> Months;

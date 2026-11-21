@@ -20,6 +20,7 @@
 #include "BoothOwner.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SpotLightComponent.h"
 #include "Engine/StaticMesh.h"
 #include "MeshDescription.h"
 #include "StaticMeshAttributes.h"
@@ -318,6 +319,7 @@ void UPeopleLifeSubsystem::Stop()
 	}
 	PropMeshes.Reset();
 	EaselMesh = nullptr;
+	BucketMesh = nullptr;
 	SetLightsDriven(false);     // the buildings light themselves again (a seeded evening)
 	LightSinks.Reset();
 	bLightSinksBound = false;
@@ -1227,7 +1229,7 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 				const int32 Prop = Def ? (int32)Def->Prop : 0;
 				const bool bNoEnd = (Def && Def->bForce) || Mn->Forced != LP::EManner::Num;
 				Body->SetManner((uint8)St.Cur, (uint8)Prop, MNow.Clock - St.Start, bNoEnd ? -1.f : St.Until - MNow.Clock, Mn->Personas[P.Id].bLeftHanded,
-					PropMeshes.IsValidIndex(Prop) ? PropMeshes[Prop].Get() : nullptr, St.Cur == LP::EManner::Paint ? EaselMesh.Get() : nullptr);
+					PropMeshes.IsValidIndex(Prop) ? PropMeshes[Prop].Get() : nullptr, St.Cur == LP::EManner::Paint ? EaselMesh.Get() : (St.Cur == LP::EManner::Mop ? BucketMesh.Get() : nullptr));
 				// what they noticed: the head goes there; a child (or anybody run at) turns round to look
 				if (St.LookAt >= -1 && MNow.Clock < St.LookUntil)
 				{
@@ -2032,6 +2034,7 @@ void UPeopleLifeSubsystem::LoadManners()
 		Want(UTF8_TO_TCHAR(LP::PropName((LP::EProp)I)));
 	}
 	Want(TEXT("easel"));
+	Want(TEXT("bucket"));
 	if (Paths.Num() == 0)
 	{
 		return;
@@ -2054,6 +2057,7 @@ void UPeopleLifeSubsystem::LoadManners()
 			}
 		}
 		EaselMesh = FindObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Prop_easel.SM_Prop_easel"));
+		BucketMesh = FindObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Prop_bucket.SM_Prop_bucket"));
 		UE_LOG(LogTemp, Display, TEXT("PeopleLife: %d of %d manner props"), Got, (int32)LP::EProp::Num - 1);
 	}));
 }
@@ -2400,10 +2404,18 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 	const bool bStand = bShow && MannerStand->GetStaticMesh() != nullptr;
 	if (bStand && !bStandPlaced)
 	{
-		// the easel a step ahead of the painter, its face to them (it stays where it was put while they paint)
+		// the easel a step ahead of the painter, its face to them (it stays where it was put while they paint); the
+		// cleaner's bucket on the floor at their side, a little ahead
 		const FQuat Q = GetActorQuat();
-		MannerStand->SetWorldLocationAndRotation(GetActorLocation() + Q.GetAxisY() * (62.f * BodyScale),
-			FRotationMatrix::MakeFromXZ(-Q.GetAxisY(), FVector::UpVector).Rotator());
+		const bool bBucket = (LyudPeople::EProp)MannerPropKind == LyudPeople::EProp::Mop;
+		const FVector Off = bBucket ? Q.GetAxisX() * ((bMannerLeft ? 42.f : -42.f) * BodyScale) + Q.GetAxisY() * (30.f * BodyScale)
+			: Q.GetAxisY() * (62.f * BodyScale);
+		FVector Foot = GetActorLocation() + Off;
+		if (bBucket)
+		{
+			Foot.Z = Mesh->GetComponentLocation().Z;      // the actor stands at the capsule's middle: the bucket on the floor
+		}
+		MannerStand->SetWorldLocationAndRotation(Foot, FRotationMatrix::MakeFromXZ(-Q.GetAxisY(), FVector::UpVector).Rotator());
 		bStandPlaced = true;
 	}
 	bStandPlaced &= bStand;
@@ -2418,6 +2430,7 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 	}
 	if (!bProp)
 	{
+		PlaceTorchLight(false, FVector::ZeroVector, FRotator::ZeroRotator);
 		return;
 	}
 	// the hands as the last pose left them: where each grips (the middle of the palm), which way its fingers run, where
@@ -2463,6 +2476,12 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 		break;
 	}
 	case EHold::Pointing:
+		if ((LyudPeople::EProp)MannerPropKind == LyudPeople::EProp::Torch)
+		{
+			// a torch: along the main hand's fingers, tipped down at the floor a few metres ahead
+			Rot = FRotationMatrix::MakeFromXZ((Fingers[M] * 0.5f + Fwd * 0.7f - Up * 0.45f).GetSafeNormal(), Up).Rotator();
+			break;
+		}
 		Rot = FRotationMatrix::MakeFromXZ((Fwd * 0.85f + Up * 0.5f).GetSafeNormal(), Up).Rotator();
 		break;
 	case EHold::Shaft:
@@ -2473,6 +2492,43 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 		break;
 	}
 	MannerProp->SetWorldLocationAndRotation(Loc, Rot);
+	PlaceTorchLight((LyudPeople::EProp)MannerPropKind == LyudPeople::EProp::Torch, Loc, Rot);
+}
+
+void ANpcBody::PlaceTorchLight(bool bOn, const FVector& Loc, const FRotator& Rot)
+{
+	if (!bOn)
+	{
+		if (TorchLight && TorchLight->IsVisible())
+		{
+			TorchLight->SetVisibility(false);
+		}
+		return;
+	}
+	if (!TorchLight)
+	{
+		// a small warm beam: no shadows, out of the volumetric fog, ~12 m (one watchman in the town: one light)
+		TorchLight = NewObject<USpotLightComponent>(this, TEXT("TorchLight"));
+		TorchLight->SetMobility(EComponentMobility::Movable);
+		TorchLight->SetCastShadows(false);
+		TorchLight->SetIntensityUnits(ELightUnits::Lumens);
+		TorchLight->SetIntensity(160.f);
+		TorchLight->SetLightColor(FLinearColor(1.f, 0.88f, 0.7f));
+		TorchLight->SetAttenuationRadius(1200.f);
+		TorchLight->SetInnerConeAngle(9.f);
+		TorchLight->SetOuterConeAngle(22.f);
+		TorchLight->SetVolumetricScatteringIntensity(0.f);
+		TorchLight->bAffectTranslucentLighting = false;
+		TorchLight->SetupAttachment(GetRootComponent());
+		TorchLight->RegisterComponent();
+	}
+	// the lens is at the far end of the prop (0.2 m along its +X)
+	const FVector Dir = Rot.Vector();
+	TorchLight->SetWorldLocationAndRotation(Loc + Dir * (20.f * BodyScale), Dir.Rotation());
+	if (!TorchLight->IsVisible())
+	{
+		TorchLight->SetVisibility(true);
+	}
 }
 
 void ANpcBody::PlacePusher(bool bShow)

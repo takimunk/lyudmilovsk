@@ -1,6 +1,7 @@
 #include "Fishing/LyudRowBoat.h"
 
 #include "NpcDialogue.h"
+#include "City/LyudCityThings.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -178,6 +179,14 @@ namespace
 	int32 BoatDay(const UWorld* World)
 	{
 		return int32(UGameCalendar::NowIn(World).GetTicks() / ETimespan::TicksPerDay);
+	}
+
+	// The day's boat taken at the rental on the promenade (the oars' act pu_rental_boat starts the stay boat_day,
+	// tools/city/content/x_rental.json): the mooring asks no rent then.
+	bool HiredAtCounter(const UWorld* World)
+	{
+		const ULyudCityThings* Things = ULyudCityThings::Get(World);
+		return Things && Things->IsOnStay(TEXT("boat_day"));
 	}
 }
 
@@ -397,6 +406,10 @@ bool ALyudRowBoat::Board(AHeroCharacter* Hero, bool bCheckReach)
 	}
 	// the rent, once a day, when it is taken from the mooring
 	const int32 Day = BoatDay(GetWorld());
+	if (PaidDay != Day && NearMooring() && HiredAtCounter(GetWorld()))
+	{
+		PaidDay = Day;               // paid at the rental's counter: nothing more to pay here
+	}
 	if (PaidDay != Day && NearMooring())
 	{
 		ULyudInventory* Inv = ULyudInventory::Get(this);
@@ -529,7 +542,7 @@ void ALyudRowBoat::Prompt(AHeroCharacter* Hero)
 	const ULyudSwimComponent* Swim = Hero ? Hero->FindComponentByClass<ULyudSwimComponent>() : nullptr;
 	const bool bNear = !bAboard && Hero && !Hero->IsSeated() && !(Swim && Swim->IsSwimming())
 		&& FVector::Dist2D(Hero->GetActorLocation(), GetActorLocation()) < 280.f;
-	const bool bRent = bNear && NearMooring() && PaidDay != BoatDay(GetWorld());
+	const bool bRent = bNear && NearMooring() && PaidDay != BoatDay(GetWorld()) && !HiredAtCounter(GetWorld());
 	uint64 Key = 0;
 	if (NoteLeft > 0.f) Key = 1;
 	else if (bNear) Key = bRent ? 2 : 3;

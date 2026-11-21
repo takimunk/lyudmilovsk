@@ -48,6 +48,7 @@ MATERIALS = {
     "CT_Paper":         ("#EDE8DA", 0.9, None, 1.0, "paper and page edges, linen, plaster casts"),
     "CT_Rubber":        ("#2B2B2B", 0.9, None, 1.0, "black rubber: gym mats, tyres, punching bags"),
     "CT_Leaf":          ("#3F7A3A", 0.6, None, 1.0, "waxy house-plant leaves"),
+    "CT_Wet":           ("#6A655E", 0.06, None, 1.0, "freshly mopped floor: thin glossy damp streaks (night_kit.wet_floor)"),
     # the picture atlas: UV0 runs 0..1 straight into textures/city/atlas_D.jpg (tools/city/atlas.py), NOT metres;
     # never tinted or tiled (ATLAS_SLOTS below). Cells: blender/city/atlas_cells.json
     "CT_Atlas":         ("#FFFFFF", 0.6, "atlas", 1.0, "picture atlas: book spines, posters, signs, labels, rugs, screens"),

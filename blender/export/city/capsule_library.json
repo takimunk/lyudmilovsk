@@ -1107,6 +1107,17 @@
   },
   {
    "pos": [
+    -11.9,
+    8.6,
+    1.42
+   ],
+   "lumens": 220,
+   "colour": "#E8FFD0",
+   "kind": "closed",
+   "radius": 5.0
+  },
+  {
+   "pos": [
     11.2,
     23.5,
     2.7
@@ -3594,6 +3605,67 @@
  ],
  "dress": [
   {
+   "id": "day_reading",
+   "when": {
+    "open": true
+   },
+   "tris": 2440,
+   "bounds": [
+    [
+     -10.31,
+     19.521,
+     0.0
+    ],
+    [
+     8.21,
+     24.979,
+     0.88
+    ]
+   ]
+  },
+  {
+   "id": "night_reading",
+   "when": {
+    "open": false
+   },
+   "tris": 2440,
+   "bounds": [
+    [
+     -10.31,
+     19.941,
+     0.0
+    ],
+    [
+     8.21,
+     24.559,
+     0.88
+    ]
+   ]
+  },
+  {
+   "id": "night_cleaner",
+   "when": {
+    "hours": [
+     21.0,
+     23.0
+    ],
+    "open": false
+   },
+   "tris": 332,
+   "bounds": [
+    [
+     -9.7,
+     5.841,
+     0.0
+    ],
+    [
+     -6.891,
+     6.859,
+     1.303
+    ]
+   ]
+  },
+  {
    "id": "cloak_winter",
    "when": {
     "months": [
@@ -3861,8 +3933,8 @@
  ],
  "tris": {
   "shell": 7124,
-  "detail": 50704,
+  "detail": 48264,
   "windows": 228,
-  "dress": 4968
+  "dress": 10180
  }
 }

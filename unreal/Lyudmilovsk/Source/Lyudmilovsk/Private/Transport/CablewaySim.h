@@ -232,6 +232,13 @@ namespace LyudTransport
 		int AddRider(const FRider& R);      // a new trip's slot: a released one, else a new one
 		bool bReuseRiders = false;
 
+		/** The wind stop (docs/transport.md "Station life"): while set, no cabin leaves a station or the depot; the ones
+		 *  on the rope go on to the next station and stand there with their doors open; trips asked for meanwhile wait
+		 *  at their stops. Cleared: everything goes on as before. */
+		bool bWindHold = false;
+		/** Cabins standing at a station or in the depot / on the rope (the wind stop's tests and the halls' words). */
+		int CabinsBetweenStations() const;
+
 		/** Seconds till the next cabin that will stop at station St for line L heading Dir (-1 either way) gets there;
 		 *  if none is coming, how long one would take if called now. bCalled says which. */
 		float Eta(int St, int L, int Dir, bool& bCalled) const;
@@ -255,6 +262,7 @@ namespace LyudTransport
 		std::string Report() const;
 
 	private:
+		bool bWindHoldApplied = false;
 		struct FRopePoint
 		{
 			int Span = -1;

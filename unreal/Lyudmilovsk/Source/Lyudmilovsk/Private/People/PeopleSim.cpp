@@ -3818,11 +3818,18 @@ namespace LyudPeople
 					continue;
 				}
 				P.WanderAt = Time + 1e9;
+				const int Was = P.Slot;
 				Reserve(P, Next);
 				P.Slot = Next;
 				P.Place = Slots[Next].Place;
 				P.Path.clear();
-				WayToSlot(P.Pos, Slots[Next], P.Path);
+				// an indoor round (the cleaner's floors, the watchman's: docs/city_night.md) goes by the room's own ways
+				if (!(Places[P.Place].bIndoor && !Slots[Was].Inside.empty() && !Slots[Next].Inside.empty()
+					&& Route(P, P.Pos, Was, Next, P.Path)))
+				{
+					P.Path.clear();
+					WayToSlot(P.Pos, Slots[Next], P.Path);
+				}
 				P.PathI = 0;
 				P.Pose = EPose::Walk;
 				return;
