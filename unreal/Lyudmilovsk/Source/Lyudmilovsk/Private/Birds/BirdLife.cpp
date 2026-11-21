@@ -992,7 +992,6 @@ void UBirdLifeSubsystem::PlayCall(int32 Id, uint8 Voice)
 	case LyudBirds::EVoice::Alarm: Loud *= 1.15f; PitchLo = 1.02f; PitchHi = 1.12f; break;    // sharper, more urgent
 	case LyudBirds::EVoice::Beg: Loud *= 0.6f; PitchLo = 1.25f; PitchHi = 1.4f; break;        // thin young voices
 	case LyudBirds::EVoice::Chatter: Loud *= 0.7f; PitchLo = 0.9f; PitchHi = 1.15f; break;    // a jumble
-	case LyudBirds::EVoice::Contact: Loud *= 0.85f; break;
 	default: break;
 	}
 	UGameplayStatics::PlaySoundAtLocation(this, Sound, ToUE(B.Pos), Loud, FMath::FRandRange(PitchLo, PitchHi), 0.f, Attenuation);

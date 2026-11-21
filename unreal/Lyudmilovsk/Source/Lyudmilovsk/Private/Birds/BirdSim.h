@@ -188,6 +188,7 @@ namespace LyudBirds
 		// taken in again, how many birds the alarm has passed through, and where the danger is
 		float AlarmT = 0.f, AlarmWait = 0.f, AlarmCool = 0.f;
 		uint8_t AlarmHop = 0;
+		uint32_t VoiceRng = 0;      // the voice's own dice: what a bird says never changes what it does
 		V3 AlarmFrom;
 		float ThinkTimer = 0.f;
 		float Seen = 0.f;           // how long it has watched the player

@@ -212,10 +212,14 @@ namespace LyudBirds
 
 	void FWorld::RaiseAlarm(FBird& B, const V3& Danger)
 	{
+		if (B.VoiceRng == 0)
+		{
+			B.VoiceRng = (B.Rng * 0x9E3779B9u) | 1u;
+		}
 		if (B.AlarmT <= 0.f)
 		{
 			B.AlarmHop = 0;
-			B.CallTimer = std::min(B.CallTimer, 0.2f + Rand(B.Rng) * 0.6f);      // it speaks up at once
+			B.CallTimer = std::min(B.CallTimer, 0.2f + Rand(B.VoiceRng) * 0.6f);      // it speaks up at once
 		}
 		B.AlarmT = std::max(B.AlarmT, 3.f);
 		B.AlarmWait = 0.f;
@@ -245,7 +249,11 @@ namespace LyudBirds
 			{
 				return;
 			}
-			B.AlarmWait = 0.4f + Rand(B.Rng) * 1.2f;
+			if (B.VoiceRng == 0)
+			{
+				B.VoiceRng = (B.Rng * 0x9E3779B9u) | 1u;
+			}
+			B.AlarmWait = 0.4f + Rand(B.VoiceRng) * 1.2f;
 			B.AlarmHop = (uint8_t)(From.AlarmHop + 1);
 			B.AlarmFrom = From.AlarmFrom;
 			B.Alert = std::min(std::max(B.Alert, 0.3f), 0.7f);     // uneasy, looking that way; it does not fly for a call
@@ -351,13 +359,17 @@ namespace LyudBirds
 
 	void FWorld::ThinkVoice(FBird& B, float Dt)
 	{
+		if (B.VoiceRng == 0)
+		{
+			B.VoiceRng = (B.Rng * 0x9E3779B9u) | 1u;
+		}
 		B.AlarmCool = std::max(0.f, B.AlarmCool - Dt);
 		if (B.AlarmWait > 0.f)
 		{
 			B.AlarmWait -= Dt;
 			if (B.AlarmWait <= 0.f)
 			{
-				B.AlarmT = 4.f + Rand(B.Rng) * 3.f;
+				B.AlarmT = 4.f + Rand(B.VoiceRng) * 3.f;
 				B.CallTimer = 0.f;
 			}
 		}
@@ -377,7 +389,7 @@ namespace LyudBirds
 		// nothing more for a bird out of earshot: it is asked again in a while
 		if ((B.Pos - Camera).Len() > HearDist * 1.3f)
 		{
-			B.CallTimer = 4.f + Rand(B.Rng) * 6.f;
+			B.CallTimer = 4.f + Rand(B.VoiceRng) * 6.f;
 			return;
 		}
 		const FVoiceTraits& T = VoiceTraits(B.Species);
@@ -397,10 +409,10 @@ namespace LyudBirds
 		const float Rate = VoiceNow(B, V);
 		if (Rate <= 0.02f)
 		{
-			B.CallTimer = 8.f + Rand(B.Rng) * 12.f;
+			B.CallTimer = 8.f + Rand(B.VoiceRng) * 12.f;
 			return;
 		}
-		B.CallTimer = 60.f / Rate * (0.4f + 1.2f * Rand(B.Rng));
+		B.CallTimer = 60.f / Rate * (0.4f + 1.2f * Rand(B.VoiceRng));
 		Say(B, V);
 		if (V == EVoice::Alarm)
 		{
