@@ -96,6 +96,7 @@ private:
 	FString Shop = TEXT("buffet");
 	bool bLightsOn = false;
 	bool bPeopleOn = false;
+	bool bDutyAtSpawn = false;                // were the staff on duty when the people were last made (SpawnPeople)
 	float ChurnTimer = 30.f;
 	float Clock = 0.f;
 	int32 Prompted = -1;                    // 0 barista (T), 1 attendant (E)
@@ -120,4 +121,5 @@ private:
 	float LifeTimer = 0.f;
 	float BarkTimer = 20.f;
 	TSet<int32> GreetedRegulars;
+	int32 GreetedDay = -1;                  // the station life's day GreetedRegulars is of
 };

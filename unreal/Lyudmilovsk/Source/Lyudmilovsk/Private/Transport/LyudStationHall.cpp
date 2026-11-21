@@ -421,7 +421,8 @@ void ALyudStationHall::SpawnPeople()
 	bPeopleOn = true;
 	const ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this);
 	const LyudTransport::FStationLife* Life = Tr ? Tr->GetLife() : nullptr;
-	if (StaffOnDuty())
+	bDutyAtSpawn = StaffOnDuty();
+	if (bDutyAtSpawn)
 	{
 		for (const FPerson& Plan : StaffPlan)
 		{
@@ -597,6 +598,8 @@ void ALyudStationHall::Churn(const FVector& Cam, const FVector& Look)
 			}
 		}
 		People = MoveTemp(Kept);
+		// and the destroyed bodies out of the kept list (it grew by one for every passenger that ever came)
+		Bodies.RemoveAll([](const TObjectPtr<ANpcBody>& B) { return !IsValid(B.Get()); });
 	}
 }
 
@@ -610,6 +613,12 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 	}
 	UWorld* World = GetWorld();
 	const double Now = World->GetTimeSeconds();
+	if (Life->Day != GreetedDay)
+	{
+		// a new day: the attendant greets her regulars again (once a day each)
+		GreetedDay = Life->Day;
+		GreetedRegulars.Reset();
+	}
 	auto Unseen = [&](const FVector& P)
 	{
 		const FVector D = P + FVector(0, 0, 100.f) - Cam;
@@ -919,14 +928,10 @@ void ALyudStationHall::Tick(float DeltaTime)
 	{
 		return;
 	}
-	// staff come on at six and go at midnight, while the player is about
+	// staff come on at six and go at midnight, while the player is about (against the duty the people were made with,
+	// not against the bodies standing: a staff body that could not be made would have every frame make them all again)
 	const bool bDuty = StaffOnDuty();
-	bool bHaveStaff = false;
-	for (const FPerson& P : People)
-	{
-		bHaveStaff |= P.Role != TEXT("passenger") && P.Body.IsValid();
-	}
-	if (bDuty != bHaveStaff && D > 1500.f)
+	if (bDuty != bDutyAtSpawn && D > 1500.f)
 	{
 		ClearPeople();
 		SpawnPeople();

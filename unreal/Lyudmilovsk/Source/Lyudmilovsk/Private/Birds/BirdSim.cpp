@@ -1898,6 +1898,9 @@ namespace LyudBirds
 		bool bCatNear = false;
 		float CatSeen = 0.f;
 		V3 CatAt;
+		// (the look at a cat is a sight line, a trace in the game: only a bird that would scold it takes one, and not on
+		// every step while it is scolding already, only as its alarm runs out)
+		const bool bLooksForCat = !bGround && B.Tier <= 1 && B.Act != EAct::Sleep && B.AlarmT <= 1.f && VoiceTraits(B.Species).bScolds;
 		for (const FBeast& M : Beasts)
 		{
 			const V3 D = B.Pos - M.Pos;
@@ -1937,14 +1940,14 @@ namespace LyudBirds
 			bCatNear |= M.bCat && Dist < 20.f && !M.bStalking;
 			// (a bird on its twig scolds a cat it can see from much farther than it would fly from it; a cat creeping low
 			// is only found out close by)
-			if (M.bCat && !bGround && Dist < (M.bStalking ? 5.f : 18.f) && (CatSeen <= 0.f || Dist < CatSeen) && (!Sight || Sight(B.Pos, M.Pos + V3(0.f, 0.f, 0.2f))))
+			if (bLooksForCat && M.bCat && Dist < (M.bStalking ? 5.f : 18.f) && (CatSeen <= 0.f || Dist < CatSeen) && (!Sight || Sight(B.Pos, M.Pos + V3(0.f, 0.f, 0.2f))))
 			{
 				CatSeen = Dist;
 				CatAt = M.Pos;
 			}
 		}
 		// (the scolding goes on for as long as the cat is in sight, and the neighbours take it up: BirdVoice.cpp)
-		if (CatSeen > 0.f && B.Tier <= 1 && B.Act != EAct::Sleep && VoiceTraits(B.Species).bScolds)
+		if (CatSeen > 0.f)
 		{
 			RaiseAlarm(B, CatAt);
 		}
