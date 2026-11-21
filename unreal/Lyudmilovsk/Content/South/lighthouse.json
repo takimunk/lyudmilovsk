@@ -1,0 +1,64 @@
+{
+ "_doc": "Written by tools/lighthouse/lighthouse.py from south.json and the manifests: Unreal cm and yaw (docs/lighthouse.md).",
+ "lamp": [
+  11200.0,
+  -42410.0,
+  3971.0
+ ],
+ "tower_yaw": 140.0,
+ "stairs": [
+  {
+   "id": "up",
+   "at": [
+    10972.0,
+    -42218.0,
+    1820.0
+   ],
+   "yaw": 320.0,
+   "to": [
+    11078.0,
+    -42203.0,
+    3800.0
+   ],
+   "to_yaw": 140.0,
+   "reach": 110
+  },
+  {
+   "id": "down",
+   "at": [
+    11116.0,
+    -42235.0,
+    3800.0
+   ],
+   "yaw": 140.0,
+   "to": [
+    10933.0,
+    -42186.0,
+    1820.0
+   ],
+   "to_yaw": 140.0,
+   "reach": 90
+  }
+ ],
+ "log": {
+  "at": [
+   10868.0,
+   -42764.0,
+   1800.0
+  ],
+  "yaw": 50.0
+ },
+ "view": {
+  "at": [
+   11375.0,
+   -42410.0,
+   3800.0
+  ],
+  "yaw": 0.0
+ },
+ "quest": "lighthouse_paraffin",
+ "open_hours": [
+  8,
+  21
+ ]
+}

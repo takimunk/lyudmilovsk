@@ -64,7 +64,8 @@ def _slot_materials():
             continue
         for p in eal.list_assets(d, False):
             nm = p.split(".")[0].rsplit("/", 1)[-1]
-            if nm == "M_North_Atlas" or nm.startswith("M_North_Text_") or nm.startswith("M_South_Text_") or nm.startswith("MI_NO_"):
+            # M_South_*: the boards' words (M_South_Text_<id>) and the lighthouse's glass and beam (make_lighthouse_materials.py)
+            if nm == "M_North_Atlas" or nm.startswith("M_North_Text_") or nm.startswith("M_South_") or nm.startswith("MI_NO_"):
                 out[nm[len("MI_NO_"):] if nm.startswith("MI_NO_") else nm] = unreal.load_asset(p)
     return out
 
@@ -114,6 +115,12 @@ def make_materials():
                     eal.save_loaded_asset(t2, False)
         except Exception:   # noqa: BLE001
             log("text material %s failed:\n%s" % (tid, traceback.format_exc()))
+    # the lighthouse's lantern glass, lens glass and beam (docs/lighthouse.md): before the import, so its slots find them
+    try:
+        import make_lighthouse_materials as LH
+        LH.make_all()
+    except Exception:   # noqa: BLE001
+        log("lighthouse materials failed:\n%s" % traceback.format_exc())
     if eal.does_directory_exist(DEST):
         eal.save_directory(DEST)
     log("%d text materials" % n)

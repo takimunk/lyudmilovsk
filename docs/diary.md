@@ -73,6 +73,12 @@ numbers and a line per topic, ~150 bytes). Test: `tools/daylog/run.sh` (60 made-
 resolve or fall back, no sentence two days running, a save and a load give the same words, noise never counts, a place found
 once); `tools/daylog/run.sh show en 10` prints them.
 
+Since 2026-11-21 it also knows the night's new systems: the lighthouse and its keeper (`do keeper_*`, `reach mayak_*`), the brook
+(`reach brook_*`), the cable-car stations (`reach cable_*`, the station kiosk), Maru, cats and dogs (`animal_*` by target Maru / Cat /
+Dog), sanatorium procedures (`procedure`), the telescopes (`observe`, Jupiter's moons on their own), bird habits (`bird_habit`),
+the paper and post rounds (`round_done`), winter play (`winter`: snow, skating, the banya, the walrus swim), cups and wins (`cup_won`,
+`beat`), quotes and the book club, a fine on the train, a stamp set completed. The test checks where each of these lands.
+
 New events for it (quests can use them too): `film_watched <film>` (ULyudCinema), `kite_flown` (ULyudKiteFlying). A new system
 gets into the diary by a rule and a topic in `content.py`: no C++.
 

@@ -267,7 +267,7 @@ def trips_for(folk, places, network, staff, researchers):
     def add(p, group, trips):
         trips = [t for t in trips if t]
         if trips:
-            riders.append({"key": p["key"], "group": group, "mesh": p.get("mesh", ""), "trips": trips})
+            riders.append({"key": p["key"], "group": group, "mesh": p.get("mesh", ""), "age": p["age"], "trips": trips})
 
     def trip(a, b, at, days, cond="", chance=1.0):
         at = round(at, 3)
@@ -348,9 +348,30 @@ def trips_for(folk, places, network, staff, researchers):
             if go:
                 a, b, wa, r, wb, _ = go
                 # "at" for a festival trip: minutes after the evening's end (the game adds the end's hour)
-                riders.append({"key": key, "group": "festival", "mesh": p.get("mesh", ""), "trips": [
+                riders.append({"key": key, "group": "festival", "mesh": p.get("mesh", ""), "age": p["age"], "trips": [
                     {"from": a, "to": b, "at": round(wa / 3600.0 + h01(key, "fest") * 0.4, 3), "days": list(range(7)),
                      "if": "festival_end", "chance": 0.5}]})
+    # the children (7..13) of a beach-goer's household go along on the parent's free days that are theirs too, by the
+    # parent's draw ("with": the game draws the chance by that key)
+    by_key = {p["key"]: p for p in folk}
+    for r in [r for r in riders if r["group"] == "beach" and r["age"] >= 22]:
+        parent = by_key.get(r["key"])
+        if not parent or not parent.get("household"):
+            continue
+        for kid in folk:
+            if kid["key"] == r["key"] or kid.get("household") != parent["household"] or not 7 <= kid["age"] <= 13:
+                continue
+            if any(x["key"] == kid["key"] for x in riders):
+                continue
+            busy = {d for x in kid.get("duties", []) for d in x.get("days", [])}
+            trips = []
+            for t in r["trips"]:
+                days = [d for d in t["days"] if d not in busy]
+                if days:
+                    trips.append(dict(t, days=days))
+            if len(trips) == len(r["trips"]):
+                riders.append({"key": kid["key"], "group": "family", "mesh": kid.get("mesh", ""), "age": kid["age"],
+                               "with": r["key"], "trips": trips})
     return riders
 
 

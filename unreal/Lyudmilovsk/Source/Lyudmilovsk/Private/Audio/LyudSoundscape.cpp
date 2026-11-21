@@ -25,6 +25,7 @@
 #include "Sky/LyudSky.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
+#include "South/LyudLighthouse.h"
 #include "Transport/LyudTransport.h"
 #include "Weather/LyudRainFog.h"
 #include "Weather/LyudWeather.h"
@@ -754,11 +755,19 @@ void ULyudSoundscapeSubsystem::UpdateWeatherVoices(LyudAudio::FAmbienceParams& P
 		}
 	}
 
-	// the lighthouse's fog signal (the Mayak station's lantern) sounds when the visibility drops under ~2 km
+	// the lighthouse's fog signal sounds when the visibility drops under ~2 km: the Mayak lighthouse's lantern on the headland
+	// (ULyudLighthouseSubsystem, docs/lighthouse.md), else the Mayak station's own lantern
 	P.FogSignal = 0.f;
 	if (!bLighthouseLooked)
 	{
-		if (const ULyudTransportSubsystem* Transport = ULyudTransportSubsystem::Get(this); Transport && Transport->IsRunning())
+		FVector Horn;
+		if (const ULyudLighthouseSubsystem* LH = ULyudLighthouseSubsystem::Get(this); LH && LH->GetHornLocation(Horn))
+		{
+			bLighthouseLooked = true;
+			bHaveLighthouse = true;
+			Lighthouse = Horn;
+		}
+		else if (const ULyudTransportSubsystem* Transport = ULyudTransportSubsystem::Get(this); Transport && Transport->IsRunning())
 		{
 			bLighthouseLooked = true;
 			const int32 Index = Transport->FindStation(TEXT("mayak"));

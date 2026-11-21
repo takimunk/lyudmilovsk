@@ -1,5 +1,5 @@
 {
- "_doc": "Animals that live with people (tools/town/town_pets.py, docs/animals.md \"With people\"). Unreal metres, yaw radians (the animals' frame). dogs: owner = the resident who walks it (townsfolk key) while their activity is walk; cats: by day on the sill, at feeding time at the door; lady: who fills the feeders on her round (activity feed); hedgehogs: where they come out at dusk from April to October.",
+ "_doc": "Animals that live with people (tools/town/town_pets.py, docs/animals.md \"With people\"). Unreal metres, yaw radians (the animals' frame). dogs: owner = the resident who walks it (townsfolk key) while their activity is walk; cats: by day on the sill, at feeding time at the door; lady: who fills the feeders on her round (activity feed); hedgehogs: where they come out at dusk from April to October; friends: residents a yard cat sees home to their door; stalls: where cats beg while a fishmonger stands there; shoo: activities at which the shooers send a cat out of their way.",
  "walk": [
   "walk_dog",
   "walk_dog_late"
@@ -519,5 +519,151 @@
    ],
    "range": 14.0
   }
+ ],
+ "friends": [
+  {
+   "person": "t_saar_oksana",
+   "home": "W2-D126",
+   "door": [
+    -106.34,
+    1428.21,
+    -36.2
+   ]
+  },
+  {
+   "person": "t_ishikawa_zeynep",
+   "home": "P-SERPENTINE/4-30",
+   "door": [
+    -291.56,
+    925.24,
+    -29.0
+   ]
+  },
+  {
+   "person": "t_beketov_yuri",
+   "home": "P-SANATORIUM/1-03",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ]
+  },
+  {
+   "person": "t_tehrani_seoyeon",
+   "home": "P-T1H4/4-03",
+   "door": [
+    25.75,
+    699.49,
+    -36.2
+   ]
+  },
+  {
+   "person": "t_haddad_oksana",
+   "home": "P-UNITE/13-26",
+   "door": [
+    -579.42,
+    961.86,
+    -15.0
+   ]
+  },
+  {
+   "person": "t_ozturk_yael",
+   "home": "P-BRIDGEHOUSE/1-01",
+   "door": [
+    -712.84,
+    956.36,
+    -8.0
+   ]
+  },
+  {
+   "person": "t_devries_maricel",
+   "home": "P-RISER2/0-02",
+   "door": [
+    -501.33,
+    1004.21,
+    -22.0
+   ]
+  },
+  {
+   "person": "t_macleod_aino",
+   "home": "P-T2H1/0-06",
+   "door": [
+    -205.96,
+    1141.29,
+    -29.0
+   ]
+  },
+  {
+   "person": "t_amada_eleni",
+   "home": "P-T1H1/0-04",
+   "door": [
+    30.26,
+    449.5,
+    -36.2
+   ]
+  },
+  {
+   "person": "t_nielsen_soren",
+   "home": "P-RISER1/2-01",
+   "door": [
+    -151.69,
+    1105.02,
+    -31.5
+   ]
+  },
+  {
+   "person": "t_kask_ruta",
+   "home": "P-T3H2/2-05",
+   "door": [
+    -419.42,
+    1261.81,
+    -22.0
+   ]
+  },
+  {
+   "person": "t_korhonen_john",
+   "home": "P-WAVE/2-10",
+   "door": [
+    -386.21,
+    1084.13,
+    -22.0
+   ]
+  }
+ ],
+ "stalls": [
+  {
+   "place": "P-MARKET",
+   "pos": [
+    -88.13,
+    873.18,
+    -36.2
+   ],
+   "yaw": 6.208,
+   "front": 1.9
+  },
+  {
+   "place": "P-MARKET",
+   "pos": [
+    -84.74,
+    866.21,
+    -36.2
+   ],
+   "yaw": 4.637,
+   "front": 1.9
+  }
+ ],
+ "fishmongers": [
+  "t_berzins_zeynep",
+  "t_shevchuk_etienne"
+ ],
+ "shoo": [
+  "mop_floor",
+  "mop_floor_late",
+  "night_watch"
+ ],
+ "shooers": [
+  "t_sato_mehmet",
+  "t_araujo_ama",
+  "t_park_maarten"
  ]
 }

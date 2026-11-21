@@ -174,6 +174,13 @@ private:
 	void StartLife();
 	void StepLife(float DeltaTime);
 	void DrawLifeRiders(const FVector& View, float DeltaTime);
+	/** The words aboard the player's cabin (docs/transport.md "Cabin life"): one rider says a word now and then, another answers. */
+	void TickCabinTalk(float DeltaTime);
+	float CabinTalkTimer = 25.f;
+	float ReplyIn = -1.f;
+	TWeakObjectPtr<AActor> ReplyBody;
+	bool bKidAtGlass = false;               // in the player's cabin, this frame
+	TWeakObjectPtr<AActor> GlassKid;        // that child (the "kid" words are theirs)
 	UPROPERTY(Transient) TObjectPtr<ALyudCableway> Cableway;
 	UPROPERTY(Transient) TArray<TObjectPtr<ALyudCabin>> Cabins;
 	TSharedPtr<SLyudTransitScreen> Screen;

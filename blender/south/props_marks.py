@@ -13,8 +13,10 @@ import math
 import random
 
 import bmesh
+import bpy
 from mathutils import Matrix, Vector
 
+import northkit as K
 import northtex as T
 from northkit import V
 from props_places import PB, beam, box, cbox, hexa, newell, pole, tube
@@ -228,6 +230,13 @@ def chunk(b, c, size, tile, R, rnd):
         wface(b, [q[0], q[2], q[3]], tile)
 
 
+def glass_slot(b, name, color):
+    """A material slot of its own (not an atlas tile): the game makes the material, the GLB carries the name only."""
+    if name not in bpy.data.materials:
+        K._plain(name, color)
+    return b.slot(name)
+
+
 def mk(name):
     b = PB(name)
     b.uvoff = (b.rnd.uniform(0, 3), b.rnd.uniform(0, 3))
@@ -309,8 +318,8 @@ def lighthouse(variant):
     for c, R in ((V(2.45, -AY, 1.45), rz(0.0)), (V(AX1, 0.2, 1.45), rz(math.pi / 2))):
         n = R @ V(0, -1, 0)
         box(b, c + n * 0.01, (0.6, 0.06, 0.8), "dark", rot=R)
-        box(b, c + n * 0.04, (0.04, 0.03, 0.8), "white_paint", rot=R)                 # mullion (front 0.055)
-        box(b, c + n * 0.035, (0.6, 0.03, 0.04), "white_paint", rot=R)                # transom (front 0.05)
+        box(b, c + n * 0.04, (0.04, 0.03, 0.76), "white_paint", rot=R)                 # mullion (front 0.055)
+        box(b, c + n * 0.035, (0.58, 0.03, 0.04), "white_paint", rot=R)               # transom (front 0.05)
         for sx in (-1, 1):
             box(b, c + n * 0.04 + (R @ V(sx * 0.33, 0, 0)), (0.06, 0.08, 0.8), "white_paint", rot=R)
         box(b, c + n * 0.04 + V(0, 0, 0.43), (0.72, 0.08, 0.06), "white_paint", rot=R)
@@ -323,20 +332,52 @@ def lighthouse(variant):
         pole(b, p + V(0, 0, Z_GAL - 0.02), p + V(0, 0, Z_GAL + 1.0), 0.022, seg=5, tile="black_paint", cap0=False, cap1=False)
     ring(b, (0, 0, 0), 2.245, 2.315, Z_GAL + 1.0, Z_GAL + 1.06, 32, "black_paint")
     ring(b, (0, 0, 0), 2.262, 2.298, Z_GAL + 0.5, Z_GAL + 0.53, 32, "black_paint")
+    # ---- the hatch in the deck, on the front (-Y) between the drum and the rail: an iron coaming round a dark hole, the lid
+    # standing open against the drum, two grab stiles curving up out of it ------------------------------------------
+    HY = -1.765                                           # the hatch's centre (deck z Z_GAL)
+    HO, HI, HH = 0.62, 0.44, 0.07                         # coaming outer / hole width, coaming height
+    for sy in (-1, 1):
+        box(b, V(0, HY + sy * (HI + 0.09) / 2, Z_GAL + HH / 2), (HO, 0.09, HH), "black_paint", grain=0, skip=("bottom",))
+        box(b, V(sy * (HI + 0.09) / 2, HY, Z_GAL + HH / 2), (0.09, HI, HH), "black_paint", grain=1, skip=("bottom",))
+    wface(b, [V(-HI / 2, HY - HI / 2, Z_GAL + 0.012), V(HI / 2, HY - HI / 2, Z_GAL + 0.012), V(HI / 2, HY + HI / 2, Z_GAL + 0.012),
+              V(-HI / 2, HY + HI / 2, Z_GAL + 0.012)], "dark")
+    hinge = V(0, HY + HO / 2, Z_GAL + HH)                 # the lid's hinge line: the drum-side edge
+    phi = math.radians(107.0)                             # opened past the vertical so it leans on the drum
+    lu = V(0, -math.cos(phi), math.sin(phi))              # along the lid, from the hinge to its free edge
+    ln = V(1, 0, 0).cross(lu)                             # across the lid's thickness (toward the rail side)
+    LR = Matrix(((1, lu.x, ln.x), (0, lu.y, ln.y), (0, lu.z, ln.z)))
+    box(b, hinge + lu * (HO / 2) + ln * 0.0225, (HO, HO, 0.045), "metal", rot=LR, grain=0)
+    for s_ in (0.17, 0.46):
+        box(b, hinge + lu * s_ + ln * 0.05, (HO - 0.04, 0.07, 0.01), "black_paint", rot=LR, grain=0)
+    box(b, hinge + lu * 0.52 + ln * 0.062, (0.12, 0.03, 0.02), "black_paint", rot=LR, grain=0)         # the lid's handle
+    for sx in (-1, 1):
+        box(b, hinge + V(sx * 0.2, 0.0, 0.0) + ln * 0.0225 + lu * 0.0, (0.07, 0.05, 0.05), "black_paint")   # hinge knuckles
+    for sx in (-1, 1):                                    # the stiles: straight out of the hole, bent toward the rail at the top
+        pts = []
+        for i in range(10):
+            h = 0.9 * i / 9
+            pts.append(V(sx * 0.17, HY - 0.05 - 0.17 * max(0.0, (h - 0.5) / 0.4) ** 2, Z_GAL + 0.012 + h))
+        tube(b, pts, 0.017, seg=6, tile="metal")
+    pole(b, V(-0.17, HY - 0.05, Z_GAL + 0.4), V(0.17, HY - 0.05, Z_GAL + 0.4), 0.012, seg=6, tile="metal")      # one rung
     # ---- lantern: drum, glazing with bars, dark cap with ball and vane ---------------------------------------
     rl0 = math.pi / NL
     lathe_w(b, [(1.25, Z_GAL - 0.05, "white_paint"), (1.25, 20.82, "white_paint"), (1.33, 20.86, "white_paint"),
-                (1.33, Z_GL0, "white_paint"), (0.9, Z_GL0, "white_paint")], seg=LH_SEG, rot0=seam)
+                (1.33, Z_GL0, "white_paint"), (0.9, Z_GL0, "white_paint"), (0.0, Z_GL0, "white_paint")], seg=LH_SEG, rot0=seam)
     rv = 1.14                                             # glazing vertex radius
+    gslot = glass_slot(b, "M_South_LanternGlass", (0.02, 0.03, 0.035, 1))
     for k in range(NL):
         a0, a1 = rl0 + 2 * math.pi * k / NL, rl0 + 2 * math.pi * (k + 1) / NL
         p0, p1 = V(math.cos(a0) * rv, math.sin(a0) * rv, 0), V(math.cos(a1) * rv, math.sin(a1) * rv, 0)
-        wface(b, [p0 + V(0, 0, Z_GL0), p1 + V(0, 0, Z_GL0), p1 + V(0, 0, Z_GL1), p0 + V(0, 0, Z_GL1)], "dark")
+        # one pane = one quad in the glass slot, UV 0..1; inset a hair at each side (under the bars) so the panes' own
+        # vertices stay apart and every pane shades flat
+        e0, e1 = (p1 - p0).normalized() * 0.004, (p0 - p1).normalized() * 0.004
+        b.face([p0 + e0 + V(0, 0, Z_GL0), p1 + e1 + V(0, 0, Z_GL0), p1 + e1 + V(0, 0, Z_GL1), p0 + e0 + V(0, 0, Z_GL1)],
+               [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)], mat=gslot)
         pv = V(math.cos(a0) * (rv + 0.02), math.sin(a0) * (rv + 0.02), 0)
-        beam(b, pv + V(0, 0, Z_GL0), pv + V(0, 0, Z_GL1), 0.055, 0.055, "black_paint", up=V(math.cos(a0), math.sin(a0), 0))
+        beam(b, pv + V(0, 0, Z_GL0 + 0.03), pv + V(0, 0, Z_GL1 - 0.03), 0.055, 0.055, "black_paint", up=V(math.cos(a0), math.sin(a0), 0))
     for z0, z1 in ((Z_GL0, Z_GL0 + 0.06), (21.68, 21.72), (Z_GL1 - 0.06, Z_GL1)):
         ring(b, (0, 0, 0), rv * math.cos(math.pi / NL) - 0.01, rv + 0.035, z0, z1, NL, "black_paint", rot0=rl0)
-    lathe_w(b, [(0.9, Z_GL1, "black_paint"), (1.36, Z_GL1 + 0.04, "black_paint"), (1.36, Z_GL1 + 0.14, "black_paint"),
+    lathe_w(b, [(0.0, Z_GL1, "black_paint"), (0.9, Z_GL1, "black_paint"), (1.36, Z_GL1 + 0.04, "black_paint"), (1.36, Z_GL1 + 0.14, "black_paint"),
                 (0.75, 23.05, "black_paint"), (0.2, 23.42, "black_paint"), (0.0, 23.46, "black_paint")], seg=24)
     ball = [(0.0, 23.38, "black_paint")] + [(math.sin(math.pi * i / 6) * 0.2, 23.58 - math.cos(math.pi * i / 6) * 0.2, "black_paint") for i in range(1, 6)] + [(0.0, 23.78, "black_paint")]
     lathe_w(b, ball, seg=12)
@@ -356,21 +397,38 @@ def lighthouse(variant):
     for i in range(len(edges) - 1):
         s = 1.8 * r_tower(max(edges[i], Z_SOCLE))
         boxes.append(cbox("tower_%d" % i, (0, 0, (edges[i] + edges[i + 1]) / 2), (s, s, edges[i + 1] - edges[i])))
-    boxes.append(cbox("gallery", (0, 0, (Z_TOP + Z_GAL + 1.06) / 2), (4.3, 4.3, Z_GAL + 1.06 - Z_TOP)))
-    boxes.append(cbox("lantern", (0, 0, (Z_GAL + 1.06 + 23.5) / 2), (2.4, 2.4, 23.5 - Z_GAL - 1.06)))
+    # the deck is walkable: its top (Z_GAL) is the collision top in the ring between the drum and the rail, the hatch is part
+    # of it (no hole); the rail is a ring of small posts up to its top (importer: axis-aligned boxes only), the lantern's
+    # two crossed boxes (an octagon-ish drum) go down to the deck
+    boxes.append(cbox("gallery_deck", (0, 0, (Z_TOP + Z_GAL) / 2), (4.7, 4.7, Z_GAL - Z_TOP)))
+    for k in range(32):
+        a = 2 * math.pi * (k + 0.5) / 32
+        boxes.append(cbox("rail_%d" % k, (math.cos(a) * 2.28, math.sin(a) * 2.28, Z_GAL + 0.53), (0.3, 0.3, 1.06)))
+    boxes.append(cbox("lantern_x", (0, 0, (Z_GAL + 23.5) / 2), (2.5, 1.44, 23.5 - Z_GAL)))
+    boxes.append(cbox("lantern_y", (0, 0, (Z_GAL + 23.5) / 2), (1.44, 2.5, 23.5 - Z_GAL)))
     lamp = [0.0, 0.0, round((Z_GL0 + Z_GL1) / 2, 3)]
     notes = ("the «Маяк» lighthouse for the cliff top: a whitewashed round masonry tower tapering from r %.2f (z %.1f) to r %.2f "
              "(z %.1f) with two red bands (z 8.2..10.4 and 13.8..16.0), on a stone socle (r 2.42, to z %.1f) and a round concrete plinth "
              "r 3.1 (top z %.1f, bedded to z -0.5, nothing else under ground); three small windows up the shaft; a corbelled gallery "
-             "(deck z %.1f, r 2.38) with a black rail (top z %.2f); a lantern room (drum to z %.2f, 12-sided opaque dark glazing "
-             "z %.2f..%.2f with black bars), a black cap, a ball and a wind vane (top z 24.45). Origin on the ground under the "
+             "(deck z %.1f, r 2.38) with a black rail (top z %.2f); a lantern room (drum to z %.2f, 12-sided glazing, one quad per pane in the slot M_South_LanternGlass (UV 0..1), "
+             "z %.2f..%.2f with black bars; the lantern floor and the cap's underside are closed discs, nothing opaque inside between "
+             "them: the lens (kind lighthouse_lens) is a separate mesh at the lamp point), a black cap, a ball and a wind vane (top z 24.45). Origin on the ground under the "
              "tower's axis. Front (-Y): a plank door (0.9 x 2.0 m, closed, not enterable) between white jambs on the plinth and two "
              "steps off the plinth (treads z 0.2 and 0.1, out to y -3.8). A keeper's annex on +X (x %.1f..%.1f, y +-%.1f, flat "
-             "concrete roof z %.1f, its door on -Y at x 3.8, windows on -Y and +X). Collision: box (collision_boxes, axis-aligned, "
-             "mesh space): plinth, steps, door surround, annex, the tower as a stack of squares (side 1.8 r), gallery and lantern "
-             "as two boxes. lamp = the lantern's centre (glazing is opaque: a future light needs it emissive or in front)"
-             % (R_BASE, Z_SOCLE, R_TOP, Z_TOP, Z_SOCLE, Z_PL, Z_GAL, Z_GAL + 1.06, Z_GL0, Z_GL0, Z_GL1, AX0, AX1, AY, ZA + 0.2))
-    return b, {"notes": notes, "manifest": {"lamp": lamp, "gallery_z": Z_GAL, "door": {"x": [-0.45, 0.45], "z": [Z_PL, 2.4], "y": -2.5},
+             "concrete roof z %.1f, its door on -Y at x 3.8, windows on -Y and +X). The gallery is walkable: a hatch in the deck on "
+             "the front (-Y; 0.62 m iron coaming round a dark hole at x 0, y -1.765, the lid standing open against the drum, two "
+             "iron stiles curving up 0.9 m as hand holds). Collision: box (collision_boxes, axis-aligned, mesh space): plinth, "
+             "steps, door surround, annex, the tower as a stack of squares (side 1.8 r), the deck (top z %.1f, one slab, the hatch "
+             "is no hole), 32 rail posts (0.3 m, to z %.2f; gaps under 0.2 m), the lantern as two crossed boxes from the deck up. "
+             "Manifest points (mesh frame, metres; yaw = degrees counter-clockwise seen from above, 0 = toward -Y the front): "
+             "lamp = lens = the lantern's centre; hatch = where the hero stands on the deck by the hatch, facing outward; "
+             "gallery_view = a standing point on the deck on the sea side (map +X = west = the sea, so with the thing's yaw 140 "
+             "the sea is toward mesh (0.643, 0.766)), facing the sea; door_stand = on the first step in front of the door, facing it"
+             % (R_BASE, Z_SOCLE, R_TOP, Z_TOP, Z_SOCLE, Z_PL, Z_GAL, Z_GAL + 1.06, Z_GL0, Z_GL0, Z_GL1, AX0, AX1, AY, ZA + 0.2, Z_GAL, Z_GAL + 1.06))
+    return b, {"notes": notes, "manifest": {"lamp": lamp, "lens": list(lamp), "gallery_z": Z_GAL,
+                                             "hatch": {"x": 0.8, "y": HY, "z": Z_GAL, "yaw": 0.0},
+                                             "gallery_view": {"x": 1.125, "y": 1.34, "z": Z_GAL, "yaw": 140.0},
+                                             "door_stand": {"x": 0.0, "y": -2.98, "z": 0.2, "yaw": 180.0}, "annex_door": {"x": 3.8, "y": -1.62, "z": 0.23, "yaw": 0.0}, "door": {"x": [-0.45, 0.45], "z": [Z_PL, 2.4], "y": -2.5},
                                              "plinth_depth": 0.5, "collision_boxes": boxes}}
 
 

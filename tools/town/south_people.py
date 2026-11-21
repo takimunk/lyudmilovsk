@@ -35,6 +35,8 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import terrain as T         # noqa: E402  (the built ground: the same heights the things stand on)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import town_activities as TA     # noqa: E402  (its places and rows stay last)
+import town_night as TN           # noqa: E402  (its places and rows stay after ours, before town_activities')
+import town_pets as PETS          # noqa: E402  (its place and rows stay after ours, before town_night's)
 
 CONTENT = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content")
 FOLK = os.path.join(CONTENT, "PeopleData", "townsfolk.json")
@@ -62,6 +64,10 @@ ACTIVITIES_ROWS = [
     '{"id": "play_brook", "places": ["aton_brook"], "slots": ["stone", "trough"], "pose": "look", "minutes": [20, 45], "hours": [14, 18.5], "days": [0, 1, 2, 3, 4, 5], "daylight": 1, "ages": [6, 13], "temp": [8, 40], "meets": {"fun": 0.9, "nature": 0.7}, "costs": {"tired": 0.05, "hunger": 0.06}, "base": 0.1, "trait": "active", "wander": 1, "wander_m": [2, 60], "wander_pause": [30, 120], "pace": 1.4}',
 ]
 ACT_IDS = [json.loads(r)["id"] for r in ACTIVITIES_ROWS]
+# the birdwatchers' own evenings in the hide (hide_evenings): days a week each, and the hours round the sunset (offsets)
+HIDE_EVENINGS = 3
+HIDE_HOURS = (-0.6, 0.25)
+SUNSETS = (16.0, 21.75)     # the town's earliest and latest sunset, local hours
 OWN_LIKES = ("mend_nets", "boats_evening", "tend_hives", "watch_starlings")
 
 # who: the old fishermen (men of 58 and over who like the shore), one beekeeper (a pensioner fond of nature), a few
@@ -266,6 +272,41 @@ def pick(people, n, fit, salt):
     return cand[:n]
 
 
+def hide_evenings(everyone, birders):
+    """Each birdwatcher's own evenings in the hide: HIDE_EVENINGS days a week, a duty tied to the sunset ("sun": "set",
+    PeopleSim's SyncSunDuties), on days with no duty of theirs in the evening (the researchers at the weekend), spread so
+    that every day of the week has somebody there (the least free choose first); only those awake through the year's
+    range of sunsets. Their liking for it still brings them on other evenings too."""
+    for p in everyone:
+        if p.get("duties"):
+            p["duties"] = [d for d in p["duties"] if d.get("activity") != "watch_starlings"]
+    count = [0] * 7
+
+    def awake(p, h):
+        bed, wake = p["bed"] % 24, p["wake"] % 24
+        return not (bed <= h or h < wake) if bed > wake else not (bed <= h < wake)
+
+    def free(p, day):
+        return not any(day in d.get("days", range(7)) and d["hours"][0] < 22.0 and d["hours"][1] > 15.5 for d in p.get("duties", []))
+
+    # up through the year's whole range of sunsets (16:00 in December to 21:45 in June), so the hide never cuts their night
+    birders = [p for p in birders if all(awake(p, SUNSETS[0] + HIDE_HOURS[0] + i * 0.25) for i in
+                                         range(int((SUNSETS[1] - SUNSETS[0] + HIDE_HOURS[1] - HIDE_HOURS[0]) * 4) + 1))]
+
+    # the least free first, so the free ones fill the days left
+    for p in sorted(birders, key=lambda p: (sum(free(p, d) for d in range(7)), zlib.crc32(("hide:" + p["key"]).encode()))):
+        days = [d for d in range(7) if free(p, d)]
+        days.sort(key=lambda d: (count[d], zlib.crc32(("hide%d:%s" % (d, p["key"])).encode())))
+        mine = sorted(days[:HIDE_EVENINGS])
+        for d in mine:
+            count[d] += 1
+        if mine:
+            p.setdefault("duties", []).append(OD([("activity", "watch_starlings"), ("sun", "set"), ("hours", list(HIDE_HOURS)),
+                                                  ("place", "S-ATON-HIDE"), ("days", mine)]))
+    if 0 in count:
+        sys.exit("south_people: no birdwatcher free in the evening on day %d" % count.index(0))
+
+
 def temper(p, k):
     return float((p.get("temper") or {}).get(k, 0.0))
 
@@ -277,8 +318,10 @@ def build():
     places = [p for p in pd["places"] if p["id"] not in PLACE_IDS]
     new = [shed(c), orchard(c), hide(c), view(c), walk(c), brook(c)]
     assert [p["id"] for p in new] == PLACE_IDS
-    # before town_activities.py's places and rows, which that script keeps last: either script run again leaves the other's
-    at = next((i for i, p in enumerate(places) if p["id"] in TA.PLACE_IDS), len(places))
+    # before town_night.py's and town_activities.py's places and rows (the order is south_people, town_night, town_activities,
+    # each keeping the later ones after its own): any of the three run again leaves the others' in place
+    at = next((i for i, p in enumerate(places) if p["id"] in TA.PLACE_IDS or p["id"] in TN.PLACE_IDS or p["id"] == PETS.FEED_PLACE),
+              len(places))
     pd["places"] = places[:at] + new + places[at:]
     out[PLACES] = dump(pd)
 
@@ -302,12 +345,13 @@ def build():
         p.setdefault("likes", OD())["tend_hives"] = 3.6
     for p in birders:
         p.setdefault("likes", OD())["watch_starlings"] = 2.4
+    hide_evenings(fd["people"], birders)
     out[FOLK] = dump(fd)
 
     # activities.json is written by hand, one activity a line: ours after the last row
     text = open(ACTIVITIES, encoding="utf-8").read()
     lines = [l for l in text.split("\n") if not any('"id": "%s"' % a in l for a in ACT_IDS)]
-    first_ta = next((i for i, l in enumerate(lines) if any('"id": "%s"' % a in l for a in TA.ACT_IDS)), None)
+    first_ta = next((i for i, l in enumerate(lines) if any('"id": "%s"' % a in l for a in TA.ACT_IDS + TN.ACT_IDS + PETS.ACT_IDS)), None)
     rows = ["    " + r + "," for r in ACTIVITIES_ROWS]
     if first_ta is not None:
         lines[first_ta:first_ta] = rows

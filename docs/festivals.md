@@ -126,6 +126,14 @@ morning (items, an icon each); fluff lying in drifts along the kerbs and burning
 day; people flying the kites by hand (the kites fly by themselves over the crowd now); the after_storm trigger also for
 the diary and the forecast.
 
+## Every holiday's voices
+
+`tools/barks/lines/17_festival_voices.txt`: each of the 31 holidays has four voices of its own, said only on that day: an
+adult says what they are bringing (`fv_<id>_bring`), a nervy one complains (`fv_<id>_grump`), a child tells the day's game
+(`fv_<id>_kid`), an elder remembers how it used to be (`fv_<id>_elder`). 124 lines in ru, en, ja, picked by the barks'
+ordinary conditions (festival, age, temper); the Russian never agrees with the speaker's gender. A new holiday gets its
+four sets in the same file; `tools/barksim/run.sh` checks the conditions and that every line fits a bubble.
+
 ## The new toys (backlog item 24)
 
 The holidays use what the town got on the night of 2026-11-20. Data first; code only where a hook was missing. Each tie is

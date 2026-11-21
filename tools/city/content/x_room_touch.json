@@ -1,0 +1,146 @@
+{
+ "_doc": "Things to pick up and put on in the club rooms and the sanatorium (docs/city_interiors.md \"Things to open and pick up\"): the Rassvet radio amateurs' kettle and their note, the dance teacher's photo; the Cog club's returns-trolley note, the model makers' kettle and glider photo; the paid-couch guest's photo and note in the sanatorium. Things from blender/city/buildings/_homekit.py (table_kettle, photo_frame, note_left).",
+ "acts": {
+  "kettle_radio": {
+   "prompt": "city.act.kettle.prompt",
+   "minutes": 5,
+   "sound": "kettle_whistle",
+   "any_hour": true,
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "lines": [
+    {
+     "k": "city.room_kettle.radio.night.1",
+     "h": [
+      22,
+      6
+     ]
+    },
+    "city.room_kettle.radio.1"
+   ]
+  },
+  "kettle_workshop": {
+   "prompt": "city.act.kettle.prompt",
+   "minutes": 5,
+   "sound": "kettle_whistle",
+   "any_hour": true,
+   "give": [
+    [
+     "tea",
+     1
+    ]
+   ],
+   "daily": 1,
+   "lines": [
+    {
+     "k": "city.room_kettle.workshop.cold.1",
+     "weather": "cold"
+    },
+    "city.room_kettle.workshop.1"
+   ]
+  },
+  "photo_dance": {
+   "prompt": "city.act.photo.prompt",
+   "minutes": 1,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.room_photo.dance.1",
+    "city.room_photo.dance.2"
+   ]
+  },
+  "photo_workshop": {
+   "prompt": "city.act.photo.prompt",
+   "minutes": 1,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.room_photo.workshop.1",
+    "city.room_photo.workshop.2"
+   ]
+  },
+  "photo_guest": {
+   "prompt": "city.act.photo.prompt",
+   "minutes": 1,
+   "sound": "page_turn",
+   "any_hour": true,
+   "lines": [
+    "city.room_photo.guest.1",
+    "city.room_photo.guest.2"
+   ]
+  },
+  "note_radio": {
+   "prompt": "city.act.note.prompt",
+   "minutes": 0,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "rotate": "daily",
+   "lines": [
+    "city.room_note.radio.1",
+    "city.room_note.radio.2",
+    "city.room_note.radio.3",
+    "city.room_note.radio.4",
+    "city.room_note.radio.5"
+   ]
+  },
+  "note_cart": {
+   "prompt": "city.act.note.prompt",
+   "minutes": 0,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "rotate": "daily",
+   "lines": [
+    "city.room_note.cart.1",
+    "city.room_note.cart.2",
+    "city.room_note.cart.3",
+    "city.room_note.cart.4",
+    "city.room_note.cart.5"
+   ]
+  },
+  "note_guest": {
+   "prompt": "city.act.note.prompt",
+   "minutes": 0,
+   "sound": "paper_rustle",
+   "any_hour": true,
+   "rotate": "daily",
+   "lines": [
+    "city.room_note.guest.1",
+    "city.room_note.guest.2",
+    "city.room_note.guest.3",
+    "city.room_note.guest.4",
+    "city.room_note.guest.5"
+   ]
+  }
+ },
+ "rules": {
+  "P-CLUB2/radio_kettle": {
+   "act": "kettle_radio"
+  },
+  "P-CLUB3/workshop_kettle": {
+   "act": "kettle_workshop"
+  },
+  "P-CLUB2/dance_photo": {
+   "act": "photo_dance"
+  },
+  "P-CLUB3/workshop_photo": {
+   "act": "photo_workshop"
+  },
+  "P-SANATORIUM/guest_photo": {
+   "act": "photo_guest"
+  },
+  "P-CLUB2/radio_note": {
+   "act": "note_radio"
+  },
+  "P-CLUB3/cart_note": {
+   "act": "note_cart"
+  },
+  "P-SANATORIUM/guest_note": {
+   "act": "note_guest"
+  }
+ }
+}

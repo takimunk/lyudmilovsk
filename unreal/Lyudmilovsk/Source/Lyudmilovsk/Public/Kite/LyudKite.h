@@ -156,6 +156,9 @@ private:
 	float ClickIn = 0.f;
 	int32 PrevState = 0;
 	bool bWasSpinning = false;
+	/** The "high" and "box" stamps were asked for with this kite out (asked once, not every frame it is up). */
+	bool bStampHigh = false;
+	bool bStampBox = false;
 	int32 ForcedReel = 0;
 	bool bForced = false;
 	bool bLaunchQueued = false;

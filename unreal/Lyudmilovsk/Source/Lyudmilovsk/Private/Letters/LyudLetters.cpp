@@ -462,6 +462,17 @@ void ULyudLetters::Tick(float DeltaTime)
 			TickPeople(Hero);
 		}
 	}
+	if (RefusedUntil > 0.0 && (Mode != EMode::None || World->GetTimeSeconds() >= RefusedUntil))
+	{
+		// the refusal has been read: its words leave the prompt line (SetPrompt would not clear them, no box being offered;
+		// they stayed until the hero next looked at a box). A box still in view is offered again by the pick below.
+		RefusedUntil = 0.0;
+		PickClock = 0.f;
+		if (ULyudInventoryUI* PromptUI = ULyudInventoryUI::Get(World))
+		{
+			PromptUI->SetPrompt(this, FText::GetEmpty());
+		}
+	}
 	if (Mode != EMode::None)
 	{
 		SetPrompt(nullptr);
@@ -652,11 +663,15 @@ ALyudPostbox* ULyudLetters::PickInView(const AHeroCharacter* Hero, const APlayer
 void ULyudLetters::SetPrompt(ALyudPostbox* Box)
 {
 	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
-	if (Box == OfferedWeak.Get() && (!Box || !Box->IsMailbox()))
+	// the mailbox's words carry the count of unread letters: said again only when the count changes (this is called
+	// eight times a second while a box is in view)
+	const int32 Unread = Box && Box->IsMailbox() && Model ? Model->NumUnread() : 0;
+	if (Box == OfferedWeak.Get() && Unread == OfferedUnread)
 	{
 		return;
 	}
 	OfferedWeak = Box;
+	OfferedUnread = Unread;
 	if (!UI)
 	{
 		return;
@@ -666,7 +681,6 @@ void ULyudLetters::SetPrompt(ALyudPostbox* Box)
 		UI->SetPrompt(this, FText::GetEmpty());
 		return;
 	}
-	const int32 Unread = Model ? Model->NumUnread() : 0;
 	UI->SetPrompt(this, !Box->IsMailbox() ? LyudText::Get(TEXT("letters.postbox.prompt"))
 		: (Unread > 0 ? LyudText::Get(TEXT("letters.mailbox.prompt_new"), { FStringFormatArg(Unread) }) : LyudText::Get(TEXT("letters.mailbox.prompt"))));
 }
@@ -1363,9 +1377,10 @@ void ULyudLetters::PostTheCard()
 	ULyudQuests::Notify(this, TEXT("letter_sent"), To.Id);
 	if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
 	{
-		if (const ALyudPostbox* Box = OfferedWeak.Get())
+		// at the hero: the box's offer is dropped while the chooser is up, so there is no box to ask here
+		if (const APawn* Pawn = UGameplayStatics::GetPlayerPawn(this, 0))
 		{
-			Sound->PlayEffect(TEXT("diary_page"), Box->UsePoint());
+			Sound->PlayEffect(TEXT("diary_page"), Pawn->GetActorLocation());
 		}
 	}
 	const int32 Day = Model->DeliveryDay(T);
@@ -1674,9 +1689,9 @@ void ULyudLetters::OpenMailAnywhere()
 
 bool ULyudLetters::DevPost(const FString& To, const FString& Picture)
 {
-	if (!Model || To.IsEmpty())
+	if (!Model || !bLoaded || To.IsEmpty())
 	{
-		return false;
+		return false;     // without the data there are no pictures or phrases to index
 	}
 	FString Group = TEXT("adult");
 	const UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(this);

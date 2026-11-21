@@ -290,6 +290,12 @@ for p in people:
         if du.get("place") and du["place"] not in all_place_ids:
             bad(w, "duty place %r is no place" % du["place"])
         a, b = du["hours"]
+        if du.get("sun") is not None:
+            # tied to the sun ("sun": "set" | "rise"): hours are offsets from today's sunset/sunrise (PeopleSim SyncSunDuties);
+            # they move through the year, so they are left out of the overlap check below
+            if du["sun"] not in ("set", "rise") or not (-6 <= a < b <= 6):
+                bad(w, "sun duty %s hours %s" % (du["sun"], du["hours"]))
+            continue
         if not (0 <= a <= 24 and 0 <= b <= 24) or a == b:
             bad(w, "duty hours %s" % du["hours"])
             continue

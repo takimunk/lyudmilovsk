@@ -31,6 +31,7 @@ from citykit import box, prism, ring, band, band_down, ribbon_wall, quad_bar, DO
 from _cons_util import wall, win, hface, rect
 from _surrounds import add_surrounds
 import interior_kit as kit
+import _homekit as hk
 import dress_kit as dk
 import night_kit as nk
 from furn_int3 import rod
@@ -872,6 +873,8 @@ def _reading(B):
         B.thing("read_table_%d_b" % (ti + 1), "seat", (sx, sy, 0.45), c.fy(0, 1), height=0.45)
         c.put(kit.books_stack, a - 0.8, 0.0, z=0.76, n=3, seed=ti)
         c.put(kit.newspaper, a + 0.8, 0.25, z=0.76, seed=ti)
+        if ti == 1:
+            hk.note_left(B, "cart_note", *c.W(a + 0.2, -0.3), 0.76, yaw=c.ang)    # a reader's note on the second table
     # chess tables
     for ci, p in enumerate((-1.3, 1.3)):
         x, y = c.W(15.3, p)
@@ -1053,6 +1056,10 @@ def _stack(B):
                 kit.stool(B, sx, sy, z, 0.0)
         x, y = c.W(a, 0.0)
         B.thing("workbench_%d" % (k + 1), "craft", (x, y, z + 0.8), c.ang, what="workbench")
+        if k == 0:
+            hk.table_kettle(B, "workshop_kettle", *c.W(a + 1.0, 0.25), z + 0.8, c.fy(0, 1))
+        else:
+            hk.photo_frame(B, "workshop_photo", *c.W(a + 1.0, 0.25), c.fy(0, 1), z=z, top=0.8, side=0.0)
         (_ribs if k == 0 else _glider)(B, *c.W(a + 0.05, -0.12), z + 0.8, c.ang + (0 if k == 0 else 90))
         for sgn in (-1, 1):
             for s2 in (-1, 1):

@@ -272,6 +272,9 @@ private:
 	bool bWantStart = false;
 	bool bStarted = false;
 	int32 StartCount = 0;
+	/** The bird life's start the brook's pools were last read for (LoadBrookPools). */
+	int32 PoolsFor = -1;
+	void LoadBrookPools();
 	/** The food in the hand (SetOffer) and how much each species wants it. */
 	FName OfferFood;
 	float StartDelay = 0.f;

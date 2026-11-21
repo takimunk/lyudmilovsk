@@ -319,6 +319,198 @@ static FDayResult RunDay(const std::string& LifeText, int Weekday, bool bWarm, f
 	return Out;
 }
 
+// the hall's moods (docs/transport.md "Hall moods"): a typical hall's places filled by the picker the game uses
+static void HallMoods(const FStationLife& L)
+{
+	using K = EHallSpot;
+	const std::vector<K> Kinds = { K::Seat, K::Seat, K::Seat, K::Seat, K::Seat, K::Seat, K::TableSeat, K::TableSeat, K::Counter,
+		K::Queue, K::Queue, K::Rail, K::Rail, K::Window, K::Window, K::Diagram, K::Read, K::StandTable };
+	auto Fill = [&](const FHallMood& M, const std::vector<int>& Ages, bool bOut, std::vector<FHallPlace>& P, std::vector<int>& Who)
+	{
+		P.clear();
+		Who.assign(Kinds.size(), -1);
+		int Q = 0;
+		for (K Kd : Kinds)
+		{
+			FHallPlace X;
+			X.Kind = Kd;
+			X.Queue = Kd == K::Queue ? ++Q : 0;
+			P.push_back(X);
+		}
+		for (int I = 0; I < (int)Ages.size(); I++)
+		{
+			const int J = HallPick(P, "rider_" + std::to_string(I), Ages[I], bOut, M, 77u);
+			if (J >= 0)
+			{
+				P[J].bTaken = true;
+				Who[J] = I;
+			}
+		}
+	};
+	std::vector<FHallPlace> P;
+	std::vector<int> Who;
+	// the morning rush: the buffet's counter and its queue
+	FHallMood Rush;
+	Rush.Hour = 8.f;
+	Fill(Rush, std::vector<int>(10, 35), false, P, Who);
+	int Queue = 0;
+	for (int I = 0; I < (int)P.size(); I++)
+	{
+		Queue += (P[I].Kind == K::Counter || P[I].Kind == K::Queue) && P[I].bTaken ? 1 : 0;
+	}
+	CHECK(Queue >= 2, "8:00, ten adults: only %d at the counter and in its queue", Queue);
+	// the queue in order: never a second spot without the first
+	CHECK(!(P[10].bTaken && !P[9].bTaken), "the queue's second spot taken before its first");
+	// the buffet shut: nobody at its counter
+	FHallMood Shut = Rush;
+	Shut.bBuffet = false;
+	Fill(Shut, std::vector<int>(10, 35), false, P, Who);
+	CHECK(!P[8].bTaken && !P[9].bTaken, "a queue at a shut buffet");
+	// an afternoon with children: they take the windows
+	FHallMood Day;
+	Day.Hour = 15.f;
+	Fill(Day, { 9, 40, 11, 45, 52, 33 }, false, P, Who);
+	int KidsAtWindows = 0;
+	for (int I = 0; I < (int)P.size(); I++)
+	{
+		KidsAtWindows += P[I].Kind == K::Window && Who[I] >= 0 && (Who[I] == 0 || Who[I] == 2) ? 1 : 0;
+	}
+	CHECK(KidsAtWindows == 2, "15:00: %d of 2 children at the windows", KidsAtWindows);
+	// the old in the morning: seated, most with the paper
+	FHallMood Morning;
+	Morning.Hour = 10.f;
+	int Seated = 0, Reading = 0;
+	Fill(Morning, std::vector<int>(5, 70), false, P, Who);
+	for (int I = 0; I < (int)P.size(); I++)
+	{
+		if (Who[I] >= 0 && (P[I].Kind == K::Seat || P[I].Kind == K::Read))
+		{
+			Seated++;
+			Reading += HallPose(70, P[I].Kind, Morning, LifeHash("rider_" + std::to_string(Who[I]), 53u)) == EHallPose::Read ? 1 : 0;
+		}
+	}
+	CHECK(Seated >= 4, "10:00, five pensioners: only %d seated or at the paper rack", Seated);
+	CHECK(Reading >= 2, "10:00: only %d of the old reading", Reading);
+	// walking out: never a seat or the counter
+	Fill(Rush, std::vector<int>(8, 30), true, P, Who);
+	for (int I = 0; I < (int)P.size(); I++)
+	{
+		CHECK(!(P[I].bTaken && (P[I].Kind == K::Seat || P[I].Kind == K::TableSeat || P[I].Kind == K::Counter || P[I].Kind == K::Queue)),
+			"someone walking out sat down or queued");
+	}
+	// lunch: the cafe's tables eat
+	FHallMood Lunch;
+	Lunch.Hour = 12.5f;
+	int Eat = 0;
+	for (int I = 0; I < 20; I++)
+	{
+		Eat += HallPose(35, K::TableSeat, Lunch, I / 20.f) == EHallPose::Eat ? 1 : 0;
+	}
+	CHECK(Eat >= 12, "lunch: %d of 20 at the tables eat", Eat);
+	// the rain fills the hall with passers-by; the stop with tea drinkers
+	int Dry = 0, Wet = 0;
+	FHallMood Rain = Day;
+	Rain.bRain = true;
+	for (uint32_t S = 0; S < 200; S++)
+	{
+		Dry += HallFiller(Day, S * 2654435761u);
+		Wet += HallFiller(Rain, S * 2654435761u);
+	}
+	CHECK(Wet >= Dry + 400, "the rain brought %.1f more people in on average", (Wet - Dry) / 200.f);
+	CHECK(std::string(HallBark(Rain)) == "rain", "no rain words in the rain");
+	// the staff: the barista works while someone waits, the attendant talks to the hall at a stop
+	CHECK(BaristaPose(2, Rush, 0.2f) == EHallPose::Work, "the barista idle with a queue");
+	FHallMood Stop = Rush;
+	Stop.bStopped = true;
+	CHECK(AttendantPose(5, Stop, 0.1f) == EHallPose::Talk, "the attendant silent at the wind stop");
+	// the riders' ages came with the data
+	int Kids = 0, Old = 0;
+	for (const FLifeRider& R : L.Riders)
+	{
+		Kids += R.Age < 18 ? 1 : 0;
+		Old += R.Age >= 60 ? 1 : 0;
+	}
+	CHECK(Old > 10, "only %d riders of 60 and over (no ages in station_life.json?)", Old);
+	// a child along with a parent goes on the same days (the parent's draw) and from the same hall
+	int Families = 0;
+	for (int R = 0; R < (int)L.Riders.size(); R++)
+	{
+		if (L.Riders[R].With.empty())
+		{
+			continue;
+		}
+		Families++;
+		int Parent = -1;
+		for (int Q = 0; Q < (int)L.Riders.size(); Q++)
+		{
+			Parent = L.Riders[Q].Key == L.Riders[R].With ? Q : Parent;
+		}
+		CHECK(Parent >= 0 && L.Riders[R].Age < 14, "%s goes along with nobody", L.Riders[R].Key.c_str());
+		for (int D = 0; D < 14 && Parent >= 0; D++)
+		{
+			FStationLife Day = L;
+			Day.StartDay(D, D % 7, true);
+			int Kid = 0, Par = 0;
+			for (const FLifeRun& Run : Day.Today)
+			{
+				Kid += Day.Trips[Run.Trip].Rider == R ? 1 : 0;
+				Par += Day.Trips[Run.Trip].Rider == Parent ? 1 : 0;
+			}
+			CHECK(Kid == 0 || Par > 0, "%s off to the beach on day %d without %s", L.Riders[R].Key.c_str(), D, L.Riders[R].With.c_str());
+			for (const FLifeRun& K : Day.Today)
+			{
+				for (const FLifeRun& P : Day.Today)
+				{
+					const FLifeTrip &KT = Day.Trips[K.Trip], &PT = Day.Trips[P.Trip];
+					CHECK(!(KT.Rider == R && PT.Rider == Parent && KT.At == PT.At) || K.HallMinutes == P.HallMinutes,
+						"%s and %s wait different minutes in the hall", L.Riders[R].Key.c_str(), L.Riders[R].With.c_str());
+				}
+			}
+		}
+	}
+	CHECK(Families > 0, "no children along with a parent in station_life.json");
+	std::printf("hall moods: %d at the counter at 8:00, %d children at the windows, %d of 5 old seated (%d reading), rain +%.1f people; riders %d under 18 (%d along with a parent), %d over 60\n",
+		Queue, KidsAtWindows, Seated, Reading, (Wet - Dry) / 200.f, Kids, Families, Old);
+}
+
+// the cabins' life (docs/transport.md "Cabin life"): who stands at the glass, who reads, the words aboard
+static void CabinLife()
+{
+	FCabinMood Clear;
+	Clear.Hour = 11.f;
+	FCabinMood Fog = Clear;
+	Fog.bFog = true;
+	FCabinMood Night;
+	Night.Hour = 22.f;
+	auto Share = [](int Age, int Aboard, const FCabinMood& M, ECabinAct A)
+	{
+		int N = 0;
+		for (int I = 0; I < 200; I++)
+		{
+			N += CabinAct(Age, Aboard, M, (I + 0.5f) / 200.f) == A ? 1 : 0;
+		}
+		return N / 200.f;
+	};
+	CHECK(Share(8, 2, Clear, ECabinAct::Window) > 0.8f, "a child not at the glass on a clear day");
+	CHECK(Share(8, 2, Fog, ECabinAct::Window) > 0.8f, "a child not at the glass in the fog");
+	CHECK(Share(35, 2, Clear, ECabinAct::Window) > Share(35, 2, Fog, ECabinAct::Window) * 2.f, "the fog keeps as many grown-ups at the glass");
+	CHECK(Share(35, 2, Night, ECabinAct::Window) < Share(35, 2, Clear, ECabinAct::Window), "as many at the dark glass as at the bay");
+	CHECK(Share(70, 2, Clear, ECabinAct::Read) > Share(30, 2, Clear, ECabinAct::Read), "the young read more than the old");
+	// a full cabin: at most two at the glass, the children first
+	std::vector<ECabinAct> Acts;
+	CabinActs({ 9, 7, 30, 16 }, { 0.1f, 0.2f, 0.01f, 0.05f }, Clear, Acts);
+	int Glass = 0;
+	for (ECabinAct A : Acts)
+	{
+		Glass += A == ECabinAct::Window ? 1 : 0;
+	}
+	CHECK(Glass == 2 && Acts[0] == ECabinAct::Window && Acts[1] == ECabinAct::Window, "a full cabin: %d at the glass, the children %d %d", Glass, (int)Acts[0], (int)Acts[1]);
+	CHECK(std::string(CabinBark(Fog, false, 0.9f)) == "fog" && std::string(CabinBark(Clear, true, 0.1f)) == "kid", "the words aboard ignore the fog or the child");
+	std::printf("cabin life: child at the glass %.0f%% (fog %.0f%%), adult %.0f%% clear / %.0f%% fog / %.0f%% night, old reading %.0f%%\n",
+		100.f * Share(8, 2, Clear, ECabinAct::Window), 100.f * Share(8, 2, Fog, ECabinAct::Window), 100.f * Share(35, 2, Clear, ECabinAct::Window),
+		100.f * Share(35, 2, Fog, ECabinAct::Window), 100.f * Share(35, 2, Night, ECabinAct::Window), 100.f * Share(70, 2, Clear, ECabinAct::Read));
+}
+
 static int Town()
 {
 	const std::string Life = ReadFile("unreal/Lyudmilovsk/Content/Transport/station_life.json");
@@ -384,6 +576,8 @@ static int Town()
 		W.SetWind(M, 11.f);
 		CHECK(!M.bWindHold, "still stopped after 400 s under 12 m/s");
 	}
+	HallMoods(L);
+	CabinLife();
 	std::printf(Fails ? "%d FAILED\n" : "all ok\n", Fails);
 	return Fails ? 1 : 0;
 }

@@ -134,6 +134,13 @@ for p in folk:
         if not a:
             bad_duty.append("%s: activity %s unknown" % (p["key"], d["activity"]))
             continue
+        if d.get("sun"):
+            # a habit tied to the sun (the birdwatchers' evenings in the hide): hours are offsets from sunset/sunrise, at the
+            # activity's own slots, no job
+            pl = by_id.get(d.get("place"))
+            if not pl or pl["kind"] not in a.get("places", []) or d["sun"] not in ("set", "rise") or not all(-6 <= h <= 6 for h in d["hours"]):
+                bad_duty.append("%s: sun-tied %s at %s, hours %s" % (p["key"], d["activity"], d.get("place"), d["hours"]))
+            continue
         if a.get("free", 1) != 0:
             bad_duty.append("%s: %s is a free-time activity, not a duty" % (p["key"], d["activity"]))
         if not d.get("place"):
@@ -187,6 +194,16 @@ for p in folk:
     if night < 6.9 or (p["age"] >= 16 and night > 10.6):
         short.append("%s: bed %.2f wake %.2f (%.1f h)" % (p["key"], p["bed"], p["wake"], night))
     for d in p["duties"]:
+        if d.get("sun"):
+            # through the year's sunsets (16:00..21:45) or sunrises (3:45..9:00), every half hour of it awake
+            lo, hi = (16.0, 21.75) if d["sun"] == "set" else (3.75, 9.0)
+            h = lo + d["hours"][0]
+            while h <= hi + d["hours"][1] + 1e-6:
+                if within(h % 24, p["bed"], p["wake"]):
+                    cut.append("%s: %s round the %s at %.2f, asleep %.2f-%.2f" % (p["key"], d["activity"], d["sun"], h, p["bed"], p["wake"]))
+                    break
+                h += 0.25
+            continue
         h0, h1 = d["hours"][0] % 24, d["hours"][1] % 24
         if within(h0, p["bed"], p["wake"]) or (h1 != p["bed"] and within(h1, p["bed"], p["wake"]) and h1 != h0):
             cut.append("%s: %s %s, asleep %.2f-%.2f" % (p["key"], d["activity"], d["hours"], p["bed"], p["wake"]))

@@ -11,6 +11,7 @@ class UStaticMeshComponent;
 class UWidgetComponent;
 class FJsonObject;
 class SLyudFlapBoard;
+namespace LyudTransport { struct FHallMood; }
 
 /**
  * A cable-car station's hall, v3 (docs/transport.md "Halls v3"; Dima 2026-11-20: the halls were crude, dark and empty, a cafe
@@ -89,6 +90,8 @@ private:
 		float BaseYaw = 0.f;
 		uint8 BasePose = 0;
 		double GoneSince = -1.0;            // their run left the hall at (the body goes once unseen)
+		int32 Age = 35;
+		float NextRoutine = 0.f;            // staff: the hall's clock of their next small change (docs/transport.md "Hall moods")
 		// stepping up in the line, or off to a table with the cup (walking from WalkFrom to At)
 		bool bWalking = false;
 		FVector WalkFrom = FVector::ZeroVector;
@@ -116,7 +119,10 @@ private:
 	bool bDutyAtSpawn = false;                // were the staff on duty when the people were last made (SpawnPeople)
 	float ChurnTimer = 30.f;
 	float Clock = 0.f;
-	int32 Prompted = -1;                    // 0 barista (T; E the usual), 1 attendant (E), 2 the punch, 3 the lost and found shelf
+	int32 Prompted = -1;                    // 0 barista (T; E the usual), 1 attendant (E), 2 the punch, 3 the lost and found shelf,
+	                                        // 4 the bell on a shut hall's desk (E)
+	FVector BellAt = FVector::ZeroVector;
+	float BellQuiet = 0.f;
 	uint32 Seed = 0;
 
 	void SetLights(bool bOn);
@@ -135,6 +141,15 @@ private:
 	bool LifeOpen() const;
 	FString LifeModel(const FString& Key, const FString& Mesh, int32& OutPid) const;
 	void Unpresent(FPerson& P);
+	/** The hour, the day, the weather and the buffet as the waiting people feel them (StationLife.h FHallMood). */
+	LyudTransport::FHallMood Mood() const;
+	/** A free place out of the player's sight for a person (Key, Age; walking out: bOut) by the mood, -1 none (the
+	 *  counter's line behind the counter place fills by the line itself, never here). */
+	int32 PickSlot(const FString& Key, int32 Age, bool bOut, const TFunctionRef<bool(const FVector&)>& Unseen, uint32 Salt) const;
+	/** Their pose at slot K by the mood (Roll 0..1, theirs). */
+	uint8 PoseAt(int32 K, int32 Age, float Roll) const;
+	/** The barista and the attendant's small routines: working the counter, the logbook, a look at who comes in. */
+	void TickStaff();
 	float LifeTimer = 0.f;
 	float BarkTimer = 20.f;
 	TSet<int32> GreetedRegulars;

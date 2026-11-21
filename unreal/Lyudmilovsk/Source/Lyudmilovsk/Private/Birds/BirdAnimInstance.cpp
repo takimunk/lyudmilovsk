@@ -169,6 +169,44 @@ namespace
 		return Q;
 	}
 
+	/** A bone's name put together on the stack: text and numbers one after another. The wings, the tail and the feet look
+	 *  their bones up by name on every evaluation of every flying bird (worker threads): no string is allocated for it. */
+	struct FBoneNameBuf
+	{
+		TCHAR Text[32];
+		int32 Len = 0;
+		FBoneNameBuf() { Text[0] = 0; }
+		void Add(const TCHAR* Part)
+		{
+			for (; *Part && Len < 31; ++Part)
+			{
+				Text[Len++] = *Part;
+			}
+			Text[Len] = 0;
+		}
+		void Add(int32 Number)
+		{
+			if (Number >= 10 && Len < 31)
+			{
+				Text[Len++] = (TCHAR)(TEXT('0') + (Number / 10) % 10);
+			}
+			if (Len < 31)
+			{
+				Text[Len++] = (TCHAR)(TEXT('0') + Number % 10);
+			}
+			Text[Len] = 0;
+		}
+		const TCHAR* operator*() const { return Text; }
+	};
+
+	template <typename... PartTypes>
+	FBoneNameBuf BoneName(PartTypes... Parts)
+	{
+		FBoneNameBuf Name;
+		(Name.Add(Parts), ...);
+		return Name;
+	}
+
 	/** Adds a component-space rotation to bone B (keeps its children following). */
 	void RotateCS(FCSPose<FCompactPose>& CS, FCompactPoseBoneIndex B, const FQuat& Delta)
 	{
@@ -219,9 +257,9 @@ void FBirdAnimProxy::ApplyWingsLocal(FCompactPose& Pose) const
 		const float Phase = bL ? Wings.StrokeL : Wings.StrokeR;
 		const float Up = FMath::Max(0.f, FMath::Sin(2.f * PI * (Phase - 0.5f))) * Wings.StrokeAmp;   // > 0 on the upstroke
 		const float Spread = FMath::Clamp((bL ? Wings.SpreadL : Wings.SpreadR) * (1.f - 0.35f * Up), 0.f, 1.f);
-		auto Set = [&](const FString& Name, float SpreadOfBone)
+		auto Set = [&](const TCHAR* Name, float SpreadOfBone)
 		{
-			const FCompactPoseBoneIndex B = FindBone(Bones, *Name);
+			const FCompactPoseBoneIndex B = FindBone(Bones, Name);
 			if (!B.IsValid())
 			{
 				return;
@@ -236,22 +274,22 @@ void FBirdAnimProxy::ApplyWingsLocal(FCompactPose& Pose) const
 			}
 		};
 		// the hand folds first and opens last
-		Set(FString::Printf(TEXT("humerus_%s"), Side), FMath::Clamp(Spread * 1.4f, 0.f, 1.f));
-		Set(FString::Printf(TEXT("forearm_%s"), Side), FMath::Clamp(Spread * 1.2f - 0.1f, 0.f, 1.f));
-		Set(FString::Printf(TEXT("hand_%s"), Side), Spread);
-		Set(FString::Printf(TEXT("primaries_%s"), Side), Spread);
+		Set(*BoneName(TEXT("humerus_"), Side), FMath::Clamp(Spread * 1.4f, 0.f, 1.f));
+		Set(*BoneName(TEXT("forearm_"), Side), FMath::Clamp(Spread * 1.2f - 0.1f, 0.f, 1.f));
+		Set(*BoneName(TEXT("hand_"), Side), Spread);
+		Set(*BoneName(TEXT("primaries_"), Side), Spread);
 		for (int32 i = 1; i <= 12; ++i)
 		{
-			Set(FString::Printf(TEXT("p%d_%s"), i, Side), Spread);
+			Set(*BoneName(TEXT("p"), i, TEXT("_"), Side), Spread);
 		}
 		for (int32 i = 1; i <= 24; ++i)
 		{
-			Set(FString::Printf(TEXT("s%d_%s"), i, Side), FMath::Clamp(Spread * 1.2f - 0.1f, 0.f, 1.f));
+			Set(*BoneName(TEXT("s"), i, TEXT("_"), Side), FMath::Clamp(Spread * 1.2f - 0.1f, 0.f, 1.f));
 		}
 		// legs: tucked under the belly (Glide) .. hanging down (Idle)
 		for (const TCHAR* Leg : LegBones)
 		{
-			const FCompactPoseBoneIndex B = FindBone(Bones, *FString::Printf(TEXT("%s_%s"), Leg, Side));
+			const FCompactPoseBoneIndex B = FindBone(Bones, *BoneName(Leg, TEXT("_"), Side));
 			if (B.IsValid() && FoldSeq && TuckSeq)
 			{
 				const FQuat Q = FQuat::Slerp(Tuck[B].GetRotation(), Fold[B].GetRotation(), FMath::Clamp(Wings.LegsDown, 0.f, 1.f));
@@ -264,7 +302,7 @@ void FBirdAnimProxy::ApplyWingsLocal(FCompactPose& Pose) const
 	{
 		for (const TCHAR* Side : { TEXT("L"), TEXT("R") })
 		{
-			const FCompactPoseBoneIndex B = FindBone(Bones, *FString::Printf(TEXT("tf_%s_%d"), Side, K));
+			const FCompactPoseBoneIndex B = FindBone(Bones, *BoneName(TEXT("tf_"), Side, TEXT("_"), K));
 			if (B.IsValid())
 			{
 				Pose[B].SetRotation(FQuat::Slerp(Pose[B].GetRotation(), Bones.GetRefPoseTransform(B).GetRotation(), W).GetNormalized());
@@ -296,8 +334,8 @@ void FBirdAnimProxy::ApplyWingsCS(FCSPose<FCompactPose>& CS) const
 		const float Spread = bL ? Wings.SpreadL : Wings.SpreadR;
 		// elevation: top of the stroke at phase 0, bottom at 0.5; a pigeon's beat is ~110 degrees, a bit more up than down
 		const float Elev = Wings.StrokeAmp * (FMath::DegreesToRadians(55.f) * FMath::Cos(2.f * PI * Phase) + FMath::DegreesToRadians(8.f));
-		const FCompactPoseBoneIndex Hum = FindBone(Bones, *FString::Printf(TEXT("humerus_%s"), Side));
-		const FCompactPoseBoneIndex Hand = FindBone(Bones, *FString::Printf(TEXT("hand_%s"), Side));
+		const FCompactPoseBoneIndex Hum = FindBone(Bones, *BoneName(TEXT("humerus_"), Side));
+		const FCompactPoseBoneIndex Hand = FindBone(Bones, *BoneName(TEXT("hand_"), Side));
 		// in the air a part-folded wing is not half way to the standing fold (dropped down the flank): the shoulder rolls it
 		// back up, so the arm stays out to the side in the wing's own plane and the fold is a sweep back (a falcon's "M")
 		// (right in, it closes against the body as the standing fold has it: a finch's bound, a falcon's teardrop)
@@ -332,12 +370,12 @@ void FBirdAnimProxy::ApplyWingsCS(FCSPose<FCompactPose>& CS) const
 		const float Part = FMath::DegreesToRadians(1.6f) * FMath::Clamp(Spread * 2.f - 1.f, 0.f, 1.f);
 		for (int32 i = 1; i <= 12; ++i)
 		{
-			Turn(FindBone(Bones, *FString::Printf(TEXT("p%d_%s"), i, Side)), UpV, S * Part * (i - 6.f));
+			Turn(FindBone(Bones, *BoneName(TEXT("p"), i, TEXT("_"), Side)), UpV, S * Part * (i - 6.f));
 		}
 		// the tail fans out from the middle pair
 		for (int32 K = 1; K <= 8; ++K)
 		{
-			Turn(FindBone(Bones, *FString::Printf(TEXT("tf_%s_%d"), Side, K)), UpV, S * FMath::DegreesToRadians(9.f) * (K - 0.5f) * Wings.TailFan);
+			Turn(FindBone(Bones, *BoneName(TEXT("tf_"), Side, TEXT("_"), K)), UpV, S * FMath::DegreesToRadians(9.f) * (K - 0.5f) * Wings.TailFan);
 		}
 	}
 }
@@ -400,12 +438,12 @@ bool FBirdAnimProxy::Evaluate(FPoseContext& Output)
 	{
 		for (int32 K = 7; K >= 1; --K)
 		{
-			const FCompactPoseBoneIndex L = FindBone(Bones, *FString::Printf(TEXT("tf_L_%d"), K));
+			const FCompactPoseBoneIndex L = FindBone(Bones, *BoneName(TEXT("tf_L_"), K));
 			if (L.IsValid())
 			{
 				for (const TCHAR* Side : { TEXT("L"), TEXT("R") })
 				{
-					const FCompactPoseBoneIndex B = FindBone(Bones, *FString::Printf(TEXT("tf_%s_%d"), Side, K));
+					const FCompactPoseBoneIndex B = FindBone(Bones, *BoneName(TEXT("tf_"), Side, TEXT("_"), K));
 					if (B.IsValid())
 					{
 						Output.Pose[B].SetScale3D(FVector(StreamerScale));
@@ -489,9 +527,8 @@ bool FBirdAnimProxy::Evaluate(FPoseContext& Output)
 			FTransform H = CS.GetComponentSpaceTransform(Head);
 			H.SetLocation(Want);
 			H.SetRotation(Was.GetRotation());
-			TArray<FBoneTransform> Out;
-			Out.Add(FBoneTransform(Head, H));
-			CS.SafeSetCSBoneTransforms(Out);
+			const FBoneTransform Out(Head, H);
+			CS.SafeSetCSBoneTransforms(TConstArrayView<FBoneTransform>(&Out, 1));
 		}
 	}
 	if (Grip.Weight > 1e-3f)
@@ -518,10 +555,10 @@ void FBirdAnimProxy::ApplyGrip(FCSPose<FCompactPose>& CS) const
 	{
 		// the leg first: knee to ankle to foot as two bones, the foot put on top of the branch right above its axis
 		// (one foot may be higher than the other on a sloping branch), the knee bending the way it bent
-		const FCompactPoseBoneIndex Shin = FindBone(Bones, *FString::Printf(TEXT("shin_%s"), Side));
-		const FCompactPoseBoneIndex Tarsus = FindBone(Bones, *FString::Printf(TEXT("tarsus_%s"), Side));
-		const FCompactPoseBoneIndex Foot = FindBone(Bones, *FString::Printf(TEXT("toes_%s"), Side));
-		const FCompactPoseBoneIndex Tip = FindBone(Bones, *FString::Printf(TEXT("toetip_%s"), Side));
+		const FCompactPoseBoneIndex Shin = FindBone(Bones, *BoneName(TEXT("shin_"), Side));
+		const FCompactPoseBoneIndex Tarsus = FindBone(Bones, *BoneName(TEXT("tarsus_"), Side));
+		const FCompactPoseBoneIndex Foot = FindBone(Bones, *BoneName(TEXT("toes_"), Side));
+		const FCompactPoseBoneIndex Tip = FindBone(Bones, *BoneName(TEXT("toetip_"), Side));
 		if (Shin.IsValid() && Tarsus.IsValid() && Foot.IsValid() && !UpAcross.IsNearlyZero())
 		{
 			const FVector Knee = CS.GetComponentSpaceTransform(Shin).GetLocation();
@@ -547,8 +584,8 @@ void FBirdAnimProxy::ApplyGrip(FCSPose<FCompactPose>& CS) const
 		}
 		for (const TCHAR* Toe : { TEXT("toes"), TEXT("hallux") })
 		{
-			const FCompactPoseBoneIndex B0 = FindBone(Bones, *FString::Printf(TEXT("%s_%s"), Toe, Side));
-			const FCompactPoseBoneIndex B1 = FindBone(Bones, *FString::Printf(TEXT("%stip_%s"), Toe[0] == TEXT('t') ? TEXT("toe") : Toe, Side));
+			const FCompactPoseBoneIndex B0 = FindBone(Bones, *BoneName(Toe, TEXT("_"), Side));
+			const FCompactPoseBoneIndex B1 = FindBone(Bones, *BoneName(Toe[0] == TEXT('t') ? TEXT("toe") : Toe, TEXT("tip_"), Side));
 			if (!B0.IsValid() || !B1.IsValid())
 			{
 				continue;
