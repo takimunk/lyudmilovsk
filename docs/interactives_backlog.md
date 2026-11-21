@@ -671,7 +671,7 @@ model (owner and dog keep together, leash never stretched through a wall), peopl
 
 ## 47. Reading anywhere
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The classics (`docs/books.md`, `SLyudBookReader`, `ULyudBenchSit`) can be read
+`[~] book-club 2026-11-21 (branch book-club)` **Cloud-only. Brief (Opus 5.5):** The classics (`docs/books.md`, `SLyudBookReader`, `ULyudBenchSit`) can be read
 only on a park bench. Let a book on loan be read wherever the hero sits or rides: any public seat (`ULyudPublicSpots`
 "bench" and "chair" spots, the sanatorium lounge, the café tables), the beach towel, the cable car cabin and the train's
 window seat (the clock moves as he reads, so a ride passes in pages), the hero's own room (item 19). Light matters: after
@@ -684,7 +684,7 @@ and the hero gets a polite postcard (item 11's letters). Done: unit tests of the
 
 ## 48. The book club
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** Give the library a social side. A reading circle meets on Thursday evenings in
+`[~] book-club 2026-11-21 (branch book-club)` **Cloud-only. Brief (Opus 5.5):** Give the library a social side. A reading circle meets on Thursday evenings in
 the reading room (a town-life gathering of four or five residents by persona: the retired teacher, the student, the
 librarian, a scientist from Academgorodok), each month one book from the catalogue (`tools/books/catalog.json`, in all
 three languages); they sit, talk in turns (bark lines about the month's book, written for each of twelve books, ru/en/ja,
