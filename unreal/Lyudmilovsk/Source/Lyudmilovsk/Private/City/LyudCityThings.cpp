@@ -1,4 +1,5 @@
 #include "City/LyudCityThings.h"
+#include "People/LyudTownRumours.h"
 
 #include "CityThingsModel.h"
 #include "CityCupsModel.h"
@@ -170,6 +171,11 @@ namespace LyudCityThingsImpl
 			}
 		}
 		W.Weather = WeatherNow(World);
+		// what the town says of the hero now: the staff's topic «Что говорят в городе?» (docs/town_rumours.md)
+		if (ULyudTownRumours* Rumours = ULyudTownRumours::Get(World))
+		{
+			W.Rumours = &Rumours->KindsGoingRound();
+		}
 		return W;
 	}
 
@@ -1739,6 +1745,12 @@ void ULyudCityThings::AnnounceStamps(const TArray<FString>& Stamps)
 		const int32 Got = Model->CountStamps(Set);
 		const int32 All = (int32)C->Pieces.size();
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: stamp %s (%d of %d)"), *Stamp, Got, All);
+		// the quests (and the talk of the town, docs/town_rumours.md) hear of a stamp, and of a collection made whole
+		ULyudQuests::Notify(this, TEXT("stamp"), Stamp);
+		if (Got >= All)
+		{
+			ULyudQuests::Notify(this, TEXT("stamp_set"), LyudCityThingsImpl::Str(Set));
+		}
 		if (Screen)
 		{
 			const FString Title = LyudText::Get(LyudCityThingsImpl::Str(C->Title)).ToString();
@@ -1964,6 +1976,14 @@ FText ULyudCityThings::LineText(const FString& Key) const
 {
 	const FText Text = LyudText::Get(Key);
 	const FString& Words = Text.ToString();
+	// the staff's answer about the talk of the town names what is said ({detail}: city.ask.town_talk.<kind>, docs/town_rumours.md)
+	static const FString TalkHead = TEXT("city.ask.town_talk.");
+	if (Words.Contains(TEXT("{detail}")) && Key.StartsWith(TalkHead))
+	{
+		const ULyudTownRumours* Rumours = ULyudTownRumours::Get(this);
+		const FString Detail = Rumours ? Rumours->DetailOf(Key.Mid(TalkHead.Len())) : FString();
+		return FText::FromString(Words.Replace(TEXT("{detail}"), *Detail));
+	}
 	if (!Words.Contains(TEXT("{time}")))
 	{
 		return Text;
@@ -2266,7 +2286,13 @@ void ULyudCityThings::FinishGame()
 		case LyudCity::ECupNote::Replay: CupNote = LyudText::Get(TEXT("city.cup.note.replay")).ToString(); break;
 		case LyudCity::ECupNote::Next: CupNote = LyudText::Get(TEXT("city.cup.note.next"), { FStringFormatArg(UTF8_TO_TCHAR(LyudCity::FCups::Hm(CR.NextHour).c_str())) }).ToString(); break;
 		case LyudCity::ECupNote::Out: CupNote = LyudText::Get(TEXT("city.cup.note.out")).ToString(); break;
-		case LyudCity::ECupNote::Champion: CupNote = LyudText::Get(TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString(); break;
+		case LyudCity::ECupNote::Champion:
+			CupNote = LyudText::Get(TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString();
+			if (Cup)
+			{
+				ULyudQuests::Notify(this, TEXT("cup_won"), LyudCityThingsImpl::Str(Cup->Id));    // the town talks of it (docs/town_rumours.md)
+			}
+			break;
 		default: break;
 		}
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: tournament %s round %d: %s"), Cup ? *LyudCityThingsImpl::Str(Cup->Id) : TEXT("?"), CupMatchRound, *CupNote);
@@ -2309,6 +2335,11 @@ void ULyudCityThings::FinishGame()
 			}
 		}
 		ULyudQuests::Notify(this, TEXT("win"), LyudCityThingsImpl::Str(End.Target));
+		if (!End.Opponent.empty())
+		{
+			// a regular beaten: they tell their friends (the talk of the town, docs/town_rumours.md; the name key: npc.<key>.name)
+			ULyudQuests::Notify(this, TEXT("beat"), LyudCityThingsImpl::Str(End.Opponent));
+		}
 	}
 	const bool bSeated = bGameSeated;
 	const int32 Minutes = GameMinutes;

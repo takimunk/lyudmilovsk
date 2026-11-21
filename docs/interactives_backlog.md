@@ -355,7 +355,7 @@ the other, or split by building (28 public rooms, 31 houses). Everyone touching 
 
 ## 22. The town reacts to the hero's day
 
-`[ ]` **Brief (Fable 5.2):** Tonight added many things the hero can do (jobs, kites, beach games, cinema, tournaments,
+`[~] town-talk-hero 2026-11-20 (branch ready, waiting for merge; docs/town_rumours.md)` **Brief (Fable 5.2):** Tonight added many things the hero can do (jobs, kites, beach games, cinema, tournaments,
 letters, friends, the sanatorium course, instruments). Make the town notice. Collect the hero's notable events of the day
 (quest events `ULyudQuests::Notify` already carry most of them: wins, catches, jobs done, festival watches, birds tamed) into
 a small "talk of the town" store (saved, decays over 3-5 game days), and feed it to: barks of residents who saw it or heard

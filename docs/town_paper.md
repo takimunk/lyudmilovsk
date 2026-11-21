@@ -90,3 +90,7 @@ Also `python3 tools/city/interiors.py --check` and `tools/citysim/run.sh` (the b
 Nothing to import: the paper is text. Build, then: `lyud.Paper.Print 3`; buy a paper at a kiosk and read it (E/D through four
 pages; the last page toasts "Read an issue … 1 of N"); `Dev.Do time.plus_day`, read again (a different front); the library
 rack shows both issues with their marks; `lyud.Language en` / `ja` and look for raw keys.
+
+## «Говорят в городе»
+
+The morning paper prints up to two lines about the day before's talk of the town (ULyudTownRumours::PaperColumn, FFacts.Talk), before the birthdays. Words: tools/rumours/rumours.py (PAPER), docs/town_rumours.md.

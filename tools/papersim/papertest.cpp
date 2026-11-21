@@ -104,6 +104,16 @@ struct FDie
 };
 
 /** A made-up day: the season's temperatures, a sky by the die, tides that walk 50 minutes a day, now and then a deed. */
+/** The column «Говорят в городе» (docs/town_rumours.md): rumours.json "paper" (kind -> how many lines), and a detail key per kind. */
+static std::vector<std::pair<std::string, int>> TalkKinds;
+static std::string TalkDetail(const std::string& Kind)
+{
+	if (Kind == "beat") return "@npc.t_sorokin_gennady.name";
+	if (Kind == "job") return "@rumour.job.kiosk";
+	if (Kind == "tune") return "@music.tune.fur_elise";
+	return std::string();
+}
+
 static FFacts MakeFacts(int Since, FDie& Die, const std::vector<std::string>& Quests)
 {
 	FFacts F;
@@ -138,6 +148,15 @@ static FFacts MakeFacts(int Since, FDie& Die, const std::vector<std::string>& Qu
 	if (Die.U() < 0.10f) F.Deeds.push_back({ Die.U() < 0.3f ? "record" : "catch", Fish[Die.I(6)], 200 + Die.I(4000) });
 	if (Die.U() < 0.05f && !Quests.empty()) F.Deeds.push_back({ "quest", Quests[(size_t)Die.I((int)Quests.size())], 0 });
 	if (Die.U() < 0.3f) F.BiteFish = Fish[Die.I(6)];
+	// the talk of the town about the hero (ULyudTownRumours::PaperColumn): now and then a line or two
+	for (int T = 0; T < 2 && !TalkKinds.empty() && Die.U() < 0.2f; ++T)
+	{
+		const auto& K = TalkKinds[(size_t)Die.I((int)TalkKinds.size())];
+		FLine L{ "rumour.paper." + K.first + "." + std::to_string(1 + Die.I(K.second)), {} };
+		const std::string D = TalkDetail(K.first);
+		if (!D.empty()) L.Args.push_back(D);
+		F.Talk.push_back(L);
+	}
 	// the clubs' tournaments (tournaments.json: Saturday chess, Wednesday dominoes, Sunday table tennis): today's to come,
 	// yesterday's over, with a champion from the regulars or the hero, the hero in it now and then
 	static const char* Cups[3][3] = { { "city.cup.cog_chess.title", "city.cup.venue.cog", "5" }, { "city.cup.san_dominoes.title", "city.cup.venue.san", "2" },
@@ -177,9 +196,17 @@ int main(int Argc, char** Argv)
 	for (int L = 0; L < 3; ++L)
 	{
 		const std::string Lang = Langs[L];
-		for (const char* Sub : { "", "city/", "town/", "quests/", "paper/", "films/" })
+		for (const char* Sub : { "", "city/", "town/", "quests/", "paper/", "films/", "rumours/", "instruments/" })
 		{
 			LoadTable(Content + "Localization/" + Sub + "strings_" + Lang + ".json", L);
+		}
+	}
+	{
+		LyudJson::FValue R;
+		std::string Err;
+		if (LyudJson::Parse(ReadFile(Content + "PeopleData/rumours.json"), R, Err))
+		{
+			for (const auto& Fd : R["paper"].Fields) TalkKinds.push_back({ Fd.first, Fd.second.I(0) });
 		}
 	}
 	std::vector<std::string> Quests;

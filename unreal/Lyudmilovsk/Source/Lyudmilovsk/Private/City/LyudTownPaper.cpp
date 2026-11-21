@@ -10,6 +10,7 @@
 #include "EngineUtils.h"
 #include "Festival/LyudFestival.h"
 #include "Fishing/LyudFishing.h"
+#include "People/LyudTownRumours.h"
 #include "HAL/IConsoleManager.h"
 #include "LyudText.h"
 #include "Misc/FileHelper.h"
@@ -361,6 +362,23 @@ void ULyudTownPaper::BuildFacts(int32 Since, LyudPaper::FFacts& Out) const
 				C.bOver = Back == 1;
 				(Back == 1 ? Out.CupsYesterday : Out.CupsToday).push_back(MoveTemp(C));
 			}
+		}
+	}
+
+	// --- the talk of the town about the hero yesterday (ULyudTownRumours: the column «Говорят в городе»)
+	if (const ULyudTownRumours* Rumours = ULyudTownRumours::Get(World))
+	{
+		TArray<TPair<FString, TArray<FString>>> Lines;
+		Rumours->PaperColumn(ULyudTownRumours::DayOf(Day), Lines);
+		for (const TPair<FString, TArray<FString>>& L : Lines)
+		{
+			LyudPaper::FLine Line;
+			Line.Key = LyudTownPaperImpl::Std(L.Key);
+			for (const FString& A : L.Value)
+			{
+				Line.Args.push_back(LyudTownPaperImpl::Std(A));
+			}
+			Out.Talk.push_back(MoveTemp(Line));
 		}
 	}
 
