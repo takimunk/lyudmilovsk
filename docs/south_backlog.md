@@ -33,9 +33,15 @@ What [south.md](south.md) leaves open, the nearest first. Everything here is a p
 - **Quests**: the places are plain map places (found by walking up); no quest uses them.
 - **Animals**: `tools/bird_habitats.py` and `tools/animal_map.py` are re-run after the land changed, but no habitat was
   drawn for the new land on purpose (kingfisher and dipper on the brook, bees at the hives, a heron at the mouth).
+  Since interactives item 43: the brook has bird places of its own (`tools/bird_habitats_brook.py`, kinds Brook and
+  Mouth plus the fishermen's shed's ridge; docs/bird_life.md "The brook"): the heron, wagtails, gulls, swallows and
+  martins, rooks and jackdaws, the cormorant use them. **Queued for the bird models thread:** the kingfisher (the
+  valley's bends, a perch over a pool) and the dipper (the ravine's stones): new species, they need models before the
+  bird life gets them. The bees at the hives and the reed's frogs are sound points as data (`tools/sound_points.py`,
+  docs/sound.md "Sound points"); the soundscape does not play them yet and their two sounds are not generated.
 
 ## Data to refresh after any change of the land here
 
 `python3 tools/south.py --check && python3 tools/south.py`, `tools/transport.py`, `tools/ui_map.py`, `tools/ui_map_ink.py`
-(LFS pictures: from the Mac), `tools/bird_habitats.py`, `tools/animal_map.py`, `tools/people_map.py`, then
+(LFS pictures: from the Mac), `tools/bird_habitats.py`, `tools/sound_points.py`, `tools/animal_map.py`, `tools/people_map.py`, then
 `unreal/scripts/build_scene01.sh`.
