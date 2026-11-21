@@ -42,6 +42,10 @@ OUT_CUPS = os.path.join(CONTENT, "City", "tournaments.json")
 OUT_STRINGS = os.path.join(CONTENT, "Localization", "city")
 QUESTS = os.path.join(CONTENT, "UI", "quests.json")
 MAP = os.path.join(CONTENT, "UI", "map.json")
+# the residents (FPersonInfo::Key of the people sim: the hand-made people and the townsfolk) a quest's photo may be of
+PEOPLE_FILES = (os.path.join(CONTENT, "PeopleData", "people.json"), os.path.join(CONTENT, "PeopleData", "townsfolk.json"))
+# what a quest's `photo <target>` may be besides a map place: the dog Maru, a resident's key (photo_subjects)
+PHOTO_ANIMALS = ("maru",)
 FESTIVALS = os.path.join(CONTENT, "PeopleData", "festivals.json")
 RUMOURS = os.path.join(CONTENT, "PeopleData", "rumours.json")   # the talk of the town's kinds (tools/rumours/rumours.py)
 LANGS = ("ru", "en", "ja")
@@ -65,12 +69,14 @@ DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 PUBLIC_KINDS_SKIP = ("residential", "square", "park", "pool")
 QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "talk", "bird", "walk", "leave_computer", "ask",
                "round_start", "round_done", "photo")  # round_*: the bicycle rounds (ULyudRounds, docs/rounds.md); photo: the film camera
+# (photo <map place | maru | resident key>: a sharp developed frame taken there, or of the dog, or of that resident)
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
               "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open")
 # screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics, the
-# photo studio's counter service and the darkroom where the hero develops his own film (Private/Photo/LyudPhoto.cpp)
-OPEN_SCREENS = ("books", "piano", "photo_lab", "photo_darkroom")
+# photo studio's counter service, the darkroom where the hero develops his own film, the photo club's monthly contest (its
+# table: hand a print in, hear the result) and the wall of its winners (Private/Photo/LyudPhoto.cpp, docs/photo.md)
+OPEN_SCREENS = ("books", "piano", "photo_lab", "photo_darkroom", "photo_contest", "photo_wall")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
@@ -406,6 +412,40 @@ def prop_rule(rules, kind, props):
         if all(fnmatch.fnmatchcase(str(props.get(a)), b) for a, _, b in conds) and n > best_n:
             best, best_n = v, n
     return best
+
+
+def photo_subjects():
+    """The subjects a quest's `photo <target>` may name besides a place of map.json (Private/Photo/LyudPhoto.cpp sends the
+    event for a sharp developed frame of them): the dog Maru and every resident's key."""
+    out = set(PHOTO_ANIMALS)
+    for path in PEOPLE_FILES:
+        if os.path.exists(path):
+            out |= {p["key"] for p in load(path).get("people", []) if p.get("key")}
+    return out
+
+
+def spot_things(export, rules, plot, btype):
+    """Things a rule makes of a spot in a building that declares its own things: a rule naming the spot (<plot>/<spot id> or
+    <type>/<spot id>) with "spot": "<thing id>" and a "kind" puts a thing of that id at the spot's look point (KIND_LOOK); the
+    thing's act and props come from the rules naming the new id. For a use the building's model has a prop for but its
+    script declared no thing (the photo club's table with the box of contest prints, by the stool photo_seat_2)."""
+    out = []
+    for sp in export.get("spots", []):
+        patch = {}
+        for r in id_rules(rules, plot, btype, sp["id"]):
+            patch.update(r)
+        if not patch.get("spot"):
+            continue
+        kind = patch.get("kind")
+        if kind not in KIND_LOOK:
+            err("%s/%s: a rule with \"spot\" needs a \"kind\" (%s)" % (plot, sp["id"], ", ".join(KINDS)))
+            continue
+        rise, faces_user = KIND_LOOK[kind]
+        x, y, z = sp["pos"]
+        uyaw = sp.get("yaw", 0.0) or 0.0
+        out.append({"id": str(patch["spot"]), "kind": kind, "pos": [x, y, z + rise],
+                    "yaw": (uyaw + 180.0) % 360.0 if faces_user else uyaw, "props": {}})
+    return out
 
 
 def derive_things(export, rules, plot, btype):
@@ -1481,6 +1521,7 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
         declared = ex.get("things") or []
         if declared:
             raw = [{"id": t["id"], "kind": t["kind"], "pos": list(t["pos"]), "yaw": t.get("yaw", 0.0) or 0.0, "props": thing_props(t)} for t in declared]
+            raw += spot_things(ex, rules, pl["id"], pl["building"])
         else:
             raw = derive_things(ex, rules, pl["id"], pl["building"])
         fp = ex.get("footprint") or []
@@ -1999,6 +2040,7 @@ def quest_line(q):
 
 def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_ids):
     keys = []
+    photo_of = photo_subjects()
     for q in quests:
         qid = q["id"]
         if qid in existing_ids:
@@ -2030,8 +2072,9 @@ def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_id
                     err("quest %s: %s %s: unknown item" % (qid, ev, tgt))
                 if ev == "reach" and tgt not in map_places:
                     err("quest %s: reach %s: not a map place" % (qid, tgt))
-                if ev == "photo" and tgt not in map_places:
-                    err("quest %s: photo %s: not a map place (a developed frame is of a place of map.json)" % (qid, tgt))
+                if ev == "photo" and tgt not in map_places and tgt not in photo_of:
+                    err("quest %s: photo %s: not a map place, maru or a resident's key (a developed frame is of a place of "
+                        "map.json, of the dog Maru or of a resident of people.json/townsfolk.json)" % (qid, tgt))
                 if ev == "ask" and tgt not in TOPICS:
                     err("quest %s: ask %s: no such topic" % (qid, tgt))
     for k in keys:

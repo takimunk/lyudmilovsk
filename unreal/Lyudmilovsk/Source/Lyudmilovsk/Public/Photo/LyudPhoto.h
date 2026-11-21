@@ -18,6 +18,10 @@ namespace PhotoModel
 	struct FShot;
 	struct FDeveloped;
 }
+namespace PhotoContest
+{
+	class FState;
+}
 
 /**
  * The hero's film camera (docs/photo.md, backlog item 2). V raises it to the eye when the pocket holds a `camera`:
@@ -33,7 +37,11 @@ namespace PhotoModel
  * the place), the studio's counter and the darkroom (city acts with "open": "photo_lab" / "photo_darkroom"), the album
  * (P), and what a development hands out: stamps, bird sightings, the quest event "photo <place>".
  *
- * Console: lyud.Photo.Raise 0|1, lyud.Photo.Shoot, lyud.Photo.Develop (every film, at once), lyud.Photo.Album, lyud.Photo.State.
+ * The photo club's monthly contest (docs/photo.md "The contest"; rules in Private/Photo/PhotoContestModel): the club's
+ * contest box is a city act with "open": "photo_contest" (hand in one print of the album by the 25th, hear the result from
+ * the 26th), the wall of winners one with "open": "photo_wall".
+ *
+ * Console: lyud.Photo.Contest, lyud.Photo.Wall, lyud.Photo.Raise 0|1, lyud.Photo.Shoot, lyud.Photo.Develop (every film, at once), lyud.Photo.Album, lyud.Photo.State.
  */
 UCLASS()
 class LYUDMILOVSK_API ULyudPhoto : public UTickableWorldSubsystem, public ILyudSaveable
@@ -80,6 +88,17 @@ public:
 	void DevelopAllNow();
 	PhotoModel::FState& State();
 
+	/** The contest's box at the club: the result of a judged contest and its prize, or the album to pick this month's print from. */
+	void UseContest();
+	/** The club's wall: the hero's prints that took a prize. */
+	void ShowWall();
+	PhotoContest::FState& Contest();
+	/**
+	 * For the paper: true when the hero entered the contest of that month; the place the print took, 1..6 (worked out from
+	 * its score, so it is known from the 26th whether or not the hero has been to the club), and the map place it was taken at.
+	 */
+	static bool ContestNews(const UObject* WorldContext, int32 Year, int32 Month, int32& OutPlace, FString& OutShotPlace);
+
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
 	virtual void Deinitialize() override;
 	virtual void Tick(float DeltaTime) override;
@@ -107,6 +126,11 @@ private:
 	void TellPlaces();
 	void Say(const TCHAR* Key, const TArray<FStringFormatArg>& Args = TArray<FStringFormatArg>());
 	void ShowAlbumPage();
+	void OpenPages(int32 Mode);
+	/** The pick mode's choice: the print Index of the open page goes to the contest. */
+	void PickPrint(int32 Index);
+	/** The year, month and day of the game now. */
+	void Today(int32& Year, int32& Month, int32& Day) const;
 	void CloseAlbum();
 	void FinishDarkroom();
 	void LockHero(bool bLock);
@@ -120,6 +144,9 @@ private:
 	UPROPERTY(SaveGame)
 	FString GameId;
 
+	UPROPERTY(SaveGame)
+	FString SavedContest;
+
 	UPROPERTY()
 	TObjectPtr<USceneCaptureComponent2D> Capture;
 
@@ -131,6 +158,9 @@ private:
 	TArray<TObjectPtr<UTexture2D>> PagePrints;
 
 	TPimplPtr<PhotoModel::FState> Model;
+	TPimplPtr<PhotoContest::FState> ContestModel;
+	/** What the open pages are: 0 the album, 1 the album to pick the contest's print from, 2 the club's wall of winners. */
+	int32 AlbumMode = 0;
 	TSharedPtr<SWidget> Finder;
 	TSharedPtr<SWidget> Album;
 	bool bRaised = false;
