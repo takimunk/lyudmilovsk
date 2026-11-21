@@ -145,6 +145,15 @@ ROWS = [
     ("line.transport.attendant.regular.2", "Доброе утро! Кабинка будет через пару минут.", "Good morning! Your cabin will be here in a couple of minutes.", "おはようございます！キャビンはあと二、三分で来ますよ。"),
     ("line.transport.attendant.regular.3", "Как здоровье? Давно вас не было видно.", "How are you keeping? We haven't seen you for a while.", "お元気でしたか？しばらくお見かけしませんでしたね。"),
     ("line.transport.attendant.regular.4", "Сегодня ветрено, держитесь за поручень.", "It's windy today. Hold on to the rail.", "今日は風が強いので、手すりにおつかまりください。"),
+    ("line.transport.wait.rain.1", "Ну и льёт. Переждём тут.", "It's pouring. We'll wait it out in here.", "すごい雨だね。ここでやり過ごそう。"),
+    ("line.transport.wait.rain.2", "Хорошо, что зал тёплый.", "Good thing the hall is warm.", "待合室が暖かくてよかった。"),
+    ("line.transport.wait.rain.3", "Зонт дома остался, как назло.", "My umbrella is at home, of course.", "よりによって傘は家に置いてきちゃった。"),
+    ("line.transport.wait.rain.4", "Смотри, как по стеклу течёт.", "Look at it running down the glass.", "見て、ガラスを雨が流れていくよ。"),
+    ("line.transport.barista.order.1", "Сейчас налью, минуточку.", "One moment, I'll pour it now.", "少々お待ちください、今お注ぎしますね。"),
+    ("line.transport.barista.order.2", "Пирожок погреть?", "Shall I warm the pie up?", "ピロシキ、温めましょうか？"),
+    ("line.transport.barista.order.3", "Сдачу не забудьте.", "Don't forget your change.", "おつりをお忘れなく。"),
+    ("transport.hall.bell_prompt", "E — позвонить в звонок", "E: ring the bell", "E：呼び鈴を鳴らす"),
+    ("transport.hall.closed_note", "Никто не выходит. Станция откроется в {0}.", "Nobody comes. The station opens at {0}.", "誰も出てこない。駅は{0}に開く。"),
 ]
 
 

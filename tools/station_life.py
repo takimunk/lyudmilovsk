@@ -267,7 +267,7 @@ def trips_for(folk, places, network, staff, researchers):
     def add(p, group, trips):
         trips = [t for t in trips if t]
         if trips:
-            riders.append({"key": p["key"], "group": group, "mesh": p.get("mesh", ""), "trips": trips})
+            riders.append({"key": p["key"], "group": group, "mesh": p.get("mesh", ""), "age": p["age"], "trips": trips})
 
     def trip(a, b, at, days, cond="", chance=1.0):
         at = round(at, 3)
@@ -348,7 +348,7 @@ def trips_for(folk, places, network, staff, researchers):
             if go:
                 a, b, wa, r, wb, _ = go
                 # "at" for a festival trip: minutes after the evening's end (the game adds the end's hour)
-                riders.append({"key": key, "group": "festival", "mesh": p.get("mesh", ""), "trips": [
+                riders.append({"key": key, "group": "festival", "mesh": p.get("mesh", ""), "age": p["age"], "trips": [
                     {"from": a, "to": b, "at": round(wa / 3600.0 + h01(key, "fest") * 0.4, 3), "days": list(range(7)),
                      "if": "festival_end", "chance": 0.5}]})
     return riders

@@ -2304,5 +2304,14 @@
  "dev.group.kite": "Воздушные змеи",
  "dev.action.kite.give": "Выдать змеев (ромб и коробку)",
  "dev.action.kite.test": "Десять змеев по ветру (бенч)",
- "dev.tp.kite_beach": "Пляж для змеев"
+ "dev.tp.kite_beach": "Пляж для змеев",
+ "line.transport.wait.rain.1": "Ну и льёт. Переждём тут.",
+ "line.transport.wait.rain.2": "Хорошо, что зал тёплый.",
+ "line.transport.wait.rain.3": "Зонт дома остался, как назло.",
+ "line.transport.wait.rain.4": "Смотри, как по стеклу течёт.",
+ "line.transport.barista.order.1": "Сейчас налью, минуточку.",
+ "line.transport.barista.order.2": "Пирожок погреть?",
+ "line.transport.barista.order.3": "Сдачу не забудьте.",
+ "transport.hall.bell_prompt": "E — позвонить в звонок",
+ "transport.hall.closed_note": "Никто не выходит. Станция откроется в {0}."
 }

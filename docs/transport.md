@@ -389,6 +389,30 @@ gale stops the line.
   hides an out-of-town worker at its square; the station shows them from their home station), voices.
 - Console: `Transport.Hall [station]` (the hall's people and the day's life in one line).
 
+## Hall moods: who waits where, by the hour and the weather (2026-11-21)
+
+The waiting people of a hall (the station life's riders and the passers-by) pick their places and what they do there by the
+hall's mood (`FHallMood` in `Private/Transport/StationLife.h`, plain C++, tested by `tools/transportsim/run.sh town`):
+the hour, a weekend, rain (PrecipRate over 0.1), the wind warning and the wind stop, whether the buffet's barista is on shift.
+`HallPick` scores every free place out of the player's sight for the person (their age comes with `station_life.json`'s
+riders; a passer-by is 18..78) and takes the best:
+
+- the rush (7:00-9:30, 16:30-19:00): the counter, the railing, standing; the counter's line itself is the front door's
+  (docs/front_door.md: `LineSlots`, `LyudFrontDoor::JoinSpot`), which riders join in the morning, in either rush and at a
+  wind stop (`HallPick` never puts anyone in the line; its queue rule is the same "from the counter back" for the tests);
+- the morning: the seats and the paper rack read (the old most of all); lunch (11:30-14:30) and the evening eat at the
+  cafe's tables, more on a weekend;
+- children (under 16) go to the windows and the diagram and look; teenagers to the windows too;
+- rain: 2..4 more passers-by out of the weather (`HallFiller`), the windows and the counter fuller, words of the rain
+  (`line.transport.wait.rain.N`); the wind stop: tea at the counter, words with the neighbour, the attendant talking to the hall;
+- walking out of a cabin: never a seat or the queue, a look at the window or the diagram on the way.
+
+The staff's routines (`TickStaff`, every 20..45 s): the barista works the counter while anyone waits at it (at once when a
+queue forms), else wipes, looks about, reads in a late quiet hour; the attendant keeps the logbook in a quiet hour, looks up
+at whoever comes off a cabin, speaks to the hall at a wind stop. T at the barista: she takes the order with a word
+(`line.transport.barista.order.N`) and works the counter. A shut hall at night: E at the attendant's empty desk rings the
+bell (station_chime), nobody comes, the station opens at 5:45 (`transport.hall.closed_note`).
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a

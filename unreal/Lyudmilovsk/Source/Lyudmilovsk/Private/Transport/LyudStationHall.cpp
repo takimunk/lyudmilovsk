@@ -14,6 +14,8 @@
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
+#include "Weather/LyudWeather.h"
+#include "UI/LyudGameScreen.h"
 #include "HeroCharacter.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
@@ -342,6 +344,131 @@ bool ALyudStationHall::LifeOpen() const
 	return !T || !T->GetLife() || T->GetLife()->IsOpen(T->LifeHour());
 }
 
+LyudTransport::FHallMood ALyudStationHall::Mood() const
+{
+	LyudTransport::FHallMood M;
+	const ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this);
+	const LyudTransport::FStationLife* Life = Tr ? Tr->GetLife() : nullptr;
+	int32 Weekday = 0;
+	if (Life)
+	{
+		M.Hour = FMath::Fmod(Tr->LifeHour(), 24.f);
+		Weekday = Tr->LifeWeekday();
+		M.bWindy = Life->LastWind() >= Life->WindWarn;
+		M.bStopped = Life->IsWindStopped();
+		M.bBuffet = Life->OnShift(Station, "barista", Weekday, Tr->LifeHour()) >= 0;
+	}
+	else
+	{
+		const FDateTime Now = UGameCalendar::NowIn(GetWorld());
+		M.Hour = Now.GetHour() + Now.GetMinute() / 60.f;
+		Weekday = ((int32)Now.GetDayOfWeek()) % 7;   // EDayOfWeek: 0 Monday
+		M.bBuffet = StaffOnDuty();
+	}
+	M.bWeekend = Weekday >= 5;
+	if (const ULyudWeatherSubsystem* W = ULyudWeatherSubsystem::Get(this))
+	{
+		M.bRain = W->GetState().PrecipRate > 0.1f;
+	}
+	return M;
+}
+
+int32 ALyudStationHall::PickSlot(const FString& Key, int32 Age, bool bOut, const TFunctionRef<bool(const FVector&)>& Unseen, uint32 Salt) const
+{
+	std::vector<LyudTransport::FHallPlace> Places;
+	Places.reserve(Slots.Num());
+	for (const FSlot& S : Slots)
+	{
+		LyudTransport::FHallPlace P;
+		P.Kind = (LyudTransport::EHallSpot)S.Kind;
+		P.bTaken = S.Who >= 0;
+		P.Queue = S.Line > 0 ? S.Line : 0;
+		P.bOpen = !P.bTaken && S.Kind != (uint8)LyudTransport::EHallSpot::Queue && Unseen(S.At);   // the line fills by itself
+		Places.push_back(P);
+	}
+	return LyudTransport::HallPick(Places, TCHAR_TO_UTF8(*Key), Age, bOut, Mood(), Salt);
+}
+
+static EPersonPose PersonPose(LyudTransport::EHallPose P)
+{
+	switch (P)
+	{
+	case LyudTransport::EHallPose::Talk: return EPersonPose::Talk;
+	case LyudTransport::EHallPose::Look: return EPersonPose::Look;
+	case LyudTransport::EHallPose::Sit: return EPersonPose::Sit;
+	case LyudTransport::EHallPose::Eat: return EPersonPose::Eat;
+	case LyudTransport::EHallPose::Read: return EPersonPose::Read;
+	case LyudTransport::EHallPose::Work: return EPersonPose::Work;
+	default: return EPersonPose::Stand;
+	}
+}
+
+uint8 ALyudStationHall::PoseAt(int32 K, int32 Age, float Roll) const
+{
+	if (!Slots.IsValidIndex(K))
+	{
+		return (uint8)EPersonPose::Stand;
+	}
+	EPersonPose P = PersonPose(LyudTransport::HallPose(Age, (LyudTransport::EHallSpot)Slots[K].Kind, Mood(), Roll));
+	// a seat holds a seated pose (Sit, Read, Eat play seated; a word with the neighbour sits as Sit); a standing place never sits
+	if (Slots[K].SeatHeight > 0.f && P != EPersonPose::Read && P != EPersonPose::Eat)
+	{
+		P = EPersonPose::Sit;
+	}
+	else if (Slots[K].SeatHeight <= 0.f && P == EPersonPose::Sit)
+	{
+		P = EPersonPose::Stand;
+	}
+	// in the counter's line (the counter place too) they stand and wait their turn; the barista does the talking
+	if (Slots[K].Line >= 0 && P == EPersonPose::Talk)
+	{
+		P = EPersonPose::Stand;
+	}
+	return (uint8)P;
+}
+
+void ALyudStationHall::TickStaff()
+{
+	// every 20..45 s each of the staff changes a little: the barista works the counter while anyone waits at it, else wipes,
+	// looks about, reads late; the attendant keeps the logbook in a quiet hour, speaks to the hall at a wind stop
+	const LyudTransport::FHallMood M = Mood();
+	int32 Customers = 0, Waiting = 0;
+	for (const FPerson& P : People)
+	{
+		if (P.Role == TEXT("passenger") && P.Body.IsValid() && P.GoneSince < 0.0)
+		{
+			Waiting++;
+			if (Slots.IsValidIndex(P.Slot) && (Slots[P.Slot].Kind == (uint8)LyudTransport::EHallSpot::Counter
+				|| Slots[P.Slot].Kind == (uint8)LyudTransport::EHallSpot::Queue))
+			{
+				Customers++;
+			}
+		}
+	}
+	for (FPerson& P : People)
+	{
+		if (P.Role == TEXT("passenger") || !P.Body.IsValid())
+		{
+			continue;
+		}
+		const bool bBarista = P.Role == TEXT("barista");
+		// a queue forming: the barista gets to work at once
+		const bool bNow = bBarista && Customers > 0 && P.BasePose != (uint8)EPersonPose::Work && P.BasePose != (uint8)EPersonPose::Talk;
+		if (Clock < P.NextRoutine && !bNow)
+		{
+			continue;
+		}
+		const float Roll = LyudTransport::LifeHash(TCHAR_TO_UTF8(*P.Role.ToString()), (uint32)(Clock * 10.f) + Seed);
+		P.NextRoutine = Clock + 20.f + 25.f * Roll;
+		const LyudTransport::EHallPose HP = bBarista ? LyudTransport::BaristaPose(Customers, M, Roll) : LyudTransport::AttendantPose(Waiting, M, Roll);
+		P.BasePose = (uint8)PersonPose(HP);
+		if (P.TalkLeft <= 0.f)
+		{
+			P.Pose = P.BasePose;
+		}
+	}
+}
+
 FString ALyudStationHall::LifeModel(const FString& Key, const FString& Mesh, int32& OutPid) const
 {
 	// their own face: the model the town shows them by (their body, or the stand-in nobody else wears), else the pool's
@@ -379,14 +506,16 @@ int32 ALyudStationHall::WantPassengers() const
 		{
 			return 0;
 		}
+		// (the rain brings more in: docs/transport.md "Hall moods")
 		const int32 H = (int32)T->LifeHour();
-		return H < 7 || H >= 23 ? 0 : (int32)((Seed + (uint32)T->LifeWeekday() * 7u + (uint32)H) % 3u);
+		return FMath::Min(LyudTransport::HallFiller(Mood(), Seed + (uint32)T->LifeWeekday() * 7u + (uint32)H * 131u), Slots.Num() / 2);
 	}
 	// by the hour: the morning and the evening rush, a quiet afternoon, almost nobody at night
 	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
 	const int32 H = Now.GetHour();
 	int32 N = H < 6 ? 0 : H < 7 ? 2 : H < 10 ? 7 : H < 17 ? 4 : H < 20 ? 7 : H < 23 ? 3 : 1;
 	N += (int32)((Seed + Now.GetDay() * 31 + H) % 3) - 1;
+	N += Mood().bRain && H >= 6 ? 3 : 0;
 	return FMath::Clamp(N, 0, FMath::Min(9, Slots.Num()));
 }
 
@@ -459,41 +588,36 @@ void ALyudStationHall::SpawnPeople()
 			}
 		}
 	}
-	// the passengers: free places picked by this visit's luck, seated ones reading or eating now and then
+	// the passengers: places by the hall's mood (the hour, the weather; docs/transport.md "Hall moods"), each their own; the
+	// line's places behind the counter fill by the line itself
 	const int32 Want = WantPassengers();
 	FRandomStream R(Seed ^ (uint32)(GetWorld()->GetTimeSeconds() * 10.0));
-	TArray<int32> Order;
-	for (int32 I = 0; I < Slots.Num(); I++)
+	for (FSlot& S : Slots)
 	{
-		Slots[I].Who = -1;
-		Order.Add(I);
+		S.Who = -1;
 	}
-	for (int32 I = Order.Num() - 1; I > 0; I--)
+	const uint32 Visit = R.GetUnsignedInt();
+	for (int32 Made = 0, Tries = 0; Made < Want && Tries < Want + 4; Tries++)
 	{
-		Order.Swap(I, R.RandRange(0, I));
-	}
-	int32 Made = 0;
-	for (int32 K = 0; K < Order.Num() && Made < Want; K++)
-	{
-		FSlot& S = Slots[Order[K]];
-		if ((S.Kind == 2 && !StaffOnDuty()) || S.Kind == 8)
+		const FString Key = FString::Printf(TEXT("hall_%d_%u_%d"), Station, Visit, Tries);
+		const int32 Age = 18 + (int32)(LyudTransport::LifeHash(TCHAR_TO_UTF8(*Key), 3u) * 60.f);
+		const int32 K = PickSlot(Key, Age, false, [](const FVector&) { return true; }, Visit);
+		if (K < 0)
 		{
-			continue;          // nobody queues at a shut buffet; the line's places behind the counter fill by the line itself
+			break;
 		}
 		FPerson P;
 		P.Role = TEXT("passenger");
-		P.Slot = Order[K];
-		P.At = S.At;
-		P.Yaw = S.Yaw;
-		P.SeatHeight = S.SeatHeight;
-		const float Roll = R.FRand();
-		P.Pose = (uint8)(S.SeatHeight > 0.f ? (S.Kind == 1 ? (Roll < 0.5f ? EPersonPose::Eat : EPersonPose::Read)
-			: (Roll < 0.3f ? EPersonPose::Read : EPersonPose::Sit))
-			: (S.Kind == 6 || S.Kind == 5 ? EPersonPose::Look : (Roll < 0.25f ? EPersonPose::Talk : EPersonPose::Stand)));
-		P.Model = PickModel(Order[K] * 13 + Made);
+		P.Slot = K;
+		P.Age = Age;
+		P.At = Slots[K].At;
+		P.Yaw = Slots[K].Yaw;
+		P.SeatHeight = Slots[K].SeatHeight;
+		P.Pose = PoseAt(K, Age, R.FRand());
+		P.Model = PickModel(K * 13 + Made);
 		if (SpawnPerson(P))
 		{
-			S.Who = People.Add(P);
+			Slots[K].Who = People.Add(P);
 			Made++;
 		}
 	}
@@ -572,26 +696,24 @@ void ALyudStationHall::Churn(const FVector& Cam, const FVector& Look)
 	}
 	if (Have < Want)
 	{
-		for (int32 Tries = 0; Tries < 8; Tries++)
+		const FString Key = FString::Printf(TEXT("hall_%d_%u"), Station, R.GetUnsignedInt());
+		const int32 Age = 18 + (int32)(LyudTransport::LifeHash(TCHAR_TO_UTF8(*Key), 3u) * 60.f);
+		const int32 K = PickSlot(Key, Age, false, Unseen, (uint32)Clock);
+		if (K >= 0)
 		{
-			const int32 K = R.RandRange(0, Slots.Num() - 1);
-			if (!Slots.IsValidIndex(K) || Slots[K].Who >= 0 || Slots[K].Kind == 8 || !Unseen(Slots[K].At) || (Slots[K].Kind == 2 && !StaffOnDuty()))
-			{
-				continue;
-			}
 			FPerson P;
 			P.Role = TEXT("passenger");
 			P.Slot = K;
+			P.Age = Age;
 			P.At = Slots[K].At;
 			P.Yaw = Slots[K].Yaw;
 			P.SeatHeight = Slots[K].SeatHeight;
-			P.Pose = (uint8)(P.SeatHeight > 0.f ? (R.FRand() < 0.35f ? EPersonPose::Read : EPersonPose::Sit) : EPersonPose::Stand);
+			P.Pose = PoseAt(K, Age, R.FRand());
 			P.Model = PickModel(K * 17 + (int32)Clock);
 			if (SpawnPerson(P))
 			{
 				Slots[K].Who = People.Add(P);
 			}
-			break;
 		}
 	}
 	// the dead entries (gone people) out of the list now and then, the slots' indices kept right
@@ -715,11 +837,15 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 		const LyudTransport::FLifeTrip& T = Life->Trips[R.Trip];
 		const LyudTransport::FLifeRider& Rd = Life->Riders[T.Rider];
 		const bool bOut = R.Phase == LyudTransport::ELifePhase::Out;
-		// a place: the one their name picks first, else the next free one (walking out: a standing place by the door side)
+		// a place: the counter's line in a rush, else by the mood and who they are (a child to the window, the old to a
+		// seat and the paper; walking out: a standing place, a look at the window or the diagram)
 		int32 K = -1;
 		const uint32 H0 = GetTypeHash(FString(UTF8_TO_TCHAR(Rd.Key.c_str())));
-		// the morning rush: most of them queue for a coffee first (behind whoever is at the counter, never before the hero)
-		if (!bOut && bBuffet && LineSlots.Num() > 1 && Tr->LifeHour() < 10.5f && LyudTransport::LifeHash(Rd.Key, 211u + (uint32)I) < 0.6f)
+		// the morning rush (and the evening one, and a wind stop's tea): most of them queue for a coffee first (behind whoever
+		// is at the counter, never before the hero)
+		const LyudTransport::FHallMood M = Mood();
+		const bool bQueueHour = Tr->LifeHour() < 10.5f || M.IsRush() || M.bStopped;
+		if (!bOut && bBuffet && LineSlots.Num() > 1 && bQueueHour && LyudTransport::LifeHash(Rd.Key, 211u + (uint32)I) < 0.6f)
 		{
 			TArray<int32> State;
 			LineState(State);
@@ -730,15 +856,9 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 				K = LineSlots[J];
 			}
 		}
-		for (int32 J = 0; J < Slots.Num() && K < 0; J++)
+		if (K < 0)
 		{
-			const int32 C = (int32)((H0 + (uint32)J * 7u) % (uint32)Slots.Num());
-			const FSlot& S = Slots[C];
-			if (S.Who >= 0 || S.Kind == 8 || (S.Kind == 2 && !bBuffet) || (bOut && S.SeatHeight > 0.f) || !Unseen(S.At))
-			{
-				continue;
-			}
-			K = C;
+			K = PickSlot(UTF8_TO_TCHAR(Rd.Key.c_str()), Rd.Age, bOut, Unseen, (uint32)Life->Day * 17u + (uint32)I);
 		}
 		if (K < 0)
 		{
@@ -751,10 +871,8 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 		P.At = Slots[K].At;
 		P.Yaw = Slots[K].Yaw;
 		P.SeatHeight = Slots[K].SeatHeight;
-		const float Roll = LyudTransport::LifeHash(Rd.Key, 53u + (uint32)I);
-		P.Pose = (uint8)(P.SeatHeight > 0.f ? (Slots[K].Kind == 1 ? (Roll < 0.5f ? EPersonPose::Eat : EPersonPose::Read)
-			: (Roll < 0.35f ? EPersonPose::Read : EPersonPose::Sit))
-			: (Slots[K].Kind == 6 || Slots[K].Kind == 5 ? EPersonPose::Look : (Roll < 0.2f && Slots[K].Line < 0 ? EPersonPose::Talk : EPersonPose::Stand)));
+		P.Age = Rd.Age;
+		P.Pose = PoseAt(K, Rd.Age, LyudTransport::LifeHash(Rd.Key, 53u + (uint32)I));
 		P.Model = LifeModel(UTF8_TO_TCHAR(Rd.Key.c_str()), UTF8_TO_TCHAR(Rd.Mesh.c_str()), P.Pid);
 		if (P.Model.IsEmpty())
 		{
@@ -766,6 +884,20 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 			continue;
 		}
 		Slots[K].Who = People.Add(P);
+		// off a cabin: the attendant looks up at who comes in
+		if (bOut)
+		{
+			for (FPerson& A : People)
+			{
+				if (A.Role == TEXT("attendant") && A.Body.IsValid() && A.TalkLeft <= 0.f && FVector::Dist(A.At, P.At) < 1500.f)
+				{
+					A.TalkLeft = 4.f;
+					A.Yaw = (P.At - A.At).Rotation().Yaw;
+					A.Pose = (uint8)EPersonPose::Look;
+					break;
+				}
+			}
+		}
 		// a regular: the attendant turns to them for a word (once a day each)
 		if (Rd.bRegular && !bOut && !GreetedRegulars.Contains(T.Rider))
 		{
@@ -797,25 +929,7 @@ void ALyudStationHall::TickBarks(float DeltaTime, const FVector& Cam)
 		return;
 	}
 	BarkTimer = 35.f + (float)((Seed + (uint32)Clock * 7u) % 40u);
-	const ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this);
-	const LyudTransport::FStationLife* Life = Tr ? Tr->GetLife() : nullptr;
-	const TCHAR* What = TEXT("any");
-	if (Life && Life->IsWindStopped())
-	{
-		What = TEXT("stopped");
-	}
-	else if (Life && Life->LastWind() >= Life->WindWarn)
-	{
-		What = TEXT("wind");
-	}
-	else if (Tr && Tr->LifeHour() < 9.5f)
-	{
-		What = TEXT("morning");
-	}
-	else if (Tr && Tr->LifeHour() > 20.5f)
-	{
-		What = TEXT("evening");
-	}
+	const FString What = UTF8_TO_TCHAR(LyudTransport::HallBark(Mood()));   // the stop, the wind, the rain, the hour
 	TArray<FPerson*> Can;
 	for (FPerson& P : People)
 	{
@@ -831,7 +945,7 @@ void ALyudStationHall::TickBarks(float DeltaTime, const FVector& Cam)
 	FPerson* P = Can[(int32)((Seed + (uint32)Clock) % (uint32)Can.Num())];
 	if (ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this))
 	{
-		Talk->SayLine(P->Body.Get(), FString::Printf(TEXT("line.transport.wait.%s.%d"), What, 1 + (int32)(((uint32)Clock / 3u) % 4u)));
+		Talk->SayLine(P->Body.Get(), FString::Printf(TEXT("line.transport.wait.%s.%d"), *What, 1 + (int32)(((uint32)Clock / 3u) % 4u)));
 	}
 }
 
@@ -914,6 +1028,20 @@ void ALyudStationHall::TickPrompt(float DeltaTime)
 		{
 			Best = 3;
 		}
+		// the hall shut for the night: a bell on the attendant's empty desk (between her place and the hall)
+		for (const FPerson& Plan : StaffPlan)
+		{
+			if (Best < 0 && !Attendant && Plan.Role == TEXT("attendant"))
+			{
+				const FVector Desk = Plan.At + FRotator(0.f, Plan.Yaw, 0.f).Vector() * 75.f;
+				if (FVector::Dist2D(Feet, Desk) < 260.f && FMath::Abs(Feet.Z - Plan.At.Z) < 250.f
+					&& FVector::DotProduct(Look, (Desk + FVector(0, 0, 90.f) - Eye).GetSafeNormal()) > 0.7f)
+				{
+					Best = 4;
+					BellAt = Desk + FVector(0, 0, 95.f);
+				}
+			}
+		}
 	}
 	// the barista's prompt names his usual; the attendant's is the card's until he has one
 	FName Usual = NAME_None;
@@ -952,6 +1080,7 @@ void ALyudStationHall::TickPrompt(float DeltaTime)
 		case 11: Text = LyudText::Get(TEXT("frontdoor.card.prompt")); break;
 		case 2: Text = LyudText::Get(TEXT("frontdoor.punch.prompt")); break;
 		case 3: Text = LyudText::Get(TEXT("frontdoor.shelf.prompt")); break;
+		case 4: Text = LyudText::Get(TEXT("transport.hall.bell_prompt")); break;
 		default: break;
 		}
 		UI->SetPrompt(this, Text);
@@ -982,6 +1111,13 @@ void ALyudStationHall::TickPrompt(float DeltaTime)
 			}
 			UI->OpenShop(LyudText::Get(TEXT("ui.shop.title_station_buffet"), { FStringFormatArg(StationName.ToString()) }), Goods);
 			Done();
+			// she takes the order: a word and to work at the counter for a moment
+			if (ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this))
+			{
+				Talk->SayLine(BestP->Body.Get(), FString::Printf(TEXT("line.transport.barista.order.%d"), 1 + (int32)((uint32)(Clock * 3.f) % 3u)));
+			}
+			BestP->TalkLeft = 6.f;
+			BestP->Pose = (uint8)EPersonPose::Work;
 		}
 	}
 	else if (Best == 0 && Usual != NAME_None && PC->WasInputKeyJustPressed(EKeys::E))
@@ -1025,6 +1161,25 @@ void ALyudStationHall::TickPrompt(float DeltaTime)
 		FrontDoor->TakeFromShelf(Attendant ? Attendant->Body.Get() : nullptr, Attendant ? Attendant->Pid : -1);
 		ShelfShown = -1;
 		Done();
+	}
+	else if (Best == 4 && PC->WasInputKeyJustPressed(EKeys::E) && Clock > BellQuiet)
+	{
+		// nobody comes: the hall opens in the morning
+		BellQuiet = Clock + 2.5f;
+		if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+		{
+			Sound->PlayEffect(TEXT("station_chime"), BellAt, 0.5f);
+		}
+		float Open = 5.75f;
+		if (const ULyudTransportSubsystem* T = ULyudTransportSubsystem::Get(this); T && T->GetLife())
+		{
+			Open = T->GetLife()->OpenHour;
+		}
+		if (ULyudGameScreen* Screen = ULyudGameScreen::Get(this))
+		{
+			const int32 Min = FMath::RoundToInt(Open * 60.f);
+			Screen->Toast(LyudText::Get(TEXT("transport.hall.closed_note"), { FStringFormatArg(FString::Printf(TEXT("%d:%02d"), Min / 60, Min % 60)) }));
+		}
 	}
 }
 
@@ -1087,6 +1242,7 @@ void ALyudStationHall::Tick(float DeltaTime)
 	{
 		LifeTimer = 1.f;
 		SyncLife(Cam, PC->PlayerCameraManager->GetCameraRotation().Vector());
+		TickStaff();
 	}
 	// the bodies hold their pose (the clip's variants change by themselves); a tick keeps their animation's clock going
 	for (FPerson& P : People)
