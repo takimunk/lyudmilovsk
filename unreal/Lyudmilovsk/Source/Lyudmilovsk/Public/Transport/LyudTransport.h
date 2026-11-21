@@ -168,6 +168,7 @@ private:
 	FName ViewWhat;
 	/** The station life's riders aboard cabins near the player: their bodies (network rider id -> body). */
 	TMap<int32, TWeakObjectPtr<AActor>> LifeBodies;
+	TSet<int32> LifeSeen;
 	void StartLife();
 	void StepLife(float DeltaTime);
 	void DrawLifeRiders(const FVector& View, float DeltaTime);

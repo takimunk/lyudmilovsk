@@ -672,7 +672,8 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 	// UPeopleLifeSubsystem through RiderPose; these are townsfolk out of the town's sight on their trip)
 	constexpr float Draw = 9000.f;
 	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
-	TSet<int32> Seen;
+	TSet<int32>& Seen = LifeSeen;      // kept between frames (no allocation each frame)
+	Seen.Reset();
 	for (int32 C = 0; C < Cabins.Num() && C < SimNum(Net->Cabins); C++)
 	{
 		ALyudCabin* A = Cabins[C];
@@ -695,7 +696,7 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 			Seen.Add(Who);
 			TWeakObjectPtr<AActor>& Slot = LifeBodies.FindOrAdd(Who);
 			ANpcBody* Body = Cast<ANpcBody>(Slot.Get());
-			const FTransform T = A->Seat(Net->Riders[RI].Seat % 4);
+			const FTransform T = A->Seat(FMath::Max(0, Net->Riders[RI].Seat) % 4);
 			if (!Body)
 			{
 				// their own face: the model the town shows them by, else their pool model
