@@ -26,9 +26,9 @@ t("ui.photo.finder", "резкость {0}   ·   кадр {1} из {2}", "focus
 t("ui.photo.finder.no_film", "резкость {0}   ·   плёнки нет", "focus {0}   ·   no film", "ピント {0}   ·   フィルムなし")
 
 t("ui.photo.studio.prints", "Отпечатки готовы: {0}. Они в альбоме (P).", "The prints are ready: {0}. They are in the album (P).", "プリントができた：{0}枚。アルバム（P）に入れた。")
-t("ui.photo.studio.taken", "Плёнок сдано: {0}, {1} руб. Будет готово завтра к десяти утра.", "Films handed in: {0}, {1} roubles. Ready tomorrow by ten in the morning.",
+t("ui.photo.studio.taken", "Плёнок сдано: {0}, {1} руб. Будет готово завтра к десяти утра.", "Films handed in: {0}, {1} rub. Ready tomorrow by ten in the morning.",
   "フィルムを{0}本預けた。{1}ルーブル。明日の朝10時にできあがる。")
-t("ui.photo.studio.no_money", "Проявка стоит {0} руб. Столько нет.", "Developing costs {0} roubles. You don't have that much.", "現像は{0}ルーブル。お金が足りない。")
+t("ui.photo.studio.no_money", "Проявка стоит {0} руб. Столько нет.", "Developing costs {0} rub. You don't have that much.", "現像は{0}ルーブル。お金が足りない。")
 t("ui.photo.studio.wait", "Плёнки ещё в работе. Будут готовы к десяти утра.", "The films are still being done. Ready by ten in the morning.", "フィルムはまだ現像中。朝10時にできあがる。")
 t("ui.photo.studio.nothing", "Сдавать нечего: отснятых плёнок нет.", "Nothing to hand in: no exposed films.", "預けるものがない。撮影済みのフィルムがない。")
 
@@ -69,10 +69,10 @@ t("ui.photo.contest.wait", "Отпечаток уже в ящике. Жюри с
 t("ui.photo.contest.closed", "Приём на этот месяц окончен. Тема следующего — {0}.", "Entries for this month are closed. Next month's theme is {0}.",
   "今月の受付は終わった。来月のテーマは{0}。")
 t("ui.photo.contest.won", "Конкурс {0}: первое место! Приз {2} руб., отпечаток повесили на стену клуба.",
-  "The {0} contest: first place! The prize is {2} roubles, and the print hangs on the club's wall.",
+  "The {0} contest: first place! The prize is {2} rub., and the print hangs on the club's wall.",
   "コンテスト{0}：1位！賞金{2}ルーブル。プリントはクラブの壁に飾られた。")
 t("ui.photo.contest.prize", "Конкурс {0}: {1}-е место. Приз {2} руб., отпечаток повесили на стену клуба.",
-  "The {0} contest: place {1}. The prize is {2} roubles, and the print hangs on the club's wall.",
+  "The {0} contest: place {1}. The prize is {2} rub., and the print hangs on the club's wall.",
   "コンテスト{0}：{1}位。賞金{2}ルーブル。プリントはクラブの壁に飾られた。")
 t("ui.photo.contest.placed", "Конкурс {0}: {1}-е место из {2}. Жюри советует: ближе к теме, резче, и снимать при низком солнце.",
   "The {0} contest: place {1} of {2}. The jury's advice: closer to the theme, sharper, and shoot when the sun is low.",
