@@ -166,11 +166,15 @@ private:
 	int32 ContestWeekday = 6;
 	int32 ContestHour = 16;
 	TArray<int32> Prizes;
+	/** The harvest fair (garden.json "fair"): the festival whose day it is, the prizes by place. */
+	FString FairFestival;
+	TArray<int32> FairPrizes;
 
 	// what the garden keeps besides the model (saved with it, "g.*")
 	int32 ContestDay = -1;      // the Sunday his jar is judged (-1 none)
 	int32 ContestQuality = 0;
 	int32 JamJars = 0;          // jars waiting on the bench for him
+	int32 FairDay = -1;         // the day his harvest was last judged at the harvest fair (once a fair)
 	TSet<FString> Harvested;    // crops picked at least once (the diary's first harvest)
 	TMap<FString, int32> SeedsGiven;    // friend key -> the day they last gave him seeds
 

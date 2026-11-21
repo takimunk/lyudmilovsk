@@ -3,8 +3,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "World/LyudCityDress.h"
 #include "LyudCityBuilding.generated.h"
 
+class UStaticMesh;
 class UStaticMeshComponent;
 class UTexture2D;
 class UMaterialInstanceDynamic;
@@ -67,6 +69,15 @@ public:
 	/** Every lamp back to the hours (the hero left the building). */
 	void ClearLampsSwitched() { LampSwitched.Reset(); }
 	bool HasLampsSwitched() const { return LampSwitched.Num() > 0; }
+
+	/** The swappable dressing (docs/city_dress.md, B.dress in blender/city): per set its id, its mesh (SM_<type>_Dress_<id>,
+	 * in the building's frame like Detail) and when it shows. Filled by import_city.py; ULyudCityDress shows and hides them. */
+	UPROPERTY(EditAnywhere, Category = "City|Dress") TArray<FName> DressIds;
+	UPROPERTY(EditAnywhere, Category = "City|Dress") TArray<TObjectPtr<UStaticMesh>> DressMeshes;
+	UPROPERTY(EditAnywhere, Category = "City|Dress") TArray<FLyudDressWhen> DressWhen;
+	/** Per set: its component once it has been shown (made on demand by ULyudCityDress; null until then). */
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> DressComps;
+	int32 NumDress() const { return FMath::Min(DressIds.Num(), FMath::Min(DressMeshes.Num(), DressWhen.Num())); }
 
 	/** Public rooms are lit from OpenHour to CloseHour (local game time). */
 	UPROPERTY(EditAnywhere, Category = "City") float OpenHour = 8.f;

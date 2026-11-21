@@ -1,0 +1,88 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The town at the evening's new things (docs/town_life.md, "The new activities"): the cinema's house, the
+## sanatorium's pump room and its dominoes, the paper on the benches, flat stones on the water, the allotment
+## neighbours at their beds, the post round, the piano in the hall
+## ---------------------------------------------------------------------------------------------------------------
+
+[stones_kid]
+doing = skip_stones
+age = kid teen
+say town.stones_kid.1 | Семь! Ты видел? Семь раз! | Seven! Did you see? Seven skips! | 七回！見た？七回はねた！
+say town.stones_kid.2 | Нужен плоский. Круглые сразу тонут. | You need a flat one. The round ones just sink. | 平たいのじゃなきゃ。丸いのはすぐ沈む。
+say town.stones_kid.3 | Бросать надо низко, почти по воде. | You throw it low, almost along the water. | 低く投げるんだ、水面すれすれに。
+say town.stones_kid.4 | Эх, волна съела. | Ah, the wave ate it. | あーあ、波に食べられた。
+say town.stones_kid.5 | Все хорошие камни уже в море. Мы и перекидали. | All the good stones are in the sea already. We threw them there. | いい石はもう全部海の中。投げたのは僕らだけど。
+
+[stones_grown]
+doing = skip_stones
+age = adult elder
+say town.stones_grown.1 | Рука помнит. Три блина, но помнит. | The hand remembers. Three skips, but it remembers. | 手が覚えてる。三回だけど、覚えてる。
+say town.stones_grown.2 | В такую гладь грех не бросить. | Water this smooth, it'd be a sin not to. | こんな凪の日に投げないなんて、もったいない。
+
+[paper_bench]
+doing = read_paper
+say town.paper_bench.1 | Опять про канатку пишут. Каждый день про канатку. | The cable car again. Every day it's the cable car. | またロープウェイの記事。毎日ロープウェイだ。
+say town.paper_bench.2 | Погоду обещают одну, а за окном другая. | They promise one weather, and there's another outside. | 予報と外の天気がまるで違う。
+say town.paper_bench.3 | Сначала объявления, потом уже новости. Так интереснее. | Notices first, then the news. It's more interesting that way. | まず広告欄、それからニュース。そのほうが面白い。
+say town.paper_bench.4 | Кроссворд сегодня лёгкий. Даже обидно. | The crossword's easy today. Almost a pity. | 今日のクロスワードは簡単。ちょっと物足りない。
+say town.paper_bench.5 | Утро, скамейка, газета. Больше ничего и не надо. | Morning, a bench, the paper. Nothing else needed. | 朝、ベンチ、新聞。ほかには何もいらない。
+
+[dominoes_table]
+doing = dominoes
+say town.dominoes.1 | Рыба! | Blocked! | 詰みだ！
+say town.dominoes.2 | Дубль шесть на стол. Кто смелый? | Double six on the table. Who's brave? | 六のダブルを出すよ。さあ、誰が続く？
+say town.dominoes.3 | Не стучи так, чашки подпрыгивают. | Don't slam them so, the cups are jumping. | そんなに叩かないで、カップが跳ねる。
+say town.dominoes.4 | Пропускаю. Опять пропускаю. | Pass. Pass again. | パス。またパス。
+say town.dominoes.5 | Вы, по-моему, считаете мои костяшки. | I believe you're counting my tiles. | あなた、私の牌を数えてるでしょう。
+say town.dominoes.6 | Ещё партию, и на ужин. | One more game, then supper. | もう一局、それから夕食。
+
+[cure_pump]
+doing = san_cure
+say town.cure.1 | Три глотка до еды. Доктор велел не торопиться. | Three sips before meals. The doctor said not to hurry. | 食前に三口。先生がゆっくり飲めって。
+say town.cure.2 | Вода тёплая и солёная. Значит, полезная. | The water's warm and salty. So it must be good for you. | 水はぬるくてしょっぱい。つまり体にいい。
+say town.cure.3 | С утра процедуры, после обеда домино. Режим. | Treatments in the morning, dominoes after lunch. A regimen. | 午前は治療、午後はドミノ。規則正しい生活。
+say town.cure.4 | Колено уже лучше. Или мне так хочется. | The knee's better already. Or I just want it to be. | 膝はもう良くなった。そう思いたいだけかも。
+
+[allotment_dig]
+doing = tend_allotment
+say town.allotment_dig.1 | Земля тут песок да песок. Без компоста никуда. | The soil here is sand and more sand. Nothing without compost. | ここの土は砂ばかり。堆肥なしじゃどうにもならない。
+say town.allotment_dig.2 | Пока прохладно, надо успеть перекопать. | Got to get it dug while it's cool. | 涼しいうちに掘り返しておかないと。
+say town.allotment_dig.3 | Сорняк растёт сам, а морковку уговаривать надо. | Weeds grow by themselves, carrots need persuading. | 雑草は勝手に伸びるのに、にんじんはなだめなきゃ育たない。
+say town.allotment_dig.4 | У соседа грядка ровнее. Ничего, зато у меня укроп. | The neighbour's bed is straighter. Never mind, I've got the dill. | 隣の畝のほうがまっすぐ。まあいい、うちにはディルがある。
+
+[allotment_water]
+doing = water_allotment
+say town.allotment_water.1 | Поливать надо вечером, когда солнце ушло. | You water in the evening, once the sun's gone. | 水やりは夕方、日が落ちてから。
+say town.allotment_water.2 | Под корень, под корень, не по листьям. | At the root, at the root, not over the leaves. | 根元に、根元に。葉にはかけない。
+say town.allotment_water.3 | Третья лейка. Ещё две, и домой. | Third can. Two more, and home. | じょうろ三杯目。あと二杯で帰ろう。
+
+[allotment_hero]
+doing = tend_allotment water_allotment
+near = hero
+say town.allotment_hero.1 | А твоя грядка как? Не забывай поливать. | And how's your bed? Don't forget to water it. | 君の畝はどう？水やりを忘れないで。
+say town.allotment_hero.2 | Соседям по огороду — привет! | Hello to a fellow gardener! | 畑のお隣さん、こんにちは！
+
+[post_round]
+doing = post_round
+say town.post_round.1 | Третий подъезд, две открытки и журнал. | Third entrance, two postcards and a magazine. | 三番入口、はがき二枚と雑誌一冊。
+say town.post_round.2 | Сумка к обеду легче, а ноги тяжелее. | By noon the bag's lighter and the legs are heavier. | 昼にはかばんが軽くなって、足が重くなる。
+say town.post_round.3 | Кому пишут, тот и ждёт у двери. | Those who get letters wait at the door. | 手紙が来る人は、ちゃんとドアの前で待ってる。
+say town.post_round.4 | В дождь, в ветер, а почта идёт. | Rain or wind, the post goes round. | 雨でも風でも、郵便は届く。
+
+[post_round_hero]
+doing = post_round
+near = hero
+say town.post_round_hero.1 | Тебе? Загляни в ящик у клуба, я туда кладу. | For you? Look in the box by the club, that's where I leave it. | 君あて？クラブのそばの郵便受けを見て。そこに入れてるから。
+
+[cinema_house]
+doing = cinema_day cinema_evening
+say town.cinema_house.1 | Тише, начинается. | Hush, it's starting. | しっ、始まるよ。
+say town.cinema_house.2 | Я этот журнал уже видела. Всё равно хорошо. | I've seen this newsreel before. Still good. | このニュース映画は前にも見た。それでもいい。
+say town.cinema_house.3 | Мой ряд седьмой. Всегда седьмой. | My row's the seventh. Always the seventh. | 私の席は七列目。いつも七列目。
+say town.cinema_house.4 | Сегодня почти полный зал. | Nearly a full house today. | 今日はほとんど満席だ。
+
+[piano_hall]
+doing = play_piano
+say town.piano_hall.1 | Расстроено, конечно. Но зал прощает. | Out of tune, of course. But the hall forgives. | もちろん調律は狂ってる。でもホールは許してくれる。
+say town.piano_hall.2 | Вечером тут никого. Можно и ошибаться. | Nobody here in the evening. You're allowed mistakes. | 夕方は誰もいない。間違えたっていい。
+say town.piano_hall.3 | Эту мне ещё в музыкальной школе задавали. | They set me this one back in music school. | これは音楽学校で出された課題曲。

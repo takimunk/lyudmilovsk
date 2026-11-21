@@ -319,4 +319,40 @@ static void CupChecks(const std::string& Path)
 	CHECK(bSigned3 && SignedFor == Hol + 7 && C3.NextDay(Chess, Day(Hol, 10.f)) == Hol + 7 && C3.MatchAt(M3, T3, Day(Hol, 13.2f)) < 0 && HolNews.empty()
 		&& C3.ShownDay(Chess, Day(Hol, 15.f)) == Hol - 7 && bHolLine && Keys.count("city.cup.holiday"),
 		"a holiday on the cup's Saturday: the sheet is for the week after, no match, no news, the board says why");
+
+	// a holiday's cup (docs/festivals.md "The new toys"): the same bracket under the holiday's heading, a second stamp
+	{
+		const long long Sat5 = Sat + 35;
+		FWhen Morning = Day(Sat5, 10.f);
+		Morning.bFestival = true;
+		const bool bPlainBefore = !C.IsFestDay(Chess, Sat5) && C.TitleOn(Chess, Sat5) == CD.Title;
+		const std::vector<FCupPage> Head = C.Pages(M, Chess, Morning);
+		const bool bHead = !Head.empty() && Head[0].size() >= 2 && Head[0][0].Args.size() == 1 && Head[0][0].Args[0] == "@" + CD.FestTitle && Head[0][1].Key == "city.cup.fest";
+		CHECK(!CD.FestTitle.empty() && !CD.FestCollect.empty() && Keys.count(CD.FestTitle) && Keys.count("city.cup.fest") && Keys.count("city.cup.fest_bracket") && bPlainBefore && bHead,
+			"a holiday on the tournament's day: the board is headed with the holiday cup (%s)", CD.FestTitle.c_str());
+		C.SignUp(Chess, Morning);
+		FCupResult F = C.Record(M, Chess, Sat5, 0, EGameResult::Win, true);
+		const bool bNotYet = !F.bFestival && !M.HasStamp(CD.FestCollect);
+		C.Record(M, Chess, Sat5, 1, EGameResult::Win, true);
+		F = C.Record(M, Chess, Sat5, 2, EGameResult::Win, true);
+		CHECK(bNotYet && F.Note == ECupNote::Champion && F.bFestival && F.NewStamps.size() == 1 && M.HasStamp(CD.FestCollect) && C.IsFestDay(Chess, Sat5) && !C.IsFestDay(Chess, Sat),
+			"the holiday cup won: the champion takes the ribbon too (%d new stamps: the weekly cup he had)", (int)F.NewStamps.size());
+		const std::vector<FCupPage> Later = C.Pages(M, Chess, Day(Sat5 + 2, 12.f));
+		bool bRemembered = false;
+		for (const FCupLine& L : Later.size() > 1 ? Later[1] : FCupPage())
+		{
+			bRemembered = bRemembered || L.Key == "city.cup.fest_bracket";
+		}
+		std::map<std::string, std::string> FestSaved;
+		C.SaveState(FestSaved);
+		FCups C4 = C;
+		C4.LoadState(FestSaved);
+		CHECK(bRemembered && C4.IsFestDay(Chess, Sat5) && !C4.IsFestDay(Chess, Sat5 + 7), "two days on the board still says whose cup it was; the save keeps it");
+		// a public holiday (a day off) is never a holiday's cup: nobody plays, whatever the festivals say of the day
+		FWhen OffDay = Day(Hol, 10.f);
+		OffDay.bFestival = true;
+		const FCupResult Off = C3.Record(M3, Chess, Hol, 0, EGameResult::Win, true);
+		CHECK(!C3.IsFestDay(Chess, Hol, &OffDay) && !C3.IsFestDay(Chess, Hol) && !Off.bFestival && C3.TitleOn(Chess, Hol, &OffDay) == CD.Title,
+			"a public holiday on the cup's day stays a skipped week, not a holiday's cup");
+	}
 }

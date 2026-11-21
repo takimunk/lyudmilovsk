@@ -240,7 +240,7 @@ and the speed do to the wings.
 | golden eagle | 15 % | 67 | 5 |
 | common swift | 19 % | 45 | 6 |
 | feral pigeon | 24 % | 40 | 4.5 |
-| house sparrow | 19 % | 23 | 4 |
+| house sparrow | 10 % | 23 | 4 |
 | herring gull | 37 % | 35 | 3 |
 | white-tailed eagle | 46 % | 35 | 3 |
 | grey heron | 73 % | 25 | 2.4 |
@@ -252,6 +252,10 @@ and the speed do to the wings.
   (`BirdFlight::RhythmPower`), and since the wingbeat rate follows the power, the wings visibly beat faster. It costs
   stamina as full-power beats do. A take-off's first 0.6 s are flat-out beats at the flat-out rate. Check 18 of the
   model test flies the take-off the way the pawn does.
+- **A glide too slow to last is not held.** Not beating, not flaring and with the gaze not well up, a bird below
+  about 0.55 to 0.8 of its best glide speed lets its wings go light and the nose down until the speed is back, and
+  settles in a slow glide near its minimum sink (a sparrow at 4.9 m/s) instead of hanging on the edge of a stall.
+  With the gaze held 30 degrees up it still mushes, as asked.
 - **How it is drawn.** A part-folded wing in the air is not half way to the standing bird's fold (that hangs it down the
   flank): `ABirdActor::SetWingLevel` rolls the arm back out to the side, so the fold is a sweep back in the wing's own
   plane, a falcon's "M"; right in, it closes against the body. The tail closes tighter than its bind pose in a dive

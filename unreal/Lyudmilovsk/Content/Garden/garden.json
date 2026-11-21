@@ -277,6 +277,14 @@
    15
   ]
  },
+ "fair": {
+  "festival": "harvest_fair",
+  "prize": [
+   80,
+   40,
+   20
+  ]
+ },
  "site": {
   "plot": "P-T2H2",
   "ue": [

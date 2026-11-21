@@ -13,6 +13,7 @@
 #include "Engine/HitResult.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
+#include "Festival/LyudFestival.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "HeroCharacter.h"
@@ -248,6 +249,12 @@ void ULyudGarden::Load()
 	{
 		Prizes.Add(P.I());
 	}
+	FairFestival = Str(Root["fair"]["festival"].S());
+	FairPrizes.Reset();
+	for (const LyudJson::FValue& P : Root["fair"]["prize"].Items)
+	{
+		FairPrizes.Add(P.I());
+	}
 	if (HeroBed < 0 || Beds[HeroBed].Cells.Num() != (int32)Model->Bed.Cells.size())
 	{
 		UE_LOG(LogLyudGarden, Warning, TEXT("Garden: the hero's bed doesn't match the cells"));
@@ -278,6 +285,7 @@ void ULyudGarden::OnGameSaving_Implementation()
 	}
 	Saved.Add(TEXT("g.contest"), FString::Printf(TEXT("%d|%d"), ContestDay, ContestQuality));
 	Saved.Add(TEXT("g.jars"), FString::FromInt(JamJars));
+	Saved.Add(TEXT("g.fair"), FString::FromInt(FairDay));
 	Saved.Add(TEXT("g.harvested"), FString::Join(Harvested.Array(), TEXT(",")));
 	for (const TPair<FString, int32>& KV : SeedsGiven)
 	{
@@ -311,6 +319,7 @@ void ULyudGarden::OnGameLoaded_Implementation()
 		}
 	}
 	JamJars = Saved.Contains(TEXT("g.jars")) ? FCString::Atoi(*Saved[TEXT("g.jars")]) : 0;
+	FairDay = Saved.Contains(TEXT("g.fair")) ? FCString::Atoi(*Saved[TEXT("g.fair")]) : -1;
 	Harvested.Reset();
 	if (const FString* H = Saved.Find(TEXT("g.harvested")))
 	{
@@ -1162,17 +1171,47 @@ void ULyudGarden::Act(APlayerController* PC)
 		const int32 Roubles = SellValue(&Things);
 		if (Things > 0)
 		{
+			// on the harvest fair's day the first harvest he brings is also judged (docs/festivals.md "The new toys")
+			bool bFair = false;
+			if (!FairFestival.IsEmpty() && FairDay != Today())
+			{
+				if (const ULyudFestivalSubsystem* Fest = ULyudFestivalSubsystem::Get(this))
+				{
+					for (const FLyudFestivalNow& F : Fest->ActiveFestivals())
+					{
+						bFair = bFair || F.Id.ToString() == FairFestival;
+					}
+				}
+			}
+			int32 Best = 0, Kinds = 0;
 			for (const TPair<FString, TArray<int32>>& KV : SellPrices)
 			{
 				const int32 Count = Inv->Count(FName(*KV.Key));
 				if (Count > 0)
 				{
+					Best = FMath::Max(Best, FMath::Clamp(Model->LastQuality(Std(KV.Key)), 1, 3));
+					++Kinds;
 					Inv->Remove(FName(*KV.Key), Count);
 				}
 			}
 			Inv->Earn(Roubles);
 			Toast(LyudText::Get(TEXT("garden.toast.sold"), { FStringFormatArg(Roubles) }));
 			ULyudQuests::Notify(this, TEXT("do"), TEXT("garden_sell"));
+			if (bFair)
+			{
+				FairDay = Today();
+				const int32 Place = LyudGarden::FairPlace(Best, Kinds, Things);
+				const int32 Prize = Place > 0 && FairPrizes.IsValidIndex(Place - 1) ? FairPrizes[Place - 1] : 0;
+				if (Prize > 0)
+				{
+					Inv->Earn(Prize);
+				}
+				const FString PlaceKey = Place > 0 ? FString::Printf(TEXT("garden.place.%d"), Place) : FString(TEXT("garden.place.none"));
+				Toast(LyudText::Get(Prize > 0 ? TEXT("garden.toast.fair_prize") : TEXT("garden.toast.fair_thanks"),
+					{ FStringFormatArg(LyudText::Get(PlaceKey).ToString()), FStringFormatArg(Prize) }));
+				Note(TEXT("garden.diary.fair"), { TEXT("@") + PlaceKey });
+				ULyudQuests::Notify(this, TEXT("do"), Place > 0 ? TEXT("garden_fair_place") : TEXT("garden_fair_done"));
+			}
 		}
 		break;
 	}

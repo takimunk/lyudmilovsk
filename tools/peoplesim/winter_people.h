@@ -104,7 +104,9 @@ static int Winter()
 				S.Gliding += P.LoopAt >= 0.f ? 1 : 0;
 				S.Standing += P.LoopAt < 0.f ? 1 : 0;
 			}
-			S.OnIce += P.OffGrid == Rink || (P.State != EState::Away && P.Pose != EPose::Hidden && InLoop(R, P.Pos) && std::fabs(P.Pos.Z - R.Loop[0].Z) < 1.5f) ? 1 : 0;
+			// somebody at their own slot of another place (a stroll round the pond whose slot the loop's outline takes in) is not a skater left on the ice
+			const bool bElsewhere = P.State == EState::Doing && P.Place >= 0 && P.Place != Rink && !bSkate;
+			S.OnIce += P.OffGrid == Rink || (!bElsewhere && P.State != EState::Away && P.Pose != EPose::Hidden && InLoop(R, P.Pos) && std::fabs(P.Pos.Z - R.Loop[0].Z) < 1.5f) ? 1 : 0;
 			S.WalrusAny += P.Activity == Swim ? 1 : 0;
 			if (P.Activity == Swim && P.State == EState::Doing)
 			{

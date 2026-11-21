@@ -655,6 +655,12 @@ bool UPeopleLifeSubsystem::UpdateClock(bool bFirst)
 	// and choose what to do by the weather (a bench in the drizzle, the beach in the frost: PeopleSim's Score)
 	S.Rain = Weather ? Weather->GetSky().Rain : 0.f;
 	S.TempC = Weather ? Weather->GetSky().TempC : 12.f;
+	// and how dark the day is: the lamps in the flats go on sooner under thick cloud and rain (PeopleSim FlatLitNow)
+	if (Weather)
+	{
+		const FLyudSkyWeather Sky = Weather->GetSky();
+		S.Gloom = FMath::Clamp(0.6f * Sky.Cloud + 0.35f * FMath::Min(1.f, Sky.Rain / 4.f) + 0.25f * Sky.Fog, 0.f, 1.f);
+	}
 	// and the wind (a kite on the beach wants a breeze: activities.json "wind")
 	const ULyudWindSubsystem* WindSys = ULyudWindSubsystem::Get(GetWorld());
 	S.Wind = WindSys ? WindSys->GetMeanSpeed() : 5.f;
@@ -2402,6 +2408,10 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 	}
 	case EHold::Pointing:
 		Rot = FRotationMatrix::MakeFromXZ((Fwd * 0.85f + Up * 0.5f).GetSafeNormal(), Up).Rotator();
+		break;
+	case EHold::Shaft:
+		// a spade: its handle's top in the main hand, the shaft down through the other hand to the blade
+		Rot = FRotationMatrix::MakeFromXZ((At[1 - M] - At[M]).GetSafeNormal(UE_SMALL_NUMBER, (Fwd * 0.5f - Up * 0.85f).GetSafeNormal()), Fwd).Rotator();
 		break;
 	default:
 		break;

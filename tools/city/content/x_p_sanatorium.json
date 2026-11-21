@@ -474,6 +474,33 @@
      "stay": "!san"
     },
     {
+     "k": "city.san.evening.festdance.1",
+     "festival": "any",
+     "h": [
+      19,
+      23
+     ],
+     "stay": "!san"
+    },
+    {
+     "k": "city.san.evening.festdance.2",
+     "festival": "any",
+     "h": [
+      19,
+      23
+     ],
+     "stay": "!san"
+    },
+    {
+     "k": "city.san.evening.festday",
+     "festival": "any",
+     "h": [
+      9,
+      19
+     ],
+     "stay": "!san"
+    },
+    {
      "k": "city.san.evening.course.wed",
      "h": [
       19,
@@ -510,6 +537,16 @@
       23
      ],
      "d": "mon,tue,thu,sun",
+     "stay": "san",
+     "collect": "san_course/dance"
+    },
+    {
+     "k": "city.san.evening.course.fest",
+     "festival": "any",
+     "h": [
+      19,
+      23
+     ],
      "stay": "san",
      "collect": "san_course/dance"
     },

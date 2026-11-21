@@ -537,6 +537,7 @@
     },
     {
      "k": "city.px.ships.5",
+     "weather": "!rain",
      "h": [
       21,
       6
@@ -548,6 +549,7 @@
     },
     {
      "k": "city.px.ships.6",
+     "weather": "!rain",
      "h": [
       21,
       6
@@ -559,6 +561,7 @@
     },
     {
      "k": "city.px.ships.7",
+     "weather": "!rain",
      "h": [
       21,
       6
@@ -570,6 +573,7 @@
     },
     {
      "k": "city.px.ships.8",
+     "weather": "!rain",
      "h": [
       21,
       6
@@ -577,6 +581,42 @@
      "every": [
       4,
       3
+     ]
+    },
+    {
+     "k": "city.px.ships.radio.1",
+     "h": [
+      21,
+      6
+     ],
+     "weather": "rain",
+     "every": [
+      3,
+      0
+     ]
+    },
+    {
+     "k": "city.px.ships.radio.2",
+     "h": [
+      21,
+      6
+     ],
+     "weather": "rain",
+     "every": [
+      3,
+      1
+     ]
+    },
+    {
+     "k": "city.px.ships.radio.3",
+     "h": [
+      21,
+      6
+     ],
+     "weather": "rain",
+     "every": [
+      3,
+      2
      ]
     }
    ],
@@ -1228,7 +1268,8 @@
   "P-PIER/tower_desk": {
    "act": "px_desk",
    "topics": [
-    "@job_t_keeper"
+    "@job_t_keeper",
+    "@photo_pier"
    ]
   },
   "P-PIER/keeper_wheel": {

@@ -582,6 +582,15 @@ namespace BirdFlight
 		// (pushing over into a dive: half the wings' lift turned down, never harder than 1 g: a bird unloads its wings
 		// to go over, it does not fly on its back)
 		NVert = std::max(NVert, -std::min(0.5 * LMax, G));
+		// a glide too slow to last is not held: not beating, not flaring and not told to keep the nose up, a bird lets its
+		// wings go light and the nose down until the speed is back (it does not hang on the edge of a stall)
+		if (Beats == 0)
+		{
+			const double Slow = 1.0 - Smooth(0.55, 0.8, V / P.BestGlide);
+			const double Held = Smooth(0.1, 0.5, In.AimPitch);
+			const double Let = Slow * (1.0 - Held) * (1.0 - Flare) * Clamp(In.Reflex, 0.0, 1.0);
+			NVert -= Let * std::max(0.0, NVert - 0.3 * G * std::cos(Gamma));
+		}
 		const double N = std::sqrt(NVert * NVert + NLat * NLat);
 		if (N > LMax && N > 0)
 		{

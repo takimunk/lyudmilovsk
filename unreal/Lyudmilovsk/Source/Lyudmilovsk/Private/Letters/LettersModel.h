@@ -141,6 +141,8 @@ namespace LyudLetters
 		std::vector<std::string> Args;   // the body's {0}, {1}: a key starting with @ is shown in the current language
 		std::string Ack;         // pen letters: the acknowledgement line said first ("" none)
 		std::vector<std::string> AckArgs;
+		std::string Ps;          // a P.S. after the body (the talk of the town about the hero, docs/town_rumours.md; "" none)
+		std::vector<std::string> PsArgs;
 		int Arrive = 0;          // the day it is in the club's mailbox (from DeliverHero)
 		bool bArrived = false;
 		bool bRead = false;
