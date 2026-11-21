@@ -215,6 +215,21 @@ def tail_len(k):
     return (0.064 - 0.0012 * k) * M["tail"] * m
 
 
+def eye_point(sx):
+    """The eye (species space): the template's, or on a scanned body the scan's own eye spot: just behind the bill
+    base (u 0.92), on the side of the head a little above its centre, just inside the skin (the bird's own camera)."""
+    if not (SCAN is not None and globals().get("SCAN_S")):
+        return warp(EYE_T * V(sx, 1, 1))
+    u = float(os.environ.get("BIRD_EYE_U", 0.92))
+    th = math.radians(float(os.environ.get("BIRD_EYE_DEG", 18)))
+    th = th if sx > 0 else math.pi - th
+    C0, T0, N0 = _centre(u)
+    r = _scan_rc(u, th)[0] * LT * 0.9
+    p = C0 + V(1, 0, 0) * r * math.cos(th) + N0 * r * math.sin(th)
+    p[1] += LEGLIFT
+    return p
+
+
 def build_skeleton(wk):
     """wk: wing scale factor (solved for the wingspan)."""
     BONES.clear()
@@ -229,8 +244,8 @@ def build_skeleton(wk):
     bone("head", warp((0, 0.059, 0.053)), warp((0, 0.062, 0.078)), parent)
     bone("jaw", warp((0, 0.0566, BEAK_Z0 - 0.002)), warp((0, 0.0560, BEAK_Z0 + 0.027 * M["beak_len"])), "head")
     # the eyes as bones: GetSocketLocation("eye_l") works on them (the bird's own camera)
-    bone("eye_l", warp(EYE_T), warp(EYE_T + V(0.004, 0, 0)), "head")
-    bone("eye_r", warp(EYE_T * V(-1, 1, 1)), warp(EYE_T * V(-1, 1, 1) + V(-0.004, 0, 0)), "head")
+    bone("eye_l", eye_point(1), eye_point(1) + V(0.004, 0, 0), "head")
+    bone("eye_r", eye_point(-1), eye_point(-1) + V(-0.004, 0, 0), "head")
     bone("tail", warp((0, 0.050, -0.040)), warp((0, 0.050, -0.058)), "body")
     for k in range(TF_N):
         for side, sx in (("L", 1), ("R", -1)):
@@ -2978,7 +2993,7 @@ def main():
     def ue(p):
         b = C.to_blender(tuple(np.asarray(p) * S))
         return [b[0] * 100, -b[1] * 100, b[2] * 100]
-    rig = {"species": SPECIES, "scale": S, "eye_l": ue(warp(EYE_T)), "eye_r": ue(warp(EYE_T * V(-1, 1, 1))),
+    rig = {"species": SPECIES, "scale": S, "eye_l": ue(eye_point(1)), "eye_r": ue(eye_point(-1)),
            "head": ue(BONES["head"][0]), "lengthCm": SP["lengthCm"], "wingspanCm": SP["wingspanCm"], "tris": len(ob.data.loop_triangles),
            "atlas": ATL.size, "clips": sorted(Acts), "gloss_hue": M.get("gloss_hue", 0.0)}
     json.dump(rig, open(os.path.join(OUTDIR, f"{TAG}_rig.json"), "w"), indent=1)
