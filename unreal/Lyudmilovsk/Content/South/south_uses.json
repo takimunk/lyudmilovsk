@@ -1,0 +1,147 @@
+{
+ "_doc": "Written by tools/south_uses.py (docs/south.md \"Things to do\"): spots the game spawns on the Aton coast. Map metres (x west, y north, z up from the club's floor); yaw: the Unreal yaw the user faces.",
+ "uses": [
+  {
+   "id": "spring_1",
+   "kind": "drink",
+   "x": -540.55,
+   "y": 132.22,
+   "z": -34.36,
+   "yaw": 120.0,
+   "water": "spring",
+   "fill": 1,
+   "reach": 130
+  },
+  {
+   "id": "fountain_1",
+   "kind": "drink",
+   "x": -8.65,
+   "y": 118.49,
+   "z": 0.0,
+   "yaw": 20.0,
+   "water": "fountain",
+   "fill": 0,
+   "reach": 110
+  },
+  {
+   "id": "read_trail",
+   "kind": "read",
+   "x": -15.43,
+   "y": 117.54,
+   "z": 0.0,
+   "yaw": 70.0,
+   "title": "south.board.trail.title",
+   "pages": [
+    [
+     "south.board.trail.1",
+     "south.board.trail.2",
+     "south.board.trail.3",
+     "south.board.trail.4",
+     "south.board.trail.5"
+    ],
+    [
+     "southuse.trail.p2"
+    ]
+   ],
+   "reach": 170
+  },
+  {
+   "id": "read_reeds",
+   "kind": "read",
+   "x": -54.72,
+   "y": 279.56,
+   "z": -36.98,
+   "yaw": 20.0,
+   "title": "south.board.reeds.title",
+   "pages": [
+    [
+     "south.board.reeds.1",
+     "south.board.reeds.2",
+     "south.board.reeds.3",
+     "south.board.reeds.4"
+    ],
+    [
+     "southuse.reeds.p2"
+    ],
+    [
+     "southuse.reeds.p3"
+    ]
+   ],
+   "reach": 170
+  },
+  {
+   "id": "read_stele",
+   "kind": "read",
+   "x": -204.97,
+   "y": 356.36,
+   "z": -36.29,
+   "yaw": 70.0,
+   "title": "southuse.stele.title",
+   "pages": [
+    [
+     "southuse.stele.p1"
+    ],
+    [
+     "southuse.stele.p2"
+    ]
+   ],
+   "reach": 170
+  },
+  {
+   "id": "read_view",
+   "kind": "read",
+   "x": 25.8,
+   "y": 177.6,
+   "z": 0.0,
+   "yaw": 90.0,
+   "title": "southuse.view.title",
+   "pages": [
+    [
+     "southuse.view.p1"
+    ],
+    [
+     "southuse.view.p2"
+    ],
+    [
+     "southuse.view.p3"
+    ]
+   ],
+   "reach": 150,
+   "z_floor": 0.25
+  }
+ ],
+ "seats": [
+  {
+   "id": "boat_1_1",
+   "x": 103.91,
+   "y": 236.99,
+   "z": -41.06,
+   "yaw": 70.0,
+   "seat_cm": 62.0
+  },
+  {
+   "id": "boat_1_2",
+   "x": 105.22,
+   "y": 236.51,
+   "z": -41.06,
+   "yaw": 70.0,
+   "seat_cm": 62.0
+  },
+  {
+   "id": "boat_2_1",
+   "x": 105.66,
+   "y": 228.14,
+   "z": -41.36,
+   "yaw": 275.0,
+   "seat_cm": 62.0
+  },
+  {
+   "id": "boat_2_2",
+   "x": 107.06,
+   "y": 228.26,
+   "z": -41.36,
+   "yaw": 275.0,
+   "seat_cm": 62.0
+  }
+ ]
+}

@@ -23,8 +23,9 @@ What [south.md](south.md) leaves open, the nearest first. Everything here is a p
 
 ## Game
 
-- **Used so far**: the seats and the coin viewer (south.md "Game side"). Not yet: one cannot drink at the spring or fill
-  a bottle, the apples are not picked, the boats do not move, the info boards cannot be read up close as a page.
+- **Used so far**: the seats and the coin viewer, the spring (drink, fill a bottle) and the alley's fountain, the boards,
+  the stele and the belvedere's view read as pages, the boats to sit on (south.md "Things to do"); apples are picked off
+  the orchard's live trees by the plant system. Not yet: the stepping stones over the mouth, the boats do not move.
 - **People** walk the shoulder trail, sit at the belvedere, mend nets at the shed, keep the hives, watch the starlings
   from the hide and play at the brook (south.md "People", `tools/town/south_people.py`). Not yet: the cliff walk, the sea
   trail and the spring trail have nobody of their own; the hero's seats are not claimed against the townsfolk; the
