@@ -185,7 +185,7 @@ BROOK = [(-650.0, 36.0, "ravine"), (-618.0, 70.0, "ravine"), (-584.0, 104.0, "ra
 RAVINE_DEPTH = 8.0               # the ravine's bed under the slope it is cut into, at its deepest
 BROOK_DEPTH = 0.9                # the bed under the valley floor
 BROOK_HALF = 1.1                 # half width of the bed, m
-BROOK_WATER = 0.28               # water over the bed in the valley
+BROOK_WATER = 0.46               # water over the bed in the valley
 RAVINE_SIDE = math.tan(math.radians(31.0))
 BANK_SIDE = 0.62                 # the valley banks' slope (rise over run)
 BROOK_REACH = 46.0               # nothing further than this from the course is touched
@@ -316,13 +316,14 @@ def brook_water():
             continue
         if c["kind"][k] == "bank" and c["bed"][k] + 0.1 < W.SEA_Z - 0.2:
             break
-        depth = 0.12 if c["kind"][k] == "ravine" else 0.16 if c["kind"][k] == "bank" else BROOK_WATER
+        depth = 0.26 if c["kind"][k] == "ravine" else 0.24 if c["kind"][k] == "bank" else BROOK_WATER
         half = c["half"][k] * (0.75 if c["kind"][k] == "ravine" else 1.08) + depth / max(c["side"][k], 0.2)
         # by the coast the bank's own fall (world_map._height0) lowers the cut further: the water lies on the real bed
-        bed = min(c["bed"][k], W.height(p[0], p[1]) + 0.1) if W.inland(p[0], p[1]) < 90.0 else c["bed"][k]
-        if out and bed + depth > out[-1][2]:
-            bed = out[-1][2] - depth - 0.01
-        out.append([round(p[0], 2), round(p[1], 2), round(bed + depth, 2), round(half, 2)])
+        # (and everywhere the water is measured from the land as it is, not from the designed bed: the cut's blend
+        # leaves the real bed a hand higher, and a sheet at the bed's own level does not show)
+        bed = W.height(p[0], p[1])
+        z = bed + depth if not out else min(bed + depth, out[-1][2])       # never uphill; a level pool may stand
+        out.append([round(p[0], 2), round(p[1], 2), round(z, 2), round(half, 2)])
         last = v
     return out
 
@@ -341,7 +342,7 @@ def wet(x, y):
 
 
 # --- level ground for the places, the stair's corridor --------------------------------------------------------------
-BELVEDERE = (27.0, 176.0)        # the lookout on the headland's north brow, over the reedbed and the town
+BELVEDERE = (27.0, 190.0)        # on the very brow: from further back the brow itself hides the reedbed below
 STAIR_Y = 38.0                   # the timber stair down the sea cliff: straight down the face at this Y
 SPRING = (-541.0, 133.0)         # the spring's trough where the ravine opens on the valley
 ORCHARD = (-372.0, 196.0)        # the old orchard's middle, between the brook and the upland's foot
@@ -355,7 +356,7 @@ BUNKER = (69.0, -128.0)       # the old pillbox on the cliff walk, its slit to t
 WRECK = (121.0, 132.0)           # the boat's ribs in the sand between the brook's mouth and the stair
 STONE = (-304.0, 254.0)                            # the erratic boulder on the meadow by the spring trail
 SPLIT_STONE = (90.0, -306.0)  # the split one on the cliff walk
-HALT = (113.5, STAIR_Y - 13.0)     # the shelter on the beach's top by the stair's foot
+HALT = (120.5, STAIR_Y - 13.0)     # the shelter on the beach's top by the stair's foot
 
 PADS = [(BELVEDERE, 7.0, 6.0), (LIGHT, 7.0, 5.0), (BUNKER, 4.5, 4.0)]   # (centre, radius, fade): the macro height is kept exactly (no hummocks, no gullies)
 
@@ -419,10 +420,13 @@ def keep_flat(x, y):
     k = 0.0
     for (px, py), r, soft in PADS:
         k = max(k, _ramp(math.hypot(x - px, y - py), r, soft))
-    if abs(y - STAIR_Y) < 16.0:
+    if abs(y - STAIR_Y) < 16.0:                                # (the ramp is done by 14 m)
         (tx, _), (fx, _) = stair_line()
         if tx - 8.0 < x < fx + 4.0:
-            k = max(k, _ramp(abs(y - STAIR_Y), 5.0, 5.0))
+            k = max(k, _ramp(abs(y - STAIR_Y), 5.0, 9.0))          # a long fade: no straight-edged chute in the cliff
+    if -52.0 < x < 92.0 and 232.0 < y < 284.0:                 # the boardwalk's line and the hide: the reedbed's
+        k = max(k, _ramp(_seg(x, y, BOARDWALK)[0], 2.2, 3.0))  # hummocks must not put its pieces at different heights
+        k = max(k, _ramp(math.hypot(x - HIDE_AT[0], y - HIDE_AT[1]), 5.0, 4.0))
     b = brook_at(x, y)
     if b is not None:
         d, i, t = b
@@ -620,6 +624,16 @@ def plants():
     add(bx + 9.0, by - 4.0, "BlackPoplar", 60.0)                               # the black poplar by the footbridge
     lx, ly = cliff_lookout()
     add(lx - 6.0, ly + 5.0, "ScotsPine", 110.0)                                # the lone pine on the cliff
+    # the old orchard's apple trees in loose rows (the tiles' town mix alone reads as a birch wood)
+    rnd = random.Random(431)
+    ox, oy = ORCHARD
+    for i in range(-3, 4):
+        for j in (-1, 0, 1):
+            if (i, j) in ((0, 0), (1, 0), (-2, 1)) or rnd.random() < 0.2:      # the table's clearing, gaps where one died
+                continue
+            x, y = ox + i * 13.0 + rnd.uniform(-2.5, 2.5), oy + j * 12.0 + rnd.uniform(-2.5, 2.5) - 6.0
+            if not _near_trail(x, y, 3.5):
+                add(x, y, "Apple", rnd.uniform(30.0, 60.0))
     return out
 
 

@@ -91,7 +91,7 @@
    "tris": 638,
    "size": [
     1.444,
-    1.242,
+    1.298,
     2.57
    ],
    "collision": "exact",
@@ -113,7 +113,7 @@
      "id": "sign_0_2",
      "material": "M_South_Text_sign_0_2",
      "texture": "south_sign_0_2",
-     "yaw_deg": 42.0,
+     "yaw_deg": 36.0,
      "z": 1.86,
      "text_keys": [
       "south.sign.trail.lookout",
@@ -134,7 +134,7 @@
    ],
    "bounds_min": [
     -0.776,
-    -0.658,
+    -0.714,
     -0.15
    ],
    "bounds_max": [
