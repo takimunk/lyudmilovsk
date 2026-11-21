@@ -591,7 +591,9 @@ def fill_patches(bm, faces, cf, cu, ua, tf, tu, us, ths, R):
             for lp in f.loops:
                 lp[ul].uv = tuple(uvs[vidx[lp.vert.index]])
         tris = [[vidx[v.index] for v in f.verts] for f in comp if len(f.verts) == 3]
-        out.append(dict(P=Pv, uv=uvs, rim=rim, tris=np.array(tris, int)))
+        d2 = (Pv[:, None, 0] - cf[None]) ** 2 + (Pv[:, None, 1] - cu[None]) ** 2
+        umean = float(ua[np.argmin(d2, 1)].mean())
+        out.append(dict(P=Pv, uv=uvs, rim=rim, tris=np.array(tris, int), umean=umean))
     # the scan's own faces: their texture is squashed below BAND
     for f in bm.faces:
         if f[pl] == 0:
@@ -629,6 +631,9 @@ def save_body_texture(patches):
         w = 1.0 / d ** 2
         col = (w @ rc) / w.sum(1, keepdims=True)
         col[ri] = rc
+        tailcap = p.get("umean", 0.5) < 0.08
+        if tailcap:   # the tail-cut cap: the rim there mixes pale undertail and back; a calm, darker median reads as the tail base
+            col[:] = np.median(rc, 0) * 0.8
         # grain: the luminance texture round one rim vertex, tiled
         g0 = rim[ri[len(ri) // 2]]
         gy, gx = int(g0[1] % 1.0 * TEX), int(g0[0] % 1.0 * TEX)
@@ -652,7 +657,7 @@ def save_body_texture(patches):
             cc = l1[..., None] * col[t[0]] + l2[..., None] * col[t[1]] + l3[..., None] * col[t[2]]
             if tile.size > 4:
                 gr = tile[(gy_.astype(int) % tile.shape[0]), (gx_.astype(int) % tile.shape[1])]
-                cc = cc * (1 + 1.2 * gr[..., None])
+                cc = cc * (1 + (0.6 if tailcap else 1.2) * gr[..., None])
             sub = tex[y0:y1, x0:x1]
             sub[m] = np.clip(cc[m], 0, 1)
     im = bpy.data.images.new("body_tex", TEX, TEX, alpha=False)
