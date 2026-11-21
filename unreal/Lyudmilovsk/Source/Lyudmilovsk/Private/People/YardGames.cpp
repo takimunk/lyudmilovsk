@@ -1370,6 +1370,9 @@ namespace LyudYard
 				for (FKid& K : G.Kids) if (K.Team == Team) SetAct(K, EAct::Cheer);
 				G.Kickoff = 3.f;
 				B.LastKick = -1;
+				// it stops in the goal's mouth (a long step must not carry it off the field)
+				B.Pos = World((P.X > 0.f ? 1.f : -1.f) * (A.FieldHalfL + 0.3f), P.Y);
+				B.Vel = FV2();
 			}
 			else
 			{

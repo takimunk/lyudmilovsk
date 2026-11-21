@@ -22,19 +22,19 @@ Generated files (rerun `python3 tools/yard/yard_areas.py`; `--check` writes noth
 | File | What |
 |---|---|
 | `Content/PeopleData/yard_games.json` | the play areas for the game model |
-| `Content/PeopleData/yard_spots.json` | people's-life spots: kind `yard` (8 stand slots, capacity 3) and `S-YARD-xx-BENCH` benches (0.45 m seats) |
+| `Content/PeopleData/yard_spots.json` | people's-life spots: kind `yard` (8 stand slots, capacity 3) and `S-YARD-xx-BENCH` benches of kind `yard_bench` (0.45 m seats; only `read_bench` and `feed_birds` use them, so no duty bound to a `bench` is pulled into a yard) |
 | `Content/Localization/yard/strings_{ru,en,ja}.json` | from `tools/yard/strings.json`; `line.*` keys get `.m`/`.f` from `ru_f`/`ja_f` |
 | `Content/Dev/teleports/yard.json` | dev teleports to every area, at 16:30 |
 
 ## How children get there
 
 No new activity: the existing `playground` and `play_run` activities now list `yard` among their places
-(`activities.json`, also `mind_child` so a parent can watch from the yard), and `PeopleSim.cpp` loads `yard_spots.json`
+(`activities.json`, also `mind_child` so a parent can watch from the yard; `read_bench` and `feed_birds` take `yard_bench`), and `PeopleSim.cpp` loads `yard_spots.json`
 beside `winter_spots.json`. So the life still decides who is out playing and when; the yards are just more places to do
 it, nearer home.
 
 **Overlap with item 26** (branch `residents-activities`, thread «Научить жителей новым занятиям города»): that branch also
-edits `activities.json` and `PeopleSim.cpp/.h` on an older main. Our change is three place lists in `activities.json`
+edits `activities.json` and `PeopleSim.cpp/.h` on an older main. Our change is five place lists in `activities.json`
 and one load line in `PeopleSim::Load`; a merge keeps both sides. Item 26 does not touch `playground`, `play_run` or the
 children's hours, and `tools/town/town_life.py` is never rerun (our data comes from an add-on script).
 
@@ -98,8 +98,8 @@ doing and keep them until the game ends.
 `tools/yardsim/run.sh` (see `docs/testing.md`): the generated data up to date, each game's rules scripted (start, roles,
 turns, misses, swaps, found, tags, goals, leaving, end), the hero hiding and seeking, then a Monday and a Saturday
 afternoon of the real town's children (13:00–20:30) on the real people's life: the yards are people's places and children
-go out to them, games start, roles hold, nobody is in two games, every game that started ends. Last run: Monday 138 games of 4 kinds, Saturday 87 of
-5 kinds, 58 and 40 children using yard places, 0 failures.
+go out to them, games start, roles hold, nobody is in two games, every game that started ends. Last run (2026-11-21, on main 24582704): Monday 99 games of 5 kinds, Saturday 75 of
+5 kinds, 59 and 40 children using yard places, up to 6 games at once, 0 failures.
 
 ## Owed on the Mac
 

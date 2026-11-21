@@ -476,7 +476,7 @@ def build(plan, pub, folk, garden):
                 seats.append({"pos": [rnd(b["at"][0] - f[1] * off), rnd(b["at"][1] + f[0] * off), rnd(z + 0.45)], "yaw": b["yaw"],
                               "height": 0.45, "kind": "bench"})
         if seats:
-            spots.append({"id": sid + "-BENCH", "kind": "bench", "pos": [rnd(seats[0]["pos"][0]), rnd(seats[0]["pos"][1]), rnd(z)],
+            spots.append({"id": sid + "-BENCH", "kind": "yard_bench", "pos": [rnd(seats[0]["pos"][0]), rnd(seats[0]["pos"][1]), rnd(z)],
                           "yaw": seats[0]["yaw"], "seats": len(seats), "slots": seats})
         spots.append({"id": sid, "kind": "yard", "pos": [rnd(y["c"][0]), rnd(y["c"][1]), rnd(z)], "yaw": rnd(yaw, 1),
                       "seats": 24, "slots": slots, "home": y["home"]})
