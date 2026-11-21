@@ -635,6 +635,17 @@
     "person": "t_hrytsenko_dawit"
    },
    {
+    "id": "W2-D035",
+    "terrace": "T1",
+    "at": [
+     -40775.5,
+     69182.9,
+     -3620.0
+    ],
+    "yaw": -3.0,
+    "person": "t_dahl_tunde"
+   },
+   {
     "id": "W2-D041",
     "terrace": "T1",
     "at": [
@@ -723,6 +734,17 @@
     "person": "t_muller_soren"
    },
    {
+    "id": "W3-D005",
+    "terrace": "T2",
+    "at": [
+     -56892.4,
+     42207.6,
+     -2900.0
+    ],
+    "yaw": -1.9,
+    "person": "t_girard_selam"
+   },
+   {
     "id": "W3-D007",
     "terrace": "T2",
     "at": [
@@ -731,7 +753,7 @@
      -2900.0
     ],
     "yaw": -2.0,
-    "person": "t_mendoza_nils"
+    "person": "t_mendoza_ama"
    },
    {
     "id": "W3-D016",
@@ -775,7 +797,7 @@
      -2900.0
     ],
     "yaw": -2.9,
-    "person": "t_petrauskas_pyotr"
+    "person": "t_petrauskas_guadalupe"
    },
    {
     "id": "W3-D039",
@@ -855,6 +877,17 @@
     "person": "t_bauer_lucia"
    },
    {
+    "id": "W4-D036",
+    "terrace": "T3",
+    "at": [
+     -70772.8,
+     69235.0,
+     -2200.0
+    ],
+    "yaw": -3.0,
+    "person": "t_asante_tatiana"
+   },
+   {
     "id": "W4-D039",
     "terrace": "T3",
     "at": [
@@ -921,6 +954,17 @@
     "person": "t_kazlauskas_lilit"
    },
    {
+    "id": "W5-D004",
+    "terrace": "T4",
+    "at": [
+     -86943.5,
+     40760.4,
+     -1500.0
+    ],
+    "yaw": -2.2,
+    "person": "t_nielsen_lilit"
+   },
+   {
     "id": "W5-D005",
     "terrace": "T4",
     "at": [
@@ -929,7 +973,7 @@
      -1500.0
     ],
     "yaw": -1.9,
-    "person": "t_moreau_astrid"
+    "person": "t_grabowski_dawit"
    },
    {
     "id": "W5-D007",
@@ -951,7 +995,7 @@
      -1500.0
     ],
     "yaw": -2.1,
-    "person": "t_lefebvre_kaveh"
+    "person": "t_lefebvre_lan"
    },
    {
     "id": "W5-D016",
@@ -976,6 +1020,17 @@
     "person": "t_henderson_subin"
    },
    {
+    "id": "W5-D035",
+    "terrace": "T4",
+    "at": [
+     -85811.8,
+     68486.1,
+     -1500.0
+    ],
+    "yaw": -3.0,
+    "person": "t_beridze_ursula"
+   },
+   {
     "id": "W5-D037",
     "terrace": "T4",
     "at": [
@@ -985,6 +1040,17 @@
     ],
     "yaw": -3.1,
     "person": "t_reddy_ruta"
+   },
+   {
+    "id": "W5-D039",
+    "terrace": "T4",
+    "at": [
+     -85486.8,
+     71409.6,
+     -1500.0
+    ],
+    "yaw": -32.1,
+    "person": "t_iglesias_jukka"
    },
    {
     "id": "W5-D041",
