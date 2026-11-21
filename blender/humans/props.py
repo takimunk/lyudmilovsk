@@ -401,7 +401,7 @@ def spade():
     p.rod(steel, (0.74, 0.0, 0.0), (0.84, 0.0, 0.0), 0.019, 0.022, seg=8)
     # the blade: a slightly dished plate, a tread at its top
     p.box(steel, (0.82, -0.09, -0.004), (1.08, 0.09, 0.004))
-    p.box(steel, (0.815, -0.095, -0.004), (0.835, 0.095, 0.012))
+    p.box(steel, (0.815, -0.095, -0.007), (0.835, 0.095, 0.012))     # (past the blade's faces: no flush faces to flicker)
     return p
 
 
