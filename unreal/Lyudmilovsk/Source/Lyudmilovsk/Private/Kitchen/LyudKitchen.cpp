@@ -637,6 +637,12 @@ void ULyudKitchen::TakeOffNow()
 		}
 		Toast(LyudText::Get(TEXT("ui.cook.jam_jar")));
 	}
+	// a dish after the first is "more" too, told first: the quest's stage "three" counts those, its stage "first" the plain
+	// "dish" (one event for both stages would let the first dish skip a stage)
+	if (Dishes >= 2)
+	{
+		ULyudQuests::Notify(this, TEXT("cook"), TEXT("more"));
+	}
 	ULyudQuests::Notify(this, TEXT("cook"), TEXT("dish"));
 	ULyudQuests::Notify(this, TEXT("cook"), KStr(R.Id));
 }

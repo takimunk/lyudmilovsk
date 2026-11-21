@@ -76,7 +76,7 @@
       {
        "id": "three",
        "event": "cook",
-       "target": "dish",
+       "target": "more",
        "need": 3
       }
      ]

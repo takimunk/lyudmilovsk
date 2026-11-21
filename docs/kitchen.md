@@ -61,7 +61,7 @@ The hero's own room (backlog item 19, branch `hero-room`) only has to give one o
   `fine` (a dish without a slip) `burnt` `veg` (sold to the restaurant).
 - **Quest `own_supper`** («Ужин своими руками»): ask the canteen's cook about her stove, cook a dish, cook three more,
   cook one without a slip and let her taste it (topic `canteen.taste`, offered with the stamp `cook/fine`).
-  Quest events: `cook dish` (any) and `cook <recipe id>`.
+  Quest events: `cook dish` (any), `cook more` (any after his first) and `cook <recipe id>`.
 
 ## Performance
 
