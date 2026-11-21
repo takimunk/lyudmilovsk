@@ -1857,6 +1857,24 @@ void ULyudCityThings::PayCollections()
 	}
 }
 
+bool ULyudCityThings::IsOnStay(const FString& Id) const
+{
+	return Model && Model->OnStay(std::string(TCHAR_TO_UTF8(*Id)), LyudCityThingsImpl::When(GetWorld(), false).Since);
+}
+
+void ULyudCityThings::StartStay(const FString& Id, int32 Days)
+{
+	if (Model)
+	{
+		Model->StartStay(std::string(TCHAR_TO_UTF8(*Id)), Days, LyudCityThingsImpl::When(GetWorld(), false).Since);
+	}
+}
+
+bool ULyudCityThings::IsClearNow() const
+{
+	return (LyudCityThingsImpl::When(GetWorld()).Weather & LyudCity::WeatherClear) != 0;
+}
+
 void ULyudCityThings::CollectionViews(TArray<FCollectionView>& Out) const
 {
 	Out.Reset();

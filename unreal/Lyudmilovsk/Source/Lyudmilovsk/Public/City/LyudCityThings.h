@@ -194,6 +194,12 @@ public:
 	};
 	/** Every collection for the diary: the paid ones first, then the ones begun (the fullest first), then the rest. */
 	void CollectionViews(TArray<FCollectionView>& Out) const;
+	/** Is the hero on that stay today (docs/city_interiors.md "Stays": the sanatorium's voucher, the rental's beach set)? */
+	bool IsOnStay(const FString& Id) const;
+	/** Puts him on a stay for so many days from today (added to the days left; 0 ends it): the console's and developer mode's hire. */
+	void StartStay(const FString& Id, int32 Days);
+	/** The lines' weather word "clear" now: few clouds, dry, no fog. */
+	bool IsClearNow() const;
 	/** Gives what every newly complete collection pays, once (the keepsake's toast, the diary's note, the item or roubles). */
 	void PayCollections();
 

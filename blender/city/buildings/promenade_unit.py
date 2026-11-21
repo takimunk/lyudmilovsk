@@ -62,9 +62,10 @@ STYLE = {
     "beer": ("CT_Brick", "CT_Wood", "CT_Floor"),
     "pasty": ("CT_PlasterPink", "CT_TileWhite", "CT_Floor"),
 }
-# the signboard over the shop window (atlas sign_* cells; none for trades the atlas has no word for)
+# the signboard over the shop window (atlas sign_* cells; every trade has its word since the atlas' late cells of 2026-11-21)
 SIGN = {"cafe": "sign_buffet", "beer": "sign_buffet", "dumplings": "sign_canteen", "pasty": "sign_canteen",
-        "bakery": "sign_bread", "books": "sign_books", "barber": "sign_barber", "photo": "sign_photo"}
+        "bakery": "sign_bread", "books": "sign_books", "barber": "sign_barber", "photo": "sign_photo",
+        "fish": "sign_fish", "rental": "sign_rental", "workshop": "sign_workshop", "souvenirs": "sign_souvenirs"}
 
 
 # ------------------------------------------------------------------------------------------------ the room
@@ -885,6 +886,9 @@ def rental_more(B):
     B.thing("rental_tariff", "board", (2.1, 1.15, 0.6), 165.0, topic="prices")
     B.thing("rental_chat", "counter", (2.15, 4.65, 1.1), 0.0, service="chat", role="renter")
     B.thing("rental_deckchair_2", "seat", (-3.3, 1.47, 0.3), 0.0, height=0.3)
+    # the oars on the back wall: taking a pair is hiring the boat for the day (act pu_rental_boat, the stay boat_day that
+    # ALyudRowBoat honours at the mooring)
+    B.thing("rental_oars", "board", (-1.4, YB - 0.08, 1.3), 0.0, topic="store")
     kit.rope_coil(B, 0.6, 5.7, 0.0, 0.0)
 
 

@@ -47,6 +47,12 @@ really works there.
   face (`city_plan.W1_RAMP_START`, `W1_RAMP`), and W1's block is 9.5 m deep (`W1_DEPTH`) so the step stays hidden.
 * `tools/city_mesh.py` leaves a unit's doorway open (no door panel, a concrete threshold, the plinth cut) and keeps the
   shop window's glass (`W1-Uxx-w1`, lit by `ALyudCityWindows`); from inside, the window hole looks out through it.
+* Shop windows: the glass is see-through (`city_mesh.ALPHA`: `City_ShopGlass` at 0.22, written by `world_mesh.py` as glTF
+  `alphaMode: BLEND`; take the entry out for the old opaque card), so from the promenade one looks into the real room,
+  lit by its own pendant while the unit is open. From far the lit pane of `ALyudCityWindows` still covers it (one instance,
+  no room to draw); within `lyud.CityWindows.RoomDistance` (45 m, 6 m of slack, 0 = never) of the viewer the pane is put
+  away. Checked with the windows every 2 s, never per frame. Not yet seen in the engine: if Interchange's translucent
+  glTF material sorts badly against the room, set the alpha to 1 and the distance to 0 and it is as before.
 * `unreal/scripts/import_city.py place` puts an `ALyudCityBuilding` per unit (`place_units`: at `front`, yaw like a plot,
   tags City/NoGrass/NoTree/Roof, lamp hours from the unit's staff, no door actor).
 * Each dressing declares its things with stable ids, the same in every unit of a trade (`cafe_bar`, `fish_counter`,
@@ -258,6 +264,24 @@ save: the day). The game (`ULyudCityThings::PayCollections`, after every stamp's
 once after a save is loaded, so a set completed before rewards existed pays then) gives the item or roubles, says
 `city.coll.reward.toast`, writes the diary's entry `city.coll.reward.diary` and sends the quest event `collection <set>`.
 `lyud.City.Collections clear <set>` forgets the payment with the stamps.
+
+### The rental's beach set
+
+Backlog item 35. The rental units (`promenade_unit:rental`, W1-U03, U15, U27) hire things out, each a one-day stay
+(`tools/city/content/x_rental.json`, words in `strings/x_rental.json`):
+
+* **A deck chair and a parasol** at the key board (`rental_keys`, act `pu_rental_keys`: 15 roubles, once a day, the
+  attendant must be in; stay `beach_set`). `ULyudBeachHire` (`Source/.../City/LyudBeachHire.*`) then offers, on the beach
+  (within 30 m of a `beach` seat of the public spaces, on its level), `city.rental.set.prompt`: E stands the kit's lounger
+  and umbrella where the hero is (one transient actor, no collision, out of Lumen, nothing per frame beyond the prompt's
+  check), E by it sits him in the chair, E from further off moves it. Seated for 25 s between 9 and 19 on a clear day: a
+  sunbath (toast, diary note, event `do sunbathe`), once a day. The set is gone when the stay ends (`city.rental.taken_back`).
+  Console `lyud.Beach.Hire [days]`, `lyud.Beach.Set`, `lyud.Beach.Sit`; dev action `interiors.beach_set`.
+* **The rowing boat** at the oars on the back wall (`rental_oars`, act `pu_rental_boat`: 25 roubles against the mooring's
+  30; stay `boat_day`). `ALyudRowBoat::Board` at the mooring takes the day as paid and its prompt says board, not hire.
+* Bicycles are free to ride in the bikes' code, so the rental hires none; its bicycles stay on show.
+
+Checks: `tools/citysim/rentalchecks.h` (prices, once a day, the attendant away, the save, the words in three tables).
 
 **The diary's «Коллекции» pages** come after its «Люди» pages (`SLyudDiarySpread::CollectionsPage`, six sets a page): the
 count of complete sets, then every set with its `n of m`, a box for every piece (ticked when he has it), and its keepsake:
