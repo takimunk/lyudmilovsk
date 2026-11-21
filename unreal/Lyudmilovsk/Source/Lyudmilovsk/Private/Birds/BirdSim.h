@@ -151,6 +151,15 @@ namespace LyudBirds
 	std::vector<FSpecies>& MutableSpeciesTable();
 	int FindSpecies(const std::string& Id);
 
+	/** What the weather has a bird doing (FBird::Weather; docs/bird_life.md "Weather"). */
+	enum class EWeathering : uint8_t
+	{
+		None,
+		Hunched,    // sitting tight under cover while it rains, feathers fluffed
+		Crouched,   // low on its perch through a gust, waiting for the lull
+		Ridge,      // a gull hanging on the wind a cliff turns upward
+	};
+
 	struct FSite
 	{
 		EHabitat Kind = EHabitat::Meadow;
@@ -210,6 +219,8 @@ namespace LyudBirds
 		uint32_t Rng = 1;
 		float LeaveDay = 1e9f;      // a straggler leaves on this day of the year (migration)
 		float Struggle = 0.f;       // s it has been flying without making way against the wind
+		uint8_t Weather = 0;        // EWeathering: what the weather has it doing now (a pose for the game)
+		float RidgeYaw = 0.f;       // riding a cliff's updraft: the way along the rim it beats up and down
 		double SightUntil = -1.0;   // the sight line to the player is taken as it was until then (a trace per bird per frame was too many)
 		bool bSightClear = true;
 	};
@@ -395,6 +406,20 @@ namespace LyudBirds
 		int VoicesSaid = 0, VoicesDropped = 0, VoicesPeak = 0;
 
 		float WindStress(const FSpecies& S) const;
+		/** 0..1 how much this species minds the rain falling now (0: the gulls, the swimmers, everybody in a drizzle). */
+		float RainStress(const FSpecies& S) const;
+		/** The wind at a bird this moment (m/s): the mean with its gusts and lulls, which sweep over the land. */
+		float GustAt(const FBird& B) const;
+		/** A gust this bird would not take off into is passing over its perch in the open. */
+		bool GustHolds(const FBird& B) const;
+		/** A wind worth turning into blows over this bird's place. */
+		bool FacesWind(const FBird& B) const;
+		/** The way a cliff's face looks (level, out over the low ground or the sea). */
+		V3 CliffOut(const FSite& Site) const;
+		/** 0..1 the updraft along a cliff: the wind blowing onto its face is turned upward (none when it blows off the land). */
+		float RidgeLift(const FSite& Site) const;
+		/** The cliff nearest to P within R whose face the wind blows onto (-1: none). */
+		int RidgeNear(const V3& P, float R) const;
 		/** 1 when a bird that flies on the wind alone (the albatross: dynamic soaring) has none, 0 from a fresh breeze up and for
 		 *  every other species: becalmed, it sits on the sea and goes nowhere far. */
 		float Becalmed(const FSpecies& S) const;

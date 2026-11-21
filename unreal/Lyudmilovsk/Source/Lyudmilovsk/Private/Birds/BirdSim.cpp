@@ -113,6 +113,102 @@ namespace LyudBirds
 		return Wind.Len2D() / std::max(S.WindLimit, 1.f);
 	}
 
+	// --- the weather (docs/bird_life.md "Weather") --------------------------------------------------------
+
+	namespace
+	{
+		/** Under leaves, needles, a hedge or the reeds: out of the rain. */
+		bool IsCover(EHabitat H) { return H == EHabitat::Broadleaf || H == EHabitat::Conifer || H == EHabitat::Garden || H == EHabitat::Reed; }
+		/** Nothing overhead. */
+		bool IsOpenSky(EHabitat H) { return IsExposed(H) || H == EHabitat::Street; }
+		float AngleDiff(float A, float B)
+		{
+			float D = std::fmod(A - B + Pi, 2.f * Pi);
+			return (D < 0.f ? D + 2.f * Pi : D) - Pi;
+		}
+	}
+
+	float FWorld::RainStress(const FSpecies& S) const
+	{
+		// oiled and at home on the water, or hunting in the air whatever falls: these don't shelter
+		if (Rain < 0.5f || IsGull(S) || IsAerial(S) || S.bPredator || Taste(S, 0, EHabitat::Sea) > 0.f || Taste(S, 1, EHabitat::Sea) > 0.f)
+		{
+			return 0.f;
+		}
+		return Smooth((Rain - 0.5f) / 3.5f) * (S.Length < 0.3f ? 1.f : (S.Length < 0.6f ? 0.6f : 0.3f));
+	}
+
+	float FWorld::GustAt(const FBird& B) const
+	{
+		// gusts are a few seconds long and tens of metres wide and travel with the wind: birds side by side feel the same one
+		const float T = (float)Time, Q = (B.Pos.X + B.Pos.Y * 0.7f) * 0.03f;
+		const float G = 0.6f * std::sin(T * 0.9f + Q) + 0.4f * std::sin(T * 0.37f + Q * 1.9f + 1.3f) + 0.3f * std::sin(T * 2.3f + Q * 0.6f);
+		return Wind.Len2D() * std::max(0.f, 1.f + 1.6f * Gustiness * G);
+	}
+
+	bool FWorld::GustHolds(const FBird& B) const
+	{
+		if (B.Site < 0 || Wind.Len2D() < 4.f || !IsExposed(Sites[B.Site].Kind) || Sites[B.Site].Kind == EHabitat::Sea)
+		{
+			return false;
+		}
+		const FSpecies& S = SpeciesTable()[B.Species];
+		return !Soars(S) && S.Flight != EFlight::Soar && GustAt(B) > 0.7f * S.WindLimit;
+	}
+
+	bool FWorld::FacesWind(const FBird& B) const
+	{
+		return B.Site >= 0 && Wind.Len2D() > 5.f && IsExposed(Sites[B.Site].Kind) && Sites[B.Site].Kind != EHabitat::Sea
+			&& !B.bNoticed && !B.bWatching && B.Alert < 0.2f && !(Sites[B.Site].Flags & SiteFeeder);
+	}
+
+	V3 FWorld::CliffOut(const FSite& Site) const
+	{
+		const V3 C = Site.Center();
+		V3 Out;
+		for (int K = 0; K < 16; K++)
+		{
+			const float A = K * Pi / 8.f;
+			const V3 D(std::cos(A), std::sin(A), 0.f);
+			// (the drop on that side, near and a little further out)
+			Out += D * (C.Z - std::max(GroundZ(C.X + D.X * 12.f, C.Y + D.Y * 12.f), SeaZ) + 0.5f * (C.Z - std::max(GroundZ(C.X + D.X * 30.f, C.Y + D.Y * 30.f), SeaZ)));
+		}
+		return Out.Flat().Len2D() > 1e-3f ? Out.Flat().Norm() : V3(1.f, 0.f, 0.f);
+	}
+
+	float FWorld::RidgeLift(const FSite& Site) const
+	{
+		if (Site.Kind != EHabitat::Cliff || Wind.Len2D() < 4.f)
+		{
+			return 0.f;
+		}
+		return Clamp((-Wind.Flat().Dot(CliffOut(Site)) - 4.f) / 5.f, 0.f, 1.f);
+	}
+
+	int FWorld::RidgeNear(const V3& P, float R) const
+	{
+		if (Wind.Len2D() < 4.f)
+		{
+			return -1;
+		}
+		int Best = -1;
+		float BestD = R;
+		for (int I = 0; I < (int)Sites.size(); I++)
+		{
+			if (Sites[I].Kind != EHabitat::Cliff)
+			{
+				continue;
+			}
+			const float D = (Sites[I].Center() - P).Len2D();
+			if (D < BestD && RidgeLift(Sites[I]) > 0.3f)
+			{
+				BestD = D;
+				Best = I;
+			}
+		}
+		return Best;
+	}
+
 	float V3::Len() const { return std::sqrt(X * X + Y * Y + Z * Z); }
 	float V3::Len2D() const { return std::sqrt(X * X + Y * Y); }
 	V3 V3::Norm() const
@@ -401,6 +497,11 @@ namespace LyudBirds
 		}
 		// a gale: birds that can't cope with it leave the open (wires, roofs, fields, the beach) for the lee of trees,
 		// hedges, reeds and streets; the soarers want the open coast all the more
+		// rain: the land birds that mind it leave the open sky for leaves, needles, hedges and reeds
+		if (const float Wetting = RainStress(S); Wetting > 0.05f)
+		{
+			W *= IsCover(Site.Kind) ? 1.f + 1.2f * Wetting : (IsOpenSky(Site.Kind) ? 1.f - 0.85f * Wetting : 1.f);
+		}
 		const float Stress = WindStress(S);
 		if (Stress > 0.6f && !Soars(S) && S.Flight != EFlight::Soar)
 		{
@@ -1388,6 +1489,7 @@ namespace LyudBirds
 		B.Act = A;
 		B.ActTime = 0.f;
 		B.ActLen = Len;
+		B.Weather = 0;
 	}
 
 	void FWorld::FlyTo(FBird& B, int Site, const V3& Spot)
@@ -2542,9 +2644,22 @@ namespace LyudBirds
 				const bool bGround = B.Site >= 0 && IsGroundHabitat(Sites[B.Site].Kind);
 				const float R = Rand(B.Rng);
 				const int Feeder = FeederAt(B.Site);
+				const float Wetting = B.Site >= 0 && IsCover(Sites[B.Site].Kind) ? RainStress(S) : 0.f;
 				if (Feeder >= 0)
 				{
 					AtFeeder(B, Feeders[Feeder], Dt);
+				}
+				else if (GustHolds(B))
+				{
+					// a gust over its perch: it crouches and holds on, and goes when the lull comes
+					SetAct(B, EAct::Perch, 1.f + Rand(B.Rng) * 1.5f);
+					B.Weather = (uint8_t)EWeathering::Crouched;
+				}
+				else if (Wetting > 0.3f && G.Plan != 2 && Rand(B.Rng) < 0.75f * Wetting)
+				{
+					// rain on the leaves over it: it sits tight, fluffed up, and feeds in the gaps
+					SetAct(B, EAct::Perch, 5.f + Rand(B.Rng) * 10.f);
+					B.Weather = (uint8_t)EWeathering::Hunched;
 				}
 				else if (G.Plan == 1 && B.Site >= 0 && (bGround || R < 0.5f))
 				{
@@ -2569,8 +2684,25 @@ namespace LyudBirds
 					const float Up = S.Length > 0.5f ? 50.f + Rand(B.Rng) * 70.f : 25.f + Rand(B.Rng) * 25.f;
 					B.Spot = Sites[B.Site].Center() + V3(0.f, 0.f, Up);
 					B.FlyFrom = B.Spot;           // the centre of its circles
-					SetAct(B, EAct::Soar, 30.f + Rand(B.Rng) * 60.f);
+					const int Ridge = IsGull(S) ? RidgeNear(B.Pos, 300.f) : -1;
+					SetAct(B, EAct::Soar, (30.f + Rand(B.Rng) * 60.f) * (Ridge >= 0 ? 2.f : 1.f));
 					B.Vel = V3(std::cos(B.Yaw), std::sin(B.Yaw), 0.4f) * 4.f;
+					if (Ridge >= 0)
+					{
+						// the wind blows onto a cliff near by: a gull hangs in the air it turns upward, beating up and down
+						// along the rim a little out from the face, head to the wind, hardly moving a wing
+						const FSite& Cliff = Sites[Ridge];
+						const V3 Out = CliffOut(Cliff), C = Cliff.Center();
+						float Rim = C.Z;
+						for (int K = 1; K <= 4; K++)
+						{
+							Rim = std::max(Rim, GroundZ(C.X - Out.X * 6.f * K, C.Y - Out.Y * 6.f * K));
+						}
+						B.FlyFrom = V3(C.X + Out.X * (3.f + Rand(B.Rng) * 6.f), C.Y + Out.Y * (3.f + Rand(B.Rng) * 6.f), Rim + 4.f + Rand(B.Rng) * 10.f);
+						B.Spot = B.FlyFrom;
+						B.RidgeYaw = std::atan2(Out.X, -Out.Y);
+						B.Weather = (uint8_t)EWeathering::Ridge;
+					}
 				}
 				else if (G.Plan == 2 && InRoost(G, B.Site) && (Hour > Sunset + S.RoostMinutes / 60.f - 0.25f || Hour < Sunrise))
 				{
@@ -2822,6 +2954,25 @@ namespace LyudBirds
 		case EAct::Preen:
 		case EAct::Watch:
 			B.Vel = V3();
+			if (B.Act != EAct::Watch && FacesWind(B))
+			{
+				// in the open in a wind a sitting bird turns its head into it (the feathers lie flat that way): each a little
+				// off the line; on a wire, across it on the side the wind comes from
+				float Want = std::atan2(-Wind.Y, -Wind.X);
+				const FSite& At = Sites[B.Site];
+				if (At.Kind == EHabitat::Wire)
+				{
+					const V3 Along = (At.B - At.A).Flat().Norm();
+					const float Across = std::atan2(Along.Y, Along.X) + 0.5f * Pi;
+					Want = std::cos(AngleDiff(Across, Want)) >= 0.f ? Across : Across + Pi;
+				}
+				else
+				{
+					Want += (((B.Id * 37) % 21) - 10) * 0.025f;
+				}
+				const float Off = AngleDiff(Want, B.Yaw);
+				B.Yaw += Clamp(Off, -1.5f * Dt, 1.5f * Dt);
+			}
 			if (S.Id == "Cormorant" && B.Pos.Z < SeaZ - 0.5f)
 			{
 				B.Pos.Z = SeaZ;
@@ -2864,6 +3015,17 @@ namespace LyudBirds
 				Goal = B.FlyFrom + V3(std::cos(A) * R, std::sin(A) * R, std::sin(A * 0.3f) * 8.f);
 				Speed = S.Cruise * 0.8f;
 				bLanding = false;
+				if (B.Weather == (uint8_t)EWeathering::Ridge)
+				{
+					// up and down the rim in the band of rising air (some 50 m each way), a slow weave in and out and up and down
+					const float Ph = (float)Time * 0.09f + B.Id * 1.3f;
+					const V3 Along(std::cos(B.RidgeYaw), std::sin(B.RidgeYaw), 0.f), Out(Along.Y, -Along.X, 0.f);
+					Goal = B.FlyFrom + Along * (std::sin(Ph) * 50.f) + Out * (std::sin(Ph * 2.3f + B.Id) * 2.5f) + V3(0.f, 0.f, std::sin(Ph * 1.7f) * 2.f);
+					Goal.Z = std::max(Goal.Z, std::max(GroundZ(Goal.X, Goal.Y), SeaZ) + 4.f);     // (the rim is no straight line: over a headland on its beat)
+					// from the beach under the cliff it climbs out in front of the face and comes in to the rim at its height
+					Goal += Out * Clamp((Goal.Z - B.Pos.Z - 3.f) * 1.2f, 0.f, 45.f);
+					Speed = std::max(2.f, std::min(S.Cruise * 0.8f, (Goal - B.Pos).Len() * 0.8f));
+				}
 			}
 			else if (B.Act == EAct::Chase && B.Target >= 0)
 			{
@@ -3030,6 +3192,15 @@ namespace LyudBirds
 			if (B.Vel.Len2D() > 0.3f)
 			{
 				B.Yaw = std::atan2(B.Vel.Y, B.Vel.X);
+			}
+			if (B.Act == EAct::Soar && B.Weather == (uint8_t)EWeathering::Ridge)
+			{
+				// it slides along the rim crabwise: the body points where it flies through the air, into the wind
+				const V3 Air = B.Vel.Flat() - Wind.Flat();
+				if (Air.Len2D() > 0.5f)
+				{
+					B.Yaw = std::atan2(Air.Y, Air.X);
+				}
 			}
 			if (B.Act == EAct::Takeoff && B.ActTime > B.ActLen)
 			{
