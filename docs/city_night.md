@@ -16,7 +16,7 @@ its dark ground floor with a torch. Backlog item 29 (docs/interactives_backlog.m
 | The buildings | `blender/city/buildings/saucer_pavilion.py` (café «Тарелка»), `workers_club.py` (Rassvet), `cog_club.py` (the buffet), `capsule_library.py`, `department_store.py` (the café upstairs) |
 | The "closed" lamp | `B.lamp(..., kind="closed")` (`blender/city/citykit.py`) -> `LAMP_KINDS` in `unreal/scripts/import_city.py` -> `ALyudCityBuilding::LampKinds` 2, switched by `ULyudWindowLights` |
 | Previews at a game moment | `python3 blender/city/shoot_interior.py -- saucer_pavilion --cam 0,10,5.9,90,-14 --dress "hour=23,open=0" --night` |
-| The cleaners and the watchman | `tools/town/town_night.py` (an add-on of the town generator, like `town_activities.py`), activities `mop_floor` and `night_watch`, manners `mop` and `torch` |
+| The cleaners and the watchman | `tools/town/town_night.py` (an add-on of the town generator, like `town_activities.py`), activities `mop_floor` (`mop_floor_late` for a cleaner's second building: one activity a duty) and `night_watch`, manners `mop` and `torch` |
 | Their props | `blender/humans/props.py` `mop`, `torch`, `bucket` -> `/Game/Characters/Humans/Props/SM_Prop_*` (`unreal/scripts/import_props.py`) |
 
 ## How the swap works
