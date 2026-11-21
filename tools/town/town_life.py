@@ -1038,7 +1038,7 @@ def main():
 
     write_counters(people, workplaces)
     # what is added to the town after it is made: the sanatorium's guests, then the new things to do (both idempotent)
-    for extra_script in ("sanatorium_guests.py", "town_activities.py"):
+    for extra_script in ("sanatorium_guests.py", "town_activities.py", "town_night.py"):
         subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), extra_script)], check=True)
 
     jobs = sum(1 for p in people if any(d.get("place") for d in p["duties"]) and p["occupation"] != "pupil")
