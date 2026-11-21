@@ -1,0 +1,682 @@
+{
+ "rules": [
+  {
+   "event": "festival",
+   "target": "",
+   "topic": "festival"
+  },
+  {
+   "event": "festival_watch",
+   "target": "",
+   "topic": "festival"
+  },
+  {
+   "event": "festival_visit",
+   "target": "",
+   "topic": "festival"
+  },
+  {
+   "event": "festival_wish",
+   "target": "",
+   "topic": "festival"
+  },
+  {
+   "event": "festival_lantern",
+   "target": "",
+   "topic": "festival"
+  },
+  {
+   "event": "bird_tamed",
+   "target": "",
+   "topic": "bird_friend"
+  },
+  {
+   "event": "bird_seen",
+   "target": "",
+   "topic": "bird_new"
+  },
+  {
+   "event": "bird",
+   "target": "",
+   "topic": "bird_self"
+  },
+  {
+   "event": "bird_call",
+   "target": "",
+   "topic": "bird_self"
+  },
+  {
+   "event": "feeder_visit",
+   "target": "",
+   "topic": "feeder"
+  },
+  {
+   "event": "corvid_gift",
+   "target": "",
+   "topic": "corvid_gift"
+  },
+  {
+   "event": "corvid_gift_taken",
+   "target": "",
+   "topic": "corvid_gift"
+  },
+  {
+   "event": "corvid_find",
+   "target": "",
+   "topic": "corvid_gift"
+  },
+  {
+   "event": "corvid_store_dug",
+   "target": "",
+   "topic": "corvid_gift"
+  },
+  {
+   "event": "corvid_snatch",
+   "target": "",
+   "topic": "corvid_snatch"
+  },
+  {
+   "event": "fish_caught",
+   "target": "",
+   "topic": "fish"
+  },
+  {
+   "event": "talk",
+   "target": "",
+   "topic": "people"
+  },
+  {
+   "event": "film_watched",
+   "target": "",
+   "topic": "film"
+  },
+  {
+   "event": "kite_flown",
+   "target": "",
+   "topic": "kite"
+  },
+  {
+   "event": "win",
+   "target": "",
+   "topic": "win"
+  },
+  {
+   "event": "play_tune",
+   "target": "",
+   "topic": "music"
+  },
+  {
+   "event": "learn_tune",
+   "target": "",
+   "topic": "music"
+  },
+  {
+   "event": "play",
+   "target": "",
+   "topic": "records"
+  },
+  {
+   "event": "radio",
+   "target": "",
+   "topic": "radio"
+  },
+  {
+   "event": "read_book",
+   "target": "",
+   "topic": "book"
+  },
+  {
+   "event": "borrow",
+   "target": "",
+   "topic": "book"
+  },
+  {
+   "event": "read",
+   "target": "paper_issue",
+   "topic": "paper"
+  },
+  {
+   "event": "letter_sent",
+   "target": "",
+   "topic": "letter"
+  },
+  {
+   "event": "photo",
+   "target": "",
+   "topic": "photo"
+  },
+  {
+   "event": "leave_computer",
+   "target": "",
+   "topic": "computer"
+  },
+  {
+   "event": "reach",
+   "target": "",
+   "topic": "place"
+  },
+  {
+   "event": "eat",
+   "target": "",
+   "topic": "eat"
+  },
+  {
+   "event": "do",
+   "target": "job_*",
+   "topic": "job",
+   "except": [
+    "job_board"
+   ]
+  },
+  {
+   "event": "do",
+   "target": "post_card",
+   "topic": "letter"
+  },
+  {
+   "event": "do",
+   "target": "pen_answer",
+   "topic": "letter"
+  },
+  {
+   "event": "do",
+   "target": "garden_*",
+   "topic": "garden",
+   "except": [
+    "garden_read"
+   ]
+  },
+  {
+   "event": "do",
+   "target": "san_*",
+   "topic": "sanatorium"
+  },
+  {
+   "event": "do",
+   "target": "sanatorium_*",
+   "topic": "sanatorium"
+  },
+  {
+   "event": "do",
+   "target": "aton_*",
+   "topic": "aton"
+  },
+  {
+   "event": "do",
+   "target": "haircut",
+   "topic": "haircut"
+  },
+  {
+   "event": "do",
+   "target": "photo_*",
+   "topic": "photo"
+  },
+  {
+   "event": "do",
+   "target": "~_photo",
+   "topic": "photo"
+  },
+  {
+   "event": "do",
+   "target": "~telescope",
+   "topic": "sky"
+  },
+  {
+   "event": "do",
+   "target": "~scope",
+   "topic": "sky",
+   "except": [
+    "school_microscope"
+   ]
+  },
+  {
+   "event": "do",
+   "target": "~chess",
+   "topic": "games"
+  },
+  {
+   "event": "do",
+   "target": "~checkers",
+   "topic": "games"
+  },
+  {
+   "event": "do",
+   "target": "~dominoes",
+   "topic": "games"
+  },
+  {
+   "event": "do",
+   "target": "~piano",
+   "topic": "music"
+  },
+  {
+   "event": "do",
+   "target": "~record",
+   "topic": "records"
+  },
+  {
+   "event": "do",
+   "target": "jukebox_*",
+   "topic": "records"
+  },
+  {
+   "event": "do",
+   "target": "~radio",
+   "topic": "radio"
+  },
+  {
+   "event": "do",
+   "target": "~paper",
+   "topic": "paper"
+  },
+  {
+   "event": "do",
+   "target": "~tea",
+   "topic": "tea"
+  },
+  {
+   "event": "do",
+   "target": "~bike",
+   "topic": "bike"
+  }
+ ],
+ "topics": [
+  {
+   "id": "festival",
+   "rank": 90,
+   "slot": "festival",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 3,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "bird_friend",
+   "rank": 85,
+   "slot": "bird",
+   "doodle": "bird",
+   "once": false,
+   "filler": false,
+   "one": 3,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "bird_new",
+   "rank": 80,
+   "slot": "bird",
+   "doodle": "bird",
+   "once": true,
+   "filler": false,
+   "one": 3,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "fish",
+   "rank": 75,
+   "slot": "item",
+   "doodle": "item",
+   "once": false,
+   "filler": false,
+   "one": 3,
+   "many": 2,
+   "plain": 3
+  },
+  {
+   "id": "job",
+   "rank": 70,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 4
+  },
+  {
+   "id": "win",
+   "rank": 65,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "film",
+   "rank": 65,
+   "slot": "film",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 3,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "bird_self",
+   "rank": 60,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "kite",
+   "rank": 60,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "letter",
+   "rank": 60,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "sky",
+   "rank": 60,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "corvid_gift",
+   "rank": 58,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "corvid_snatch",
+   "rank": 50,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "music",
+   "rank": 55,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "garden",
+   "rank": 55,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "aton",
+   "rank": 55,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "people",
+   "rank": 50,
+   "slot": "npc",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 3,
+   "many": 2,
+   "plain": 3
+  },
+  {
+   "id": "book",
+   "rank": 50,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "sanatorium",
+   "rank": 50,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "haircut",
+   "rank": 50,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "feeder",
+   "rank": 45,
+   "slot": "bird",
+   "doodle": "bird",
+   "once": false,
+   "filler": false,
+   "one": 3,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "photo",
+   "rank": 45,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "place",
+   "rank": 45,
+   "slot": "place",
+   "doodle": "",
+   "once": true,
+   "filler": false,
+   "one": 3,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "games",
+   "rank": 40,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "records",
+   "rank": 40,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "tea",
+   "rank": 35,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "bike",
+   "rank": 35,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "radio",
+   "rank": 30,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "paper",
+   "rank": 30,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "computer",
+   "rank": 20,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "eat",
+   "rank": 15,
+   "slot": "item",
+   "doodle": "item",
+   "once": false,
+   "filler": true,
+   "one": 3,
+   "many": 2,
+   "plain": 3
+  }
+ ],
+ "weather": [
+  {
+   "code": "thunder",
+   "n": 4
+  },
+  {
+   "code": "aurora",
+   "n": 4
+  },
+  {
+   "code": "rainbow",
+   "n": 4
+  },
+  {
+   "code": "snow",
+   "n": 4
+  },
+  {
+   "code": "rain",
+   "n": 4
+  },
+  {
+   "code": "fog",
+   "n": 4
+  },
+  {
+   "code": "drizzle",
+   "n": 4
+  },
+  {
+   "code": "frost",
+   "n": 4
+  },
+  {
+   "code": "hot",
+   "n": 4
+  },
+  {
+   "code": "clear",
+   "n": 4
+  },
+  {
+   "code": "cloudy",
+   "n": 4
+  },
+  {
+   "code": "mixed",
+   "n": 4
+  }
+ ],
+ "quiet": 4,
+ "busy": 3,
+ "calm": 4,
+ "max_topics": 4,
+ "busy_hits": 7,
+ "evening_hour": 18
+}
