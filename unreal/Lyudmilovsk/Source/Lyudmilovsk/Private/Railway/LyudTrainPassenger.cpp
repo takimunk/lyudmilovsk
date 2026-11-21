@@ -325,10 +325,11 @@ void ULyudTrainPassenger::TickTrain(AHeroCharacter* Hero, float DeltaTime)
 		LastDir = Info.Dir;
 	}
 	const double Now = World->GetTimeSeconds();
-	const FText Title = LyudText::Get(TEXT("rail.announce.title"));
+	// the announcer's title is looked up only when something is said (not every frame of the ride)
+	const auto Title = [] { return LyudText::Get(TEXT("rail.announce.title")); };
 	if (bLastDoors && !Info.bDoorsOpen)
 	{
-		Say(Title, LyudText::Get(TEXT("rail.announce.doors")), 3.5f);
+		Say(Title(), LyudText::Get(TEXT("rail.announce.doors")), 3.5f);
 	}
 	if (LastStop >= 0 && Info.Stop < 0)
 	{
@@ -336,7 +337,7 @@ void ULyudTrainPassenger::TickTrain(AHeroCharacter* Hero, float DeltaTime)
 		const int32 Next = NextStop(LastStop, Info.Dir);
 		if (Next >= 0)
 		{
-			Say(Title, LyudText::Get(TEXT("rail.announce.next"), { FStringFormatArg(StopName(Next).ToString()) }), 5.f);
+			Say(Title(), LyudText::Get(TEXT("rail.announce.next"), { FStringFormatArg(StopName(Next).ToString()) }), 5.f);
 		}
 		bPunchedThisRide = bPunchedThisRide && bCheckedThisRide;
 		bCheckedThisRide = false;
@@ -348,7 +349,7 @@ void ULyudTrainPassenger::TickTrain(AHeroCharacter* Hero, float DeltaTime)
 	if (LastStop < 0 && Info.Stop >= 0)
 	{
 		const bool bEnd = Info.Dir < 0 && NextStop(Info.Stop, Info.Dir) < 0;
-		Say(Title, bEnd ? LyudText::Get(TEXT("rail.announce.last"))
+		Say(Title(), bEnd ? LyudText::Get(TEXT("rail.announce.last"))
 			: LyudText::Get(TEXT("rail.announce.arrive"), { FStringFormatArg(StopName(Info.Stop).ToString()) }), 5.f);
 		if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
 		{

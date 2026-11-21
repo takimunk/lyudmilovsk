@@ -275,6 +275,7 @@ bool ULyudRounds::StartPaper(bool bForce)
 	Round->Begin(LyudRounds::EKind::Paper, Route, Entries, (int)Entries.size() + Data->Spare, H, Deadline);
 	RoundTerrace = Data->RouteTerrace[(size_t)Route];
 	PaperDay = Day;
+	Prompted = -1;  // the round's first prompt is always said (its code may equal the one showing)
 	if (GS)
 	{
 		GS->Toast(LyudText::Get(TEXT("rounds.paper.start"), { FStringFormatArg(RoundTerrace), FStringFormatArg((int32)Entries.size()),
@@ -303,6 +304,7 @@ bool ULyudRounds::StartPost(bool bForce)
 	Round->Begin(LyudRounds::EKind::Post, -1, Picks, 0, H, Deadline);
 	RoundTerrace = 0;
 	PostDay = Day;
+	Prompted = -1;
 	if (ULyudGameScreen* GS = ULyudGameScreen::Get(this))
 	{
 		GS->Toast(LyudText::Get(TEXT("rounds.post.start"), { FStringFormatArg((int32)Picks.size()) }), true);
@@ -439,7 +441,10 @@ void ULyudRounds::TickDoors()
 		// the bundle on the kiosk's step, the postman's door
 		if (Near(Data->Bundle, ReachCm) && PaperDay != Day && H >= Data->PaperFrom && H <= Data->PaperUntil)
 		{
-			SetPrompt(-10, LyudText::Get(TEXT("rounds.prompt.bundle")));
+			if (Prompted != -10)
+			{
+				SetPrompt(-10, LyudText::Get(TEXT("rounds.prompt.bundle")));
+			}
 			if (ANpcTalkDirector::UsePressed(PC))
 			{
 				StartPaper(false);
@@ -449,7 +454,10 @@ void ULyudRounds::TickDoors()
 		const int32 Weekday = (int32)UGameCalendar::NowIn(World).GetDayOfWeek() + 1;
 		if (Near(At(Data->PostmanDoor), ReachCm) && PostDay != Day && H >= Data->PostFrom && H <= Data->PostUntil && Data->PostDays.Contains(Weekday))
 		{
-			SetPrompt(-11, LyudText::Get(TEXT("rounds.prompt.postman")));
+			if (Prompted != -11)
+			{
+				SetPrompt(-11, LyudText::Get(TEXT("rounds.prompt.postman")));
+			}
 			if (ANpcTalkDirector::UsePressed(PC))
 			{
 				if (StartPost(false))
@@ -498,9 +506,14 @@ void ULyudRounds::TickDoors()
 				Best = I;
 			}
 		}
-		SetPrompt(Best >= 0 ? 100 + R.Papers * 1000 : -3 - R.Papers, Best >= 0
-			? LyudText::Get(TEXT("rounds.prompt.throw"), { FStringFormatArg(R.Papers) })
-			: LyudText::Get(TEXT("rounds.prompt.papers"), { FStringFormatArg(R.Papers), FStringFormatArg(R.Left()) }));
+		// the words are looked up and filled only when the prompt changes, not every frame of the round
+		const int32 PaperPrompt = Best >= 0 ? 100 + R.Papers * 1000 : -3 - R.Papers;
+		if (Prompted != PaperPrompt)
+		{
+			SetPrompt(PaperPrompt, Best >= 0
+				? LyudText::Get(TEXT("rounds.prompt.throw"), { FStringFormatArg(R.Papers) })
+				: LyudText::Get(TEXT("rounds.prompt.papers"), { FStringFormatArg(R.Papers), FStringFormatArg(R.Left()) }));
+		}
 		if (R.AllDone() && !Flights[0].bFlying && !Flights[1].bFlying && !Flights[2].bFlying && !Flights[3].bFlying && !Flights[4].bFlying && !Flights[5].bFlying)
 		{
 			Finish(H <= R.Deadline);
@@ -520,11 +533,20 @@ void ULyudRounds::TickDoors()
 		{
 			continue;
 		}
+		// who lives here is looked up only when the prompt is first said and when the bell is pressed, not every frame at the door
+		const bool bPressed = ANpcTalkDirector::UsePressed(PC);
+		if (Prompted == 200 + I && !bPressed)
+		{
+			return;
+		}
 		const UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(this);
 		const int32 Id = Life ? Life->FindPerson(UTF8_TO_TCHAR(S.Person.c_str())) : -1;
-		const FText Name = Id >= 0 && Life ? Life->GetDisplayName(Id) : FText::GetEmpty();
-		SetPrompt(200 + I, LyudText::Get(TEXT("rounds.prompt.ring"), { FStringFormatArg(Name.ToString()) }));
-		if (ANpcTalkDirector::UsePressed(PC))
+		if (Prompted != 200 + I)
+		{
+			const FText Name = Id >= 0 && Life ? Life->GetDisplayName(Id) : FText::GetEmpty();
+			SetPrompt(200 + I, LyudText::Get(TEXT("rounds.prompt.ring"), { FStringFormatArg(Name.ToString()) }));
+		}
+		if (bPressed)
 		{
 			// the bell, and a moment's wait: the nervy are at the door at once, a sleeper takes a while
 			const float Nerve = Life && Id >= 0 ? Life->GetTrait(Id, TEXT("nerve")) : 0.5f;
@@ -541,7 +563,10 @@ void ULyudRounds::TickDoors()
 		}
 		return;
 	}
-	SetPrompt(-5 - R.Left(), LyudText::Get(TEXT("rounds.prompt.parcels"), { FStringFormatArg(R.Left()) }));
+	if (const int32 ParcelPrompt = -5 - R.Left(); Prompted != ParcelPrompt)
+	{
+		SetPrompt(ParcelPrompt, LyudText::Get(TEXT("rounds.prompt.parcels"), { FStringFormatArg(R.Left()) }));
+	}
 	if (R.AllDone())
 	{
 		Finish(H <= R.Deadline);
@@ -574,7 +599,7 @@ void ULyudRounds::Answer(int32 Entry)
 		{
 			GS->Toast(LyudText::Get(FString::Printf(TEXT("rounds.nobody.%d"), 1 + (Day + Entry) % 3)));
 		}
-		Prompted = -2;
+		Prompted = -1;  // said again next frame (not -2: that means "nothing shows", and a clear would then be skipped)
 		return;
 	}
 	const int32 Sleep = Life->FindActivity(TEXT("sleep"));
@@ -587,7 +612,7 @@ void ULyudRounds::Answer(int32 Entry)
 		const FText Line = LyudText::Get(FString::Printf(TEXT("rounds.answer.%s.%d"), UTF8_TO_TCHAR(Set), 1 + (Day + Entry) % 3));
 		GS->Toast(LyudText::Get(TEXT("rounds.answer.say"), { FStringFormatArg(Life->GetDisplayName(Id).ToString()), FStringFormatArg(Line.ToString()) }));
 	}
-	Prompted = -2;
+	Prompted = -1;
 }
 
 // ---------------------------------------------------------------------------------------------------------- the papers flying
@@ -770,7 +795,7 @@ void ULyudRounds::Land(int32, const FVector& Where)
 		GS->Toast(LyudText::Get(Res == LyudRounds::EResult::Perfect ? TEXT("rounds.throw.perfect") : Res == LyudRounds::EResult::Good
 			? TEXT("rounds.throw.good") : TEXT("rounds.throw.missed"), { FStringFormatArg(R.Left()) }));
 	}
-	Prompted = -2;
+	Prompted = -1;  // the count changed: said again next frame (-2 would make a clear be skipped and leave the old words up)
 }
 
 FString ULyudRounds::Report() const

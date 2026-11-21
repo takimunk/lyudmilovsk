@@ -144,6 +144,8 @@ private:
 	float NearClock = 0.f;
 	float OfferClock = 0.f;
 	float BenchClock = 0.f;
+	/** Seated on a city thing: the chair is matched to the hosts' twice a second (strings are built for it), not every frame. */
+	float TeaChairClock = 0.f;
 	/** Person ids by key, looked up once (the life's ids don't change in a session). */
 	mutable TMap<FString, int32> PersonIds;
 	/** Who waved first today / mentioned his card (keys; refreshed each day). */

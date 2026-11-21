@@ -89,6 +89,9 @@ private:
 	int32 PromptShown = 0;
 	bool bConditionSent = false;
 	bool bConditionOn = false;
+	/** He was near the circle at the last look; while he is not, the circle is looked for only twice a second. */
+	bool bClubNear = false;
+	float ClubScanClock = 0.f;
 	/** The hero's lines being said after he joined (index of the next; -1 none). */
 	int32 HeroLine = -1;
 	float HeroClock = 0.f;

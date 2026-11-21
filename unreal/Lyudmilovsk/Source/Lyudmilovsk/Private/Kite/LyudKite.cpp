@@ -734,6 +734,8 @@ void ULyudKiteFlying::TakeOut(FName Item)
 	WheelReel = 0.f;
 	PrevState = (int32)LyudKite::EState::Wound;
 	bWasSpinning = false;
+	bStampHigh = false;
+	bStampBox = false;
 	Say(TEXT("ui.kite.keys_wound"), 4.f);
 }
 
@@ -844,7 +846,9 @@ void ULyudKiteFlying::TickHero(float DeltaTime)
 	// the hand: the reel held up in front; it rides on the hand bone once the hand is there
 	if (Reach && !Reach->HasOverrideHold())
 	{
-		Reach->SetHold(ReelPose());
+		// made once: the pose holds an array, and this runs every frame the kite is out
+		static const FHeroHoldPose ReelHold = ReelPose();
+		Reach->SetHold(ReelHold);
 	}
 	HoldTime += DeltaTime;
 	if (!bAttached && Reach && Reach->HoldWeight() > 0.6f)
@@ -997,12 +1001,15 @@ void ULyudKiteFlying::TickHero(float DeltaTime)
 			Stamp(TEXT("first_flight"));
 			Say(TEXT("ui.kite.flying"), 3.f);
 		}
-		if (Now == LyudKite::EState::Flying && Sim.Pos.Z - Hero.Hand.Z * 0.01 > 30.0)
+		// asked once a kite taken out, not every frame it stays up there (the stamp's name is a string built for the ask)
+		if (!bStampHigh && Now == LyudKite::EState::Flying && Sim.Pos.Z - Hero.Hand.Z * 0.01 > 30.0)
 		{
+			bStampHigh = true;
 			Stamp(TEXT("high"));
 		}
-		if (HeroItem == KiteBoxId && UpFor > 30.f)
+		if (!bStampBox && HeroItem == KiteBoxId && UpFor > 30.f)
 		{
+			bStampBox = true;
 			Stamp(TEXT("box"));
 		}
 	}

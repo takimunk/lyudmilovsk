@@ -89,10 +89,9 @@ void ULyudBooks::Initialize(FSubsystemCollectionBase& Collection)
 		{
 			if (Save && !Save->Records.Contains(TEXT("Books")))
 			{
-				// a save from before the library lent books: nothing on loan
-				BorrowedKeys.Reset();
-				Marks.Reset();
-				FinishedKeys.Reset();
+				// a save from before the library lent books: nothing on loan, and nothing of the game played before this
+				// load either (this subsystem lives through it: its quotes, pages read, club months and advice would stay)
+				ResetAll();
 			}
 			if (Save && Save->Records.Contains(TEXT("Books")))
 			{
