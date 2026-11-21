@@ -582,7 +582,7 @@ Mac shots of each interaction, bench.
 
 ## 40. The Aton station as the club's front door
 
-`[ ]` **Brief (Opus 5.5):** The Aton station is the first hall the hero sees and stands next to the club
+`[x]` aton-front-door 2026-11-21 (docs/front_door.md; Mac compile, shots and bench owed) **Brief (Opus 5.5):** The Aton station is the first hall the hero sees and stands next to the club
 (`docs/transport.md`: the swept wing, its coffee bar with `coffee` goods; `stations-v3` dresses the halls). Make it the
 club's front door: the coffee bar served by its barista through item 27's counter service (a line in the morning, the
 cup set on the counter, the regulars' "the usual"), a departures board that shows the real next cabins of the Sun line

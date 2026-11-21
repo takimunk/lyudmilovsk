@@ -1084,7 +1084,7 @@ void ULyudCityThings::Greet(int32 Thing)
 			Talk->SayEvent(Body, TEXT("counter_hello"), Person, Role);
 			if (ULyudCounterService* Counter = ULyudCounterService::Get(this))
 			{
-				Counter->NoteGreeted(Person);
+				Counter->NoteGreeted(Body);
 			}
 			return;
 		}

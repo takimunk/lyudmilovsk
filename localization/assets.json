@@ -1384,6 +1384,48 @@
    "aspect": "1:1",
    "prompt": "a glass jar of dark red strawberry jam with whole berries visible, a square of white gauze tied over the lid with string, a blank paper label",
    "source": "localization/icon_grids_garden.json: icons_garden_2, cell 6 (row 2, right), one 3x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_travel_card": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small cream cardboard cable car travel card with a row of seven little printed squares along its edge and a tiny cabin drawn in one corner, no lettering."
+  },
+  "icon_lost_umbrella": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A closed dark blue folding umbrella with a curved wooden handle, lying diagonally."
+  },
+  "icon_lost_mitten": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A single red hand-knitted wool mitten with a white snowflake pattern."
+  },
+  "icon_lost_scarf": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A folded mustard yellow knitted wool scarf with short fringe at the ends."
+  },
+  "icon_lost_glasses": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A pair of folded black-rimmed reading glasses."
+  },
+  "icon_lost_keys": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small bunch of three old brass keys on a ring with a little anchor key fob."
+  },
+  "icon_lost_bear": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small worn brown plush teddy bear sitting upright, one ear slightly faded."
   }
  }
 }

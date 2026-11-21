@@ -1,6 +1,7 @@
 // The cable-car metro outside the engine: behaviour checks and a busy day (tools/transportsim/run.sh).
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Transport/CablewaySim.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Transport/StationLife.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Transport/FrontDoor.h"
 
 #include <algorithm>
 #include <cmath>
@@ -387,6 +388,216 @@ static int Town()
 	return Fails ? 1 : 0;
 }
 
+
+// --- the Aton station as the club's front door (docs/front_door.md): the board, the line, the usual, the lost things --------
+
+static int Board()
+{
+	using namespace LyudFrontDoor;
+	const std::string LifeText = ReadFile("unreal/Lyudmilovsk/Content/Transport/station_life.json");
+	FNetwork N;
+	FStationLife L;
+	if (LifeText.empty() || !Load(N) || !L.Load(LifeText, N))
+	{
+		std::printf("no network or station life\n");
+		return 1;
+	}
+	const int Aton = N.FindStation("aton"), Sun = N.FindLine("sun");
+	CHECK(Aton >= 0 && Sun >= 0, "no aton or sun");
+	N.bReuseRiders = true;
+	N.Reset();
+	L.StartDay(0, 0, false);
+	std::vector<FDeparture> Rows;
+	// a prediction made ten minutes before the riders go up, and when they really got on
+	std::vector<float> Predicted(L.Today.size(), -1.f);
+	int Samples = 0, Unsorted = 0, OutOfWindow = 0, Empty = 0, BoardingSeen = 0, BoardingMissed = 0, Planned = 0, Arriving = 0;
+	int MaxRows = 0;
+	const float Dt = 0.5f;
+	for (double T = 5.5 * 3600.0; T < 23.5 * 3600.0; T += Dt)
+	{
+		const float Hour = (float)(T / 3600.0);
+		N.Step(Dt);
+		L.Step(N, Hour);
+		for (const FEvent& E : N.Events)
+		{
+			if (E.Kind == EEvent::Done || E.Kind == EEvent::Alight)
+			{
+				N.ReleaseRider(E.Rider);
+			}
+		}
+		N.Events.clear();
+		const int Sec = (int)std::lround(T);
+		if (Sec % 30 != 0 || Hour < 6.f)
+		{
+			continue;
+		}
+		Departures(N, &L, Aton, Sun, Hour, 6, Rows);
+		Samples++;
+		MaxRows = std::max(MaxRows, (int)Rows.size());
+		Empty += Rows.empty() ? 1 : 0;
+		for (size_t I = 0; I < Rows.size(); I++)
+		{
+			Unsorted += I > 0 && Rows[I].Hour < Rows[I - 1].Hour ? 1 : 0;
+			OutOfWindow += Rows[I].Hour < Hour - 0.01f || Rows[I].Hour > Hour + 1.6f ? 1 : 0;
+			OutOfWindow += Rows[I].To == Aton || Rows[I].To < 0 ? 1 : 0;
+			Planned += Rows[I].Kind == EDepKind::Planned ? 1 : 0;
+			Arriving += Rows[I].Kind == EDepKind::Arriving ? 1 : 0;
+		}
+		// a cabin standing at Aton with its doors open and riders aboard is on the board as boarding
+		for (int CI = 0; CI < (int)N.Cabins.size(); CI++)
+		{
+			const FCabin& C = N.Cabins[(size_t)CI];
+			if (C.Line != Sun || C.State == ECabinState::Moving || C.AtStop < 0 || N.Lines[Sun].Stops[C.AtStop].Station != Aton || C.Riders.empty() || C.Door < 0.5f)
+			{
+				continue;
+			}
+			bool bOn = false;
+			for (const FDeparture& D : Rows)
+			{
+				bOn |= D.Cabin == CI && D.Kind == EDepKind::Boarding;
+			}
+			BoardingSeen += bOn ? 1 : 0;
+			BoardingMissed += bOn ? 0 : 1;
+		}
+		for (size_t RI = 0; RI < L.Today.size(); RI++)
+		{
+			const FLifeRun& R = L.Today[RI];
+			const float Ask = R.At + R.HallMinutes / 60.f;
+			if (L.Trips[R.Trip].From != Aton || Predicted[RI] >= 0.f || Ask - Hour > 10.f / 60.f || Ask < Hour)
+			{
+				continue;
+			}
+			// the planned row nearest their going up
+			float Best = -1.f;
+			for (const FDeparture& D : Rows)
+			{
+				if (D.Kind == EDepKind::Planned && (Best < 0.f || std::fabs(D.Hour - Ask) < std::fabs(Best - Ask)))
+				{
+					Best = D.Hour;
+				}
+			}
+			Predicted[RI] = Best >= 0.f ? Best : -2.f;
+		}
+	}
+	int Compared = 0, Late = 0, NotShown = 0;
+	double SumErr = 0.0, MaxErr = 0.0;
+	for (size_t RI = 0; RI < L.Today.size(); RI++)
+	{
+		const FLifeRun& R = L.Today[RI];
+		if (L.Trips[R.Trip].From != Aton || R.Wait <= 0.0)
+		{
+			continue;
+		}
+		if (Predicted[RI] < -1.f)
+		{
+			NotShown++;
+			continue;
+		}
+		if (Predicted[RI] < 0.f)
+		{
+			continue;
+		}
+		const double Boarded = 5.5 + (R.RideStart + R.Wait) / 3600.0;
+		const double Err = std::fabs(Boarded - Predicted[RI]) * 60.0;
+		SumErr += Err;
+		MaxErr = std::max(MaxErr, Err);
+		Late += Err > 5.0 ? 1 : 0;
+		Compared++;
+	}
+	const double Mean = Compared ? SumErr / Compared : 0.0;
+	std::printf("Aton's board, Monday: %d looks, up to %d rows, %d planned and %d arriving rows seen; %d riders' departures foretold 10 min ahead "
+		"(mean error %.1f min, worst %.1f, %d over 5 min, %d not on the board); boarding shown %d of %d looks\n",
+		Samples, MaxRows, Planned, Arriving, Compared, Mean, MaxErr, Late, NotShown, BoardingSeen, BoardingSeen + BoardingMissed);
+	CHECK(Empty == 0, "the board was empty %d times", Empty);
+	CHECK(Unsorted == 0 && OutOfWindow == 0, "rows out of order %d, out of the hour or to nowhere %d", Unsorted, OutOfWindow);
+	CHECK(Planned > 0 && Arriving > 0, "the board shows riders' cabins (%d) and cabins on their way (%d)", Planned, Arriving);
+	CHECK(Compared > 20 && Mean < 3.0 && Late * 10 <= Compared, "the board's time ten minutes ahead: mean %.1f min over %d, %d late by over 5",
+		Mean, Compared, Late);
+	CHECK(NotShown * 10 <= Compared, "riders' departures missing from the board: %d", NotShown);
+	CHECK(BoardingMissed == 0 && BoardingSeen > 0, "a cabin boarding at Aton not on the board: %d of %d", BoardingMissed, BoardingSeen + BoardingMissed);
+	CHECK(Clock(7.7f) == "07:42" && Clock(24.25f) == "00:15", "the clock: %s %s", Clock(7.7f).c_str(), Clock(24.25f).c_str());
+
+	// the counter's line: the front first, the hero's held spot taken, stepping up
+	CHECK(JoinSpot({ -1, -1, -1 }) == 0 && JoinSpot({ 5, -1, -1 }) == 1 && JoinSpot({ -2, -1, -1 }) == 1 && JoinSpot({ 5, 6, 7 }) == -1,
+		"joining a line at its first free spot");
+	int To = -1;
+	CHECK(StepUp({ -1, 5, 6 }, To) == 1 && To == 0, "the second steps up to a free front");
+	CHECK(StepUp({ -2, -1, 6 }, To) == 2 && To == 1, "behind the hero they step up to him");
+	CHECK(StepUp({ -2, 5, 6 }, To) == -1, "nobody steps past the hero");
+
+	// the usual: three times the same at a counter
+	FUsual U;
+	U.Add("hall:aton", "coffee");
+	U.Add("hall:aton", "coffee");
+	U.Add("hall:aton", "pie");
+	CHECK(U.Of("hall:aton").empty(), "twice is not the usual yet");
+	U.Add("hall:aton", "coffee");
+	int Times = 0;
+	CHECK(U.Of("hall:aton", &Times) == "coffee" && Times == 3 && U.Visits("hall:aton") == 4 && U.Of("hall:zenit").empty(), "coffee is the usual at Aton");
+	FUsual U2;
+	U2.Load(U.Save());
+	CHECK(U2.Of("hall:aton") == "coffee" && U2.Visits("hall:aton") == 4, "the usual is saved");
+
+	// the lost and found: things come, wait, go; one of a person's at a time; handed back for a gift
+	FLostFound F;
+	std::vector<float> Hours;
+	OwnersAt(L, Aton, F.Owners, Hours);
+	CHECK(F.Owners.size() > 20 && Hours.size() == F.Owners.size(), "owners through Aton: %zu", F.Owners.size());
+	int Found = 0, MaxShelf = 0;
+	for (int D = 0; D < 30; D++)
+	{
+		const size_t Before = F.Shelf.size();
+		F.StartDay(D);
+		Found += (int)F.Shelf.size() > (int)Before ? (int)(F.Shelf.size() - Before) : 0;
+		MaxShelf = std::max(MaxShelf, (int)F.Shelf.size());
+		for (const FLost& X : F.Shelf)
+		{
+			CHECK(D - X.Day < FLostFound::KeepDays, "a thing on the shelf %d days", D - X.Day);
+		}
+	}
+	CHECK(Found >= 10 && MaxShelf <= FLostFound::MaxShelf, "a month of finds: %d, the shelf holds at most %d", Found, MaxShelf);
+	FLost Took;
+	if (!F.Shelf.empty())
+	{
+		CHECK(F.Take(0, Took) && F.Carried.size() == 1, "he takes a thing");
+		const std::string Owner = F.Owners[(size_t)Took.Owner];
+		CHECK(F.CarriedFor(Owner) == 0 && F.CarriedFor("nobody") == -1, "it is the owner's");
+		FLostFound G;
+		G.Owners = F.Owners;
+		G.Load(F.Save());
+		CHECK(G.Carried.size() == 1 && G.Shelf.size() == F.Shelf.size() && G.Day == F.Day, "the lost and found is saved");
+		const std::string Gift = F.GiveBack(0);
+		bool bKnown = false;
+		for (int K = 0; K < NumGifts; K++)
+		{
+			bKnown |= Gift == Gifts[K];
+		}
+		CHECK(bKnown && F.Carried.empty() && F.Returned == 1, "handed back for a gift (%s)", Gift.c_str());
+		F.StartDay(31);
+		for (const FLost& X : F.Shelf)
+		{
+			CHECK(F.Owners[(size_t)X.Owner] != Owner || X.Day == 31, "the same thing again on the shelf");
+		}
+	}
+
+	// the travel card: seven stamps, each once
+	FTravelCard Card;
+	CHECK(!Card.Punch("aton"), "no card, no stamp");
+	Card.bHave = true;
+	int New = 0;
+	for (const FStation& S : N.Stations)
+	{
+		New += Card.Punch(S.Id) ? 1 : 0;
+		New += Card.Punch(S.Id) ? 1 : 0;
+	}
+	FTravelCard Card2;
+	Card2.Load(Card.Save());
+	CHECK(New == (int)N.Stations.size() && N.Stations.size() == 7 && Card2.Stamps.size() == 7 && Card2.bHave, "seven stations, seven stamps (%d)", New);
+
+	std::printf(Fails ? "%d FAILED\n" : "all ok\n", Fails);
+	return Fails ? 1 : 0;
+}
+
 int main(int Argc, char** Argv)
 {
 	const std::string Cmd = Argc > 1 ? Argv[1] : "test";
@@ -398,6 +609,10 @@ int main(int Argc, char** Argv)
 	{
 		return Town();
 	}
-	std::printf("usage: run.sh test | town\n");
+	if (Cmd == "board")
+	{
+		return Board();
+	}
+	std::printf("usage: run.sh test | town | board\n");
 	return 2;
 }
