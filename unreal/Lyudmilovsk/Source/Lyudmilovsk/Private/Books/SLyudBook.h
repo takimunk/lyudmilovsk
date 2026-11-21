@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Books/BookLayout.h"
 #include "Books/LyudBooks.h"
+#include "Books/ReadingModel.h"
 #include "Fonts/SlateFontInfo.h"
 #include "Tasks/Task.h"
 #include "Widgets/SCompoundWidget.h"
@@ -50,6 +51,17 @@ public:
 	void ScrollContents(int32 Rows);
 	int32 TakeAskedTurns() { const int32 T = AskedTurns; AskedTurns = 0; return T; }
 
+	// --- quotes (docs/books.md "Quotes"): C picks a sentence of the spread, W/S another, E copies it into the diary
+	/** Into the quote mode on the spread shown; false when it has no sentence to offer. */
+	bool EnterQuote();
+	void LeaveQuote() { bQuote = false; }
+	bool InQuote() const { return bQuote; }
+	void QuoteStep(int32 By);
+	/** The chosen sentence: its clean text for the diary and where it starts. False: none. */
+	bool ChosenQuote(FString& OutText, int32& OutOffset) const;
+	/** How bright the page is drawn (the dusk outdoors): 0.35..1. */
+	void SetBright(float B) { Bright = FMath::Clamp(B, 0.35f, 1.f); }
+
 private:
 	struct FLoaded
 	{
@@ -82,6 +94,12 @@ private:
 	bool bContents = false;
 	int32 ContentsTop = 0;
 	int32 AskedTurns = 0;
+	bool bQuote = false;
+	std::vector<LyudReading::FSpan> QuoteSpans;
+	int32 QuoteIx = 0;
+	float Bright = 1.f;
+	FString QuoteKeysText;
+	void PaintQuote(int32 Page, const FGeometry& G, FVector2f PageOrigin, FSlateWindowElementList& Out, int32 Layer) const;
 
 	// geometry of the spread for the current Allotted (computed in Tick, used in OnPaint and the mouse)
 	struct FSpread
@@ -153,6 +171,8 @@ private:
 	TArray<TSharedPtr<FString>> Rows;
 	TSharedPtr<SListView<TSharedPtr<FString>>> List;
 	TSharedPtr<class STextBlock> Status;
+	/** The librarian's line at the desk (ULyudReading::Advice), or what a "recommend to a friend" just did. */
+	FText Note;
 
 	void Refill();
 	TSharedRef<ITableRow> MakeRow(TSharedPtr<FString> Key, const TSharedRef<STableViewBase>& Owner);

@@ -2105,12 +2105,15 @@ namespace LyudPeople
 		}
 		for (const FDuty& D : P.Duties)
 		{
-			if (bDayOff)
 			{
 				const int A = ActOf(D);
-				if (A >= 0 && Activities[A].bHolidayOff)
+				if (bDayOff && A >= 0 && Activities[A].bHolidayOff)
 				{
 					continue;       // a public holiday: no school, the offices shut
+				}
+				if (A >= 0 && !ConditionOk(Activities[(size_t)A]))
+				{
+					continue;       // a duty at a "when" activity is kept only while the game has its condition on (the book club)
 				}
 			}
 			// a weekday duty that started yesterday evening (a night shift) counts for yesterday
