@@ -16,6 +16,7 @@ Spots: 8 sales counters + 8 sellers, 2 cashiers (counter + work), 5 stands, benc
 Ideas for later: escalator, a cafeteria on the 1st floor, a flats storey above the back half, rooftop terrace.
 Kit wishes: B.facade with a different material for the inner face (done here with wall()).
 """
+import contextlib
 import math
 import random
 
@@ -24,6 +25,7 @@ from _furn1 import rbox, cyl, blob, mannequin
 import furn_int3 as fu
 import interior_kit as kit
 import dress_kit as dk
+import night_kit as nk
 
 INFO = {
     "name_ru": "Универмаг", "name_en": "Department Store",
@@ -720,20 +722,31 @@ def _first_east(B, zf, rnd):
     B.spot("f1_cafe_work", "work", (22.0, 5.4, zf), 270.0)
     _thing(B, "f1_cafe_counter", "counter", (21.2, 5.4, zf + 1.05), 270.0, service="bar")
     kit.sign_plate(B, 21.2, 5.4, zf, 270.0, name="sign_buffet", w=1.5, zc=3.6, hang=True)
+    # the café's chairs go up on its tables when the store is shut (dress day_cafe / night_cafe, docs/city_night.md);
+    # the draughts table keeps its game and its chairs
+    day_g, night_g = nk.Gather(B), nk.Gather(B)
     for k, (tx, ty) in enumerate(((16.5, 3.4), (16.5, 6.4), (13.3, 4.9), (13.3, 8.2), (19.0, 8.6))):
         t = kit.table_round(B, tx, ty, zf, 0.0, r=0.4, h=0.74)
+        mat = ("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow")[k % 3]
         if k == 3:                                       # a game of draughts instead of the crockery
             _checkers(B, tx, ty, t["top"], 0.0)
             _thing(B, "f1_cafe_checkers", "play", (tx, ty, t["top"] + 0.03), 0.0, what="checkers")
         else:
-            kit.cup(B, tx - 0.1, ty, t["top"], 0.0)
-            kit.plates(B, tx + 0.12, ty + 0.05, t["top"], 0.0, n=1)
+            with day_g:
+                kit.cup(B, tx - 0.1, ty, t["top"], 0.0)
+                kit.plates(B, tx + 0.12, ty + 0.05, t["top"], 0.0, n=1)
+            with night_g:
+                nk.chairs_up_round(B, tx, ty, t["top"], n=2, r=0.4, kind="tube", mats=[mat], a0=0.0, seed=k)
         rs = []
-        for a in (90.0, 270.0):
-            ox = 0.62 if a == 270.0 else -0.62
-            rs.append(kit.chair(B, tx + ox, ty, zf, a, kind="tube", mat=("CT_PlasterRed", "CT_PlasterBlue", "CT_PlasterYellow")[k % 3]))
+        with day_g if k != 3 else contextlib.nullcontext():
+            for a in (90.0, 270.0):
+                ox = 0.62 if a == 270.0 else -0.62
+                rs.append(kit.chair(B, tx + ox, ty, zf, a, kind="tube", mat=mat))
         _seat(B, "f1_cafe_seat_%d" % (2 * k + 1), rs[0])
         _seat(B, "f1_cafe_seat_%d" % (2 * k + 2), rs[1])
+    day_g.dress("day_cafe", open=True)
+    night_g.dress("night_cafe", open=False)
+    nk.lone_lamp(B, 21.35, 5.75, zf + 1.05, 270.0, lumens=240)      # left on over the café counter when the store is shut
     kit.plant(B, 11.6, 3.0, zf, 0.0, kind="palm", pot="CT_PlasterYellow", h=1.6)
     # ---- garden and bird feed (east middle): wall bays, feeders, plants, sacks
     for i, g in enumerate(("boxes", "jars", "boxes")):
@@ -845,6 +858,10 @@ def _dress(B):
     on rain days, felt boots in winter, the cafe after lunch, flowers on the cafe tables (fresh, then wilting), a satchel
     on the window bench after school, flowers on the counters on holidays."""
     zg, zf = 0.03, Z_SLAB1
+    # the cleaner's morning before the doors open at 9: the café floor upstairs mopped between the tables
+    with B.dress("night_cleaner", hours=(7, 10), open=False):
+        nk.wet_floor(B, 14.9, 6.4, zf, 90.0, w=1.6, d=1.1, seed=14)
+        nk.mop_bucket(B, 14.75, 7.55, zf, 60.0, seed=14)
     with B.dress("cloak_winter", months=(12, 1, 2)):
         dk.coats_on_rail(B, 5.0, 28.8, zg, 0.0, w=2.2, share=0.75, season="winter", seed=3)
     with B.dress("cloak_winter_b", months=(12, 1, 2)):
@@ -874,10 +891,10 @@ def _dress(B):
     with B.dress("cafe_lunch", hours=(13, 16), chance=0.75):
         for k, (tx, ty) in enumerate(cafe):
             dk.plate_crumbs(B, tx + 0.15, ty - 0.2, zf + 0.74, 20.0 * k, seed=k + 1)
-    with B.dress("cafe_flowers", phase=(7, 0, 5)):
+    with B.dress("cafe_flowers", phase=(7, 0, 5), open=True):        # off the tables when the chairs go up (city_night)
         kit.vase(B, 16.5, 3.65, zf + 0.74, 0.0, seed=51)
         kit.vase(B, 13.3, 5.15, zf + 0.74, 0.0, seed=52)
-    with B.dress("cafe_wilted", phase=(7, 5, 7)):
+    with B.dress("cafe_wilted", phase=(7, 5, 7), open=True):
         dk.vase_wilted(B, 16.5, 3.65, zf + 0.74, 0.0, seed=51)
         dk.vase_wilted(B, 13.3, 5.15, zf + 0.74, 0.0, seed=52)
     with B.dress("bench_satchel", weekdays=(0, 1, 2, 3, 4), hours=(15, 19), chance=0.6):

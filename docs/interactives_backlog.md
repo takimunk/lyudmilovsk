@@ -422,7 +422,13 @@ indoor counts by weather, citysim, a Mac walk on a rain day.
 
 ## 29. Night state geometry and the cleaner
 
-`[ ]` **Brief (Opus 5.5):** Backlog P5 "night state of public rooms" has the data but no geometry: chairs on tables in
+`[~]` 2026-11-21 (branches night-state + night-people, docs/city_night.md): chairs up on the tables of the café, the
+Rassvet, the cog club's buffet and the store's café after hours, the library's pushed in, a "closed" lamp kind (one lamp
+left on, the windows faint), the cleaner's bucket and damp floor before opening, two cleaners and the store's night
+watchman with a torch in town life (manners mop, torch; props mop, torch, bucket). Blender previews done; Mac build,
+prop import, shots at 23:00 and 07:30, bench owed.
+
+**Brief (Opus 5.5):** Backlog P5 "night state of public rooms" has the data but no geometry: chairs on tables in
 closed cafés and clubs, a single lamp left on, a cleaner at work 7-10 with a mop and a bucket (a town-life role `cleaner`,
 a manner prop), the watchman in the department store at night with a torch. Use swappable pieces like item 25 (coordinate
 with it: same `B.dress` mechanism, one of you writes it). Done: Blender previews, Mac shots at 23:00 and 07:30, bench.
