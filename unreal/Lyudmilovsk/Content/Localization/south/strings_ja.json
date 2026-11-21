@@ -64,5 +64,22 @@
  "place.boat_wreck.name": "漁船の残骸",
  "dev.tp.boat_wreck": "漁船の残骸",
  "place.devils_stone.name": "悪魔の石",
- "dev.tp.devils_stone": "悪魔の石"
+ "dev.tp.devils_stone": "悪魔の石",
+ "place.town_gate.name": "最初のテラス",
+ "dev.tp.town_gate": "最初のテラス（小道の終点）",
+ "south.trail.town.name": "アトンの小道",
+ "south.trail.belvedere.name": "見晴らし台へ",
+ "south.trail.sea.name": "海へ",
+ "south.trail.hide.name": "ヨシ原の小道",
+ "south.trail.spring.name": "湧き水の小道",
+ "dev.tp.town_road.alley": "町への道：アトン駅の横",
+ "dev.tp.town_road.square": "町への道：太陽広場",
+ "dev.tp.town_road.market": "町への道：パン屋の並び",
+ "dev.action.south.trails_walked": "地図：小道をすべて歩いた",
+ "south.sign.trail.dist.350m_5min": "350m・5分",
+ "south.sign.trail.dist.70m_1min": "70m・1分",
+ "south.sign.trail.dist.130m_2min": "130m・2分",
+ "south.sign.trail.dist.250m_3min": "250m・3分",
+ "south.sign.trail.dist.100m_1min": "100m・1分",
+ "south.sign.trail.dist.400m_5min": "400m・5分"
 }

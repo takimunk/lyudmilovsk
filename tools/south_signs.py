@@ -97,6 +97,20 @@ import south as _south  # noqa: E402
 PLANKS = _south.sign_planks()
 
 
+def _walked_distance_words():
+    """The distance words tools/south.py walks along the trails ("350m_5min"): metres and minutes on foot, in each language."""
+    out = {}
+    for rows in PLANKS.values():
+        for _name, dist, _yaw in rows:
+            if dist.endswith("min") and "m_" in dist:
+                m, mins = dist[:-3].split("m_")
+                out["south.sign.trail.dist." + dist] = ("%s м · %s мин" % (m, mins), "%s m · %s min" % (m, mins), "%sm・%s分" % (m, mins))
+    return out
+
+
+STRINGS.update(_walked_distance_words())
+
+
 def add_strings():
     for li, lang in enumerate(LANGS):
         path = LOC % lang

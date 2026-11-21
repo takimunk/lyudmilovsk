@@ -64,5 +64,22 @@
  "place.boat_wreck.name": "Wreck of a fishing boat",
  "dev.tp.boat_wreck": "Wreck of a fishing boat",
  "place.devils_stone.name": "Devil's Stone",
- "dev.tp.devils_stone": "Devil's Stone"
+ "dev.tp.devils_stone": "Devil's Stone",
+ "place.town_gate.name": "The first terrace",
+ "dev.tp.town_gate": "The first terrace (the trail's end)",
+ "south.trail.town.name": "The Aton Trail",
+ "south.trail.belvedere.name": "To the lookout",
+ "south.trail.sea.name": "To the sea",
+ "south.trail.hide.name": "The reed path",
+ "south.trail.spring.name": "The spring path",
+ "dev.tp.town_road.alley": "Road to town: by the Aton station",
+ "dev.tp.town_road.square": "Road to town: Sun Square",
+ "dev.tp.town_road.market": "Road to town: the bakers' row",
+ "dev.action.south.trails_walked": "Map: every trail walked",
+ "south.sign.trail.dist.350m_5min": "350 m · 5 min",
+ "south.sign.trail.dist.70m_1min": "70 m · 1 min",
+ "south.sign.trail.dist.130m_2min": "130 m · 2 min",
+ "south.sign.trail.dist.250m_3min": "250 m · 3 min",
+ "south.sign.trail.dist.100m_1min": "100 m · 1 min",
+ "south.sign.trail.dist.400m_5min": "400 m · 5 min"
 }

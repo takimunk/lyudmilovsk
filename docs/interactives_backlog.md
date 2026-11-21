@@ -549,7 +549,7 @@ rain and at night, nobody leaves the trails), `--check` of the post-step, lines 
 
 ## 38. The first walk to the town
 
-`[ ]` **Brief (Opus 5.5):** Make the half-kilometre walk from the club to the town (`south.trails()` `town`) the game's
+`[~] town-road 2026-11-21 (branch on aton-uses, docs/south.md "The first walk"; Mac: sign textures + south GLB, map build, shots)` **Brief (Opus 5.5):** Make the half-kilometre walk from the club to the town (`south.trails()` `town`) the game's
 natural first trip. Signposts at the forks (the alley's end, the shoulder's foot, the footbridge) with arrows and
 distances in metres and minutes ("Город 350 м", "Пляж", "Родник", "Станция «Атон»"), built from the North's kit sign
 (`set: "north"`) with words from `tools/south_signs.py`. A small quest "Дорога в город" for the first day: Maru (or the
