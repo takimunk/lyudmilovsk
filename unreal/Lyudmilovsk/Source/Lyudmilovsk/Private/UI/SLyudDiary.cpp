@@ -251,9 +251,19 @@ void SLyudDiarySpread::Construct(const FArguments& InArgs)
 	case ESection::Diary:
 		if (Spread.Part >= State->DiarySpreads + State->PeopleSpreads)
 		{
-			// last: the sets of stamps and what each gave
-			L = CollectionsPage((Spread.Part - State->DiarySpreads - State->PeopleSpreads) * 2);
-			R = CollectionsPage((Spread.Part - State->DiarySpreads - State->PeopleSpreads) * 2 + 1);
+			const int32 B = Spread.Part - State->DiarySpreads - State->PeopleSpreads;
+			if (B >= State->BookSpreads)
+			{
+				// last: the sets of stamps and what each gave
+				L = CollectionsPage((B - State->BookSpreads) * 2);
+				R = CollectionsPage((B - State->BookSpreads) * 2 + 1);
+			}
+			else
+			{
+				// after the people: the books he read and the quotes he copied
+				L = BooksPage(B * 2);
+				R = BooksPage(B * 2 + 1);
+			}
 		}
 		else if (Spread.Part >= State->DiarySpreads)
 		{
@@ -1030,6 +1040,94 @@ TSharedRef<SWidget> SLyudDiarySpread::CollectionsPage(int32 PageIndex)
 	return Box;
 }
 
+// ------------------------------------------------------------------ books: what he read, the quotes he copied (docs/books.md)
+
+namespace
+{
+	constexpr int32 QuotesFirstPage = 2;
+	constexpr int32 QuotesPerPage = 4;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::BooksPage(int32 PageIndex)
+{
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	ULyudBooks* Books = ULyudBooks::Get(Owner.Get());
+	if (!Books)
+	{
+		return Box;
+	}
+	auto Arg = [](const FText& T) { return FStringFormatArg(T.ToString()); };
+	auto TitleOf = [Books](const FString& BookKey)
+	{
+		const FLyudBookInfo* B = Books->Find(BookKey);
+		FString Lang, Work;
+		return B ? FText::FromString(B->TitleNow()) : LyudText::Get(TEXT("book.title.") + (BookKey.Split(TEXT("/"), &Lang, &Work) ? Work : BookKey));
+	};
+	if (PageIndex == 0)
+	{
+		Box->AddSlot().AutoHeight()[Title(LyudText::Get(TEXT("reading.diary.title")))];
+		Box->AddSlot().AutoHeight().Padding(0, 10, 0, 0)
+		[
+			Words(LyudText::Get(TEXT("reading.diary.stats"), { FStringFormatArg(Books->NumFinished()), FStringFormatArg(Books->PagesRead()) }), 28.f, Ink, false, true)
+		];
+		int32 LongPages = 0;
+		const FString Longest = Books->LongestFinished(&LongPages);
+		if (!Longest.IsEmpty())
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+			[
+				Words(LyudText::Get(TEXT("reading.diary.longest"), { Arg(TitleOf(Longest)), FStringFormatArg(LongPages) }), 26.f, Ink, false, true)
+			];
+		}
+		for (const FString& BookKey : Books->Borrowed())
+		{
+			const FLyudBookInfo* B = Books->Find(BookKey);
+			if (B && B->Chars > 0 && Books->Bookmark(BookKey) > 0 && !Books->IsFinished(BookKey))
+			{
+				const int32 Pct = FMath::Clamp(FMath::RoundToInt(100.f * Books->Bookmark(BookKey) / (float)B->Chars), 1, 99);
+				Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+				[
+					Words(LyudText::Get(TEXT("reading.diary.reading_now"), { Arg(TitleOf(BookKey)), FStringFormatArg(Pct) }), 26.f, Pencil, false, true)
+				];
+			}
+		}
+		if (Books->ClubMonths.Num() > 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+			[
+				Words(LyudText::Get(TEXT("reading.diary.club"), { FStringFormatArg(Books->ClubMonths.Num()) }), 26.f, Green, false, true)
+			];
+		}
+		Box->AddSlot().AutoHeight().Padding(0, 22, 0, 6)[Subtitle(LyudText::Get(TEXT("reading.diary.quotes")))];
+		if (Books->GetQuotes().Num() == 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 6, 0, 0)[Key(TEXT("reading.diary.empty"), 26.f, PencilFaint, false, true)];
+			return Box;
+		}
+	}
+	if (!State->QuotePages.IsValidIndex(PageIndex))
+	{
+		return Box;
+	}
+	const TArray<FLyudBookQuote>& Quotes = Books->GetQuotes();
+	for (const int32 I : State->QuotePages[PageIndex])
+	{
+		if (!Quotes.IsValidIndex(I))
+		{
+			continue;
+		}
+		const FLyudBookQuote& Q = Quotes[I];
+		TSharedRef<SVerticalBox> Card = SNew(SVerticalBox);
+		Card->AddSlot().AutoHeight()[Words(FText::FromString(Q.Text), 25.f, Ink, false, true)];
+		Card->AddSlot().AutoHeight().HAlign(HAlign_Right).Padding(0, 2, 0, 0)
+		[
+			Words(LyudText::Get(TEXT("reading.diary.quote_src"), { Arg(TitleOf(Q.Book)), Arg(LyudUIText::Date(Q.When)) }), 22.f, Pencil)
+		];
+		Box->AddSlot().AutoHeight().Padding(0, 8, 0, 14)[Card];
+	}
+	return Box;
+}
+
 TSharedRef<SWidget> SLyudDiarySpread::BirdCard(FName Species)
 {
 	const ULyudBirdBook* Book = ULyudBirdBook::Get(Owner.Get());
@@ -1727,6 +1825,27 @@ void SLyudDiaryScreen::PaginateCollections()
 	}
 }
 
+void SLyudDiaryScreen::PaginateQuotes()
+{
+	// the newest quotes first: two under the stats on the first page, four a page after it
+	State->QuotePages.Reset();
+	State->QuotePages.AddDefaulted();
+	const ULyudBooks* Books = ULyudBooks::Get(Owner.Get());
+	if (!Books)
+	{
+		return;
+	}
+	for (int32 I = Books->GetQuotes().Num() - 1; I >= 0; --I)
+	{
+		const int32 Room = State->QuotePages.Num() == 1 ? QuotesFirstPage : QuotesPerPage;
+		if (State->QuotePages.Last().Num() >= Room)
+		{
+			State->QuotePages.AddDefaulted();
+		}
+		State->QuotePages.Last().Add(I);
+	}
+}
+
 void SLyudDiaryScreen::PaginateFriends()
 {
 	// the friends start on a page of their own after the birds'; none: no pages
@@ -1758,15 +1877,18 @@ void SLyudDiaryScreen::Rebuild()
 	PaginatePeople();
 	State->DiarySpreads = DiarySpreads;
 	const int32 PeopleSpreads = FMath::Max(1, (State->PeoplePages.Num() + 1) / 2);
-	PaginateCollections();
 	State->PeopleSpreads = PeopleSpreads;
+	PaginateQuotes();
+	const int32 BookSpreads = FMath::Max(1, (State->QuotePages.Num() + 1) / 2);
+	State->BookSpreads = BookSpreads;
+	PaginateCollections();
 	const int32 CollectionSpreads = FMath::Max(1, (State->CollectionPages.Num() + 1) / 2);
 	const int32 BirdSpreads = FMath::Max(1, (State->BirdPages.Num() + State->FriendPages.Num() + 1) / 2);
 	const FLyudDiarySpread Was = Spreads.IsValidIndex(Current) ? Spreads[Current] : FLyudDiarySpread();
 	Spreads.Reset();
 	Spreads.Add({ ESection::Things, 0 });
 	Spreads.Add({ ESection::Quests, 0 });
-	for (int32 P = 0; P < DiarySpreads + PeopleSpreads + CollectionSpreads; ++P)
+	for (int32 P = 0; P < DiarySpreads + PeopleSpreads + BookSpreads + CollectionSpreads; ++P)
 	{
 		Spreads.Add({ ESection::Diary, P });
 	}

@@ -453,7 +453,7 @@ walk tests in two buildings with lifts.
 
 ## 32. Children's games in the yards
 
-`[ ]` **Brief (Fable 5.2):** Children of the town play together after school: hopscotch on chalked squares, a skipping
+`[~] yard-games 2026-11-21 (branch ready, docs/yard_games.md; awaits Mac build, shots, bench)` **Brief (Fable 5.2):** Children of the town play together after school: hopscotch on chalked squares, a skipping
 rope, hide-and-seek in the yards (one counts at a wall, others hide behind the town's own cover; the hero can join and be
 found or find), football with a ball that rolls (physics, a code-built ball), tag. A small group behaviour in the people
 sim (a game leader, roles, a play area from the city plan's yard spots), gestures by the hand-goal IK layer. Done: peoplesim
@@ -677,7 +677,7 @@ model (owner and dog keep together, leash never stretched through a wall), peopl
 
 ## 47. Reading anywhere
 
-`[~] book-club 2026-11-21 (branch book-club)` **Cloud-only. Brief (Opus 5.5):** The classics (`docs/books.md`, `SLyudBookReader`, `ULyudBenchSit`) can be read
+`[~] book-club 2026-11-21 (branch book-club: written and tested offline, Mac compile pending)` **Cloud-only. Brief (Opus 5.5):** The classics (`docs/books.md`, `SLyudBookReader`, `ULyudBenchSit`) can be read
 only on a park bench. Let a book on loan be read wherever the hero sits or rides: any public seat (`ULyudPublicSpots`
 "bench" and "chair" spots, the sanatorium lounge, the café tables), the beach towel, the cable car cabin and the train's
 window seat (the clock moves as he reads, so a ride passes in pages), the hero's own room (item 19). Light matters: after
@@ -690,7 +690,7 @@ and the hero gets a polite postcard (item 11's letters). Done: unit tests of the
 
 ## 48. The book club
 
-`[~] book-club 2026-11-21 (branch book-club)` **Cloud-only. Brief (Opus 5.5):** Give the library a social side. A reading circle meets on Thursday evenings in
+`[~] book-club 2026-11-21 (branch book-club: written and tested offline, Mac compile pending)` **Cloud-only. Brief (Opus 5.5):** Give the library a social side. A reading circle meets on Thursday evenings in
 the reading room (a town-life gathering of four or five residents by persona: the retired teacher, the student, the
 librarian, a scientist from Academgorodok), each month one book from the catalogue (`tools/books/catalog.json`, in all
 three languages); they sit, talk in turns (bark lines about the month's book, written for each of twelve books, ru/en/ja,

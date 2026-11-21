@@ -115,8 +115,8 @@ for p in folk:
             continue
         if pl["kind"] not in a.get("places", []):
             bad_duty.append("%s: %s at a %s (%s goes to %s)" % (p["key"], d["place"], pl["kind"], d["activity"], a.get("places")))
-        if a.get("round"):
-            continue        # a round's workplace is its doors, one after another: no staff slot to stand at
+        if a.get("round") or a.get("when"):
+            continue        # a round's workplace is its doors, one after another; a meeting (the book club) has its members' own seats
         staff = [s for s in pl.get("slots", []) if s.get("kind") == "staff"]
         tagged = [s for s in staff if s.get("tag") == d.get("role")]
         if not (tagged or staff):

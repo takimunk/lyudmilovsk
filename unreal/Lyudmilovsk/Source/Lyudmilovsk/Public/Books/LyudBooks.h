@@ -8,6 +8,34 @@
 
 class SWidget;
 class SLyudBookReader;
+
+/** A sentence copied from a book into the diary's «Цитаты» (docs/books.md "Quotes"). */
+USTRUCT()
+struct FLyudBookQuote
+{
+	GENERATED_BODY()
+
+	/** "<lang>/<work>". */
+	UPROPERTY(SaveGame) FString Book;
+	/** Where the sentence starts in the text. */
+	UPROPERTY(SaveGame) int32 Offset = 0;
+	UPROPERTY(SaveGame) FString Text;
+	UPROPERTY(SaveGame) FDateTime When;
+};
+
+/** A book he recommended to a friend at the lending desk; the friend writes what they thought some days later. */
+USTRUCT()
+struct FLyudBookAdvice
+{
+	GENERATED_BODY()
+
+	/** The work id (any language). */
+	UPROPERTY(SaveGame) FString Work;
+	/** The friend's key (t_*). */
+	UPROPERTY(SaveGame) FString Friend;
+	UPROPERTY(SaveGame) int32 Day = 0;
+	UPROPERTY(SaveGame) bool bAnswered = false;
+};
 class SLyudBookCatalog;
 class ULyudSaveGame;
 
@@ -79,6 +107,28 @@ public:
 	void MarkFinished(const FString& Key);
 	int32 NumFinished() const { return FinishedKeys.Num(); }
 
+	// --- reading anywhere (docs/books.md "Reading anywhere"): the day a loan was taken, the quotes, the reading stats
+
+	/** Whole game days since the game began (UGameCalendar's StartDate: day 0). */
+	static int32 DayOf(const FDateTime& When);
+	int32 Today() const;
+	/** The day a book on loan was taken (today's for a loan older than this record). */
+	int32 BorrowedOn(const FString& Key) const;
+	/** Copies a sentence into the diary; false when that very sentence is there already. */
+	bool AddQuote(const FString& Book, int32 Offset, const FString& Text);
+	const TArray<FLyudBookQuote>& GetQuotes() const { return Quotes; }
+	/** The reader turned forward over Chars characters of a book (the stats, the diary's day line). */
+	void NoteRead(const FString& Key, int32 Chars);
+	/** Standard pages read in all, and of one book. */
+	int32 PagesRead() const;
+	int32 PagesReadOf(const FString& Key) const;
+	/** The finished book with the most standard pages ("" none). */
+	FString LongestFinished(int32* OutPages = nullptr) const;
+	/** Pages read today of each book (the diary's day entry: docs/interactives_backlog.md item 23 may ask). */
+	const TMap<FString, int32>& ReadToday() const { return TodayChars; }
+	/** The work ids he finished, the latest first (any language). */
+	TArray<FString> FinishedWorks() const;
+
 	/** Makes the pocket's count of library_book match the books on loan (after a load, a new game, a console change). */
 	void SyncPocket();
 
@@ -91,6 +141,28 @@ public:
 	TMap<FString, int32> Marks;
 	UPROPERTY(SaveGame)
 	TArray<FString> FinishedKeys;
+	/** The day each book on loan was taken (DayOf). */
+	UPROPERTY(SaveGame)
+	TMap<FString, int32> BorrowDays;
+	/** Loans the librarian has written about already ("<key>@<day taken>"). */
+	UPROPERTY(SaveGame)
+	TArray<FString> OverdueNoticed;
+	UPROPERTY(SaveGame)
+	TArray<FLyudBookQuote> Quotes;
+	/** Characters read forward, by book. */
+	UPROPERTY(SaveGame)
+	TMap<FString, int32> ReadChars;
+	/** Today's reading (its day), by book: the diary's line when the reader shuts. */
+	UPROPERTY(SaveGame)
+	int32 TodayDay = -1;
+	UPROPERTY(SaveGame)
+	TMap<FString, int32> TodayChars;
+	/** The book club: the months he joined the talk ("YYYY-MM"). */
+	UPROPERTY(SaveGame)
+	TArray<FString> ClubMonths;
+	/** Books he recommended to friends. */
+	UPROPERTY(SaveGame)
+	TArray<FLyudBookAdvice> Advice;
 
 private:
 	TArray<FLyudBookInfo> Books;
@@ -134,6 +206,10 @@ public:
 
 	/** Console and tests: turn pages (+ forward, - back) as if the keys were pressed. */
 	void Turn(int32 Spreads);
+	/** How bright the open page is drawn (ULyudReading: the dusk outdoors). */
+	void SetPageBright(float Bright);
+	/** Copies the sentence chosen in the quote mode (or, with bFirst, the spread's first sentence) into the diary. */
+	bool CopyQuote(bool bFirst = false);
 
 private:
 	TSharedPtr<SWidget> Page;
@@ -146,4 +222,8 @@ private:
 	/** The game minutes the page just read took (by its characters), passed on the clock in a few small steps. */
 	void PassReadingTime(int32 Chars, const FString& Lang);
 	double PendingSeconds = 0.0;
+	/** Characters read forward since the book was opened (the diary's line when it shuts). */
+	int32 SessionChars = 0;
+	/** The book and day of the last diary line about reading (one a book a day). */
+	TMap<FString, int32> NotedDay;
 };
