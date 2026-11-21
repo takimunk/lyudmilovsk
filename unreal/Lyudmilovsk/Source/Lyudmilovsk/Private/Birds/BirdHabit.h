@@ -224,7 +224,7 @@ namespace LyudBirds
 		bool RoomAt(const FWorld& W, const V3& P, float Yaw, float Room, float* OutYaw) const;
 		bool GroundAt(const FWorld& W, const V3& Near, float X, float Y, float& Z) const;
 		int Partner(const FWorld& W, const FBird& B, float R, bool bSame) const;
-		bool WaterNear(const FWorld& W, const V3& P, float R, uint32_t& Rng, V3& Out) const;
+		bool WaterNear(const FWorld& W, const V3& P, float R, uint32_t& Seed, V3& Out) const;
 		void MapEvents(FWorld& W);
 		void MapActs(FWorld& W, FBird& B);
 		int Find(int Bird) const;

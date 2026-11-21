@@ -413,7 +413,7 @@ namespace LyudBirds
 	}
 
 	/** Water to dip to within R of P: a water the game named, else the sea a little off the shore. */
-	bool FHabits::WaterNear(const FWorld& W, const V3& P, float R, uint32_t& Rng, V3& Out) const
+	bool FHabits::WaterNear(const FWorld& W, const V3& P, float R, uint32_t& Seed, V3& Out) const
 	{
 		float BestD = R;
 		bool bFound = false;
@@ -433,7 +433,7 @@ namespace LyudBirds
 		}
 		for (int Try = 0; Try < 10; Try++)
 		{
-			const float A = HabitDetail::Dice(Rng) * 2.f * HabitDetail::Pi, D = R * (0.2f + 0.8f * HabitDetail::Dice(Rng));
+			const float A = HabitDetail::Dice(Seed) * 2.f * HabitDetail::Pi, D = R * (0.2f + 0.8f * HabitDetail::Dice(Seed));
 			const float X = P.X + std::cos(A) * D, Y = P.Y + std::sin(A) * D;
 			const float Off = W.Offshore(X, Y);
 			if (Off > 4.f && Off < 80.f)
@@ -527,14 +527,14 @@ namespace LyudBirds
 	bool FHabits::Plan(FWorld& W, FBird& B, const FHabitDef& D, FHabitRun& R) const
 	{
 		const FSpecies& S = SpeciesTable()[B.Species];
-		uint32_t Rng = (uint32_t)(B.Id * 2654435761u) ^ (uint32_t)(W.Time * 1000.0) ^ 0x5bd1e995u;
-		Rng |= 1u;
+		uint32_t Seed = (uint32_t)(B.Id * 2654435761u) ^ (uint32_t)(W.Time * 1000.0) ^ 0x5bd1e995u;
+		Seed |= 1u;
 		R.Home = R.From = R.To = R.Exit = B.Pos;
 		R.HomeYaw = B.Yaw;
 		R.MySpot = B.Spot;
 		R.MySite = B.Site;
 		R.Was = B.Act;
-		R.Len = D.LenMin + (D.LenMax - D.LenMin) * HabitDetail::Dice(Rng);
+		R.Len = D.LenMin + (D.LenMax - D.LenMin) * HabitDetail::Dice(Seed);
 		const float Speed = D.Speed > 0.f ? D.Speed : S.Cruise;
 		switch (D.Mech)
 		{
@@ -580,7 +580,7 @@ namespace LyudBirds
 			// the first run; the next ones are picked as it goes (Advance)
 			for (int Try = 0; Try < 6; Try++)
 			{
-				const float A = B.Yaw + (HabitDetail::Dice(Rng) - 0.5f) * 2.4f, L = D.Reach * (0.45f + 0.55f * HabitDetail::Dice(Rng));
+				const float A = B.Yaw + (HabitDetail::Dice(Seed) - 0.5f) * 2.4f, L = D.Reach * (0.45f + 0.55f * HabitDetail::Dice(Seed));
 				V3 To = B.Pos + V3(std::cos(A), std::sin(A), 0.f) * L;
 				if (GroundAt(W, B.Pos, To.X, To.Y, To.Z) && Clear(W, B.Pos + V3(0.f, 0.f, 0.1f), To + V3(0.f, 0.f, 0.1f)))
 				{
@@ -620,7 +620,7 @@ namespace LyudBirds
 			}
 			for (int Try = 0; Try < 6; Try++)
 			{
-				const float A = B.Yaw + (HabitDetail::Dice(Rng) - 0.5f) * 3.f, L = D.Reach * (0.5f + 0.5f * HabitDetail::Dice(Rng));
+				const float A = B.Yaw + (HabitDetail::Dice(Seed) - 0.5f) * 3.f, L = D.Reach * (0.5f + 0.5f * HabitDetail::Dice(Seed));
 				V3 To = B.Pos + V3(std::cos(A), std::sin(A), 0.f) * L;
 				if (D.Id == EHabit::RobinPounce)
 				{
@@ -646,7 +646,7 @@ namespace LyudBirds
 				}
 				else
 				{
-					To.Z = B.Pos.Z + 0.4f + 1.2f * HabitDetail::Dice(Rng);
+					To.Z = B.Pos.Z + 0.4f + 1.2f * HabitDetail::Dice(Seed);
 				}
 				if (Clear(W, Eye, To + V3(0.f, 0.f, 0.1f)))
 				{
@@ -661,7 +661,7 @@ namespace LyudBirds
 			V3 To;
 			if (D.Needs & NeedWater)
 			{
-				if (!WaterNear(W, B.Pos, D.Reach, Rng, To))
+				if (!WaterNear(W, B.Pos, D.Reach, Seed, To))
 				{
 					return false;
 				}
@@ -887,6 +887,7 @@ namespace LyudBirds
 				B.ActLen = 0.f;
 				if (!bAbort)
 				{
+					B.Spot = B.Pos;          // (a swan drifted meanwhile; a walker was stopped short of its spot)
 					W.Settle(B);
 				}
 				break;
@@ -1313,11 +1314,11 @@ namespace LyudBirds
 					bool bNext = false;
 					if (R.Beat < std::max(1, D.Beats))
 					{
-						uint32_t Rng = ((uint32_t)(B.Id * 2654435761u) ^ (uint32_t)(W.Time * 977.0)) | 1u;
+						uint32_t Seed = ((uint32_t)(B.Id * 2654435761u) ^ (uint32_t)(W.Time * 977.0)) | 1u;
 						const FSite* Site = B.Site >= 0 ? &W.Sites[B.Site] : nullptr;
 						for (int Try = 0; Try < 6 && !bNext; Try++)
 						{
-							const float A = B.Yaw + (HabitDetail::Dice(Rng) - 0.5f) * 2.8f, L = D.Reach * (0.45f + 0.55f * HabitDetail::Dice(Rng));
+							const float A = B.Yaw + (HabitDetail::Dice(Seed) - 0.5f) * 2.8f, L = D.Reach * (0.45f + 0.55f * HabitDetail::Dice(Seed));
 							V3 To = B.Pos + V3(std::cos(A), std::sin(A), 0.f) * L;
 							if (Site && (To - Site->Center()).Len2D() > Site->Radius + (Site->B - Site->A).Len() * 0.5f + 1.5f)
 							{
