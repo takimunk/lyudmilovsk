@@ -664,7 +664,7 @@ the soundscape mix unchanged at night.
 
 ## 46. Animals with people
 
-`[ ]` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
+`[~] animals-with-people 2026-11-21` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
 some households have a dog that a resident walks on a leash morning and evening along their usual paths (the town-life
 walk activity carries an animal id; the dog follows at the owner's heel, sniffs, greets other dogs; the leash a simple
 cable between hand and collar, out of Lumen), cats that belong to a flat and sit on its window sill by day (the flats'
