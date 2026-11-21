@@ -18322,10 +18322,28 @@
    "household": "t_p-bridgehouse_2-03",
    "home": "P-BRIDGEHOUSE/2-03",
    "chronotype": "night",
-   "wake": 11.99,
-   "bed": 4.86,
-   "spread": 0.84,
-   "duties": [],
+   "wake": 14.8,
+   "bed": 7.2,
+   "spread": 0.25,
+   "duties": [
+    {
+     "activity": "night_watch",
+     "place": "P-STORE-WATCH",
+     "hours": [
+      20.5,
+      6.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_sokolov_yanka",
     "t_yilmaz_etienne",
@@ -18341,14 +18359,15 @@
     "sun": 0.32
    },
    "walk_speed": 1.15,
-   "occupation": "unemployed",
+   "occupation": "guard",
    "likes": {
     "night_walk": 1.23,
     "fair_visit": 0.45,
     "sea_air": 0.55,
     "play_piano": 1.75
    },
-   "body": "Town/R_sato_mehmet"
+   "body": "Town/R_sato_mehmet",
+   "night_job": "watch"
   },
   {
    "key": "t_hargreaves_madison",
@@ -22186,10 +22205,45 @@
    "household": "t_p-t5h1_1-07",
    "home": "P-T5H1/1-07",
    "chronotype": "lark",
-   "wake": 5.65,
-   "bed": 21.2,
-   "spread": 0.62,
-   "duties": [],
+   "wake": 5.6,
+   "bed": 21.4,
+   "spread": 0.25,
+   "duties": [
+    {
+     "activity": "mop_floor",
+     "place": "P-CAFE-CLEAN",
+     "hours": [
+      7.0,
+      7.85
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "mop_floor_late",
+     "place": "P-CLUB2-CLEAN",
+     "hours": [
+      8.1,
+      9.9
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_balogun_padraig",
     "t_lee_parisa",
@@ -22204,13 +22258,14 @@
     "sun": 0.71
    },
    "walk_speed": 1.31,
-   "occupation": "unemployed",
+   "occupation": "cleaner",
    "likes": {
     "watch_sunrise": 0.82,
     "swim_look": 0.35,
     "fish_shore": 0.64
    },
-   "body": "Town/R_araujo_ama"
+   "body": "Town/R_araujo_ama",
+   "night_job": "cleaner_a"
   },
   {
    "key": "t_villanueva_nurlan",
@@ -23055,11 +23110,45 @@
    "female": 0,
    "household": "t_p-unite_1-27",
    "home": "P-UNITE/1-27",
-   "chronotype": "usual",
-   "wake": 6.55,
-   "bed": 22.91,
-   "spread": 0.84,
-   "duties": [],
+   "chronotype": "lark",
+   "wake": 6.1,
+   "bed": 22.9,
+   "spread": 0.25,
+   "duties": [
+    {
+     "activity": "mop_floor",
+     "place": "P-STORE-CLEAN",
+     "hours": [
+      7.0,
+      8.85
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    {
+     "activity": "mop_floor_late",
+     "place": "P-LIBRARY-CLEAN",
+     "hours": [
+      21.1,
+      22.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_fernandez_yumiko",
     "t_svoboda_luana"
@@ -23073,12 +23162,13 @@
     "sun": 0.41
    },
    "walk_speed": 1.2,
-   "occupation": "unemployed",
+   "occupation": "cleaner",
    "likes": {
     "sea_air": 0.74,
     "read_library": 0.26
    },
-   "body": "Town/R_park_maarten"
+   "body": "Town/R_park_maarten",
+   "night_job": "cleaner_b"
   },
   {
    "key": "t_mizrahi_alesya",
