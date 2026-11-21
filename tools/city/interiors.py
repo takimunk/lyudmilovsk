@@ -1844,7 +1844,8 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
         if not pieces:
             err("collection %s: no pieces (nothing in town gives one)" % sid)
         out[sid] = {"title": title, "pieces": pieces}
-        cup_given = sorted(cid for cid, cup in (cups or {}).items() if (cup.get("collect") or "").partition("/")[0] == sid)
+        cup_given = sorted(cid for cid, cup in (cups or {}).items()
+                           if sid in ((cup.get("collect") or "").partition("/")[0], (cup.get("fest_collect") or "").partition("/")[0]))
         if c.get("by"):
             out[sid]["by"] = str(c["by"])
         elif c.get("code"):
