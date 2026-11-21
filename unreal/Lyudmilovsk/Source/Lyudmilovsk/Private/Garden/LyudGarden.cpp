@@ -338,6 +338,8 @@ void ULyudGarden::OnGameLoaded_Implementation()
 	// the bed grows on from where it was saved to now (in the weather of the days between)
 	StepModel();
 	ShowCells();
+	// the plants too, at once: the hero may stand at the bed, and the next step is up to ten seconds away
+	ShowPlants(bNear);
 }
 
 // --- time and weather --------------------------------------------------------------------------------------------------------
@@ -655,11 +657,14 @@ void ULyudGarden::BuildSite()
 			}
 			// the film over hoops: a low tunnel, down on cold nights
 			Film = AddBox(P.At + FVector(0, 0, BedHeight + 30.f), FVector(BX + 4.f, BY + 4.f, 30.f), P.Yaw, FLinearColor(0.85f, 0.9f, 0.92f), false);
-			if (UMaterialInterface* Clear = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Academgorodok/Materials/M_Academ_GlassClear.M_Academ_GlassClear")))
+			if (Film)
 			{
-				Film->SetMaterial(0, Clear);
+				if (UMaterialInterface* Clear = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Academgorodok/Materials/M_Academ_GlassClear.M_Academ_GlassClear")))
+				{
+					Film->SetMaterial(0, Clear);
+				}
+				Film->SetCastShadow(false);
 			}
-			Film->SetCastShadow(false);
 		}
 		else
 		{

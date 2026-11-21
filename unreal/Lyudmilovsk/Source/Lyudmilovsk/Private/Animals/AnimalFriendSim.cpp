@@ -755,7 +755,7 @@ namespace LyudAnimals
 	bool FWorld::FriendMove(FAnimal& A, float Dt)
 	{
 		// the lean into the hand eases in and out
-		const float LeanTo = A.Friend == EFriend::Stroked || A.Friend == EFriend::Rolled ? 1.f : 0.f;
+		const float LeanTo = A.Friend == EFriend::Stroked || A.Friend == EFriend::Rolled || (A.Moment == EMoment::Comfort && A.bMomentThere) ? 1.f : 0.f;
 		if (A.Lean != LeanTo)
 		{
 			A.Lean += FrClamp(LeanTo - A.Lean, -Dt * 2.f, Dt * 2.5f);

@@ -779,7 +779,8 @@ void ULyudPoplarFluffSubsystem::Tick(float DeltaTime)
 	{
 		Timer = 0.5f;
 		// the forests lay their trees out over their first seconds: looked at a few times, then kept
-		if (PoplarLooks < 4)
+		// (only when there can be fluff at all: out of its season the walk over every tree is for nothing)
+		if (PoplarLooks < 4 && (CVarFluffAmount.GetValueOnGameThread() >= 0.f || SeasonAt(UGameCalendar::DayOfYear(UGameCalendar::NowIn(GetWorld()))) > 0.f))
 		{
 			PoplarTimer -= 0.5f;
 			if (PoplarTimer <= 0.f)

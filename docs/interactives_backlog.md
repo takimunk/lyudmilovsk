@@ -609,7 +609,8 @@ lines through the localization skill, the hall staff in town data.
 
 ## 42. A lighthouse at Mayak
 
-`[ ]` **Brief (Opus 5.5):** The south end of the Aton coast is the Mayak station on the cliff (`south.places()`
+`[~]` *(branch `lighthouse`, docs/lighthouse.md: light, stairs, log, gallery view, keeper Ветров Гордей, quest
+`lighthouse_paraffin`; offline tests pass; the Mac import, build, night shots and bench are still owed)* **Brief (Opus 5.5):** The south end of the Aton coast is the Mayak station on the cliff (`south.places()`
 `mayak_station`, `cliff_lookout`) and there is no lighthouse ("Маяк") there (`docs/south_backlog.md` "Looks"). Build one
 in Blender with the North's kit and atlas (`blender/south/`, a white tower with a red band, a gallery, the lantern room,
 a keeper's cottage, a fence), place it on the headland beyond the station, and light it: a rotating lens like the
@@ -622,7 +623,7 @@ Blender lint 0/0, Mac import through `import_south.sh`, night shots from the tow
 
 ## 43. Birds and beasts of the brook
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The new brook (`south.brook_cut`) and its mouth have no habitat on purpose
+`[~] 2026-11-21: built on branch brook-birds (PR #62, lands after aton-coast): Brook and Mouth kinds, tastes, checks (BIRD_ONLY=brook), sound points as data; the habits by the brook on habits-brook (docs/bird_habits.md "The brook"); a look at it in the game owed` **Cloud-only. Brief (Opus 5.5):** The new brook (`south.brook_cut`) and its mouth have no habitat on purpose
 (`docs/south_backlog.md` "Animals"). Add a `brook` habitat kind in `tools/bird_habitats.py` (the valley bed and the
 ravine's stones) and a `mouth` kind (the shallow fan over the beach), and let existing species use them by taste in
 `species.json`: the grey heron standing at the mouth at low tide and in the brook's slow bends at dawn, white wagtails on

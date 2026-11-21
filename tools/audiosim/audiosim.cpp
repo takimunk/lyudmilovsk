@@ -333,18 +333,18 @@ namespace
 			Check(Snowy < Bare * 0.85f, "fresh snow hushes the world", Bare, Snowy);
 		}
 		{
-			// two blasts a minute: loud in their seconds, the gap between quiet (the echo dies within 3 s)
+			// two blasts every half minute (the lighthouse's horn): loud in their seconds, the gap between quiet (the echo dies within 3 s)
 			const FResult R = Run(Find("fog_lighthouse"));
 			const std::vector<float>& S = R.VoiceRmsPerSecond[Signal];
 			float Blast = 0.f, Gap = 0.f;
 			for (int I = 0; I < int(S.size()); I++)
 			{
-				// the signal's clock starts at 50 s of its minute: blasts at 10-12.5 s and 15-17.5 s of the scene, then +60
-				const int M = (I + 50) % 60;
+				// the signal's clock starts at 50 s (20 s of its half minute): blasts at 10-12.5 s and 15-17.5 s of the scene, then +30
+				const int M = (I + 20) % 30;
 				if (M == 0 || M == 1 || M == 5 || M == 6) Blast = std::fmax(Blast, S[I]);
-				if (M > 15 && M < 55) Gap = std::fmax(Gap, S[I]);
+				if (M > 15 && M < 28) Gap = std::fmax(Gap, S[I]);
 			}
-			Check(Blast > 0.01f && Gap < Blast * 0.05f, "the fog signal: two blasts a minute, silence between", Blast, Gap);
+			Check(Blast > 0.01f && Gap < Blast * 0.05f, "the fog signal: two blasts every 30 s, silence between", Blast, Gap);
 			const FResult F = Run(Find("fog_signal_far"));
 			float FarBlast = 0.f;
 			for (float V : F.VoiceRmsPerSecond[Signal]) FarBlast = std::fmax(FarBlast, V);

@@ -19,7 +19,7 @@ a dog that walks along, a cat on the lap ("Friends" below).
 | Offscreen checks | `unreal/scripts/make_animals_test_level.py`, `test_animals.sh` (`test_animals.py`) |
 | Birds fleeing them | `Private/Birds/BirdSim.cpp` `PerceiveBeasts`, `UBirdLifeSubsystem::SetBeasts` |
 | Maru: her collar, her name, E | `blender/animals/collar.py`, `Public/Animals/AnimalCollar.h`, `AnimalNameTags.h` |
-| With people: household dogs and cats, the lady's round, hedgehogs | `Private/Animals/AnimalPetsSim.cpp`, `Public/Animals/LyudPets.h`, `tools/town/town_pets.py` -> `Content/AnimalsData/pets.json`, `blender/animals/hedgehog.py` |
+| With people: household dogs and cats, the lady's round, hedgehogs; yard cats and the townsfolk | `Private/Animals/AnimalPetsSim.cpp`, `Public/Animals/LyudPets.h`, `tools/town/town_pets.py` -> `Content/AnimalsData/pets.json`, `blender/animals/hedgehog.py` |
 
 Rebuild the walk map whenever `tools/world_map.py`, the terrain or the Academgorodok's layout changes:
 `python3 tools/animal_map.py`.
@@ -272,6 +272,41 @@ and has not been compiled or run; the sill's offset and the leash's hand and col
 pets are added to the model after the strays, so a saved bond with one is not restored; there is one feeder in
 `animal_places.json` (the Academgorodok's), the lady has one stop.
 
+## Town cats
+
+A polish round on top of "With people" (2026-11-21): the yard cats (nobody's) have doings with the townsfolk,
+`FAnimal::Do` (`ECatDo`) in `AnimalPetsSim.cpp`, driven by `ULyudPets::TickTownCats` four times a second from
+`pets.json` (`friends`, `stalls`, `fishmongers`, `shoo`, `shooers`, all written by `tools/town/town_pets.py`).
+
+| What | How |
+|---|---|
+| **Sees a resident home** | Twelve residents of 55 and over without a pet, one a building, are each liked by the free yard cat nearest their door (`SetFavourite`). When one walks homeward within 60 m of the door, `FavouriteHome(Cat, Feet, Vel, Door)` is called: a cat that is awake, free and within 30 m falls in behind them (`Tail` event, a meow), keeps 2.2 m back at their pace, sits and looks up when they stop. They go in: it walks up to the door, sits there 18 to 38 s meowing now and then (`SeeIn`), and is its own cat again; not twice within two hours. The resident talks to it (`cat_friend`). |
+| **The fish stalls** | The market's two fishmongers' places are `FWorld::Stalls`, open while a fishmonger stands there. Every 20 s an open stall with fewer than two cats calls the nearest free, awake, hungry (over 0.35) and bold (over 0.35) cat within 90 m: it walks there, sits on the buyers' side (`front` m from the seller), looks up and meows (`Beg`, `BegStall` event). Every 50 to 120 s the seller throws a scrap (`ThrowScrap`: the cat eats there, is fed, and keeps away for three hours; line `cat_scrap`), or less often shoos it (`cat_shoo`). Seven minutes of nothing and it gives up for an hour; the stall shutting sends it off. |
+| **The broom** | The two cleaners and the night watchman at their work (`shooers`, activities `shoo`) call `Shoo(P, 2.2)`: a cat within reach on their side of the wall wakes, trots 14 m off to walkable ground, sits and looks back for five seconds (`Shooed` event). Not a fright: no tree, no hiss, no flight. A cat shooed from a stall keeps off it for ten minutes. |
+| **The sill by the weather** | `FWorld::Weather` (rain, air temperature, sun = clear sky by day, set from `ULyudWeatherSubsystem`): a flat's cat is on its sill only in the dry, and under 8 °C only when the sun is on the glass and it is not freezing; otherwise indoors. A warm sunny sill is slept on, a grey day's is watched from. |
+
+A fright, the hero's hand or a dog ends any of these at once (the cat's own reflexes come first). `lyud.Pets.Report`
+counts them. Not seen in the engine yet: the stall's `front` (1.9 m) and its yaw (the fishmonger slot's) want a look
+at the market.
+
+## Maru's moments
+
+The hero's dog (`FWorld::HeroDog`, set by `ULyudPets` to the dog named `animal.maru.name`) has moments of her own with
+him once she is his friend (`FAnimal::Moment`, `EMoment`, in `AnimalPetsSim.cpp`; she is not on a walk with him then):
+
+| Moment | When | What |
+|---|---|---|
+| Waits up | half an hour after sunset till one in the morning, he is more than 60 m from her door | goes to the door, sits, later lies awake looking the way he went, whines now and then (`WaitLate`); he comes within 25 m: she runs to him barking and greets him (`Welcome`); once an evening |
+| A gift | by day, dry, he is within 12 m and not running, bond 0.7 and over, once in 20 hours | trots 7 m off, sniffs about, carries a thing back (`FAnimal::Carry`) and lays it at his feet (`Gift`, Other = `FWorld::EGift`): a stick in spring, a shell in summer, a cone in autumn, a mitten in winter, an old ball every fifth day |
+| Comfort | a thunderstorm with him within 25 m, or he has sat or crouched still for 40 s | comes to his side, sits pressed against him, then lies with her head up (`Comfort`, `Lean` 1) |
+| Shelter | rain and he is not near | lies under the porch at her door till it stops or he comes (`Shelter`) |
+| Her spot | by day, dry, he is away | `FavouriteSpot`: the warm hatch in winter, a sunny wall in spring and autumn, a bench or lookout in summer; she walks there and lies down |
+
+Each writes a line into the journal (`FWorld::MomentNotes`, keys `journal.maru.*`, each kind once a day). A fright,
+his hand held out or a walk begun ends a moment at once. Checked by `ANIM_ONLY=pets tools/animalsim/run.sh test`.
+Not there yet: the thing she carries is not drawn and is not an item, thunder is taken from a downpour
+(`PrecipRate` over 4), and none of the engine side has been compiled.
+
 ## Checks
 
 - `tools/animalsim/run.sh test`: a dog chases a cat up a tree and barks, the cat comes down later; a bold cat without a
@@ -288,6 +323,12 @@ pets are added to the model after the strays, so a saved bond with one is not re
   a clear line to him at every step, sniffs, greets another walked dog, goes indoors after; a flat's cat is on the
   sill by day, at the door at feeding time, indoors at night; the feeders stay empty till the lady puts the food
   down; hedgehogs come out at dusk in July, curl up by the hero, a cat sniffs one and backs off, none in December.
+  Town cats (in the same run): a cat falls in behind its resident once, keeps within 6 m round the house's corner,
+  never underfoot or through the wall, sits at the door when they go in, then goes its way; a shut stall draws
+  nobody, an open one the hungry bold cat (not the fed one, not the shy one), a scrap feeds it and it stays away, the
+  stall shutting ends the begging; a sleeping cat by the broom trots 15 m off without a fright and looks back, a
+  swept counter stays clear; the sill is kept at a mild dry noon and in cold sun, left in rain, grey cold and frost,
+  and slept on more in the sun.
 - `tools/peoplesim/run.sh town`: the ten owners are out with the dog morning and evening (they set off about a
   quarter of an hour ahead and are back on time; a holiday on the square thins the evening's walk), never at other hours.
 - `tools/animalsim/run.sh day && python3 tools/animalsim/render_animals.py`: `Saved/AnimalSim/animals_day_map.png`

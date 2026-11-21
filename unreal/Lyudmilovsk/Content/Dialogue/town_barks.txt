@@ -2920,6 +2920,9 @@ say = town.aton_brook.1..4
 # Events (on = ...), sent by ULyudPets: pet_talk (the owner to the dog on the walk), pet_stroke_yes / pet_stroke_no
 # (the hero asked to stroke the dog), cat_call (the lady puts the bowls down), cat_sill (the hero stops under a
 # window with the flat's cat on the sill, its owner near), hedgehog (somebody near a hedgehog at dusk).
+# The yard cats and the townsfolk (docs/animals.md "Town cats"). Events sent by ULyudPets: cat_friend (a resident
+# to the yard cat that sees them home), cat_scrap (the fishmonger throws a begging cat a scrap), cat_shoo (the
+# fishmonger, a cleaner, the watchman or somebody with a snow shovel sends a cat out of the way).
 
 [dog_owner_walk]
 doing = walk_dog walk_dog_late
@@ -2956,6 +2959,18 @@ say = town.cat_sill.1..4
 [hedgehog_seen]
 on = hedgehog
 say = town.hedgehog_seen.1..4
+
+[cat_friend]
+on = cat_friend
+say = town.cat_friend.1..6
+
+[cat_scrap]
+on = cat_scrap
+say = town.cat_scrap.1..5
+
+[cat_shoo]
+on = cat_shoo
+say = town.cat_shoo.1..5
 
 # The sanatorium's guests in turn (docs/town_life.md, "The sanatorium's guests"; tools/town/sanatorium_guests.py):
 # the day they come and the day they go, the regime's outings, and each guest's own story told in pieces through the
@@ -3288,3 +3303,782 @@ job = guest_kovalchuk
 age = kid
 weekday = fri
 say = town.guest_asya.4
+
+# The holidays' own voices (docs/festivals.md "Every holiday's voices"): on each holiday of the calendar an adult says
+# what they are bringing, a nervy one complains, a child tells the day's game, an elder remembers how it used to be.
+# One line a set, said only on that holiday. Russian: the speaker's own words never agree in gender (no "я принёс").
+
+[fv_weekend_market_bring]
+festival = weekend_market
+age = adult
+weight = 5
+say = town.fv_weekend_market_bring.1
+
+[fv_weekend_market_grump]
+festival = weekend_market
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_weekend_market_grump.1
+
+[fv_weekend_market_kid]
+festival = weekend_market
+age = kid
+weight = 5
+say = town.fv_weekend_market_kid.1
+
+[fv_weekend_market_elder]
+festival = weekend_market
+age = elder
+weight = 5
+say = town.fv_weekend_market_elder.1
+
+[fv_sea_festival_bring]
+festival = sea_festival
+age = adult
+weight = 5
+say = town.fv_sea_festival_bring.1
+
+[fv_sea_festival_grump]
+festival = sea_festival
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_sea_festival_grump.1
+
+[fv_sea_festival_kid]
+festival = sea_festival
+age = kid
+weight = 5
+say = town.fv_sea_festival_kid.1
+
+[fv_sea_festival_elder]
+festival = sea_festival
+age = elder
+weight = 5
+say = town.fv_sea_festival_elder.1
+
+[fv_lantern_night_bring]
+festival = lantern_night
+age = adult
+weight = 5
+say = town.fv_lantern_night_bring.1
+
+[fv_lantern_night_grump]
+festival = lantern_night
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_lantern_night_grump.1
+
+[fv_lantern_night_kid]
+festival = lantern_night
+age = kid
+weight = 5
+say = town.fv_lantern_night_kid.1
+
+[fv_lantern_night_elder]
+festival = lantern_night
+age = elder
+weight = 5
+say = town.fv_lantern_night_elder.1
+
+[fv_first_snow_bring]
+festival = first_snow
+age = adult
+weight = 5
+say = town.fv_first_snow_bring.1
+
+[fv_first_snow_grump]
+festival = first_snow
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_first_snow_grump.1
+
+[fv_first_snow_kid]
+festival = first_snow
+age = kid
+weight = 5
+say = town.fv_first_snow_kid.1
+
+[fv_first_snow_elder]
+festival = first_snow
+age = elder
+weight = 5
+say = town.fv_first_snow_elder.1
+
+[fv_winter_fair_bring]
+festival = winter_fair
+age = adult
+weight = 5
+say = town.fv_winter_fair_bring.1
+
+[fv_winter_fair_grump]
+festival = winter_fair
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_winter_fair_grump.1
+
+[fv_winter_fair_kid]
+festival = winter_fair
+age = kid
+weight = 5
+say = town.fv_winter_fair_kid.1
+
+[fv_winter_fair_elder]
+festival = winter_fair
+age = elder
+weight = 5
+say = town.fv_winter_fair_elder.1
+
+[fv_new_year_bring]
+festival = new_year
+age = adult
+weight = 5
+say = town.fv_new_year_bring.1
+
+[fv_new_year_grump]
+festival = new_year
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_new_year_grump.1
+
+[fv_new_year_kid]
+festival = new_year
+age = kid
+weight = 5
+say = town.fv_new_year_kid.1
+
+[fv_new_year_elder]
+festival = new_year
+age = elder
+weight = 5
+say = town.fv_new_year_elder.1
+
+[fv_maslenitsa_bring]
+festival = maslenitsa
+age = adult
+weight = 5
+say = town.fv_maslenitsa_bring.1
+
+[fv_maslenitsa_grump]
+festival = maslenitsa
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_maslenitsa_grump.1
+
+[fv_maslenitsa_kid]
+festival = maslenitsa
+age = kid
+weight = 5
+say = town.fv_maslenitsa_kid.1
+
+[fv_maslenitsa_elder]
+festival = maslenitsa
+age = elder
+weight = 5
+say = town.fv_maslenitsa_elder.1
+
+[fv_bird_day_bring]
+festival = bird_day
+age = adult
+weight = 5
+say = town.fv_bird_day_bring.1
+
+[fv_bird_day_grump]
+festival = bird_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_bird_day_grump.1
+
+[fv_bird_day_kid]
+festival = bird_day
+age = kid
+weight = 5
+say = town.fv_bird_day_kid.1
+
+[fv_bird_day_elder]
+festival = bird_day
+age = elder
+weight = 5
+say = town.fv_bird_day_elder.1
+
+[fv_blossom_bring]
+festival = blossom
+age = adult
+weight = 5
+say = town.fv_blossom_bring.1
+
+[fv_blossom_grump]
+festival = blossom
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_blossom_grump.1
+
+[fv_blossom_kid]
+festival = blossom
+age = kid
+weight = 5
+say = town.fv_blossom_kid.1
+
+[fv_blossom_elder]
+festival = blossom
+age = elder
+weight = 5
+say = town.fv_blossom_elder.1
+
+[fv_midsummer_bring]
+festival = midsummer
+age = adult
+weight = 5
+say = town.fv_midsummer_bring.1
+
+[fv_midsummer_grump]
+festival = midsummer
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_midsummer_grump.1
+
+[fv_midsummer_kid]
+festival = midsummer
+age = kid
+weight = 5
+say = town.fv_midsummer_kid.1
+
+[fv_midsummer_elder]
+festival = midsummer
+age = elder
+weight = 5
+say = town.fv_midsummer_elder.1
+
+[fv_fisherman_day_bring]
+festival = fisherman_day
+age = adult
+weight = 5
+say = town.fv_fisherman_day_bring.1
+
+[fv_fisherman_day_grump]
+festival = fisherman_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_fisherman_day_grump.1
+
+[fv_fisherman_day_kid]
+festival = fisherman_day
+age = kid
+weight = 5
+say = town.fv_fisherman_day_kid.1
+
+[fv_fisherman_day_elder]
+festival = fisherman_day
+age = elder
+weight = 5
+say = town.fv_fisherman_day_elder.1
+
+[fv_perseids_bring]
+festival = perseids
+age = adult
+weight = 5
+say = town.fv_perseids_bring.1
+
+[fv_perseids_grump]
+festival = perseids
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_perseids_grump.1
+
+[fv_perseids_kid]
+festival = perseids
+age = kid
+weight = 5
+say = town.fv_perseids_kid.1
+
+[fv_perseids_elder]
+festival = perseids
+age = elder
+weight = 5
+say = town.fv_perseids_elder.1
+
+[fv_harvest_fair_bring]
+festival = harvest_fair
+age = adult
+weight = 5
+say = town.fv_harvest_fair_bring.1
+
+[fv_harvest_fair_grump]
+festival = harvest_fair
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_harvest_fair_grump.1
+
+[fv_harvest_fair_kid]
+festival = harvest_fair
+age = kid
+weight = 5
+say = town.fv_harvest_fair_kid.1
+
+[fv_harvest_fair_elder]
+festival = harvest_fair
+age = elder
+weight = 5
+say = town.fv_harvest_fair_elder.1
+
+[fv_lunar_new_year_bring]
+festival = lunar_new_year
+age = adult
+weight = 5
+say = town.fv_lunar_new_year_bring.1
+
+[fv_lunar_new_year_grump]
+festival = lunar_new_year
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_lunar_new_year_grump.1
+
+[fv_lunar_new_year_kid]
+festival = lunar_new_year
+age = kid
+weight = 5
+say = town.fv_lunar_new_year_kid.1
+
+[fv_lunar_new_year_elder]
+festival = lunar_new_year
+age = elder
+weight = 5
+say = town.fv_lunar_new_year_elder.1
+
+[fv_holi_bring]
+festival = holi
+age = adult
+weight = 5
+say = town.fv_holi_bring.1
+
+[fv_holi_grump]
+festival = holi
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_holi_grump.1
+
+[fv_holi_kid]
+festival = holi
+age = kid
+weight = 5
+say = town.fv_holi_kid.1
+
+[fv_holi_elder]
+festival = holi
+age = elder
+weight = 5
+say = town.fv_holi_elder.1
+
+[fv_nowruz_bring]
+festival = nowruz
+age = adult
+weight = 5
+say = town.fv_nowruz_bring.1
+
+[fv_nowruz_grump]
+festival = nowruz
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_nowruz_grump.1
+
+[fv_nowruz_kid]
+festival = nowruz
+age = kid
+weight = 5
+say = town.fv_nowruz_kid.1
+
+[fv_nowruz_elder]
+festival = nowruz
+age = elder
+weight = 5
+say = town.fv_nowruz_elder.1
+
+[fv_children_day_bring]
+festival = children_day
+age = adult
+weight = 5
+say = town.fv_children_day_bring.1
+
+[fv_children_day_grump]
+festival = children_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_children_day_grump.1
+
+[fv_children_day_kid]
+festival = children_day
+age = kid
+weight = 5
+say = town.fv_children_day_kid.1
+
+[fv_children_day_elder]
+festival = children_day
+age = elder
+weight = 5
+say = town.fv_children_day_elder.1
+
+[fv_tanabata_bring]
+festival = tanabata
+age = adult
+weight = 5
+say = town.fv_tanabata_bring.1
+
+[fv_tanabata_grump]
+festival = tanabata
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_tanabata_grump.1
+
+[fv_tanabata_kid]
+festival = tanabata
+age = kid
+weight = 5
+say = town.fv_tanabata_kid.1
+
+[fv_tanabata_elder]
+festival = tanabata
+age = elder
+weight = 5
+say = town.fv_tanabata_elder.1
+
+[fv_toro_nagashi_bring]
+festival = toro_nagashi
+age = adult
+weight = 5
+say = town.fv_toro_nagashi_bring.1
+
+[fv_toro_nagashi_grump]
+festival = toro_nagashi
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_toro_nagashi_grump.1
+
+[fv_toro_nagashi_kid]
+festival = toro_nagashi
+age = kid
+weight = 5
+say = town.fv_toro_nagashi_kid.1
+
+[fv_toro_nagashi_elder]
+festival = toro_nagashi
+age = elder
+weight = 5
+say = town.fv_toro_nagashi_elder.1
+
+[fv_mid_autumn_bring]
+festival = mid_autumn
+age = adult
+weight = 5
+say = town.fv_mid_autumn_bring.1
+
+[fv_mid_autumn_grump]
+festival = mid_autumn
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_mid_autumn_grump.1
+
+[fv_mid_autumn_kid]
+festival = mid_autumn
+age = kid
+weight = 5
+say = town.fv_mid_autumn_kid.1
+
+[fv_mid_autumn_elder]
+festival = mid_autumn
+age = elder
+weight = 5
+say = town.fv_mid_autumn_elder.1
+
+[fv_halloween_bring]
+festival = halloween
+age = adult
+weight = 5
+say = town.fv_halloween_bring.1
+
+[fv_halloween_grump]
+festival = halloween
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_halloween_grump.1
+
+[fv_halloween_kid]
+festival = halloween
+age = kid
+weight = 5
+say = town.fv_halloween_kid.1
+
+[fv_halloween_elder]
+festival = halloween
+age = elder
+weight = 5
+say = town.fv_halloween_elder.1
+
+[fv_dia_de_muertos_bring]
+festival = dia_de_muertos
+age = adult
+weight = 5
+say = town.fv_dia_de_muertos_bring.1
+
+[fv_dia_de_muertos_grump]
+festival = dia_de_muertos
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_dia_de_muertos_grump.1
+
+[fv_dia_de_muertos_kid]
+festival = dia_de_muertos
+age = kid
+weight = 5
+say = town.fv_dia_de_muertos_kid.1
+
+[fv_dia_de_muertos_elder]
+festival = dia_de_muertos
+age = elder
+weight = 5
+say = town.fv_dia_de_muertos_elder.1
+
+[fv_diwali_bring]
+festival = diwali
+age = adult
+weight = 5
+say = town.fv_diwali_bring.1
+
+[fv_diwali_grump]
+festival = diwali
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_diwali_grump.1
+
+[fv_diwali_kid]
+festival = diwali
+age = kid
+weight = 5
+say = town.fv_diwali_kid.1
+
+[fv_diwali_elder]
+festival = diwali
+age = elder
+weight = 5
+say = town.fv_diwali_elder.1
+
+[fv_loy_krathong_bring]
+festival = loy_krathong
+age = adult
+weight = 5
+say = town.fv_loy_krathong_bring.1
+
+[fv_loy_krathong_grump]
+festival = loy_krathong
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_loy_krathong_grump.1
+
+[fv_loy_krathong_kid]
+festival = loy_krathong
+age = kid
+weight = 5
+say = town.fv_loy_krathong_kid.1
+
+[fv_loy_krathong_elder]
+festival = loy_krathong
+age = elder
+weight = 5
+say = town.fv_loy_krathong_elder.1
+
+[fv_christmas_bring]
+festival = christmas
+age = adult
+weight = 5
+say = town.fv_christmas_bring.1
+
+[fv_christmas_grump]
+festival = christmas
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_christmas_grump.1
+
+[fv_christmas_kid]
+festival = christmas
+age = kid
+weight = 5
+say = town.fv_christmas_kid.1
+
+[fv_christmas_elder]
+festival = christmas
+age = elder
+weight = 5
+say = town.fv_christmas_elder.1
+
+[fv_sun_day_bring]
+festival = sun_day
+age = adult
+weight = 5
+say = town.fv_sun_day_bring.1
+
+[fv_sun_day_grump]
+festival = sun_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_sun_day_grump.1
+
+[fv_sun_day_kid]
+festival = sun_day
+age = kid
+weight = 5
+say = town.fv_sun_day_kid.1
+
+[fv_sun_day_elder]
+festival = sun_day
+age = elder
+weight = 5
+say = town.fv_sun_day_elder.1
+
+[fv_city_day_bring]
+festival = city_day
+age = adult
+weight = 5
+say = town.fv_city_day_bring.1
+
+[fv_city_day_grump]
+festival = city_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_city_day_grump.1
+
+[fv_city_day_kid]
+festival = city_day
+age = kid
+weight = 5
+say = town.fv_city_day_kid.1
+
+[fv_city_day_elder]
+festival = city_day
+age = elder
+weight = 5
+say = town.fv_city_day_elder.1
+
+[fv_kite_day_bring]
+festival = kite_day
+age = adult
+weight = 5
+say = town.fv_kite_day_bring.1
+
+[fv_kite_day_grump]
+festival = kite_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_kite_day_grump.1
+
+[fv_kite_day_kid]
+festival = kite_day
+age = kid
+weight = 5
+say = town.fv_kite_day_kid.1
+
+[fv_kite_day_elder]
+festival = kite_day
+age = elder
+weight = 5
+say = town.fv_kite_day_elder.1
+
+[fv_cat_day_bring]
+festival = cat_day
+age = adult
+weight = 5
+say = town.fv_cat_day_bring.1
+
+[fv_cat_day_grump]
+festival = cat_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_cat_day_grump.1
+
+[fv_cat_day_kid]
+festival = cat_day
+age = kid
+weight = 5
+say = town.fv_cat_day_kid.1
+
+[fv_cat_day_elder]
+festival = cat_day
+age = elder
+weight = 5
+say = town.fv_cat_day_elder.1
+
+[fv_book_day_bring]
+festival = book_day
+age = adult
+weight = 5
+say = town.fv_book_day_bring.1
+
+[fv_book_day_grump]
+festival = book_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_book_day_grump.1
+
+[fv_book_day_kid]
+festival = book_day
+age = kid
+weight = 5
+say = town.fv_book_day_kid.1
+
+[fv_book_day_elder]
+festival = book_day
+age = elder
+weight = 5
+say = town.fv_book_day_elder.1
+
+[fv_amber_morning_bring]
+festival = amber_morning
+age = adult
+weight = 5
+say = town.fv_amber_morning_bring.1
+
+[fv_amber_morning_grump]
+festival = amber_morning
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_amber_morning_grump.1
+
+[fv_amber_morning_kid]
+festival = amber_morning
+age = kid
+weight = 5
+say = town.fv_amber_morning_kid.1
+
+[fv_amber_morning_elder]
+festival = amber_morning
+age = elder
+weight = 5
+say = town.fv_amber_morning_elder.1

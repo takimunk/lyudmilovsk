@@ -226,6 +226,13 @@
    "prompt": "A folded newspaper with grey columns and one photo, no readable words.",
    "source": "design/lobby/icons_grid.json: one 4x4 Higgsfield grid, cut by tools/lobby_icons.py (the game-assets rule)"
   },
+  "icon_paraffin": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small red tin can of lamp paraffin with a screw cap on a little chain and a wire handle, no readable words.",
+   "source": "tools/gen_localized.py icon_paraffin (fal, on the Mac: the game-assets rule); the Mayak lighthouse keeper's errand"
+  },
   "icon_rail_ticket": {
    "kind": "icon",
    "style": "icon",

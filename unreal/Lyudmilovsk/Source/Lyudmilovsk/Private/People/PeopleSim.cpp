@@ -470,6 +470,14 @@ namespace LyudPeople
 				Duty.Role = D["role"].S();
 				Duty.From = D["hours"][0].F(9.f);
 				Duty.To = D["hours"][1].F(17.f);
+				const std::string SunTie = D["sun"].S();
+				if (SunTie == "set" || SunTie == "rise")
+				{
+					Duty.Sun = SunTie == "set" ? 1 : 2;
+					Duty.Off0 = Duty.From;
+					Duty.Off1 = Duty.To;
+					DutySunrise = DutySunset = -1.f;     // set by SyncSunDuties
+				}
 				Duty.Days = 0;
 				for (const LyudJson::FValue& Day : D["days"].Items)
 				{
@@ -2758,7 +2766,15 @@ namespace LyudPeople
 				const float Lat = -Rel.X * Dir.Y + Rel.Y * Dir.X >= 0.f ? 1.7f : -1.7f;
 				FPerson::FWay Side;
 				Side.P = To.Approach + V3(-Dir.Y * Lat, Dir.X * Lat, 0.f);
-				Out.insert(Out.end() - 1, Side);
+				// (before the step out in front; a way that added no point has no end to go before)
+				if (Out.size() > First)
+				{
+					Out.insert(Out.end() - 1, Side);
+				}
+				else
+				{
+					Out.push_back(Side);
+				}
 			}
 			FPerson::FWay Last;
 			Last.P = To.Approach;
@@ -4831,6 +4847,29 @@ namespace LyudPeople
 		}
 	}
 
+	void FWorld::SyncSunDuties()
+	{
+		if (DutySunrise == Sunrise && DutySunset == Sunset)
+		{
+			return;
+		}
+		DutySunrise = Sunrise;
+		DutySunset = Sunset;
+		auto Wrap = [](float H) { return std::fmod(std::fmod(H, 24.f) + 24.f, 24.f); };
+		for (FPerson& P : People)
+		{
+			for (FDuty& D : P.Duties)
+			{
+				if (D.Sun)
+				{
+					const float At = D.Sun == 1 ? Sunset : Sunrise;
+					D.From = Wrap(At + D.Off0);
+					D.To = Wrap(At + D.Off1);
+				}
+			}
+		}
+	}
+
 	void FWorld::Step(float Dt)
 	{
 		if (Dt <= 0.f)
@@ -4838,6 +4877,7 @@ namespace LyudPeople
 			return;
 		}
 		Time += Dt;
+		SyncSunDuties();
 		if (!Queues.empty())
 		{
 			StepQueues();       // (a few dozen lines of a few spots: every step, so nobody stands behind a gap)
@@ -5114,6 +5154,7 @@ namespace LyudPeople
 
 	void FWorld::Resettle()
 	{
+		SyncSunDuties();
 		for (FSlot& S : Slots)
 		{
 			S.Users.clear();

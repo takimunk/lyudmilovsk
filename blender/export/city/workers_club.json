@@ -4478,6 +4478,45 @@
    }
   },
   {
+   "id": "radio_kettle",
+   "kind": "machine",
+   "pos": [
+    -7.25,
+    6.03,
+    0.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "kettle"
+   }
+  },
+  {
+   "id": "radio_note",
+   "kind": "take",
+   "pos": [
+    -8.25,
+    5.12,
+    0.8
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "note"
+   }
+  },
+  {
+   "id": "dance_photo",
+   "kind": "take",
+   "pos": [
+    14.7,
+    4.05,
+    0.75
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "photo"
+   }
+  },
+  {
    "id": "hall_piano",
    "kind": "play",
    "pos": [
@@ -6101,7 +6140,7 @@
  ],
  "tris": {
   "shell": 2228,
-  "detail": 39595,
+  "detail": 39757,
   "windows": 136,
   "dress": 9474
  }

@@ -59,7 +59,8 @@ STYLES = ["arches", "dome", "folded", "lantern", "saucer", "star", "wing"]
 KEEP = ("Vending", "CoffeeBar", "Stove", "AmberCase", "Aquarium")
 # the signature pieces' footprint radius (m) to keep clear round them (lobby_props.py sizes)
 KEEP_R = {"Vending": 0.75, "CoffeeBar": 1.6, "Stove": 1.0, "AmberCase": 0.9, "Aquarium": 1.0}
-PLANTS = ["Monstera", "KentiaPalm", "Aspidistra", "Ficus", "Dracaena", "Sansevieria"]
+# species of the plant library (PlantSpeciesHerbs.cpp Indoor): an unknown name grows the default tree
+PLANTS = ["Monstera", "KentiaPalm", "Aspidistra", "RubberPlant", "Dracaena", "SnakePlant"]
 RAIL = 0.12          # the railing round the stairwell's opening, its thickness and a hand's clearance
 WALK = 0.95          # the narrowest walk left between anything and the railing
 
@@ -296,6 +297,21 @@ class Dresser:
             self.out["notes"].append("buffet: no room (%.2f m)" % dep)
             return False
         hw = w / 2
+        # never over a kept piece, a door or the diagram (Horizon's buffet stood in the aquarium, Amber's in the amber
+        # case): slide along the ring to the nearest free angle, else no buffet on this side
+        for k in range(15):
+            da = math.radians(6 * ((k + 1) // 2)) * (1 if k % 2 else -1)
+            if self.free(a + da, math.atan2(hw + 0.25, h.wall(a + da))):
+                break
+        else:
+            self.out["notes"].append("buffet: side %d deg taken" % round(math.degrees(a)))
+            return False
+        if da:
+            a += da
+            dep, R = self.depth(a), h.wall(a)
+            if dep < d + staff + WALK:
+                self.out["notes"].append("buffet: no room (%.2f m)" % dep)
+                return False
         # the counter's back line: the staff's gap to the wall at least `staff` at its ends too
         if h.kind == "cyl" and not h.walls:
             r_back = min(math.sqrt(max(0.0, (R - staff) ** 2 - hw ** 2)), R - staff)
@@ -469,6 +485,15 @@ class Dresser:
         f = (math.cos(math.radians(yaw_ue)), -math.sin(math.radians(yaw_ue)))
         yaw = facing_yaw(*f)
         x, y = p[0] - f[0] * 0.35, p[1] - f[1] * 0.35
+        # the attendant stands 0.76 m behind the desk's middle: keep that spot 0.35 m off the wall (the kiosk stood
+        # against it, and a desk set back from it put her inside the wall)
+        for _ in range(8):
+            sx, sy = x - f[0] * 0.76, y - f[1] * 0.76
+            rs = math.hypot(sx - h.rc[0], sy - h.rc[1])
+            lim = h.wall(h.ang((sx, sy))) - 0.35
+            if rs <= lim:
+                break
+            x, y = x + f[0] * (rs - lim + 0.02), y + f[1] * (rs - lim + 0.02)
         r = kit.reception_desk(B, x, y, 0.0, yaw, w=1.3, d=0.62, front=self.look["front"] if self.look["front"] != "CT_Leather" else "CT_PlasterBlue")
         kit.telephone(B, *r["on"][:2], r["top"] - 0.35, yaw) if hasattr(kit, "telephone") else None
         st = r["staff"]

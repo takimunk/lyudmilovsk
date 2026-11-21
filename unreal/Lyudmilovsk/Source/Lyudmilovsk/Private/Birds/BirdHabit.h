@@ -183,6 +183,10 @@ namespace LyudBirds
 		float ShowDist = 70.f;
 		/** Fresh water the game names (the brook's pools, a fountain, puddles after rain): swallows drink there. */
 		std::vector<V3> Waters;
+		/** The map's own still fresh water (the brook's pools, read once when the birds start): swallows drink there too. */
+		std::vector<V3> Pools;
+		/** A sample of the brook's water (south.json: surface height, half width) wide enough to be a pool, above the tide's reach. */
+		static bool IsPool(float Z, float Half, float MeanSeaZ) { return Half >= 2.f && Z > MeanSeaZ + 2.f; }
 		std::vector<FMorsel> Morsels;
 		/** 0 dry .. 1 puddles everywhere (rises in rain, dries in a couple of hours). */
 		float Wet = 0.f;

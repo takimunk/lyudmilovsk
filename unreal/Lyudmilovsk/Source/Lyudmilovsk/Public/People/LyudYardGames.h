@@ -105,6 +105,14 @@ private:
 	float HeroCountShown = -1.f;
 	bool bHeroWasCounting = false;
 	FText LastPrompt;
+	/** PromptByKey's last key (a literal's address: compared, never read) and number. */
+	const TCHAR* PromptKey = nullptr;
+	int32 PromptArg = MIN_int32;
+	/** Children whose body could not be made (the spawn or its setup failed: a missing mesh): not tried again every frame. */
+	TSet<int32> NoBody;
+	/** The ground under the things that stay put while a game is drawn (a rope's middle, the goals' bags): traced when
+	 *  first drawn and once a second after, not every frame. */
+	TArray<FShown> RopeGround, PostGround;
 
 	bool Ensure();
 	void BuildThings();
@@ -119,6 +127,8 @@ private:
 	float GroundAt(FShown& S, const FVector2D& At, float ZHint);
 	void SayLine(int32 Id, const FString& Key);
 	void Prompt(const FText& Text);
+	/** The prompt by its LyudText key (null: none), with a number for {0} if given: looked up only when it changes. */
+	void PromptByKey(const TCHAR* Key, int32 Arg = MIN_int32);
 	FVector CameraLocation() const;
 	FVector HeroLocation(FVector* OutVel = nullptr) const;
 	int32 NearestArea(const FVector& Where, uint32 GameMask) const;

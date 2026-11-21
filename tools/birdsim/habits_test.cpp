@@ -398,6 +398,87 @@ namespace HabitTest
 		Check(W.Birds[Id].Habit == 0 && (A == EAct::Peck || A == EAct::Forage || A == EAct::Perch), "and then feeds on from where it stopped");
 	}
 
+	/** The brook (EHabitat::Brook and Mouth: narrow patches on the bank with the stream a step away). */
+	void Brookside()
+	{
+		std::printf("by the brook:\n");
+		{
+			// a gravel bar 6 m long and 0.7 m to either side of its line; the water lies past its rim
+			FWorld W;
+			Flat(W);
+			const int Id = Feeding(W, "WhiteWagtail", V3(10.f, 0.f, 0.f), 1, EHabitat::Brook, 0.7f);
+			FSite& Bar = W.Sites[W.Birds[Id].Site];
+			Bar.A = V3(7.f, 0.f, 0.f);
+			Bar.B = V3(13.f, 0.f, 0.f);
+			W.Birds[Id].Pos = W.Birds[Id].Spot = V3(10.f, 0.2f, 0.f);
+			W.Step(0.05f);
+			int Dashes = 0, Beats = 0;
+			float Off = 0.f, Path = 0.f;
+			V3 Last = W.Birds[Id].Pos;
+			for (int Round = 0; Round < 12; Round++)
+			{
+				FSeen Seen;
+				Dashes += W.Habits()->Start(W, W.Birds[Id], EHabit::WagtailDash);
+				Step(W, 14.f, 0.02f, EHabit::WagtailDash, &Seen, [&]()
+				{
+					const FBird& B = W.Birds[Id];
+					const float X = std::min(std::max(B.Pos.X, 7.f), 13.f);
+					Off = std::max(Off, (B.Pos - V3(X, 0.f, 0.f)).Len2D() - 0.7f);
+					if (B.Habit != 0)
+					{
+						Path += (B.Pos - Last).Len();
+					}
+					Last = B.Pos;
+				});
+				Beats += Seen.Beats;
+			}
+			std::printf("  wagtail on the bar: %d dashes of 12 started, %d runs, %.1f m run, furthest %.2f m past the bar's rim\n", Dashes, Beats, Path, Off);
+			Check(Dashes >= 8 && Beats >= Dashes && Path > 6.f, "a wagtail dashes along the brook's gravel bar");
+			Check(Off < 0.02f, "and never runs off the bar into the water");
+		}
+		{
+			FWorld W;
+			Flat(W);
+			const int Heron = Feeding(W, "GreyHeron", V3(20.f, 0.f, 0.f), 1, EHabitat::Mouth, 2.f);
+			const int Crow = Feeding(W, "CarrionCrow", V3(40.f, 0.f, 0.f), 1, EHabitat::Brook, 1.f);
+			const int Gull = Feeding(W, "CommonGull", V3(60.f, 0.f, 0.f), 1, EHabitat::Brook, 1.f);
+			W.Step(0.05f);
+			for (const int Id : { Heron, Crow, Gull })
+			{
+				W.Birds[Id].Act = EAct::Peck;
+				W.Birds[Id].ActLen = 1e6f;
+				W.Birds[Id].Pos = W.Birds[Id].Spot = W.Sites[W.Birds[Id].Site].A;
+				W.Birds[Id].Vel = V3();
+			}
+			Check(W.Habits()->Start(W, W.Birds[Heron], EHabit::HeronStalk), "the heron stalks at the brook's mouth");
+			Check(W.Habits()->Start(W, W.Birds[Crow], EHabit::CarrionDunk), "a crow dunks its find at the brook's edge");
+			Check(!W.Habits()->Start(W, W.Birds[Gull], EHabit::CommonGullPaddle), "a gull does not paddle on the narrow bank (only on the mouth's sand)");
+		}
+		{
+			// the map's own pools: a swallow hawking 60 m off finds one without the game naming it
+			FWorld W;
+			Flat(W);
+			const int Id = Perched(W, "BarnSwallow", V3(0.f, 0.f, 0.f), 12.f, EHabitat::Brook, 1);
+			W.Birds[Id].Act = EAct::Hawk;
+			W.Birds[Id].ActLen = 1e6f;
+			W.Birds[Id].Vel = V3(8.f, 0.f, 0.f);
+			W.Step(0.02f);
+			W.Habits()->Pools.push_back(V3(300.f, 0.f, 0.2f));
+			const bool bFar = W.Habits()->Start(W, W.Birds[Id], EHabit::SwallowDrink);
+			W.Habits()->Pools.push_back(V3(55.f, 20.f, 0.2f));
+			W.Birds[Id].Pos = V3(0.f, 0.f, 12.f);
+			const bool bOk = W.Habits()->Start(W, W.Birds[Id], EHabit::SwallowDrink);
+			FSeen Seen;
+			float Closest = 1e9f;
+			Step(W, 25.f, 0.02f, EHabit::SwallowDrink, &Seen, [&]()
+			{
+				Closest = std::min(Closest, (W.Birds[Id].Pos - V3(55.f, 20.f, 0.26f)).Len());
+			});
+			std::printf("  swallow: %.2f m from the pool at its lowest\n", Closest);
+			Check(!bFar && bOk && Seen.Beats == 1 && Closest < 0.25f, "a swallow drinks from the brook's pool when one is in reach, not from one 300 m off");
+		}
+	}
+
 	void Sallies()
 	{
 		std::printf("a sally from the perch:\n");
@@ -799,6 +880,7 @@ int HabitTests(int* Passed)
 	Far();
 	Walls();
 	Runs();
+	Brookside();
 	Sallies();
 	Pairs();
 	Swoops();

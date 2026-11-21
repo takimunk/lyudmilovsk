@@ -1,0 +1,128 @@
+{
+ "_doc": "Things to pick up in the club rooms and the sanatorium (tools/city/content/x_room_touch.json).",
+ "city.room_kettle.radio.1": {
+  "ru": "Включил чайник радиолюбителей. Пока он шумел, в наушниках кто-то из Риги передавал сводку погоды. Заварил чай в общей кружке с позывным.",
+  "en": "I switched on the radio club's kettle. While it hissed, someone in Riga read the weather into the headphones. I made tea in the shared mug with the call sign on it.",
+  "ja": "無線クラブの電気ポットのスイッチを入れた。湯が鳴るあいだ、ヘッドホンの中でリガの誰かが天気予報を読んでいた。コールサイン入りの共用マグにお茶をいれた。"
+ },
+ "city.room_kettle.radio.night.1": {
+  "ru": "Ночью радиоклуб пустой, но чайник ещё тёплый. Значит, кто-то сидел на связи до полуночи. Налил себе остатки и заварил свежий.",
+  "en": "At night the radio club is empty, but the kettle is still warm. Someone was on the air until midnight. I poured the rest and brewed fresh.",
+  "ja": "夜の無線クラブは無人なのに、ポットはまだ温かい。誰かが真夜中まで交信していたのだ。残りを注いで、新しくいれ直した。"
+ },
+ "city.room_kettle.workshop.1": {
+  "ru": "Чайник у моделистов весь в краске и клее. Пока закипал, рядом сохла нервюра крыла. Чай пахнет немного эмалитом, но это даже уютно.",
+  "en": "The model makers' kettle is covered in paint and glue. While it boiled, a wing rib dried beside it. The tea smells faintly of dope, which is oddly cosy.",
+  "ja": "模型クラブのポットは塗料と接着剤だらけ。沸くあいだ、隣で翼のリブが乾いていた。お茶はかすかにドープ塗料の匂いがするが、それもなんだか落ち着く。"
+ },
+ "city.room_kettle.workshop.cold.1": {
+  "ru": "В мастерской холодно, клей не схватывается. Включил чайник, грел ладони о кружку, пока не перестали дрожать пальцы.",
+  "en": "It's cold in the workshop and the glue won't set. I switched the kettle on and warmed my hands on the mug until my fingers stopped shaking.",
+  "ja": "工房は寒くて接着剤が固まらない。ポットのスイッチを入れ、指の震えが止まるまでマグで手を温めた。"
+ },
+ "city.room_photo.dance.1": {
+  "ru": "Танцевальный кружок «Рассвета», все в одинаковых белых блузках, у рояля. Посередине строгая женщина с прямой спиной: наверное, сама руководительница.",
+  "en": "The Rassvet dance class by the piano, all in identical white blouses. In the middle a strict woman with a straight back: the teacher herself, most likely.",
+  "ja": "ピアノのそばに並ぶ「ラスヴェート」のダンス教室。みな同じ白いブラウス。真ん中に背筋の伸びた厳しそうな女性。たぶん先生本人だ。"
+ },
+ "city.room_photo.dance.2": {
+  "ru": "На обороте: «Отчётный вечер, май 1979. Все двенадцать не сбились. Я плакала за кулисами. — В. С.»",
+  "en": "On the back: \"Recital, May 1979. All twelve kept the step. I cried in the wings. — V. S.\"",
+  "ja": "裏に。「発表会、1979年5月。十二人とも一度も乱れなかった。私は舞台袖で泣いた。— V・S」"
+ },
+ "city.room_photo.workshop.1": {
+  "ru": "Пятеро мальчишек и инструктор в берете держат над головой планер с размахом во всю фотографию. На заднем плане та самая шестерня клуба.",
+  "en": "Five boys and an instructor in a beret hold a glider over their heads, its wings as wide as the photo. Behind them, the club's famous gear.",
+  "ja": "五人の少年とベレー帽の指導員が、写真いっぱいの翼のグライダーを頭上に掲げている。背景には例のクラブの歯車。"
+ },
+ "city.room_photo.workshop.2": {
+  "ru": "На обороте: «„Чайка-3“, первый полёт с обрыва. Пролетела 212 метров и села в пруд. Все живы, планер тоже».",
+  "en": "On the back: \"Chaika-3, first flight off the cliff. Flew 212 metres and landed in the pond. Everyone survived, the glider too.\"",
+  "ja": "裏に。「チャイカ3号、崖からの初飛行。212メートル飛んで池に着水。全員無事、グライダーも」"
+ },
+ "city.room_photo.guest.1": {
+  "ru": "Чья-то фотография, оставленная у кушетки: пожилая пара на набережной, оба в панамах, держат одно мороженое на двоих.",
+  "en": "A photo someone left by the couch: an old couple on the promenade, both in sun hats, sharing one ice cream.",
+  "ja": "寝台のそばに誰かが置いていった写真。遊歩道の老夫婦、二人とも日よけ帽で、アイスをひとつ分け合っている。"
+ },
+ "city.room_photo.guest.2": {
+  "ru": "На обороте: «Людмиловск, двадцатая путёвка. Врач говорит, что мы уже здоровы, просто нам здесь нравится».",
+  "en": "On the back: \"Lyudmilovsk, our twentieth stay. The doctor says we're well already, we just like it here.\"",
+  "ja": "裏に。「リュドミロフスク、二十回目の療養。医者はもう健康だと言う。ただここが好きなだけなのだ」"
+ },
+ "city.room_note.radio.1": {
+  "ru": "«Кто выпил последний сахар — тот и несёт новый. 73!»",
+  "en": "\"Whoever used the last sugar brings more. 73!\"",
+  "ja": "「最後の砂糖を使った者が新しいのを持ってくること。73！」"
+ },
+ "city.room_note.radio.2": {
+  "ru": "«Вчера в 23:40 поймали Шпицберген! Журнал на столе, запишитесь, кто слышал».",
+  "en": "\"Caught Svalbard yesterday at 23:40! The log is on the table, sign it if you heard.\"",
+  "ja": "「昨夜23時40分、スヴァールバルを受信！記録帳は机の上、聞いた人は署名を」"
+ },
+ "city.room_note.radio.3": {
+  "ru": "«Паяльник не оставлять включённым. Особенно ты, Костя».",
+  "en": "\"Don't leave the soldering iron on. Especially you, Kostya.\"",
+  "ja": "「はんだごてを付けっぱなしにしないこと。特にコースチャ、君だ」"
+ },
+ "city.room_note.radio.4": {
+  "ru": "«Антенну на крыше снова повернули чайки. Поправлю в субботу. — Г.»",
+  "en": "\"The gulls turned the roof antenna again. I'll fix it Saturday. — G.\"",
+  "ja": "「屋上のアンテナをまたカモメが回した。土曜に直す。— G」"
+ },
+ "city.room_note.radio.5": {
+  "ru": "«Детский кружок перенесён на четверг. Морзянку учим с понедельника, кто не успел — по свистку».",
+  "en": "\"The children's group moves to Thursday. Morse starts Monday; latecomers learn by whistle.\"",
+  "ja": "「子ども部は木曜に変更。モールス信号は月曜から、間に合わない人は口笛で」"
+ },
+ "city.room_note.cart.1": {
+  "ru": "«Вернувшим „Двух капитанов“ с пятном от варенья: пятно оставьте, оно уже часть книги».",
+  "en": "\"To whoever returned The Two Captains with a jam stain: keep the stain, it's part of the book now.\"",
+  "ja": "「ジャムのしみ付きで『二人の船長』を返した方へ。しみはそのままで。もう本の一部です」"
+ },
+ "city.room_note.cart.2": {
+  "ru": "«Полку краеведения не трогать до обеда: идёт перепись книг. — Библиотекарь»",
+  "en": "\"Please leave the local-history shelf until after lunch: stocktaking. — The librarian\"",
+  "ja": "「郷土史の棚は昼まで触らないでください。蔵書点検中。— 司書」"
+ },
+ "city.room_note.cart.3": {
+  "ru": "«Кто взял атлас птиц, верните к выходным: орнитологи едут на косу».",
+  "en": "\"Whoever has the bird atlas, please return it by the weekend: the bird watchers are off to the spit.\"",
+  "ja": "「鳥類図鑑を借りた方、週末までに返却を。野鳥の会が砂州へ行きます」"
+ },
+ "city.room_note.cart.4": {
+  "ru": "«Нашлась закладка-трамвайный билет 1968 года. Хозяин, отзовитесь у стойки».",
+  "en": "\"Found: a 1968 tram ticket used as a bookmark. Owner, ask at the desk.\"",
+  "ja": "「1968年の路面電車の切符のしおりを拾いました。持ち主はカウンターまで」"
+ },
+ "city.room_note.cart.5": {
+  "ru": "«Сегодня читаем вслух в шесть. Стулья берите у шахматистов, они не заметят».",
+  "en": "\"Reading aloud at six today. Borrow chairs from the chess players, they won't notice.\"",
+  "ja": "「今日は六時から朗読会。椅子はチェスの人たちから借りて。気づきませんから」"
+ },
+ "city.room_note.guest.1": {
+  "ru": "«Сестричка, разбудите меня к ванне, если просплю. Спасибо! — из 3-14»",
+  "en": "\"Nurse, wake me for the bath if I oversleep. Thank you! — room 3-14\"",
+  "ja": "「看護師さん、寝過ごしたら入浴に起こしてください。ありがとう！— 3-14号室」"
+ },
+ "city.room_note.guest.2": {
+  "ru": "«Халат не мой, мой с зелёным поясом. Поменялись в гардеробе».",
+  "en": "\"This robe isn't mine, mine has a green belt. We swapped in the cloakroom.\"",
+  "ja": "「このガウンは私のじゃありません。私のは緑の帯。更衣室で取り違えました」"
+ },
+ "city.room_note.guest.3": {
+  "ru": "«Кто храпит на соседней кушетке — вы прекрасный человек, но я ушёл в зимний сад».",
+  "en": "\"To whoever snores on the next couch: you're a lovely person, but I've moved to the winter garden.\"",
+  "ja": "「隣の寝台でいびきをかく方へ。あなたは素敵な人ですが、私は温室に移りました」"
+ },
+ "city.room_note.guest.4": {
+  "ru": "«Минеральную пить тёплой, маленькими глотками. Не забыть! Не забыть!!»",
+  "en": "\"Drink the mineral water warm, small sips. Don't forget! Don't forget!!\"",
+  "ja": "「鉱泉水は温かく、少しずつ飲むこと。忘れるな！忘れるな！！」"
+ },
+ "city.room_note.guest.5": {
+  "ru": "«Приходил внук, оставил апельсины на тумбочке. Угощайтесь, кто прочтёт».",
+  "en": "\"My grandson came and left oranges on the cabinet. Help yourself, whoever reads this.\"",
+  "ja": "「孫が来て、棚にオレンジを置いていった。読んだ方はどうぞ」"
+ }
+}

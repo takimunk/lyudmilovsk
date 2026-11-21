@@ -601,6 +601,18 @@ void ULyudYardGames::Prompt(const FText& Text)
 	}
 }
 
+void ULyudYardGames::PromptByKey(const TCHAR* Key, int32 Arg)
+{
+	// a held prompt is asked for every frame: its words are looked up (and formatted) only when the key or its number changes
+	if (PromptKey == Key && PromptArg == Arg)
+	{
+		return;
+	}
+	PromptKey = Key;
+	PromptArg = Arg;
+	Prompt(!Key ? FText::GetEmpty() : (Arg != MIN_int32 ? LyudText::Get(Key, { FStringFormatArg(Arg) }) : LyudText::Get(Key)));
+}
+
 void ULyudYardGames::SayLine(int32 Id, const FString& Key)
 {
 	const FShown* S = Shown.Find(Id);
@@ -637,6 +649,9 @@ void ULyudYardGames::Tick(float DeltaTime)
 	{
 		OfferClock = 1.f;
 		OfferChildren();
+		// (the props' kept ground is traced anew: ground that came in late, a game that moved to another slot)
+		RopeGround.Reset();
+		PostGround.Reset();
 	}
 	Model->Step(DeltaTime);
 	HandleEvents();
@@ -723,7 +738,7 @@ void ULyudYardGames::HandleEvents()
 			if (bHeros)
 			{
 				HeroGameUid = -1;
-				Prompt(FText::GetEmpty());
+				PromptByKey(nullptr);
 			}
 			break;
 		default:
@@ -741,7 +756,7 @@ void ULyudYardGames::UpdateHero(float DeltaTime)
 	UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(this);
 	if (!PC || !Model->bHeroHere)
 	{
-		Prompt(FText::GetEmpty());
+		PromptByKey(nullptr);
 		return;
 	}
 	const int Gi = Model->HeroGame();
@@ -761,10 +776,10 @@ void ULyudYardGames::UpdateHero(float DeltaTime)
 		}
 		if (Near < 0)
 		{
-			Prompt(FText::GetEmpty());
+			PromptByKey(nullptr);
 			return;
 		}
-		Prompt(LyudText::Get(TEXT("yard.prompt.join")));
+		PromptByKey(TEXT("yard.prompt.join"));
 		if (ANpcTalkDirector::UsePressed(PC) && Model->HeroJoin(Near))
 		{
 			const LyudYard::FGame& G = Model->Games[(size_t)Near];
@@ -778,7 +793,7 @@ void ULyudYardGames::UpdateHero(float DeltaTime)
 					: LyudText::Get(TEXT("yard.toast.joined"), { FStringFormatArg(Life && Who >= 0 ? Life->GetDisplayName(Who).ToString() : FString()) }));
 			}
 			SayLine(G.Leader, TEXT("line.yard.hero_join"));
-			Prompt(FText::GetEmpty());
+			PromptByKey(nullptr);
 		}
 		return;
 	}
@@ -790,19 +805,19 @@ void ULyudYardGames::UpdateHero(float DeltaTime)
 		Model->HeroLeave();
 		HeroGameUid = -1;
 		if (GS) GS->Toast(LyudText::Get(TEXT("yard.toast.left")));
-		Prompt(FText::GetEmpty());
+		PromptByKey(nullptr);
 		return;
 	}
 	if (G.Seeker != LyudYard::HeroId || G.Count < -900.f)
 	{
 		bHeroWasCounting = false;
-		Prompt(FText::GetEmpty());
+		PromptByKey(nullptr);
 		return;
 	}
 	if (G.Count > 0.f)
 	{
 		bHeroWasCounting = true;
-		Prompt(LyudText::Get(TEXT("yard.toast.counting"), { FStringFormatArg(FMath::CeilToInt(G.Count)) }));
+		PromptByKey(TEXT("yard.toast.counting"), FMath::CeilToInt(G.Count));
 		return;
 	}
 	if (bHeroWasCounting)
@@ -815,7 +830,7 @@ void ULyudYardGames::UpdateHero(float DeltaTime)
 	{
 		bNear = bNear || (K.Role == LyudYard::ERole::Hider && (K.Pos - Model->HeroPos).Len() < 2.6f);
 	}
-	Prompt(bNear ? LyudText::Get(TEXT("yard.prompt.find")) : FText::GetEmpty());
+	PromptByKey(bNear ? TEXT("yard.prompt.find") : nullptr);
 	if (bNear && ANpcTalkDirector::UsePressed(PC))
 	{
 		const int Found = Model->HeroFind();
@@ -879,6 +894,11 @@ void ULyudYardGames::Present(float DeltaTime)
 			FShown* S = Shown.Find(K.Id);
 			if (!S)
 			{
+				// (a body that could not be made is not spawned, set up and destroyed again every frame)
+				if (NoBody.Contains(K.Id))
+				{
+					continue;
+				}
 				const FString ModelName = Life->ShownModel(K.Id);
 				if (ModelName.IsEmpty())
 				{
@@ -892,6 +912,7 @@ void ULyudYardGames::Present(float DeltaTime)
 				if (!Body || !Body->Setup(ModelName, FString()))
 				{
 					if (Body) Body->Destroy();
+					NoBody.Add(K.Id);
 					continue;
 				}
 				Life->SetPresentedExternally(K.Id, true);
@@ -975,6 +996,9 @@ void ULyudYardGames::DrawProps()
 		return;
 	}
 	int32 RopeUsed = 0, BallUsed = 0, PostUsed = 0;
+	// (the rope's middle and the bags stay where they are: their ground is kept, Tick drops it once a second)
+	RopeGround.SetNum(LyudYardDraw::MaxDrawn);
+	PostGround.SetNum(T->Posts.Num());
 	for (const LyudYard::FGame& G : Model->Games)
 	{
 		if (!Drawn.Contains(G.Uid) || G.Phase != LyudYard::EPhase::Play)
@@ -985,7 +1009,7 @@ void ULyudYardGames::DrawProps()
 		FShown Probe;
 		if (G.Kind == LyudYard::EGame::Rope && RopeUsed + LyudYardDraw::RopeSegs <= T->Rope.Num() && G.NumIn(LyudYard::ERole::Turner) == 2)
 		{
-			const float Z0 = GroundAt(Probe, FVector2D(A.Rope.X * 100.0, A.Rope.Y * 100.0), A.Z * 100.f);
+			const float Z0 = GroundAt(RopeGround[RopeUsed / LyudYardDraw::RopeSegs], FVector2D(A.Rope.X * 100.0, A.Rope.Y * 100.0), A.Z * 100.f);
 			FVector Prev;
 			for (int32 I = 0; I <= LyudYardDraw::RopeSegs; I++)
 			{
@@ -1019,8 +1043,8 @@ void ULyudYardGames::DrawProps()
 				{
 					if (PostUsed >= T->Posts.Num()) break;
 					const LyudYard::FV2 P = A.C + F * ((float)End * A.FieldHalfL) + L * ((float)Side * LyudYard::GoalHalf);
+					const float Zb = GroundAt(PostGround[PostUsed], FVector2D(P.X * 100.0, P.Y * 100.0), A.Z * 100.f);
 					UStaticMeshComponent* Bag = T->Posts[PostUsed++];
-					const float Zb = GroundAt(Probe, FVector2D(P.X * 100.0, P.Y * 100.0), A.Z * 100.f);
 					Bag->SetWorldTransform(FTransform(FRotator(0.f, A.FieldYaw + 20.f * (float)Side, 0.f), LyudYardDraw::ToUE(P, Zb + 11.f), FVector(0.34, 0.24, 0.22)));
 					Bag->SetVisibility(true);
 				}
