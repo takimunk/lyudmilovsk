@@ -1,0 +1,523 @@
+{
+ "_doc": "Animals that live with people (tools/town/town_pets.py, docs/animals.md \"With people\"). Unreal metres, yaw radians (the animals' frame). dogs: owner = the resident who walks it (townsfolk key) while their activity is walk; cats: by day on the sill, at feeding time at the door; lady: who fills the feeders on her round (activity feed); hedgehogs: where they come out at dusk from April to October.",
+ "walk": [
+  "walk_dog",
+  "walk_dog_late"
+ ],
+ "feed": [
+  "feed_cats",
+  "feed_cats_late"
+ ],
+ "lady": "korneeva_nina",
+ "dogs": [
+  {
+   "id": "dog_01",
+   "owner": "t_jansen_kaveh",
+   "household": "t_p-serpentine_7-17",
+   "home": "P-SERPENTINE/7-17",
+   "breed": 2,
+   "coat": 0,
+   "female": 0,
+   "name": "animal.pet.dog_01.name",
+   "door": [
+    -284.21,
+    1008.01,
+    -29.0
+   ]
+  },
+  {
+   "id": "dog_02",
+   "owner": "t_hernandez_alesya",
+   "household": "t_p-serpentine_7-13",
+   "home": "P-SERPENTINE/7-13",
+   "breed": 1,
+   "coat": 0,
+   "female": 0,
+   "name": "animal.pet.dog_02.name",
+   "door": [
+    -284.21,
+    1008.01,
+    -29.0
+   ]
+  },
+  {
+   "id": "dog_03",
+   "owner": "t_solberg_ingvild",
+   "household": "t_p-capsule_3-09",
+   "home": "P-CAPSULE/3-09",
+   "breed": 0,
+   "coat": 1,
+   "female": 0,
+   "name": "animal.pet.dog_03.name",
+   "door": [
+    -539.47,
+    1187.09,
+    -15.0
+   ]
+  },
+  {
+   "id": "dog_04",
+   "owner": "t_carvalho_jericho",
+   "household": "t_p-capsule_5-11",
+   "home": "P-CAPSULE/5-11",
+   "breed": 1,
+   "coat": 0,
+   "female": 0,
+   "name": "animal.pet.dog_04.name",
+   "door": [
+    -539.47,
+    1187.09,
+    -15.0
+   ]
+  },
+  {
+   "id": "dog_05",
+   "owner": "t_fontaine_elif",
+   "household": "t_p-t3h2_3-17",
+   "home": "P-T3H2/3-17",
+   "breed": 2,
+   "coat": 2,
+   "female": 0,
+   "name": "animal.pet.dog_05.name",
+   "door": [
+    -422.96,
+    1229.81,
+    -22.0
+   ]
+  },
+  {
+   "id": "dog_06",
+   "owner": "t_saar_yumiko",
+   "household": "t_w3-d121",
+   "home": "W3-D121",
+   "breed": 2,
+   "coat": 2,
+   "female": 0,
+   "name": "animal.pet.dog_06.name",
+   "door": [
+    -270.42,
+    1331.76,
+    -29.0
+   ]
+  },
+  {
+   "id": "dog_07",
+   "owner": "t_gelashvili_alejandro",
+   "household": "t_p-t4h2_3-10",
+   "home": "P-T4H2/3-10",
+   "breed": 1,
+   "coat": 1,
+   "female": 0,
+   "name": "animal.pet.dog_07.name",
+   "door": [
+    -529.63,
+    1366.22,
+    -15.0
+   ]
+  },
+  {
+   "id": "dog_08",
+   "owner": "t_papadopoulos_arturs",
+   "household": "t_p-wave_7-03",
+   "home": "P-WAVE/7-03",
+   "breed": 2,
+   "coat": 1,
+   "female": 0,
+   "name": "animal.pet.dog_08.name",
+   "door": [
+    -376.28,
+    1133.41,
+    -22.0
+   ]
+  },
+  {
+   "id": "dog_09",
+   "owner": "t_hrytsenko_tigran",
+   "household": "t_w2-d090",
+   "home": "W2-D090",
+   "breed": 1,
+   "coat": 0,
+   "female": 0,
+   "name": "animal.pet.dog_09.name",
+   "door": [
+    -148.25,
+    1070.78,
+    -36.2
+   ]
+  },
+  {
+   "id": "dog_10",
+   "owner": "t_ostrovsky_tatiana",
+   "household": "t_p-t4h1_2-05",
+   "home": "P-T4H1/2-05",
+   "breed": 2,
+   "coat": 1,
+   "female": 0,
+   "name": "animal.pet.dog_10.name",
+   "door": [
+    -779.53,
+    563.41,
+    -15.0
+   ]
+  }
+ ],
+ "cats": [
+  {
+   "id": "cat_01",
+   "owner": "t_mcmartin_shirin",
+   "household": "t_w2-d065",
+   "home": "W2-D065",
+   "window": "W2-D065-w1",
+   "coat": 5,
+   "female": 1,
+   "name": "animal.pet.cat_01.name",
+   "sill": [
+    -173.11,
+    821.2,
+    -35.3
+   ],
+   "yaw": -0.665,
+   "door": [
+    -174.05,
+    817.36,
+    -36.2
+   ]
+  },
+  {
+   "id": "cat_02",
+   "owner": "t_kowalski_ursula",
+   "household": "t_w5-d071",
+   "home": "W5-D071",
+   "window": "W5-D071-w1",
+   "coat": 0,
+   "female": 0,
+   "name": "animal.pet.cat_02.name",
+   "sill": [
+    -661.53,
+    939.52,
+    -14.1
+   ],
+   "yaw": -0.087,
+   "door": [
+    -660.22,
+    935.79,
+    -15.0
+   ]
+  },
+  {
+   "id": "cat_03",
+   "owner": "t_bautista_meiling",
+   "household": "t_w5-d096",
+   "home": "W5-D096",
+   "window": "W5-D096-w1",
+   "coat": 0,
+   "female": 1,
+   "name": "animal.pet.cat_03.name",
+   "sill": [
+    -640.74,
+    1156.03,
+    -14.1
+   ],
+   "yaw": -0.098,
+   "door": [
+    -639.48,
+    1152.29,
+    -15.0
+   ]
+  },
+  {
+   "id": "cat_04",
+   "owner": "t_ramirez_shira",
+   "household": "t_w5-d075",
+   "home": "W5-D075",
+   "window": "W5-D075-w1",
+   "coat": 4,
+   "female": 1,
+   "name": "animal.pet.cat_04.name",
+   "sill": [
+    -658.84,
+    969.4,
+    -14.1
+   ],
+   "yaw": -0.093,
+   "door": [
+    -657.55,
+    965.67,
+    -15.0
+   ]
+  },
+  {
+   "id": "cat_05",
+   "owner": "t_romano_reka",
+   "household": "t_w2-d092",
+   "home": "W2-D092",
+   "window": "W2-D092-w1",
+   "coat": 4,
+   "female": 1,
+   "name": "animal.pet.cat_05.name",
+   "sill": [
+    -142.88,
+    1134.15,
+    -35.3
+   ],
+   "yaw": -0.096,
+   "door": [
+    -141.61,
+    1130.41,
+    -36.2
+   ]
+  },
+  {
+   "id": "cat_06",
+   "owner": "t_amada_alesya",
+   "household": "t_w3-d016",
+   "home": "W3-D016",
+   "window": "W3-D016-w1",
+   "coat": 1,
+   "female": 1,
+   "name": "animal.pet.cat_06.name",
+   "sill": [
+    -566.03,
+    523.14,
+    -28.1
+   ],
+   "yaw": -0.038,
+   "door": [
+    -564.54,
+    519.48,
+    -29.0
+   ]
+  },
+  {
+   "id": "cat_07",
+   "owner": "t_gelashvili_mads",
+   "household": "t_w3-d116",
+   "home": "W3-D116",
+   "window": "W3-D116-w1",
+   "coat": 5,
+   "female": 1,
+   "name": "animal.pet.cat_07.name",
+   "sill": [
+    -277.16,
+    1283.33,
+    -28.1
+   ],
+   "yaw": -0.117,
+   "door": [
+    -275.97,
+    1279.56,
+    -29.0
+   ]
+  },
+  {
+   "id": "cat_08",
+   "owner": "t_levi_eero",
+   "household": "t_w2-d079",
+   "home": "W2-D079",
+   "window": "W2-D079-w1",
+   "coat": 0,
+   "female": 0,
+   "name": "animal.pet.cat_08.name",
+   "sill": [
+    -158.09,
+    977.39,
+    -35.3
+   ],
+   "yaw": -0.094,
+   "door": [
+    -156.81,
+    973.65,
+    -36.2
+   ]
+  },
+  {
+   "id": "cat_09",
+   "owner": "t_navarro_selam",
+   "household": "t_w2-d120",
+   "home": "W2-D120",
+   "window": "W2-D120-w1",
+   "coat": 2,
+   "female": 1,
+   "name": "animal.pet.cat_09.name",
+   "sill": [
+    -115.58,
+    1372.58,
+    -35.3
+   ],
+   "yaw": -0.141,
+   "door": [
+    -114.48,
+    1368.79,
+    -36.2
+   ]
+  },
+  {
+   "id": "cat_10",
+   "owner": "t_ferreira_ines",
+   "household": "t_w2-d108",
+   "home": "W2-D108",
+   "window": "W2-D108-w1",
+   "coat": 2,
+   "female": 0,
+   "name": "animal.pet.cat_10.name",
+   "sill": [
+    -127.16,
+    1283.33,
+    -35.3
+   ],
+   "yaw": -0.117,
+   "door": [
+    -125.97,
+    1279.56,
+    -36.2
+   ]
+  },
+  {
+   "id": "cat_11",
+   "owner": "t_virtanen_yanka",
+   "household": "t_w5-d041",
+   "home": "W5-D041",
+   "window": "W5-D041-w1",
+   "coat": 1,
+   "female": 1,
+   "name": "animal.pet.cat_11.name",
+   "sill": [
+    -842.97,
+    728.05,
+    -14.1
+   ],
+   "yaw": -0.899,
+   "door": [
+    -844.77,
+    724.53,
+    -15.0
+   ]
+  },
+  {
+   "id": "cat_12",
+   "owner": "t_ramirez_soren",
+   "household": "t_w4-d122",
+   "home": "W4-D122",
+   "window": "W4-D122-w1",
+   "coat": 0,
+   "female": 0,
+   "name": "animal.pet.cat_12.name",
+   "sill": [
+    -457.77,
+    1423.97,
+    -21.1
+   ],
+   "yaw": -0.161,
+   "door": [
+    -456.73,
+    1420.15,
+    -22.0
+   ]
+  },
+  {
+   "id": "cat_13",
+   "owner": "t_korhonen_lars",
+   "household": "t_w5-d045",
+   "home": "W5-D045",
+   "window": "W5-D045-w1",
+   "coat": 3,
+   "female": 0,
+   "name": "animal.pet.cat_13.name",
+   "sill": [
+    -803.91,
+    750.27,
+    -14.1
+   ],
+   "yaw": -1.126,
+   "door": [
+    -806.45,
+    747.25,
+    -15.0
+   ]
+  },
+  {
+   "id": "cat_14",
+   "owner": "t_rossi_ama",
+   "household": "t_w4-d090",
+   "home": "W4-D090",
+   "window": "W4-D090-w1",
+   "coat": 2,
+   "female": 0,
+   "name": "animal.pet.cat_14.name",
+   "sill": [
+    -492.21,
+    1141.1,
+    -21.1
+   ],
+   "yaw": -0.098,
+   "door": [
+    -490.94,
+    1137.36,
+    -22.0
+   ]
+  }
+ ],
+ "feeders": [
+  [
+   -230.42,
+   620.52,
+   -36.16
+  ]
+ ],
+ "hedgehogs": [
+  {
+   "id": "park_orchard",
+   "pos": [
+    -44.26,
+    1236.9,
+    -36.2
+   ],
+   "range": 18.0
+  },
+  {
+   "id": "park_lawn",
+   "pos": [
+    -74.26,
+    1221.9,
+    -36.2
+   ],
+   "range": 16.0
+  },
+  {
+   "id": "pond_bank",
+   "pos": [
+    -80.83,
+    1274.9,
+    -36.2
+   ],
+   "range": 14.0
+  },
+  {
+   "id": "playground_hedge",
+   "pos": [
+    -31.43,
+    1149.9,
+    -36.2
+   ],
+   "range": 12.0
+  },
+  {
+   "id": "academ_yard",
+   "pos": [
+    -246.0,
+    616.0,
+    -36.16
+   ],
+   "range": 16.0
+  },
+  {
+   "id": "academ_birches",
+   "pos": [
+    -262.0,
+    640.0,
+    -36.16
+   ],
+   "range": 14.0
+  }
+ ]
+}

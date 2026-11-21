@@ -1086,6 +1086,332 @@ static void TestFriends()
 	TestFriendsOnMap();
 }
 
+// --- animals with people (AnimalPetsSim.cpp) --------------------------------------------------------
+
+/** The straight line from A to B crosses only ground an animal walks on (sampled every 20 cm). */
+static bool ClearLine(const FWorld& W, const V3& A, const V3& B)
+{
+	const float L = (B - A).Len2D();
+	const int N = std::max(1, (int)(L / 0.2f));
+	for (int I = 0; I <= N; I++)
+	{
+		const V3 P = A + (B - A) * ((float)I / N);
+		if (!W.Walkable(P.X, P.Y))
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
+/** A yard with a house in it: blocked from (0, 0) to (20, 20). */
+static FWorld Yard()
+{
+	FWorld W = Empty();
+	W.MakeGrid(60, 60, -40.f, -40.f, 2.f, 0.f);
+	for (float X = 0.f; X <= 20.f; X += 2.f)
+	{
+		for (float Y = 0.f; Y <= 20.f; Y += 2.f)
+		{
+			W.SetGround(X, Y, EGround::Blocked, 0.f);
+		}
+	}
+	W.Camera = V3(-5.f, -5.f, 1.6f);
+	return W;
+}
+
+/** An owner walking round the house, close to its walls, stopping now and then. */
+struct FOwnerWalk
+{
+	std::vector<V3> Route;
+	V3 Pos, Vel;
+	int Leg = 0;
+	float Pause = 0.f;
+	float Speed = 1.3f;
+	void Step(float Dt, float T)
+	{
+		Vel = V3();
+		if (Pause > 0.f)
+		{
+			Pause -= Dt;
+			return;
+		}
+		const V3 To = Route[Leg % Route.size()];
+		const V3 D = (To - Pos).Flat();
+		if (D.Len2D() < 0.1f)
+		{
+			Leg++;
+			Pause = Leg % 3 == 0 ? 16.f : 0.f;       // a long stop every third corner
+			return;
+		}
+		Vel = D.Norm() * Speed;
+		Pos += Vel * Dt;
+	}
+	V3 Hand() const { return Pos + V3(0.f, 0.f, 0.85f); }
+};
+
+static void TestLeash()
+{
+	std::printf("pets: a household's dog walks on the leash round the house\n");
+	FWorld W = Yard();
+	const V3 Door(-2.4f, 10.f, 0.f);
+	const int Dog = W.AddAnimal(EKind::Dog, 2, 0, V3(-10.f, -10.f, 0.f));
+	const int Stray = W.AddAnimal(EKind::Dog, 0, 0, V3(24.5f, 10.f, 0.f));
+	W.Animals[Stray].Tired = 0.f;
+	CHECK(W.AdoptDog(Dog, 7, Door) && W.Animals[Dog].Pet == EPet::Indoors && W.Animals[Dog].Owner == 7 && W.Animals[Dog].Pack < 0,
+		"adopted: it lives indoors, out of any pack");
+	CHECK(!W.AdoptDog(Dog, 8, Door), "nobody adopts it twice");
+	std::vector<int> Near;
+	W.Step(0.05f);
+	W.Near(Door, 5.f, Near);
+	CHECK(std::find(Near.begin(), Near.end(), Dog) == Near.end(), "indoors nobody meets it");
+	FOwnerWalk O;
+	O.Route = { V3(-2.4f, -2.4f, 0.f), V3(22.4f, -2.4f, 0.f), V3(22.4f, 22.4f, 0.f), V3(-2.4f, 22.4f, 0.f) };
+	O.Pos = Door;
+	float MaxLen = 0.f, SumLen = 0.f, MaxJump = 0.f;
+	int Steps = 0, Through = 0, OffGround = 0, Sniffs = 0, Sat = 0, Greets = 0, Heel = 0, Moving = 0;
+	bool bWasSniff = false;
+	V3 Last;
+	const float Dt = 0.05f;
+	for (float T = 0.f; T < 420.f; T += Dt)
+	{
+		O.Step(Dt, T);
+		W.OwnerWalk(Dog, true, O.Pos, O.Vel, O.Hand());
+		W.Step(Dt);
+		const FAnimal& A = W.Animals[Dog];
+		for (const FEvent& E : W.Events)
+		{
+			Greets += E.Kind == EEvent::Greet && E.Animal == Dog && E.Other == Stray ? 1 : 0;
+		}
+		W.Events.clear();
+		const float Len = (A.Pos - O.Pos).Len2D();
+		MaxLen = std::max(MaxLen, Len);
+		SumLen += Len;
+		Through += ClearLine(W, O.Pos, A.Pos) ? 0 : 1;
+		OffGround += W.Walkable(A.Pos.X, A.Pos.Y) ? 0 : 1;
+		const bool bSniff = A.Act == EAct::Sniff;
+		Sniffs += bSniff && !bWasSniff ? 1 : 0;
+		bWasSniff = bSniff;
+		Sat += A.Act == EAct::Sit ? 1 : 0;
+		if (O.Vel.Len2D() > 0.5f)
+		{
+			Moving++;
+			// at heel: beside the owner or just behind, never out in front pulling
+			Heel += (A.Pos - O.Pos).Flat().Dot(O.Vel.Norm()) < 0.9f ? 1 : 0;
+		}
+		if (Steps > 0)
+		{
+			if ((A.Pos - Last).Len2D() > 1.f && std::getenv("ANIM_DEBUG"))
+			{
+				std::printf("    jump %.2f at t %.1f: dog (%.2f %.2f) <- (%.2f %.2f), owner (%.2f %.2f) act %s\n", (A.Pos - Last).Len2D(), T, A.Pos.X, A.Pos.Y, Last.X, Last.Y, O.Pos.X, O.Pos.Y, ActName(A.Act));
+			}
+			MaxJump = std::max(MaxJump, (A.Pos - Last).Len2D());
+		}
+		Last = A.Pos;
+		Steps++;
+	}
+	CHECK(W.Animals[Dog].Pet == EPet::Leash, "out with its owner it is on the leash");
+	CHECK(MaxLen <= FWorld::LeashLen + 0.02f, "the leash is never longer than %.1f m (longest %.2f, mean %.2f)", FWorld::LeashLen, MaxLen, SumLen / Steps);
+	CHECK(Through == 0, "the leash never goes through the house (%d of %d steps)", Through, Steps);
+	CHECK(OffGround == 0, "the dog never stands in a wall (%d steps)", OffGround);
+	CHECK(SumLen / Steps < 1.5f && Heel >= Moving * 9 / 10, "it keeps at heel (mean %.2f m, %d of %d moving steps not ahead)", SumLen / Steps, Heel, Moving);
+	CHECK(MaxJump < 1.3f, "no big jumps when the leash pulls it round a corner (%.2f m)", MaxJump);
+	CHECK(Sniffs >= 3, "it stops to sniff on the way (%d times)", Sniffs);
+	CHECK(Sat > 100, "it sits down by the owner at a long stop (%d steps)", Sat);
+	CHECK(Greets >= 1, "it greets the yard dog they pass (%d)", Greets);
+	// may I stroke it?
+	Crouch(W, W.Animals[Dog].Pos + V3(0.9f, 0.f, 0.f), V3(-1.f, 0.f, 0.f));
+	W.Animals[Dog].Sniffed = 0.f;
+	CHECK(!W.OfferHand(Dog) && !W.Stroke(Dog), "a stranger's hand is not let near without asking");
+	W.Animals[Dog].Bond = 0.9f;
+	CHECK(!W.StartWalk(Dog), "it does not leave its owner for a walk with the player, friend or not");
+	W.Animals[Dog].Bond = 0.f;
+	CHECK(W.AllowStroke(Dog) && W.Stroke(Dog), "the owner said yes: stroked");
+	int Through2 = 0;
+	float MaxLen2 = 0.f;
+	for (float T = 0.f; T < 6.f; T += Dt)
+	{
+		W.OwnerWalk(Dog, true, O.Pos, V3(), O.Hand());
+		W.Step(Dt);
+		W.Events.clear();
+		MaxLen2 = std::max(MaxLen2, (W.Animals[Dog].Pos - O.Pos).Len2D());
+		Through2 += ClearLine(W, O.Pos, W.Animals[Dog].Pos) ? 0 : 1;
+	}
+	CHECK(MaxLen2 <= FWorld::LeashLen + 0.02f && Through2 == 0, "and the leash holds while it is stroked (%.2f m)", MaxLen2);
+	W.Player.bPresent = false;
+	W.OwnerWalk(Dog, false, O.Pos, V3(), O.Hand());
+	W.Step(Dt);
+	CHECK(W.Animals[Dog].Pet == EPet::Indoors && (W.Animals[Dog].Pos - Door).Len2D() < 0.1f && !W.AllowStroke(Dog), "home again: indoors");
+}
+
+static void TestFlatCat()
+{
+	std::printf("pets: a flat's cat keeps the sill by day and the door at feeding time\n");
+	FWorld W = Yard();
+	W.Sunrise = 6.f;
+	W.Sunset = 20.f;
+	const V3 Sill(-1.2f, 6.f, 1.1f), Door(-2.6f, 12.f, 0.f);
+	const int Cat = W.AddAnimal(EKind::Cat, 0, 1, V3(-12.f, 0.f, 0.f));
+	const int Dog = W.AddAnimal(EKind::Dog, 0, 0, V3(-4.f, 6.f, 0.f));
+	W.Animals[Dog].Tired = 0.f;
+	CHECK(W.AdoptCat(Cat, 3, Sill, 3.14159f, Door), "adopted by the flat");
+	float Hour = 12.f;
+	int OnSill = 0, Looks = 0, Fled = 0, Acts = 0;
+	EAct LastAct = EAct::Num;
+	Run(W, 1200.f, 0.1f, Hour, [&](float)
+	{
+		const FAnimal& A = W.Animals[Cat];
+		OnSill += A.Pet == EPet::Sill && (A.Pos - Sill).Len() < 0.01f ? 1 : 0;
+		Fled += A.Act == EAct::Flee || A.Act == EAct::Climb || A.Act == EAct::Hiss ? 1 : 0;
+		Acts += A.Act != LastAct ? 1 : 0;
+		LastAct = A.Act;
+		Looks++;
+	});
+	CHECK(OnSill >= Looks - 2, "noon: on its window sill (%d of %d looks)", OnSill, Looks);
+	CHECK(Fled == 0, "the dog under the window is nothing to it up there");
+	CHECK(Acts >= 3, "it sits, loafs, dozes and washes there (%d changes)", Acts);
+	Stand(W, V3(-5.f, 6.f, 0.f), V3(1.f, 0.f, 0.f));
+	W.Animals[Cat].Act = EAct::Sit;
+	Hour = 12.5f;
+	bool bWatch = false;
+	Run(W, 10.f, 0.1f, Hour, [&](float) { bWatch = bWatch || (W.Animals[Cat].Act == EAct::Watch && W.Animals[Cat].bLook); });
+	CHECK(bWatch, "it watches the player who stops under the window");
+	W.Player.bPresent = false;
+	Hour = 18.1f;
+	int Meows = 0;
+	bool bDoor = false;
+	for (float T = 0.f; T < 600.f; T += 0.1f)
+	{
+		Hour += 0.1f / 3600.f;
+		SetClock(W, Hour);
+		W.Step(0.1f);
+		for (const FEvent& E : W.Events)
+		{
+			Meows += E.Kind == EEvent::Meow && E.Animal == Cat ? 1 : 0;
+		}
+		W.Events.clear();
+		const FAnimal& A = W.Animals[Cat];
+		bDoor = A.Pet == EPet::Door && (A.Pos - Door).Len2D() < 1.2f && W.Walkable(A.Pos.X, A.Pos.Y) && A.Act == EAct::Sit;
+	}
+	CHECK(bDoor, "18:10: sitting at the flat's door");
+	CHECK(Meows >= 10, "asking to be fed (%d meows in ten minutes)", Meows);
+	Hour = 22.f;
+	Run(W, 30.f, 0.1f, Hour);
+	std::vector<int> Near;
+	W.Near(Door, 6.f, Near);
+	CHECK(W.Animals[Cat].Pet == EPet::Indoors && std::find(Near.begin(), Near.end(), Cat) == Near.end() && W.Animals[Cat].Hunger < 0.3f, "night: indoors and fed");
+}
+
+static void TestFeederLady()
+{
+	std::printf("pets: the feeders are filled by the lady with her bowls\n");
+	FWorld W = Yard();
+	FPlace F;
+	F.Kind = EPlace::Feeder;
+	F.Pos = V3(-10.f, -10.f, 0.f);
+	F.Capacity = 4;
+	F.Food = 1.f;
+	W.AddPlace(F);
+	const int Place = (int)W.Places.size() - 1;
+	const int Cat = W.AddAnimal(EKind::Cat, 0, 0, V3(-14.f, -12.f, 0.f));
+	W.Animals[Cat].Hunger = 0.9f;
+	W.Animals[Cat].Tired = 0.f;
+	W.bFeedByPerson = true;
+	float Hour = 7.9f;
+	Run(W, 900.f, 0.1f, Hour);
+	CHECK(W.Places[Place].FoodLeft < 0.01f && W.Animals[Cat].Meals == 0, "8:00 passes and no bowl appears by itself (%.1f)", W.Places[Place].FoodLeft);
+	CHECK((W.Animals[Cat].Pos - F.Pos).Len2D() < 8.f, "the hungry cat waits by the feeder (%.1f m)", (W.Animals[Cat].Pos - F.Pos).Len2D());
+	std::vector<int> Feeders;
+	W.FeedersNear(V3(0.f, -10.f, 0.f), 30.f, Feeders);
+	CHECK(Feeders.size() == 1 && Feeders[0] == Place, "the lady's round finds the feeder");
+	W.PutFood(Place);
+	CHECK(W.Places[Place].FoodLeft == 4.f, "she puts the bowls down: full");
+	Run(W, 600.f, 0.1f, Hour);
+	CHECK(W.Animals[Cat].Meals >= 1 && W.Places[Place].FoodLeft < 4.f, "and the cat eats (%d meals, %.1f left)", W.Animals[Cat].Meals, W.Places[Place].FoodLeft);
+	W.bFeedByPerson = false;
+	W.Places[Place].FoodLeft = 0.f;
+	Hour = 18.45f;
+	Run(W, 400.f, 0.1f, Hour);
+	CHECK(W.Places[Place].FoodLeft > 0.f || W.Animals[Cat].Meals >= 2, "without her the clock still fills them (the old way)");
+}
+
+static void TestHedgehogs()
+{
+	std::printf("pets: hedgehogs at dusk\n");
+	FWorld W = Yard();
+	W.Sunrise = 5.f;
+	W.Sunset = 21.f;
+	W.Month = 7;
+	const V3 Home(-14.f, -14.f, 0.f);
+	const int H = W.AddHedgehog(Home, 8.f);
+	W.Camera = Home + V3(0.f, 0.f, 1.6f);
+	float Hour = 14.f;
+	Run(W, 60.f, 0.1f, Hour);
+	CHECK(!W.HedgehogsOut() && W.Hedgehogs[H].State == EHog::Away, "by day it is not about");
+	Hour = 20.6f;
+	float Far = 0.f, Walked = 0.f;
+	int OffGround = 0;
+	V3 Last = W.Hedgehogs[H].Pos;
+	Run(W, 600.f, 0.1f, Hour, [&](float)
+	{
+		const FHedgehog& G = W.Hedgehogs[H];
+		Far = std::max(Far, (G.Pos - Home).Len2D());
+		Walked += (G.Pos - Last).Len2D();
+		Last = G.Pos;
+		OffGround += W.Walkable(G.Pos.X, G.Pos.Y) ? 0 : 1;
+	});
+	CHECK(W.HedgehogsOut() && W.Hedgehogs[H].State != EHog::Away, "half an hour before sunset it comes out");
+	CHECK(Walked > 6.f && Walked < 600.f * 0.3f && Far <= 8.2f && OffGround == 0, "a slow shuffle round its home (%.0f m in ten minutes, never over %.1f m away)", Walked, Far);
+	// the player walks up
+	const V3 At = W.Hedgehogs[H].Pos;
+	Stand(W, At + V3(8.f, 0.f, 0.f), V3(-1.f, 0.f, 0.f));
+	Run(W, 3.f, 0.1f, Hour);
+	CHECK(W.Hedgehogs[H].State != EHog::Curl, "eight metres off it does not mind");
+	Stand(W, W.Hedgehogs[H].Pos + V3(1.8f, 0.f, 0.f), V3(-1.f, 0.f, 0.f));
+	Run(W, 1.f, 0.1f, Hour);
+	const V3 Ball = W.Hedgehogs[H].Pos;
+	CHECK(W.Hedgehogs[H].State == EHog::Curl && W.Hedgehogs[H].Curl >= 1.f, "close by: a ball");
+	Run(W, 20.f, 0.1f, Hour);
+	CHECK(W.Hedgehogs[H].State == EHog::Curl && (W.Hedgehogs[H].Pos - Ball).Len2D() < 0.01f, "and stays one while they stand there");
+	W.Player.bPresent = false;
+	Run(W, 12.f, 0.1f, Hour);
+	CHECK(W.Hedgehogs[H].State != EHog::Curl && W.Hedgehogs[H].Curl < 0.5f, "they go: it uncurls and shuffles on");
+	// a cat
+	const int Cat = W.AddAnimal(EKind::Cat, 0, 0, W.Hedgehogs[H].Pos + V3(3.f, 1.f, 0.f));
+	W.Animals[Cat].Tired = 0.f;
+	W.Animals[Cat].Hunger = 0.f;
+	W.Animals[Cat].Lively = 0.9f;
+	int Hiss = 0;
+	bool bNose = false;
+	float Hour2 = Hour;
+	for (float T = 0.f; T < 400.f && Hiss == 0; T += 0.1f)
+	{
+		Hour2 += 0.1f / 3600.f;
+		SetClock(W, Hour2);
+		W.Step(0.1f);
+		for (const FEvent& E : W.Events)
+		{
+			Hiss += E.Kind == EEvent::Hiss && E.Animal == Cat ? 1 : 0;
+		}
+		W.Events.clear();
+		bNose = bNose || (W.Animals[Cat].Pos - W.Hedgehogs[H].Pos).Len2D() < 0.9f;
+	}
+	CHECK(bNose && Hiss == 1 && W.Hedgehogs[H].Curl >= 1.f, "a cat comes to sniff it and gets the spines (%d)", Hiss);
+	Run(W, 8.f, 0.1f, Hour2);
+	CHECK((W.Animals[Cat].Pos - W.Hedgehogs[H].Pos).Len2D() > 2.5f, "and backs off (%.1f m)", (W.Animals[Cat].Pos - W.Hedgehogs[H].Pos).Len2D());
+	W.Month = 12;
+	Run(W, 2.f, 0.1f, Hour2);
+	CHECK(!W.HedgehogsOut() && W.Hedgehogs[H].State == EHog::Away, "in December they sleep");
+}
+
+static void TestPets()
+{
+	TestLeash();
+	TestFlatCat();
+	TestFeederLady();
+	TestHedgehogs();
+}
+
 static int Trace(int Argc, char** Argv)
 {
 	const int Id = Argc > 2 ? std::atoi(Argv[2]) : 0;
@@ -1145,6 +1471,10 @@ int main(int Argc, char** Argv)
 	if (!Only || !std::strcmp(Only, "friends"))
 	{
 		TestFriends();
+	}
+	if (!Only || !std::strcmp(Only, "pets"))
+	{
+		TestPets();
 	}
 	std::printf(Failures ? "%d FAILED\n" : "all passed\n", Failures);
 	return Failures ? 1 : 0;

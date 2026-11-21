@@ -1172,6 +1172,7 @@
  "label.maru.tag": "Мару",
  "ui.animal.call": "[E]  Позвать",
  "ui.friend.hand": "[E]  Протянуть руку",
+ "ui.pets.ask": "[E]  Спросить: можно погладить?",
  "ui.friend.stroke": "[E]  Погладить",
  "ui.friend.walk": "[E]  Позвать с собой",
  "ui.friend.home": "[E]  Отпустить домой",

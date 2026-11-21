@@ -89,6 +89,7 @@ struct FClock
 		const double H = Seconds / 3600.0;
 		W.Hour = (float)std::fmod(H, 24.0);
 		W.Weekday = (int)std::fmod(std::floor(H / 24.0), 7.0);
+		W.Week = (int)std::floor(H / 168.0);
 		W.Time = Seconds;
 		W.Sunrise = 7.75f;
 		W.Sunset = 17.25f;
@@ -985,6 +986,192 @@ static int Test()
 }
 
 
+/** The sanatorium's guests over three weeks (docs/town_life.md "The sanatorium's guests"; run.sh guests): who is here when,
+ *  the Saturday trains, the rooms and the chairs. Steps of 2 s, as the game's faster time. */
+static int GuestsRota()
+{
+	FWorld W;
+	if (!W.Load(DataDir, AnimalsDir))
+	{
+		std::printf("load failed: %s\n", W.LastError.c_str());
+		return 1;
+	}
+	W.AssignHomes();
+	AttachRail(W);
+	std::vector<int> Stay;
+	for (const FPerson& P : W.People)
+	{
+		if (P.StayCycle > 0)
+		{
+			Stay.push_back(P.Id);
+		}
+	}
+	const int Platform = W.FindPlace("S-RAIL-GUESTS"), San = W.FindPlace("P-SANATORIUM"), Dining = W.FindPlace("P-SANATORIUM-DINING");
+	const int Depart = W.FindActivity("san_depart"), Arrive = W.FindActivity("san_arrive");
+	std::printf("the sanatorium's guests: %zu in turn, Friday of week 0 to Monday of week 3\n", Stay.size());
+	CHECK(Stay.size() == 12 && W.GoneAct >= 0 && Platform >= 0 && San >= 0 && Dining >= 0 && Depart >= 0 && Arrive >= 0,
+		"twelve guests with a stay, the platform, the reception, the dining room, the activities (%zu)", Stay.size());
+	if (Failures)
+	{
+		return 1;
+	}
+	FClock C = FClock::At(4, 4.f);      // Friday 04:00, week 0
+	C.Set(W);
+	W.Resettle();
+	const float Dt = 2.f;
+	const double End = (21.0 + 1.0) * 86400.0;     // Monday of week 3, 24:00
+	int Minutes = 0, NotFour = 0, GoneSeen = 0, GoneLate = 0, HereHidden = 0, Meals = 0, MealsFull = 0, RoomTwo = 0, ChairTwo = 0;
+	int Saturdays = 0, OnPlatform = 0, LeftOnTime = 0, CameOnTime = 0, AtReception = 0, InBed = 0, Leavers = 0, Comers = 0;
+	std::map<int, int> GoneVisible;     // person -> minutes in a row gone by the calendar but still in the world
+	std::map<std::string, double> Mins;
+	std::set<int> Everybody, Suitcase;
+	std::string FirstBad;
+	auto Note = [&](const char* What, const FPerson& P)
+	{
+		if (FirstBad.empty())
+		{
+			char Buf[160];
+			std::snprintf(Buf, sizeof Buf, "%s: %s, week %d day %d %05.2f, %s", What, P.Key.c_str(), W.Week, W.Weekday, W.Hour,
+				P.Activity >= 0 ? W.Activities[(size_t)P.Activity].Id.c_str() : "-");
+			FirstBad = Buf;
+		}
+	};
+	while (C.Seconds < End)
+	{
+		C.Seconds += Dt;
+		C.Set(W);
+		W.Step(Dt);
+		if (std::fmod(C.Seconds, 60.0) >= Dt)
+		{
+			continue;
+		}
+		Minutes++;
+		const float H = W.Hour;
+		const bool bChange = W.Weekday == 5 && H >= 9.3f && H < 12.6f;     // the Saturday trains
+		int Here = 0;
+		std::map<int, int> InRoom, OnChair;
+		for (const int Id : Stay)
+		{
+			const FPerson& P = W.People[(size_t)Id];
+			const bool bGone = W.Gone(P);
+			const bool bHidden = P.State == EState::Away && P.Activity == W.GoneAct;
+			if (bGone)
+			{
+				GoneSeen++;
+				// a few minutes to get out of sight once the train has gone (they stand on the platform already)
+				if (!bHidden && ++GoneVisible[Id] > 4)
+				{
+					GoneLate++;
+					Note("gone but in the world", P);
+				}
+				continue;
+			}
+			GoneVisible[Id] = 0;
+			Here++;
+			Everybody.insert(Id);
+			if (bHidden && ++GoneVisible[Id] > 2)
+			{
+				HereHidden++;
+				Note("here but still away", P);
+			}
+			if (P.Activity >= 0 && P.State == EState::Doing)
+			{
+				Mins[W.Activities[(size_t)P.Activity].Id] += 1.0;
+			}
+			if (P.Activity == Depart || P.Activity == Arrive)
+			{
+				Suitcase.insert(Id);
+			}
+			if (P.State == EState::Doing && P.Slot >= 0)
+			{
+				const FSlot& Sl = W.Slots[(size_t)P.Slot];
+				if (P.Place == P.Home && P.Pose == EPose::Sleep)
+				{
+					InRoom[P.Home]++;
+				}
+				if (P.Place == Dining)
+				{
+					OnChair[P.Slot]++;
+				}
+				(void)Sl;
+			}
+		}
+		NotFour += !bChange && Here != 4 ? 1 : 0;
+		for (const auto& R : InRoom) RoomTwo += R.second > 1 ? 1 : 0;
+		for (const auto& Ch : OnChair) ChairTwo += Ch.second > 1 ? 1 : 0;
+		// lunch at 13:55: everybody who is here eats at their table's chair, the chair held
+		if (std::fabs(H - 13.92f) < 0.009f)
+		{
+			int Eat = 0;
+			for (const int Id : Stay)
+			{
+				const FPerson& P = W.People[(size_t)Id];
+				if (!W.Gone(P) && P.Place == Dining && P.Slot >= 0 && P.State == EState::Doing && P.Pose == EPose::Eat)
+				{
+					const FSlot& Sl = W.Slots[(size_t)P.Slot];
+					bool bOwn = false;
+					for (const FDuty& D : P.Duties)
+					{
+						bOwn |= D.Role == Sl.Tag;
+					}
+					Eat += bOwn && !Sl.Thing.empty() && Sl.Users.size() == 1 ? 1 : 0;
+				}
+			}
+			Meals++;
+			MealsFull += Eat == Here && Here == 4 ? 1 : 0;
+		}
+		if (W.Weekday == 5)
+		{
+			auto Near = [](float A, float B) { return std::fabs(A - B) < 0.009f; };
+			for (const int Id : Stay)
+			{
+				const FPerson& P = W.People[(size_t)Id];
+				const int Day = W.StayDayOf(P);
+				if (Day == 14 || (Day == 0 && H > 10.5f) || (W.Gone(P) && W.StayAt(P) < 1.f))
+				{
+					// the pair that leaves today
+					if (Near(H, 9.0f) && Day == 14) Leavers++;
+					if (Near(H, 10.6f) && Day == 14) OnPlatform += P.Activity == Depart && P.State == EState::Doing && P.Place == Platform ? 1 : 0;
+				}
+				if (Near(H, 10.85f) && W.StayAt(P) >= 14.f && W.StayAt(P) < 15.f) LeftOnTime += P.State == EState::Away ? 1 : 0;
+				if (Day == 0 && !W.Gone(P))
+				{
+					if (Near(H, 11.1f)) { Comers++; CameOnTime += P.State != EState::Away && P.Pose != EPose::Hidden ? 1 : 0; }
+					if (Near(H, 12.3f)) AtReception += P.Activity == Arrive && P.State == EState::Doing && P.Place == San ? 1 : 0;
+				}
+			}
+			Saturdays += Near(H, 12.3f) ? 1 : 0;
+		}
+		if (W.Weekday == 6 && std::fabs(H - 3.f) < 0.009f)
+		{
+			// the night after the trains: the newcomers asleep in their own rooms
+			for (const int Id : Stay)
+			{
+				const FPerson& P = W.People[(size_t)Id];
+				InBed += W.StayDayOf(P) == 1 && P.Place == P.Home && P.Pose == EPose::Sleep ? 1 : 0;
+			}
+		}
+	}
+	std::printf("  %d minutes; person-minutes: san_cure %.0f, dominoes %.0f, san_promenade %.0f, san_postcards %.0f, san_depart %.0f, san_arrive %.0f\n",
+		Minutes, Mins["san_cure"], Mins["dominoes"], Mins["san_promenade"], Mins["san_postcards"], Mins["san_depart"], Mins["san_arrive"]);
+	CHECK(NotFour == 0, "four guests are here at any time but the Saturday trains' hours (%d minutes not four)", NotFour);
+	CHECK(GoneLate == 0 && HereHidden == 0 && GoneSeen > 0, "the gone are out of the world and those who are here are in it (%d and %d person-minutes wrong%s%s)",
+		GoneLate, HereHidden, FirstBad.empty() ? "" : "; first ", FirstBad.c_str());
+	CHECK(Saturdays == 3 && Leavers == 6 && Comers == 6, "three Saturdays, a pair out and a pair in each (%d Saturdays, %d leave, %d come)", Saturdays, Leavers, Comers);
+	CHECK(OnPlatform == Leavers, "at 10:36 those who leave wait on the platform (%d of %d)", OnPlatform, Leavers);
+	CHECK(LeftOnTime == Leavers, "at 10:51 the train has taken them (%d of %d)", LeftOnTime, Leavers);
+	CHECK(CameOnTime == Comers, "at 11:06 the newcomers are off the train (%d of %d)", CameOnTime, Comers);
+	CHECK(AtReception >= Comers - 1, "at 12:18 they stand at the sanatorium's reception (%d of %d)", AtReception, Comers);
+	CHECK(InBed == Comers, "and that night they sleep in their rooms (%d of %d)", InBed, Comers);
+	CHECK(RoomTwo == 0 && ChairTwo == 0, "no room sleeps two guests, no chair seats two (%d and %d minutes)", RoomTwo, ChairTwo);
+	CHECK(Meals >= 15 && MealsFull >= Meals - 1, "at 13:55 all four eat at their table's chairs, the chairs held (%d of %d lunches)", MealsFull, Meals);
+	CHECK(Everybody.size() >= 8 && Suitcase.size() >= 10, "over three weeks eight or more of the dozen have been here (%zu), those who came or left with the suitcase (%zu)",
+		Everybody.size(), Suitcase.size());
+	CHECK(Mins["san_promenade"] > 600 && Mins["san_postcards"] > 30 && Mins["san_cure"] > 300,
+		"the regime: the promenade after lunch, postcards at the kiosk, the waters (%.0f, %.0f, %.0f person-minutes)", Mins["san_promenade"], Mins["san_postcards"], Mins["san_cure"]);
+	return 0;
+}
+
 /** The town's life (docs/town_life.md): the townsfolk of townsfolk.json in the town's places, a day and a night. */
 static int Town()
 {
@@ -1023,7 +1210,7 @@ static int Town()
 	int LongestLine = 0, CrowdSent = 0, GapMinutes = 0, MarketServed = 0, HeroLine = -1, HeroSpotTaken = 0, BehindHero = 0;
 	std::vector<int> Line;
 	int Waiters12 = -1, Sellers10 = -1, Pupils10 = -1, PupilsOff = -1, AtSquare = -1, Overbooked = 0;
-	// the sanatorium's four guests (tools/town/sanatorium_guests.py): at their own chairs at lunch, not there before it
+	// the sanatorium's guests who are here now (tools/town/sanatorium_guests.py: four at a time): at their table's chairs at lunch, not there before it
 	int GuestsAtLunch = -1, GuestsAt11 = -1, Guests = 0;
 	const int Dining = W.FindPlace("P-SANATORIUM-DINING");
 	auto GuestsSeated = [&W, Dining]()
@@ -1036,13 +1223,13 @@ static int Town()
 				continue;
 			}
 			const FSlot& Sl = W.Slots[(size_t)P.Slot];
-			N += P.State == EState::Doing && P.Pose == EPose::Eat && Sl.Tag == "guest_" + P.Key.substr(2) && !Sl.Thing.empty() ? 1 : 0;
+			N += P.State == EState::Doing && P.Pose == EPose::Eat && Sl.Tag.rfind("guest_seat_", 0) == 0 && !Sl.Thing.empty() ? 1 : 0;
 		}
 		return N;
 	};
 	for (const FPerson& P : W.People)
 	{
-		Guests += P.Key == "t_gromov_pyotr" || P.Key == "t_mironova_sonya" || P.Key == "t_tamm_boris" || P.Key == "t_sazonov_nikolai" ? 1 : 0;
+		Guests += P.StayCycle > 0 && !W.Gone(P) ? 1 : 0;
 	}
 	double Longest = 0.0;
 	std::string LongestWho;
@@ -1065,6 +1252,8 @@ static int Town()
 	// the town's new things to do (tools/town/town_activities.py, docs/town_life.md "The new activities")
 	int CinemaNow = 0, CinemaPeak = 0, CinemaOff = 0, BedStrangers = 0, PianoNow = 0, PianoTwo = 0, StonesDark = 0, StonesGale = 0, PaperLate = 0;
 	std::set<int> PostStops, CinemaGoers;
+	std::set<int> DogWalkers;      // who was out with the dog (tools/town/town_pets.py)
+	int DogOff = 0;                 // ... and person-minutes of it off its hours
 	for (double T = 0.0; T < 36.0 * 3600.0; T += Dt)
 	{
 		C.Seconds += Dt;
@@ -1203,6 +1392,11 @@ static int Town()
 					{
 						PostStops.insert(P.Slot);
 					}
+					else if (Id == "walk_dog" || Id == "walk_dog_late")
+					{
+						DogWalkers.insert(P.Id);
+						DogOff += (W.Hour > 6.4f && W.Hour < 7.8f) || (W.Hour > 18.4f && W.Hour < 19.8f) ? 0 : 1;   // they set off a quarter of an hour ahead and are back on time
+					}
 				}
 				if (P.Activity >= 0 && (P.State == EState::Doing || P.State == EState::Away))
 				{
@@ -1302,13 +1496,18 @@ static int Town()
 		CHECK(Minutes["play_piano"] < 400 && PianoTwo == 0, "the piano in the hall is played now and then, by one at a time (%.0f person-minutes)", Minutes["play_piano"]);
 		CHECK(PostStops.size() >= 12, "the postman's round goes from door to door (%zu doors in 36 h, %.0f person-minutes)", PostStops.size(), Minutes["post_round"]);
 	}
+	if (W.FindActivity("walk_dog") >= 0)
+	{
+		CHECK(DogWalkers.size() >= 8 && Minutes["walk_dog"] > 150 && Minutes["walk_dog_late"] > 100 && DogOff == 0,
+			"the dogs' owners take them out morning and evening (%zu owners, %.0f + %.0f person-minutes, %d off the hours)", DogWalkers.size(), Minutes["walk_dog"], Minutes["walk_dog_late"], DogOff);
+	}
 	CHECK(Minutes["watch_sunrise"] > 0, "early risers watch the sunrise (%.0f person-minutes)", Minutes["watch_sunrise"]);
 	CHECK(Minutes["night_walk"] > 0, "somebody walks at night (%.0f person-minutes)", Minutes["night_walk"]);
 	CHECK(Minutes["sit_bench"] > 300, "people sit on the benches (%.0f person-minutes)", Minutes["sit_bench"]);
 	CHECK(Minutes["work_town"] > 3000 && Minutes["work_office"] > 1000, "the town's shops, cafés and offices are staffed (%.0f / %.0f person-minutes)", Minutes["work_town"], Minutes["work_office"]);
 	CHECK(Minutes["eat_out"] + Minutes["coffee"] > 200, "people eat out and have coffee (%.0f + %.0f)", Minutes["eat_out"], Minutes["coffee"]);
 	CHECK(Waiters12 > 0, "Wednesday 12:00: waiters on shift at the restaurant (%d)", Waiters12);
-	CHECK(Dining >= 0 && Guests == 4, "the sanatorium's dining room and its four guests are in the town (%d)", Guests);
+	CHECK(Dining >= 0 && Guests == 4, "the sanatorium's dining room is in the town and four of its guests are here now (%d)", Guests);
 	CHECK(GuestsAtLunch == Guests && GuestsAt11 == 0, "Wednesday 13:55 the guests eat at their own chairs (%d of %d), at 11:00 none (%d)", GuestsAtLunch, Guests, GuestsAt11);
 	CHECK(Sellers10 > 0, "Wednesday 10:00: sellers at the market (%d)", Sellers10);
 	CHECK(!W.Queues.empty() && LongestLine >= 2 && W.QueueMoves > 0, "queues form at the counters and move up (%d lines, longest %d, %d steps up)",
@@ -1551,6 +1750,12 @@ int main(int Argc, char** Argv)
 		const int R = BookClub();
 		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 		return R;
+	}
+	if (Mode == "guests")
+	{
+		const int R = GuestsRota();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return R || Failures ? 1 : 0;
 	}
 	if (Mode == "winter")
 	{
