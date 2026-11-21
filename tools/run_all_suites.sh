@@ -148,6 +148,7 @@ suite festivalsim.test            - bash tools/festivalsim/run.sh test
 suite festivalsim.year            - bash tools/festivalsim/run.sh year 2026
 suite festivalsim.at              - bash tools/festivalsim/run.sh at 2026-08-15 20.0
 suite fishing.test                - bash tools/fishing/run.sh -v
+suite booksim.reading             - bash tools/booksim/run.sh reading
 suite railsim.test                - bash tools/railsim/run.sh test
 suite railsim.table               - bash tools/railsim/run.sh table
 # peoplesim reads the gitignored railway timetable when it is there: once with it, once without
@@ -161,6 +162,7 @@ suite gardensim.test              - bash tools/gardensim/run.sh
 suite peoplesim.test              - bash tools/peoplesim/run.sh test
 suite peoplesim.town              - bash tools/peoplesim/run.sh town
 suite peoplesim.weather           - bash tools/peoplesim/run.sh weather
+suite peoplesim.bookclub          - bash tools/peoplesim/run.sh bookclub
 suite peoplesim.day               - bash tools/peoplesim/run.sh day 6 2
 suite peoplesim.summary           slow bash tools/peoplesim/run.sh summary
 if wanted peoplesim.test.norail && [ -f "$RAIL" ]; then
@@ -178,6 +180,8 @@ suite sea.field                   - bash tools/sea/run.sh field
 suite transportsim.test           - bash tools/transportsim/run.sh test
 suite togethersim.data            - bash tools/togethersim/run.sh data
 suite togethersim.week            slow bash tools/togethersim/run.sh brief
+suite yardsim.rules               - bash tools/yardsim/run.sh rules
+suite yardsim.town                slow bash tools/yardsim/run.sh
 suite underwater.test             - bash tools/underwater/run.sh test
 suite underwater.eco              - bash tools/underwater/run.sh eco -v
 suite underwater.bed              slow bash tools/underwater/run.sh bed
@@ -202,6 +206,7 @@ generator gen.barks           "$CONTENT/Dialogue/town_barks.txt $CONTENT/Localiz
 generator gen.letters         "$CONTENT/Letters/letters.json $CONTENT/Localization/letters" python3 tools/letters/build_letters.py
 generator gen.friends         "$CONTENT/PeopleData/friends.json $CONTENT/Localization/friends" python3 tools/friends/build_friends.py
 generator gen.weather_pull    "$CONTENT/PeopleData/weather_pull.json" python3 tools/town/weather_pull.py
+generator gen.reading         "$CONTENT/Reading/reading.json $CONTENT/Localization/reading" python3 tools/reading/build_reading.py
 generator gen.garden          "$CONTENT/Garden/garden.json $CONTENT/Localization/garden" python3 tools/garden/build_garden.py
 generator gen.strings         "$CONTENT/Localization/strings_ru.json $CONTENT/Localization/strings_en.json $CONTENT/Localization/strings_ja.json" \
 	bash -c 'python3 tools/restaurant/strings.py && python3 tools/lobby_strings.py && python3 tools/smoking_strings.py && python3 tools/characters/nao_strings.py'
