@@ -99,6 +99,22 @@
    "prompt": "An angry cat hissing and spitting at a dog, close, no other sounds"
   },
   {
+   "id": "bees_hive",
+   "group": "animals",
+   "variants": 1,
+   "duration": 12.0,
+   "loop": true,
+   "prompt": "Honey bees humming around a row of old wooden beehives in an orchard on a warm summer afternoon, a steady soft buzz with bees passing close now and then, gentle, seamless loop, no birds, no other sounds"
+  },
+  {
+   "id": "frogs_reed",
+   "group": "animals",
+   "variants": 2,
+   "duration": 15.0,
+   "loop": true,
+   "prompt": "A chorus of common frogs and moor frogs croaking softly in a reedbed by a slow brook on a still spring night, low purring croaks and soft bubbling calls from many frogs, medium distance, seamless loop, no crickets, no other sounds"
+  },
+  {
    "id": "ship_horn_far",
    "group": "far",
    "variants": 3,
