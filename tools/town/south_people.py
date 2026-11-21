@@ -35,6 +35,8 @@ sys.path.insert(0, os.path.join(ROOT, "tools"))
 import terrain as T         # noqa: E402  (the built ground: the same heights the things stand on)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import town_activities as TA     # noqa: E402  (its places and rows stay last)
+import town_night as TN          # noqa: E402  (its places and rows come after ours)
+import town_pets as TP           # noqa: E402  (its rows come after ours)
 
 CONTENT = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content")
 FOLK = os.path.join(CONTENT, "PeopleData", "townsfolk.json")
@@ -278,7 +280,10 @@ def build():
     new = [shed(c), orchard(c), hide(c), view(c), walk(c), brook(c)]
     assert [p["id"] for p in new] == PLACE_IDS
     # before town_activities.py's places and rows, which that script keeps last: either script run again leaves the other's
-    at = next((i for i, p in enumerate(places) if p["id"] in TA.PLACE_IDS), len(places))
+    # (the fixed order of the post-steps' blocks: ours, town_pets, town_night, town_activities; each script puts its own
+    # before the first block that comes after it, so any order of running them leaves the same file)
+    later_places = {TP.FEED_PLACE} | set(TN.PLACE_IDS) | set(TA.PLACE_IDS)
+    at = next((i for i, p in enumerate(places) if p["id"] in later_places), len(places))
     pd["places"] = places[:at] + new + places[at:]
     out[PLACES] = dump(pd)
 
@@ -307,7 +312,8 @@ def build():
     # activities.json is written by hand, one activity a line: ours after the last row
     text = open(ACTIVITIES, encoding="utf-8").read()
     lines = [l for l in text.split("\n") if not any('"id": "%s"' % a in l for a in ACT_IDS)]
-    first_ta = next((i for i, l in enumerate(lines) if any('"id": "%s"' % a in l for a in TA.ACT_IDS)), None)
+    later = list(TP.ACT_IDS) + list(TN.ACT_IDS) + list(TA.ACT_IDS)
+    first_ta = next((i for i, l in enumerate(lines) if any('"id": "%s"' % a in l for a in later)), None)
     rows = ["    " + r + "," for r in ACTIVITIES_ROWS]
     if first_ta is not None:
         lines[first_ta:first_ta] = rows
