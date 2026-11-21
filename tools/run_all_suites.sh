@@ -176,6 +176,8 @@ suite sea.field                   - bash tools/sea/run.sh field
 suite transportsim.test           - bash tools/transportsim/run.sh test
 suite togethersim.data            - bash tools/togethersim/run.sh data
 suite togethersim.week            slow bash tools/togethersim/run.sh brief
+suite yardsim.rules               - bash tools/yardsim/run.sh rules
+suite yardsim.town                slow bash tools/yardsim/run.sh
 suite underwater.test             - bash tools/underwater/run.sh test
 suite underwater.eco              - bash tools/underwater/run.sh eco -v
 suite underwater.bed              slow bash tools/underwater/run.sh bed
