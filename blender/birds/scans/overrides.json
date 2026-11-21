@@ -43,7 +43,8 @@
   "wing_paint": "photo"
  },
  "CommonBuzzard": {
-  "wing_paint": "photo"
+  "wing_paint": "photo",
+  "keep_old": "huge wing-root cut leaves a hollow back, far wing sticks up. Old model kept."
  },
  "GoldenEagle": {
   "wing_paint": "photo"

@@ -465,7 +465,9 @@ def save_mesh_npz(P, T, TL, uv, kf, lm, L, up_ref, name, tgt):
     me.polygons.foreach_set("loop_start", np.arange(0, len(F) * 3, 3, dtype=np.int32))
     me.polygons.foreach_set("loop_total", np.full(len(F), 3, dtype=np.int32))
     ul = me.uv_layers.new(name="UVMap")
-    ul.data.foreach_set("uv", uv[TL[kf]].reshape(-1).astype(np.float32))
+    uvx = uv[TL[kf]].reshape(-1, 2).copy()
+    uvx[:, 1] = (uvx[:, 1] % 1.0) * BAND   # (the body texture is squashed below BAND)
+    ul.data.foreach_set("uv", uvx.reshape(-1).astype(np.float32))
     me.update()
     ob = bpy.data.objects.new(name, me)
     bpy.context.scene.collection.objects.link(ob)
@@ -491,6 +493,174 @@ def save_mesh_npz(P, T, TL, uv, kf, lm, L, up_ref, name, tgt):
     bpy.data.objects.remove(ob)
     bpy.data.meshes.remove(me)
     print("SCAN saved", name, len(tri) // 3, "tris")
+
+
+BAND = 0.88          # body texture: the scan's own texture squashed into v < BAND, the fill patches' island above it
+TEX = 2048
+
+
+def fill_patches(bm, faces, cf, cu, ua, tf, tu, us, ths, R):
+    """The holes left by the wing, leg and tail cuts: bridged faces subdivided finely, their inner vertices pushed onto
+    the body's own cleaned radius (so the patch continues the body's curvature) and relaxed; each patch gets planar
+    uvs in its own slot of the texture band above BAND, painted later by diffusing the rim's colours inward."""
+    import bmesh
+    if not faces:
+        return []
+    pl = bm.faces.layers.int.get("patch")
+    for f in bm.faces:
+        f[pl] = 0
+    for f in faces:
+        f[pl] = 1
+    inner_e = list({e for f in faces for e in f.edges if e.link_faces and all(g[pl] == 1 for g in e.link_faces)})
+    if inner_e:
+        bmesh.ops.subdivide_edges(bm, edges=inner_e, cuts=3, use_grid_fill=True)
+    bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 3])
+    bm.verts.ensure_lookup_table()
+    pf = [f for f in bm.faces if f[pl] == 1]
+    inner = [v for v in {v for f in pf for v in f.verts} if all(g[pl] == 1 for g in v.link_faces)]
+    nt = len(ths)
+
+    def project(vs):
+        if not vs:
+            return
+        Pv = np.array([v.co[:] for v in vs])
+        d2 = (Pv[:, None, 0] - cf[None]) ** 2 + (Pv[:, None, 1] - cu[None]) ** 2
+        k = np.argmin(d2, 1)
+        uvv = ua[k]
+        nf_, nu_ = -tu[k], tf[k]
+        nc = (Pv[:, 0] - cf[k]) * nf_ + (Pv[:, 1] - cu[k]) * nu_
+        th = np.arctan2(nc, Pv[:, 2]) % (2 * math.pi)
+        fu = np.clip(np.interp(np.clip(uvv, us[0], us[-1]), us, np.arange(len(us))), 0, len(us) - 1.001)
+        i0, au = fu.astype(int), fu - fu.astype(int)
+        ft = th / (2 * math.pi) * nt
+        j0, bt = ft.astype(int) % nt, ft - ft.astype(int)
+        j1 = (j0 + 1) % nt
+        rf = (R[i0, j0] * (1 - bt) + R[i0, j1] * bt) * (1 - au) + (R[i0 + 1, j0] * (1 - bt) + R[i0 + 1, j1] * bt) * au
+        ok = (uvv > -0.02) & (uvv < 1.0)
+        for v, kk, t, r, good in zip(vs, k, th, rf, ok):
+            if not good:
+                continue
+            c = Vector((cf[kk], cu[kk], 0.0))
+            n = Vector((-tu[kk], tf[kk], 0.0))
+            v.co = c + n * (r * math.sin(t)) + Vector((0, 0, r * math.cos(t)))
+    for _ in range(3):
+        bmesh.ops.smooth_vert(bm, verts=inner, factor=0.7, use_axis_x=True, use_axis_y=True, use_axis_z=True)
+        project(inner)
+    bmesh.ops.smooth_vert(bm, verts=inner, factor=0.4, use_axis_x=True, use_axis_y=True, use_axis_z=True)
+    # patches = connected groups of patch faces
+    seen, comps = set(), []
+    for f0 in pf:
+        if f0.index in seen:
+            continue
+        stack, comp = [f0], []
+        seen.add(f0.index)
+        while stack:
+            f = stack.pop()
+            comp.append(f)
+            for e in f.edges:
+                for g in e.link_faces:
+                    if g[pl] == 1 and g.index not in seen:
+                        seen.add(g.index)
+                        stack.append(g)
+        comps.append(comp)
+    ul = bm.loops.layers.uv.active
+    out = []
+    n = len(comps)
+    slot_w = 1.0 / max(n, 1)
+    for ci, comp in enumerate(comps):
+        vs = list({v for f in comp for v in f.verts})
+        Pv = np.array([v.co[:] for v in vs])
+        c0 = Pv.mean(0)
+        _, _, vt = np.linalg.svd(Pv - c0, full_matrices=False)
+        a2 = np.stack([(Pv - c0) @ vt[0], (Pv - c0) @ vt[1]], 1)
+        lo, hi = a2.min(0), a2.max(0)
+        ext = max(float((hi - lo).max()), 1e-9)
+        # fit into the slot (u: ci*slot_w .. +slot_w, v: BAND .. 1) with a margin, aspect kept
+        sw, sh = slot_w * 0.9, (1 - BAND) * 0.9
+        sc = min(sw / max(hi[0] - lo[0], 1e-9), sh / max(hi[1] - lo[1], 1e-9))
+        uvs = np.stack([ci * slot_w + slot_w * 0.05 + (a2[:, 0] - lo[0]) * sc, BAND + (1 - BAND) * 0.05 + (a2[:, 1] - lo[1]) * sc], 1)
+        vidx = {v.index: i for i, v in enumerate(vs)}
+        # rim colours: the uv each rim vertex has in the scan's own faces (sampled from the texture later)
+        rim = {}
+        for v in vs:
+            for lp in v.link_loops:
+                if lp.face[pl] == 0:
+                    rim[vidx[v.index]] = lp[ul].uv.copy()
+                    break
+        for f in comp:
+            for lp in f.loops:
+                lp[ul].uv = tuple(uvs[vidx[lp.vert.index]])
+        tris = [[vidx[v.index] for v in f.verts] for f in comp if len(f.verts) == 3]
+        out.append(dict(P=Pv, uv=uvs, rim=rim, tris=np.array(tris, int)))
+    # the scan's own faces: their texture is squashed below BAND
+    for f in bm.faces:
+        if f[pl] == 0:
+            for lp in f.loops:
+                u_, v_ = lp[ul].uv
+                lp[ul].uv = (u_, (v_ % 1.0) * BAND)
+    print("SCAN fill patches: %d, %d faces" % (n, len(pf)))
+    return out
+
+
+def save_body_texture(patches):
+    """The scan texture at TEX, squashed into v < BAND (the body's own uvs follow: v *= BAND), and above it every
+    fill patch painted from its rim: rim texel colours spread to the inner vertices by inverse-distance weights,
+    interpolated over each triangle, with the luminance grain of the rim's own texture tiled over it."""
+    H, W = PX.shape[:2]
+    ys = np.clip(((np.arange(TEX) + 0.5) / TEX * H).astype(int), 0, H - 1)
+    xs = np.clip(((np.arange(TEX) + 0.5) / TEX * W).astype(int), 0, W - 1)
+    base = PX[ys][:, xs]
+    tex = np.zeros((TEX, TEX, 3), np.float32)
+    hb = int(TEX * BAND)
+    rows = np.clip(((np.arange(hb) + 0.5) / hb * TEX).astype(int), 0, TEX - 1)
+    tex[:hb] = base[rows]
+    tex[hb:] = base[rows[-1]]
+    lum = base.mean(2)
+    for p in patches:
+        Pv, uvs, rim, tris = p["P"], p["uv"], p["rim"], p["tris"]
+        if not len(tris):
+            continue
+        col = np.zeros((len(Pv), 3))
+        ri = np.array(sorted(rim))
+        if len(ri) == 0:
+            continue
+        rc = np.array([base[min(int(rim[i][1] % 1.0 * TEX), TEX - 1), min(int(rim[i][0] % 1.0 * TEX), TEX - 1)] for i in ri])
+        d = np.linalg.norm(Pv[:, None] - Pv[ri][None], axis=2) + 1e-9
+        w = 1.0 / d ** 2
+        col = (w @ rc) / w.sum(1, keepdims=True)
+        col[ri] = rc
+        # grain: the luminance texture round one rim vertex, tiled
+        g0 = rim[ri[len(ri) // 2]]
+        gy, gx = int(g0[1] % 1.0 * TEX), int(g0[0] % 1.0 * TEX)
+        tile = lum[max(gy - 32, 0):gy + 32, max(gx - 32, 0):gx + 32]
+        tile = tile - tile.mean() if tile.size else np.zeros((1, 1))
+        px_uv = uvs * [TEX, TEX]
+        for t in tris:
+            a, b, c = px_uv[t]
+            x0, x1 = int(max(min(a[0], b[0], c[0]) - 1, 0)), int(min(max(a[0], b[0], c[0]) + 2, TEX))
+            y0, y1 = int(max(min(a[1], b[1], c[1]) - 1, hb)), int(min(max(a[1], b[1], c[1]) + 2, TEX))
+            if x1 <= x0 or y1 <= y0:
+                continue
+            gx_, gy_ = np.meshgrid(np.arange(x0, x1) + 0.5, np.arange(y0, y1) + 0.5)
+            den = (b[1] - c[1]) * (a[0] - c[0]) + (c[0] - b[0]) * (a[1] - c[1])
+            if abs(den) < 1e-12:
+                continue
+            l1 = ((b[1] - c[1]) * (gx_ - c[0]) + (c[0] - b[0]) * (gy_ - c[1])) / den
+            l2 = ((c[1] - a[1]) * (gx_ - c[0]) + (a[0] - c[0]) * (gy_ - c[1])) / den
+            l3 = 1 - l1 - l2
+            m = (l1 > -0.08) & (l2 > -0.08) & (l3 > -0.08)
+            cc = l1[..., None] * col[t[0]] + l2[..., None] * col[t[1]] + l3[..., None] * col[t[2]]
+            if tile.size > 4:
+                gr = tile[(gy_.astype(int) % tile.shape[0]), (gx_.astype(int) % tile.shape[1])]
+                cc = cc * (1 + 1.2 * gr[..., None])
+            sub = tex[y0:y1, x0:x1]
+            sub[m] = np.clip(cc[m], 0, 1)
+    im = bpy.data.images.new("body_tex", TEX, TEX, alpha=False)
+    im.pixels.foreach_set(np.concatenate([tex, np.ones((TEX, TEX, 1), np.float32)], 2).ravel())
+    im.filepath_raw = os.path.join(ROOT, "blender", "birds", "scan_raw", SID, "body_tex.png")
+    im.file_format = "PNG"
+    im.save()
+    print("SCAN body texture", im.filepath_raw, "patches", len(patches))
 
 
 def cut_body(P, T, TL, uv, cf, cu, ua, tf, tu, us, ths, R, lm, L, up_ref, badw):
@@ -574,35 +744,10 @@ def cut_body(P, T, TL, uv, cf, cu, ua, tf, tu, us, ths, R, lm, L, up_ref, badw):
     bs = set(f.index for f in best)
     bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.index not in bs], context="FACES")
     bmesh.ops.delete(bm, geom=[v for v in bm.verts if not v.link_faces], context="VERTS")
+    bm.faces.layers.int.new("patch")   # (a new layer invalidates face references: make it before collecting any)
     holes = bmesh.ops.holes_fill(bm, edges=bm.edges[:], sides=0)
     tri = bmesh.ops.triangulate(bm, faces=holes["faces"])
-    # the fill faces have no uvs of their own. Mixing the uvs of distant boundary vertices in one triangle spans
-    # unrelated texture islands (flat grey panels on dark birds): every fill triangle takes ONE texel instead, the
-    # uv its own nearest boundary corner has in the scan's faces, so it wears the plumage right beside the hole.
-    # Then the fill is subdivided and relaxed so it bulges like the body instead of lying flat.
-    ul = bm.loops.layers.uv.active
-    newf = [f for f in (set(tri["faces"]) | set(holes["faces"])) if f.is_valid]
-    newset = set(newf)
-    for f in newf:
-        uvc = None
-        for lp in f.loops:
-            for o in lp.vert.link_loops:
-                if o.face not in newset:
-                    uvc = o[ul].uv.copy()
-                    break
-            if uvc is not None:
-                break
-        if uvc is not None:
-            for lp in f.loops:
-                lp[ul].uv = uvc
-    if newf:
-        edges = list({e for f in newf for e in f.edges if all(g in newset for g in e.link_faces)})
-        if edges:
-            sub = bmesh.ops.subdivide_edges(bm, edges=edges, cuts=2, use_grid_fill=True)
-            inner = [v for v in sub.get("geom_inner", []) if isinstance(v, bmesh.types.BMVert)]
-            for _ in range(6):
-                bmesh.ops.smooth_vert(bm, verts=inner, factor=0.6, use_axis_x=True, use_axis_y=True, use_axis_z=True)
-        bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 3])
+    PATCH = fill_patches(bm, [f for f in tri["faces"] if f.is_valid], cf, cu, ua, tf, tu, us, ths, R)
     bm.to_mesh(me)
     bm.free()
     me.update()
@@ -640,12 +785,7 @@ def cut_body(P, T, TL, uv, cf, cu, ua, tf, tu, us, ths, R, lm, L, up_ref, badw):
         wing_planform(P, T, TL, uv, ~keep, uvv, nc, lm, L)
     except Exception as e:   # a species without a clean raised wing keeps its painted wings
         print("SCAN wing planform FAILED", e)
-    img = max((i for i in bpy.data.images if i.size[0] > 0), key=lambda i: i.size[0])
-    img.scale(2048, 2048)
-    img.filepath_raw = os.path.join(ROOT, "blender", "birds", "scan_raw", SID, "body_tex.png")
-    img.file_format = "PNG"
-    img.save()
-    print("SCAN body texture", img.filepath_raw)
+    save_body_texture(PATCH)
 
 
 PX = None
