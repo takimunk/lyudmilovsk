@@ -83,7 +83,9 @@ LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", 
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
-            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments")
+            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments", "rewards")
+# what a complete collection gives (docs/city_interiors.md "A complete set pays"): a reward's fields
+REWARD_FIELDS = ("name", "note", "pay", "item", "count", "item_from", "like", "free", "days")
 # the staff talk (docs/city_interiors.md "Staff talk"): a topic's fields besides its line conditions (when it is offered)
 TOPIC_FIELDS = ("id", "k", "lines", "once", "gives", "everywhere")
 MAX_TOPICS = 8
@@ -291,7 +293,7 @@ def load_strings():
 
 
 CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}, "topics": {}, "topic_sets": {},
-                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}}
+                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}, "rewards": {}}
 
 
 def content_files():
@@ -333,7 +335,7 @@ def load_content():
                               ("topics", CONTENT_EXTRA["topics"]), ("topic_sets", CONTENT_EXTRA["topic_sets"]),
                               ("tones", CONTENT_EXTRA["tones"]), ("tone_by", CONTENT_EXTRA["tone_by"]),
                               ("sound_alias", CONTENT_EXTRA["sound_alias"]), ("stays", CONTENT_EXTRA["stays"]),
-                              ("tournaments", CONTENT_EXTRA["tournaments"])):
+                              ("tournaments", CONTENT_EXTRA["tournaments"]), ("rewards", CONTENT_EXTRA["rewards"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -1709,7 +1711,66 @@ def day_in(days, wd):
     return False
 
 
-def build_collections(src, things, acts, strings, regs=None, texts=None, cups=None):
+def build_reward(sid, r, strings, items, shops):
+    """A collection's reward (the "rewards" section: {"<set>": {"name": key, "note": key, and one thing to hold: "pay": roubles |
+    "item": id ("count": n) | "item_from": shop id (the first of its goods the hero has none of, with "like": only those whose id begins so; "pay" is
+    given when he has them all) | "free": item id for "days" days}}). The keys default to city.coll.reward.<set>.name / .note."""
+    out = collections.OrderedDict()
+    if not isinstance(r, dict):
+        err("reward %s: an object" % sid)
+        return out
+    for k in r:
+        if k not in REWARD_FIELDS:
+            err("reward %s: unknown field %s (%s)" % (sid, k, ", ".join(REWARD_FIELDS)))
+    for f in ("name", "note"):
+        key = r.get(f, "city.coll.reward.%s.%s" % (sid, f))
+        if key not in strings and key not in MAIN:
+            err("reward %s: %s string %s is missing" % (sid, f, key))
+        out[f] = key
+    held = [f for f in ("item", "item_from", "free") if r.get(f)]
+    if len(held) > 1 or (not held and not r.get("pay")):
+        err("reward %s: one thing to hold: pay, item, item_from or free" % sid)
+    for f in ("pay", "count", "days"):
+        if f in r and (not isinstance(r[f], int) or isinstance(r[f], bool) or r[f] <= 0):
+            err("reward %s: %s is a whole number above 0" % (sid, f))
+    if r.get("pay"):
+        if held and held != ["item_from"]:
+            err("reward %s: pay goes alone, or with item_from as what is given when he has every good" % sid)
+        out["pay"] = r["pay"]
+    for f in ("item", "free"):
+        if r.get(f):
+            if r[f] not in items:
+                err("reward %s: %s %s is not an item" % (sid, f, r[f]))
+            out[f] = r[f]
+    if r.get("item"):
+        out["count"] = r.get("count", 1)
+    elif "count" in r:
+        err("reward %s: count goes with item" % sid)
+    if r.get("free"):
+        if not r.get("days"):
+            err("reward %s: free needs days" % sid)
+        elif not any(g["item"] == r["free"] for sh in shops.values() for g in sh["goods"]):
+            err("reward %s: no shop sells %s" % (sid, r["free"]))
+        out["days"] = r.get("days", 0)
+    elif "days" in r:
+        err("reward %s: days goes with free" % sid)
+    if r.get("item_from"):
+        if r["item_from"] not in shops:
+            err("reward %s: item_from %s is not a shop" % (sid, r["item_from"]))
+        elif not r.get("pay"):
+            err("reward %s: item_from needs pay (given when he has every good of the shop)" % sid)
+        out["item_from"] = r["item_from"]
+        if r.get("like"):
+            # only the goods whose id begins so (the Wave's records, not its guitar)
+            if r["item_from"] in shops and not any(g["item"].startswith(r["like"]) for g in shops[r["item_from"]]["goods"]):
+                err("reward %s: no good of %s begins with %s" % (sid, r["item_from"], r["like"]))
+            out["like"] = r["like"]
+    elif "like" in r:
+        err("reward %s: like goes with item_from" % sid)
+    return out
+
+
+def build_collections(src, things, acts, strings, regs=None, texts=None, cups=None, rewards=None, items=(), shops=None):
     """The collections (docs/city_interiors.md "Collections"): {"<set>": {"title": key, "pieces": [...]}}. Pieces omitted: every
     piece something in town gives. Every stamp named anywhere must be of a declared set (and a declared piece), and every
     declared piece must be given by some thing in town (or the set could never be complete); a set with "by": "code" names
@@ -1801,8 +1862,28 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
         if not pieces:
             err("collection %s: no pieces (nothing in town gives one)" % sid)
         out[sid] = {"title": title, "pieces": pieces}
+        cup_given = sorted(cid for cid, cup in (cups or {}).items()
+                           if sid in ((cup.get("collect") or "").partition("/")[0], (cup.get("fest_collect") or "").partition("/")[0]))
         if c.get("by"):
             out[sid]["by"] = str(c["by"])
+        elif c.get("code"):
+            # given by the game's code (its files named in "code"): no thing in town has to give the pieces (quest_audit.py)
+            out[sid]["by"] = "code"
+        elif cup_given:
+            out[sid]["by"] = "the clubs' tournaments (Private/City/CityCupsModel.h): the champion's cup"
+        if rewards is not None:
+            # every set pays when it is complete (backlog P4: a complete set gave nothing)
+            # (a set another branch brings without one still pays: roubles by its size, under the default words)
+            if sid not in rewards:
+                print("warning: collection %s has no reward of its own (a \"rewards\" section): it pays the default" % sid)
+                out[sid]["reward"] = collections.OrderedDict([("name", "city.coll.reward.default.name"), ("note", "city.coll.reward.default.note"),
+                                                              ("pay", max(30, min(150, 10 * len(pieces))))])
+            else:
+                out[sid]["reward"] = build_reward(sid, rewards[sid], strings, items, shops or {})
+    for sid in sorted(rewards or {}):
+        if sid not in out and not sid.startswith("_"):
+            # its collection may live on a branch not merged yet (fest_cups): the words wait for it
+            print("warning: reward %s: no such collection yet" % sid)
     for where, st in STAMPS_USED:
         sid, _, piece = st.partition("/")
         if sid not in out:
@@ -2168,7 +2249,7 @@ def main():
         if g and g["vs"] and not opponents_at(regs, g["vs"], ""):
             err("act %s: game vs %s: no regular plays it" % (aid, g["vs"]))
     cups = build_tournaments(CONTENT_EXTRA["tournaments"], strings, regs, things, acts, texts, all_plots)
-    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs, texts, cups)
+    colls = build_collections(CONTENT_EXTRA["collections"], things, acts, strings, regs, texts, cups, CONTENT_EXTRA["rewards"], items, shops)
     tones, plot_tones, missing_tone_sounds = build_tones(places(plan), reg)
     targets = {a["target"] for a in acts.values()} | set(acts)
     for where, v in DID_USED:

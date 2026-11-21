@@ -234,6 +234,41 @@ thing in town (`ULyudCityThings::GiveStamp("<set>/<piece>")`): it must write its
 `lyud.City.Collections` (each set "n of m" to the log and on the page; `grant|clear <set|*>`); developer mode
 `interiors.collections` (the page) and `interiors.collections_all` (toggle: every set complete / cleared).
 
+### A complete set pays
+
+Every collection gives something once, at its last stamp (backlog item 30). A content file's `rewards` section
+(`tools/city/content/x_rewards.json`, words in `strings/x_rewards.json`):
+
+```
+"rewards": {"<set>": {"pay": roubles | "item": "<item id>", "count": n | "item_from": "<shop id>", "like": "<id prefix>", "pay": n
+                      | "free": "<item id>", "days": n}}
+```
+
+A reward is a keepsake with a name and a diary sentence (`city.coll.reward.<set>.name` / `.note`: the reader's card with a
+photograph, the framed Rassvet poster, the chess club's badge) and one thing to hold: roubles, an existing item, the first
+good of a shop the hero has none of (`item_from`; with `like` only the goods whose id begins so: a record of the Wave, never
+its guitar; `pay` when he owns them all), or a good that costs nothing for some days (`free`: the bus-stop kiosks' daily
+paper for 30 days; `ULyudCityThings::OpenShopOf` asks `FModel::PriceOn`). Keepsakes are not items: they live on the
+diary's page, so none needs an icon. `interiors.py` writes each reward into its collection (`"reward"`); a set with none
+(a branch that brings a new set) still pays roubles by its size under the default words, with a warning; a reward whose set
+does not exist yet is a warning too.
+
+The model (`FModel::TakeRewards(day)`) hands back the sets complete and not yet paid and marks them (`g:<set>` in the
+save: the day). The game (`ULyudCityThings::PayCollections`, after every stamp's HUD note, after a developer grant, and
+once after a save is loaded, so a set completed before rewards existed pays then) gives the item or roubles, says
+`city.coll.reward.toast`, writes the diary's entry `city.coll.reward.diary` and sends the quest event `collection <set>`.
+`lyud.City.Collections clear <set>` forgets the payment with the stamps.
+
+**The diary's «Коллекции» pages** come after its «Люди» pages (`SLyudDiarySpread::CollectionsPage`, six sets a page): the
+count of complete sets, then every set with its `n of m`, a box for every piece (ticked when he has it), and its keepsake:
+`city.coll.page.reward` once paid, `city.coll.page.promise` before, the days left of a free good. Order
+(`FModel::CollectionRows`): the paid sets (oldest first), the ones begun (the fullest first), the untouched. The console
+page of `lyud.City.Collections` stays as the developer's plain list.
+
+Checks: `tools/citysim/rewardchecks.h` (each of the sets one stamp short pays nothing and pays itself once at the last;
+the words in three languages; the paper's price over the month; the save; the page's order), `quest_audit.py` (0 errors:
+a set given by code or by the tournaments is marked `by`, an event the code sends by name is known from the source).
+
 ### Closed
 
 While a thing's plot is shut (the thing's `hours`/`days`; never with `interiors.open_all_hours`) a thing with a `closed` act

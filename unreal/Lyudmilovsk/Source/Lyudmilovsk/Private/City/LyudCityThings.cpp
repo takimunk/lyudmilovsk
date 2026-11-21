@@ -431,6 +431,7 @@ void ULyudCityThings::ApplySaved()
 	{
 		Cups->LoadState(In);
 	}
+	bPayCollections = true;
 }
 
 void ULyudCityThings::StartOver()
@@ -1476,6 +1477,11 @@ void ULyudCityThings::Tick(float DeltaTime)
 	{
 		return;
 	}
+	if (bPayCollections && UGameplayStatics::GetPlayerPawn(World, 0))
+	{
+		bPayCollections = false;
+		PayCollections();
+	}
 	const double Now = World->GetTimeSeconds();
 	// a fade round a jump of the clock: black, (the pillow's view), the jump, hold a moment, back
 	if (FadeMinutes > 0 && Now >= FadeAt)
@@ -1763,6 +1769,100 @@ void ULyudCityThings::AnnounceStamps(const TArray<FString>& Stamps)
 				{ FStringFormatArg(Title), FStringFormatArg(Got), FStringFormatArg(All) }));
 		}
 	}
+	PayCollections();
+}
+
+void ULyudCityThings::PayCollections()
+{
+	if (!Model)
+	{
+		return;
+	}
+	UWorld* World = GetWorld();
+	const LyudCity::FWhen PayNow = LyudCityThingsImpl::When(World, false);
+	const std::vector<const LyudCity::FCollection*> Paid = Model->TakeRewards(PayNow.Since);
+	if (Paid.empty())
+	{
+		return;
+	}
+	ULyudInventory* Inv = ULyudInventory::Get(this);
+	ULyudGameScreen* Screen = ULyudGameScreen::Get(this);
+	ULyudQuests* Quests = ULyudQuests::Get(this);
+	for (const LyudCity::FCollection* C : Paid)
+	{
+		const LyudCity::FReward& R = C->Reward;
+		// what he holds: the item, the first good of the shop he has none of, or the roubles (also when he has every good)
+		FName Held = NAME_None;
+		int32 HeldCount = 0;
+		int32 Rubles = R.Pay;
+		if (!R.ItemFrom.empty())
+		{
+			for (const std::string& Choice : Model->RewardChoices(R))
+			{
+				const FName Item = LyudCityThingsImpl::Name(Choice);
+				if (Inv && ULyudInventory::FindDef(Item) && Inv->Count(Item) == 0)
+				{
+					Held = Item;
+					HeldCount = 1;
+					Rubles = 0;
+					break;
+				}
+			}
+		}
+		else if (!R.Item.empty() && ULyudInventory::FindDef(LyudCityThingsImpl::Name(R.Item)))
+		{
+			Held = LyudCityThingsImpl::Name(R.Item);
+			HeldCount = R.Count;
+		}
+		if (Inv && Held != NAME_None)
+		{
+			Inv->Add(Held, HeldCount);
+		}
+		if (Inv && Rubles > 0)
+		{
+			Inv->Earn(Rubles);
+		}
+		const FString TitleKey = LyudCityThingsImpl::Str(C->Title);
+		const FString NameKey = LyudCityThingsImpl::Str(R.Name);
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: collection %s complete: reward %s (item %s x%d, %d roubles, free %s for %d days)"),
+			*LyudCityThingsImpl::Str(C->Id), *NameKey, *Held.ToString(), HeldCount, Rubles, *LyudCityThingsImpl::Str(R.Free), R.Days);
+		if (Screen)
+		{
+			Screen->Toast(LyudText::Get(TEXT("city.coll.reward.toast"), { FStringFormatArg(LyudText::Get(TitleKey).ToString()), FStringFormatArg(LyudText::Get(NameKey).ToString()) }));
+		}
+		if (Quests)
+		{
+			Quests->AddNote(TEXT("city.coll.reward.diary"), { FString(TEXT("@")) + TitleKey, FString(TEXT("@")) + LyudCityThingsImpl::Str(R.Note) });
+		}
+		ULyudQuests::Notify(this, TEXT("collection"), LyudCityThingsImpl::Str(C->Id));
+	}
+}
+
+void ULyudCityThings::CollectionViews(TArray<FCollectionView>& Out) const
+{
+	Out.Reset();
+	if (!Model)
+	{
+		return;
+	}
+	const LyudCity::FWhen ViewNow = LyudCityThingsImpl::When(GetWorld(), false);
+	for (const LyudCity::FCollectionRow& Row : Model->CollectionRows())
+	{
+		FCollectionView& V = Out.AddDefaulted_GetRef();
+		V.Title = LyudText::Get(LyudCityThingsImpl::Str(Row.Of->Title));
+		V.Reward = Row.Of->Reward.Any() ? LyudText::Get(LyudCityThingsImpl::Str(Row.Of->Reward.Name)) : FText::GetEmpty();
+		V.Got = Row.Got;
+		V.bRewarded = Row.bRewarded;
+		for (const bool bHas : Row.Slots)
+		{
+			V.Slots.Add(bHas);
+		}
+		if (Row.bRewarded && !Row.Of->Reward.Free.empty())
+		{
+			const long long Until = Model->FreeUntil(Row.Of->Reward.Free, ViewNow.Since);
+			V.FreeDays = Until > ViewNow.Since ? (int32)(Until - ViewNow.Since) : 0;
+		}
+	}
 }
 
 void ULyudCityThings::ShowCollections(bool bPage)
@@ -1819,7 +1919,9 @@ bool ULyudCityThings::EditCollections(const FString& Verb, const FString& Set)
 	const std::string Which(TCHAR_TO_UTF8(*Set));
 	if (Verb == TEXT("grant"))
 	{
-		return Model->GrantSet(Which);
+		const bool bGranted = Model->GrantSet(Which);
+		PayCollections();
+		return bGranted;
 	}
 	if (Verb == TEXT("clear") && (Which == "*" || Model->FindCollection(Which)))
 	{
@@ -3598,7 +3700,8 @@ bool ULyudCityThings::OpenShopOf(const FString& Shop, const FString& TitleKey)
 		{
 			FLyudShopGood Good;
 			Good.Item = LyudCityThingsImpl::Name(G.Item);
-			Good.Price = G.Price;
+			// a good a complete collection made free (the kiosks' paper for a month) costs nothing while that lasts
+			Good.Price = Model->PriceOn(G, LyudCityThingsImpl::When(GetWorld(), false).Since);
 			Good.Count = G.Count;
 			if (ULyudInventory::FindDef(Good.Item))
 			{
