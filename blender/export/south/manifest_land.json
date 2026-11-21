@@ -90,8 +90,8 @@
    "file": "trail_sign_v0.glb",
    "tris": 638,
    "size": [
-    1.466,
-    1.233,
+    1.444,
+    1.242,
     2.57
    ],
    "collision": "exact",
@@ -102,7 +102,7 @@
      "id": "sign_0_1",
      "material": "M_South_Text_sign_0_1",
      "texture": "south_sign_0_1",
-     "yaw_deg": -67.0,
+     "yaw_deg": -62.0,
      "z": 2.12,
      "text_keys": [
       "south.sign.trail.town",
@@ -113,7 +113,7 @@
      "id": "sign_0_2",
      "material": "M_South_Text_sign_0_2",
      "texture": "south_sign_0_2",
-     "yaw_deg": 44.0,
+     "yaw_deg": 42.0,
      "z": 1.86,
      "text_keys": [
       "south.sign.trail.lookout",
@@ -124,7 +124,7 @@
      "id": "sign_0_3",
      "material": "M_South_Text_sign_0_3",
      "texture": "south_sign_0_3",
-     "yaw_deg": 132.0,
+     "yaw_deg": 131.0,
      "z": 1.6,
      "text_keys": [
       "south.sign.trail.sea",
@@ -133,13 +133,13 @@
     }
    ],
    "bounds_min": [
-    -0.808,
-    -0.638,
+    -0.776,
+    -0.658,
     -0.15
    ],
    "bounds_max": [
-    0.658,
-    0.595,
+    0.668,
+    0.584,
     2.42
    ],
    "materials": [
