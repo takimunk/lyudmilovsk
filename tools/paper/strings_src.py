@@ -346,6 +346,56 @@ S = [
 
 # --- festivals with stories of their own (paper.fest.<id>.<n>), front page on their day
 FEST = {
+    # the holidays that use the town's new toys (docs/festivals.md "The new toys"): the allotment's harvest, the kites, the
+    # holiday cups, the Rassvet's programme of the day
+    "harvest_fair": [
+        ("Ярмарка урожая! До трёх часов несите своё на контрольные весы рынка: жюри взвесит, понюхает и запишет. Лучшим грядкам — призы, остальным — уважение соседей.",
+         "The Harvest Fair! Bring your own to the market's control scales before three: the judges will weigh it, smell it and write it down. Prizes for the best beds, the neighbours' respect for the rest.",
+         "収穫祭！三時までに自分の収穫を市場の検量ばかりへ。審査員が量り、香りをかぎ、帳面につける。よい畑には賞を、ほかの畑にはご近所の敬意を。"),
+        ("Сегодня Ярмарка урожая. Самую большую тыкву в прошлом году везли на тачке втроём. В этом году тачку заранее смазали.",
+         "The Harvest Fair today. Last year's biggest pumpkin took three people and a wheelbarrow. This year the wheelbarrow has been oiled in advance.",
+         "今日は収穫祭。去年いちばん大きなカボチャは三人がかりで手押し車にのせて運んだ。今年は手押し車に前もって油をさしてある。"),
+    ],
+    "children_day": [
+        ("День защиты детей: в парке игры и шары, над лужайкой воздушные змеи, а «Рассвет» перед сеансами крутит мультфильм 1908 года. Взрослым вход с ребёнком.",
+         "Children's Day: games and balloons in the park, kites over the lawn, and before its showings the Rassvet runs a cartoon from 1908. Adults admitted with a child.",
+         "こどもの日：公園では遊びと風船、芝生の上には凧。「ラスヴェート」は上映前に一九〇八年のアニメーションをかける。大人は子ども同伴で入場可。"),
+        ("Сегодня главные в городе те, кто ниже прилавка. Редакция напоминает: змея запускают против ветра, а мороженое едят до того, как оно решит иначе.",
+         "Today the town belongs to those shorter than the counter. The editors remind you: a kite is launched into the wind, and ice cream is eaten before it decides otherwise.",
+         "今日の町の主役は売り台より背の低い人たち。編集部からひとこと：凧は風に向かって上げること、アイスはアイスが気を変える前に食べること。"),
+    ],
+    "blossom": [
+        ("Праздник цветения: в парке пледы, термосы и воздушные змеи над деревьями. Лепестки в чай не класть — они и так туда попадут.",
+         "The Blossom Festival: rugs, flasks and kites over the trees in the park. Don't put petals in your tea: they will get there by themselves.",
+         "花祭り：公園には敷物と魔法びん、木々の上には凧。花びらをお茶に入れる必要はない。放っておいても入ってくる。"),
+        ("Парк цветёт. Сегодня там пикник на весь день; кто принесёт своего змея, тому место на лужайке у пруда.",
+         "The park is in blossom. A picnic there all day today; whoever brings a kite of their own gets a place on the lawn by the pond.",
+         "公園が花ざかり。今日は一日じゅうピクニック。自分の凧を持ってきた人には池のそばの芝生に場所がある。"),
+    ],
+    "city_day": [
+        ("С Днём города! Парад по набережной в четыре, вечером концерт и салют. Клубные турниры перенесены на следующую неделю, а «Рассвет» показывает самые первые фильмы на свете.",
+         "Happy City Day! The parade along the promenade is at four, a concert and fireworks tonight. The clubs' tournaments move to next week, and the Rassvet shows the very first films in the world.",
+         "町の日おめでとう！四時に遊歩道でパレード、夜はコンサートと花火。クラブの大会は来週に延期、「ラスヴェート」は世界でいちばん最初の映画を上映する。"),
+        ("Людмиловску сегодня столько лет, сколько записано в архиве, и на год больше, чем вчера. Редакция поздравляет всех, кто здесь живёт, и тех, кто только что приехал.",
+         "Lyudmilovsk is as old today as the archive says, and a year older than yesterday. The editors congratulate everyone who lives here, and those who have only just arrived.",
+         "リュドミロフスクは今日、記録にあるとおりの歳になり、昨日よりひとつ歳をとった。ここに暮らす皆さん、そして着いたばかりの皆さんに、編集部からお祝いを。"),
+    ],
+    "sun_day": [
+        ("День большого солнца. В полдень все на площади, после полудня — у моря под змеями, на закате — на набережной. Клубный турнир сегодня не играют: он через неделю.",
+         "The Day of the Big Sun. Everyone on the square at noon, by the sea under the kites in the afternoon, on the promenade at sunset. No tournament at the club today: it is played a week from now.",
+         "大きな太陽の日。正午は皆で広場へ、午後は凧の下の海辺へ、日没には遊歩道へ。今日はクラブの大会はなく、一週間後に行われる。"),
+        ("Сегодня солнце ближе, чем в любой другой день года. Редакция не знает почему, но флажки развесила тоже.",
+         "The sun is closer today than on any other day of the year. The editors don't know why, but they have hung out their pennants too.",
+         "今日の太陽は一年のどの日よりも近い。編集部にも理由はわからないが、やはり旗は飾った。"),
+    ],
+    "kite_day": [
+        ("День воздушных змеев: с одиннадцати над пляжем тесно. Ветер обещают с моря, леер держать двумя руками, соседа не перелетать.",
+         "Kite Day: the sky over the beach gets crowded from eleven. The wind is promised off the sea; hold the line with both hands and don't fly over your neighbour.",
+         "凧の日：十一時から浜の空は混みあう。風は海からの予報。糸は両手で持ち、隣の凧の上を越えないこと。"),
+        ("Сегодня над пляжем больше змеев, чем чаек, и чайки этим недовольны. Свой змей можно купить в «Волне» или сделать из газеты. Только не из этой.",
+         "More kites than gulls over the beach today, and the gulls are not pleased. You can buy a kite at the Wave or make one from a newspaper. Just not this one.",
+         "今日の浜の空はカモメより凧のほうが多く、カモメは不満そう。凧は「ヴォルナ」で買うか、新聞紙で作れる。ただしこの新聞以外で。"),
+    ],
     "new_year": [
         ("С Новым годом, Людмиловск! Ёлка на площади зажглась ровно в полночь, салют было видно даже с канатной дороги, а последний трамвай, которого у нас нет, всё равно опоздал.",
          "Happy New Year, Lyudmilovsk! The tree on the square lit up at midnight sharp, the fireworks could be seen even from the cable car, and the last tram, which we haven't got, was late anyway.",

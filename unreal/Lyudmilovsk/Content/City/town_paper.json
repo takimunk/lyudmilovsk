@@ -19,14 +19,20 @@
  ],
  "fest_blurbs": [
   "bird_day",
+  "blossom",
+  "children_day",
   "christmas",
+  "city_day",
   "fisherman_day",
+  "harvest_fair",
+  "kite_day",
   "lantern_night",
   "maslenitsa",
   "midsummer",
   "new_year",
   "perseids",
-  "sea_festival"
+  "sea_festival",
+  "sun_day"
  ],
  "cinema": [
   "city.rassvet.poster.mon",
@@ -47,6 +53,14 @@
   "film.programme.sat",
   "film.programme.sun",
   "film.programme.fest"
+ ],
+ "newsreel_fest": [
+  "children_day",
+  "christmas",
+  "city_day",
+  "halloween",
+  "new_year",
+  "sea_festival"
  ],
  "variants": {
   "front.fest_today": 3,
@@ -69,14 +83,20 @@
   "front.contest": 3,
   "front.contest_noplace": 2,
   "fest.bird_day": 2,
+  "fest.blossom": 2,
+  "fest.children_day": 2,
   "fest.christmas": 2,
+  "fest.city_day": 2,
   "fest.fisherman_day": 2,
+  "fest.harvest_fair": 2,
+  "fest.kite_day": 2,
   "fest.lantern_night": 2,
   "fest.maslenitsa": 2,
   "fest.midsummer": 2,
   "fest.new_year": 2,
   "fest.perseids": 2,
-  "fest.sea_festival": 2
+  "fest.sea_festival": 2,
+  "fest.sun_day": 2
  },
  "fronts": [
   "paper.story.1",

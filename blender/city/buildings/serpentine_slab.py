@@ -23,6 +23,7 @@ Material requests: none (CT_Tile, CT_TileWhite, CT_Cobogo, CT_Louvre cover it).
 import math
 import random
 
+import dress_kit as dk
 import furn_int3 as fu
 import interior_kit as kit
 from citykit import (box, offset_polyline, band, extrude_profile, Frame, Mesh, DOOR_W, DOOR_H)
@@ -605,6 +606,19 @@ def _dress_lobby(B, i, cid, p0, p1, nl, Lb, D):
         kit.aquarium(B, x, y, Z, F.yaw(-sb, 0), w=1.0, seed=3)
         B.thing(pre + "aquarium", "screen", (x, y, 1.0), F.yaw(sb, 0), what="aquarium")
     _lobby_extras(B, cid, F, Lb, D, sa, sb, Z, pre, mid, at)
+    # ---- lived-in sets (docs/city_dress.md): a wet day, the winter sledge by the mailboxes, a forgotten paper
+    with B.dress("lobby%d_rain" % cid, weather=("rain", "wet")):
+        dk.doormat_wet(B, *F.p(mid, 1.5), Z, F.yaw(0, 1))
+        dk.umbrella_open(B, *F.p(mid + (1.5 if cid == 0 else -1.4), 2.3), Z, 30 + 70 * cid, seed=cid + 1)
+        if cid == 2:
+            dk.umbrella_open(B, *F.p(mid + 1.4, 2.6), Z, 210, seed=9)
+    if cid != 1:
+        sx, sy = wall(1, 0.85)[0]
+        with B.dress("lobby%d_sledge" % cid, season="winter"):
+            dk.sledge(B, sx, sy, Z, wall(1, 0.85)[1])
+    else:
+        with B.dress("lobby1_paper", weekdays=(0, 1, 2, 3, 4), hours=(8.0, 18.0), chance=0.5):
+            kit.newspaper(B, cx_, cy_, 0.46, F.yaw(-sa, 0), seed=6)
 
 
 # ================================================================================================ round 2: the stair, the flat, the gallery
@@ -806,6 +820,24 @@ def _bauer_flat(B, FP, BP, GP, ctx, zs):
     kit.wall_phone(B, x, y, Zf, W, zc=1.45)
     x, y = at(1.45, 11.3)
     kit.rug(B, x, y, Zf, S, w=0.9, d=0.6, name="rug_1", seed=1)
+    # ---- lived-in sets: Colette's breakfast, her flowers (a nine-day round), boots and coats by the door
+    tt = tb["top"]
+    with B.dress("bauer_breakfast", weekdays=(0, 1, 2, 3, 4), hours=(7.5, 10.0)):
+        dk.plate_crumbs(B, *at(6.5 - 0.25, 10.0 - 0.2), tt, 0.0, seed=1)
+        kit.cup(B, *at(6.5 + 0.25, 10.0 - 0.2), tt, 40.0)
+        kit.glass(B, *at(6.5 + 0.2, 10.0 + 0.27), tt, 0.0)
+    cvx, cvy = at(5.75, 5.05)
+    for nm, (a, b) in (("fresh", (0, 6)), ("wilt", (6, 8)), ("empty", (8, 9))):
+        with B.dress("bauer_flowers_" + nm, phase=(9, a, b)):
+            if nm == "wilt":
+                dk.vase_wilted(B, cvx, cvy, ct["top"], 0.0, seed=3)
+            else:
+                kit.vase(B, cvx, cvy, ct["top"], 0.0, flowers=(nm == "fresh"), seed=3)
+    for nm, months, kind, sea in (("winter", (12, 1, 2), "felt", "winter"), ("mild", (3, 4, 5, 9, 10, 11), "rubber", "autumn"),
+                                  ("summer", (6, 7, 8), "sandals", "summer")):
+        with B.dress("bauer_hall_" + nm, months=months):
+            dk.boots(B, *at(1.25, 10.2), Zf, E, kind=kind, seed=4)
+            dk.wall_hooks(B, *at(0.2, 11.5), Zf, E, w=0.7, season=sea, seed=5)
     # ---- bedroom
     x, y = at(2.33, 6.65)
     kit.bed(B, x, y, Zf, S, size="single", blanket="CT_PlasterGreen")

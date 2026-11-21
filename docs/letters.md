@@ -67,3 +67,7 @@ the nudge; answer options in order; a late start without birds; a month's jump o
 - The engine side was written in the cloud and has not been compiled yet: the first Mac build may need small fixes.
 - The boxes are placed at run time by traces round the kiosks; their spots want one look in the game.
 - The boxes and the card on the shelf are built from the engine's basic shapes; no new item, so no new icon.
+
+## P.S. about the town's talk
+
+A townsperson's reply or a letter from home may end with a P.S. about what the town says of the hero lately (ULyudTownRumours::PostScript, FLetter.Ps/PsArgs, saved as fields 11 and 12). Words: tools/rumours/rumours.py (PS), docs/town_rumours.md.

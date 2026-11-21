@@ -56,6 +56,10 @@ SELL = {"radish": [2, 3, 4], "dill": [2, 4, 5], "potatoes": [2, 3, 4], "tomatoes
 # control scales Monday to Friday, judged on Sunday at 16 (the market's own notices city.reg.market.1, city.mk.day.jam.1)
 JAM = {"strawberries": 6, "hours": 20, "contest_weekday": 6, "contest_hour": 16, "prize": [50, 30, 15]}
 
+# the harvest fair (festivals.json harvest_fair, docs/festivals.md "The new toys"): the first harvest he brings to the scales on
+# its day is judged too (LyudGarden::FairPlace: how well it was kept, how many crops), roubles for the first three places
+FAIR = {"festival": "harvest_fair", "prize": [80, 40, 20]}
+
 # where it is: the commune house's yard (P-T2H2, Narkomfin's slab on the second terrace), behind the house on the inland
 # side, between its back and the third terrace's wall. Local metres from the plot's middle: +x toward the sea (the front),
 # +y north; the build turns them by the plot's yaw. Ground: the terrace's (the build takes the plot's z).

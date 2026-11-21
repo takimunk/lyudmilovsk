@@ -30,6 +30,8 @@ namespace LyudFriends
 		int Bench = 6;          // an hour on a bench together (once a day)
 		int Tea = 12;
 		int Outing = 12;
+		int Festival = 8;       // a holiday spent together: met at the festival (once a day a friend)
+		int FestivalLevel = 3;  // from a friend up
 		int TeaLevel = 2;       // a host invites to tea from this level
 		int TeaEvery = 7;       // days between a tea (or a missed invitation) and the next invitation
 		int TeaAhead = 2;       // the tea is this many days after the invitation is written (its letter takes a post day)
@@ -122,6 +124,7 @@ namespace LyudFriends
 		int TeaLast = -1;           // the day of the last tea, or of the last invitation missed
 		int OutingDay = -1;         // an invitation to their outing: on this day (-1 none)
 		int OutingLast = -1;        // the day of the last outing he was invited to
+		int FestDay = -1;           // the last holiday they met at (once a day)
 		int LevelShown = 0;         // the highest level already told (the game's toast once each)
 	};
 
@@ -168,6 +171,8 @@ namespace LyudFriends
 		/** Tea at a host's: the invitation is used up. */
 		int Tea(const std::string& Key, int Day);
 		int Outing(const std::string& Key, int Day);
+		/** They met at a holiday's gathering (docs/festivals.md "The new toys"): counts once a day, from a friend up. */
+		int Festival(const std::string& Key, int Day);
 
 		/** What they think of an item (no state). */
 		EGift Likes(const std::string& Item, const FWho& Who) const;

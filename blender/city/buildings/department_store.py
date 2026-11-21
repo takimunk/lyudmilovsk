@@ -23,6 +23,7 @@ from citykit import box, prism, ring, Mesh, Facade, wall_with_holes, reveal
 from _furn1 import rbox, cyl, blob, mannequin
 import furn_int3 as fu
 import interior_kit as kit
+import dress_kit as dk
 
 INFO = {
     "name_ru": "Универмаг", "name_en": "Department Store",
@@ -257,6 +258,7 @@ def build(B):
             for ly in (8.0, 16.5, 25.0):
                 B.lamp((lx, ly, zc - 0.3), lumens=2300, colour="#FFD2A0", radius=12.0)
 
+    _dress(B)
     B.footprint = [(-HW, -1.0), (HW, -1.0), (HW, D), (-HW, D)]
     B.height = 14.0
     B.note("2 shop halls + roof sign; stair hole at x -1.8..1.8, y 21..27.3; entrances main/west/east")
@@ -578,8 +580,8 @@ def _ground(B, rnd):
 
     # ---- the cloakroom (back wall, east of the stair)
     kit.shop_counter(B, 6.4, 26.4, zf, 0.0, w=3.4, d=0.7, mat=kit.WOODL, top="CT_TileWhite", front="CT_PlasterGreen", till=False)
-    kit.coat_rack(B, 5.0, 28.8, zf, 0.0, w=2.2, coats=0.8, seed=3)
-    kit.coat_rack(B, 7.9, 28.8, zf, 0.0, w=2.2, coats=0.6, seed=4)
+    kit.coat_rack(B, 5.0, 28.8, zf, 0.0, w=2.2, coats=0, seed=3)   # coats come from the cloak_* dressing sets
+    kit.coat_rack(B, 7.9, 28.8, zf, 0.0, w=2.2, coats=0, seed=4)
     kit.cup(B, 7.2, 26.35, zf + 1.05, 0.0)
     kit.newspaper(B, 5.4, 26.4, zf + 1.05, 8.0, seed=5)
     kit.sign_plate(B, 6.4, 26.4, zf, 0.0, name="sign_cloakroom", w=1.4, zc=3.7, hang=True)
@@ -836,6 +838,53 @@ def _umbrella(d, x, y, z, mat):
     cyl(d, "CT_Steel", x, y, z, z + 0.8, 0.008, 4)
     cyl(d, mat, x, y, z + 0.08, z + 0.58, 0.012, 6, r1=0.048)
     box(d, "CT_Wood", x - 0.035, x + 0.035, y - 0.012, y + 0.012, z + 0.78, z + 0.82, faces="xXyYZ")
+
+
+def _dress(B):
+    """Lived-in dressing (docs/city_dress.md): the cloakroom's coats by the season, wet mats and umbrellas at the doors
+    on rain days, felt boots in winter, the cafe after lunch, flowers on the cafe tables (fresh, then wilting), a satchel
+    on the window bench after school, flowers on the counters on holidays."""
+    zg, zf = 0.03, Z_SLAB1
+    with B.dress("cloak_winter", months=(12, 1, 2)):
+        dk.coats_on_rail(B, 5.0, 28.8, zg, 0.0, w=2.2, share=0.75, season="winter", seed=3)
+    with B.dress("cloak_winter_b", months=(12, 1, 2)):
+        dk.coats_on_rail(B, 7.9, 28.8, zg, 0.0, w=2.2, share=0.55, season="winter", seed=4)
+    with B.dress("cloak_autumn", months=(3, 4, 10, 11)):
+        dk.coats_on_rail(B, 5.0, 28.8, zg, 0.0, w=2.2, share=0.5, season="autumn", seed=3)
+    with B.dress("cloak_autumn_b", months=(3, 4, 10, 11)):
+        dk.coats_on_rail(B, 7.9, 28.8, zg, 0.0, w=2.2, share=0.3, season="autumn", seed=4)
+    with B.dress("cloak_summer", months=(5, 6, 7, 8, 9)):
+        dk.coats_on_rail(B, 5.0, 28.8, zg, 0.0, w=2.2, share=0.12, season="summer", seed=3)
+        dk.coats_on_rail(B, 7.9, 28.8, zg, 0.0, w=2.2, share=0.12, season="summer", seed=4)
+    with B.dress("doors_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, -0.6, 2.2, zg + 0.014, 0.0)
+        dk.doormat_wet(B, 0.6, 2.2, zg + 0.014, 0.0)
+        dk.umbrella_open(B, -2.3, 3.3, zg, 30, seed=1)
+        dk.umbrella_open(B, 2.5, 3.5, zg, 200, seed=2)
+        dk.umbrella_stand(B, 1.9, 2.0, zg, 0, n=4, seed=4)
+    with B.dress("doors_rain_east", weather=("rain", "wet")):
+        dk.doormat_wet(B, 9.0, 2.2, zg + 0.002, 0.0, w=1.2)
+        dk.umbrella_open(B, 11.3, 3.4, zg, 110, seed=3)
+        dk.umbrella_stand(B, 10.6, 2.0, zg, 0, n=3, seed=5)
+    with B.dress("doors_winter", months=(12, 1, 2), weather_not=("rain",)):
+        dk.boots(B, -1.7, 2.1, zg, -4, kind="felt", seed=6)
+        dk.boots(B, 8.0, 2.1, zg, 6, kind="felt", seed=7)
+        dk.boots(B, 10.0, 2.1, zg, 0, kind="galoshes", seed=8)
+    cafe = ((16.5, 3.4), (16.5, 6.4), (13.3, 4.9), (19.0, 8.6))
+    with B.dress("cafe_lunch", hours=(13, 16), chance=0.75):
+        for k, (tx, ty) in enumerate(cafe):
+            dk.plate_crumbs(B, tx + 0.15, ty - 0.2, zf + 0.74, 20.0 * k, seed=k + 1)
+    with B.dress("cafe_flowers", phase=(7, 0, 5)):
+        kit.vase(B, 16.5, 3.65, zf + 0.74, 0.0, seed=51)
+        kit.vase(B, 13.3, 5.15, zf + 0.74, 0.0, seed=52)
+    with B.dress("cafe_wilted", phase=(7, 5, 7)):
+        dk.vase_wilted(B, 16.5, 3.65, zf + 0.74, 0.0, seed=51)
+        dk.vase_wilted(B, 13.3, 5.15, zf + 0.74, 0.0, seed=52)
+    with B.dress("bench_satchel", weekdays=(0, 1, 2, 3, 4), hours=(15, 19), chance=0.6):
+        dk.school_bag(B, 12.7, 2.4, zf + 0.45, 0.0, seed=3)
+    with B.dress("festive_flowers", festival="any"):
+        kit.vase(B, 6.4, 26.45, zg + 1.05, 0.0, seed=61)
+        kit.vase(B, -5.35, 24.1, zf + 1.05, 0.0, seed=62)
 
 
 def _extras(B, rnd):

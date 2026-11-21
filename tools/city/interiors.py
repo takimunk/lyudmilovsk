@@ -47,6 +47,7 @@ PEOPLE_FILES = (os.path.join(CONTENT, "PeopleData", "people.json"), os.path.join
 # what a quest's `photo <target>` may be besides a map place: the dog Maru, a resident's key (photo_subjects)
 PHOTO_ANIMALS = ("maru",)
 FESTIVALS = os.path.join(CONTENT, "PeopleData", "festivals.json")
+RUMOURS = os.path.join(CONTENT, "PeopleData", "rumours.json")   # the talk of the town's kinds (tools/rumours/rumours.py)
 LANGS = ("ru", "en", "ja")
 
 KINDS = ("seat", "bed", "shelf", "board", "counter", "machine", "play", "sport", "craft", "screen", "take", "door")
@@ -81,15 +82,16 @@ OPEN_SCREENS = ("books", "piano", "photo_lab", "photo_darkroom", "photo_contest"
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
 # them), have ("set/piece"), count (["set", n]); "collect" ("set/piece") is no condition: the stamp the line gives when shown
 # them), have ("set/piece"), count (["set", n]), read (a text read to its end), did (an act's target the hero has done), heard
-# (a staff talk topic asked about)
+# (a staff talk topic asked about), rumour (a kind of the talk of the town about the hero going round now, "any", "!kind":
+# docs/town_rumours.md)
 LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect", "read", "did",
-              "heard", "pay", "stay")
+              "heard", "pay", "stay", "rumour")
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
             "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments")
 # the staff talk (docs/city_interiors.md "Staff talk"): a topic's fields besides its line conditions (when it is offered)
-TOPIC_FIELDS = ("id", "k", "lines", "once", "gives")
+TOPIC_FIELDS = ("id", "k", "lines", "once", "gives", "everywhere")
 MAX_TOPICS = 8
 # room tones (docs/city_interiors.md "Room tones")
 TONE_FIELDS = ("loop", "volume", "shots", "every", "shot_volume", "closed", "about")
@@ -564,6 +566,10 @@ def check_line_conds(where, cond):
                 STAY_USED.append((where, v.lstrip("!")))
             else:
                 err("%s: stay must be a stay id (or \"!id\": not on it)" % where)
+        elif k == "rumour":
+            kinds = set(load(RUMOURS).get("kinds", {})) if os.path.exists(RUMOURS) else set()
+            if not (isinstance(v, str) and (v.lstrip("!") == "any" or v.lstrip("!") in kinds)):
+                err("%s: rumour must be a kind of PeopleData/rumours.json, \"any\" (or \"!kind\")" % where)
 
 
 def expand_lines(spec, strings, where="lines"):
@@ -1006,6 +1012,11 @@ def build_topic(where, t, strings):
             STAMPS_USED.append(("%s line %s" % (where, l["k"]), l["collect"]))
     rec = dict({"k": t["k"]}, **cond)
     rec["lines"] = lines
+    if "everywhere" in t:
+        if not isinstance(t["everywhere"], bool):
+            err("%s: everywhere must be true or false" % where)
+        elif t["everywhere"]:
+            rec["everywhere"] = True   # offered by every counter with staff talk (the talk of the town)
     if "once" in t:
         if not isinstance(t["once"], bool):
             err("%s: once must be true or false" % where)
@@ -1641,7 +1652,7 @@ def given_topic(given, tp):
             given[c.partition("/")[0]].add(c.partition("/")[2])
 
 
-CUP_FIELDS = ("title", "venue", "game", "plot", "days", "start", "step", "collect")
+CUP_FIELDS = ("title", "venue", "game", "plot", "days", "start", "step", "collect", "fest_title", "fest_collect")
 DOW = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 
 
@@ -1693,6 +1704,15 @@ def build_tournaments(src, strings, regs, things, acts, texts, plot_ids):
             STAMPS_USED.append((where, c["collect"]))
         out[cid] = {"title": c.get("title", ""), "venue": c.get("venue", ""), "game": game, "plot": plot, "weekday": wd,
                     "start": float(start), "step": float(step), "collect": c.get("collect", "")}
+        # a holiday's cup (docs/festivals.md "The new toys"): the board's heading and the champion's second stamp on a holiday
+        if c.get("fest_title"):
+            if not has_string(c["fest_title"], strings):
+                err("%s: fest_title string %s is missing" % (where, c["fest_title"]))
+            out[cid]["fest_title"] = c["fest_title"]
+        if c.get("fest_collect"):
+            check_line_conds(where, {"collect": c["fest_collect"]})
+            STAMPS_USED.append((where, c["fest_collect"]))
+            out[cid]["fest_collect"] = c["fest_collect"]
     for tx, t in texts.items():
         g = t.get("gen", "")
         if g.startswith("cup:") and g[4:] not in out:
@@ -1759,8 +1779,9 @@ def build_collections(src, things, acts, strings, regs=None, texts=None, cups=No
             elif c:
                 given[c.partition("/")[0]].add(c.partition("/")[2])
     for c in (cups or {}).values():
-        if c.get("collect"):
-            given[c["collect"].partition("/")[0]].add(c["collect"].partition("/")[2])
+        for st in (c.get("collect"), c.get("fest_collect")):
+            if st:
+                given[st.partition("/")[0]].add(st.partition("/")[2])
     out = collections.OrderedDict()
     for sid in sorted(src):
         if sid.startswith("_"):
@@ -2182,6 +2203,8 @@ def main():
         if v.lstrip("!") not in TOPICS:
             err("%s: heard %s is not a topic" % (where, v))
     offered = {tp for t in things for tp in t.get("topics", []) + acts[t["act"]].get("topics", [])}
+    if offered:
+        offered |= {tp for tp, rec in TOPICS.items() if rec.get("everywhere")}
     things.sort(key=lambda t: t["id"])
     used = {t["act"] for t in things}
     gen_strings = {}

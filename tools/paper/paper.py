@@ -253,6 +253,9 @@ def main():
     data["fest_blurbs"] = sorted(src.FEST)
     data["cinema"] = CINEMA
     data["newsreel"] = NEWSREEL
+    # the holidays with a newsreel of their own (cinema.json "festivals", tools/films/films.py: film.programme.fest.<id>)
+    with open(os.path.join(CONTENT, "City", "cinema.json"), encoding="utf-8") as f:
+        data["newsreel_fest"] = sorted(json.load(f).get("festivals", {}))
     data["variants"] = variants(tables)
     data["fronts"] = pool("paper.story", src.FRONTS)
     data["town"] = pool("paper.town", src.TOWN)

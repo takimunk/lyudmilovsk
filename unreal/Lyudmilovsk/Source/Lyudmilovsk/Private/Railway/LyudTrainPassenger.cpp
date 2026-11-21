@@ -14,6 +14,7 @@
 #include "Railway/LyudRailway.h"
 #include "Railway/LyudTrain.h"
 #include "UI/LyudGameScreen.h"
+#include "UI/LyudQuests.h"
 #include "World/LyudPrefetch.h"
 
 #include "Components/StaticMeshComponent.h"
@@ -491,6 +492,10 @@ void ULyudTrainPassenger::TickConductor(AHeroCharacter* Hero, float DeltaTime)
 		else if (Res.Verdict == LyudTicket::EVerdict::Fine && Screen)
 		{
 			Screen->Toast(LyudText::Get(TEXT("rail.fine.paid"), { FStringFormatArg(Res.Fine) }));
+		}
+		if (Res.Verdict == LyudTicket::EVerdict::Fine)
+		{
+			ULyudQuests::Notify(this, TEXT("fined"), TEXT("conductor"));    // the passengers tell the town (docs/town_rumours.md)
 		}
 		if (Res.bTakeTicket && Inv && Inv->Remove(LyudPassengerImpl::Ticket, 1))
 		{

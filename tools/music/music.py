@@ -143,6 +143,7 @@ def main():
              "music.radio.now.requests", "music.radio.now.off_air", "music.radio.cap.track", "music.radio.cap.sign_on.1",
              "music.radio.cap.sign_on.2", "music.radio.cap.sign_on.3", "music.radio.cap.sign_off.1", "music.radio.cap.sign_off.2",
              "music.radio.cap.time", "music.radio.news.intro", "music.radio.news.outro", "music.radio.news.paper",
+             "music.radio.show.festival", "music.radio.fest.sign_on", "music.radio.fest.news", "music.radio.fest.hour",
              "music.radio.weather.intro", "music.radio.weather.now", "music.radio.weather.calm", "music.radio.tide.rising",
              "music.radio.tide.falling", "music.radio.ship.intro", "music.radio.ship.outro", "music.radio.ship.line",
              "music.radio.req.intro", "music.radio.req.outro", "music.radio.req.hero", "music.player.play", "music.player.more",
