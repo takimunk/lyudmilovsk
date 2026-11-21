@@ -208,3 +208,71 @@ def window_latch(B, tid, near, z=0.0, what="window", reach=5.0, room=None):
     k = depth + 0.25
     B.thing(tid, "board", (c[0] - n[0] * k, c[1] - n[1] * k, min(c[2], z + 1.5)), yaw, what=what)
     return w_["id"]
+
+
+# ---------------------------------------------------------------- things to open and pick up in the homes (room details)
+# docs/city_interiors.md "Things to open and pick up": a wardrobe's doors and a kitchen cupboard open on E (what is inside,
+# by season and weather), a kettle goes on, a photo on the bedside table is picked up and turned over (its back is the
+# home's own: an id rule per plot), a note left on the kitchen table says something new each day of the week.
+
+def _local(x, y, yaw, lx, ly):
+    """A kit piece's local point (lx, ly) (its front toward -ly) in the building's plan."""
+    r = math.radians(yaw)
+    return x + lx * math.cos(r) - ly * math.sin(r), y + lx * math.sin(r) + ly * math.cos(r)
+
+
+def wardrobe_thing(B, tid, x, y, yaw, z=0.0, d=0.58):
+    """The thing of a kit.wardrobe(x, y, z, yaw) (what=wardrobe): before its doors at handle height."""
+    px, py = _local(x, y, yaw, 0.0, -d - 0.12)
+    B.thing(tid, "board", (px, py, z + 1.2), yaw, what="wardrobe")
+
+
+def cupboard_thing(B, tid, x, y, yaw, z=0.0, modules="cupboard,stove,sink,fridge", k=0):
+    """The thing of module k (a cupboard) of a kit.kitchen_unit(x, y, z, yaw, modules) (what=cupboard): before its door."""
+    mods = modules.split(",")
+    assert mods[k] == "cupboard", "cupboard_thing %s: module %d is %s" % (tid, k, mods[k])
+    px, py = _local(x, y, yaw, -0.3 * len(mods) + 0.6 * k + 0.3, -0.75)
+    B.thing(tid, "board", (px, py, z + 0.6), yaw, what="cupboard")
+
+
+def kettle(B, tid, x, y, yaw, z=0.0, modules="cupboard,stove,sink,fridge"):
+    """An enamel kettle on the hob of a kit.kitchen_unit(x, y, z, yaw, modules) and its thing (what=kettle)."""
+    mods = modules.split(",")
+    k = mods.index("stove")
+    lx = -0.3 * len(mods) + 0.6 * k + 0.17
+    kx, ky = _local(x, y, yaw, lx, -0.45)
+    p = kit._P(B, kx, ky, z + 0.9, yaw, "kettle")
+    p.kind = "prop"
+    p.lathe("CT_PlasterRed", 0, 0, [(0.09, 0.0), (0.11, 0.035), (0.105, 0.11), (0.07, 0.145), (0.045, 0.155)], 10)
+    p.cyl("CT_PlasterRed", 0, 0, 0.155, 0.16, 0.045, 10)
+    p.cyl("CT_Wood", 0, 0, 0.16, 0.185, 0.014, 5)
+    p.rod("CT_PlasterRed", (0.09, 0.0, 0.07), (0.18, 0.0, 0.15), 0.022, 5, caps=True)
+    p.rod("CT_Wood", (-0.09, 0.0, 0.13), (0.0, 0.0, 0.24), 0.012, 4, caps=True)
+    p.rod("CT_Wood", (0.0, 0.0, 0.24), (0.09, 0.0, 0.13), 0.012, 4, caps=True)
+    p.done(top=0.18)
+    px, py = _local(x, y, yaw, lx, -0.8)
+    B.thing(tid, "machine", (px, py, z + 1.05), yaw, what="kettle")
+
+
+def photo_frame(B, tid, x, y, yaw, z=0.0, top=0.55, side=0.12):
+    """A small standing photo frame on a bedside table (kit.bedside_table(x, y, z, yaw): its top `top` over z), beside its
+    lamp, and its thing (what=photo): picked up, looked at, turned over."""
+    fx, fy = _local(x, y, yaw, side, 0.02)
+    p = kit._P(B, fx, fy, z + top, yaw + 12.0, "photo_frame")
+    p.kind = "prop"
+    p.box("CT_Wood", -0.06, 0.06, -0.012, 0.0, 0.0, 0.16, f="xXyYzZ")
+    p.box("CT_Paper", -0.045, 0.045, -0.0135, -0.012, 0.018, 0.142, f="y")
+    p.rod("CT_Wood", (0.0, 0.0, 0.1), (0.0, 0.06, 0.0), 0.006, 3)
+    p.done()
+    px, py = _local(x, y, yaw, side, -0.3)
+    B.thing(tid, "take", (px, py, z + top + 0.1), yaw, what="photo")
+
+
+def note_left(B, tid, x, y, z, yaw=0.0):
+    """A folded note left on a table top at (x, y, z) and its thing (what=note): the resident's word of the day."""
+    p = kit._P(B, x, y, z, yaw + 20.0, "note_left")
+    p.kind = "prop"
+    p.face("CT_Paper", [(-0.07, -0.05, 0.002), (0.07, -0.05, 0.002), (0.07, 0.0, 0.02), (-0.07, 0.0, 0.02)])
+    p.face("CT_Paper", [(-0.07, 0.0, 0.02), (0.07, 0.0, 0.02), (0.07, 0.05, 0.002), (-0.07, 0.05, 0.002)])
+    p.done()
+    B.thing(tid, "take", (x, y, z + 0.05), yaw, what="note")

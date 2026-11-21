@@ -115,6 +115,7 @@ public:
 		using namespace LyudUI;
 		TWeakObjectPtr<ULyudWinterPlay> W = InArgs._Owner;
 		SetVisibility(EVisibility::HitTestInvisible);
+		ColdText = LyudText::Get(TEXT("winter.hud.cold"));
 		auto Bar = [W](bool bHeat)
 		{
 			return SNew(SBox).WidthOverride(220.f).HeightOverride(8.f)
@@ -125,15 +126,29 @@ public:
 					.FillColorAndOpacity(bHeat ? FLinearColor(0.95f, 0.42f, 0.16f, 0.9f) : FLinearColor(0.45f, 0.72f, 0.98f, 0.9f))
 				];
 		};
-		auto Label = [W](bool bHeat)
+		auto Label = [this, W](bool bHeat)
 		{
 			return SNew(STextBlock).Font(Font(12))
 				.ShadowOffset(FVector2D(1, 1)).ShadowColorAndOpacity(FLinearColor(0, 0, 0, 0.7f))
 				.Visibility_Lambda([W, bHeat]() { return W.IsValid() && (bHeat ? (W->GetHeat() > 0.02f || W->IsInSteamRoom()) : W->IsColdShown()) ? EVisibility::Visible : EVisibility::Collapsed; })
-				.Text_Lambda([W, bHeat]()
+				.Text_Lambda([this, W, bHeat]()
 				{
-					if (!W.IsValid()) return FText::GetEmpty();
-					return bHeat ? LyudText::Get(TEXT("winter.hud.heat"), { FString::FromInt(W->GetRounds()) }) : LyudText::Get(TEXT("winter.hud.cold"));
+					// asked for every frame the HUD shows: the words are looked up only when the rounds change
+					if (!W.IsValid())
+					{
+						return FText();
+					}
+					if (!bHeat)
+					{
+						return ColdText;
+					}
+					const int32 Rounds = W->GetRounds();
+					if (Rounds != HeatRounds)
+					{
+						HeatRounds = Rounds;
+						HeatText = LyudText::Get(TEXT("winter.hud.heat"), { FString::FromInt(Rounds) });
+					}
+					return HeatText;
 				})
 				.ColorAndOpacity(FLinearColor(0.92f, 0.9f, 0.86f, 0.95f));
 		};
@@ -170,6 +185,11 @@ public:
 			]
 		];
 	}
+
+private:
+	/** The labels' words (the heat's with the rounds it was made for). */
+	FText ColdText, HeatText;
+	int32 HeatRounds = -1;
 };
 
 // ------------------------------------------------------------------ life
@@ -271,6 +291,7 @@ void ULyudWinterPlay::OnGameSaving_Implementation()
 	M->Save.ThawHours = M->IceState.ThawHours;
 	M->Save.BestGlideM = M->Skater.BestGlideM;
 	M->Save.SkatedM = SkatedM;
+	M->Save.Rounds = M->Body.Rounds;      // today's (RefreshFacts starts them again on a new day)
 	Saved = Str(M->Save.Save());
 }
 
@@ -295,6 +316,7 @@ void ULyudWinterPlay::OnGameLoaded_Implementation()
 	bFirstGlide = SkatedM > 50.f;
 	bLongGlide = M->Skater.BestGlideM >= 25.0;
 	M->Body.Reset();
+	M->Body.Rounds = FMath::Max(0, M->Save.Rounds);
 	M->Fight.End();
 	M->Balls.clear();
 	Rolling = -1;
@@ -304,6 +326,29 @@ void ULyudWinterPlay::OnGameLoaded_Implementation()
 		ShowSnowman(I);
 	}
 	IceTimer = 0.f;
+	// a save made on the steam room's shelf puts the hero back inside the banya, whose door never opens (he goes in and out
+	// through the fade) and whose walls are solid: out onto the porch, as when he leaves
+	UWorld* World = GetWorld();
+	AHeroCharacter* Hero = World ? Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0)) : nullptr;
+	if (Hero && !Hero->IsSeated())
+	{
+		const FParams& P = M->P;
+		const FRotator Turn(0.f, (float)P.BanyaYaw, 0.f);
+		const FVector Local = Turn.UnrotateVector(Hero->GetActorLocation() - Cm(P.BanyaAt));
+		if (FMath::Abs(Local.X) < P.BanyaSize[0] * 50.0 && FMath::Abs(Local.Y) < P.BanyaSize[1] * 50.0 && FMath::Abs(Local.Z) < 500.0)
+		{
+			FVector Out = BanyaPoint(P.Door) + Turn.Vector() * 130.0;
+			const float Half = Hero->GetCapsuleComponent() ? Hero->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() : 90.f;
+			FHitResult Hit;
+			FCollisionQueryParams Q(SCENE_QUERY_STAT(WinterPlayLoadedOut), false, Hero);
+			if (World->LineTraceSingleByChannel(Hit, Out + FVector(0.0, 0.0, 300.0), Out - FVector(0.0, 0.0, 600.0), ECC_Visibility, Q))
+			{
+				// the porch may not be built yet (the first tick builds it): a little over the sand then
+				Out.Z = Hit.ImpactPoint.Z + (bBuilt ? 0.0 : 20.0);
+			}
+			Hero->TeleportTo(Out + FVector(0.0, 0.0, Half + 2.0), Turn);
+		}
+	}
 }
 
 // ------------------------------------------------------------------ small helpers
@@ -377,6 +422,18 @@ void ULyudWinterPlay::SetPrompt(const FText& Text)
 	bPrompt = bWant;
 	PromptShown = Text;
 	UI->SetPrompt(this, Text);
+}
+
+void ULyudWinterPlay::SetPromptKey(const TCHAR* Key, int32 Arg)
+{
+	// a held prompt is asked for every frame: its words are looked up (and formatted) only when the key or its number changes
+	if (bPrompt && PromptKey == Key && PromptArg == Arg)
+	{
+		return;
+	}
+	SetPrompt(Arg != MIN_int32 ? LyudText::Get(Key, { FString::FromInt(Arg) }) : LyudText::Get(Key));
+	PromptKey = bPrompt ? Key : nullptr;
+	PromptArg = Arg;
 }
 
 UStaticMeshComponent* ULyudWinterPlay::MakePart(UStaticMesh* Mesh, const FString& Name, bool bCollide, const FTransform& Xf, float CullCm, bool bMoving)
@@ -637,8 +694,9 @@ void ULyudWinterPlay::RefreshFacts(bool bForce)
 			}
 		}
 		HourTimer = 0.f;
-		if (bChanged && Rolling < 0)
+		if (bChanged)
 		{
+			// (also while a ball is being rolled: a snowman gone from the list shifts the others' parts)
 			HideSnowmen();
 			for (int32 K = 0; K < (int32)M->Save.Snowmen.size(); K++)
 			{
@@ -1004,7 +1062,7 @@ void ULyudWinterPlay::TickBanya(AHeroCharacter* Hero, float Dt)
 	if (bInSteam)
 	{
 		const bool bVenik = bVenikThisVisit || (Inv && Inv->Count(TEXT("birch_venik")) > 0);
-		SetPrompt(LyudText::Get(bVenik ? TEXT("winter.banya.prompt_steam_venik") : TEXT("winter.banya.prompt_steam")));
+		SetPromptKey(bVenik ? TEXT("winter.banya.prompt_steam_venik") : TEXT("winter.banya.prompt_steam"));
 		if (PC && Pending == 0 && (!UI || !UI->IsOpen()))
 		{
 			if (ANpcTalkDirector::UsePressed(PC))
@@ -1054,8 +1112,18 @@ void ULyudWinterPlay::TickBanya(AHeroCharacter* Hero, float Dt)
 	const FVector Stand = Door + Front * 80.0;
 	const FVector L = Hero->GetActorLocation();
 	bNearDoor = FVector::Dist2D(L, Stand) < 170.0 && FMath::Abs(L.Z - Stand.Z - 90.0) < 150.0;
-	if (!bNearDoor || Hero->IsSeated() || Pending != 0 || (UI && UI->IsOpen()))
+	if (!bNearDoor)
 	{
+		return;
+	}
+	// this near the door the snow's code leaves the prompt alone (TickSnowman), so the door's prompt, or the steam room's
+	// he has just come out of, is taken down here when it no longer holds
+	if (Hero->IsSeated() || Pending != 0 || (UI && UI->IsOpen()))
+	{
+		if (Rolling < 0)
+		{
+			SetPrompt(FText());
+		}
 		return;
 	}
 	FVector Eye;
@@ -1065,15 +1133,19 @@ void ULyudWinterPlay::TickBanya(AHeroCharacter* Hero, float Dt)
 		PC->GetPlayerViewPoint(Eye, View);
 		if (FVector::DotProduct(View.Vector(), (Door + FVector(0.0, 0.0, 120.0) - Eye).GetSafeNormal()) < 0.4)
 		{
+			if (Rolling < 0)
+			{
+				SetPrompt(FText());
+			}
 			return;
 		}
 	}
 	if (!BanyaOpenNow())
 	{
-		SetPrompt(LyudText::Get(TEXT("winter.banya.closed")));
+		SetPromptKey(TEXT("winter.banya.closed"));
 		return;
 	}
-	SetPrompt(LyudText::Get(TEXT("winter.banya.prompt_door"), { FString::FromInt(M->P.BanyaPrice) }));
+	SetPromptKey(TEXT("winter.banya.prompt_door"), M->P.BanyaPrice);
 	if (!PC)
 	{
 		return;
@@ -1861,8 +1933,8 @@ void ULyudWinterPlay::TickSnowman(AHeroCharacter* Hero, float Dt)
 		}
 		const bool bOnto = Near >= 0 && NearD < RollR * 100.0 + 45.0 && M->Save.Snowmen[(size_t)Near].Balls > 0 && M->Save.Snowmen[(size_t)Near].Balls < 3;
 		const bool bFits = bOnto && CanLift(P, RollR, M->Save.Snowmen[(size_t)Near].R[M->Save.Snowmen[(size_t)Near].Balls - 1]);
-		SetPrompt(LyudText::Get(bOnto ? (bFits ? TEXT("winter.snowman.prompt_lift") : TEXT("winter.snowman.prompt_too_big")) : TEXT("winter.snowman.prompt_leave"),
-			{ FString::FromInt(FMath::RoundToInt(RollR * 200.f)) }));
+		SetPromptKey(bOnto ? (bFits ? TEXT("winter.snowman.prompt_lift") : TEXT("winter.snowman.prompt_too_big")) : TEXT("winter.snowman.prompt_leave"),
+			FMath::RoundToInt(RollR * 200.f));
 		if (!bUse)
 		{
 			return;
@@ -1929,7 +2001,7 @@ void ULyudWinterPlay::TickSnowman(AHeroCharacter* Hero, float Dt)
 			: (Sm.Eyes < 2 && bCoal ? TEXT("winter.snowman.prompt_eyes") : nullptr));
 		if (Key)
 		{
-			SetPrompt(LyudText::Get(Key));
+			SetPromptKey(Key);
 			if (bUse)
 			{
 				if (!Sm.bArms) Sm.bArms = true;
@@ -1945,14 +2017,13 @@ void ULyudWinterPlay::TickSnowman(AHeroCharacter* Hero, float Dt)
 			}
 			return;
 		}
-		SetPrompt(LyudText::Get(!Sm.bNose ? TEXT("winter.snowman.want_carrot") : TEXT("winter.snowman.want_coal")));
+		SetPromptKey(!Sm.bNose ? TEXT("winter.snowman.want_carrot") : TEXT("winter.snowman.want_coal"));
 		return;
 	}
 	// crouched on snow that packs: start a ball
-	const float Depth = Winter->GetSnowDepthAt(Feet);
-	if (Hero->GetCrouchAlpha() > 0.6f && Depth >= (float)P.ManMinCm && PacksAt(Feet) > 0.05f)
+	if (Hero->GetCrouchAlpha() > 0.6f && Winter->GetSnowDepthAt(Feet) >= (float)P.ManMinCm && PacksAt(Feet) > 0.05f)
 	{
-		SetPrompt(LyudText::Get(TEXT("winter.snowman.prompt_start")));
+		SetPromptKey(TEXT("winter.snowman.prompt_start"));
 		if (bUse)
 		{
 			Rolling = 1;

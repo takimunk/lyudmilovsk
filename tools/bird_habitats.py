@@ -6,6 +6,11 @@ the built ground (tools/terrain.py ground_z) and writes
   unreal/Lyudmilovsk/Content/BirdsData/bird_world.bin       8 m grid: ground and obstacle-top heights
 
   python3 tools/bird_habitats.py [--face-y CM]
+  python3 tools/bird_habitats.py --only-brook [--merge JSON]
+      appends only the brook's, its mouth's and the fishermen's shed's sites (tools/bird_habitats_brook.py) to an existing
+      bird_habitats.json (default: the committed one), keeping every other site as it is and bird_world.bin untouched:
+      for a checkout without the built terrain, where a full run would move thousands of sites to the macro heights.
+      Run the full script after the terrain build (on the Mac) for exact heights.
 
 A site is a point or a segment (a roof ridge, a rope, a ledge) with a radius around it (a patch of
 ground or water to walk and peck in) and a capacity (how many birds it holds). Trees found here are
@@ -28,11 +33,12 @@ import terrain as T  # noqa: E402
 import plan as AP  # noqa: E402  (the Academgorodok's houses)
 from geom import Frame  # noqa: E402
 import bird_habitats_north as BN  # noqa: E402  (the North, north of Y 1450: its own rules)
+import bird_habitats_brook as BB  # noqa: E402  (the Aton coast's brook and its mouth, tools/south.py)
 OUT_DIR = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "BirdsData")
 
-# Order matters: LyudBirds::EHabitat (BirdSim.h) has the same order.
+# Order matters: LyudBirds::EHabitat (BirdSim.h) has the same order, and the file stores the index: new kinds go at the end.
 KINDS = ["Sea", "Beach", "Cliff", "Meadow", "Reed", "Street", "Roof", "Tower", "Wire", "Garden",
-         "Broadleaf", "Conifer", "ForestFloor"]
+         "Broadleaf", "Conifer", "ForestFloor", "Brook", "Mouth"]
 FLAG_GUESSED_TREE = 1        # replace with the real forest's trees in the game
 FLAG_HERO_PLANT = 2          # one of the hero plants (AProceduralPlant): crown height from the actor
 GRID_CELL = 8.0
@@ -169,11 +175,43 @@ def city_gardens(add):
                     tree(x, yy2)
 
 
+def site_row(fy, kind, p, q=None, radius=0.0, cap=8, flags=0):
+    """One site of the file: map metres -> Unreal metres (X stays, Y from the portal face)."""
+    q = q or p
+    return [KINDS.index(kind), round(p[0], 2), round(fy + p[1], 2), round(p[2], 2),
+            round(q[0], 2), round(fy + q[1], 2), round(q[2], 2), round(radius, 2), cap, flags]
+
+
+def merge_brook(path):
+    """--only-brook: the brook's sites appended to an existing habitats file, every other site kept byte for byte."""
+    with open(path) as f:
+        doc = json.load(f)
+    old = doc["kinds"]
+    if KINDS[:len(old)] != old:
+        sys.exit("bird_habitats: %s has kinds %s, not a prefix of %s" % (path, old, KINDS))
+    fy = doc["face_y_cm"] / 100.0
+    new = []
+    summary = BB.add_extras(lambda *a, **k: new.append(site_row(fy, *a, **k)), T.ground_z)
+    first = KINDS.index("Brook")
+    # a second run replaces what the first appended (the shed's ridge is a Roof: dropped when it is the same site)
+    kept = [s for s in doc["sites"] if s[0] < first and s not in new]
+    doc["kinds"] = KINDS
+    doc["sites"] = kept + new
+    with open(path, "w") as f:
+        json.dump(doc, f, separators=(",", ":"))
+    print("bird_habitats: kept %d sites, appended %d %s -> %s" % (len(kept), len(new), summary, path))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--face-y", type=float, default=None, help="portal face, Unreal Y cm")
     ap.add_argument("--out", default=OUT_DIR)
+    ap.add_argument("--only-brook", action="store_true", help="append only the brook's sites to --merge's file")
+    ap.add_argument("--merge", default=os.path.join(OUT_DIR, "bird_habitats.json"))
     a = ap.parse_args()
+    if a.only_brook:
+        merge_brook(a.merge)
+        return
     face_y = a.face_y if a.face_y is not None else face_y_default()
     fy = face_y / 100.0
     rnd = random.Random(2026)
@@ -182,10 +220,7 @@ def main():
     sites = []
 
     def add(kind, p, q=None, radius=0.0, cap=8, flags=0):
-        q = q or p
-        # map metres -> Unreal metres (X stays, Y from the portal face)
-        sites.append([KINDS.index(kind), round(p[0], 2), round(fy + p[1], 2), round(p[2], 2),
-                      round(q[0], 2), round(fy + q[1], 2), round(q[2], 2), round(radius, 2), cap, flags])
+        sites.append(site_row(fy, kind, p, q, radius, cap, flags))
 
     def near_house(x, y, grow):
         return any(in_box(x, y, b, grow) for b in houses if abs(b[0] - x) < 40 and abs(b[1] - y) < 40)
@@ -362,6 +397,8 @@ def main():
     city_gardens(add)
     north = BN.add_extras(add, nrnd)           # the river's bars and mouth, the stacks, tall herbs, perches, camp and hut
     print("bird_habitats: the North's own sites %s" % north)
+    brook = BB.add_extras(add, T.ground_z)     # last, with its own stream: the brook's bends and stones, its mouth, the shed
+    print("bird_habitats: the brook's sites %s" % brook)
 
     # the ground and the tallest thing on it (roofs, crowns) on an 8 m grid, for flight clearance
     gx0, gy0 = W.X_MIN - MARGIN, W.Y_MIN - MARGIN

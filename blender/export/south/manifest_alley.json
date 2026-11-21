@@ -1,0 +1,479 @@
+{
+ "frame": "metres, origin on the ground under the middle unless the kind's notes say otherwise, Blender -Y is the front, Z up; seats [x, y, z, yaw]: yaw = degrees of the sitter's facing, counter-clockwise seen from above, 0 = toward the object's front (-Y); size and bounds are in Blender axes (x, y, z)",
+ "front_yaw": 90.0,
+ "asset_names": "SM_South_<Kind>[_V<n>] (_V only for kinds with several variants)",
+ "atlas": "M_North_Atlas (the North's, blender/north/gen); text slots M_South_Text_<id> from textures/localized/<lang>/south_<id>.png",
+ "meshes": [
+  {
+   "kind": "park_lamp",
+   "variant": 0,
+   "file": "park_lamp_v0.glb",
+   "tris": 336,
+   "size": [
+    0.52,
+    0.837,
+    4.5
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "late-Soviet park lamp post 4.2 m high, origin on the ground under the post: cast iron foot (r 0.17, buried 0.3 m), tapered octagonal steel post painted park green (r 0.075 -> 0.045, top z 3.62), paint peeling to rust and bare steel, a cast collar, one globe (diameter 0.34) under a conical shade (top z 4.20, diameter 0.52) on a curved arm that falls to the front (-Y). No front (round post): the arm/bar points to -Y (front). Collision: box (collision_boxes: the post only, 0.34 m square to z 3.8; the arm and globes are out of reach). manifest `lamps` = the globes' centres [x, y, z] for future lights",
+   "lamps": [
+    [
+     0.0,
+     -0.42,
+     3.855
+    ]
+   ],
+   "collision_boxes": [
+    {
+     "name": "post",
+     "center": [
+      0,
+      0,
+      1.9
+     ],
+     "size": [
+      0.34,
+      0.34,
+      3.8
+     ]
+    }
+   ],
+   "bounds_min": [
+    -0.26,
+    -0.667,
+    -0.3
+   ],
+   "bounds_max": [
+    0.26,
+    0.17,
+    4.2
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "park_lamp",
+   "variant": 1,
+   "file": "park_lamp_v1.glb",
+   "tris": 500,
+   "size": [
+    1.34,
+    0.34,
+    4.5
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "late-Soviet park lamp post 4.2 m high, origin on the ground under the post: cast iron foot (r 0.17, buried 0.3 m), tapered octagonal steel post painted park green (r 0.075 -> 0.045, top z 3.62), paint peeling to rust and bare steel, a cast collar, two globes (diameter 0.34 each) in cast cups on a T-bar 1.12 m wide along X (bar z 3.67..3.97). No front (round post): the arm/bar points along X. Collision: box (collision_boxes: the post only, 0.34 m square to z 3.8; the arm and globes are out of reach). manifest `lamps` = the globes' centres [x, y, z] for future lights",
+   "lamps": [
+    [
+     -0.5,
+     0.0,
+     4.03
+    ],
+    [
+     0.5,
+     0.0,
+     4.03
+    ]
+   ],
+   "collision_boxes": [
+    {
+     "name": "post",
+     "center": [
+      0,
+      0,
+      1.9
+     ],
+     "size": [
+      0.34,
+      0.34,
+      3.8
+     ]
+    }
+   ],
+   "bounds_min": [
+    -0.67,
+    -0.17,
+    -0.3
+   ],
+   "bounds_max": [
+    0.67,
+    0.17,
+    4.2
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "park_bench",
+   "variant": 0,
+   "file": "park_bench_v0.glb",
+   "tris": 178,
+   "size": [
+    1.9,
+    0.7,
+    1.08
+   ],
+   "collision": "exact",
+   "seats": [
+    [
+     -0.56,
+     -0.02,
+     0.45,
+     0.0
+    ],
+    [
+     0.0,
+     -0.02,
+     0.45,
+     0.0
+    ],
+    [
+     0.56,
+     -0.02,
+     0.45,
+     0.0
+    ]
+   ],
+   "notes": "park bench 1.9 m long (x) x 0.7 m deep (y -0.26..0.44 at the top of the back) x 0.88 m high, origin on the ground under the middle: two cast concrete ends (0.1 thick, x +-0.9, feet buried to z -0.2), four seat slats (top z 0.45, painted park green) and three leaning back slats (z 0.52..0.86), back on +Y, the sitter faces -Y; 3 seats at x -0.56 / 0 / 0.56 (z 0.45, yaw 0 = facing -Y). Variant 0: whole, a few small peeled patches. Collision: exact",
+   "bounds_min": [
+    -0.95,
+    -0.26,
+    -0.2
+   ],
+   "bounds_max": [
+    0.95,
+    0.44,
+    0.88
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "park_bench",
+   "variant": 1,
+   "file": "park_bench_v1.glb",
+   "tris": 216,
+   "size": [
+    1.9,
+    0.7,
+    1.08
+   ],
+   "collision": "exact",
+   "seats": [
+    [
+     -0.56,
+     -0.02,
+     0.45,
+     0.0
+    ],
+    [
+     0.0,
+     -0.02,
+     0.45,
+     0.0
+    ],
+    [
+     0.56,
+     -0.02,
+     0.45,
+     0.0
+    ]
+   ],
+   "notes": "park bench 1.9 m long (x) x 0.7 m deep (y -0.26..0.44 at the top of the back) x 0.88 m high, origin on the ground under the middle: two cast concrete ends (0.1 thick, x +-0.9, feet buried to z -0.2), four seat slats (top z 0.45, painted park green) and three leaning back slats (z 0.52..0.86), back on +Y, the sitter faces -Y; 3 seats at x -0.56 / 0 / 0.56 (z 0.45, yaw 0 = facing -Y). Variant 1: the middle back slat missing and the paint worn through to bare wood on several slats. Collision: exact",
+   "bounds_min": [
+    -0.95,
+    -0.26,
+    -0.2
+   ],
+   "bounds_max": [
+    0.95,
+    0.44,
+    0.88
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "flower_bed",
+   "variant": 0,
+   "file": "flower_bed.glb",
+   "tris": 452,
+   "size": [
+    1.6,
+    1.6,
+    1.257
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "round concrete flower bowl 1.6 m across (rim r 0.8, rim top z 0.58) on a short round foot (r 0.30, buried 0.2 m), origin on the ground under the middle; dark earth mounded inside the rim and 24 low tufts (green blades, flower heads in yellow, red, orange and white, the tallest in the middle, highest flower head z 1.06); round, no front; Collision: box",
+   "bounds_min": [
+    -0.8,
+    -0.8,
+    -0.2
+   ],
+   "bounds_max": [
+    0.8,
+    0.8,
+    1.057
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "litter_urn",
+   "variant": 0,
+   "file": "litter_urn.glb",
+   "tris": 190,
+   "size": [
+    0.58,
+    0.552,
+    0.85
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "concrete urn-shaped litter bin 0.7 m high (foot r 0.21 buried 0.15 m, belly r 0.27 at z 0.52, rim r 0.29 at z 0.70, mouth r 0.20 with a dark bottom), origin on the ground under the middle; round, no front; Collision: box",
+   "bounds_min": [
+    -0.29,
+    -0.276,
+    -0.15
+   ],
+   "bounds_max": [
+    0.29,
+    0.276,
+    0.7
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "bike_rack",
+   "variant": 0,
+   "file": "bike_rack.glb",
+   "tris": 396,
+   "size": [
+    2.4,
+    0.56,
+    1.018
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "steel hoop rack for five bicycles, 2.4 m long along X (x -1.2..1.2), 0.56 m deep, origin on the ground under the middle: five inverted-U hoops (0.42 m wide, top z 0.72, 0.45 m apart, x -0.9..0.9) welded to two steel tubes along X at z 0.09, which end in two concrete feet (0.2 x 0.56 m, top z 0.14, buried to z -0.3). A bicycle's front wheel goes between two hoops. Symmetric front to back (no front; yaw freely). Collision: box",
+   "bounds_min": [
+    -1.2,
+    -0.28,
+    -0.3
+   ],
+   "bounds_max": [
+    1.2,
+    0.28,
+    0.718
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "halt_shelter",
+   "variant": 0,
+   "file": "halt_shelter.glb",
+   "tris": 1672,
+   "size": [
+    4.4,
+    2.45,
+    2.81
+   ],
+   "collision": "box",
+   "seats": [
+    [
+     -1.1,
+     0.68,
+     0.57,
+     0.0
+    ],
+    [
+     0.0,
+     0.68,
+     0.57,
+     0.0
+    ],
+    [
+     1.1,
+     0.68,
+     0.57,
+     0.0
+    ]
+   ],
+   "notes": "small open waiting shelter of a seaside railway halt, origin on the ground under the middle of the 4 x 2 m concrete slab (top z 0.12, foundation to z -0.3): four concrete posts, a back wall (+Y) and two half side walls (y 0.06..0.80, the front halves open) of vertical boards, five rafters and an iron mono-pitch roof 4.4 x 2.45 m falling to the back (+Y): eaves z 2.40 at the front (y -1) to 2.00 at the back (y +1), overhanging 0.3 m at the front; the front (-Y) is open. A bench along the back wall inside (plank slats, seat top z 0.57, three concrete supports), 3 seats at x -1.1 / 0 / 1.1 facing -Y. Collision: box (collision_boxes, mesh space; rot_x_deg right-handed about +X, negative tips the +Y end down): floor slab, back wall, the two half walls, the two front posts, bench, roof; the front stays open",
+   "collision_boxes": [
+    {
+     "name": "floor",
+     "center": [
+      0,
+      0,
+      -0.09
+     ],
+     "size": [
+      4.0,
+      2.0,
+      0.42
+     ]
+    },
+    {
+     "name": "wall_back",
+     "center": [
+      0,
+      0.88,
+      1.05
+     ],
+     "size": [
+      3.9,
+      0.12,
+      1.86
+     ]
+    },
+    {
+     "name": "wall_west",
+     "center": [
+      -1.88,
+      0.43,
+      1.05
+     ],
+     "size": [
+      0.12,
+      0.74,
+      1.86
+     ]
+    },
+    {
+     "name": "wall_east",
+     "center": [
+      1.88,
+      0.43,
+      1.05
+     ],
+     "size": [
+      0.12,
+      0.74,
+      1.86
+     ]
+    },
+    {
+     "name": "post_front_west",
+     "center": [
+      -1.88,
+      -0.88,
+      1.0
+     ],
+     "size": [
+      0.16,
+      0.16,
+      2.0
+     ]
+    },
+    {
+     "name": "post_front_east",
+     "center": [
+      1.88,
+      -0.88,
+      1.0
+     ],
+     "size": [
+      0.16,
+      0.16,
+      2.0
+     ]
+    },
+    {
+     "name": "bench",
+     "center": [
+      0,
+      0.67,
+      0.345
+     ],
+     "size": [
+      3.5,
+      0.36,
+      0.45
+     ]
+    },
+    {
+     "name": "roof",
+     "center": [
+      0,
+      -0.075,
+      2.24
+     ],
+     "size": [
+      4.4,
+      2.499,
+      0.05
+     ],
+     "rot_x_deg": -11.31
+    }
+   ],
+   "open_front": "-Y",
+   "bounds_min": [
+    -2.2,
+    -1.3,
+    -0.3
+   ],
+   "bounds_max": [
+    2.2,
+    1.15,
+    2.51
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "drinking_fountain",
+   "variant": 0,
+   "file": "drinking_fountain.glb",
+   "tris": 198,
+   "size": [
+    0.44,
+    0.44,
+    1.163
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "concrete pedestal drinking fountain 0.95 m high, origin on the ground under the middle: square plinth 0.44 m (buried 0.2 m), a column tapering 0.30 -> 0.23 m, a cap slab 0.40 m (z 0.72..0.80), a shallow steel bowl (rim r 0.2, z 0.88) with a dark drain and a steel gooseneck spout on the back rim (+Y) leaning over the bowl; a push button on the front (-Y) face of the column; use from -Y. manifest `spout` = the spout's tip [x, y, z]. Collision: box",
+   "spout": [
+    0.0,
+    0.05,
+    0.925
+   ],
+   "bounds_min": [
+    -0.22,
+    -0.22,
+    -0.2
+   ],
+   "bounds_max": [
+    0.22,
+    0.22,
+    0.963
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  }
+ ]
+}

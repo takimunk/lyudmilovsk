@@ -211,7 +211,9 @@ namespace LyudBirds
 			case EMaterial::Twigs: return H == EHabitat::Broadleaf || H == EHabitat::Conifer || H == EHabitat::Garden || H == EHabitat::ForestFloor;
 			case EMaterial::Grass: return H == EHabitat::Meadow || H == EHabitat::Garden || H == EHabitat::Street || H == EHabitat::Beach;
 			case EMaterial::Moss: return H == EHabitat::ForestFloor || H == EHabitat::Garden || H == EHabitat::Meadow;
-			case EMaterial::Mud: return H == EHabitat::Beach || H == EHabitat::Reed || H == EHabitat::Street || H == EHabitat::Meadow;
+			// (the brook's soft edges are the swallows' and martins' best mud)
+			case EMaterial::Mud: return H == EHabitat::Beach || H == EHabitat::Reed || H == EHabitat::Street || H == EHabitat::Meadow
+				|| H == EHabitat::Brook || H == EHabitat::Mouth;
 			case EMaterial::Reed: return H == EHabitat::Reed || H == EHabitat::Beach;
 			case EMaterial::Feathers: return H == EHabitat::Meadow || H == EHabitat::Street || H == EHabitat::Beach;
 			default: return false;

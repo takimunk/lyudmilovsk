@@ -64,17 +64,86 @@ double ULyudCounterService::Now() const
 	return World ? World->GetTimeSeconds() : 0.0;
 }
 
-AActor* ULyudCounterService::BodyOf(int32 PersonId) const
+AActor* ULyudCounterService::ShownBody(int32 PersonId) const
 {
 	const UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(this);
 	AActor* Body = Life && PersonId >= 0 ? Life->GetShownBody(PersonId) : nullptr;
 	return IsValid(Body) && !Body->IsHidden() ? Body : nullptr;
 }
 
-void ULyudCounterService::NoteGreeted(int32 PersonId)
+AActor* ULyudCounterService::BodyOf(int32 PersonId) const
 {
-	GreetedPerson = PersonId;
+	if (PersonId < 0)
+	{
+		return nullptr;
+	}
+	if (AActor* Body = ShownBody(PersonId))
+	{
+		return Body;
+	}
+	for (const FExtra& E : Extras)
+	{
+		if (E.Pid == PersonId && E.Body.IsValid() && !E.Body->IsHidden())
+		{
+			return E.Body.Get();
+		}
+	}
+	return nullptr;
+}
+
+void ULyudCounterService::NoteGreeted(const AActor* Body)
+{
+	GreetedBody = Body;
 	GreetedAt = Now();
+}
+
+void ULyudCounterService::RegisterBody(AActor* Body, int32 PersonId, bool bServer)
+{
+	if (!Body)
+	{
+		return;
+	}
+	Extras.RemoveAll([](const FExtra& E) { return !E.Body.IsValid(); });
+	for (FExtra& E : Extras)
+	{
+		if (E.Body.Get() == Body)
+		{
+			E.Pid = PersonId;
+			E.bServer = bServer;
+			return;
+		}
+	}
+	FExtra E;
+	E.Body = Body;
+	E.Pid = PersonId;
+	E.bServer = bServer;
+	Extras.Add(E);
+}
+
+void ULyudCounterService::UnregisterBody(AActor* Body)
+{
+	Extras.RemoveAll([Body](const FExtra& E) { return !E.Body.IsValid() || E.Body.Get() == Body; });
+}
+
+void ULyudCounterService::OpenedAt(const FString& InCounter, AActor* InServerBody, int32 ServerPid)
+{
+	PendingCounter = InCounter;
+	PendingBody = InServerBody;
+	PendingPid = ServerPid;
+	PendingAt = Now();
+}
+
+void ULyudCounterService::AnnounceChange(int32 Spent, int32 Purse) const
+{
+	if (Spent <= 0)
+	{
+		return;
+	}
+	// the money counted: the note he gave and what came back
+	const int32 Note = LyudCounter::PayWith(Spent, Purse);
+	CounterSvc::Toast(this, Note > 0
+		? LyudText::Get(TEXT("ui.counter.change"), { FStringFormatArg(Spent), FStringFormatArg(Note), FStringFormatArg(Note - Spent) })
+		: LyudText::Get(TEXT("ui.counter.exact"), { FStringFormatArg(Spent) }));
 }
 
 void ULyudCounterService::Tick(float DeltaTime)
@@ -84,6 +153,13 @@ void ULyudCounterService::Tick(float DeltaTime)
 	const UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(this);
 	if (!Hero || !Life || !Life->GetSim())
 	{
+		// no boy to stand in a line (he flies as a bird now): the spot he held is free again, or the line waits behind
+		// nobody till he is back
+		if (bHeldOn && Life && Life->GetSim())
+		{
+			Life->GetSim()->SetHeroAt(LyudPeople::V3(), false);
+		}
+		bHeldOn = false;
 		return;
 	}
 	HoldClock += DeltaTime;
@@ -112,11 +188,22 @@ void ULyudCounterService::TickHold(AHeroCharacter* Hero)
 	bHeldOn = bOn;
 }
 
-int32 ULyudCounterService::FindServer(const FVector& Near, float MaxCm) const
+int32 ULyudCounterService::FindServer(const FVector& Near, float MaxCm, AActor*& OutBody) const
 {
 	const LyudPeople::FWorld* Sim = UPeopleLifeSubsystem::Get(this)->GetSim();
 	int32 Best = -1;
+	OutBody = nullptr;
 	double BestD = (double)MaxCm * MaxCm;
+	for (const FExtra& E : Extras)
+	{
+		const double D = E.bServer && E.Body.IsValid() && !E.Body->IsHidden() ? FVector::DistSquared2D(E.Body->GetActorLocation(), Near) : 1e30;
+		if (D < BestD)
+		{
+			BestD = D;
+			Best = E.Pid;
+			OutBody = E.Body.Get();
+		}
+	}
 	for (const LyudPeople::FPerson& P : Sim->People)
 	{
 		if (P.State != LyudPeople::EState::Doing || P.Activity < 0 || !Sim->Activities[(size_t)P.Activity].bStaff)
@@ -124,10 +211,12 @@ int32 ULyudCounterService::FindServer(const FVector& Near, float MaxCm) const
 			continue;
 		}
 		const double D = FVector::DistSquared2D(CounterSvc::ToUE(P.Pos), Near);
-		if (D < BestD && BodyOf(P.Id))
+		AActor* Body = D < BestD ? ShownBody(P.Id) : nullptr;
+		if (Body)
 		{
 			BestD = D;
 			Best = P.Id;
+			OutBody = Body;
 		}
 	}
 	return Best;
@@ -145,28 +234,42 @@ void ULyudCounterService::TickShop(AHeroCharacter* Hero, float DeltaTime)
 	const bool bShop = UI->IsShopOpen();
 	if (bShop && !bShopWas)
 	{
-		// the shop opens: whoever is on shift by him turns to him and nods (and says hello, unless they just did)
-		Server = FindServer(Hero->GetActorLocation(), CounterSvc::ServerCm);
+		// the shop opens: whoever is on shift by him turns to him and nods (and says hello, unless they just did); a hall
+		// that opened it named its counter and its server just before
+		AActor* Body = nullptr;
+		if (Now() - PendingAt < 2.0 && PendingBody.IsValid())
+		{
+			Server = PendingPid;
+			Body = PendingBody.Get();
+			Counter = PendingCounter;
+		}
+		else
+		{
+			Server = FindServer(Hero->GetActorLocation(), CounterSvc::ServerCm, Body);
+			Counter.Reset();
+		}
+		PendingAt = -100.0;
+		ServerBody = Body;
 		RublesAtOpen = Inv->Rubles;
 		LookClock = CounterSvc::LookEvery;
-		if (Server >= 0)
+		if (Body)
 		{
 			Life->ReactManner(Server, TEXT("nod"), 1.5f);
-			const bool bGreeted = GreetedPerson == Server && Now() - GreetedAt < CounterSvc::GreetAgain;
+			const bool bGreeted = GreetedBody.Get() == Body && Now() - GreetedAt < CounterSvc::GreetAgain;
 			ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this);
-			if (!bGreeted && Talk && Talk->SayEvent(BodyOf(Server), TEXT("counter_hello"), Server))
+			if (!bGreeted && Talk && Talk->SayEvent(Body, TEXT("counter_hello"), Server))
 			{
-				NoteGreeted(Server);
+				NoteGreeted(Body);
 			}
 		}
 	}
-	if (bShop && Server >= 0)
+	if (bShop && ServerBody.IsValid())
 	{
 		LookClock += DeltaTime;
 		if (LookClock >= CounterSvc::LookEvery)
 		{
 			LookClock = 0.f;
-			if (ANpcBody* Body = Cast<ANpcBody>(BodyOf(Server)))
+			if (ANpcBody* Body = Cast<ANpcBody>(ServerBody.Get()))
 			{
 				Body->LookAtPoint(Hero->EyeLocation(), CounterSvc::LookEvery * 2.f);
 			}
@@ -178,20 +281,20 @@ void ULyudCounterService::TickShop(AHeroCharacter* Hero, float DeltaTime)
 		const int32 Spent = RublesAtOpen - Inv->Rubles;
 		if (Spent > 0)
 		{
-			// the money counted: the note he gave and what came back
-			const int32 Note = LyudCounter::PayWith(Spent, RublesAtOpen);
-			CounterSvc::Toast(this, Note > 0
-				? LyudText::Get(TEXT("ui.counter.change"), { FStringFormatArg(Spent), FStringFormatArg(Note), FStringFormatArg(Note - Spent) })
-				: LyudText::Get(TEXT("ui.counter.exact"), { FStringFormatArg(Spent) }));
-			if (Server >= 0)
+			AnnounceChange(Spent, RublesAtOpen);
+			if (AActor* Body = ServerBody.Get())
 			{
 				Life->ReactManner(Server, TEXT("point"), 1.5f);
 				if (ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this))
 				{
-					Talk->SayEvent(BodyOf(Server), TEXT("counter_give"), Server);
+					Talk->SayEvent(Body, TEXT("counter_give"), Server);
 				}
 			}
 		}
+	}
+	if (!bShop && Now() - ClosedAt > CounterSvc::HandoverFor)
+	{
+		Counter.Reset();
 	}
 	bShopWas = bShop;
 }
@@ -199,11 +302,19 @@ void ULyudCounterService::TickShop(AHeroCharacter* Hero, float DeltaTime)
 bool ULyudCounterService::HandoverPoint(int32 Index, FVector& Out) const
 {
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	// bShopWas: the shop shut this very frame and our tick has not seen it yet
+	if (!UI || (!UI->IsShopOpen() && !bShopWas && Now() - ClosedAt > CounterSvc::HandoverFor))
+	{
+		return false;
+	}
+	return HandoverPointFrom(ServerBody.Get(), Index, Out);
+}
+
+bool ULyudCounterService::HandoverPointFrom(const AActor* Body, int32 Index, FVector& Out) const
+{
 	const UWorld* World = GetWorld();
 	const AHeroCharacter* Hero = World ? Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0)) : nullptr;
-	const AActor* Body = BodyOf(Server);
-	// bShopWas: the shop shut this very frame and our tick has not seen it yet
-	if (!Hero || !Body || !UI || (!UI->IsShopOpen() && !bShopWas && Now() - ClosedAt > CounterSvc::HandoverFor))
+	if (!Hero || !IsValid(Body) || Body->IsHidden())
 	{
 		return false;
 	}
@@ -270,9 +381,10 @@ void ULyudCounterService::TickLines(AHeroCharacter* Hero)
 		if (bNear && Who >= 0 && LastFront[Q] != Who && LastFront[Q] != -1 && T >= NextNextBark)
 		{
 			// the front changed: the one on shift calls the next
-			const int32 Staff = FindServer(CounterSvc::ToUE(Front.Pos), 400.f);
+			AActor* StaffBody = nullptr;
+			const int32 Staff = FindServer(CounterSvc::ToUE(Front.Pos), 400.f, StaffBody);
 			ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this);
-			if (Staff >= 0 && Talk && Talk->SayEvent(BodyOf(Staff), TEXT("queue_next"), Staff))
+			if (StaffBody && Talk && Talk->SayEvent(StaffBody, TEXT("queue_next"), Staff))
 			{
 				NextNextBark = T + 8.0;
 			}
@@ -315,8 +427,9 @@ FString ULyudCounterService::Status() const
 	{
 		return TEXT("Counter: no people's life or no hero");
 	}
-	FString Out = FString::Printf(TEXT("Counter: %d lines, %d steps up so far; server %d, rubles at open %d\n"),
-		(int32)Sim->Queues.size(), Sim->QueueMoves, Server, RublesAtOpen);
+	FString Out = FString::Printf(TEXT("Counter: %d lines, %d steps up so far; server %d (%s), counter %s, rubles at open %d, %d registered bodies\n"),
+		(int32)Sim->Queues.size(), Sim->QueueMoves, Server, ServerBody.IsValid() ? *ServerBody->GetName() : TEXT("-"), Counter.IsEmpty() ? TEXT("-") : *Counter,
+		RublesAtOpen, Extras.Num());
 	for (int32 Q = 0; Q < (int32)Sim->Queues.size(); Q++)
 	{
 		const LyudPeople::FSlot& Front = Sim->Slots[(size_t)Sim->Queues[(size_t)Q][0]];

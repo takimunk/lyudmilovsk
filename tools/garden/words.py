@@ -130,7 +130,7 @@ T("garden.prompt.clear", "E — выдернуть засохшее", "E — pul
 T("garden.prompt.cover", "E — опустить плёнку", "E — pull the film down", "E：ビニールをかける")
 T("garden.prompt.uncover", "E — скатать плёнку", "E — roll the film up", "E：ビニールを巻き上げる")
 T("garden.prompt.fill", "E — набрать воды в лейку", "E — fill the watering can", "E：じょうろに水をくむ")
-T("garden.prompt.rent", "E — взять свободную грядку у домкома ({0} руб.)", "E — rent the free bed from the house committee ({0} roubles)",
+T("garden.prompt.rent", "E — взять свободную грядку у домкома ({0} руб.)", "E — rent the free bed from the house committee ({0} rub.)",
   "E：住宅委員会から空いた畑を借りる（{0}ルーブル）")
 T("garden.prompt.no_spade", "Нужна лопата. Продаётся в «Хозтоварах».", "You need a spade. The hardware shop sells them.",
   "スコップがいる。金物屋で売っている。")
@@ -145,7 +145,7 @@ T("garden.prompt.board", "E — прочитать объявление домк
 T("garden.prompt.jam_ask", "E — попросить сварить варенье: {0}", "E — ask for jam from your strawberries: {0}",
   "E：イチゴでジャムを頼む：{0}")
 T("garden.prompt.contest", "E — сдать банку на конкурс варенья", "E — hand the jar in for the jam contest", "E：ジャムをコンテストに出す")
-T("garden.prompt.sell", "E — сдать урожай на весы ({0} шт.) за {1} руб.", "E — hand in the harvest ({0} items) for {1} roubles",
+T("garden.prompt.sell", "E — сдать урожай на весы ({0} шт.) за {1} руб.", "E — hand in the harvest ({0} items) for {1} rub.",
   "E：収穫（{0}点）を検量はかりに出す：{1}ルーブル")
 T("garden.prompt.scales_closed", "Весы закрыты. Откроются в {0}:00.", "The scales are closed. They open at {0}:00.",
   "検量はかりは閉まっている。{0}時に開く。")
@@ -160,7 +160,7 @@ T("garden.sow.none", "В карманах нет ни семян, ни расс�
 
 T("garden.toast.rented", "Грядка твоя. Домком записал тебя в тетрадку.", "The bed is yours. The house committee wrote you into its book.",
   "畑は君のものだ。住宅委員会のノートに名前が書かれた。")
-T("garden.toast.no_money", "Не хватает денег: аренда {0} руб.", "Not enough money: the rent is {0} roubles.",
+T("garden.toast.no_money", "Не хватает денег: аренда {0} руб.", "Not enough money: the rent is {0} rub.",
   "お金が足りない。借り賃は{0}ルーブル。")
 T("garden.toast.dug", "Вскопано.", "Dug.", "耕した。")
 T("garden.toast.sown", "Посеяно: {0}.", "Sown: {0}.", "まいた：{0}。")
@@ -182,9 +182,9 @@ T("garden.toast.jam_ready", "На скамейке банка варенья и 
 T("garden.toast.contest_entered", "Банка принята на конкурс. Жюри — в воскресенье.", "The jar is entered. The jury meets on Sunday.",
   "ジャムを受けつけてもらった。審査は日曜日。")
 T("garden.toast.contest_already", "Твоя банка уже на конкурсе.", "Your jar is already in the contest.", "君のジャムはもう出してある。")
-T("garden.toast.sold", "Урожай сдан: {0} руб.", "Harvest handed in: {0} roubles.", "収穫を引き取ってもらった：{0}ルーブル。")
+T("garden.toast.sold", "Урожай сдан: {0} руб.", "Harvest handed in: {0} rub.", "収穫を引き取ってもらった：{0}ルーブル。")
 T("garden.toast.fair_prize", "Ярмарка урожая: ваш урожай взвесили и для жюри. Итог: {0}, приз {1} руб.",
-  "The harvest fair: your harvest was weighed for the judges too. The result: {0}, a prize of {1} roubles.",
+  "The harvest fair: your harvest was weighed for the judges too. The result: {0}, a prize of {1} rub.",
   "収穫祭：あなたの収穫は審査員の分も量られた。結果：{0}、賞金{1}ルーブル。")
 T("garden.toast.fair_thanks", "Ярмарка урожая: ваш урожай взвесили и для жюри. Итог: {0}.",
   "The harvest fair: your harvest was weighed for the judges too. The result: {0}.",
@@ -208,7 +208,7 @@ T("garden.diary.jam", "Соседка сварила варенье из мое�
   "となりのおばあさんが僕のイチゴでジャムを煮てくれた。びんがまだあたたかい。")
 T("garden.diary.fair", "Ярмарка урожая: {0}. Мой урожай лежал на столе жюри рядом с чужими тыквами, и никто не спросил, чей он, пока не взвесили.",
   "The harvest fair: {0}. My harvest lay on the judges' table next to other people's pumpkins, and nobody asked whose it was until it was weighed.",
-  "収穫祭：{0}。ぼくの収穫はよその人のカボチャと並んで審査の机にのっていて、量り終えるまで誰のものか誰も聞かなかった。")
+  "収穫祭：{0}。僕の収穫はよその人のカボチャと並んで審査の机にのっていて、量り終えるまで誰のものか誰も聞かなかった。")
 T("garden.diary.contest", "Конкурс варенья: {0}. Пахло клубникой на весь рынок.", "The jam contest: {0}. The whole market smelled of strawberries.",
   "ジャムのコンテスト：{0}。市場じゅうイチゴのにおいだった。")
 

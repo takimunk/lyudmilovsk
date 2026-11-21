@@ -120,7 +120,7 @@ citysim + questsim tests of each job, quest audit clean.
 
 ## 5. Telescopes that show the sky
 
-`[ ]` **Brief (Fable 5.2):** Today the telescopes (the café «Тарелка»'s gallery, the lighthouse gallery, the Santos
+`[~] «Сделать телескопы с настоящим небом» 2026-11-20 (branch `telescopes`, docs/telescopes.md)` **Brief (Fable 5.2):** Today the telescopes (the café «Тарелка»'s gallery, the lighthouse gallery, the Santos
 family's loft, `home_santos`) are a line of text. Make looking through one a view: a round eyepiece view with a slow
 manual aim (mouse, inertia), focus, magnification steps, the real sky of the game (`ALyudSky`, the sun motif, the moon
 phase from the festival calendar's Meeus code, the planets the sky already places, the rare sky: aurora, noctilucent
@@ -538,7 +538,7 @@ rebased on it (both in the bird-life model); 46 owns `tools/animal_map.py` for t
 
 ## 37. People on the Aton trails
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The Aton coast (`docs/south.md`, branch `aton-coast`) has five trails and twelve
+`[~] aton-people 2026-11-21 (branch ready on aton-coast, docs/south.md "People")` **Cloud-only. Brief (Opus 5.5):** The Aton coast (`docs/south.md`, branch `aton-coast`) has five trails and twelve
 places, and nobody walks them (`docs/south_backlog.md` "People do not walk it"). Give it people, the townsfolk we already
 have, by persona, weekday and weather: a fisherman mending nets at the boat shed by the brook's mouth (`brook_mouth`)
 mornings, going out in the evening; a beekeeper in the old orchard in warm months (the hives); the birdwatcher in the
@@ -555,7 +555,7 @@ rain and at night, nobody leaves the trails), `--check` of the post-step, lines 
 
 ## 38. The first walk to the town
 
-`[ ]` **Brief (Opus 5.5):** Make the half-kilometre walk from the club to the town (`south.trails()` `town`) the game's
+`[~] town-road 2026-11-21 (branch on aton-uses, docs/south.md "The first walk"; Mac: sign textures + south GLB, map build, shots)` **Brief (Opus 5.5):** Make the half-kilometre walk from the club to the town (`south.trails()` `town`) the game's
 natural first trip. Signposts at the forks (the alley's end, the shoulder's foot, the footbridge) with arrows and
 distances in metres and minutes ("Город 350 м", "Пляж", "Родник", "Станция «Атон»"), built from the North's kit sign
 (`set: "north"`) with words from `tools/south_signs.py`. A small quest "Дорога в город" for the first day: Maru (or the
@@ -568,7 +568,7 @@ questsim walk-through, `south.py --check`, Mac: the map pictures rebuilt (LFS), 
 
 ## 39. Things to do on the way
 
-`[ ]` **Brief (Opus 5.5):** The Aton coast's places can only be sat at and looked through (`docs/south_backlog.md`
+`[~] aton-uses 2026-11-21 (branch on aton-people, docs/south.md "Things to do")` **Brief (Opus 5.5):** The Aton coast's places can only be sat at and looked through (`docs/south_backlog.md`
 "Game"). Make each one do something, in the existing systems: drink at the spring with the hands (E: the hero kneels,
 a sip sound, thirst/"refreshed" like the soda) and fill the empty bottle from the vending machines (a new item state
 "spring water", sold to nobody, given to the sanatorium's doctor for a line); pick apples in the old orchard
@@ -582,7 +582,7 @@ Mac shots of each interaction, bench.
 
 ## 40. The Aton station as the club's front door
 
-`[ ]` **Brief (Opus 5.5):** The Aton station is the first hall the hero sees and stands next to the club
+`[x]` aton-front-door 2026-11-21 (docs/front_door.md; Mac compile, shots and bench owed) **Brief (Opus 5.5):** The Aton station is the first hall the hero sees and stands next to the club
 (`docs/transport.md`: the swept wing, its coffee bar with `coffee` goods; `stations-v3` dresses the halls). Make it the
 club's front door: the coffee bar served by its barista through item 27's counter service (a line in the morning, the
 cup set on the counter, the regulars' "the usual"), a departures board that shows the real next cabins of the Sun line
@@ -635,7 +635,7 @@ unchanged), habitats regenerated after rebase, the sound points as data.
 
 ## 44. Signature behaviours of each bird species
 
-`[ ]` **Brief (Fable 5.2):** Birds feed, rest, bathe and roost by species (`docs/bird_life.md` "Daily routines"), but they
+`[~] bird flight thread 2026-11-21: model, 63 habits, tests, book lines, stamps in (docs/bird_habits.md); own clips, sketches, page shot, bench on the Mac owed` **Brief (Fable 5.2):** Birds feed, rest, bathe and roost by species (`docs/bird_life.md` "Daily routines"), but they
 do it alike. Give each of the 39 species one or two things it alone does, that a patient hero with binoculars sees and
 writes in the bird book (`ULyudBirdBook`, `docs/bird_guide.md`): hooded crows dropping a walnut or a shell on the
 promenade's paving from 5 m and walking down to eat it; herring gulls snatching food from a resident's bench and from the
@@ -664,7 +664,7 @@ the soundscape mix unchanged at night.
 
 ## 46. Animals with people
 
-`[ ]` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
+`[x] animals-with-people 2026-11-21 (model, data, lines, hedgehog model and offline checks done; engine side never compiled or seen: Mac build, hedgehog.py + import_props.sh hedgehog hedgehog_ball, shots, bench owed)` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
 some households have a dog that a resident walks on a leash morning and evening along their usual paths (the town-life
 walk activity carries an animal id; the dog follows at the owner's heel, sniffs, greets other dogs; the leash a simple
 cable between hand and collar, out of Lumen), cats that belong to a flat and sit on its window sill by day (the flats'
@@ -702,7 +702,7 @@ fills on Thursdays, not on festival days), barksim for the lines, questsim for t
 
 ## 49. The sanatorium's procedures
 
-`[ ]` **Brief (Fable 5.2):** The course at «Корона» (`sanatorium-cure`, `docs/city_interiors.md` "Stays") stamps the
+`[~] san-procedures 2026-11-21 (branch san-procedures, docs/sanatorium_procedures.md; scenes, wing, guests and citysim done; Mac compile, shots of three procedures and bench owed)` **Brief (Fable 5.2):** The course at «Корона» (`sanatorium-cure`, `docs/city_interiors.md` "Stays") stamps the
 hero's book, but the procedures happen as a word and a fade. Make each a short hands-on scene in the room where it
 happens: the pump room (pick a cup, fill it at the brass tap, sip it slowly while the clock ticks; the water's taste line
 changes by spring), the inhalation room (sit, a mask, breathe in time with a slow ring on the screen), the mud bath and
@@ -715,7 +715,7 @@ of three procedures, bench.
 
 ## 50. Sanatorium guests come and go
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The four sanatorium guests (`tools/town/sanatorium_guests.py`) live there for
+`[~] sanatorium-rotation 2026-11-21` **Cloud-only. Brief (Opus 5.5):** The four sanatorium guests (`tools/town/sanatorium_guests.py`) live there for
 ever. Make the sanatorium a place people come to: a nine-day stay (the same as the hero's course) with arrivals and
 departures on Saturdays by the train (item 21's passengers: they get off with a suitcase and walk to «Корона», the
 departing ones wait on the platform), a pool of a dozen guests from the residents generator's spare bodies who rotate,

@@ -208,7 +208,7 @@ void ALyudNorthRiver::BuildParts()
 			const FRiverPoint& P = Points[I];
 			// G: the sheet fades in at the first point and out at the mouth
 			const float Ends = (I == 0 || I == M - 1) ? 1.f : 0.f;
-			const FVector4f Colour(RiverFast01(P.Speed), Ends, 0.f, 1.f);
+			const FVector4f Colour(RiverFast01(P.Speed) * FoamScale, Ends, 0.f, 1.f);
 			const FVector3f Tangent = FVector3f(P.Side);
 			for (int32 S = 0; S < 2; ++S)
 			{

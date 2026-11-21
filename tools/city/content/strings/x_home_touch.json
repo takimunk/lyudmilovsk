@@ -1,0 +1,248 @@
+{
+ "_doc": "Things to open and pick up in the homes (tools/city/content/x_home_touch.json, docs/city_interiors.md \"Things to open and pick up\").",
+ "city.act.wardrobe.prompt": {
+  "ru": "E — открыть шкаф",
+  "en": "E — open the wardrobe",
+  "ja": "E：洋服だんすを開ける"
+ },
+ "city.act.cupboard.prompt": {
+  "ru": "E — открыть шкафчик",
+  "en": "E — open the cupboard",
+  "ja": "E：戸棚を開ける"
+ },
+ "city.act.kettle.prompt": {
+  "ru": "E — поставить чайник",
+  "en": "E — put the kettle on",
+  "ja": "E：やかんを火にかける"
+ },
+ "city.act.photo.prompt": {
+  "ru": "E — взять фотографию",
+  "en": "E — pick up the photo",
+  "ja": "E：写真を手に取る"
+ },
+ "city.act.note.prompt": {
+  "ru": "E — прочесть записку",
+  "en": "E — read the note",
+  "ja": "E：メモを読む"
+ },
+ "city.wardrobe.cold.1": {
+  "ru": "Скрипнули дверцы. Пахнет нафталином и шерстью: зимнее пальто висит впереди всех, наготове.",
+  "en": "The doors creak. A smell of mothballs and wool: the winter coat hangs at the front, ready.",
+  "ja": "扉がきしむ。防虫剤と毛糸のにおい。冬のコートがいちばん手前に、出番を待っている。"
+ },
+ "city.wardrobe.rain.1": {
+  "ru": "На нижней полке сохнут вторые ботинки, на газете. Первые, видимо, сейчас в деле.",
+  "en": "On the bottom shelf a second pair of shoes is drying on newspaper. The first pair must be out working.",
+  "ja": "下の棚で、新聞紙の上に替えの靴が乾かしてある。もう一足はいま出番らしい。"
+ },
+ "city.wardrobe.warm.1": {
+  "ru": "Летняя рубашка висит отдельно, на плечиках с прищепкой. Её, кажется, носят по праздникам и в жару.",
+  "en": "A summer shirt hangs apart on a hanger with a peg. It seems to be for holidays and heat.",
+  "ja": "夏のシャツが一枚だけ別に、洗濯ばさみ付きのハンガーに掛かっている。祝日と暑い日用らしい。"
+ },
+ "city.wardrobe.1": {
+  "ru": "Скрипнули дверцы. Пиджаки по росту, на дне коробка из-под обуви, перевязанная бечёвкой. Я закрыл обратно.",
+  "en": "The doors creak. Jackets in order of length, a shoebox tied with string at the bottom. I closed it again.",
+  "ja": "扉がきしむ。上着が丈の順に並び、底には紐で縛った靴箱。そっと閉めた。"
+ },
+ "city.wardrobe.2": {
+  "ru": "На внутренней стороне дверцы зеркало и карандашные отметки роста с датами. Последняя — давно.",
+  "en": "Inside the door, a mirror and pencil marks of someone's height with dates. The last one is long ago.",
+  "ja": "扉の内側に鏡と、日付つきの身長の鉛筆の印。最後の印はずいぶん昔だ。"
+ },
+ "city.wardrobe.3": {
+  "ru": "Пахнет лавандой: мешочек висит на крючке. Всё сложено так ровно, что страшно дышать.",
+  "en": "It smells of lavender: a little bag hangs on a hook. Everything is folded so neatly I hardly dare breathe.",
+  "ja": "ラベンダーの香り。小袋がフックに下がっている。何もかもきちんと畳まれていて、息をするのもためらう。"
+ },
+ "city.cupboard.festival.1": {
+  "ru": "За банками с крупой спрятана коробка конфет с бантом. На праздник, не раньше.",
+  "en": "Behind the jars of grain, a box of chocolates with a bow is hidden. For the holiday, not before.",
+  "ja": "穀物の瓶の奥に、リボン付きのチョコレートの箱が隠してある。祝日用、それまでは開けない。"
+ },
+ "city.cupboard.cold.1": {
+  "ru": "Банка малинового варенья с бумажной крышкой: «от простуды». Почти пустая.",
+  "en": "A jar of raspberry jam with a paper lid: \"for colds\". Almost empty.",
+  "ja": "紙の蓋をしたラズベリージャムの瓶。「かぜ用」。もうほとんど空だ。"
+ },
+ "city.cupboard.morning.1": {
+  "ru": "Пахнет кофе: молотый в жестяной банке, ложка прямо в нём. Утром здесь уже были.",
+  "en": "A smell of coffee: ground, in a tin, the spoon left in it. Someone has been here this morning.",
+  "ja": "コーヒーの香り。缶入りの挽いた豆に、スプーンが差したまま。今朝もう誰かが開けたんだ。"
+ },
+ "city.cupboard.1": {
+  "ru": "Крупы в стеклянных банках, на каждой бумажка: гречка, пшено, рис. Почерк крупный и уверенный.",
+  "en": "Grains in glass jars, a paper label on each: buckwheat, millet, rice. Big, confident handwriting.",
+  "ja": "ガラス瓶に穀物。そば、きび、米と、それぞれに紙のラベル。大きくて迷いのない字だ。"
+ },
+ "city.cupboard.2": {
+  "ru": "Стопка блюдец с синим ободком и одна чашка без пары. Её, видно, берегут больше всех.",
+  "en": "A stack of saucers with a blue rim and one cup with no match. That one seems to be the most cared for.",
+  "ja": "青い縁の小皿の山と、対のないカップがひとつ。それがいちばん大事にされているらしい。"
+ },
+ "city.cupboard.3": {
+  "ru": "Тихо, ровно, по-хозяйски. Я ничего не трогал и закрыл дверцу.",
+  "en": "Quiet, neat, well kept. I touched nothing and closed the door.",
+  "ja": "静かで、きちんとしていて、手入れが行き届いている。何も触らずに戸を閉めた。"
+ },
+ "city.kettle.cold.1": {
+  "ru": "Чайник засвистел, окно над плитой запотело. Хорошо, когда на улице холодно, а тут свистит.",
+  "en": "The kettle whistles and the window over the stove steams up. It's nice when it's cold out and something whistles in here.",
+  "ja": "やかんが鳴り、コンロの上の窓が曇る。外が寒い日に、ここで何かが鳴っているのはいい。"
+ },
+ "city.kettle.night.1": {
+  "ru": "Ночью чайник свистит громче, чем днём. Я снял его с огня, не дожидаясь, пока проснётся весь подъезд.",
+  "en": "At night the kettle whistles louder than by day. I took it off before the whole stairwell woke up.",
+  "ja": "夜のやかんは昼より大きく鳴る。階段じゅうが目を覚ます前に火から下ろした。"
+ },
+ "city.kettle.1": {
+  "ru": "Поставил чайник. Пока закипал, смотрел, как в окне меняется свет. Чай заварил покрепче.",
+  "en": "I put the kettle on. While it boiled I watched the light change in the window. I made the tea strong.",
+  "ja": "やかんを火にかけた。沸くまで、窓の光が変わるのを見ていた。お茶は濃いめにいれた。"
+ },
+ "city.kettle.2": {
+  "ru": "Красный чайник в белых сколах. Засвистел на второй ноте, как старая электричка.",
+  "en": "A red kettle with white chips. It whistles on a second note, like an old local train.",
+  "ja": "白い欠けのある赤いやかん。古い電車みたいに、二つ目の音で鳴った。"
+ },
+ "city.home_photo.holm.1": {
+  "ru": "Молодой штурман на мостике, в фуражке набекрень, щурится на солнце. Узнать можно только по усам.",
+  "en": "A young navigator on a ship's bridge, cap askew, squinting at the sun. You can tell it's him only by the moustache.",
+  "ja": "若い航海士が船橋で帽子を斜めにかぶり、日差しに目を細めている。口ひげでやっと本人とわかる。"
+ },
+ "city.home_photo.holm.2": {
+  "ru": "На обороте карандашом: «Теплоход „Ладога“, Бискайский залив, 1974. Шторм кончился, а я ещё нет».",
+  "en": "On the back, in pencil: \"MV Ladoga, Bay of Biscay, 1974. The storm was over, I wasn't yet.\"",
+  "ja": "裏に鉛筆で。「客船ラドガ号、ビスケー湾、1974年。嵐は終わったが、私はまだだった」"
+ },
+ "city.home_note.holm.1": {
+  "ru": "«Ушёл за барометром к часовщику. Чайник не трогать, он нервный».",
+  "en": "\"Gone to the watchmaker about the barometer. Don't touch the kettle, it's nervous.\"",
+  "ja": "「時計屋へ気圧計を持っていった。やかんには触るな、神経質だから」"
+ },
+ "city.home_note.holm.2": {
+  "ru": "«Давление падает. К вечеру ветер с запада. Окно не открывать».",
+  "en": "\"Pressure's falling. Westerly by evening. Don't open the window.\"",
+  "ja": "「気圧が下がっている。夕方には西風。窓は開けるな」"
+ },
+ "city.home_note.holm.3": {
+  "ru": "«Письма нет и сегодня. Значит, завтра будет два».",
+  "en": "\"No letter today either. So tomorrow there'll be two.\"",
+  "ja": "「今日も手紙はなし。なら明日は二通来る」"
+ },
+ "city.home_note.holm.4": {
+  "ru": "«Кефир взял. Хлеб — нет. Хлеб всегда забываю, как шлюпку на берегу».",
+  "en": "\"Got the kefir. Not the bread. I always forget the bread, like a boat left on the shore.\"",
+  "ja": "「ケフィアは買った。パンは忘れた。パンはいつも忘れる、岸に置いたボートみたいに」"
+ },
+ "city.home_note.holm.5": {
+  "ru": "«Курс — на рынок. Вернусь к шести склянкам».",
+  "en": "\"Course set for the market. Back by six bells.\"",
+  "ja": "「針路は市場。六点鐘までに戻る」"
+ },
+ "city.home_photo.lev.1": {
+  "ru": "Мальчишка с этюдником больше него самого на морском берегу. Рядом женщина смеётся и держит его шапку.",
+  "en": "A boy with a sketch box bigger than himself on a beach. Beside him a woman laughs, holding his cap.",
+  "ja": "自分より大きな写生箱を抱えた男の子が浜辺にいる。隣で女の人が笑いながら、その子の帽子を押さえている。"
+ },
+ "city.home_photo.lev.2": {
+  "ru": "На обороте: «Лёвушке семь. Нарисовал море и сказал, что оно не похоже. Мама».",
+  "en": "On the back: \"Lyovushka is seven. He painted the sea and said it didn't look like it. Mum.\"",
+  "ja": "裏に。「リョーヴシカ、七歳。海を描いて、似てないと言った。母より」"
+ },
+ "city.home_note.lev.1": {
+  "ru": "«Ушёл писать туман. Если туман ушёл раньше — я в шахматном клубе».",
+  "en": "\"Gone to paint the fog. If the fog left first, I'm at the chess club.\"",
+  "ja": "「霧を描きに出た。霧が先にいなくなったら、チェスクラブにいる」"
+ },
+ "city.home_note.lev.2": {
+  "ru": "«Купить: белила, хлеб, терпение».",
+  "en": "\"To buy: white lead, bread, patience.\"",
+  "ja": "「買うもの：白絵の具、パン、忍耐」"
+ },
+ "city.home_note.lev.3": {
+  "ru": "«Кисти в банке не трогать: они думают».",
+  "en": "\"Don't touch the brushes in the jar: they're thinking.\"",
+  "ja": "「瓶の筆に触らないこと。考えごと中」"
+ },
+ "city.home_note.lev.4": {
+  "ru": "«Зоя опять выиграла. Реванш в субботу. Готовить итальянскую».",
+  "en": "\"Zoya won again. Rematch on Saturday. Prepare the Italian.\"",
+  "ja": "「またゾーヤが勝った。土曜に雪辱戦。イタリアン・ゲームを準備」"
+ },
+ "city.home_note.lev.5": {
+  "ru": "«Свет хороший до трёх. После трёх — чай и Шостакович».",
+  "en": "\"The light's good until three. After three: tea and Shostakovich.\"",
+  "ja": "「光がいいのは三時まで。三時からはお茶とショスタコーヴィチ」"
+ },
+ "city.home_photo.bauer.1": {
+  "ru": "Лодка у причала, на корме девушка в косынке держит огромную треску обеими руками и очень серьёзна.",
+  "en": "A boat at a jetty; in the stern a girl in a headscarf holds a huge cod with both hands, very serious.",
+  "ja": "桟橋の舟。船尾でスカーフの娘が大きなタラを両手で抱え、とても真剣な顔をしている。"
+ },
+ "city.home_photo.bauer.2": {
+  "ru": "На обороте по-латышски и ниже по-русски: «Первая моя рыба. Янис говорит, что это он её поймал. Врёт».",
+  "en": "On the back, in Latvian and below in Russian: \"My first fish. Jānis says he caught it. He's lying.\"",
+  "ja": "裏にラトビア語、その下にロシア語。「私の初めての魚。ヤーニスは自分が釣ったと言う。うそつき」"
+ },
+ "city.home_note.bauer.1": {
+  "ru": "«Гуппи покормлены. Юнгу не перекармливать, он хитрый».",
+  "en": "\"Guppies fed. Don't overfeed the Cabin Boy, he's crafty.\"",
+  "ja": "「グッピーは餌やり済み。見習い水夫にはやりすぎないこと、ずる賢いから」"
+ },
+ "city.home_note.bauer.2": {
+  "ru": "«Сеть на балконе — не трогать, сохнет. Янис, это тебе».",
+  "en": "\"The net on the balcony: don't touch, it's drying. Jānis, that means you.\"",
+  "ja": "「バルコニーの網は干してるから触らないで。ヤーニス、あなたのことよ」"
+ },
+ "city.home_note.bauer.3": {
+  "ru": "«Ушла на рынок за салакой. Если не будет — за терпением».",
+  "en": "\"Gone to the market for herring. If there's none, for patience.\"",
+  "ja": "「市場へニシンを買いに。なければ忍耐を買いに」"
+ },
+ "city.home_note.bauer.4": {
+  "ru": "«Суп на плите. Соль уже в нём. Второй раз не солить!»",
+  "en": "\"Soup's on the stove. The salt's already in. Don't salt it twice!\"",
+  "ja": "「スープはコンロの上。塩はもう入ってる。二度入れないこと！」"
+ },
+ "city.home_note.bauer.5": {
+  "ru": "«Сегодня шторм. Сидим дома и чиним то, что порвали в штиль».",
+  "en": "\"Storm today. We stay in and mend what we tore in the calm.\"",
+  "ja": "「今日は嵐。家にいて、凪の日に破ったものを繕う」"
+ },
+ "city.home_photo.priya.1": {
+  "ru": "Девочка на крыше поезда? Нет, на перроне, а поезд за ней такой длинный, что не помещается в кадр. Жара, пыль, улыбка.",
+  "en": "A girl on top of a train? No, on a platform, and the train behind her so long it doesn't fit in the frame. Heat, dust, a smile.",
+  "ja": "列車の屋根の上の女の子？ いや、ホームだ。後ろの列車は長すぎて写真に収まっていない。暑さ、ほこり、笑顔。"
+ },
+ "city.home_photo.priya.2": {
+  "ru": "На обороте: «Караганда — Людмиловск, трое суток. Первая открытка в альбом — эта, хоть она и не открытка».",
+  "en": "On the back: \"Karaganda to Lyudmilovsk, three days. The first card for the album is this one, even if it isn't a card.\"",
+  "ja": "裏に。「カラガンダ発リュドミロフスク行き、三昼夜。アルバムの最初の一枚はこれ、絵葉書じゃないけれど」"
+ },
+ "city.home_note.priya.1": {
+  "ru": "«Магазин закрыт до двух. Пуговицы — в коробке у двери, сдачу оставьте себе».",
+  "en": "\"Shop closed till two. Buttons in the box by the door, keep the change.\"",
+  "ja": "「店は二時まで休み。ボタンは戸口の箱に、おつりは結構です」"
+ },
+ "city.home_note.priya.2": {
+  "ru": "«Открытки с морем всё ещё нет. Спросить на почте ещё раз, вежливо».",
+  "en": "\"Still no card with the sea. Ask at the post office again, politely.\"",
+  "ja": "「海の絵葉書はまだない。郵便局でもう一度聞くこと、丁寧に」"
+ },
+ "city.home_note.priya.3": {
+  "ru": "«Шить: подол Зое, пуговица Льву Марковичу, заплатка себе».",
+  "en": "\"To sew: a hem for Zoya, a button for Lev Markovich, a patch for myself.\"",
+  "ja": "「縫うもの：ゾーヤの裾、レフ・マルコヴィチのボタン、自分のつぎあて」"
+ },
+ "city.home_note.priya.4": {
+  "ru": "«Чай — в четыре. Кто пришёл, тот и гость».",
+  "en": "\"Tea at four. Whoever comes is a guest.\"",
+  "ja": "「お茶は四時。来た人がお客さま」"
+ },
+ "city.home_note.priya.5": {
+  "ru": "«Воскресенье. Дверь закрыта. Я дома, просто для себя».",
+  "en": "\"Sunday. The door's shut. I'm home, just for myself.\"",
+  "ja": "「日曜日。戸は閉めています。家にいます、自分のために」"
+ }
+}

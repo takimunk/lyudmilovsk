@@ -28,6 +28,7 @@ import random
 import furn_int3 as fu
 import geom
 import interior_kit as kit
+import _homekit as hk
 from citykit import box, prism, band, ribbon_wall, DOOR_W, DOOR_H
 
 INFO = {
@@ -892,12 +893,14 @@ def _flat(B):
     B.thing("tul_photos", "board", (FX1 - 0.06, 11.2, A + 1.7), 270.0, topic="local")
     # ---------------------------------------------------------------- level 2: kitchen
     kit.kitchen_unit(B, FX1 - 0.3, 16.6, A, 270.0, modules="cupboard,sink,stove,fridge", wall_cupboards=False)
+    hk.cupboard_thing(B, "tul_cupboard", FX1 - 0.3, 16.6, 270.0, z=A, modules="cupboard,sink,stove,fridge", k=0)
     B.thing("tul_sink", "machine", (FX1 - 0.3, 16.8, A + 1.0), 270.0, what="sink")
     B.thing("tul_stove", "machine", (FX1 - 0.3, 16.2, A + 1.0), 270.0, what="stove")
     # reach audit: a smaller table at the edge of the floor (x -9.6, the void over the bedroom beyond) leaves 0.75 m free
     # to the kitchen unit (was 0.34 m: the back of the kitchen, the sink and the radio could not be reached)
     tb = kit.table(B, -9.3, 16.8, A, 0.0, w=0.6, d=0.7)
     kit.samovar(B, -9.3, 16.8, tb["top"], 0.0)
+    hk.note_left(B, "tul_note", -9.45, 17.07, tb["top"])
     B.thing("tul_samovar", "machine", (-9.3, 16.8, A + 1.05), 0.0, what="samovar")
     kit.chair(B, -9.3, 16.05, A, 180.0, kind="wood")
     B.thing("tul_kitchen_seat", "seat", (-9.3, 16.05, A + 0.45), 180.0, height=0.45)
@@ -912,6 +915,7 @@ def _flat(B):
     kit.bed(B, FX0 + 0.55, 7.6, Zb, 0.0, size="single", blanket="CT_PlasterGreen")
     B.thing("tul_bed", "bed", (FX0 + 0.55, 7.6, Zb + 0.5), 0.0, rest="private", height=0.5)
     kit.bedside_table(B, FX0 + 0.3, 8.95, Zb, 0.0, lamp=True)
+    hk.photo_frame(B, "tul_photo", FX0 + 0.3, 8.95, 0.0, z=Zb)
     kit.wardrobe(B, FX1 - 0.0, 8.2, Zb, 270.0, w=1.0)
     B.thing("tul_wardrobe", "board", (FX1 - 0.3, 8.2, Zb + 1.2), 270.0, topic="store")
     kit.sewing_table(B, -8.7, 5.5, Zb, 0.0)

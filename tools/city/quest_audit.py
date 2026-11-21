@@ -166,7 +166,12 @@ def main():
     heard_ok = {}
 
     def stamp_reachable(s):
-        return s in pieces_given
+        if s in pieces_given:
+            return True
+        # a collection by code: the game gives its declared pieces itself (GiveStamp), nothing in town does
+        cid, _, piece = s.partition("/")
+        cdef = colls.get(cid) or {}
+        return bool(cdef.get("by")) and piece in (cdef.get("pieces") or [])
 
     def conds_ok(c, ws, where, depth=0):
         """Line/topic conditions that can hold within the open week ws; returns a reason or ''."""
@@ -260,6 +265,16 @@ def main():
         for ln in g.get("win") or []:
             if isinstance(ln, dict) and ln.get("collect"):
                 add_stamp(ln["collect"], ln, ws, t["id"])  # a win's line may give a stamp (the sanatorium course's exercises)
+        # a procedure's good result gives its piece (CityThingsModel EndProc: GiveStamp(D->Collect)), its result lines theirs;
+        # the scene plays only while its "when" holds (docs/sanatorium_procedures.md)
+        pr = a.get("proc") or {}
+        pw = pr.get("when") or {}
+        if pr.get("collect"):
+            add_stamp(pr["collect"], {k: v for k, v in pw.items() if k != "k"}, ws, t["id"])
+        for res in ("good", "fair", "poor"):
+            for ln in pr.get(res) or []:
+                if isinstance(ln, dict) and ln.get("collect"):
+                    add_stamp(ln["collect"], ln, ws, t["id"])
         for tx in (a.get("read") or {}).get("texts", []):
             if tx in read_ok and texts[tx].get("collect"):
                 add_stamp(texts[tx]["collect"], {}, ws, "text " + tx)

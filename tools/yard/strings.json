@@ -52,12 +52,12 @@
  "yard.prompt.join": {
   "ru": "E — попроситься в прятки",
   "en": "E — ask to join hide-and-seek",
-  "ja": "E — かくれんぼに入れてもらう"
+  "ja": "E：かくれんぼに入れてもらう"
  },
  "yard.prompt.find": {
   "ru": "E — «Туки-туки!»: нашёл",
-  "en": "E — \"Found you!\"",
-  "ja": "E — 「みーつけた！」"
+  "en": "E — “Found you!”",
+  "ja": "E：「みーつけた！」"
  },
  "yard.toast.joined": {
   "ru": "Тебя взяли в прятки. Прячься, пока {0} считает!",
