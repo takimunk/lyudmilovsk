@@ -73,6 +73,20 @@ struct FLyudBodyAnimProxy : public FAnimInstanceProxy
 	/** 0 .. 1 from Prev to Cur. */
 	float Alpha = 1.f;
 	float BlendTime = 0.3f;
+	/** lyud.Anim.Smooth: a new clip doesn't cross-fade from the old one (Prev) but starts at once and carries, fading, the
+	 *  difference between the pose shown when it started and its own (Offset, per bone of the compact pose). Whatever
+	 *  was on screen is where it starts from, so a blend cut short by the next clip never pops, and the new clip's own
+	 *  motion is whole from its first frame. LastClip: the clips' pose of the last evaluation (before anything
+	 *  procedural), for the bone container PoseFor / PoseSerial. */
+	bool bTakeOffset = false;
+	bool bOffset = false;
+	TArray<FTransform> LastClip, Offset;
+	const FBoneContainer* PoseFor = nullptr;
+	uint16 PoseSerial = 0;
+	/** How long the steps are against the clip's (1 = the clip's own): the feet's reach fore and aft of the hips is
+	 *  scaled by it (two-bone IK, with the feet on the ground), so a quicker walk takes longer steps and not only faster
+	 *  ones, and a slow one short steps instead of slow motion. */
+	float StrideScale = 1.f;
 	/** The head's turn toward what the person looks at, on top of the clip (deg; yaw toward the character's left). */
 	float HeadYaw = 0.f;
 	float HeadPitch = 0.f;
@@ -183,6 +197,8 @@ public:
 
 	/** A manner's gesture (ANpcBody every frame; a default pose = none): eased toward, so one gesture melts into the next. */
 	void SetGesture(const FLyudGesturePose& Pose) { GestureWant = Pose; }
+	/** The steps' length against the walk clip's (ANpcBody works it out from the speed; 1 = as the clip). Eased. */
+	void SetStride(float Scale) { StrideWant = Scale; }
 	/** Looks at the look candidate for Seconds from now (somebody noticed something), not when it happens to. */
 	void Attend(float Seconds) { bAttending = true; AttendUntil = Clock + Seconds; }
 
@@ -249,6 +265,8 @@ private:
 	float BreathPeriod = 4.2f;
 	FVector LastPos = FVector::ZeroVector;
 	FVector Vel = FVector::ZeroVector;
+	FVector Accel = FVector::ZeroVector;           // smoothed (cm/s2): the lean into a start and out of a stop
+	float StrideWant = 1.f;
 	float LastYaw = 0.f;
 	float YawRate = 0.f;
 	float FootAlpha = 0.f;

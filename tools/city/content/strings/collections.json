@@ -12,6 +12,7 @@
  "city.coll.kiosks.title": {"ru": "Киоски у остановок", "en": "Bus-stop kiosks", "ja": "バス停のキオスク"},
  "city.coll.kites.title": {"ru": "Воздушный змей", "en": "The kite", "ja": "凧揚げ"},
  "city.coll.bird_habits.title": {"ru": "Птичьи повадки", "en": "Bird habits", "ja": "鳥のくせ"},
+ "city.coll.book_club.title": {"ru": "Книжный клуб", "en": "The book club", "ja": "読書会"},
  "dev.action.interiors.collections": {"ru": "Интерьеры: коллекции (страница и лог)", "en": "Interiors: collections (page and log)", "ja": "内装：コレクション（ページとログ）"},
  "dev.action.interiors.collections_all": {"ru": "Интерьеры: все коллекции собраны / сброшены", "en": "Interiors: all collections complete / cleared", "ja": "内装：全コレクション達成／リセット"}
 }

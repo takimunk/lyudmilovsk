@@ -474,6 +474,18 @@ private:
 	bool bOnBike = false;
 	float Facing = 0.f;
 	bool bPlaced = false;
+	/** lyud.Anim.Smooth (LyudMotion.h): where the body is shown, following where its life has it through a spring (so a
+	 *  path's corner is rounded, setting off and stopping take a moment, a kerb is a short ramp), the spring's velocity
+	 *  (the gait goes by it: the feet keep step with the ground actually covered), the facing's turn rate, and the
+	 *  fastest the life itself moved them lately (a small jump of the life's is glided over, not run). */
+	FVector ShownPos = FVector::ZeroVector;
+	FVector ShownVel = FVector::ZeroVector;
+	/** 0 on their feet .. 1 on a seat: how far the actor stands back from the body's point under the seat (Drive). */
+	float SeatLeadK = 0.f;
+	float ShownZVel = 0.f;
+	float FacingVel = 0.f;
+	float RecentSpeed = 0.f;
+	bool bShownValid = false;
 	/** Body size against the body the shared clips are baked on (Guy_a: pelvis height / 93.7 cm). */
 	float BodyScale = 1.f;
 	/** Standing, looking and talking take turns among a few clips (a nod, folded arms) so nobody loops one gesture. */
@@ -508,7 +520,8 @@ private:
 	class UAnimSequence* Clip(FName Name);
 	/** Lays the pusher between the hands and the ground ahead (or hides it). */
 	void PlacePusher(bool bShow);
-	void Play(FName Name, bool bLoop, float Rate = 1.f);
+	/** BlendTime < 0: by what follows what (a step into a step quickly, one way of standing into another slowly). */
+	void Play(FName Name, bool bLoop, float Rate = 1.f, float BlendTime = -1.f);
 	/** A duvet over the sleeper: a height field over the bed shaped by capsules round the bones, from the shoulders to past the feet. */
 	void BuildBlanket();
 	/** Plays one of the role's variants (the role's own clip most of the time), picking again every 6-12 s. */
