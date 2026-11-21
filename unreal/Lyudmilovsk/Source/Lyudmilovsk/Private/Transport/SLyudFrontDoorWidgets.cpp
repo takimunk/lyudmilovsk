@@ -230,7 +230,7 @@ int32 SLyudClubSign::OnPaint(const FPaintArgs& Args, const FGeometry& G, const F
 	for (int32 I = 0; I < Bulbs; I++)
 	{
 		const float X = 40.f * U + (Size.X - 80.f * U) * I / (Bulbs - 1);
-		for (const float Y : { 30.f * U, Size.Y - 30.f * U })
+		for (const float Y : { 30.f * U, (float)Size.Y - 30.f * U })
 		{
 			LyudFlapImpl::Box(Out, G, LayerId + 2, FVector2D(X - 7.f * U, Y - 7.f * U), FVector2D(14.f, 14.f) * U, bLit ? FLinearColor(1.f, 0.85f, 0.55f) * 4.f : Brass * 0.6f, 7.f * U);
 		}

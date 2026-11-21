@@ -474,10 +474,9 @@ void ULyudFrontDoor::TickDusk(float DeltaTime)
 	DuskClock = 2.f;
 	if (!Sky.IsValid())
 	{
-		for (TActorIterator<ALyudSky> It(GetWorld()); It; ++It)
+		if (TActorIterator<ALyudSky> It(GetWorld()); It)
 		{
 			Sky = *It;
-			break;
 		}
 	}
 	// no sky (an indoor level): by the clock, a rough sun
