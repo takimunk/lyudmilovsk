@@ -1105,6 +1105,7 @@
  "label.maru.tag": "Мару",
  "ui.animal.call": "[E]  Call her",
  "ui.friend.hand": "[E]  Hold out your hand",
+ "ui.pets.ask": "[E]  Ask: may I stroke him?",
  "ui.friend.stroke": "[E]  Stroke",
  "ui.friend.walk": "[E]  Call to come along",
  "ui.friend.home": "[E]  Send home",

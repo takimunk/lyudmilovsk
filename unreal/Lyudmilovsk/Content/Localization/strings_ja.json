@@ -1105,6 +1105,7 @@
  "label.maru.tag": "Мару",
  "ui.animal.call": "[E]  呼ぶ",
  "ui.friend.hand": "[E]  手を差し出す",
+ "ui.pets.ask": "[E]  なでてもいいか聞く",
  "ui.friend.stroke": "[E]  なでる",
  "ui.friend.walk": "[E]  一緒に行こうと呼ぶ",
  "ui.friend.home": "[E]  家に帰す",

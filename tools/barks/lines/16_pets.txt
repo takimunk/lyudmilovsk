@@ -8,7 +8,7 @@
 ## ---------------------------------------------------------------------------------------------------------------
 
 [dog_owner_walk]
-doing = walk_dog
+doing = walk_dog walk_dog_late
 say town.dog_owner_walk.1 | Гуляем. Два раза в день, в любую погоду. Это он меня выгуливает. | Out for our walk. Twice a day, any weather. It's him who walks me. | 散歩中です。日に二回、どんな天気でも。散歩させられてるのは私のほう。
 say town.dog_owner_walk.2 | Не бойся, не кусается. Разве что залижет. | Don't be afraid, no biting. A licking, at worst. | 怖がらないで、かみません。なめ回されるくらいで。
 say town.dog_owner_walk.3 | Каждый столб надо прочитать. У него там газета. | Every post has to be read. That's his newspaper. | 電柱は一本ずつ読まないと。あれがこの子の新聞なんです。
@@ -18,8 +18,7 @@ say town.dog_owner_walk.6 | Дома он тихий. Это на улице у 
 say town.dog_owner_walk.7 | В дождь тоже гуляем. Потом в подъезде отряхивается, соседи счастливы. | We walk in the rain too. Then a shake in the stairwell, and the neighbours are delighted. | 雨でも散歩です。帰ると階段でぶるぶるして、ご近所は大喜び。
 
 [dog_owner_walk_evening]
-doing = walk_dog
-hours = 18.5 20
+doing = walk_dog_late
 say town.dog_owner_walk_evening.1 | Вечерний круг. Он знает маршрут лучше меня. | The evening round. He knows the route better than I do. | 夕方のひと回り。道はこの子のほうがよく知ってます。
 say town.dog_owner_walk_evening.2 | На закате он всегда садится и смотрит на солнце. Я тоже привык. | At sunset he always sits and looks at the sun. I've got used to it too. | 日の入りになると、いつも座って太陽を見るんです。私もつられて。
 
@@ -56,7 +55,7 @@ say town.cat_call.4 | Идите, идите. Сорок лет кормлю, н
 say town.cat_call.5 | Кис-кис! А серая где? Опять на крыше? | Puss-puss! And where's the grey one? On the roof again? | おいで！灰色の子は？また屋根の上？
 
 [cat_lady_round]
-doing = feed_cats
+doing = feed_cats feed_cats_late
 say town.cat_lady_round.1 | В восемь и в полшестого. Они часы по мне сверяют. | At eight and at half past six. They set their clocks by me. | 八時と六時半。あの子たちは私で時計を合わせてるの。
 say town.cat_lady_round.2 | Дворовые, а каждого знаю. Вон тот полосатый ещё котёнком пришёл. | Yard cats, but I know each one. That tabby there came as a kitten. | 庭の猫だけど、みんな知ってるよ。あのしまの子は子猫のときに来たの。
 say town.cat_lady_round.3 | Ты их не бойся и не гоняй. Посиди тихо, сами подойдут. | Don't fear them and don't chase them. Sit quietly, they'll come themselves. | 怖がらないで、追いかけないで。静かに座っていれば、向こうから来るから。

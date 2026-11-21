@@ -1,7 +1,13 @@
 {
  "_doc": "Animals that live with people (tools/town/town_pets.py, docs/animals.md \"With people\"). Unreal metres, yaw radians (the animals' frame). dogs: owner = the resident who walks it (townsfolk key) while their activity is walk; cats: by day on the sill, at feeding time at the door; lady: who fills the feeders on her round (activity feed); hedgehogs: where they come out at dusk from April to October.",
- "walk": "walk_dog",
- "feed": "feed_cats",
+ "walk": [
+  "walk_dog",
+  "walk_dog_late"
+ ],
+ "feed": [
+  "feed_cats",
+  "feed_cats_late"
+ ],
  "lady": "korneeva_nina",
  "dogs": [
   {

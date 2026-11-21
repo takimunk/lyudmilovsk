@@ -11,7 +11,7 @@ it after itself):
 What it writes:
   Content/AnimalsData/pets.json         the dogs, the cats, the lady, the feeders of her round, the hedgehogs (Unreal metres,
                                         like animal_places.json); read by ULyudPets (Source/.../Animals/LyudPets.*)
-  Content/PeopleData/activities.json    walk_dog and feed_cats (duties only: "free": 0)
+  Content/PeopleData/activities.json    walk_dog, walk_dog_late, feed_cats, feed_cats_late (duties only: "free": 0)
   Content/PeopleData/town_places.json   S-CAT-FEEDERS: where the lady stands at each feeder
   Content/PeopleData/townsfolk.json     the dog owners' two walks a day (duties)
   Content/PeopleData/people.json        the lady's two rounds a day (duties of LADY)
@@ -49,10 +49,14 @@ LADY = "korneeva_nina"                      # Nina Korneeva, 71, of Novikova 1 (
 FEED_PLACE = "S-CAT-FEEDERS"
 ANCHOR_PLACE = "P-CAFE-CLEAN"               # town_night.py's first place and first activity: ours go just before them (that
 ANCHOR_ACTIVITY = "mop_floor_late"          # script puts its own before town_activities.py's, which keeps its own last)
-ACT_IDS = ["walk_dog", "feed_cats"]
+# The evening's walk and round are activities of their own: the people's life lets a duty last till the end of the LAST
+# duty of the same activity (FWorld::Think), so two duties of one activity a day would run the morning's into the evening.
+ACT_IDS = ["walk_dog", "walk_dog_late", "feed_cats", "feed_cats_late"]
 ACTIVITIES_ROWS = [
-    '{"id": "walk_dog", "places": ["promenade", "park", "pond", "fountain", "square"], "pose": "walk", "minutes": [30, 36], "meets": {"nature": 0.8, "sun": 0.2, "social": 0.1}, "costs": {"tired": 0.02}, "free": 0, "wander": 1, "wander_m": [20, 160], "wander_pause": [15, 50], "rain": "ok"}',
+    '{"id": "walk_dog", "places": ["promenade", "park", "pond", "fountain", "square"], "pose": "walk", "minutes": [30, 36], "meets": {"nature": 0.8, "sun": 0.2, "social": 0.1}, "costs": {"tired": 0.02}, "free": 0, "wander": 1, "wander_m": [20, 160], "wander_pause": [15, 50], "rain": "ok", "on_time": 1}',
+    '{"id": "walk_dog_late", "places": ["promenade", "park", "pond", "fountain", "square"], "pose": "walk", "minutes": [30, 36], "meets": {"nature": 0.8, "sun": 0.2, "social": 0.1}, "costs": {"tired": 0.02}, "free": 0, "wander": 1, "wander_m": [20, 160], "wander_pause": [15, 50], "rain": "ok", "on_time": 1}',
     '{"id": "feed_cats", "places": ["cat_feeder"], "slots": ["stand"], "pose": "stand", "wander": 1, "round": 1, "wander_pause": [80, 140], "minutes": [25, 27], "meets": {"nature": 0.4, "social": 0.2}, "free": 0, "rain": "ok"}',
+    '{"id": "feed_cats_late", "places": ["cat_feeder"], "slots": ["stand"], "pose": "stand", "wander": 1, "round": 1, "wander_pause": [80, 140], "minutes": [25, 27], "meets": {"nature": 0.4, "social": 0.2}, "free": 0, "rain": "ok"}',
 ]
 SILL_OUT = 0.14         # m the cat sits out from the glass, on the window's ledge
 DOOR_OUT = 0.9          # m in front of the flat's door a cat waits
@@ -166,7 +170,7 @@ def build():
                         "radians (the animals' frame). dogs: owner = the resident who walks it (townsfolk key) while their activity is "
                         "walk; cats: by day on the sill, at feeding time at the door; lady: who fills the feeders on her round "
                         "(activity feed); hedgehogs: where they come out at dusk from April to October."),
-               ("walk", "walk_dog"), ("feed", "feed_cats"), ("lady", LADY)])
+               ("walk", ["walk_dog", "walk_dog_late"]), ("feed", ["feed_cats", "feed_cats_late"]), ("lady", LADY)])
     rows = []
     used = set()
     for n, p in enumerate(dogs):
@@ -180,7 +184,7 @@ def build():
             names[lang]["animal.pet.%s.name" % pid] = DOG_NAMES[k][i]
         rows.append(OD([("id", pid), ("owner", p["key"]), ("household", p["household"]), ("home", p["home"]), ("breed", (h >> 8) % 3),
                         ("coat", (h >> 12) % 3), ("female", 0), ("name", "animal.pet.%s.name" % pid), ("door", r2(homes[p["home"]]["door"]))]))
-        p["duties"] = p["duties"] + [OD([("activity", "walk_dog"), ("hours", [a, b])]) for a, b in WALKS]
+        p["duties"] = p["duties"] + [OD([("activity", act), ("hours", [a, b])]) for act, (a, b) in zip(("walk_dog", "walk_dog_late"), WALKS)]
     pets["dogs"] = rows
     rows = []
     used = set()
@@ -241,7 +245,7 @@ def build():
     at = block.index('"duties": ') + len('"duties": ')
     was, used_to = json.JSONDecoder(object_pairs_hook=OD).raw_decode(block, at)
     was = [d for d in was if d.get("activity") not in ACT_IDS]
-    now = was + [OD([("activity", "feed_cats"), ("place", FEED_PLACE), ("hours", [a, b])]) for a, b in ROUNDS]
+    now = was + [OD([("activity", act), ("place", FEED_PLACE), ("hours", [a, b])]) for act, (a, b) in zip(("feed_cats", "feed_cats_late"), ROUNDS)]
     block2 = block[:at] + json.dumps(now, ensure_ascii=False) + block[used_to:]
     out[PEOPLE] = text[:m.start()] + block2 + text[m.end():]
     json.loads(out[PEOPLE])

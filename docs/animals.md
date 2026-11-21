@@ -19,6 +19,7 @@ a dog that walks along, a cat on the lap ("Friends" below).
 | Offscreen checks | `unreal/scripts/make_animals_test_level.py`, `test_animals.sh` (`test_animals.py`) |
 | Birds fleeing them | `Private/Birds/BirdSim.cpp` `PerceiveBeasts`, `UBirdLifeSubsystem::SetBeasts` |
 | Maru: her collar, her name, E | `blender/animals/collar.py`, `Public/Animals/AnimalCollar.h`, `AnimalNameTags.h` |
+| With people: household dogs and cats, the lady's round, hedgehogs | `Private/Animals/AnimalPetsSim.cpp`, `Public/Animals/LyudPets.h`, `tools/town/town_pets.py` -> `Content/AnimalsData/pets.json`, `blender/animals/hedgehog.py` |
 
 Rebuild the walk map whenever `tools/world_map.py`, the terrain or the Academgorodok's layout changes:
 `python3 tools/animal_map.py`.
@@ -246,6 +247,31 @@ Maru and to the club's door.
 is rebuilt only when it changes, the pocket is looked through once a second while an animal is looked at. A step of the
 simulation with a friend at heel costs the same as without (0.002 ms per animal in `tools/animalsim`).
 
+## With people
+
+Backlog item 46. Until it the cats and dogs lived on their own and no resident owned one. `tools/town/town_pets.py`
+(run by `tools/town/town_life.py` after the other add-ons, idempotent, `--check`) ties them and writes
+`Content/AnimalsData/pets.json`; the behaviour is in the pure model (`AnimalPetsSim.cpp`, `FAnimal::Pet`), the game
+side is `ULyudPets`.
+
+| What | How |
+|---|---|
+| **Ten households with a dog** | The owner has two duties, `walk_dog` 7:00 to 7:33 and `walk_dog_late` 19:00 to 19:36 (two activities: a person's duty lasts till the end of the last duty of the same activity, so one id would run the morning into the evening; `"on_time": 1` ends them at the duty's hour however long the way there took). `ULyudPets` reads the owner's activity every tick and calls `FWorld::OwnerWalk(Dog, bOut, Feet, Vel, Hand)`. On the leash (`EPet::Leash`) the dog keeps at the owner's left heel, stops to sniff (the owner's wander pauses are when it gets to), greets another dog that comes within reach (both sniff, tails going, then are led on), sits when the owner stands long. `LeashHold` keeps it within `LeashLen` (2.4 m) and, when the straight line to the owner is not walkable (a corner taken), brings it to the nearest point of the owner's trail that sees the owner: the leash is never stretched through a wall. Home again, the dog is `Indoors` (not drawn, not in the hash). |
+| **The leash** | One engine cylinder stretched from the owner's `hand_l` to the dog's collar height, no shadow, no collision, out of Lumen, moved only while a dog is out and near. |
+| **Fourteen flats with a cat** | Flats with a west window from `city_plan.json` (the window's place 0.14 m out of the wall is the sill). By the clock: `Sill` by day (it sits and watches, turns its head after birds and the hero), `Door` at feeding time (7:30 to 8:15 and 18:00 to 18:45: it waits at the entrance and goes in with whoever comes), else `Indoors`. A sill cat cannot be reached; a door cat can be stroked like any cat. |
+| **The lady with the bowls** | Nina Korneeva (`pets.json` `lady`) has duties `feed_cats` 7:54 to 8:21 and `feed_cats_late` 18:24 to 18:51 at `S-CAT-FEEDERS`. With her in the town `FWorld::bFeedByPerson` is set and the feeders no longer fill by themselves at eight: `ULyudPets::TickLady` calls `PutFood` when she stands by one and she calls the cats (`cat_call`). In `tools/animalsim` the old clock still fills them. |
+| **Hedgehogs** | Six spots (the yards, the park's orchard corner). Out from April to October, from half an hour before sunset for four and a half hours (`FWorld::HedgehogsOut`, `Month`): they shuffle about their spot, stop and sniff, curl up when the hero or a dog comes within 2.6 m (4.5 m when he runs) and uncurl a while after he has gone. A cat that sees one comes up, sniffs, gets the spines (a `Hiss` event) and trots off. Drawn as two static meshes swapped by state, `SM_Prop_hedgehog` and `SM_Prop_hedgehog_ball` (`blender/animals/hedgehog.py`: about 3 000 triangles each, no UV overlap, checked by the script; `unreal/scripts/import_props.sh hedgehog hedgehog_ball`). |
+| **Words** | `tools/barks/lines/16_pets.txt`: owners talk to the dog on the walk, about it to the hero, the lady calls the cats, people remark on a sill cat and on a hedgehog (events `pet_talk`, `cat_call`, `cat_sill`, `hedgehog`). The pets' names are `animal.pet.<id>.name` in `Localization/pets/`. |
+| **"Можно погладить?"** | A dog on the leash takes the hero's hand only after its owner said yes: the prompt is `ui.pets.ask`, E asks (`ULyudPets::AskToStroke`), the owner answers (`pet_stroke_yes` / `pet_stroke_no`, one owner in four says no that day), a yes is `FWorld::AllowStroke(Dog)` for 40 s and the stroke is item 1's. A household's pet never follows the hero (`StartWalk` refuses). |
+
+Console: `lyud.Pets.Report`, `lyud.Pets.Walk [n]` (sends an owner out with the dog now), `lyud.Pets.Hedgehogs` (forces
+the hedgehogs' month to July; they still wait for dusk).
+
+Not done or not seen yet: the engine side (`LyudPets.cpp`, the prompt in `AnimalFriends.cpp`) was written in the cloud
+and has not been compiled or run; the sill's offset and the leash's hand and collar offsets want a look in the level;
+pets are added to the model after the strays, so a saved bond with one is not restored; there is one feeder in
+`animal_places.json` (the Academgorodok's), the lady has one stop.
+
 ## Checks
 
 - `tools/animalsim/run.sh test`: a dog chases a cat up a tree and barks, the cat comes down later; a bold cat without a
@@ -258,6 +284,11 @@ simulation with a friend at heel costs the same as without (0.002 ms per animal 
   keeps up with a run, rejoins from 300 m; she waits outside a door and lies down there, goes home at half past ten;
   she swims after him and turns back at 30 m; she sits by his bench and a befriended cat sleeps on his lap; on the
   real map she walks 119 m along the spur at heel and goes back to the club's door.
+  With people (`ANIM_ONLY=pets`): an owner walks a block and round a corner and the dog keeps within the leash with
+  a clear line to him at every step, sniffs, greets another walked dog, goes indoors after; a flat's cat is on the
+  sill by day, at the door at feeding time, indoors at night; the feeders stay empty till the lady puts the food
+  down; hedgehogs come out at dusk in July, curl up by the hero, a cat sniffs one and backs off, none in December.
+- `tools/peoplesim/run.sh town`: the dogs' owners are out morning and evening and never off those hours.
 - `tools/animalsim/run.sh day && python3 tools/animalsim/render_animals.py`: `Saved/AnimalSim/animals_day_map.png`
   and `animals_day_acts.txt` (what they do, hour by hour); `run.sh trace <id> <hour> <hours>` follows one animal.
 - `tools/birdsim/run.sh test`: birds flush from a running dog well before a walking cat, a stalking cat gets closest.

@@ -78,7 +78,7 @@
      "friends": ["korneeva_nina", "lange_pyotr", "zotov_lev"], "likes": {"play_club": -0.8, "fish_shore": 0.6, "shop": 0.05}},
     {"key": "korneeva_nina", "body": "Korneeva_nina", "mesh": "Girl_b", "age": 71, "occupation": "pensioner", "household": "korneev", "female": 1,
      "temper": {"social": 0.85, "active": 0.4, "studious": 0.4, "gamer": 0.0, "nature": 0.7, "sun": 0.85},
-     "wake": 6.5, "bed": 22.5, "duties": [{"activity": "yard_evening", "place": "academ_bench_0", "hours": [14, 16.5]}, {"activity": "feed_cats", "place": "S-CAT-FEEDERS", "hours": [7.9, 8.35]}, {"activity": "feed_cats", "place": "S-CAT-FEEDERS", "hours": [18.4, 18.85]}],
+     "wake": 6.5, "bed": 22.5, "duties": [{"activity": "yard_evening", "place": "academ_bench_0", "hours": [14, 16.5]}, {"activity": "feed_cats", "place": "S-CAT-FEEDERS", "hours": [7.9, 8.35]}, {"activity": "feed_cats_late", "place": "S-CAT-FEEDERS", "hours": [18.4, 18.85]}],
      "friends": ["korneev_ivan", "zotova_galina", "orlova_tanya"], "likes": {"play_club": -0.8, "shop": 0.1, "sit_bench": 0.1}},
     {"key": "belov_misha", "body": "Belov_misha", "mesh": "Crowd_13", "age": 29, "occupation": "lab_technician", "household": "belov",
      "temper": {"social": 0.6, "active": 0.7, "studious": 0.4, "gamer": 0.6, "nature": 0.5, "sun": 0.5},

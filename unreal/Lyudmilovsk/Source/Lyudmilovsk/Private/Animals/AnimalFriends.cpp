@@ -3,6 +3,7 @@
 #include "AnimalSim.h"
 #include "Animals/AnimalActor.h"
 #include "Animals/AnimalLife.h"
+#include "Animals/LyudPets.h"
 #include "BirdTame.h"
 #include "Brushes/SlateColorBrush.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -563,7 +564,12 @@ void UAnimalFriendSubsystem::UpdatePrompt()
 	};
 	switch (EAction)
 	{
-	case EKeyAction::Hand: Add(LyudText::Get(TEXT("ui.friend.hand"))); break;
+	case EKeyAction::Hand:
+	{
+		const ULyudPets* Pets = ULyudPets::Get(this);
+		Add(LyudText::Get(Pets && Pets->NeedsAsking(Target) ? TEXT("ui.pets.ask") : TEXT("ui.friend.hand")));
+		break;
+	}
 	case EKeyAction::Stroke: Add(LyudText::Get(TEXT("ui.friend.stroke"))); break;
 	case EKeyAction::Walk: Add(LyudText::Get(TEXT("ui.friend.walk"))); break;
 	case EKeyAction::Home: Add(LyudText::Get(TEXT("ui.friend.home"))); break;
@@ -611,13 +617,18 @@ bool UAnimalFriendSubsystem::StartHand(EHand Mode, int32 Id)
 	switch (Mode)
 	{
 	case EHand::Offer:
-		bOk = Life->OfferHand(Id);
+	{
+		// somebody's dog on a leash: the owner is asked first ("may I stroke it?", ULyudPets) and answers aloud
+		ULyudPets* Pets = ULyudPets::Get(this);
+		const bool bRefused = Pets && Pets->NeedsAsking(Id) && !Pets->AskToStroke(Id);
+		bOk = !bRefused && Life->OfferHand(Id);
 		HandLeft = bOk ? 18.f : 2.4f;
-		if (!bOk)
+		if (!bOk && !bRefused)
 		{
 			Say(TEXT("ui.friend.not_yet"));
 		}
 		break;
+	}
 	case EHand::Stroke:
 	case EHand::Lap:
 		bOk = Life->StrokeAnimal(Id);

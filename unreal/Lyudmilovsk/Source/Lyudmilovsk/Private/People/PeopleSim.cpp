@@ -328,6 +328,7 @@ namespace LyudPeople
 			A.bStaff = V["staff"].F() > 0.f;
 			A.Pace = V["pace"].F(1.f);
 			A.bRainOk = V["rain"].S() == "ok";
+			A.bOnTime = V["on_time"].I(0) != 0;
 			A.bShelter = V["shelter"].F() > 0.f;
 			if (V["wind"].Size() == 2)
 			{
@@ -3706,6 +3707,19 @@ namespace LyudPeople
 		const FSlot& Sl = Slots[P.Slot];
 		P.bIndoors = Roofed(Sl.Place);
 		P.Until = Time + P.Minutes * 60.0;
+		if (A.bOnTime)
+		{
+			// the way there was a part of it: home by the duty's end (a walk begun at seven is over at half past, wherever it led)
+			for (const FDuty& D : P.Duties)
+			{
+				if (D.Activity == A.Id)
+				{
+					float Left = D.To - Hour;
+					Left += Left < -12.f ? 24.f : 0.f;
+					P.Until = std::min(P.Until, Time + std::max(1.f, Left * 60.f) * 60.0);
+				}
+			}
+		}
 		P.StateStart = Time;
 		P.WanderAt = Time + (A.bPauseSet ? A.PauseMin + (A.PauseMax - A.PauseMin) * Rand(P.Rng) : 30.0 + 60.0 * Rand(P.Rng));
 		Emit(EEvent::Arrive, P);
