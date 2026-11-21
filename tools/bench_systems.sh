@@ -20,6 +20,7 @@ variant() {
         noacadem)    echo "lyud.Academ 0" ;;
         nodiner)     echo "lyud.Diner 0" ;;
         nocity)      echo "lyud.City.Show 0" ;;
+        nohi3d)      echo "lyud.City.Hi3d 0" ;;
         nofloor)     echo "lyud.ForestFloor 0" ;;
         nosound)     echo "lyud.Sound 0" ;;
         novines)     echo "lyud.Vines 0" ;;

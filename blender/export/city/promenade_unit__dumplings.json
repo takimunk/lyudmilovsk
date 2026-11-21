@@ -382,9 +382,81 @@
  "notes": [
   "promenade unit room, variant dumplings: placed at each W1 unit whose plan variant is dumplings"
  ],
+ "dress": [
+  {
+   "id": "unit_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 291,
+   "bounds": [
+    [
+     0.715,
+     0.73,
+     0.02
+    ],
+    [
+     3.8,
+     1.664,
+     0.89
+    ]
+   ]
+  },
+  {
+   "id": "dumplings_used",
+   "when": {
+    "hours": [
+     12.5,
+     15.5
+    ]
+   },
+   "tris": 372,
+   "bounds": [
+    [
+     -1.605,
+     1.44,
+     1.08
+    ],
+    [
+     -1.29,
+     3.56,
+     1.115
+    ]
+   ]
+  },
+  {
+   "id": "dumplings_mittens",
+   "when": {
+    "months": [
+     1,
+     2,
+     3,
+     11,
+     12
+    ]
+   },
+   "tris": 172,
+   "bounds": [
+    [
+     -1.35,
+     6.235,
+     0.72
+    ],
+    [
+     -1.06,
+     6.4,
+     0.747
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 274,
   "detail": 6319,
-  "windows": 0
+  "windows": 0,
+  "dress": 835
  }
 }

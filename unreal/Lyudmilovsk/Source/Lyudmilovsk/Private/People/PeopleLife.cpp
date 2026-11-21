@@ -2409,6 +2409,10 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 	case EHold::Pointing:
 		Rot = FRotationMatrix::MakeFromXZ((Fwd * 0.85f + Up * 0.5f).GetSafeNormal(), Up).Rotator();
 		break;
+	case EHold::Shaft:
+		// a spade: its handle's top in the main hand, the shaft down through the other hand to the blade
+		Rot = FRotationMatrix::MakeFromXZ((At[1 - M] - At[M]).GetSafeNormal(UE_SMALL_NUMBER, (Fwd * 0.5f - Up * 0.85f).GetSafeNormal()), Fwd).Rotator();
+		break;
 	default:
 		break;
 	}

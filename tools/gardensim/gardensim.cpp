@@ -338,6 +338,11 @@ static int Run(const FData& Data)
 		CHECK(NeighbourGrowth("strawberry", 10.f) > 0.f, "strawberries keep their leaves over winter");
 		CHECK(NeighbourGrowth("tomato", 296.f) < 0.f, "no tomatoes on the game's first day");
 		CHECK(Season(296.f) == 2 && Season(10.f) == 3 && Season(100.f) == 0 && Season(200.f) == 1, "seasons");
+		// the harvest fair's judges (docs/festivals.md "The new toys")
+		CHECK(FairPlace(3, 3, 12) == 1 && FairPlace(3, 2, 4) == 2 && FairPlace(2, 3, 12) == 2 && FairPlace(2, 1, 3) == 3 && FairPlace(1, 1, 2) == 0 && FairPlace(0, 0, 0) == 0,
+			"the harvest fair: three well-kept crops win, one poor bunch is only thanked");
+		const auto Rank = [](int Place) { return Place == 0 ? 4 : Place; };
+		CHECK(Rank(FairPlace(3, 1, 1)) <= Rank(FairPlace(2, 1, 1)) && Rank(FairPlace(2, 3, 20)) <= Rank(FairPlace(2, 1, 20)), "the fair: better kept or more kinds never places lower");
 	}
 	std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 	return Failures ? 1 : 0;

@@ -375,7 +375,7 @@ synthetic events, Mac shot of the page.
 
 ## 24. Festival days use the new toys
 
-`[ ]` **Brief (Opus 5.5):** Festivals (`Content/PeopleData/festivals.json`, `docs/festivals.md`) know nothing of tonight's
+`[~] festival-toys 2026-11-20` (branch `festival-toys`; what was built: `docs/festivals.md` "The new toys"; never compiled or seen in the engine) **Brief (Opus 5.5):** Festivals (`Content/PeopleData/festivals.json`, `docs/festivals.md`) know nothing of tonight's
 features. Tie them: the cinema shows a festival programme (the sea festival, New Year cartoons), the radio plays a festival
 broadcast, the tournament of the week becomes a festival cup on its day, kites fly on Children's Day and the blossom
 picnic, the beach games become contests on Fisherman's Day (stone skipping championship), the sanatorium has a dance
@@ -395,7 +395,7 @@ never per-frame). Done: Blender previews of three rooms in two states, perf benc
 
 ## 26. Residents do the new activities
 
-`[ ]` **Brief (Fable 5.2):** Make the townsfolk use tonight's features by persona and weather: kids fly kites and skip
+`[~] residents-activities 2026-11-20` (docs/town_life.md "The new activities") **Brief (Fable 5.2):** Make the townsfolk use tonight's features by persona and weather: kids fly kites and skip
 stones, pensioners take the sanatorium cure and play dominoes in its lounge, the regulars go to the cinema (seats fill,
 `FindFreeThing`), people read the paper on benches (the `read_bench` activity holding the new paper prop), someone plays the
 piano in the hall in the evening (item 15's synth, rarely), allotment neighbours dig and water, the postman does his round,
@@ -405,7 +405,7 @@ Mac shots of three new activities, bench (no new per-frame cost per person).
 
 ## 27. Counters with real service
 
-`[ ]` **Brief (Opus 5.5):** At counters the hero buys from a menu. Make it a little scene: the staff turns to him, says the
+`[~]` counter-service 2026-11-20 (branch ready, waiting for merge; docs/counters.md; Mac compile and queue shots by the merge thread) **Brief (Opus 5.5):** At counters the hero buys from a menu. Make it a little scene: the staff turns to him, says the
 greeting by hour and by whether they know him (friends, item 12), the item is put on the counter and the hero takes it (the
 hand reaches, `UHeroReachComponent::Take`), change is counted, a queue forms behind him at busy hours and residents wait
 their turn (customer pairs exist: `LyudBarks::AtCounter`, `CounterTrade.cpp`). Fix P-MARKET counters never firing
@@ -429,7 +429,7 @@ with it: same `B.dress` mechanism, one of you writes it). Done: Blender previews
 
 ## 30. Collections pay off
 
-`[ ]` **Brief (Opus 5.5):** Stamp sets exist (library shelves, films, jukebox records, kiosks, chess wins, the sanatorium
+`[~] collections-payoff 2026-11-21 (model, data, diary pages, citysim and quest audit done; never compiled or seen in the engine)` **Brief (Opus 5.5):** Stamp sets exist (library shelves, films, jukebox records, kiosks, chess wins, the sanatorium
 card, tonight's new sets) but a complete set gives nothing (backlog P4). Give each set a reward that fits: a library reader's
 card with a photo, a framed film poster for the hero's room (item 19), a record of your choice, the kiosk keepers' free
 paper for a month, a chess club badge on the jacket, the sanatorium diploma. A diary page "Коллекции" with all sets, filled
@@ -455,7 +455,7 @@ test of a game's start, roles and end, Mac shots, bench with three groups playin
 
 ## 33. Photo quests and the photo contest
 
-`[ ]` **Brief (Opus 5.5):** On top of the camera (item 2): the photo club at «Шестерня» runs a monthly contest with a theme
+`[~] photo-contest 2026-11-20` **Brief (Opus 5.5):** On top of the camera (item 2): the photo club at «Шестерня» runs a monthly contest with a theme
 (the sea, birds, people at work, the festival) announced in the paper; the hero hands in one print, residents of the club
 judge (a score from what is in the frame: subject tags from the capture, light by sun height, sharpness), the winners' prints
 hang in the club and the paper prints the hero's photo. Three photo quests from residents (a portrait of a pensioner for his
@@ -485,3 +485,237 @@ sidecars; teen hero rules do not apply, adults by persona). Dima pre-approved th
 for the birds (about $5); keep this pass small (a few dollars), ask the coordinator for the night's fal total first, and
 record the spend in the sidecars. Import on the Mac
 (`import_voice.py`). Done: lines play at the counters, subtitles match, the voice list committed.
+
+---
+
+# Part 3 (2026-11-21, 00:10 UTC): Dima's own asks, deeper
+
+Written for the quota thread when part 2 was all given out. Part 3 goes back to what Dima asked for himself on
+2026-11-20 (the way from Aton to the town, the cable-car stations, birds, animals in the town, reading in the library,
+the sanatorium) and takes each one a step deeper than tonight's threads did. Same rules ("Rules every brief carries":
+paste them with each brief), same marks.
+
+Two of tonight's branches are the ground for several items and were **not in main** when this was written: `aton-coast`
+(PR #31, `docs/south.md`, `docs/south_backlog.md`, `tools/south.py`) and `stations-v3` (the dressed station halls,
+`halls.json`, `unreal/scripts/test_station_halls.py`). An item that builds on one of them branches from it and says so
+in its PR; the merge thread takes the base first.
+
+**Cloud-only** in the table means the whole item is written and proven in the cloud: data, C++ and the offline suites,
+no new mesh, picture or sound to push through LFS (the cloud cannot push LFS) and no shot needed to call it done. The Mac
+then only compiles it in the merge thread's batch. Everything else needs the Mac for assets, import or shots.
+
+## Order (part 3)
+
+| # | Item | Value | Cloud-only | Model | Size | Builds on |
+|---|---|---|---|---|---|---|
+| 37 | [People on the Aton trails](#37-people-on-the-aton-trails) | very high | **yes** | Opus 5.5 | M | aton-coast, town_life |
+| 38 | [The first walk to the town: signposts, a guide and the map's trails](#38-the-first-walk-to-the-town) | very high | no (map pictures) | Opus 5.5 | M | aton-coast, quests, ui_map |
+| 39 | [What the hero can do on the way: the spring, the orchard, the boats, the boards](#39-things-to-do-on-the-way) | high | no | Opus 5.5 | M | aton-coast |
+| 40 | [The Aton station as the club's front door](#40-the-aton-station-as-the-clubs-front-door) | high | no | Opus 5.5 | M | stations-v3, counters |
+| 41 | [Station life: commuters, attendants, the cabins' words](#41-station-life) | high | **yes** | Fable 5.2 | L | transport, town_life |
+| 42 | [A lighthouse at Mayak and its keeper](#42-a-lighthouse-at-mayak) | high | no (Blender + Mac) | Opus 5.5 | L | aton-coast, stations |
+| 43 | [Birds and beasts of the brook](#43-birds-and-beasts-of-the-brook) | medium-high | **yes** | Opus 5.5 | S | aton-coast, bird life |
+| 44 | [Signature behaviours of each bird species](#44-signature-behaviours-of-each-bird-species) | high | no (clips) | Fable 5.2 | L | bird life, bird book |
+| 45 | [Bird voices that mean something](#45-bird-voices-that-mean-something) | high | **yes** (model) | Opus 5.5 | M | bird life, soundscape |
+| 46 | [Animals with people: walked dogs, window cats, hedgehogs](#46-animals-with-people) | medium-high | no (hedgehog model) | Fable 5.2 | L | animal life, town_life |
+| 47 | [Reading anywhere, and quotes in the diary](#47-reading-anywhere) | high | **yes** | Opus 5.5 | M | books, diary |
+| 48 | [The library's book club and the librarian's advice](#48-the-book-club) | medium-high | **yes** | Opus 5.5 | M | books, barks, paper |
+| 49 | [The sanatorium's procedures as small hands-on scenes](#49-the-sanatoriums-procedures) | high | no | Fable 5.2 | L | sanatorium-cure, guests |
+| 50 | [Sanatorium guests come and go, and go out into the town](#50-sanatorium-guests-come-and-go) | medium-high | **yes** | Opus 5.5 | M | sanatorium guests, train |
+
+**Running in parallel without touching the same files:** 37 ∥ 41 ∥ 47 ∥ 44 (four different subsystems); 38 and 39 both
+edit `tools/south.py` places and words: one after the other, or 38 keeps to quests and the map and 39 to things; 43 waits
+for 37 if both touch `tools/bird_habitats.py`/`people_map.py` regeneration (rerun after rebase); 45 after 44 or
+rebased on it (both in the bird-life model); 46 owns `tools/animal_map.py` for the night; 49 and 50 both touch
+`x_p_sanatorium.json`: 50 keeps to town-life (`tools/town/`) and the train. Everyone who changes town life runs
+`tools/peoplesim/run.sh town`; everyone who changes the city content reruns `python3 tools/city/interiors.py --check`.
+
+## 37. People on the Aton trails
+
+`[ ]` **Cloud-only. Brief (Opus 5.5):** The Aton coast (`docs/south.md`, branch `aton-coast`) has five trails and twelve
+places, and nobody walks them (`docs/south_backlog.md` "People do not walk it"). Give it people, the townsfolk we already
+have, by persona, weekday and weather: a fisherman mending nets at the boat shed by the brook's mouth (`brook_mouth`)
+mornings, going out in the evening; a beekeeper in the old orchard in warm months (the hives); the birdwatcher in the
+hide (`bird_hide`) at dusk when the starlings come in (the ornithologist from `quest/ornithologist`, if his schedule
+allows); couples and pensioners walking the shoulder trail (`town` trail) to the belvedere and back on fine afternoons,
+sitting on its benches (the seats are already `ULyudPublicSpots` spots); children at the spring and the brook's stones
+after school; a dog walker on the cliff walk; nobody in heavy rain, more people on festival days and Sundays. Add the
+places and their slots the way `tools/town/sanatorium_guests.py` adds the guests (an idempotent post-step over
+`townsfolk.json`/`town_places.json`/`activities`, because `town_life.py` does not rebuild on current inputs), with the
+walking routes taken from `south.trails()` so they keep to the paths; `tools/people_map.py` must know the new ground.
+A few lines for each role (ru/en/ja: the fisherman about the weather and the catch, the beekeeper about the bees,
+walkers greeting). Done: `tools/peoplesim/run.sh town` with new checks (the places fill at the right hours, empty in
+rain and at night, nobody leaves the trails), `--check` of the post-step, lines through the localization skill.
+
+## 38. The first walk to the town
+
+`[ ]` **Brief (Opus 5.5):** Make the half-kilometre walk from the club to the town (`south.trails()` `town`) the game's
+natural first trip. Signposts at the forks (the alley's end, the shoulder's foot, the footbridge) with arrows and
+distances in metres and minutes ("Город 350 м", "Пляж", "Родник", "Станция «Атон»"), built from the North's kit sign
+(`set: "north"`) with words from `tools/south_signs.py`. A small quest "Дорога в город" for the first day: Maru (or the
+club's regular who tells the hero about the town) suggests the walk; the steps are the places on the way (the belvedere's
+view of the whole town, the footbridge, the stele "Людмиловск", the first terrace), each step a line of the hero's own
+thought, the end at the square with a first errand (bread at the bakery) so it leads on into the town. The map
+(`tools/ui_map.py`, `tools/ui_map_ink.py`) draws the designed trails as dashed footpaths with their names, the places'
+markers get small icons by kind (view, bridge, water, birds, boats), and the trail the hero walked is inked in. Done:
+questsim walk-through, `south.py --check`, Mac: the map pictures rebuilt (LFS), shots of three signposts and the map.
+
+## 39. Things to do on the way
+
+`[ ]` **Brief (Opus 5.5):** The Aton coast's places can only be sat at and looked through (`docs/south_backlog.md`
+"Game"). Make each one do something, in the existing systems: drink at the spring with the hands (E: the hero kneels,
+a sip sound, thirst/"refreshed" like the soda) and fill the empty bottle from the vending machines (a new item state
+"spring water", sold to nobody, given to the sanatorium's doctor for a line); pick apples in the old orchard
+in August-October (`ULyudInventory::Get(this)->Add`, a windfall under each tree that regrows by days, the plant system's
+fruit if the orchard's trees use it, the allotment's kitchen recipes from item 34 take them); the info boards at the
+belvedere, the hide and the stele open as a readable page (the town paper's reader layout, words in ru/en/ja: the town's
+history, the birds of the reedbed, the brook); the boats at the mouth: a keel-up boat to sit on and watch the sea; the
+stepping stones over the brook's mouth with a misstep into the water (wet feet: the swim system's wet state). Each new
+item with an icon (one Higgsfield grid, already-allowed budget). Done: citysim-style offline checks where a model exists,
+Mac shots of each interaction, bench.
+
+## 40. The Aton station as the club's front door
+
+`[ ]` **Brief (Opus 5.5):** The Aton station is the first hall the hero sees and stands next to the club
+(`docs/transport.md`: the swept wing, its coffee bar with `coffee` goods; `stations-v3` dresses the halls). Make it the
+club's front door: the coffee bar served by its barista through item 27's counter service (a line in the morning, the
+cup set on the counter, the regulars' "the usual"), a departures board that shows the real next cabins of the Sun line
+(from `ULyudTransport`'s schedule, flipping like a split-flap with a clack), a ticket punch and a travel card with a
+stamp per station (a collection "Все станции" in `collections.json`, paid off by item 30's rules: a badge in the diary
+when all seven are stamped), a lost-and-found shelf where residents' lost things turn up and can be handed back to their
+owners (a line and a small gift each), the station's lights coming on at dusk with the club's sign. Coordinate with the
+stations thread (it owns the halls' meshes): add only things and content. Done: transportsim checks for the board's
+times, citysim for the counter, Mac shots by day and night, bench.
+
+## 41. Station life
+
+`[ ]` **Cloud-only. Brief (Fable 5.2):** The cable car carries riders (`docs/transport.md`, `tools/transportsim`) but the
+stations do not live by the town's day. Give them a rhythm from town life: the morning commute (Academgorodok's
+scientists from the town to Akademgorodok station 7:30-9:00, back 17:30-19:00), schoolchildren to the school's stop,
+pensioners going to the market on Saturday morning, beach-goers to Yantarny bereg on warm days, a crowd after the
+cinema's last show and after festivals; each station's attendant on a shift (opens the hall, sweeps, closes at night,
+talks to regulars), the barista and the kiosk keepers from `stations-v3`'s halls given real town schedules. The cabins'
+words: an announcement of each next station in ru/en/ja (text first; the voice is item 36's job), one line about the view
+("Слева — Людмиловская бухта"), the hall's barks of people waiting ("Опять ветер, кабинки встанут?" when the wind stops the
+line). Riders pick the line from where they live and work (`townsfolk.json` home/work), so the same faces ride at the same
+hours. Done: transportsim + peoplesim town checks (peak loads, no one stuck in a hall at closing, the wind stop handled),
+lines through the localization skill, the hall staff in town data.
+
+## 42. A lighthouse at Mayak
+
+`[ ]` **Brief (Opus 5.5):** The south end of the Aton coast is the Mayak station on the cliff (`south.places()`
+`mayak_station`, `cliff_lookout`) and there is no lighthouse ("Маяк") there (`docs/south_backlog.md` "Looks"). Build one
+in Blender with the North's kit and atlas (`blender/south/`, a white tower with a red band, a gallery, the lantern room,
+a keeper's cottage, a fence), place it on the headland beyond the station, and light it: a rotating lens like the
+station's own (`docs/transport.md` "Mayak (lantern)") with a sweeping beam that the town and the beach see at night (one
+light, out of Lumen, no per-frame mesh changes; the beam a cheap card cone), dimmed in fog with a foghorn every 30 s in
+fog (the soundscape's weather mood). The keeper, a new resident with a schedule (lights the lamp at dusk, polishes the
+lens, keeps a weather log he lets the hero read; a quest to bring him paraffin and the paper), the gallery as a viewpoint
+(E: look; the telescope item 5's eyepiece at the coin viewer there). Check UVs and artefacts on every new mesh. Done:
+Blender lint 0/0, Mac import through `import_south.sh`, night shots from the town and the beach, bench (the beam's cost).
+
+## 43. Birds and beasts of the brook
+
+`[ ]` **Cloud-only. Brief (Opus 5.5):** The new brook (`south.brook_cut`) and its mouth have no habitat on purpose
+(`docs/south_backlog.md` "Animals"). Add a `brook` habitat kind in `tools/bird_habitats.py` (the valley bed and the
+ravine's stones) and a `mouth` kind (the shallow fan over the beach), and let existing species use them by taste in
+`species.json`: the grey heron standing at the mouth at low tide and in the brook's slow bends at dawn, white wagtails on
+the stones, gulls bathing in the fresh water, swallows and sand martins drinking on the wing over the pools, the cormorant
+drying on the boat shed's roof, rooks and jackdaws drinking on hot days. The kingfisher and dipper are new species and
+need models: list them in the bird models thread's queue, do not add them here. Bees at the orchard's hives as a small
+ambient sound point; frogs croaking in the reedbed's runnels on warm spring nights (the soundscape's existing points).
+Done: `tools/birdsim/run.sh` checks (the heron at the mouth at low tide, no bird standing in deep water, roost counts
+unchanged), habitats regenerated after rebase, the sound points as data.
+
+## 44. Signature behaviours of each bird species
+
+`[ ]` **Brief (Fable 5.2):** Birds feed, rest, bathe and roost by species (`docs/bird_life.md` "Daily routines"), but they
+do it alike. Give each of the 39 species one or two things it alone does, that a patient hero with binoculars sees and
+writes in the bird book (`ULyudBirdBook`, `docs/bird_guide.md`): hooded crows dropping a walnut or a shell on the
+promenade's paving from 5 m and walking down to eat it; herring gulls snatching food from a resident's bench and from the
+fishermen; jackdaws in pairs preening each other on a roof; rooks' noisy gathering on the field; wagtails' dashing runs
+after flies on the wet sand; swallows dipping to drink from the brook; blackbirds tossing leaves aside; great tits hanging
+upside down at the feeders; starlings mimicking (a car alarm, a whistle) on the wires; the heron's slow stalk and strike;
+the cormorant's spread wings; the sparrowhawk's dash along a hedge that scatters sparrows; magpies hiding a shiny thing.
+Each is a short act in the bird-life model with its clip from the animations thread's rig (coordinate: it owns the clips;
+reuse what exists first), seen at most a few times a day near the hero. The bird book gets a page "Повадки" per species:
+a sketch, a line, the date first seen; finding all of one family's gives a stamp. Done: birdsim checks (rates, never in
+front of a wall, no per-frame cost when far), the book page shot on the Mac, bench.
+
+## 45. Bird voices that mean something
+
+`[ ]` **Cloud-only (the model; new recordings or synth renders go through the Mac). Brief (Opus 5.5):** Bird calls come
+from `tools/birdsim/bird_calls.py` and play by species. Make them follow what the bird is doing: songs only from
+singing perches in the breeding months and the dawn chorus (species by species in their real order from an hour before
+sunrise: robin, blackbird, song thrush, then tits and finches), quiet in midday heat and in rain; contact calls in
+flocks (the more birds, the denser the murmur); alarm calls that spread: a tit that sees a cat or the sparrowhawk scolds,
+its neighbours take it up, and the hero can find the cat by the sound (item 1's cats, `docs/animals.md` "Birds"); begging
+young in late spring at the nests (`docs/bird_nests.md`); the starlings' chatter at the roost; gulls' long calls at the
+beach in the morning. A per-bird "voice state" in the model, a voice budget near the camera (at most N voices, nearest and
+loudest first, nothing per frame when far), and the bird book's "Голос" line (what the call means). Done: birdsim checks
+(dawn order by sunrise over a year, alarm spread within a few seconds and not across the town, voice budget held),
+the soundscape mix unchanged at night.
+
+## 46. Animals with people
+
+`[ ]` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
+some households have a dog that a resident walks on a leash morning and evening along their usual paths (the town-life
+walk activity carries an animal id; the dog follows at the owner's heel, sniffs, greets other dogs; the leash a simple
+cable between hand and collar, out of Lumen), cats that belong to a flat and sit on its window sill by day (the flats'
+windows from `ULyudCityWindows`: a sill spot per lit flat) or wait at its door at feeding time, the lady who feeds the
+yard cats walking out with her bowls at 8:00 and 18:30 (she exists only as a time in the model today), and hedgehogs at
+dusk in the yards and the old orchard from April to October (a new small animal: Blender model with UV check, a shuffle
+and a curl-up when the hero comes close; cats sniff them and back off). Residents talk to their pets and about them
+(lines ru/en/ja), the hero can ask "можно погладить?" (item 1's stroke). Done: offline checks in the animal-life pure
+model (owner and dog keep together, leash never stretched through a wall), peoplesim town, Mac shots, bench.
+
+## 47. Reading anywhere
+
+`[~] book-club 2026-11-21 (branch book-club)` **Cloud-only. Brief (Opus 5.5):** The classics (`docs/books.md`, `SLyudBookReader`, `ULyudBenchSit`) can be read
+only on a park bench. Let a book on loan be read wherever the hero sits or rides: any public seat (`ULyudPublicSpots`
+"bench" and "chair" spots, the sanatorium lounge, the café tables), the beach towel, the cable car cabin and the train's
+window seat (the clock moves as he reads, so a ride passes in pages), the hero's own room (item 19). Light matters: after
+dusk outdoors the page dims and a line says it is too dark, unless the headlamp (L) is on or a street lamp is near; rain
+wets the page (he refuses outdoors in rain). Quotes: select a sentence in the reader (click and drag, or a key) and it is
+copied into a diary page "Цитаты" with the book and the date (ru/en/ja UI); the diary's day entry (item 23) mentions what
+he read. Reading stats in the diary (books finished, pages, the longest). The librarian notices overdue books (a week)
+and the hero gets a polite postcard (item 11's letters). Done: unit tests of the light rule and the quote store
+(engine-free like `BookLayout.h`), questsim/citysim where they touch, strings through the localization skill.
+
+## 48. The book club
+
+`[~] book-club 2026-11-21 (branch book-club)` **Cloud-only. Brief (Opus 5.5):** Give the library a social side. A reading circle meets on Thursday evenings in
+the reading room (a town-life gathering of four or five residents by persona: the retired teacher, the student, the
+librarian, a scientist from Academgorodok), each month one book from the catalogue (`tools/books/catalog.json`, in all
+three languages); they sit, talk in turns (bark lines about the month's book, written for each of twelve books, ru/en/ja,
+never spoiling past the first chapters), and if the hero has read that book (`read_book` notifications, the bookmark at
+the end) he may join with his own lines and gets a stamp. The librarian recommends a next book from what he has read
+(a small table of "if you liked X" pairs across languages), the town paper (item 6) prints the club's "книга месяца",
+friends (item 12) borrow the book he recommends and later tell him what they thought. Done: peoplesim town (the club
+fills on Thursdays, not on festival days), barksim for the lines, questsim for the stamp.
+
+## 49. The sanatorium's procedures
+
+`[ ]` **Brief (Fable 5.2):** The course at «Корона» (`sanatorium-cure`, `docs/city_interiors.md` "Stays") stamps the
+hero's book, but the procedures happen as a word and a fade. Make each a short hands-on scene in the room where it
+happens: the pump room (pick a cup, fill it at the brass tap, sip it slowly while the clock ticks; the water's taste line
+changes by spring), the inhalation room (sit, a mask, breathe in time with a slow ring on the screen), the mud bath and
+the Charcot shower (a nurse, a curtain, a cut to the robe and slippers), the massage (lie down, a few lines from the
+masseur about the town's news from item 22), the doctor's check (weight on old scales, pressure with a cuff, the card
+filled in by hand: real numbers that improve over the course), the evening dance in the hall on holidays and the film
+night in the lounge (the cinema's films, item 13). The guests (`sanatorium-guests`) are at the same procedures at the
+same hours and talk to him there. Done: citysim CourseChecks extended, any new prop through Blender lint 0/0, Mac shots
+of three procedures, bench.
+
+## 50. Sanatorium guests come and go
+
+`[ ]` **Cloud-only. Brief (Opus 5.5):** The four sanatorium guests (`tools/town/sanatorium_guests.py`) live there for
+ever. Make the sanatorium a place people come to: a nine-day stay (the same as the hero's course) with arrivals and
+departures on Saturdays by the train (item 21's passengers: they get off with a suitcase and walk to «Корона», the
+departing ones wait on the platform), a pool of a dozen guests from the residents generator's spare bodies who rotate,
+each with a home town and one story told in pieces over the days at the dining table and in the lounge (lines ru/en/ja),
+and their outings by the day's regime: the promenade and the pier after lunch, the Aton coast's belvedere and the
+spring (item 37's places), the amber shop and the kiosk for postcards, letters home from the post office (item 11), a
+goodbye line to the hero on their last day if they knew him (friends' bond, item 12). Done: peoplesim town over three
+weeks (rotations on time, beds never double-booked, the meals' chairs held), `sanatorium_guests.py --check`, lines through
+the localization skill.

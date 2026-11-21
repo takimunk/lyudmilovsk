@@ -330,11 +330,38 @@ namespace LyudCity
 	};
 
 	/** A collection: a set of stamps the hero gathers (films seen, shelves read, kiosks visited), its title key and pieces. */
+	/** What a complete collection gives, once (docs/city_interiors.md "A complete set pays"): a keepsake named in the diary
+	 *  (Name, Note: text keys) and one thing to hold: roubles, an item, an item of a shop the hero does not have yet, or a
+	 *  good that costs him nothing for some days. */
+	struct FReward
+	{
+		std::string Name;
+		std::string Note;
+		int Pay = 0;
+		std::string Item;
+		int Count = 1;
+		std::string ItemFrom;
+		/** Only the shop's goods whose id begins so (the Wave's records, not its guitar); empty: any. */
+		std::string Like;
+		std::string Free;
+		int Days = 0;
+		bool Any() const { return !Name.empty(); }
+	};
 	struct FCollection
 	{
 		std::string Id;
 		std::string Title;
 		std::vector<std::string> Pieces;
+		FReward Reward;
+	};
+	/** A collection as the diary's page shows it: its slots in the data's order (filled or empty) and what it gave. */
+	struct FCollectionRow
+	{
+		const FCollection* Of = nullptr;
+		int Got = 0;
+		std::vector<bool> Slots;
+		bool bRewarded = false;
+		long long Day = -1;
 	};
 
 	/** What an act is (the defaults of a kind are made the same way). */
@@ -1230,6 +1257,16 @@ namespace LyudCity
 						C.Pieces.push_back(P.Str);
 					}
 				}
+				const LyudJson::FValue& Rw = Field.second["reward"];
+				C.Reward.Name = Rw["name"].S();
+				C.Reward.Note = Rw["note"].S();
+				C.Reward.Pay = std::max(0, Rw["pay"].I(0));
+				C.Reward.Item = Rw["item"].S();
+				C.Reward.Count = std::max(1, Rw["count"].I(1));
+				C.Reward.ItemFrom = Rw["item_from"].S();
+				C.Reward.Like = Rw["like"].S();
+				C.Reward.Free = Rw["free"].S();
+				C.Reward.Days = std::max(0, Rw["days"].I(0));
 				Collections.push_back(std::move(C));
 			}
 			for (const LyudJson::FValue& T : Root["things"].Items)
@@ -2133,6 +2170,111 @@ namespace LyudCity
 			}
 			return true;
 		}
+		// --- a complete set pays (once; "g:<set>" in the save: the day it paid)
+
+		bool IsComplete(const std::string& Set) const
+		{
+			const FCollection* C = FindCollection(Set);
+			return C && !C->Pieces.empty() && CountStamps(Set) >= (int)C->Pieces.size();
+		}
+		bool IsRewarded(const std::string& Set) const { return Rewarded.count(Set) > 0; }
+		/** The collections complete and not yet paid for: marked paid on Day (since the game began) and handed back, for the
+		 *  game to give what each Reward names. A set with no reward is left alone. */
+		std::vector<const FCollection*> TakeRewards(long long Day)
+		{
+			std::vector<const FCollection*> Out;
+			for (const FCollection& C : Collections)
+			{
+				if (C.Reward.Any() && !IsRewarded(C.Id) && IsComplete(C.Id))
+				{
+					Rewarded[C.Id] = Day;
+					Out.push_back(&C);
+				}
+			}
+			return Out;
+		}
+		/** Is Item free for the hero on Day: a paid collection's reward names it and its days are not over (Days 0: for good). */
+		bool IsFree(const std::string& Item, long long Day) const
+		{
+			for (const FCollection& C : Collections)
+			{
+				const auto It = Rewarded.find(C.Id);
+				if (It != Rewarded.end() && !C.Reward.Free.empty() && C.Reward.Free == Item && (C.Reward.Days <= 0 || Day < It->second + C.Reward.Days))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		/** The last day (exclusive) Item is free; -1: not free, or free for good. */
+		long long FreeUntil(const std::string& Item, long long Day) const
+		{
+			long long Until = -1;
+			for (const FCollection& C : Collections)
+			{
+				const auto It = Rewarded.find(C.Id);
+				if (It != Rewarded.end() && C.Reward.Free == Item && C.Reward.Days > 0 && Day < It->second + C.Reward.Days)
+				{
+					Until = std::max(Until, It->second + C.Reward.Days);
+				}
+			}
+			return Until;
+		}
+		int PriceOn(const FGood& Good, long long Day) const { return IsFree(Good.Item, Day) ? 0 : Good.Price; }
+		/** The goods an "item_from" reward chooses among, in the shop's order (the game gives the first the hero has none of). */
+		std::vector<std::string> RewardChoices(const FReward& R) const
+		{
+			std::vector<std::string> Out;
+			if (const std::vector<FGood>* Stock = R.ItemFrom.empty() ? nullptr : FindShop(R.ItemFrom))
+			{
+				for (const FGood& G : *Stock)
+				{
+					if (R.Like.empty() || G.Item.rfind(R.Like, 0) == 0)
+					{
+						Out.push_back(G.Item);
+					}
+				}
+			}
+			return Out;
+		}
+		/** The diary's page: the sets paid for first (oldest first), then the ones begun (the fullest first), then the rest. */
+		std::vector<FCollectionRow> CollectionRows() const
+		{
+			std::vector<FCollectionRow> Rows;
+			for (const FCollection& C : Collections)
+			{
+				FCollectionRow R;
+				R.Of = &C;
+				const auto St = Stamps.find(C.Id);
+				for (const std::string& P : C.Pieces)
+				{
+					const bool bHas = St != Stamps.end() && St->second.count(P) > 0;
+					R.Slots.push_back(bHas);
+					R.Got += bHas ? 1 : 0;
+				}
+				const auto It = Rewarded.find(C.Id);
+				R.bRewarded = It != Rewarded.end();
+				R.Day = R.bRewarded ? It->second : -1;
+				Rows.push_back(std::move(R));
+			}
+			std::stable_sort(Rows.begin(), Rows.end(), [](const FCollectionRow& A, const FCollectionRow& B)
+			{
+				const int Ka = A.bRewarded ? 0 : A.Got > 0 ? 1 : 2;
+				const int Kb = B.bRewarded ? 0 : B.Got > 0 ? 1 : 2;
+				if (Ka != Kb)
+				{
+					return Ka < Kb;
+				}
+				if (Ka == 0)
+				{
+					return A.Day < B.Day;
+				}
+				// the fullest first: Got/All compared without dividing
+				return Ka == 1 && (long long)A.Got * (long long)B.Slots.size() > (long long)B.Got * (long long)A.Slots.size();
+			});
+			return Rows;
+		}
+
 		/** Developer mode: every piece of Set ("*": of every set); false for an unknown set. */
 		bool GrantSet(const std::string& Set)
 		{
@@ -2153,10 +2295,12 @@ namespace LyudCity
 			if (Set == "*")
 			{
 				Stamps.clear();
+				Rewarded.clear();
 			}
 			else
 			{
 				Stamps.erase(Set);
+				Rewarded.erase(Set);
 			}
 		}
 
@@ -2948,13 +3092,14 @@ namespace LyudCity
 			Heard.clear();
 			Done.clear();
 			StayUntil.clear();
+			Rewarded.clear();
 			CountDay = 0;
 		}
 
 		/** The state as a flat map for the save: "day", "t:<act>", "u:<act>", "l:<thing>", "d:<thing>", "v:<plot>",
 		 *  "c:<set>/<piece>" (a stamp), "o:<page>|<line>" (a once line shown), "b:<text>" (the page it was left on), "r:<text>"
 		 *  (read to the end; the value is the plot), "h:<topic>" (a staff talk topic heard), "w:<target>" (done: "did" lines),
-		 *  "s:<stay>" (on a stay until that day since the game began, exclusive). */
+		 *  "s:<stay>" (on a stay until that day since the game began, exclusive), "g:<set>" (a complete collection paid: the day). */
 		void SaveState(std::map<std::string, std::string>& Out) const
 		{
 			Out.clear();
@@ -3013,6 +3158,10 @@ namespace LyudCity
 			{
 				Out["s:" + P.first] = std::to_string(P.second);
 			}
+			for (const auto& P : Rewarded)
+			{
+				Out["g:" + P.first] = std::to_string(P.second);
+			}
 		}
 		void LoadState(const std::map<std::string, std::string>& In)
 		{
@@ -3040,6 +3189,7 @@ namespace LyudCity
 					case 'h': Heard.insert(Name); break;
 					case 'w': Done.insert(Name); break;
 					case 's': StayUntil[Name] = V; break;
+					case 'g': Rewarded[Name] = V; break;
 					case 'c':
 					{
 						// kept even when the data no longer declares it (a piece may come back with the content)
@@ -3098,6 +3248,8 @@ namespace LyudCity
 		std::set<std::string> Done;
 		/** The stays the hero is on: id -> the first day (since the game began) it no longer holds. */
 		std::map<std::string, long long> StayUntil;
+		/** The complete collections paid for: set -> the day (since the game began). */
+		std::map<std::string, long long> Rewarded;
 		std::unordered_map<std::string, int> TopicIndex;
 		std::unordered_map<std::string, int> ToneIndex;
 		/** plot id -> index into Tones. */

@@ -896,7 +896,9 @@
     "night_walk": 0.36,
     "fish_shore": 1.19,
     "shop_town": 0.75,
-    "stroll": 0.22
+    "stroll": 0.22,
+    "tend_allotment": 2.0,
+    "water_allotment": 2.7
    },
    "body": "Town/R_patel_sachiko"
   },
@@ -1869,7 +1871,8 @@
    "occupation": "musician",
    "likes": {
     "sea_air": 0.42,
-    "shop_town": 0.38
+    "shop_town": 0.38,
+    "play_piano": 1.75
    },
    "body": "Town/R_novotny_dmitry"
   },
@@ -2822,7 +2825,8 @@
     "play_club": 0.63,
     "play_town_club": 0.76,
     "stroll": 0.3,
-    "fair_visit": 0.46
+    "fair_visit": 0.46,
+    "play_piano": 1.75
    },
    "body": "Town/R_zhang_oksana"
   },
@@ -3383,7 +3387,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.11,
     "shop_town": 0.74,
-    "fair_visit": 0.31
+    "fair_visit": 0.31,
+    "play_piano": 1.75
    },
    "body": "Town/R_ozturk_colette"
   },
@@ -3600,7 +3605,8 @@
    "occupation": "cook",
    "likes": {
     "stroll": 0.47,
-    "eat_out": 0.37
+    "eat_out": 0.37,
+    "play_piano": 1.75
    },
    "body": "Town/R_lee_kofi"
   },
@@ -3736,7 +3742,8 @@
    "likes": {
     "watch_sunrise": 1.13,
     "sea_air": 0.74,
-    "shop_town": 0.59
+    "shop_town": 0.59,
+    "play_piano": 1.75
    },
    "body": "Town/R_zimmermann_levan"
   },
@@ -4925,7 +4932,8 @@
    "likes": {
     "night_walk": 0.28,
     "read_library": 0.21,
-    "eat_out": 0.75
+    "eat_out": 0.75,
+    "play_piano": 1.75
    },
    "body": "Town/R_levi_eero"
   },
@@ -6460,7 +6468,8 @@
    "likes": {
     "night_walk": 1.59,
     "sea_air": 0.67,
-    "stroll": 0.81
+    "stroll": 0.81,
+    "play_piano": 1.75
    },
    "body": "Town/R_tsvetkov_rashid"
   },
@@ -7142,7 +7151,8 @@
    "occupation": "pupil",
    "likes": {
     "fair_visit": 0.49,
-    "coffee": 0.62
+    "coffee": 0.62,
+    "play_piano": 1.75
    },
    "body": "Town/R_abenov_thao"
   },
@@ -7439,7 +7449,9 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "coffee": 0.41,
-    "fair_visit": 0.42
+    "fair_visit": 0.42,
+    "tend_allotment": 2.0,
+    "water_allotment": 2.7
    },
    "body": "Town/R_mendoza_ingrid"
   },
@@ -7493,7 +7505,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "stroll": 0.43,
-    "shop_town": 0.8
+    "shop_town": 0.8,
+    "play_piano": 1.75
    },
    "body": "Town/R_girma_femke"
   },
@@ -8690,7 +8703,8 @@
    "likes": {
     "watch_sunrise": 0.96,
     "shop_town": 0.58,
-    "swim_look": 0.53
+    "swim_look": 0.53,
+    "play_piano": 1.75
    },
    "body": "Town/R_kavanagh_eoin"
   },
@@ -9144,7 +9158,8 @@
    "occupation": "musician",
    "likes": {
     "fair_visit": 0.71,
-    "shop_town": 0.62
+    "shop_town": 0.62,
+    "play_piano": 1.75
    },
    "body": "Town/R_bogdanovich_aiko"
   },
@@ -10018,7 +10033,8 @@
    "likes": {
     "night_walk": 0.2,
     "swim_look": 0.72,
-    "coffee": 0.57
+    "coffee": 0.57,
+    "play_piano": 1.75
    },
    "body": "Town/R_seitkali_ales"
   },
@@ -12051,7 +12067,8 @@
     "night_walk": -1.0,
     "fish_shore": 0.82,
     "eat_out": 0.54,
-    "read_library": 0.74
+    "read_library": 0.74,
+    "play_piano": 1.75
    },
    "body": "Town/R_ozols_zsofia"
   },
@@ -13667,7 +13684,8 @@
     "play_club": 0.27,
     "play_town_club": 0.5,
     "stroll": 0.7,
-    "sea_air": 0.32
+    "sea_air": 0.32,
+    "play_piano": 1.75
    },
    "body": "Town/R_garcia_karim"
   },
@@ -17138,7 +17156,8 @@
    "likes": {
     "watch_sunrise": 0.66,
     "fish_shore": 0.49,
-    "stroll": 0.75
+    "stroll": 0.75,
+    "play_piano": 1.75
    },
    "body": "Town/R_le_dawit"
   },
@@ -17503,7 +17522,8 @@
     "fish_shore": 1.19,
     "watch_sunrise": 0.93,
     "stroll": 0.48,
-    "swim_look": 0.58
+    "swim_look": 0.58,
+    "play_piano": 1.75
    },
    "body": "Town/R_owusu_mads"
   },
@@ -17707,7 +17727,8 @@
    "occupation": "away",
    "likes": {
     "fish_shore": 0.6,
-    "eat_out": 0.62
+    "eat_out": 0.62,
+    "play_piano": 1.75
    },
    "body": "Town/R_vinogradov_milagros"
   },
@@ -18324,7 +18345,8 @@
    "likes": {
     "night_walk": 1.23,
     "fair_visit": 0.45,
-    "sea_air": 0.55
+    "sea_air": 0.55,
+    "play_piano": 1.75
    },
    "body": "Town/R_sato_mehmet"
   },
@@ -20412,7 +20434,8 @@
    "occupation": "away",
    "likes": {
     "stroll": 0.58,
-    "fair_visit": 0.26
+    "fair_visit": 0.26,
+    "play_piano": 1.75
    },
    "body": "Town/R_henderson_reka"
   },
@@ -23229,7 +23252,8 @@
    "likes": {
     "watch_sunrise": 0.44,
     "read_library": 0.43,
-    "eat_out": 0.7
+    "eat_out": 0.7,
+    "play_piano": 1.75
    },
    "body": "Town/R_horvath_jihoon"
   },
@@ -24718,7 +24742,8 @@
    "occupation": "barista",
    "likes": {
     "eat_out": 0.38,
-    "swim_look": 0.41
+    "swim_look": 0.41,
+    "play_piano": 1.75
    },
    "body": "Town/R_tehrani_ondrej"
   },
@@ -25696,7 +25721,8 @@
    "occupation": "student",
    "likes": {
     "shop_town": 0.49,
-    "fair_visit": 0.76
+    "fair_visit": 0.76,
+    "play_piano": 1.75
    },
    "body": "Town/R_fernandez_almaz"
   },
@@ -26161,7 +26187,8 @@
    "likes": {
     "night_walk": 0.02,
     "swim_look": 0.6,
-    "fair_visit": 0.49
+    "fair_visit": 0.49,
+    "play_piano": 1.75
    },
    "body": "Town/R_brooks_kofi"
   },
@@ -26193,7 +26220,9 @@
    "occupation": "homemaker",
    "likes": {
     "sea_air": 0.54,
-    "coffee": 0.24
+    "coffee": 0.24,
+    "tend_allotment": 2.0,
+    "water_allotment": 2.7
    },
    "body": "Town/R_brooks_chiara"
   },
@@ -26596,7 +26625,8 @@
    "occupation": "programmer",
    "likes": {
     "fish_shore": 0.73,
-    "shop_town": 0.48
+    "shop_town": 0.48,
+    "play_piano": 1.75
    },
    "body": "Town/R_haile_klaus"
   },
@@ -27189,7 +27219,8 @@
    "occupation": "musician",
    "likes": {
     "fair_visit": 0.55,
-    "read_library": 0.38
+    "read_library": 0.38,
+    "play_piano": 1.75
    },
    "body": "Town/R_schneider_priya"
   },
@@ -27527,7 +27558,9 @@
     "night_walk": -1.0,
     "fish_shore": 0.86,
     "watch_sunrise": 1.23,
-    "swim_look": 0.63
+    "swim_look": 0.63,
+    "tend_allotment": 2.0,
+    "water_allotment": 2.7
    },
    "body": "Town/R_sargsyan_eleni"
   },
@@ -29196,7 +29229,8 @@
    "likes": {
     "watch_sunrise": 0.72,
     "eat_out": 0.62,
-    "shop_town": 0.23
+    "shop_town": 0.23,
+    "play_piano": 1.75
    },
    "body": "Town/R_zhuravlev_giuseppe"
   },
@@ -29569,7 +29603,8 @@
     "night_walk": 0.24,
     "read_library": 0.5,
     "coffee": 0.31,
-    "stroll": 0.47
+    "stroll": 0.47,
+    "play_piano": 1.75
    },
    "body": "Town/R_yavorsky_giorgi"
   },
@@ -30520,7 +30555,8 @@
     "fish_shore": 0.82,
     "watch_sunrise": 1.12,
     "sea_air": 0.52,
-    "stroll": 0.4
+    "stroll": 0.4,
+    "play_piano": 1.75
    },
    "body": "Town/R_bergstrom_arturs"
   },
@@ -30830,7 +30866,8 @@
    "occupation": "away",
    "likes": {
     "coffee": 0.59,
-    "read_library": 0.4
+    "read_library": 0.4,
+    "play_piano": 1.75
    },
    "body": "Town/R_karimi_zsofia"
   },
@@ -31464,7 +31501,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.79,
     "stroll": 0.33,
-    "sea_air": 0.57
+    "sea_air": 0.57,
+    "play_piano": 1.75
    },
    "body": "Town/R_kask_ruta"
   },
@@ -31838,7 +31876,8 @@
    "occupation": "musician",
    "likes": {
     "sea_air": 0.39,
-    "stroll": 0.3
+    "stroll": 0.3,
+    "play_piano": 1.75
    },
    "body": "Town/R_kobayashi_ondrej"
   },
@@ -32570,7 +32609,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "swim_look": 0.76,
-    "fish_shore": 0.26
+    "fish_shore": 0.26,
+    "play_piano": 1.75
    },
    "body": "Town/R_haddad_folake"
   },
@@ -32619,7 +32659,8 @@
    "likes": {
     "watch_sunrise": 0.97,
     "eat_out": 0.75,
-    "shop_town": 0.28
+    "shop_town": 0.28,
+    "play_piano": 1.75
    },
    "body": "Town/R_toth_tiago"
   },
@@ -33060,7 +33101,8 @@
    "occupation": "homemaker",
    "likes": {
     "fish_shore": 0.62,
-    "eat_out": 0.35
+    "eat_out": 0.35,
+    "play_piano": 1.75
    },
    "body": "Town/R_chen_meiling"
   },
@@ -35011,7 +35053,8 @@
    "occupation": "musician",
    "likes": {
     "stroll": 0.48,
-    "fish_shore": 0.22
+    "fish_shore": 0.22,
+    "play_piano": 1.75
    },
    "body": "Town/R_fernandez_yumiko"
   },
@@ -35348,7 +35391,8 @@
    "likes": {
     "watch_sunrise": 0.79,
     "eat_out": 0.49,
-    "fish_shore": 0.45
+    "fish_shore": 0.45,
+    "play_piano": 1.75
    },
    "body": "Town/R_papadopoulos_zsofia"
   },
@@ -36841,7 +36885,8 @@
    "likes": {
     "watch_sunrise": 0.78,
     "sea_air": 0.64,
-    "coffee": 0.58
+    "coffee": 0.58,
+    "play_piano": 1.75
    },
    "body": "Town/R_cerny_shirin"
   },
@@ -37347,7 +37392,8 @@
    "occupation": "pupil",
    "likes": {
     "shop_town": 0.22,
-    "fish_shore": 0.36
+    "fish_shore": 0.36,
+    "play_piano": 1.75
    },
    "body": "Town/R_kjaer_arjun"
   },
@@ -37399,7 +37445,8 @@
     "play_club": 0.56,
     "play_town_club": 0.83,
     "stroll": 0.76,
-    "eat_out": 0.59
+    "eat_out": 0.59,
+    "play_piano": 1.75
    },
    "body": "Town/R_vinogradov_rohan"
   },
@@ -37777,7 +37824,8 @@
    "occupation": "teacher",
    "likes": {
     "fish_shore": 0.37,
-    "eat_out": 0.25
+    "eat_out": 0.25,
+    "play_piano": 1.75
    },
    "body": "Town/R_krause_olga"
   },
@@ -39861,7 +39909,8 @@
    "likes": {
     "watch_sunrise": 0.75,
     "fish_shore": 0.71,
-    "read_library": 0.44
+    "read_library": 0.44,
+    "play_piano": 1.75
    },
    "body": "Town/R_mcmartin_pyotr"
   },
@@ -40485,7 +40534,24 @@
    "wake": 5.2,
    "bed": 21.18,
    "spread": 0.39,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "post_round",
+     "place": "S-POST-ROUND",
+     "hours": [
+      8.5,
+      12.0
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
    "friends": [
     "t_farouk_caio",
     "t_krause_olga",
@@ -40500,7 +40566,7 @@
     "sun": 1.0
    },
    "walk_speed": 1.33,
-   "occupation": "unemployed",
+   "occupation": "postman",
    "likes": {
     "watch_sunrise": 1.11,
     "eat_out": 0.26,
@@ -40645,7 +40711,9 @@
     "sit_bench": 0.9,
     "sea_air": 1.0,
     "watch_sunrise": 0.8,
-    "read_library": 0.5
+    "read_library": 0.5,
+    "san_cure": 0.9,
+    "read_paper": 0.6
    }
   },
   {
@@ -40733,7 +40801,8 @@
     "stroll": 0.9,
     "read_library": 1.0,
     "coffee": 0.5,
-    "swim_look": 0.6
+    "swim_look": 0.6,
+    "cinema_evening": 0.8
    }
   },
   {
@@ -40821,7 +40890,9 @@
     "play_club": 1.0,
     "sit_bench": 0.8,
     "fish_shore": 0.7,
-    "chat": 0.6
+    "chat": 0.6,
+    "dominoes": 1.1,
+    "san_cure": 0.6
    }
   },
   {
@@ -40909,7 +40980,9 @@
     "play_club": 1.0,
     "read_library": 0.8,
     "sit_bench": 0.6,
-    "chat": 0.5
+    "chat": 0.5,
+    "dominoes": 1.1,
+    "san_cure": 0.6
    }
   }
  ]

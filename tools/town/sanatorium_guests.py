@@ -44,22 +44,22 @@ GUESTS = [
     {"key": "t_gromov_pyotr", "thing": "P-SANATORIUM/dining_table_1", "home": "P-SANATORIUM/1-01", "mesh": "Korneev_ivan",
      "age": 78, "female": 0, "wake": 6.5, "bed": 22.25, "walk_speed": 0.95, "friends": ["t_mironova_sonya"],
      "temper": {"social": 0.55, "active": 0.4, "studious": 0.7, "gamer": 0.3, "nature": 0.6, "sun": 0.5},
-     "likes": {"sit_bench": 0.9, "sea_air": 1.0, "watch_sunrise": 0.8, "read_library": 0.5},
+     "likes": {"sit_bench": 0.9, "sea_air": 1.0, "watch_sunrise": 0.8, "read_library": 0.5, "san_cure": 0.9, "read_paper": 0.6},
      "name": ("Пётр Громов", "Pyotr Gromov", "ピョートル・グロモフ")},
     {"key": "t_mironova_sonya", "thing": "P-SANATORIUM/dining_1_c", "home": "P-SANATORIUM/1-02", "mesh": "Frolova_masha",
      "age": 16, "female": 1, "wake": 7.5, "bed": 22.75, "walk_speed": 1.3, "friends": ["t_gromov_pyotr"],
      "temper": {"social": 0.45, "active": 0.6, "studious": 0.8, "gamer": 0.2, "nature": 0.5, "sun": 0.6},
-     "likes": {"stroll": 0.9, "read_library": 1.0, "coffee": 0.5, "swim_look": 0.6},
+     "likes": {"stroll": 0.9, "read_library": 1.0, "coffee": 0.5, "swim_look": 0.6, "cinema_evening": 0.8},
      "name": ("Соня Миронова", "Sonya Mironova", "ソーニャ・ミロノワ")},
     {"key": "t_tamm_boris", "thing": "P-SANATORIUM/dining_table_2", "home": "P-SANATORIUM/1-03", "mesh": "Sorokin_oleg",
      "age": 81, "female": 0, "wake": 6.75, "bed": 22.5, "walk_speed": 0.9, "friends": ["t_sazonov_nikolai"],
      "temper": {"social": 0.7, "active": 0.3, "studious": 0.5, "gamer": 0.9, "nature": 0.5, "sun": 0.4},
-     "likes": {"play_club": 1.0, "sit_bench": 0.8, "fish_shore": 0.7, "chat": 0.6},
+     "likes": {"play_club": 1.0, "sit_bench": 0.8, "fish_shore": 0.7, "chat": 0.6, "dominoes": 1.1, "san_cure": 0.6},
      "name": ("Борис Тамм", "Boris Tamm", "ボリス・タム")},
     {"key": "t_sazonov_nikolai", "thing": "P-SANATORIUM/dining_2_c", "home": "P-SANATORIUM/1-04", "mesh": "Zotov_lev", "age": 80, "female": 0, "wake": 7.0, "bed": 22.5, "walk_speed": 0.9,
      "friends": ["t_tamm_boris"],
      "temper": {"social": 0.6, "active": 0.35, "studious": 0.9, "gamer": 0.85, "nature": 0.4, "sun": 0.4},
-     "likes": {"play_club": 1.0, "read_library": 0.8, "sit_bench": 0.6, "chat": 0.5},
+     "likes": {"play_club": 1.0, "read_library": 0.8, "sit_bench": 0.6, "chat": 0.5, "dominoes": 1.1, "san_cure": 0.6},
      "name": ("Николай Сазонов", "Nikolai Sazonov", "ニコライ・サゾーノフ")},
 ]
 ROLE = {"ru": ("отдыхающий в санатории", "отдыхающая в санатории"), "en": ("sanatorium guest", "sanatorium guest"),
@@ -94,10 +94,11 @@ def dining_place(things, door, yaw):
     slots = []
     for g in GUESTS:
         t = things[g["thing"]]
+        # the thing's own point is on the seat's top; the slot is the floor under it (+ height), as everywhere in the life
+        h = float((t.get("props") or {}).get("height", 0.45))
         x, y, z = (round(v / 100.0, 2) for v in t["ue"])
-        slots.append(OD([("kind", "staff"), ("tag", "guest_" + g["key"][2:]), ("pos", [x, y, z]),
-                         ("yaw", round(t["yaw"] % 360.0, 1)), ("height", float((t.get("props") or {}).get("height", 0.45))),
-                         ("thing", g["thing"])]))
+        slots.append(OD([("kind", "staff"), ("tag", "guest_" + g["key"][2:]), ("pos", [x, y, round(z - h, 2)]),
+                         ("yaw", round(t["yaw"] % 360.0, 1)), ("height", h), ("thing", g["thing"])]))
     floor = slots[0]["pos"][2]
     inside = [round(door[0] - 1.6, 2), round(door[1] + 0.6, 2), floor]
     return OD([("id", PLACE_ID), ("kind", PLACE_KIND), ("door", list(door)), ("yaw", yaw), ("island", 0), ("slots", slots),

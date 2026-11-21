@@ -18,6 +18,7 @@ import os
 from citykit import box, prism, ring, DOOR_H  # noqa: F401
 import geom
 import interior_kit as kit
+import dress_kit as dk
 from furn_int2 import Furn
 
 INFO = {
@@ -106,6 +107,9 @@ def _furnish(B, cx):
     B.lamp((-0.7, 14.6, 2.5), lumens=450, colour="#CFE6FF", kind="public", radius=4)
 
 
+_ROWS = {}                 # the waiting rows by spot id (the dressing puts a satchel on a seat)
+
+
 def _seat(B, tid, r, h=0.45, **props):
     x, y, z, yw = r["seats"][0]
     B.thing(tid, "seat", (x, y, z), yw, height=h, **props)
@@ -135,6 +139,7 @@ def _hall(B):
             ("wait_3", -1.6, 8.0, 180.0), ("wait_4", 2.8, 6.4, 270.0), ("wait_5", 2.8, 8.4, 270.0)]
     for i, (sid, x, y, yaw) in enumerate(rows):
         r = kit.waiting_row(B, x, y, 0.0, yaw, n=4 if i in (2, 3) else 3, mat=("CT_PlasterYellow", "CT_PlasterBlue", "CT_PlasterGreen")[i % 3])
+        _ROWS[sid] = r
         B.spot(sid, "bench", (x, y, 0.0), yaw)
         mid = r["seats"][len(r["seats"]) // 2]
         B.thing("hall_" + sid, "seat", (mid[0], mid[1], mid[2]), mid[3], height=0.45)
@@ -674,6 +679,38 @@ def _depth2(B, cx):
     B.spot("inhaler_wait", "stand", (1.6, 13.1, 0.0), 180.0)
 
 
+def _dress(B):
+    """Lived-in dressing (docs/city_dress.md): wet umbrellas and a wet mat by the door on rain days, coats on the
+    corridor hooks by the season, mittens on the radiator, a satchel on a waiting seat after school, the nurse's lunch
+    plate, a book on the children's table, flowers on the reception desk (fresh, then wilting)."""
+    with B.dress("hall_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, -5.3, 4.8, 0.016, 0.0)
+        dk.doormat_wet(B, -4.3, 4.8, 0.016, 0.0)
+        dk.umbrella_open(B, -7.3, 6.0, 0.0, 30, seed=1)
+        dk.umbrella_open(B, -1.0, 6.3, 0.0, 200, seed=2)
+        dk.boots(B, -6.4, 5.5, 0.0, 10, kind="rubber", seed=3)
+    # a coat board on the north wall between the palm and the partition (the corridor wall is full of notices)
+    with B.dress("hooks_winter", months=(11, 12, 1, 2, 3)):
+        dk.wall_hooks(B, 2.75, 15.7, 0.0, 0.0, w=0.9, coats=0.9, season="winter", seed=1)
+    with B.dress("hooks_autumn", months=(4, 9, 10)):
+        dk.wall_hooks(B, 2.75, 15.7, 0.0, 0.0, w=0.9, coats=0.55, season="autumn", seed=1)
+    with B.dress("hooks_summer", months=(5, 6, 7, 8)):
+        dk.wall_hooks(B, 2.75, 15.7, 0.0, 0.0, w=0.9, coats=0.4, season="summer", seed=1)
+    with B.dress("radiator_mittens", months=(11, 12, 1, 2, 3), hours=(8, 18), chance=0.7):
+        dk.mitten_pair(B, -8.0, 4.38, 0.67, 0.0, seed=1)
+    with B.dress("seat_satchel", weekdays=(0, 1, 2, 3, 4), hours=(14, 18), chance=0.7):
+        x, y, z, yw = _ROWS["wait_3"]["seats"][1]
+        dk.school_bag(B, x, y, z, yw, seed=4)
+    with B.dress("kids_book", hours=(9, 17), chance=0.6):
+        dk.book_face_down(B, -11.55, 13.45, 0.5, 20.0, seed=5)
+    with B.dress("nurse_lunch", hours=(12.5, 14.5), chance=0.6):
+        dk.plate_crumbs(B, -5.1, 11.95, 0.75, 0.0, seed=6)
+    with B.dress("reception_flowers", phase=(7, 0, 5)):
+        kit.vase(B, -2.9, 12.0, 0.75, 0.0, seed=7)
+    with B.dress("reception_wilted", phase=(7, 5, 7)):
+        dk.vase_wilted(B, -2.9, 12.0, 0.75, 0.0, seed=7)
+
+
 def build(B):
     m, d = B.m, B.detail
     IX0, IX1, IY0, IY1 = X0 + T, X1 - T, Y0 + T, Y1 - T
@@ -733,6 +770,7 @@ def build(B):
     for x in (6.8, 10.3):
         box(m, "CT_Interior", x, x + 0.3, IY0, 11.3, 0.0, H1)
     _furnish(B, cx)
+    _dress(B)
     # ================================================================ canopy, cross panel, roof, fins
     box(m, "CT_ConcreteWhite", -8.5, -1.5, 0.8, Y0, 3.0, 3.25)
     box(m, "CT_PlasterRed", -8.5, -1.5, 0.75, 0.85, 2.9, 3.5)

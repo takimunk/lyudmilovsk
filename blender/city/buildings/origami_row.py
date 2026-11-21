@@ -16,6 +16,7 @@ Material requests: none.
 """
 import math
 
+import dress_kit as dk
 import interior_kit as kit
 from citykit import box, prism, triangulate, DOOR_H
 import _homekit as hk
@@ -423,8 +424,45 @@ def _family(B, i):
         B.thing("loft_mats", "bed", mt["pos"][:2] + (z + 0.1,), 0.0, height=0.1, rest="nap")
         B.thing("loft_beanbag", "seat", (-5.1, 8.3, z + 0.4), 0.0, height=0.4)
     run(2, loft)
+    _dress(B, i)
     for w_ in kit.check(B):
         print("KIT origami", w_)
+
+
+def _dress(B, i):
+    """The Santos home's lived-in sets: breakfast on the dining table (kit.table h 0.75 at -4.3, 9.4), weekend glasses,
+    flowers on the sideboard, a book left on the coffee table, the weekly drawings, boots and coats in the hall."""
+    xe = XE[i]
+    WW = xe + 0.15 + 0.02
+    ttop, ctop, stop = 0.75, 0.42, 0.80
+    with B.dress("santos_breakfast", weekdays=(0, 1, 2, 3, 4), hours=(7.0, 9.5)):
+        dk.plate_crumbs(B, -4.55, 8.85, ttop, 0.0, seed=1)
+        dk.plate_crumbs(B, -4.05, 8.85, ttop, 0.0, seed=2)
+        kit.cup(B, -4.55, 10.0, ttop, 90.0)
+        kit.cup(B, -4.05, 10.0, ttop, 270.0)
+        kit.newspaper(B, -4.3, 9.0, ttop, 90.0, seed=2)
+    with B.dress("santos_weekend", weekdays=(5, 6), hours=(9.0, 12.5)):
+        dk.plate_crumbs(B, -4.55, 8.85, ttop, 0.0, seed=3)
+        dk.plate_crumbs(B, -4.05, 10.0, ttop, 0.0, seed=4)
+        kit.glass(B, -4.55, 10.0, ttop, 0.0)
+        kit.glass(B, -4.05, 8.85, ttop, 0.0)
+    for nm, (a, b) in (("fresh", (0, 5)), ("wilt", (5, 7)), ("empty", (7, 8))):
+        with B.dress("santos_flowers_" + nm, phase=(8, a, b)):
+            if nm == "wilt":
+                dk.vase_wilted(B, -3.07, 11.52, stop, 0.0, seed=7)
+            else:
+                kit.vase(B, -3.07, 11.52, stop, 0.0, flowers=(nm == "fresh"), seed=7)
+    with B.dress("santos_book", chance=0.5):
+        dk.book_face_down(B, -4.12, 5.28, ctop, 90.0, seed=3)
+    for k in range(4):               # the children's drawings change weekly on the hall wall
+        with B.dress("santos_drawings_%d" % k, phase=(28, 7 * k, 7 * k + 7)):
+            kit.poster(B, WW, 6.0, 0.0, 90.0, name="kids_%d" % k, w=0.42, zc=1.55)
+    for nm, months, kind, sea in (("winter", (12, 1, 2), "felt", "winter"),
+                                  ("mild", (3, 4, 5, 9, 10, 11), "rubber", "autumn"),
+                                  ("summer", (6, 7, 8), "sandals", "summer")):
+        with B.dress("santos_hall_" + nm, months=months):
+            dk.boots(B, -5.45, 3.2, 0.0, 10.0, kind=kind, seed=3)
+            dk.wall_hooks(B, WW, 5.25, 0.0, 90.0, w=0.6, season=sea, seed=4)
 
 
 from _wallhang import hung  # noqa: E402  (QA r9: nothing hangs over the glass)

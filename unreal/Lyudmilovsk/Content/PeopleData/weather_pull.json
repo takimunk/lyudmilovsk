@@ -51,12 +51,23 @@
   },
   {
    "kinds": [
-    "hotel"
+    "hotel",
+    "sanatorium_lounge"
    ],
    "rain": 0.6,
    "cold": 0.4,
    "storm": 0.4,
-   "about": "the sanatorium's lounge"
+   "about": "the sanatorium and its lounge"
+  },
+  {
+   "kinds": [
+    "cinema_hall"
+   ],
+   "rain": 0.8,
+   "cold": 0.4,
+   "storm": 0.5,
+   "dark": 0.15,
+   "about": "the cinema hall"
   },
   {
    "kinds": [

@@ -44,6 +44,7 @@
 #include "Misc/Paths.h"
 #include "NpcDialogue.h"
 #include "Sound/SoundBase.h"
+#include "People/CounterService.h"
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
@@ -430,6 +431,7 @@ void ULyudCityThings::ApplySaved()
 	{
 		Cups->LoadState(In);
 	}
+	bPayCollections = true;
 }
 
 void ULyudCityThings::StartOver()
@@ -1080,6 +1082,10 @@ void ULyudCityThings::Greet(int32 Thing)
 		{
 			GreetedPlot = Plot;
 			Talk->SayEvent(Body, TEXT("counter_hello"), Person, Role);
+			if (ULyudCounterService* Counter = ULyudCounterService::Get(this))
+			{
+				Counter->NoteGreeted(Person);
+			}
 			return;
 		}
 	}
@@ -1490,6 +1496,11 @@ void ULyudCityThings::Tick(float DeltaTime)
 	{
 		return;
 	}
+	if (bPayCollections && UGameplayStatics::GetPlayerPawn(World, 0))
+	{
+		bPayCollections = false;
+		PayCollections();
+	}
 	const double Now = World->GetTimeSeconds();
 	// a fade round a jump of the clock: black, (the pillow's view), the jump, hold a moment, back
 	if (FadeMinutes > 0 && Now >= FadeAt)
@@ -1777,6 +1788,100 @@ void ULyudCityThings::AnnounceStamps(const TArray<FString>& Stamps)
 				{ FStringFormatArg(Title), FStringFormatArg(Got), FStringFormatArg(All) }));
 		}
 	}
+	PayCollections();
+}
+
+void ULyudCityThings::PayCollections()
+{
+	if (!Model)
+	{
+		return;
+	}
+	UWorld* World = GetWorld();
+	const LyudCity::FWhen PayNow = LyudCityThingsImpl::When(World, false);
+	const std::vector<const LyudCity::FCollection*> Paid = Model->TakeRewards(PayNow.Since);
+	if (Paid.empty())
+	{
+		return;
+	}
+	ULyudInventory* Inv = ULyudInventory::Get(this);
+	ULyudGameScreen* Screen = ULyudGameScreen::Get(this);
+	ULyudQuests* Quests = ULyudQuests::Get(this);
+	for (const LyudCity::FCollection* C : Paid)
+	{
+		const LyudCity::FReward& R = C->Reward;
+		// what he holds: the item, the first good of the shop he has none of, or the roubles (also when he has every good)
+		FName Held = NAME_None;
+		int32 HeldCount = 0;
+		int32 Rubles = R.Pay;
+		if (!R.ItemFrom.empty())
+		{
+			for (const std::string& Choice : Model->RewardChoices(R))
+			{
+				const FName Item = LyudCityThingsImpl::Name(Choice);
+				if (Inv && ULyudInventory::FindDef(Item) && Inv->Count(Item) == 0)
+				{
+					Held = Item;
+					HeldCount = 1;
+					Rubles = 0;
+					break;
+				}
+			}
+		}
+		else if (!R.Item.empty() && ULyudInventory::FindDef(LyudCityThingsImpl::Name(R.Item)))
+		{
+			Held = LyudCityThingsImpl::Name(R.Item);
+			HeldCount = R.Count;
+		}
+		if (Inv && Held != NAME_None)
+		{
+			Inv->Add(Held, HeldCount);
+		}
+		if (Inv && Rubles > 0)
+		{
+			Inv->Earn(Rubles);
+		}
+		const FString TitleKey = LyudCityThingsImpl::Str(C->Title);
+		const FString NameKey = LyudCityThingsImpl::Str(R.Name);
+		UE_LOG(LogLyudCity, Display, TEXT("CityThings: collection %s complete: reward %s (item %s x%d, %d roubles, free %s for %d days)"),
+			*LyudCityThingsImpl::Str(C->Id), *NameKey, *Held.ToString(), HeldCount, Rubles, *LyudCityThingsImpl::Str(R.Free), R.Days);
+		if (Screen)
+		{
+			Screen->Toast(LyudText::Get(TEXT("city.coll.reward.toast"), { FStringFormatArg(LyudText::Get(TitleKey).ToString()), FStringFormatArg(LyudText::Get(NameKey).ToString()) }));
+		}
+		if (Quests)
+		{
+			Quests->AddNote(TEXT("city.coll.reward.diary"), { FString(TEXT("@")) + TitleKey, FString(TEXT("@")) + LyudCityThingsImpl::Str(R.Note) });
+		}
+		ULyudQuests::Notify(this, TEXT("collection"), LyudCityThingsImpl::Str(C->Id));
+	}
+}
+
+void ULyudCityThings::CollectionViews(TArray<FCollectionView>& Out) const
+{
+	Out.Reset();
+	if (!Model)
+	{
+		return;
+	}
+	const LyudCity::FWhen ViewNow = LyudCityThingsImpl::When(GetWorld(), false);
+	for (const LyudCity::FCollectionRow& Row : Model->CollectionRows())
+	{
+		FCollectionView& V = Out.AddDefaulted_GetRef();
+		V.Title = LyudText::Get(LyudCityThingsImpl::Str(Row.Of->Title));
+		V.Reward = Row.Of->Reward.Any() ? LyudText::Get(LyudCityThingsImpl::Str(Row.Of->Reward.Name)) : FText::GetEmpty();
+		V.Got = Row.Got;
+		V.bRewarded = Row.bRewarded;
+		for (const bool bHas : Row.Slots)
+		{
+			V.Slots.Add(bHas);
+		}
+		if (Row.bRewarded && !Row.Of->Reward.Free.empty())
+		{
+			const long long Until = Model->FreeUntil(Row.Of->Reward.Free, ViewNow.Since);
+			V.FreeDays = Until > ViewNow.Since ? (int32)(Until - ViewNow.Since) : 0;
+		}
+	}
 }
 
 void ULyudCityThings::ShowCollections(bool bPage)
@@ -1833,7 +1938,9 @@ bool ULyudCityThings::EditCollections(const FString& Verb, const FString& Set)
 	const std::string Which(TCHAR_TO_UTF8(*Set));
 	if (Verb == TEXT("grant"))
 	{
-		return Model->GrantSet(Which);
+		const bool bGranted = Model->GrantSet(Which);
+		PayCollections();
+		return bGranted;
 	}
 	if (Verb == TEXT("clear") && (Which == "*" || Model->FindCollection(Which)))
 	{
@@ -2141,7 +2248,8 @@ void ULyudCityThings::BeginGame(int32 Thing, int32 Minutes, bool bSeated)
 	GameTitle = R ? LyudText::Get(TEXT("city.game.title_vs"), { FStringFormatArg(Title.ToString()), FStringFormatArg(GameOpponent.ToString()) }) : Title;
 	if (const LyudCity::FCupDef* Cup = Cups && R && CupMatchCup >= 0 ? Cups->Def(CupMatchCup) : nullptr)
 	{
-		GameTitle = LyudText::Get(TEXT("city.cup.game_title"), { FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(Cup->Title)).ToString()),
+		const LyudCity::FWhen CupNow = LyudCityThingsImpl::When(World);
+		GameTitle = LyudText::Get(TEXT("city.cup.game_title"), { FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(Cups->TitleOn(CupMatchCup, CupMatchDay, &CupNow))).ToString()),
 			FStringFormatArg(LyudText::Get(FString::Printf(TEXT("city.cup.rname.%d"), CupMatchRound)).ToString()), FStringFormatArg(GameOpponent.ToString()) });
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: tournament %s, round %d, against %s"), *LyudCityThingsImpl::Str(Cup->Id), CupMatchRound, *GameOpponent.ToString());
 	}
@@ -2324,17 +2432,19 @@ void ULyudCityThings::FinishGame()
 	FString CupNote;
 	if (Cups && CupMatchCup >= 0)
 	{
-		const LyudCity::FCupResult CR = Cups->Record(*Model, CupMatchCup, CupMatchDay, CupMatchRound, End.Result);
+		// (a holiday today, and the match is today's: the holiday's cup, docs/festivals.md "The new toys")
+		const LyudCity::FWhen CupNow = LyudCityThingsImpl::When(World);
+		const LyudCity::FCupResult CR = Cups->Record(*Model, CupMatchCup, CupMatchDay, CupMatchRound, End.Result, CupNow.bFestival && CupMatchDay == CupNow.Since);
 		End.NewStamps.insert(End.NewStamps.end(), CR.NewStamps.begin(), CR.NewStamps.end());
 		const LyudCity::FCupDef* Cup = Cups->Def(CupMatchCup);
-		const FString CupTitle = Cup ? LyudText::Get(LyudCityThingsImpl::Str(Cup->Title)).ToString() : FString();
+		const FString CupTitle = Cup ? LyudText::Get(LyudCityThingsImpl::Str(Cups->TitleOn(CupMatchCup, CupMatchDay))).ToString() : FString();
 		switch (CR.Note)
 		{
 		case LyudCity::ECupNote::Replay: CupNote = LyudText::Get(TEXT("city.cup.note.replay")).ToString(); break;
 		case LyudCity::ECupNote::Next: CupNote = LyudText::Get(TEXT("city.cup.note.next"), { FStringFormatArg(UTF8_TO_TCHAR(LyudCity::FCups::Hm(CR.NextHour).c_str())) }).ToString(); break;
 		case LyudCity::ECupNote::Out: CupNote = LyudText::Get(TEXT("city.cup.note.out")).ToString(); break;
 		case LyudCity::ECupNote::Champion:
-			CupNote = LyudText::Get(TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString();
+			CupNote = LyudText::Get(CR.bFestival ? TEXT("city.cup.note.champion_fest") : TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString();
 			if (Cup)
 			{
 				ULyudQuests::Notify(this, TEXT("cup_won"), LyudCityThingsImpl::Str(Cup->Id));    // the town talks of it (docs/town_rumours.md)
@@ -3656,7 +3766,8 @@ bool ULyudCityThings::OpenShopOf(const FString& Shop, const FString& TitleKey)
 		{
 			FLyudShopGood Good;
 			Good.Item = LyudCityThingsImpl::Name(G.Item);
-			Good.Price = G.Price;
+			// a good a complete collection made free (the kiosks' paper for a month) costs nothing while that lasts
+			Good.Price = Model->PriceOn(G, LyudCityThingsImpl::When(GetWorld(), false).Since);
 			Good.Count = G.Count;
 			if (ULyudInventory::FindDef(Good.Item))
 			{

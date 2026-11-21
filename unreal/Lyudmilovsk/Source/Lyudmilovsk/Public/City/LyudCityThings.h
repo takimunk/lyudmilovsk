@@ -179,6 +179,23 @@ public:
 	bool EditCollections(const FString& Verb, const FString& Set);
 	/** Is every collection complete (the developer toggle's light)? */
 	bool AreCollectionsComplete() const;
+	/** A collection as the diary's «Коллекции» pages show it (docs/city_interiors.md "A complete set pays"). */
+	struct FCollectionView
+	{
+		FText Title;
+		/** The keepsake a complete set gives. */
+		FText Reward;
+		/** Its slots in the data's order: filled or empty. */
+		TArray<bool> Slots;
+		int32 Got = 0;
+		bool bRewarded = false;
+		/** Days left of a reward that makes a good free (0: none, or over). */
+		int32 FreeDays = 0;
+	};
+	/** Every collection for the diary: the paid ones first, then the ones begun (the fullest first), then the rest. */
+	void CollectionViews(TArray<FCollectionView>& Out) const;
+	/** Gives what every newly complete collection pays, once (the keepsake's toast, the diary's note, the item or roubles). */
+	void PayCollections();
 
 	// --- mini-games
 
@@ -348,6 +365,8 @@ private:
 	void AnnouncePay(int32 Rubles);
 	/** A note on the HUD for every stamp got for the first time ("Films at «Рассвет»: 3 of 12"). */
 	void AnnounceStamps(const TArray<FString>& Stamps);
+	/** A save was loaded: its complete sets are looked over at the next tick (a set completed before rewards existed pays then). */
+	bool bPayCollections = false;
 	void FillRef(int32 Thing, FCityThingRef& Out) const;
 	/** The holds of townsfolk whose holder is gone are let go (a few times a second). */
 	void DropDeadHolds();

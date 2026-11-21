@@ -9,7 +9,9 @@
    "days": "sat",
    "start": 13,
    "step": 1.5,
-   "collect": "cups/cog_chess"
+   "collect": "cups/cog_chess",
+   "fest_title": "city.cup.cog_chess.fest_title",
+   "fest_collect": "fest_cups/cog_chess"
   },
   "san_dominoes": {
    "title": "city.cup.san_dominoes.title",
@@ -19,7 +21,9 @@
    "days": "wed",
    "start": 15,
    "step": 1,
-   "collect": "cups/san_dominoes"
+   "collect": "cups/san_dominoes",
+   "fest_title": "city.cup.san_dominoes.fest_title",
+   "fest_collect": "fest_cups/san_dominoes"
   },
   "tt_cup": {
    "title": "city.cup.tt_cup.title",
@@ -29,7 +33,9 @@
    "days": "sun",
    "start": 11,
    "step": 1,
-   "collect": "cups/tt_cup"
+   "collect": "cups/tt_cup",
+   "fest_title": "city.cup.tt_cup.fest_title",
+   "fest_collect": "fest_cups/tt_cup"
   }
  },
  "regulars": {
@@ -319,6 +325,9 @@
  "collections": {
   "cups": {
    "title": "city.coll.cups.title"
+  },
+  "fest_cups": {
+   "title": "city.coll.fest_cups.title"
   }
  }
 }
