@@ -95,7 +95,7 @@
   "ru": "Конкурс {0}: {1}-е место из {2}. Жюри советует: ближе к теме, резче, и снимать при низком солнце."
  },
  "ui.photo.contest.prize": {
-  "en": "The {0} contest: place {1}. The prize is {2} roubles, and the print hangs on the club's wall.",
+  "en": "The {0} contest: place {1}. The prize is {2} rub., and the print hangs on the club's wall.",
   "ja": "コンテスト{0}：{1}位。賞金{2}ルーブル。プリントはクラブの壁に飾られた。",
   "ru": "Конкурс {0}: {1}-е место. Приз {2} руб., отпечаток повесили на стену клуба."
  },
@@ -140,7 +140,7 @@
   "ru": "Стена фотоклуба"
  },
  "ui.photo.contest.won": {
-  "en": "The {0} contest: first place! The prize is {2} roubles, and the print hangs on the club's wall.",
+  "en": "The {0} contest: first place! The prize is {2} rub., and the print hangs on the club's wall.",
   "ja": "コンテスト{0}：1位！賞金{2}ルーブル。プリントはクラブの壁に飾られた。",
   "ru": "Конкурс {0}: первое место! Приз {2} руб., отпечаток повесили на стену клуба."
  },
@@ -235,7 +235,7 @@
   "ru": "Плёнка перемотана и вынута. Отснятых плёнок в кармане: {0}."
  },
  "ui.photo.studio.no_money": {
-  "en": "Developing costs {0} roubles. You don't have that much.",
+  "en": "Developing costs {0} rub. You don't have that much.",
   "ja": "現像は{0}ルーブル。お金が足りない。",
   "ru": "Проявка стоит {0} руб. Столько нет."
  },
@@ -250,7 +250,7 @@
   "ru": "Отпечатки готовы: {0}. Они в альбоме (P)."
  },
  "ui.photo.studio.taken": {
-  "en": "Films handed in: {0}, {1} roubles. Ready tomorrow by ten in the morning.",
+  "en": "Films handed in: {0}, {1} rub. Ready tomorrow by ten in the morning.",
   "ja": "フィルムを{0}本預けた。{1}ルーブル。明日の朝10時にできあがる。",
   "ru": "Плёнок сдано: {0}, {1} руб. Будет готово завтра к десяти утра."
  },

@@ -134,7 +134,7 @@ HERO = {
     "white_nights": [("Я читал её на набережной в июне, и было светло до конца.", "I read it on the promenade in June, and it was light till the end.", "六月の遊歩道で読んだら、最後まで明るかった。"),
                      ("Мне жалко Мечтателя. И всё равно он счастливее многих.", "I'm sorry for the Dreamer. And he's still happier than many.", "夢想家が気の毒。でも多くの人より幸せだと思う。")],
     "twenty_thousand": [("Я теперь смотрю на море и считаю, сколько это — двадцать тысяч льё.", "Now I look at the sea and work out how far twenty thousand leagues is.", "海を見て二万里がどれくらいか計算してる。"),
-                        ("Консель, который классифицирует даже в опасности, — мой герой.", "Conseil classifying things even in danger is my hero.", "危機でも分類するコンセイユが僕のヒーロー。")],
+                        ("Консель, который классифицирует даже в опасности, — мой герой.", "Conseil, who keeps classifying things even in danger, is my hero.", "危機でも分類するコンセイユが僕のヒーロー。")],
     "invisible_man": [("Я весь вечер оглядывался в пустой улице. Спасибо, Уэллс.", "I kept looking round in empty streets all evening. Thanks, Wells.", "一晩中、誰もいない通りで振り返ってた。"),
                       ("Мне его жалко в конце, хоть он и сам виноват.", "I felt sorry for him at the end, though it was his own fault.", "最後は気の毒だった。自業自得だけど。")],
     "rubaiyat": [("Я выписал одно четверостишие в дневник. Про розы и про пыль.", "I copied one quatrain into my diary. About roses and dust.", "一篇を日記に写した。薔薇と塵の詩。"),
@@ -170,7 +170,7 @@ FRIENDS = {"opinions": 6, "reply_min": 4, "reply_max": 8}
 
 S = {
     # reading wherever he sits, the light
-    "reading.prompt.read": ("E — читать", "E — read", "E — 読む"),
+    "reading.prompt.read": ("E — читать", "E — read", "E：読む"),
     "reading.dark": ("Слишком темно, чтобы читать. Включи фонарик (L) или сядь под фонарём.",
                      "Too dark to read. Switch on the headlamp (L) or sit under a street lamp.",
                      "暗くて読めない。ヘッドランプ(L)をつけるか、街灯の下へ。"),
@@ -184,10 +184,10 @@ S = {
     # the reader's keys and the quote mode
     "reading.keys": ("A/D — листать · Q — оглавление · C — выписать цитату · +/− — шрифт · Esc — закрыть",
                      "A/D — turn pages · Q — contents · C — copy a quote · +/− — type size · Esc — close",
-                     "A/D — めくる · Q — 目次 · C — 引用を書き写す · +/− — 文字サイズ · Esc — 閉じる"),
+                     "A/D：めくる · Q：目次 · C：引用を書き写す · +/−：文字サイズ · Esc：閉じる"),
     "reading.quote.keys": ("W/S — другое предложение · E — выписать в дневник · C — отмена",
                            "W/S — another sentence · E — copy into the diary · C — cancel",
-                           "W/S — 別の文 · E — 日記に書き写す · C — やめる"),
+                           "W/S：別の文 · E：日記に書き写す · C：やめる"),
     "reading.quote.saved": ("Цитата выписана в дневник: «{0}»", "Quote copied into the diary: “{0}”", "日記に引用を書き写した：「{0}」"),
     "reading.quote.again": ("Эта цитата уже есть в дневнике.", "That quote is already in the diary.", "その引用はもう日記にある。"),
     "reading.quote.none": ("На этой странице нечего выписать.", "Nothing to copy on this page.", "このページには書き写せる文がない。"),
@@ -249,7 +249,7 @@ S = {
                                  "“{0}” wasn't really for me. But I found a bookmark from 1974 in it. That's a story too!",
                                  "『{0}』はあまり合わなかった。でも1974年のしおりが挟まってた。それも物語だね！"),
     # the club
-    "reading.club.join": ("E — вступить в разговор о книге", "E — join the talk about the book", "E — 本の話に加わる"),
+    "reading.club.join": ("E — вступить в разговор о книге", "E — join the talk about the book", "E：本の話に加わる"),
     "reading.club.unread": ("Клуб обсуждает «{0}». Дочитай её — и сможешь вступить в разговор.",
                             "The club is talking about “{0}”. Finish it and you can join in.",
                             "読書会は『{0}』の話をしている。読み終えれば話に加われる。"),
