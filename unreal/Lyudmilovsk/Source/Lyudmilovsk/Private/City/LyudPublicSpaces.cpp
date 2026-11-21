@@ -32,6 +32,8 @@ static TAutoConsoleVariable<int32> CVarCitySummer(TEXT("lyud.City.Summer"), -1,
 	TEXT("Beach umbrellas and loungers: -1 out from June to August, 0 never, 1 always."));
 static TAutoConsoleVariable<int32> CVarCityShow(TEXT("lyud.City.Show"), 1,
 	TEXT("1 the public spaces drawn, 0 all hidden (props, paving, their trees and flowers, the lamps' lights): for A/B frame times in one process."));
+static TAutoConsoleVariable<int32> CVarCityHi3d(TEXT("lyud.City.Hi3d"), 1,
+	TEXT("1 the hi3d town props drawn (statues, sundial, chandeliers...), 0 hidden: for A/B frame times in one process."));
 static TAutoConsoleVariable<int32> CVarCityRides(TEXT("lyud.City.Rides"), -1,
 	TEXT("The fair's carousel and Ferris wheel: -1 by the fair's hours, 0 standing, 1 running."));
 static TAutoConsoleVariable<int32> CVarCityIce(TEXT("lyud.City.Ice"), -1,
@@ -262,6 +264,47 @@ bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 	}
 
 	Lap(TEXT("props"));
+	// the hi3d props (docs/city/hi3d_props.md): statues, sundial, drinking fountains outdoors, chandeliers in halls; imported
+	// meshes with their own materials, one instanced set per prop, placed by tools/city/hi3d_props.py
+	{
+		FString Text;
+		TSharedPtr<FJsonObject> H;
+		const FString Path = FPaths::ProjectContentDir() / TEXT("City/hi3d_props.json");
+		const TSharedPtr<FJsonObject>* MeshesObj = nullptr;
+		const TArray<TSharedPtr<FJsonValue>>* Items = nullptr;
+		if (FFileHelper::LoadFileToString(Text, *Path) && FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), H) && H
+			&& H->TryGetObjectField(TEXT("meshes"), MeshesObj) && H->TryGetArrayField(TEXT("items"), Items))
+		{
+			TMap<FString, UInstancedStaticMeshComponent*> Sets;
+			for (const TPair<FString, TSharedPtr<FJsonValue>>& KV : (*MeshesObj)->Values)
+			{
+				const TSharedPtr<FJsonObject> M = KV.Value->AsObject();
+				UStaticMesh* Mesh = LoadObject<UStaticMesh>(nullptr, *M->GetStringField(TEXT("mesh")), nullptr, LOAD_NoWarn | LOAD_Quiet);
+				if (!Mesh)
+				{
+					UE_LOG(LogTemp, Log, TEXT("LyudPublicSpaces: hi3d prop '%s' not imported yet (unreal/scripts/import_hi3d_props.sh)"), *KV.Key);
+					continue;
+				}
+				const bool bIndoor = M->HasField(TEXT("indoor")) && M->GetBoolField(TEXT("indoor"));
+				UInstancedStaticMeshComponent* C = MakeIsm(Mesh, TEXT("Hi3d_") + KV.Key, M->GetBoolField(TEXT("collide")), nullptr,
+					(float)M->GetNumberField(TEXT("cull")) * 100.f);
+				C->SetCastShadow(M->GetBoolField(TEXT("cast_shadow")));
+				C->bAffectDistanceFieldLighting = !bIndoor;
+				Sets.Add(KV.Key, C);
+				Hi3dSets.Add(C);
+			}
+			for (const TSharedPtr<FJsonValue>& V : *Items)
+			{
+				const TSharedPtr<FJsonObject> P = V->AsObject();
+				if (UInstancedStaticMeshComponent** C = Sets.Find(P->GetStringField(TEXT("prop"))))
+				{
+					(*C)->AddInstance(FTransform(FRotator(0.f, P->GetNumberField(TEXT("yaw")), 0.f), VecField(P, TEXT("at"))), true);
+					NumProps++;
+				}
+			}
+		}
+	}
+	Lap(TEXT("hi3d"));
 	// fountain stones built from their profiles (the water is ALyudFountain's, from the same numbers)
 	{
 		const TArray<TSharedPtr<FJsonValue>>* Fs = nullptr;
@@ -759,6 +802,12 @@ void ALyudPublicSpaces::Tick(float DeltaSeconds)
 			LastPoolCam = FVector(1e9);
 			UpdateSeason(true);
 		}
+	}
+	const bool bHi3d = CVarCityHi3d.GetValueOnGameThread() != 0;
+	if (bHi3d != bHi3dShown)
+	{
+		bHi3dShown = bHi3d;
+		for (UInstancedStaticMeshComponent* C : Hi3dSets) if (C) C->SetVisibility(bHi3d);
 	}
 	SpawnPendingPlants();
 	if (!bShown) return;
