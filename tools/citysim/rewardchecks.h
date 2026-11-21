@@ -105,6 +105,26 @@ inline void RewardChecks(const std::string& Path)
 	CHECK(Reward("shelves").Name == "city.coll.reward.shelves.name" && !Reward("shelves").Item.empty(), "the library's shelves: the reader's card with a photograph, and %s", Reward("shelves").Item.c_str());
 	CHECK(Reward("films").Any() && !Reward("films").Item.empty(), "the Rassvet's films: the framed poster, and %s x%d", Reward("films").Item.c_str(), Reward("films").Count);
 	CHECK(Reward("chess_wins").Item == "badge", "the chess players beaten: the club's badge on the jacket");
+	// the cable car's travel card (docs/front_door.md): a stamp for every station of network.json, the badge at the seventh
+	{
+		std::set<std::string> NetIds;
+		std::string NetText, NetError;
+		LyudJson::FValue Net;
+		if (ReadFile("unreal/Lyudmilovsk/Content/Transport/network.json", NetText) && LyudJson::Parse(NetText, Net, NetError))
+		{
+			if (const LyudJson::FValue* St = Net.Find("stations"))
+			{
+				for (const LyudJson::FValue& V : St->Items)
+				{
+					if (const LyudJson::FValue* Id = V.Find("id")) NetIds.insert(Id->Str);
+				}
+			}
+		}
+		const FCollection* Card = M.FindCollection("stations");
+		const std::set<std::string> Pieces = Card ? std::set<std::string>(Card->Pieces.begin(), Card->Pieces.end()) : std::set<std::string>();
+		CHECK(Card && Pieces == NetIds && NetIds.size() == 7 && Reward("stations").Item == "badge",
+			"the travel card: a stamp for each of the %d cable car stations (%d pieces), the badge when all are punched", (int)NetIds.size(), (int)Pieces.size());
+	}
 	CHECK(Reward("san_course").Pay > 0 && Reward("san_cure").Any(), "the sanatorium's book and card: the intake's photograph with %d roubles, the card marked", Reward("san_course").Pay);
 	const FReward& Rec = Reward("records");
 	const std::vector<std::string> Choices = M.RewardChoices(Rec);
