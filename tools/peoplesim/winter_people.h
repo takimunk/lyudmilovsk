@@ -145,6 +145,15 @@ static int Winter()
 	const char* Only = std::getenv("LYUD_WINTER_ONLY");
 	auto Want = [Only](const char* Part) { return !Only || std::strstr(Only, Part) != nullptr; };
 
+	// children on the ice and people going round beside one of theirs: counted on the weekday evening and the Saturday
+	// together (a family's outing is a matter of who happens to come when; one evening alone may well have no pair)
+	std::set<int> KidSkaters;
+	int PairSeconds = 0;
+	auto CountTogether = [&](const FPerson& P, float Seconds)
+	{
+		if (P.Age < 14) KidSkaters.insert(P.Id);
+		if (P.LoopAt >= 0.f && P.Speed > 1.f && P.SkateWith >= 0) PairSeconds += (int)Seconds;
+	};
 	if (Want("evening"))
 	{
 	// --- a weekday evening (Wednesday): shut till 17:30, open till 19:30, shut again
@@ -185,6 +194,7 @@ static int Winter()
 				continue;
 			}
 			EveSkaters.insert(P.Id);
+			CountTogether(P, 1.f);
 			if (P.LoopAt >= 0.f && P.Speed > 1.f)
 			{
 				// round anticlockwise seen from above: clockwise in the X, Y plane (the middle on the right of the heading there)
@@ -217,7 +227,7 @@ static int Winter()
 	CHECK(Glides > 0 && Wrong == 0, "they go round anticlockwise seen from above (%d of %d skater-seconds the wrong way)", Wrong, Glides);
 	CHECK(Mean >= 3.f && Mean <= 4.5f && SpeedMax <= 4.5f * 1.15f + 0.01f, "at 3-4.5 m/s (%.2f on average gliding on their own, %.2f at most)", Mean, SpeedMax);
 	CHECK(StandSeen > 0, "with pauses at the slots: a breath, a word (%d skater-minutes standing)", StandSeen);
-	CHECK(Kids > 0 && Pairs > 0, "children among them (%d) and some go round beside one of theirs (%d skater-seconds)", Kids, Pairs);
+	std::printf("       (this evening: %d children on the ice, %d skater-seconds beside one of theirs)\n", Kids, Pairs);
 	// shut at 19:30: off the ice within a few minutes
 	W.SetCondition("rink", false);
 	int At75 = -1, OnIce3 = -1, OnIce5 = -1, Any5 = -1;
@@ -278,6 +288,13 @@ static int Winter()
 				{
 					for (const FPerson& P : W.People) Busy += P.Activity == SkateBusy && P.State == EState::Doing ? 1 : 0;
 				}
+				for (const FPerson& P : W.People)
+				{
+					if ((P.Activity == Skate || P.Activity == SkateBusy) && P.State == EState::Doing)
+					{
+						CountTogether(P, 60.f);     // a sample every 30 steps of 2 s
+					}
+				}
 			}
 		}
 		SatMean[Pass] = N ? (float)Sum / N : 0.f;
@@ -288,6 +305,11 @@ static int Winter()
 	W.SetCondition("rink", false);
 	W.SetCondition("rink_busy", false);
 
+	}
+	if (Want("evening") || Want("saturday"))
+	{
+	CHECK(!KidSkaters.empty() && PairSeconds > 0, "children among the skaters (%zu of them) and some go round beside one of theirs (%d skater-seconds), the evening and the Saturday together",
+		KidSkaters.size(), PairSeconds);
 	}
 	if (Want("walrus"))
 	{

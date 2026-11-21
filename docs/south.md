@@ -175,7 +175,7 @@ into `townsfolk.json`:
 |---|---|---|---|
 | `S-ATON-SHED` | the shed's bench, the net racks, the boats | `mend_nets`, `boats_evening` | three old fishermen (men of 58+ who like the shore): nets 6:00-11:00 by day, the boats 16:00-19:30 |
 | `S-ATON-ORCHARD` | a place at each hive, the picnic table's 4 seats | `tend_hives`, `orchard_picnic` | the beekeeper (a pensioner fond of nature, not one of the allotment's keepers) 9-17 at 13 °C and over; anybody at the table on warm Saturdays and Sundays |
-| `S-ATON-HIDE` | the hide's 2 seats (in at the stair's foot, up to the landing) | `watch_starlings` | eight birdwatchers (the studious who love the open air) and the odd passer-by, only round sunset |
+| `S-ATON-HIDE` | the hide's 2 seats (in at the stair's foot, up to the landing) | `watch_starlings` | eight birdwatchers (the studious who love the open air) and the odd passer-by, only round sunset; those awake through the year's sunsets have three evenings a week there as a duty tied to the sunset (`hide_evenings`: every day of the week covered) |
 | `S-ATON-VIEW` | the rotunda's 4 seats, the brow benches by it and on the shoulder's last bend | `sit_belvedere` | anybody, by day, more at the weekend |
 | `S-ATON-WALK` | a spot every 16 m up the `town` trail and out to the belvedere, then the same back down | `walk_aton` (a round: spot to spot in order, so the walk keeps to the trail) | anybody of 8+, by day, more at the weekend |
 | `S-ATON-BROOK` | the stones by the footbridge, the spring's trough | `play_brook` | children of 6-13 after school (14:00-18:30, not Sunday) |
