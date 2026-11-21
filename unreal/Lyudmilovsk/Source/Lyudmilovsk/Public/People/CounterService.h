@@ -19,6 +19,10 @@ class AHeroCharacter;
  * never step in front; when he joins a line behind others a toast says how many are ahead. Near him the one on shift calls
  * "next" when the front changes and a newcomer asks who is last.
  *
+ * Bodies drawn outside the people's life (the station halls' barista, docs/front_door.md) are registered here
+ * (RegisterBody), so they serve and are found like the town's own; whoever opens a shop may name its counter first
+ * (OpenedAt: "hall:aton"), and the counter's purchases are told to whoever listens (ULyudFrontDoor: the regulars' usual).
+ *
  * Console: lyud.Counter status | crowd [n]. Developer mode: "counters" (crowd, status).
  */
 UCLASS()
@@ -35,8 +39,22 @@ public:
 	/** Where the Index-th thing he just bought is put down: on the counter between the one serving him and him (world cm).
 	 *  False when nobody serves him now (the shop shut over 3 s ago, or nobody on shift stands near): hand it over as before. */
 	bool HandoverPoint(int32 Index, FVector& Out) const;
-	/** ULyudCityThings greeted him with this person: no second hello when the shop opens. */
-	void NoteGreeted(int32 PersonId);
+	/** The same for a given server (a direct sale: the usual), whether or not a shop is open. */
+	bool HandoverPointFrom(const AActor* ServerBody, int32 Index, FVector& Out) const;
+	/** Somebody greeted him with this body (ULyudCityThings::Greet, a hall's barista): no second hello when the shop opens. */
+	void NoteGreeted(const AActor* Body);
+
+	/** A body drawn outside the people's life (PersonId: who they are in it, -1 nobody); bServer: they serve at a counter. */
+	void RegisterBody(AActor* Body, int32 PersonId, bool bServer);
+	void UnregisterBody(AActor* Body);
+	/** Whoever is drawn for PersonId now: the town's body or a registered one (null: not drawn). */
+	AActor* BodyOf(int32 PersonId) const;
+	/** The next shop that opens is at this counter, served by this body (the station halls; the town's shops find theirs). */
+	void OpenedAt(const FString& Counter, AActor* ServerBody, int32 ServerPid);
+	/** The counter of the shop open now ("" none or unnamed). */
+	const FString& OpenCounter() const { return Counter; }
+	/** The toast that counts the money: Spent out of a purse of Purse roubles. */
+	void AnnounceChange(int32 Spent, int32 Purse) const;
 
 	/** The lines near the hero, for the log. */
 	FString Status() const;
@@ -50,11 +68,20 @@ protected:
 	}
 
 private:
+	struct FExtra
+	{
+		TWeakObjectPtr<AActor> Body;
+		int32 Pid = -1;
+		bool bServer = false;
+	};
+
 	void TickHold(AHeroCharacter* Hero);
 	void TickShop(AHeroCharacter* Hero, float DeltaTime);
 	void TickLines(AHeroCharacter* Hero);
-	int32 FindServer(const FVector& Near, float MaxCm) const;
-	AActor* BodyOf(int32 PersonId) const;
+	/** The nearest body on a staff duty (or a registered server) within MaxCm of Near: its id (-1: a registered one with no
+	 *  id, or none) and the body (null: none). */
+	int32 FindServer(const FVector& Near, float MaxCm, AActor*& OutBody) const;
+	AActor* ShownBody(int32 PersonId) const;
 	double Now() const;
 
 	float HoldClock = 0.f;
@@ -65,10 +92,17 @@ private:
 	// the scene at the counter
 	bool bShopWas = false;
 	int32 Server = -1;
+	TWeakObjectPtr<AActor> ServerBody;
 	int32 RublesAtOpen = 0;
 	double ClosedAt = -100.0;
-	int32 GreetedPerson = -1;
+	TWeakObjectPtr<const AActor> GreetedBody;
 	double GreetedAt = -1000.0;
+	FString Counter;
+	FString PendingCounter;
+	TWeakObjectPtr<AActor> PendingBody;
+	int32 PendingPid = -1;
+	double PendingAt = -100.0;
+	TArray<FExtra> Extras;
 
 	// the lines: who stood at each spot last look (flattened by LineStart), the front's person per line
 	TArray<int32> LineStart;

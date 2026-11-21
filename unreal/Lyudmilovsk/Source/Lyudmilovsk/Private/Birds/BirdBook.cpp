@@ -1,6 +1,8 @@
 #include "Birds/BirdBook.h"
 
+#include "BirdHabit.h"
 #include "BirdTame.h"
+#include "City/LyudCityThings.h"
 #include "Birds/BirdLife.h"
 #include "Engine/Engine.h"
 #include "Engine/GameInstance.h"
@@ -40,6 +42,7 @@ void ULyudBirdBook::Reset()
 {
 	Seen.Reset();
 	Friends.Reset();
+	Habits.Reset();
 	OnChanged.Broadcast();
 }
 
@@ -110,7 +113,7 @@ bool ULyudBirdBook::NoteSeen(const UObject* WorldContext, FName Species, bool bF
 	const FString NameKey = FString(TEXT("@bird.")) + Snake(Species.ToString()) + TEXT(".name");
 	if (ULyudQuests* Q = ULyudQuests::Get(WorldContext))
 	{
-		Q->AddNote(How == TEXT("binoculars") ? TEXT("journal.bird.seen_binoculars") : TEXT("journal.bird.seen"), { NameKey });
+		Q->AddNote(How == TEXT("binoculars") ? TEXT("journal.bird.seen_binoculars") : How == TEXT("telescope") ? TEXT("journal.bird.seen_telescope") : TEXT("journal.bird.seen"), { NameKey });
 	}
 	ULyudQuests::Notify(WorldContext, TEXT("bird_seen"), Species.ToString());
 	OnChanged.Broadcast();
@@ -152,6 +155,80 @@ bool ULyudBirdBook::NoteTamed(const UObject* WorldContext, int32 BirdId, FName S
 		Q->AddNote(bFemale ? TEXT("journal.bird.tamed_f") : TEXT("journal.bird.tamed_m"), { NameKey });
 	}
 	ULyudQuests::Notify(WorldContext, TEXT("bird_tamed"), Species.ToString());
+	OnChanged.Broadcast();
+	return true;
+}
+
+const FLyudBirdHabitSeen* ULyudBirdBook::FindHabit(FName Habit) const
+{
+	return Habits.FindByPredicate([Habit](const FLyudBirdHabitSeen& H) { return H.Habit == Habit; });
+}
+
+TArray<FName> ULyudBirdBook::HabitsOfSpecies(FName Species)
+{
+	TArray<FName> Out;
+	const int32 Sp = LyudBirds::FindSpecies(TCHAR_TO_UTF8(*Species.ToString()));
+	for (const int Di : LyudBirds::HabitsOf(Sp))
+	{
+		Out.Add(FName(UTF8_TO_TCHAR(LyudBirds::HabitTable()[Di].Name)));
+	}
+	return Out;
+}
+
+FName ULyudBirdBook::FamilyOfSpecies(FName Species)
+{
+	const int32 Sp = LyudBirds::FindSpecies(TCHAR_TO_UTF8(*Species.ToString()));
+	const LyudBirds::EBirdFamily F = LyudBirds::FamilyOf(Sp);
+	return F == LyudBirds::EBirdFamily::Num ? NAME_None : FName(UTF8_TO_TCHAR(LyudBirds::FamilyName(F)));
+}
+
+void ULyudBirdBook::FamilyCount(FName Family, int32& OutSeen, int32& OutAll) const
+{
+	OutSeen = OutAll = 0;
+	for (const LyudBirds::FHabitDef& D : LyudBirds::HabitTable())
+	{
+		if (D.Id != LyudBirds::EHabit::None && Family == FName(UTF8_TO_TCHAR(LyudBirds::FamilyName(D.Family))))
+		{
+			OutAll++;
+			OutSeen += FindHabit(FName(UTF8_TO_TCHAR(D.Name))) ? 1 : 0;
+		}
+	}
+}
+
+bool ULyudBirdBook::NoteHabit(const UObject* WorldContext, FName Species, FName Habit, const FVector& Where)
+{
+	if (Species.IsNone() || Habit.IsNone() || FindHabit(Habit))
+	{
+		return false;
+	}
+	// (a habit watched is a bird met: its page must be there for the line)
+	if (!FindSeen(Species))
+	{
+		NoteSeen(WorldContext, Species, false, TEXT("binoculars"), Where);
+	}
+	FLyudBirdHabitSeen& H = Habits.AddDefaulted_GetRef();
+	H.Habit = Habit;
+	H.Species = Species;
+	H.When = Now(WorldContext);
+	H.Place = PlaceNear(Where);
+	UE_LOG(LogTemp, Log, TEXT("BirdBook: habit %s (%s)"), *Habit.ToString(), *Species.ToString());
+	if (ULyudQuests* Q = ULyudQuests::Get(WorldContext))
+	{
+		Q->AddNote(TEXT("journal.bird.habit"), { FString(TEXT("@bird.")) + Snake(Species.ToString()) + TEXT(".name"), FString(TEXT("@bird.habit.")) + Habit.ToString() });
+	}
+	ULyudQuests::Notify(WorldContext, TEXT("bird_habit"), Habit.ToString());
+	// every habit of the family in the book: its stamp
+	const FName Family = FamilyOfSpecies(Species);
+	int32 Have = 0, All = 0;
+	FamilyCount(Family, Have, All);
+	if (!Family.IsNone() && All > 0 && Have >= All)
+	{
+		if (ULyudCityThings* City = ULyudCityThings::Get(WorldContext))
+		{
+			// (the pieces: "crows", "wings", "water", "garden", "singers", "raptors")
+			City->GiveStamp(FString(TEXT("bird_habits/")) + Family.ToString());
+		}
+	}
 	OnChanged.Broadcast();
 	return true;
 }

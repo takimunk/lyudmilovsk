@@ -12,8 +12,14 @@ a living-room window and a balcony-door window (240 flat windows) + corridor win
 Podium: solid blue-tile wall, except the ground hall in the 90 degree sector facing the street: ENTERABLE lobby
 with the main entrance (under the first balcony tips), reception counter, benches, a dining area; floor
 CT_Floor, walls CT_Interior, ceiling; big windows to the sea side and to the courtyard.
+The hydrotherapy wing (_hydro_wing, backlog 49) continues the hall eastwards: three more bays of the same angular width
+(-45 .. -6.43 deg): bay 7 the inhalation room, bay 8 the hydro room (mud bath behind a curtain, the Charcot shower and
+the nurse's desk, the robe bench), bay 9 the massage room; white tile floors and wall bands, high privacy windows on the
+street side, a 1.0 m doorway through the treatment room's east end wall (R 16.45..17.45, at -45 deg), doors in the
+partitions, a solid east end wall; the podium's solid sector starts after it (-6.43 deg).
 Courtyard (R 12 m): lawn, fountain basin, trees (not reachable tonight).
-Spots: counter (reception), bench x2, table x3 (dining). Entrance "main" (2.4 m, double leaf).
+Spots: counter (reception), bench x2, table x3 (dining), the wing's inhalation seats, robe bench, nurse and guest places.
+Entrance "main" (2.4 m, double leaf).
 Ideas for later: garden door from the hall, roof solarium, a sea-water pool in the courtyard.
 Material requests: none.
 """
@@ -107,6 +113,9 @@ JIG_XY = (3.55, 10.7)                  # the jigsaw table in the lobby
 _ANCH = {}
 CEIL = Z0 - 0.01                       # underside of the hall ceiling
 PIERS = [-135.0 + 90.0 * i / 7 for i in range(8)]      # angles of the panel joints (solid piers between the windows)
+PIERS_W = [-45.0 + 90.0 * i / 7 for i in range(4)]     # the hydrotherapy wing's joints: -45, -32.14, -19.29, -6.43
+WING_END = PIERS_W[3]
+DOOR_R0, DOOR_R1, DOOR_Z = 16.45, 17.45, 2.2           # the doorway through the radial wall at -45 deg (hall <-> wing)
 R_LO, R_HI = 12.3, 17.7                # radial span of a partition (its ends hide inside the walls)
 
 
@@ -269,6 +278,17 @@ def _furnish_hall(B, hall, t):
     B.thing("lobby_lounge_a", "seat", a1["seats"][0][:3], a1["seats"][0][3], height=0.44)
     B.thing("lobby_lounge_b", "seat", a2["seats"][0][:3], a2["seats"][0][3], height=0.44)
     kit.floor_lamp(B, *pol(12.9, thl - _dth(1.75, 12.9)), yaw=0)
+    # film night: a pull-down screen on a tripod south of the sofa (off the entrance's straight line, the middle path
+    # stays free), the film projector on a trolley beside the sofa's east end
+    scx, scy = -0.7, 10.6
+    scyaw = _fy(-0.35 - scx, 13.0 - scy)
+    _film_screen(B, scx, scy, scyaw)
+    B.thing("lounge_screen", "board", (scx, scy, 1.5), scyaw, topic="film")
+    prx, pry = 1.2, 13.0
+    pryaw = _fy(scx - prx, scy - pry)
+    _proj_trolley(B, prx, pry, pryaw)
+    pj = kit.projector(B, prx, pry, 0.805, pryaw)
+    B.thing("lounge_projector", "machine", (prx, pry, 0.95), pryaw, what="projector")
     # benches either side of the entrance
     for sgn, sid, tid in ((-1, "bench_-4", "lobby_bench_w"), (1, "bench_4", "lobby_bench_e")):
         thb = -90.0 + sgn * _dth(2.9, 17.0)
@@ -458,7 +478,7 @@ def _furnish_hall(B, hall, t):
     wx, wy = _at(17.0, th_t0, 0.075)
     kit.mirror(B, wx, wy, yaw=_ytan(th_t0), zc=1.5, w=0.5, h=0.9)
     kit.pendant(B, *pol(15.2, tc), CEIL, drop=1.2, kind="cone", light=True, lumens=900, radius=7)
-    kit.plant(B, *pol(16.95, tc + 4.2), kind="ficus", pot="CT_TileWhite", h=1.4, seed=21)     # was on the lab bench
+    # (the ficus that stood at the east end wall's street corner moved into the wing's massage room: the doorway is there)
 
     # ------------------------------------------------------------------------------------------ lobby/dining light
     kit.pendant(B, *pol(15.0, -92.0), CEIL, drop=1.2, kind="opal", light=True, lumens=900, radius=8)
@@ -828,6 +848,9 @@ def _depth2(B, q, desk, th_r, dc):
     cx_, cy_ = _at(13.1, tc, 1.2)
     _clipboard(B, cx_, cy_, 0.9, yaw=_yout(tc) + 8)
     B.thing("treat_card", "board", (cx_, cy_, 0.96), _yout(tc), topic="card")
+    # the doctor's check: a blood-pressure cuff and a spirometer on the front strip of the bench, beside the check-up
+    _bp_cuff(B, *_at(13.3, tc, 0.49), z=0.9, yaw=_yout(tc))
+    _spirometer(B, *_at(13.32, tc, 0.86), z=0.9, yaw=_yout(tc))
     dx_, dy_ = _at(13.1, tc, 1.58)
     B.thing("treat_desk", "counter", (dx_, dy_ - 0.4, 1.0), (_yout(tc) + 315.0) % 360.0, role="doctor", service="treatment")
 
@@ -1002,6 +1025,448 @@ def _dress(B):
                 break
 
 
+# ====================================================================================================== hydrotherapy wing
+def _skin_hole(q, e, th, r0, r1, z0, z1):
+    """The hole (u0, u1, z0, z1) of the inner skin Facade(q[e + 1], q[e]) for a doorway at radii r0..r1 of the radial wall at th."""
+    n = len(q)
+    a, b = q[(e + 1) % n], q[e]
+    L = math.dist(a, b)
+    dx, dy = (b[0] - a[0]) / L, (b[1] - a[1]) / L
+    us = [(pol(r, th)[0] - a[0]) * dx + (pol(r, th)[1] - a[1]) * dy for r in (r0, r1)]
+    return (max(0.0, min(us)), min(L, max(us)), z0, z1)
+
+
+def _ccw(poly):
+    area = sum(poly[i][0] * poly[(i + 1) % len(poly)][1] - poly[(i + 1) % len(poly)][0] * poly[i][1] for i in range(len(poly)))
+    return poly if area > 0 else poly[::-1]
+
+
+def _band(B, a, b, z0, z1, mat, gaps=(), off=0.004):
+    """A strip of wall covering (tile band) on the room side of the skin edge a -> b (room on the left), gaps = [(u0, u1)]."""
+    L = math.dist(a, b)
+    dx, dy = (b[0] - a[0]) / L, (b[1] - a[1]) / L
+    nx, ny = -dy * off, dx * off
+    pos, segs = 0.0, []
+    for g0, g1 in sorted(gaps):
+        segs.append((pos, g0))
+        pos = g1
+    segs.append((pos, L))
+    for s0, s1 in segs:
+        if s1 - s0 < 0.02:
+            continue
+        pa = (a[0] + dx * s0 + nx, a[1] + dy * s0 + ny)
+        pb = (a[0] + dx * s1 + nx, a[1] + dy * s1 + ny)
+        B.detail.face(mat, [(pb[0], pb[1], z0), (pa[0], pa[1], z0), (pa[0], pa[1], z1), (pb[0], pb[1], z1)])
+
+
+def _door_casing(B, th, side, r0, r1, hz, t=0.4, w=0.05):
+    """Wooden casing (CT_Frame, like _partition's doors) round a doorway of the radial wall at th on its skin, 0.4 m off
+    the radial line toward side (-1: the -theta room, +1: the +theta room)."""
+    tx, ty = _tan(th)
+    ux, uy = math.cos(math.radians(th)), math.sin(math.radians(th))
+
+    def rect(a, b):
+        return _ccw([(CX + rr * ux + side * (t + off) * tx, CY + rr * uy + side * (t + off) * ty)
+                     for rr, off in ((a, 0.0), (b, 0.0), (b, 0.025), (a, 0.025))])
+    for (a, b) in ((r0 - w, r0), (r1, r1 + w)):
+        prism(B.detail, "CT_Frame", rect(a, b), 0.0, hz + w, top=True, bottom=False)
+    prism(B.detail, "CT_Frame", rect(r0 - w, r1 + w), hz, hz + 0.07, top=True, bottom=True)
+
+
+def _dial_back(p, name, cx, zc, r, y, sides=12):
+    """Like interior_kit._round_dial but on a face looking toward +y (the operator's side)."""
+    u0, v0, u1, v1 = interior_kit._uvrect(name)
+    cu, cv, ru, rv = (u0 + u1) / 2, (v0 + v1) / 2, (u1 - u0) / 2 * 0.985, (v1 - v0) / 2 * 0.985
+    angs = [2 * math.pi * k / sides for k in range(sides)]
+    p.m.face(interior_kit.ATLAS_SLOT, [(cx - r * math.cos(a), y, zc + r * math.sin(a)) for a in angs],
+             [(cu + ru * math.cos(a), cv + rv * math.sin(a)) for a in angs])
+
+
+def _inhaler(B, x, y, yaw):
+    """[wall] A wall-mounted inhaler: a white enamel box with a dial, two knobs and a steam nozzle, a short hose to a
+    rubber mask that hangs on a hook beside it. (x, y) on the wall, facing the room."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "inhaler")
+    p.kind = "wall"
+    p.bev("CT_SteelWhite", -0.2, 0.2, -0.24, 0.0, 1.0, 1.5, 0.02, 0.03)
+    p.box("CT_Aluminium", -0.205, 0.205, -0.245, -0.2, 1.0, 1.035, f="xXyZ")
+    interior_kit._round_dial(p, "clock_0", -0.06, 1.33, 0.075, -0.2445, 12)
+    interior_kit._knob(p, "CT_Aluminium", 0.11, 1.38, 0.025, -0.244, -0.27, 8)
+    interior_kit._knob(p, "CT_Aluminium", 0.11, 1.26, 0.025, -0.244, -0.27, 8)
+    p.rod("CT_Brass", (-0.1, -0.24, 1.1), (-0.1, -0.31, 1.1), 0.04, 6)
+    p.rod("CT_Aluminium", (0.34, 0.0, 1.3), (0.34, -0.05, 1.3), 0.015, 4)                    # the hook
+    p.rod("CT_Aluminium", (0.34, -0.05, 1.3), (0.34, -0.05, 1.25), 0.015, 4)
+    p.cushion("CT_Rubber", 0.29, 0.39, -0.115, -0.045, 1.02, 1.16, 0.015)                    # the mask
+    p.cushion("CT_Glass", 0.31, 0.37, -0.125, -0.115, 1.06, 1.12, 0.005)
+    p.rod("CT_Rubber", (0.34, -0.05, 1.25), (0.34, -0.07, 1.16), 0.01, 4)                    # strap on the hook
+    p.tube("CT_Rubber", [(-0.12, -0.12, 1.0), (-0.14, -0.17, 0.88), (0.02, -0.2, 0.82), (0.2, -0.17, 0.9), (0.32, -0.09, 1.03)],
+           0.028, 5)
+    return p.done()
+
+
+def _card_box(B, x, y, z, yaw):
+    """[prop] A wooden box of treatment cards with a pencil, on the nurse's table."""
+    p = interior_kit._P(B, x, y, z, yaw, "card_box")
+    p.kind = "prop"
+    p.box("CT_Wood", -0.14, 0.14, -0.08, 0.08, 0.0, 0.09)
+    for k in range(6):
+        u = -0.1 + 0.04 * k
+        p.box("CT_Paper", u - 0.014, u + 0.014, -0.07, 0.07, 0.09, 0.14 + 0.012 * (k % 3))
+    p.rod("CT_Wood", (0.19, -0.05, 0.006), (0.19, 0.1, 0.006), 0.01, 4)
+    return p.done(top=0.14)
+
+
+def _mud_bath(B, x, y, yaw):
+    """A tiled mud-bath plinth 1.9 x 0.7 x 0.7: white tiles with a blue skirt and lip, a brown oilcloth mattress and a
+    folded sheet at the foot (x- end); the head is at x+. Solid."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "mud_bath")
+    p.box("CT_TileWhite", -0.95, 0.95, -0.35, 0.35, 0.0, 0.58)
+    p.box("CT_Tile", -0.96, 0.96, -0.36, 0.36, 0.0, 0.1, f="xXyY")
+    p.bev("CT_Tile", -0.97, 0.97, -0.37, 0.37, 0.58, 0.63, 0.01)
+    p.cushion("CT_Leather", -0.9, 0.9, -0.31, 0.31, 0.63, 0.70, 0.015)
+    p.cushion("CT_TileWhite", -0.86, -0.46, -0.27, 0.27, 0.69, 0.74, 0.01)
+    p.cushion("CT_PlasterBlue", -0.84, -0.48, -0.25, 0.25, 0.735, 0.745, 0.005)
+    p.core(-0.93, 0.93, -0.33, 0.33, 0.5, 0.6)
+    return p.done(solid=True, top=0.7)
+
+
+def _rail_curtain(B, x, y, yaw, length=1.9, drawn=1.0):
+    """[prop] A curtain rail hung from the ceiling on two rods (z 2.4) along the local x axis, with a pleated curtain drawn
+    over the first `drawn` metres, down to 0.3 m over the floor."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "rail_curtain")
+    p.kind = "prop"
+    zr = 2.4
+    p.rod("CT_Aluminium", (0.0, 0.0, zr), (length, 0.0, zr), 0.03, 6)
+    for u in (0.08, length - 0.08):
+        p.rod("CT_Aluminium", (u, 0.0, zr), (u, 0.0, CEIL), 0.02, 4)
+    segs = 10
+    rows = [(zr - 0.06, 0.012), (1.3, 0.028), (0.3, 0.04)]
+    rr = [[(drawn * k / segs, amp * math.sin(k * 2.2), zz) for k in range(segs + 1)] for zz, amp in rows]
+    for r0, r1 in zip(rr, rr[1:]):
+        for k in range(segs):
+            q = [r1[k], r1[k + 1], r0[k + 1], r0[k]]
+            p.face("CT_PlasterBlue", q)
+            p.face("CT_PlasterBlue", [(a, b + 0.003, c) for a, b, c in q][::-1])
+    for k in range(0, segs + 1, 2):                                                       # rings
+        p.rod("CT_Aluminium", (drawn * k / segs, 0.0, zr), (drawn * k / segs, 0.0, zr - 0.07), 0.012, 4)
+    return p.done()
+
+
+def _charcot_bay(B, x, y, yaw):
+    """The Charcot shower's tiled bay on the street wall: two 1.0 m tiled kerbs (solid, separate pieces) 1.1 m apart, a blue
+    floor and a chrome handrail on the back wall (a horizontal bar and a vertical grab). (x, y) = the wall point in the
+    middle; faces the room."""
+    for sx in (-0.575, 0.575):
+        p = interior_kit._P(B, x, y, 0.0, yaw, "charcot_kerb")
+        p.box("CT_TileWhite", sx - 0.05, sx + 0.05, -1.3, -0.02, 0.0, 1.0)
+        p.box("CT_Tile", sx - 0.055, sx + 0.055, -1.3, -0.02, 0.0, 0.08, f="xXyY")
+        p.core(sx - 0.04, sx + 0.04, -1.29, -0.03, 0.05, 0.98)
+        p.done(solid=True, top=1.0)
+    p = interior_kit._P(B, x, y, 0.0, yaw, "charcot_floor")
+    p.kind = "flat"
+    p.box("CT_Tile", -0.52, 0.52, -1.3, -0.02, 0.0, 0.016, f="Z")
+    p.done()
+    p = interior_kit._P(B, x, y, 0.0, yaw, "charcot_rail")
+    p.kind = "wall"
+    p.rod("CT_Aluminium", (-0.42, -0.08, 1.1), (0.42, -0.08, 1.1), 0.035, 8)
+    for sx in (-0.4, 0.4):
+        p.rod("CT_Aluminium", (sx, -0.005, 1.1), (sx, -0.08, 1.1), 0.02, 6)
+    p.rod("CT_Aluminium", (-0.44, -0.08, 0.85), (-0.44, -0.08, 1.7), 0.035, 8)
+    for zz in (0.9, 1.65):
+        p.rod("CT_Aluminium", (-0.44, -0.005, zz), (-0.44, -0.08, zz), 0.02, 6)
+    p.done()
+
+
+def _charcot_desk(B, x, y, yaw):
+    """The nurse's control desk: a tiled lectern 0.9 x 0.5 x 1.0 (front -y faces the Charcot bay, the nurse stands at +y)
+    with a gauge panel on top (two pressure gauges facing the nurse) and a hose with a brass nozzle lying on the top
+    pointing at the bay. Solid."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "charcot_desk")
+    p.box("CT_TileWhite", -0.45, 0.45, -0.25, 0.25, 0.0, 0.95)
+    p.box("CT_Tile", -0.455, 0.455, -0.255, 0.255, 0.0, 0.08, f="xXyY")
+    p.bev("CT_Aluminium", -0.5, 0.5, -0.3, 0.3, 0.95, 1.0, 0.008)
+    p.box("CT_SteelWhite", -0.4, 0.4, 0.12, 0.2, 1.0, 1.35)
+    for gx in (-0.2, 0.2):
+        interior_kit._knob(p, "CT_Aluminium", gx, 1.2, 0.085, 0.2, 0.222, 12)
+        _dial_back(p, "clock_2" if gx < 0 else "clock_3", gx, 1.2, 0.072, 0.2245, 12)
+    p.tube("CT_Rubber", [(0.45, 0.0, 0.8), (0.57, 0.0, 0.68), (0.62, -0.3, 0.62), (0.5, -0.5, 0.82), (0.32, -0.3, 1.02)],
+           0.035, 6)
+    p.rod("CT_Brass", (0.32, -0.28, 1.04), (0.32, -0.56, 1.04), 0.05, 8)
+    p.rod("CT_Aluminium", (0.32, -0.56, 1.04), (0.32, -0.6, 1.04), 0.03, 6)
+    p.core(-0.45, 0.45, -0.25, 0.25, 0.1, 0.94)
+    return p.done(solid=True, top=1.0)
+
+
+def _drain(B, x, y, yaw):
+    """[flat] A steel floor drain grate 0.4 x 0.4 in a frame."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "drain_grate")
+    p.kind = "flat"
+    p.box("CT_Rubber", -0.2, 0.2, -0.2, 0.2, 0.014, 0.018, f="Z")
+    for k in range(5):
+        v = -0.14 + 0.07 * k
+        p.box("CT_Aluminium", -0.19, 0.19, v - 0.012, v + 0.012, 0.018, 0.026)
+    for a, b, c, e in ((-0.21, 0.21, -0.21, -0.19), (-0.21, 0.21, 0.19, 0.21), (-0.21, -0.19, -0.19, 0.19), (0.19, 0.21, -0.19, 0.19)):
+        p.box("CT_Steel", a, b, c, e, 0.014, 0.03)
+    return p.done()
+
+
+def _robe_hooks(B, x, y, yaw):
+    """[wall] A board of five steel hooks at 1.55 m with two bathrobes (white, blue-striped) hanging from the end hooks.
+    (x, y) on the wall, facing the room; 1.3 m wide."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "robe_hooks")
+    p.kind = "wall"
+    p.box("CT_Wood", -0.65, 0.65, -0.03, 0.0, 1.5, 1.62, f="xXyZz")
+    for k in range(5):
+        u = -0.5 + 0.25 * k
+        p.rod("CT_Steel", (u, -0.03, 1.57), (u, -0.1, 1.57), 0.016, 5)
+        p.rod("CT_Steel", (u, -0.1, 1.57), (u, -0.1, 1.62), 0.016, 5)
+    for u, belt in ((-0.5, "CT_PlasterBlue"), (0.25, "CT_PlasterBlue")):
+        p.cushion("CT_TileWhite", u - 0.17, u + 0.17, -0.2, -0.12, 0.58, 1.52, 0.03)
+        p.cushion("CT_TileWhite", u - 0.25, u - 0.17, -0.19, -0.13, 0.7, 1.46, 0.015)
+        p.cushion("CT_TileWhite", u + 0.17, u + 0.25, -0.19, -0.13, 0.7, 1.46, 0.015)
+        p.box(belt, u - 0.175, u + 0.175, -0.205, -0.115, 1.0, 1.05, f="xXyY")
+        p.box(belt, u - 0.175, u + 0.175, -0.205, -0.115, 0.58, 0.62, f="xXyYz")
+    return p.done()
+
+
+def _massage_table(B, x, y, yaw):
+    """A massage table 1.9 x 0.66: steel legs and stretchers, a blue padded top with a face hole at the head (x+) end
+    and a rolled white towel at the foot (x-). Solid."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "massage_table")
+    for sx in (-0.8, 0.8):
+        for sy in (-0.25, 0.25):
+            p.rod("CT_Aluminium", (sx, sy, 0.0), (sx, sy, 0.64), 0.045, 4)
+        p.box("CT_Aluminium", sx - 0.015, sx + 0.015, -0.25, 0.25, 0.12, 0.15)
+    p.box("CT_Aluminium", -0.8, 0.8, -0.015, 0.015, 0.12, 0.15)
+    p.box("CT_Aluminium", -0.9, 0.9, -0.3, 0.3, 0.6, 0.64)
+    p.cushion("CT_PlasterBlue", -0.95, 0.6, -0.33, 0.33, 0.64, 0.75, 0.02)
+    p.cushion("CT_PlasterBlue", 0.6, 0.82, -0.33, -0.1, 0.64, 0.75, 0.02)
+    p.cushion("CT_PlasterBlue", 0.6, 0.82, 0.1, 0.33, 0.64, 0.75, 0.02)
+    p.cushion("CT_PlasterBlue", 0.82, 0.95, -0.33, 0.33, 0.64, 0.75, 0.02)
+    p.box("CT_Rubber", 0.6, 0.82, -0.1, 0.1, 0.62, 0.645, f="Z")
+    p.rod("CT_TileWhite", (-0.8, -0.26, 0.805), (-0.8, 0.26, 0.805), 0.11, 8, caps=True)
+    p.core(-0.93, 0.93, -0.3, 0.3, 0.64, 0.74)
+    return p.done(solid=True, top=0.75, seats=[(0.0, 0.0, 0.75, 0.0)])
+
+
+def _towels(B, x, y, z, yaw):
+    """[prop] A stack of four folded towels (white, blue, white, yellow)."""
+    p = interior_kit._P(B, x, y, z, yaw, "towels")
+    p.kind = "prop"
+    for k, m in enumerate(("CT_TileWhite", "CT_PlasterBlue", "CT_TileWhite", "CT_PlasterYellow")):
+        p.cushion(m, -0.17, 0.17, -0.13, 0.13, 0.07 * k, 0.07 * k + 0.068, 0.008)
+    return p.done(top=0.28)
+
+
+def _bp_cuff(B, x, y, z, yaw):
+    """[prop] A blood-pressure cuff (tonometer): a blue cloth cuff with a white velcro strip and a round gauge on it, a
+    rubber hose to a black bulb standing on the table (0.37 m long)."""
+    p = interior_kit._P(B, x, y, z, yaw, "bp_cuff")
+    p.kind = "prop"
+    p.cushion("CT_PlasterBlue", -0.12, 0.08, -0.05, 0.05, 0.0, 0.07, 0.012)
+    p.box("CT_TileWhite", -0.1, 0.06, -0.045, 0.045, 0.07, 0.073, f="Z")
+    p.cyl("CT_Aluminium", -0.02, 0.0, 0.073, 0.098, 0.035, 8)
+    p.card_top("clock_1", -0.045, 0.005, -0.025, 0.025, 0.0985)
+    p.tube("CT_Rubber", [(0.08, 0.0, 0.03), (0.13, 0.035, 0.012), (0.18, 0.0, 0.012), (0.21, -0.03, 0.02)], 0.014, 5)
+    p.lathe("CT_Rubber", 0.22, -0.04, [(0.01, 0.0), (0.028, 0.015), (0.034, 0.04), (0.027, 0.065), (0.012, 0.085)], 8, top=True)
+    return p.done(top=0.1)
+
+
+def _spirometer(B, x, y, z, yaw):
+    """[prop] A small white spirometer box with a dial on the front, a corrugated tube and a mouthpiece (0.37 m long)."""
+    p = interior_kit._P(B, x, y, z, yaw, "spirometer")
+    p.kind = "prop"
+    p.bev("CT_SteelWhite", -0.11, 0.11, -0.06, 0.06, 0.0, 0.1, 0.01, 0.015)
+    interior_kit._round_dial(p, "clock_1", -0.03, 0.055, 0.035, -0.0615, 10)
+    interior_kit._knob(p, "CT_Rubber", 0.07, 0.055, 0.015, -0.061, -0.07, 6)
+    p.tube("CT_Rubber", [(0.11, 0.0, 0.05), (0.16, -0.02, 0.025), (0.2, 0.02, 0.02), (0.22, 0.04, 0.03)], 0.025, 6)
+    p.rod("CT_TileWhite", (0.22, 0.04, 0.03), (0.26, 0.055, 0.035), 0.035, 6)
+    return p.done(top=0.1)
+
+
+def _film_screen(B, x, y, yaw):
+    """A pull-down film screen on a steel tripod: a white 1.5 x 1.05 sheet hanging from a case at 2.05 m, a weighted bar
+    at 0.95 m; faces yaw. Thin solid mast."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "film_screen")
+    for sx, sy in ((-0.38, 0.28), (0.38, 0.28), (0.0, -0.42)):
+        p.rod("CT_Steel", (0.0, 0.0, 0.9), (sx, sy, 0.0), 0.03, 5)
+    p.rod("CT_Steel", (0.0, 0.0, 0.0), (0.0, 0.0, 2.0), 0.045, 6)
+    p.box("CT_SteelWhite", -0.82, 0.82, -0.07, 0.07, 1.98, 2.1, f="xXyYZz")
+    p.box("CT_Paper", -0.75, 0.75, -0.075, -0.07, 0.98, 1.98, f="y")
+    p.box("CT_Aluminium", -0.77, 0.77, -0.085, -0.06, 0.93, 0.98, f="xXyYzZ")
+    p.core(-0.04, 0.04, -0.04, 0.04, 0.0, 1.95)
+    return p.done(solid=True, top=2.1, pin=(-0.82, 0.82, -0.42, 0.28, 0.0, 2.1))
+
+
+def _proj_trolley(B, x, y, yaw):
+    """A two-shelf steel film trolley 0.55 x 0.38 (wheels, a push bar) with film cans on the lower shelf; the projector
+    stands on the top shelf at 0.8 m. Solid."""
+    p = interior_kit._P(B, x, y, 0.0, yaw, "film_trolley")
+    for sx in (-0.25, 0.25):
+        for sy in (-0.16, 0.16):
+            p.rod("CT_Steel", (sx, sy, 0.06), (sx, sy, 0.8), 0.03, 4)
+            p.cyl("CT_Rubber", sx, sy, 0.0, 0.06, 0.035, 6)
+    for zz in (0.22, 0.78):
+        p.box("CT_Aluminium", -0.28, 0.28, -0.19, 0.19, zz, zz + 0.025)
+    p.rod("CT_Steel", (-0.25, 0.16, 0.8), (-0.25, 0.26, 0.92), 0.025, 4)
+    p.rod("CT_Steel", (0.25, 0.16, 0.8), (0.25, 0.26, 0.92), 0.025, 4)
+    p.rod("CT_Steel", (-0.25, 0.26, 0.92), (0.25, 0.26, 0.92), 0.03, 4)
+    for k, u in enumerate((-0.15, 0.0, 0.15)):
+        p.cyl("CT_Aluminium", u, 0.0, 0.245, 0.305, 0.09, 8, top=True)
+        p.cyl("CT_PlasterRed", u, 0.0, 0.245, 0.255, 0.092, 8, top=False)
+    p.core(-0.26, 0.26, -0.17, 0.17, 0.76, 0.8)
+    return p.done(solid=True, top=0.805)
+
+
+def _wing_polys():
+    outer = [pol(R_P, a) for a in PIERS_W]
+    inner = [pol(R_IN, a) for a in PIERS_W][::-1]
+    return outer, inner, outer + inner
+
+
+def _hydro_wing(B):
+    """The hydrotherapy wing (водолечебница): three bays of 90/7 degrees east of the hall (-45 .. -6.43 deg): bay 7 the
+    inhalation room, bay 8 the hydro room, bay 9 the massage room. Its own annular-sector shell (facade walls with a
+    solid east end, the floor slab, the ceiling, the inner skin), a doorway through the treatment room's east end wall,
+    partitions with doors on the piers, white tile floors and tile bands."""
+    kit = interior_kit
+    m = B.m
+    t = 0.4
+    P = PIERS_W
+    outer, inner, poly = _wing_polys()
+    nh = len(poly)                         # 8: edges 0-2 street chords (bays 7-9), 3 east end, 4-6 courtyard chords (bays 9-7), 7 west end
+    holes = {}
+    for i in range(3):
+        L = math.dist(outer[i], outer[i + 1])
+        holes[i] = [(0.45, L - 0.45, 2.0, 3.7)]                    # high privacy windows
+    for j in range(3):
+        i = 4 + j
+        L = math.dist(poly[i], poly[(i + 1) % nh])
+        holes[i] = [(0.4, L - 0.4, 0.3, 3.8)]                      # like the hall's courtyard side
+    holes[7] = [(DOOR_R0 - R_IN, DOOR_R1 - R_IN, 0.0, DOOR_Z)]    # the doorway toward the treatment room
+    q = inset_poly(poly, t)
+    for i in range(nh):
+        p0, p1 = poly[i], poly[(i + 1) % nh]
+        hl = holes.get(i, [])
+        F = B.facade(p0, p1, 0.0, Z0, "CT_ConcreteWhite", holes=hl, depth=t, back=False)
+        L = F.length
+        if i != 7:
+            for h in hl:
+                B.facade_window(F, h[0], h[1], h[2], h[3], kind="public", cols=2 if i < 4 else 1, rows=1, inset=0.15)
+        Fi = Facade(q[(i + 1) % nh], q[i])
+        Li = Fi.length
+        if i == 7:
+            ih = [_skin_hole(q, 7, P[0], DOOR_R0, DOOR_R1, 0.0, DOOR_Z)]
+        else:
+            ih = [(max(0.0, Li - h[1] * Li / L), min(Li, Li - h[0] * Li / L), h[2], h[3]) for h in hl]
+        mi = Mesh()
+        wall_with_holes(mi, "CT_Interior", Li, 0.0, Z0, ih)
+        m.extend(Fi.apply(mi))
+    prism(m, "CT_Floor", poly, -0.3, 0.0, top=True, bottom=True, side_mat="CT_ConcreteDark")
+    m.face("CT_Interior", [(x, y, CEIL) for x, y in q][::-1])
+    # the doorway's casings (the treatment-room side and the wing side)
+    _door_casing(B, P[0], -1, DOOR_R0, DOOR_R1, DOOR_Z)
+    _door_casing(B, P[0], +1, DOOR_R0, DOOR_R1, DOOR_Z)
+    # tile bands (1.5 m white, a blue border) on the street walls, the east end wall and the west wall (the door cut out)
+    for e in (0, 1, 2, 3, 7):
+        a, b = q[e], q[(e + 1) % nh]
+        gaps = ()
+        if e == 7:                                      # the doorway (casings 0.05 each side) is left bare
+            L7 = math.dist(a, b)
+            ux7, uy7 = (b[0] - a[0]) / L7, (b[1] - a[1]) / L7
+            us = [(pol(r, P[0])[0] - a[0]) * ux7 + (pol(r, P[0])[1] - a[1]) * uy7 for r in (DOOR_R0, DOOR_R1)]
+            gaps = [(min(us) - 0.06, max(us) + 0.06)]
+        _band(B, a, b, 0.0, 1.5, "CT_TileWhite", gaps=gaps)
+        _band(B, a, b, 1.5, 1.58, "CT_Tile", gaps=gaps, off=0.006)
+    f = Furn(B)
+    for e in (4, 5, 6):
+        f.skirting([q[e], q[(e + 1) % nh]], h=0.13)
+    # partitions on the piers (doors at the courtyard end), white tile below
+    _partition(B, P[1], gaps=[(12.8, 13.8, 2.2)])
+    _partition(B, P[2], gaps=[(12.8, 13.8, 2.2)])
+    # floors: one white tile covering, a blue border on the courtyard side
+    _floor_sector(B, "CT_TileWhite", P[0] + 1.3, P[3] - 1.3, 12.45, 17.45, n=12)
+    _floor_sector(B, "CT_Tile", P[0] + 1.3, P[3] - 1.3, 12.45, 12.7, z=0.012, n=12)
+
+    TM = [(P[i] + P[i + 1]) / 2 for i in range(3)]
+    half = math.radians((P[1] - P[0]) / 2)
+    RS = R_P * math.cos(half) - t                      # axial coordinate of the street wall's inner face (chord, 17.49)
+
+    # ============================================================================================ BAY 7: INHALATION ROOM
+    tm = TM[0]
+    for k, s in enumerate((-0.45, 0.55, 1.55)):
+        _inhaler(B, *_at(RS, tm, s), _yin(tm))
+        ch = kit.chair(B, *_at(16.65, tm, s), yaw=_yout(tm), kind="tube", mat="CT_PlasterBlue")
+        seat = ch["seats"][0]
+        B.thing("inhale_%d" % (k + 1), "seat", seat[:3], seat[3], height=0.45)
+        B.spot("inhale_%d" % (k + 1), "seat", seat[:3], seat[3])
+    # the nurse's small table on the west wall (card box), her stool on its east side
+    tb = kit.table(B, *_at(14.55, P[0], 0.4 + 0.05 + 0.25), yaw=P[0], w=0.8, d=0.5, h=0.75, kind="steel", mat="CT_SteelWhite")
+    _card_box(B, *_at(14.55, P[0], 0.7), z=tb["top"], yaw=P[0] + 90)
+    sx_, sy_ = _at(14.55, P[0], 1.4)
+    kit.stool(B, sx_, sy_, 0.0, P[0], mat="CT_PlasterBlue", h=0.45)
+    B.spot("inhale_nurse", "work", (sx_, sy_, 0.0), P[0])
+    # west wall (faces +theta): a health poster; east partition (faces -theta): the big procedure clock
+    kit.poster(B, *_at(15.5, P[0], 0.4), yaw=_ytan(P[0]), name="poster_health", w=0.6, zc=1.8)
+    cx_, cy_ = _at(16.0, P[1], -0.075)
+    kit.wall_clock(B, cx_, cy_, yaw=P[1], zc=2.6, r=0.24)
+    B.things.pop()                       # its kit_clock_<n> (the wing is built first: it must not shift the hall's clock numbers)
+    B.thing("inhale_clock", "board", (cx_, cy_, 2.6), P[1], topic="clock")
+    kit.pendant(B, *_at(15.4, tm, 0.0), CEIL, drop=1.2, kind="opal", light=False)
+
+    # ============================================================================================ BAY 8: HYDRO ROOM
+    tm = TM[1]
+    th_w, th_e = P[1], P[2]
+    # the mud bath on the west partition (couch along the radial, head to the street), a curtain on a ceiling rail
+    mx, my = _at(15.45, th_w, 0.07 + 0.05 + 0.35)
+    _mud_bath(B, mx, my, th_w)
+    B.thing("hydro_mud", "bed", (mx, my, 0.7), th_w, height=0.7)
+    _rail_curtain(B, *_at(14.5, th_w, 0.07 + 0.05 + 0.7 + 0.12), yaw=th_w, length=1.9, drawn=1.0)
+    # the Charcot shower: the bay at the street wall, the guest stands in it facing the nurse's desk 2.6 m away
+    sc = 0.35
+    _charcot_bay(B, *_at(RS, tm, sc), _yin(tm))
+    gx, gy = _at(16.9, tm, sc)
+    B.thing("hydro_charcot", "machine", (gx, gy, 1.0), _yin(tm), what="charcot")
+    B.spot("hydro_charcot", "stand", (gx, gy, 0.0), _yin(tm))
+    _drain(B, *_at(16.9, tm, sc), yaw=tm)
+    _charcot_desk(B, *_at(14.3, tm, sc), yaw=_yout(tm))
+    nx_, ny_ = _at(13.55, tm, sc)
+    B.spot("hydro_nurse", "work", (nx_, ny_, 0.0), _yout(tm))
+    # the robe bench on the east partition (faces -theta), hooks above it, slippers under it
+    bx, by = _at(15.75, th_e, -(0.07 + 0.2 + 0.03))
+    bn = kit.bench(B, bx, by, yaw=th_e, w=1.3, kind="sauna")
+    B.spot("hydro_robes", "seat", bn["seats"][0][:3], th_e)
+    hx, hy = _at(15.75, th_e, -0.075)
+    _robe_hooks(B, hx, hy, th_e)
+    B.thing("hydro_robes", "board", (hx, hy, 1.5), th_e, topic="robes")
+    for dr in (-0.3, 0.3):
+        _slippers(B, *_at(15.75 + dr, th_e, -(0.07 + 0.2 + 0.03)), z=0.012, yaw=th_e)
+    kit.pendant(B, *_at(15.4, tm, 0.35), CEIL, drop=1.2, kind="cone", light=True, lumens=900, radius=8)
+    kit.poster(B, *_at(14.4, th_w, 0.075), yaw=_ytan(th_w), name="chart_anatomy", w=0.6, zc=1.9)
+
+    # ============================================================================================ BAY 9: MASSAGE ROOM
+    tm = TM[2]
+    th_w, th_e = P[2], P[3]
+    mt = _massage_table(B, *_at(15.45, tm, -0.15), yaw=tm)
+    B.thing("massage_table", "bed", (mt["pos"][0], mt["pos"][1], 0.75), tm, height=0.75)
+    sx_, sy_ = _at(15.0, tm, 0.7)
+    kit.stool(B, sx_, sy_, 0.0, tm, mat="CT_PlasterBlue", h=0.5)
+    B.spot("massage_masseur", "work", (sx_, sy_, 0.0), tm)
+    # the shelf on the solid east end wall (faces -theta): towels, oils, the radio
+    shx, shy = _at(15.2, th_e, -0.4)
+    sh = kit.wall_shelf(B, shx, shy, yaw=th_e, w=1.5, zt=1.5, props=False)
+    _towels(B, *_at(14.65, th_e, -0.4 - 0.11), z=1.5, yaw=th_e)
+    kit.bottles(B, *_at(15.8, th_e, -0.4 - 0.11), z=1.5, yaw=th_e, n=3, seed=9)
+    rx, ry = _at(15.2, th_e, -0.4 - 0.11)
+    kit.radio(B, rx, ry, 1.5, yaw=th_e)
+    bx_, by_ = _at(15.8, th_e, -0.4 - 0.11)
+    B.thing("massage_shelf", "shelf", (bx_, by_, 1.55), th_e, topic="oils")
+    B.thing("massage_radio", "machine", (rx, ry, 1.65), th_e, what="radio")
+    kit.screen_divider(B, *_at(15.4, tm, -1.1), yaw=tm, mat="fabric_2")
+    kit.plant(B, *_at(13.0, tm, 0.65), kind="ficus", pot="CT_TileWhite", h=1.4, seed=21)
+    kit.pendant(B, *_at(15.4, tm, -0.15), CEIL, drop=1.2, kind="opal", light=True, lumens=800, radius=7)
+    kit.poster(B, *_at(RS, tm, 0.9), yaw=_yin(tm), name="poster_sun_1", w=0.55, zc=1.9)
+
+
 def build(B):
     rnd = random.Random(1984)
     m = B.m
@@ -1077,7 +1542,7 @@ def build(B):
             m.face("CT_Tile", [(ax, ay, 0), (bx, by, 0), (bx, by, Z0), (ax, ay, Z0)])
             (ax, ay), (bx, by) = inner[i + 1], inner[i]
             m.face("CT_Concrete", [(ax, ay, 0), (bx, by, 0), (bx, by, Z0), (ax, ay, Z0)])
-    sector(-45.0, 225.0, 36)
+    sector(WING_END, 225.0, 31)                 # the solid podium starts after the hydrotherapy wing
     # ground hall, sector -135..-45
     ang = [-135.0 + 90.0 * i / 7 for i in range(8)]
     outer = [pol(R_P, t) for t in ang]
@@ -1089,6 +1554,7 @@ def build(B):
     for i in range(7):
         L = math.dist(outer[i], outer[i + 1])
         holes[i] = [(1.1, 3.1, 0.0, 2.6)] if i == 3 else [(0.45, L - 0.45, 0.5, 3.7)]
+    holes[7] = [(R_P - DOOR_R1, R_P - DOOR_R0, 0.0, DOOR_Z)]      # east end wall: the doorway into the wing (a radial wall)
     for j in range(7):
         i = 8 + j
         L = math.dist(hall[i], hall[(i + 1) % nh])
@@ -1100,13 +1566,15 @@ def build(B):
         F = B.facade(p0, p1, 0.0, Z0, "CT_ConcreteWhite", holes=hl, depth=t, back=False)
         L = F.length
         for hi, h in enumerate(hl):
-            if i == 3:
+            if i in (3, 7):
                 continue
             B.facade_window(F, h[0], h[1], h[2], h[3], kind="public", cols=2 if i < 8 else 1, rows=1, inset=0.15)
         # inner skin
         Fi = Facade(q[(i + 1) % nh], q[i])
         Li = Fi.length
         ih = [(max(0.0, Li - h[1] * Li / L), min(Li, Li - h[0] * Li / L), h[2], h[3]) for h in hl]
+        if i == 7:
+            ih = [_skin_hole(q, 7, PIERS_W[0], DOOR_R0, DOOR_R1, 0.0, DOOR_Z)]
         mi = Mesh()
         wall_with_holes(mi, "CT_Interior", Li, 0.0, Z0, ih)
         m.extend(Fi.apply(mi))
@@ -1114,6 +1582,7 @@ def build(B):
     m.face("CT_Interior", [(x, y, Z0 - 0.01) for x, y in q][::-1])
     ex, ey = pol(R_P, -90.0)
     B.entrance("main", (ex, ey, 0.0), 0.0, width=2.4, height=2.6, leaves=2, kind="street")
+    _hydro_wing(B)                              # before the hall's furnishing: its kit.check covers the wing too
     _furnish_hall(B, hall, t)
     _dress(B)
     # ------------------------------------------------------------------ struts under some balcony tips
@@ -1139,4 +1608,5 @@ def build(B):
         box(m, "CT_ConcreteWhite", x - 1.2, x + 1.2, y - 1.2, y + 1.2, ZT, ZT + 2.2)
     B.footprint = ring(CX, CY, R_TIP, 48)
     B.height = ZT + 2.2
-    B.note("120 flats (5 storeys x 24 bays); hall sector -135..-45 deg enterable; entrance at (0, 8)")
+    B.note("120 flats (5 storeys x 24 bays); hall sector -135..-45 deg enterable + the hydrotherapy wing -45..-6.43 deg "
+           "(inhalation room, hydro room, massage room; doorway from the treatment room); entrance at (0, 8)")
