@@ -63,7 +63,7 @@
     {"id": "san_depart", "places": ["guest_platform"], "slots": ["stand"], "pose": "stand", "minutes": [30, 30], "meets": {"social": 0.2}, "free": 0, "rain": "ok"},
     {"id": "stay_gone", "places": ["guest_platform"], "slots": ["stand"], "pose": "hidden", "minutes": [60, 60], "free": 0, "away": 1},
     {"id": "san_promenade", "places": ["promenade", "pier"], "pose": "walk", "minutes": [35, 70], "hours": [14.4, 16.6], "daylight": 1, "temp": [-5, 40], "meets": {"nature": 0.9, "sun": 0.5, "social": 0.2}, "costs": {"hunger": 0.04, "tired": 0.03}, "base": -2.0, "trait": "nature", "wander": 1, "wander_m": [10, 120], "wander_pause": [40, 120]},
-    {"id": "san_postcards", "places": ["kiosk"], "slots": ["visit"], "pose": "stand", "minutes": [6, 12], "hours": [10.5, 13.0], "meets": {"social": 0.5, "fun": 0.3}, "base": -2.0, "trait": "social"},
+    {"id": "san_postcards", "places": ["kiosk"], "slots": ["visit"], "pose": "stand", "minutes": [6, 12], "hours": [12.2, 13.1], "days": [1, 4, 6], "meets": {"social": 0.5, "fun": 0.3}, "base": -2.0, "trait": "social"},
     {"id": "work_fair", "places": ["fair_stall"], "slots": ["staff"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.35, "hunger": 0.2}, "free": 0, "staff": 1},
     {"id": "work_office", "places": ["school", "clinic", "office"], "slots": ["staff"], "pose": "sit", "minutes": [60, 60], "meets": {"social": 0.3, "mind": 0.25, "hunger": 0.2}, "free": 0, "staff": 1, "holiday": "off"},
     {"id": "school_town", "places": ["school"], "slots": ["staff"], "pose": "sit", "minutes": [60, 60], "meets": {"social": 0.5, "mind": 0.4, "hunger": 0.3}, "free": 0, "staff": 1, "holiday": "off"},

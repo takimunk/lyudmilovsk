@@ -41141,7 +41141,7 @@
     "san_cure": 0.9,
     "read_paper": 0.6,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -41277,7 +41277,7 @@
     "swim_look": 0.6,
     "cinema_evening": 0.8,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -41414,7 +41414,7 @@
     "dominoes": 1.1,
     "san_cure": 0.6,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -41551,7 +41551,7 @@
     "dominoes": 1.1,
     "san_cure": 0.6,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -41688,7 +41688,7 @@
     "cinema_day": 0.6,
     "sea_air": 0.6,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -41825,7 +41825,7 @@
     "read_paper": 0.5,
     "cinema_evening": 0.5,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -41962,7 +41962,7 @@
     "sit_bench": 0.7,
     "read_paper": 0.7,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -42099,7 +42099,7 @@
     "stroll": 0.7,
     "cinema_evening": 0.6,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -42236,7 +42236,7 @@
     "read_paper": 0.8,
     "sea_air": 0.7,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -42373,7 +42373,7 @@
     "play_club": 0.6,
     "sea_air": 0.8,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -42510,7 +42510,7 @@
     "shop_town": 0.6,
     "cinema_day": 0.7,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   },
   {
@@ -42647,7 +42647,7 @@
     "cinema_day": 0.9,
     "read_library": 0.4,
     "san_promenade": 4.2,
-    "san_postcards": 3.8
+    "san_postcards": 3.4
    }
   }
  ]

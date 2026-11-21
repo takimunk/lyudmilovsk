@@ -58,7 +58,7 @@ EXTRA_LINES = [
     '    {"id": "stay_gone", "places": ["guest_platform"], "slots": ["stand"], "pose": "hidden", "minutes": [60, 60], "free": 0, "away": 1},',
     '    {"id": "san_promenade", "places": ["promenade", "pier"], "pose": "walk", "minutes": [35, 70], "hours": [14.4, 16.6], "daylight": 1, "temp": [-5, 40], '
     '"meets": {"nature": 0.9, "sun": 0.5, "social": 0.2}, "costs": {"hunger": 0.04, "tired": 0.03}, "base": -2.0, "trait": "nature", "wander": 1, "wander_m": [10, 120], "wander_pause": [40, 120]},',
-    '    {"id": "san_postcards", "places": ["kiosk"], "slots": ["visit"], "pose": "stand", "minutes": [6, 12], "hours": [10.5, 13.0], '
+    '    {"id": "san_postcards", "places": ["kiosk"], "slots": ["visit"], "pose": "stand", "minutes": [6, 12], "hours": [12.2, 13.1], "days": [1, 4, 6], '
     '"meets": {"social": 0.5, "fun": 0.3}, "base": -2.0, "trait": "social"},',
 ]
 EXTRA_IDS = ("san_arrive", "san_depart", "stay_gone", "san_promenade", "san_postcards")
@@ -81,7 +81,7 @@ PLATFORM_ID = "S-RAIL-GUESTS"
 PLATFORM_KIND = "guest_platform"
 PEOPLE_PLACES = os.path.join(CONTENT, "PeopleData", "people_places.json")
 
-OUT = {"san_promenade": 4.2, "san_postcards": 3.8}      # the regime's outings: every guest
+OUT = {"san_promenade": 4.2, "san_postcards": 3.4}      # the regime's outings: every guest
 
 
 def G(key, pair, seat, table, mesh, age, female, wake, bed, speed, friend, temper, likes, name, town):

@@ -1857,9 +1857,15 @@ namespace LyudPeople
 			}
 		}
 		FPlace& Flat = Places[F];
+		// guests on a stay have a room one after another: two such households in it is in order
+		bool bStay = false;
+		for (const FPerson& P : People)
+		{
+			bStay |= P.Household == Household && P.StayCycle > 0;
+		}
 		for (const int Id : Flat.Residents)
 		{
-			if (People[Id].Household != Household)
+			if (People[Id].Household != Household && !(bStay && People[Id].StayCycle > 0))
 			{
 				return false;       // somebody else's
 			}

@@ -88,7 +88,7 @@ breakfast 8:30, lunch 13:30, supper 18:30, 45 minutes) at the walked place `P-SA
 door, one slot a chair tagged `guest_seat_1a|1b|2a|2b` (the city things `dining_table_1`, `dining_1_c`,
 `dining_table_2`, `dining_2_c`: the acts `san_seat_<name>`), the duty's role the chair of their table. The regime's
 outings are two activities only the guests like enough to do: `san_promenade` (the promenade and the pier after lunch,
-14:25 to 16:35, by day and not in the rain) and `san_postcards` (a kiosk before lunch). They take the waters
+14:25 to 16:35, by day and not in the rain) and `san_postcards` (a kiosk before lunch on Tuesdays, Fridays and Sundays). They take the waters
 (`san_cure`), play dominoes, and the rest of the day are free like anybody. A slot with `"thing"` holds that city thing
 while somebody sits or sits down there (`UPeopleLifeSubsystem::UpdateThingHolds`, once a second,
 `ULyudCityThings::ClaimThing` / `ReleaseThing`): the hero gets "taken" instead of sitting on a guest.
