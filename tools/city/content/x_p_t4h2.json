@@ -420,6 +420,7 @@
   },
   "rcb_telescope": {
    "prompt": "city.rcb.telescope.prompt",
+   "screen": "scope",
    "lines": [
     {
      "k": "city.rcb.telescope.1",

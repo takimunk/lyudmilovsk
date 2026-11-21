@@ -120,7 +120,7 @@ citysim + questsim tests of each job, quest audit clean.
 
 ## 5. Telescopes that show the sky
 
-`[ ]` **Brief (Fable 5.2):** Today the telescopes (the café «Тарелка»'s gallery, the lighthouse gallery, the Santos
+`[~] «Сделать телескопы с настоящим небом» 2026-11-20 (branch `telescopes`, docs/telescopes.md)` **Brief (Fable 5.2):** Today the telescopes (the café «Тарелка»'s gallery, the lighthouse gallery, the Santos
 family's loft, `home_santos`) are a line of text. Make looking through one a view: a round eyepiece view with a slow
 manual aim (mouse, inertia), focus, magnification steps, the real sky of the game (`ALyudSky`, the sun motif, the moon
 phase from the festival calendar's Meeus code, the planets the sky already places, the rare sky: aurora, noctilucent
@@ -584,7 +584,7 @@ Mac shots of each interaction, bench.
 
 ## 40. The Aton station as the club's front door
 
-`[ ]` **Brief (Opus 5.5):** The Aton station is the first hall the hero sees and stands next to the club
+`[x]` aton-front-door 2026-11-21 (docs/front_door.md; Mac compile, shots and bench owed) **Brief (Opus 5.5):** The Aton station is the first hall the hero sees and stands next to the club
 (`docs/transport.md`: the swept wing, its coffee bar with `coffee` goods; `stations-v3` dresses the halls). Make it the
 club's front door: the coffee bar served by its barista through item 27's counter service (a line in the morning, the
 cup set on the counter, the regulars' "the usual"), a departures board that shows the real next cabins of the Sun line
@@ -637,7 +637,7 @@ unchanged), habitats regenerated after rebase, the sound points as data.
 
 ## 44. Signature behaviours of each bird species
 
-`[ ]` **Brief (Fable 5.2):** Birds feed, rest, bathe and roost by species (`docs/bird_life.md` "Daily routines"), but they
+`[~] bird flight thread 2026-11-21: model, 63 habits, tests, book lines, stamps in (docs/bird_habits.md); own clips, sketches, page shot, bench on the Mac owed` **Brief (Fable 5.2):** Birds feed, rest, bathe and roost by species (`docs/bird_life.md` "Daily routines"), but they
 do it alike. Give each of the 39 species one or two things it alone does, that a patient hero with binoculars sees and
 writes in the bird book (`ULyudBirdBook`, `docs/bird_guide.md`): hooded crows dropping a walnut or a shell on the
 promenade's paving from 5 m and walking down to eat it; herring gulls snatching food from a resident's bench and from the
@@ -704,7 +704,7 @@ fills on Thursdays, not on festival days), barksim for the lines, questsim for t
 
 ## 49. The sanatorium's procedures
 
-`[ ]` **Brief (Fable 5.2):** The course at «Корона» (`sanatorium-cure`, `docs/city_interiors.md` "Stays") stamps the
+`[~] san-procedures 2026-11-21 (branch san-procedures, docs/sanatorium_procedures.md; scenes, wing, guests and citysim done; Mac compile, shots of three procedures and bench owed)` **Brief (Fable 5.2):** The course at «Корона» (`sanatorium-cure`, `docs/city_interiors.md` "Stays") stamps the
 hero's book, but the procedures happen as a word and a fade. Make each a short hands-on scene in the room where it
 happens: the pump room (pick a cup, fill it at the brass tap, sip it slowly while the clock ticks; the water's taste line
 changes by spring), the inhalation room (sit, a mask, breathe in time with a slow ring on the screen), the mud bath and
