@@ -1,0 +1,13 @@
+{
+ "_doc": "The rental's beach set: the hire at the key board, the prompts on the sand, the sunbath (ULyudBeachHire).",
+ "city.rental.hire.prompt": {"ru": "E — взять шезлонг с зонтом на день", "en": "E — hire a deck chair and a parasol for the day", "ja": "E：デッキチェアとパラソルを一日借りる"},
+ "city.rental.hire.1": {"ru": "Прокатчик снял с крючка номерок: «Шезлонг и зонт ваши до завтра. Ставьте на пляже где понравится, вечером сам соберу».", "en": "The attendant took a tag off its hook: “The deck chair and the parasol are yours till tomorrow. Set them up on the beach wherever you like, I'll fetch them in the evening.”", "ja": "係の人がフックから番号札を外した。「デッキチェアとパラソルは明日までどうぞ。浜の好きなところに立ててください。夕方に私が片づけます」"},
+ "city.rental.hire.2": {"ru": "Номерок на шнурке, шезлонг под мышкой, зонт на плече. «Только не у самой воды: прилив всё равно выиграет».", "en": "A tag on a string, the deck chair under one arm, the parasol on a shoulder. “Just not right by the water: the tide wins anyway.”", "ja": "ひもつきの番号札、わきにデッキチェア、肩にパラソル。「波打ちぎわだけはやめて。どうせ潮が勝つから」"},
+ "city.rental.set.prompt": {"ru": "E — поставить шезлонг и зонт", "en": "E — set up the deck chair and the parasol", "ja": "E：デッキチェアとパラソルを立てる"},
+ "city.rental.sit.prompt": {"ru": "E — сесть в шезлонг", "en": "E — sit in the deck chair", "ja": "E：デッキチェアに座る"},
+ "city.rental.move.prompt": {"ru": "E — перенести шезлонг и зонт сюда", "en": "E — move the deck chair and the parasol here", "ja": "E：デッキチェアとパラソルをここに移す"},
+ "city.rental.taken_back": {"ru": "Прокатчик собрал шезлонг и зонт", "en": "The attendant has taken the deck chair and the parasol back", "ja": "係の人がデッキチェアとパラソルを片づけた"},
+ "city.rental.sunbath.toast": {"ru": "Хорошо полежал на солнце", "en": "A good while in the sun", "ja": "ゆっくり日なたぼっこした"},
+ "city.rental.sunbath.diary": {"ru": "Взял в прокате шезлонг с зонтом и пролежал на пляже, пока не затекла спина. Солнце здесь близко: кажется, до него можно дотянуться ногой.", "en": "Hired a deck chair and a parasol and lay on the beach until my back went stiff. The sun is close here: it feels as if a foot could reach it.", "ja": "デッキチェアとパラソルを借りて、背中がこわばるまで浜で寝ころんだ。ここは太陽が近い。足をのばせば届きそうだ。"},
+ "dev.action.interiors.beach_set": {"ru": "Интерьеры: шезлонг с зонтом (взять и поставить здесь)", "en": "Interiors: the beach set (hire it and set it up here)", "ja": "インテリア：ビーチセット（借りてここに立てる）"}
+}

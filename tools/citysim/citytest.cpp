@@ -1775,6 +1775,7 @@ static void JobChecks(const std::string& Path)
 
 #include "cupchecks.h"
 #include "rewardchecks.h"
+#include "rentalchecks.h"
 
 // The photo club's contest and the photo quests on the real data (docs/photo.md, tools/city/content/photo.json): the table
 // with the box of prints and the wall of winners hand over to the camera's code ("open"), the lab's board reads the guide and
@@ -1902,6 +1903,7 @@ int main(int Argc, char** Argv)
 	CupChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	RewardChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	PhotoContestChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	RentalChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;
 }

@@ -1,0 +1,8 @@
+{
+ "_doc": "The rental's beach set (docs/city_interiors.md \"The rental's beach set\"): the stay the hire is. The hire itself is the key board's act pu_rental_keys (x_w1_units.json); the set on the sand is ULyudBeachHire.",
+ "stays": {
+  "beach_set": {
+   "plot": "W1-U03"
+  }
+ }
+}
