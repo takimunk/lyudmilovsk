@@ -220,7 +220,10 @@ def build():
         slots.append(OD([("kind", "stand"), ("pos", r2((x + 2.6, y + 1.4, z))), ("yaw", -152.0), ("tag", "watch")]))  # she watches them eat
     place = OD([("id", FEED_PLACE), ("kind", "cat_feeder"), ("pos", list(slots[0]["pos"])), ("yaw", 0.0), ("island", 0), ("slots", slots)])
     # before the other scripts' places (so every script finds the file as it makes it)
-    first = next((i for i, p in enumerate(places) if p["id"] == ANCHOR_PLACE), len(places))
+    import town_activities as TA
+    import town_night as TN
+    later_places = set(TN.PLACE_IDS) | set(TA.PLACE_IDS)
+    first = next((i for i, p in enumerate(places) if p["id"] in later_places), len(places))
     pd["places"] = places[:first] + [place] + places[first:]
     out[PLACES] = dump(pd)
 
@@ -255,8 +258,12 @@ def build():
 
     text = open(ACTIVITIES, encoding="utf-8").read()
     lines = [l for l in text.split("\n") if not any('"id": "%s"' % a in l for a in ACT_IDS)]
-    # before the other scripts' rows
-    at = next(i for i, l in enumerate(lines) if '"id": "%s"' % ANCHOR_ACTIVITY in l)
+    # before town_night.py's and town_activities.py's rows (the post-steps' fixed order: south_people, town_pets, town_night,
+    # town_activities; each before the first block after it, so any order of running them leaves the same file)
+    import town_activities as TA
+    import town_night as TN
+    later = list(TN.ACT_IDS) + list(TA.ACT_IDS)
+    at = next(i for i, l in enumerate(lines) if any('"id": "%s"' % a in l for a in later))
     lines[at:at] = ["    " + r + "," for r in ACTIVITIES_ROWS]
     out[ACTIVITIES] = "\n".join(lines)
     json.loads(out[ACTIVITIES])
