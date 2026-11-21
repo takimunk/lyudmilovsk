@@ -5,6 +5,7 @@ icon per item (tools/garden/data.py ITEMS).
   python3 tools/garden/icons.py            download each grid that isn't in design/garden/ yet (its job_id and output_url
                                            are pinned in the plan), write its sidecar, cut every grid
   python3 tools/garden/icons.py --cut      only cut the grids already in design/garden/
+  python3 tools/garden/icons.py --plan localization/icon_grids_kitchen.json   the same for another plan (docs/kitchen.md)
 
 Writes design/garden/<grid id>.png + .json (service, tool, every argument, job id, output URL, sha256) and
 textures/localized/ru/icon_<item id>.jpg (a cell, a 3 % margin trimmed so no neighbour's edge shows, 512 px). The
@@ -60,8 +61,13 @@ def cut(grid):
 
 
 def main():
-    data = json.load(open(GRIDS, encoding="utf-8"))
-    only_cut = "--cut" in sys.argv[1:]
+    # --plan <file>: another grid plan of the same shape (the kitchen's dishes: localization/icon_grids_kitchen.json)
+    args = sys.argv[1:]
+    plan = GRIDS
+    if "--plan" in args:
+        plan = os.path.join(ROOT, args[args.index("--plan") + 1])
+    data = json.load(open(plan, encoding="utf-8"))
+    only_cut = "--cut" in args
     for grid in data["grids"]:
         have = os.path.exists(os.path.join(ROOT, grid["output"]))
         if not have and not only_cut:

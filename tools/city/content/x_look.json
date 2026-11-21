@@ -1,0 +1,18 @@
+{
+ "_doc": "The hero's look (docs/look.md). The barber's chair (activities.json: haircut), the department store's rail and fitting room (x_p_store.json: ps_clothes, ps_fitting_room) open ULyudLook's pages (\"open\": barber | clothes | fitting). The collection \"looks\": its stamps come from ULyudLook. Words: strings/look.json.",
+ "collections": {
+  "looks": {
+   "title": "city.coll.looks.title",
+   "by": "ULyudLook (Private/Look/LyudLook.cpp): a haircut had, a thing worn, not found in town",
+   "pieces": [
+    "crop",
+    "short",
+    "parted",
+    "wind_jacket",
+    "raincoat",
+    "winter_coat",
+    "cap"
+   ]
+  }
+ }
+}

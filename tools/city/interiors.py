@@ -83,6 +83,8 @@ WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
             "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments")
 # the staff talk (docs/city_interiors.md "Staff talk"): a topic's fields besides its line conditions (when it is offered)
+# the hero's look (ULyudLook, docs/look.md): the barber's chair, the clothes rail and the fitting room open its pages
+OPEN_SCREENS += ("barber", "clothes", "fitting")
 TOPIC_FIELDS = ("id", "k", "lines", "once", "gives")
 MAX_TOPICS = 8
 # room tones (docs/city_interiors.md "Room tones")
