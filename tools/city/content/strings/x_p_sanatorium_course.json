@@ -3,11 +3,11 @@
  "city.san.voucher.prompt": {
   "ru": "E — взять путёвку на 3 дня",
   "en": "E — take a three-day voucher",
-  "ja": "E：三日間の療養券を買う"
+  "ja": "E：三日間の療養券をもらう"
  },
  "city.san.voucher.1": {
   "ru": "Дежурная достаёт бланк путёвки, вписывает мою фамилию и ставит штамп «Корона». «Три дня. Курортная книжка в процедурной, в картотеке на букву вашей фамилии. Режим на доске у входа. Отбой в двадцать три, без исключений».",
-  "en": "The attendant takes out a voucher form, writes in my name and stamps it «Korona». \"Three days. Your health-resort book is in the treatment room, filed under your surname. The regime is on the board by the entrance. Lights out at eleven, no exceptions.\"",
+  "en": "The attendant takes out a voucher form, writes in my name and stamps it \"Korona\". \"Three days. Your health-resort book is in the treatment room, filed under your surname. The regime is on the board by the entrance. Lights out at eleven, no exceptions.\"",
   "ja": "受付の人が療養券の用紙を出して僕の名前を書き、「コロナ」の判を押した。「三日間です。療養手帳は処置室のカード棚、名字の頭文字のところ。日課は入口の掲示板。消灯は二十三時、例外なし」"
  },
  "city.san.voucher.2": {
@@ -57,22 +57,22 @@
  },
  "city.san.regime.my.1": {
   "ru": "Мой день по путёвке. 7:00–9:00 — зарядка на паркете с инструктором, 8:00 — первый стакан, источник «Корона-1», натощак. 8:30 — завтрак, мой стол у окна.",
-  "en": "My day on the voucher. 7:00–9:00 exercises on the parquet with the instructor; 8:00 the first glass, the «Korona-1» spring, before breakfast. 8:30 breakfast, my table by the window.",
+  "en": "My day on the voucher. 7:00–9:00 exercises on the parquet with the instructor; 8:00 the first glass, the Korona-1 spring, before breakfast. 8:30 breakfast, my table by the window.",
   "ja": "療養券の僕の一日。七時から九時、寄木の床で指導員と体操。八時、一杯目、「コロナ一号」泉、空腹で。八時半、朝食、窓ぎわの僕の席。"
  },
  "city.san.regime.my.2": {
   "ru": "Мой день по путёвке. С 9 — кварц у врача (по будням), с 10 — кислородный коктейль, потом терренкур: схема маршрутов висит в процедурной. 13:00 — второй стакан, «Янтарная».",
-  "en": "My day on the voucher. From 9 the quartz lamp at the doctor's (weekdays), from 10 the oxygen cocktail, then the health path: the route map hangs in the treatment room. 13:00 the second glass, «Yantarnaya».",
+  "en": "My day on the voucher. From 9 the quartz lamp at the doctor's (weekdays), from 10 the oxygen cocktail, then the health path: the route map hangs in the treatment room. 13:00 the second glass, Yantarnaya.",
   "ja": "療養券の僕の一日。九時から先生のところで石英灯（平日）、十時から酸素カクテル、それから療養遊歩道。地図は処置室に貼ってある。十三時、二杯目、「ヤンタルナヤ」。"
  },
  "city.san.regime.my.3": {
   "ru": "Мой день по путёвке. 13:00 — второй стакан, «Янтарная», и обед. 14:00–16:00 — тихий час на кушетке в процедурной. Строго лёжа. Слово «лёжа» обведено.",
-  "en": "My day on the voucher. 13:00 the second glass, «Yantarnaya», and lunch. 14:00–16:00 quiet hour on the couch in the treatment room. Strictly lying down. The word \"lying\" is circled.",
+  "en": "My day on the voucher. 13:00 the second glass, Yantarnaya, and lunch. 14:00–16:00 quiet hour on the couch in the treatment room. Strictly lying down. The word \"lying\" is circled.",
   "ja": "療養券の僕の一日。十三時、二杯目「ヤンタルナヤ」、そして昼食。十四時から十六時、処置室の寝台で安静時間。必ず横になって。「横になって」に丸がついている。"
  },
  "city.san.regime.my.4": {
   "ru": "Мой день по путёвке. 16:00 — полдник, свободное время, процедуры, которые не успел. 18:00 — третий стакан, «Маячная», мягкая. Не перепутать с «Янтарной»: врач проверит по лицу.",
-  "en": "My day on the voucher. 16:00 afternoon snack, free time, any treatment I missed. 18:00 the third glass, «Mayachnaya», the soft one. Don't mix it up with «Yantarnaya»: the doctor will check by my face.",
+  "en": "My day on the voucher. 16:00 afternoon snack, free time, any treatment I missed. 18:00 the third glass, Mayachnaya, the soft one. Don't mix it up with Yantarnaya: the doctor will check by my face.",
   "ja": "療養券の僕の一日。十六時、おやつ、自由時間、やり残した処置。十八時、三杯目、やわらかい「マヤーチナヤ」。「ヤンタルナヤ」と間違えないこと。先生は顔で見抜く。"
  },
  "city.san.regime.my.5": {
@@ -92,17 +92,17 @@
  },
  "city.san.water.8": {
   "ru": "Восемь утра, источник «Корона-1». Вода холодная, солёная, с йодом, будто глотнул моря без волны. Дежурная по бювету ставит в книжке синюю каплю: «Натощак, молодец».",
-  "en": "Eight in the morning, the «Korona-1» spring. The water is cold and salty with iodine, as if I had swallowed the sea without a wave. The pump-room attendant puts a blue drop in my book: \"Before breakfast, good lad.\"",
+  "en": "Eight in the morning, the Korona-1 spring. The water is cold and salty with iodine, as if I had swallowed the sea without a wave. The pump-room attendant puts a blue drop in my book: \"Before breakfast, good lad.\"",
   "ja": "朝八時、「コロナ一号」泉。冷たくて塩からく、ヨードの味。波のない海をひと口飲んだみたいだ。飲泉所の係が手帳に青いしずくを押した。「空腹で、えらいね」"
  },
  "city.san.water.13": {
   "ru": "Час дня, источник «Янтарная». Вода тёплая и отдаёт железом, как ключ, который долго держали в руке. В книжке появляется жёлтая капля.",
-  "en": "One in the afternoon, the «Yantarnaya» spring. The water is warm and tastes of iron, like a key held in the hand for a long time. A yellow drop appears in my book.",
+  "en": "One in the afternoon, the Yantarnaya spring. The water is warm and tastes of iron, like a key held in the hand for a long time. A yellow drop appears in my book.",
   "ja": "午後一時、「ヤンタルナヤ」泉。温かくて鉄の味がする。長く手に握っていた鍵みたいだ。手帳に黄色いしずくが増えた。"
  },
  "city.san.water.18": {
   "ru": "Шесть вечера, источник «Маячная». Самая мягкая: почти без вкуса, только чуть горчит в конце, как вечер после долгого дня. Зелёная капля в книжку.",
-  "en": "Six in the evening, the «Mayachnaya» spring. The softest one: almost no taste, just a little bitter at the end, like an evening after a long day. A green drop in my book.",
+  "en": "Six in the evening, the Mayachnaya spring. The softest one: almost no taste, just a little bitter at the end, like an evening after a long day. A green drop in my book.",
   "ja": "夕方六時、「マヤーチナヤ」泉。いちばんやわらかい。ほとんど味がなく、最後に少しだけ苦い。長い一日のあとの夕方みたいだ。手帳に緑のしずく。"
  },
  "city.san.water.early": {
@@ -112,12 +112,12 @@
  },
  "city.san.water.late1": {
   "ru": "Между завтраком и обедом. «Корона-1» уже выпита, «Янтарная» ещё рано. Набираю воды в бутылку, а в книжку — ничего. Врач любит точность.",
-  "en": "Between breakfast and lunch. «Korona-1» is behind me, «Yantarnaya» is still too early. I fill a bottle, but nothing goes into the book. The doctor likes precision.",
+  "en": "Between breakfast and lunch. Korona-1 is behind me, Yantarnaya is still too early. I fill a bottle, but nothing goes into the book. The doctor likes precision.",
   "ja": "朝食と昼食のあいだ。「コロナ一号」はもう飲んだし、「ヤンタルナヤ」にはまだ早い。瓶に水をくむけど、手帳には何もなし。先生は正確さが好きだ。"
  },
  "city.san.water.late2": {
   "ru": "Тихий час или полдник: между «Янтарной» и «Маячной». Пью просто воду, без назначения. Кружка с носиком всё равно приятно холодит ладонь.",
-  "en": "Quiet hour or afternoon snack: between «Yantarnaya» and «Mayachnaya». I drink plain water, not on prescription. The spouted mug still feels pleasantly cool in my palm.",
+  "en": "Quiet hour or afternoon snack: between Yantarnaya and Mayachnaya. I drink plain water, not on prescription. The spouted mug still feels pleasantly cool in my palm.",
   "ja": "安静時間かおやつの頃。「ヤンタルナヤ」と「マヤーチナヤ」のあいだ。処方なしでただの水を飲む。注ぎ口つきのマグはそれでも手のひらにひんやり気持ちいい。"
  },
  "city.san.ex.course.1": {
@@ -263,37 +263,37 @@
  "city.san.cbook.p1.on": {
   "ru": "«Санаторий «Корона». Курортная книжка. Отдыхающий: корпус 1, кушетка в процедурной. Путёвка действует». Ниже от руки: «Режим соблюдать. Воду пить по часам».",
   "en": "\"Korona Sanatorium. Health-resort book. Guest: Block 1, the couch in the treatment room. Voucher valid.\" Below, by hand: \"Keep the regime. Drink the water by the clock.\"",
-  "ja": "「療養所コロナ。療養手帳。療養者：第一棟、処置室の寝台。療養券有効」。下に手書きで「日課を守ること。水は時間どおりに」"
+  "ja": "「療養所『コロナ』。療養手帳。療養者：第一棟、処置室の寝台。療養券有効」。下に手書きで「日課を守ること。水は時間どおりに」"
  },
  "city.san.cbook.p1.off": {
   "ru": "«Санаторий «Корона». Курортная книжка». Путёвки сейчас нет: книжка ждёт в картотеке. «Путёвки — в окошке гардероба, на 3 дня, с продлением до недели».",
   "en": "\"Korona Sanatorium. Health-resort book.\" No voucher just now: the book waits in the card index. \"Vouchers at the cloakroom window, for 3 days, extendable to a week.\"",
-  "ja": "「療養所コロナ。療養手帳」。今は療養券がない。手帳はカード棚で待っている。「療養券はクロークの窓口で。三日間、一週間まで延長可」"
+  "ja": "「療養所『コロナ』。療養手帳」。今は療養券がない。手帳はカード棚で待っている。「療養券はクロークの窓口で。三日間、一週間まで延長可」"
  },
  "city.san.cbook.p2": {
   "ru": "Назначения врача: вода «Корона-1» в 8, «Янтарная» в 13, «Маячная» в 18; утренняя зарядка; кварц; кислородный коктейль; терренкур; тихий час лёжа с 14 до 16; вечер в вестибюле. Девять клеток.",
-  "en": "The doctor's prescriptions: «Korona-1» water at 8, «Yantarnaya» at 13, «Mayachnaya» at 18; morning exercises; quartz; the oxygen cocktail; the health path; quiet hour lying down from 14 to 16; the evening in the lobby. Nine squares.",
+  "en": "The doctor's prescriptions: Korona-1 water at 8, Yantarnaya at 13, Mayachnaya at 18; morning exercises; quartz; the oxygen cocktail; the health path; quiet hour lying down from 14 to 16; the evening in the lobby. Nine squares.",
   "ja": "先生の処方。水は八時に「コロナ一号」、十三時に「ヤンタルナヤ」、十八時に「マヤーチナヤ」。朝の体操、石英灯、酸素カクテル、療養遊歩道、十四時から十六時まで横になって安静、ロビーの夜会。九つのます目。"
  },
  "city.san.cbook.water_8": {
   "ru": "Клетка: «Корона-1», 8:00 — синяя капля.",
-  "en": "Square: «Korona-1», 8:00, a blue drop.",
+  "en": "Square: Korona-1, 8:00, a blue drop.",
   "ja": "ます目：「コロナ一号」八時、青いしずく。"
  },
  "city.san.cbook.water_13": {
   "ru": "Клетка: «Янтарная», 13:00 — жёлтая капля.",
-  "en": "Square: «Yantarnaya», 13:00, a yellow drop.",
+  "en": "Square: Yantarnaya, 13:00, a yellow drop.",
   "ja": "ます目：「ヤンタルナヤ」十三時、黄色いしずく。"
  },
  "city.san.cbook.water_18": {
   "ru": "Клетка: «Маячная», 18:00 — зелёная капля.",
-  "en": "Square: «Mayachnaya», 18:00, a green drop.",
+  "en": "Square: Mayachnaya, 18:00, a green drop.",
   "ja": "ます目：「マヤーチナヤ」十八時、緑のしずく。"
  },
  "city.san.cbook.exercise": {
   "ru": "Клетка: зарядка — человечек с поднятыми руками и подпись Н. П.",
   "en": "Square: exercises, a little man with raised arms and the initials N. P.",
-  "ja": "ます目：体操。腕を上げた小さな人と、Н・Пのサイン。"
+  "ja": "ます目：体操。腕を上げた小さな人と、ニーナ・パーヴロヴナの頭文字。"
  },
  "city.san.cbook.quartz": {
   "ru": "Клетка: кварц — синий кружок с лучами.",
@@ -328,7 +328,7 @@
  "city.san.coll.course.title": {
   "ru": "Курортная книжка «Короны»",
   "en": "The Korona health-resort book",
-  "ja": "コロナの療養手帳"
+  "ja": "「コロナ」の療養手帳"
  },
  "city.ask.sand.course": {
   "ru": "Что мне назначено по путёвке?",
@@ -347,7 +347,7 @@
  },
  "city.ask.sand.course.3": {
   "ru": "— Больше половины! У «Янтарной» вы, наверное, морщитесь, все морщатся. Это значит, железо работает.",
-  "en": "\"More than half! I expect you wince at «Yantarnaya»; everyone does. It means the iron is working.\"",
+  "en": "\"More than half! I expect you wince at the Yantarnaya; everyone does. It means the iron is working.\"",
   "ja": "「半分以上！「ヤンタルナヤ」では顔をしかめるでしょう、みんなそう。鉄が効いている証拠です」"
  },
  "city.ask.sand.course.4": {
@@ -433,7 +433,7 @@
  "city.san.tg.9": {
   "ru": "Утром оба уезжают одним поездом. На тарелке Громова салфетка-ракета, под ней записка: «Старт разрешаю. П. И.». Соня оставила на стуле канифоль и ноты с пометкой «Для того, кто сядет на моё место. Играть можно в пять».",
   "en": "In the morning both leave on the same train. On Gromov's plate is a napkin rocket, and under it a note: \"Launch authorised. P. I.\" On her chair Sonya has left some rosin and sheet music marked: \"For whoever takes my seat. You may play at five.\"",
-  "ja": "朝、二人は同じ列車で帰った。グロモフさんの皿にはナプキンのロケット、その下にメモ。「発射を許可する。П・И」。ソーニャの椅子には松やにと楽譜が残っていて、「私の席に座る人へ。五時なら弾いていい」と書いてある。"
+  "ja": "朝、二人は同じ列車で帰った。グロモフさんの皿にはナプキンのロケット、その下にメモ。「発射を許可する。P・I」。ソーニャの椅子には松やにと楽譜が残っていて、「私の席に座る人へ。五時なら弾いていい」と書いてある。"
  },
  "city.san.tg.after": {
   "ru": "Стол у окна. Салфетки снова сложены как у всех, домиком, но официантка одну по-прежнему складывает ракетой: «Привыкла». На часах в столовой ровно столько, сколько надо.",
@@ -483,7 +483,7 @@
  "city.san.tf.9": {
   "ru": "Уезжают они вместе, с одним чемоданом на двоих. В шахматном углу расставлена позиция тридцать третьего хода, и записка: «Для следующего заезда. Ничья. Кто предложил — не важно. Б. Т., Н. С.». Ниже другой рукой: «Предложил я».",
   "en": "They leave together, with one suitcase between them. In the chess corner the position after move thirty-three is set up, with a note: \"For the next intake. A draw. Who offered it doesn't matter. B. T., N. S.\" Below, in a different hand: \"I offered it.\"",
-  "ja": "二人はスーツケース一つを二人で持って帰った。チェスコーナーには三十三手目の局面が並べてあり、メモがある。「次の入所者へ。引き分け。どちらが申し出たかは重要でない。Б・Т、Н・С」。その下に別の筆跡で「申し出たのは私だ」"
+  "ja": "二人はスーツケース一つを二人で持って帰った。チェスコーナーには三十三手目の局面が並べてあり、メモがある。「次の入所者へ。引き分け。どちらが申し出たかは重要でない。B・T、N・S」。その下に別の筆跡で「申し出たのは私だ」"
  },
  "city.san.tf.after": {
   "ru": "Соседний стол опустел. Официантка говорит, что без них в столовой слишком тихо, и иногда нарочно роняет ложку. В шахматном углу всё ещё стоит та ничья.",
@@ -523,7 +523,7 @@
  "quest.sanatorium_course.title": {
   "ru": "Курс лечения в «Короне»",
   "en": "A course of cure at the Korona",
-  "ja": "コロナでの療養コース"
+  "ja": "「コロナ」での療養コース"
  },
  "quest.sanatorium_course.desc": {
   "ru": "В санатории можно не просто зайти, а пожить по путёвке: вода по часам, процедуры, тихий час, танцы и отбой в одиннадцать. Говорят, кто пройдёт весь курс, получит от врача диплом.",
@@ -538,7 +538,7 @@
  "quest.sanatorium_course.voucher.obj": {
   "ru": "Взять путёвку в гардеробе",
   "en": "Take a voucher at the cloakroom",
-  "ja": "クロークで療養券を買う"
+  "ja": "クロークで療養券をもらう"
  },
  "quest.sanatorium_course.book.log": {
   "ru": "Курортная книжка лежит в картотеке в процедурной. Там всё, что мне назначено.",
@@ -562,7 +562,7 @@
  },
  "quest.sanatorium_course.water.log": {
   "ru": "Вода по часам: «Корона-1» в восемь, «Янтарная» в час, «Маячная» в шесть. Бювет справа от входа.",
-  "en": "Water by the clock: «Korona-1» at eight, «Yantarnaya» at one, «Mayachnaya» at six. The pump room is to the right of the entrance.",
+  "en": "Water by the clock: Korona-1 at eight, Yantarnaya at one, Mayachnaya at six. The pump room is to the right of the entrance.",
   "ja": "水は時間どおりに。八時に「コロナ一号」、一時に「ヤンタルナヤ」、六時に「マヤーチナヤ」。飲泉所は入口の右。"
  },
  "quest.sanatorium_course.pump.obj": {
@@ -612,7 +612,7 @@
  },
  "quest.sanatorium_course.done": {
   "ru": "Выписан с диагнозом «практически здоров». Диплом с короной лежит в кармане и почему-то греет. Наверное, это «Янтарная».",
-  "en": "Discharged with the diagnosis \"practically healthy\". The diploma with the crown sits in my pocket and somehow keeps me warm. «Yantarnaya», probably.",
+  "en": "Discharged with the diagnosis \"practically healthy\". The diploma with the crown sits in my pocket and somehow keeps me warm. Yantarnaya, probably.",
   "ja": "「ほぼ健康」の診断で退所した。王冠の修了証がポケットの中でなぜか温かい。たぶん「ヤンタルナヤ」のせいだ。"
  }
 }

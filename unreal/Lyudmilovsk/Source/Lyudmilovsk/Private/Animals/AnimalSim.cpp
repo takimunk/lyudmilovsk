@@ -40,7 +40,8 @@ namespace LyudAnimals
 		bool Busy(const FAnimal& A)
 		{
 			return A.Act == EAct::Eat || A.Act == EAct::Flee || A.Act == EAct::Climb || A.Act == EAct::Perch || A.Act == EAct::Pounce
-				|| A.Act == EAct::Chase || A.Act == EAct::Hiss || A.Act == EAct::Play || A.Act == EAct::PlayBow || A.Act == EAct::Follow;
+				|| A.Act == EAct::Chase || A.Act == EAct::Hiss || A.Act == EAct::Play || A.Act == EAct::PlayBow || A.Act == EAct::Follow
+				|| A.Friend != EFriend::None;
 		}
 		bool Asleep(const FAnimal& A) { return A.Act == EAct::Sleep; }
 		/** Going somewhere (sniffing without a route is sniffing on the spot). */
@@ -65,7 +66,9 @@ namespace LyudAnimals
 	const char* ActName(EAct A)
 	{
 		static const char* N[] = { "Sleep", "Rest", "Sit", "Groom", "Stand", "Walk", "Trot", "Run", "Sniff", "Eat", "Watch", "Approach",
-			"Greet", "Beg", "Rub", "PlayBow", "Play", "Stalk", "Crouch", "Pounce", "Chase", "Flee", "Climb", "Perch", "Hiss", "Bark", "Follow" };
+			"Greet", "Beg", "Rub", "PlayBow", "Play", "Stalk", "Crouch", "Pounce", "Chase", "Flee", "Climb", "Perch", "Hiss", "Bark", "Follow",
+			"SniffHand", "Petted", "RollOver", "Lap", "Swim" };
+		static_assert(sizeof(N) / sizeof(N[0]) == (size_t)EAct::Num, "ActName");
 		return (int)A < (int)EAct::Num ? N[(int)A] : "?";
 	}
 
@@ -78,7 +81,9 @@ namespace LyudAnimals
 	const char* EventName(EEvent E)
 	{
 		static const char* N[] = { "Notice", "Watch", "Approach", "Flee", "Bark", "Growl", "Whine", "Meow", "Purr", "Hiss", "Pounce",
-			"ChaseStart", "Climb", "Greet", "PlayStart", "BarkHappy" };
+			"ChaseStart", "Climb", "Greet", "PlayStart", "BarkHappy", "HandSniff", "HandRefuse", "Stroked", "Enough", "Roll", "Ate", "Befriended",
+			"WalkStart", "WalkEnd", "WaitDoor", "Rejoin", "LapUp", "LapDown" };
+		static_assert(sizeof(N) / sizeof(N[0]) == (size_t)EEvent::Num, "EventName");
 		return (int)E < (int)EEvent::Num ? N[(int)E] : "?";
 	}
 
@@ -1103,7 +1108,7 @@ namespace LyudAnimals
 	{
 		for (FAnimal& A : Animals)
 		{
-			if (A.Act != EAct::Follow)
+			if (A.Act != EAct::Follow && A.Friend == EFriend::None)
 			{
 				PlaceAtStart(A);
 			}
@@ -1222,6 +1227,7 @@ namespace LyudAnimals
 		A.Excite = Clamp01(A.Excite - Dt / 7.f);
 		A.Cooldown = std::max(0.f, A.Cooldown - Dt);
 		A.BarkTimer = std::max(0.f, A.BarkTimer - Dt);
+		FriendNeeds(A, Dt);
 	}
 
 	// --- choosing what to do ------------------------------------------------------------------------
@@ -2244,9 +2250,9 @@ namespace LyudAnimals
 
 	void FWorld::Perceive(FAnimal& A, float Dt)
 	{
-		if (A.Act == EAct::Climb || A.Act == EAct::Pounce)
+		if (A.Act == EAct::Climb || A.Act == EAct::Pounce || A.Friend != EFriend::None)
 		{
-			return;
+			return;     // busy with the player's hand, or walking with them: FriendThink minds the rest
 		}
 		PerceivePlayer(A, Dt);
 		if (A.Act == EAct::Flee && A.ActTime < 0.05f)
@@ -2269,6 +2275,10 @@ namespace LyudAnimals
 	{
 		UpdateNeeds(A, Dt);
 		Perceive(A, Dt);
+		if (FriendThink(A, Dt))
+		{
+			return;
+		}
 		const bool bCat = IsCat(A);
 
 		switch (A.Act)
@@ -2480,6 +2490,10 @@ namespace LyudAnimals
 		const bool bCat = IsCat(A);
 		A.ActTime += Dt;
 		A.Phase += Dt * (0.4f + A.Speed * (bCat ? 2.2f : 1.4f));
+		if (FriendMove(A, Dt))
+		{
+			return;
+		}
 
 		// climbing: straight up (or down) the trunk
 		if (A.Act == EAct::Climb)
@@ -2934,6 +2948,11 @@ namespace LyudAnimals
 			{
 				A.Tier = 1;
 			}
+			// whoever is with the player (at the hand, at heel, waiting at a door) lives every frame
+			if (A.Friend != EFriend::None && A.Tier > 0)
+			{
+				A.Tier = D < Opt.MidDist ? 0 : 1;
+			}
 			TierCount[A.Tier]++;
 		}
 	}
@@ -2946,6 +2965,7 @@ namespace LyudAnimals
 		UpdateTiers();
 		BuildHash();
 		UpdatePlaces(Dt);
+		FriendStep(Dt);
 		static const double PlacesEvery = 2.0;
 		if (std::floor(Time / PlacesEvery) != std::floor((Time - Dt) / PlacesEvery))
 		{
@@ -3120,9 +3140,9 @@ namespace LyudAnimals
 		}
 		const FAnimal& A = Animals[Id];
 		char B[512];
-		std::snprintf(B, sizeof(B), "%s %d (breed %d coat %d %s%s) %s goal %s at (%.1f %.1f %.1f) v %.2f | hunger %.2f tired %.2f play %.2f lonely %.2f curious %.2f fear %.2f trust %.2f",
+		std::snprintf(B, sizeof(B), "%s %d (breed %d coat %d %s%s) %s goal %s at (%.1f %.1f %.1f) v %.2f | hunger %.2f tired %.2f play %.2f lonely %.2f curious %.2f fear %.2f trust %.2f bond %.2f %s",
 			IsCat(A) ? "cat" : "dog", A.Id, A.Breed, A.Coat, A.bFemale ? "f" : "m", A.bYoung ? " young" : "", ActName(A.Act), GoalName(A.Goal),
-			A.Pos.X, A.Pos.Y, A.Pos.Z, A.Speed, A.Hunger, A.Tired, A.Playful, A.Lonely, A.Curious, A.Fear, A.Trust);
+			A.Pos.X, A.Pos.Y, A.Pos.Z, A.Speed, A.Hunger, A.Tired, A.Playful, A.Lonely, A.Curious, A.Fear, A.Trust, A.Bond, FriendName(A.Friend));
 		return B;
 	}
 }

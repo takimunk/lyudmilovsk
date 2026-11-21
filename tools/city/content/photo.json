@@ -1,0 +1,40 @@
+{
+ "_doc": "The film camera (docs/interactives_backlog.md item 2; engine: Private/Photo/LyudPhoto.cpp). The photo studios' service: handing in an exposed film and collecting the prints (photo_lab, the screen \"photo_lab\", at the studio's own darkroom behind the screen, photographer on shift; the engine takes the money and keeps the films). The hero's own developing is the screen \"photo_darkroom\" on the darkroom acts (activities.json darkroom, x_p_club3.json cog_darkroom). The camera and the films are sold at the studio's desk (counters.json shop photo, stories.json photo_desk). The album's three stamp sets are given by the game's code (\"by\": \"code\", ULyudCityThings::GiveStamp when a film is developed with a sharp frame of the subject): photo_birds = the species ids of Content/BirdsData/species.json, photo_sky = sunset_<weather regime> (ELyudWeatherRegime in snake case) and aurora, photo_life = fest_<festival id of Content/PeopleData/festivals.json>, fish, maru; a new species or festival is added here by hand. The quest city_portrait («Портрет города») is given by the photographer (topic photo.city, talk.json) and hears the event photo <map place> when a developed film has a frame taken there. Strings: strings/photo.json.",
+ "acts": {
+  "photo_lab": {"prompt": "city.photo.lab.prompt", "needs_staff": "photographer", "open": "photo_lab", "sound": "shop_bell", "closed": "city.pu.closed.photo.*"}
+ },
+ "rules": {
+  "promenade_unit/photo_darkroom": {"act": "photo_lab"}
+ },
+ "collections": {
+  "photo_birds": {"title": "city.coll.photo_birds.title", "by": "code", "pieces": [
+   "Rook", "HoodedCrow", "Jackdaw", "Magpie", "FeralPigeon", "WoodPigeon", "HerringGull", "BlackHeadedGull",
+   "CommonGull", "GreatTit", "BlueTit", "Goldfinch", "Chaffinch", "Bullfinch", "HouseSparrow", "TreeSparrow",
+   "Starling", "SongThrush", "Fieldfare", "Blackbird", "Robin", "WhiteWagtail", "Waxwing", "CommonSwift", "BarnSwallow",
+   "SandMartin", "Cormorant", "MuteSwan", "Sparrowhawk", "Peregrine", "WhiteTailedEagle", "GoldenEagle",
+   "CommonBuzzard", "Raven", "GreyHeron", "BlackBrowedAlbatross", "Jay", "Nutcracker", "CarrionCrow"]},
+  "photo_sky": {"title": "city.coll.photo_sky.title", "by": "code", "pieces": [
+   "sunset_high", "sunset_warm_front", "sunset_warm_sector", "sunset_cold_front", "sunset_showery", "sunset_occluded",
+   "sunset_arctic_high", "sunset_thundery_low", "aurora"]},
+  "photo_life": {"title": "city.coll.photo_life.title", "by": "code", "pieces": [
+   "fest_weekend_market", "fest_sea_festival", "fest_lantern_night", "fest_first_snow", "fest_winter_fair",
+   "fest_new_year", "fest_maslenitsa", "fest_bird_day", "fest_blossom", "fest_midsummer", "fest_fisherman_day",
+   "fest_perseids", "fest_harvest_fair", "fest_lunar_new_year", "fest_holi", "fest_nowruz", "fest_children_day",
+   "fest_tanabata", "fest_toro_nagashi", "fest_mid_autumn", "fest_halloween", "fest_dia_de_muertos", "fest_diwali",
+   "fest_loy_krathong", "fest_christmas", "fest_sun_day", "fest_city_day", "fest_kite_day", "fest_cat_day",
+   "fest_book_day", "fest_amber_morning", "fish", "maru"]}
+ },
+ "quests": [
+  {"id": "city_portrait", "kind": "side", "start_on": {"event": "ask", "target": "photo.city"}, "stages": [
+   {"id": "camera", "objectives": [{"id": "have_camera", "event": "have", "target": "camera"}]},
+   {"id": "views", "objectives": [
+    {"id": "view_club", "event": "photo", "target": "club", "place": "club"},
+    {"id": "view_cable", "event": "photo", "target": "cable_upper", "place": "cable_upper"},
+    {"id": "view_academ", "event": "photo", "target": "academ", "place": "academ"},
+    {"id": "view_promenade", "event": "photo", "target": "promenade", "place": "promenade"},
+    {"id": "view_beach", "event": "photo", "target": "beach", "place": "beach"}]},
+   {"id": "show", "objectives": [{"id": "show_prints", "event": "ask", "target": "photo.city.done", "place": "promenade"}],
+    "reward": {"rubles": 60, "items": {"photo_film": 2}}}
+  ]}
+ ]
+}

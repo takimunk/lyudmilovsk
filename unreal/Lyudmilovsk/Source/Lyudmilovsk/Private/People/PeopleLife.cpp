@@ -47,6 +47,7 @@
 #include "HeroCharacter.h"
 #include "Weather/LyudWeather.h"
 #include "Winter/LyudWinter.h"
+#include "Sea/LyudSea.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
@@ -70,6 +71,10 @@
 #include <cmath>
 
 namespace LP = LyudPeople;
+
+// the game's poses are the life's, in the same order (both lists end with Skate, Walrus)
+static_assert((uint8)EPersonPose::Walrus + 1 == (uint8)LP::EPose::Num && (uint8)EPersonPose::Skate == (uint8)LP::EPose::Skate,
+	"EPersonPose (PeopleLife.h) and LyudPeople::EPose (PeopleSim.h) must list the same poses in the same order");
 
 static TAutoConsoleVariable<int32> CVarPeople(TEXT("lyud.People"), 1,
 	TEXT("The people's life (UPeopleLifeSubsystem): 1 on, 0 off (the club's people stay at their stations as placed)."));
@@ -1125,7 +1130,23 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 			Transit = P.Pose == LP::EPose::Sleep ? 4 : 2;
 		}
 		FVector At = Loc;
-		if (!P.bIndoors && Dist < 6000.f)
+		if (P.Pose == LP::EPose::Walrus)
+		{
+			// in the ice hole: the water's surface now (the sea's level with the tide; the slot stands on the sea's datum),
+			// the body stands in it to the shoulders (Drive)
+			if (!SeaActor.IsValid() && --SeaSeek < 0)
+			{
+				SeaSeek = 120;
+				TActorIterator<ALyudSea> It(World);
+				SeaActor = It ? *It : nullptr;
+			}
+			if (SeaActor.IsValid())
+			{
+				At.Z = SeaActor->SeaLevel();
+			}
+		}
+		// (on the rink's ice, in the hole's water: the life's own height, not whatever a trace finds under the ice)
+		else if (!P.bIndoors && P.OffGrid < 0 && Dist < 6000.f)
 		{
 			// exact ground under them near the camera (steps, kerbs); someone standing still on the same spot keeps the last
 			// trace's ground for a little while
@@ -1647,6 +1668,32 @@ void UPeopleLifeSubsystem::SetDayOff(bool bOff)
 	}
 }
 
+void UPeopleLifeSubsystem::SetCondition(FName Name, bool bOn)
+{
+	if (Name.IsNone())
+	{
+		return;
+	}
+	// kept for a life that starts later (and one stopped and started again); sent every few seconds, said only when it changes
+	bool& Was = WantedConditions.FindOrAdd(Name, !bOn);
+	const bool bChanged = Was != bOn;
+	Was = bOn;
+	if (Sim)
+	{
+		Sim->SetCondition(TCHAR_TO_UTF8(*Name.ToString()), bOn);
+	}
+	if (bChanged)
+	{
+		UE_LOG(LogTemp, Display, TEXT("PeopleLife: condition %s %s"), *Name.ToString(), bOn ? TEXT("on") : TEXT("off"));
+	}
+}
+
+bool UPeopleLifeSubsystem::IsCondition(FName Name) const
+{
+	const bool* On = WantedConditions.Find(Name);
+	return On && *On;
+}
+
 void UPeopleLifeSubsystem::SetStayUpUntil(float Hour)
 {
 	// the night's end on the calendar (Hour counts from today's 00:00), for a life that starts before it
@@ -1663,6 +1710,10 @@ void UPeopleLifeSubsystem::ApplyWanted()
 	// what the festivals asked while there was no life (or of the one before): a new life starts with it
 	LP::FWorld& S = *Sim;
 	S.bDayOff = bWantedDayOff;
+	for (const TPair<FName, bool>& Cond : WantedConditions)
+	{
+		S.SetCondition(TCHAR_TO_UTF8(*Cond.Key.ToString()), Cond.Value);
+	}
 	for (const TPair<FName, FWantedGathering>& G : WantedGatherings)
 	{
 		const FWantedGathering& W = G.Value;
@@ -2252,7 +2303,7 @@ bool ANpcBody::DriveManner(EPersonPose Pose, int32 Transit, float Speed)
 	using LyudPeople::EManner;
 	const EManner M = Manner < (uint8)EManner::Num ? (EManner)Manner : EManner::None;
 	const bool bCan = M != EManner::None && Transit == 0 && Pose != EPersonPose::Hidden && Pose != EPersonPose::Sleep && Pose != EPersonPose::Computer
-		&& Pose != EPersonPose::Work && Pose != EPersonPose::Shovel;
+		&& Pose != EPersonPose::Work && Pose != EPersonPose::Shovel && Pose != EPersonPose::Skate && Pose != EPersonPose::Walrus;
 	FLyudGesturePose G;
 	if (bCan)
 	{
@@ -2351,6 +2402,10 @@ void ANpcBody::PlaceMannerProp(bool bShow)
 	}
 	case EHold::Pointing:
 		Rot = FRotationMatrix::MakeFromXZ((Fwd * 0.85f + Up * 0.5f).GetSafeNormal(), Up).Rotator();
+		break;
+	case EHold::Shaft:
+		// a spade: its handle's top in the main hand, the shaft down through the other hand to the blade
+		Rot = FRotationMatrix::MakeFromXZ((At[1 - M] - At[M]).GetSafeNormal(UE_SMALL_NUMBER, (Fwd * 0.5f - Up * 0.85f).GetSafeNormal()), Fwd).Rotator();
 		break;
 	default:
 		break;
@@ -2606,8 +2661,33 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		{
 			At.Z += (SeatHeight > 0.f ? SeatHeight : 47.f) - 47.f * S;
 		}
+		// in the ice hole: Location is the water's surface, and the water comes up to the shoulders
+		if (Pose == EPersonPose::Walrus && Transit == 0)
+		{
+			At.Z -= 125.f * S;
+		}
 		// the model faces +Y at yaw 0
-		SetActorLocationAndRotation(At, FRotator(0.f, Facing - 90.f, 0.f));
+		FQuat Turn = FRotator(0.f, Facing - 90.f, 0.f).Quaternion();
+		// on skates: leaning into the glide (more the faster), the body swinging a little from side to side with each long
+		// stroke (in time with the walk clip's steps, played slowly: Skate below)
+		const float Glide = Pose == EPersonPose::Skate && Transit == 0 ? FMath::Clamp((Speed - 40.f) / 200.f, 0.f, 1.f) : 0.f;
+		SkateLean = FMath::FInterpTo(SkateLean, Glide, DeltaTime, 3.f);
+		if (SkateLean > 0.01f)
+		{
+			float Phase = 0.f;
+			if (const ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Mesh->GetAnimInstance()))
+			{
+				Phase = Anim->CurrentClipPhase();
+			}
+			// (a stroke a step: the walk cycle is two steps, the swing once each way per cycle)
+			const float Swing = FMath::Sin(Phase * 2.f * PI);
+			const FVector Fwd = FRotator(0.f, Facing, 0.f).Vector();
+			const FVector Right = FVector::CrossProduct(FVector::UpVector, Fwd);
+			const FVector Up = (FVector::UpVector + Fwd * FMath::Tan(FMath::DegreesToRadians(14.f * SkateLean))
+				+ Right * FMath::Tan(FMath::DegreesToRadians(3.f * SkateLean * Swing))).GetSafeNormal();
+			Turn = FQuat::FindBetweenNormals(FVector::UpVector, Up) * FRotator(0.f, Facing - 90.f + 6.f * SkateLean * Swing, 0.f).Quaternion();
+		}
+		SetActorLocationAndRotation(At, Turn);
 	}
 	// under the blanket once they lie still; it goes when they get up
 	const bool bAsleep = Pose == EPersonPose::Sleep && Transit == 0;
@@ -2630,8 +2710,9 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		{
 			Anim->SetComputer(NAME_None);
 		}
+		// (not in the ice hole: no ground under the feet there)
 		Anim->SetOnFeet(Transit == 0 && (Pose == EPersonPose::Walk || Pose == EPersonPose::Stand || Pose == EPersonPose::Look
-			|| Pose == EPersonPose::Talk || Pose == EPersonPose::Shovel));
+			|| Pose == EPersonPose::Talk || Pose == EPersonPose::Shovel || Pose == EPersonPose::Skate));
 	}
 	PlacePusher(Transit == 0 && Pose == EPersonPose::Shovel && Clip(TEXT("Push")) != nullptr);
 	const bool bMannerClip = DriveManner(Pose, Transit, Speed);
@@ -2693,6 +2774,27 @@ void ANpcBody::Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32
 		{
 			Play(TEXT("Walk"), true, 0.4f);
 		}
+		break;
+	case EPersonPose::Skate:
+		// TODO(Mac): a real skating clip (a long push and glide on each leg); for now the shared walk, slowly: long strokes,
+		// about a third of the walk's cadence for the speed, with the lean and the side-to-side swing above. Standing on the
+		// ice (a breath at a slot): the idle.
+		if (Speed > 40.f)
+		{
+			if (SharedWalk < 0)
+			{
+				if (const UAnimSequence* W = Clip(TEXT("Walk"))) SharedWalk = W->GetName().StartsWith(TEXT("A_Human")) ? 1 : 0;
+			}
+			Play(TEXT("Walk"), true, FMath::Clamp(Speed / ((SharedWalk == 1 ? 93.f * S : 75.f) * 3.f), 0.3f, 1.6f));
+		}
+		else
+		{
+			PlayVaried(TEXT("Stand"), { TEXT("StandIdle"), TEXT("StandIdle"), TEXT("FoldArms") });
+		}
+		break;
+	case EPersonPose::Walrus:
+		// in the water to the shoulders (Location lowered above): the idle, standing still
+		Play(TEXT("StandIdle"), true);
 		break;
 	case EPersonPose::Eat: Play(TEXT("Eat"), true); break;
 	case EPersonPose::Read: Play(TEXT("Read"), true); break;
@@ -2918,6 +3020,25 @@ static FAutoConsoleCommandWithWorldAndArgs GPeopleOrder(TEXT("lyud.People.Order"
 		{
 			const bool bOk = People->Order(People->FindPerson(Args[0]), Args[1], Args.Num() > 2 ? Args[2] : FString());
 			UE_LOG(LogTemp, Warning, TEXT("People: order %s %s: %s"), *Args[0], *Args[1], bOk ? TEXT("going") : TEXT("can't"));
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GPeopleCondition(TEXT("lyud.People.Condition"),
+	TEXT("lyud.People.Condition [name 0|1]: switches a condition (rink, rink_busy, walrus, banya: docs/people.md \"Winter play\"; the winter sends them again every few seconds), or lists them."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(World);
+		if (!People)
+		{
+			return;
+		}
+		if (Args.Num() >= 2)
+		{
+			People->SetCondition(FName(*Args[0]), FCString::Atoi(*Args[1]) != 0);
+		}
+		for (const TCHAR* Name : { TEXT("rink"), TEXT("rink_busy"), TEXT("walrus"), TEXT("banya") })
+		{
+			UE_LOG(LogTemp, Warning, TEXT("People: condition %s %s"), Name, People->IsCondition(FName(Name)) ? TEXT("on") : TEXT("off"));
 		}
 	}));
 

@@ -1,0 +1,20 @@
+{
+ "name": "snowball_throw_01",
+ "asset": "/Game/Audio/Winter/S_snowball_throw_01",
+ "pool": "snowball_throw",
+ "file": "audio/sfx/winter/snowball_throw_01.wav",
+ "generator": "tools/winter_play/sounds.py",
+ "seed": 2190,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.35,
+ "peak_dbfs": -8.0,
+ "rms_dbfs": -22.99,
+ "params": {
+  "seconds": 0.35
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,6 +1,7 @@
 // The townsfolk's own lines (Private/People/TownBarks.cpp, docs/town_talk.md) run on the town's people outside the engine.
 //   tools/barksim/run.sh              checks: town_barks.txt reads clean, every key has its words in ru/en/ja, every set fits
 //                                     somebody of the town on a day, most people up and about have something to say
+//   tools/barksim/run.sh rumours      the checks, and who hears of a regular beaten, day by day (docs/town_rumours.md)
 //   tools/barksim/run.sh day [lang]   a Wednesday of the town: what is said hour by hour (samples), then how often each set wins
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleSim.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/TownBarks.h"
@@ -131,6 +132,9 @@ static bool HoursFit(const FSet& S, float Hour)
 	return S.Hours.Empty() || S.Hours.Has(Hour, true);
 }
 
+static bool bRumourStory = false;
+#include "rumourchecks.h"
+
 static int Run(bool bDay, const std::string& Lang)
 {
 	FBook Book;
@@ -219,6 +223,7 @@ static int Run(bool bDay, const std::string& Lang)
 		return 1;
 	}
 	W.AssignHomes();
+	RumourChecks(W, Book, bRumourStory);
 	std::vector<std::string> FestIds, Phases;
 	for (const FSet& S : Book.Sets)
 	{
@@ -280,12 +285,13 @@ static int Run(bool bDay, const std::string& Lang)
 				const FSet& S = Book.Sets[I];
 				// (a set that asks for a manner: as if their hands were doing it; what the player is noticed by: anybody may)
 				// (and the friends' moments: anybody may be a friend of his, docs/friends.md)
-				const bool bNotice = S.Kind == EKind::Event && (S.On.compare(0, 5, "hero_") == 0 || S.On.compare(0, 7, "friend_") == 0);
+				const bool bNotice = S.Kind == EKind::Event && (S.On.compare(0, 5, "hero_") == 0 || S.On.compare(0, 7, "friend_") == 0 || S.On == "dog_walk");
 				if (!FitA[I] && S.Kind != EKind::Talk && (S.Kind != EKind::Event || bNotice) && HoursFit(S, H))
 				{
 					Who.Manner = S.A.Manner.Yes.empty() ? std::string() : S.A.Manner.Yes[0];
 					Who.Met = S.A.Met.Yes.empty() ? std::string("new") : S.A.Met.Yes[0];
 					Who.Bond = S.A.Bond.Yes.empty() ? std::string() : S.A.Bond.Yes[0];
+					Who.Heard = S.A.Heard.Yes;
 					Who.Temper = S.A.Temper.Yes;
 					if (Book.MatchWho(S.A, Who))
 					{
@@ -294,6 +300,7 @@ static int Run(bool bDay, const std::string& Lang)
 					Who.Manner.clear();
 					Who.Met = "new";
 					Who.Bond.clear();
+					Who.Heard.clear();
 					Who.Temper.clear();
 				}
 			}
@@ -361,10 +368,16 @@ static int Run(bool bDay, const std::string& Lang)
 				for (size_t I = 0; I < Book.Sets.size(); I++)
 				{
 					const FSet& S = Book.Sets[I];
-					if (S.Kind == EKind::Talk && !FitA[I] && HoursFit(S, H)
-						&& ((Book.MatchWho(S.A, Who) && Book.MatchWho(S.B, Other)) || (Book.MatchWho(S.A, Other) && Book.MatchWho(S.B, Who))))
+					if (S.Kind == EKind::Talk && !FitA[I] && HoursFit(S, H))
 					{
-						FitA[I] = 1;
+						// (a talk about the player's doings: as if either had heard of it, docs/town_rumours.md)
+						Who.Heard = Other.Heard = S.A.Heard.Yes;
+						if ((Book.MatchWho(S.A, Who) && Book.MatchWho(S.B, Other)) || (Book.MatchWho(S.A, Other) && Book.MatchWho(S.B, Who)))
+						{
+							FitA[I] = 1;
+						}
+						Who.Heard.clear();
+						Other.Heard.clear();
 					}
 				}
 				SetNow(W, C, Skies[(SampleI++) % (sizeof(Skies) / sizeof(Skies[0]))], 10, Now);
@@ -475,6 +488,7 @@ static int Run(bool bDay, const std::string& Lang)
 int main(int Argc, char** Argv)
 {
 	const bool bDay = Argc > 1 && std::strcmp(Argv[1], "day") == 0;
+	bRumourStory = Argc > 1 && std::strcmp(Argv[1], "rumours") == 0;
 	const std::string Lang = bDay && Argc > 2 ? Argv[2] : "ru";
 	return Run(bDay, Lang);
 }

@@ -92,6 +92,8 @@ def strings():
     for d in range(7):
         put("film.programme.%s" % DAYS[d], *(title_list(catalog.PROGRAMME[d], l) for l in LANGS))
     put("film.programme.fest", *(title_list(catalog.FESTIVAL, l) for l in LANGS))
+    for fid in sorted(catalog.FESTIVALS):
+        put("film.programme.fest.%s" % fid, *(title_list(catalog.FESTIVALS[fid], l) for l in LANGS))
     for k, v in t.items():
         ph = sorted(re.findall(r"\{\d+\}", v["ru"]))
         for l in LANGS:
@@ -159,7 +161,12 @@ def main():
         plan = json.load(f)
     table = strings()
     fl, ids = films()
-    for d, day in list(catalog.PROGRAMME.items()) + [("fest", catalog.FESTIVAL)]:
+    with open(os.path.join(CONTENT, "PeopleData", "festivals.json"), encoding="utf-8") as f:
+        fest_ids = {x["id"] for x in json.load(f)["festivals"]}
+    for fid in catalog.FESTIVALS:
+        if fid not in fest_ids:
+            err("festival programme %s: no such festival in festivals.json" % fid)
+    for d, day in list(catalog.PROGRAMME.items()) + [("fest", catalog.FESTIVAL)] + [("fest." + k, v) for k, v in sorted(catalog.FESTIVALS.items())]:
         if not day:
             err("programme %s is empty" % d)
         for i in day:
@@ -173,6 +180,7 @@ def main():
         ("films", fl),
         ("programme", [list(catalog.PROGRAMME[d]) for d in range(7)]),
         ("festival", list(catalog.FESTIVAL)),
+        ("festivals", collections.OrderedDict((k, list(catalog.FESTIVALS[k])) for k in sorted(catalog.FESTIVALS))),
         ("cinemas", cinemas(plan)),
     ])
     if ERRORS:

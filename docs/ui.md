@@ -16,6 +16,8 @@ One game screen, the hero's diary (an A4 planner he takes out of his bag: docs/d
 | B | the bird guide (when the hero has it, docs/bird_guide.md); B or Esc shuts it |
 | L | head lamp on and off (when it is worn) |
 | right mouse button, held | binoculars (when they are worn) |
+| V | raises and lowers the film camera (when the hero has one); while it is up: the mouse wheel focuses, the left mouse button takes the picture, R rewinds the film |
+| P | the photo album |
 
 The diary does not pause the game: walking and looking stop and the mouse shows (as the inventory always did). The to-do list and
 the map open as a bird too (no hands: the pages just fade in); the things need the hero. Keys are polled, so nothing else loses a key.
@@ -68,6 +70,7 @@ rewards also give items and roubles. Any system reports events with `ULyudQuests
 | `walk` | | the game screen, once per level start, 2.5 m from where the hero stood (the game starts standing) |
 | `visit` | plot id (`P-LIBRARY`) | `ULyudCityThings`, the first use of anything in a plot each game day |
 | `do` (or an act's own: `read`, `look`, `sit`, `play`...) | the act's target (default the act id) | `ULyudCityThings`, a thing used in a building (docs/city_interiors.md) |
+| `photo` | place id from `Content/UI/map.json` | the film camera (`Private/Photo/LyudPhoto.cpp`), when a film is developed and holds a frame taken at that place |
 
 An objective's event may list alternatives (`leave_computer|walk`). An event that a later stage of an active quest waits for
 finishes the stages before it, so a teleport, a loaded save or steps done out of order never leave a quest on an old step

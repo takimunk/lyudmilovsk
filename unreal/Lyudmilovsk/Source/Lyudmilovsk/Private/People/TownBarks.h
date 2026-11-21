@@ -56,6 +56,7 @@ namespace LyudBarks
 		FValues Job, Sex, Doing, At, Pose, Gather, Chrono, Need;
 		FValues Met;                // how well they know the player: new, seen, known
 		FValues Bond;               // how close a friend of his they are: friendly, friend, close (docs/friends.md)
+		FValues Heard;              // heard_of: a rumour about him they would bring up (docs/town_rumours.md: cup, beat, ...)
 		FValues Manner;             // what their hands are doing (manners.json: smoke, phone_call, umbrella, ...)
 		FValues Temper;             // who they are in manner: warm, reserved, nervy, calm, curious, tidy, careless
 		FValues AgeGroup;           // kid, teen, adult, elder
@@ -71,11 +72,13 @@ namespace LyudBarks
 		bool bFemale = false;
 		std::vector<std::string> Doing;     // the activity's id, and "work" (on a duty at its place) or "free"
 		std::vector<std::string> At;        // where: outdoors or indoors; there: the place's kind, its id, its building's id
-		std::string Pose;                   // stand, walk, talk, look, sit, computer, eat, read, work, shovel
+		std::string Pose;                   // stand, walk, talk, look, sit, computer, eat, read, work, shovel, skate, walrus
 		std::string Gather;                 // the holiday gathering's mode they are at (mingle, watch, sit, fair), "" none
 		std::string Chrono;                 // lark, owl, night, usual
 		std::string Met;                    // new (never greeted him), seen (a few days), known (five days and more); the caller sets it
 		std::string Bond;                   // friendly, friend, close ("" less: docs/friends.md); the caller sets it after FillWho
+		std::vector<std::string> Heard;     // the kinds of the rumours about him they would bring up now (docs/town_rumours.md);
+		                                    // the caller sets it after FillWho, empty while they have nothing to say of him
 		std::string Manner;                 // their manner now (PeopleManners.h), "" none or not drawn; the caller sets it after FillWho
 		std::vector<std::string> Needs;     // the needs over 0.75: hunger, tired, social, fun, nature, mind, sun
 		// their persona's strong sides (PeopleManners.h FPersona: a trait over 0.66 or under 0.34): warm / reserved, nervy /

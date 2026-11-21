@@ -25,13 +25,20 @@ if not os.path.exists(FEST):
     FEST = None
 
 LANGS = ["ru", "en", "ja"]
-COND_KEYS = ["to", "on", "near", "job", "age", "sex", "doing", "at", "pose", "manner", "met", "bond", "temper", "gather", "chrono", "need", "hours", "months",
+COND_KEYS = ["to", "on", "near", "job", "age", "sex", "doing", "at", "pose", "manner", "met", "bond", "heard_of", "temper", "gather", "chrono", "need", "hours", "months",
              "weekday", "sun", "weather", "festival", "phase", "job2", "age2", "sex2", "doing2", "weight"]
 EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
           # somebody noticed the player (PeopleManners.h ENoticeEvent, docs/town_manners.md)
           "hero_runs", "hero_close", "hero_lamp", "hero_sneaks", "hero_rides", "hero_fishes", "hero_swims", "hero_sits", "thunder", "counter_hello",
+          # the service scene and the lines at counters (docs/counters.md, ULyudCounterService)
+          "counter_give", "queue_next", "queue_join",
           # a friend of his (docs/friends.md, ULyudFriends): waves first, sits with him on a bench, his card came, his gift, their outing
-          "friend_wave", "friend_bench", "friend_card", "friend_gift", "friend_outing"}
+          "friend_wave", "friend_bench", "friend_card", "friend_gift", "friend_outing", "friend_festival",
+          # the hero plays a piano or his guitar (docs/instruments.md)
+          "hero_plays", "hero_played", "hero_sing_twinkle", "hero_sing_happy_birthday", "hero_sing_korobeiniki",
+          "hero_sing_jingle_bells", "hero_sing_sakura",
+          # the hero walks with a dog that is his friend (docs/animals.md "Friends")
+          "dog_walk"}
 
 sets = []          # [{name, conds: [(k, v)], say: [keys], talk: [[keys]], file}]
 strings = collections.OrderedDict()   # key -> (ru, en, ja)
@@ -127,10 +134,11 @@ VALID = {
     "sex": {"female", "male"}, "sex2": {"female", "male"},
     "doing": acts | {"work", "free", "outing", "date"}, "doing2": acts | {"work", "free", "outing", "date"},
     "at": kinds | ids | {"outdoors", "indoors"},
-    "pose": {"stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "work", "shovel"},
+    "pose": {"stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "work", "shovel", "skate", "walrus"},
     "manner": {r.get("manner", r["id"]) for r in json.load(open(os.path.join(D, "PeopleData", "manners.json"), encoding="utf-8"))["manners"]},
     "met": {"new", "seen", "known"},
     "bond": {"friendly", "friend", "close"},
+    "heard_of": set(json.load(open(os.path.join(D, "PeopleData", "rumours.json"), encoding="utf-8"))["kinds"]),
     "gather": {"mingle", "watch", "sit", "fair"},
     "chrono": {"lark", "owl", "night", "usual"},
     "need": {"hunger", "tired", "social", "fun", "nature", "mind", "sun"},
@@ -197,6 +205,8 @@ HEADER = """# What the townsfolk say on their own (docs/town_talk.md): a greetin
 # met =       how well the speaker knows the player: new (never greeted him), seen (on 1-4 days), known (5 and more)
 # bond =      how close a friend of his the speaker is (docs/friends.md): friendly, friend, close; lines of a set with
 #             bond = friend or close may hold {0}: the nickname the friend gave him
+# heard_of =  a rumour about the player the speaker would bring up now (docs/town_rumours.md: cup, beat, job, tamed, ...);
+#             lines may hold {1}: the rumour's detail (the cup, the regular beaten, the bird, the fish, the tune, the job)
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun

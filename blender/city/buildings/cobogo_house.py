@@ -23,6 +23,7 @@ Material requests: none (CT_Cobogo, CT_Copper, CT_ConcreteWhite, plasters).
 import math
 import random
 
+import dress_kit as dk
 import furn_int3 as fu
 import interior_kit as kit
 import geom
@@ -311,6 +312,7 @@ def build(B):
     _furnish_garden(B)
     _furnish_flat(B)
     _depth_pass(B)
+    _dress(B)
     B.footprint = [(-19.1, 1.9), (XE + 0.3, 1.9), (XE + 0.3, 16.7), (-19.1, 16.7)]
     B.height = roof_top(15.1) + 0.0
     add_surrounds(B, seed=2, kinds=("street",), bounds=(-20.0, 20.0, 0.3, 30.0))
@@ -789,3 +791,40 @@ def _depth_pass(B):
     _switch_plate(B, -12.0, 13.04, 0.0, 0.0)
     T("flat_switch", "machine", (-12.0, 12.98, 1.3), 0.0, what="switch", switch="room")
     B.spot("flat_kettle_spot", "stand", (-10.0, 11.9, 0.0), 180)
+
+
+# ====================================================================== lived-in dressing (docs/city_dress.md)
+def _dress(B):
+    """Swappable sets: Holm's breakfast, the flowers on his coffee table, his boots by the door; the lobby's wet day,
+    the winter sledge, the concierge's paper. Table tops are the kit's own (kitchen table h 0.75, coffee table h 0.42,
+    sideboard h 0.7)."""
+    ktop, ctop, sbtop = 0.75, 0.42, 0.70            # kit.table(h=0.75) at (-9.4, 10.6); coffee_table; sideboard
+    with B.dress("holm_breakfast", weekdays=(0, 1, 2, 3, 4), hours=(7.5, 10.0)):
+        kit.cup(B, -9.15, 10.45, ktop, 20.0)
+        dk.plate_crumbs(B, -9.65, 10.42, ktop, 0.0, seed=1)
+        kit.newspaper(B, -9.45, 10.8, ktop, 8.0, seed=3)
+    with B.dress("holm_weekend", weekdays=(5, 6), hours=(9.0, 12.5)):
+        kit.teapot(B, -9.65, 10.45, ktop, 0.0)
+        kit.cup(B, -9.15, 10.45, ktop, 340.0)
+        dk.plate_crumbs(B, -9.2, 10.85, ktop, 90.0, seed=2)
+    for nm, (a, b), wilt, fl in (("fresh", (0, 4), False, True), ("wilt", (4, 6), True, True), ("empty", (6, 7), False, False)):
+        with B.dress("holm_flowers_" + nm, phase=(7, a, b)):
+            if wilt:
+                dk.vase_wilted(B, -12.1, 5.95, ctop, 0.0, seed=5)
+            else:
+                kit.vase(B, -12.1, 5.95, ctop, 0.0, flowers=fl, seed=5)
+    with B.dress("holm_book", chance=0.5):
+        dk.book_face_down(B, -12.2, 4.05, sbtop, 15.0, seed=1)
+    for nm, months, kind in (("winter", (12, 1, 2), "felt"), ("mild", (3, 4, 5, 9, 10, 11), "rubber"),
+                             ("summer", (6, 7, 8), "sandals")):
+        with B.dress("holm_boots_" + nm, months=months):
+            dk.boots(B, -13.42, 12.68, 0.0, 15.0, kind=kind, seed=2)
+    # lobby: a wet day, the winter sledge, the concierge's paper
+    with B.dress("lobby_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, XLOB, 4.1, 0.0, 0.0)
+        dk.umbrella_open(B, 3.55, 5.3, 0.0, 30, seed=1)
+        dk.umbrella_open(B, 0.7, 6.2, 0.0, 200, seed=2)
+    with B.dress("lobby_sledge", season="winter"):
+        dk.sledge(B, -1.1, 8.1, 0.0, 90.0)
+    with B.dress("lobby_paper", weekdays=(0, 1, 2, 3, 4), hours=(8.0, 18.0)):
+        kit.newspaper(B, 4.0, 11.8, 0.75, 262.0, seed=4)

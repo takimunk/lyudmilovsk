@@ -71,7 +71,8 @@ namespace LyudPeople
 	}
 
 	static const char* NeedNames[] = { "hunger", "tired", "social", "fun", "nature", "mind", "sun" };
-	static const char* PoseNames[] = { "hidden", "stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "sleep", "work", "shovel" };
+	static const char* PoseNames[] = { "hidden", "stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "sleep", "work", "shovel", "skate", "walrus" };
+	static_assert(sizeof(PoseNames) / sizeof(PoseNames[0]) == (size_t)EPose::Num, "a name for every pose (EPose)");
 	static const char* StateNames[] = { "idle", "going", "riding", "settling", "doing", "leaving", "away", "waiting" };
 	static const char* EventNames[] = { "Start", "Arrive", "Leave", "TalkStart", "TalkEnd", "Ride", "Away", "Back" };
 
@@ -144,7 +145,15 @@ namespace LyudPeople
 		// (one Index for all of it, here, not one after each part)
 		bLoading = true;
 		const bool bTownOk = (TownPlaces.empty() || LoadTownPlaces(TownPlaces)) && (Townsfolk.empty() || LoadTownsfolk(Townsfolk));
+		// the winter's places (tools/winter_play/winter_play.py: the rink, the banya, the ice hole), after the town's (their
+		// ways on start on the town's ground); the residents' life without the town has them too
+		const std::string Spots = bTownOk ? ReadFile(Dir + "/winter_spots.json") : std::string();
+		const bool bSpotsOk = Spots.empty() || LoadSpots(Spots);
 		bLoading = false;
+		if (!bSpotsOk)
+		{
+			return false;
+		}
 		if (!bTownOk)
 		{
 			return false;
@@ -215,6 +224,37 @@ namespace LyudPeople
 			{
 				A.WindMin = V["wind"][size_t(0)].F();
 				A.WindMax = V["wind"][size_t(1)].F();
+			}
+			A.When = V["when"].S();
+			A.WhenId = A.When.empty() ? -1 : ConditionId(A.When);
+			if (V["weekend_hours"].Size() == 2)
+			{
+				A.WkFrom = V["weekend_hours"][0].F();
+				A.WkTo = V["weekend_hours"][1].F();
+			}
+			for (const auto& F : V["day_more"].Fields)
+			{
+				const int Day = std::atoi(F.first.c_str());
+				if (Day >= 0 && Day < 7)
+				{
+					A.DayMore[Day] = F.second.F();
+				}
+			}
+			if (V["loop"].Size() == 2)
+			{
+				A.LoopMin = V["loop"][0].F();
+				A.LoopMax = std::max(A.LoopMin, V["loop"][1].F());
+			}
+			if (V["dip"].Size() == 2)
+			{
+				A.DipMin = V["dip"][0].F();
+				A.DipMax = std::max(A.DipMin, V["dip"][1].F());
+			}
+			A.Regulars = V["regulars"].F(0.f);
+			if (V["temp"].Size() == 2)
+			{
+				A.TempMin = V["temp"][size_t(0)].F();
+				A.TempMax = V["temp"][size_t(1)].F();
 			}
 			if (A.bGather)
 			{
@@ -1154,6 +1194,7 @@ namespace LyudPeople
 			Pl.Yaw = V["yaw"].F();
 			Pl.Portal = V.Find("door") ? Vec(V["door"]) : Vec(V["pos"]);
 			Pl.bShell = V["shell"].F() > 0.f;
+			Pl.bOpen = V["open"].F() > 0.f;
 			Pl.bIndoor = Pl.bShell;
 			// a walked interior (the restaurant): in by its door and the way inside to each slot
 			std::vector<V3> Prefix;
@@ -1187,10 +1228,33 @@ namespace LyudPeople
 				Sl.Height = S["height"].F();
 				Sl.Capacity = std::max(1, S["capacity"].I(1));
 				Sl.Tag = S["tag"].S();
-			Sl.Thing = S["thing"].S();
+				Sl.Thing = S["thing"].S();
+				Sl.OwnerKey = S["owner"].S();
+				if (S.Find("queue") && S.Find("q"))
+				{
+					// a counter's line: interned, its spots put in order once everything is loaded
+					const std::string QId = S["queue"].S();
+					auto It = std::find(QueueIds.begin(), QueueIds.end(), QId);
+					Sl.Queue = (int)(It - QueueIds.begin());
+					if (It == QueueIds.end())
+					{
+						QueueIds.push_back(QId);
+						Queues.emplace_back();
+					}
+					Sl.QueueN = std::max(0, S["q"].I());
+					Queues[(size_t)Sl.Queue].push_back((int)Slots.size());
+				}
 				if (!Prefix.empty())
 				{
 					Sl.Inside = Prefix;
+					// its own way on from the place's (an aisle of the cinema, a doorway further in)
+					for (const V3& Pt : Line(S["path"]))
+					{
+						if (!Same(Sl.Inside.back(), Pt))
+						{
+							Sl.Inside.push_back(Pt);
+						}
+					}
 					if (!Same(Sl.Inside.back(), Sl.Approach))
 					{
 						Sl.Inside.push_back(Sl.Approach);
@@ -1212,11 +1276,193 @@ namespace LyudPeople
 			}
 			Places.push_back(Pl);
 		}
+		for (std::vector<int>& L : Queues)
+		{
+			std::stable_sort(L.begin(), L.end(), [this](int A, int B) { return Slots[(size_t)A].QueueN < Slots[(size_t)B].QueueN; });
+		}
 		if (!bLoading)
 		{
 			Index();
 		}
 		return true;
+	}
+
+	// --- extra spots (winter_spots.json: the rink, the banya, the ice hole; docs/people.md "Winter play") ----------
+
+	bool FWorld::LoadSpots(const std::string& Text)
+	{
+		LyudJson::FValue J;
+		if (!LyudJson::Parse(Text, J, LastError))
+		{
+			LastError = "spots: " + LastError;
+			return false;
+		}
+		for (const LyudJson::FValue& V : J["spots"].Items)
+		{
+			FPlace Pl;
+			Pl.Id = V["id"].S();
+			// (a summer spot is no place in winter's file; town_life.py leaves them out of town_places.json the same way)
+			if (Pl.Id.empty() || FindPlace(Pl.Id) >= 0 || V["season"].S() == "summer")
+			{
+				continue;
+			}
+			Pl.Kind = V["kind"].S();
+			Pl.Yaw = V["yaw"].F();
+			const V3 Pos = Vec(V["pos"]);
+			Pl.Portal = V.Find("door") ? Vec(V["door"]) : Pos;
+			// indoors (the banya): a shell, whoever is in is inside (not drawn), at its door
+			Pl.bShell = Pl.bIndoor = V["indoor"].F() > 0.f;
+			Pl.Island = V.Find("island") ? V["island"].I() : 0;
+			// a closed path: the loop to go round, anticlockwise seen from above (Unreal's +Y is to the right of +X seen from
+			// above, so that is clockwise in the X, Y plane: a negative signed area)
+			std::vector<V3> Path = Line(V["path"]);
+			if (Path.size() >= 4 && (Path.front() - Path.back()).Len2D() < 0.5f)
+			{
+				Path.pop_back();
+				float Area = 0.f;
+				for (size_t I = 0; I < Path.size(); I++)
+				{
+					const V3& A = Path[I];
+					const V3& B = Path[(I + 1) % Path.size()];
+					Area += A.X * B.Y - B.X * A.Y;
+				}
+				if (Area > 0.f)
+				{
+					std::reverse(Path.begin(), Path.end());
+				}
+				Pl.Loop = Path;
+				float S = 0.f;
+				for (size_t I = 0; I < Path.size(); I++)
+				{
+					Pl.LoopS.push_back(S);
+					S += (Path[(I + 1) % Path.size()] - Path[I]).Len2D();
+				}
+				Pl.LoopLen = S;
+			}
+			const int PlaceIdx = (int)Places.size();
+			for (const LyudJson::FValue& S : V["slots"].Items)
+			{
+				FSlot Sl;
+				Sl.Kind = S["kind"].S("bench");
+				Sl.Place = PlaceIdx;
+				// the seat point is on the seat; the slot is the floor under it (+ height), as town_life.py's spot_slots
+				Sl.Height = S.Find("height") ? S["height"].F() : 0.45f;
+				Sl.Pos = Vec(S["pos"]);
+				Sl.Pos.Z -= Sl.Height;
+				if (Pl.bShell)
+				{
+					Sl.Pos = Pl.Portal;
+				}
+				Sl.Approach = Sl.Pos;
+				Sl.Yaw = S.Find("yaw") ? S["yaw"].F() : Pl.Yaw;
+				// how many to a slot unless it says: a standing point holds a little group, a spot on the ice a pair (a word
+				// at the kerb, a couple), a banya's shelf three
+				const int Cap = Sl.Kind == "stand" || Sl.Kind == "banya_shelf" ? 3 : (Sl.Kind == "skate" ? 2 : 1);
+				Sl.Capacity = std::max(1, S["capacity"].I(Cap));
+				Sl.Tag = S["tag"].S();
+				Pl.Slots.push_back((int)Slots.size());
+				Slots.push_back(Sl);
+			}
+			if (Pl.Slots.empty())
+			{
+				FSlot Sl;
+				Sl.Kind = "stand";
+				Sl.Place = PlaceIdx;
+				Sl.Pos = Sl.Approach = Pl.Portal;
+				Sl.Yaw = Pl.Yaw;
+				Sl.Capacity = 8;
+				Pl.Slots.push_back((int)Slots.size());
+				Slots.push_back(Sl);
+			}
+			// the ways onto slots off the walk grid (Route): onto the ice from the kerb outside the loop, straight out from its
+			// middle through the slot (3.5 m past the loop, or on to the first walkable point); into the water from the nearest
+			// slot that isn't in it (the deck by the hole)
+			if (!Pl.bIndoor)
+			{
+				V3 Mid;
+				for (const V3& L : Pl.Loop)
+				{
+					Mid += L * (1.f / (float)Pl.Loop.size());
+				}
+				for (const int SI : Pl.Slots)
+				{
+					FSlot& Sl = Slots[(size_t)SI];
+					if (!Pl.Loop.empty())
+					{
+						V3 Out = (Sl.Pos - Mid).Flat();
+						Out = Out.Len2D() > 0.1f ? Out.Norm() : V3(1.f, 0.f, 0.f);
+						V3 Kerb = Sl.Pos + Out * 3.5f;
+						for (float D = 3.5f; bHasGround && D <= 25.f; D += 0.5f)
+						{
+							const V3 K = Sl.Pos + Out * D;
+							if (Ground.Walkable(K.X, K.Y))
+							{
+								Kerb = K;
+								break;
+							}
+						}
+						Kerb.Z = GroundAt(V3(Kerb.X, Kerb.Y, Sl.Pos.Z));
+						Sl.Reach = { Kerb, Sl.Pos };
+					}
+					else if (Sl.Pos.Z < Pos.Z - 0.75f)
+					{
+						const FSlot* Dry = nullptr;
+						for (const int SJ : Pl.Slots)
+						{
+							const FSlot& T = Slots[(size_t)SJ];
+							if (T.Pos.Z >= Pos.Z - 0.75f && (!Dry || (T.Pos - Sl.Pos).Len2D() < (Dry->Pos - Sl.Pos).Len2D()))
+							{
+								Dry = &T;
+							}
+						}
+						if (Dry)
+						{
+							Sl.Reach = { Dry->Pos, Sl.Pos };
+						}
+					}
+				}
+			}
+			Places.push_back(Pl);
+		}
+		if (!bLoading)
+		{
+			Index();
+		}
+		return true;
+	}
+
+	int FWorld::ConditionId(const std::string& Name)
+	{
+		for (int I = 0; I < (int)CondNames.size(); I++)
+		{
+			if (CondNames[(size_t)I] == Name)
+			{
+				return I;
+			}
+		}
+		CondNames.push_back(Name);
+		CondOn.push_back(0);
+		return (int)CondNames.size() - 1;
+	}
+
+	void FWorld::SetCondition(const std::string& Name, bool bOn)
+	{
+		if (!Name.empty())
+		{
+			CondOn[(size_t)ConditionId(Name)] = bOn ? 1 : 0;
+		}
+	}
+
+	bool FWorld::IsCondition(const std::string& Name) const
+	{
+		for (size_t I = 0; I < CondNames.size(); I++)
+		{
+			if (CondNames[I] == Name)
+			{
+				return CondOn[I] != 0;
+			}
+		}
+		return false;
 	}
 
 	int FWorld::KindId(const std::string& Kind)
@@ -1667,6 +1913,15 @@ namespace LyudPeople
 
 	void FWorld::ReserveOwnSlots()
 	{
+		for (FSlot& Sl : Slots)
+		{
+			if (!Sl.OwnerKey.empty())
+			{
+				const int Who = FindPerson(Sl.OwnerKey);
+				// a keeper who isn't in the town (any more): nobody's, and nobody else's either
+				Sl.Owner = Who >= 0 ? Who : -2;
+			}
+		}
 		for (const FPerson& P : People)
 		{
 			const size_t Colon = P.OwnSlot.find(':');
@@ -1825,7 +2080,7 @@ namespace LyudPeople
 		{
 			return false;
 		}
-		if (Sl.Owner >= 0 && Sl.Owner != P.Id && !(bBed && bFlat && Sl.Place == P.Home && Sl.Capacity > 1))
+		if (Sl.Owner != -1 && Sl.Owner != P.Id && !(bBed && bFlat && Sl.Place == P.Home && Sl.Capacity > 1))
 		{
 			return false;
 		}
@@ -1850,6 +2105,11 @@ namespace LyudPeople
 					return false;
 				}
 			}
+		}
+		// a counter's queue: only the first free spot of its line (and none the hero stands on)
+		if ((Sl.Queue >= 0 || Sl.bHeld) && !QueueOpenFor(S) && std::find(Sl.Users.begin(), Sl.Users.end(), P.Id) == Sl.Users.end())
+		{
+			return false;
 		}
 		// away (work in another town, school, the lab's gate): a door to leave the world by, not a seat: no room to keep
 		return A.bAway || Sl.Free(P.Id);
@@ -2092,7 +2352,15 @@ namespace LyudPeople
 		{
 			return -1e9f;
 		}
-		if (!A.bFree || P.Age < A.MinAge || P.Age > A.MaxAge || !InHours(A.From, A.To, Hour))
+		// (on the weekend an activity may have hours of its own: the rink from late morning)
+		const bool bWeekendHours = A.WkFrom >= 0.f && Weekday >= 5;
+		if (!A.bFree || !ConditionOk(A) || P.Age < A.MinAge || P.Age > A.MaxAge
+			|| !(bWeekendHours ? InHours(A.WkFrom, A.WkTo, Hour) : InHours(A.From, A.To, Hour)) || !IsRegular(P, A))
+		{
+			return -1e9f;
+		}
+		// a dip once a morning: not again within three hours of the last
+		if (A.DipMax > 0.f && P.PrevActivity >= 0 && &Activities[(size_t)P.PrevActivity] == &A && Time - P.PrevActivityEnd < 3.0 * HourS)
 		{
 			return -1e9f;
 		}
@@ -2134,7 +2402,7 @@ namespace LyudPeople
 			Gain += Met * (0.5f + P.N[N]) * 2.f - A.Cost[N] * DurH * 0.3f;
 		}
 		const float T = A.Trait.empty() ? 0.5f : Trait(P, A.Trait);
-		float Score = A.Base + Gain * (0.6f + 0.8f * T);
+		float Score = A.Base + Gain * (0.6f + 0.8f * T) + A.DayMore[(Weekday % 7 + 7) % 7];
 		for (const auto& L : P.Likes)
 		{
 			if (L.first == A.Id)
@@ -2166,8 +2434,13 @@ namespace LyudPeople
 		Score -= TravelH * Opt.WalkCostPerHour;
 		// the weather: nobody chooses to be out in the rain (those who love the open air mind it less), the frost empties
 		// the benches and the lookouts, a warm day draws to the water
-		if (!Places[Sl.Place].bIndoor && !A.bAway && !A.bGather)
+		if (!Roofed(Sl.Place) && !A.bAway && !A.bGather)
 		{
+			// an activity of the season (the allotment's beds, a paper on a bench): not in the frost, not in the heat
+			if (TempC < A.TempMin || TempC > A.TempMax)
+			{
+				return -1e9f;
+			}
 			if (bRain && !A.bRainOk)
 			{
 				Score -= (0.9f + 0.8f * Rain) * (1.f - 0.35f * P.NatureLove);
@@ -2196,7 +2469,7 @@ namespace LyudPeople
 			}
 		}
 		// a fine evening: the town comes out to walk the sea front (the warmer, the more of them; nobody in the rain)
-		if (Hour >= 18.f && Hour < 21.5f && !bRain && TempC > 12.f && !A.bAway && !A.bGather && !Places[Sl.Place].bIndoor
+		if (Hour >= 18.f && Hour < 21.5f && !bRain && TempC > 12.f && !A.bAway && !A.bGather && !Roofed(Sl.Place)
 			&& (A.bWander || A.Pose == EPose::Look))
 		{
 			const std::string& K = Places[Sl.Place].Kind;
@@ -2366,6 +2639,13 @@ namespace LyudPeople
 			}
 			return true;
 		}
+		// on a place's own ground off the walk grid (the rink's ice, the ice hole's water): on to another slot of it straight
+		const bool bOffGrid = !bFromInside && P.OffGrid >= 0 && P.OffGrid < (int)Places.size();
+		if (bOffGrid && P.OffGrid == To.Place && !ToPl.bIndoor)
+		{
+			Push(To.Approach, 4);
+			return true;
+		}
 		V3 Out0 = From;
 		int FromIsland = P.Island;
 		if (bFromInside)
@@ -2377,7 +2657,33 @@ namespace LyudPeople
 			Out0 = Places[Fr->Place].Portal;
 			FromIsland = Places[Fr->Place].Island;
 		}
-		const V3 Goal = ToPl.bIndoor ? ToPl.Portal : To.Approach;
+		else if (bOffGrid)
+		{
+			// off it by the nearest of its slots' ways on, walked back (to the slot on the ice, then out over the kerb)
+			const FPlace& Og = Places[(size_t)P.OffGrid];
+			const FSlot* Ex = nullptr;
+			float ExD = 1e30f;
+			for (const int S : Og.Slots)
+			{
+				const float D = (Slots[(size_t)S].Pos - From).Len2D();
+				if (!Slots[(size_t)S].Reach.empty() && D < ExD)
+				{
+					ExD = D;
+					Ex = &Slots[(size_t)S];
+				}
+			}
+			if (Ex)
+			{
+				for (int I = (int)Ex->Reach.size() - 1; I >= 0; I--)
+				{
+					Push(Ex->Reach[(size_t)I], 4);
+				}
+				Out0 = Ex->Reach.front();
+				FromIsland = Og.Island;
+			}
+		}
+		// a slot off the walk grid: to the start of its way on (the kerb, the deck), then along it
+		const V3 Goal = ToPl.bIndoor ? ToPl.Portal : (To.Reach.empty() ? To.Approach : To.Reach.front());
 		const int ToIsland = ToPl.Island;
 		if (ToIsland < 0)
 		{
@@ -2450,6 +2756,17 @@ namespace LyudPeople
 				Push(To.Inside[I], 1);
 			}
 		}
+		else if (!To.Reach.empty())
+		{
+			for (size_t I = 1; I < To.Reach.size(); I++)
+			{
+				Push(To.Reach[I], 4);
+			}
+			if (!Same(Out.back().P, To.Approach))
+			{
+				Push(To.Approach, 4);
+			}
+		}
 		return !Out.empty();
 	}
 
@@ -2491,17 +2808,25 @@ namespace LyudPeople
 		// snapped asleep (a load, a clock jump): they've been asleep a while, no bedside lamp just switched on
 		P.StateStart = bSnap && A.Id == "sleep" ? Time - 3600.0 : Time;
 		Emit(EEvent::Start, P);
+		// a new round of the rink, a new dip: nothing of the last one
+		P.LoopAt = -1.f;
+		P.LoopLeft = 0.f;
+		P.bLoopStop = false;
+		P.SkateWith = -1;
+		P.Dips = 0;
 		if (bSnap)
 		{
 			P.Path.clear();
 			P.PathI = 0;
 			P.Pos = IsSeated(A.Pose) || A.Pose == EPose::Sleep || A.Pose == EPose::Work ? SpotOf(P, Slot) : Sl.Approach;
 			P.Yaw = YawAt(P, Slot, A.Pose);
-			P.bIndoors = Places[Sl.Place].bIndoor;
+			P.bIndoors = Roofed(Sl.Place);
 			P.Island = std::max(0, Places[Sl.Place].Island);
 			P.Until = Time + Minutes * 60.0;
 			P.State = A.bAway ? EState::Away : EState::Doing;
-			P.Pose = A.bAway ? EPose::Hidden : A.Pose;
+			P.Pose = A.bAway ? EPose::Hidden : PoseAt(A, Slot);
+			P.Speed = 0.f;
+			P.OffGrid = Sl.Reach.empty() || A.bAway ? -1 : Sl.Place;
 			P.WanderAt = Time + 60.0;
 			CatchTrainBack(P);
 			return true;
@@ -2516,6 +2841,7 @@ namespace LyudPeople
 			P.Think = 30.f;
 			return false;
 		}
+		P.OffGrid = -1;     // (the way starts with the way off the ice, out of the water)
 		P.PathI = 0;
 		P.State = EState::Going;
 		P.Pose = EPose::Walk;
@@ -2650,6 +2976,11 @@ namespace LyudPeople
 		{
 			return false;
 		}
+		// a walrus at the hole: nothing calls them away (the visit is short; nobody runs off wet)
+		if (Cur.DipMax > 0.f)
+		{
+			return false;
+		}
 		for (const ENeed N : { ENeed::Hunger, ENeed::Tired })
 		{
 			if (P.N[(int)N] > (N == ENeed::Hunger ? 0.85f : 0.96f) && Cur.Need[(int)N] <= 0.f)
@@ -2673,7 +3004,7 @@ namespace LyudPeople
 		}
 		// caught by the rain out of doors at something they chose: they don't sit it out (each looks up at their own
 		// moment, so a square empties over a couple of minutes, not at once)
-		if (bRain && Cur.bFree && Duty < 0 && !Cur.bRainOk && !Cur.bGather && !P.bIndoors && P.Place >= 0 && !Places[P.Place].bIndoor)
+		if (bRain && Cur.bFree && Duty < 0 && !Cur.bRainOk && !Cur.bGather && !P.bIndoors && P.Place >= 0 && !Roofed(P.Place))
 		{
 			return true;
 		}
@@ -3205,7 +3536,7 @@ namespace LyudPeople
 		}
 		const FActivity& A = Activities[P.Activity];
 		const FSlot& Sl = Slots[P.Slot];
-		P.bIndoors = Places[Sl.Place].bIndoor;
+		P.bIndoors = Roofed(Sl.Place);
 		P.Until = Time + P.Minutes * 60.0;
 		P.StateStart = Time;
 		P.WanderAt = Time + (A.bPauseSet ? A.PauseMin + (A.PauseMax - A.PauseMin) * Rand(P.Rng) : 30.0 + 60.0 * Rand(P.Rng));
@@ -3228,8 +3559,22 @@ namespace LyudPeople
 			return;
 		}
 		P.State = EState::Doing;
-		P.Pose = A.Pose;
+		P.Pose = PoseAt(A, P.Slot);
 		P.Yaw = A.Pose == EPose::Look ? (A.bSunrise ? SunriseYaw : SunYaw) : Sl.Yaw;
+		// on the ice, in the water: the way out goes back by a slot's way on
+		P.OffGrid = Sl.Reach.empty() ? -1 : Sl.Place;
+		if (A.LoopMax > 0.f && !Places[Sl.Place].Loop.empty())
+		{
+			// onto the ice: a moment at the kerb's spot, facing the way round
+			LoopPoint(Places[Sl.Place], LoopArc(Places[Sl.Place], P.Pos), &P.Yaw);
+			P.WanderAt = Time + 4.0 + 16.0 * Rand(P.Rng);
+		}
+		if (A.DipMax > 0.f)
+		{
+			// in the water so long; on the deck first (the water's full): a moment to get ready
+			const bool bIn = P.Pose == EPose::Walrus;
+			P.WanderAt = Time + (bIn ? A.DipMin + (A.DipMax - A.DipMin) * Rand(P.Rng) : 10.0 + 30.0 * Rand(P.Rng));
+		}
 		if (A.bGather)
 		{
 			// a holiday: face the stage (or the fireworks over the sea) if there is one, else the spot's way
@@ -3447,6 +3792,349 @@ namespace LyudPeople
 		OutdoorWay(P.Pos, Slots[S].Approach, P.Path);
 		P.PathI = 0;
 		P.Pose = EPose::Walk;
+	}
+
+	// --- winter play: round the rink, the dip in the ice hole, the regulars (docs/people.md "Winter play") --------
+
+	float FWorld::LoopArc(const FPlace& Pl, const V3& At) const
+	{
+		const size_t N = Pl.Loop.size();
+		float Best = 1e30f, BestS = 0.f;
+		for (size_t I = 0; I < N; I++)
+		{
+			const V3& A = Pl.Loop[I];
+			const V3& B = Pl.Loop[(I + 1) % N];
+			const V3 D = (B - A).Flat();
+			const float L2 = D.Dot(D);
+			const float T = L2 > 1e-6f ? std::max(0.f, std::min(1.f, (At - A).Flat().Dot(D) / L2)) : 0.f;
+			const float Off = (A + D * T - At).Len2D();
+			if (Off < Best)
+			{
+				Best = Off;
+				BestS = Pl.LoopS[I] + T * std::sqrt(L2);
+			}
+		}
+		return Pl.LoopLen > 0.f ? std::fmod(BestS, Pl.LoopLen) : 0.f;
+	}
+
+	V3 FWorld::LoopPoint(const FPlace& Pl, float S, float* OutYaw) const
+	{
+		const size_t N = Pl.Loop.size();
+		if (N == 0 || Pl.LoopLen <= 0.f)
+		{
+			return N ? Pl.Loop[0] : V3();
+		}
+		S = std::fmod(S, Pl.LoopLen);
+		if (S < 0.f)
+		{
+			S += Pl.LoopLen;
+		}
+		size_t I = N - 1;
+		for (size_t K = 1; K < N; K++)
+		{
+			if (Pl.LoopS[K] > S)
+			{
+				I = K - 1;
+				break;
+			}
+		}
+		const V3& A = Pl.Loop[I];
+		const V3& B = Pl.Loop[(I + 1) % N];
+		const float Seg = (I + 1 < N ? Pl.LoopS[I + 1] : Pl.LoopLen) - Pl.LoopS[I];
+		const float T = Seg > 1e-4f ? (S - Pl.LoopS[I]) / Seg : 0.f;
+		if (OutYaw)
+		{
+			*OutYaw = YawTo(A, B);
+		}
+		return A + (B - A) * T;
+	}
+
+	EPose FWorld::PoseAt(const FActivity& A, int Slot) const
+	{
+		// a dip's first slot kind is the water (the activity's pose there); its others are the deck, stood on
+		if (A.DipMax > 0.f && !A.Slots.empty() && Slot >= 0 && Slot < (int)Slots.size())
+		{
+			const FSlot& Sl = Slots[(size_t)Slot];
+			const bool bFirst = A.bK && Sl.K >= 0 && !A.SlotK.empty() ? Sl.K == A.SlotK[0] : Sl.Kind == A.Slots[0];
+			return bFirst ? A.Pose : EPose::Stand;
+		}
+		return A.Pose;
+	}
+
+	bool FWorld::IsRegular(const FPerson& P, const FActivity& A) const
+	{
+		if (A.Regulars <= 0.f)
+		{
+			return true;
+		}
+		for (const auto& L : P.Likes)
+		{
+			if (L.first == A.Id && L.second > 0.f)
+			{
+				return true;
+			}
+		}
+		// the same handful every game: by who they are and what it is, more of those with its temper
+		uint32_t H = 2166136261u;
+		for (const char Ch : P.Key)
+		{
+			H = (H ^ (uint8_t)Ch) * 16777619u;
+		}
+		for (const char Ch : A.Id)
+		{
+			H = (H ^ (uint8_t)Ch) * 16777619u;
+		}
+		H ^= H >> 13;
+		H *= 0x5bd1e995u;
+		H ^= H >> 15;
+		const float U = (H & 0xFFFFFF) / 16777216.f;
+		const float T = A.Trait.empty() ? 0.5f : Trait(P, A.Trait);
+		return U < A.Regulars * 2.f * T;
+	}
+
+	void FWorld::Skate(FPerson& P, float Dt)
+	{
+		const FActivity& A = Activities[(size_t)P.Activity];
+		const int Pi = Slots[(size_t)P.Slot].Place;
+		const FPlace& Pl = Places[(size_t)Pi];
+		const float L = Pl.LoopLen;
+		if (Pl.Loop.size() < 3 || L < 1.f)
+		{
+			P.Speed = 0.f;
+			return;
+		}
+		// how far B is ahead of A round the loop
+		auto Ahead = [L](float From, float To)
+		{
+			const float D = std::fmod(To - From, L);
+			return D < 0.f ? D + L : D;
+		};
+		if (P.LoopAt < 0.f)
+		{
+			// standing at their slot on the ice: a breath, a word with whoever else stands there
+			P.Speed = 0.f;
+			P.Pose = EPose::Skate;
+			for (const int U : Slots[(size_t)P.Slot].Users)
+			{
+				const FPerson& Q = People[(size_t)U];
+				if (U != P.Id && Q.Activity == P.Activity && Q.State == EState::Doing && Q.LoopAt < 0.f && (Q.Pos - P.Pos).Len2D() < 3.f)
+				{
+					P.Pose = EPose::Talk;
+					if ((Q.Pos - P.Pos).Len2D() > 0.05f)
+					{
+						P.Yaw = YawTo(P.Pos, Q.Pos);
+					}
+				}
+			}
+			if (Time < P.WanderAt)
+			{
+				return;
+			}
+			// off round again: a lap or a few, then a free slot ahead to stop at
+			P.LoopAt = LoopArc(Pl, P.Pos);
+			P.LoopRun = 0.f;
+			P.bLoopStop = false;
+			const float Slow = P.Age < 12 || P.Age > 60 ? 0.8f : 1.f;
+			P.LoopGo = (A.LoopMin + (A.LoopMax - A.LoopMin) * Rand(P.Rng)) * Slow;
+			P.LoopLeft = L * (1.f + 3.f * Rand(P.Rng));
+			// one of theirs going round already (their household, their friend): beside them
+			P.SkateWith = -1;
+			for (const int S : Pl.Slots)
+			{
+				for (const int U : Slots[(size_t)S].Users)
+				{
+					const FPerson& Q = People[(size_t)U];
+					if (U == P.Id || P.SkateWith >= 0 || Q.Activity != P.Activity || Q.State != EState::Doing || Q.LoopAt < 0.f || Q.bLoopStop
+						|| Q.SkateWith >= 0)
+					{
+						continue;
+					}
+					if ((!P.Household.empty() && Q.Household == P.Household) || P.DateWith == U || Has(P.Friends, Q.Key))
+					{
+						P.SkateWith = U;
+					}
+				}
+			}
+		}
+		// gliding round
+		const FPerson* With = P.SkateWith >= 0 && P.SkateWith < (int)People.size() ? &People[(size_t)P.SkateWith] : nullptr;
+		if (With && (With->Activity != P.Activity || With->State != EState::Doing || With->LoopAt < 0.f || With->bLoopStop || With->Slot < 0
+			|| Slots[(size_t)With->Slot].Place != Pi))
+		{
+			// the one they skated with stops: they stop too, at the next free slot (theirs, if there's room for two)
+			With = nullptr;
+			P.SkateWith = -1;
+			if (!P.bLoopStop)
+			{
+				P.LoopLeft = 0.f;
+			}
+		}
+		float Want = P.LoopGo;
+		if (With)
+		{
+			// side by side: close up to them, then keep their pace
+			float Gap = Ahead(P.LoopAt, With->LoopAt);
+			if (Gap > L * 0.5f)
+			{
+				Gap -= L;
+			}
+			Want = std::max(0.5f, std::min(A.LoopMax * 1.15f, With->Speed + Gap * 0.7f));
+			P.LoopLeft = std::max(P.LoopLeft, 6.f);
+		}
+		if (!P.bLoopStop && P.LoopLeft <= 0.f)
+		{
+			// a slot to stop at: the first free one a few metres ahead or more
+			int Best = -1;
+			float BestD = 1e30f;
+			for (const int S : Pl.Slots)
+			{
+				if (!Slots[(size_t)S].Free(P.Id))
+				{
+					continue;
+				}
+				float D = Ahead(P.LoopAt, LoopArc(Pl, Slots[(size_t)S].Pos));
+				if (D < 4.f)
+				{
+					D += L;
+				}
+				if (D < BestD)
+				{
+					BestD = D;
+					Best = S;
+				}
+			}
+			if (Best >= 0)
+			{
+				Reserve(P, Best);
+				P.Slot = Best;
+				P.bLoopStop = true;
+				P.LoopLeft = BestD;
+			}
+			else
+			{
+				P.LoopLeft = L * 0.25f;     // (none: their own is always theirs, so this can't be; a quarter more)
+			}
+		}
+		// speed up and slow down as on skates (and to a stop at the slot: v^2 = 2 a d)
+		const float Acc = 1.2f;
+		if (P.bLoopStop)
+		{
+			Want = std::min(Want, std::sqrt(std::max(0.f, 2.f * Acc * P.LoopLeft)));
+		}
+		P.Speed = P.Speed < Want ? std::min(Want, P.Speed + Acc * Dt) : std::max(Want, P.Speed - 2.f * Acc * Dt);
+		float Step = P.Speed * Dt;
+		if (P.bLoopStop)
+		{
+			Step = std::min(P.LoopLeft, std::max(Step, 0.3f * Dt));
+		}
+		P.LoopAt = std::fmod(P.LoopAt + Step, L);
+		P.LoopLeft -= Step;
+		P.LoopRun += Step;
+		float Yaw = 0.f;
+		const V3 At = LoopPoint(Pl, P.LoopAt, &Yaw);
+		// a lane of their own a little in or out of the line (people pass each other; beside theirs, on the other side of
+		// them), eased in after setting off and out before the stop
+		float Lane = (float)((P.Id * 7) % 5 - 2) * 0.5f;
+		if (With)
+		{
+			const float Theirs = (float)((With->Id * 7) % 5 - 2) * 0.5f;
+			Lane = Theirs + (Theirs > 0.f ? -0.9f : 0.9f);
+		}
+		const float Ease = std::min(1.f, std::min(P.LoopRun, P.bLoopStop ? P.LoopLeft : 1e9f) / 4.f);
+		const float R = Yaw * 0.01745329f;
+		const V3 Out(-std::sin(R), std::cos(R), 0.f);    // (the loop's outside: its middle is on the left going round)
+		P.Pos = At + Out * (Lane * Ease);
+		P.Pos.Z = At.Z;
+		P.Yaw = Yaw;
+		P.Pose = EPose::Skate;
+		if (P.bLoopStop && P.LoopLeft <= 0.02f)
+		{
+			// at the slot: stand a while
+			P.Pos = Slots[(size_t)P.Slot].Pos;
+			P.LoopAt = -1.f;
+			P.Speed = 0.f;
+			P.bLoopStop = false;
+			P.SkateWith = -1;
+			P.WanderAt = Time + A.PauseMin + (A.PauseMax - A.PauseMin) * Rand(P.Rng);
+		}
+	}
+
+	void FWorld::Dip(FPerson& P)
+	{
+		if (Time < P.WanderAt)
+		{
+			return;
+		}
+		const FActivity& A = Activities[(size_t)P.Activity];
+		const FSlot& Sl = Slots[(size_t)P.Slot];
+		const FPlace& Pl = Places[(size_t)Sl.Place];
+		const EPose InWater = A.Pose;
+		const bool bIn = PoseAt(A, P.Slot) == InWater;
+		// on the deck: in if they haven't been yet, or once more if there's time; else they rub down till they go
+		// (the hour over: nobody goes in any more)
+		if (!bIn && (!ConditionOk(A) || !(P.Dips == 0 || (P.Dips < 2 && P.Until - Time > 600.0 && Rand(P.Rng) < 0.5f))))
+		{
+			P.WanderAt = Time + 1e9;
+			return;
+		}
+		// out: the nearest free spot on the deck; in: the nearest free place in the water
+		int Best = -1;
+		float BestD = 1e30f;
+		for (const int S : Pl.Slots)
+		{
+			if (S == P.Slot || (PoseAt(A, S) == InWater) == bIn || !SlotFits(P, A, S))
+			{
+				continue;
+			}
+			const float D = (Slots[(size_t)S].Pos - P.Pos).Len2D();
+			if (D < BestD)
+			{
+				BestD = D;
+				Best = S;
+			}
+		}
+		if (Best < 0)
+		{
+			P.WanderAt = Time + 15.0 + 15.0 * Rand(P.Rng);     // no room just now: a little longer where they are
+			return;
+		}
+		const FSlot& To = Slots[(size_t)Best];
+		auto Push = [&P](const V3& Pt)
+		{
+			FPerson::FWay W;
+			W.P = Pt;
+			W.Kind = 4;
+			P.Path.push_back(W);
+		};
+		P.Path.clear();
+		P.PathI = 0;
+		// by the hole's edge: up out of the water onto the deck, or down into it from the deck
+		if (bIn)
+		{
+			if (!Sl.Reach.empty())
+			{
+				Push(Sl.Reach.front());
+			}
+			P.Dips++;
+			P.OffGrid = -1;
+		}
+		else
+		{
+			if (!To.Reach.empty())
+			{
+				Push(To.Reach.front());
+			}
+			// (the first dip after waiting on the deck for room in the water: the visit lasts till it's done and they're dry)
+			if (P.Dips == 0)
+			{
+				P.Until = std::max(P.Until, Time + A.DipMax + 300.0);
+			}
+		}
+		Push(To.Approach);
+		Reserve(P, Best);
+		P.Slot = Best;
+		P.Pose = EPose::Walk;
+		P.WanderAt = Time + 1e9;
 	}
 
 	void FWorld::DropSweep(FPerson& P)
@@ -3701,6 +4389,207 @@ namespace LyudPeople
 		}
 	}
 
+	// --- counters' queues (docs/counters.md) ------------------------------------------------------------------
+
+	bool FWorld::QueueOpenFor(int S) const
+	{
+		// a line fills from the front: a spot is open only when every spot before it is taken (by somebody or the hero)
+		const FSlot& Sl = Slots[(size_t)S];
+		if (Sl.bHeld)
+		{
+			return false;
+		}
+		if (Sl.Queue < 0 || Sl.QueueN <= 0)
+		{
+			return true;
+		}
+		for (const int T : Queues[(size_t)Sl.Queue])
+		{
+			const FSlot& Before = Slots[(size_t)T];
+			if (Before.QueueN >= Sl.QueueN)
+			{
+				break;
+			}
+			if (Before.Users.empty() && !Before.bHeld)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	void FWorld::SetHeroAt(const V3& P, bool bOn)
+	{
+		for (const std::vector<int>& L : Queues)
+		{
+			for (const int S : L)
+			{
+				FSlot& Sl = Slots[(size_t)S];
+				Sl.bHeld = bOn && (Sl.Pos - P).Len2D() < 0.6f && std::fabs(Sl.Pos.Z - P.Z) < 1.5f;
+			}
+		}
+	}
+
+	void FWorld::QueueState(int Q, std::vector<int>& Out) const
+	{
+		Out.clear();
+		if (Q < 0 || Q >= (int)Queues.size())
+		{
+			return;
+		}
+		for (const int S : Queues[(size_t)Q])
+		{
+			const FSlot& Sl = Slots[(size_t)S];
+			int Who = Sl.bHeld ? -2 : -1;
+			for (const int U : Sl.Users)
+			{
+				if (People[(size_t)U].Slot == S)
+				{
+					Who = U;
+				}
+			}
+			Out.push_back(Who);
+		}
+	}
+
+	int FWorld::NearestQueue(const V3& P, float MaxM) const
+	{
+		int Best = -1;
+		float BestD = MaxM;
+		for (int Q = 0; Q < (int)Queues.size(); Q++)
+		{
+			const float D = (Slots[(size_t)Queues[(size_t)Q][0]].Pos - P).Len2D();
+			if (!Queues[(size_t)Q].empty() && D < BestD && std::fabs(Slots[(size_t)Queues[(size_t)Q][0]].Pos.Z - P.Z) < 3.f)
+			{
+				Best = Q;
+				BestD = D;
+			}
+		}
+		return Best;
+	}
+
+	int FWorld::SendToQueue(int Q, int Count)
+	{
+		const int Act = FindActivity("shop_town");
+		if (Q < 0 || Q >= (int)Queues.size() || Act < 0)
+		{
+			return 0;
+		}
+		const V3 Front = Slots[(size_t)Queues[(size_t)Q][0]].Pos;
+		int Sent = 0;
+		while (Sent < Count)
+		{
+			// the first open spot of the line, and the nearest grown-up out and about with nothing they must do
+			int Spot = -1;
+			for (const int S : Queues[(size_t)Q])
+			{
+				if (Spot < 0 && Slots[(size_t)S].Users.empty() && QueueOpenFor(S))
+				{
+					Spot = S;
+				}
+			}
+			int Who = -1;
+			float BestD = 250.f;
+			for (const FPerson& P : People)
+			{
+				bool bSleep = false;
+				const bool bFree = P.bTown && P.Age >= 14 && P.State == EState::Doing && P.Activity >= 0 &&
+					!Activities[(size_t)P.Activity].bStaff && Activities[(size_t)P.Activity].Id != "sleep" && P.Island == Places[(size_t)Slots[(size_t)Queues[(size_t)Q][0]].Place].Island;
+				const float D = (P.Pos - Front).Len2D();
+				if (bFree && D < BestD && DutyNow(P, bSleep) < 0 && (P.Slot < 0 || Slots[(size_t)P.Slot].Queue < 0))
+				{
+					Who = P.Id;
+					BestD = D;
+				}
+			}
+			if (Spot < 0 || Who < 0 || !Start(People[(size_t)Who], Act, Spot, 10.0, false, "counter crowd"))
+			{
+				break;
+			}
+			Sent++;
+		}
+		return Sent;
+	}
+
+	void FWorld::StepQueues()
+	{
+		// the one at the front is served for a minute or two, then goes; the ones behind wait (up to ten minutes) and step up
+		// into the spot before them as soon as it is free
+		for (const std::vector<int>& L : Queues)
+		{
+			for (size_t N = 0; N < L.size(); N++)
+			{
+				FSlot& Sl = Slots[(size_t)L[N]];
+				int Who = -1, Coming = -1;
+				for (const int U : Sl.Users)
+				{
+					const FPerson& Q = People[(size_t)U];
+					if (Q.Slot == L[N] && Q.State == EState::Doing && Q.Path.empty())
+					{
+						Who = U;
+					}
+					else if (Q.Slot == L[N] && !Q.Path.empty() && (Q.State == EState::Going || Q.State == EState::Doing))
+					{
+						Coming = U;
+					}
+				}
+				if (N > 0 && Who < 0 && Coming >= 0)
+				{
+					// on the way to a spot whose one ahead has meanwhile come free: they make for that one instead
+					FSlot& Ahead = Slots[(size_t)L[N - 1]];
+					if (Ahead.Users.empty() && !Ahead.bHeld)
+					{
+						FPerson& P = People[(size_t)Coming];
+						Reserve(P, L[N - 1]);
+						P.Slot = L[N - 1];
+						P.Path.back().P = Ahead.Approach;
+						QueueMoves++;
+					}
+					continue;
+				}
+				if (N == 0)
+				{
+					if (Who != Sl.FrontWho)
+					{
+						Sl.FrontWho = Who;
+						Sl.FrontSince = Time;
+					}
+					if (Who >= 0)
+					{
+						FPerson& P = People[(size_t)Who];
+						const double Serve = 60.0 + (double)(((uint32_t)P.Id * 2654435761u) % 90u);
+						P.Until = std::min(P.Until, Sl.FrontSince + Serve);
+					}
+					continue;
+				}
+				if (Who < 0)
+				{
+					continue;
+				}
+				FPerson& P = People[(size_t)Who];
+				FSlot& Ahead = Slots[(size_t)L[N - 1]];
+				if (Ahead.Users.empty() && !Ahead.bHeld)
+				{
+					// step up: the spot ahead is theirs, a short walk within what they are doing
+					Reserve(P, L[N - 1]);
+					P.Slot = L[N - 1];
+					P.Path.clear();
+					FPerson::FWay W;
+					W.P = Ahead.Approach;
+					W.Kind = P.bIndoors ? 1 : 0;
+					P.Path.push_back(W);
+					P.PathI = 0;
+					P.Pose = EPose::Walk;
+					QueueMoves++;
+				}
+				else if (Time - P.StateStart < 600.0)
+				{
+					P.Until = std::max(P.Until, Time + 30.0);      // still their turn to come: they wait
+				}
+			}
+		}
+	}
+
 	void FWorld::Step(float Dt)
 	{
 		if (Dt <= 0.f)
@@ -3708,6 +4597,10 @@ namespace LyudPeople
 			return;
 		}
 		Time += Dt;
+		if (!Queues.empty())
+		{
+			StepQueues();       // (a few dozen lines of a few spots: every step, so nobody stands behind a gap)
+		}
 		// everybody's day is rolled once a day at 14:00 (tonight's bedtime, tomorrow's waking)
 		if (PrevHour >= 0.f && PrevHour < 14.f && Hour >= 14.f)
 		{
@@ -3741,6 +4634,27 @@ namespace LyudPeople
 				}
 				break;
 			case EState::Going:
+				// what they were going to do is off now (the rink shut, the banya cold): they think again where they are, unless
+				// they are already stepping onto the ice (they'll be off it again within a minute) or have their bike in hand
+				// (out of doors on the ground: not on a stair's flights or in a flat, where a way has to start from a slot)
+				if (P.Activity >= 0 && !ConditionOk(Activities[(size_t)P.Activity]) && P.Bike < 0 && P.BikeAct == EBikeAct::None
+					&& P.Slot >= 0 && !P.bIndoors && P.OffGrid < 0 && P.PathI < (int)P.Path.size() && P.Path[(size_t)P.PathI].Kind == 0
+					&& (int)P.Path.size() - P.PathI > std::max(0, (int)Slots[(size_t)P.Slot].Reach.size() - 1))
+				{
+					Unreserve(P);
+					P.Path.clear();
+					P.PathI = 0;
+					P.Activity = -1;
+					P.Slot = -1;
+					P.State = EState::Idle;
+					P.Pose = EPose::Stand;
+					P.Speed = 0.f;
+					P.bHurry = false;
+					P.BreathAt = -1;
+					P.Think = 1.f + 3.f * Rand(P.Rng);
+					P.Why = "called off";
+					break;
+				}
 				Move(P, Dt);
 				break;
 			case EState::Waiting:
@@ -3796,6 +4710,11 @@ namespace LyudPeople
 				// a duty starts (bed, work, school): drop what they're doing
 				// (a break from work: the way there, 35 min at most, the way back)
 				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil);
+				// what they do is off now (the rink shut, the walruses' hour over): they finish within a minute and go
+				if (!ConditionOk(Activities[(size_t)P.Activity]) && P.Until > Time + 60.0)
+				{
+					P.Until = Time + 5.0 + 45.0 * Rand(P.Rng);
+				}
 				// a stretch of snow half cleared is finished first
 				const bool bMidSweep = P.SweepT >= 0.f;
 				if ((Time >= P.Until && !bMidSweep) || bDutyCalls || (P.Path.empty() && !bMidSweep && Interrupt(P, Dt)))
@@ -3809,10 +4728,13 @@ namespace LyudPeople
 					const EPose Keep = P.Pose;
 					const float Go = ActPace(P, Activities[P.Activity]);
 					float Budget = Go * Dt;
+					bool bLine = false;
 					while (Budget > 0.f && P.PathI < (int)P.Path.size())
 					{
 						V3 D = P.Path[P.PathI].P - P.Pos;
-						if (P.Path[P.PathI].Kind != 1)
+						// (along a line in 3D: indoors, a stair's flight, the ladder out of the ice hole)
+						bLine = P.Path[P.PathI].Kind == 1 || P.Path[P.PathI].Kind == 4;
+						if (!bLine)
 						{
 							D.Z = 0.f;
 						}
@@ -3833,7 +4755,7 @@ namespace LyudPeople
 							Budget = 0.f;
 						}
 					}
-					if (!P.bIndoors)
+					if (!P.bIndoors && !bLine)
 					{
 						P.Pos.Z = GroundAt(P.Pos);
 					}
@@ -3844,7 +4766,16 @@ namespace LyudPeople
 						P.PathI = 0;
 						P.Speed = 0.f;
 						const FActivity& A = Activities[P.Activity];
-						if (A.bSnow)
+						if (A.DipMax > 0.f)
+						{
+							// at the next slot of a dip: in the water so long, or on the deck rubbing down a few minutes
+							const FSlot& At = Slots[(size_t)P.Slot];
+							P.Pose = PoseAt(A, P.Slot);
+							P.Yaw = At.Yaw;
+							P.OffGrid = At.Reach.empty() ? -1 : At.Place;
+							P.WanderAt = Time + (P.Pose == EPose::Walrus ? A.DipMin + (A.DipMax - A.DipMin) * Rand(P.Rng) : 240.0 + 360.0 * Rand(P.Rng));
+						}
+						else if (A.bSnow)
 						{
 							P.Pose = EPose::Shovel;
 							P.SweepT = -1.f;
@@ -3874,6 +4805,14 @@ namespace LyudPeople
 				if (Activities[P.Activity].bSnow)
 				{
 					Sweep(P, Dt);
+				}
+				else if (Activities[P.Activity].LoopMax > 0.f)
+				{
+					Skate(P, Dt);
+				}
+				else if (Activities[P.Activity].DipMax > 0.f)
+				{
+					Dip(P);
 				}
 				else if (Activities[P.Activity].bWander)
 				{
@@ -3944,6 +4883,11 @@ namespace LyudPeople
 			P.Bike = -1;
 			P.BikeMode = 0;
 			P.BikeAct = EBikeAct::None;
+			P.OffGrid = -1;
+			P.LoopAt = -1.f;
+			P.bLoopStop = false;
+			P.SkateWith = -1;
+			P.Speed = 0.f;
 			// how tired and hungry they'd be at this hour
 			float Awake = Hour - WakeOf(P);
 			if (Awake < 0.f)

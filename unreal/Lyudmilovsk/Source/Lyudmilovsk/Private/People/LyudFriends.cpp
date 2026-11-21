@@ -11,11 +11,13 @@
 #include "Engine/GameViewportClient.h"
 #include "Engine/HitResult.h"
 #include "Engine/World.h"
+#include "Festival/LyudFestival.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "HeroCharacter.h"
 #include "InputCoreTypes.h"
 #include "Kismet/GameplayStatics.h"
+#include "Garden/LyudGarden.h"
 #include "Letters/LyudLetters.h"
 #include "LyudGameMenu.h"
 #include "LyudGoodsItem.h"
@@ -289,6 +291,11 @@ void ULyudFriends::OnGreeted(int32 PersonId)
 	{
 		const FString Key = KeyOf(PersonId);
 		Grew(Key, Model->Greeted(Std(Key), Today()));
+		// a friend hands him a seed packet now and then if he keeps a bed (docs/allotment.md)
+		if (ULyudGarden* Garden = ULyudGarden::Get(this))
+		{
+			Garden->OnFriendGreeted(PersonId, Model->Level(Std(Key)));
+		}
 	}
 }
 
@@ -361,6 +368,7 @@ void ULyudFriends::Tick(float DeltaTime)
 		{
 			TickVisits(Hero);
 			TickOuting(Hero);
+			TickFestival(Hero);
 		}
 	}
 	if (Hero)
@@ -619,6 +627,71 @@ void ULyudFriends::TickBench(AHeroCharacter* Hero)
 	}
 }
 
+void ULyudFriends::TickFestival(AHeroCharacter* Hero)
+{
+	// a holiday's running part, and the hero at its venue (docs/festivals.md "The new toys")
+	ULyudFestivalSubsystem* Fest = ULyudFestivalSubsystem::Get(this);
+	UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(this);
+	if (!Fest || !Life || !Fest->IsFestivalToday())
+	{
+		return;
+	}
+	const FVector HeroAt = Hero->GetActorLocation();
+	FName FestId;
+	for (const FLyudFestivalNow& F : Fest->ActiveFestivals())
+	{
+		if (F.Phase.IsNone() || F.Venue.IsNone())
+		{
+			continue;
+		}
+		const FLyudVenue V = Fest->FindVenue(F.Venue);
+		if (V.bValid && FVector::Dist2D(V.Center, HeroAt) < V.Radius + OutingNear)
+		{
+			FestId = F.Id;
+			break;
+		}
+	}
+	if (FestId.IsNone())
+	{
+		return;
+	}
+	const int32 Day = Today();
+	TArray<FString> Met;
+	for (const auto& KV : Model->Bonds)
+	{
+		if (KV.second.FestDay == Day || Model->Level(KV.first) < Model->Data.R.FestivalLevel)
+		{
+			continue;
+		}
+		const int32 Id = PersonOf(Str(KV.first));
+		int32 Act = -1;
+		bool bDoing = false;
+		EPersonPose Pose = EPersonPose::Stand;
+		FVector At;
+		if (Id >= 0 && Life->GetActivityState(Id, Act, bDoing, Pose, At) && FVector::Dist2D(At, HeroAt) < OutingNear * 0.5)
+		{
+			Met.Add(Str(KV.first));
+		}
+	}
+	for (const FString& Key : Met)
+	{
+		const int32 Added = Model->Festival(Std(Key), Day);
+		if (Added <= 0)
+		{
+			continue;
+		}
+		const int32 Id = PersonOf(Key);
+		Life->ReactManner(Id, TEXT("wave"), 2.6f);
+		SayEvent(Id, TEXT("friend_festival"));
+		Toast(LyudText::Get(TEXT("friends.festival.toast"), { FStringFormatArg(NameOf(Key).ToString()), FStringFormatArg(ULyudFestivalSubsystem::FestivalName(FestId).ToString()) }));
+		if (ULyudQuests* Quests = ULyudQuests::Get(this))
+		{
+			Quests->AddNote(TEXT("friends.festival.diary"), { TEXT("@npc.") + Key + TEXT(".name"), TEXT("@festival.") + FestId.ToString() + TEXT(".name") });
+		}
+		Grew(Key, Added);
+	}
+}
+
 void ULyudFriends::TickOuting(AHeroCharacter* Hero)
 {
 	UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(this);
@@ -686,6 +759,7 @@ void ULyudFriends::TickTeaChair(AHeroCharacter* Hero)
 	if (Seat.IsEmpty())
 	{
 		TeaNotNowShown.Reset();
+		TeaClosedSeat.Reset();
 		return;
 	}
 	float Hour = 12.f;
@@ -695,6 +769,10 @@ void ULyudFriends::TickTeaChair(AHeroCharacter* Hero)
 		if (Str(H.Chair) != Seat)
 		{
 			continue;
+		}
+		if (TeaClosedSeat == Seat)
+		{
+			return;     // the tea at this table just ended (or was left): not again until he gets up
 		}
 		if (Model->TeaNow(H.Key(), Day, Hour))
 		{
@@ -722,6 +800,7 @@ void ULyudFriends::TickTeaChair(AHeroCharacter* Hero)
 void ULyudFriends::OpenTea(const LyudFriends::FHost& Host)
 {
 	TeaHost = Str(Host.Id);
+	TeaClosedSeat = Str(Host.Chair);
 	TeaAsked.Init(false, FMath::Max(1, Host.Topics));
 	TeaShown = -1;
 	TeaLine = LyudText::Get(TEXT("friends.tea.") + TeaHost + TEXT(".welcome"));
@@ -912,9 +991,11 @@ void ULyudFriends::TickOffer(AHeroCharacter* Hero, APlayerController* PC)
 		const ULyudLetters* Letters = ULyudLetters::Get(World);
 		const bool bCalm = UI && UI->CanOpen(true) && !Hero->IsOnBike() && !Hero->IsLeadingBike() && !(City && City->HasModeUp())
 			&& !(Letters && (Letters->IsOffering() || Letters->HasModeUp()));
+		const ULyudGarden* Garden = ULyudGarden::Get(World);
+		const bool bGardenBusy = Garden && Garden->IsPrompting();
 		const ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(World);
 		AActor* Actor = nullptr;
-		const int32 Id = bCalm && Talk ? Talk->NearestSpeaker(Actor) : -1;
+		const int32 Id = bCalm && !bGardenBusy && Talk ? Talk->NearestSpeaker(Actor) : -1;
 		if (Id >= 0 && Actor)
 		{
 			const FVector Eye = Hero->GetPawnViewLocation();

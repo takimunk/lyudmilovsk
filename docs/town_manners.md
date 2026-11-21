@@ -35,11 +35,14 @@ temperature, a need, a holiday gathering, waiting for the train), how likely (we
 what it puts in the hands. The file's `_doc` lists every key.
 
 - **force** rows are what somebody does while they fit: an umbrella in the rain (those who have one; the rest cover
-  the head or hug themselves and hurry), the rod while fishing, the brush at the easel, the bag carried home from the shop.
+  the head or hug themselves and hurry), the rod while fishing, the brush at the easel, the bag carried home from the shop, the paper
+  on the bench in the morning (`read_paper`), the keys at the hall's piano, the postwoman's bag.
 - weighted rows are picked now and then against `idle_weight` (doing nothing in particular): folded arms, hands on
   the hips, a stretch, a yawn, a look at the watch (more of it waiting for the train), a look at the sky, a hand over the
   eyes against the low sun, cold hands rubbed, a phone call, the phone scrolled, a cigarette, a photograph, a newspaper
-  on the bench, knitting, an ice cream, a cup, a doze on the bench after lunch, claps and swaying at a holiday.
+  on the bench, knitting, an ice cream, a cup, a doze on the bench after lunch, claps and swaying at a holiday,
+  a flat stone sent over the water, the dominoes put down in the sanatorium's lounge, the cup at its pump room, the
+  spade, the watering can and the weeding at the allotment's beds.
 - **react** rows are never picked: the game starts them (`ReactManner`): a wave, a nod.
 
 Only people who have a body now are updated (a few dozen); between picks an update is a couple of comparisons
@@ -170,18 +173,19 @@ curled). So a gesture goes with any pose and any body, melts into the next one, 
 hand. Standing with folded arms uses the `FoldArms` clip (`LyudGesture::ClipFor`).
 
 Props are static meshes `/Game/Characters/Humans/Props/SM_Prop_<name>` (phone, cigarette, camera, umbrella, rod,
-brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, and easel), made by `blender/humans/props.py` and
+brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, spade, watering_can, and easel), made by `blender/humans/props.py` and
 imported by `unreal/scripts/import_props.py`. A manner whose prop's mesh is missing is never picked. How each sits in
 the hands is `LyudGesture::HoldOf`:
 
 | hold | props | the mesh |
 | --- | --- | --- |
-| Upright | umbrella, ice_cream, cup | origin at the grip, +Z up |
+| Upright | umbrella, ice_cream, cup, watering_can | origin at the grip, +Z up (the can's spout +X) |
 | Hanging | bag | origin at the handles, hangs along -Z |
 | Palm | phone | long axis X, the screen +Z |
 | Fingers | cigarette, brush | along +X from the fingers |
 | TwoHands | camera, binoculars, newspaper, book, knitting | length X, the face the holder looks at +Z |
 | Pointing | rod | along +X from the grip |
+| Shaft | spade | both hands on it: +X from the main hand's grip through the other hand and on to the blade |
 
 ## API
 

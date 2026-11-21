@@ -1,0 +1,167 @@
+{
+ "dev.action.photo.album": {
+  "en": "Open the album",
+  "ja": "アルバムを開く",
+  "ru": "Открыть альбом"
+ },
+ "dev.action.photo.develop": {
+  "en": "Develop every film now",
+  "ja": "すべてのフィルムを今すぐ現像",
+  "ru": "Проявить все плёнки сейчас"
+ },
+ "dev.action.photo.give": {
+  "en": "Give a camera, 3 films and 200 roubles",
+  "ja": "カメラ、フィルム3本、200ルーブルをもらう",
+  "ru": "Дать фотоаппарат, 3 плёнки и 200 руб."
+ },
+ "dev.group.photo": {
+  "en": "Camera",
+  "ja": "カメラ",
+  "ru": "Фотоаппарат"
+ },
+ "ui.photo.album.caption": {
+  "en": "{0}, {1}",
+  "ja": "{0}　{1}",
+  "ru": "{0}, {1}"
+ },
+ "ui.photo.album.empty": {
+  "en": "Not a single print yet.",
+  "ja": "プリントはまだ一枚もない。",
+  "ru": "Пока ни одного отпечатка."
+ },
+ "ui.photo.album.keys": {
+  "en": "A, D — turn pages   ·   P — close",
+  "ja": "A・D：ページをめくる   ·   P：閉じる",
+  "ru": "A, D — листать   ·   P — закрыть"
+ },
+ "ui.photo.album.nowhere": {
+  "en": "somewhere on the way",
+  "ja": "どこかの道で",
+  "ru": "где-то в пути"
+ },
+ "ui.photo.album.page": {
+  "en": "{0} / {1}",
+  "ja": "{0} / {1}",
+  "ru": "{0} / {1}"
+ },
+ "ui.photo.album.title": {
+  "en": "Album",
+  "ja": "アルバム",
+  "ru": "Альбом"
+ },
+ "ui.photo.dark.bath.0": {
+  "en": "Developer",
+  "ja": "現像液",
+  "ru": "Проявитель"
+ },
+ "ui.photo.dark.bath.1": {
+  "en": "Stop bath",
+  "ja": "停止液",
+  "ru": "Стоп-ванна"
+ },
+ "ui.photo.dark.bath.2": {
+  "en": "Fixer",
+  "ja": "定着液",
+  "ru": "Фиксаж"
+ },
+ "ui.photo.dark.done": {
+  "en": "The film is developed, the prints are dry: {0}. They are in the album (P).",
+  "ja": "現像できた。乾いたプリントは{0}枚。アルバム（P）に入れた。",
+  "ru": "Плёнка проявлена, отпечатки высохли: {0}. Они в альбоме (P)."
+ },
+ "ui.photo.dark.hint": {
+  "en": "E — take the film out",
+  "ja": "E：フィルムを引き上げる",
+  "ru": "E — вынуть плёнку"
+ },
+ "ui.photo.dark.nothing": {
+  "en": "Nothing to develop: no exposed films.",
+  "ja": "現像するものがない。撮影済みのフィルムがない。",
+  "ru": "Проявлять нечего: отснятых плёнок нет."
+ },
+ "ui.photo.dark.pale": {
+  "en": "The film came out so-so, the prints are grey: {0}.",
+  "ja": "現像はいまひとつ。プリントは灰色っぽい：{0}枚。",
+  "ru": "Плёнка проявлена кое-как, отпечатки вышли серые: {0}."
+ },
+ "ui.photo.dark.ruined": {
+  "en": "The film is ruined: nothing came out on it.",
+  "ja": "フィルムをだめにした。何も写っていない。",
+  "ru": "Плёнка испорчена: на ней ничего не вышло."
+ },
+ "ui.photo.dark.seconds": {
+  "en": "{0} s   (needs {1})",
+  "ja": "{0} 秒   （目安 {1}）",
+  "ru": "{0} с   (нужно {1})"
+ },
+ "ui.photo.film_end": {
+  "en": "The film is finished. R to rewind.",
+  "ja": "フィルムが終わった。Rで巻き戻す。",
+  "ru": "Плёнка кончилась. R — перемотать."
+ },
+ "ui.photo.finder": {
+  "en": "focus {0}   ·   frame {1} of {2}",
+  "ja": "ピント {0}   ·   {2}枚中{1}枚",
+  "ru": "резкость {0}   ·   кадр {1} из {2}"
+ },
+ "ui.photo.finder.no_film": {
+  "en": "focus {0}   ·   no film",
+  "ja": "ピント {0}   ·   フィルムなし",
+  "ru": "резкость {0}   ·   плёнки нет"
+ },
+ "ui.photo.focus.inf": {
+  "en": "∞",
+  "ja": "∞",
+  "ru": "∞"
+ },
+ "ui.photo.focus.m": {
+  "en": "{0} m",
+  "ja": "{0} m",
+  "ru": "{0} м"
+ },
+ "ui.photo.loaded": {
+  "en": "Film loaded: 36 frames.",
+  "ja": "フィルムを入れた。36枚。",
+  "ru": "Плёнка заряжена: 36 кадров."
+ },
+ "ui.photo.no_film": {
+  "en": "There is no film in the camera.",
+  "ja": "カメラにフィルムがない。",
+  "ru": "В аппарате нет плёнки."
+ },
+ "ui.photo.rewind.nothing": {
+  "en": "Nothing to rewind.",
+  "ja": "巻き戻すものがない。",
+  "ru": "Перематывать нечего."
+ },
+ "ui.photo.rewound": {
+  "en": "The film is rewound and out. Exposed films in the pocket: {0}.",
+  "ja": "フィルムを巻き戻して取り出した。撮影済みフィルム：{0}本。",
+  "ru": "Плёнка перемотана и вынута. Отснятых плёнок в кармане: {0}."
+ },
+ "ui.photo.studio.no_money": {
+  "en": "Developing costs {0} roubles. You don't have that much.",
+  "ja": "現像は{0}ルーブル。お金が足りない。",
+  "ru": "Проявка стоит {0} руб. Столько нет."
+ },
+ "ui.photo.studio.nothing": {
+  "en": "Nothing to hand in: no exposed films.",
+  "ja": "預けるものがない。撮影済みのフィルムがない。",
+  "ru": "Сдавать нечего: отснятых плёнок нет."
+ },
+ "ui.photo.studio.prints": {
+  "en": "The prints are ready: {0}. They are in the album (P).",
+  "ja": "プリントができた：{0}枚。アルバム（P）に入れた。",
+  "ru": "Отпечатки готовы: {0}. Они в альбоме (P)."
+ },
+ "ui.photo.studio.taken": {
+  "en": "Films handed in: {0}, {1} roubles. Ready tomorrow by ten in the morning.",
+  "ja": "フィルムを{0}本預けた。{1}ルーブル。明日の朝10時にできあがる。",
+  "ru": "Плёнок сдано: {0}, {1} руб. Будет готово завтра к десяти утра."
+ },
+ "ui.photo.studio.wait": {
+  "en": "The films are still being done. Ready by ten in the morning.",
+  "ja": "フィルムはまだ現像中。朝10時にできあがる。",
+  "ru": "Плёнки ещё в работе. Будут готовы к десяти утра."
+ }
+}

@@ -1,4 +1,5 @@
 #include "City/LyudCityThings.h"
+#include "People/LyudTownRumours.h"
 
 #include "CityThingsModel.h"
 #include "CityCupsModel.h"
@@ -23,6 +24,7 @@
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "Festival/LyudFestival.h"
+#include "../Festival/FestivalCalendar.h"
 #include "Food/LyudHandUse.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
@@ -33,6 +35,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Letters/LyudLetters.h"
 #include "People/LyudFriends.h"
+#include "Garden/LyudGarden.h"
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudSave.h"
@@ -41,6 +44,7 @@
 #include "Misc/Paths.h"
 #include "NpcDialogue.h"
 #include "Sound/SoundBase.h"
+#include "People/CounterService.h"
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
@@ -159,6 +163,11 @@ namespace LyudCityThingsImpl
 		{
 			const FLyudSkyWeather Sky = Wx->GetSky();
 			W.Weather = LyudCity::WeatherBits(Sky.Cloud, Sky.Rain, Sky.Snow, Sky.Fog, Sky.TempC, Sky.Wet);
+		}
+		// what the town says of the hero now: the staff's topic «Что говорят в городе?» (docs/town_rumours.md)
+		if (ULyudTownRumours* Rumours = ULyudTownRumours::Get(World))
+		{
+			W.Rumours = &Rumours->KindsGoingRound();
 		}
 		return W;
 	}
@@ -1055,6 +1064,10 @@ void ULyudCityThings::Greet(int32 Thing)
 		{
 			GreetedPlot = Plot;
 			Talk->SayEvent(Body, TEXT("counter_hello"), Person, Role);
+			if (ULyudCounterService* Counter = ULyudCounterService::Get(this))
+			{
+				Counter->NoteGreeted(Person);
+			}
 			return;
 		}
 	}
@@ -1230,7 +1243,16 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	}
 	if (!O.Open.empty())
 	{
-		// another system's screen (the library's classics: ULyudBookScreen listens); the act's line stays unsaid
+		// another system's screen (the library's classics: ULyudBookScreen listens; a piano: ULyudInstruments); the act's line
+		// stays unsaid. An act that sits (a piano's stool) seats the hero first when he is at the thing.
+		if (Hero && O.Pose == "sit" && !Hero->IsSeated() && FVector::Dist(Hero->GetActorLocation(), At) < 400.f)
+		{
+			const int OpenSeat = Model->SeatFor(Thing, SeatedOn);
+			if (OpenSeat >= 0)
+			{
+				Sit(OpenSeat, Hero, false);
+			}
+		}
 		OnOpen.Broadcast(FName(*LyudCityThingsImpl::Str(O.Open)), Thing);
 		return;
 	}
@@ -1318,7 +1340,7 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	// a system that adds to this act (the music: a record goes on, a radio is switched) may say its own words instead
 	FText Line = O.Line.empty() ? FText::GetEmpty() : LineText(LyudCityThingsImpl::Str(O.Line));
 	bool bHooked = false;
-	if (!O.bClosed && O.Act >= 0 && ActHook.IsBound())
+	if (!O.bClosed && O.Act >= 0 && (ActHook.IsBound() || MoreActHooks.Num() > 0))
 	{
 		FCityActInfo Info;
 		Info.Thing = LyudCityThingsImpl::Str(T.Id);
@@ -1327,7 +1349,14 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		Info.Plot = LyudCityThingsImpl::Str(T.Plot);
 		Info.At = At;
 		Info.bFromConsole = bFromConsole;
-		bHooked = ActHook.Execute(Info, Line);
+		bHooked = ActHook.IsBound() && ActHook.Execute(Info, Line);
+		for (int32 H = 0; !bHooked && H < MoreActHooks.Num(); ++H)
+		{
+			if (MoreActHooks[H].IsBound())
+			{
+				bHooked = MoreActHooks[H].Execute(Info, Line);
+			}
+		}
 	}
 	if (!Line.IsEmpty())
 	{
@@ -1529,6 +1558,14 @@ void ULyudCityThings::Tick(float DeltaTime)
 				Picked = -1;
 			}
 		}
+		// and so has the allotment (docs/allotment.md)
+		if (const ULyudGarden* Garden = ULyudGarden::Get(World))
+		{
+			if (Garden->IsPrompting())
+			{
+				Picked = -1;
+			}
+		}
 		if (!bOutside)
 		{
 			TrackPlot(Hero);
@@ -1705,6 +1742,12 @@ void ULyudCityThings::AnnounceStamps(const TArray<FString>& Stamps)
 		const int32 Got = Model->CountStamps(Set);
 		const int32 All = (int32)C->Pieces.size();
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: stamp %s (%d of %d)"), *Stamp, Got, All);
+		// the quests (and the talk of the town, docs/town_rumours.md) hear of a stamp, and of a collection made whole
+		ULyudQuests::Notify(this, TEXT("stamp"), Stamp);
+		if (Got >= All)
+		{
+			ULyudQuests::Notify(this, TEXT("stamp_set"), LyudCityThingsImpl::Str(Set));
+		}
 		if (Screen)
 		{
 			const FString Title = LyudText::Get(LyudCityThingsImpl::Str(C->Title)).ToString();
@@ -1930,6 +1973,14 @@ FText ULyudCityThings::LineText(const FString& Key) const
 {
 	const FText Text = LyudText::Get(Key);
 	const FString& Words = Text.ToString();
+	// the staff's answer about the talk of the town names what is said ({detail}: city.ask.town_talk.<kind>, docs/town_rumours.md)
+	static const FString TalkHead = TEXT("city.ask.town_talk.");
+	if (Words.Contains(TEXT("{detail}")) && Key.StartsWith(TalkHead))
+	{
+		const ULyudTownRumours* Rumours = ULyudTownRumours::Get(this);
+		const FString Detail = Rumours ? Rumours->DetailOf(Key.Mid(TalkHead.Len())) : FString();
+		return FText::FromString(Words.Replace(TEXT("{detail}"), *Detail));
+	}
 	if (!Words.Contains(TEXT("{time}")))
 	{
 		return Text;
@@ -2040,7 +2091,8 @@ void ULyudCityThings::BeginGame(int32 Thing, int32 Minutes, bool bSeated)
 	GameTitle = R ? LyudText::Get(TEXT("city.game.title_vs"), { FStringFormatArg(Title.ToString()), FStringFormatArg(GameOpponent.ToString()) }) : Title;
 	if (const LyudCity::FCupDef* Cup = Cups && R && CupMatchCup >= 0 ? Cups->Def(CupMatchCup) : nullptr)
 	{
-		GameTitle = LyudText::Get(TEXT("city.cup.game_title"), { FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(Cup->Title)).ToString()),
+		const LyudCity::FWhen CupNow = LyudCityThingsImpl::When(World);
+		GameTitle = LyudText::Get(TEXT("city.cup.game_title"), { FStringFormatArg(LyudText::Get(LyudCityThingsImpl::Str(Cups->TitleOn(CupMatchCup, CupMatchDay, &CupNow))).ToString()),
 			FStringFormatArg(LyudText::Get(FString::Printf(TEXT("city.cup.rname.%d"), CupMatchRound)).ToString()), FStringFormatArg(GameOpponent.ToString()) });
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: tournament %s, round %d, against %s"), *LyudCityThingsImpl::Str(Cup->Id), CupMatchRound, *GameOpponent.ToString());
 	}
@@ -2223,16 +2275,24 @@ void ULyudCityThings::FinishGame()
 	FString CupNote;
 	if (Cups && CupMatchCup >= 0)
 	{
-		const LyudCity::FCupResult CR = Cups->Record(*Model, CupMatchCup, CupMatchDay, CupMatchRound, End.Result);
+		// (a holiday today, and the match is today's: the holiday's cup, docs/festivals.md "The new toys")
+		const LyudCity::FWhen CupNow = LyudCityThingsImpl::When(World);
+		const LyudCity::FCupResult CR = Cups->Record(*Model, CupMatchCup, CupMatchDay, CupMatchRound, End.Result, CupNow.bFestival && CupMatchDay == CupNow.Since);
 		End.NewStamps.insert(End.NewStamps.end(), CR.NewStamps.begin(), CR.NewStamps.end());
 		const LyudCity::FCupDef* Cup = Cups->Def(CupMatchCup);
-		const FString CupTitle = Cup ? LyudText::Get(LyudCityThingsImpl::Str(Cup->Title)).ToString() : FString();
+		const FString CupTitle = Cup ? LyudText::Get(LyudCityThingsImpl::Str(Cups->TitleOn(CupMatchCup, CupMatchDay))).ToString() : FString();
 		switch (CR.Note)
 		{
 		case LyudCity::ECupNote::Replay: CupNote = LyudText::Get(TEXT("city.cup.note.replay")).ToString(); break;
 		case LyudCity::ECupNote::Next: CupNote = LyudText::Get(TEXT("city.cup.note.next"), { FStringFormatArg(UTF8_TO_TCHAR(LyudCity::FCups::Hm(CR.NextHour).c_str())) }).ToString(); break;
 		case LyudCity::ECupNote::Out: CupNote = LyudText::Get(TEXT("city.cup.note.out")).ToString(); break;
-		case LyudCity::ECupNote::Champion: CupNote = LyudText::Get(TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString(); break;
+		case LyudCity::ECupNote::Champion:
+			CupNote = LyudText::Get(CR.bFestival ? TEXT("city.cup.note.champion_fest") : TEXT("city.cup.note.champion"), { FStringFormatArg(CupTitle) }).ToString();
+			if (Cup)
+			{
+				ULyudQuests::Notify(this, TEXT("cup_won"), LyudCityThingsImpl::Str(Cup->Id));    // the town talks of it (docs/town_rumours.md)
+			}
+			break;
 		default: break;
 		}
 		UE_LOG(LogLyudCity, Display, TEXT("CityThings: tournament %s round %d: %s"), Cup ? *LyudCityThingsImpl::Str(Cup->Id) : TEXT("?"), CupMatchRound, *CupNote);
@@ -2275,6 +2335,11 @@ void ULyudCityThings::FinishGame()
 			}
 		}
 		ULyudQuests::Notify(this, TEXT("win"), LyudCityThingsImpl::Str(End.Target));
+		if (!End.Opponent.empty())
+		{
+			// a regular beaten: they tell their friends (the talk of the town, docs/town_rumours.md; the name key: npc.<key>.name)
+			ULyudQuests::Notify(this, TEXT("beat"), LyudCityThingsImpl::Str(End.Opponent));
+		}
 	}
 	const bool bSeated = bGameSeated;
 	const int32 Minutes = GameMinutes;
@@ -4109,6 +4174,25 @@ void ULyudCityThings::LoadCups()
 		UE_LOG(LogLyudCity, Warning, TEXT("CityThings: City/tournaments.json unreadable: %s"), *LyudCityThingsImpl::Str(Error));
 		return;
 	}
+	// no cup on a public holiday (Big Sun Day and the festivals' days off): asked of the festivals for a day since the start
+	Cups->IsHoliday = [WeakThis = TWeakObjectPtr<ULyudCityThings>(this)](long long Day) -> bool
+	{
+		const ULyudCityThings* Self = WeakThis.Get();
+		const UWorld* World = Self ? Self->GetWorld() : nullptr;
+		const ULyudFestivalSubsystem* Fest = World ? ULyudFestivalSubsystem::Get(World) : nullptr;
+		const LyudFest::FCalendar* Cal = Fest ? Fest->GetCalendar() : nullptr;
+		if (!Cal)
+		{
+			return false;
+		}
+		const UGameCalendar* GameCal = World->GetSubsystem<UGameCalendar>();
+		const FDateTime Date = (GameCal ? GameCal->StartDate : FDateTime(2026, 10, 20)).GetDate() + FTimespan::FromDays((double)Day);
+		LyudFest::FDate D;
+		D.Y = Date.GetYear();
+		D.M = Date.GetMonth();
+		D.D = Date.GetDay();
+		return Cal->IsDayOff(D);
+	};
 	const bool bAll = Cups->Bind(*Model);
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: %d club tournaments%s"), (int32)Cups->Defs.size(), bAll ? TEXT("") : TEXT(" (some with fewer than eight players: not held)"));
 }
@@ -4126,7 +4210,7 @@ void ULyudCityThings::GetCupNews(int32 Since, TArray<FLyudCupNews>& Out) const
 	for (int32 Cup = 0; Cup < (int32)Cups->Defs.size(); ++Cup)
 	{
 		const LyudCity::FCupDef& D = Cups->Defs[(size_t)Cup];
-		if (!Cups->IsUsable(Cup) || LyudCity::FCups::WeekdayOf(Since, Now) != D.Weekday)
+		if (!Cups->IsUsable(Cup) || LyudCity::FCups::WeekdayOf(Since, Now) != D.Weekday || Cups->IsOff(Since))
 		{
 			continue;
 		}
