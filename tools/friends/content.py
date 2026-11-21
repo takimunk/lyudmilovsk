@@ -582,6 +582,9 @@ for job, ru, en, ja in [
         ("director", "директорствует", "a director", "所長さん"),
         ("guest", "отдыхает в санатории", "is staying at the sanatorium", "療養所で療養中"),
         ("postman", "разносит почту", "delivers the post", "郵便配達の仕事"),
+        ("researcher", "работает в лаборатории", "works at the lab", "研究所の研究員"),
+        ("station_attendant", "дежурит на станции канатки", "works at the cable car station", "ロープウェイ駅の係員"),
+        ("station_barista", "варит кофе в станционном буфете", "makes coffee at the station buffet", "駅のビュッフェでコーヒーをいれる仕事"),
 ]:
     T("friends.job.%s" % job, ru, en, ja)
 
