@@ -91,6 +91,7 @@ namespace LyudPeople
 		V3 Pos;                     // floor point under the seat / the middle of the mattress / where to stand
 		float Yaw = 0.f;            // the way the person faces (lying: head to foot)
 		V3 Approach;                // where to stand before sitting or lying down
+		bool bFrontApproach = false; // the approach is the step in front of an outdoor seat: come to it from the front
 		float Height = 0.f;         // seat or mattress top over the floor, m
 		int Capacity = 1;
 		std::string Tag;            // club seats: the station index; flats: the room kind
@@ -759,6 +760,7 @@ namespace LyudPeople
 		/** Clearing a snow stretch: along it from its near end to its far end at the pusher's pace, then on to the next. */
 		void Sweep(FPerson& P, float Dt);
 		void OutdoorWay(const V3& From, const V3& To, std::vector<FPerson::FWay>& Out) const;
+		void WayToSlot(const V3& From, const FSlot& To, std::vector<FPerson::FWay>& Out) const;
 		/** Rewrites a fresh way to go part of it by bike (theirs, if it suits). */
 		void PlanBike(FPerson& P);
 		/** At a stop of the way with something to do with the bike. */

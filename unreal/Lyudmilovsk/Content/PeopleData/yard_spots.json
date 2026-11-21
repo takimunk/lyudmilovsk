@@ -1,0 +1,1280 @@
+{
+ "_doc": "Built by tools/yard/yard_areas.py (docs/yard_games.md): the yards' people's places (kind yard), the same format as town_plan.json's spots. Do not edit by hand.",
+ "spots": [
+  {
+   "id": "S-YARD-01-BENCH",
+   "kind": "yard_bench",
+   "pos": [
+    -591.239,
+    1067.42,
+    -15.0
+   ],
+   "yaw": 344.0,
+   "seats": 4,
+   "slots": [
+    {
+     "pos": [
+      -591.239,
+      1067.42,
+      -14.55
+     ],
+     "yaw": 344.0,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -590.991,
+      1068.286,
+      -14.55
+     ],
+     "yaw": 344.0,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -591.467,
+      1062.843,
+      -14.55
+     ],
+     "yaw": 6.0,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -591.561,
+      1063.739,
+      -14.55
+     ],
+     "yaw": 6.0,
+     "height": 0.45,
+     "kind": "bench"
+    }
+   ]
+  },
+  {
+   "id": "S-YARD-01",
+   "kind": "yard",
+   "pos": [
+    -579.58,
+    1064.546,
+    -15.0
+   ],
+   "yaw": -5.5,
+   "seats": 24,
+   "slots": [
+    {
+     "pos": [
+      -575.08,
+      1064.546,
+      -15.0
+     ],
+     "yaw": 180.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -574.984,
+      1069.142,
+      -15.0
+     ],
+     "yaw": 225.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -579.58,
+      1069.046,
+      -15.0
+     ],
+     "yaw": 270.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -584.176,
+      1069.142,
+      -15.0
+     ],
+     "yaw": 315.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -584.08,
+      1064.546,
+      -15.0
+     ],
+     "yaw": 360.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -584.176,
+      1059.949,
+      -15.0
+     ],
+     "yaw": 405.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -579.58,
+      1060.046,
+      -15.0
+     ],
+     "yaw": 450.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -574.984,
+      1059.949,
+      -15.0
+     ],
+     "yaw": 495.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    }
+   ],
+   "home": "P-UNITE"
+  },
+  {
+   "id": "S-YARD-02-BENCH",
+   "kind": "yard_bench",
+   "pos": [
+    -648.45,
+    1026.993,
+    -15.0
+   ],
+   "yaw": 346.5,
+   "seats": 4,
+   "slots": [
+    {
+     "pos": [
+      -648.45,
+      1026.993,
+      -14.55
+     ],
+     "yaw": 346.5,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -648.24,
+      1027.869,
+      -14.55
+     ],
+     "yaw": 346.5,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -648.478,
+      1022.411,
+      -14.55
+     ],
+     "yaw": 8.5,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -648.612,
+      1023.301,
+      -14.55
+     ],
+     "yaw": 8.5,
+     "height": 0.45,
+     "kind": "bench"
+    }
+   ]
+  },
+  {
+   "id": "S-YARD-02",
+   "kind": "yard",
+   "pos": [
+    -636.677,
+    1024.63,
+    -15.0
+   ],
+   "yaw": -3.0,
+   "seats": 24,
+   "slots": [
+    {
+     "pos": [
+      -632.177,
+      1024.63,
+      -15.0
+     ],
+     "yaw": 180.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -632.081,
+      1029.226,
+      -15.0
+     ],
+     "yaw": 225.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -636.677,
+      1029.13,
+      -15.0
+     ],
+     "yaw": 270.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -641.273,
+      1029.226,
+      -15.0
+     ],
+     "yaw": 315.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -641.177,
+      1024.63,
+      -15.0
+     ],
+     "yaw": 360.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -641.273,
+      1020.033,
+      -15.0
+     ],
+     "yaw": 405.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -636.677,
+      1020.13,
+      -15.0
+     ],
+     "yaw": 450.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -632.081,
+      1020.033,
+      -15.0
+     ],
+     "yaw": 495.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    }
+   ],
+   "home": "W5-D081"
+  },
+  {
+   "id": "S-YARD-03-BENCH",
+   "kind": "yard_bench",
+   "pos": [
+    -574.554,
+    979.847,
+    -15.0
+   ],
+   "yaw": 27.0,
+   "seats": 2,
+   "slots": [
+    {
+     "pos": [
+      -574.554,
+      979.847,
+      -14.55
+     ],
+     "yaw": 27.0,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -574.962,
+      980.649,
+      -14.55
+     ],
+     "yaw": 27.0,
+     "height": 0.45,
+     "kind": "bench"
+    }
+   ]
+  },
+  {
+   "id": "S-YARD-03",
+   "kind": "yard",
+   "pos": [
+    -564.066,
+    985.696,
+    -15.0
+   ],
+   "yaw": -5.5,
+   "seats": 24,
+   "slots": [
+    {
+     "pos": [
+      -559.566,
+      985.696,
+      -15.0
+     ],
+     "yaw": 180.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -559.47,
+      990.292,
+      -15.0
+     ],
+     "yaw": 225.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -564.066,
+      990.196,
+      -15.0
+     ],
+     "yaw": 270.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -568.662,
+      990.292,
+      -15.0
+     ],
+     "yaw": 315.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -568.566,
+      985.696,
+      -15.0
+     ],
+     "yaw": 360.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -568.662,
+      981.099,
+      -15.0
+     ],
+     "yaw": 405.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -564.066,
+      981.196,
+      -15.0
+     ],
+     "yaw": 450.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -559.47,
+      981.099,
+      -15.0
+     ],
+     "yaw": 495.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    }
+   ],
+   "home": "P-UNITE"
+  },
+  {
+   "id": "S-YARD-04-BENCH",
+   "kind": "yard_bench",
+   "pos": [
+    -579.155,
+    932.068,
+    -15.0
+   ],
+   "yaw": 27.0,
+   "seats": 2,
+   "slots": [
+    {
+     "pos": [
+      -579.155,
+      932.068,
+      -14.55
+     ],
+     "yaw": 27.0,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -579.563,
+      932.87,
+      -14.55
+     ],
+     "yaw": 27.0,
+     "height": 0.45,
+     "kind": "bench"
+    }
+   ]
+  },
+  {
+   "id": "S-YARD-04",
+   "kind": "yard",
+   "pos": [
+    -568.666,
+    937.917,
+    -15.0
+   ],
+   "yaw": -5.5,
+   "seats": 24,
+   "slots": [
+    {
+     "pos": [
+      -564.166,
+      937.917,
+      -15.0
+     ],
+     "yaw": 180.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -564.07,
+      942.513,
+      -15.0
+     ],
+     "yaw": 225.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -568.666,
+      942.417,
+      -15.0
+     ],
+     "yaw": 270.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -573.263,
+      942.513,
+      -15.0
+     ],
+     "yaw": 315.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -573.166,
+      937.917,
+      -15.0
+     ],
+     "yaw": 360.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -573.263,
+      933.32,
+      -15.0
+     ],
+     "yaw": 405.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -568.666,
+      933.417,
+      -15.0
+     ],
+     "yaw": 450.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -564.07,
+      933.32,
+      -15.0
+     ],
+     "yaw": 495.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    }
+   ],
+   "home": "P-UNITE"
+  },
+  {
+   "id": "S-YARD-05-BENCH",
+   "kind": "yard_bench",
+   "pos": [
+    -264.648,
+    1059.804,
+    -29.0
+   ],
+   "yaw": 26.8,
+   "seats": 2,
+   "slots": [
+    {
+     "pos": [
+      -264.648,
+      1059.804,
+      -28.55
+     ],
+     "yaw": 26.8,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -265.054,
+      1060.608,
+      -28.55
+     ],
+     "yaw": 26.8,
+     "height": 0.45,
+     "kind": "bench"
+    }
+   ]
+  },
+  {
+   "id": "S-YARD-05",
+   "kind": "yard",
+   "pos": [
+    -254.14,
+    1065.617,
+    -29.0
+   ],
+   "yaw": -5.7,
+   "seats": 24,
+   "slots": [
+    {
+     "pos": [
+      -249.64,
+      1065.617,
+      -29.0
+     ],
+     "yaw": 180.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -249.544,
+      1070.213,
+      -29.0
+     ],
+     "yaw": 225.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -254.14,
+      1070.117,
+      -29.0
+     ],
+     "yaw": 270.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -258.736,
+      1070.213,
+      -29.0
+     ],
+     "yaw": 315.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -258.64,
+      1065.617,
+      -29.0
+     ],
+     "yaw": 360.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -258.736,
+      1061.021,
+      -29.0
+     ],
+     "yaw": 405.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -254.14,
+      1061.117,
+      -29.0
+     ],
+     "yaw": 450.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -249.544,
+      1061.021,
+      -29.0
+     ],
+     "yaw": 495.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    }
+   ],
+   "home": "P-SERPENTINE"
+  },
+  {
+   "id": "S-YARD-06-BENCH",
+   "kind": "yard_bench",
+   "pos": [
+    -488.303,
+    1146.684,
+    -22.0
+   ],
+   "yaw": 22.5,
+   "seats": 2,
+   "slots": [
+    {
+     "pos": [
+      -488.303,
+      1146.684,
+      -21.55
+     ],
+     "yaw": 22.5,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -488.647,
+      1147.516,
+      -21.55
+     ],
+     "yaw": 22.5,
+     "height": 0.45,
+     "kind": "bench"
+    }
+   ]
+  },
+  {
+   "id": "S-YARD-06",
+   "kind": "yard",
+   "pos": [
+    -477.389,
+    1151.693,
+    -22.0
+   ],
+   "yaw": -3.0,
+   "seats": 24,
+   "slots": [
+    {
+     "pos": [
+      -472.889,
+      1151.693,
+      -22.0
+     ],
+     "yaw": 180.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -472.793,
+      1156.289,
+      -22.0
+     ],
+     "yaw": 225.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -477.389,
+      1156.193,
+      -22.0
+     ],
+     "yaw": 270.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -481.985,
+      1156.289,
+      -22.0
+     ],
+     "yaw": 315.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -481.889,
+      1151.693,
+      -22.0
+     ],
+     "yaw": 360.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -481.985,
+      1147.096,
+      -22.0
+     ],
+     "yaw": 405.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -477.389,
+      1147.193,
+      -22.0
+     ],
+     "yaw": 450.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -472.793,
+      1147.096,
+      -22.0
+     ],
+     "yaw": 495.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    }
+   ],
+   "home": "W4-D092"
+  },
+  {
+   "id": "S-YARD-07-BENCH",
+   "kind": "yard_bench",
+   "pos": [
+    -270.607,
+    1000.101,
+    -29.0
+   ],
+   "yaw": 26.8,
+   "seats": 2,
+   "slots": [
+    {
+     "pos": [
+      -270.607,
+      1000.101,
+      -28.55
+     ],
+     "yaw": 26.8,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -271.013,
+      1000.905,
+      -28.55
+     ],
+     "yaw": 26.8,
+     "height": 0.45,
+     "kind": "bench"
+    }
+   ]
+  },
+  {
+   "id": "S-YARD-07",
+   "kind": "yard",
+   "pos": [
+    -260.099,
+    1005.914,
+    -29.0
+   ],
+   "yaw": -5.7,
+   "seats": 24,
+   "slots": [
+    {
+     "pos": [
+      -255.599,
+      1005.914,
+      -29.0
+     ],
+     "yaw": 180.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -255.503,
+      1010.51,
+      -29.0
+     ],
+     "yaw": 225.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -260.099,
+      1010.414,
+      -29.0
+     ],
+     "yaw": 270.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -264.695,
+      1010.51,
+      -29.0
+     ],
+     "yaw": 315.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -264.599,
+      1005.914,
+      -29.0
+     ],
+     "yaw": 360.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -264.695,
+      1001.317,
+      -29.0
+     ],
+     "yaw": 405.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -260.099,
+      1001.414,
+      -29.0
+     ],
+     "yaw": 450.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -255.503,
+      1001.317,
+      -29.0
+     ],
+     "yaw": 495.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    }
+   ],
+   "home": "P-SERPENTINE"
+  },
+  {
+   "id": "S-YARD-08-BENCH",
+   "kind": "yard_bench",
+   "pos": [
+    -427.823,
+    1211.972,
+    -22.0
+   ],
+   "yaw": 343.2,
+   "seats": 4,
+   "slots": [
+    {
+     "pos": [
+      -427.823,
+      1211.972,
+      -21.55
+     ],
+     "yaw": 343.2,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -427.563,
+      1212.834,
+      -21.55
+     ],
+     "yaw": 343.2,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -428.115,
+      1207.4,
+      -21.55
+     ],
+     "yaw": 5.2,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -428.197,
+      1208.296,
+      -21.55
+     ],
+     "yaw": 5.2,
+     "height": 0.45,
+     "kind": "bench"
+    }
+   ]
+  },
+  {
+   "id": "S-YARD-08",
+   "kind": "yard",
+   "pos": [
+    -416.206,
+    1208.935,
+    -22.0
+   ],
+   "yaw": -6.3,
+   "seats": 24,
+   "slots": [
+    {
+     "pos": [
+      -411.706,
+      1208.935,
+      -22.0
+     ],
+     "yaw": 180.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -411.609,
+      1213.531,
+      -22.0
+     ],
+     "yaw": 225.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -416.206,
+      1213.435,
+      -22.0
+     ],
+     "yaw": 270.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -420.802,
+      1213.531,
+      -22.0
+     ],
+     "yaw": 315.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -420.706,
+      1208.935,
+      -22.0
+     ],
+     "yaw": 360.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -420.802,
+      1204.339,
+      -22.0
+     ],
+     "yaw": 405.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -416.206,
+      1204.435,
+      -22.0
+     ],
+     "yaw": 450.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -411.609,
+      1204.339,
+      -22.0
+     ],
+     "yaw": 495.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    }
+   ],
+   "home": "P-T3H2"
+  },
+  {
+   "id": "S-YARD-09-BENCH",
+   "kind": "yard_bench",
+   "pos": [
+    -275.374,
+    952.338,
+    -29.0
+   ],
+   "yaw": 26.8,
+   "seats": 2,
+   "slots": [
+    {
+     "pos": [
+      -275.374,
+      952.338,
+      -28.55
+     ],
+     "yaw": 26.8,
+     "height": 0.45,
+     "kind": "bench"
+    },
+    {
+     "pos": [
+      -275.78,
+      953.142,
+      -28.55
+     ],
+     "yaw": 26.8,
+     "height": 0.45,
+     "kind": "bench"
+    }
+   ]
+  },
+  {
+   "id": "S-YARD-09",
+   "kind": "yard",
+   "pos": [
+    -264.866,
+    958.151,
+    -29.0
+   ],
+   "yaw": -5.7,
+   "seats": 24,
+   "slots": [
+    {
+     "pos": [
+      -260.366,
+      958.151,
+      -29.0
+     ],
+     "yaw": 180.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -260.27,
+      962.747,
+      -29.0
+     ],
+     "yaw": 225.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -264.866,
+      962.651,
+      -29.0
+     ],
+     "yaw": 270.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -269.462,
+      962.747,
+      -29.0
+     ],
+     "yaw": 315.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -269.366,
+      958.151,
+      -29.0
+     ],
+     "yaw": 360.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -269.462,
+      953.555,
+      -29.0
+     ],
+     "yaw": 405.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -264.866,
+      953.651,
+      -29.0
+     ],
+     "yaw": 450.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    },
+    {
+     "pos": [
+      -260.27,
+      953.555,
+      -29.0
+     ],
+     "yaw": 495.0,
+     "height": 0.0,
+     "kind": "stand",
+     "capacity": 3
+    }
+   ],
+   "home": "P-SERPENTINE"
+  }
+ ]
+}

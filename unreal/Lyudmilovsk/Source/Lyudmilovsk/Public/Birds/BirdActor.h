@@ -138,10 +138,21 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Bird")
 	const FBirdSpecies& GetSpeciesData() const { return Data; }
 
+	/** Where its life has it this frame (the life's renderer, every frame; not the player's bird). With lyud.Anim.Smooth
+	 *  the body turns with a beginning and an end instead of snapping round (a hop's turn, the heading read off a
+	 *  velocity that wobbles), noses up and down gently, and in the air banks into its turns as far as the turn and its
+	 *  speed ask (tan bank = speed x turn rate / g). */
+	void Place(const FVector& Location, float YawDeg, float PitchDeg, bool bAirborne);
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 
 private:
+	bool bPlaced = false;
+	FVector PlacedAt = FVector::ZeroVector;
+	float ShownYaw = 0.f, ShownPitch = 0.f, ShownRoll = 0.f, YawVel = 0.f, PitchVel = 0.f, RollVel = 0.f;
+	/** The frame's length, smoothed: the wings never beat faster than the frames can show (TickFlight). */
+	float FrameDt = 1.f / 60.f;
 	FBirdSpecies Data;
 	EBirdState State = EBirdState::Perch;
 	EBirdState Resume = EBirdState::Perch;

@@ -926,6 +926,7 @@ static void Bikes(FWorld& W)
 }
 
 static int Winter();     // winter_people.h
+static int BookClub();   // book_club_people.h
 
 static int Test()
 {
@@ -1528,6 +1529,7 @@ static int Day(int Argc, char** Argv, const char* TraceKey, bool bSummary = fals
 #include "town_week.h"
 #include "winter_people.h"
 #include "indoor_weather.h"
+#include "book_club_people.h"
 
 int main(int Argc, char** Argv)
 {
@@ -1543,6 +1545,12 @@ int main(int Argc, char** Argv)
 	if (Mode == "week")
 	{
 		return Week();
+	}
+	if (Mode == "bookclub")
+	{
+		const int R = BookClub();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return R;
 	}
 	if (Mode == "winter")
 	{
