@@ -122,10 +122,10 @@ the add-on is what brings these back).
 | `book_club` (a duty, `"when": "book_club"`) | the five club members (`tools/reading/build_reading.py`), Thursdays 18:10–20:00 while the game holds the condition on; not on festivals or holidays | `P-LIBRARY-CLUB`: the library lounge's armchairs and sofa, a seat each (docs/books.md "The book club") |
 | `cinema_day`, `cinema_evening` | anybody who likes it (the curious, the warm), going in before the 15:00 and 19:00 sessions | `P-CLUB2-CINEMA`: 145 of the hall's seats, each walked to along its aisle; six of them are the hero's seats and are held through the slot's `thing` |
 | `san_cure` | 60 and over and the sanatorium's guests, mornings but Sunday | `P-SANATORIUM-PUMP`: the pump room's bench and stool, the lobby's benches; the drink manner with a cup |
-| `dominoes` | 58 and over, 15:00 to 20:00, a talk | `P-SANATORIUM-LOUNGE`: the lounge's four seats |
+| `dominoes` | 58 and over, 15:00 to 20:00 (not a talk: partners on one sofa would turn into each other) | `P-SANATORIUM-LOUNGE`: the lounge's four seats |
 | `read_paper` | readers, 7:00 to 11:30 | any bench; the newspaper manner is forced |
-| `skip_stones` | children first, the bold; by day, wind under 7.5 m/s, above 3 °C | the beach's stand slots |
-| `tend_allotment`, `water_allotment` | the four keepers of the allotment's beds, morning and evening, not in frost | `P-T2H2-ALLOTMENT`: two slots a bed, each with its `owner` |
+| `skip_stones` | children first, the bold; by day, wind under 7.5 m/s, above 3 °C | `S-BEACH-STONES` (kind `stone_shore`): spots every 45 m on the wet sand's edge, 6.5 m up from the mean water line, facing the sea |
+| `tend_allotment`, `water_allotment` | the four keepers of the allotment's beds, morning and evening, not in frost | `P-T2H2-ALLOTMENT`: two slots a bed at its lane side (reached along the lane: the slot's `path`), each with its `owner` |
 | `play_piano` | one in three of the musicians and teachers, one in thirty of the rest; 18:00 to 20:30, seldom | `P-HALL-STAGE`: the stool at the club hall's piano |
 | `post_round` | the postwoman (`t_hernandez_lyudmila`), a duty 8:30 to 12:00 but Sunday, rain or not | `S-POST-ROUND`: 37 house doors, one after another |
 
@@ -138,6 +138,10 @@ What the sim learnt for them (`PeopleSim`):
 
 The postwoman is not the old postman of `docs/rounds.md`: he is retired and hands the hero his parcels, she has the
 round of the doors now.
+
+First shots on the Mac (2026-11-21, `unreal/scripts/shoot_residents.sh`): the cinema's house sits right; the keepers stood in
+the lane and the stone throwers high up the sand (both moved since, not shot again); the hands' gestures for weeding and
+the stone's throw were not seen in the frames and want a longer look.
 
 Not done: the pianist is silent (the instruments' synth has no way to be played by somebody else yet), friends do not
 walk along with the hero, and the cinema's house does not follow the programme (people sit through the two fixed
