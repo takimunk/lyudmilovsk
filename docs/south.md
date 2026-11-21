@@ -103,6 +103,32 @@ along every trail and reed and sedge along the brook's lower reach (`south.grass
   that into the planks' angles for `tools/south_signs.py` `PLANKS` (words) and `props_land.py` (geometry).
 - Places are plain map places (`ULyudQuests`): `reach` events and the "new place" note work as for the others.
 
+## Things to do
+
+Backlog item 39. `python3 tools/south_uses.py` writes `Content/South/south_uses.json` from `south.json` (`--check`); the game
+spawns its spots when the level starts (`ULyudSouthUses`, `Public/South/LyudSouthUses.h`), only where the coast is placed
+(any `ALyudSouthSpot` in the level), so nothing is imported in the editor. The spots are `ALyudNorthThing`s: asleep far
+away, E polled only near, the nearest in reach has the prompt.
+
+| Spot | Where | [E] |
+|---|---|---|
+| `spring_1` (drink) | in front of the spring's trough | bends down (the reach's crouch) and drinks from his hands, a line of what it tastes like; with an `empty_bottle` in the pocket fills it instead (`water`). Quests: `use spring` |
+| `fountain_1` (drink) | the drinking fountain on the club's alley | drinks (`use fountain`) |
+| `read_trail`, `read_reeds` (read) | in front of the trail's notice board and the board at the hide | the board's own words (`south.board.*`) as the first page, then more (distances; the starlings' roost and the peregrine) |
+| `read_stele` (read) | in front of the stele «Людмиловск» | the terraces; what somebody scratched into it |
+| `read_view` (read) | on the belvedere by the rail | what can be seen from there: the town, the sea and the bars at low tide, the cable car |
+| boat seats (4) | on the edge of the two boats lying keel up at the mouth | sits down like on a bench (`ALyudSouthSpot`, cushion 62 cm) facing the sea |
+
+Pages use the city's page widget (`SLyudCityPage`: E next / E close; a step away shuts it); quests hear `read <spot id>`.
+Words: `Content/Localization/south_uses/strings_<lang>.json`. Console `lyud.South.Use [id]` (goes there and uses it),
+`lyud.South.Uses`; developer mode, Actions: `south.empty_bottle`. Apples: the orchard's apple trees are the plant system's
+(the `town` mix), and a live apple tree near the hero already lets him pick its fruit in season (`AProceduralPlant`
+`bAllowPick`), so nothing was added for them.
+
+Not done: the stepping stones over the brook's mouth (a misstep into the water needs a wet state the hero does not have);
+the boats' seats are placed from the mesh's size, not from a seat in its manifest (check them in a shot); the seats on the
+boats are not claimed against the fishermen standing by them (they stand, they never sit there).
+
 ## People
 
 Townsfolk walk and use the coast (backlog item 37). `python3 tools/town/south_people.py` adds them to the town's data (like
@@ -137,7 +163,7 @@ ornithologist of `quest/ornithologist` has no duty at the hide; nobody walks the
 
 `python3 tools/south.py --check && python3 tools/south.py`, `python3 tools/transport.py` (the pylons are resolved
 against the ground), `python3 tools/ui_map.py` and `tools/ui_map_ink.py` (restore `textures/ui/binoculars_mask.png`
-if the cloud rewrote it), then `python3 tools/town/south_people.py` (the townsfolk's places follow the things and trails) and the level's build
+if the cloud rewrote it), then `python3 tools/town/south_people.py` (the townsfolk's places follow the things and trails), `python3 tools/south_uses.py` and the level's build
 (`unreal/scripts/build_scene01.sh`).
 
 ## Not done yet

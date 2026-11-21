@@ -562,7 +562,7 @@ questsim walk-through, `south.py --check`, Mac: the map pictures rebuilt (LFS), 
 
 ## 39. Things to do on the way
 
-`[ ]` **Brief (Opus 5.5):** The Aton coast's places can only be sat at and looked through (`docs/south_backlog.md`
+`[~] aton-uses 2026-11-21 (branch on aton-people, docs/south.md "Things to do")` **Brief (Opus 5.5):** The Aton coast's places can only be sat at and looked through (`docs/south_backlog.md`
 "Game"). Make each one do something, in the existing systems: drink at the spring with the hands (E: the hero kneels,
 a sip sound, thirst/"refreshed" like the soda) and fill the empty bottle from the vending machines (a new item state
 "spring water", sold to nobody, given to the sanatorium's doctor for a line); pick apples in the old orchard
