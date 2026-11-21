@@ -2766,7 +2766,15 @@ namespace LyudPeople
 				const float Lat = -Rel.X * Dir.Y + Rel.Y * Dir.X >= 0.f ? 1.7f : -1.7f;
 				FPerson::FWay Side;
 				Side.P = To.Approach + V3(-Dir.Y * Lat, Dir.X * Lat, 0.f);
-				Out.insert(Out.end() - 1, Side);
+				// (before the step out in front; a way that added no point has no end to go before)
+				if (Out.size() > First)
+				{
+					Out.insert(Out.end() - 1, Side);
+				}
+				else
+				{
+					Out.push_back(Side);
+				}
 			}
 			FPerson::FWay Last;
 			Last.P = To.Approach;

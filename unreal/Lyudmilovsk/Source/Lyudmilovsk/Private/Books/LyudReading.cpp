@@ -301,7 +301,20 @@ void ULyudReading::TickClub(AHeroCharacter* Hero, APlayerController* PC, float D
 			SetPrompt(0);
 		}
 		HeroLine = -1;
+		bClubNear = false;
+		ClubScanClock = 0.f;
 		return;
+	}
+	// while he is away from the table (the whole evening, wherever he is in town) the members are looked up twice a second,
+	// not every frame: the look-up below makes strings and searches the people by key
+	if (!bClubNear)
+	{
+		ClubScanClock -= DeltaTime;
+		if (ClubScanClock > 0.f)
+		{
+			return;
+		}
+		ClubScanClock = 0.5f;
 	}
 	const LyudPeople::FWorld* Sim = People->GetSim();
 	const int32 ClubPlace = Sim ? Sim->FindPlace(Club->D.Place) : -1;
@@ -312,7 +325,7 @@ void ULyudReading::TickClub(AHeroCharacter* Hero, APlayerController* PC, float D
 		Turn = 0;
 	}
 	// who of the circle sits there now, and is he near them
-	TArray<TPair<int32, AActor*>> Seated;
+	TArray<TPair<int32, AActor*>, TInlineAllocator<8>> Seated;
 	for (const LyudReading::FMember& M : Club->D.Members)
 	{
 		const int32 Id = People->FindPerson(LyudReadingImpl::Str(M.Key));
@@ -332,7 +345,8 @@ void ULyudReading::TickClub(AHeroCharacter* Hero, APlayerController* PC, float D
 	{
 		bNear |= FVector::Dist(S.Value->GetActorLocation(), Hero->GetActorLocation()) < LyudReadingImpl::ClubNearCm;
 	}
-	if (Seated.Num() < 2 || !bNear)
+	bClubNear = Seated.Num() >= 2 && bNear;
+	if (!bClubNear)
 	{
 		if (PromptShown == 2)
 		{

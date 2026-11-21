@@ -105,6 +105,9 @@ void ULyudFriends::OnWorldBeginPlay(UWorld& InWorld)
 
 void ULyudFriends::Deinitialize()
 {
+	// the level is going (a load or a new game from the menu over a tea): the tea is not counted or written in the diary
+	// (ULyudQuests outlives the level), it is only put away
+	TeaAsked.Reset();
 	EndMode();
 	SetPrompt(-1);
 	Super::Deinitialize();
@@ -290,6 +293,10 @@ void ULyudFriends::OnGreeted(int32 PersonId)
 	if (bLoaded && PersonId >= 0)
 	{
 		const FString Key = KeyOf(PersonId);
+		if (Key.IsEmpty())
+		{
+			return;     // nobody the life knows: no bond under an empty key (it would be saved)
+		}
 		Grew(Key, Model->Greeted(Std(Key), Today()));
 		// a friend hands him a seed packet now and then if he keeps a bed (docs/allotment.md)
 		if (ULyudGarden* Garden = ULyudGarden::Get(this))
@@ -304,6 +311,10 @@ void ULyudFriends::OnHeard(int32 PersonId)
 	if (bLoaded && PersonId >= 0)
 	{
 		const FString Key = KeyOf(PersonId);
+		if (Key.IsEmpty())
+		{
+			return;
+		}
 		Grew(Key, Model->Heard(Std(Key), Today()));
 	}
 }
@@ -396,6 +407,11 @@ void ULyudFriends::Tick(float DeltaTime)
 	{
 		TickTeaChair(Hero);
 		TickOffer(Hero, PC);
+	}
+	else
+	{
+		// no hero (he flies as a bird): a gift's prompt left up would stay on the screen and keep the others' E away
+		SetPrompt(-1);
 	}
 }
 
@@ -755,7 +771,23 @@ void ULyudFriends::TickOuting(AHeroCharacter* Hero)
 void ULyudFriends::TickTeaChair(AHeroCharacter* Hero)
 {
 	const ULyudCityThings* City = ULyudCityThings::Get(this);
-	const FString Seat = City ? City->SeatedThingId() : FString();
+	if (!City || !City->IsSittingOnThing())
+	{
+		TeaNotNowShown.Reset();
+		TeaClosedSeat.Reset();
+		TeaChairClock = 0.f;
+		return;
+	}
+	// seated: the chair's id, the hosts' chairs and the date are built as strings below, so this is looked at twice a second
+	// (at once on sitting down), not every frame of every sit on any bench
+	const UWorld* World = GetWorld();
+	TeaChairClock -= World ? World->GetDeltaSeconds() : 0.f;
+	if (TeaChairClock > 0.f)
+	{
+		return;
+	}
+	TeaChairClock = 0.5f;
+	const FString Seat = City->SeatedThingId();
 	if (Seat.IsEmpty())
 	{
 		TeaNotNowShown.Reset();
@@ -801,7 +833,8 @@ void ULyudFriends::OpenTea(const LyudFriends::FHost& Host)
 {
 	TeaHost = Str(Host.Id);
 	TeaClosedSeat = Str(Host.Chair);
-	TeaAsked.Init(false, FMath::Max(1, Host.Topics));
+	// (the topics and the gift after them are asked with the digit keys: eight topics at most)
+	TeaAsked.Init(false, FMath::Clamp(Host.Topics, 1, PageSize - 1));
 	TeaShown = -1;
 	TeaLine = LyudText::Get(TEXT("friends.tea.") + TeaHost + TEXT(".welcome"));
 	bTeaBye = false;

@@ -186,6 +186,8 @@ private:
 	TArray<FString> ThanksLines;
 	/** The box whose prompt shows (null none). */
 	TWeakObjectPtr<ALyudPostbox> OfferedWeak;
+	/** The unread count the mailbox's prompt was last said with (0 for a street box or none). */
+	int32 OfferedUnread = 0;
 	float StepClock = 0.f;
 	float PickClock = 0.f;
 	float PeopleClock = 0.f;
