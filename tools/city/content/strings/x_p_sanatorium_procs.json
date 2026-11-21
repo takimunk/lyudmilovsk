@@ -1,0 +1,638 @@
+{
+ "_doc": "The sanatorium procedures as hands-on scenes (docs/sanatorium_procedures.md, item 49): the panel words, the pump room, the inhalation room, the mud bath, the Charcot shower, the massage, the doctor's check, the dance, the film night in the lobby. Hero's voice; ja: 僕.",
+ "city.proc.title": {
+  "ru": "Процедура",
+  "en": "Treatment",
+  "ja": "療法"
+ },
+ "city.proc.keys.say": {
+  "ru": "E — дальше",
+  "en": "E — go on",
+  "ja": "E：次へ"
+ },
+ "city.proc.keys.pick": {
+  "ru": "1, 2, 3 — выбрать",
+  "en": "1, 2, 3 — choose",
+  "ja": "1・2・3：選ぶ"
+ },
+ "city.proc.keys.pour": {
+  "ru": "Держи E — наливать; отпусти у черты",
+  "en": "Hold E to pour; let go at the line",
+  "ja": "Eを押し続けて注ぐ。線で離す"
+ },
+ "city.proc.keys.sip": {
+  "ru": "E — точно на щелчок",
+  "en": "E — right on the click",
+  "ja": "E：カチッに合わせて"
+ },
+ "city.proc.keys.breathe": {
+  "ru": "Держи E — вдох, пока круг растёт; отпусти — выдох",
+  "en": "Hold E to breathe in while the ring grows; let go to breathe out",
+  "ja": "輪が大きくなる間はEを押して吸う。離して吐く"
+ },
+ "city.proc.keys.tap": {
+  "ru": "E — ещё и ещё",
+  "en": "E — again and again",
+  "ja": "E：何度も"
+ },
+ "city.proc.hint.good": {
+  "ru": "Вовремя.",
+  "en": "Just right.",
+  "ja": "ぴったり。"
+ },
+ "city.proc.hint.miss": {
+  "ru": "Не в такт.",
+  "en": "Out of time.",
+  "ja": "ずれた。"
+ },
+ "city.proc.hint.spill": {
+  "ru": "Через край!",
+  "en": "Over the brim!",
+  "ja": "あふれた！"
+ },
+ "city.proc.hint.short": {
+  "ru": "Не долил.",
+  "en": "Not full enough.",
+  "ja": "少なすぎた。"
+ },
+ "city.proc.hint.level": {
+  "ru": "До черты.",
+  "en": "Up to the line.",
+  "ja": "線まで。"
+ },
+ "city.proc.status.sips": {
+  "ru": "{0} из {1}",
+  "en": "{0} of {1}",
+  "ja": "{1}回中{0}回"
+ },
+ "city.proc.status.breaths": {
+  "ru": "Вдох {0} из {1}",
+  "en": "Breath {0} of {1}",
+  "ja": "呼吸 {0}／{1}"
+ },
+ "city.proc.status.taps": {
+  "ru": "{0} из {1}",
+  "en": "{0} of {1}",
+  "ja": "{1}回中{0}回"
+ },
+ "city.proc.status.step": {
+  "ru": "Шаг {0} из {1}",
+  "en": "Step {0} of {1}",
+  "ja": "{1}段階中{0}"
+ },
+ "city.proc.walked": {
+  "ru": "Ушёл с процедуры, не дождавшись конца. В книжке ничего не отметили.",
+  "en": "I walked out before the end. Nothing was marked in the book.",
+  "ja": "最後まで待たずに出てきた。手帳には何もつかなかった。"
+ },
+ "city.proc.result": {
+  "ru": "Итог",
+  "en": "How it went",
+  "ja": "結果"
+ },
+ "city.san.p.pump.title": {
+  "ru": "Бювет: минеральная вода",
+  "en": "The pump room: mineral water",
+  "ja": "飲泉所：ミネラルウォーター"
+ },
+ "city.san.p.pump.pick": {
+  "ru": "На полке поильники. Какой взять?",
+  "en": "Drinking cups on the shelf. Which one?",
+  "ja": "棚に飲泉カップが並んでいる。どれにしよう？"
+ },
+ "city.san.p.pump.cup.1": {
+  "ru": "Фаянсовый поильник с носиком",
+  "en": "A china spouted drinking cup",
+  "ja": "注ぎ口つきの陶器の飲泉カップ"
+ },
+ "city.san.p.pump.cup.2": {
+  "ru": "Гранёный стакан в подстаканнике",
+  "en": "A faceted glass in a metal holder",
+  "ja": "金属ホルダーに入った切子のコップ"
+ },
+ "city.san.p.pump.cup.3": {
+  "ru": "Кружка с надписью «Корона»",
+  "en": "A mug that says \"Korona\"",
+  "ja": "「コロナ」と書かれたマグ"
+ },
+ "city.san.p.pump.pour.1": {
+  "ru": "Подставляю поильник под латунный кран и тяну рычажок. Вода бежит с тихим журчанием.",
+  "en": "I hold the spouted cup under the brass tap and pull the lever. The water runs with a quiet gurgle.",
+  "ja": "注ぎ口のカップを真鍮の蛇口の下に置き、レバーを引く。水が静かに流れ出る。"
+ },
+ "city.san.p.pump.pour.2": {
+  "ru": "Ставлю стакан в подстаканнике под латунный кран. Вода звякает о стекло.",
+  "en": "I set the glass in its holder under the brass tap. The water rings against the glass.",
+  "ja": "ホルダーのコップを真鍮の蛇口の下に置く。水がガラスに当たって鳴る。"
+ },
+ "city.san.p.pump.pour.3": {
+  "ru": "Кружку под латунный кран. Внутри на донышке нарисовано солнышко, его постепенно заливает.",
+  "en": "The mug under the brass tap. There is a little sun painted at the bottom; slowly the water covers it.",
+  "ja": "マグを真鍮の蛇口の下へ。底に小さな太陽が描いてあって、だんだん水に沈んでいく。"
+ },
+ "city.san.p.pump.sip.1": {
+  "ru": "Табличка: «Пить медленно, мелкими глотками». Часы над стойкой щёлкают. Глоток — на щелчок.",
+  "en": "A sign: \"Drink slowly, in small sips\". The clock over the counter clicks. A sip to each click.",
+  "ja": "札に「ゆっくり、少しずつ」。カウンターの上の時計がカチッと鳴る。カチッごとにひと口。"
+ },
+ "city.san.p.pump.good.1": {
+  "ru": "Выпил ровно, по часам, как положено. Дежурная по бювету одобрительно кивает.",
+  "en": "I drank it evenly, by the clock, the proper way. The pump-room attendant nods approvingly.",
+  "ja": "時計どおり、きちんと飲んだ。飲泉所の係がうなずいた。"
+ },
+ "city.san.p.pump.fair.1": {
+  "ru": "Пару раз хлебнул не в такт, но выпил всё.",
+  "en": "A couple of sips were out of time, but I drank it all.",
+  "ja": "何度かずれたけど、全部飲んだ。"
+ },
+ "city.san.p.pump.poor.1": {
+  "ru": "Выпил почти залпом и закашлялся. Дежурная качает головой: «Минеральную не пьют, её смакуют».",
+  "en": "I drank it nearly in one go and coughed. The attendant shakes her head: \"You don't gulp mineral water, you savour it.\"",
+  "ja": "ほとんどひと息で飲んでむせた。係が首をふる。「鉱泉は飲むんじゃなくて、味わうものよ」"
+ },
+ "city.san.p.inh.prompt": {
+  "ru": "E — сесть на ингаляцию",
+  "en": "E — sit down for an inhalation",
+  "ja": "E：吸入を受ける"
+ },
+ "city.san.p.inh.title": {
+  "ru": "Ингаляторий",
+  "en": "The inhalation room",
+  "ja": "吸入室"
+ },
+ "city.san.p.inh.herb.mon": {
+  "ru": "Сестра щёлкает тумблером: «Сегодня шалфей». Аппарат гудит и пахнет баней.",
+  "en": "The nurse flips a switch: \"Sage today.\" The machine hums and smells like a bathhouse.",
+  "ja": "看護師がスイッチを入れる。「今日はセージよ」。機械がうなり、銭湯のにおいがする。"
+ },
+ "city.san.p.inh.herb.tue": {
+  "ru": "«Ромашка», — говорит сестра и крутит ручку. Пахнет летним лугом и немножко аптекой.",
+  "en": "\"Camomile,\" says the nurse, turning the knob. It smells of a summer meadow and a little of the chemist's.",
+  "ja": "「カモミール」と看護師がつまみを回す。夏の野原と、少しだけ薬局のにおい。"
+ },
+ "city.san.p.inh.herb.wed": {
+  "ru": "«Морская соль». Аппарат шипит, и в маске становится как на пирсе в ветер.",
+  "en": "\"Sea salt.\" The machine hisses, and inside the mask it is like the pier on a windy day.",
+  "ja": "「海塩よ」。機械がしゅうっと鳴り、マスクの中は風の日の桟橋みたいになる。"
+ },
+ "city.san.p.inh.herb.sun": {
+  "ru": "«Эвкалипт, по воскресеньям», — сестра подмигивает. Холодит до самых ушей.",
+  "en": "\"Eucalyptus, on Sundays,\" the nurse winks. It goes cold right up to my ears.",
+  "ja": "「日曜はユーカリ」と看護師がウインク。耳の奥まですうっと冷える。"
+ },
+ "city.san.p.inh.mask.1": {
+  "ru": "Маска холодная, резинка за ушами. В маске слышно только своё дыхание и гудение аппарата.",
+  "en": "The mask is cold, the elastic behind my ears. Inside it I hear only my own breathing and the hum of the machine.",
+  "ja": "マスクは冷たく、ゴムを耳にかける。聞こえるのは自分の息と機械のうなりだけ。"
+ },
+ "city.san.p.inh.breathe.1": {
+  "ru": "На круглом экранчике светлый круг растёт и опадает. Дышу вместе с ним.",
+  "en": "On a little round screen a pale ring grows and shrinks. I breathe along with it.",
+  "ja": "丸い小さな画面で、明るい輪がふくらんではしぼむ。それに合わせて息をする。"
+ },
+ "city.san.p.inh.guest.any": {
+  "ru": "{0} сидит в соседнем кресле, в такой же маске. Мы киваем друг другу, как водолазы.",
+  "en": "{0} sits in the next chair in the same kind of mask. We nod to each other like divers.",
+  "ja": "{0}が隣の椅子で同じマスクをしている。潜水士みたいにうなずき合う。"
+ },
+ "city.san.p.inh.guest.gromov": {
+  "ru": "Громов в соседней маске считает вслух, по-лётному: «Вдох… два, три, четыре. Выдох…»",
+  "en": "Gromov in the next mask counts aloud, pilot-style: \"In... two, three, four. Out...\"",
+  "ja": "隣のマスクでグロモフさんが飛行士式に数えている。「吸って…二、三、四。吐いて…」"
+ },
+ "city.san.p.inh.guest.sonya": {
+  "ru": "Соня в соседнем кресле дышит под скрипку, которой нет: пальцы левой руки бегают по колену.",
+  "en": "Sonya in the next chair breathes to a violin that isn't there: the fingers of her left hand run over her knee.",
+  "ja": "隣のソーニャは、そこにないバイオリンに合わせて呼吸している。左手の指がひざの上を走る。"
+ },
+ "city.san.p.inh.guest.tamm": {
+  "ru": "Тамм в маске бубнит: «Ладья на d7…» Сазонова рядом нет, и он спорит с ингалятором.",
+  "en": "Tamm mutters into his mask: \"Rook to d7...\" Sazonov isn't here, so he argues with the inhaler.",
+  "ja": "タムさんがマスクの中でつぶやく。「ルークはd7…」。サゾノフさんがいないので、吸入器と言い争っている。"
+ },
+ "city.san.p.inh.guest.sazonov": {
+  "ru": "Сазонов в соседней маске чертит пальцем на подлокотнике: «Объём лёгких, молодой человек, — тоже геометрия».",
+  "en": "Sazonov in the next mask draws on the armrest with a finger: \"The volume of the lungs, young man, is geometry too.\"",
+  "ja": "隣のサゾノフさんが指でひじかけに図を描く。「肺の容積も、きみ、幾何学なんだよ」"
+ },
+ "city.san.p.inh.end.1": {
+  "ru": "Аппарат щёлкает и затихает. Сестра снимает маску: «Всё. Полчаса не разговаривать на холоде».",
+  "en": "The machine clicks and goes quiet. The nurse takes the mask off: \"That's it. No talking out in the cold for half an hour.\"",
+  "ja": "機械がカチッと止まる。看護師がマスクを外す。「おしまい。三十分は寒いところでしゃべらないで」"
+ },
+ "city.san.p.inh.good.1": {
+  "ru": "Дышал ровно, в такт кругу. В груди просторно, как в пустом зале.",
+  "en": "I breathed evenly, in time with the ring. My chest feels roomy, like an empty hall.",
+  "ja": "輪に合わせて落ち着いて呼吸した。胸の中が空っぽのホールみたいに広い。"
+ },
+ "city.san.p.inh.fair.1": {
+  "ru": "Пару раз сбился, но к концу поймал ритм.",
+  "en": "I lost the rhythm a couple of times but caught it by the end.",
+  "ja": "何度かずれたけど、最後にはリズムをつかんだ。"
+ },
+ "city.san.p.inh.poor.1": {
+  "ru": "Всё время дышал невпопад: вдох, когда круг уменьшается. Сестра вздыхает: «Завтра ещё раз, и не торопитесь».",
+  "en": "I kept breathing at the wrong time: in while the ring shrank. The nurse sighs: \"Again tomorrow, and don't rush.\"",
+  "ja": "ずっとずれていた。輪が小さくなるときに吸っていた。看護師がため息。「また明日、あわてないでね」"
+ },
+ "city.san.p.inh.book.1": {
+  "ru": "В курортной книжке новая отметка: «Ингаляция».",
+  "en": "A new mark in my health-resort book: \"Inhalation\".",
+  "ja": "療養手帳に新しい印。「吸入」。"
+ },
+ "city.san.p.inh.nostay.1": {
+  "ru": "Сестра качает головой: «Процедуры по путёвке. Путёвку дают в окошке у гардероба».",
+  "en": "The nurse shakes her head: \"Treatments are on the voucher. You get one at the window by the cloakroom.\"",
+  "ja": "看護師が首をふる。「療法は療養券の人だけ。券はクロークの窓口でね」"
+ },
+ "city.san.p.mud.prompt": {
+  "ru": "E — грязевая аппликация",
+  "en": "E — a mud treatment",
+  "ja": "E：泥パック"
+ },
+ "city.san.p.mud.title": {
+  "ru": "Грязелечебница",
+  "en": "The mud room",
+  "ja": "泥療法室"
+ },
+ "city.san.p.mud.curtain.1": {
+  "ru": "Сестра задёргивает занавеску: «Раздевайтесь, халат на крючке».",
+  "en": "The nurse draws the curtain: \"Get undressed, the robe is on the hook.\"",
+  "ja": "看護師がカーテンを引く。「脱いで、ガウンはフックよ」"
+ },
+ "city.san.p.mud.robe.1": {
+  "ru": "Халат, тапочки. Тапочки на два размера больше и шлёпают по плитке.",
+  "en": "A robe, slippers. The slippers are two sizes too big and slap on the tiles.",
+  "ja": "ガウンとスリッパ。スリッパは二サイズ大きくて、タイルの上でぺたぺた鳴る。"
+ },
+ "city.san.p.mud.spread.1": {
+  "ru": "Ложусь на клеёнку. Сестра намазывает тёплую грязь лопаточкой, как масло на хлеб, и укутывает простынёй.",
+  "en": "I lie down on the oilcloth. The nurse spreads warm mud with a spatula, like butter on bread, and wraps me in a sheet.",
+  "ja": "防水布に横になる。看護師がへらで温かい泥をバターみたいに塗り、シーツでくるむ。"
+ },
+ "city.san.p.mud.still.1": {
+  "ru": "Лежать не шевелясь и дышать медленно. Грязь пахнет морем и чуть-чуть серой.",
+  "en": "Lie still and breathe slowly. The mud smells of the sea and a little of sulphur.",
+  "ja": "動かずに、ゆっくり呼吸する。泥は海と、少し硫黄のにおいがする。"
+ },
+ "city.san.p.mud.guest.any": {
+  "ru": "Из-за занавески через проход кто-то кряхтит от удовольствия. Сестра: «{0}, не вертитесь!»",
+  "en": "From behind the curtain across the aisle someone grunts with pleasure. The nurse: \"{0}, keep still!\"",
+  "ja": "通路の向こうのカーテンから、気持ちよさそうなうなり声。看護師。「{0}さん、動かないで！」"
+ },
+ "city.san.p.mud.guest.gromov": {
+  "ru": "За занавеской Громов засекает время сразу по двум часам: «Двадцать минут, ни секундой больше».",
+  "en": "Behind the curtain Gromov times it on both his watches at once: \"Twenty minutes, not a second more.\"",
+  "ja": "カーテンの向こうでグロモフさんが二つの時計で同時に計っている。「二十分、一秒も長くなく」"
+ },
+ "city.san.p.mud.guest.sonya": {
+  "ru": "За занавеской тихо напевает Соня. Сестра делает вид, что не слышит.",
+  "en": "Behind the curtain Sonya hums softly. The nurse pretends not to hear.",
+  "ja": "カーテンの向こうでソーニャが小さく歌っている。看護師は聞こえないふり。"
+ },
+ "city.san.p.mud.guest.tamm": {
+  "ru": "За занавеской: «Ладья!» — «Не было ладьи!» Даже грязь их не помирила.",
+  "en": "Behind the curtains: \"The rook!\" \"There was no rook!\" Not even the mud has made peace between them.",
+  "ja": "カーテンの向こうで「ルークだ！」「ルークなんてなかった！」。泥でも仲直りしない。"
+ },
+ "city.san.p.mud.rinse.1": {
+  "ru": "Двадцать минут. Потом тёплый душ, грязь убегает в решётку, а кожа как новая.",
+  "en": "Twenty minutes. Then a warm shower; the mud runs down the drain and my skin feels brand new.",
+  "ja": "二十分。それから温かいシャワー。泥が排水口に流れて、肌が新品みたいになる。"
+ },
+ "city.san.p.mud.good.1": {
+  "ru": "Пролежал спокойно все двадцать минут. Сестра говорит, что я образцовый больной, хотя я здоров.",
+  "en": "I lay still for the whole twenty minutes. The nurse says I'm a model patient, though I'm not ill.",
+  "ja": "二十分ずっと静かにしていた。看護師いわく模範的な患者だって。病気じゃないのに。"
+ },
+ "city.san.p.mud.fair.1": {
+  "ru": "Пару раз почесался, но пролежал до конца.",
+  "en": "I scratched a couple of times, but lay there to the end.",
+  "ja": "何度かかいたけど、最後まで横になっていた。"
+ },
+ "city.san.p.mud.poor.1": {
+  "ru": "Вертелся, и простыня сползла. Сестра терпеливо укутывает меня снова.",
+  "en": "I fidgeted and the sheet slipped off. The nurse patiently wraps me up again.",
+  "ja": "もぞもぞしてシーツがずれた。看護師が辛抱強くくるみ直してくれた。"
+ },
+ "city.san.p.mud.book.1": {
+  "ru": "Отметка в книжке: «Грязевая аппликация».",
+  "en": "A mark in the book: \"Mud application\".",
+  "ja": "手帳に印。「泥パック」。"
+ },
+ "city.san.p.mud.nostay.1": {
+  "ru": "«Грязи по назначению врача и по путёвке», — сестра показывает на окошко у гардероба.",
+  "en": "\"Mud is by the doctor's order and on a voucher,\" the nurse points to the window by the cloakroom.",
+  "ja": "「泥は医師の指示と療養券でね」と看護師がクロークの窓口を指さす。"
+ },
+ "city.san.p.ch.prompt": {
+  "ru": "E — душ Шарко",
+  "en": "E — the Charcot shower",
+  "ja": "E：シャルコーシャワー"
+ },
+ "city.san.p.ch.title": {
+  "ru": "Душ Шарко",
+  "en": "The Charcot shower",
+  "ja": "シャルコーシャワー"
+ },
+ "city.san.p.ch.robe.1": {
+  "ru": "Халат на крючок, тапочки у решётки. Встаю в кафельную нишу и берусь за поручень.",
+  "en": "The robe on the hook, the slippers by the drain. I step into the tiled bay and grip the rail.",
+  "ja": "ガウンをフックに、スリッパは排水口のそばに。タイルの壁の前に立ち、手すりをつかむ。"
+ },
+ "city.san.p.ch.desk.1": {
+  "ru": "Сестра за пультом с двумя манометрами берёт шланг: «Поворачиваемся по свистку! Спиной… боком… лицом!»",
+  "en": "At the desk with two pressure gauges the nurse picks up the hose: \"Turn at the whistle! Back... side... front!\"",
+  "ja": "圧力計が二つある台の向こうで看護師がホースを持つ。「笛で回って！背中…横…前！」"
+ },
+ "city.san.p.ch.turn.1": {
+  "ru": "Струя бьёт, как ледяная верёвка. Свисток — и я поворачиваюсь.",
+  "en": "The jet hits like an icy rope. A whistle, and I turn.",
+  "ja": "水流が氷のロープみたいに当たる。笛が鳴ったら回る。"
+ },
+ "city.san.p.ch.fan.1": {
+  "ru": "Под конец она переключает на веер: тёплый дождь вместо верёвки. Можно отдышаться.",
+  "en": "At the end she switches to a fan spray: warm rain instead of a rope. I can get my breath back.",
+  "ja": "最後に扇形に切りかえてくれる。ロープの代わりに温かい雨。やっと息がつける。"
+ },
+ "city.san.p.ch.guest.any": {
+  "ru": "На скамейке у крючков ждёт очереди {0}, с полотенцем на шее: «Ну как? Не страшно?»",
+  "en": "{0} waits a turn on the bench by the hooks, a towel round the neck: \"Well? Scary?\"",
+  "ja": "フックのそばのベンチで、首にタオルをかけた{0}が順番を待っている。「どう？こわい？」"
+ },
+ "city.san.p.ch.guest.gromov": {
+  "ru": "На скамейке ждёт Громов: «Перегрузка не хуже центрифуги. Я засёк».",
+  "en": "Gromov waits on the bench: \"As good a load as the centrifuge. I timed it.\"",
+  "ja": "ベンチでグロモフさんが待っている。「遠心機に負けない重力だ。計っておいた」"
+ },
+ "city.san.p.ch.guest.sonya": {
+  "ru": "Соня на скамейке зажимает уши: «Я слышала, как ты охнул».",
+  "en": "Sonya on the bench covers her ears: \"I heard you gasp.\"",
+  "ja": "ベンチのソーニャが耳をふさぐ。「いま、ひゃって言ったでしょ」"
+ },
+ "city.san.p.ch.guest.tamm": {
+  "ru": "Тамм на скамейке: «В шторм на палубе было мокрее, молодой человек».",
+  "en": "Tamm on the bench: \"It was wetter on deck in a storm, young man.\"",
+  "ja": "ベンチのタムさん。「嵐の甲板のほうがずっと濡れたぞ、若いの」"
+ },
+ "city.san.p.ch.guest.sazonov": {
+  "ru": "Сазонов на скамейке: «Три атмосферы! Посчитайте-ка силу на квадратный сантиметр».",
+  "en": "Sazonov on the bench: \"Three atmospheres! Now work out the force per square centimetre.\"",
+  "ja": "ベンチのサゾノフさん。「三気圧！一平方センチあたりの力を計算してごらん」"
+ },
+ "city.san.p.ch.after.1": {
+  "ru": "Снова халат и тапочки. Кожа горит, и почему-то очень хочется смеяться.",
+  "en": "The robe and slippers again. My skin is glowing and for some reason I really want to laugh.",
+  "ja": "またガウンとスリッパ。肌がほてって、なぜかすごく笑いたい。"
+ },
+ "city.san.p.ch.good.1": {
+  "ru": "Поворачивался точно по свистку. Сестра довольна: «Как на параде».",
+  "en": "I turned right on the whistle. The nurse is pleased: \"Like a parade.\"",
+  "ja": "笛どおりに回れた。看護師も満足。「パレードみたい」"
+ },
+ "city.san.p.ch.fair.1": {
+  "ru": "Один раз повернулся не туда и получил струю в живот.",
+  "en": "Once I turned the wrong way and got the jet in the stomach.",
+  "ja": "一度だけ逆に回って、お腹に水流を食らった。"
+ },
+ "city.san.p.ch.poor.1": {
+  "ru": "Всё путал, и струя била куда попало. Сестра смеётся: «Ничего, у всех в первый раз так».",
+  "en": "I mixed everything up and the jet hit wherever. The nurse laughs: \"Never mind, it's like that for everyone the first time.\"",
+  "ja": "ぜんぶ間違えて、水流があちこちに当たった。看護師が笑う。「平気、最初はみんなそう」"
+ },
+ "city.san.p.ch.book.1": {
+  "ru": "Отметка в книжке: «Душ Шарко».",
+  "en": "A mark in the book: \"Charcot shower\".",
+  "ja": "手帳に印。「シャルコーシャワー」。"
+ },
+ "city.san.p.ch.nostay.1": {
+  "ru": "«Душ по путёвке, молодой человек», — сестра за пультом даже не оборачивается.",
+  "en": "\"The shower is on a voucher, young man,\" the nurse at the desk doesn't even turn round.",
+  "ja": "「シャワーは療養券でね」台の看護師は振り向きもしない。"
+ },
+ "city.san.p.mas.prompt": {
+  "ru": "E — на массаж",
+  "en": "E — have a massage",
+  "ja": "E：マッサージを受ける"
+ },
+ "city.san.p.mas.title": {
+  "ru": "Массажный кабинет",
+  "en": "The massage room",
+  "ja": "マッサージ室"
+ },
+ "city.san.p.mas.lie.1": {
+  "ru": "Ложусь лицом в дырку в столе. Видно только пол и тапочки массажистки.",
+  "en": "I lie face down with my face in the hole of the table. All I can see is the floor and the masseuse's slippers.",
+  "ja": "台の穴に顔をうずめてうつぶせになる。見えるのは床とマッサージ師のスリッパだけ。"
+ },
+ "city.san.p.mas.hands.1": {
+  "ru": "Массажистка греет руки и масло: «Расслабьтесь. Плечи как у штурмана после вахты».",
+  "en": "The masseuse warms her hands and the oil: \"Relax. Shoulders like a navigator's after a watch.\"",
+  "ja": "マッサージ師が手とオイルを温める。「力を抜いて。当直明けの航海士みたいな肩ね」"
+ },
+ "city.san.p.mas.news.1": {
+  "ru": "«А в городе, — начинает она, — всё как всегда: ветер с моря, рыба у причала, в «Янтаре» новый повар».",
+  "en": "\"And in town,\" she begins, \"everything as usual: wind off the sea, fish by the pier, a new cook at the Yantar.\"",
+  "ja": "「町はね」と彼女が話しはじめる。「いつもどおり。海風、桟橋の魚、『ヤンタリ』には新しいコック」"
+ },
+ "city.san.p.mas.news.2": {
+  "ru": "«Говорят, на субботу обещают солнце, — она мнёт мне лопатки. — Мои огурцы на даче уже не знают, верить или нет».",
+  "en": "\"They say there'll be sun on Saturday,\" she kneads my shoulder blades. \"My cucumbers at the dacha don't know whether to believe it.\"",
+  "ja": "「土曜は晴れるって」と肩甲骨をもむ。「うちの菜園のきゅうりは、信じていいのか迷ってる」"
+ },
+ "city.san.p.mas.breathe.1": {
+  "ru": "На каждом выдохе она нажимает на лопатки. Дышу медленно, как велено.",
+  "en": "On every breath out she presses on my shoulder blades. I breathe slowly, as I'm told.",
+  "ja": "息を吐くたびに肩甲骨を押される。言われたとおり、ゆっくり呼吸する。"
+ },
+ "city.san.p.mas.end.1": {
+  "ru": "«Всё, вставайте не спеша. Голова не кружится?»",
+  "en": "\"That's it, get up slowly. Not dizzy?\"",
+  "ja": "「はい、ゆっくり起きて。めまいはない？」"
+ },
+ "city.san.p.mas.good.1": {
+  "ru": "Расслабился так, что чуть не уснул. Спина лёгкая, как воздушный змей.",
+  "en": "I relaxed so much I nearly fell asleep. My back is as light as a kite.",
+  "ja": "力が抜けて、眠りそうになった。背中が凧みたいに軽い。"
+ },
+ "city.san.p.mas.fair.1": {
+  "ru": "То напрягался, то расслаблялся, но под конец помогло.",
+  "en": "I kept tensing up and letting go, but by the end it helped.",
+  "ja": "力が入ったり抜けたりしたけど、最後には効いた。"
+ },
+ "city.san.p.mas.poor.1": {
+  "ru": "Всё время напрягался. Массажистка ворчит: «Вы со мной боретесь или лечитесь?»",
+  "en": "I kept tensing up. The masseuse grumbles: \"Are you fighting me or taking a cure?\"",
+  "ja": "ずっと力が入っていた。マッサージ師がぼやく。「わたしと戦ってるの、療養してるの？」"
+ },
+ "city.san.p.mas.book.1": {
+  "ru": "Отметка в книжке: «Массаж воротниковой зоны».",
+  "en": "A mark in the book: \"Neck and shoulder massage\".",
+  "ja": "手帳に印。「首と肩のマッサージ」。"
+ },
+ "city.san.p.mas.nostay.1": {
+  "ru": "Массажистка вытирает руки: «Запись по путёвкам, у меня всё расписано на неделю».",
+  "en": "The masseuse wipes her hands: \"Bookings are by voucher, my week is full.\"",
+  "ja": "マッサージ師が手をふく。「予約は療養券の人だけ。一週間ぜんぶ埋まってるの」"
+ },
+ "city.san.p.doc.title": {
+  "ru": "Осмотр у врача",
+  "en": "The doctor's check",
+  "ja": "医師の診察"
+ },
+ "city.san.p.doc.scales.1": {
+  "ru": "Доктор кивает на весы: «Разуйтесь — и на весы». Старые весы с гирьками на рейке.",
+  "en": "The doctor nods at the scales: \"Shoes off, and onto the scales.\" Old scales with weights on a beam.",
+  "ja": "医師が体重計にあごをしゃくる。「靴を脱いで、乗って」。分銅を棒にすべらせる古い体重計。"
+ },
+ "city.san.p.doc.weight.1": {
+  "ru": "Доктор двигает гирьку, пока коромысло не замирает: «{0} килограмма».",
+  "en": "The doctor slides the weight until the beam stops: \"{0} kilograms.\"",
+  "ja": "医師が分銅を動かし、さおが止まる。「{0}キロ」"
+ },
+ "city.san.p.doc.cuff.1": {
+  "ru": "Манжета на руку. Доктор даёт мне грушу: «Качайте сами, до ста восьмидесяти».",
+  "en": "A cuff on my arm. The doctor hands me the bulb: \"Pump it yourself, up to a hundred and eighty.\"",
+  "ja": "腕にカフ。医師がゴム球を渡す。「自分で押して、百八十まで」"
+ },
+ "city.san.p.doc.pressure.1": {
+  "ru": "Стрелка ползёт вниз, доктор слушает трубкой. «{1} на {2}. Пульс {3}».",
+  "en": "The needle creeps down; the doctor listens through the stethoscope. \"{1} over {2}. Pulse {3}.\"",
+  "ja": "針が下がり、医師が聴診器で聴く。「{1}の{2}。脈は{3}」"
+ },
+ "city.san.p.doc.spiro.1": {
+  "ru": "Спирометр: вдохнуть поглубже и дуть в трубку, пока хватит воздуха.",
+  "en": "The spirometer: breathe in deep and blow into the tube as long as the air lasts.",
+  "ja": "肺活量計。大きく吸って、息が続くかぎり管に吹きこむ。"
+ },
+ "city.san.p.doc.card.1": {
+  "ru": "«{4} миллилитров». Доктор записывает всё в карту от руки, перьевой ручкой. В первый день было: {5} кг, {6} на {7}, пульс {8}, {9} мл.",
+  "en": "\"{4} millilitres.\" The doctor writes it all on my card by hand, with a fountain pen. On the first day it was: {5} kg, {6} over {7}, pulse {8}, {9} ml.",
+  "ja": "「{4}ミリリットル」。医師が万年筆で手書きでカルテに書く。初日は{5}キロ、{6}の{7}、脈{8}、{9}ミリリットルだった。"
+ },
+ "city.san.p.doc.good.1": {
+  "ru": "«Хорошие цифры, — говорит доктор. — Море работает».",
+  "en": "\"Good numbers,\" says the doctor. \"The sea is doing its job.\"",
+  "ja": "「いい数字だ」と医師。「海が効いているね」"
+ },
+ "city.san.p.doc.fair.1": {
+  "ru": "«Неплохо. Только воду пить по часам, а не когда вспомните».",
+  "en": "\"Not bad. But drink the water by the clock, not when you happen to remember.\"",
+  "ja": "「悪くない。ただ水は思い出したときじゃなく、時間どおりにね」"
+ },
+ "city.san.p.doc.poor.1": {
+  "ru": "«Груша — не для красоты, — смеётся доктор. — Давление перемерим завтра».",
+  "en": "\"The bulb isn't for decoration,\" the doctor laughs. \"We'll measure the pressure again tomorrow.\"",
+  "ja": "「ゴム球は飾りじゃないよ」と医師が笑う。「血圧は明日また測ろう」"
+ },
+ "city.san.p.dance.title": {
+  "ru": "Танцы в холле",
+  "en": "Dancing in the lobby",
+  "ja": "ロビーのダンス"
+ },
+ "city.san.p.dance.start.1": {
+  "ru": "Дежурная ставит на радиолу пластинку. Вальс.",
+  "en": "The attendant puts a record on the radiogram. A waltz.",
+  "ja": "当番の人が電蓄にレコードをのせる。ワルツ。"
+ },
+ "city.san.p.dance.fest.1": {
+  "ru": "Сегодня праздник: на радиоле бумажные гирлянды, в холле пахнет мандаринами и одеколоном.",
+  "en": "Today is a holiday: paper garlands on the radiogram, and the lobby smells of tangerines and cologne.",
+  "ja": "今日はお祭り。電蓄に紙のかざり、ロビーはみかんとオーデコロンのにおい。"
+ },
+ "city.san.p.dance.guest.any": {
+  "ru": "{0} приглашает меня на вальс. Отказываться невежливо.",
+  "en": "{0} asks me to waltz. It would be rude to say no.",
+  "ja": "{0}にワルツに誘われた。断るのは失礼だ。"
+ },
+ "city.san.p.dance.guest.gromov": {
+  "ru": "Громов кланяется даме из 4-12, а мне показывает на часы: «Раз-два-три, строго по секундомеру».",
+  "en": "Gromov bows to the lady from 4-12 and points at his watch for me: \"One-two-three, strictly by the stopwatch.\"",
+  "ja": "グロモフさんは4の12号室のご婦人に一礼し、僕には時計を指さす。「いち、に、さん、ストップウォッチどおりに」"
+ },
+ "city.san.p.dance.guest.sonya": {
+  "ru": "Соня приглашает меня сама: «Только не наступай. Мне ещё играть».",
+  "en": "Sonya asks me herself: \"Just don't tread on my feet. I still have to play.\"",
+  "ja": "ソーニャが自分から誘ってくる。「足だけは踏まないで。まだ弾かなきゃいけないんだから」"
+ },
+ "city.san.p.dance.guest.tamm": {
+  "ru": "Тамм и Сазонов танцуют с медсёстрами и впервые за неделю не спорят.",
+  "en": "Tamm and Sazonov dance with the nurses and for the first time in a week they aren't arguing.",
+  "ja": "タムさんとサゾノフさんは看護師さんたちと踊っていて、一週間ぶりに言い争っていない。"
+ },
+ "city.san.p.dance.waltz.1": {
+  "ru": "Раз-два-три, раз-два-три. Шагаю на «раз».",
+  "en": "One-two-three, one-two-three. I step on the \"one\".",
+  "ja": "いち、に、さん。いち、に、さん。「いち」で踏み出す。"
+ },
+ "city.san.p.dance.end.1": {
+  "ru": "Пластинка шипит и кончается. Все хлопают радиоле.",
+  "en": "The record hisses and ends. Everyone applauds the radiogram.",
+  "ja": "レコードがしゅうっと鳴って終わる。みんなが電蓄に拍手する。"
+ },
+ "city.san.p.dance.good.1": {
+  "ru": "Ни разу не сбился. Даже Громов одобрил бы.",
+  "en": "I never lost the step. Even Gromov would approve.",
+  "ja": "一度もずれなかった。グロモフさんでも合格をくれそうだ。"
+ },
+ "city.san.p.dance.fair.1": {
+  "ru": "Пару раз наступил партнёрше на ногу и извинился.",
+  "en": "I trod on my partner's foot a couple of times and apologised.",
+  "ja": "二回ほど相手の足を踏んで、あやまった。"
+ },
+ "city.san.p.dance.poor.1": {
+  "ru": "Танцевал, как медведь на льду. Но было весело.",
+  "en": "I danced like a bear on ice. But it was fun.",
+  "ja": "氷の上のクマみたいに踊った。でも楽しかった。"
+ },
+ "city.san.p.film.prompt": {
+  "ru": "E — киносеанс в холле",
+  "en": "E — the film night in the lobby",
+  "ja": "E：ロビーの映画会"
+ },
+ "city.san.p.film.title": {
+  "ru": "Кино в холле «Короны»",
+  "en": "Films in the Korona's lobby",
+  "ja": "「コロナ」ロビーの映画会"
+ },
+ "city.san.p.screen.1": {
+  "ru": "Белое полотно на треноге. Записка на нём: «Киносеанс по средам и субботам в 20:00. Фильмы из «Рассвета»».",
+  "en": "A white screen on a tripod. A note pinned to it: \"Film night Wednesdays and Saturdays at 8 p.m. Films from the Rassvet.\"",
+  "ja": "三脚の白いスクリーン。貼り紙。「映画会　水・土曜20時。『ラスヴェート』の作品」"
+ },
+ "city.san.p.film.closed.1": {
+  "ru": "Проектор накрыт чехлом. Кино по средам и субботам, в восемь вечера.",
+  "en": "The projector is under its cover. Films on Wednesdays and Saturdays at eight in the evening.",
+  "ja": "映写機にはカバーがかかっている。映画は水曜と土曜の夜八時。"
+ },
+ "city.san.p.robes.1": {
+  "ru": "Халаты на крючках, вафельные, с вышитым солнышком. Под скамейкой тапочки всех размеров, но в основном больших.",
+  "en": "Waffle robes on the hooks with a little embroidered sun. Under the bench, slippers of all sizes, mostly big ones.",
+  "ja": "フックにワッフル地のガウン、小さな太陽の刺繍つき。ベンチの下にはいろんなサイズのスリッパ、ほとんど大きい。"
+ },
+ "city.san.p.shelf.1": {
+  "ru": "Стопка полотенец, бутылочки с маслом: «Пихтовое», «Облепиховое». Пахнет лесом после дождя.",
+  "en": "A pile of towels, bottles of oil: \"Fir\", \"Sea buckthorn\". It smells like a forest after rain.",
+  "ja": "タオルの山と、オイルの小びん。「モミ」「シーバックソーン」。雨上がりの森のにおい。"
+ },
+ "city.san.p.clock.1": {
+  "ru": "Процедурные часы: большие, с красной стрелкой для минут ингаляции. Тикают громче всех в здании.",
+  "en": "The treatment clock: big, with a red hand for inhalation minutes. It ticks louder than any other clock in the building.",
+  "ja": "療法室の時計。大きくて、吸入の分を示す赤い針つき。建物のどの時計より大きな音で時を刻む。"
+ },
+ "city.san.p.radio.1": {
+  "ru": "Радио на полке тихо играет что-то симфоническое. Массажистка говорит, что под Чайковского мышцы расслабляются быстрее.",
+  "en": "The radio on the shelf quietly plays something symphonic. The masseuse says muscles relax faster to Tchaikovsky.",
+  "ja": "棚のラジオが静かに交響曲を流している。チャイコフスキーだと筋肉が早くほぐれる、とマッサージ師。"
+ },
+ "city.san.coll.proc.title": {
+  "ru": "Процедуры «Короны»",
+  "en": "The Korona's treatments",
+  "ja": "「コロナ」の療法"
+ },
+ "dev.action.interiors.proc_nearest": {
+  "ru": "Интерьеры: процедура санатория (ближайшая)",
+  "en": "Interiors: sanatorium procedure (nearest)",
+  "ja": "内装：療養所の療法（一番近い物）"
+ }
+}

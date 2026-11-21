@@ -221,6 +221,86 @@
  ],
  "spots": [
   {
+   "id": "inhale_1",
+   "kind": "seat",
+   "pos": [
+    12.737,
+    15.267,
+    0.45
+   ],
+   "yaw": 51.42857142857143
+  },
+  {
+   "id": "inhale_2",
+   "kind": "seat",
+   "pos": [
+    13.36,
+    16.049,
+    0.45
+   ],
+   "yaw": 51.42857142857143
+  },
+  {
+   "id": "inhale_3",
+   "kind": "seat",
+   "pos": [
+    13.984,
+    16.831,
+    0.45
+   ],
+   "yaw": 51.42857142857143
+  },
+  {
+   "id": "inhale_nurse",
+   "kind": "work",
+   "pos": [
+    11.278,
+    16.702,
+    0.0
+   ],
+   "yaw": -45.0
+  },
+  {
+   "id": "hydro_charcot",
+   "kind": "stand",
+   "pos": [
+    15.378,
+    18.983,
+    0.0
+   ],
+   "yaw": 244.28571428571428
+  },
+  {
+   "id": "hydro_nurse",
+   "kind": "work",
+   "pos": [
+    12.36,
+    20.436,
+    0.0
+   ],
+   "yaw": 64.28571428571429
+  },
+  {
+   "id": "hydro_robes",
+   "kind": "seat",
+   "pos": [
+    14.767,
+    20.515,
+    0.45
+   ],
+   "yaw": -19.285714285714285
+  },
+  {
+   "id": "massage_masseur",
+   "kind": "work",
+   "pos": [
+    14.78,
+    23.345,
+    0.0
+   ],
+   "yaw": -12.857142857142858
+  },
+  {
    "id": "reception",
    "kind": "counter",
    "pos": [
@@ -564,6 +644,28 @@
  "lamps": [
   {
    "pos": [
+    14.027,
+    19.634,
+    3.29
+   ],
+   "lumens": 900,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8
+  },
+  {
+   "pos": [
+    14.981,
+    22.427,
+    3.29
+   ],
+   "lumens": 800,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7
+  },
+  {
+   "pos": [
     -4.777,
     11.887,
     3.34
@@ -664,6 +766,136 @@
  ],
  "things": [
   {
+   "id": "inhale_1",
+   "kind": "seat",
+   "pos": [
+    12.737,
+    15.267,
+    0.45
+   ],
+   "yaw": 51.4,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "inhale_2",
+   "kind": "seat",
+   "pos": [
+    13.36,
+    16.049,
+    0.45
+   ],
+   "yaw": 51.4,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "inhale_3",
+   "kind": "seat",
+   "pos": [
+    13.984,
+    16.831,
+    0.45
+   ],
+   "yaw": 51.4,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "inhale_clock",
+   "kind": "board",
+   "pos": [
+    13.508,
+    17.424,
+    2.6
+   ],
+   "yaw": -32.1,
+   "props": {
+    "topic": "clock"
+   }
+  },
+  {
+   "id": "hydro_mud",
+   "kind": "bed",
+   "pos": [
+    13.332,
+    18.178,
+    0.7
+   ],
+   "yaw": -32.1,
+   "props": {
+    "height": 0.7
+   }
+  },
+  {
+   "id": "hydro_charcot",
+   "kind": "machine",
+   "pos": [
+    15.378,
+    18.983,
+    1.0
+   ],
+   "yaw": 244.3,
+   "props": {
+    "what": "charcot"
+   }
+  },
+  {
+   "id": "hydro_robes",
+   "kind": "board",
+   "pos": [
+    14.841,
+    20.727,
+    1.5
+   ],
+   "yaw": -19.3,
+   "props": {
+    "topic": "robes"
+   }
+  },
+  {
+   "id": "massage_table",
+   "kind": "bed",
+   "pos": [
+    15.029,
+    22.416,
+    0.75
+   ],
+   "yaw": -12.9,
+   "props": {
+    "height": 0.75
+   }
+  },
+  {
+   "id": "massage_shelf",
+   "kind": "shelf",
+   "pos": [
+    15.644,
+    23.724,
+    1.55
+   ],
+   "yaw": -6.4,
+   "props": {
+    "topic": "oils"
+   }
+  },
+  {
+   "id": "massage_radio",
+   "kind": "machine",
+   "pos": [
+    15.047,
+    23.791,
+    1.65
+   ],
+   "yaw": -6.4,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
    "id": "reception",
    "kind": "counter",
    "pos": [
@@ -741,6 +973,32 @@
    "yaw": 273.4,
    "props": {
     "height": 0.44
+   }
+  },
+  {
+   "id": "lounge_screen",
+   "kind": "board",
+   "pos": [
+    -0.7,
+    10.6,
+    1.5
+   ],
+   "yaw": 171.7,
+   "props": {
+    "topic": "film"
+   }
+  },
+  {
+   "id": "lounge_projector",
+   "kind": "machine",
+   "pos": [
+    1.2,
+    13.0,
+    0.95
+   ],
+   "yaw": 321.6,
+   "props": {
+    "what": "projector"
    }
   },
   {
@@ -13859,11 +14117,137 @@
     3.5
    ],
    "shape": "rect"
+  },
+  {
+   "slot": 493,
+   "id": "pub/w14",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.984,
+    14.848,
+    2.85
+   ],
+   "normal": [
+    0.782,
+    -0.623,
+    0.0
+   ],
+   "size": [
+    3.131,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 494,
+   "id": "pub/w15",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    16.115,
+    18.239,
+    2.85
+   ],
+   "normal": [
+    0.901,
+    -0.434,
+    0.0
+   ],
+   "size": [
+    3.131,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 495,
+   "id": "pub/w16",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    17.438,
+    22.02,
+    2.85
+   ],
+   "normal": [
+    0.975,
+    -0.223,
+    0.0
+   ],
+   "size": [
+    3.131,
+    1.7
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 496,
+   "id": "pub/w17",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.626,
+    23.347,
+    2.05
+   ],
+   "normal": [
+    -0.975,
+    0.223,
+    0.0
+   ],
+   "size": [
+    1.887,
+    3.5
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 497,
+   "id": "pub/w18",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.744,
+    20.826,
+    2.05
+   ],
+   "normal": [
+    -0.901,
+    0.434,
+    0.0
+   ],
+   "size": [
+    1.887,
+    3.5
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 498,
+   "id": "pub/w19",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    9.323,
+    18.565,
+    2.05
+   ],
+   "normal": [
+    -0.782,
+    0.623,
+    0.0
+   ],
+   "size": [
+    1.887,
+    3.5
+   ],
+   "shape": "rect"
   }
  ],
  "light_tex": 64,
  "notes": [
-  "120 flats (5 storeys x 24 bays); hall sector -135..-45 deg enterable; entrance at (0, 8)"
+  "120 flats (5 storeys x 24 bays); hall sector -135..-45 deg enterable + the hydrotherapy wing -45..-6.43 deg (inhalation room, hydro room, massage room; doorway from the treatment room); entrance at (0, 8)"
  ],
  "dress": [
   {
@@ -14191,9 +14575,9 @@
   }
  ],
  "tris": {
-  "shell": 15998,
-  "detail": 38279,
-  "windows": 1972,
+  "shell": 16488,
+  "detail": 43605,
+  "windows": 1996,
   "dress": 3131
  }
 }

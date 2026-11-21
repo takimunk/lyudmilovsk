@@ -313,6 +313,9 @@ machine:
 
 ## Halls v3: a real station hall (2026-11-20)
 
+The front-door layer on top of the halls (the buffet's line and the regulars' usual, the punch and travel card on every desk, Aton's
+departures board and lost and found, the dusk lamps with the club's sign) is in [front_door.md](front_door.md).
+
 Dima: "inside the stations it is crude, dark and empty; there is a cafe and nobody to buy from". Each hall is a ring 1.5..2.8 m
 wide round the tower's core (the lift and the stair come up through the railed opening in its middle), so v3 dresses that
 ring like a real station hall with the town's interior kit (`blender/city/interior_kit.py`, CT_* materials, the picture atlas):
