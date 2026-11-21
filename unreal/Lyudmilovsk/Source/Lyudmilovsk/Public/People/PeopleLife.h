@@ -16,7 +16,7 @@ struct FLyudBikeRide;
 
 /** How someone looks now (the simulation's poses, Private/People/PeopleSim.h EPose, in the same order). */
 UENUM(BlueprintType)
-enum class EPersonPose : uint8 { Hidden, Stand, Walk, Talk, Look, Sit, Computer, Eat, Read, Sleep, Work, Shovel };
+enum class EPersonPose : uint8 { Hidden, Stand, Walk, Talk, Look, Sit, Computer, Eat, Read, Sleep, Work, Shovel, Skate, Walrus };
 
 USTRUCT(BlueprintType)
 struct LYUDMILOVSK_API FPersonInfo
@@ -114,6 +114,8 @@ public:
 
 	/** An activity's index (activities.json id), -1 if none: for GetActivityState. */
 	int32 FindActivity(const FString& Id) const;
+	/** The body drawn for Id now (null: not drawn, hidden, or the level's own actor), for things they hold (a child's kite). */
+	AActor* GetShownBody(int32 Id) const;
 
 	/** A cheap read for per-frame checks (no strings built, unlike GetPerson): the person's activity index (-1 none), whether
 	 *  they are at it ("doing"), their pose and where they are (cm). False if there is no such person. */
@@ -122,6 +124,10 @@ public:
 	/** Sends someone to do something now (activities.json id), at a place (its id) or wherever suits them. */
 	UFUNCTION(BlueprintCallable, Category = "People")
 	bool Order(int32 Id, const FString& Activity, const FString& PlaceId = TEXT(""));
+
+	/** A friend comes to sit beside the player (docs/friends.md): the free seat nearest Where (world cm) within MaxCm that a
+	 *  sitting activity of theirs fits, for Minutes of game time; false if there is none. */
+	bool SitBeside(int32 Id, const FVector& Where, float MaxCm = 250.f, float Minutes = 15.f);
 
 	/** Moves a household into a flat (its id, e.g. Novikova1-2-17); false if it is not free. Kept with the save. */
 	UFUNCTION(BlueprintCallable, Category = "People")
@@ -191,6 +197,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "People|Town")
 	void SetStayUpUntil(float Hour);
 
+	/**
+	 * A condition the game switches (docs/people.md "Winter play"): an activity with "when": "<Name>" (activities.json) is
+	 * chosen only while it is on, and whoever is at it finishes and walks off within a minute after it goes off. Winter play
+	 * sends rink (the pond's ice open for skating), rink_busy (a festival day or a holiday while it is open), walrus (the
+	 * walruses' swim hour) and banya (the banya by the pier heated) every few seconds. Kept over clock jumps and for a life
+	 * that starts later; not saved (the setter sends it again).
+	 */
+	UFUNCTION(BlueprintCallable, Category = "People|Town")
+	void SetCondition(FName Name, bool bOn);
+	UFUNCTION(BlueprintPure, Category = "People|Town")
+	bool IsCondition(FName Name) const;
+
 	/** Who is at work at a place now (town_places.json id: restaurant, P-MARKET, W1-U01, ...), in a role (waiter, cook; None any). */
 	UFUNCTION(BlueprintCallable, Category = "People|Town")
 	TArray<int32> StaffOnShift(FName PlaceId, FName Role) const;
@@ -259,6 +277,7 @@ private:
 	/** The props' meshes by LyudPeople::EProp (null: not made or not loaded yet; such manners aren't picked), the easel. */
 	UPROPERTY(Transient) TArray<TObjectPtr<class UStaticMesh>> PropMeshes;
 	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> EaselMesh;
+	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> BucketMesh;     // the cleaner's bucket by them while they mop
 	TSharedPtr<struct FStreamableHandle> PropLoad;
 	/** Present's scratch: the people drawn this frame. */
 	TArray<int32> ShownIds;
@@ -314,6 +333,11 @@ private:
 	struct FWantedGathering { FName PlaceOrKind; float From = 0.f, To = 0.f, Pull = 0.f; EPeopleGatherMode Mode = EPeopleGatherMode::Mingle; FVector Face = FVector::ZeroVector; };
 	TMap<FName, FWantedGathering> WantedGatherings;
 	bool bWantedDayOff = false;
+	/** The conditions the game set (SetCondition), given to every life that starts. */
+	TMap<FName, bool> WantedConditions;
+	/** The sea (ALyudSea::SeaLevel: the walruses' water line), looked for now and then till found. */
+	TWeakObjectPtr<class ALyudSea> SeaActor;
+	int32 SeaSeek = 0;
 	/** The festival night's end on the calendar (FDateTime ticks), 0 none. */
 	int64 WantedStayUpUntil = 0;
 	void ApplyWanted();
@@ -412,7 +436,8 @@ public:
 	bool Setup(const FString& MeshName, const FString& ComputerClip);
 	/** Pose this frame: where (cm; seated: the floor under the seat, lying: under the mattress's middle), facing (deg; lying:
 	 *  the bed's head to foot), the pose, the transition (1 sit down, 2 stand up, 3 lie down, 4 get up), the walking speed
-	 *  (cm/s) and the seat's or mattress's height (cm, 0 = the clips' own). */
+	 *  (cm/s) and the seat's or mattress's height (cm, 0 = the clips' own). Skate: on the ice, gliding at Speed; Walrus:
+	 *  Location is the water's surface, the body stands in it to the shoulders. */
 	void Drive(const FVector& Location, float Yaw, EPersonPose Pose, int32 Transit, float Speed, float SeatHeight, float DeltaTime, bool bSnap);
 	/** On a bicycle, getting on or off it, or leading it by the bars (ULyudBikeSubsystem::PresentPerson does this instead of
 	 *  Drive while the person has their bike in hand); a null Bike lets go of it. Ground: the feet's point, cm. */
@@ -432,6 +457,8 @@ public:
 	/** What a manner puts in the hands (SM_Prop_*), and what stands before them. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerProp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerStand;
+	/** The night watchman's torch beam: made the first time this body holds a torch (one or two in the town), no shadows. */
+	UPROPERTY(Transient) TObjectPtr<class USpotLightComponent> TorchLight;
 
 	FString MeshName;
 	/** Who they are in npc_dialogue.txt (their own body's id, whatever model shows them now). */
@@ -447,6 +474,18 @@ private:
 	bool bOnBike = false;
 	float Facing = 0.f;
 	bool bPlaced = false;
+	/** lyud.Anim.Smooth (LyudMotion.h): where the body is shown, following where its life has it through a spring (so a
+	 *  path's corner is rounded, setting off and stopping take a moment, a kerb is a short ramp), the spring's velocity
+	 *  (the gait goes by it: the feet keep step with the ground actually covered), the facing's turn rate, and the
+	 *  fastest the life itself moved them lately (a small jump of the life's is glided over, not run). */
+	FVector ShownPos = FVector::ZeroVector;
+	FVector ShownVel = FVector::ZeroVector;
+	/** 0 on their feet .. 1 on a seat: how far the actor stands back from the body's point under the seat (Drive). */
+	float SeatLeadK = 0.f;
+	float ShownZVel = 0.f;
+	float FacingVel = 0.f;
+	float RecentSpeed = 0.f;
+	bool bShownValid = false;
 	/** Body size against the body the shared clips are baked on (Guy_a: pelvis height / 93.7 cm). */
 	float BodyScale = 1.f;
 	/** Standing, looking and talking take turns among a few clips (a nod, folded arms) so nobody loops one gesture. */
@@ -465,6 +504,8 @@ private:
 	FVector BedCenter = FVector::ZeroVector;
 	float BedYaw = 0.f;
 	float BedTop = 50.f;
+	/** On skates (EPersonPose::Skate): how far into the glide's forward lean they are, 0..1 (eased in and out). */
+	float SkateLean = 0.f;
 
 	uint8 Manner = 0, MannerPropKind = 0;
 	float MannerSince = 0.f, MannerLeft = -1.f;
@@ -475,10 +516,12 @@ private:
 	 *  its own was played for it. Then the prop into the hands. */
 	bool DriveManner(EPersonPose Pose, int32 Transit, float Speed);
 	void PlaceMannerProp(bool bShow);
+	void PlaceTorchLight(bool bOn, const FVector& Loc, const FRotator& Rot);
 	class UAnimSequence* Clip(FName Name);
 	/** Lays the pusher between the hands and the ground ahead (or hides it). */
 	void PlacePusher(bool bShow);
-	void Play(FName Name, bool bLoop, float Rate = 1.f);
+	/** BlendTime < 0: by what follows what (a step into a step quickly, one way of standing into another slowly). */
+	void Play(FName Name, bool bLoop, float Rate = 1.f, float BlendTime = -1.f);
 	/** A duvet over the sleeper: a height field over the bed shaped by capsules round the bones, from the shoulders to past the feet. */
 	void BuildBlanket();
 	/** Plays one of the role's variants (the role's own clip most of the time), picking again every 6-12 s. */

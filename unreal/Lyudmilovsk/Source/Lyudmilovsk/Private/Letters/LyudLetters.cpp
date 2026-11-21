@@ -1,6 +1,7 @@
 #include "Letters/LyudLetters.h"
 
 #include "Letters/LettersModel.h"
+#include "People/LyudTownRumours.h"
 #include "People/MiniJson.h"
 #include "Audio/LyudSoundscape.h"
 #include "Birds/BirdBook.h"
@@ -31,6 +32,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "NpcDialogue.h"
+#include "People/LyudFriends.h"
 #include "People/PeopleLife.h"
 #include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
@@ -393,12 +395,31 @@ void ULyudLetters::StepPost()
 	for (const std::string& To : E.Delivered)
 	{
 		UE_LOG(LogLyudLetters, Display, TEXT("Letters: a card was carried to %s"), *LyudLettersImpl::Str(To));
+		// the friendship grows (docs/friends.md: a card of his on their shelf)
+		if (ULyudFriends* Friends = ULyudFriends::Get(this))
+		{
+			Friends->OnCardDelivered(LyudLettersImpl::Str(To));
+		}
 	}
 	if (!E.Arrived.empty())
 	{
+		const ULyudTownRumours* Rumours = ULyudTownRumours::Get(this);
 		for (const int32 I : E.Arrived)
 		{
-			UE_LOG(LogLyudLetters, Display, TEXT("Letters: in the mailbox: %s"), *LyudLettersImpl::Str(Model->Letters[(size_t)I].Id));
+			LyudLetters::FLetter& L = Model->Letters[(size_t)I];
+			// a townsperson writing back adds what the town says of him lately (docs/town_rumours.md)
+			FString PsKey;
+			TArray<FString> PsArgs;
+			if (Rumours && L.Ps.empty() && (L.Kind == "reply" || L.Kind == "home") && Rumours->PostScript(L.Arrive, PsKey, PsArgs))
+			{
+				L.Ps = LyudLettersImpl::Std(PsKey);
+				L.PsArgs.clear();
+				for (const FString& A : PsArgs)
+				{
+					L.PsArgs.push_back(LyudLettersImpl::Std(A));
+				}
+			}
+			UE_LOG(LogLyudLetters, Display, TEXT("Letters: in the mailbox: %s%s"), *LyudLettersImpl::Str(L.Id), L.Ps.empty() ? TEXT("") : TEXT(" (with a P.S.)"));
 		}
 		if (ULyudGameScreen* Screen = ULyudGameScreen::Get(this))
 		{
@@ -792,6 +813,37 @@ FText ULyudLetters::FromName(const FString& From) const
 	return LyudText::Get(LyudLettersImpl::FromKey(LyudLettersImpl::Std(From)));
 }
 
+bool ULyudLetters::PostTownLetter(const FString& Id, const FString& From, const FString& Body, const TArray<FString>& Args)
+{
+	if (!bLoaded || !Model)
+	{
+		return false;
+	}
+	std::vector<std::string> A;
+	for (const FString& S : Args)
+	{
+		A.push_back(LyudLettersImpl::Std(S));
+	}
+	return Model->AddLetter(Now(), LyudLettersImpl::Std(Id), LyudLettersImpl::Std(From), "town", LyudLettersImpl::Std(Body), A);
+}
+
+FText ULyudLetters::HomeAddress(const FString& Home) const
+{
+	if (!Model || Home.IsEmpty())
+	{
+		return FText::GetEmpty();
+	}
+	const std::vector<std::string> Parts = Model->AddressOf(LyudLettersImpl::Std(Home));
+	if (Parts.size() < 2)
+	{
+		return FText::GetEmpty();
+	}
+	const FString Street = LyudText::Get(TEXT("letters.street.") + LyudLettersImpl::Str(Parts[0])).ToString();
+	return Parts.size() >= 3
+		? LyudText::Get(TEXT("letters.addr.flat"), { FStringFormatArg(Street), FStringFormatArg(LyudLettersImpl::Str(Parts[1])), FStringFormatArg(LyudLettersImpl::Str(Parts[2])) })
+		: LyudText::Get(TEXT("letters.addr.house"), { FStringFormatArg(Street), FStringFormatArg(LyudLettersImpl::Str(Parts[1])) });
+}
+
 FText ULyudLetters::AddressOf(const FString& AddresseeId, int32 PersonId) const
 {
 	FString Home;
@@ -847,6 +899,10 @@ void ULyudLetters::DiaryLetter(int32 Letter)
 		Quests->AddNote(LyudLettersImpl::Str(L.Ack), Args(L.AckArgs));
 	}
 	Quests->AddNote(LyudLettersImpl::Str(L.Body), Args(L.Args));
+	if (!L.Ps.empty())
+	{
+		Quests->AddNote(LyudLettersImpl::Str(L.Ps), Args(L.PsArgs));
+	}
 }
 
 // --- the choosers -------------------------------------------------------------------------------------------------------
@@ -1054,7 +1110,7 @@ void ULyudLetters::ShowMode()
 	}
 	const FText Choose = LyudText::Get(TEXT("letters.keys.choose"));
 	TArray<FText> E;
-	const auto Phrases = [this](const std::vector<std::string>& Ids)
+	const auto Phrases = [](const std::vector<std::string>& Ids)
 	{
 		TArray<FText> Out;
 		for (const std::string& Id : Ids)
@@ -1415,6 +1471,10 @@ void ULyudLetters::ShowLetterPage()
 		if (!L.Ack.empty())
 		{
 			All = Fill(LyudLettersImpl::Str(L.Ack), Args(L.AckArgs)).ToString() + TEXT("\n\n") + All;
+		}
+		if (!L.Ps.empty())
+		{
+			All += TEXT("\n\n") + Fill(LyudLettersImpl::Str(L.Ps), Args(L.PsArgs)).ToString();
 		}
 		TArray<FString> Paras;
 		All.ParseIntoArray(Paras, TEXT("\n\n"));

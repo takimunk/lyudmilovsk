@@ -208,6 +208,9 @@ namespace LyudFest
 			F.Decor = Strings(V["decor"]["kinds"]);
 			F.DecorVenues = Strings(V["decor"]["venues"]);
 			F.Priority = V["priority"].I(0);
+			F.SunApproach = V["sky"]["sun"].F(0.f);
+			F.Clear = V["sky"]["clear"].F(0.f);
+			F.SkyLead = std::max(0.25f, V["sky"]["lead"].F(2.f));
 			for (const LyudJson::FValue& P : V["program"].Items)
 			{
 				FPhase Ph;
@@ -369,6 +372,46 @@ namespace LyudFest
 		{
 			return Festivals[A.Festival].Priority > Festivals[B.Festival].Priority;
 		});
+		return Out;
+	}
+
+	FSky FCalendar::SkyAt(const FDate& Date, float Hour) const
+	{
+		FSky Out;
+		float Best = 0.f;
+		for (int Fi = 0; Fi < (int)Festivals.size(); Fi++)
+		{
+			const FFestival& F = Festivals[Fi];
+			if (F.SunApproach <= 0.f && F.Clear <= 0.f)
+			{
+				continue;
+			}
+			const int Lead = (int)std::ceil(F.SkyLead) + 1;
+			for (int Off = -Lead - F.Days; Off <= Lead; Off++)
+			{
+				if (!StartsOn(Fi, AddDays(Date, Off)))
+				{
+					continue;
+				}
+				// days from now to the noon of its nearest day (a festival of several days holds its sky through them)
+				const float ToFirst = Off + (13.f - Hour) / 24.f;
+				const float ToLast = ToFirst + (F.Days - 1);
+				const float D = ToFirst > 0.f ? ToFirst : (ToLast < 0.f ? ToLast : 0.f);
+				const float X = std::min(1.f, std::fabs(D) / F.SkyLead);
+				// the star swells slowly and is at its nearest for the day itself; the fair weather comes in the day before
+				const float Sun = F.SunApproach * (1.f - X * X * (3.f - 2.f * X));
+				const float CX = std::min(1.f, std::fabs(D) / std::min(F.SkyLead, 1.25f));
+				const float Clear = F.Clear * (1.f - CX * CX * (3.f - 2.f * CX));
+				Out.SunApproach = std::max(Out.SunApproach, Sun);
+				Out.Clear = std::max(Out.Clear, Clear);
+				if (Sun + Clear > Best)
+				{
+					Best = Sun + Clear;
+					Out.Festival = Fi;
+					Out.DaysTo = D;
+				}
+			}
+		}
 		return Out;
 	}
 

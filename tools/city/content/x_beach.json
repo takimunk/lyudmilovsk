@@ -3,7 +3,7 @@
  "collections": {
   "beach": {
    "title": "city.coll.beach.title",
-   "given": 1,
+   "by": "ULyudBeach (Private/Sea/LyudBeach.cpp): done on the sand, not found in town",
    "pieces": [
     "skip3",
     "skip5",

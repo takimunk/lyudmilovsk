@@ -24,5 +24,5 @@ clang++ -std=c++20 -O2 -Wall -Wshadow -Wunreachable-code-loop-increment -Wno-unu
 	-I "$OUT/inc" -I "$ROOT/tools/plantsim/shim" -I "$SRC/Public" -I "$SRC/Private" \
 	-o "$OUT/plantsim" "$ROOT/tools/plantsim/plantsim.cpp" "$ROOT/tools/plantsim/render.cpp" "$SRC/Private/Plants/PlantModel.cpp" \
 	"$SRC/Private/Plants/PlantSpecies.cpp" "$SRC/Private/Plants/PlantSpeciesHerbs.cpp" "$SRC/Private/Plants/PlantSpeciesFloor.cpp" \
-	"$SRC/Private/Plants/PlantSpeciesNorth.cpp" "$SRC/Private/Plants/PlantAlga.cpp" "$OUT/PlantHerbModel.cpp"
+	"$SRC/Private/Plants/PlantSpeciesNorth.cpp" "$SRC/Private/Plants/PlantSpeciesGarden.cpp" "$SRC/Private/Plants/PlantAlga.cpp" "$OUT/PlantHerbModel.cpp"
 exec "$OUT/plantsim" "$@"

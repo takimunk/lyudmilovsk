@@ -293,6 +293,27 @@ namespace LyudLetters
 		Letters.push_back(std::move(L));
 	}
 
+	bool FModel::AddLetter(const FTime& Now, const std::string& Id, const std::string& From, const std::string& Kind, const std::string& Body,
+		const std::vector<std::string>& Args)
+	{
+		for (const FLetter& Old : Letters)
+		{
+			if (Old.Id == Id)
+			{
+				return false;
+			}
+		}
+		FLetter L;
+		L.Id = Id;
+		L.From = From;
+		L.Kind = Kind;
+		L.Body = Body;
+		L.Args = Args;
+		L.Arrive = NextArrival(Now);
+		Letters.push_back(std::move(L));
+		return true;
+	}
+
 	bool FModel::PostCard(const FTime& Now, const std::string& To, const std::string& Picture, const std::string& Opening, const std::string& Wish,
 		const std::string& Group)
 	{
@@ -761,7 +782,7 @@ namespace LyudLetters
 		{
 			const FLetter& L = Letters[I];
 			Out["letter." + std::to_string(I)] = Join({ L.Id, L.From, L.Kind, L.Body, Join(L.Args, '\x1f'), L.Ack, Join(L.AckArgs, '\x1f'), std::to_string(L.Arrive),
-				L.bArrived ? "1" : "0", L.bRead ? "1" : "0", std::to_string(L.ReadDay) }, '\t');
+				L.bArrived ? "1" : "0", L.bRead ? "1" : "0", std::to_string(L.ReadDay), L.Ps, Join(L.PsArgs, '\x1f') }, '\t');
 		}
 		for (const auto& G : Got)
 		{
@@ -830,6 +851,8 @@ namespace LyudLetters
 			L.bArrived = Field(F, 8) == "1";
 			L.bRead = Field(F, 9) == "1";
 			L.ReadDay = ToInt(Field(F, 10));
+			L.Ps = Field(F, 11);
+			L.PsArgs = Split(Field(F, 12), '\x1f');
 			Letters.push_back(L);
 		}
 		for (const auto& KV : In)

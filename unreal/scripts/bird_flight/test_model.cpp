@@ -92,13 +92,14 @@ int main()
 				F("cruise: %.1f m/s, height %+.1f m after %.0f s (want ~%.0f m/s)", Speed, S.Pos.Z - 100, Time, P.Cruise));
 		}
 		// 3. take-off from standing: a hop, then clicking without pause, gaze 25 deg up: off the ground and climbing
-		// (a weak climber, a swan, an eagle, a heron, a gull, can't climb that steeply: it is flown up at 12 deg)
+		// (a weak climber, a swan, an eagle, a heron, a gull, can't climb that steeply: it is flown up at 12 deg,
+		// the weakest of all, the white-tailed eagle and the albatross, at 10)
 		const bool bWeak = Bio.ClimbMs < 1.6;
 		{
 			FState S; S.Vel = V3(0.6, 0, 1.8);
 			double Next = 0, MinZ = 0;
 			const double Time = bWeak ? 3.5 : 3.0;
-			Run(P, S, Time, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += P.ClickTime(); } In.AimPitch = bWeak ? 0.2 : 0.45; });
+			Run(P, S, Time, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += FastClick(P); } In.AimPitch = Bio.ClimbMs < 1.0 ? 0.17 : bWeak ? 0.2 : 0.45; });
 			MinZ = S.Pos.Z;
 			Check(MinZ > 1.5 && BirdFlight::Speed(S) > P.Stall, F("take-off: %.1f m up, %.1f m/s after %.1f s (stall %.1f)", S.Pos.Z, BirdFlight::Speed(S), Time, P.Stall));
 		}
@@ -107,7 +108,7 @@ int main()
 			FState S; S.Vel = V3(0.6, 0, 1.8);
 			double Next = 0;
 			const double Time = bWeak ? 3.5 : 2.5;
-			Run(P, S, Time, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += P.ClickTime(); } In.AimPitch = bWeak ? 0.1 : 0.2; });
+			Run(P, S, Time, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += FastClick(P); } In.AimPitch = bWeak ? 0.1 : 0.2; });
 			Check(S.Pos.Z > 0.5 && BirdFlight::Speed(S) > P.Stall, F("take-off, level gaze: %.1f m up, %.1f m/s after %.1f s", S.Pos.Z, BirdFlight::Speed(S), Time));
 		}
 		// 4. wings in, gaze down: speeds up to a fast dive but not past the dive limit
@@ -184,7 +185,7 @@ int main()
 				FState S = Flying(P, P.Sprint);
 				FAir Air; Air.Wind = V3(-P.Sprint * K, 0, 0);
 				double Next = 0;
-				Run(P, S, 6, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += P.ClickTime(); } In.AimPitch = std::min(0.3, std::max(-0.3, (100 - S.Pos.Z) * 0.05)); }, Air);
+				Run(P, S, 6, [&](double T, FInput& In) { if (T >= Next) { In.ClickL = In.ClickR = true; Next += FastClick(P); } In.AimPitch = std::min(0.3, std::max(-0.3, (100 - S.Pos.Z) * 0.05)); }, Air);
 				const bool Ok = K < 1 ? S.Pos.X > 5 : S.Pos.X < 0;
 				Check(Ok, F("headwind %.1f m/s: %+.0f m over the ground in 6 s flat out", P.Sprint * K, S.Pos.X));
 			}
@@ -202,6 +203,61 @@ int main()
 			}
 			const double Want = BirdBio::Get(Sp.Id).StaminaS;
 			Check(Spent < 0 ? Want > 500 : std::fabs(Spent - Want) < Want * 0.2, F("stamina: spent after %s s (biology %.0f s)", Spent < 0 ? ">600" : F("%.0f", Spent).c_str(), Want));
+		}
+		// 14. a dive by the gaze alone (no buttons): the bird folds its wings as far as its kind does and goes
+		// faster than it would with them held out; then the gaze back to level: the wings open, the path levels
+		// within the wings' strength, and looking up trades the speed back into height
+		{
+			auto Dive = [&](double Reflex, FState& S)
+			{
+				S = Flying(P, P.Cruise);
+				S.Pos.Z = 2000;
+				Run(P, S, 8, [&](double, FInput& In) { In.AimPitch = -1.2; In.Reflex = Reflex; });
+				return BirdFlight::Speed(S);
+			};
+			FState S, Stiff;
+			const double Folded = Dive(1, S), Open = Dive(0, Stiff);
+			const double WantSpread = 1.0 - 0.9 * P.DiveTuck;
+			Check(S.SpreadL < WantSpread + 0.08 && S.SpreadL > WantSpread - 0.08 && Folded > Open * (P.DiveTuck >= 0.6 ? 1.03 : 0.999) && Folded < P.MaxSpeed * 1.05,
+				F("dive by the gaze: wings %.0f%% out (its kind folds to %.0f%%), %.1f m/s (%.1f with the wings held out)", S.SpreadL * 100, WantSpread * 100, Folded, Open));
+			const double Tucked = S.SpreadL, Z0 = S.Pos.Z, V0 = Folded;
+			double MaxLoad = 0, Level = -1, Widest = 0;
+			for (double T = 0; T < 4; T += Dt)
+			{
+				FInput In; In.AimPitch = 0; Step(P, In, FAir(), S, Dt);
+				MaxLoad = std::max(MaxLoad, S.Load);
+				Widest = std::max(Widest, S.SpreadL);
+				if (Level < 0 && S.Vel.Z > -0.1 * BirdFlight::Speed(S)) Level = T;
+			}
+			const double Lost = Z0 - S.Pos.Z;
+			Check(Level > 0 && MaxLoad <= P.MaxLoad + 0.01 && (Widest > Tucked + 0.05 || Tucked > 0.7),
+				F("pull-out: level in %.2f s at up to %.1f g (its wings take %.1f), wings from %.0f%% to %.0f%%, %.0f m lost", Level, MaxLoad, P.MaxLoad, Tucked * 100, Widest * 100, Lost));
+			const double Z1 = S.Pos.Z, V1 = BirdFlight::Speed(S);
+			double Top = Z1;
+			for (double T = 0; T < 20; T += Dt)
+			{
+				FInput In; In.AimPitch = 0.6; Step(P, In, FAir(), S, Dt);
+				Top = std::max(Top, S.Pos.Z);
+			}
+			// the height the speed is worth, above the speed the bird still needs to fly
+			const double Worth = (V1 * V1 - P.BestGlide * P.BestGlide) / (2 * P.Gravity);
+			Check(Worth < 3 || Top - Z1 > 0.45 * Worth, F("zoom: %.1f m/s (of the dive's %.1f) turned into %.0f m of height (the speed was worth %.0f m)", V1, V0, Top - Z1, Worth));
+		}
+		// 15. the span follows the speed: spread right out at the best glide, flexed back in a fast glide
+		{
+			FState Slow = Flying(P, P.BestGlide), Fast = Flying(P, P.BestGlide * 1.8);
+			const double PitchSlow = GlidePitch(P, P.BestGlide);
+			Run(P, Slow, 3, [&](double, FInput& In) { In.AimPitch = PitchSlow; });
+			// (held at that speed by its path: steeper than the spread wings' glide there, as the flexed ones drag less)
+			Run(P, Fast, 3, [&](double, FInput& In) { In.AimPitch = std::max(-0.19, GlidePitch(P, P.BestGlide * 1.8)); });
+			Check(Slow.SpreadL > 0.97 && Fast.SpreadL < 0.85 && Fast.SpreadL > 0.4,
+				F("span: %.0f%% at the best glide, %.0f%% at %.1f m/s", Slow.SpreadL * 100, Fast.SpreadL * 100, BirdFlight::Speed(Fast)));
+		}
+		// 16. the wingbeat rate: the easy rhythm beats at the table's rate, flat out faster, a take-off fastest (within a third)
+		{
+			const double Easy = BeatRate(P, P.CruisePower), Full = BeatRate(P, 1.0), Off = BeatRate(P, 1.0, 1.0);
+			Check(std::fabs(Easy - 1.0) < 1e-6 && Full >= 1.0 && Off > Full && Off < 1.5,
+				F("wingbeat: %.1f Hz travelling, %.1f flat out, %.1f taking off", P.BeatHz * Easy, P.BeatHz * Full, P.BeatHz * Off));
 		}
 	}
 	// 13. gusts toss a small bird and hardly a big one: the spread of the ground track in the same gusty 8 m/s crosswind
@@ -227,6 +283,74 @@ int main()
 		const double Tit = Toss("BlueTit", EStyle::Bounding, 11, 19, 27, 8);
 		const double Eagle = Toss("WhiteTailedEagle", EStyle::Soaring, 4800, 220, 2.0, 12.5);
 		Check(Tit > Eagle * 1.4, F("gusts: a blue tit's track wanders %.0f%% of its speed, a white-tailed eagle's %.0f%%", Tit * 100, Eagle * 100));
+	}
+	// 17. who can stoop: a peregrine looking straight down falls three times as fast as a swan, whose wings stay out
+	{
+		auto Stoop = [](const char* Id, EStyle Style, double MassG, double SpanCm, double Hz, double Cruise, double& Spread)
+		{
+			const FParams P = MakeSpeciesParams(Id, Style, MassG, SpanCm, Hz, Cruise);
+			FState S = Flying(P, P.Cruise);
+			S.Pos.Z = 3000;
+			Run(P, S, 14, [&](double, FInput& In) { In.AimPitch = -1.4; });
+			Spread = S.SpreadL;
+			return BirdFlight::Speed(S);
+		};
+		double FalconWings = 0, SwanWings = 0;
+		const double Falcon = Stoop("Peregrine", EStyle::Flapping, 900, 100, 4.5, 18, FalconWings);
+		const double Swan = Stoop("MuteSwan", EStyle::Flapping, 11000, 225, 2.6, 20, SwanWings);
+		Check(Falcon > 80 && Falcon > Swan * 2.7 && FalconWings < 0.15 && SwanWings > 0.75,
+			F("stoop: a peregrine %.0f m/s with its wings %.0f%% out, a mute swan %.0f m/s with %.0f%%", Falcon, FalconWings * 100, Swan, SwanWings * 100));
+	}
+	// 18. the take-off as the player flies it: a jump, 0.6 s of flat-out beats, then Space (the rhythm, which works harder
+	// while the bird is slow and looks up) with the gaze 14 deg up: it must keep climbing, not sink back onto the ground
+	{
+		auto Off = [](const char* Id, EStyle Style, double MassG, double SpanCm, double Hz, double Cruise)
+		{
+			const FParams P = MakeSpeciesParams(Id, Style, MassG, SpanCm, Hz, Cruise);
+			FState S;
+			S.Pos = V3(0, 0, 0.3);
+			S.Vel = V3(0.9, 0, 1.8);
+			double Clock = 0, Assist = 0.6, Next = 0, Z1 = 0, V1 = 0, Last = 0, Top = 0;
+			bool Sank = false;
+			Run(P, S, 3.0, [&](double T, FInput& In)
+			{
+				const double Dt = T - Last; Last = T;
+				if (Z1 == 0 && T >= 1.0) { Z1 = S.Pos.Z; V1 = BirdFlight::Speed(S); }
+				// (a bounding bird's path dips between its bursts: what counts is that it never loses real height)
+				Top = std::max(Top, S.Pos.Z);
+				if (S.Pos.Z < Top - 0.25) Sank = true;
+				In.AimPitch = std::min(0.244, -0.07 + T * 2.4);
+				double Tuck = 0;
+				if (AutoFlap(P, Dt, Clock, Tuck)) { In.ClickL = In.ClickR = true; In.Power = RhythmPower(P, BirdFlight::Speed(S), In.AimPitch); }
+				In.TuckL = In.TuckR = Tuck;
+				if (Assist > 0)
+				{
+					Assist -= Dt;
+					if (T >= Next) { In.ClickL = In.ClickR = true; In.Power = 1.0; Next += FastClick(P); }
+					In.Reflex = 0;
+				}
+			});
+			Check(!Sank && Z1 > 1.8 && V1 > P.Stall * 1.1 && S.Pos.Z > 4.0,
+				F("%s off the ground on Space: %.1f m up at %.1f m/s after 1 s, %.1f m after 3 s (stall %.1f)", Id, Z1, V1, S.Pos.Z, P.Stall));
+		};
+		Off("Starling", EStyle::Flapping, 75, 38, 12, 17);
+		Off("HouseSparrow", EStyle::Bounding, 30, 23, 15, 9);
+		Off("FeralPigeon", EStyle::Clapping, 330, 65, 7, 17);
+	}
+	// 19. a glide too slow to last: just above the stall with the gaze near level and no beats, the bird lets the nose down
+	// and settles in a slow glide well clear of the stall (it does not mush down at the stall speed)
+	{
+		auto Slow = [](const char* Id, EStyle Style, double MassG, double SpanCm, double Hz, double Cruise)
+		{
+			const FParams P = MakeSpeciesParams(Id, Style, MassG, SpanCm, Hz, Cruise);
+			FState S = Flying(P, P.Stall * 1.05);
+			Run(P, S, 6, [&](double, FInput& In) { In.AimPitch = -0.07; });
+			const double V = BirdFlight::Speed(S);
+			Check(V > P.Stall * 1.35 && V < P.BestGlide * 1.2 && -S.Vel.Z < 0.3 * V, F("%s slow glide: settles at %.1f m/s sinking %.1f (stall %.1f, best glide %.1f)", Id, V, -S.Vel.Z, P.Stall, P.BestGlide));
+		};
+		Slow("HouseSparrow", EStyle::Bounding, 30, 23, 15, 9);
+		Slow("Starling", EStyle::Flapping, 75, 38, 12, 17);
+		Slow("HerringGull", EStyle::Soaring, 1000, 140, 3, 12);
 	}
 	std::printf(Failures ? "%d FAILED\n" : "all passed\n", Failures);
 	return Failures ? 1 : 0;

@@ -3,6 +3,8 @@
 #include "CoreMinimal.h"
 #include "UI/LyudDiaryStyle.h"
 #include "UI/LyudGameScreen.h"
+#include "People/LyudFriends.h"
+#include "City/LyudCityThings.h"
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/SLeafWidget.h"
 
@@ -32,6 +34,22 @@ struct FLyudDiaryState
 	TArray<TArray<int32>> DiaryPages;
 	/** The birds section: the species on each page (ULyudBirdBook::Seen order), BirdsPerPage a page. */
 	TArray<TArray<FName>> BirdPages;
+	/** The diary's «Люди» pages after its entries (docs/friends.md): the friends (ULyudFriends::DiaryFriends) and which go on
+	 *  each page; the spread the people start on within the diary's section. */
+	TArray<ULyudFriends::FDiaryFriend> People;
+	TArray<TArray<int32>> PeoplePages;
+	int32 DiarySpreads = 1;
+	/** The diary's «Коллекции» pages after the people (docs/city_interiors.md "A complete set pays"): every set of stamps
+	 *  (ULyudCityThings::CollectionViews), which go on each page, and how many spreads the people take before them. */
+	TArray<ULyudCityThings::FCollectionView> Collections;
+	TArray<TArray<int32>> CollectionPages;
+	int32 PeopleSpreads = 1;
+	/** The «Книги» pages between the people's and the collections' (docs/books.md "Reading anywhere"): indices into
+	 *  ULyudBooks::GetQuotes on each page, and how many spreads they take. */
+	TArray<TArray<int32>> QuotePages;
+	int32 BookSpreads = 1;
+	/** The friends' pages after the birds' (the cats and dogs, ULyudAnimalFriends order): animal ids on each. */
+	TArray<TArray<int32>> FriendPages;
 };
 
 /** A hand-drawn mark over whatever it is laid over (an overlay slot): an underline, a circle, a tick... */
@@ -120,7 +138,12 @@ private:
 	TSharedRef<SWidget> QuestsRight();
 	TSharedRef<SWidget> DiaryPage(int32 PageIndex);
 	TSharedRef<SWidget> BirdsPage(int32 PageIndex);
+	TSharedRef<SWidget> PeoplePage(int32 PageIndex);
+	TSharedRef<SWidget> CollectionsPage(int32 PageIndex);
+	TSharedRef<SWidget> BooksPage(int32 PageIndex);
 	TSharedRef<SWidget> BirdCard(FName Species);
+	TSharedRef<SWidget> FriendsPage(int32 PageIndex);
+	TSharedRef<SWidget> FriendCard(int32 AnimalId);
 	TSharedRef<SWidget> MapSpread();
 	TSharedRef<SWidget> MapNote();
 	void Changed() { OnChanged.ExecuteIfBound(); }
@@ -215,6 +238,10 @@ private:
 	TSharedRef<SWidget> MakeCorner(bool bRight);
 	void Paginate();
 	void PaginateBirds();
+	void PaginatePeople();
+	void PaginateCollections();
+	void PaginateQuotes();
+	void PaginateFriends();
 	void Refresh();
 	FVector2D LocalPos() const;
 	float LocalScale() const;

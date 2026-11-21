@@ -2,6 +2,7 @@
 
 #include "AnimalSim.h"
 #include "Animals/AnimalActor.h"
+#include "Animals/AnimalFriends.h"
 #include "Animals/AnimalLife.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/InputComponent.h"
@@ -143,6 +144,13 @@ bool AAnimalNameTags::PlayerBusy() const
 	if (!Pawn || Pawn->IsHidden())     // the sit-down cutscene, ATON OS
 	{
 		return true;
+	}
+	if (const UAnimalFriendSubsystem* Friends = UAnimalFriendSubsystem::Get(this))
+	{
+		if (Friends->TakesE())      // E there is the hand held out, a stroke, "come along"
+		{
+			return true;
+		}
 	}
 	const double Now = GetWorld()->GetTimeSeconds();
 	if (Now - SeatsAt > 2.0 || Now < SeatsAt)

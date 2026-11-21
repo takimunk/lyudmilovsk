@@ -192,6 +192,8 @@ namespace LyudBarks
 		Chrono.clear();
 		Manner.clear();
 		Met.clear();
+		Bond.clear();
+		Heard.clear();
 		Temper.clear();
 		Needs.clear();
 		bHeroNear = false;
@@ -379,6 +381,8 @@ namespace LyudBarks
 		else if (!bSecond && Key == "chrono") { SplitValues(Value, S.A.Chrono); }
 		else if (!bSecond && Key == "manner") { SplitValues(Value, S.A.Manner); }
 		else if (!bSecond && Key == "met") { SplitValues(Value, S.A.Met); }
+		else if (!bSecond && Key == "bond") { SplitValues(Value, S.A.Bond); }
+		else if (!bSecond && Key == "heard_of") { SplitValues(Value, S.A.Heard); }
 		else if (!bSecond && Key == "temper") { SplitValues(Value, S.A.Temper); }
 		else if (!bSecond && Key == "need") { SplitValues(Value, S.A.Need); }
 		else if (Key == "hours" || Key == "months")
@@ -546,6 +550,8 @@ namespace LyudBarks
 			&& C.Chrono.Match(W.Chrono)
 			&& C.Manner.Match(W.Manner)
 			&& C.Met.Match(W.Met)
+			&& C.Bond.Match(W.Bond)
+			&& C.Heard.Match(W.Heard)
 			&& C.Temper.Match(W.Temper)
 			&& C.Need.Match(W.Needs);
 	}

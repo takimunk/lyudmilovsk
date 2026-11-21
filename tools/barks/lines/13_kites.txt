@@ -1,0 +1,33 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Kites (docs/kites.md): the children flying kites on windy afternoons (town life's fly_kite), the grown-ups who watch
+## them on the beach, a kite flier noticing the player's own kite
+## ---------------------------------------------------------------------------------------------------------------
+
+[kite_kid]
+doing = fly_kite
+say town.kite_kid.1 | Выше! Ещё выше! Отпускай, отпускай! | Higher! Higher! Let it out, let it out! | もっと高く！もっと！糸を出して、出して！
+say town.kite_kid.2 | Смотри, как хвост вьётся! | Look how the tail wriggles! | 見て、しっぽがくねくねしてる！
+say town.kite_kid.3 | Ой, ныряет! Тяни, тяни! | Oh, it's diving! Pull, pull! | わっ、落ちてる！引いて、引いて！
+say town.kite_kid.4 | У меня леска до самого конца! Пятьдесят метров! | My line's all the way out! Fifty metres! | 糸、最後まで出したよ！50メートル！
+say town.kite_kid.5 | Чуть в фонарь не влетел. Фух. | It nearly went into the lamp post. Phew. | もう少しで街灯にぶつかるところだった。ふう。
+say town.kite_kid.6 | Папа сам клеил. Из старой занавески. | Dad glued it himself. Out of an old curtain. | お父さんが自分で作ったんだ。古いカーテンで。
+
+[kite_kid_box]
+doing = fly_kite
+age = teen
+say town.kite_teen.1 | Коробчатый в такой ветер — самое то. Ромбы уже крутит. | A box kite's just right in this wind. The diamonds are already spinning. | この風なら箱凧がいちばん。ひし形はもう回ってる。
+say town.kite_teen.2 | Главное — не держать мёртво. Ветер сам скажет. | The main thing is not to hold it dead still. The wind will tell you. | 大事なのは、がっちり握らないこと。風が教えてくれる。
+
+[kite_watch]
+at = beach
+age = adult elder
+doing = sea_air swim_look sun_watch
+say town.kite_watch.1 | Сегодня змеи над пляжем. Ветерок хороший. | Kites over the beach today. A good breeze. | 今日は浜の上に凧が上がってる。いい風だ。
+say town.kite_watch.2 | Мы в детстве из газет клеили. Летали не хуже. | As kids we made them out of newspaper. They flew just as well. | 子どもの頃は新聞紙で作ったものさ。それでもよく飛んだ。
+say town.kite_watch.3 | Только бы на сосну не занесло. Оттуда не снимешь. | As long as it doesn't drift onto a pine. You'll never get it down. | 松の木に流されなきゃいいけど。あそこに引っかかったら取れない。
+
+[kite_hero]
+doing = fly_kite
+near = hero
+say town.kite_hero.1 | У тебя тоже змей? Давай, кто выше! | You've got a kite too? Let's see whose goes higher! | 君も凧持ってるの？どっちが高く上がるか勝負しよう！
+say town.kite_hero.2 | Отойди подальше, а то лески перепутаем! | Move further off, or we'll tangle our lines! | もう少し離れて、糸がからまっちゃう！

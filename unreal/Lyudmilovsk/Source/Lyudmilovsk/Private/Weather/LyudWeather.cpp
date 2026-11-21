@@ -321,6 +321,41 @@ namespace
 		}
 	}
 
+	/** A day held fair (ULyudWeatherSubsystem::SetFairSky): what there is of cloud, rain, fog and thunder fades with K. */
+	void ApplyFair(LyudWeather::FWeatherState& S, float K)
+	{
+		using namespace LyudWeather;
+		if (K <= 0.f)
+		{
+			return;
+		}
+		const float Keep = 1.f - K;
+		const float C = FMath::Min(S.CloudCover, FMath::Lerp(S.CloudCover, 0.08f, K));
+		const float Scale = S.CloudCover > 0.01f ? C / S.CloudCover : 1.f;
+		S.CloudCover = C;
+		S.Low.Cover *= Scale;
+		S.Mid.Cover *= Scale;
+		S.High.Cover *= Scale;
+		S.PrecipRate *= Keep * Keep;
+		S.SnowfallCmPerHour *= Keep * Keep;
+		S.Thunder *= Keep;
+		S.Hail *= Keep;
+		S.ShowerCells *= Keep;
+		S.Rainbow *= Keep;
+		S.Waterspout *= Keep;
+		S.Fog *= Keep;
+		S.Wet *= 1.f - 0.8f * K;
+		if (S.PrecipRate < 0.03f)
+		{
+			S.Precip = EPrecip::None;
+		}
+		if (S.Fog < 0.03f)
+		{
+			S.FogType = EFog::None;
+		}
+		S.VisibilityM = FMath::Lerp(S.VisibilityM, FMath::Max(S.VisibilityM, 30000.f), K);
+	}
+
 	uint32 ForceHash()
 	{
 		const float V[] = { CVarRain.GetValueOnGameThread(), CVarCloud.GetValueOnGameThread(), CVarFog.GetValueOnGameThread(),
@@ -441,6 +476,8 @@ const LyudWeather::FWeatherState& ULyudWeatherSubsystem::StateAt(double Hours) c
 	// preset over lyud.Weather.PresetBlend (0 by default: tests force a weather and look at once)
 	const bool bJump = CachedHours > -1e8 && FMath::Abs(Hours - CachedHours) > 0.25;
 	const bool bForced = F != CachedForceHash;
+	// the held fair day moves slowly (its caller eases it over hours): a new amount just makes the state anew
+	const bool bFair = !FMath::IsNearlyEqual(FairSky, CachedFairSky, 0.002f);
 	if (bJump || bForced)
 	{
 		const float Want = bJump ? CVarBlend.GetValueOnGameThread() : CVarPresetBlend.GetValueOnGameThread();
@@ -455,10 +492,12 @@ const LyudWeather::FWeatherState& ULyudWeatherSubsystem::StateAt(double Hours) c
 	// the model is cheap: recompute every couple of game seconds so nothing it feeds moves in steps
 	const float Blend = BlendLength;
 	const bool bBlending = BlendStart > 0.0 && Real - BlendStart < Blend;
-	if (FMath::Abs(Hours - CachedHours) > 1.0 / 1800.0 || bForced || bJump || bBlending || CachedHours < -1e8 || bWasBlending)
+	if (FMath::Abs(Hours - CachedHours) > 1.0 / 1800.0 || bForced || bFair || bJump || bBlending || CachedHours < -1e8 || bWasBlending)
 	{
 		CachedHours = Hours;
+		CachedFairSky = FairSky;
 		LyudWeather::FWeatherState Target = LyudWeather::Full(Hours, *Chain, *Season);
+		ApplyFair(Target, FairSky);
 		ApplyForces(Target);
 		if (bBlending)
 		{
@@ -505,6 +544,11 @@ FLyudSkyWeather ULyudWeatherSubsystem::GetSky() const
 	O.TempC = S.TempC;
 	O.Wet = S.Wet;
 	return O;
+}
+
+void ULyudWeatherSubsystem::SetFairSky(float Amount)
+{
+	FairSky = FMath::Clamp(Amount, 0.f, 1.f);
 }
 
 bool ULyudWeatherSubsystem::SetPreset(const FString& InName)

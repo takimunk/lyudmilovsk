@@ -31,6 +31,8 @@ from citykit import box, prism, ring, band, band_down, ribbon_wall, quad_bar, DO
 from _cons_util import wall, win, hface, rect
 from _surrounds import add_surrounds
 import interior_kit as kit
+import dress_kit as dk
+import night_kit as nk
 from furn_int3 import rod
 import furn_int3 as fu
 
@@ -228,6 +230,7 @@ def build(B):
     _lamps_misc(B)
     _wh.restore()
     _backboards(B)
+    _dress(B)
     if os.environ.get("KIT_CHECK"):
         print("KITCHECK", kit.check(B))
     # ------------------------------------------------------------ footprint, height, surrounds
@@ -733,7 +736,7 @@ def _foyer(B):
     cx, cy, cyaw = _ring_pt(162, 4.6)
     kit.shop_counter(B, cx, cy, 0.0, cyaw, w=1.9, d=0.6, h=1.05, top="CT_WoodLight", front="CT_PlasterRed", till=False)
     rx, ry, ryaw = _ring_pt(162, 5.8)
-    kit.coat_rack(B, rx, ry, 0.0, ryaw, w=1.8, coats=0.8, seed=8)
+    kit.coat_rack(B, rx, ry, 0.0, ryaw, w=1.8, coats=0, seed=8)   # coats come from the cloak_* dressing sets
     outw = (math.cos(math.radians(162)), math.sin(math.radians(162)))
     B.spot("cloak", "counter", (cx - outw[0] * 0.9, cy - outw[1] * 0.9, 0.0), facing_yaw(*outw))
     B.spot("cloak_staff", "work", (cx + outw[0] * 0.75, cy + outw[1] * 0.75, 0.0), facing_yaw(-outw[0], -outw[1]))
@@ -949,26 +952,45 @@ def _buffet(B):
     c = Ctx(B, "buffet")
     _cswitch(c, 6.3, -1, "light_switch_buffet", "room")
     c.along(kit.rug, 10.0, 0.0, w=5.0, d=3.2, name="rug_2")
+    tabs = []
     for i, (a, p) in enumerate(((8.8, -1.4), (8.8, 1.4), (11.4, -1.4), (11.4, 1.4))):
         x, y = c.W(a, p)
         kit.table_round(B, x, y, 0.0, 0.0, r=0.55, h=0.75, mat="CT_WoodLight")
         B.spot("buffet_t%d" % i, "table", (x, y, 0.0), 0.0)
+        mat = "CT_PlasterRed" if i % 2 else "CT_PlasterBlue"
+        seats = []
         for k in range(3):
             ang = math.radians(90 + 120 * k)
             cx, cy = x + 0.95 * math.cos(ang), y + 0.95 * math.sin(ang)
             yw = yaw_at((cx, cy), (x, y))
-            kit.chair(B, cx, cy, 0.0, yw, kind="tube", mat="CT_PlasterRed" if i % 2 else "CT_PlasterBlue")
+            seats.append((cx, cy, yw))
             B.spot("buffet_s%d_%d" % (i, k), "seat", (cx, cy, 0.0), yw)
-        kit.cup(B, x - 0.1, y, 0.75, 0.0)
-        kit.vase(B, x + 0.12, y + 0.08, 0.75, 0.0, seed=i)
+        tabs.append((i, x, y, mat, seats))
         cx, cy = x + 0.95 * math.cos(math.radians(90)), y + 0.95
         B.thing("buffet_seat_%d" % (i + 1), "seat", (cx, cy, 0.45), yaw_at((cx, cy), (x, y)), height=0.45)
+    # open: the chairs at the tables, a cup and a vase on each; shut (docs/city_night.md): the chairs up on the tables
+    with B.dress("day_buffet", open=True):
+        for i, x, y, mat, seats in tabs:
+            for cx, cy, yw in seats:
+                kit.chair(B, cx, cy, 0.0, yw, kind="tube", mat=mat)
+            kit.cup(B, x - 0.1, y, 0.75, 0.0)
+            kit.vase(B, x + 0.12, y + 0.08, 0.75, 0.0, seed=i)
+    with B.dress("night_buffet", open=False):
+        for i, x, y, mat, seats in tabs:
+            nk.chairs_up_round(B, x, y, 0.75, n=3, r=0.55, kind="tube", mats=[mat], a0=90.0, seed=i)
     c.put(kit.bar_counter, 14.3, 0.0, w=3.4, d=0.65, h=1.05, taps=0, back=True, seed=2, front="CT_PlasterRed", top="CT_WoodLight")
     c.put(kit.samovar, 13.9, -1.2, z=1.05)
     for k in range(3):
         c.put(kit.cup, 14.0, 0.6 + 0.2 * k, z=1.05)
     c.put(kit.plates, 14.0, -0.2, z=1.05, n=3)
     c.put(kit.cash_register, 14.4, 1.2, z=1.05)
+    lx, ly = c.W(14.3, -0.7)
+    nk.lone_lamp(B, lx, ly, 1.05, c.fy(-1, 0), lumens=240)          # left on over the counter when the club is shut
+    with B.dress("night_cleaner", hours=(7, 10), open=False):     # the cleaner's morning, before the doors open
+        wx, wy = c.W(12.95, 0.0)
+        nk.wet_floor(B, wx, wy, 0.0, c.fy(-1, 0), w=1.3, d=1.6, seed=12)
+        bx, by = c.W(13.05, 1.75)
+        nk.mop_bucket(B, bx, by, 0.0, c.fy(-1, 0) + 25.0, seed=12)
     c.spot("buffet_counter", "counter", 13.5, 0.0, (1, 0))
     c.spot("buffet_staff", "work", 15.1, 0.0, (-1, 0))
     c.thing("buffet_counter", "counter", 14.3, 0.0, 1.05, (-1, 0), role="clerk", service="bar", shop="club_buffet")
@@ -1252,6 +1274,51 @@ def _front_room(B):
     B.thing("meeting_board", "board", (x, y, z + 1.7), c.fy(0, 1), topic="club")
     B.lamp((*c.W(11.0, 0.0), z + 3.3), lumens=700, colour=WARM, kind=PUB, radius=7.0)
     kit.pendant(B, *c.W(11.0, 0.0), z + 3.8, drop=0.8, kind="cone", light=False)
+
+
+def _dress(B):
+    """Lived-in dressing (docs/city_dress.md): coats in the cloakroom by the season, wet umbrellas in the drum on rain
+    days, books and cups left on the reading tables, chess evenings, crumbs in the buffet, a satchel in the youth lounge."""
+    rx, ry, ryaw = _ring_pt(162, 5.8)
+    with B.dress("cloak_winter", months=(12, 1, 2)):
+        dk.coats_on_rail(B, rx, ry, 0.0, ryaw, w=1.8, share=0.85, season="winter", seed=8)
+    with B.dress("cloak_autumn", months=(3, 4, 10, 11)):
+        dk.coats_on_rail(B, rx, ry, 0.0, ryaw, w=1.8, share=0.5, season="autumn", seed=8)
+    with B.dress("cloak_summer", months=(5, 6, 7, 8, 9)):
+        dk.coats_on_rail(B, rx, ry, 0.0, ryaw, w=1.8, share=0.12, season="summer", seed=8)
+    with B.dress("foyer_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, CX - 0.45, 14.0, 0.0, 0.0, w=0.8)
+        dk.doormat_wet(B, CX + 0.45, 14.0, 0.0, 0.0, w=0.8)
+        dk.umbrella_open(B, -1.0, 14.9, 0.0, 30, seed=1)
+        dk.umbrella_open(B, 1.15, 15.0, 0.0, 200, seed=2)
+        dk.umbrella_stand(B, -1.2, 13.85, 0.0, 0, n=3, seed=3)
+    with B.dress("foyer_winter", months=(12, 1, 2), weather_not=("rain",)):
+        dk.boots(B, -0.6, 13.95, 0.0, 0, kind="felt", seed=4)
+        dk.boots(B, 0.6, 13.95, 0.0, 6, kind="felt", seed=5)
+    c = Ctx(B, "reading")
+    with B.dress("read_books", hours=(10, 21), chance=0.6):
+        for ti, a in enumerate((8.6, 11.9)):
+            c.put(dk.book_face_down, a + 0.1, -0.28, z=0.76, seed=ti + 1)
+        c.put(dk.book_face_down, 14.3, -1.95, z=0.8, seed=5)
+    with B.dress("read_cup", hours=(11, 20), chance=0.5):
+        c.put(kit.cup, 8.6 - 0.3, 0.3, z=0.76)
+        c.put(kit.cup, 11.9 + 0.2, -0.3, z=0.76)
+    with B.dress("chess_evening", hours=(17, 23)):
+        c.put(kit.cup, 15.7, 0.55, z=1.0)
+        c.put(kit.glass, 15.9, -0.2, z=1.0)
+    c = Ctx(B, "buffet")
+    with B.dress("buffet_after", hours=(13, 16), chance=0.7):
+        for (a, p_) in ((8.8, -1.4), (11.4, 1.4)):
+            x, y = c.W(a, p_)
+            dk.plate_crumbs(B, x, y - 0.25, 0.75, 0.0, seed=int(a))
+        c.put(dk.plate_crumbs, 14.0, 1.0, z=1.05, seed=3)
+    c = Ctx(B, "studio", 4.4)
+    with B.dress("lounge_school", weekdays=(0, 1, 2, 3, 4), hours=(14, 19), chance=0.7):
+        c.put(dk.school_bag, 8.4, 1.0, z=4.4, seed=2)
+    c = Ctx(B, "front", 8.8)
+    with B.dress("meeting_evening", hours=(18, 22), weekdays=(1, 3, 5)):
+        c.put(dk.plate_crumbs, 12.4, 0.2, z=8.8 + 0.76, seed=6)
+        c.put(dk.book_face_down, 9.9, 0.3, z=8.8 + 0.76, seed=7)
 
 
 def _lamps_misc(B):

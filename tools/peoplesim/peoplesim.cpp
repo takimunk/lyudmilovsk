@@ -1,9 +1,11 @@
 // The people's life outside the engine: behaviour checks and a day on the real map (CSV for render_people.py).
 //   tools/peoplesim/run.sh test
 //   tools/peoplesim/run.sh town | week          the town: a day and a night | a week of invariants (town_week.h)
+//   tools/peoplesim/run.sh winter               winter play on the town (winter_people.h; also part of test)
 //   tools/peoplesim/run.sh day [start_hour hours]
 //   tools/peoplesim/run.sh trace <key> [start_hour hours]
 //   tools/peoplesim/run.sh summary [start_hour hours [weekday]]
+#include "WindModel.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleSim.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Railway/RailRun.h"
 
@@ -923,6 +925,9 @@ static void Bikes(FWorld& W)
 	CHECK(Riders == 0, "no bike reserved by someone who isn't on the way to it (%d)", Riders);
 }
 
+static int Winter();     // winter_people.h
+static int BookClub();   // book_club_people.h
+
 static int Test()
 {
 	std::printf("a made-up town:\n");
@@ -970,6 +975,11 @@ static int Test()
 		const double S = std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - T0).count();
 		std::printf("  the real map's checks took %.2f s\n", S);
 	}
+	if (Real)
+	{
+		std::printf("winter play (the town: the rink, the ice hole, the banya; docs/people.md):\n");
+		Winter();
+	}
 	std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 	return Failures ? 1 : 0;
 }
@@ -1008,6 +1018,10 @@ static int Town()
 	std::map<std::string, int> Meals;
 	std::map<std::string, float> Hungry;
 	int Lit21 = -1, Lit03 = -1, Lit12 = -1, Occupied = 0, Asleep03 = 0, Awake03 = 0, AwakeNightType03 = 0;
+	// counters' queues (docs/counters.md): the longest line seen, minutes somebody stood behind a gap, market shoppers served,
+	// and the hero holding a front spot (nobody else takes it meanwhile)
+	int LongestLine = 0, CrowdSent = 0, GapMinutes = 0, MarketServed = 0, HeroLine = -1, HeroSpotTaken = 0, BehindHero = 0;
+	std::vector<int> Line;
 	int Waiters12 = -1, Sellers10 = -1, Pupils10 = -1, PupilsOff = -1, AtSquare = -1, Overbooked = 0;
 	// the sanatorium's four guests (tools/town/sanatorium_guests.py): at their own chairs at lunch, not there before it
 	int GuestsAtLunch = -1, GuestsAt11 = -1, Guests = 0;
@@ -1042,10 +1056,23 @@ static int Town()
 	long Steps = 0;
 	const float Dt = 1.f;
 	bool bGather = false, bDayOff = false;
+	// the calendar's wind, as ULyudWindSubsystem has it (seed 921 from Monday 19 October 2026): kites want a breeze
+	LyudWeather::FWindParams WindP;
+	WindP.Seed = 921;
+	const double Monday = LyudWeather::HoursSince2000(2026, 10, 19, 0.0);
+	int KitesDark = 0, KitesOffWind = 0;
+	float KiteWindLo = 99.f, KiteWindHi = 0.f;
+	// the town's new things to do (tools/town/town_activities.py, docs/town_life.md "The new activities")
+	int CinemaNow = 0, CinemaPeak = 0, CinemaOff = 0, BedStrangers = 0, PianoNow = 0, PianoTwo = 0, StonesDark = 0, StonesGale = 0, PaperLate = 0;
+	std::set<int> PostStops, CinemaGoers;
 	for (double T = 0.0; T < 36.0 * 3600.0; T += Dt)
 	{
 		C.Seconds += Dt;
 		C.Set(W);
+		if (std::fmod(C.Seconds, 300.0) < Dt)
+		{
+			W.Wind = LyudWeather::Regime(Monday + C.Seconds / 3600.0, WindP).Speed;
+		}
 		const float H = W.Hour;
 		const int Day = W.Weekday;
 		// a holiday on the square Wednesday 18-22 (as ULyudFestivalSubsystem would set it)
@@ -1082,19 +1109,121 @@ static int Town()
 		const bool bTick = Sec % 60 == 0;
 		if (bTick)
 		{
+			// the hero steps up to the front of an empty line on Wednesday at 11:00 and stands there twenty minutes
+			if (Day == 2 && Sec == 11 * 3600)
+			{
+				for (int Q = 0; Q < (int)W.Queues.size() && HeroLine < 0; Q++)
+				{
+					W.QueueState(Q, Line);
+					const FSlot& Front = W.Slots[(size_t)W.Queues[(size_t)Q][0]];
+					if (!Line.empty() && Line[0] == -1 && Front.Users.empty() && W.Places[(size_t)Front.Place].Id.rfind("P-KIOSK", 0) == 0)
+					{
+						HeroLine = Q;
+						W.SetHeroAt(Front.Pos, true);
+						// lyud.Counter crowd: three townsfolk sent to the line behind him
+						CrowdSent = W.SendToQueue(Q, 3);
+					}
+				}
+			}
+			if (Day == 2 && Sec == 11 * 3600 + 20 * 60)
+			{
+				W.SetHeroAt(V3(), false);
+			}
+			for (int Q = 0; Q < (int)W.Queues.size(); Q++)
+			{
+				W.QueueState(Q, Line);
+				int In = 0;
+				for (size_t N = 0; N < Line.size(); N++)
+				{
+					In += Line[N] >= 0 ? 1 : 0;
+					const bool bGap = N > 0 && Line[N] >= 0 && Line[N - 1] == -1 && W.Slots[(size_t)W.Queues[(size_t)Q][N - 1]].Users.empty() &&
+						W.People[(size_t)Line[N]].State == EState::Doing && W.People[(size_t)Line[N]].Path.empty();
+					GapMinutes += bGap ? 1 : 0;
+					if (bGap && std::getenv("LYUD_QUEUE_DEBUG") && GapMinutes < 15)
+					{
+						const FPerson& G = W.People[(size_t)Line[N]];
+						std::printf("    gap %s q%d: %s state %d path %d partner %d act %s\n", W.QueueIds[(size_t)Q].c_str(), (int)N, G.Key.c_str(), (int)G.State, (int)G.Path.size(), G.Partner, G.Activity >= 0 ? W.Activities[G.Activity].Id.c_str() : "-");
+					}
+				}
+				LongestLine = std::max(LongestLine, In);
+				if (Q == HeroLine && Day == 2 && Sec > 11 * 3600 && Sec < 11 * 3600 + 20 * 60)
+				{
+					HeroSpotTaken += Line[0] >= 0 ? 1 : 0;
+					BehindHero = std::max(BehindHero, In);
+				}
+				const FSlot& Front = W.Slots[(size_t)W.Queues[(size_t)Q][0]];
+				if (Line[0] >= 0 && W.Places[(size_t)Front.Place].Id == "P-MARKET")
+				{
+					// a shopper at a stall's counter with its seller within 4 m (LyudBarks::AtCounter's distance)
+					for (const FPerson& S : W.People)
+					{
+						if (S.Place == Front.Place && S.State == EState::Doing && S.Activity >= 0 && W.Activities[S.Activity].bStaff &&
+							(S.Pos - W.People[(size_t)Line[0]].Pos).Len2D() < 4.f)
+						{
+							MarketServed++;
+							break;
+						}
+					}
+				}
+			}
 			for (const FPerson& P : W.People)
 			{
 				if (!P.bTown)
 				{
 					continue;
 				}
+				if (P.Activity >= 0 && P.State == EState::Doing)
+				{
+					const std::string& Id = W.Activities[P.Activity].Id;
+					if (Id == "cinema_day" || Id == "cinema_evening")
+					{
+						CinemaNow++;
+						CinemaGoers.insert(P.Id);
+						// a session is an hour and a half from 15:00 or 19:00 (and the walk there)
+						CinemaOff += (W.Hour > 14.5f && W.Hour < 17.4f) || (W.Hour > 18.5f && W.Hour < 21.4f) ? 0 : 1;
+					}
+					else if (Id == "tend_allotment" || Id == "water_allotment")
+					{
+						BedStrangers += P.Slot >= 0 && W.Slots[(size_t)P.Slot].Owner == P.Id ? 0 : 1;
+					}
+					else if (Id == "play_piano")
+					{
+						PianoNow++;
+					}
+					else if (Id == "skip_stones")
+					{
+						StonesDark += (W.Hour < 7.f || W.Hour > 20.f) ? 1 : 0;
+						StonesGale += W.Wind > 9.f ? 1 : 0;
+					}
+					else if (Id == "read_paper")
+					{
+						PaperLate += W.Hour > 12.6f ? 1 : 0;
+					}
+					else if (Id == "post_round" && P.Pose != EPose::Walk && P.Slot >= 0)
+					{
+						PostStops.insert(P.Slot);
+					}
+				}
 				if (P.Activity >= 0 && (P.State == EState::Doing || P.State == EState::Away))
 				{
 					Minutes[W.Activities[P.Activity].Id] += 1.0;
+					if (W.Activities[P.Activity].Id == "fly_kite" && P.State == EState::Doing)
+					{
+						KitesDark += (W.Hour < 7.f || W.Hour > 20.f) ? 1 : 0;
+						KitesOffWind += (W.Wind < 2.f || W.Wind > 15.f) ? 1 : 0;
+						KiteWindLo = std::min(KiteWindLo, W.Wind);
+						KiteWindHi = std::max(KiteWindHi, W.Wind);
+					}
 				}
 				if (P.N[(int)ENeed::Hunger] > 0.95f && P.Pose != EPose::Sleep)
 				{
 					Hungry[P.Key] += 1.f;
+				}
+				if (&P == &W.People.back())
+				{
+					CinemaPeak = std::max(CinemaPeak, CinemaNow);
+					PianoTwo += PianoNow > 1 ? 1 : 0;
+					CinemaNow = PianoNow = 0;
 				}
 				const bool bWay = P.State == EState::Going || P.State == EState::Waiting || P.State == EState::Riding;
 				if (!bWay)
@@ -1157,6 +1286,22 @@ static int Town()
 	std::printf("\n");
 	CHECK(Asleep03 > Town * 0.8, "Thursday 03:00: most asleep in their own beds (%d asleep, %d up)", Asleep03, Awake03);
 	CHECK(AwakeNightType03 > 0, "... but the night owls are up (%d)", AwakeNightType03);
+	CHECK(Minutes["fly_kite"] > 0 && KitesDark == 0 && KitesOffWind == 0, "children fly kites by day in a breeze (%.0f person-minutes in %.1f-%.1f m/s; %d in the dark, %d in a calm or a gale)",
+		Minutes["fly_kite"], KiteWindLo, KiteWindHi, KitesDark, KitesOffWind);
+	if (W.FindActivity("cinema_day") >= 0)
+	{
+		CHECK(CinemaPeak >= 12 && CinemaPeak <= 150 && CinemaOff == 0, "the Rassvet's sessions have a house (%d at once at the fullest, %zu went in 36 h; %d person-minutes out of a session)",
+			CinemaPeak, CinemaGoers.size(), CinemaOff);
+		CHECK(Minutes["dominoes"] > 60 && Minutes["san_cure"] > 60, "the old play dominoes at the sanatorium and take its waters (%.0f, %.0f person-minutes)",
+			Minutes["dominoes"], Minutes["san_cure"]);
+		CHECK(Minutes["tend_allotment"] + Minutes["water_allotment"] > 60 && BedStrangers == 0, "the allotment's keepers work their own beds (%.0f + %.0f person-minutes, %d at somebody else's)",
+			Minutes["tend_allotment"], Minutes["water_allotment"], BedStrangers);
+		CHECK(Minutes["read_paper"] > 60 && PaperLate == 0, "the morning paper is read on the benches (%.0f person-minutes, %d after half past twelve)", Minutes["read_paper"], PaperLate);
+		CHECK(Minutes["skip_stones"] > 60 && StonesDark == 0 && StonesGale == 0, "stones are skipped off the beach by day on a quiet sea (%.0f person-minutes; %d in the dark, %d in a gale)",
+			Minutes["skip_stones"], StonesDark, StonesGale);
+		CHECK(Minutes["play_piano"] < 400 && PianoTwo == 0, "the piano in the hall is played now and then, by one at a time (%.0f person-minutes)", Minutes["play_piano"]);
+		CHECK(PostStops.size() >= 12, "the postman's round goes from door to door (%zu doors in 36 h, %.0f person-minutes)", PostStops.size(), Minutes["post_round"]);
+	}
 	CHECK(Minutes["watch_sunrise"] > 0, "early risers watch the sunrise (%.0f person-minutes)", Minutes["watch_sunrise"]);
 	CHECK(Minutes["night_walk"] > 0, "somebody walks at night (%.0f person-minutes)", Minutes["night_walk"]);
 	CHECK(Minutes["sit_bench"] > 300, "people sit on the benches (%.0f person-minutes)", Minutes["sit_bench"]);
@@ -1166,6 +1311,13 @@ static int Town()
 	CHECK(Dining >= 0 && Guests == 4, "the sanatorium's dining room and its four guests are in the town (%d)", Guests);
 	CHECK(GuestsAtLunch == Guests && GuestsAt11 == 0, "Wednesday 13:55 the guests eat at their own chairs (%d of %d), at 11:00 none (%d)", GuestsAtLunch, Guests, GuestsAt11);
 	CHECK(Sellers10 > 0, "Wednesday 10:00: sellers at the market (%d)", Sellers10);
+	CHECK(!W.Queues.empty() && LongestLine >= 2 && W.QueueMoves > 0, "queues form at the counters and move up (%d lines, longest %d, %d steps up)",
+		(int)W.Queues.size(), LongestLine, W.QueueMoves);
+	CHECK(GapMinutes < 30, "a line fills from the front: few person-minutes behind an empty spot (%d)", GapMinutes);
+	CHECK(MarketServed > 30, "market shoppers stand at a stall's counter with its seller (%d person-minutes)", MarketServed);
+	CHECK(HeroLine >= 0 && HeroSpotTaken == 0, "the hero at a kiosk's window: nobody takes his spot (%d minutes; %d in the line behind him)",
+		HeroSpotTaken, BehindHero);
+	CHECK(CrowdSent == 3 && BehindHero >= 2, "a crowd sent to his line stands behind him (%d sent, %d behind)", CrowdSent, BehindHero);
 	CHECK(Pupils10 > 10, "Wednesday 10:00: pupils at school (%d)", Pupils10);
 	CHECK(PupilsOff == 0, "Thursday (a day off) 10:00: nobody at school (%d)", PupilsOff);
 	CHECK(AtSquare > 40, "a holiday on the square at 20:00 draws the town (%d there)", AtSquare);
@@ -1375,6 +1527,9 @@ static int Day(int Argc, char** Argv, const char* TraceKey, bool bSummary = fals
 }
 
 #include "town_week.h"
+#include "winter_people.h"
+#include "indoor_weather.h"
+#include "book_club_people.h"
 
 int main(int Argc, char** Argv)
 {
@@ -1390,6 +1545,22 @@ int main(int Argc, char** Argv)
 	if (Mode == "week")
 	{
 		return Week();
+	}
+	if (Mode == "bookclub")
+	{
+		const int R = BookClub();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return R;
+	}
+	if (Mode == "winter")
+	{
+		const int R = Winter();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return R;
+	}
+	if (Mode == "weather")
+	{
+		return IndoorWeather();
 	}
 	if (Mode == "day")
 	{

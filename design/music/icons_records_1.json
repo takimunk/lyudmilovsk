@@ -1,0 +1,26 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_6",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one square cardboard long-playing record sleeve of a 1970s-80s Soviet seaside town, seen straight on and slightly tilted, with the black vinyl record sliding a little out of its top right edge, centred and filling most of the cell, softly lit from the upper left, painterly realistic style, worn printed cardboard with soft corners, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one sleeve per cell, no text, letters, numbers or logos anywhere, not on the sleeves either: each sleeve is a picture only. Row 1, left: the amber sleeve shows the sea and one gull who woke before everyone else. Row 1, middle: the sleeve is pale blue, with a piano standing right on the sand. Row 1, right: the yellow sleeve shows beach umbrellas on the third terrace, seen from above. Row 2, left: the sleeve is grey like the sky over town, with one wet maple leaf on it. Row 2, middle: the sky-blue sleeve has dunes, pines and a great deal of sky. Row 2, right: On the orange sleeve a cello casts a long evening shadow. Row 3, left: the plum-coloured sleeve shows the last windows of the Korona sanatorium going dark one by one. Row 3, middle: A dark-blue sleeve with stars and the lamp at the end of the pier. Row 3, right: the violet sleeve has a moon with a tiny music box and key inside it."
+ },
+ "job_id": "dbd2def5-3519-439c-9547-567a41f91e6b",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_213949_dbd2def5-3519-439c-9547-567a41f91e6b.png",
+ "credits": 1,
+ "cells_row_major": [
+  "record_dawn_1",
+  "record_dawn_2",
+  "record_day_1",
+  "record_day_2",
+  "record_day_3",
+  "record_dusk_1",
+  "record_dusk_2",
+  "record_night_1",
+  "record_night_2"
+ ],
+ "sha256": "984ddfbd645dcb6c0f944b4735e061e45de754ce0e39949a0818a6599fee39be"
+}

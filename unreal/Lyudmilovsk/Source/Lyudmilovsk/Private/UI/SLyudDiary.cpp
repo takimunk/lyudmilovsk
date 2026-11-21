@@ -5,12 +5,14 @@
 #include "Framework/Application/SlateApplication.h"
 #include "HAL/IConsoleManager.h"
 #include "BirdTame.h"
+#include "Animals/AnimalFriends.h"
 #include "Birds/BirdBook.h"
 #include "Birds/BirdSpecies.h"
 #include "Books/LyudBooks.h"
 #include "Fishing/LyudFishBook.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "Music/LyudInstruments.h"
 #include "Plants/GameCalendar.h"
 #include "Rendering/DrawElements.h"
 #include "Rendering/SlateRenderer.h"
@@ -247,8 +249,33 @@ void SLyudDiarySpread::Construct(const FArguments& InArgs)
 		R = QuestsRight();
 		break;
 	case ESection::Diary:
-		L = DiaryPage(Spread.Part * 2);
-		R = DiaryPage(Spread.Part * 2 + 1);
+		if (Spread.Part >= State->DiarySpreads + State->PeopleSpreads)
+		{
+			const int32 B = Spread.Part - State->DiarySpreads - State->PeopleSpreads;
+			if (B >= State->BookSpreads)
+			{
+				// last: the sets of stamps and what each gave
+				L = CollectionsPage((B - State->BookSpreads) * 2);
+				R = CollectionsPage((B - State->BookSpreads) * 2 + 1);
+			}
+			else
+			{
+				// after the people: the books he read and the quotes he copied
+				L = BooksPage(B * 2);
+				R = BooksPage(B * 2 + 1);
+			}
+		}
+		else if (Spread.Part >= State->DiarySpreads)
+		{
+			// after the entries: the people he knows
+			L = PeoplePage((Spread.Part - State->DiarySpreads) * 2);
+			R = PeoplePage((Spread.Part - State->DiarySpreads) * 2 + 1);
+		}
+		else
+		{
+			L = DiaryPage(Spread.Part * 2);
+			R = DiaryPage(Spread.Part * 2 + 1);
+		}
 		break;
 	case ESection::Birds:
 		L = BirdsPage(Spread.Part * 2);
@@ -447,6 +474,19 @@ TSharedRef<SWidget> SLyudDiarySpread::ThingsLeft()
 			if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World))
 			{
 				Screen->CloseThen([WeakWorld] { if (ULyudBookScreen* Books = ULyudBookScreen::Get(WeakWorld.Get())) { Books->OpenReader(FString()); } });
+			}
+		});
+	}
+	else if (Id == ULyudInstruments::GuitarItem)
+	{
+		// his guitar: played where he stands, best by a bonfire (docs/instruments.md)
+		AddAction(TEXT("ui.use.play"), [WeakUI]
+		{
+			UWorld* World = WeakUI.IsValid() ? WeakUI->GetWorld() : nullptr;
+			TWeakObjectPtr<UWorld> WeakWorld = World;
+			if (ULyudGameScreen* Screen = ULyudGameScreen::Get(World))
+			{
+				Screen->CloseThen([WeakWorld] { if (ULyudInstruments* Instr = ULyudInstruments::Get(WeakWorld.Get())) { Instr->Open(true); } });
 			}
 		});
 	}
@@ -846,7 +886,8 @@ TSharedRef<SWidget> SLyudDiarySpread::BirdsPage(int32 PageIndex)
 	}
 	if (!State->BirdPages.IsValidIndex(PageIndex))
 	{
-		return Box;
+		// after the birds: the cats and dogs that are friends
+		return State->FriendPages.IsValidIndex(PageIndex - State->BirdPages.Num()) ? FriendsPage(PageIndex - State->BirdPages.Num()) : StaticCastSharedRef<SWidget>(Box);
 	}
 	for (const FName Species : State->BirdPages[PageIndex])
 	{
@@ -856,6 +897,233 @@ TSharedRef<SWidget> SLyudDiarySpread::BirdsPage(int32 PageIndex)
 	{
 		Box->AddSlot().FillHeight(1.f)[SNew(SSpacer)];
 		Box->AddSlot().AutoHeight()[Key(TEXT("ui.birds.hint"), 22.f, PencilFaint, false, true)];
+	}
+	return Box;
+}
+
+// ------------------------------------------------------------------ people: what he knows of each friend (docs/friends.md)
+
+namespace
+{
+	constexpr int32 PeoplePerPage = 4;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::PeoplePage(int32 PageIndex)
+{
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	if (PageIndex == 0)
+	{
+		Box->AddSlot().AutoHeight()[Title(LyudText::Get(TEXT("friends.diary.title")))];
+		if (State->People.Num() == 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 20, 0, 0)[Key(TEXT("friends.diary.empty"), 30.f, PencilFaint, false, true)];
+			return Box;
+		}
+	}
+	if (!State->PeoplePages.IsValidIndex(PageIndex))
+	{
+		return Box;
+	}
+	for (const int32 I : State->PeoplePages[PageIndex])
+	{
+		if (!State->People.IsValidIndex(I))
+		{
+			continue;
+		}
+		const ULyudFriends::FDiaryFriend& F = State->People[I];
+		TSharedRef<SVerticalBox> Card = SNew(SVerticalBox);
+		Card->AddSlot().AutoHeight()
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().AutoWidth()[Marked(Words(F.Name, 34.f, Ink, true), EMark::Underline, InkSoft, SeedOf(F.Name.ToString()))]
+			+ SHorizontalBox::Slot().FillWidth(1.f).HAlign(HAlign_Right).VAlign(VAlign_Bottom)[Words(F.Level, 24.f, Pencil)]
+		];
+		for (const FText& Fact : F.Facts)
+		{
+			Card->AddSlot().AutoHeight().Padding(10, 1, 0, 0)[Words(Fact, 24.f, Ink, false, true)];
+		}
+		Box->AddSlot().AutoHeight().Padding(0, 8, 0, 14)[Card];
+	}
+	return Box;
+}
+
+// ------------------------------------------------------------------ collections: every set of stamps, its slots and its reward
+
+namespace
+{
+	constexpr int32 CollectionsPerPage = 6;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::CollectionsPage(int32 PageIndex)
+{
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	if (PageIndex == 0)
+	{
+		Box->AddSlot().AutoHeight()[Title(LyudText::Get(TEXT("city.coll.page.title")))];
+		int32 Complete = 0, Begun = 0;
+		for (const ULyudCityThings::FCollectionView& V : State->Collections)
+		{
+			Complete += V.Got >= V.Slots.Num() && V.Slots.Num() > 0 ? 1 : 0;
+			Begun += V.Got > 0 ? 1 : 0;
+		}
+		if (State->Collections.Num() > 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 0, 0, 6)
+			[
+				Words(LyudText::Get(TEXT("city.coll.page.sum"), { FStringFormatArg(Complete), FStringFormatArg(State->Collections.Num()) }), 26.f, Pencil)
+			];
+		}
+		if (Begun == 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 10, 0, 10)[Key(TEXT("city.coll.page.empty"), 28.f, PencilFaint, false, true)];
+		}
+	}
+	if (!State->CollectionPages.IsValidIndex(PageIndex))
+	{
+		return Box;
+	}
+	for (const int32 I : State->CollectionPages[PageIndex])
+	{
+		if (!State->Collections.IsValidIndex(I))
+		{
+			continue;
+		}
+		const ULyudCityThings::FCollectionView& V = State->Collections[I];
+		const uint32 Seed = SeedOf(V.Title.ToString());
+		const bool bBegun = V.Got > 0;
+		TSharedRef<SVerticalBox> Card = SNew(SVerticalBox);
+		Card->AddSlot().AutoHeight()
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().FillWidth(1.f)
+			[
+				SNew(SBox).HAlign(HAlign_Left)
+				[
+					V.bRewarded ? Marked(Words(V.Title, 30.f, Ink, true, true), EMark::Underline, InkSoft, Seed)
+						: StaticCastSharedRef<SWidget>(Words(V.Title, 30.f, bBegun ? Ink : PencilFaint, bBegun, true))
+				]
+			]
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Bottom).Padding(10, 0, 0, 0)
+			[
+				Words(LyudText::Get(TEXT("city.coll.page.count"), { FStringFormatArg(V.Got), FStringFormatArg(V.Slots.Num()) }), 24.f, bBegun ? Pencil : PencilFaint)
+			]
+		];
+		// the slots: a box for every piece, the ones he has ticked
+		TSharedRef<SWrapBox> Slots = SNew(SWrapBox).PreferredSize(PageW - 2 * Margin - 28).InnerSlotPadding(FVector2D(5.f, 5.f));
+		for (int32 K = 0; K < V.Slots.Num(); ++K)
+		{
+			Slots->AddSlot()
+			[
+				SNew(SBox).WidthOverride(20.f).HeightOverride(20.f)
+				[
+					SNew(SOverlay)
+					+ SOverlay::Slot()[SNew(SLyudInkMark).Kind(EMark::Box).Color(V.Slots[K] ? Pencil : PencilFaint).Seed(Seed + (uint32)K * 2u + 2u).Thickness(1.4f)]
+					+ SOverlay::Slot()[SNew(SLyudInkMark).Kind(EMark::Tick).Color(V.bRewarded ? Green : Ink).Seed(Seed + (uint32)K * 2u + 4u).Thickness(2.4f).Show(V.Slots[K])]
+				]
+			];
+		}
+		Card->AddSlot().AutoHeight().Padding(4, 6, 0, 4)[Slots];
+		if (!V.Reward.IsEmpty())
+		{
+			Card->AddSlot().AutoHeight().Padding(4, 0, 0, 0)
+			[
+				Words(LyudText::Get(V.bRewarded ? TEXT("city.coll.page.reward") : TEXT("city.coll.page.promise"), { FStringFormatArg(V.Reward.ToString()) }),
+					23.f, V.bRewarded ? Green : PencilFaint, false, true)
+			];
+		}
+		if (V.FreeDays > 0)
+		{
+			Card->AddSlot().AutoHeight().Padding(4, 0, 0, 0)[Words(LyudText::Get(TEXT("city.coll.page.free"), { FStringFormatArg(V.FreeDays) }), 22.f, Pencil)];
+		}
+		Box->AddSlot().AutoHeight().Padding(0, 6, 0, 12)[Card];
+	}
+	return Box;
+}
+
+// ------------------------------------------------------------------ books: what he read, the quotes he copied (docs/books.md)
+
+namespace
+{
+	constexpr int32 QuotesFirstPage = 2;
+	constexpr int32 QuotesPerPage = 4;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::BooksPage(int32 PageIndex)
+{
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	ULyudBooks* Books = ULyudBooks::Get(Owner.Get());
+	if (!Books)
+	{
+		return Box;
+	}
+	auto Arg = [](const FText& T) { return FStringFormatArg(T.ToString()); };
+	auto TitleOf = [Books](const FString& BookKey)
+	{
+		const FLyudBookInfo* B = Books->Find(BookKey);
+		FString Lang, Work;
+		return B ? FText::FromString(B->TitleNow()) : LyudText::Get(TEXT("book.title.") + (BookKey.Split(TEXT("/"), &Lang, &Work) ? Work : BookKey));
+	};
+	if (PageIndex == 0)
+	{
+		Box->AddSlot().AutoHeight()[Title(LyudText::Get(TEXT("reading.diary.title")))];
+		Box->AddSlot().AutoHeight().Padding(0, 10, 0, 0)
+		[
+			Words(LyudText::Get(TEXT("reading.diary.stats"), { FStringFormatArg(Books->NumFinished()), FStringFormatArg(Books->PagesRead()) }), 28.f, Ink, false, true)
+		];
+		int32 LongPages = 0;
+		const FString Longest = Books->LongestFinished(&LongPages);
+		if (!Longest.IsEmpty())
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+			[
+				Words(LyudText::Get(TEXT("reading.diary.longest"), { Arg(TitleOf(Longest)), FStringFormatArg(LongPages) }), 26.f, Ink, false, true)
+			];
+		}
+		for (const FString& BookKey : Books->Borrowed())
+		{
+			const FLyudBookInfo* B = Books->Find(BookKey);
+			if (B && B->Chars > 0 && Books->Bookmark(BookKey) > 0 && !Books->IsFinished(BookKey))
+			{
+				const int32 Pct = FMath::Clamp(FMath::RoundToInt(100.f * Books->Bookmark(BookKey) / (float)B->Chars), 1, 99);
+				Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+				[
+					Words(LyudText::Get(TEXT("reading.diary.reading_now"), { Arg(TitleOf(BookKey)), FStringFormatArg(Pct) }), 26.f, Pencil, false, true)
+				];
+			}
+		}
+		if (Books->ClubMonths.Num() > 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+			[
+				Words(LyudText::Get(TEXT("reading.diary.club"), { FStringFormatArg(Books->ClubMonths.Num()) }), 26.f, Green, false, true)
+			];
+		}
+		Box->AddSlot().AutoHeight().Padding(0, 22, 0, 6)[Subtitle(LyudText::Get(TEXT("reading.diary.quotes")))];
+		if (Books->GetQuotes().Num() == 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 6, 0, 0)[Key(TEXT("reading.diary.empty"), 26.f, PencilFaint, false, true)];
+			return Box;
+		}
+	}
+	if (!State->QuotePages.IsValidIndex(PageIndex))
+	{
+		return Box;
+	}
+	const TArray<FLyudBookQuote>& Quotes = Books->GetQuotes();
+	for (const int32 I : State->QuotePages[PageIndex])
+	{
+		if (!Quotes.IsValidIndex(I))
+		{
+			continue;
+		}
+		const FLyudBookQuote& Q = Quotes[I];
+		TSharedRef<SVerticalBox> Card = SNew(SVerticalBox);
+		Card->AddSlot().AutoHeight()[Words(FText::FromString(Q.Text), 25.f, Ink, false, true)];
+		Card->AddSlot().AutoHeight().HAlign(HAlign_Right).Padding(0, 2, 0, 0)
+		[
+			Words(LyudText::Get(TEXT("reading.diary.quote_src"), { Arg(TitleOf(Q.Book)), Arg(LyudUIText::Date(Q.When)) }), 22.f, Pencil)
+		];
+		Box->AddSlot().AutoHeight().Padding(0, 8, 0, 14)[Card];
 	}
 	return Box;
 }
@@ -930,6 +1198,104 @@ TSharedRef<SWidget> SLyudDiarySpread::BirdCard(FName Species)
 		+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Top).Padding(0, 0, 18, 0)
 		[
 			SNew(SBox).WidthOverride(PicSize).HeightOverride(PicSize)[Img]
+		]
+		+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Top)[Text];
+}
+
+// ------------------------------------------------------------------ friends: the cats and dogs, after the birds
+
+namespace
+{
+	/** Cards on a page (the first page has the title where one card would be). */
+	constexpr int32 FriendsPerPage = 3;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::FriendsPage(int32 PageIndex)
+{
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	if (PageIndex == 0)
+	{
+		Box->AddSlot().AutoHeight()[Title(LyudText::Get(TEXT("ui.diary.friends")))];
+	}
+	if (State->FriendPages.IsValidIndex(PageIndex))
+	{
+		for (const int32 Id : State->FriendPages[PageIndex])
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 6, 0, 14)[FriendCard(Id)];
+		}
+	}
+	if (PageIndex == State->FriendPages.Num() - 1)
+	{
+		Box->AddSlot().FillHeight(1.f)[SNew(SSpacer)];
+		Box->AddSlot().AutoHeight()[Key(TEXT("ui.friends.hint"), 22.f, PencilFaint, false, true)];
+	}
+	return Box;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::FriendCard(int32 AnimalId)
+{
+	const ULyudAnimalFriends* Book = ULyudAnimalFriends::Get(Owner.Get());
+	const FLyudAnimalFriend* F = Book ? Book->Find(AnimalId) : nullptr;
+	if (!F)
+	{
+		return SNew(SSpacer);
+	}
+	const bool bNameless = F->Name.IsEmpty() && F->NameKey.IsEmpty();
+	TSharedRef<SVerticalBox> Text = SNew(SVerticalBox);
+	Text->AddSlot().AutoHeight().HAlign(HAlign_Left)[Marked(Words(ULyudAnimalFriends::DisplayName(*F), 36.f, Ink, true), EMark::Underline, InkSoft, (uint32)AnimalId * 131u + 7u)];
+	// what it is, under a name
+	if (!bNameless)
+	{
+		Text->AddSlot().AutoHeight()
+		[
+			Words(LyudText::Get(F->bCat ? (F->bFemale ? TEXT("animal.kind.cat_f") : TEXT("animal.kind.cat_m")) : (F->bFemale ? TEXT("animal.kind.dog_f") : TEXT("animal.kind.dog_m"))), 22.f, Pencil)
+		];
+	}
+	// how we met: the day, the place, the hand or the treat
+	const FText Where = F->Place.IsNone() ? FText::GetEmpty() : ULyudQuests::PlaceName(F->Place);
+	const TCHAR* HowKey = F->How == TEXT("food") ? TEXT("ui.friends.how_food") : (F->bFemale ? TEXT("ui.friends.how_hand_f") : TEXT("ui.friends.how_hand_m"));
+	Text->AddSlot().AutoHeight().Padding(0, 6, 0, 0)
+	[
+		Words(LyudText::Get(Where.IsEmpty() ? TEXT("ui.friends.met") : TEXT("ui.friends.met_at"),
+			{ FStringFormatArg(LyudUIText::Date(F->Met).ToString()), FStringFormatArg(Where.ToString()), FStringFormatArg(LyudText::Get(HowKey).ToString()) }), 26.f, Ink, false, true)
+	];
+	Text->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+	[
+		Words(LyudText::Get(F->bCat ? TEXT("ui.friends.counts_cat") : TEXT("ui.friends.counts_dog"),
+			{ FStringFormatArg(F->Strokes), FStringFormatArg(F->Treats), FStringFormatArg(F->Walks) }), 25.f, Green, false, true)
+	];
+	// a name of the hero's own for one that has none of its own
+	if (F->NameKey.IsEmpty())
+	{
+		Text->AddSlot().AutoHeight().Padding(0, 4, 0, 0).HAlign(HAlign_Left)
+		[
+			Link(LyudText::Get(bNameless ? TEXT("ui.friends.name") : TEXT("ui.friends.rename")), [this, AnimalId]()
+			{
+				// the diary goes back in the bag first: the name is typed in a box of its own
+				if (ULyudGameScreen* S = Owner.Get())
+				{
+					TWeakObjectPtr<ULyudGameScreen> WeakS = S;
+					S->CloseThen([WeakS, AnimalId]()
+					{
+						if (UAnimalFriendSubsystem* Friends = WeakS.IsValid() ? UAnimalFriendSubsystem::Get(WeakS.Get()) : nullptr)
+						{
+							Friends->BeginNaming(AnimalId);
+						}
+					});
+				}
+			}, (uint32)AnimalId * 31u + 11u, 25.f)
+		];
+	}
+	const FSlateBrush* Pic = ULyudAnimalFriends::Portrait(F->Breed);
+	if (!Pic)
+	{
+		return Text;
+	}
+	const float PicSize = 250.f;
+	return SNew(SHorizontalBox)
+		+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Top).Padding(0, 0, 18, 0)
+		[
+			SNew(SBox).WidthOverride(PicSize).HeightOverride(PicSize)[SNew(SImage).Image(Pic)]
 		]
 		+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Top)[Text];
 }
@@ -1414,18 +1780,115 @@ void SLyudDiaryScreen::PaginateBirds()
 	}
 }
 
+void SLyudDiaryScreen::PaginatePeople()
+{
+	// four friends a page; the first page has the title where one would be
+	State->People.Reset();
+	State->PeoplePages.Reset();
+	if (const ULyudFriends* Friends = ULyudFriends::Get(Owner.Get()))
+	{
+		Friends->DiaryFriends(State->People);
+	}
+	State->PeoplePages.AddDefaulted();
+	for (int32 I = 0; I < State->People.Num(); ++I)
+	{
+		const int32 Room = State->PeoplePages.Num() == 1 ? PeoplePerPage - 1 : PeoplePerPage;
+		if (State->PeoplePages.Last().Num() >= Room)
+		{
+			State->PeoplePages.AddDefaulted();
+		}
+		State->PeoplePages.Last().Add(I);
+	}
+}
+
+void SLyudDiaryScreen::PaginateCollections()
+{
+	// six sets a page (the first has the title and the count); a set with many slots takes the room of two
+	State->Collections.Reset();
+	State->CollectionPages.Reset();
+	if (const ULyudCityThings* Things = ULyudCityThings::Get(Owner.Get()))
+	{
+		Things->CollectionViews(State->Collections);
+	}
+	State->CollectionPages.AddDefaulted();
+	int32 Used = 1;
+	for (int32 I = 0; I < State->Collections.Num(); ++I)
+	{
+		const int32 Takes = State->Collections[I].Slots.Num() > 54 ? 2 : 1;
+		if (Used + Takes > CollectionsPerPage)
+		{
+			State->CollectionPages.AddDefaulted();
+			Used = 0;
+		}
+		State->CollectionPages.Last().Add(I);
+		Used += Takes;
+	}
+}
+
+void SLyudDiaryScreen::PaginateQuotes()
+{
+	// the newest quotes first: two under the stats on the first page, four a page after it
+	State->QuotePages.Reset();
+	State->QuotePages.AddDefaulted();
+	const ULyudBooks* Books = ULyudBooks::Get(Owner.Get());
+	if (!Books)
+	{
+		return;
+	}
+	for (int32 I = Books->GetQuotes().Num() - 1; I >= 0; --I)
+	{
+		const int32 Room = State->QuotePages.Num() == 1 ? QuotesFirstPage : QuotesPerPage;
+		if (State->QuotePages.Last().Num() >= Room)
+		{
+			State->QuotePages.AddDefaulted();
+		}
+		State->QuotePages.Last().Add(I);
+	}
+}
+
+void SLyudDiaryScreen::PaginateFriends()
+{
+	// the friends start on a page of their own after the birds'; none: no pages
+	State->FriendPages.Reset();
+	const ULyudAnimalFriends* Book = ULyudAnimalFriends::Get(Owner.Get());
+	if (!Book || !Book->Friends.Num())
+	{
+		return;
+	}
+	State->FriendPages.AddDefaulted();
+	for (const FLyudAnimalFriend& F : Book->Friends)
+	{
+		const int32 Room = State->FriendPages.Num() == 1 ? FriendsPerPage - 1 : FriendsPerPage;
+		if (State->FriendPages.Last().Num() >= Room)
+		{
+			State->FriendPages.AddDefaulted();
+		}
+		State->FriendPages.Last().Add(F.AnimalId);
+	}
+}
+
 void SLyudDiaryScreen::Rebuild()
 {
 	Language = LyudText::Language();
 	Paginate();
 	PaginateBirds();
+	PaginateFriends();
 	const int32 DiarySpreads = FMath::Max(1, (State->DiaryPages.Num() + 1) / 2);
-	const int32 BirdSpreads = FMath::Max(1, (State->BirdPages.Num() + 1) / 2);
+	PaginatePeople();
+	State->DiarySpreads = DiarySpreads;
+	const int32 PeopleSpreads = FMath::Max(1, (State->PeoplePages.Num() + 1) / 2);
+	State->PeopleSpreads = PeopleSpreads;
+	PaginateQuotes();
+	const int32 BookSpreads = FMath::Max(1, (State->QuotePages.Num() + 1) / 2);
+	State->BookSpreads = BookSpreads;
+	PaginateCollections();
+	const int32 CollectionSpreads = FMath::Max(1, (State->CollectionPages.Num() + 1) / 2);
+	const int32 BirdSpreads = FMath::Max(1, (State->BirdPages.Num() + State->FriendPages.Num() + 1) / 2);
 	const FLyudDiarySpread Was = Spreads.IsValidIndex(Current) ? Spreads[Current] : FLyudDiarySpread();
 	Spreads.Reset();
 	Spreads.Add({ ESection::Things, 0 });
 	Spreads.Add({ ESection::Quests, 0 });
-	for (int32 P = 0; P < DiarySpreads; ++P)
+	for (int32 P = 0; P < DiarySpreads + PeopleSpreads + BookSpreads + CollectionSpreads; ++P)
 	{
 		Spreads.Add({ ESection::Diary, P });
 	}
@@ -1474,7 +1937,8 @@ int32 SLyudDiaryScreen::SpreadFor(ELyudScreenTab Tab) const
 	int32 Found = 0;
 	for (int32 I = 0; I < Spreads.Num(); ++I)
 	{
-		if (Spreads[I].Section == S)
+		// the diary's newest entries (its last spread before the «Люди» pages that follow them)
+		if (Spreads[I].Section == S && !(S == ESection::Diary && Spreads[I].Part >= State->DiarySpreads))
 		{
 			Found = I;
 			if (S != ESection::Diary)

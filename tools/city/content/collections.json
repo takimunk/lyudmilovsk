@@ -4,7 +4,9 @@
   "shelves": {"title": "city.coll.shelves.title"},
   "films": {"title": "city.coll.films.title"},
   "records": {"title": "city.coll.records.title"},
-  "kiosks": {"title": "city.coll.kiosks.title"}
+  "kiosks": {"title": "city.coll.kiosks.title"},
+  "kites": {"title": "city.coll.kites.title", "pieces": ["first_flight", "high", "box", "storm"], "by": "ULyudKiteFlying (Private/Kite/LyudKite.cpp): flown, not found in town"},
+  "book_club": {"title": "city.coll.book_club.title", "pieces": ["faust", "queen_of_spades", "ibsen_doll", "time_machine", "two_cities", "white_nights", "twenty_thousand", "invisible_man", "rubaiyat", "little_princess", "dead_souls", "christmas_carol"], "by": "ULyudReading (Private/Books/LyudReading.cpp): joining the Thursday circle's talk about the month's book"}
  },
  "closed_by": {
   "saucer_pavilion": {"seat": "city.closed.cafe.chairs", "counter": "city.closed.cafe.bar", "machine": "city.closed.cafe.machine"},

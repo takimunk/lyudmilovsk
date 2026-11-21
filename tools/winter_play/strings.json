@@ -1,0 +1,443 @@
+{
+ "_doc": "Every word of winter play (docs/winter_play.md), Russian first, then English and Japanese (.claude/skills/localization/SKILL.md).",
+ "item.skates.name": {
+  "ru": "Коньки",
+  "en": "Skates",
+  "ja": "スケート靴"
+ },
+ "item.skates.desc": {
+  "ru": "Прогулочные коньки «Снегурочка» на кожаных ботинках. Надеть — и на пруд.",
+  "en": "«Snegurochka» leisure skates on leather boots. Put them on and go to the pond.",
+  "ja": "革のブーツに付いた散歩用スケート「スネグーロチカ」。履いて池へ。"
+ },
+ "item.banya_hat.name": {
+  "ru": "Банная шапка",
+  "en": "Banya hat",
+  "ja": "サウナ帽"
+ },
+ "item.banya_hat.desc": {
+  "ru": "Войлочный колпак: в парилке голова не перегревается.",
+  "en": "A felt cap: the head keeps cool in the steam room.",
+  "ja": "フェルトの帽子。蒸し風呂で頭がのぼせない。"
+ },
+ "item.banya_towel.name": {
+  "ru": "Полотенце",
+  "en": "Towel",
+  "ja": "タオル"
+ },
+ "item.banya_towel.desc": {
+  "ru": "Махровое полотенце. После проруби растереться — и сразу теплее.",
+  "en": "A terry towel. A rub-down after the ice hole and you're warm at once.",
+  "ja": "テリー織りのタオル。氷の穴のあとにこすれば、すぐ温まる。"
+ },
+ "item.birch_venik.name": {
+  "ru": "Берёзовый веник",
+  "en": "Birch venik",
+  "ja": "白樺のヴェニク"
+ },
+ "item.birch_venik.desc": {
+  "ru": "Связка берёзовых веток, запаренная в кипятке. Хватает на один банный день.",
+  "en": "A bunch of birch twigs steeped in hot water. Good for one banya day.",
+  "ja": "熱湯で蒸らした白樺の枝の束。サウナ一日分。"
+ },
+ "item.carrot.name": {
+  "ru": "Морковка",
+  "en": "Carrot",
+  "ja": "にんじん"
+ },
+ "item.carrot.desc": {
+  "ru": "Морковка. Можно съесть, а можно сделать снеговику нос.",
+  "en": "A carrot. You can eat it, or give a snowman a nose.",
+  "ja": "にんじん。食べてもいいし、雪だるまの鼻にしてもいい。"
+ },
+ "item.coal.name": {
+  "ru": "Угольки",
+  "en": "Bits of coal",
+  "ja": "炭のかけら"
+ },
+ "item.coal.desc": {
+  "ru": "Пара угольков из банной печки. Для глаз снеговика в самый раз.",
+  "en": "Two bits of coal from the banya stove. Just right for a snowman's eyes.",
+  "ja": "サウナのストーブから取った炭のかけら二つ。雪だるまの目にちょうどいい。"
+ },
+ "winter.radio.rink_open": {
+  "ru": "Каток на пруду в приморском парке открыт: лёд {0} сантиметров. Коньки — в спортивном отделе универмага.",
+  "en": "The rink on the seaside park's pond is open: the ice is {0} centimetres. Skates at the department store's sports counter.",
+  "ja": "海辺の公園の池のスケート場が開いています。氷の厚さは{0}センチ。スケート靴はデパートのスポーツ売り場で。"
+ },
+ "winter.radio.rink_thin": {
+  "ru": "На пруду в парке лёд пока тонкий, {0} сантиметров. Выходить на лёд не рекомендуется.",
+  "en": "The ice on the park pond is still thin, {0} centimetres. Please keep off it.",
+  "ja": "公園の池の氷はまだ薄く、{0}センチです。氷の上に出ないでください。"
+ },
+ "winter.radio.rink_slush": {
+  "ru": "Оттепель: на катке в парке вода поверх льда, каток закрыт.",
+  "en": "A thaw: there is water over the ice at the park rink, and the rink is closed.",
+  "ja": "雪解け。公園のスケート場は氷の上に水が出ていて、閉鎖中です。"
+ },
+ "winter.radio.walrus": {
+  "ru": "Клуб моржей приглашает: завтра в девять утра — заплыв в проруби у пирса. Баня у пирса топится с двух часов.",
+  "en": "The walruses' club invites you: tomorrow at nine, a swim in the ice hole by the pier. The banya by the pier is heated from two.",
+  "ja": "寒中水泳クラブからのお知らせ。明日の朝九時、桟橋そばの氷の穴で泳ぎます。桟橋のサウナは二時から焚いています。"
+ },
+ "winter.radio.new_year": {
+  "ru": "С Новым годом, Людмиловск! Моржи ждут всех смелых у пирса до часу дня.",
+  "en": "Happy New Year, Lyudmilovsk! The walruses wait for everyone brave by the pier until one o'clock.",
+  "ja": "新年おめでとう、リュドミロフスク！寒中水泳の仲間が、午後一時まで桟橋で勇気ある人を待っています。"
+ },
+ "winter.skate.fall.1": {
+  "ru": "Ой! Лёд твёрдый.",
+  "en": "Oof! The ice is hard.",
+  "ja": "うわっ！氷はかたい。"
+ },
+ "winter.skate.fall.2": {
+  "ru": "Трещина поймала конёк.",
+  "en": "A crack caught the blade.",
+  "ja": "ひびにエッジが取られた。"
+ },
+ "winter.skate.fall.3": {
+  "ru": "Поворот был круче, чем держит ребро.",
+  "en": "That turn was sharper than the edge could hold.",
+  "ja": "エッジが持ちこたえられないほど急なターンだった。"
+ },
+ "winter.skate.fall.4": {
+  "ru": "Сижу на льду. Хорошо хоть никто не смотрел.",
+  "en": "Sitting on the ice. At least nobody was looking.",
+  "ja": "氷の上に座りこんだ。誰も見ていなくてよかった。"
+ },
+ "winter.skate.fall.5": {
+  "ru": "Встаю. Колено мокрое, гордость тоже.",
+  "en": "Getting up. A wet knee, and wet pride.",
+  "ja": "立ち上がる。ひざもプライドもびしょぬれ。"
+ },
+ "winter.skate.first": {
+  "ru": "Поехал! Толчок — и скольжу.",
+  "en": "I'm off! A push, and a glide.",
+  "ja": "すべった！ひと押しで、すうっと。"
+ },
+ "winter.skate.long_glide": {
+  "ru": "Долгий накат, через полпруда.",
+  "en": "A long glide, half the pond.",
+  "ja": "池の半分まで、長いすべり。"
+ },
+ "winter.banya.prompt_steam": {
+  "ru": "E — плеснуть на камни · Пробел — выйти",
+  "en": "E: pour on the stones · Space: go out",
+  "ja": "E：石に水をかける · スペース：外へ"
+ },
+ "winter.banya.prompt_steam_venik": {
+  "ru": "E — плеснуть на камни · G — веник · Пробел — выйти",
+  "en": "E: pour on the stones · G: the venik · Space: go out",
+  "ja": "E：石に水をかける · G：ヴェニク · スペース：外へ"
+ },
+ "winter.banya.prompt_door": {
+  "ru": "E — в баню ({0} ₽) · T — веники и шапки",
+  "en": "E: into the banya ({0} rub.) · T: veniks and hats",
+  "ja": "E：バーニャに入る（{0}ルーブル） · T：ヴェニクと帽子"
+ },
+ "winter.banya.closed": {
+  "ru": "Баня сегодня не топлена. Топят в среду, пятницу и выходные, с двух часов.",
+  "en": "The banya isn't heated today. It's heated Wednesdays, Fridays and weekends, from two.",
+  "ja": "今日はバーニャを焚いていない。水・金・週末の二時から。"
+ },
+ "winter.banya.steam.1": {
+  "ru": "Ш-ш-ш! Пар ударил в потолок.",
+  "en": "Hiss! The steam hits the ceiling.",
+  "ja": "シューッ！蒸気が天井まで上がる。"
+ },
+ "winter.banya.steam.2": {
+  "ru": "Уши горят. Хорошо.",
+  "en": "My ears are burning. Good.",
+  "ja": "耳が熱い。いい感じ。"
+ },
+ "winter.banya.steam.3": {
+  "ru": "Камни отвечают паром, пахнет берёзой.",
+  "en": "The stones answer with steam; it smells of birch.",
+  "ja": "石が蒸気で応える。白樺の香り。"
+ },
+ "winter.banya.no_venik": {
+  "ru": "Веника нет. Его продают у двери.",
+  "en": "No venik. They sell them at the door.",
+  "ja": "ヴェニクがない。入口で売っている。"
+ },
+ "winter.banya.shop": {
+  "ru": "Банщик",
+  "en": "The banya keeper",
+  "ja": "バーニャの番人"
+ },
+ "winter.banya.no_money": {
+  "ru": "Вход {0} ₽, а в кармане меньше.",
+  "en": "Entry is {0} rub., and my pocket holds less.",
+  "ja": "入場は{0}ルーブル、ポケットにはそれより少ない。"
+ },
+ "winter.banya.enter.1": {
+  "ru": "Наверх, на полок. Дерево горячее.",
+  "en": "Up onto the top shelf. The wood is hot.",
+  "ja": "上の段へ。板が熱い。"
+ },
+ "winter.banya.enter.2": {
+  "ru": "Жар обнимает сразу, дышать надо медленно.",
+  "en": "The heat wraps round at once; breathe slowly.",
+  "ja": "熱がすぐに包みこむ。ゆっくり息をする。"
+ },
+ "winter.banya.enter.3": {
+  "ru": "В парилке пахнет липой и дымком.",
+  "en": "The steam room smells of linden and a little smoke.",
+  "ja": "サウナ室は菩提樹と少しの煙の匂い。"
+ },
+ "winter.banya.faint": {
+  "ru": "В глазах темнеет... Банщик выводит меня на воздух.",
+  "en": "Everything goes dark... the banya keeper walks me out into the air.",
+  "ja": "目の前が暗くなる……番人が外へ連れ出してくれた。"
+ },
+ "winter.banya.out_snow": {
+  "ru": "Пар валит от плеч. Теперь — в снег!",
+  "en": "Steam rolls off my shoulders. Now, into the snow!",
+  "ja": "肩から湯気が立つ。さあ、雪の中へ！"
+ },
+ "winter.banya.out_sea": {
+  "ru": "Пар валит от плеч. До моря два шага.",
+  "en": "Steam rolls off my shoulders. The sea is two steps away.",
+  "ja": "肩から湯気が立つ。海まであと二歩。"
+ },
+ "winter.banya.coal": {
+  "ru": "Банщик сунул мне уголёк из печки: «Снеговику на глаза».",
+  "en": "The banya keeper slipped me a coal from the stove: «For a snowman's eyes».",
+  "ja": "番人がストーブの炭をくれた。「雪だるまの目にどうぞ」"
+ },
+ "winter.banya.snow.1": {
+  "ru": "А-а-а! Снег кусается!",
+  "en": "Aaah! The snow bites!",
+  "ja": "ああっ！雪がかみつく！"
+ },
+ "winter.banya.snow.2": {
+  "ru": "Кожа шипит, как камни в печке.",
+  "en": "My skin hisses like the stones on the stove.",
+  "ja": "肌がストーブの石みたいにジュッと鳴る。"
+ },
+ "winter.banya.snow.3": {
+  "ru": "Лежу в сугробе, и мне жарко.",
+  "en": "Lying in a snowdrift, and I'm hot.",
+  "ja": "雪だまりに寝ころんでいるのに、熱い。"
+ },
+ "winter.banya.too_hot": {
+  "ru": "Слишком жарко. Пора выходить.",
+  "en": "Too hot. Time to go out.",
+  "ja": "熱すぎる。外に出る時間だ。"
+ },
+ "winter.banya.round": {
+  "ru": "Заход {0}: жар и холод, как положено.",
+  "en": "Round {0}: the heat and the cold, as it should be.",
+  "ja": "{0}回目：熱さと冷たさ、きちんと。"
+ },
+ "winter.banya.full": {
+  "ru": "Три захода. Лёгкий, как пар.",
+  "en": "Three rounds. Light as steam.",
+  "ja": "三回やりきった。湯気のように軽い。"
+ },
+ "winter.walrus.towel": {
+  "ru": "Полотенце — и сразу теплее.",
+  "en": "The towel, and at once it's warmer.",
+  "ja": "タオルで、すぐに温かくなる。"
+ },
+ "winter.walrus.new_year": {
+  "ru": "С Новым годом! Первое купание года — в проруби.",
+  "en": "Happy New Year! The year's first swim, in the ice hole.",
+  "ja": "あけましておめでとう！今年最初の泳ぎは氷の穴で。"
+ },
+ "winter.walrus.club": {
+  "ru": "Моржи кивают: «Наш человек».",
+  "en": "The walruses nod: «One of us».",
+  "ja": "寒中水泳の仲間がうなずく。「われらの仲間だ」"
+ },
+ "winter.walrus.counted": {
+  "ru": "Окунулся по-настоящему. Засчитано.",
+  "en": "A real dip. It counts.",
+  "ja": "しっかりつかった。認定。"
+ },
+ "winter.walrus.cold": {
+  "ru": "Пальцы не слушаются. Надо вылезать!",
+  "en": "My fingers won't obey. Time to get out!",
+  "ja": "指が言うことをきかない。上がらなきゃ！"
+ },
+ "winter.walrus.hauled": {
+  "ru": "Моржи вытащили меня на пирс и растёрли полотенцем.",
+  "en": "The walruses hauled me onto the pier and rubbed me down with a towel.",
+  "ja": "仲間たちが桟橋に引き上げて、タオルでこすってくれた。"
+ },
+ "winter.snow.too_cold": {
+  "ru": "Снег сухой, как песок: на морозе не лепится.",
+  "en": "The snow is dry as sand: it won't pack in this frost.",
+  "ja": "雪は砂のようにさらさら。この寒さでは固まらない。"
+ },
+ "winter.snow.too_thin": {
+  "ru": "Снега мало, в ладонь не наберёшь.",
+  "en": "Too little snow to fill a palm.",
+  "ja": "雪が少なすぎて手のひらにも集まらない。"
+ },
+ "winter.snow.no_pack": {
+  "ru": "Снег не лепится.",
+  "en": "The snow won't pack.",
+  "ja": "雪が固まらない。"
+ },
+ "winter.fight.hit_me.1": {
+  "ru": "Попали! За шиворот!",
+  "en": "Got me! Right down the collar!",
+  "ja": "当たった！襟の中に！"
+ },
+ "winter.fight.hit_me.2": {
+  "ru": "Ай! Меткие.",
+  "en": "Ow! Good shots.",
+  "ja": "いてっ！うまいな。"
+ },
+ "winter.fight.hit_me.3": {
+  "ru": "Снег в ухе. Война!",
+  "en": "Snow in my ear. This is war!",
+  "ja": "耳に雪。戦争だ！"
+ },
+ "winter.fight.hit_me.4": {
+  "ru": "Ну держитесь!",
+  "en": "Just you wait!",
+  "ja": "覚えてろよ！"
+ },
+ "winter.fight.join.1": {
+  "ru": "«Снежки-и-и!» — дети бегут лепить.",
+  "en": "«Snowballs!» The children run to pack some.",
+  "ja": "「雪合戦だー！」子どもたちが雪玉を作りに走る。"
+ },
+ "winter.fight.join.2": {
+  "ru": "Кто-то из детей уже целится в меня.",
+  "en": "One of the children is already aiming at me.",
+  "ja": "子どもの一人がもうこちらを狙っている。"
+ },
+ "winter.fight.join.3": {
+  "ru": "«Наших бьют!» — подбегает ещё один.",
+  "en": "«They're hitting ours!» Another one runs up.",
+  "ja": "「仲間がやられた！」もう一人走ってくる。"
+ },
+ "winter.fight.score": {
+  "ru": "Снежки: я попал {0}, в меня {1}",
+  "en": "Snowballs: I hit {0}, they hit me {1}",
+  "ja": "雪合戦：当てた{0}、当てられた{1}"
+ },
+ "winter.snowman.prompt_start": {
+  "ru": "E — скатать ком",
+  "en": "E: roll a ball",
+  "ja": "E：雪玉を転がす"
+ },
+ "winter.snowman.prompt_leave": {
+  "ru": "E — оставить ком ({0} см)",
+  "en": "E: leave the ball ({0} cm)",
+  "ja": "E：雪玉を置く（{0}cm）"
+ },
+ "winter.snowman.prompt_lift": {
+  "ru": "E — поставить ком сверху ({0} см)",
+  "en": "E: lift the ball on top ({0} cm)",
+  "ja": "E：雪玉を上にのせる（{0}cm）"
+ },
+ "winter.snowman.prompt_too_big": {
+  "ru": "Ком слишком большой, не поднять ({0} см)",
+  "en": "The ball is too big to lift ({0} cm)",
+  "ja": "雪玉が大きすぎて持ち上がらない（{0}cm）"
+ },
+ "winter.snowman.too_big": {
+  "ru": "Не поднять. Верхний ком должен быть меньше нижнего.",
+  "en": "Can't lift it. The top ball has to be smaller than the one under it.",
+  "ja": "持ち上がらない。上の玉は下の玉より小さくないと。"
+ },
+ "winter.snowman.done": {
+  "ru": "Снеговик! Три кома, как положено.",
+  "en": "A snowman! Three balls, as it should be.",
+  "ja": "雪だるまだ！ちゃんと三段。"
+ },
+ "winter.snowman.prompt_arms": {
+  "ru": "E — воткнуть веточки-руки",
+  "en": "E: stick in twig arms",
+  "ja": "E：小枝の腕をさす"
+ },
+ "winter.snowman.prompt_nose": {
+  "ru": "E — морковку вместо носа",
+  "en": "E: a carrot for a nose",
+  "ja": "E：にんじんの鼻をつける"
+ },
+ "winter.snowman.prompt_eyes": {
+  "ru": "E — угольки вместо глаз",
+  "en": "E: coals for eyes",
+  "ja": "E：炭の目をつける"
+ },
+ "winter.snowman.dressed": {
+  "ru": "Смотрит на меня угольками. Готов.",
+  "en": "He looks at me with coal eyes. Done.",
+  "ja": "炭の目でこちらを見ている。完成。"
+ },
+ "winter.snowman.want_carrot": {
+  "ru": "Нужна морковка для носа (рынок).",
+  "en": "He needs a carrot for a nose (the market).",
+  "ja": "鼻ににんじんが要る（市場で）。"
+ },
+ "winter.snowman.want_coal": {
+  "ru": "Нужны угольки для глаз (у банщика бывают).",
+  "en": "He needs coals for eyes (the banya keeper may have some).",
+  "ja": "目に炭が要る（バーニャの番人が持っているかも）。"
+ },
+ "winter.hud.heat": {
+  "ru": "Жар · заходов: {0}",
+  "en": "Heat · rounds: {0}",
+  "ja": "熱さ · {0}回"
+ },
+ "winter.hud.cold": {
+  "ru": "Холод",
+  "en": "Cold",
+  "ja": "冷え"
+ },
+ "dev.action.winter.kit": {
+  "ru": "Зима: коньки, веник, шапка, полотенце, морковь, уголь",
+  "en": "Winter: skates, venik, hat, towel, carrot, coal",
+  "ja": "冬：スケート靴、ヴェニク、帽子、タオル、にんじん、炭"
+ },
+ "dev.action.winter.rink": {
+  "ru": "Зима: каток открыт / по погоде",
+  "en": "Winter: rink open / by the weather",
+  "ja": "冬：リンク開放／天気どおり"
+ },
+ "dev.action.winter.fight": {
+  "ru": "Зима: снежки с детьми",
+  "en": "Winter: a snowball fight with children",
+  "ja": "冬：子どもと雪合戦"
+ },
+ "dev.action.winter.heat": {
+  "ru": "Зима: распарен (как после парилки)",
+  "en": "Winter: hot from the steam room",
+  "ja": "冬：サウナ上がりの熱さ"
+ },
+ "dev.action.winter.report": {
+  "ru": "Зима: отчёт в лог",
+  "en": "Winter: report to the log",
+  "ja": "冬：ログに報告"
+ },
+ "city.coll.winter.title": {
+  "ru": "Зимние радости",
+  "en": "Winter joys",
+  "ja": "冬の楽しみ"
+ },
+ "dev.tp.winter.rink": {
+  "ru": "Каток на пруду в парке",
+  "en": "The park pond's rink",
+  "ja": "公園の池のスケートリンク"
+ },
+ "dev.tp.winter.banya": {
+  "ru": "Баня у пирса",
+  "en": "The banya by the pier",
+  "ja": "桟橋のバーニャ"
+ },
+ "dev.tp.winter.ice_hole": {
+  "ru": "Прорубь моржей у пирса",
+  "en": "The walruses' ice hole by the pier",
+  "ja": "桟橋の寒中水泳の穴"
+ },
+ "dev.group.winter": {
+  "ru": "Зима",
+  "en": "Winter",
+  "ja": "冬"
+ }
+}

@@ -19,6 +19,7 @@ Material requests: none.
 import math
 import random
 
+import dress_kit as drs
 import interior_kit as kit
 from citykit import box, prism, extrude_profile, DOOR_W, DOOR_H
 from _surrounds import add_surrounds
@@ -429,6 +430,7 @@ def _gardens(B):
         (2, -1): [("bench", 5.8), ("tubs", 9.0), ("table", 12.5), ("line", 17.0)],
     }
     n = 0
+    tables, benches = [], []
     for (k, side), items in spec.items():
         y0, y1 = B_Y[k], B_Y[k + 1]
         zt = ZT[k]
@@ -467,6 +469,17 @@ def _gardens(B):
                 for j, px in enumerate((x - 0.6, x, x + 0.6)):
                     f(kit.plant, px, y0 + 1.9 + 0.4 * (j % 2), 0.0, z=zt, kind=("fern", "ficus", "cactus")[j], pot="CT_PlasterRed", h=0.8, seed=k * 7 + j)
             n += 1
+            if kind == "table":
+                tables.append((x, y, zt))
+            elif kind == "bench":
+                benches.append((x, y, zt))
+    with B.dress("garden_breakfast", months=(4, 5, 6, 7, 8, 9), weather=("clear", "warm"), hours=(7.5, 10.5)):
+        for (x, y, zt) in tables:
+            drs.plate_crumbs(B, x + 0.02, y - 0.27, zt + 0.75, 0.0, seed=int(abs(x) * 3))
+            kit.cup(B, x - 0.28, y - 0.2, zt + 0.75, 0.0)
+    with B.dress("garden_towels", season="summer", weather=("clear", "warm")):
+        for (x, y, zt) in benches[:3]:
+            drs.towel_hat(B, x + 0.3, y, zt + 0.45, 0.0, seed=int(abs(x) * 5))
     # pots and a mat at every flat door of tiers 0..3 (the doors are the flat_door entrances)
     pots = []
     for i, e in enumerate(B.entrances):
@@ -534,6 +547,7 @@ def _stair_things(B):
     f(kit.notice_board, -SX - 0.02, 3.2, 90.0, z=zs(3.2) - 0.3, w=0.9, zc=1.7, seed=52)
     ph = f(kit.wall_phone, -SX - 0.02, 1.8, 90.0, z=zs(1.8) - 0.3)
     B.thing("stair_payphone", "machine", (-SX, 1.8, zs(1.8) + 1.1), 90.0, what="payphone")
+    hk.mailbox_thing(B, "stair_mailboxes", SX + 0.02, 1.7, 270.0, z=z1_ - 0.4, rows=3)     # backlog item 31
 
 
 def _maisonette(B):
@@ -615,6 +629,36 @@ def _maisonette(B):
     B.thing("home_board_calendar", "board", (5.97, yi0, z + 1.6), 180.0, topic="club")
     B.thing("home_picture", "board", (xi1, 15.2, z + 1.5), 270.0, topic="painting")
     B.thing("home_paper", "take", (11.1, 15.6, z + 0.45), 10.0, item="daily_paper")
+    # small things that answer a touch (backlog item 31): the switch by the door, the kitchen tap, a window that opens
+    hk.switch(B, "home_switch", xi1, 14.9, 270.0, z=z)
+    hk.tap_thing(B, "home_tap", 16.1, yi1 - 0.02, 0.0, z=z)
+    hk.window_latch(B, "home_window", (7.7, yi0), z=z, room=lambda x_, y_: inside(x_, y_, 0.02))
+    # ---- lived-in sets (docs/city_dress.md): breakfast on the dining table (top z + 0.75), flowers on the desk,
+    #      a book on the sofa, boots and coats by the door
+    tt = z + 0.75
+    who = "rimma" if seam else "astro"
+    with B.dress(who + "_breakfast", weekdays=(0, 1, 2, 3, 4), hours=(7.5, 10.0)):
+        drs.plate_crumbs(B, 14.85, 15.35, tt, 0.0, seed=1)
+        drs.plate_crumbs(B, 15.75, 15.3, tt, 180.0, seed=2)
+        kit.cup(B, 15.3, 15.95, tt, 60.0)
+        kit.newspaper(B, 14.9, 15.85, tt, 100.0, seed=7)
+    with B.dress(who + "_weekend", weekdays=(5, 6), hours=(9.0, 12.5)):
+        kit.teapot(B, 15.25, 15.9, tt, 0.0)
+        drs.plate_crumbs(B, 14.85, 15.35, tt, 90.0, seed=3)
+        kit.glass(B, 15.7, 15.3, tt, 0.0)
+    per = 8 if seam else 7                      # each home flowers on its own week
+    for nm, (a, b) in (("fresh", (0, per - 3)), ("wilt", (per - 3, per - 1)), ("empty", (per - 1, per))):
+        with B.dress(who + "_flowers_" + nm, phase=(per, a, b)):
+            if nm == "wilt":
+                drs.vase_wilted(B, 7.4, yi1 - 0.45, z + 0.75, 0.0, seed=9)
+            else:
+                kit.vase(B, 7.4, yi1 - 0.45, z + 0.75, 0.0, flowers=(nm == "fresh"), seed=9)
+    with B.dress(who + "_book", chance=0.5):
+        drs.book_face_down(B, 10.65, yi1 - 0.65, z + 0.45, 10.0, seed=4)
+    for nm, months, sea in (("winter", (12, 1, 2), "winter"), ("mild", (3, 4, 5, 9, 10, 11), "autumn"),
+                            ("summer", (6, 7, 8), "summer")):
+        with B.dress(who + "_hall_" + nm, months=months):
+            drs.boots(B, xi1 - 0.5, 14.85, z, 270.0, kind={"winter": "felt", "mild": "rubber", "summer": "sandals"}[nm], seed=5)
     H.check("riser-maisonette", overlaps=False)
 
 

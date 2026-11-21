@@ -62,6 +62,53 @@ chess for the two old friends). A slot with `"thing"` holds that city thing whil
 (`UPeopleLifeSubsystem::UpdateThingHolds`, once a second, `ULyudCityThings::ClaimThing` / `ReleaseThing`): the hero gets
 "taken" instead of sitting on a guest. `tools/peoplesim/run.sh town` checks them at lunch on Wednesday.
 
+## The new activities
+
+Item 26 of `docs/interactives_backlog.md`: the town uses what the evening of 2026-11-20 added. The places, the activity
+rows, the likes and the postman are put in by `tools/town/town_activities.py`, an add-on in the manner of
+`sanatorium_guests.py`: it works on the generated files as they stand, is safe to run twice, `--check` says whether it
+has been run, and `town_life.py` runs it at the end (regenerating the town rerolls everybody, so after a plan change
+the add-on is what brings these back).
+
+| activity | who, when | where |
+|---|---|---|
+| `book_club` (a duty, `"when": "book_club"`) | the five club members (`tools/reading/build_reading.py`), Thursdays 18:10–20:00 while the game holds the condition on; not on festivals or holidays | `P-LIBRARY-CLUB`: the library lounge's armchairs and sofa, a seat each (docs/books.md "The book club") |
+| `cinema_day`, `cinema_evening` | anybody who likes it (the curious, the warm), going in before the 15:00 and 19:00 sessions | `P-CLUB2-CINEMA`: 145 of the hall's seats, each walked to along its aisle; six of them are the hero's seats and are held through the slot's `thing` |
+| `san_cure` | 60 and over and the sanatorium's guests, mornings but Sunday | `P-SANATORIUM-PUMP`: the pump room's bench and stool, the lobby's benches; the drink manner with a cup |
+| `dominoes` | 58 and over, 15:00 to 20:00, a talk | `P-SANATORIUM-LOUNGE`: the lounge's four seats |
+| `read_paper` | readers, 7:00 to 11:30 | any bench; the newspaper manner is forced |
+| `skip_stones` | children first, the bold; by day, wind under 7.5 m/s, above 3 °C | the beach's stand slots |
+| `tend_allotment`, `water_allotment` | the four keepers of the allotment's beds, morning and evening, not in frost | `P-T2H2-ALLOTMENT`: two slots a bed, each with its `owner` |
+| `play_piano` | one in three of the musicians and teachers, one in thirty of the rest; 18:00 to 20:30, seldom | `P-HALL-STAGE`: the stool at the club hall's piano |
+| `post_round` | the postwoman (`t_hernandez_lyudmila`), a duty 8:30 to 12:00 but Sunday, rain or not | `S-POST-ROUND`: 37 house doors, one after another |
+
+What the sim learnt for them (`PeopleSim`):
+
+- an activity's `temp: [min, max]`: outdoors it is not chosen outside these degrees (like `wind`);
+- a slot's `owner`: a person's key, nobody else takes the slot (a missing person leaves it empty);
+- a slot's `path`: points walked after the place's own path and before the slot's approach (a seat's aisle);
+- a place's `open: 1`: a place with a door that is under the sky all the same (the allotment), so rain and cold count.
+
+The postwoman is not the old postman of `docs/rounds.md`: he is retired and hands the hero his parcels, she has the
+round of the doors now.
+
+Not done: the pianist is silent (the instruments' synth has no way to be played by somebody else yet), friends do not
+walk along with the hero, and the cinema's house does not follow the programme (people sit through the two fixed
+sessions whatever is on).
+
+## The night jobs
+
+Item 29 (`docs/city_night.md`): `tools/town/town_night.py`, an add-on like `town_activities.py` (and run after it by
+`town_life.py`), gives three residents without work the shut rooms' jobs:
+
+| activity | who, when | where |
+|---|---|---|
+| `mop_floor`, `mop_floor_late` (the day's second building) | cleaner A: the café 7:00-7:50, the Rassvet 8:05-9:55; cleaner B: the store 7:00-8:50 (Mon-Sat), the library 21:05-22:25 | `P-CAFE-CLEAN` (up the spiral stair), `P-CLUB2-CLEAN`, `P-STORE-CLEAN`, `P-LIBRARY-CLEAN`: floor spots in round order; the mop manner with the bucket by them |
+| `night_watch` | the watchman (occupation `guard`), 20:30-6:30, sleeps by day | `P-STORE-WATCH`: the store's ground floor, up the runner and out to the side halls; the torch manner and its beam |
+
+A round in an indoor place now goes from spot to spot by the place's own ways (`Route` within the place) instead of the
+street grid. Who has a job is kept in townsfolk.json (`night_job`), so a rerun keeps the same people.
+
 ## How it works
 
 - **Places**: the restaurant (its `seats.json` has an entrance) is walked: diners and staff go in by its front door to

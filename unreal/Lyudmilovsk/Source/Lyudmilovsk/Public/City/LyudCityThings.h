@@ -157,6 +157,13 @@ public:
 	bool RunNearest();
 	/** Developer mode: today's limits start over. */
 	void ResetDailyLimits();
+	/**
+	 * The cinema's newsreel (ULyudCinema, docs/cinema.md) ran before a session and held its show: bGoOn, the films ran out and the
+	 * session's own show starts now; else he left and it is dropped.
+	 */
+	void ReleaseHeldShow(bool bGoOn);
+	bool IsShowHeld() const { return bShowHeld; }
+
 	/** Debug labels of the things within 15 m (lyud.City.Things.Show). */
 	void SetShowLabels(bool bShow) { bShowLabels = bShow; }
 	bool AreLabelsShown() const { return bShowLabels; }
@@ -172,6 +179,29 @@ public:
 	bool EditCollections(const FString& Verb, const FString& Set);
 	/** Is every collection complete (the developer toggle's light)? */
 	bool AreCollectionsComplete() const;
+	/** A collection as the diary's «Коллекции» pages show it (docs/city_interiors.md "A complete set pays"). */
+	struct FCollectionView
+	{
+		FText Title;
+		/** The keepsake a complete set gives. */
+		FText Reward;
+		/** Its slots in the data's order: filled or empty. */
+		TArray<bool> Slots;
+		int32 Got = 0;
+		bool bRewarded = false;
+		/** Days left of a reward that makes a good free (0: none, or over). */
+		int32 FreeDays = 0;
+	};
+	/** Every collection for the diary: the paid ones first, then the ones begun (the fullest first), then the rest. */
+	void CollectionViews(TArray<FCollectionView>& Out) const;
+	/** Is the hero on that stay today (docs/city_interiors.md "Stays": the sanatorium's voucher, the rental's beach set)? */
+	bool IsOnStay(const FString& Id) const;
+	/** Puts him on a stay for so many days from today (added to the days left; 0 ends it): the console's and developer mode's hire. */
+	void StartStay(const FString& Id, int32 Days);
+	/** The lines' weather word "clear" now: few clouds, dry, no fog. */
+	bool IsClearNow() const;
+	/** Gives what every newly complete collection pays, once (the keepsake's toast, the diary's note, the item or roubles). */
+	void PayCollections();
 
 	// --- mini-games
 
@@ -198,6 +228,8 @@ public:
 	/** Lying on a bed: sleeps until Hour (0..23) at once (the chooser's E); false when not lying on a bed of ours. */
 	bool SleepUntil(int32 Hour);
 	bool IsSittingOnThing() const { return SeatedOn >= 0; }
+	/** The thing the hero sits on now (its id), "" none (docs/friends.md: the tea at a host's table). */
+	FString SeatedThingId() const;
 	bool IsLyingOnThing() const { return LyingOn >= 0; }
 	bool IsChoosingSleep() const { return SleepHour >= 0; }
 
@@ -237,6 +269,8 @@ public:
 	bool GoToThing(const FString& ThingId);
 	/** Developer mode: uses the nearest lift door (its chooser, or at once). */
 	bool UseNearestLift();
+	/** Developer mode: opens or shuts the nearest window that opens (docs/city_interiors.md "Windows that open"). */
+	bool ToggleNearestWindow();
 	bool IsUsingLift() const { return LiftDest >= 0 || LiftThing >= 0; }
 	/** Has one of our modes the keys (a page, a show, a game, a text, the talk's chooser, a lift, lying, the sleep chooser)? The
 	 *  NPC talk should step aside meanwhile (docs/city_interiors.md "Open points for other threads"); seated alone is not one. */
@@ -279,6 +313,9 @@ public:
 	 *  page shows (true + Line set; an empty Line shows no page). One listener (ULyudMusic), bound with a weak object. */
 	DECLARE_DELEGATE_RetVal_TwoParams(bool, FActHook, const FCityActInfo& /*Info*/, FText& /*Line*/);
 	FActHook ActHook;
+	/** More listeners asked after ActHook (when it didn't take the act): the instruments' sheet music (docs/instruments.md). */
+	void AddActHook(FActHook Hook) { MoreActHooks.Add(MoveTemp(Hook)); }
+	void RemoveActHooks(const void* Object) { MoreActHooks.RemoveAll([Object](const FActHook& H) { return H.IsBoundToObject(Object); }); }
 	/** Every thing whose act Match accepts (the act id with its "@role"), appended to Out. A pass over all things: call once. */
 	void GetThingsByAct(TFunctionRef<bool(const FString& Act)> Match, TArray<FCityThingRef>& Out) const;
 	/** The act id of a thing ("<plot>/<thing id>"); empty when unknown. */
@@ -295,6 +332,8 @@ protected:
 
 	/** The model's state as a flat map ("CityThings"): counts, pages, uses, plots visited. */
 	UPROPERTY(SaveGame) TMap<FString, FString> Saved;
+
+	TArray<FActHook> MoreActHooks;
 
 private:
 	void StartLoad();
@@ -332,6 +371,8 @@ private:
 	void AnnouncePay(int32 Rubles);
 	/** A note on the HUD for every stamp got for the first time ("Films at «Рассвет»: 3 of 12"). */
 	void AnnounceStamps(const TArray<FString>& Stamps);
+	/** A save was loaded: its complete sets are looked over at the next tick (a set completed before rewards existed pays then). */
+	bool bPayCollections = false;
 	void FillRef(int32 Thing, FCityThingRef& Out) const;
 	/** The holds of townsfolk whose holder is gone are let go (a few times a second). */
 	void DropDeadHolds();
@@ -339,6 +380,10 @@ private:
 	FText LineText(const FString& Key) const;
 	/** A thing with "switch": the lamps of its room on or off for the hero's visit (all back when he leaves the plot). */
 	void FlipSwitch(int32 Thing);
+	/** A window that opens (its act's "window"): open or shut it, the open air in the room follows (ApplyOpenAir). */
+	void ToggleWindow(int32 Thing);
+	/** The soundscape hears the widest open window of this visit (ULyudSoundscapeSubsystem::SetOpenAir). */
+	void ApplyOpenAir();
 	/** A short word on the prompt line for a moment (the switch's "lights on"), like a refusal but not one. */
 	void Note(const FText& What);
 
@@ -497,6 +542,13 @@ private:
 	int32 ShowThing = -1;
 	FText ShowTitle;
 	bool bShowSeated = false;
+	// a session's show waiting for the cinema's newsreel (ReleaseHeldShow)
+	bool bShowHeld = false;
+	int32 HeldThing = -1;
+	FText HeldTitle;
+	FText HeldLine;
+	int32 HeldMinutes = 0;
+	bool bHeldSeated = false;
 
 	bool bShowLabels = false;
 	float LabelClock = 0.f;

@@ -141,6 +141,8 @@ namespace LyudLetters
 		std::vector<std::string> Args;   // the body's {0}, {1}: a key starting with @ is shown in the current language
 		std::string Ack;         // pen letters: the acknowledgement line said first ("" none)
 		std::vector<std::string> AckArgs;
+		std::string Ps;          // a P.S. after the body (the talk of the town about the hero, docs/town_rumours.md; "" none)
+		std::vector<std::string> PsArgs;
 		int Arrive = 0;          // the day it is in the club's mailbox (from DeliverHero)
 		bool bArrived = false;
 		bool bRead = false;
@@ -218,6 +220,13 @@ namespace LyudLetters
 
 		/** The address parts of a home id: terrace, house, flat (empty when unknown). */
 		std::vector<std::string> AddressOf(const std::string& Home) const;
+
+		/** A letter from somebody else of the game (docs/friends.md: a friend's invitation): in the club's mailbox the next post
+		 *  day after it is written (the same day if before the morning round). Once per Id; false if there was one already. */
+		bool AddLetter(const FTime& Now, const std::string& Id, const std::string& From, const std::string& Kind, const std::string& Body,
+			const std::vector<std::string>& Args);
+		/** The day a letter written now is in the club's mailbox. */
+		int ArriveDay(const FTime& Now) const { return NextArrival(Now); }
 
 		/** Developer mode: every card and letter on its way is due now (the next Step carries them). */
 		void DevDeliverAll(const FTime& Now);

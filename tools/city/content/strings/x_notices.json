@@ -8,7 +8,7 @@
  "city.note.lost.cat_lost": {
   "ru": "Пропал кот Рыжик: рыжий, наглый, откликается на шуршание пакета. Видевших просят позвонить в квартиру 12 на Новикова.",
   "en": "Lost: Ryzhik the cat. Ginger, cheeky, answers to a rustling bag. If seen, please knock at flat 12 on Novikova Street.",
-  "ja": "猫のルィジクがいなくなりました。茶色で図々しく、レジ袋の音に反応します。見かけた方はノヴィコワ通り12号室まで。"
+  "ja": "猫のルィジクがいなくなりました。茶トラで図々しく、レジ袋の音に反応します。見かけた方はノヴィコワ通り12号室まで。"
  },
  "city.note.lost.cat_found": {
   "ru": "Рыжик нашёлся! Сидел на крыше пекарни и ждал, когда о нём напишут в газете. Спасибо всем, кто искал.",
@@ -33,7 +33,7 @@
  "city.note.lost.umbrella_swap": {
   "ru": "Обменяю чёрный зонт на чёрный зонт: вчера в «Тарелке» мы взяли не свои. Мой — со сломанной спицей.",
   "en": "Will swap a black umbrella for a black umbrella: yesterday at the Saucer café we took each other's. Mine has a broken rib.",
-  "ja": "黒い傘を黒い傘と交換したい。昨日「ソーサー」で取り違えました。私のは骨が一本折れています。"
+  "ja": "黒い傘を黒い傘と交換します。昨日「ソーサー」で取り違えました。私のは骨が一本折れています。"
  },
  "city.note.lost.mitten": {
   "ru": "Найдена варежка, левая, вязаная, с оленем. Висит на заборе у школы и очень ждёт.",
@@ -48,7 +48,7 @@
  "city.note.lost.start_parrot": {
   "ru": "Объявление: попугай Кеша выучил новое слово. Какое — не говорит. Просьба при встрече не подсказывать.",
   "en": "Notice: Kesha the parrot has learnt a new word. He won't say which. Please don't prompt him if you meet.",
-  "ja": "お知らせ：オウムのケーシャが新しい言葉を覚えました。どの言葉かは言いません。会っても教えないでください。"
+  "ja": "お知らせ：インコのケーシャが新しい言葉を覚えました。どの言葉かは言いません。会っても教えないでください。"
  },
  "city.note.lost.tree_pickup": {
   "ru": "Ёлки после праздников складывайте у пекарни: в субботу их увезут в лесничество на подстилку для зверей.",
@@ -63,7 +63,7 @@
  "city.note.lost.sunglasses": {
   "ru": "На пляже у спасательной вышки найдены солнечные очки в красной оправе. Очки видели много солнца и хотят домой.",
   "en": "Found on the beach by the lifeguard tower: sunglasses with red frames. They've seen a lot of sun and want to go home.",
-  "ja": "浜の救助塔のそばで赤いふちのサングラスを拾いました。たくさん太陽を見たので、家に帰りたがっています。"
+  "ja": "浜の監視塔のそばで赤いふちのサングラスを拾いました。たくさん太陽を見たので、家に帰りたがっています。"
  },
  "city.note.lost.bucket": {
   "ru": "Потерялось синее ведёрко с совочком. Хозяйке четыре года, она очень переживает и строит замки руками.",
@@ -78,7 +78,7 @@
  "city.note.club.choir": {
   "ru": "Хор «Прибой»: репетиции по четвергам в семь. Приходите петь, а если стесняетесь — слушать.",
   "en": "The Surf choir: rehearsals on Thursdays at seven. Come and sing, or if you're shy, come and listen.",
-  "ja": "合唱団「寄せ波」：練習は毎週木曜7時。歌いに来てください。恥ずかしければ聴くだけでも。"
+  "ja": "合唱団「寄せ波」：練習は毎週木曜19時。歌いに来てください。恥ずかしければ聴くだけでも。"
  },
  "city.note.club.chess": {
   "ru": "Весенний шахматный турнир! Запись у дежурного до 15 марта. Часы свои, нервы тоже.",
@@ -93,7 +93,7 @@
  "city.note.club.dance": {
   "ru": "Танцы на набережной по пятницам в девять. Оркестр живой, пол деревянный, туфли — какие есть.",
   "en": "Dancing on the promenade on Fridays at nine. Live band, wooden floor, whatever shoes you've got.",
-  "ja": "金曜9時、遊歩道でダンス。生演奏、木の床、靴はお手持ちのもので。"
+  "ja": "金曜21時、遊歩道でダンス。生演奏、木の床、靴はお手持ちのもので。"
  },
  "city.note.club.astro": {
   "ru": "Астрономический кружок: наблюдаем Персеиды. Берите плед и термос, телескопы наши.",
@@ -115,6 +115,41 @@
   "en": "The club welcomes the coast's new residents! Drop in for tea in the evenings: the samovar is hot, and so is the talk.",
   "ja": "クラブは海岸の新しい住人を歓迎します！夕方にお茶をどうぞ。サモワールは熱く、おしゃべりも熱い。"
  },
+ "city.note.club.contest_sea": {
+  "ru": "Фотоконкурс «Шестерни». Тема месяца: «Море». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Маяк считается морем, только если в кадре есть вода.",
+  "en": "The Cog's photo contest. Theme of the month: “The sea”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. The lighthouse counts as the sea only with water in the frame.",
+  "ja": "「歯車」写真コンクール。今月のテーマは「海」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。灯台は、画面に水が写っている場合に限り海とみなす。"
+ },
+ "city.note.club.contest_birds": {
+  "ru": "Фотоконкурс «Шестерни». Тема месяца: «Птицы». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Голуби допускаются, чучела из кабинета биологии — нет.",
+  "en": "The Cog's photo contest. Theme of the month: “Birds”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. Pigeons are admitted; stuffed birds from the biology room are not.",
+  "ja": "「歯車」写真コンクール。今月のテーマは「鳥」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。ハトは可、生物室の剥製は不可。"
+ },
+ "city.note.club.contest_work": {
+  "ru": "Фотоконкурс «Шестерни». Тема месяца: «Люди за работой». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Спящий сторож работой не считается, хотя жюри спорило.",
+  "en": "The Cog's photo contest. Theme of the month: “People at work”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. A sleeping watchman does not count as work, though the jury argued.",
+  "ja": "「歯車」写真コンクール。今月のテーマは「働く人びと」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。居眠り中の守衛は仕事に数えない。審査員のあいだでも議論はあったが。"
+ },
+ "city.note.club.contest_festival": {
+  "ru": "Фотоконкурс «Шестерни». Тема месяца: «Праздник». Один отпечаток от автора, сдавать до 25-го в фотолабораторию клуба, в ящик на столе у проектора. Праздник должен быть в кадре, а не только на душе у автора.",
+  "en": "The Cog's photo contest. Theme of the month: “The festival”. One print from each entrant, handed in by the 25th at the club's photo lab, in the box on the table by the projector. The festival must be in the frame, not only in the author's heart.",
+  "ja": "「歯車」写真コンクール。今月のテーマは「祭り」。出品は一人一枚、25日までにクラブの写真室、映写機の机の箱へ。祭りは作者の心の中だけでなく、画面の中にあること。"
+ },
+ "city.note.club.contest_soon": {
+  "ru": "Фотокружок напоминает: снимки на конкурс месяца принимают до 25-го. Ящик на столе у проектора, подпись карандашом на обороте.",
+  "en": "The photo circle reminds you: prints for the contest of the month are taken until the 25th. The box is on the table by the projector; sign in pencil on the back.",
+  "ja": "写真サークルよりお知らせ：今月のコンクールの出品は25日まで。箱は映写機の机の上、署名は裏に鉛筆で。"
+ },
+ "city.note.club.contest_jury": {
+  "ru": "Сегодня, 26-го, в фотолаборатории «Шестерни» заседает жюри конкурса. Просьба не стучать: при красном свете спорят шёпотом.",
+  "en": "Today, the 26th, the contest's jury sits in the Cog's photo lab. Please don't knock: under the red light they argue in whispers.",
+  "ja": "本日26日、「歯車」の写真室でコンクールの審査会。ノックはご遠慮ください。赤いランプの下では、議論もひそひそ声です。"
+ },
+ "city.note.club.contest_done": {
+  "ru": "Итоги фотоконкурса подведены. Три лучших снимка висят в фотолаборатории «Шестерни», на стене у лески. С первого числа — новая тема.",
+  "en": "The photo contest has been judged. The three best prints hang in the Cog's photo lab, on the wall by the drying line. A new theme from the first of the month.",
+  "ja": "写真コンクールの結果が出ました。上位三点は「歯車」の写真室、干し紐のそばの壁に。一日からは新しいテーマです。"
+ },
  "city.notices.health.title": {
   "ru": "Доска здоровья",
   "en": "Health board",
@@ -128,7 +163,7 @@
  "city.note.health.sun": {
   "ru": "Берегите голову: в жару — панама, в полдень — тень, на пляже — вода. Медсестра на пляже с одиннадцати до пяти.",
   "en": "Mind your head: a sun hat in the heat, shade at noon, water on the beach. The beach nurse is there from eleven to five.",
-  "ja": "頭を守ろう：暑い日は帽子、正午は日陰、浜では水分を。浜の看護師は11時から5時まで。"
+  "ja": "頭を守ろう：暑い日は帽子、正午は日陰、浜では水分を。浜の看護師は11時から17時まで。"
  },
  "city.note.health.ticks": {
   "ru": "Внимание: в лесу клещи. После прогулки осмотритесь; если что — к нам, вытащим быстро и без паники.",
@@ -168,7 +203,7 @@
  "city.note.school.exams": {
   "ru": "Экзамены! Просьба на переменах не шуметь у кабинета 12: там думают.",
   "en": "Exams! Please keep quiet near room 12 at break: people are thinking in there.",
-  "ja": "試験中！休み時間は12教室の前で騒がないでください。中で考えています。"
+  "ja": "試験中！休み時間は12番教室の前で騒がないでください。中で考えています。"
  },
  "city.note.school.september": {
   "ru": "Первое сентября: линейка в девять, у флагштока. Первоклассникам — шары, учителям — цветы, родителям — платки.",
@@ -204,5 +239,15 @@
   "ru": "День лыжника: если выпадет снег — гонка вокруг пруда. Если не выпадет — чай и надежда.",
   "en": "Ski day: if the snow comes, a race round the pond. If not, tea and hope.",
   "ja": "スキーの日：雪が降れば池のまわりでレース。降らなければ、お茶と希望。"
+ },
+ "city.notices.photo.title": {
+  "ru": "Фотокружок: конкурс месяца",
+  "en": "The photo circle: contest of the month",
+  "ja": "写真サークル：今月のコンクール"
+ },
+ "city.note.photo.rules": {
+  "ru": "Конкурс фотокружка. Каждый месяц новая тема: море, птицы, люди за работой, праздник — и снова по кругу. Один отпечаток от автора, сдавать с 1-го по 25-е в ящик на столе у проектора. 26-го судят члены кружка: что в кадре, каков свет и резко ли. Три лучших снимка висят на стене у лески до следующего конкурса.",
+  "en": "The photo circle's contest. A new theme every month: the sea, birds, people at work, the festival, and round again. One print from each entrant, handed in from the 1st to the 25th, in the box on the table by the projector. On the 26th the circle's members judge: what is in the frame, how the light is, and whether it is sharp. The three best prints hang on the wall by the drying line until the next contest.",
+  "ja": "写真サークルのコンクール。テーマは毎月替わる。海、鳥、働く人びと、祭り、そしてまた最初から。出品は一人一枚、1日から25日までに映写機の机の箱へ。26日にサークルの会員が審査する。何が写っているか、光はどうか、ピントは合っているか。上位三点は次のコンクールまで、干し紐のそばの壁に掛かる。"
  }
 }

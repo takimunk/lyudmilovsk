@@ -19,6 +19,8 @@ import random
 
 import furn_int3 as fu
 import interior_kit as kit
+import dress_kit as dk
+import night_kit as nk
 from citykit import box, prism, DOOR_W, DOOR_H
 from _surrounds import add_surrounds
 from capsule_cluster import _clip, _sat, _rect, _quad_out, _tri_faces, _poly, _edges
@@ -510,7 +512,7 @@ def _furnish(B, rnd):
     for (px, py, kd, pot) in ((-2.0, 4.0, "ficus", "CT_PlasterBlue"), (2.0, 4.0, "ficus", "CT_PlasterRed"),
                               (11.6, 3.7, "ficus", "CT_Concrete"), (-12.2, 3.9, "monstera", "CT_PlasterBlue")):
         K.plant(B, px, py, 0.0, 0.0, kind=kd, pot=pot, h=1.2, seed=int(px))
-    K.coat_rack(B, 4.6, HY0 + 0.38, 0.0, 180.0, w=2.4, seed=3)
+    K.coat_rack(B, 4.6, HY0 + 0.38, 0.0, 180.0, w=2.4, coats=0, seed=3)   # coats come from the cloak_* dressing sets
 
     # ---- lending desk (the librarian behind it), returns and the children's shelves back to back
     d = K.lending_desk(B, -9.5, 8.4, 0.0, 0.0, w=5.4, front="CT_PlasterGreen", seed=2)
@@ -518,6 +520,8 @@ def _furnish(B, rnd):
     K.books_stack(B, -10.2, 8.5, 1.0, -10.0, n=3, seed=2)
     K.telephone(B, -7.7, 8.5, 1.0, 190.0)
     K.lamp_green(B, -11.9, 8.6, 1.0, 180.0)
+    # the librarian's desk lamp stays on when the library is shut (the "closed" lamp kind, docs/city_night.md)
+    B.lamp((-11.9, 8.6, 1.42), lumens=220, colour="#E8FFD0", kind="closed", radius=5.0, fixture=False)
     K.cup(B, -8.3, 8.5, 1.0, 0.0)
     K.sign_plate(B, -9.5, 8.4, 0.0, 0.0, name="sign_library", w=1.4, zc=2.9, hang=True)
     for i in range(4):
@@ -630,12 +634,17 @@ def _furnish(B, rnd):
         m = fr.p(0.0, 0.16)
         thing("core_wall_%d" % yaw, "shelf", (m[0], m[1], 1.3), e["yaw"], topic=topics[yaw][0])
 
-    # ---- reading tables in the north (ids and places as before)
+    # ---- reading tables in the north (ids and places as before); the chairs pulled out in the open hours, pushed in
+    # under the tables when the library is shut (dress day_reading / night_reading, docs/city_night.md)
+    day_g, night_g = nk.Gather(B), nk.Gather(B)
     for (tx, ty) in ((-9.5, 20.5), (-9.5, 24.0), (-2.4, 23.5), (3.2, 23.5), (7.4, 23.0)):
         tid = (int(tx), int(ty)) if (tx, ty) != (7.4, 23.0) else (9, 24)
         K.reading_table(B, tx, ty, 0.0, 0.0, w=2.4, d=1.0, lamps=1)
-        chs = K.around_table(B, tx, ty, 2.4, 1.0, 0.0, per_side=(2, 2, 0, 0), kind="wood",
-                             mat=R.choice(("CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow", "CT_SteelRed")))
+        cm = R.choice(("CT_PlasterBlue", "CT_PlasterGreen", "CT_PlasterYellow", "CT_SteelRed"))
+        with day_g:
+            chs = K.around_table(B, tx, ty, 2.4, 1.0, 0.0, per_side=(2, 2, 0, 0), kind="wood", mat=cm)
+        with night_g:
+            K.around_table(B, tx, ty, 2.4, 1.0, 0.0, per_side=(2, 2, 0, 0), gap=-0.3, kind="wood", mat=cm)
         K.books_stack(B, tx - 0.7, ty, 0.75, R.uniform(-30, 30), n=R.randint(2, 4), seed=tid[0])
         _table_clutter(B, [(-9.5, 20.5), (-9.5, 24.0), (-2.4, 23.5), (3.2, 23.5), (7.4, 23.0)].index((tx, ty)), tx, ty)
         for j, c in enumerate(chs):
@@ -647,6 +656,8 @@ def _furnish(B, rnd):
         for j in (0, 3):
             s_ = chs[j]["seats"][0]
             thing("hall_seat_%d_%d_%d" % (tid[0], tid[1], j), "seat", (s_[0], s_[1], s_[2]), s_[3], height=0.45)
+    day_g.dress("day_reading", open=True)
+    night_g.dress("night_reading", open=False)
     K.sign_plate(B, -6.0, 22.3, 0.0, 0.0, name="sign_quiet", w=1.0, zc=2.95, hang=True)
 
     # ---- children's corner (west, behind the stair side): low shelves, rug, bean bags, a board of drawings
@@ -862,6 +873,48 @@ def _office(B, R):
 
 
 
+def _dress(B):
+    """Lived-in dressing (docs/city_dress.md): coats by the season, wet umbrellas at the door on rain days, books and
+    cups left on the reading tables, a morning cup at the periodicals table, mittens, a satchel in the children's corner."""
+    # the cleaner comes after closing here (the library opens at 7): the floor before the lending desk mopped
+    with B.dress("night_cleaner", hours=(21, 23), open=False):
+        nk.wet_floor(B, -8.6, 6.45, 0.0, 0.0, w=2.2, d=1.1, seed=13)
+        nk.mop_bucket(B, -7.05, 6.0, 0.0, 200.0, seed=13)
+    with B.dress("cloak_winter", months=(12, 1, 2)):
+        dk.coats_on_rail(B, 4.6, HY0 + 0.38, 0.0, 180.0, w=2.4, share=0.65, season="winter", seed=3)
+    with B.dress("cloak_autumn", months=(3, 4, 10, 11)):
+        dk.coats_on_rail(B, 4.6, HY0 + 0.38, 0.0, 180.0, w=2.4, share=0.45, season="autumn", seed=3)
+    with B.dress("cloak_summer", months=(5, 6, 7, 8, 9)):
+        dk.coats_on_rail(B, 4.6, HY0 + 0.38, 0.0, 180.0, w=2.4, share=0.12, season="summer", seed=3)
+    with B.dress("door_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, -0.45, 3.9, 0.022, 0.0)
+        dk.doormat_wet(B, 0.45, 3.9, 0.022, 0.0)
+        dk.umbrella_open(B, -1.3, 5.3, 0.0, 30, seed=1)
+        dk.umbrella_open(B, 1.7, 5.5, 0.0, 200, seed=2)
+        dk.umbrella_stand(B, 1.4, 3.55, 0.0, 0, n=3, seed=3)
+    with B.dress("door_winter", months=(12, 1, 2), weather_not=("rain",)):
+        dk.boots(B, -0.8, 4.35, 0.0, 0, kind="felt", seed=4)
+        dk.boots(B, 0.8, 4.35, 0.0, 8, kind="felt", seed=5)
+    tables = [(-9.5, 20.5), (-9.5, 24.0), (-2.4, 23.5), (3.2, 23.5), (7.4, 23.0)]
+    with B.dress("reading_books", hours=(10, 21), chance=0.6):
+        for k in (0, 2, 4):
+            tx, ty = tables[k]
+            dk.book_face_down(B, tx - 0.2, ty + 0.22, 0.75, 20.0 * k - 10, seed=k + 1)
+    with B.dress("reading_cup", hours=(11, 20), chance=0.5):
+        for k in (1, 3):
+            tx, ty = tables[k]
+            kit.cup(B, tx + 0.15, ty - 0.25, 0.75, 0.0)
+    with B.dress("periodicals_morning", hours=(9, 13)):
+        kit.cup(B, 8.6, 5.3, 0.75, 0.0)
+        dk.book_face_down(B, 10.2, 5.3, 0.75, 170.0, seed=8)
+    with B.dress("mittens_winter", months=(12, 1, 2), hours=(10, 21), chance=0.6):
+        dk.mitten_pair(B, -8.6, 4.62, 0.74, 0.0, seed=2)
+    with B.dress("kids_bag", weekdays=(0, 1, 2, 3, 4), hours=(14, 19), chance=0.7):
+        dk.school_bag(B, -10.4, 14.5, 0.0, 20.0, seed=3)
+    with B.dress("festive_flowers", festival="any"):
+        kit.vase(B, -9.0, 8.55, 1.0, 0.0, seed=41)
+
+
 def build(B):
     rnd = random.Random(SEED)
     CORE["poly"] = _poly(CORE)
@@ -906,6 +959,7 @@ def build(B):
                  lamp_on)
             n_pods += 1
     _hall(B, rnd)
+    _dress(B)
     B.footprint = [(HX0, HY0), (HX1, HY0), (HX1, HY1), (HX0, HY1)]
     B.height = 19.0
     B.note("%d reading pods on 3 levels round an octagonal core; glazed hall; open stair to level 1" % n_pods)

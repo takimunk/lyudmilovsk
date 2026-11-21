@@ -1,0 +1,192 @@
+{
+ "_doc": "The town's black poplars (tools/town_poplars.py; Unreal cm). Planted by ULyudPoplarFluffSubsystem.",
+ "trees": [
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -8116.9,
+    113590.0,
+    -3620.0
+   ],
+   "age": 40.7,
+   "variant": 2,
+   "yaw": 347.2
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -5516.9,
+    113590.0,
+    -3620.0
+   ],
+   "age": 45.8,
+   "variant": 1,
+   "yaw": 295.2
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -7882.6,
+    115990.0,
+    -3620.0
+   ],
+   "age": 48.0,
+   "variant": 2,
+   "yaw": 342.3
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -7399.5,
+    120790.0,
+    -3620.0
+   ],
+   "age": 52.0,
+   "variant": 0,
+   "yaw": 324.2
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -4799.5,
+    120790.0,
+    -3620.0
+   ],
+   "age": 44.4,
+   "variant": 0,
+   "yaw": 32.1
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -7147.4,
+    123190.0,
+    -3620.0
+   ],
+   "age": 44.8,
+   "variant": 1,
+   "yaw": 110.5
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -4547.4,
+    123190.0,
+    -3620.0
+   ],
+   "age": 58.5,
+   "variant": 1,
+   "yaw": 338.8
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -2790.7,
+    84290.0,
+    -3616.0
+   ],
+   "age": 50.2,
+   "variant": 2,
+   "yaw": 29.4
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -190.7,
+    84290.0,
+    -3616.0
+   ],
+   "age": 63.1,
+   "variant": 2,
+   "yaw": 81.9
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    2409.3,
+    84290.0,
+    -3616.0
+   ],
+   "age": 56.3,
+   "variant": 2,
+   "yaw": 255.7
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    5009.3,
+    84290.0,
+    -3616.0
+   ],
+   "age": 56.1,
+   "variant": 2,
+   "yaw": 261.9
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -1778.7,
+    98290.0,
+    -3616.0
+   ],
+   "age": 50.7,
+   "variant": 0,
+   "yaw": 129.0
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    821.3,
+    98290.0,
+    -3616.0
+   ],
+   "age": 69.6,
+   "variant": 2,
+   "yaw": 2.6
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    3421.3,
+    98290.0,
+    -3616.0
+   ],
+   "age": 65.9,
+   "variant": 1,
+   "yaw": 0.5
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    6021.3,
+    98290.0,
+    -3616.0
+   ],
+   "age": 48.2,
+   "variant": 1,
+   "yaw": 347.9
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -9502.3,
+    126801.2,
+    -3620.0
+   ],
+   "age": 57.9,
+   "variant": 0,
+   "yaw": 355.4
+  },
+  {
+   "species": "BlackPoplar",
+   "at": [
+    -9194.2,
+    125391.7,
+    -3620.0
+   ],
+   "age": 66.6,
+   "variant": 1,
+   "yaw": 174.9
+  }
+ ]
+}

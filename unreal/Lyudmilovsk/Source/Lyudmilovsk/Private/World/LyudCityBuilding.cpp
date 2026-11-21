@@ -143,6 +143,13 @@ void ALyudCityBuilding::BeginPlay()
 	{
 		L->Register(this);
 	}
+	if (NumDress() > 0)
+	{
+		if (ULyudCityDress* D = ULyudCityDress::Get(this))
+		{
+			D->Register(this);
+		}
+	}
 	if (CVarCity.GetValueOnGameThread() == 0)
 	{
 		SetActorHiddenInGame(true);
@@ -155,6 +162,10 @@ void ALyudCityBuilding::EndPlay(const EEndPlayReason::Type Reason)
 	if (ULyudWindowLights* L = ULyudWindowLights::Get(this))
 	{
 		L->Unregister(this);
+	}
+	if (ULyudCityDress* D = ULyudCityDress::Get(this))
+	{
+		D->Unregister(this);
 	}
 	Super::EndPlay(Reason);
 }
@@ -211,7 +222,7 @@ void ALyudCityBuilding::MakeLightTexture()
 
 void ALyudCityBuilding::SetLamps(uint8 Kind, bool bOn)
 {
-	if (Kind > 1 || LampState[Kind] == int8(bOn))
+	if (Kind > 2 || LampState[Kind] == int8(bOn))
 	{
 		return;
 	}
@@ -780,6 +791,7 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 			continue;
 		}
 		const bool bOpen = InHours(Hour, B->OpenHour, B->CloseHour);
+		const bool bNightLamp = !bOpen && bNight && B->LampKinds.Contains(uint8(2));   // a shut room keeps one lamp on
 		for (int32 S = 0; S < B->WindowIds.Num(); ++S)
 		{
 			const ELyudWindowKind K = B->WindowKinds.IsValidIndex(S) ? B->WindowKinds[S] : ELyudWindowKind::Flat;
@@ -802,7 +814,7 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 			}
 			else if (K == ELyudWindowKind::Public)
 			{
-				L = bOpen ? (bNight ? 1.f : 0.35f) : 0.f;    // by day a shop's lamps still show a little
+				L = bOpen ? (bNight ? 1.f : 0.35f) : (bNightLamp ? 0.12f : 0.f);    // by day a shop's lamps still show a little
 			}
 			else if (B->Seeds.IsValidIndex(S))
 			{
@@ -815,6 +827,7 @@ void ULyudWindowLights::UpdateAll(bool bForce)
 		Pending.Remove(W);
 		B->SetLamps(0, Mode == 2 ? false : (Mode == 1 || bOpen));
 		B->SetLamps(1, Mode == 2 ? false : (Mode == 1 || bNight));
+		B->SetLamps(2, Mode == 2 ? false : (Mode == 1 || bNightLamp));
 	}
 	LastMode = Mode;
 }

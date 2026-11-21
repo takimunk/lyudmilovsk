@@ -944,7 +944,10 @@ def cascade(L):
         L.d["waters"].append({"id": "cascade_" + c["wall"], "at": L.ue(bx, by, fz + 0.27), "rect": [bl, bw], "yaw": yaw,
                               "ring": L.ue(fx + dx * 0.2, fy + dy * 0.2, fz + 0.27), "kind": "basin"})
         sid = "S-CASCADE" if i == len(cs) - 1 else "S-CASCADE-" + c["wall"]
-        slots = [{"pos": L.ue(bx + ax * side * (bw / 2 + 0.15) + dx * o, by + ay * side * (bw / 2 + 0.15) + dy * o, fz + 0.35),
+        # the sitter sits on the kerb's outer edge (its face is at bw/2 + 0.30), feet on the paving: a slot on the
+        # kerb's centre line put the body inside the kerb's collision and the ground trace stood it on top
+        so = bw / 2 + 0.36
+        slots = [{"pos": L.ue(bx + ax * side * so + dx * o, by + ay * side * so + dy * o, fz + 0.35),
                   "yaw": round(math.degrees(math.atan2(ay * side, ax * side)), 2), "height": 0.35}
                  for side in (-1, 1) for o in (-1.4, 0.0, 1.4)]
         sp = L.P.spots.get("S-CASCADE", {}) if sid == "S-CASCADE" else {}

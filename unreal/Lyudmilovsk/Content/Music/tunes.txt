@@ -1,0 +1,100 @@
+# The tunes the hero plays on the pianos and the guitar (docs/instruments.md; format in Private/Music/TunesModel.h).
+# Every melody here is old enough to be free: folk songs, and composers and lyricists who died by 1955.
+# Titles: music.tune.<id> (Content/Localization/instruments/strings_*.json). Checked by tools/instrumentsim/run.sh.
+
+[twinkle]
+# «Ah! vous dirai-je, maman», French, 18th century
+bpm = 100
+for = piano guitar
+start = yes
+sing = yes
+notes = C4 C4 G4 G4 | A4 A4 G4/2 | F4 F4 E4 E4 | D4 D4 C4/2 | G4 G4 F4 F4 | E4 E4 D4/2 | G4 G4 F4 F4 | E4 E4 D4/2
+notes = C4 C4 G4 G4 | A4 A4 G4/2 | F4 F4 E4 E4 | D4 D4 C4/2
+chords = C/4 F/2 C/2 F/2 C/2 G/2 C/2 C/2 F/2 C/2 G/2 C/2 F/2 C/2 G/2 C/4 F/2 C/2 F/2 C/2 G/2 C/2
+
+[happy_birthday]
+# Mildred and Patty Hill (d. 1916, 1946)
+bpm = 90
+for = piano guitar
+start = yes
+sing = yes
+notes = G4/0.75 G4/0.25 | A4 G4 C5 | B4/2 G4/0.75 G4/0.25 | A4 G4 D5 | C5/2 G4/0.75 G4/0.25 | G5 E5 C5 | B4 A4/2
+notes = F5/0.75 F5/0.25 | E5 C5 D5 | C5/3
+chords = r/1 C/3 G/3 G/3 C/3 C/3 F/3 C/2 G/1 C/3
+
+[korobeiniki]
+# «Коробейники», a folk tune to Nekrasov's verse (d. 1878)
+bpm = 132
+for = piano guitar
+sheet = hall_sheet_dance
+sing = yes
+notes = E5 B4/0.5 C5/0.5 D5 C5/0.5 B4/0.5 | A4 A4/0.5 C5/0.5 E5 D5/0.5 C5/0.5 | B4/1.5 C5/0.5 D5 E5 | C5 A4 A4/2
+notes = D5/1.5 F5/0.5 A5 G5/0.5 F5/0.5 | E5/1.5 C5/0.5 E5 D5/0.5 C5/0.5 | B4 B4/0.5 C5/0.5 D5 E5 | C5 A4 A4/2
+chords = Am/2 E/2 Am/4 E/4 Am/4 Dm/4 C/4 E/4 Am/4
+
+[yolochka]
+# «В лесу родилась ёлочка», Leonid Bekman's tune (d. 1939). Raisa Kudasheva's verse (d. 1964) is not free yet: nobody sings it
+bpm = 112
+for = piano guitar
+sheet = rd_music_orchestra
+notes = C4/0.5 A4/0.5 A4/0.5 G4/0.5 A4/0.5 F4/0.5 C4/0.5 C4/0.5 C4/1 | C4/0.5 A4/0.5 A4/0.5 Bb4/0.5 G4/0.5 C5/1.5
+notes = C5/0.5 D5/0.5 D5/0.5 Bb4/0.5 Bb4/0.5 A4/0.5 G4/0.5 F4/0.5 | F4/0.5 A4/0.5 A4/0.5 G4/0.5 A4/0.5 F4/1.5
+chords = F/4.5 C7/1.5 F/1 Bb/2 F/2 C7/1.5 F/1.5
+
+[ode_joy]
+# Beethoven, the Ninth (1824), to Schiller
+bpm = 108
+for = piano guitar
+sheet = school_music_board
+notes = E4 E4 F4 G4 | G4 F4 E4 D4 | C4 C4 D4 E4 | E4/1.5 D4/0.5 D4/2
+notes = E4 E4 F4 G4 | G4 F4 E4 D4 | C4 C4 D4 E4 | D4/1.5 C4/0.5 C4/2
+notes = D4 D4 E4 C4 | D4 E4/0.5 F4/0.5 E4 C4 | D4 E4/0.5 F4/0.5 E4 D4 | C4 D4 G3/2
+notes = E4 E4 F4 G4 | G4 F4 E4 D4 | C4 C4 D4 E4 | D4/1.5 C4/0.5 C4/2
+chords = C/4 G/4 C/4 G/4 C/4 G/4 C/2 G/2 C/4 G/2 C/2 G/2 C/2 C/2 G/2 C/4 G/4 C/2 G/2 C/4
+
+[fur_elise]
+# Beethoven, «Für Elise» (1810)
+bpm = 70
+for = piano
+sheet = school_music_board
+notes = E5/0.5 D#5/0.5 | E5/0.5 D#5/0.5 E5/0.5 B4/0.5 D5/0.5 C5/0.5 | A4/1.5 C4/0.5 E4/0.5 A4/0.5 | B4/1.5 E4/0.5 G#4/0.5 B4/0.5 | C5/1.5 E4/0.5
+notes = E5/0.5 D#5/0.5 | E5/0.5 D#5/0.5 E5/0.5 B4/0.5 D5/0.5 C5/0.5 | A4/1.5 C4/0.5 E4/0.5 A4/0.5 | B4/1.5 E4/0.5 C5/0.5 B4/0.5 | A4/3
+
+[greensleeves]
+# «Greensleeves», English, 16th century
+bpm = 168
+for = piano guitar
+sheet = hall_sheet_stage
+notes = A4 | C5/2 D5 | E5/1.5 F5/0.5 E5 | D5/2 B4 | G4/1.5 A4/0.5 B4 | C5/2 A4 | A4/1.5 G#4/0.5 A4 | B4/2 G#4 | E4/2 A4
+notes = C5/2 D5 | E5/1.5 F5/0.5 E5 | D5/2 B4 | G4/1.5 A4/0.5 B4 | C5/1.5 B4/0.5 A4 | G#4/1.5 F#4/0.5 G#4 | A4/3
+chords = r/1 Am/3 C/3 G/3 Em/3 Am/3 F/3 E/3 E/3 Am/3 C/3 G/3 Em/3 Am/3 E/3 Am/3
+
+[jingle_bells]
+# James Lord Pierpont (d. 1893)
+bpm = 120
+for = piano guitar
+sheet = hall_sheet_dance
+sing = yes
+notes = E4 E4 E4/2 | E4 E4 E4/2 | E4 G4 C4/1.5 D4/0.5 | E4/4 | F4 F4 F4/1.5 F4/0.5 | F4 E4 E4 E4/0.5 E4/0.5 | E4 D4 D4 E4 | D4/2 G4/2
+notes = E4 E4 E4/2 | E4 E4 E4/2 | E4 G4 C4/1.5 D4/0.5 | E4/4 | F4 F4 F4/1.5 F4/0.5 | F4 E4 E4 E4/0.5 E4/0.5 | G4 G4 F4 D4 | C4/4
+chords = C/4 C/4 C/4 C/4 F/4 C/4 D7/4 G/4 C/4 C/4 C/4 C/4 F/4 C/4 G7/4 C/4
+
+[sakura]
+# «さくら さくら», Japanese, Edo period
+bpm = 72
+for = piano guitar
+sheet = rd_music_orchestra
+sing = yes
+notes = A4 A4 B4/2 | A4 A4 B4/2 | A4 B4 C5 B4 | A4 B4/0.5 A4/0.5 F4/2 | E4 C4 E4 F4 | E4 E4/0.5 C4/0.5 B3/2
+notes = A4 B4 C5 B4 | A4 B4/0.5 A4/0.5 F4/2 | E4 C4 E4 F4 | E4 E4/0.5 C4/0.5 B3/2
+notes = A4 A4 B4/2 | A4 A4 B4/2 | E4 F4 B4/0.5 A4/0.5 F4 | E4/4
+chords = Am/4 Am/4 Am/4 Dm/4 Am/4 E/4 Am/4 Dm/4 Am/4 E/4 Am/4 Am/4 Dm/4 Am/4
+
+[brahms_lullaby]
+# Brahms, «Wiegenlied» (1868)
+bpm = 100
+for = piano guitar
+sheet = hall_sheet_stage
+notes = E4/0.5 E4/0.5 | G4/2 E4/0.5 E4/0.5 | G4/2 E4/0.5 G4/0.5 | C5 B4/1.5 A4/0.5 | A4 G4 D4/0.5 E4/0.5
+notes = F4 D4 D4/0.5 E4/0.5 | F4/2 D4/0.5 F4/0.5 | B4/0.5 A4/0.5 G4 B4 | C5/3
+chords = r/1 C/3 C/3 C/3 F/3 G/3 G/3 G/3 C/3

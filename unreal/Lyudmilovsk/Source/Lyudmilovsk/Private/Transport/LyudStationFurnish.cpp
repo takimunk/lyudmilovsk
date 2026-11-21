@@ -5,6 +5,7 @@
 // new cab (ALyudStationLift::Setup). docs/transport.md "Furnishing".
 
 #include "Transport/LyudCableway.h"
+#include "Transport/LyudStationHall.h"
 
 #include "Components/PointLightComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -140,6 +141,10 @@ void ALyudCableway::FurnishVestibule(int32 S, const TSharedPtr<FJsonObject>& V, 
 		Sound->AttachLoop(TEXT("station_hall"), Spot, 0.5f);
 	}
 	int32 N = 0;
+	// halls v3: the dressed hall (ALyudStationHall) replaces the planters, benches, lamps, posters and egg chairs; the
+	// vending machine and the signature piece stay where they are
+	const FString StyleName = V->HasField(TEXT("mesh")) ? V->GetStringField(TEXT("mesh")).RightChop(16).ToLower() : FString();
+	const TSharedPtr<FJsonObject> Hall = ALyudStationHall::HasDressing(StyleName) ? ALyudStationHall::HallData(StyleName) : nullptr;
 	for (const TSharedPtr<FJsonValue>& Iv : *Items)
 	{
 		const TSharedPtr<FJsonObject> O = Iv->AsObject();
@@ -149,6 +154,10 @@ void ALyudCableway::FurnishVestibule(int32 S, const TSharedPtr<FJsonObject>& V, 
 		if (LobbyItem(S, Item, O, At))
 		{
 			N++;
+			continue;
+		}
+		if (Hall.IsValid())
+		{
 			continue;
 		}
 		if (Item == TEXT("EggPair"))
@@ -174,6 +183,31 @@ void ALyudCableway::FurnishVestibule(int32 S, const TSharedPtr<FJsonObject>& V, 
 			Lamp(At.TransformPosition(FVector(0.f, 0.f, 175.f)), 1800.f, 600.f);
 		}
 		N++;
+	}
+	if (Hall.IsValid())
+	{
+		// the hall's planters with live plants (halls.json "planters"), then the hall itself: dressing, lamps, people
+		const TArray<TSharedPtr<FJsonValue>>* Pl = nullptr;
+		if (Hall->TryGetArrayField(TEXT("planters"), Pl))
+		{
+			for (const TSharedPtr<FJsonValue>& Pv : *Pl)
+			{
+				const TSharedPtr<FJsonObject> O = Pv->AsObject();
+				const FTransform At = FTransform(FRotator(0.f, O->GetNumberField(TEXT("yaw")), 0.f), JsonVec(O, TEXT("at"))) * C;
+				Furniture(TEXT("Planter"), At);
+				FString Sp = TEXT("Monstera");
+				O->TryGetStringField(TEXT("plant"), Sp);
+				Plant(At.TransformPosition(FVector(0.f, 0.f, PlanterTop - 6.f)), FName(*Sp), 900 + S * 13 + N, 12.f);
+				N++;
+			}
+		}
+		FActorSpawnParameters HallSP;
+		HallSP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		HallSP.ObjectFlags |= RF_Transient;
+		if (ALyudStationHall* H = GetWorld()->SpawnActor<ALyudStationHall>(ALyudStationHall::StaticClass(), C, HallSP))
+		{
+			H->Setup(this, S, StyleName, C, Hall);
+		}
 	}
 	LobbyCentre(S, V, C);
 }

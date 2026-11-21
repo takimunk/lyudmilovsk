@@ -66,7 +66,10 @@ namespace LyudPaper
 
 	/** Something the hero did on the day before the issue. Kind: tamed (What: species id), rare (a rare species seen for the
 	 *  first time), seen (any other first sighting), record (What: fish species, N: grams, the biggest of its kind he ever took),
-	 *  catch (the biggest fish of the day, N grams), quest (What: quest id finished), win (What: a game won). */
+	 *  catch (the biggest fish of the day, N grams), quest (What: quest id finished), win (What: a game won), contest (the
+	 *  photo club's monthly contest was judged that day, the 26th, and the hero had a print in it: N his place 1..6, What
+	 *  the map place the print was taken at or empty; ULyudPhoto::ContestNews. Place 1 is a front story, 2 and 3 a brief,
+	 *  4..6 nothing; the theme is the month's, ContestTheme). */
 	struct FDeed
 	{
 		std::string Kind;
@@ -102,6 +105,12 @@ namespace LyudPaper
 		/** The tournaments of the day before (over) and today's (to come). */
 		std::vector<FCup> CupsYesterday;
 		std::vector<FCup> CupsToday;
+		/** The talk of the town about the hero the day before (ULyudTownRumours::PaperColumn, docs/town_rumours.md): lines made
+		 *  already (a key and its arguments), printed on the town page under «Говорят в городе». */
+		std::vector<FLine> Talk;
+		/** The library's book club (ULyudReading::PaperLines, docs/books.md "The book club"): its heading, the month's book,
+		 *  tonight's meeting; printed on the holidays page after the cinema. */
+		std::vector<FLine> Club;
 	};
 
 	struct FPoolEntry
@@ -151,6 +160,8 @@ namespace LyudPaper
 		/** How many variants (1..n) each template kind has: "front.fest_today" -> 3 means paper.front.fest_today.1..3. */
 		std::vector<std::pair<std::string, int>> Variants;
 		std::vector<std::string> CinemaKeys;      // by weekday Mon..Sun, then the festival one
+		std::vector<std::string> NewsreelKeys;    // the old films before the sessions, the same way (docs/cinema.md); may be absent
+		std::vector<std::string> NewsreelFest;    // festivals with a newsreel of their own (film.programme.fest.<id>)
 		LyudFest::FCalendar Calendar;
 		bool bCalendar = false;
 
@@ -167,6 +178,8 @@ namespace LyudPaper
 			for (const LyudJson::FValue& V : Root["rare_birds"].Items) RareBirds.push_back(V.S());
 			for (const LyudJson::FValue& V : Root["fest_blurbs"].Items) FestBlurbs.push_back(V.S());
 			for (const LyudJson::FValue& V : Root["cinema"].Items) CinemaKeys.push_back(V.S());
+			for (const LyudJson::FValue& V : Root["newsreel"].Items) NewsreelKeys.push_back(V.S());
+			for (const LyudJson::FValue& V : Root["newsreel_fest"].Items) NewsreelFest.push_back(V.S());
 			for (const LyudJson::FValue& V : Root["birthdays"].Items)
 			{
 				FBirthday B;
@@ -273,6 +286,19 @@ namespace LyudPaper
 			Out.Pages.push_back(BillsPage(Facts));
 			return Out;
 		}
+
+		/** The photo contest's theme of a calendar month (docs/photo.md: the same order as the contest's own code): its
+		 *  name is the key paper.contest.theme.<id>. */
+		static const char* ContestTheme(int Month)
+		{
+			static const char* const Themes[4] = { "sea", "birds", "work", "festival" };
+			return Themes[(((Month - 1) % 4) + 4) % 4];
+		}
+
+		/** The photo club's contest by the day of the month: prints are taken on days 1..ContestLastDay, the jury sits on
+		 *  ContestJuryDay (so the issue of the day after tells the hero's place). */
+		static constexpr int ContestLastDay = 25;
+		static constexpr int ContestJuryDay = 26;
 
 		/** The masthead line of an issue (also the archive's line for it). */
 		static FLine Masthead(const FIssue& I)
@@ -502,6 +528,22 @@ namespace LyudPaper
 					AddVariants(Cand, "front.cup", { "@" + C.Title, C.RunnerUp.empty() ? std::string("@paper.cup.nobody") : "@" + C.RunnerUp }, F.Since);
 				}
 			}
+			// the photo contest judged yesterday: the hero's print took the first place, the paper prints it
+			if (const FDeed* D = Deed("contest"))
+			{
+				if (D->N == 1)
+				{
+					const std::string Theme = std::string("@paper.contest.theme.") + ContestTheme(LyudFest::AddDays(F.Date, -1).M);
+					if (D->What.empty())
+					{
+						DeedLines(D, "front.contest_noplace", { Theme });
+					}
+					else
+					{
+						DeedLines(D, "front.contest", { Theme, "@place." + D->What + ".name" });
+					}
+				}
+			}
 			// 2. a festival today
 			std::string Today;
 			int TodayDay = 0;
@@ -584,6 +626,7 @@ namespace LyudPaper
 			{
 				const bool bOnFront = PickedKey.find(".tamed_swan.") != std::string::npos ? (D.Kind == "tamed" && D.What == "MuteSwan")
 					: PickedKey.find(".record.") != std::string::npos ? D.Kind == "record"
+					: PickedKey.rfind("paper.front.contest", 0) == 0 ? D.Kind == "contest"
 					: (PickedKey.find(".tamed.") != std::string::npos || PickedKey.find(".rare.") != std::string::npos ||
 					   PickedKey.find(".quest.") != std::string::npos || PickedKey.find(".catch.") != std::string::npos)
 						&& Cand[Pick].Args.size() >= 1 && DeedArg(D) == Cand[Pick].Args[0] && PickedKey.find("." + D.Kind + ".") != std::string::npos;
@@ -642,11 +685,26 @@ namespace LyudPaper
 				{
 					Page.push_back({ "paper.brief.win", {} });
 				}
+				else if (D.Kind == "contest" && D.N >= 1 && D.N <= 3)
+				{
+					// the prize places (the first one only when a bigger story took the front); places 4..6 are no news
+					Page.push_back({ "paper.brief.contest_" + std::to_string(D.N),
+						{ std::string("@paper.contest.theme.") + ContestTheme(LyudFest::AddDays(F.Date, -1).M) } });
+				}
 				else
 				{
 					continue;
 				}
 				++NBrief;
+			}
+			// the talk of the town about the hero (docs/town_rumours.md): its heading and at most two lines
+			if (!F.Talk.empty())
+			{
+				Page.push_back({ "rumour.paper.title", {} });
+				for (size_t I = 0; I < F.Talk.size() && I < 2; ++I)
+				{
+					Page.push_back(F.Talk[I]);
+				}
 			}
 			// birthdays: the round ones first, then the children's, at most two; and one anniversary
 			std::vector<std::pair<int, const FBirthday*>> Bd;
@@ -804,8 +862,32 @@ namespace LyudPaper
 			{
 				Page.push_back({ "paper.cup.today", { "@" + C.Title, Hm(C.StartMinute), "@" + C.Venue } });
 			}
+			// the first of the month: the photo club's contest opens with the month's theme
+			if (F.Date.D == 1)
+			{
+				Page.push_back({ "paper.contest.open", { std::string("@paper.contest.theme.") + ContestTheme(F.Date.M),
+					std::to_string(ContestLastDay), std::to_string(ContestJuryDay), "@paper.month.gen." + std::to_string(F.Date.M) } });
+			}
 			const int Wd = LyudFest::Weekday(F.Date);
 			Page.push_back({ "paper.cinema", { "@" + (bFest && CinemaKeys.size() > 7 ? CinemaKeys[7] : CinemaKeys[(size_t)Wd]) } });
+			if (NewsreelKeys.size() >= 7)
+			{
+				// (a holiday with a programme of its own at the Rassvet: the paper prints that one)
+				std::string Own;
+				for (const auto& Fe : F.Festivals)
+				{
+					if (Own.empty() && Fe.second <= 0 && std::find(NewsreelFest.begin(), NewsreelFest.end(), Fe.first) != NewsreelFest.end())
+					{
+						Own = "film.programme.fest." + Fe.first;
+					}
+				}
+				Page.push_back({ "paper.newsreel", { "@" + (!Own.empty() ? Own : (bFest && NewsreelKeys.size() > 7 ? NewsreelKeys[7] : NewsreelKeys[(size_t)Wd])) } });
+			}
+			// the readers' club: the month's book (and tonight's meeting, next month's book near the month's end)
+			for (const FLine& L : F.Club)
+			{
+				Page.push_back(L);
+			}
 			// three small ads of the season, turning by day
 			std::vector<const FPoolEntry*> Season;
 			for (const FPoolEntry& P : Ads)
