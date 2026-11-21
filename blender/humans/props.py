@@ -477,6 +477,9 @@ def bucket():
     p.rod(zinc, (0.0, -0.148, 0.27), (0.13, -0.07, 0.3), 0.004, seg=5)
     p.rod(zinc, (0.13, -0.07, 0.3), (0.13, 0.07, 0.3), 0.004, seg=5)
     p.rod(zinc, (0.13, 0.07, 0.3), (0.0, 0.148, 0.27), 0.004, seg=5)
+    return p
+
+
 def suitcase():
     """A sanatorium guest's suitcase (EHold::Hanging): the handle's grip at the origin, the case hanging under it along
     -Z, its broad sides facing +Y and -Y (beside the leg)."""
