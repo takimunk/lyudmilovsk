@@ -60,6 +60,11 @@ namespace LyudBirds
 		}
 	}
 
+	V3 FWorld::KeptOnPatch(const FBird& B, const V3& P) const
+	{
+		return B.Site >= 0 && B.Site < (int)Sites.size() && KeepsToPatch(Sites[B.Site].Kind) ? OnPatch(Sites[B.Site], P) : P;
+	}
+
 	/** How much the wind makes a soarer take to the air: the gulls hang on the cliff wind, the albatross needs a
 	 *  stiff breeze at all (in a calm it sits on the sea). */
 	float FWorld::SoarWind(const FSpecies& S) const

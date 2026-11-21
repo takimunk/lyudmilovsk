@@ -27,6 +27,13 @@ namespace LyudBirds
 			S ^= S << 5;
 			return (S & 0xFFFFFF) / 16777216.f;
 		}
+		/** A run's end by the brook: pulled back onto the bank where the bird's site keeps its birds out of the water
+		 *  (false when nothing worth a run is left of it). */
+		bool OnBank(const FWorld& W, const FBird& B, V3& To)
+		{
+			To = W.KeptOnPatch(B, To);
+			return (To - B.Pos).Len2D() > 0.4f;
+		}
 		constexpr uint32_t A(EAct X) { return 1u << (int)X; }
 		constexpr uint32_t H(EHabitat X) { return 1u << (int)X; }
 
@@ -40,7 +47,8 @@ namespace LyudBirds
 		const uint32_t Twigs = H(EHabitat::Garden) | H(EHabitat::Broadleaf) | H(EHabitat::Conifer);
 		const uint32_t Heights = H(EHabitat::Roof) | H(EHabitat::Tower) | H(EHabitat::Wire);
 		const uint32_t Lawn = H(EHabitat::Meadow) | H(EHabitat::Garden);
-		const uint32_t Shore = H(EHabitat::Beach) | H(EHabitat::Reed);
+		const uint32_t Stream = H(EHabitat::Brook) | H(EHabitat::Mouth);      // the brook's edges and its fan across the beach
+		const uint32_t Shore = H(EHabitat::Beach) | H(EHabitat::Reed) | Stream;
 		const uint32_t Town = H(EHabitat::Street) | H(EHabitat::Garden) | H(EHabitat::Meadow);
 
 		struct FBuild
@@ -132,9 +140,9 @@ namespace LyudBirds
 				.Wind(0.f, 14.f).Len(4.f, 8.f, 1).Often(4.f, 4, 900.f).Reach(45.f).Clip(""));
 			T.push_back(FBuild(E::GullLongCall, "gull_long_call", "HerringGull", F::Water, M::Mapped).From(EHabitFrom::Voice, (int)EVoice::LongCall).Len(3.5f, 3.5f, 0).Clip("Call"));
 			T.push_back(FBuild(E::BlackHeadedSquabble, "black_headed_squabble", "BlackHeadedGull", F::Water, M::Pair)
-				.At(Stand, H(EHabitat::Beach) | H(EHabitat::Meadow) | H(EHabitat::Street)).Need(NeedGround)
+				.At(Stand, H(EHabitat::Beach) | H(EHabitat::Meadow) | H(EHabitat::Street) | H(EHabitat::Mouth)).Need(NeedGround)
 				.Len(3.f, 5.f, 2).Often(1.5f, 5, 420.f).Room(0.5f).Clip("Call"));
-			T.push_back(FBuild(E::CommonGullPaddle, "common_gull_paddle", "CommonGull", F::Water, M::Still).At(Feed, H(EHabitat::Beach) | H(EHabitat::Meadow))
+			T.push_back(FBuild(E::CommonGullPaddle, "common_gull_paddle", "CommonGull", F::Water, M::Still).At(Feed, H(EHabitat::Beach) | H(EHabitat::Meadow) | H(EHabitat::Mouth))
 				.Need(NeedFeeding | NeedGround).Len(5.f, 8.f, 6).Often(1.5f, 5, 420.f).Base(EAct::Peck).Clip("Walk"));
 			T.push_back(FBuild(E::CormorantWings, "cormorant_wings", "Cormorant", F::Water, M::Mapped).From(EHabitFrom::Act, (int)EAct::Preen).Clip("WingsOut"));
 			T.push_back(FBuild(E::CormorantDive, "cormorant_dive", "Cormorant", F::Water, M::Mapped).From(EHabitFrom::Act, (int)EAct::Peck).Len(1.2f, 1.2f, 1).Clip("Peck"));
@@ -184,10 +192,10 @@ namespace LyudBirds
 			T.push_back(FBuild(E::RobinPounce, "robin_pounce", "Robin", F::Singers, M::Sally).At(Sit, Twigs)
 				.Wind(0.f, 10.f).Len(3.f, 5.f, 1).Often(1.5f, 6, 300.f).Reach(5.f).Clip(""));
 			T.push_back(FBuild(E::WagtailDash, "wagtail_dash", "WhiteWagtail", F::Singers, M::Run)
-				.At(Feed, H(EHabitat::Beach) | H(EHabitat::Street) | H(EHabitat::Meadow)).Need(NeedFeeding | NeedGround)
+				.At(Feed, H(EHabitat::Beach) | H(EHabitat::Street) | H(EHabitat::Meadow) | Stream).Need(NeedFeeding | NeedGround)
 				.Len(3.f, 6.f, 3).Often(3.f, 8, 200.f).Reach(3.5f, 2.6f).Clip("Walk"));
 			T.push_back(FBuild(E::WagtailLeap, "wagtail_leap", "WhiteWagtail", F::Singers, M::Still)
-				.At(Feed, H(EHabitat::Beach) | H(EHabitat::Street) | H(EHabitat::Meadow)).Need(NeedGround)
+				.At(Feed, H(EHabitat::Beach) | H(EHabitat::Street) | H(EHabitat::Meadow) | Stream).Need(NeedGround)
 				.Days(100.f, 280.f).Len(1.5f, 2.f, 1).Often(1.5f, 5, 400.f).Room(0.5f).Clip("Takeoff"));
 			T.push_back(FBuild(E::WaxwingGulp, "waxwing_gulp", "Waxwing", F::Singers, M::Still).At(Sit | A(EAct::Peck), Twigs).Need(NeedFeeding)
 				.Days(290.f, 100.f).Len(4.f, 7.f, 4).Often(2.f, 6, 300.f).Base(EAct::Peck).Clip("Peck"));
@@ -417,14 +425,17 @@ namespace LyudBirds
 	{
 		float BestD = R;
 		bool bFound = false;
-		for (const V3& Wt : Waters)
+		for (const std::vector<V3>* List : { &Waters, &Pools })
 		{
-			const float D = (Wt - P).Len2D();
-			if (D < BestD && D > 6.f)
+			for (const V3& Wt : *List)
 			{
-				BestD = D;
-				Out = Wt;
-				bFound = true;
+				const float D = (Wt - P).Len2D();
+				if (D < BestD && D > 6.f)
+				{
+					BestD = D;
+					Out = Wt;
+					bFound = true;
+				}
 			}
 		}
 		if (bFound)
@@ -582,6 +593,10 @@ namespace LyudBirds
 			{
 				const float A = B.Yaw + (HabitDetail::Dice(Seed) - 0.5f) * 2.4f, L = D.Reach * (0.45f + 0.55f * HabitDetail::Dice(Seed));
 				V3 To = B.Pos + V3(std::cos(A), std::sin(A), 0.f) * L;
+				if (!HabitDetail::OnBank(W, B, To))
+				{
+					continue;
+				}
 				if (GroundAt(W, B.Pos, To.X, To.Y, To.Z) && Clear(W, B.Pos + V3(0.f, 0.f, 0.1f), To + V3(0.f, 0.f, 0.1f)))
 				{
 					R.To = To;
@@ -727,11 +742,19 @@ namespace LyudBirds
 				const float C = std::cos(Turn[Try]), Sn = std::sin(Turn[Try]);
 				V3 Exit = To + V3(In.X * C - In.Y * Sn, In.X * Sn + In.Y * C, 0.f);
 				Exit.Z = B.Pos.Z;
-				if (Exit.Z < std::max(W.TopZ(Exit.X, Exit.Y), W.SeaZ) + 1.5f)
+				const float Over = std::max(W.TopZ(Exit.X, Exit.Y), W.SeaZ) + 1.5f;
+				if (Exit.Z < Over)
 				{
-					continue;
+					// the far side is higher (the brook runs down a slope under trees): out over it, if that is no great climb
+					if (!(D.Needs & NeedWater) || Over + 2.5f - Exit.Z > 15.f)
+					{
+						continue;
+					}
+					Exit.Z = Over + 2.5f;
 				}
-				if (Clear(W, B.Pos, To + V3(0.f, 0.f, 0.3f)) && Clear(W, To + V3(0.f, 0.f, 0.3f), Exit))
+				// (a pool lies lower than the ground's grid has it there: the way is looked along to a point over both)
+				const V3 Low(To.X, To.Y, std::max(To.Z, W.GroundZ(To.X, To.Y)) + 0.3f);
+				if (Clear(W, B.Pos, Low) && Clear(W, Low, Exit))
 				{
 					R.To = To;
 					R.Exit = Exit;
@@ -1324,6 +1347,10 @@ namespace LyudBirds
 							{
 								continue;
 							}
+							if (!HabitDetail::OnBank(W, B, To))
+							{
+								continue;
+							}
 							if (GroundAt(W, B.Pos, To.X, To.Y, To.Z) && Clear(W, B.Pos + V3(0.f, 0.f, 0.1f), To + V3(0.f, 0.f, 0.1f)))
 							{
 								R.To = To;
@@ -1424,7 +1451,16 @@ namespace LyudBirds
 			U = HabitDetail::Clamp(U, 0.f, 1.f);
 			const float L0 = 2.f * (U - 0.5f) * (U - 1.f), L1 = -4.f * U * (U - 1.f), L2 = 2.f * U * (U - 0.5f);
 			V3 P = R.From * L0 + R.To * L1 + R.Exit * L2;
-			P.Z = std::max(P.Z, std::max(W.GroundZ(P.X, P.Y), W.SeaZ) + 0.04f);
+			float Floor = std::max(W.GroundZ(P.X, P.Y), W.SeaZ) + 0.04f;
+			if (D.Needs & NeedWater)
+			{
+				// a pool lies in the brook's cut, narrower than the ground's grid knows: at the water itself the floor is
+				// the water, and the grid's ground again a few metres to either side (and a way out higher than the way
+				// in must not pull the curve's lowest point under the water)
+				const float Off = (P - R.To).Len2D();
+				Floor = Floor > R.To.Z ? HabitDetail::Lerp(R.To.Z, Floor, HabitDetail::Smooth((Off - 1.5f) / 4.f)) : (Off < 6.f ? R.To.Z : Floor);
+			}
+			P.Z = std::max(P.Z, Floor);
 			MoveTo(P);
 			if (R.Beat == 0 && U >= 0.5f)
 			{

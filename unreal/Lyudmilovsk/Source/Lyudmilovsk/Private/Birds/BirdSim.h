@@ -429,6 +429,8 @@ namespace LyudBirds
 		FNesting* Nesting() const { return Nest.get(); }
 		/** The species' signature behaviours (BirdHabit.h). */
 		FHabits* Habits() const { return Hab.get(); }
+		/** P kept on the patch of B's site where birds keep to it (the brook's edges, its mouth: never into the water); P itself elsewhere. */
+		V3 KeptOnPatch(const FBird& B, const V3& P) const;
 		/** Turns the corvids' minds on or off while running (off: their items go, they live like the other birds; A/B). */
 		void SetCorvids(bool bOn);
 		/** One calm bird on the ground at P that keeps to that spot (tests, tutorials); returns its id. */
