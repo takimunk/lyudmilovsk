@@ -413,6 +413,21 @@ at whoever comes off a cabin, speaks to the hall at a wind stop. T at the barist
 (`line.transport.barista.order.N`) and works the counter. A shut hall at night: E at the attendant's empty desk rings the
 bell (station_chime), nobody comes, the station opens at 5:45 (`transport.hall.closed_note`).
 
+## Cabin life: the people aboard (2026-11-21)
+
+The station life's riders aboard a cabin near the player (`ULyudTransportSubsystem::DrawLifeRiders`) each have an act for the
+ride (`CabinAct` in `Private/Transport/StationLife.cpp`, tested by `tools/transportsim/run.sh town`), by their age, how many
+ride, the hour and the weather (fog: visibility under 1.5 km; rain over 0.1 mm/h):
+- **at the glass** (standing at the side window, facing out): a child nearly always, fog or rain or not (their nose to it);
+  the young often; grown-ups for the bay on a clear day, few in fog, in the dark or in a full cabin. At most two at the
+  glass, one each side, the children first;
+- **reading**: the old most, in the morning, on a grey ride;
+- else sitting.
+In the player's cabin someone says a word every 30-60 s (`line.transport.ride.<sea|any|fog|rain|night|kid>.N`; the child at
+the glass says the "kid" ones) and a neighbour answers 3.5 s later (`line.transport.ride.reply.N`). Only the station life's
+riders do this; the town's own people riding (RiderPose) sit as before. Children among the riders are few (the pupils'
+trips): more children aboard needs family trips in tools/station_life.py.
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a

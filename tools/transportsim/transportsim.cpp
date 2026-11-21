@@ -435,6 +435,44 @@ static void HallMoods(const FStationLife& L)
 		Queue, KidsAtWindows, Seated, Reading, (Wet - Dry) / 200.f, Kids, Old);
 }
 
+// the cabins' life (docs/transport.md "Cabin life"): who stands at the glass, who reads, the words aboard
+static void CabinLife()
+{
+	FCabinMood Clear;
+	Clear.Hour = 11.f;
+	FCabinMood Fog = Clear;
+	Fog.bFog = true;
+	FCabinMood Night;
+	Night.Hour = 22.f;
+	auto Share = [](int Age, int Aboard, const FCabinMood& M, ECabinAct A)
+	{
+		int N = 0;
+		for (int I = 0; I < 200; I++)
+		{
+			N += CabinAct(Age, Aboard, M, (I + 0.5f) / 200.f) == A ? 1 : 0;
+		}
+		return N / 200.f;
+	};
+	CHECK(Share(8, 2, Clear, ECabinAct::Window) > 0.8f, "a child not at the glass on a clear day");
+	CHECK(Share(8, 2, Fog, ECabinAct::Window) > 0.8f, "a child not at the glass in the fog");
+	CHECK(Share(35, 2, Clear, ECabinAct::Window) > Share(35, 2, Fog, ECabinAct::Window) * 2.f, "the fog keeps as many grown-ups at the glass");
+	CHECK(Share(35, 2, Night, ECabinAct::Window) < Share(35, 2, Clear, ECabinAct::Window), "as many at the dark glass as at the bay");
+	CHECK(Share(70, 2, Clear, ECabinAct::Read) > Share(30, 2, Clear, ECabinAct::Read), "the young read more than the old");
+	// a full cabin: at most two at the glass, the children first
+	std::vector<ECabinAct> Acts;
+	CabinActs({ 9, 7, 30, 16 }, { 0.1f, 0.2f, 0.01f, 0.05f }, Clear, Acts);
+	int Glass = 0;
+	for (ECabinAct A : Acts)
+	{
+		Glass += A == ECabinAct::Window ? 1 : 0;
+	}
+	CHECK(Glass == 2 && Acts[0] == ECabinAct::Window && Acts[1] == ECabinAct::Window, "a full cabin: %d at the glass, the children %d %d", Glass, (int)Acts[0], (int)Acts[1]);
+	CHECK(std::string(CabinBark(Fog, false, 0.9f)) == "fog" && std::string(CabinBark(Clear, true, 0.1f)) == "kid", "the words aboard ignore the fog or the child");
+	std::printf("cabin life: child at the glass %.0f%% (fog %.0f%%), adult %.0f%% clear / %.0f%% fog / %.0f%% night, old reading %.0f%%\n",
+		100.f * Share(8, 2, Clear, ECabinAct::Window), 100.f * Share(8, 2, Fog, ECabinAct::Window), 100.f * Share(35, 2, Clear, ECabinAct::Window),
+		100.f * Share(35, 2, Fog, ECabinAct::Window), 100.f * Share(35, 2, Night, ECabinAct::Window), 100.f * Share(70, 2, Clear, ECabinAct::Read));
+}
+
 static int Town()
 {
 	const std::string Life = ReadFile("unreal/Lyudmilovsk/Content/Transport/station_life.json");
@@ -501,6 +539,7 @@ static int Town()
 		CHECK(!M.bWindHold, "still stopped after 400 s under 12 m/s");
 	}
 	HallMoods(L);
+	CabinLife();
 	std::printf(Fails ? "%d FAILED\n" : "all ok\n", Fails);
 	return Fails ? 1 : 0;
 }
