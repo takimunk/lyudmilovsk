@@ -523,6 +523,22 @@ The windows shut behind him when he walks into another plot or starts over (`FMo
 lamps); not saved. The windows are not drawn open (no moving sash yet). Developer mode: `interiors.window_nearest`.
 Checked in citysim ("small things that answer a touch").
 
+### Things to open and pick up
+
+The furnished homes answer more than a sit: a **wardrobe** (`what=wardrobe`, act `open_wardrobe`: what hangs inside by the
+weather, a cold day finds the winter coat at the front) and a **kitchen cupboard** (`what=cupboard`, `open_cupboard`: jars,
+the holiday's hidden sweets, the morning's coffee) open on E; a **kettle** goes on (`what=kettle`, `put_kettle`: five
+minutes, a tea once a day) where the home had none; each home's **photo** on the bedside table is picked up (its first
+line: what it shows) and turned over (the second: what is written on the back); a **note** left on the kitchen table
+(`what=note`, `"rotate": "daily"`) is the resident's word of the day, another one tomorrow. Content
+`tools/city/content/x_home_touch.json` (+ `strings/x_home_touch.json`): generic acts by `what`, the photos and notes by id
+rule per home (`<plot>/<prefix>_photo`, `_note`). Things from `blender/city/buildings/_homekit.py` (`wardrobe_thing`,
+`cupboard_thing`, `kettle` with its mesh, `photo_frame` with a small standing frame, `note_left` with a folded paper),
+placed in four homes so far: Holm (P-T1H2, cobogo_house), Lev Markovich (P-T4H1, pilotis_curve_slab, his new red kettle),
+Colette Bauer (P-SERPENTINE, serpentine_slab), Priya Tulegenova (P-UNITE, unite_block; her wardrobe keeps its old
+"store" board). Reach audit clean; citysim "things to open and pick up in the homes". The Mac reimports the four types
+(the frames, notes and the kettle are new meshes).
+
 ### Sitting and lying
 
 What is a real pose and what is a stand-in:

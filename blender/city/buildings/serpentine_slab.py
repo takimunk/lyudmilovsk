@@ -26,6 +26,7 @@ import random
 import dress_kit as dk
 import furn_int3 as fu
 import interior_kit as kit
+import _homekit as hk
 from citykit import (box, offset_polyline, band, extrude_profile, Frame, Mesh, DOOR_W, DOOR_H)
 import geom
 
@@ -798,11 +799,13 @@ def _bauer_flat(B, FP, BP, GP, ctx, zs):
     # ---- kitchen
     x, y = at(4.4, v1)
     kit.kitchen_unit(B, x, y, Zf, S, modules="cupboard,sink,stove,fridge", wall_cupboards=False)
+    hk.cupboard_thing(B, "bauer_cupboard", x, y, S, z=Zf, modules="cupboard,sink,stove,fridge", k=0)
     B.thing("bauer_sink", "machine", _p3(F, 4.1, v1 - 0.25, Zf + 1.0), S, what="sink")
     B.thing("bauer_stove", "machine", _p3(F, 4.7, v1 - 0.25, Zf + 1.0), S, what="stove")
     x, y = at(6.5, 10.0)
     tb = kit.table(B, x, y, Zf, N, w=0.8, d=0.8)
     kit.samovar(B, x, y, tb["top"], N)
+    hk.note_left(B, "bauer_note", *at(6.5 - 0.25, 10.0 + 0.25), tb["top"])
     B.thing("bauer_samovar", "machine", (x, y, Zf + 1.05), N, what="samovar")
     xa, ya = at(5.75, 10.0)
     kit.chair(B, xa, ya, Zf, E, kind="wood")
@@ -844,8 +847,10 @@ def _bauer_flat(B, FP, BP, GP, ctx, zs):
     B.thing("bauer_bed", "bed", (x, y, Zf + 0.5), S, rest="private", height=0.5)
     x, y = at(1.55, 7.45)
     kit.bedside_table(B, x, y, Zf, S, lamp=True)
+    hk.photo_frame(B, "bauer_photo", x, y, S, z=Zf)
     x, y = at(0.2, 3.6)
     kit.wardrobe(B, x, y, Zf, E, w=1.2)
+    hk.wardrobe_thing(B, "bauer_wardrobe", x, y, E, z=Zf)
     x, y = at(1.5, 1.4)
     kit.loom(B, x, y, Zf, N)
     B.thing("bauer_net", "craft", (x, y, Zf + 1.0), N, what="net_mending")

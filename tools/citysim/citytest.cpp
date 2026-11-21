@@ -1987,6 +1987,7 @@ static void JobChecks(const std::string& Path)
 }
 
 #include "cupchecks.h"
+#include "homechecks.h"
 #include "rewardchecks.h"
 #include "rentalchecks.h"
 
@@ -2208,6 +2209,7 @@ int main(int Argc, char** Argv)
 	RewardChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	PhotoContestChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	RentalChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	HomeTouchChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;
 }
