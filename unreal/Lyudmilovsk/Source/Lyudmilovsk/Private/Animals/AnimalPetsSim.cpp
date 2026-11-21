@@ -247,6 +247,17 @@ namespace LyudAnimals
 			}
 			return true;
 		}
+		if (A.Moment != EMoment::None)
+		{
+			// the hero's dog at one of her moments (MomentMove steers her); a fright, his hand or a walk ends it
+			if (A.Pet != EPet::None || A.Friend != EFriend::None || A.Act == EAct::Flee || A.Act == EAct::Chase)
+			{
+				MomentEnd(A);
+				return false;
+			}
+			A.Tired = std::min(A.Tired, 0.6f);
+			return true;
+		}
 		if (A.Do != ECatDo::None)
 		{
 			// with the townsfolk (CatDoMove steers it); a fright, the player's hand or a new home ends it
@@ -389,6 +400,10 @@ namespace LyudAnimals
 			}
 			A.Pos.Z = ZAt(A);
 			return true;
+		}
+		if (A.Moment != EMoment::None && A.Pet == EPet::None && A.Friend == EFriend::None && A.Act != EAct::Flee && A.Act != EAct::Chase)
+		{
+			return MomentMove(A, Dt);
 		}
 		if (A.Do != ECatDo::None && A.Pet == EPet::None && A.Friend == EFriend::None && A.Act != EAct::Flee && A.Act != EAct::Climb)
 		{
@@ -628,6 +643,424 @@ namespace LyudAnimals
 		}
 		HedgehogStep(Dt);
 		StallStep(Dt);
+		MomentStep(Dt);
+	}
+
+	// --- the hero's dog: her moments with him ---------------------------------------------------------
+
+	const char* MomentName(EMoment M)
+	{
+		static const char* N[] = { "None", "WaitLate", "Welcome", "Fetch", "Bring", "Give", "Comfort", "Shelter", "Spot" };
+		static_assert(sizeof(N) / sizeof(N[0]) == (size_t)EMoment::Num, "MomentName");
+		return (int)M < (int)EMoment::Num ? N[(int)M] : "?";
+	}
+
+	static constexpr float WaitFar = 60.f;          // m from her door: farther than that he is "not home"
+	static constexpr float WelcomeNear = 25.f;      // m at which she sees him coming
+	static constexpr float GiftNear = 12.f, GiftOff = 7.f;
+	static constexpr float ComfortNear = 25.f, ComfortStill = 40.f;
+
+	int FWorld::GiftNow() const
+	{
+		static const int BySeason[4] = { Mitten, Stick, Shell, Cone };
+		const int Day = (int)(Time / 86400.0);
+		return Day % 5 == 4 ? (int)Ball : BySeason[SeasonOf(Month)];
+	}
+
+	int FWorld::FavouriteSpot(int Dog) const
+	{
+		if (Dog < 0 || Dog >= (int)Animals.size())
+		{
+			return -1;
+		}
+		const FAnimal& A = Animals[Dog];
+		const int Season = SeasonOf(Month);
+		int Best = -1;
+		float BestScore = -1e9f;
+		for (size_t I = 0; I < Places.size(); I++)
+		{
+			const FPlace& P = Places[I];
+			const float D = (P.Pos - A.HomePos).Len2D();
+			if (D > std::max(A.Range, 60.f))
+			{
+				continue;
+			}
+			float Like = -1.f;
+			if (Season == 0)
+			{
+				Like = P.Kind == EPlace::WarmHatch || P.Kind == EPlace::Basement ? 1.f + P.Warm : -1.f;
+			}
+			else if (Season == 2)
+			{
+				Like = P.Kind == EPlace::Bench || P.Kind == EPlace::Lookout || P.Kind == EPlace::Beach ? 1.f : -1.f;
+			}
+			else
+			{
+				Like = P.Kind == EPlace::SunnyWall ? 1.f + P.Sun : -1.f;
+			}
+			const float Score = Like - D * 0.005f;
+			if (Like > 0.f && Score > BestScore)
+			{
+				Best = (int)I;
+				BestScore = Score;
+			}
+		}
+		return Best;
+	}
+
+	void FWorld::MomentEnd(FAnimal& A)
+	{
+		A.Moment = EMoment::None;
+		A.MomentTime = 0.f;
+		A.bMomentThere = false;
+		A.Carry = -1;
+		A.Lean = 0.f;
+		A.bLook = false;
+		A.Path.clear();
+	}
+
+	void FWorld::MomentStep(float Dt)
+	{
+		const bool bLow = Player.bPresent && (Player.bSeated || Player.bCrouched) && Player.Vel.Len2D() < 0.2f;
+		HeroStill = bLow ? HeroStill + Dt : 0.f;
+		if (HeroDog < 0 || HeroDog >= (int)Animals.size())
+		{
+			return;
+		}
+		FAnimal& A = Animals[HeroDog];
+		A.NoWait = std::max(0.f, A.NoWait - Dt);
+		A.NoGift = std::max(0.f, A.NoGift - Dt);
+		A.NoComfort = std::max(0.f, A.NoComfort - Dt);
+		A.NoSpot = std::max(0.f, A.NoSpot - Dt);
+		if (A.Moment != EMoment::None || A.Kind != EKind::Dog || A.Pet != EPet::None || A.Friend != EFriend::None || A.Bond < FriendBond
+			|| A.Id == Walker || A.Act == EAct::Flee || A.Act == EAct::Chase || A.Act == EAct::Swim || A.Act == EAct::Play || A.Act == EAct::Eat)
+		{
+			return;
+		}
+		auto Begin = [&](EMoment M)
+		{
+			A.Moment = M;
+			A.MomentTime = 0.f;
+			A.bMomentThere = false;
+			A.Path.clear();
+			A.Repath = 0.f;
+		};
+		const float ToHero = Player.bPresent ? (Player.Feet - A.Pos).Len2D() : 1e9f;
+		const float HeroFromHome = Player.bPresent ? (Player.Feet - A.HomePos).Len2D() : 1e9f;
+		const bool bDay = Hour > Sunrise + 0.5f && Hour < Sunset;
+		const bool bLate = Hour > Sunset + 0.5f || Hour < 1.f;
+		const bool bHeroNear = ToHero < ComfortNear && !Player.bSwimming;
+		if (bLate && HeroFromHome > WaitFar && A.NoWait <= 0.f)
+		{
+			// he is not back and it is dark: she waits up for him at the door
+			Begin(EMoment::WaitLate);
+			A.Waited = 0.f;
+			A.MomentPos = FreeSpot(A.HomePos, 1.2f, A.Rng);
+			Emit(EEvent::WaitLate, A);
+		}
+		else if (bHeroNear && A.NoComfort <= 0.f && (Weather.bThunder || HeroStill > ComfortStill))
+		{
+			Begin(EMoment::Comfort);
+			if (Weather.bThunder)
+			{
+				Emit(EEvent::Whine, A);
+			}
+		}
+		else if (bDay && !Weather.bRain && ToHero < GiftNear && A.NoGift <= 0.f && A.Bond >= 0.7f && Player.Vel.Len2D() < 2.5f
+			&& !Player.bSwimming && A.Act != EAct::Sleep)
+		{
+			// something for him: she goes off a little way to find it
+			Begin(EMoment::Fetch);
+			const V3 Away = (A.Pos - Player.Feet).Flat();
+			const float Yaw = (Away.Len2D() > 0.1f ? PtYaw(Away) : A.Yaw) + (Rand(A.Rng) - 0.5f) * 1.6f;
+			A.MomentPos = FreeSpot(A.Pos + PtDir(Yaw) * GiftOff, 2.f, A.Rng);
+		}
+		else if (Weather.bRain && ToHero > 15.f && (A.Pos - A.HomePos).Len2D() > 3.f && A.Act != EAct::Sleep)
+		{
+			Begin(EMoment::Shelter);
+			A.MomentPos = FreeSpot(A.HomePos, 1.f, A.Rng);
+		}
+		else if (bDay && !Weather.bRain && ToHero > 20.f && A.NoSpot <= 0.f && A.Act != EAct::Sleep)
+		{
+			const int Spot = FavouriteSpot(A.Id);
+			if (Spot >= 0 && (Places[Spot].Pos - A.Pos).Len2D() > 3.f)
+			{
+				Begin(EMoment::Spot);
+				A.MomentPos = FreeSpot(Places[Spot].Pos, 1.f, A.Rng);
+			}
+			else
+			{
+				A.NoSpot = 600.f;
+			}
+		}
+	}
+
+	bool FWorld::MomentMove(FAnimal& A, float Dt)
+	{
+		A.MomentTime += Dt;
+		auto Become = [&](EAct Act)
+		{
+			if (A.Act != Act)
+			{
+				SetAct(A, Act, 1e9f);
+			}
+		};
+		auto Stay = [&](const V3& Face)
+		{
+			A.Speed = 0.f;
+			A.Vel = V3();
+			const V3 D = (Face - A.Pos).Flat();
+			if (D.Len2D() > 0.05f)
+			{
+				const float Off = PtWrap(PtYaw(D) - A.Yaw);
+				A.Yaw = PtWrap(A.Yaw + PtClamp(Off, -3.f * Dt, 3.f * Dt));
+			}
+		};
+		auto Go = [&](const V3& To, EAct Gait)
+		{
+			bool bNoWay = false;
+			const V3 Want = Route(A, To, Dt, bNoWay);
+			if (bNoWay)
+			{
+				A.Speed = 0.f;
+				A.Vel = V3();
+				return false;
+			}
+			Become(Gait);
+			Steer(A, Want, GaitSpeed(A, Gait), Dt);
+			return true;
+		};
+		auto Done = [&](const char* Note, EAct Then, float Len)
+		{
+			if (Note)
+			{
+				MomentNotes.push_back(Note);
+			}
+			MomentEnd(A);
+			A.Speed = 0.f;
+			A.Vel = V3();
+			SetAct(A, Then, Len);
+		};
+		const float ToHero = Player.bPresent ? (Player.Feet - A.Pos).Len2D() : 1e9f;
+		const V3 HeroEye = Player.Eye;
+		switch (A.Moment)
+		{
+		case EMoment::WaitLate:
+		{
+			if (ToHero < WelcomeNear)
+			{
+				// there he is
+				A.Moment = EMoment::Welcome;
+				A.MomentTime = 0.f;
+				A.bMomentThere = false;
+				A.NoWait = 6.f * 3600.f;
+				Emit(EEvent::Welcome, A);
+				Emit(EEvent::BarkHappy, A);
+				if (A.Waited > 60.f)
+				{
+					MomentNotes.push_back("wait");
+				}
+				break;
+			}
+			if (Hour >= 1.f && Hour < Sunrise)
+			{
+				// past one in the morning: she gives it up and sleeps on the step
+				A.NoWait = 4.f * 3600.f;
+				Done(nullptr, EAct::Sleep, 3600.f);
+				break;
+			}
+			if (!A.bMomentThere)
+			{
+				if ((A.MomentPos - A.Pos).Len2D() < 0.5f || A.MomentTime > 120.f || !Go(A.MomentPos, EAct::Trot))
+				{
+					A.bMomentThere = true;
+				}
+				break;
+			}
+			// she sits, then lies with her head up, looking the way he went; a whine now and then
+			A.Waited += Dt;
+			Become(A.Waited > 240.f ? EAct::Rest : EAct::Sit);
+			const V3 Way = bPlayerOk ? PlayerLastOk : (Player.bPresent ? Player.Feet : A.Pos + PtDir(A.Yaw));
+			Stay(Way);
+			A.Look = Way + V3(0.f, 0.f, 1.f);
+			A.bLook = true;
+			A.CallTimer -= Dt;
+			if (A.CallTimer <= 0.f)
+			{
+				A.CallTimer = 60.f + 120.f * Rand(A.Rng);
+				Emit(EEvent::Whine, A);
+			}
+			break;
+		}
+		case EMoment::Welcome:
+		{
+			A.Look = HeroEye;
+			A.bLook = true;
+			if (!Player.bPresent || A.MomentTime > 40.f)
+			{
+				Done(nullptr, EAct::Stand, 2.f);
+				break;
+			}
+			if (!A.bMomentThere)
+			{
+				if (ToHero < 1.4f || !Go(Player.Feet, EAct::Run))
+				{
+					A.bMomentThere = true;
+					A.MomentTime = 0.f;
+				}
+				break;
+			}
+			// all of her wagging in front of him
+			Become(EAct::Greet);
+			Stay(Player.Feet);
+			if (A.MomentTime > 4.f)
+			{
+				Done(nullptr, EAct::Sit, 6.f);
+			}
+			break;
+		}
+		case EMoment::Fetch:
+		{
+			A.bLook = false;
+			if (ToHero > 45.f)
+			{
+				Done(nullptr, EAct::Stand, 2.f);
+				break;
+			}
+			if (!A.bMomentThere)
+			{
+				if ((A.MomentPos - A.Pos).Len2D() < 0.6f || A.MomentTime > 20.f || !Go(A.MomentPos, EAct::Trot))
+				{
+					A.bMomentThere = true;
+					A.MomentTime = 0.f;
+				}
+				break;
+			}
+			Become(EAct::Sniff);
+			A.Speed = 0.f;
+			A.Vel = V3();
+			if (A.MomentTime > 3.5f)
+			{
+				A.Carry = GiftNow();
+				A.Moment = EMoment::Bring;
+				A.MomentTime = 0.f;
+				A.bMomentThere = false;
+			}
+			break;
+		}
+		case EMoment::Bring:
+		{
+			A.Look = HeroEye;
+			A.bLook = true;
+			if (!Player.bPresent || ToHero > 45.f || A.MomentTime > 60.f)
+			{
+				// he went off: she drops it where she is
+				Done(nullptr, EAct::Stand, 2.f);
+				break;
+			}
+			if (ToHero < 1.1f || !Go(Player.Feet, EAct::Trot))
+			{
+				static const char* Notes[GiftNum] = { "gift_stick", "gift_cone", "gift_shell", "gift_ball", "gift_mitten" };
+				const int What = A.Carry >= 0 && A.Carry < GiftNum ? A.Carry : (int)Stick;
+				Emit(EEvent::Gift, A, What);
+				MomentNotes.push_back(Notes[What]);
+				A.Carry = -1;
+				A.NoGift = 20.f * 3600.f;
+				A.Moment = EMoment::Give;
+				A.MomentTime = 0.f;
+			}
+			break;
+		}
+		case EMoment::Give:
+			Become(EAct::Sit);
+			Stay(Player.Feet);
+			A.Look = HeroEye;
+			A.bLook = true;
+			if (A.MomentTime > 5.f || ToHero > 6.f)
+			{
+				Done(nullptr, EAct::Sit, 4.f);
+			}
+			break;
+		case EMoment::Comfort:
+		{
+			A.Look = HeroEye;
+			A.bLook = true;
+			if (!Player.bPresent || ToHero > 40.f || A.MomentTime > 150.f)
+			{
+				A.NoComfort = 1200.f;
+				Done(nullptr, EAct::Stand, 2.f);
+				break;
+			}
+			if (!A.bMomentThere)
+			{
+				const V3 Side = Player.Feet + V3(-Player.Facing.Y, Player.Facing.X, 0.f) * 0.55f;
+				if ((Side - A.Pos).Len2D() < 0.35f || !Go(Side, EAct::Walk))
+				{
+					A.bMomentThere = true;
+					A.MomentTime = 0.f;
+					Emit(EEvent::Comfort, A);
+					MomentNotes.push_back(Weather.bThunder ? "thunder" : "comfort");
+				}
+				break;
+			}
+			// pressed against him: sitting, then lying with her head on his knee
+			Become(A.MomentTime > 12.f ? EAct::Rest : EAct::Sit);
+			Stay(Player.Feet + Player.Facing);
+			// (she leans into him: FriendStep eases Lean to 1 while she is here)
+			if (ToHero > 2.5f || (A.MomentTime > 15.f && !Weather.bThunder && HeroStill <= 0.f))
+			{
+				A.NoComfort = 1200.f;
+				Done(nullptr, EAct::Sit, 3.f);
+			}
+			break;
+		}
+		case EMoment::Shelter:
+		{
+			A.bLook = false;
+			if (!A.bMomentThere)
+			{
+				if ((A.MomentPos - A.Pos).Len2D() < 0.6f || A.MomentTime > 120.f || !Go(A.MomentPos, EAct::Trot))
+				{
+					A.bMomentThere = true;
+					A.MomentTime = 0.f;
+					Emit(EEvent::Shelter, A);
+					MomentNotes.push_back("shelter");
+				}
+				break;
+			}
+			// under the porch, head on her paws, watching the rain
+			Become(EAct::Rest);
+			A.Speed = 0.f;
+			A.Vel = V3();
+			if (!Weather.bRain || ToHero < 8.f || A.MomentTime > 1800.f)
+			{
+				Done(nullptr, EAct::Stand, 2.f);
+			}
+			break;
+		}
+		case EMoment::Spot:
+		{
+			A.bLook = false;
+			if (Weather.bRain || ToHero < 10.f)
+			{
+				Done(nullptr, EAct::Stand, 1.f);     // rain, or he is here: other things come first
+				break;
+			}
+			if ((A.MomentPos - A.Pos).Len2D() < 0.6f || A.MomentTime > 180.f || !Go(A.MomentPos, EAct::Walk))
+			{
+				static const char* Notes[4] = { "spot_winter", "spot_spring", "spot_summer", "spot_autumn" };
+				const bool bThere = (A.MomentPos - A.Pos).Len2D() < 2.f;
+				A.NoSpot = bThere ? 2400.f : 600.f;
+				Done(bThere ? Notes[SeasonOf(Month)] : nullptr, EAct::Rest, bThere ? 900.f : 2.f);
+			}
+			break;
+		}
+		default:
+			MomentEnd(A);
+			break;
+		}
+		A.Pos.Z = ZAt(A);
+		return true;
 	}
 
 	// --- yard cats and the townsfolk ----------------------------------------------------------------

@@ -82,7 +82,8 @@ namespace LyudAnimals
 	{
 		static const char* N[] = { "Notice", "Watch", "Approach", "Flee", "Bark", "Growl", "Whine", "Meow", "Purr", "Hiss", "Pounce",
 			"ChaseStart", "Climb", "Greet", "PlayStart", "BarkHappy", "HandSniff", "HandRefuse", "Stroked", "Enough", "Roll", "Ate", "Befriended",
-			"WalkStart", "WalkEnd", "WaitDoor", "Rejoin", "LapUp", "LapDown", "Tail", "SeeIn", "BegStall", "Scrap", "Shooed" };
+			"WalkStart", "WalkEnd", "WaitDoor", "Rejoin", "LapUp", "LapDown", "Tail", "SeeIn", "BegStall", "Scrap", "Shooed",
+			"WaitLate", "Welcome", "Gift", "Comfort", "Shelter" };
 		static_assert(sizeof(N) / sizeof(N[0]) == (size_t)EEvent::Num, "EventName");
 		return (int)E < (int)EEvent::Num ? N[(int)E] : "?";
 	}

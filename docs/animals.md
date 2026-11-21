@@ -289,6 +289,24 @@ A fright, the hero's hand or a dog ends any of these at once (the cat's own refl
 counts them. Not seen in the engine yet: the stall's `front` (1.9 m) and its yaw (the fishmonger slot's) want a look
 at the market.
 
+## Maru's moments
+
+The hero's dog (`FWorld::HeroDog`, set by `ULyudPets` to the dog named `animal.maru.name`) has moments of her own with
+him once she is his friend (`FAnimal::Moment`, `EMoment`, in `AnimalPetsSim.cpp`; she is not on a walk with him then):
+
+| Moment | When | What |
+|---|---|---|
+| Waits up | half an hour after sunset till one in the morning, he is more than 60 m from her door | goes to the door, sits, later lies awake looking the way he went, whines now and then (`WaitLate`); he comes within 25 m: she runs to him barking and greets him (`Welcome`); once an evening |
+| A gift | by day, dry, he is within 12 m and not running, bond 0.7 and over, once in 20 hours | trots 7 m off, sniffs about, carries a thing back (`FAnimal::Carry`) and lays it at his feet (`Gift`, Other = `FWorld::EGift`): a stick in spring, a shell in summer, a cone in autumn, a mitten in winter, an old ball every fifth day |
+| Comfort | a thunderstorm with him within 25 m, or he has sat or crouched still for 40 s | comes to his side, sits pressed against him, then lies with her head up (`Comfort`, `Lean` 1) |
+| Shelter | rain and he is not near | lies under the porch at her door till it stops or he comes (`Shelter`) |
+| Her spot | by day, dry, he is away | `FavouriteSpot`: the warm hatch in winter, a sunny wall in spring and autumn, a bench or lookout in summer; she walks there and lies down |
+
+Each writes a line into the journal (`FWorld::MomentNotes`, keys `journal.maru.*`, each kind once a day). A fright,
+his hand held out or a walk begun ends a moment at once. Checked by `ANIM_ONLY=pets tools/animalsim/run.sh test`.
+Not there yet: the thing she carries is not drawn and is not an item, thunder is taken from a downpour
+(`PrecipRate` over 4), and none of the engine side has been compiled.
+
 ## Checks
 
 - `tools/animalsim/run.sh test`: a dog chases a cat up a tree and barks, the cat comes down later; a bold cat without a
