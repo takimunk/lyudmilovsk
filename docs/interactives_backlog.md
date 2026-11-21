@@ -447,7 +447,7 @@ walk tests in two buildings with lifts.
 
 ## 32. Children's games in the yards
 
-`[ ]` **Brief (Fable 5.2):** Children of the town play together after school: hopscotch on chalked squares, a skipping
+`[~] yard-games 2026-11-21 (branch ready, docs/yard_games.md; awaits Mac build, shots, bench)` **Brief (Fable 5.2):** Children of the town play together after school: hopscotch on chalked squares, a skipping
 rope, hide-and-seek in the yards (one counts at a wall, others hide behind the town's own cover; the hero can join and be
 found or find), football with a ball that rolls (physics, a code-built ball), tag. A small group behaviour in the people
 sim (a game leader, roles, a play area from the city plan's yard spots), gestures by the hand-goal IK layer. Done: peoplesim

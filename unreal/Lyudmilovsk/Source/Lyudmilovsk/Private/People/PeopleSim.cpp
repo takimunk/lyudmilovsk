@@ -148,7 +148,9 @@ namespace LyudPeople
 		// the winter's places (tools/winter_play/winter_play.py: the rink, the banya, the ice hole), after the town's (their
 		// ways on start on the town's ground); the residents' life without the town has them too
 		const std::string Spots = bTownOk ? ReadFile(Dir + "/winter_spots.json") : std::string();
-		const bool bSpotsOk = Spots.empty() || LoadSpots(Spots);
+		// and the yards the children play in (tools/yard/yard_areas.py, docs/yard_games.md), in the same format
+		const std::string Yards = bTownOk ? ReadFile(Dir + "/yard_spots.json") : std::string();
+		const bool bSpotsOk = (Spots.empty() || LoadSpots(Spots)) && (Yards.empty() || LoadSpots(Yards));
 		bLoading = false;
 		if (!bSpotsOk)
 		{
