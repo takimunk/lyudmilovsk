@@ -164,8 +164,9 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
   (the building modules' things), no ticking sound (no file), the lamp's fitting does not change, only its light
 - [~] Night state of public rooms (closed: chairs on tables, a single lamp, the cleaner at work 7-10). 2026-11-13: by data
   (`closed` on a rule or an act, `closed_by` per plot, type or plot kind): the café, both clubs, the library, the market
-  and the store say what is closed instead of refusing (149 things); still open: geometry (chairs really on the tables), the
-  single lamp, the cleaner
+  and the store say what is closed instead of refusing (149 things). 2026-11-21 (item 29, docs/city_night.md): chairs up
+  on the tables, the one lamp left on (lamp kind "closed"), the cleaner's bucket and damp floor, two cleaners and the
+  store's night watchman in town life; still open: Mac build and shots, the market and the school
 - [ ] Seasonal dressing (wet umbrellas by doors on rain days, coats on racks in winter)
 - [ ] Townsfolk use every new seat, table and counter (spots follow the furniture)
 - [ ] New goods with their own icons (needs the paid icon generation to be approved): stationery, toys, records,
