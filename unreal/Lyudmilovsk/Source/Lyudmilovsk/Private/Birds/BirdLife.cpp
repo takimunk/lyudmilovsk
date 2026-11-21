@@ -28,9 +28,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "LyudSave.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Dom/JsonObject.h"
 #include "Misc/FileHelper.h"
 #include "Misc/PackageName.h"
 #include "Misc/Paths.h"
+#include "Serialization/JsonReader.h"
+#include "Serialization/JsonSerializer.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/PlantModel.h"
 #include "Plants/PlantSpecies.h"
@@ -885,6 +888,11 @@ void UBirdLifeSubsystem::DispatchEvents()
 		}
 	}
 	// the species' habits: who listens gets the start, the beats and the end; a habit with a voice sounds on its beats
+	if (PoolsFor != StartCount && S.Habits())
+	{
+		PoolsFor = StartCount;
+		LoadBrookPools();
+	}
 	if (LyudBirds::FHabits* H = S.Habits())
 	{
 		static const FName Whats[] = { TEXT("start"), TEXT("beat"), TEXT("end") };
@@ -927,6 +935,44 @@ FName UBirdLifeSubsystem::HabitOf(int32 Id) const
 		return NAME_None;
 	}
 	return FName(LyudBirds::HabitName((LyudBirds::EHabit)Sim->Birds[Id].Habit));
+}
+
+/** The brook's pools for the swallows to drink from (Content/South/south.json "brook" "water": [x, y, surface z, half
+ *  width] in map metres; docs/south.md): read once for each start of the bird life. */
+void UBirdLifeSubsystem::LoadBrookPools()
+{
+	LyudBirds::FHabits* H = Sim ? Sim->Habits() : nullptr;
+	if (!H)
+	{
+		return;
+	}
+	H->Pools.clear();
+	FString Text;
+	TSharedPtr<FJsonObject> Root;
+	const FString Path = FPaths::ProjectContentDir() / TEXT("South/south.json");
+	if (!FFileHelper::LoadFileToString(Text, *Path) || !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Root) || !Root.IsValid())
+	{
+		return;
+	}
+	const TSharedPtr<FJsonObject>* BrookObj = nullptr;
+	const TArray<TSharedPtr<FJsonValue>>* WaterArr = nullptr;
+	if (!Root->TryGetObjectField(TEXT("brook"), BrookObj) || !BrookObj || !BrookObj->IsValid() || !(*BrookObj)->TryGetArrayField(TEXT("water"), WaterArr) || !WaterArr)
+	{
+		return;
+	}
+	for (const TSharedPtr<FJsonValue>& V : *WaterArr)
+	{
+		const TArray<TSharedPtr<FJsonValue>>* Sample = nullptr;
+		if (V.IsValid() && V->TryGetArray(Sample) && Sample && Sample->Num() >= 4)
+		{
+			const double Z = (*Sample)[2]->AsNumber(), Half = (*Sample)[3]->AsNumber();
+			if (LyudBirds::FHabits::IsPool((float)Z, (float)Half, Sim->MeanSeaZ))
+			{
+				H->Pools.push_back(FromUE(ULyudQuests::Frame().ToWorld(FVector2D((*Sample)[0]->AsNumber(), (*Sample)[1]->AsNumber()), Z * 100.0)));
+			}
+		}
+	}
+	UE_LOG(LogTemp, Display, TEXT("BIRDS brook: %d pools for the swallows"), (int32)H->Pools.size());
 }
 
 void UBirdLifeSubsystem::SetHabitWaters(const TArray<FVector>& Waters)

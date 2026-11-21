@@ -389,6 +389,46 @@ gale stops the line.
   hides an out-of-town worker at its square; the station shows them from their home station), voices.
 - Console: `Transport.Hall [station]` (the hall's people and the day's life in one line).
 
+## Hall moods: who waits where, by the hour and the weather (2026-11-21)
+
+The waiting people of a hall (the station life's riders and the passers-by) pick their places and what they do there by the
+hall's mood (`FHallMood` in `Private/Transport/StationLife.h`, plain C++, tested by `tools/transportsim/run.sh town`):
+the hour, a weekend, rain (PrecipRate over 0.1), the wind warning and the wind stop, whether the buffet's barista is on shift.
+`HallPick` scores every free place out of the player's sight for the person (their age comes with `station_life.json`'s
+riders; a passer-by is 18..78) and takes the best:
+
+- the rush (7:00-9:30, 16:30-19:00): the counter, the railing, standing; the counter's line itself is the front door's
+  (docs/front_door.md: `LineSlots`, `LyudFrontDoor::JoinSpot`), which riders join in the morning, in either rush and at a
+  wind stop (`HallPick` never puts anyone in the line; its queue rule is the same "from the counter back" for the tests);
+- the morning: the seats and the paper rack read (the old most of all); lunch (11:30-14:30) and the evening eat at the
+  cafe's tables, more on a weekend;
+- children (under 16) go to the windows and the diagram and look; teenagers to the windows too;
+- rain: 2..4 more passers-by out of the weather (`HallFiller`), the windows and the counter fuller, words of the rain
+  (`line.transport.wait.rain.N`); the wind stop: tea at the counter, words with the neighbour, the attendant talking to the hall;
+- walking out of a cabin: never a seat or the queue, a look at the window or the diagram on the way.
+
+The staff's routines (`TickStaff`, every 20..45 s): the barista works the counter while anyone waits at it (at once when a
+queue forms), else wipes, looks about, reads in a late quiet hour; the attendant keeps the logbook in a quiet hour, looks up
+at whoever comes off a cabin, speaks to the hall at a wind stop. T at the barista: she takes the order with a word
+(`line.transport.barista.order.N`) and works the counter. A shut hall at night: E at the attendant's empty desk rings the
+bell (station_chime), nobody comes, the station opens at 5:45 (`transport.hall.closed_note`).
+
+## Cabin life: the people aboard (2026-11-21)
+
+The station life's riders aboard a cabin near the player (`ULyudTransportSubsystem::DrawLifeRiders`) each have an act for the
+ride (`CabinAct` in `Private/Transport/StationLife.cpp`, tested by `tools/transportsim/run.sh town`), by their age, how many
+ride, the hour and the weather (fog: visibility under 1.5 km; rain over 0.1 mm/h):
+- **at the glass** (standing at the side window, facing out): a child nearly always, fog or rain or not (their nose to it);
+  the young often; grown-ups for the bay on a clear day, few in fog, in the dark or in a full cabin. At most two at the
+  glass, one each side, the children first;
+- **reading**: the old most, in the morning, on a grey ride;
+- else sitting.
+In the player's cabin someone says a word every 30-60 s (`line.transport.ride.<sea|any|fog|rain|night|kid>.N`; the child at
+the glass says the "kid" ones) and a neighbour answers 3.5 s later (`line.transport.ride.reply.N`). Only the station life's
+riders do this; the town's own people riding (RiderPose) sit as before. Children aboard: the pupils, and the children (7..13)
+of a beach-goer's household going along on the parent's free days that are theirs too (`"group": "family"`, `"with"`: the
+parent; the day's chance is the parent's draw and they wait the parent's minutes in the hall, so they ride together).
+
 ## Assets
 
 - Windows: `optimize.py` reads each model's base colour under every face: dark, dull texels (and the lantern's amber) become a

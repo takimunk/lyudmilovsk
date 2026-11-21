@@ -21,6 +21,8 @@
 #include "Plants/GameCalendar.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
+#include "UI/LyudQuests.h"
+#include "Weather/LyudWeather.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogLyudPets, Log, All);
 
@@ -201,6 +203,73 @@ bool ULyudPets::Load()
 			}
 		}
 	}
+	// the yard cats and the townsfolk: each resident's cat is the free yard cat nearest their door
+	if (Doc->TryGetArrayField(TEXT("friends"), Arr))
+	{
+		for (const TSharedPtr<FJsonValue>& V : *Arr)
+		{
+			const TSharedPtr<FJsonObject> O = V->AsObject();
+			V3 Door;
+			const int32 Person = O ? People->FindPerson(O->GetStringField(TEXT("person"))) : -1;
+			if (Person < 0 || !LyudPetsImpl::ReadV3(O, TEXT("door"), Door))
+			{
+				continue;
+			}
+			int32 Best = -1;
+			float BestD = 120.f;
+			for (const FAnimal& A : Sim->Animals)
+			{
+				const float D = (A.Pos - Door).Len2D();
+				if (A.Kind == LyudAnimals::EKind::Cat && A.Pet == EPet::None && A.Favourite < 0 && D < BestD)
+				{
+					Best = A.Id;
+					BestD = D;
+				}
+			}
+			if (Best >= 0)
+			{
+				Sim->SetFavourite(Best, Person);
+				FCatFriend F;
+				F.Person = Person;
+				F.Animal = Best;
+				F.Door = LyudPetsImpl::ToUE(Door);
+				CatFriends.Add(F);
+			}
+		}
+	}
+	if (Doc->TryGetArrayField(TEXT("stalls"), Arr))
+	{
+		for (const TSharedPtr<FJsonValue>& V : *Arr)
+		{
+			const TSharedPtr<FJsonObject> O = V->AsObject();
+			V3 At;
+			if (LyudPetsImpl::ReadV3(O, TEXT("pos"), At))
+			{
+				FFishStall St;
+				St.Stall = Sim->AddStall(At, (float)O->GetNumberField(TEXT("yaw")), (float)O->GetNumberField(TEXT("front")));
+				St.At = LyudPetsImpl::ToUE(At);
+				FishStalls.Add(St);
+			}
+		}
+	}
+	auto ReadPeople = [&](const TCHAR* Field, TArray<int32>& Out)
+	{
+		const TArray<TSharedPtr<FJsonValue>>* Keys = nullptr;
+		if (Doc->TryGetArrayField(Field, Keys))
+		{
+			for (const TSharedPtr<FJsonValue>& V : *Keys)
+			{
+				const int32 Person = People->FindPerson(V->AsString());
+				if (Person >= 0)
+				{
+					Out.Add(Person);
+				}
+			}
+		}
+	};
+	ReadPeople(TEXT("fishmongers"), Fishmongers);
+	ReadPeople(TEXT("shooers"), Shooers);
+	ReadActs(TEXT("shoo"), ShooActs);
 	// the lady fills the feeders now, not the clock (without her in the town they stay the clock's)
 	Sim->bFeedByPerson = Lady >= 0 && !FeedActs.IsEmpty();
 	HogMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Prop_hedgehog.SM_Prop_hedgehog"), nullptr, LOAD_NoWarn | LOAD_Quiet);
@@ -211,8 +280,9 @@ bool ULyudPets::Load()
 		LeashMat = UMaterialInstanceDynamic::Create(Base, this);
 		LeashMat->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.035f, 0.022f, 0.015f));
 	}
-	UE_LOG(LogLyudPets, Display, TEXT("PETS %d dogs, %d cats, %d hedgehogs, the lady %d (walks %d, rounds %d, hedgehog meshes %d)"), Dogs.Num(), Cats.Num(),
-		(int32)Sim->Hedgehogs.size(), Lady, WalkActs.Num(), FeedActs.Num(), (HogMesh ? 1 : 0) + (HogBall ? 1 : 0));
+	UE_LOG(LogLyudPets, Display, TEXT("PETS %d dogs, %d cats, %d hedgehogs, the lady %d (walks %d, rounds %d, hedgehog meshes %d); yard cats: %d see a resident home, %d fish stalls, %d fishmongers, %d with a broom"),
+		Dogs.Num(), Cats.Num(), (int32)Sim->Hedgehogs.size(), Lady, WalkActs.Num(), FeedActs.Num(), (HogMesh ? 1 : 0) + (HogBall ? 1 : 0),
+		CatFriends.Num(), FishStalls.Num(), Fishmongers.Num(), Shooers.Num());
 	return true;
 }
 
@@ -247,6 +317,12 @@ void ULyudPets::Tick(float DeltaTime)
 	const double Now = World->GetTimeSeconds();
 	TickDogs(DeltaTime, Camera);
 	TickHedgehogs(Camera);
+	if (Now >= NextTownCats)
+	{
+		const float Dt = NextTownCats > 0.0 ? (float)(Now - NextTownCats + 0.25) : 0.25f;
+		NextTownCats = Now + 0.25;
+		TickTownCats(Dt);
+	}
 	if (Now >= NextSlow)
 	{
 		NextSlow = Now + 1.0;
@@ -389,6 +465,165 @@ void ULyudPets::TickLady()
 					}
 				}
 			}
+		}
+	}
+}
+
+void ULyudPets::Say(int32 Person, const TCHAR* Event)
+{
+	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this);
+	if (AActor* Body = People && Talk ? People->GetShownBody(Person) : nullptr)
+	{
+		Talk->SayEvent(Body, Event, Person);
+	}
+}
+
+void ULyudPets::TickTownCats(float Dt)
+{
+	UAnimalLifeSubsystem* Life = UAnimalLifeSubsystem::Get(this);
+	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	FWorld* Sim = Life ? Life->GetSim() : nullptr;
+	if (!Sim || !People)
+	{
+		return;
+	}
+	const double Now = GetWorld()->GetTimeSeconds();
+	// the weather on the window sills
+	if (const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(this))
+	{
+		const FLyudWeatherState St = Weather->GetState();
+		const bool bDay = Sim->Hour > Sim->Sunrise + 0.5f && Sim->Hour < Sim->Sunset - 0.5f;
+		Sim->Weather.bThunder = St.PrecipRate > 4.f;       // a downpour stands for the storm (the state has no thunder of its own)
+		Sim->Weather.bRain = St.PrecipRate > 0.05f;
+		Sim->Weather.TempC = St.TempC;
+		Sim->Weather.Sun = bDay ? FMath::Clamp(1.f - St.CloudCover, 0.f, 1.f) : 0.f;
+	}
+	// the hero's dog (Maru) and her moments with him (docs/animals.md "Maru's moments"): what happened goes into the journal,
+	// each kind once a day
+	if (Sim->HeroDog < 0)
+	{
+		for (const FAnimal& A : Sim->Animals)
+		{
+			if (A.Kind == LyudAnimals::EKind::Dog && A.NameKey == "animal.maru.name")
+			{
+				Sim->HeroDog = A.Id;
+				break;
+			}
+		}
+	}
+	if (!Sim->MomentNotes.empty())
+	{
+		const int32 Day = LyudPetsImpl::DayOf(GetWorld());
+		for (const std::string& Note : Sim->MomentNotes)
+		{
+			const FString Key = FString(TEXT("journal.maru.")) + UTF8_TO_TCHAR(Note.c_str());
+			int32& Last = MaruNoted.FindOrAdd(Key, -1);
+			if (Last != Day)
+			{
+				Last = Day;
+				if (ULyudQuests* Quests = ULyudQuests::Get(this))
+				{
+					Quests->AddNote(Key);
+				}
+			}
+		}
+		Sim->MomentNotes.clear();
+	}
+	auto Where = [&](int32 Person, int32& Act, bool& bDoing, FVector& At)
+	{
+		EPersonPose Pose = EPersonPose::Hidden;
+		return People->GetActivityState(Person, Act, bDoing, Pose, At) && Pose != EPersonPose::Hidden && Pose != EPersonPose::Sleep;
+	};
+	// a resident on the way home, near their door: the cat that likes them falls in behind and sees them in
+	for (FCatFriend& F : CatFriends)
+	{
+		int32 Act = -1;
+		bool bDoing = false;
+		FVector At = FVector::ZeroVector;
+		if (!Where(F.Person, Act, bDoing, At))
+		{
+			F.bSeen = false;
+			F.bWith = false;
+			continue;
+		}
+		const FVector Vel = F.bSeen && Dt > 1e-3f ? (At - F.LastAt) / Dt : FVector::ZeroVector;
+		F.LastAt = At;
+		F.bSeen = true;
+		const FVector ToDoor = FVector(F.Door.X - At.X, F.Door.Y - At.Y, 0.0);
+		const double Far = ToDoor.Size();
+		// a jump of the clock or a teleport is not a speed
+		const bool bWalking = Vel.SizeSquared() < FMath::Square(600.0) && Vel.Size2D() > 40.0;
+		const bool bHomeward = bWalking && Far > 1.0 && FVector::DotProduct(Vel, ToDoor / Far) > 50.0;
+		if (Far > 6000.0 || !(bHomeward || (F.bWith && Far < 4500.0)))
+		{
+			F.bWith = false;
+			continue;
+		}
+		const bool bWith = Sim->FavouriteHome(F.Animal, LyudPetsImpl::ToSim(At), LyudPetsImpl::ToSim(bWalking ? Vel : FVector::ZeroVector),
+			LyudPetsImpl::ToSim(F.Door));
+		if (bWith && (!F.bWith || Now >= F.NextSay))
+		{
+			if (Now >= F.NextSay)
+			{
+				F.NextSay = Now + 45.0;
+				Say(F.Person, TEXT("cat_friend"));
+			}
+		}
+		F.bWith = bWith;
+	}
+	// the fish stalls: open while a fishmonger stands there; a begging cat gets a scrap now and then, or the broom
+	for (FFishStall& St : FishStalls)
+	{
+		int32 Seller = -1;
+		for (const int32 Person : Fishmongers)
+		{
+			int32 Act = -1;
+			bool bDoing = false;
+			FVector At = FVector::ZeroVector;
+			if (Where(Person, Act, bDoing, At) && bDoing && FVector::DistSquared2D(At, St.At) < FMath::Square(300.0))
+			{
+				Seller = Person;
+				break;
+			}
+		}
+		if (Seller >= 0 && St.Seller < 0)
+		{
+			St.NextThrow = Now + 40.0;
+		}
+		St.Seller = Seller;
+		Sim->StallOpen(St.Stall, Seller >= 0);
+		if (Seller >= 0 && Now >= St.NextThrow && Sim->Begging(St.Stall) > 0)
+		{
+			St.NextThrow = Now + FMath::FRandRange(50.f, 120.f);
+			const float Roll = FMath::FRand();
+			if (Roll < 0.55f)
+			{
+				if (Sim->ThrowScrap(St.Stall))
+				{
+					Say(Seller, TEXT("cat_scrap"));
+				}
+			}
+			else if (Roll < 0.75f)
+			{
+				const LyudAnimals::FStall& S = Sim->Stalls[St.Stall];
+				if (Sim->Shoo(S.Pos + V3(FMath::Cos(S.Yaw), FMath::Sin(S.Yaw), 0.f) * S.Front, 2.5f, true) > 0)
+				{
+					Say(Seller, TEXT("cat_shoo"));
+				}
+			}
+		}
+	}
+	// cleaners and the watchman at their work: a cat within a broom's reach gets out of the way
+	for (const int32 Person : Shooers)
+	{
+		int32 Act = -1;
+		bool bDoing = false;
+		FVector At = FVector::ZeroVector;
+		if (Where(Person, Act, bDoing, At) && ShooActs.Contains(Act) && Sim->Shoo(LyudPetsImpl::ToSim(At), 2.2f) > 0 && Now >= NextShooSay)
+		{
+			NextShooSay = Now + 30.0;
+			Say(Person, TEXT("cat_shoo"));
 		}
 	}
 }
@@ -592,8 +827,20 @@ FString ULyudPets::Report() const
 	{
 		Hog += H.State != EHog::Away ? 1 : 0;
 	}
-	return FString::Printf(TEXT("pets: %d dogs (%d out on the leash), %d cats (%d on a sill, %d at a door), %d of %d hedgehogs about, feeders by the lady %d"),
-		Dogs.Num(), Out, Cats.Num(), Sill, Door, Hog, (int32)Sim->Hedgehogs.size(), Sim->bFeedByPerson ? 1 : 0);
+	int32 Tail = 0, Beg = 0, Open = 0;
+	for (const FAnimal& A : Sim->Animals)
+	{
+		Tail += A.Do == LyudAnimals::ECatDo::Tail || A.Do == LyudAnimals::ECatDo::SeeIn ? 1 : 0;
+		Beg += A.Do == LyudAnimals::ECatDo::Beg || A.Do == LyudAnimals::ECatDo::Scrap ? 1 : 0;
+	}
+	for (const LyudAnimals::FStall& S : Sim->Stalls)
+	{
+		Open += S.bOpen ? 1 : 0;
+	}
+	return FString::Printf(TEXT("pets: %d dogs (%d out on the leash), %d cats (%d on a sill, %d at a door), %d of %d hedgehogs about, feeders by the lady %d; ")
+		TEXT("yard cats: %d of %d seeing somebody home, %d begging at %d open fish stalls of %d; sills: rain %d, %.0f C, sun %.1f"),
+		Dogs.Num(), Out, Cats.Num(), Sill, Door, Hog, (int32)Sim->Hedgehogs.size(), Sim->bFeedByPerson ? 1 : 0,
+		Tail, CatFriends.Num(), Beg, Open, FishStalls.Num(), Sim->Weather.bRain ? 1 : 0, Sim->Weather.TempC, Sim->Weather.Sun);
 }
 
 static FAutoConsoleCommandWithWorldAndArgs GPetsReport(TEXT("lyud.Pets.Report"), TEXT("Animals with people: who is out, on a sill, at a door; the hedgehogs."),

@@ -1,0 +1,781 @@
+
+## ---------------------------------------------------------------------------------------------------------------
+## The holidays' own voices (docs/festivals.md "Every holiday's voices"): on each holiday of the calendar an adult says
+## what they are bringing, a nervy one complains, a child tells the day's game, an elder remembers how it used to be.
+## One line a set, said only on that holiday. Russian: the speaker's own words never agree in gender (no "я принёс").
+## ---------------------------------------------------------------------------------------------------------------
+
+[fv_weekend_market_bring]
+festival = weekend_market
+age = adult
+weight = 5
+say town.fv_weekend_market_bring.1 | Несу на рынок банку мёда и пустую сумку. Обратно сумка будет полная. | I'm taking a jar of honey to the market and an empty bag. The bag comes back full. | 市場にはちみつを一瓶と、からっぽの袋を持っていく。帰りは袋がいっぱいさ。
+
+[fv_weekend_market_grump]
+festival = weekend_market
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_weekend_market_grump.1 | Каждую субботу одно и то же: пришли за укропом, ушли с тремя сумками. | Every Saturday the same: you come for dill and leave with three bags. | 土曜はいつも同じ。ディルを買いに来て、袋三つ下げて帰る。
+
+[fv_weekend_market_kid]
+festival = weekend_market
+age = kid
+weight = 5
+say town.fv_weekend_market_kid.1 | Мы считаем, у кого на прилавке самая большая тыква. Пока побеждает дядя с усами. | We're counting who has the biggest pumpkin on the stall. The man with the moustache is winning. | だれの店のカボチャがいちばん大きいか数えてるの。今はひげのおじさんが一位。
+
+[fv_weekend_market_elder]
+festival = weekend_market
+age = elder
+weight = 5
+say town.fv_weekend_market_elder.1 | Раньше торговали прямо с лодок. Рыба ещё прыгала, а её уже взвешивали. | They used to sell straight from the boats. The fish was still jumping while they weighed it. | 昔は舟からじかに売っていたよ。魚がまだ跳ねているのを量っていたものさ。
+
+[fv_sea_festival_bring]
+festival = sea_festival
+age = adult
+weight = 5
+say town.fv_sea_festival_bring.1 | Беру на берег термос и старый плед. У моря без пледа праздник короткий. | I'm bringing a flask and an old blanket to the shore. By the sea a holiday is short without one. | 浜には魔法びんと古い毛布を持っていく。海辺の祭りは毛布がないと短いからね。
+
+[fv_sea_festival_grump]
+festival = sea_festival
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_sea_festival_grump.1 | Праздник моря, а ветер такой, что шапку держи двумя руками. | A festival of the sea, and the wind is such that you hold your hat with both hands. | 海の祭りだというのに、帽子を両手で押さえなきゃならない風だ。
+
+[fv_sea_festival_kid]
+festival = sea_festival
+age = kid
+weight = 5
+say town.fv_sea_festival_kid.1 | Кто найдёт самый гладкий камень, тот сегодня капитан. У меня уже три. | Whoever finds the smoothest stone is captain today. I've got three already. | いちばんつるつるの石を見つけた人が今日の船長。もう三つ見つけたよ。
+
+[fv_sea_festival_elder]
+festival = sea_festival
+age = elder
+weight = 5
+say town.fv_sea_festival_elder.1 | Мы в этот день всем двором встречали баркасы. Кто первый увидит парус, тому первая уха. | On this day our whole yard met the boats. The first to see a sail got the first bowl of soup. | この日は長屋じゅうで漁船を迎えたものだ。最初に帆を見つけた子が、最初の一杯をもらえた。
+
+[fv_lantern_night_bring]
+festival = lantern_night
+age = adult
+weight = 5
+say town.fv_lantern_night_bring.1 | Несу свечи про запас. У кого-нибудь фонарик обязательно погаснет. | I'm bringing spare candles. Somebody's lantern always goes out. | 予備のろうそくを持っていくよ。きっと誰かの灯が消えるからね。
+
+[fv_lantern_night_grump]
+festival = lantern_night
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_lantern_night_grump.1 | Красиво, не спорю. Только воск потом с куртки не отстирать. | It's pretty, I won't argue. But the wax never comes out of a coat. | きれいだよ、それは認める。でも上着についたろうは落ちないんだ。
+
+[fv_lantern_night_kid]
+festival = lantern_night
+age = kid
+weight = 5
+say town.fv_lantern_night_kid.1 | Мы идём цепочкой и не разговариваем. Кто засмеётся, тот несёт фонарь последним. | We walk in a line and don't talk. Whoever laughs carries the lantern at the back. | 一列になって、しゃべらないで歩くの。笑った人はいちばん後ろで灯を持つんだよ。
+
+[fv_lantern_night_elder]
+festival = lantern_night
+age = elder
+weight = 5
+say town.fv_lantern_night_elder.1 | Фонари тогда клеили из газет. Светили плохо, зато свои. | We glued the lanterns out of newspapers then. They gave little light, but they were ours. | あのころの灯ろうは新聞紙で貼ったものさ。暗かったけれど、自分たちのだった。
+
+[fv_first_snow_bring]
+festival = first_snow
+age = adult
+weight = 5
+say town.fv_first_snow_bring.1 | Достаю варежки на всю семью. Одна, как всегда, без пары. | I'm getting out mittens for the whole family. One, as always, has no pair. | 家族みんなのミトンを出しているところ。いつも通り、片方だけのが一つある。
+
+[fv_first_snow_grump]
+festival = first_snow
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_first_snow_grump.1 | Первый снег, радость. А дорожки чистить кому? Вот именно. | First snow, what joy. And who clears the paths? Exactly. | 初雪だ、めでたい。で、道の雪かきは誰がやる？ほらね。
+
+[fv_first_snow_kid]
+festival = first_snow
+age = kid
+weight = 5
+say town.fv_first_snow_kid.1 | Кто первый поймает снежинку языком, загадывает желание. Только не подсказывай! | Whoever catches a snowflake on the tongue first makes a wish. Don't tell me how! | 最初に舌で雪を受けた人が願いごとをするの。教えちゃだめ！
+
+[fv_first_snow_elder]
+festival = first_snow
+age = elder
+weight = 5
+say town.fv_first_snow_elder.1 | На первый снег мать всегда пекла шаньги. Снег тает, а запах помнится. | For the first snow my mother always baked buns. The snow melts, the smell stays. | 初雪の日には母がきまって丸パンを焼いた。雪は溶けても、あの匂いは残っているよ。
+
+[fv_winter_fair_bring]
+festival = winter_fair
+age = adult
+weight = 5
+say town.fv_winter_fair_bring.1 | Везу на ярмарку вязаные носки. Каждый год думаю, что много, и каждый год не хватает. | I'm taking knitted socks to the fair. Every year I think it's too many, and every year they run out. | 市には手編みの靴下を持っていく。毎年多すぎると思うのに、毎年足りなくなる。
+
+[fv_winter_fair_grump]
+festival = winter_fair
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_winter_fair_grump.1 | Пряник стоит как целый обед. И ведь всё равно куплю. | A gingerbread costs as much as a dinner. And I'll buy it all the same. | ジンジャーブレッド一枚が昼ごはん一回分だよ。それでも買うんだけどね。
+
+[fv_winter_fair_kid]
+festival = winter_fair
+age = kid
+weight = 5
+say town.fv_winter_fair_kid.1 | Мы ищем пряник с самой смешной глазурью. Нашли кота без уха. | We're looking for the gingerbread with the funniest icing. We found a cat with one ear. | いちばん変な絵のジンジャーブレッドを探してるの。耳が片方の猫がいたよ。
+
+[fv_winter_fair_elder]
+festival = winter_fair
+age = elder
+weight = 5
+say town.fv_winter_fair_elder.1 | На зимней ярмарке мы с отцом выбирали валенки. Он стучал ими друг о друга и слушал. | At the winter fair my father and I chose felt boots. He knocked them together and listened. | 冬の市では父とフェルトの長靴を選んだ。父は靴どうしを打ち合わせて、音を聞いていたよ。
+
+[fv_new_year_bring]
+festival = new_year
+age = adult
+weight = 5
+say town.fv_new_year_bring.1 | Несу салат в самой большой кастрюле. Меньше в этом доме не признают. | I'm carrying salad in the biggest pot. This house accepts nothing smaller. | いちばん大きな鍋でサラダを運んでいるところ。この家ではそれより小さいのは認められない。
+
+[fv_new_year_grump]
+festival = new_year
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_new_year_grump.1 | До полуночи все сонные, после полуночи никого не уложишь. | Before midnight everyone is sleepy, after midnight nobody will go to bed. | 真夜中まではみんな眠そうで、真夜中を過ぎたら誰も寝ようとしない。
+
+[fv_new_year_kid]
+festival = new_year
+age = kid
+weight = 5
+say town.fv_new_year_kid.1 | Мы спорим, кто дольше не уснёт. В прошлом году куранты прозвенели без меня. | We're betting who stays awake longest. Last year I slept through the chimes. | だれがいちばん遅くまで起きていられるか賭けてるんだ。去年は鐘の前に寝ちゃった。
+
+[fv_new_year_elder]
+festival = new_year
+age = elder
+weight = 5
+say town.fv_new_year_elder.1 | Мандарины тогда были раз в году. Корки сушили на батарее до самой весны. | There were tangerines once a year then. We dried the peel on the radiator till spring. | みかんは年に一度きりだった。皮は春まで暖房の上で干したものさ。
+
+[fv_maslenitsa_bring]
+festival = maslenitsa
+age = adult
+weight = 5
+say town.fv_maslenitsa_bring.1 | Несу блины под полотенцем. Пока дойду, половину раздам знакомым. | I'm carrying pancakes under a towel. By the time I get there half will go to friends. | 布巾をかけたブリヌイを運んでいる。着くまでに半分は知り合いに配ってしまうよ。
+
+[fv_maslenitsa_grump]
+festival = maslenitsa
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_maslenitsa_grump.1 | Блины, блины. К пятому дню на сковородку смотреть не могу. | Pancakes, pancakes. By the fifth day I can't look at a frying pan. | ブリヌイ、またブリヌイ。五日目にはフライパンを見るのもいやになる。
+
+[fv_maslenitsa_kid]
+festival = maslenitsa
+age = kid
+weight = 5
+say town.fv_maslenitsa_kid.1 | Мы считаем, кто съест больше блинов. Со сметаной не считается, это слишком легко. | We're counting who eats the most pancakes. With sour cream doesn't count, that's too easy. | だれがブリヌイをいちばん食べるか数えてるの。サワークリームつきは数えない、簡単すぎるから。
+
+[fv_maslenitsa_elder]
+festival = maslenitsa
+age = elder
+weight = 5
+say town.fv_maslenitsa_elder.1 | Чучело мы делали всей улицей. Солому носили с конюшни, а платок давала соседка. | Our whole street made the straw doll. The straw came from the stable, the scarf from a neighbour. | わら人形は通りのみんなで作った。わらは馬小屋から、スカーフは隣のおばさんが出してくれた。
+
+[fv_bird_day_bring]
+festival = bird_day
+age = adult
+weight = 5
+say town.fv_bird_day_bring.1 | Несу скворечник. Крышу прибили криво, но скворцы не привередливы. | I'm carrying a nesting box. The roof went on crooked, but starlings aren't fussy. | 巣箱を持っていくところ。屋根は曲がってしまったけれど、ムクドリは気にしない。
+
+[fv_bird_day_grump]
+festival = bird_day
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_bird_day_grump.1 | День птиц. А кто мне вернёт вишню, которую они склевали летом? | Bird day. And who gives me back the cherries they ate last summer? | 鳥の日か。去年の夏についばまれたサクランボは誰が返してくれるんだ。
+
+[fv_bird_day_kid]
+festival = bird_day
+age = kid
+weight = 5
+say town.fv_bird_day_kid.1 | Мы играем, кто узнает птицу по голосу. Воробей не считается, его все знают. | We're playing who knows a bird by its voice. Sparrows don't count, everybody knows them. | 鳴き声で鳥を当てる遊びをしてるの。スズメはなし、みんな知ってるから。
+
+[fv_bird_day_elder]
+festival = bird_day
+age = elder
+weight = 5
+say town.fv_bird_day_elder.1 | Скворечники мы вешали всем классом. Мой висел на тополе лет двадцать. | Our whole class hung nesting boxes. Mine stayed on a poplar for twenty years. | 巣箱は学級みんなで掛けたものだ。私のはポプラの木に二十年もあったよ。
+
+[fv_blossom_bring]
+festival = blossom
+age = adult
+weight = 5
+say town.fv_blossom_bring.1 | Беру покрывало и пирог с ревенём. Под цветущей яблоней он вкуснее. | I'm taking a rug and a rhubarb pie. It tastes better under an apple tree in bloom. | 敷物とルバーブのパイを持っていく。花ざかりのリンゴの木の下だと、いっそうおいしい。
+
+[fv_blossom_grump]
+festival = blossom
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_blossom_grump.1 | Цветёт красиво. А у меня от этой красоты нос третий день не дышит. | It blooms beautifully. And from that beauty my nose hasn't worked for three days. | 花はきれいだよ。そのきれいさのおかげで、鼻が三日も詰まっているけどね。
+
+[fv_blossom_kid]
+festival = blossom
+age = kid
+weight = 5
+say town.fv_blossom_kid.1 | Кому лепесток упадёт на нос, тот водит. Мне пока не везёт. | Whoever gets a petal on the nose is it. No luck for me so far. | 花びらが鼻に落ちた人が鬼。わたしにはまだ落ちてこないの。
+
+[fv_blossom_elder]
+festival = blossom
+age = elder
+weight = 5
+say town.fv_blossom_elder.1 | Эти яблони сажали в год, когда пустили канатку. Тогда они были мне по плечо. | These apple trees were planted the year the cable car opened. They came up to my shoulder then. | このリンゴの木はロープウェイが通った年に植えたものだ。あのころは肩ほどの高さだった。
+
+[fv_midsummer_bring]
+festival = midsummer
+age = adult
+weight = 5
+say town.fv_midsummer_bring.1 | Несу дрова для костра. Сухие, берёзовые, с прошлого года берегу. | I'm bringing wood for the bonfire. Dry birch, kept since last year. | 焚き火の薪を運んでいる。去年からとっておいた、乾いた白樺だよ。
+
+[fv_midsummer_grump]
+festival = midsummer
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_midsummer_grump.1 | Самая короткая ночь, и ту не дают поспать. | The shortest night of the year, and they won't let you sleep even that. | 一年でいちばん短い夜なのに、それすら眠らせてくれない。
+
+[fv_midsummer_kid]
+festival = midsummer
+age = kid
+weight = 5
+say town.fv_midsummer_kid.1 | Мы ищем цветок папоротника. Взрослые говорят, что его нет, но они плохо искали. | We're looking for the fern flower. The grown-ups say there isn't one, but they didn't look properly. | シダの花を探してるんだ。大人はないって言うけど、ちゃんと探さなかっただけだよ。
+
+[fv_midsummer_elder]
+festival = midsummer
+age = elder
+weight = 5
+say town.fv_midsummer_elder.1 | Через костёр прыгали парами. Если руки не разнялись, осенью гуляли на свадьбе. | We jumped the fire in pairs. If the hands held, there was a wedding in autumn. | 焚き火は二人で手をつないで跳んだ。手が離れなければ、秋には婚礼だったよ。
+
+[fv_fisherman_day_bring]
+festival = fisherman_day
+age = adult
+weight = 5
+say town.fv_fisherman_day_bring.1 | Несу котёл для ухи. Рыбу пусть несут те, кто хвастался уловом. | I'm bringing the pot for the soup. Let those who bragged about their catch bring the fish. | 魚汁の大鍋を運んでいる。魚は、釣果を自慢した連中が持ってくればいい。
+
+[fv_fisherman_day_grump]
+festival = fisherman_day
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_fisherman_day_grump.1 | Сегодня у каждого щука была вот такая. Завтра спросишь, и она станет вдвое короче. | Today everyone's pike was this big. Ask tomorrow and it's half the length. | 今日はみんなのカワカマスがこんなに大きい。明日聞いたら半分になってるよ。
+
+[fv_fisherman_day_kid]
+festival = fisherman_day
+age = kid
+weight = 5
+say town.fv_fisherman_day_kid.1 | Мы ловим на хлеб с пирса. Кто поймает первым, тому не мыть котёл. | We're fishing with bread off the pier. Whoever catches first doesn't wash the pot. | 桟橋からパンで釣ってるの。最初に釣った人は鍋を洗わなくていいんだ。
+
+[fv_fisherman_day_elder]
+festival = fisherman_day
+age = elder
+weight = 5
+say town.fv_fisherman_day_elder.1 | Сети сушили вдоль всей набережной. Мы, мальчишки и девчонки, бегали под ними как под крышей. | The nets dried all along the promenade. We children ran under them as under a roof. | 網は海岸通りいっぱいに干してあった。子どもらはその下を屋根のようにくぐって走ったものさ。
+
+[fv_perseids_bring]
+festival = perseids
+age = adult
+weight = 5
+say town.fv_perseids_bring.1 | Беру два одеяла и чай с чабрецом. Звёзды лучше смотреть лёжа и в тепле. | I'm taking two blankets and thyme tea. Stars are best watched lying down and warm. | 毛布を二枚とタイムのお茶を持っていく。星は寝ころんで、あったかくして見るのがいい。
+
+[fv_perseids_grump]
+festival = perseids
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_perseids_grump.1 | Шея затекла, а упало всего три. И те, пока чай наливали. | My neck is stiff and only three fell. And those while I was pouring tea. | 首がこったのに、流れたのは三つだけ。それもお茶を注いでいるあいだに。
+
+[fv_perseids_kid]
+festival = perseids
+age = kid
+weight = 5
+say town.fv_perseids_kid.1 | Мы считаем, кто больше увидит. Самолёты не считаются, это проверено. | We're counting who sees the most. Aeroplanes don't count, I checked. | だれがいちばんたくさん見るか数えてるんだ。飛行機は数えない、確かめたから。
+
+[fv_perseids_elder]
+festival = perseids
+age = elder
+weight = 5
+say town.fv_perseids_elder.1 | На звездопад мы лазили на крышу бани. Желаний было много, а крыша одна. | For the meteor shower we climbed the bathhouse roof. Many wishes, one roof. | 流星の夜は風呂小屋の屋根に登った。願いごとはたくさん、屋根は一つきりだったよ。
+
+[fv_harvest_fair_bring]
+festival = harvest_fair
+age = adult
+weight = 5
+say town.fv_harvest_fair_bring.1 | Везу кабачок. Он вырос больше, чем тачка, так что везу вместе с тачкой. | I'm bringing a marrow. It outgrew the wheelbarrow, so the wheelbarrow comes too. | ズッキーニを運んでいる。手押し車より大きく育ったから、車ごと持っていくよ。
+
+[fv_harvest_fair_grump]
+festival = harvest_fair
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_harvest_fair_grump.1 | Опять первый приз дадут за тыкву. А за мой чеснок кто-нибудь хоть раз спасибо сказал? | The first prize goes to a pumpkin again. Has anyone ever said thank you for my garlic? | また一等はカボチャだろう。うちのニンニクに礼を言ってくれた人が一度でもいたかね。
+
+[fv_harvest_fair_kid]
+festival = harvest_fair
+age = kid
+weight = 5
+say town.fv_harvest_fair_kid.1 | Мы угадываем, сколько весит тыква. Кто ближе всех, тому яблоко в карамели. | We're guessing what the pumpkin weighs. The closest gets a toffee apple. | カボチャの重さを当てっこしてるの。いちばん近い人がりんごあめをもらえる。
+
+[fv_harvest_fair_elder]
+festival = harvest_fair
+age = elder
+weight = 5
+say town.fv_harvest_fair_elder.1 | Картошку тогда копали всей семьёй. Последний мешок несли домой как знамя. | We dug potatoes with the whole family then. The last sack was carried home like a banner. | じゃがいもは家族そろって掘ったものだ。最後の袋は旗のようにかついで帰ったよ。
+
+[fv_lunar_new_year_bring]
+festival = lunar_new_year
+age = adult
+weight = 5
+say town.fv_lunar_new_year_bring.1 | Несу пельмени, лепили всем подъездом. В один спрятана монетка, жуй осторожно. | I'm bringing dumplings, the whole stair made them. One hides a coin, chew with care. | 水餃子を持っていく。階段じゅうで包んだんだ。一つにコインが入っているから、気をつけて噛んで。
+
+[fv_lunar_new_year_grump]
+festival = lunar_new_year
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_lunar_new_year_grump.1 | Хлопушки с самого утра. Кот третий час сидит под ванной. | Firecrackers since morning. The cat has been under the bath for three hours. | 朝から爆竹だ。猫はもう三時間、風呂の下から出てこない。
+
+[fv_lunar_new_year_kid]
+festival = lunar_new_year
+age = kid
+weight = 5
+say town.fv_lunar_new_year_kid.1 | Мы идём за драконом и считаем его ноги. У меня каждый раз выходит по-разному. | We're following the dragon and counting its legs. I get a different number every time. | 龍のあとをついて、足を数えてるの。数えるたびに違う数になるんだ。
+
+[fv_lunar_new_year_elder]
+festival = lunar_new_year
+age = elder
+weight = 5
+say town.fv_lunar_new_year_elder.1 | Красные конверты нам дарил сосед с пятого этажа. Внутри была монетка и записка «учись». | A neighbour from the fifth floor gave us red envelopes. Inside was a coin and a note: study. | 赤い袋は五階のおじさんがくれた。中には小銭と「勉強しなさい」の紙が入っていたよ。
+
+[fv_holi_bring]
+festival = holi
+age = adult
+weight = 5
+say town.fv_holi_bring.1 | Несу краски в бумажных кульках. И старую рубашку, её не жалко. | I'm bringing colours in paper cones. And an old shirt I won't miss. | 紙の袋に入れた色粉を持っていく。それから、惜しくない古いシャツも。
+
+[fv_holi_grump]
+festival = holi
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_holi_grump.1 | Весело им. А мне потом неделю ходить в зелёную крапинку. | Fun for them. And I go about in green speckles for a week afterwards. | あの子らは楽しいだろうさ。こっちは一週間、緑のまだらで歩くんだ。
+
+[fv_holi_kid]
+festival = holi
+age = kid
+weight = 5
+say town.fv_holi_kid.1 | Кто останется чистым дольше всех, тот проиграл. Такие правила. | Whoever stays clean longest loses. Those are the rules. | いちばん長くきれいなままの人が負け。そういう決まりなの。
+
+[fv_holi_elder]
+festival = holi
+age = elder
+weight = 5
+say town.fv_holi_elder.1 | У нас красок не было, мы кидались мукой. Бабушка ругалась, а сама смеялась. | We had no colours, we threw flour. Grandmother scolded us and laughed herself. | うちには色粉がなくて、小麦粉を投げ合った。祖母は叱りながら、自分でも笑っていたよ。
+
+[fv_nowruz_bring]
+festival = nowruz
+age = adult
+weight = 5
+say town.fv_nowruz_bring.1 | Несу проросшую пшеницу на блюдце. Две недели поливали, зеленее не бывает. | I'm bringing sprouted wheat on a saucer. Two weeks of watering, it doesn't come greener. | 小皿に芽を出させた麦を持っていく。二週間水をやった、これ以上の緑はないよ。
+
+[fv_nowruz_grump]
+festival = nowruz
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_nowruz_grump.1 | Семь блюд на стол, и все на букву «с». А посуду мыть на какую букву? | Seven dishes on the table, all starting with one letter. And what letter is the washing-up? | 食卓に七つの品、みんな同じ文字で始まる。皿洗いは何の文字で始まるんだい。
+
+[fv_nowruz_kid]
+festival = nowruz
+age = kid
+weight = 5
+say town.fv_nowruz_kid.1 | Мы прыгаем через маленький костёр. Через большой пока не разрешают. | We jump over the little fire. They won't let us over the big one yet. | 小さい焚き火を跳びこえるの。大きいほうはまだだめだって。
+
+[fv_nowruz_elder]
+festival = nowruz
+age = elder
+weight = 5
+say town.fv_nowruz_elder.1 | Мать ставила на стол зеркало и говорила: пусть год увидит себя красивым. | My mother put a mirror on the table and said: let the year see itself handsome. | 母は食卓に鏡を置いて言ったものだ。新しい年が自分のきれいな顔を見られるように、と。
+
+[fv_children_day_bring]
+festival = children_day
+age = adult
+weight = 5
+say town.fv_children_day_bring.1 | Несу мелки, коробок десять. Асфальта в городе на всех хватит. | I'm bringing chalk, about ten boxes. There's asphalt enough in town for everybody. | チョークを十箱ほど持っていく。町のアスファルトはみんなの分あるからね。
+
+[fv_children_day_grump]
+festival = children_day
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_children_day_grump.1 | День детей. Можно подумать, остальные триста шестьдесят четыре не их. | Children's day. As if the other three hundred and sixty-four weren't theirs. | 子どもの日か。残りの三百六十四日は子どものものじゃないみたいじゃないか。
+
+[fv_children_day_kid]
+festival = children_day
+age = kid
+weight = 5
+say town.fv_children_day_kid.1 | Сегодня мы рисуем самую длинную змею в городе. Она уже завернула за угол. | Today we're drawing the longest snake in town. It's already gone round the corner. | 今日は町でいちばん長いヘビを描いてるの。もう角を曲がったよ。
+
+[fv_children_day_elder]
+festival = children_day
+age = elder
+weight = 5
+say town.fv_children_day_elder.1 | Нам в этот день давали мороженое в вафельном стаканчике. Ели так медленно, что оно убегало. | On this day we got ice cream in a wafer cup. I ate so slowly that it ran away. | この日はウエハースのカップのアイスをもらった。あんまりゆっくり食べるから、溶けて逃げていったよ。
+
+[fv_tanabata_bring]
+festival = tanabata
+age = adult
+weight = 5
+say town.fv_tanabata_bring.1 | Несу цветную бумагу и нитки. Желаний в городе много, полосок надо с запасом. | I'm bringing coloured paper and thread. The town has many wishes, we need strips to spare. | 色紙と糸を持っていく。町には願いごとが多いから、短冊は余分にいるね。
+
+[fv_tanabata_grump]
+festival = tanabata
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_tanabata_grump.1 | Все желания на виду висят. Я своё пишу мелко и вешаю повыше. | All the wishes hang in plain sight. I write mine small and hang it high. | 願いごとが丸見えでぶら下がっている。私のは小さく書いて、高いところに結ぶよ。
+
+[fv_tanabata_kid]
+festival = tanabata
+age = kid
+weight = 5
+say town.fv_tanabata_kid.1 | Мы читаем чужие желания и угадываем, чьи они. Про велосипед точно Петино. | We read other people's wishes and guess whose they are. The bicycle one is Petya's for sure. | ほかの人の願いごとを読んで、だれのか当てるの。自転車のは絶対ペーチャのだよ。
+
+[fv_tanabata_elder]
+festival = tanabata
+age = elder
+weight = 5
+say town.fv_tanabata_elder.1 | Я каждый год загадываю одно и то же. Пока сбывается. | I wish for the same thing every year. So far it comes true. | 毎年同じことを願っているよ。今のところ、かなっている。
+
+[fv_toro_nagashi_bring]
+festival = toro_nagashi
+age = adult
+weight = 5
+say town.fv_toro_nagashi_bring.1 | Несу фонарик и спички. Имя на нём пишу от руки, каждый год. | I'm bringing a lantern and matches. The name on it I write by hand, every year. | 灯ろうとマッチを持っていく。名前は毎年、自分の手で書くの。
+
+[fv_toro_nagashi_grump]
+festival = toro_nagashi
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_toro_nagashi_grump.1 | Не люблю, когда тут шумят. Сегодня у воды надо помолчать. | I don't like noise here. Tonight by the water one should keep quiet. | ここで騒がれるのは好かない。今夜は水辺で黙っているものだ。
+
+[fv_toro_nagashi_kid]
+festival = toro_nagashi
+age = kid
+weight = 5
+say town.fv_toro_nagashi_kid.1 | Мы смотрим, чей фонарик уплывёт дальше. Только болеть надо шёпотом. | We watch whose lantern floats farthest. But you have to cheer in a whisper. | だれの灯ろうがいちばん遠くまで行くか見てるの。でも応援は小さな声でね。
+
+[fv_toro_nagashi_elder]
+festival = toro_nagashi
+age = elder
+weight = 5
+say town.fv_toro_nagashi_elder.1 | Я пускаю два фонарика. Один за отца, другой за его лодку. | I set two lanterns on the water. One for my father, one for his boat. | 灯ろうは二つ流すよ。一つは父に、もう一つは父の舟に。
+
+[fv_mid_autumn_bring]
+festival = mid_autumn
+age = adult
+weight = 5
+say town.fv_mid_autumn_bring.1 | Несу лунные пряники. Резать будем на всех, по дольке, как положено. | I'm bringing mooncakes. We'll cut them for everyone, a slice each, as is proper. | 月餅を持っていく。決まりどおり、みんなで一切れずつ分けよう。
+
+[fv_mid_autumn_grump]
+festival = mid_autumn
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_mid_autumn_grump.1 | Луна как луна. В прошлом году была круглее, я помню. | A moon like any moon. It was rounder last year, I remember. | ふつうの月だね。去年のほうが丸かった、覚えているよ。
+
+[fv_mid_autumn_kid]
+festival = mid_autumn
+age = kid
+weight = 5
+say town.fv_mid_autumn_kid.1 | Мы ищем на луне зайца. Мне видно только ухо, но оно точно заячье. | We're looking for the hare on the moon. I can only see an ear, but it's a hare's for sure. | 月のうさぎを探してるの。耳しか見えないけど、絶対うさぎの耳だよ。
+
+[fv_mid_autumn_elder]
+festival = mid_autumn
+age = elder
+weight = 5
+say town.fv_mid_autumn_elder.1 | В такую луну мы выносили стол во двор. Чай остывал, а расходиться никто не хотел. | Under such a moon we carried the table into the yard. The tea went cold and nobody wanted to leave. | こんな月の晩には庭に食卓を出した。お茶が冷めても、誰も帰ろうとしなかったよ。
+
+[fv_halloween_bring]
+festival = halloween
+age = adult
+weight = 5
+say town.fv_halloween_bring.1 | Несу тыкву с вырезанной рожицей. Вышла скорее удивлённая, чем страшная. | I'm bringing a pumpkin with a face cut in it. It came out more surprised than scary. | 顔を彫ったカボチャを持っていく。こわいというより、びっくりした顔になったよ。
+
+[fv_halloween_grump]
+festival = halloween
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_halloween_grump.1 | Третий раз за вечер звонят в дверь. Конфеты кончились на втором. | The doorbell for the third time tonight. The sweets ran out at the second. | 今夜三度目の呼び鈴だ。お菓子は二度目でなくなったよ。
+
+[fv_halloween_kid]
+festival = halloween
+age = kid
+weight = 5
+say town.fv_halloween_kid.1 | Я привидение. Простыню брать разрешили, а дырки вырезать нет, поэтому я ничего не вижу. | I'm a ghost. They let me take the sheet but not cut holes, so I can't see a thing. | ぼく、おばけ。シーツはいいけど穴はだめって言われたから、なんにも見えないんだ。
+
+[fv_halloween_elder]
+festival = halloween
+age = elder
+weight = 5
+say town.fv_halloween_elder.1 | Мы пугали друг друга свёклой со свечкой внутри. Тыквы были на варенье, их не давали. | We scared each other with a beetroot and a candle inside. The pumpkins were for jam. | ビーツにろうそくを入れておどかし合ったものさ。カボチャはジャム用で、もらえなかったんだ。
+
+[fv_dia_de_muertos_bring]
+festival = dia_de_muertos
+age = adult
+weight = 5
+say town.fv_dia_de_muertos_bring.1 | Несу бархатцы и хлеб. И фотографию деда, он любил, когда людно. | I'm bringing marigolds and bread. And grandfather's photograph, he liked a crowd. | マリーゴールドとパンを持っていく。それから祖父の写真も。にぎやかなのが好きな人だったから。
+
+[fv_dia_de_muertos_grump]
+festival = dia_de_muertos
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_dia_de_muertos_grump.1 | Развеселились. А я считаю, вспоминать надо тихо и за чаем. | How merry they are. I say remembering is done quietly and over tea. | ずいぶん陽気だね。思い出すのは静かに、お茶を飲みながらするものだと思うよ。
+
+[fv_dia_de_muertos_kid]
+festival = dia_de_muertos
+age = kid
+weight = 5
+say town.fv_dia_de_muertos_kid.1 | Мы кладём на столик конфету для прабабушки. Она любила ириски, мне рассказали. | We put a sweet on the little table for great-grandmother. She liked toffees, I asked. | ひいおばあちゃんのために、小さい机にあめを置くの。キャラメルが好きだったって聞いたよ。
+
+[fv_dia_de_muertos_elder]
+festival = dia_de_muertos
+age = elder
+weight = 5
+say town.fv_dia_de_muertos_elder.1 | Чем старше, тем длиннее у меня список, кого вспомнить. И тем веселее за столом, как ни странно. | The older I get, the longer my list of people to remember. And the merrier the table, oddly. | 年をとるほど、思い出す人の名前が増える。それなのに食卓はにぎやかになる、不思議なものだ。
+
+[fv_diwali_bring]
+festival = diwali
+age = adult
+weight = 5
+say town.fv_diwali_bring.1 | Несу глиняные плошки и масло. Расставим по всем подоконникам, сколько хватит. | I'm bringing clay lamps and oil. We'll stand them on every windowsill, as far as they go. | 素焼きの灯皿と油を持っていく。足りるかぎり、窓という窓に並べよう。
+
+[fv_diwali_grump]
+festival = diwali
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_diwali_grump.1 | Огоньки на каждом окне. Красиво, но пожарным сегодня не позавидуешь. | A light in every window. Pretty, but I don't envy the firemen tonight. | どの窓にも灯がともっている。きれいだが、今夜の消防は気の毒だ。
+
+[fv_diwali_kid]
+festival = diwali
+age = kid
+weight = 5
+say town.fv_diwali_kid.1 | Мы рисуем у порога узор цветным песком. Главное, чтобы никто не чихнул. | We're drawing a pattern by the door in coloured sand. The main thing is that nobody sneezes. | 玄関に色砂で模様を描いてるの。だれもくしゃみしないのがいちばん大事。
+
+[fv_diwali_elder]
+festival = diwali
+age = elder
+weight = 5
+say town.fv_diwali_elder.1 | Соседка научила нас зажигать плошки. С тех пор на нашей лестнице в этот вечер всегда светло. | A neighbour taught us to light the lamps. Since then our stair is always bright this evening. | 灯皿のともし方は隣の奥さんに教わった。それからこの晩は、うちの階段がいつも明るいよ。
+
+[fv_loy_krathong_bring]
+festival = loy_krathong
+age = adult
+weight = 5
+say town.fv_loy_krathong_bring.1 | Несу кораблик из листьев. Вместо банановых взяли лопух, плывёт не хуже. | I'm bringing a little boat of leaves. Burdock instead of banana, it floats just as well. | 葉っぱの小舟を持っていく。バナナの葉のかわりにゴボウの葉、ちゃんと浮くよ。
+
+[fv_loy_krathong_grump]
+festival = loy_krathong
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_loy_krathong_grump.1 | Пускают и пускают. А вылавливать завтра кто будет, речной царь? | They launch them and launch them. And who fishes them out tomorrow, the river king? | 流して、また流して。明日すくい上げるのは誰だい、川の王様かね。
+
+[fv_loy_krathong_kid]
+festival = loy_krathong
+age = kid
+weight = 5
+say town.fv_loy_krathong_kid.1 | В моём кораблике монетка и пуговица. Монетку за желание, пуговицу просто так. | I put a coin and a button in my boat. The coin for a wish, the button just because. | 小舟にコインとボタンを入れたの。コインは願いごとのため、ボタンはなんとなく。
+
+[fv_loy_krathong_elder]
+festival = loy_krathong
+age = elder
+weight = 5
+say town.fv_loy_krathong_elder.1 | Мы в детстве пускали по ручью щепки с огарком. Не знали, что где-то это целый праздник. | As children we floated wood chips with candle stubs down the brook. We never knew it was a holiday. | 子どものころ、木っ端にろうそくをのせて小川に流した。それがお祭りだとは知らなかったよ。
+
+[fv_christmas_bring]
+festival = christmas
+age = adult
+weight = 5
+say town.fv_christmas_bring.1 | Несу кутью и пирог с маком. Ложки возьмите свои, моих на всех не хватит. | I'm bringing the wheat pudding and a poppy-seed pie. Bring your own spoons, mine won't go round. | 麦の甘がゆとケシの実のパイを持っていく。さじは各自で頼むよ、うちのは足りないから。
+
+[fv_christmas_grump]
+festival = christmas
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_christmas_grump.1 | Ёлку нарядили в ноябре. К празднику на неё уже никто не смотрит. | They dressed the tree in November. By the holiday nobody looks at it any more. | ツリーは十一月から飾ってある。当日にはもう誰も見やしない。
+
+[fv_christmas_kid]
+festival = christmas
+age = kid
+weight = 5
+say town.fv_christmas_kid.1 | Мы караулим первую звезду. Пока она не выйдет, пирог трогать нельзя. | We're watching for the first star. Until it comes out nobody may touch the pie. | いちばん星を見張ってるの。出るまではパイにさわっちゃいけないんだ。
+
+[fv_christmas_elder]
+festival = christmas
+age = elder
+weight = 5
+say town.fv_christmas_elder.1 | Мы ходили со звездой по всей улице. Пели плохо, зато громко, и нам давали пряники. | We went down the whole street with a star. We sang badly but loudly, and they gave us gingerbread. | 星を掲げて通りじゅうを回ったものだ。歌は下手だが声は大きくて、ジンジャーブレッドをもらったよ。
+
+[fv_sun_day_bring]
+festival = sun_day
+age = adult
+weight = 5
+say town.fv_sun_day_bring.1 | Несу на площадь блины. Круглые, жёлтые, как положено в этот день. | I'm bringing pancakes to the square. Round and yellow, as the day demands. | 広場にブリヌイを持っていく。この日の決まりどおり、丸くて黄色いのを。
+
+[fv_sun_day_grump]
+festival = sun_day
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_sun_day_grump.1 | Жара, толпа и все смотрят вверх. Хоть бы один под ноги глянул. | Heat, a crowd, and everyone looking up. If only one of them looked where he walks. | 暑くて、人だらけで、みんな上を見ている。一人くらい足もとを見てくれないものか。
+
+[fv_sun_day_kid]
+festival = sun_day
+age = kid
+weight = 5
+say town.fv_sun_day_kid.1 | Мы меряем, чья тень в полдень короче. У меня почти совсем пропала! | We're measuring whose shadow is shortest at noon. Mine has nearly gone! | お昼にだれの影がいちばん短いか測ってるの。わたしの、ほとんどなくなっちゃった！
+
+[fv_sun_day_elder]
+festival = sun_day
+age = elder
+weight = 5
+say town.fv_sun_day_elder.1 | В день большого солнца мать выносила на балкон все подушки. Говорила, год будет спаться светло. | On Big Sun Day mother put every pillow out on the balcony. So we'd sleep bright all year, she said. | 大きな太陽の日には、母が枕をみんなベランダに出した。一年じゅう明るく眠れるから、と言ってね。
+
+[fv_city_day_bring]
+festival = city_day
+age = adult
+weight = 5
+say town.fv_city_day_bring.1 | Несу альбом со старыми фотографиями. Пусть молодые посмотрят, где раньше была остановка. | I'm bringing an album of old photographs. Let the young see where the stop used to be. | 古い写真のアルバムを持っていく。昔の停留所がどこにあったか、若い人に見せてやろう。
+
+[fv_city_day_grump]
+festival = city_day
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_city_day_grump.1 | Речи, речи. Лучше бы к празднику фонарь на нашей улице починили. | Speeches, speeches. Better if they'd mended the lamp on our street for the holiday. | 演説、また演説。それより祭りまでにうちの通りの街灯を直してほしかったよ。
+
+[fv_city_day_kid]
+festival = city_day
+age = kid
+weight = 5
+say town.fv_city_day_kid.1 | Мы ищем на старых снимках свой дом. Наш нашёлся, только дерево рядом совсем маленькое. | We're looking for our houses in the old pictures. Ours turned up, only the tree beside it is tiny. | 古い写真の中から自分の家を探してるの。うちはあったよ、でも横の木がすごく小さいんだ。
+
+[fv_city_day_elder]
+festival = city_day
+age = elder
+weight = 5
+say town.fv_city_day_elder.1 | Я помню, когда тут был один причал и три дома. А очередь за хлебом уже была. | I remember when there was one pier here and three houses. And there was already a queue for bread. | ここに桟橋が一つと家が三軒しかなかったころを覚えているよ。それでもパンの行列はもうあった。
+
+[fv_kite_day_bring]
+festival = kite_day
+age = adult
+weight = 5
+say town.fv_kite_day_bring.1 | Несу змея и моток бечёвки. Хвост вязали из старых галстуков, летит солидно. | I'm bringing a kite and a ball of string. The tail is tied from old neckties, it flies with dignity. | 凧と糸玉を持っていく。尾は古いネクタイで作ったから、堂々と飛ぶよ。
+
+[fv_kite_day_grump]
+festival = kite_day
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_kite_day_grump.1 | Полнеба в верёвках. Чайки и те облетают стороной. | Half the sky is strings. Even the gulls go round. | 空の半分が糸だらけだ。カモメでさえ避けて飛んでいる。
+
+[fv_kite_day_kid]
+festival = kite_day
+age = kid
+weight = 5
+say town.fv_kite_day_kid.1 | Чей змей выше, тот и главный. Мой пока зацепился за тополь, но это временно. | Whoever's kite is highest is the boss. Mine is caught in a poplar for now, but that's temporary. | いちばん高い凧の人がいちばんえらいの。ぼくのは今ポプラに引っかかってるけど、ちょっとだけ。
+
+[fv_kite_day_elder]
+festival = kite_day
+age = elder
+weight = 5
+say town.fv_kite_day_elder.1 | Змеев мы клеили из газеты на картофельном клейстере. Улетали они вместе с новостями. | We glued our kites from newspaper with potato paste. They flew off news and all. | 凧は新聞紙をじゃがいもの糊で貼って作った。ニュースごと飛んでいったものさ。
+
+[fv_cat_day_bring]
+festival = cat_day
+age = adult
+weight = 5
+say town.fv_cat_day_bring.1 | Несу блюдце сметаны к подъезду. Сегодня дворовым положено угощение. | I'm taking a saucer of sour cream to the door. Today the yard cats are owed a treat. | 玄関先にサワークリームの小皿を持っていく。今日は外の猫たちがごちそうをもらう日だ。
+
+[fv_cat_day_grump]
+festival = cat_day
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_cat_day_grump.1 | День кошек. У моего кота он, между прочим, круглый год. | Cat day. For my cat, by the way, it lasts all year. | 猫の日か。うちの猫にとっては、言っておくが一年じゅうそうだよ。
+
+[fv_cat_day_kid]
+festival = cat_day
+age = kid
+weight = 5
+say town.fv_cat_day_kid.1 | Мы считаем котов на подоконниках. Рыжие идут за два очка. | We're counting cats on windowsills. Ginger ones are worth two points. | 窓辺の猫を数えてるの。茶トラは二点だよ。
+
+[fv_cat_day_elder]
+festival = cat_day
+age = elder
+weight = 5
+say town.fv_cat_day_elder.1 | У нас во дворе жила кошка Муха. Она провожала всех детей до школы и возвращалась одна. | A cat called Mukha lived in our yard. She walked all the children to school and came back alone. | うちの庭にはムーハという猫がいた。子どもたちをみんな学校まで送って、ひとりで帰ってきたものさ。
+
+[fv_book_day_bring]
+festival = book_day
+age = adult
+weight = 5
+say town.fv_book_day_bring.1 | Несу стопку книг на обмен. Прочитаны честно, с закладками и крошками. | I'm bringing a pile of books to swap. Honestly read, with bookmarks and crumbs. | 交換用の本をひと山持っていく。しおりもパンくずも入った、ちゃんと読んだ本だよ。
+
+[fv_book_day_grump]
+festival = book_day
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_book_day_grump.1 | Отдаёшь хорошую книгу, а взамен получаешь справочник по мелиорации. | You give away a good book and get a handbook on land drainage in return. | いい本を出したのに、かわりに来るのは土地改良の手引きだ。
+
+[fv_book_day_kid]
+festival = book_day
+age = kid
+weight = 5
+say town.fv_book_day_kid.1 | Мы открываем книгу наугад и читаем первую строчку. У кого смешнее, тот выбирает следующую. | We open a book anywhere and read the first line. The funniest one picks the next book. | 本をてきとうに開いて、最初の行を読むの。いちばん笑えた人が次の本を選ぶんだ。
+
+[fv_book_day_elder]
+festival = book_day
+age = elder
+weight = 5
+say town.fv_book_day_elder.1 | Первая моя книга досталась мне в обмен на перочинный нож. Ножа потом было жаль, книги никогда. | I got my first book in exchange for a penknife. I missed the knife later, the book never. | 初めての本は小刀と取りかえて手に入れた。小刀はあとで惜しくなったが、本は一度も。
+
+[fv_amber_morning_bring]
+festival = amber_morning
+age = adult
+weight = 5
+say town.fv_amber_morning_bring.1 | Беру сито и резиновые сапоги. После шторма янтарь лежит у самой кромки. | I'm taking a sieve and rubber boots. After a storm the amber lies right at the water's edge. | ふるいとゴム長を持っていく。嵐のあとは琥珀が波打ちぎわに落ちているんだ。
+
+[fv_amber_morning_grump]
+festival = amber_morning
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_amber_morning_grump.1 | Весь город на берегу с рассвета. Мне достанутся одни водоросли. | The whole town on the shore since dawn. All that's left for me is seaweed. | 夜明けから町じゅうが浜に出ている。こっちに残るのは海藻だけだ。
+
+[fv_amber_morning_kid]
+festival = amber_morning
+age = kid
+weight = 5
+say town.fv_amber_morning_kid.1 | Кто найдёт янтарь с мушкой внутри, тот победил навсегда. У меня пока с пузырьком. | Whoever finds amber with a fly inside wins for ever. I found one with a bubble. | 虫の入った琥珀を見つけた人がずっと一番。わたしのは泡が入ってたよ。
+
+[fv_amber_morning_elder]
+festival = amber_morning
+age = elder
+weight = 5
+say town.fv_amber_morning_elder.1 | После шторма бабушка будила нас затемно. Говорила: море ночью щедрое, а утром жадное. | After a storm grandmother woke us before dawn. The sea gives by night, she said, and grudges by day. | 嵐のあとは祖母がまだ暗いうちに起こしに来た。海は夜は気前がよくて、朝はけちになる、と言ってね。

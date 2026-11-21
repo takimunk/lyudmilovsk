@@ -62,7 +62,7 @@ the running habits (a handful). The tests check that no bird is even looked at w
   toss of leaves, the touch of the water).
 - The hero has a habit in view for a second (within 12 m plus 50 m per metre of the bird's length and 22 degrees of the
   view's middle; through the binoculars 250 m and 4 degrees, nothing in between by a line trace): `NoteHabit` writes it.
-- `SetHabitWaters`: the brook's pools and fountains for the swallows (without them they drink from the sea off the shore).
+- `SetHabitWaters`: fountains and other water the game names for the swallows. The brook's pools need no caller: see "The brook".
   `AddMorsel`: a snack on a bench, a fisherman's catch, for the herring gull's snatch; the snatch comes as a `gull_snatch`
   beat and `LastSnatched` names the morsel. **Owed**: the town life and the fishing calling these two.
 - **Owed on the Mac**: the first compile of the game's side, a sketch per habit for the book (now the line and the date
@@ -162,3 +162,25 @@ the running habits (a handful). The tests check that no bird is even looked at w
 | WhiteTailedEagle | `sea_eagle_snatch` | swoop | Passes low over the water and lifts a fish in its feet without landing |
 | GoldenEagle | `golden_eagle_dance` | dance | High in the sky it dives and climbs again and again, as if riding waves |
 | CommonBuzzard | `buzzard_hang` | hang | Hangs on the wind over one spot, looking down |
+
+## The brook
+
+The brook's sites (`EHabitat::Brook`: its shallow edges and stones; `Mouth`: its fan across the beach; docs/bird_life.md
+"The brook") are narrow patches with the water a step away, and the habits know it:
+
+- The wagtail's dash and leap, the heron's stalk and the carrion crow's dunking happen on both kinds; the common gull's
+  paddling and the black-headed gulls' squabble on the mouth's sand only (the bank is too narrow for them).
+- A run (`EHabitMech::Run`) by the brook ends on the bank: every dash is pulled back onto the site's patch
+  (`FWorld::KeptOnPatch`, the same rule the bird life walks by), so no wagtail runs into the stream.
+- The swallows drink from the brook's pools. `FHabits::Pools` holds them: the samples of the brook's water
+  (Content/South/south.json "brook" "water") wide enough to be a pool and above the tide (`FHabits::IsPool`: half width
+  from 2 m, more than 2 m over the mean sea; 31 of them). The game reads them itself at each start of the bird life
+  (`UBirdLifeSubsystem::LoadBrookPools`), the tests by the same rule.
+- A pool lies in the brook's cut, which the ground's grid does not resolve (the grid has the ground some 0.9 m over the
+  water there). So a swoop to water takes the water as its floor at the pool and the grid's ground again within a few
+  metres to either side, and looks along its way to a point over both. Where the far side is higher than the swallow
+  flew in, it leaves over it. **Owed on the Mac**: a look at a swallow drinking at a pool with real banks (the line
+  trace keeps it out of trees and walls; a steep bank right at the pool's rim could be brushed for a frame or two).
+
+Checks: `BIRD_ONLY=habits` "by the brook" (the bar, who does what where, a pool in reach), `BIRD_ONLY=brook` on the real
+map (swallows put over the brook's stretches go down to its pools, each touches the water, none goes under).

@@ -276,3 +276,18 @@ def note_left(B, tid, x, y, z, yaw=0.0):
     p.face("CT_Paper", [(-0.07, 0.0, 0.02), (0.07, 0.0, 0.02), (0.07, 0.05, 0.002), (-0.07, 0.05, 0.002)])
     p.done()
     B.thing(tid, "take", (x, y, z + 0.05), yaw, what="note")
+
+
+def table_kettle(B, tid, x, y, z, yaw, reach=0.35):
+    """An electric kettle (white, black handle, on its base) standing on a table top at (x, y, z) and its thing
+    (what=kettle) `reach` metres in front of it (front toward the yaw's facing): club rooms, staff corners."""
+    p = kit._P(B, x, y, z, yaw, "table_kettle")
+    p.kind = "prop"
+    p.cyl("CT_Steel", 0, 0, 0.0, 0.018, 0.085, 10)
+    p.lathe("CT_TileWhite", 0, 0, [(0.075, 0.018), (0.08, 0.06), (0.07, 0.17), (0.05, 0.2), (0.0, 0.205)], 10)
+    p.rod("CT_TileWhite", (0.0, -0.07, 0.15), (0.0, -0.11, 0.19), 0.016, 5, caps=True)
+    p.rod("CT_Steel", (0.0, 0.075, 0.05), (0.0, 0.11, 0.1), 0.012, 4, caps=True)
+    p.rod("CT_Steel", (0.0, 0.11, 0.1), (0.0, 0.07, 0.19), 0.012, 4, caps=True)
+    p.done(top=0.21)
+    px, py = _local(x, y, yaw, 0.0, -reach)
+    B.thing(tid, "machine", (px, py, z + 0.15), yaw, what="kettle")

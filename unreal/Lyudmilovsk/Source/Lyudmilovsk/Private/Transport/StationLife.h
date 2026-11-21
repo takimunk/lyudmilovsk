@@ -19,6 +19,8 @@ namespace LyudTransport
 	struct FLifeRider
 	{
 		std::string Key, Group, Mesh;
+		std::string With;           // a child along with a parent: the day's chance is drawn by the parent's key
+		int Age = 35;
 		bool bRegular = false;
 	};
 
@@ -97,6 +99,67 @@ namespace LyudTransport
 		double CalmSince = -1.0;
 		int Weekday = 0;
 	};
+
+	/** The hall's mood (docs/transport.md "Hall moods"): what the hour, the day and the weather make of the waiting people. */
+	struct FHallMood
+	{
+		float Hour = 12.f;
+		bool bWeekend = false;
+		bool bRain = false;         // it rains or snows (PrecipRate over 0.1 mm/h)
+		bool bWindy = false;        // over WindWarn: people worry
+		bool bStopped = false;      // the wind stop
+		bool bBuffet = true;        // the barista is on shift
+		bool IsRush() const { return (Hour >= 7.f && Hour < 9.5f) || (Hour >= 16.5f && Hour < 19.f); }
+		bool IsLunch() const { return Hour >= 11.5f && Hour < 14.5f; }
+	};
+
+	/** A hall's spots (ALyudStationHall's slots): as halls.json's seats and stands, plus the queue behind the counter. */
+	enum class EHallSpot : uint8_t { Seat, TableSeat, Counter, Rail, Window, Diagram, Read, StandTable, Queue };
+	/** What a waiting person does there (the hall maps it to EPersonPose). */
+	enum class EHallPose : uint8_t { Stand, Talk, Look, Sit, Eat, Read, Work };
+
+	/** How much a person of Age (walking out: bOut) wants spot Kind in Mood; 0: never. Roll 0..1 is theirs. */
+	float HallSpotScore(int Age, bool bOut, EHallSpot Kind, const FHallMood& Mood, float Roll);
+	/** What they do at that spot (Roll 0..1, theirs). */
+	EHallPose HallPose(int Age, EHallSpot Kind, const FHallMood& Mood, float Roll);
+	/** A place as the picker sees it: its kind, its turn in the queue (the counter 0, then 1, 2 behind it), whether
+	 *  someone stands there (bTaken) and whether it can be taken now (bOpen: free and out of the player's sight). */
+	struct FHallPlace
+	{
+		EHallSpot Kind = EHallSpot::Seat;
+		int Queue = 0;
+		bool bTaken = false;
+		bool bOpen = true;
+	};
+	/** The place a person (Key, Age; walking out: bOut) takes: the best score among the open ones, a queue spot only behind
+	 *  a taken counter and the spots before it; -1: none. */
+	int HallPick(const std::vector<FHallPlace>& Places, const std::string& Key, int Age, bool bOut, const FHallMood& Mood, uint32_t Salt);
+
+	/** Passers-by in for the buffet or out of the weather, besides the riders (Salt: the hall and the hour). */
+	int HallFiller(const FHallMood& Mood, uint32_t Salt);
+	/** The barista between customers: working while someone waits at the counter, else by the hour (Roll 0..1). */
+	EHallPose BaristaPose(int Customers, const FHallMood& Mood, float Roll);
+	/** The attendant's moment (every so often, Roll 0..1): the logbook in a quiet hour, a word to the hall at a stop. */
+	EHallPose AttendantPose(int Waiting, const FHallMood& Mood, float Roll);
+	/** The bark category of the waiting people's words (line.transport.wait.<it>.N). */
+	const char* HallBark(const FHallMood& Mood);
+
+	/** A ride's weather and hour as the people aboard feel it (docs/transport.md "Cabin life"). */
+	struct FCabinMood
+	{
+		float Hour = 12.f;
+		bool bFog = false;          // visibility under 1.5 km: the bay gone, the next pylon a shadow
+		bool bRain = false;         // drops running down the glass
+		bool IsDark() const { return Hour < 6.5f || Hour >= 20.5f; }
+	};
+	/** What a rider does on the way: sits, reads, or stands at the side glass (a child's nose to it, an adult at the view). */
+	enum class ECabinAct : uint8_t { Sit, Read, Window };
+	/** Their act for this ride (Roll 0..1: theirs and the ride's); Aboard: how many ride with them. */
+	ECabinAct CabinAct(int Age, int Aboard, const FCabinMood& Mood, float Roll);
+	/** At most two at the glass (one each side): the acts of the riders aboard (ages; rolls) with the extras sat down. */
+	void CabinActs(const std::vector<int>& Ages, const std::vector<float>& Rolls, const FCabinMood& Mood, std::vector<ECabinAct>& Out);
+	/** The words aboard: line.transport.ride.<it>.N (a child at the glass: "kid"). */
+	const char* CabinBark(const FCabinMood& Mood, bool bKidAtGlass, float Roll);
 
 	/** A number 0..1 from a string and a salt (the same in the tool, the game and the tests). */
 	float LifeHash(const std::string& S, uint32_t Salt);

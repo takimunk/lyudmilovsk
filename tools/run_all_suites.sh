@@ -175,6 +175,7 @@ fi
 suite looksim.test                - bash tools/looksim/run.sh test
 suite looksim.weather             - bash tools/looksim/run.sh weather
 suite sea.test                    - bash tools/sea/run.sh test
+suite skyeventsim.test            - bash tools/skyeventsim/run.sh test
 suite sea.days                    - bash tools/sea/run.sh days
 suite sea.field                   - bash tools/sea/run.sh field
 suite telescopesim.test           - bash tools/telescopesim/run.sh test

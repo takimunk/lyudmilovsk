@@ -8,7 +8,7 @@
    "kind": "lighthouse",
    "variant": 0,
    "file": "lighthouse.glb",
-   "tris": 4420,
+   "tris": 4878,
    "size": [
     7.9,
     6.9,
@@ -16,13 +16,42 @@
    ],
    "collision": "box",
    "seats": [],
-   "notes": "the «Маяк» lighthouse for the cliff top: a whitewashed round masonry tower tapering from r 2.30 (z 0.9) to r 1.55 (z 19.2) with two red bands (z 8.2..10.4 and 13.8..16.0), on a stone socle (r 2.42, to z 0.9) and a round concrete plinth r 3.1 (top z 0.3, bedded to z -0.5, nothing else under ground); three small windows up the shaft; a corbelled gallery (deck z 20.0, r 2.38) with a black rail (top z 21.06); a lantern room (drum to z 20.92, 12-sided opaque dark glazing z 20.92..22.50 with black bars), a black cap, a ball and a wind vane (top z 24.45). Origin on the ground under the tower's axis. Front (-Y): a plank door (0.9 x 2.0 m, closed, not enterable) between white jambs on the plinth and two steps off the plinth (treads z 0.2 and 0.1, out to y -3.8). A keeper's annex on +X (x 1.2..4.6, y +-1.5, flat concrete roof z 2.9, its door on -Y at x 3.8, windows on -Y and +X). Collision: box (collision_boxes, axis-aligned, mesh space): plinth, steps, door surround, annex, the tower as a stack of squares (side 1.8 r), gallery and lantern as two boxes. lamp = the lantern's centre (glazing is opaque: a future light needs it emissive or in front)",
+   "notes": "the «Маяк» lighthouse for the cliff top: a whitewashed round masonry tower tapering from r 2.30 (z 0.9) to r 1.55 (z 19.2) with two red bands (z 8.2..10.4 and 13.8..16.0), on a stone socle (r 2.42, to z 0.9) and a round concrete plinth r 3.1 (top z 0.3, bedded to z -0.5, nothing else under ground); three small windows up the shaft; a corbelled gallery (deck z 20.0, r 2.38) with a black rail (top z 21.06); a lantern room (drum to z 20.92, 12-sided glazing, one quad per pane in the slot M_South_LanternGlass (UV 0..1), z 20.92..22.50 with black bars; the lantern floor and the cap's underside are closed discs, nothing opaque inside between them: the lens (kind lighthouse_lens) is a separate mesh at the lamp point), a black cap, a ball and a wind vane (top z 24.45). Origin on the ground under the tower's axis. Front (-Y): a plank door (0.9 x 2.0 m, closed, not enterable) between white jambs on the plinth and two steps off the plinth (treads z 0.2 and 0.1, out to y -3.8). A keeper's annex on +X (x 1.2..4.6, y +-1.5, flat concrete roof z 2.9, its door on -Y at x 3.8, windows on -Y and +X). The gallery is walkable: a hatch in the deck on the front (-Y; 0.62 m iron coaming round a dark hole at x 0, y -1.765, the lid standing open against the drum, two iron stiles curving up 0.9 m as hand holds). Collision: box (collision_boxes, axis-aligned, mesh space): plinth, steps, door surround, annex, the tower as a stack of squares (side 1.8 r), the deck (top z 20.0, one slab, the hatch is no hole), 32 rail posts (0.3 m, to z 21.06; gaps under 0.2 m), the lantern as two crossed boxes from the deck up. Manifest points (mesh frame, metres; yaw = degrees counter-clockwise seen from above, 0 = toward -Y the front): lamp = lens = the lantern's centre; hatch = where the hero stands on the deck by the hatch, facing outward; gallery_view = a standing point on the deck on the sea side (map +X = west = the sea, so with the thing's yaw 140 the sea is toward mesh (0.643, 0.766)), facing the sea; door_stand = on the first step in front of the door, facing it",
    "lamp": [
     0.0,
     0.0,
     21.71
    ],
+   "lens": [
+    0.0,
+    0.0,
+    21.71
+   ],
    "gallery_z": 20.0,
+   "hatch": {
+    "x": 0.8,
+    "y": -1.765,
+    "z": 20.0,
+    "yaw": 0.0
+   },
+   "gallery_view": {
+    "x": 1.125,
+    "y": 1.34,
+    "z": 20.0,
+    "yaw": 140.0
+   },
+   "door_stand": {
+    "x": 0.0,
+    "y": -2.98,
+    "z": 0.2,
+    "yaw": 180.0
+   },
+   "annex_door": {
+    "x": 3.8,
+    "y": -1.62,
+    "z": 0.23,
+    "yaw": 0.0
+   },
    "door": {
     "x": [
      -0.45,
@@ -167,29 +196,458 @@
      ]
     },
     {
-     "name": "gallery",
+     "name": "gallery_deck",
      "center": [
       0,
       0,
-      20.13
+      19.6
      ],
      "size": [
-      4.3,
-      4.3,
-      1.86
+      4.7,
+      4.7,
+      0.8
      ]
     },
     {
-     "name": "lantern",
+     "name": "rail_0",
+     "center": [
+      2.269,
+      0.223,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_1",
+     "center": [
+      2.182,
+      0.662,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_2",
+     "center": [
+      2.011,
+      1.075,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_3",
+     "center": [
+      1.762,
+      1.446,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_4",
+     "center": [
+      1.446,
+      1.762,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_5",
+     "center": [
+      1.075,
+      2.011,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_6",
+     "center": [
+      0.662,
+      2.182,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_7",
+     "center": [
+      0.223,
+      2.269,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_8",
+     "center": [
+      -0.223,
+      2.269,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_9",
+     "center": [
+      -0.662,
+      2.182,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_10",
+     "center": [
+      -1.075,
+      2.011,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_11",
+     "center": [
+      -1.446,
+      1.762,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_12",
+     "center": [
+      -1.762,
+      1.446,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_13",
+     "center": [
+      -2.011,
+      1.075,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_14",
+     "center": [
+      -2.182,
+      0.662,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_15",
+     "center": [
+      -2.269,
+      0.223,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_16",
+     "center": [
+      -2.269,
+      -0.223,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_17",
+     "center": [
+      -2.182,
+      -0.662,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_18",
+     "center": [
+      -2.011,
+      -1.075,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_19",
+     "center": [
+      -1.762,
+      -1.446,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_20",
+     "center": [
+      -1.446,
+      -1.762,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_21",
+     "center": [
+      -1.075,
+      -2.011,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_22",
+     "center": [
+      -0.662,
+      -2.182,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_23",
+     "center": [
+      -0.223,
+      -2.269,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_24",
+     "center": [
+      0.223,
+      -2.269,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_25",
+     "center": [
+      0.662,
+      -2.182,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_26",
+     "center": [
+      1.075,
+      -2.011,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_27",
+     "center": [
+      1.446,
+      -1.762,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_28",
+     "center": [
+      1.762,
+      -1.446,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_29",
+     "center": [
+      2.011,
+      -1.075,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_30",
+     "center": [
+      2.182,
+      -0.662,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_31",
+     "center": [
+      2.269,
+      -0.223,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "lantern_x",
      "center": [
       0,
       0,
-      22.28
+      21.75
      ],
      "size": [
-      2.4,
-      2.4,
-      2.44
+      2.5,
+      1.44,
+      3.5
+     ]
+    },
+    {
+     "name": "lantern_y",
+     "center": [
+      0,
+      0,
+      21.75
+     ],
+     "size": [
+      1.44,
+      2.5,
+      3.5
      ]
     }
    ],
@@ -204,7 +662,8 @@
     24.45
    ],
    "materials": [
-    "M_North_Atlas"
+    "M_North_Atlas",
+    "M_South_LanternGlass"
    ],
    "uv_lint": 0
   },

@@ -129,7 +129,13 @@ namespace
 			{ "read_book", "tolstoy" }, { "read", "paper_issue" }, { "letter_sent", "tonya" }, { "do", "garden_pick" }, { "do", "san_walk" },
 			{ "do", "girma_telescope" }, { "do", "school_microscope" }, { "do", "un_chess" }, { "do", "jukebox_records" }, { "do", "rcb_tea" },
 			{ "do", "sp_bikes" }, { "do", "haircut" }, { "do", "aton_scope" }, { "kite_flown", "" }, { "bird", "" }, { "corvid_gift", "Rook" },
-			{ "corvid_snatch", "HoodedCrow" }, { "photo", "beach" }, { "leave_computer", "" }, { "get", "apple" }, { "walk", "" }, { "do", "look_wallpaper" } };
+			{ "corvid_snatch", "HoodedCrow" }, { "photo", "beach" }, { "leave_computer", "" }, { "get", "apple" }, { "walk", "" }, { "do", "look_wallpaper" },
+			// tonight's systems (2026-11-21): lighthouse, brook, station, animals, cure, telescopes, habits, rounds, winter, cups
+			{ "do", "keeper_log" }, { "reach", "mayak_lighthouse" }, { "reach", "brook_bridge" }, { "reach", "cable_lower" }, { "do", "kiosk_cablecar" },
+			{ "animal_friend", "Maru" }, { "animal_stroked", "Cat" }, { "animal_fed", "Dog" }, { "animal_named", "Cat" }, { "procedure", "oxygen" },
+			{ "observe", "jupiter_night" }, { "observe", "saturn" }, { "bird_habit", "anting" }, { "round_done", "paper" }, { "winter", "snowman" },
+			{ "winter", "skate" }, { "winter", "banya" }, { "winter", "new_year_swim" }, { "cup_won", "chess" }, { "beat", "petrovich" },
+			{ "quote", "x" }, { "book_club", "x" }, { "fined", "conductor" }, { "stamp_set", "x" }, { "do", "pu_cafe_cat" }, { "do", "mk_catch" } };
 		const char* Precips[] = { "", "", "", "", "drizzle", "rain", "snow", "thunder" };
 		for (int D = First; D < First + N; ++D)
 		{
@@ -293,6 +299,31 @@ int main(int Argc, char** Argv)
 			Bytes += KV.first.size() + KV.second.size();
 		}
 		std::printf("save: %zu days, %zu bytes\n", Saved.size(), Bytes);
+	}
+
+	// 3b) tonight's events land on their own topics (first match wins, so order in content.py matters)
+	{
+		const std::vector<std::vector<std::string>> Want = {
+			{ "do", "keeper_cat", "lighthouse" }, { "reach", "mayak_station", "lighthouse" }, { "reach", "brook_mouth", "brook" },
+			{ "reach", "cable_upper", "cablecar" }, { "do", "kiosk_cablecar", "cablecar" }, { "animal_lap", "Maru", "maru" },
+			{ "animal_lap", "Cat", "cat" }, { "animal_sniffed", "Dog", "dog" }, { "animal_friend", "Dog", "animal_friend" },
+			{ "procedure", "quartz", "cure" }, { "observe", "jupiter_next", "jupiter" }, { "observe", "moon", "sky" },
+			{ "bird_habit", "x", "bird_habit" }, { "cup_won", "x", "cup" }, { "beat", "x", "win" }, { "round_done", "t3", "rounds" },
+			{ "winter", "snowball_fight", "snow_play" }, { "winter", "fall", "skate" }, { "winter", "venik", "banya" },
+			{ "winter", "walrus_club", "walrus" }, { "fined", "conductor", "fined" }, { "collection", "x", "collection" },
+			{ "do", "pu_bakery_cat", "cat" }, { "reach", "beach", "place" } };
+		for (const auto& W : Want)
+		{
+			const FTopic* T = M.Data.Match(W[0], W[1]);
+			if (!T || T->Id != W[2])
+			{
+				Fail(W[0] + " " + W[1] + " -> " + (T ? T->Id : std::string("nothing")) + ", want " + W[2]);
+			}
+		}
+		if (M.Data.Match("do", "mk_catch") || M.Data.Match("do", "pu_fish_catch"))
+		{
+			Fail("a fish catch counted as a cat");
+		}
 	}
 
 	// 4) noise never counts; firsts only once; a microscope is not a telescope

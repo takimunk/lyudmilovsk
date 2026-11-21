@@ -1383,6 +1383,19 @@
    }
   },
   {
+   "id": "cart_note",
+   "kind": "take",
+   "pos": [
+    -11.6,
+    16.046,
+    0.81
+   ],
+   "yaw": 198,
+   "props": {
+    "what": "note"
+   }
+  },
+  {
    "id": "chess_0",
    "kind": "play",
    "pos": [
@@ -1886,6 +1899,19 @@
    }
   },
   {
+   "id": "workshop_kettle",
+   "kind": "machine",
+   "pos": [
+    5.04,
+    27.457,
+    5.35
+   ],
+   "yaw": 234.0,
+   "props": {
+    "what": "kettle"
+   }
+  },
+  {
    "id": "workbench_2",
    "kind": "craft",
    "pos": [
@@ -1896,6 +1922,19 @@
    "yaw": 54,
    "props": {
     "what": "workbench"
+   }
+  },
+  {
+   "id": "workshop_photo",
+   "kind": "take",
+   "pos": [
+    6.961,
+    30.017,
+    5.3
+   ],
+   "yaw": 234.0,
+   "props": {
+    "what": "photo"
    }
   },
   {
@@ -4717,7 +4756,7 @@
  ],
  "tris": {
   "shell": 6692,
-  "detail": 38116,
+  "detail": 38278,
   "windows": 380,
   "dress": 9280
  }

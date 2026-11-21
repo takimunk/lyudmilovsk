@@ -1404,12 +1404,499 @@ static void TestHedgehogs()
 	CHECK(!W.HedgehogsOut() && W.Hedgehogs[H].State == EHog::Away, "in December they sleep");
 }
 
+static void TestFavourite()
+{
+	std::printf("town cats: a cat sees the resident it likes home\n");
+	FWorld W = Yard();
+	const V3 Door(22.6f, 10.f, 0.f);
+	const int Cat = W.AddAnimal(EKind::Cat, 0, 1, V3(-12.f, -6.f, 0.f));
+	const int Other = W.AddAnimal(EKind::Cat, 0, 2, V3(-36.f, -36.f, 0.f));
+	W.Animals[Cat].Tired = 0.f;
+	W.Animals[Cat].Hunger = 0.2f;
+	W.Animals[Other].Tired = 0.f;
+	W.SetFavourite(Cat, 11);
+	CHECK(!W.FavouriteHome(Other, V3(-10.f, -2.4f, 0.f), V3(1.3f, 0.f, 0.f), Door), "a cat that likes nobody follows nobody");
+	// the resident comes along the house's south wall, turns its corner and goes up to the door in the east wall
+	const std::vector<V3> Way = { V3(-20.f, -2.4f, 0.f), V3(22.6f, -2.4f, 0.f), Door };
+	V3 P = Way[0];
+	size_t Leg = 1;
+	float Hour = 17.5f;
+	int Tails = 0, SeeIns = 0, Meows = 0, With = 0, Near = 0, Under = 0, Frights = 0, Through = 0;
+	bool bIn = false, bSat = false;
+	float InAt = 0.f, DoneAt = -1.f, DoorD = 1e9f;
+	const float Dt = 0.05f;
+	for (float T = 0.f; T < 200.f; T += Dt)
+	{
+		Hour += Dt / 3600.f;
+		SetClock(W, Hour);
+		V3 Vel;
+		if (!bIn)
+		{
+			const V3 D = (Way[Leg] - P).Flat();
+			if (D.Len2D() < 0.1f)
+			{
+				Leg++;
+				if (Leg >= Way.size())
+				{
+					bIn = true;
+					InAt = T;
+				}
+			}
+			else
+			{
+				Vel = D.Norm() * 1.3f;
+				P = P + Vel * Dt;
+			}
+		}
+		if (!bIn)
+		{
+			W.FavouriteHome(Cat, P, Vel, Door);
+		}
+		W.Step(Dt);
+		const FAnimal& A = W.Animals[Cat];
+		for (const FEvent& E : W.Events)
+		{
+			Tails += E.Kind == EEvent::Tail && E.Animal == Cat ? 1 : 0;
+			SeeIns += E.Kind == EEvent::SeeIn && E.Animal == Cat ? 1 : 0;
+			Meows += E.Kind == EEvent::Meow && E.Animal == Cat && bIn ? 1 : 0;
+		}
+		W.Events.clear();
+		if (!bIn && A.Do == ECatDo::Tail)
+		{
+			const float D = (A.Pos - P).Len2D();
+			With++;
+			Near += D < 6.f ? 1 : 0;
+			Under += D < 0.7f ? 1 : 0;
+			Through += W.Walkable(A.Pos.X, A.Pos.Y) ? 0 : 1;
+		}
+		Frights += A.Act == EAct::Flee || A.Act == EAct::Climb || A.Act == EAct::Hiss ? 1 : 0;
+		if (bIn && A.Do == ECatDo::SeeIn && A.bDoThere)
+		{
+			bSat = bSat || A.Act == EAct::Sit;
+			DoorD = std::min(DoorD, (A.Pos - Door).Len2D());
+		}
+		if (bIn && DoneAt < 0.f && A.Do == ECatDo::None)
+		{
+			DoneAt = T - InAt;
+		}
+	}
+	CHECK(Tails == 1, "it falls in behind them once (%d)", Tails);
+	CHECK(With > 400 && Near > With * 0.8f, "and keeps behind them round the corner (%d of %d steps within 6 m)", Near, With);
+	CHECK(Under == 0 && Through == 0 && Frights == 0, "never under their feet, never through the wall (%d, %d)", Under, Through);
+	CHECK(SeeIns == 1 && bSat && DoorD < 2.5f, "they go in: it sits down at the door (%.1f m from it)", DoorD);
+	CHECK(Meows >= 1, "and says so (%d meows)", Meows);
+	CHECK(DoneAt > 15.f && DoneAt < 80.f, "then goes its own way (after %.0f s)", DoneAt);
+	CHECK(!W.FavouriteHome(Cat, W.Animals[Cat].Pos + V3(8.f, 0.f, 0.f), V3(1.f, 0.f, 0.f), V3(-30.f, -30.f, 0.f)), "not twice in an evening");
+}
+
+static void TestFishStall()
+{
+	std::printf("town cats: the fish stall\n");
+	FWorld W = Yard();
+	const V3 StallPos(-20.f, -20.f, 0.f);
+	const int Stall = W.AddStall(StallPos, 0.f);
+	const int Cat = W.AddAnimal(EKind::Cat, 0, 0, V3(-6.f, -30.f, 0.f));
+	const int Fed = W.AddAnimal(EKind::Cat, 0, 1, V3(-8.f, -28.f, 0.f));
+	const int Shy = W.AddAnimal(EKind::Cat, 0, 2, V3(-8.f, -32.f, 0.f));
+	for (int Id : { Cat, Fed, Shy })
+	{
+		W.Animals[Id].Tired = 0.f;
+		W.Animals[Id].Hunger = 0.8f;
+		W.Animals[Id].Bold = 0.8f;
+	}
+	W.Animals[Fed].Hunger = 0.05f;
+	W.Animals[Shy].Bold = 0.1f;
+	float Hour = 11.f;
+	int Came = 0;
+	Run(W, 120.f, 0.1f, Hour, [&](float)
+	{
+		for (int Id : { Cat, Fed, Shy })
+		{
+			Came += W.Animals[Id].Do == ECatDo::Beg ? 1 : 0;
+		}
+	});
+	CHECK(Came == 0, "shut: nobody comes");
+	W.StallOpen(Stall, true);
+	int BegEvents = 0, Meows = 0, Wrong = 0;
+	for (float T = 0.f; T < 150.f; T += 0.1f)
+	{
+		Hour += 0.1f / 3600.f;
+		SetClock(W, Hour);
+		W.Step(0.1f);
+		for (const FEvent& E : W.Events)
+		{
+			BegEvents += E.Kind == EEvent::BegStall && E.Animal == Cat ? 1 : 0;
+			Meows += E.Kind == EEvent::Meow && E.Animal == Cat && W.Animals[Cat].bDoThere ? 1 : 0;
+		}
+		W.Events.clear();
+		Wrong += W.Animals[Fed].Do == ECatDo::Beg || W.Animals[Shy].Do == ECatDo::Beg ? 1 : 0;
+	}
+	const FAnimal& A = W.Animals[Cat];
+	const V3 Spot = StallPos + V3(1.3f, 0.f, 0.f);
+	const V3 Fwd(std::cos(A.Yaw), std::sin(A.Yaw), 0.f);
+	const V3 ToStall = (StallPos - A.Pos).Flat().Norm();
+	CHECK(BegEvents == 1 && A.Do == ECatDo::Beg && A.Act == EAct::Beg && W.Begging(Stall) == 1,
+		"open: the hungry bold cat comes and sits begging (%s, %s)", CatDoName(A.Do), ActName(A.Act));
+	CHECK((A.Pos - Spot).Len2D() < 0.8f && Fwd.X * ToStall.X + Fwd.Y * ToStall.Y > 0.8f && A.bLook,
+		"in front of the counter, looking up at the seller (%.2f m off its spot)", (A.Pos - Spot).Len2D());
+	CHECK(Meows >= 3, "it asks (%d meows)", Meows);
+	CHECK(Wrong == 0, "the fed one and the shy one stay away");
+	CHECK(W.ThrowScrap(Stall), "the seller throws a scrap");
+	bool bAte = false;
+	Run(W, 6.f, 0.1f, Hour, [&](float) { bAte = bAte || (W.Animals[Cat].Do == ECatDo::Scrap && W.Animals[Cat].Act == EAct::Eat); });
+	CHECK(bAte, "it eats it there");
+	Run(W, 30.f, 0.1f, Hour);
+	CHECK(W.Animals[Cat].Do == ECatDo::None && W.Animals[Cat].Hunger < 0.2f && W.Animals[Cat].NoStall > 3600.f,
+		"and is off, fed (hunger %.2f)", W.Animals[Cat].Hunger);
+	CHECK(!W.ThrowScrap(Stall), "nobody left to throw to");
+	W.Animals[Cat].Hunger = 0.9f;
+	int Back = 0;
+	Run(W, 200.f, 0.1f, Hour, [&](float) { Back += W.Animals[Cat].Do == ECatDo::Beg ? 1 : 0; });
+	CHECK(Back == 0, "it does not come straight back for more");
+	// another comes; the stall shuts under it
+	W.Animals[Fed].Hunger = 0.9f;
+	bool bThere = false;
+	Run(W, 150.f, 0.1f, Hour, [&](float) { W.Animals[Fed].Hunger = 0.9f; bThere = bThere || (W.Animals[Fed].Do == ECatDo::Beg && W.Animals[Fed].bDoThere); });
+	W.StallOpen(Stall, false);
+	Run(W, 5.f, 0.1f, Hour);
+	CHECK(bThere && W.Animals[Fed].Do == ECatDo::None, "the stall shuts: the next beggar gives up");
+}
+
+static void TestShoo()
+{
+	std::printf("town cats: the cleaner's broom\n");
+	FWorld W = Yard();
+	W.AddRefuge(V3(-12.f, -14.f, 0.f), 3.f);
+	const int Cat = W.AddAnimal(EKind::Cat, 0, 0, V3(-10.f, -10.f, 0.f));
+	const int Far = W.AddAnimal(EKind::Cat, 0, 1, V3(-30.f, -30.f, 0.f));
+	W.Animals[Cat].Tired = 0.9f;
+	W.Animals[Cat].Act = EAct::Sleep;
+	W.Animals[Cat].ActLen = 1e9f;
+	float Hour = 23.f;
+	const V3 Broom(-11.5f, -10.f, 0.f);
+	CHECK(W.Shoo(Broom, 3.f) == 1 && W.Animals[Far].Do == ECatDo::None, "only the cat in the way is sent off");
+	int Events = 0;
+	for (const FEvent& E : W.Events)
+	{
+		Events += E.Kind == EEvent::Shooed && E.Animal == Cat ? 1 : 0;
+	}
+	W.Events.clear();
+	int Frights = 0, Off = 0;
+	bool bLooked = false;
+	float MaxD = 0.f;
+	Run(W, 16.f, 0.05f, Hour, [&](float)
+	{
+		const FAnimal& A = W.Animals[Cat];
+		Frights += A.Act == EAct::Flee || A.Act == EAct::Climb || A.Act == EAct::Perch || A.Act == EAct::Hiss ? 1 : 0;
+		Off += W.Walkable(A.Pos.X, A.Pos.Y) ? 0 : 1;
+		MaxD = std::max(MaxD, (A.Pos - Broom).Len2D());
+		if (A.Do == ECatDo::Shooed && A.bDoThere && A.DoTime > 2.f)
+		{
+			const V3 Fwd(std::cos(A.Yaw), std::sin(A.Yaw), 0.f);
+			const V3 To = (Broom - A.Pos).Flat().Norm();
+			bLooked = bLooked || (A.Act == EAct::Sit && A.bLook && Fwd.X * To.X + Fwd.Y * To.Y > 0.7f);
+		}
+	});
+	CHECK(Events == 1 && MaxD > 9.f, "it wakes and trots out of the way (%.1f m)", MaxD);
+	CHECK(Frights == 0 && Off == 0, "no fright in it: no tree, no hiss");
+	CHECK(bLooked, "then sits and looks back at the broom");
+	CHECK(W.Animals[Cat].Do == ECatDo::None, "and is its own cat again");
+	// a cat begging at the stall is swept from it and does not come straight back
+	const int Stall = W.AddStall(V3(-20.f, -20.f, 0.f), 0.f);
+	W.StallOpen(Stall, true);
+	FAnimal& B = W.Animals[Far];
+	B.Hunger = 0.9f;
+	B.Bold = 0.9f;
+	B.Tired = 0.f;
+	B.Act = EAct::Stand;        // it slept through the night's sweeping
+	B.ActTime = 0.f;
+	B.ActLen = 1.f;
+	Hour = 11.f;
+	Run(W, 150.f, 0.1f, Hour, [&](float) { W.Animals[Far].Hunger = 0.9f; });
+	const bool bBegged = B.Do == ECatDo::Beg && B.bDoThere;
+	const int N = W.Shoo(V3(-20.f, -20.f, 0.f), 3.f);
+	int Back = 0;
+	Run(W, 120.f, 0.1f, Hour, [&](float) { W.Animals[Far].Hunger = 0.9f; Back += W.Animals[Far].Do == ECatDo::Beg ? 1 : 0; });
+	CHECK(bBegged && N == 1 && Back == 0, "the seller's broom clears the counter for a while (begging %d, sent off %d, back %d)", (int)bBegged, N, Back);
+}
+
+static void TestSillWeather()
+{
+	std::printf("town cats: the window sill by the weather\n");
+	FWorld W = Yard();
+	W.Sunrise = 6.f;
+	W.Sunset = 20.f;
+	const V3 Sill(-1.2f, 6.f, 1.1f), Door(-2.6f, 12.f, 0.f);
+	const int Cat = W.AddAnimal(EKind::Cat, 0, 1, V3(-12.f, 0.f, 0.f));
+	W.AdoptCat(Cat, 3, Sill, 3.14159f, Door);
+	auto Noon = [&](bool bRain, float Temp, float Sun, float Seconds, int& Asleep)
+	{
+		W.Weather.bRain = bRain;
+		W.Weather.TempC = Temp;
+		W.Weather.Sun = Sun;
+		float Hour = 12.f;
+		int On = 0, Looks = 0;
+		Asleep = 0;
+		Run(W, Seconds, 0.5f, Hour, [&](float T)
+		{
+			if (T > 5.f)
+			{
+				On += W.Animals[Cat].Pet == EPet::Sill ? 1 : 0;
+				Asleep += W.Animals[Cat].Act == EAct::Sleep ? 1 : 0;
+				Looks++;
+			}
+		});
+		return (float)On / (float)std::max(1, Looks);
+	};
+	int Sleep = 0, SleepSun = 0, SleepGrey = 0;
+	CHECK(Noon(false, 18.f, 0.4f, 60.f, Sleep) > 0.99f, "a dry mild noon: on the sill");
+	CHECK(Noon(true, 18.f, 0.f, 60.f, Sleep) < 0.01f, "rain: indoors");
+	CHECK(Noon(false, 2.f, 0.1f, 60.f, Sleep) < 0.01f, "a grey cold day: indoors");
+	CHECK(Noon(false, 2.f, 0.9f, 60.f, Sleep) > 0.99f, "cold but the sun is on the glass: on the sill");
+	CHECK(Noon(false, -8.f, 0.9f, 60.f, Sleep) < 0.01f, "hard frost: indoors whatever the sun");
+	Noon(false, 22.f, 0.9f, 7200.f, SleepSun);
+	Noon(false, 22.f, 0.1f, 7200.f, SleepGrey);
+	CHECK(SleepSun > SleepGrey * 1.3f && SleepSun > 2000, "a warm sunny sill is slept on, a grey one watched from (%d against %d half-seconds asleep)", SleepSun, SleepGrey);
+}
+
+static void TestTownCats()
+{
+	TestFavourite();
+	TestFishStall();
+	TestShoo();
+	TestSillWeather();
+}
+
+static void TestMaruMoments()
+{
+	std::printf("the hero's dog: she waits up, welcomes, brings things, minds the weather and him, has her spots\n");
+	FWorld W = Yard();
+	W.Sunrise = 6.f;
+	W.Sunset = 20.f;
+	W.Month = 7;
+	const V3 Home(-10.f, -10.f, 0.f);
+	FPlace Wall, Hatch, Bench;
+	Wall.Kind = EPlace::SunnyWall;
+	Wall.Pos = V3(-28.f, -10.f, 0.f);
+	Wall.Sun = 1.f;
+	Hatch.Kind = EPlace::WarmHatch;
+	Hatch.Pos = V3(-10.f, -28.f, 0.f);
+	Hatch.Warm = 1.f;
+	Bench.Kind = EPlace::Bench;
+	Bench.Pos = V3(-28.f, -28.f, 0.f);
+	W.AddPlace(Wall);
+	W.AddPlace(Hatch);
+	W.AddPlace(Bench);
+	const int WallId = (int)W.Places.size() - 3, HatchId = WallId + 1, BenchId = WallId + 2;
+	const int Dog = W.AddAnimal(EKind::Dog, 3, 0, Home);
+	auto Count = [&](EEvent Kind, int* Other = nullptr)
+	{
+		int N = 0;
+		for (const FEvent& E : W.Events)
+		{
+			if (E.Kind == Kind && E.Animal == Dog)
+			{
+				N++;
+				if (Other)
+				{
+					*Other = E.Other;
+				}
+			}
+		}
+		return N;
+	};
+	auto Noted = [&](const char* Note)
+	{
+		return std::find(W.MomentNotes.begin(), W.MomentNotes.end(), std::string(Note)) != W.MomentNotes.end();
+	};
+	auto Fresh = [&]()
+	{
+		FAnimal& A = W.Animals[Dog];
+		A.Tired = 0.f;
+		A.Hunger = 0.1f;
+		A.NoWait = A.NoGift = A.NoComfort = A.NoSpot = 0.f;
+		A.Moment = EMoment::None;
+		A.Act = EAct::Stand;
+		A.ActTime = 0.f;
+		A.ActLen = 1.f;
+		A.Path.clear();
+		W.MomentNotes.clear();
+		W.Weather = FPetWeather();
+		W.Player.bPresent = false;
+		W.Player.bCrouched = false;
+		W.HeroStill = 0.f;
+	};
+	// not his dog yet: nothing of this
+	W.HeroDog = Dog;
+	W.Animals[Dog].Bond = 0.2f;
+	Fresh();
+	float Hour = 21.5f;
+	int Any = 0;
+	for (float T = 0.f; T < 120.f; T += 0.1f)
+	{
+		SetClock(W, Hour);
+		W.Step(0.1f);
+		Any += W.Animals[Dog].Moment != EMoment::None ? 1 : 0;
+		W.Events.clear();
+	}
+	CHECK(Any == 0, "a dog that is not his friend waits for nobody");
+
+	// he is late: she waits at the door, and runs to meet him
+	W.Animals[Dog].Bond = 0.9f;
+	Fresh();
+	W.Animals[Dog].Pos = V3(-22.f, -20.f, 0.f);
+	int Waits = 0, Sat = 0, Lay = 0, Whines = 0;
+	for (float T = 0.f; T < 420.f; T += 0.1f)
+	{
+		Hour += 0.1f / 3600.f;
+		SetClock(W, Hour);
+		W.Step(0.1f);
+		Waits += Count(EEvent::WaitLate);
+		Whines += Count(EEvent::Whine);
+		W.Events.clear();
+		const FAnimal& A = W.Animals[Dog];
+		Sat += A.Moment == EMoment::WaitLate && A.bMomentThere && A.Act == EAct::Sit ? 1 : 0;
+		Lay += A.Moment == EMoment::WaitLate && A.bMomentThere && A.Act == EAct::Rest ? 1 : 0;
+	}
+	CHECK(Waits == 1 && (W.Animals[Dog].Pos - Home).Len2D() < 2.5f, "dark and he is not back: she goes to the door (%.1f m from it)", (W.Animals[Dog].Pos - Home).Len2D());
+	CHECK(Sat > 100 && Lay > 100 && W.Animals[Dog].Act != EAct::Sleep, "sits, then lies there awake (%d, %d steps), whining now and then (%d)", Sat, Lay, Whines);
+	Stand(W, Home + V3(-20.f, 0.f, 0.f), V3(1.f, 0.f, 0.f));
+	int Welcomes = 0, Barks = 0;
+	float MinD = 1e9f;
+	bool bRan = false, bGreet = false;
+	for (float T = 0.f; T < 15.f; T += 0.05f)
+	{
+		W.Step(0.05f);
+		Welcomes += Count(EEvent::Welcome);
+		Barks += Count(EEvent::BarkHappy);
+		W.Events.clear();
+		const FAnimal& A = W.Animals[Dog];
+		MinD = std::min(MinD, (A.Pos - W.Player.Feet).Len2D());
+		bRan = bRan || A.Act == EAct::Run;
+		bGreet = bGreet || A.Act == EAct::Greet;
+	}
+	CHECK(Welcomes == 1 && Barks >= 1 && bRan && MinD < 1.6f && bGreet, "he comes: she runs to him barking and greets him (to %.1f m)", MinD);
+	CHECK(Noted("wait"), "the diary hears of it");
+	int Again = 0;
+	W.Player.bPresent = false;
+	Run(W, 60.f, 0.1f, Hour, [&](float) { Again += W.Animals[Dog].Moment == EMoment::WaitLate ? 1 : 0; });
+	CHECK(Again == 0, "one waiting an evening");
+
+	// a gift: she goes off, finds a thing, lays it at his feet
+	Fresh();
+	Hour = 12.f;
+	W.Animals[Dog].Pos = Home;
+	Stand(W, Home + V3(-6.f, 0.f, 0.f), V3(1.f, 0.f, 0.f));
+	int Gifts = 0, What = -1;
+	float Off = 0.f, GiveD = 1e9f;
+	bool bCarried = false, bSniffed = false;
+	for (float T = 0.f; T < 60.f; T += 0.05f)
+	{
+		SetClock(W, Hour);
+		W.Step(0.05f);
+		const int G = Count(EEvent::Gift, &What);
+		const FAnimal& A = W.Animals[Dog];
+		if (G)
+		{
+			GiveD = (A.Pos - W.Player.Feet).Len2D();
+		}
+		Gifts += G;
+		W.Events.clear();
+		Off = A.Moment == EMoment::Fetch ? std::max(Off, (A.Pos - W.Player.Feet).Len2D()) : Off;
+		bCarried = bCarried || (A.Moment == EMoment::Bring && A.Carry == FWorld::Shell);
+		bSniffed = bSniffed || (A.Moment == EMoment::Fetch && A.Act == EAct::Sniff);
+	}
+	CHECK(Gifts == 1 && What == FWorld::Shell && W.GiftNow() == FWorld::Shell, "in summer she brings him a shell (%d gift, kind %d)", Gifts, What);
+	CHECK(Off > 8.f && bSniffed && bCarried && GiveD < 1.6f, "found a little way off (%.1f m), carried back, laid at his feet (%.1f m)", Off, GiveD);
+	CHECK(Noted("gift_shell") && W.Animals[Dog].Carry < 0 && W.Animals[Dog].NoGift > 3600.f, "noted, and one a day");
+	W.Month = 1;
+	const int Winter = W.GiftNow();
+	W.Month = 10;
+	const int Autumn = W.GiftNow();
+	W.Month = 4;
+	CHECK(Winter == FWorld::Mitten && Autumn == FWorld::Cone && W.GiftNow() == FWorld::Stick, "a mitten in winter, a cone in autumn, a stick in spring");
+
+	// thunder: she presses against him
+	Fresh();
+	W.Animals[Dog].NoGift = 1e6f;
+	W.Animals[Dog].Pos = Home;
+	Stand(W, Home + V3(-10.f, 0.f, 0.f), V3(1.f, 0.f, 0.f));
+	W.Weather.bRain = true;
+	W.Weather.bThunder = true;
+	int Comforts = 0;
+	Run(W, 0.f, 0.1f, Hour);
+	for (float T = 0.f; T < 25.f; T += 0.05f)
+	{
+		W.Step(0.05f);
+		Comforts += Count(EEvent::Comfort);
+		W.Events.clear();
+	}
+	CHECK(Comforts == 1 && (W.Animals[Dog].Pos - W.Player.Feet).Len2D() < 1.f && W.Animals[Dog].Lean > 0.5f && Noted("thunder"),
+		"thunder: she comes and presses against him (%.2f m, lean %.1f)", (W.Animals[Dog].Pos - W.Player.Feet).Len2D(), W.Animals[Dog].Lean);
+	// he sits low and still a long while: she comes too
+	Fresh();
+	W.Animals[Dog].NoGift = 1e6f;
+	W.Animals[Dog].Pos = Home;
+	Stand(W, Home + V3(-10.f, 0.f, 0.f), V3(1.f, 0.f, 0.f));
+	W.Player.bCrouched = true;
+	Comforts = 0;
+	float CameAt = -1.f;
+	for (float T = 0.f; T < 80.f; T += 0.05f)
+	{
+		W.Step(0.05f);
+		if (Count(EEvent::Comfort))
+		{
+			Comforts++;
+			CameAt = T;
+		}
+		W.Events.clear();
+	}
+	CHECK(Comforts == 1 && CameAt > 40.f && Noted("comfort"), "he sits low and still: after a while she lies down against him (at %.0f s)", CameAt);
+
+	// rain with him away: under the porch
+	Fresh();
+	W.Animals[Dog].Pos = V3(-24.f, -22.f, 0.f);
+	W.Weather.bRain = true;
+	int Shelters = 0;
+	for (float T = 0.f; T < 60.f; T += 0.1f)
+	{
+		SetClock(W, Hour);
+		W.Step(0.1f);
+		Shelters += Count(EEvent::Shelter);
+		W.Events.clear();
+	}
+	CHECK(Shelters == 1 && (W.Animals[Dog].Pos - Home).Len2D() < 2.f && W.Animals[Dog].Act == EAct::Rest && Noted("shelter"),
+		"rain: she lies under the porch (%.1f m from the door)", (W.Animals[Dog].Pos - Home).Len2D());
+	W.Weather.bRain = false;
+	Run(W, 3.f, 0.1f, Hour);
+	CHECK(W.Animals[Dog].Moment != EMoment::Shelter, "it stops: she is up again (%s)", MomentName(W.Animals[Dog].Moment));
+
+	// her places by the season
+	W.Month = 1;
+	const int SpotWinter = W.FavouriteSpot(Dog);
+	W.Month = 7;
+	const int SpotSummer = W.FavouriteSpot(Dog);
+	W.Month = 10;
+	const int SpotAutumn = W.FavouriteSpot(Dog);
+	W.Month = 4;
+	CHECK(SpotWinter == HatchId && SpotSummer == BenchId && SpotAutumn == WallId && W.FavouriteSpot(Dog) == WallId,
+		"the warm hatch in winter, the bench in summer, the sunny wall in spring and autumn");
+	Fresh();
+	W.Animals[Dog].Pos = Home;
+	Hour = 11.f;
+	Run(W, 90.f, 0.1f, Hour);
+	CHECK((W.Animals[Dog].Pos - Wall.Pos).Len2D() < 2.5f && W.Animals[Dog].Act == EAct::Rest && Noted("spot_spring"),
+		"an April morning without him: she lies by the sunny wall (%.1f m from it, %s)", (W.Animals[Dog].Pos - Wall.Pos).Len2D(), ActName(W.Animals[Dog].Act));
+}
+
 static void TestPets()
 {
 	TestLeash();
 	TestFlatCat();
 	TestFeederLady();
 	TestHedgehogs();
+	TestTownCats();
+	TestMaruMoments();
 }
 
 static int Trace(int Argc, char** Argv)

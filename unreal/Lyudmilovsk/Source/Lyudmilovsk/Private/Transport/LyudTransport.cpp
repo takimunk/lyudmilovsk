@@ -34,6 +34,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "People/PeopleLife.h"
+#include "People/TownTalk.h"
 #include "../People/PeopleSim.h"
 #include "SLyudTransitWidgets.h"
 #include "Transport/LyudCableway.h"
@@ -663,6 +664,75 @@ void ULyudTransportSubsystem::StepLife(float DeltaTime)
 	Life->Step(*Net, LifeClock);
 }
 
+void ULyudTransportSubsystem::TickCabinTalk(float DeltaTime)
+{
+	if (!Life || !Net || RidingCabin < 0 || RidingCabin >= SimNum(Net->Cabins))
+	{
+		ReplyIn = -1.f;
+		return;
+	}
+	ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this);
+	if (!Talk)
+	{
+		return;
+	}
+	// the answer a few seconds after
+	if (ReplyIn > 0.f)
+	{
+		ReplyIn -= DeltaTime;
+		if (ReplyIn <= 0.f && ReplyBody.IsValid())
+		{
+			Talk->SayLine(ReplyBody.Get(), FString::Printf(TEXT("line.transport.ride.reply.%d"), 1 + (int32)((uint32)(LifeClock * 97.f) % 4u)));
+		}
+	}
+	CabinTalkTimer -= DeltaTime;
+	if (CabinTalkTimer > 0.f)
+	{
+		return;
+	}
+	CabinTalkTimer = 30.f + 30.f * LT::LifeHash("cabin_talk", (uint32)(LifeClock * 60.f));
+	// the riders of the station life aboard with the player (their bodies)
+	AActor* Say[8];
+	int32 N = 0;
+	for (const int RI : Net->Cabins[RidingCabin].Riders)
+	{
+		if (N < 8 && SimValid(Net->Riders, RI))
+		{
+			if (const TWeakObjectPtr<AActor>* B = LifeBodies.Find(Net->Riders[RI].Who); B && B->IsValid())
+			{
+				Say[N++] = B->Get();
+			}
+		}
+	}
+	if (N == 0)
+	{
+		return;
+	}
+	LT::FCabinMood Mood;
+	Mood.Hour = FMath::Fmod(LifeHour(), 24.f);
+	if (const ULyudWeatherSubsystem* W = ULyudWeatherSubsystem::Get(this))
+	{
+		const FLyudWeatherState WS = W->GetState();
+		Mood.bFog = WS.VisibilityM < 1500.f;
+		Mood.bRain = WS.PrecipRate > 0.1f;
+	}
+	const float Roll = LT::LifeHash("cabin_say", (uint32)(LifeClock * 600.f));
+	int32 Who = (int32)(Roll * 1000.f) % N;
+	const FString What = UTF8_TO_TCHAR(LT::CabinBark(Mood, bKidAtGlass && GlassKid.IsValid(), Roll));
+	if (What == TEXT("kid"))
+	{
+		// the child at the glass says it
+		for (int32 I = 0; I < N; I++)
+		{
+			Who = Say[I] == GlassKid.Get() ? I : Who;
+		}
+	}
+	Talk->SayLine(Say[Who], FString::Printf(TEXT("line.transport.ride.%s.%d"), *What, 1 + (int32)((uint32)(Roll * 4000.f) % 4u)));
+	// a neighbour answers (two or more aboard)
+	ReplyIn = N > 1 ? 3.5f : -1.f;
+	ReplyBody = N > 1 ? Say[(Who + 1) % N] : nullptr;
+}
+
 void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTime)
 {
 	if (!Life || !Net)
@@ -675,6 +745,16 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
 	TSet<int32>& Seen = LifeSeen;      // kept between frames (no allocation each frame)
 	Seen.Reset();
+	// the ride's weather and hour: who stands at the glass, who reads (docs/transport.md "Cabin life")
+	LT::FCabinMood Mood;
+	Mood.Hour = FMath::Fmod(LifeHour(), 24.f);
+	if (const ULyudWeatherSubsystem* W = ULyudWeatherSubsystem::Get(this))
+	{
+		const FLyudWeatherState WS = W->GetState();
+		Mood.bFog = WS.VisibilityM < 1500.f;
+		Mood.bRain = WS.PrecipRate > 0.1f;
+	}
+	bKidAtGlass = false;
 	for (int32 C = 0; C < Cabins.Num() && C < SimNum(Net->Cabins); C++)
 	{
 		ALyudCabin* A = Cabins[C];
@@ -682,11 +762,41 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 		{
 			continue;
 		}
+		// this cabin's acts: each rider's for the ride, at most two at the glass (one each side), the children first
+		constexpr int32 MaxAboard = 8;
+		int32 Aboard = 0, Ages[MaxAboard];
+		uint8 Acts[MaxAboard];
+		for (const int RI : Net->Cabins[C].Riders)
+		{
+			if (Aboard < MaxAboard && SimValid(Net->Riders, RI) && Net->Riders[RI].Who >= LT::FStationLife::Base
+				&& SimValid(Life->Riders, Net->Riders[RI].Who - LT::FStationLife::Base))
+			{
+				const LT::FLifeRider& Rd = Life->Riders[Net->Riders[RI].Who - LT::FStationLife::Base];
+				Ages[Aboard] = Rd.Age;
+				Acts[Aboard] = (uint8)LT::CabinAct(Rd.Age, (int)Net->Cabins[C].Riders.size(), Mood, LT::LifeHash(Rd.Key, 401u + (uint32)RI));
+				Aboard++;
+			}
+		}
+		for (int32 Pass = 0, Glass = 0; Pass < 2; Pass++)
+		{
+			for (int32 I = 0; I < Aboard; I++)
+			{
+				if (Acts[I] == (uint8)LT::ECabinAct::Window && (Ages[I] < 13) == (Pass == 0) && ++Glass > 2)
+				{
+					Acts[I] = (uint8)LT::ECabinAct::Sit;
+				}
+			}
+		}
+		int32 K = -1, Side = 0;
 		for (const int RI : Net->Cabins[C].Riders)
 		{
 			if (!SimValid(Net->Riders, RI) || Net->Riders[RI].Who < LT::FStationLife::Base)
 			{
 				continue;
+			}
+			if (SimValid(Life->Riders, Net->Riders[RI].Who - LT::FStationLife::Base))
+			{
+				K++;
 			}
 			const int32 Who = Net->Riders[RI].Who;
 			const int32 Rider = Who - LT::FStationLife::Base;
@@ -734,7 +844,26 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 				}
 				Body->Drive(T.GetLocation(), T.Rotator().Yaw, EPersonPose::Sit, 0, 0.f, 44.f, 0.f, true);
 			}
-			Body->Drive(T.GetLocation(), T.Rotator().Yaw, EPersonPose::Sit, 0, 0.f, 44.f, DeltaTime, true);
+			const LT::ECabinAct Act = K >= 0 && K < Aboard ? (LT::ECabinAct)Acts[K] : LT::ECabinAct::Sit;
+			if (Act == LT::ECabinAct::Window)
+			{
+				// up at the side glass, facing out (a child's nose to it): the first one on the left, the next on the right
+				const FTransform& AT = A->GetActorTransform();
+				const FVector L = AT.InverseTransformPosition(T.GetLocation());
+				const float Y = Side++ == 0 ? 60.f : -60.f;
+				const FVector At = AT.TransformPosition(FVector(L.X * 0.4f, Y, L.Z));
+				const float Yaw = A->GetActorRotation().Yaw + (Y > 0.f ? 90.f : -90.f);
+				Body->Drive(At, Yaw, EPersonPose::Look, 0, 0.f, 0.f, DeltaTime, true);
+				if (C == RidingCabin && Ages[K] < 13)
+				{
+					bKidAtGlass = true;
+					GlassKid = Body;
+				}
+			}
+			else
+			{
+				Body->Drive(T.GetLocation(), T.Rotator().Yaw, Act == LT::ECabinAct::Read ? EPersonPose::Read : EPersonPose::Sit, 0, 0.f, 44.f, DeltaTime, true);
+			}
 		}
 	}
 	// the ones off the cabins (or out of range): gone
@@ -809,6 +938,7 @@ void ULyudTransportSubsystem::Tick(float DeltaTime)
 		PC->GetPlayerViewPoint(View, ViewRot);
 	}
 	DrawLifeRiders(View, DeltaTime);
+	TickCabinTalk(DeltaTime);
 	if (ViewTimer > 0.f)
 	{
 		ViewTimer -= DeltaTime;

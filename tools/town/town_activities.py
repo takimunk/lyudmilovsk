@@ -41,7 +41,7 @@ EXPORT = os.path.join(ROOT, "blender", "export", "city", "%s.json")
 STRINGS = os.path.join(CONTENT, "Localization", "town", "strings_%s.json")
 OD = collections.OrderedDict
 
-PLACE_IDS = ["P-CLUB2-CINEMA", "P-SANATORIUM-LOUNGE", "P-SANATORIUM-PUMP", "P-HALL-STAGE", "P-T2H2-ALLOTMENT", "S-POST-ROUND"]
+PLACE_IDS = ["P-CLUB2-CINEMA", "P-SANATORIUM-LOUNGE", "P-SANATORIUM-PUMP", "P-HALL-STAGE", "P-T2H2-ALLOTMENT", "S-POST-ROUND", "S-BEACH-STONES"]
 
 # activities.json rows, one a line. The cinema has two sessions a day (the Rassvet's programme: the day's film from 15:00,
 # the evening's from 19:00): "hours" is when people set off for one. "temp": [min, max] C: chosen only in such weather.
@@ -49,12 +49,12 @@ ACTIVITIES_ROWS = [
     '{"id": "cinema_day", "places": ["cinema_hall"], "slots": ["cinema_seat"], "pose": "sit", "minutes": [88, 96], "hours": [14.6, 15.2], "ages": [6, 200], "meets": {"fun": 0.9, "mind": 0.3, "social": 0.25}, "base": -0.32, "trait": "social"}',
     '{"id": "cinema_evening", "places": ["cinema_hall"], "slots": ["cinema_seat"], "pose": "sit", "minutes": [88, 96], "hours": [18.6, 19.2], "ages": [12, 200], "meets": {"fun": 0.9, "mind": 0.3, "social": 0.3}, "base": -0.05, "trait": "social"}',
     '{"id": "san_cure", "places": ["sanatorium_pump"], "slots": ["cure_seat"], "pose": "sit", "minutes": [20, 40], "hours": [9, 12.5], "days": [0, 1, 2, 3, 4, 5], "ages": [60, 200], "meets": {"tired": 0.2, "social": 0.35, "hunger": 0.3}, "base": -0.28, "trait": ""}',
-    '{"id": "dominoes", "places": ["sanatorium_lounge"], "slots": ["domino_seat"], "pose": "sit", "minutes": [40, 90], "hours": [15, 20], "ages": [58, 200], "meets": {"social": 0.9, "fun": 0.7, "mind": 0.2}, "base": -0.3, "trait": "social", "talk": 1}',
+    '{"id": "dominoes", "places": ["sanatorium_lounge"], "slots": ["domino_seat"], "pose": "sit", "minutes": [40, 90], "hours": [15, 20], "ages": [58, 200], "meets": {"social": 0.9, "fun": 0.7, "mind": 0.2}, "base": -0.3, "trait": "social"}',
     '{"id": "play_piano", "places": ["hall_stage"], "slots": ["piano_seat"], "pose": "sit", "minutes": [15, 35], "hours": [18, 20.6], "ages": [10, 200], "meets": {"fun": 0.6, "mind": 0.5}, "base": -1.7, "trait": "studious"}',
     '{"id": "tend_allotment", "places": ["allotment"], "slots": ["bed_side"], "pose": "stand", "minutes": [30, 70], "hours": [6.5, 10.5], "daylight": 1, "temp": [6, 40], "meets": {"nature": 0.9, "sun": 0.4, "fun": 0.2}, "costs": {"tired": 0.08, "hunger": 0.08}, "base": -1.6, "trait": "nature"}',
     '{"id": "water_allotment", "places": ["allotment"], "slots": ["bed_side"], "pose": "stand", "minutes": [15, 30], "hours": [14.5, 20.5], "daylight": 1, "temp": [5, 40], "meets": {"nature": 0.8, "fun": 0.2}, "costs": {"tired": 0.04}, "base": -1.6, "trait": "nature"}',
     '{"id": "read_paper", "places": ["park", "pond", "fountain", "promenade", "promenade_bench", "town_bench", "bench"], "slots": ["bench"], "pose": "sit", "minutes": [20, 45], "hours": [7, 11.5], "daylight": 1, "temp": [4, 40], "ages": [30, 200], "meets": {"mind": 0.55, "nature": 0.3, "sun": 0.2}, "base": -0.2, "trait": "studious"}',
-    '{"id": "skip_stones", "places": ["beach"], "pose": "look", "minutes": [10, 25], "hours": [9, 20], "ages": [6, 70], "daylight": 1, "wind": [0, 7.5], "temp": [3, 40], "meets": {"fun": 0.8, "nature": 0.6, "sun": 0.2}, "costs": {"tired": 0.03}, "base": -0.25, "trait": "active"}',
+    '{"id": "skip_stones", "places": ["stone_shore"], "slots": ["stand"], "pose": "look", "minutes": [10, 25], "hours": [9, 20], "ages": [6, 70], "daylight": 1, "wind": [0, 7.5], "temp": [3, 40], "meets": {"fun": 0.8, "nature": 0.6, "sun": 0.2}, "costs": {"tired": 0.03}, "base": -0.25, "trait": "active"}',
     '{"id": "post_round", "places": ["post_round"], "slots": ["stand"], "pose": "stand", "wander": 1, "round": 1, "wander_pause": [50, 130], "minutes": [60, 60], "meets": {"social": 0.4, "nature": 0.5, "sun": 0.3}, "costs": {"hunger": 0.05, "tired": 0.03}, "free": 0, "rain": "ok"}',
 ]
 ACT_IDS = [json.loads(r)["id"] for r in ACTIVITIES_ROWS]
@@ -208,10 +208,31 @@ def allotment(garden, folk_keys):
         side = 1.0 if bx < cx else -1.0         # the lane is toward the yard's middle
         for dy in (-0.9, 0.9):
             slots.append(OD([("kind", "bed_side"), ("pos", r2([bx + side * (garden["bed_size"][0] / 2 + 0.45), by + dy, bz])),
-                             ("yaw", 180.0 if side > 0 else 0.0), ("approach", r2([cx, by + dy, bz])), ("owner", b["keeper"])]))
+                             ("yaw", 180.0 if side > 0 else 0.0),
+                             # a standing place is stood at its approach point: the bed's side itself, reached along the lane
+                             ("approach", r2([bx + side * (garden["bed_size"][0] / 2 + 0.45), by + dy, bz])),
+                             ("path", [r2([cx, by + dy, bz])]), ("owner", b["keeper"])]))
     return OD([("id", "P-T2H2-ALLOTMENT"), ("kind", "allotment"), ("door", r2([gate[0], gate[1] - 1.0, gate[2]])), ("yaw", site["yaw"]),
                ("island", 0), ("open", 1), ("slots", slots), ("roles", []),
                ("path", [r2([gate[0] + 0.2, gate[1] + 2.6, gate[2]]), r2([cx, gate[1] + 6.0, gate[2]])])])
+
+
+def stone_shore():
+    """Where flat stones are sent over the water: spots along the town's beach on the wet sand's edge, 6.5 m up from the
+    mean water line (the ground there is a hand over the springs' high water: tools/world_map.py), facing the sea."""
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import world_map as wm
+    beach = next(p for p in load(PLACES)["places"] if p["id"] == "S-BEACH")
+    ys = [sl["pos"][1] for sl in beach["slots"]]
+    slots = []
+    y = min(ys) + 12.0
+    while y < max(ys):
+        x = wm.shore_x(y) - 6.5
+        pos = r2([x, y, wm.height(x, y)])
+        slots.append(OD([("kind", "stand"), ("pos", pos), ("yaw", 0.0), ("height", 0.0), ("approach", list(pos))]))
+        y += 45.0
+    mid = slots[len(slots) // 2]["pos"]
+    return OD([("id", "S-BEACH-STONES"), ("kind", "stone_shore"), ("pos", list(mid)), ("yaw", 0.0), ("island", 0), ("slots", slots), ("roles", [])])
 
 
 def post_round(places):
@@ -271,14 +292,11 @@ def build():
     fd = load(FOLK)
     people = fd["people"]
     keys = {p["key"] for p in people}
-    new = [cinema(plan, things, by_id)] + sanatorium(plan, things, by_id) + [hall(plan, things, by_id), allotment(garden, keys), post_round(places)]
+    new = [cinema(plan, things, by_id)] + sanatorium(plan, things, by_id) + [hall(plan, things, by_id), allotment(garden, keys), post_round(places), stone_shore()]
     assert [p["id"] for p in new] == PLACE_IDS
     # each stays where it stands in the file (other add-ons put their places after ours); a new one goes to the end
     fresh = {p["id"]: p for p in new}
-    if all(i in was for i in PLACE_IDS):
-        pd["places"] = [fresh.get(p["id"], p) for p in pd["places"]]
-    else:
-        pd["places"] = places + new
+    pd["places"] = [fresh.get(p["id"], p) for p in pd["places"]] + [p for p in new if p["id"] not in was]
     out[PLACES] = dump(pd)
 
     # the people: the beds' keepers, those who play, the postman

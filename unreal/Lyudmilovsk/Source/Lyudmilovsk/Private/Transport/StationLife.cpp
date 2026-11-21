@@ -53,6 +53,8 @@ namespace LyudTransport
 			Rd.Key = R["key"].S();
 			Rd.Group = R["group"].S();
 			Rd.Mesh = R["mesh"].S();
+			Rd.Age = R["age"].I(35);
+			Rd.With = R["with"].S();
 			Rd.bRegular = std::find(Regulars.begin(), Regulars.end(), Rd.Key) != Regulars.end();
 			const int RI = (int)Riders.size();
 			bool bAny = false;
@@ -110,7 +112,8 @@ namespace LyudTransport
 				continue;
 			}
 			// the chance by the rider and the day (both trips of a beach day go or neither: the rider's draw, not the trip's)
-			if (Tr.Chance < 1.f && LifeHash(Riders[Tr.Rider].Key, 7919u * (uint32_t)(InDay + 1)) >= Tr.Chance)
+			const FLifeRider& Rd = Riders[Tr.Rider];
+			if (Tr.Chance < 1.f && LifeHash(Rd.With.empty() ? Rd.Key : Rd.With, 7919u * (uint32_t)(InDay + 1)) >= Tr.Chance)
 			{
 				continue;
 			}
@@ -119,6 +122,23 @@ namespace LyudTransport
 			R.At = Tr.At;
 			R.HallMinutes = 2.f + 6.f * LifeHash(Riders[Tr.Rider].Key, 31u + (uint32_t)T);
 			Today.push_back(R);
+		}
+		// a child along with a parent keeps to the parent's minutes in the hall: the same cabin
+		for (FLifeRun& K : Today)
+		{
+			const FLifeTrip& KT = Trips[K.Trip];
+			if (Riders[KT.Rider].With.empty())
+			{
+				continue;
+			}
+			for (const FLifeRun& P : Today)
+			{
+				const FLifeTrip& PT = Trips[P.Trip];
+				if (Riders[PT.Rider].Key == Riders[KT.Rider].With && PT.From == KT.From && PT.To == KT.To && PT.At == KT.At)
+				{
+					K.HallMinutes = P.HallMinutes;
+				}
+			}
 		}
 	}
 
@@ -308,5 +328,270 @@ namespace LyudTransport
 			bWindStopped ? " (STOPPED)" : "");
 		(void)N;
 		return Buf;
+	}
+
+	// --- the hall's moods (docs/transport.md "Hall moods") ---
+
+	float HallSpotScore(int Age, bool bOut, EHallSpot Kind, const FHallMood& M, float Roll)
+	{
+		const bool bKid = Age < 16, bTeen = Age < 18, bOld = Age >= 60;
+		const bool bSeat = Kind == EHallSpot::Seat || Kind == EHallSpot::TableSeat;
+		if (bOut && (bSeat || Kind == EHallSpot::Counter || Kind == EHallSpot::Queue))
+		{
+			return 0.f;                 // walking out: on their way, a look at the window or the diagram at most
+		}
+		if ((Kind == EHallSpot::Counter || Kind == EHallSpot::Queue) && !M.bBuffet)
+		{
+			return 0.f;
+		}
+		float S = 1.f;
+		switch (Kind)
+		{
+		case EHallSpot::Seat:
+			S = bOld ? 2.6f : bKid ? 0.6f : 1.f;
+			S *= M.IsRush() ? 0.7f : 1.2f;        // the rush stands, ready to go
+			break;
+		case EHallSpot::TableSeat:
+			S = bKid ? 0.4f : 1.f;
+			S *= M.IsLunch() ? 2.2f : M.Hour >= 19.f ? 1.4f : 0.9f;
+			S *= M.bWeekend ? 1.5f : 1.f;
+			S *= M.bBuffet ? 1.f : 0.3f;
+			break;
+		case EHallSpot::Counter:
+		case EHallSpot::Queue:
+			S = bKid ? 0.5f : bOld ? 0.8f : 1.2f;
+			S *= M.IsRush() ? 2.6f : M.IsLunch() ? 1.8f : 0.8f; // a coffee for the road
+			S *= M.bStopped ? 2.f : M.bRain ? 1.4f : 1.f;     // stuck: tea while it blows over
+			break;
+		case EHallSpot::Rail:
+			S = M.IsRush() ? 1.6f : 0.8f;
+			S *= bOld ? 0.5f : 1.f;
+			break;
+		case EHallSpot::Window:
+			S = bKid ? 4.f : bTeen ? 2.4f : 0.8f;
+			S *= M.bRain ? 1.6f : 1.f;              // the rain on the glass, the sea under it
+			S *= M.bWindy || M.bStopped ? 1.4f : 1.f;
+			break;
+		case EHallSpot::Diagram:
+			S = bKid ? 2.f : 0.7f;
+			S *= M.bStopped ? 1.6f : 1.f;
+			break;
+		case EHallSpot::Read:
+			S = bOld ? 2.f : bKid ? 0.4f : 1.f;
+			S *= M.Hour < 11.f ? 1.6f : 1.f;        // the morning paper
+			break;
+		case EHallSpot::StandTable:
+			S = bKid ? 0.5f : 1.f;
+			S *= M.IsRush() || M.IsLunch() ? 1.5f : 1.f;
+			S *= M.bBuffet ? 1.f : 0.5f;
+			break;
+		}
+		if (bOut)
+		{
+			S *= Kind == EHallSpot::Window || Kind == EHallSpot::Diagram ? 1.5f : 0.8f;
+		}
+		return S * (0.6f + 0.8f * Roll);
+	}
+
+	EHallPose HallPose(int Age, EHallSpot Kind, const FHallMood& M, float Roll)
+	{
+		const bool bKid = Age < 16, bOld = Age >= 60;
+		switch (Kind)
+		{
+		case EHallSpot::Seat:
+			if (bKid)
+			{
+				return Roll < 0.5f ? EHallPose::Look : EHallPose::Sit;
+			}
+			// the paper in the morning and with the old; a word with the neighbour when the wind holds everyone
+			if (M.bStopped && Roll < 0.4f)
+			{
+				return EHallPose::Talk;
+			}
+			return Roll < (M.Hour < 11.f ? 0.55f : 0.3f) + (bOld ? 0.2f : 0.f) ? EHallPose::Read : EHallPose::Sit;
+		case EHallSpot::TableSeat:
+			if (M.IsLunch() || M.Hour >= 18.5f)
+			{
+				return Roll < 0.7f ? EHallPose::Eat : EHallPose::Talk;
+			}
+			return Roll < 0.4f ? EHallPose::Eat : Roll < 0.75f ? EHallPose::Read : EHallPose::Talk;
+		case EHallSpot::Counter:
+			return Roll < 0.6f ? EHallPose::Talk : EHallPose::Stand;   // ordering
+		case EHallSpot::Queue:
+			return Roll < 0.15f ? EHallPose::Look : EHallPose::Stand;
+		case EHallSpot::Window:
+			return EHallPose::Look;
+		case EHallSpot::Diagram:
+			return EHallPose::Look;
+		case EHallSpot::Read:
+			return Roll < 0.75f ? EHallPose::Read : EHallPose::Look;
+		case EHallSpot::StandTable:
+			return Roll < 0.5f ? EHallPose::Eat : Roll < 0.8f ? EHallPose::Talk : EHallPose::Stand;
+		case EHallSpot::Rail:
+		default:
+			if (M.IsRush())
+			{
+				return Roll < 0.15f ? EHallPose::Talk : Roll < 0.35f ? EHallPose::Read : EHallPose::Stand;
+			}
+			return Roll < 0.3f ? EHallPose::Talk : Roll < 0.45f ? EHallPose::Look : EHallPose::Stand;
+		}
+	}
+
+	int HallPick(const std::vector<FHallPlace>& Places, const std::string& Key, int Age, bool bOut, const FHallMood& M, uint32_t Salt)
+	{
+		bool bCounter = false;
+		int QueueTaken = 0;     // the queue's spots taken, in order from the counter
+		for (const FHallPlace& P : Places)
+		{
+			bCounter |= P.Kind == EHallSpot::Counter && P.bTaken;
+		}
+		for (int Q = 1; Q < 8; Q++)
+		{
+			bool bAny = false;
+			for (const FHallPlace& P : Places)
+			{
+				bAny |= P.Kind == EHallSpot::Queue && P.Queue == Q && P.bTaken;
+			}
+			if (!bAny)
+			{
+				break;
+			}
+			QueueTaken = Q;
+		}
+		int Best = -1;
+		float BestScore = 0.f;
+		for (int I = 0; I < (int)Places.size(); I++)
+		{
+			const FHallPlace& P = Places[I];
+			if (!P.bOpen || P.bTaken)
+			{
+				continue;
+			}
+			if (P.Kind == EHallSpot::Queue && (!bCounter || P.Queue != QueueTaken + 1))
+			{
+				continue;           // the queue grows from the counter back
+			}
+			const float S = HallSpotScore(Age, bOut, P.Kind, M, LifeHash(Key, Salt + 131u * (uint32_t)I));
+			if (S > BestScore)
+			{
+				BestScore = S;
+				Best = I;
+			}
+		}
+		return Best;
+	}
+
+	int HallFiller(const FHallMood& M, uint32_t Salt)
+	{
+		const int H = (int)M.Hour;
+		if (H < 7 || H >= 23)
+		{
+			return M.bRain && H >= 6 ? 1 : 0;
+		}
+		int N = (int)(Salt % 3u);                   // 0..2: in for the buffet
+		if (M.bRain)
+		{
+			N += 2 + (int)((Salt >> 3) % 3u);       // out of the rain: the hall fills
+		}
+		if (M.bStopped)
+		{
+			N += 1;
+		}
+		if (M.bWeekend && M.Hour >= 11.f && M.Hour < 19.f)
+		{
+			N += 1;
+		}
+		return N > 6 ? 6 : N;
+	}
+
+	EHallPose BaristaPose(int Customers, const FHallMood& M, float Roll)
+	{
+		if (Customers > 0)
+		{
+			return Roll < 0.75f ? EHallPose::Work : EHallPose::Talk;
+		}
+		if (M.Hour >= 21.f || M.Hour < 7.f)
+		{
+			return Roll < 0.45f ? EHallPose::Read : Roll < 0.7f ? EHallPose::Work : EHallPose::Stand;  // a quiet evening
+		}
+		return Roll < 0.45f ? EHallPose::Work : Roll < 0.7f ? EHallPose::Look : EHallPose::Stand;     // wiping, stacking
+	}
+
+	EHallPose AttendantPose(int Waiting, const FHallMood& M, float Roll)
+	{
+		if (M.bStopped)
+		{
+			return Waiting > 0 && Roll < 0.6f ? EHallPose::Talk : EHallPose::Look;  // "it'll blow over"
+		}
+		if (!M.IsRush() && Waiting < 3 && Roll < 0.4f)
+		{
+			return EHallPose::Read;                 // the logbook
+		}
+		return Roll < 0.15f && Waiting > 0 ? EHallPose::Talk : EHallPose::Look;
+	}
+
+	const char* HallBark(const FHallMood& M)
+	{
+		return M.bStopped ? "stopped" : M.bWindy ? "wind" : M.bRain ? "rain" : M.Hour < 9.5f ? "morning" : M.Hour > 20.5f ? "evening" : "any";
+	}
+
+	// --- the cabins' life (docs/transport.md "Cabin life") ---
+
+	ECabinAct CabinAct(int Age, int Aboard, const FCabinMood& M, float Roll)
+	{
+		const bool bKid = Age < 13, bTeen = Age < 18, bOld = Age >= 65;
+		// the glass: children nearly always (the rain on it too, the fog a wonder), the young often, the grown-ups for the
+		// bay on a clear day, few in the dark (only their own faces in the glass) and fewer in a full cabin
+		float Glass = bKid ? 0.9f : bTeen ? 0.45f : bOld ? 0.08f : 0.18f;
+		if (!bKid)
+		{
+			Glass *= M.bFog ? 0.3f : M.bRain ? 0.6f : 1.3f;
+			Glass *= M.IsDark() ? 0.35f : 1.f;
+			Glass *= Aboard >= 4 ? 0.6f : 1.f;
+		}
+		if (Roll < Glass)
+		{
+			return ECabinAct::Window;
+		}
+		// the paper: in the morning, the old, a dull grey ride
+		float Read = bKid ? 0.05f : bOld ? 0.45f : 0.22f;
+		Read *= M.Hour < 10.f ? 1.5f : 1.f;
+		Read *= M.bFog || M.bRain ? 1.4f : 1.f;
+		return Roll < Glass + (1.f - Glass) * Read ? ECabinAct::Read : ECabinAct::Sit;
+	}
+
+	void CabinActs(const std::vector<int>& Ages, const std::vector<float>& Rolls, const FCabinMood& M, std::vector<ECabinAct>& Out)
+	{
+		const int N = (int)Ages.size();
+		Out.assign(N, ECabinAct::Sit);
+		for (int I = 0; I < N; I++)
+		{
+			Out[I] = CabinAct(Ages[I], N, M, I < (int)Rolls.size() ? Rolls[I] : 0.5f);
+		}
+		// two sides of glass: the youngest keep them, the rest sit back down
+		int AtGlass = 0;
+		for (int Pass = 0; Pass < 2; Pass++)
+		{
+			for (int I = 0; I < N; I++)
+			{
+				if (Out[I] != ECabinAct::Window || ((Ages[I] < 13) != (Pass == 0)))
+				{
+					continue;
+				}
+				if (++AtGlass > 2)
+				{
+					Out[I] = ECabinAct::Sit;
+				}
+			}
+		}
+	}
+
+	const char* CabinBark(const FCabinMood& M, bool bKidAtGlass, float Roll)
+	{
+		if (bKidAtGlass && Roll < 0.5f)
+		{
+			return "kid";
+		}
+		return M.bFog ? "fog" : M.bRain ? "rain" : M.IsDark() ? "night" : Roll < 0.75f ? "sea" : "any";
 	}
 }

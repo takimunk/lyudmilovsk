@@ -248,6 +248,10 @@ namespace LyudPeople
 		std::string Role;           // their job there (waiter, cook): slots tagged with it, else any staff slot
 		int Place = -1;
 		int Act = -1;               // Activity's index (Index())
+		// tied to the sun (people.json "sun": "set" | "rise"): "hours" are then offsets from today's sunset / sunrise and
+		// From/To follow them (FWorld::SyncSunDuties): the lighthouse keeper lights the lamp at dusk all the year round
+		int8_t Sun = 0;             // 0 fixed hours, 1 sunset, 2 sunrise
+		float Off0 = 0.f, Off1 = 0.f;
 		int StayDay = -1;           // "stay_day": only on this day of their stay (0 the day they come; FPerson::StayCycle)
 	};
 
@@ -409,6 +413,7 @@ namespace LyudPeople
 		int Weekday = 1;                // 0 Monday .. 6 Sunday
 		int Week = 0;                   // the calendar's week (Mondays counted from any fixed day): who is here on a stay (FPerson::StayCycle)
 		float Sunrise = 7.5f, Sunset = 17.f;
+		float DutySunrise = -1.f, DutySunset = -1.f;   // the sun the sun-tied duties were last set by (SyncSunDuties)
 		float SunYaw = 225.f;           // where the sun sets/stands, yaw (deg) in the UE frame
 		float SunriseYaw = 45.f;        // where it comes up (the early risers face it)
 		bool bSunUp = true;
@@ -565,6 +570,9 @@ namespace LyudPeople
 		/** A new game: everybody where the club scene has them (people.json start), the rest as Resettle. */
 		void NewGame();
 		void Step(float Dt);
+		/** Moves the sun-tied duties' hours to today's Sunrise / Sunset (cheap when they have not changed; Step, Resettle and
+		 *  NewGame call it). */
+		void SyncSunDuties();
 		/** The hero stands at P (Unreal metres; bOn false: nowhere near a counter): a queue spot under him counts as taken, so
 		 *  the townsfolk line up behind him (docs/counters.md). */
 		void SetHeroAt(const V3& P, bool bOn);
