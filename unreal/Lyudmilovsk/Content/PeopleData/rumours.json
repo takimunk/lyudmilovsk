@@ -1,0 +1,241 @@
+{
+ "_doc": "The talk of the town about the hero (docs/town_rumours.md). Written by tools/rumours/rumours.py: edit there.",
+ "kinds": {
+  "cup": {
+   "hops": 4,
+   "life": 5,
+   "pass": 0.7,
+   "news": 0.35,
+   "rank": 9
+  },
+  "garden": {
+   "hops": 3,
+   "life": 5,
+   "pass": 0.6,
+   "news": 0.3,
+   "rank": 8
+  },
+  "beat": {
+   "hops": 3,
+   "life": 4,
+   "pass": 0.6,
+   "rank": 7
+  },
+  "cure": {
+   "hops": 3,
+   "life": 5,
+   "pass": 0.6,
+   "seed": 4,
+   "once": 1,
+   "rank": 6
+  },
+  "job": {
+   "hops": 3,
+   "life": 4,
+   "pass": 0.6,
+   "once": 1,
+   "rank": 6
+  },
+  "tamed": {
+   "hops": 3,
+   "life": 5,
+   "pass": 0.55,
+   "once": 1,
+   "rank": 5
+  },
+  "radio": {
+   "hops": 1,
+   "life": 3,
+   "pass": 0.5,
+   "news": 0.4,
+   "news_today": 1,
+   "rank": 5
+  },
+  "fine": {
+   "hops": 2,
+   "life": 3,
+   "pass": 0.55,
+   "seed": 3,
+   "rank": 4
+  },
+  "crows": {
+   "hops": 2,
+   "life": 4,
+   "pass": 0.55,
+   "rank": 4
+  },
+  "catch": {
+   "hops": 2,
+   "life": 3,
+   "pass": 0.5,
+   "rank": 3
+  },
+  "kite": {
+   "hops": 2,
+   "life": 3,
+   "pass": 0.5,
+   "rank": 3
+  },
+  "tune": {
+   "hops": 2,
+   "life": 3,
+   "pass": 0.5,
+   "rank": 3
+  },
+  "sing": {
+   "hops": 2,
+   "life": 2,
+   "pass": 0.5,
+   "rank": 2
+  },
+  "film": {
+   "hops": 1,
+   "life": 2,
+   "pass": 0.5,
+   "rank": 1
+  }
+ },
+ "rules": [
+  {
+   "event": "cup_won",
+   "target": "*",
+   "kind": "cup",
+   "detail": "city.coll.cups.{t}"
+  },
+  {
+   "event": "beat",
+   "target": "npc.*",
+   "kind": "beat",
+   "detail": "{t}"
+  },
+  {
+   "event": "do",
+   "target": "garden_contest_place",
+   "kind": "garden",
+   "detail": ""
+  },
+  {
+   "event": "stamp_set",
+   "target": "san_course",
+   "kind": "cure",
+   "detail": ""
+  },
+  {
+   "event": "stamp",
+   "target": "work_book/*",
+   "kind": "job",
+   "detail": "rumour.job.{p}"
+  },
+  {
+   "event": "bird_tamed",
+   "target": "*",
+   "kind": "tamed",
+   "detail": "bird.{t}.name"
+  },
+  {
+   "event": "radio",
+   "target": "request_heard",
+   "kind": "radio",
+   "detail": ""
+  },
+  {
+   "event": "fined",
+   "target": "*",
+   "kind": "fine",
+   "detail": ""
+  },
+  {
+   "event": "corvid_gift",
+   "target": "*",
+   "kind": "crows",
+   "detail": ""
+  },
+  {
+   "event": "fish_caught",
+   "target": "*",
+   "kind": "catch",
+   "detail": "item.{t}.name"
+  },
+  {
+   "event": "stamp",
+   "target": "kites/*",
+   "kind": "kite",
+   "detail": ""
+  },
+  {
+   "event": "play_tune",
+   "target": "bonfire",
+   "kind": "sing",
+   "detail": ""
+  },
+  {
+   "event": "play_tune",
+   "target": "*",
+   "kind": "tune",
+   "detail": "music.tune.{t}"
+  },
+  {
+   "event": "stamp",
+   "target": "films/*",
+   "kind": "film",
+   "detail": ""
+  }
+ ],
+ "far_m": 200,
+ "big_group": 12,
+ "group_links": 4,
+ "max_rumours": 16,
+ "fresh": [
+  1.0,
+  0.8,
+  0.5,
+  0.3
+ ],
+ "witness_m": 30,
+ "remark_every_s": 150,
+ "paper": {
+  "beat": 2,
+  "garden": 1,
+  "cure": 1,
+  "job": 1,
+  "radio": 1,
+  "fine": 1,
+  "crows": 1,
+  "kite": 1,
+  "tune": 1,
+  "sing": 1,
+  "film": 1
+ },
+ "ps": [
+  "beat",
+  "catch",
+  "crows",
+  "cup",
+  "cure",
+  "film",
+  "fine",
+  "garden",
+  "job",
+  "kite",
+  "radio",
+  "sing",
+  "tamed",
+  "tune"
+ ],
+ "staff": [
+  "beat",
+  "catch",
+  "crows",
+  "cup",
+  "cure",
+  "film",
+  "fine",
+  "garden",
+  "job",
+  "kite",
+  "radio",
+  "sing",
+  "tamed",
+  "tune"
+ ]
+}

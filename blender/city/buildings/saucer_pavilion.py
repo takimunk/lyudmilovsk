@@ -26,6 +26,7 @@ from citykit import box, prism, ring, ribbon_wall, Mesh
 from _furn1 import rbox, cyl, blob, goods_row
 import furn_int3 as fu
 import interior_kit as kit
+import dress_kit as dk
 
 INFO = {
     "name_ru": "Кафе «Летающая тарелка»", "name_en": "Saucer Café",
@@ -40,6 +41,8 @@ Z_FLOOR = 4.3
 Z_CEIL = 7.35
 N = 48
 CORE_R = 2.3
+_TBL = []        # the round tables of the hall (centre, chair angle, seats): where the dressing goes
+_ANCH = {}
 
 
 def P(r, a_deg, z=0.0):
@@ -132,6 +135,78 @@ def arc_band(m, mat, r0, r1, a0, a1, z0, z1, n=None, top_mat=None):
     inner = arc_pts(r0, a1, a0, n)
     poly = outer + inner                       # CCW
     prism(m, top_mat or mat, poly, z0, z1, top=True, bottom=False, side_mat=mat)
+
+
+# ---------------------------------------------------------------- lived-in dressing (docs/city_dress.md)
+def _free(B, x, y, r=0.25, z=0.0):
+    """True when the circle (x, y, r) at height z touches no floor or wall piece of the kit (rugs and mats ignored)."""
+    for it in getattr(B, "kit_items", []):
+        if it["kind"] not in ("floor", "wall") or it["z1"] < z + 0.1 or it["z0"] > z + 1.0:
+            continue
+        f = it["foot"]
+        inside = False
+        for i in range(len(f)):
+            a, b = f[i], f[(i + 1) % len(f)]
+            if (a[1] > y) != (b[1] > y) and x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]) + a[0]:
+                inside = not inside
+            dx, dy = b[0] - a[0], b[1] - a[1]
+            t = max(0.0, min(1.0, ((x - a[0]) * dx + (y - a[1]) * dy) / (dx * dx + dy * dy or 1.0)))
+            if math.hypot(x - a[0] - t * dx, y - a[1] - t * dy) < r:
+                return False
+        if inside:
+            return False
+    return True
+
+
+def _tp(ti, j, r, off=0.0):
+    """A point on table ti at radius r, at the gap between two chairs (j-th gap), off degrees along."""
+    t = _TBL[ti]
+    ang = math.radians(t["a"] + 360.0 * (j + 0.5) / t["ns"] + off)
+    return t["c"][0] + r * math.cos(ang), t["c"][1] + r * math.sin(ang), t["top"], math.degrees(ang)
+
+
+def _dress(B, zf):
+    """Today's paper, what the breakfast and lunch crowds left, wet umbrellas, coats, a towel, flowers on holidays."""
+    open_ = dict(hours=(7, 21))
+    for sid, tabs in (("paper_a", (0, 3, 6)), ("paper_b", (1, 4, 9)), ("paper_c", (7, 10))):
+        with B.dress(sid, chance=0.7, **open_):
+            for ti in tabs:
+                x, y, z, a = _tp(ti, 1, 0.17)
+                kit.newspaper(B, x, y, z, a * 1.7 % 360, seed=ti + 40)
+    for sid, hrs, ch, tabs in (("after_breakfast_a", (9.5, 11), 0.8, (0, 4, 7, 9)),
+                               ("after_breakfast_b", (9.5, 11), 0.6, (1, 3, 5, 10)),
+                               ("after_lunch_a", (14, 16), 0.75, (2, 6, 8)),
+                               ("after_lunch_b", (14, 16), 0.6, (0, 5, 9, 10))):
+        with B.dress(sid, hours=hrs, chance=ch):
+            for ti in tabs:
+                x, y, z, a = _tp(ti, 0, 0.27)
+                dk.plate_crumbs(B, x, y, z, a + 90.0, seed=ti)
+                x2, y2, z2, a2 = _tp(ti, 0, 0.27, 32.0)
+                kit.cup(B, x2, y2, z2, a2)
+    with B.dress("book_left", hours=(10, 20), chance=0.5):
+        x, y, z, a = _tp(7, 0, 0.22)
+        dk.book_face_down(B, x, y, z, a + 20.0, seed=3)
+    with B.dress("holiday_flowers", festival="any"):
+        for ti in (0, 3, 6, 9):
+            kit.vase(B, _TBL[ti]["c"][0], _TBL[ti]["c"][1], _TBL[ti]["top"], 0.0, seed=ti + 50)
+    # rain: a wet mat, a stand and an open umbrella in the glass tunnel, a stand by the coat rail upstairs
+    with B.dress("door_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, 0.0, 2.0, 0.03, 0.0, w=1.0)
+        dk.umbrella_stand(B, 1.3, 2.3, 0.03, 0.0, n=3, seed=1)
+        dk.umbrella_open(B, -0.95, 3.6, 0.03, 30.0, seed=2)
+        if "rack" in _ANCH:
+            rx, ry, rz, ryaw, rw = _ANCH["rack"]
+            ux, uy = rx + 0.9 * math.cos(math.radians(ryaw)), ry + 0.9 * math.sin(math.radians(ryaw))
+            if _free(B, ux, uy, 0.3, zf):
+                dk.umbrella_stand(B, ux, uy, zf, 0.0, n=2, seed=5)
+    if "rack" in _ANCH:
+        rx, ry, rz, ryaw, rw = _ANCH["rack"]
+        with B.dress("coats_cold", season="cold_months"):
+            dk.coats_on_rail(B, rx, ry, rz, ryaw, w=rw, share=0.85, season="winter", seed=2)
+    with B.dress("towel_summer", season="summer", weather=("warm", "clear")):
+        for ti, si in ((3, 0), (8, 1)):
+            sx, sy, sz, syaw = _TBL[ti]["seats"][min(si, len(_TBL[ti]["seats"]) - 1)]
+            dk.towel_hat(B, sx, sy, sz + 0.45 if sz < zf + 0.2 else sz, syaw, seed=ti)
 
 
 def build(B):
@@ -440,6 +515,7 @@ def _seat_thing(B, tid, r, h=None):
 def _hall(B, rnd, zf):
     """Tables with chairs, bar stools, lounge, jukebox, ice-cream counter, telescope, decor, plants."""
     d = B.detail
+    del _TBL[:]
     # ------------------------------------------------------------------ tables and chairs
     layout = [(8.4, a) for a in (-32, 4, 38, 160, 178, 214, 250)] + [(4.8, a) for a in (150, 195, 345, 20)]
     cols = ["CT_SteelRed", "CT_PlasterBlue", "CT_PlasterYellow", "CT_PlasterGreen"]
@@ -452,12 +528,14 @@ def _hall(B, rnd, zf):
         ns = 3 if ti % 3 else 2
         a_chair = rnd.uniform(0, 360)
         first = None
+        _TBL.append(dict(c=c, a=a_chair, ns=ns, top=t["top"], seats=[]))
         for si in range(ns):
             ac = a_chair + 360.0 * si / ns
             sp = (c[0] + 0.85 * math.cos(math.radians(ac)), c[1] + 0.85 * math.sin(math.radians(ac)))
             yw = yaw_to(sp, c)
             ch = kit.chair(B, sp[0], sp[1], zf, yw, kind="tube", mat=cols[(ti + si) % 4])
             first = first or ch
+            _TBL[-1]["seats"].append(ch["seats"][0])
             B.spot("seat_%d_%d" % (ti + 1, si + 1), "seat", (sp[0], sp[1], zf), yw)
             ox, oy = c[0] + 0.28 * math.cos(math.radians(ac)), c[1] + 0.28 * math.sin(math.radians(ac))
             if (ti + si) % 3 == 0:
@@ -684,6 +762,7 @@ def _extras(B, zf):
     B.thing("lounge_paper", "take", (lc2[0] + 0.1, lc2[1] - 0.1, zf + 0.5), 20, item="daily_paper")
 
     _third_layer(B, zf)
+    _dress(B, zf)
 
 
 def _third_layer(B, zf):
@@ -730,6 +809,13 @@ def _third_layer(B, zf):
     # ---- coat stand at the stair exit
     hp = P(3.1, 246, zf)
     kit.hat_stand(B, hp[0], hp[1], zf, 0.0)
+    # a cloakroom rail on posts by the stair exit: empty in warm months (the coats are dressing)
+    for r_, a_ in ((5.2, 285), (5.4, 295), (5.0, 262), (5.6, 270), (4.8, 300)):
+        rp_ = P(r_, a_, zf)
+        if _free(B, rp_[0], rp_[1], 0.8, zf):
+            kit.coat_rack(B, rp_[0], rp_[1], zf, yaw_to(rp_, (CX, CY)), w=1.2, coats=0)
+            _ANCH["rack"] = (rp_[0], rp_[1], zf, yaw_to(rp_, (CX, CY)), 1.2)
+            break
     # ---- ice-cream counter: cones in stands behind the tubs, a stack of cups
     a_i = 300
     ic = P(8.6, a_i, zf)

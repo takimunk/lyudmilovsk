@@ -1,6 +1,7 @@
 #include "Letters/LyudLetters.h"
 
 #include "Letters/LettersModel.h"
+#include "People/LyudTownRumours.h"
 #include "People/MiniJson.h"
 #include "Audio/LyudSoundscape.h"
 #include "Birds/BirdBook.h"
@@ -402,9 +403,23 @@ void ULyudLetters::StepPost()
 	}
 	if (!E.Arrived.empty())
 	{
+		const ULyudTownRumours* Rumours = ULyudTownRumours::Get(this);
 		for (const int32 I : E.Arrived)
 		{
-			UE_LOG(LogLyudLetters, Display, TEXT("Letters: in the mailbox: %s"), *LyudLettersImpl::Str(Model->Letters[(size_t)I].Id));
+			LyudLetters::FLetter& L = Model->Letters[(size_t)I];
+			// a townsperson writing back adds what the town says of him lately (docs/town_rumours.md)
+			FString PsKey;
+			TArray<FString> PsArgs;
+			if (Rumours && L.Ps.empty() && (L.Kind == "reply" || L.Kind == "home") && Rumours->PostScript(L.Arrive, PsKey, PsArgs))
+			{
+				L.Ps = LyudLettersImpl::Std(PsKey);
+				L.PsArgs.clear();
+				for (const FString& A : PsArgs)
+				{
+					L.PsArgs.push_back(LyudLettersImpl::Std(A));
+				}
+			}
+			UE_LOG(LogLyudLetters, Display, TEXT("Letters: in the mailbox: %s%s"), *LyudLettersImpl::Str(L.Id), L.Ps.empty() ? TEXT("") : TEXT(" (with a P.S.)"));
 		}
 		if (ULyudGameScreen* Screen = ULyudGameScreen::Get(this))
 		{
@@ -884,6 +899,10 @@ void ULyudLetters::DiaryLetter(int32 Letter)
 		Quests->AddNote(LyudLettersImpl::Str(L.Ack), Args(L.AckArgs));
 	}
 	Quests->AddNote(LyudLettersImpl::Str(L.Body), Args(L.Args));
+	if (!L.Ps.empty())
+	{
+		Quests->AddNote(LyudLettersImpl::Str(L.Ps), Args(L.PsArgs));
+	}
 }
 
 // --- the choosers -------------------------------------------------------------------------------------------------------
@@ -1452,6 +1471,10 @@ void ULyudLetters::ShowLetterPage()
 		if (!L.Ack.empty())
 		{
 			All = Fill(LyudLettersImpl::Str(L.Ack), Args(L.AckArgs)).ToString() + TEXT("\n\n") + All;
+		}
+		if (!L.Ps.empty())
+		{
+			All += TEXT("\n\n") + Fill(LyudLettersImpl::Str(L.Ps), Args(L.PsArgs)).ToString();
 		}
 		TArray<FString> Paras;
 		All.ParseIntoArray(Paras, TEXT("\n\n"));

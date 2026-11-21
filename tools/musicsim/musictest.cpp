@@ -158,9 +158,13 @@ int main(int Argc, char** Argv)
 		}
 	};
 	FAir Air;
+	long long FestSignOn = 0, FestNews = 0, FestHour = 0, FestShow = 0, FestWrongDay = 0, PlainOnHoliday = 0;
 	for (long long Day = 0; Day < 120; ++Day)
 	{
 		FFacts F = Facts(Day);
+		// every tenth day is a holiday (the name key stands in for festival.<id>.name, which is in the game's own table)
+		const bool bHoliday = Day % 10 == 4;
+		F.Festival = bHoliday ? "music.radio.name" : "";
 		if (Day == 30)
 		{
 			M.Request.Track = 3;
@@ -168,7 +172,7 @@ int main(int Argc, char** Argv)
 		}
 		bool bHero = false;
 		double LastEnd = 0, Heard = 0;
-		for (double S = 0; S < 86400; S += 15.0)
+		for (double S = 0; S < 86400; S += bHoliday ? 3.0 : 15.0)   // (a holiday is sampled finely: its greetings sit between the 15 s marks)
 		{
 			M.AirAt(Day, (int)(Day % 7), S, F, Air);
 			if (Air.Kind == EKind::OffAir)
@@ -196,6 +200,11 @@ int main(int Argc, char** Argv)
 			if (Air.Cap)
 			{
 				++Caps;
+				const bool bFestCap = Air.Cap->Key.compare(0, 17, "music.radio.fest.") == 0;
+				FestSignOn += Air.Cap->Key == "music.radio.fest.sign_on";
+				FestNews += Air.Cap->Key == "music.radio.fest.news";
+				FestHour += Air.Cap->Key == "music.radio.fest.hour";
+				FestWrongDay += bFestCap && !bHoliday;
 				CheckKey(Air.Cap->Key, (int)Air.Cap->Args.size());
 				for (const FArg& A : Air.Cap->Args)
 				{
@@ -209,6 +218,10 @@ int main(int Argc, char** Argv)
 			if (!Air.Show.empty())
 			{
 				CheckKey(Air.Show, 0);
+				const bool bFestShow = Air.Show == "music.radio.show.festival";
+				FestShow += bFestShow;
+				FestWrongDay += bFestShow && !bHoliday;
+				PlainOnHoliday += bHoliday && Air.Kind == EKind::Music && !bFestShow;
 			}
 		}
 		if (Day == 30)
@@ -224,6 +237,10 @@ int main(int Argc, char** Argv)
 	}
 	CHECK(Missing.empty(), "every caption key in ru/en/ja (%zu missing)", Missing.size());
 	CHECK(Caps > 1000, "the station says things (%lld captions over 120 days)", Caps);
+	// the holiday broadcast (docs/festivals.md "The new toys"): twelve holidays in the 120 days
+	CHECK(FestSignOn >= 12 && FestNews >= 24 && FestHour >= 60 && FestShow > 1000, "a holiday's air: greeted at sign-on, in the bulletins and every music hour (%lld, %lld, %lld; %lld samples of the holiday programme)",
+		FestSignOn, FestNews, FestHour, FestShow);
+	CHECK(FestWrongDay == 0 && PlainOnHoliday == 0, "the holiday programme only on a holiday, and all day then (%lld on plain days, %lld plain music hours on holidays)", FestWrongDay, PlainOnHoliday);
 
 	// 2. the same moment is the same air (every radio in step), and different days differ
 	{

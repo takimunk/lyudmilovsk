@@ -1318,6 +1318,8 @@
  "dev.tp.topi_path": "トーピ：夜の道",
  "dev.tp.ural_bank": "ウラル：夜の岸",
  "dev.action.topi.night": "トーピ：夜と川のオン／オフ",
+ "dev.action.interiors.dress_all": "室内：部屋の小物をすべて表示／日付どおりに戻す",
+ "dev.action.interiors.dress_hide": "室内：部屋の小物を隠す／日付どおりに戻す",
  "dev.action.weather.fluff": "ポプラの綿毛のオン／オフ",
  "dev.action.festival.sun_day": "祭り：大きな太陽の日、正午",
  "dev.action.festival.street_bunting": "町じゅうのペナント飾りのオン／オフ",

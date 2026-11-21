@@ -98,5 +98,15 @@
  "city.coll.cups.title": {"ru": "Кубки клубов", "en": "Club cups", "ja": "クラブのカップ"},
  "city.coll.cups.cog_chess": {"ru": "Шахматный кубок «Шестерни»", "en": "The Cog chess cup", "ja": "「歯車」チェスカップ"},
  "city.coll.cups.san_dominoes": {"ru": "Кубок санатория по домино", "en": "The sanatorium dominoes cup", "ja": "療養所ドミノカップ"},
- "city.coll.cups.tt_cup": {"ru": "Воскресный теннисный кубок", "en": "The Sunday table tennis cup", "ja": "日曜卓球カップ"}
+ "city.coll.cups.tt_cup": {"ru": "Воскресный теннисный кубок", "en": "The Sunday table tennis cup", "ja": "日曜卓球カップ"},
+ "city.cup.cog_chess.fest_title": {"ru": "Праздничный шахматный кубок «Шестерни»", "en": "The Cog Club Holiday Chess Cup", "ja": "「歯車」祝日チェスカップ"},
+ "city.cup.san_dominoes.fest_title": {"ru": "Праздничный кубок санатория по домино", "en": "The Sanatorium Holiday Dominoes Cup", "ja": "療養所祝日ドミノカップ"},
+ "city.cup.tt_cup.fest_title": {"ru": "Праздничный кубок по настольному теннису", "en": "The Holiday Table Tennis Cup", "ja": "祝日卓球カップ"},
+ "city.cup.fest": {"ru": "Сегодня в городе праздник, и турнир играют как праздничный кубок: сетка та же, а победителю достаётся ещё и лента с датой.", "en": "The town has a holiday today, so the tournament is played as the holiday cup: the same bracket, and the winner also takes a ribbon with the date on it.", "ja": "今日は町の祝日なので、大会は祝日カップとして行われる。表はいつも通りで、優勝者には日付入りのリボンも贈られる。"},
+ "city.cup.fest_bracket": {"ru": "Над сеткой приколота бумажная гирлянда и подпись от руки: «{0}».", "en": "A paper garland is pinned above the bracket, with a handwritten label: \"{0}\".", "ja": "表の上に紙の飾りが留めてあり、手書きでこうある。「{0}」"},
+ "city.cup.note.champion_fest": {"ru": "Праздничный кубок ваш! {0}: победитель — вы. К кубку привязали ленту с сегодняшней датой.", "en": "The holiday cup is yours! {0}: you are the winner. They tied a ribbon with today's date to the cup.", "ja": "祝日カップはあなたのもの！{0}、優勝はあなた。カップには今日の日付入りのリボンが結ばれた。"},
+ "city.coll.fest_cups.title": {"ru": "Праздничные кубки", "en": "Holiday cups", "ja": "祝日カップ"},
+ "city.coll.fest_cups.cog_chess": {"ru": "Лента праздничного шахматного кубка", "en": "The holiday chess cup ribbon", "ja": "祝日チェスカップのリボン"},
+ "city.coll.fest_cups.san_dominoes": {"ru": "Лента праздничного кубка по домино", "en": "The holiday dominoes cup ribbon", "ja": "祝日ドミノカップのリボン"},
+ "city.coll.fest_cups.tt_cup": {"ru": "Лента праздничного теннисного кубка", "en": "The holiday table tennis cup ribbon", "ja": "祝日卓球カップのリボン"}
 }

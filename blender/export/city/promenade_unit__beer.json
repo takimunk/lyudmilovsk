@@ -385,9 +385,56 @@
  "notes": [
   "promenade unit room, variant beer: placed at each W1 unit whose plan variant is beer"
  ],
+ "dress": [
+  {
+   "id": "unit_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 291,
+   "bounds": [
+    [
+     0.715,
+     0.73,
+     0.02
+    ],
+    [
+     3.8,
+     1.664,
+     0.89
+    ]
+   ]
+  },
+  {
+   "id": "beer_used",
+   "when": {
+    "hours": [
+     15.0,
+     23.0
+    ]
+   },
+   "tris": 96,
+   "bounds": [
+    [
+     -3.772,
+     1.318,
+     1.04
+    ],
+    [
+     -1.448,
+     3.392,
+     1.15
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 238,
   "detail": 5045,
-  "windows": 0
+  "windows": 0,
+  "dress": 387
  }
 }

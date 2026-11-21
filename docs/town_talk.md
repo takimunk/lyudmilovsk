@@ -125,3 +125,5 @@ find an exchange (40%), the restaurant's staff have a line at every moment, and 
 - The restaurant's moments read its properties until it calls `SayEvent` itself.
 
 Lines by what the hands are doing (`manner = smoke`) and for noticing the player (`on = hero_runs`, `hero_close`, `hero_lamp`): docs/town_manners.md, tools/barks/lines/10_manners.txt.
+
+Remarks about the hero's day (`heard_of = cup`, `heard_of = any`, `{1}` the rumour's detail): docs/town_rumours.md, tools/barks/lines/15_rumours.txt.

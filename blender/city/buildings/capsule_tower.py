@@ -4,6 +4,7 @@ Metabolism (prefab capsules on cores), not a copy of any building."""
 import math
 import random
 
+import dress_kit as drs
 import furn_int3 as fu
 import interior_kit as kit
 from citykit import box, prism, ring, DOOR_W, DOOR_H
@@ -684,5 +685,31 @@ def _deepen(B, lob, cores):
     _lobby_more(B, lob, cores)
     _capsule_more(B)
     _stops(B, cores)
+    _dress(B, lob)
     for w in kit.check(B):
         print("capsule_tower kit.check:", w)
+
+
+# ================================================================================================ lived-in dressing
+def _dress(B, lob):
+    """Swappable sets (docs/city_dress.md): the caretaker's morning, boots and a book in the capsule; the lobby's wet
+    umbrellas, a winter sledge, a forgotten paper on the concierge's chair."""
+    dtop, btop = 0.75, 0.50                     # office_desk at 5.35, 2.78 (top 0.75); the single bed's blanket
+    with B.dress("capsule_breakfast", weekdays=(0, 1, 2, 3, 4), hours=(7.0, 9.5)):
+        drs.plate_crumbs(B, 5.38, 2.8, dtop, 0.0, seed=1)
+    with B.dress("capsule_weekend", weekdays=(5, 6), hours=(9.0, 12.0)):
+        kit.glass(B, 5.38, 2.8, dtop, 0.0)
+    with B.dress("capsule_book", chance=0.5):
+        drs.book_face_down(B, 6.43, 3.75, btop, 90.0, seed=2)
+    for nm, months, kind in (("winter", (12, 1, 2), "felt"), ("mild", (3, 4, 5, 9, 10, 11), "rubber"),
+                             ("summer", (6, 7, 8), "sandals")):
+        with B.dress("capsule_boots_" + nm, months=months):
+            drs.boots(B, 5.45, 5.28, 0.0, 10.0, kind=kind, seed=4)
+    with B.dress("lobby_rain", weather=("rain", "wet")):
+        drs.doormat_wet(B, 0.0, 2.6, 0.01, 0.0)
+        drs.umbrella_open(B, -0.8, 4.4, 0.01, 30, seed=1)
+        drs.umbrella_open(B, 2.2, 2.9, 0.01, 200, seed=2)
+    with B.dress("lobby_sledge", season="winter"):
+        drs.sledge(B, -1.2, 8.2, 0.01, 90.0)
+    with B.dress("lobby_paper", weekdays=(0, 1, 2, 3, 4), hours=(8.0, 18.0), chance=0.5):
+        kit.newspaper(B, 2.4, 4.6, 0.45, 90.0, seed=6)
