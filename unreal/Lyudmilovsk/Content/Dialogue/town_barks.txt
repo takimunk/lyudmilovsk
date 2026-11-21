@@ -2862,6 +2862,58 @@ say = town.cinema_house.1..4
 doing = play_piano
 say = town.piano_hall.1..3
 
+# The Aton coast's people (docs/south.md "People", tools/town/south_people.py): the old fishermen at the boat shed by
+# the brook's mouth, the beekeeper in the old orchard, families at its table, birdwatchers in the hide at dusk, walkers
+# on the shoulder trail, people on the belvedere's benches, children at the brook's stones. The places' names are the
+# map's (place.<id>.name): Атон, Отрог, Смотровая, Старый сад, Скрадок, Устье, Родник.
+
+[aton_nets]
+doing = mend_nets
+weight = 2
+say = town.aton_nets.1..5
+
+[aton_nets_hero]
+to = hero
+doing = mend_nets
+say = town.aton_nets_hero.1..2
+
+[aton_boats]
+doing = boats_evening
+weight = 2
+say = town.aton_boats.1..3
+
+[aton_hives]
+doing = tend_hives
+weight = 2
+say = town.aton_hives.1..4
+
+[aton_picnic]
+doing = orchard_picnic
+say = town.aton_picnic.1..3
+
+[aton_hide]
+doing = watch_starlings
+weight = 2
+say = town.aton_hide.1..4
+
+[aton_walk]
+doing = walk_aton
+say = town.aton_walk.1..4
+
+[aton_walk_hero]
+to = hero
+doing = walk_aton
+say = town.aton_walk_hero.1..2
+
+[aton_view]
+doing = sit_belvedere
+say = town.aton_view.1..4
+
+[aton_brook]
+doing = play_brook
+age = kid teen
+say = town.aton_brook.1..4
+
 # Animals that live with people (docs/animals.md "With people"): the owners out with their dogs on the leash, what
 # they say to the dog and about it, the answer to "may I stroke it?", the lady with the bowls for the yard cats,
 # the flats' cats, the hedgehogs at dusk.

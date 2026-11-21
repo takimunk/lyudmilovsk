@@ -25,9 +25,10 @@ What [south.md](south.md) leaves open, the nearest first. Everything here is a p
 
 - **Used so far**: the seats and the coin viewer (south.md "Game side"). Not yet: one cannot drink at the spring or fill
   a bottle, the apples are not picked, the boats do not move, the info boards cannot be read up close as a page.
-- **People do not walk it.** `tools/people_map.py` and the town's schedules know nothing of the trails: a fisherman by
-  the boat shed, a beekeeper in the orchard, walkers on the shoulder, a birdwatcher in the hide at dusk would make it a
-  place. The hide looks straight at the starlings' roost: the ornithologist's quests could send the hero there.
+- **People** walk the shoulder trail, sit at the belvedere, mend nets at the shed, keep the hives, watch the starlings
+  from the hide and play at the brook (south.md "People", `tools/town/south_people.py`). Not yet: the cliff walk, the sea
+  trail and the spring trail have nobody of their own; the hero's seats are not claimed against the townsfolk; the
+  ornithologist's quests could send the hero to the hide at dusk.
 - **Quests**: the places are plain map places (found by walking up); no quest uses them.
 - **Animals**: `tools/bird_habitats.py` and `tools/animal_map.py` are re-run after the land changed, but no habitat was
   drawn for the new land on purpose (kingfisher and dipper on the brook, bees at the hives, a heron at the mouth).
