@@ -616,7 +616,9 @@ void ULyudSoundscapeSubsystem::UpdateBed()
 	{
 		bOutdoorsNow = bHaveSky;
 	}
-	Outdoors = FMath::FInterpTo(Outdoors, bOutdoorsNow ? 1.f : 0.f, 0.1f, 1.2f);
+	// an open window lets part of the outside in (at most 0.35: under the 0.4 at which the music leaves the room's mood)
+	const float WindowAir = FMath::Clamp(OpenAir, 0.f, 1.f) * 0.35f;
+	Outdoors = FMath::FInterpTo(Outdoors, bOutdoorsNow ? 1.f : WindowAir, 0.1f, 1.2f);
 	P.Enclosure = 1.f - Outdoors;
 	ALyudSea* Sea = ALyudSea::Get(World);
 	if (Sea && Sea->IsCameraUnderwater())
@@ -832,6 +834,11 @@ void ULyudSoundscapeSubsystem::SetUmbrella(float Amount)
 void ULyudSoundscapeSubsystem::SetNearWindows(float Amount)
 {
 	NearWindows = FMath::Clamp(Amount, 0.f, 1.f);
+}
+
+void ULyudSoundscapeSubsystem::SetOpenAir(float Amount)
+{
+	OpenAir = FMath::Clamp(Amount, 0.f, 1.f);
 }
 
 void ULyudSoundscapeSubsystem::OnLightning(FVector Location, float DistanceFromViewM)

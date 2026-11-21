@@ -1,0 +1,11 @@
+{
+ "type": "tr_hall__arches",
+ "lint": [
+  "coplanar faces lifted: 1",
+  "shell: 60 tris, 0 faces stretched UV, 0 degenerate",
+  "detail: 5950 tris, 0 faces stretched UV, 0 degenerate",
+  "windows: 0 tris, 0 faces stretched UV, 0 degenerate",
+  "windows 0 (flat 0), flats 0, entrances 0"
+ ],
+ "tris": 5950
+}

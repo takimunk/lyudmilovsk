@@ -32,6 +32,7 @@ from _cons_util import wall, win, hface, rect
 from _surrounds import add_surrounds
 import interior_kit as kit
 import dress_kit as dk
+import night_kit as nk
 from furn_int3 import rod
 import furn_int3 as fu
 
@@ -951,26 +952,45 @@ def _buffet(B):
     c = Ctx(B, "buffet")
     _cswitch(c, 6.3, -1, "light_switch_buffet", "room")
     c.along(kit.rug, 10.0, 0.0, w=5.0, d=3.2, name="rug_2")
+    tabs = []
     for i, (a, p) in enumerate(((8.8, -1.4), (8.8, 1.4), (11.4, -1.4), (11.4, 1.4))):
         x, y = c.W(a, p)
         kit.table_round(B, x, y, 0.0, 0.0, r=0.55, h=0.75, mat="CT_WoodLight")
         B.spot("buffet_t%d" % i, "table", (x, y, 0.0), 0.0)
+        mat = "CT_PlasterRed" if i % 2 else "CT_PlasterBlue"
+        seats = []
         for k in range(3):
             ang = math.radians(90 + 120 * k)
             cx, cy = x + 0.95 * math.cos(ang), y + 0.95 * math.sin(ang)
             yw = yaw_at((cx, cy), (x, y))
-            kit.chair(B, cx, cy, 0.0, yw, kind="tube", mat="CT_PlasterRed" if i % 2 else "CT_PlasterBlue")
+            seats.append((cx, cy, yw))
             B.spot("buffet_s%d_%d" % (i, k), "seat", (cx, cy, 0.0), yw)
-        kit.cup(B, x - 0.1, y, 0.75, 0.0)
-        kit.vase(B, x + 0.12, y + 0.08, 0.75, 0.0, seed=i)
+        tabs.append((i, x, y, mat, seats))
         cx, cy = x + 0.95 * math.cos(math.radians(90)), y + 0.95
         B.thing("buffet_seat_%d" % (i + 1), "seat", (cx, cy, 0.45), yaw_at((cx, cy), (x, y)), height=0.45)
+    # open: the chairs at the tables, a cup and a vase on each; shut (docs/city_night.md): the chairs up on the tables
+    with B.dress("day_buffet", open=True):
+        for i, x, y, mat, seats in tabs:
+            for cx, cy, yw in seats:
+                kit.chair(B, cx, cy, 0.0, yw, kind="tube", mat=mat)
+            kit.cup(B, x - 0.1, y, 0.75, 0.0)
+            kit.vase(B, x + 0.12, y + 0.08, 0.75, 0.0, seed=i)
+    with B.dress("night_buffet", open=False):
+        for i, x, y, mat, seats in tabs:
+            nk.chairs_up_round(B, x, y, 0.75, n=3, r=0.55, kind="tube", mats=[mat], a0=90.0, seed=i)
     c.put(kit.bar_counter, 14.3, 0.0, w=3.4, d=0.65, h=1.05, taps=0, back=True, seed=2, front="CT_PlasterRed", top="CT_WoodLight")
     c.put(kit.samovar, 13.9, -1.2, z=1.05)
     for k in range(3):
         c.put(kit.cup, 14.0, 0.6 + 0.2 * k, z=1.05)
     c.put(kit.plates, 14.0, -0.2, z=1.05, n=3)
     c.put(kit.cash_register, 14.4, 1.2, z=1.05)
+    lx, ly = c.W(14.3, -0.7)
+    nk.lone_lamp(B, lx, ly, 1.05, c.fy(-1, 0), lumens=240)          # left on over the counter when the club is shut
+    with B.dress("night_cleaner", hours=(7, 10), open=False):     # the cleaner's morning, before the doors open
+        wx, wy = c.W(12.95, 0.0)
+        nk.wet_floor(B, wx, wy, 0.0, c.fy(-1, 0), w=1.3, d=1.6, seed=12)
+        bx, by = c.W(13.05, 1.75)
+        nk.mop_bucket(B, bx, by, 0.0, c.fy(-1, 0) + 25.0, seed=12)
     c.spot("buffet_counter", "counter", 13.5, 0.0, (1, 0))
     c.spot("buffet_staff", "work", 15.1, 0.0, (-1, 0))
     c.thing("buffet_counter", "counter", 14.3, 0.0, 1.05, (-1, 0), role="clerk", service="bar", shop="club_buffet")

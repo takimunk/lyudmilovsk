@@ -31,6 +31,7 @@ import math
 import furn_int3 as fu
 import interior_kit as kit
 import dress_kit as dk
+import night_kit as nk
 from citykit import box, prism
 from _cons_util import wall, win, hface, rect
 
@@ -374,6 +375,7 @@ def _foyer(B):
         kit.cup(B, -2.6 + 0.3 * k, 10.2, 1.05, 0.0)
     kit.plates(B, -0.8, 10.3, 1.05, 0.0, n=3)
     kit.teapot(B, 0.5, 10.4, 1.05, 0.0)
+    nk.lone_lamp(B, -1.25, 10.45, 1.05, 0.0, lumens=240)      # left on over the buffet when the club is shut
     kit.glass(B, 1.0, 10.2, 1.05, 0.0)
     kit.glass(B, 1.2, 10.3, 1.05, 0.0)
     kit.bottles(B, 2.2, 10.45, 1.05, 0.0, n=3, seed=1)
@@ -384,8 +386,6 @@ def _foyer(B):
     B.thing("buffet", "counter", (0.0, 10.4, 1.05), 0.0, role="clerk", service="bar", shop="club_buffet")
     for k, (tx, ty) in enumerate(((-3.9, 7.2), (3.9, 7.2), (8.4, 7.2))):
         kit.table_round(B, tx, ty, 0.0, 0.0, r=0.38, h=1.0, mat="CT_WoodLight")
-        kit.cup(B, tx + 0.12, ty - 0.05, 1.0, 0.0)
-        kit.glass(B, tx - 0.12, ty + 0.1, 1.0, 0.0)
         B.spot("buffet_table_%d" % (k + 1), "table", (tx, ty, 0.0), 0.0)
         for j, (ox, oy, yw_) in enumerate(((0.0, -0.75, 180.0), (0.0, 0.75, 0.0))):
             B.spot("buffet_stand_%d_%d" % (k + 1, j + 1), "stand", (tx + ox, ty + oy, 0.0), yw_)
@@ -463,15 +463,26 @@ def _foyer(B):
     B.thing("magazines", "shelf", (16.3, yp - 0.15, 1.0), 0.0, topic="local")
     B.thing("foyer_board", "board", (X1 - 0.45, 11.6, 1.6), 270.0, topic="club")
     # seated café tables (west of the lane and east of the columns)
+    # the west table and the buffet's tables are cleared after hours (dress "day_cafe" / "night_cafe", docs/city_night.md);
+    # the dominoes table keeps its game and its chairs
     for k, (tx, ty) in enumerate(((-8.8, 8.7), (7.2, 5.0))):
         kit.table_round(B, tx, ty, 0.0, 0.0, r=0.45, h=0.75)
         if k == 1:                                       # the east table is for dominoes
             _dominoes(B, tx - 0.18, ty - 0.14, 0.75, 0.0)
             B.thing("cafe_dominoes", "play", (tx, ty, 0.78), 0.0, what="dominoes")
+            cs = kit.around_table(B, tx, ty, 0.8, 0.8, 0.0, per_side=(1, 1, 1, 1), chair_fn=kit.chair, kind="wood")
         else:
-            kit.cup(B, tx + 0.1, ty, 0.75, 0.0)
-            kit.vase(B, tx - 0.1, ty + 0.1, 0.75, 0.0, seed=k)
-        cs = kit.around_table(B, tx, ty, 0.8, 0.8, 0.0, per_side=(1, 1, 1, 1), chair_fn=kit.chair, kind="wood")
+            with B.dress("day_cafe", open=True):
+                kit.cup(B, tx + 0.1, ty, 0.75, 0.0)
+                kit.vase(B, tx - 0.1, ty + 0.1, 0.75, 0.0, seed=k)
+                cs = kit.around_table(B, tx, ty, 0.8, 0.8, 0.0, per_side=(1, 1, 1, 1), chair_fn=kit.chair, kind="wood")
+                for bx, by in ((-3.9, 7.2), (3.9, 7.2), (8.4, 7.2)):
+                    kit.cup(B, bx + 0.12, by - 0.05, 1.0, 0.0)
+                    kit.glass(B, bx - 0.12, by + 0.1, 1.0, 0.0)
+            with B.dress("night_cafe", open=False):
+                nk.chairs_up_round(B, tx, ty, 0.75, n=2, r=0.45, kind="wood", a0=0.0, seed=k)
+                for yy, yw in ((-0.38, 180.0), (0.38, 0.0)):      # the other two pushed in under the table
+                    kit.chair(B, tx, ty + yy, 0.0, yw, kind="wood")
         B.thing("cafe_seat_%d" % (k + 1), "seat", (cs[0]["seats"][0][0], cs[0]["seats"][0][1], 0.45), cs[0]["seats"][0][3],
                 height=0.45)
     # pendants over the buffet and the corners (no light: the building's own lamps stay)
@@ -661,6 +672,10 @@ def _dress(B):
         kit.cup(B, -12.8, 6.6, 0.72, 0.0)
     with B.dress("lounge_book", hours=(10, 22), chance=0.6):
         dk.book_face_down(B, 15.55, 9.3, 0.42, 15.0, seed=10)
+    # ---- the cleaner's morning before the doors open (7..10): the foyer between the buffet tables mopped (docs/city_night.md)
+    with B.dress("night_cleaner", hours=(7, 10), open=False):
+        nk.wet_floor(B, 0.0, 6.1, 0.0, 0.0, w=2.6, d=1.4, seed=11)
+        nk.mop_bucket(B, 1.75, 5.55, 0.0, 30.0, seed=11)
     with B.dress("festive_flowers", festival="any"):
         kit.vase(B, -9.8, 10.95, 1.05, 0.0, seed=31)
         kit.vase(B, 1.65, 10.3, 1.05, 0.0, seed=32)

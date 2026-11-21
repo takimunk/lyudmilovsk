@@ -1775,6 +1775,7 @@ static void JobChecks(const std::string& Path)
 
 #include "cupchecks.h"
 #include "rewardchecks.h"
+#include "rentalchecks.h"
 
 // The photo club's contest and the photo quests on the real data (docs/photo.md, tools/city/content/photo.json): the table
 // with the box of prints and the wall of winners hand over to the camera's code ("open"), the lab's board reads the guide and
@@ -1884,6 +1885,95 @@ static void PhotoContestChecks(const std::string& Path)
 	M.ResetState();
 }
 
+// windows that open, the mailboxes and the taps (backlog item 31, docs/city_interiors.md "Small things that answer a touch")
+static void TouchChecks(const std::string& Path)
+{
+	std::string Text, Error, Ru;
+	if (!ReadFile(Path, Text))
+	{
+		return;
+	}
+	std::printf("small things that answer a touch (real data)\n");
+	FModel M;
+	CHECK(M.Load(Text, Error), "it loads (%s)", Error.c_str());
+	ReadFile("unreal/Lyudmilovsk/Content/Localization/city/strings_ru.json", Ru);
+	auto Has = [&Ru](const std::string& Key) { return Ru.find("\"" + Key + "\"") != std::string::npos; };
+	// every window, vent and balcony door a building declares opens; every switch, mailbox and tap does its act
+	int Windows = 0, Shut = 0, Mail = 0, NoMail = 0, Taps = 0, NoTap = 0;
+	int First = -1, Vent = -1, Plain = -1;
+	for (int I = 0; I < (int)M.Things.size(); ++I)
+	{
+		const FThing& T = M.Things[(size_t)I];
+		const std::string What = T.Prop("what");
+		const FAct* A = M.ActOf(I);
+		if (What == "window" || What == "vent" || What == "balcony_door")
+		{
+			Windows++;
+			Shut += M.WindowShare(I) > 0.f ? 0 : 1;
+			Vent = What == "vent" && Vent < 0 ? I : Vent;
+			First = What == "window" && First < 0 ? I : First;
+		}
+		if (What == "mailbox")
+		{
+			Mail++;
+			NoMail += A && !A->Lines.empty() ? 0 : 1;
+		}
+		if (What == "tap")
+		{
+			Taps++;
+			NoTap += A && !A->Lines.empty() ? 0 : 1;
+		}
+		Plain = Plain < 0 && M.WindowShare(I) <= 0.f && What.empty() ? I : Plain;
+	}
+	CHECK(Windows >= 6 && Shut == 0, "%d windows, vents and balcony doors in the houses, each opens (%d do not)", Windows, Shut);
+	CHECK(Mail >= 4 && NoMail == 0 && Taps >= 5 && NoTap == 0, "%d banks of mailboxes and %d taps, each with its lines (%d, %d without)", Mail, Taps, NoMail, NoTap);
+	if (First < 0 || Vent < 0 || Plain < 0)
+	{
+		CHECK(false, "a window, a vent and a plain thing to try");
+		return;
+	}
+	// open, the air comes in; a second, narrower one adds nothing; shut the wide one: the vent's air; a plain thing never opens
+	CHECK(!M.IsWindowOpen(First) && M.OpenAir() == 0.f, "a fresh visit: every window shut, no open air");
+	const bool bOpen = M.ToggleWindow(First);
+	CHECK(bOpen && M.IsWindowOpen(First) && std::fabs(M.OpenAir() - M.WindowShare(First)) < 1e-4f, "opened: the open air is its width (%.2f)", M.OpenAir());
+	M.ToggleWindow(Vent);
+	CHECK(std::fabs(M.OpenAir() - std::max(M.WindowShare(First), M.WindowShare(Vent))) < 1e-4f, "two open: the wider one counts (%.2f)", M.OpenAir());
+	const bool bShut = !M.ToggleWindow(First);
+	CHECK(bShut && !M.IsWindowOpen(First) && std::fabs(M.OpenAir() - M.WindowShare(Vent)) < 1e-4f, "the window shut again: only the vent's air (%.2f)", M.OpenAir());
+	CHECK(!M.ToggleWindow(Plain) && !M.IsWindowOpen(Plain), "a thing that is no window never opens (%s)", M.Things[(size_t)Plain].Id.c_str());
+	M.ShutWindows();
+	CHECK(M.OpenAir() == 0.f && !M.IsWindowOpen(Vent), "walking into another plot shuts them all");
+	M.ToggleWindow(First);
+	M.ResetState();
+	CHECK(M.OpenAir() == 0.f, "starting over shuts them too");
+	// the words as it opens and shuts: by the weather first, then the hour; every key in the tables
+	FWhen W;
+	int Missing = 0;
+	std::set<std::string> Keys;
+	const uint8_t Weathers[] = { 0, WeatherRain, WeatherSnow, WeatherFog, WeatherCold, WeatherWarm, WeatherClear, WeatherRain | WeatherCold };
+	for (const uint8_t Bits : Weathers)
+	{
+		for (const float Hour : { 3.f, 12.f, 22.5f })
+		{
+			W.Weather = Bits;
+			W.Hour = Hour;
+			for (const bool bO : { true, false })
+			{
+				const std::string Key = FModel::WindowNote(bO, W);
+				Keys.insert(Key);
+				Missing += Has(Key) ? 0 : 1;
+			}
+		}
+	}
+	W.Weather = WeatherRain | WeatherCold;
+	CHECK(FModel::WindowNote(true, W) == "city.window.open.rain", "rain and cold: the rain is told (%s)", FModel::WindowNote(true, W).c_str());
+	W.Weather = WeatherClear;
+	W.Hour = 23.f;
+	CHECK(FModel::WindowNote(false, W) == "city.window.shut.night", "a clear night: the night (%s)", FModel::WindowNote(false, W).c_str());
+	CHECK(Keys.size() == 14 && Missing == 0, "%d words for opening and shutting, every one in the tables (%d missing)", (int)Keys.size(), Missing);
+	CHECK(Has("city.act.window.shut_prompt") && Has("city.act.window_look.prompt"), "the prompts: shut it, open and look out");
+}
+
 int main(int Argc, char** Argv)
 {
 	FixtureChecks();
@@ -1900,8 +1990,10 @@ int main(int Argc, char** Argv)
 	CourseChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	JobChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	CupChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	TouchChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	RewardChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	PhotoContestChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	RentalChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;
 }
