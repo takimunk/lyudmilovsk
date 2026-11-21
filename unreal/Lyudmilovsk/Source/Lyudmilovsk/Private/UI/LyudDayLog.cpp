@@ -205,6 +205,7 @@ void ULyudDayLog::Entries(TArray<FEntry>& Out) const
 		O.Day = LyudDayLogImpl::DateOf(E.Day);
 		O.bToday = E.Day == Today;
 		O.Doodle = LyudDayLogImpl::Str(E.Doodle);
+		O.Weather = LyudDayLogImpl::Str(E.Weather);
 		for (const LyudDayLog::FLine& L : E.Lines)
 		{
 			const FText Line = LyudDayLogImpl::LineText(L);

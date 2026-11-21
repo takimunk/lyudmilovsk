@@ -47,6 +47,8 @@ public:
 		TArray<FText> Lines;
 		/** The margin doodle: "bird:<Species>", "item:<id>", "weather:<code>". */
 		FString Doodle;
+		/** The day's weather code (drawn when the doodle's bird or thing has no picture). */
+		FString Weather;
 	};
 	/** The entries of every day played, oldest first (today's from the evening). */
 	void Entries(TArray<FEntry>& Out) const;

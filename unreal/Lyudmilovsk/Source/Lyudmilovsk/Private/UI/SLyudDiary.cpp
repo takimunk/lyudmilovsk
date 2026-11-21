@@ -1125,7 +1125,8 @@ namespace
 
 	FString WeatherOfDoodle(const ULyudDayLog::FEntry& E)
 	{
-		return E.Doodle.StartsWith(TEXT("weather:")) ? E.Doodle.Mid(8) : TEXT("mixed");
+		// a bird or a thing with no picture falls back on the day's own weather, not a stock sun-and-cloud
+		return E.Doodle.StartsWith(TEXT("weather:")) ? E.Doodle.Mid(8) : !E.Weather.IsEmpty() ? E.Weather : FString(TEXT("mixed"));
 	}
 
 	/** How many lines a text takes at a width in a font (words wrapped greedily; Japanese, with no spaces, by its width). */
