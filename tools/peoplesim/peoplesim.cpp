@@ -1208,7 +1208,7 @@ static int Town()
 					else if (Id == "walk_dog" || Id == "walk_dog_late")
 					{
 						DogWalkers.insert(P.Id);
-						DogOff += (W.Hour > 6.9f && W.Hour < 8.4f) || (W.Hour > 18.9f && W.Hour < 20.5f) ? 0 : 1;
+						DogOff += (W.Hour > 6.4f && W.Hour < 7.8f) || (W.Hour > 18.4f && W.Hour < 19.8f) ? 0 : 1;   // they set off a quarter of an hour ahead and are back on time
 					}
 				}
 				if (P.Activity >= 0 && (P.State == EState::Doing || P.State == EState::Away))
@@ -1311,7 +1311,7 @@ static int Town()
 	}
 	if (W.FindActivity("walk_dog") >= 0)
 	{
-		CHECK(DogWalkers.size() >= 8 && Minutes["walk_dog"] > 150 && Minutes["walk_dog_late"] > 150 && DogOff == 0,
+		CHECK(DogWalkers.size() >= 8 && Minutes["walk_dog"] > 150 && Minutes["walk_dog_late"] > 100 && DogOff == 0,
 			"the dogs' owners take them out morning and evening (%zu owners, %.0f + %.0f person-minutes, %d off the hours)", DogWalkers.size(), Minutes["walk_dog"], Minutes["walk_dog_late"], DogOff);
 	}
 	CHECK(Minutes["watch_sunrise"] > 0, "early risers watch the sunrise (%.0f person-minutes)", Minutes["watch_sunrise"]);

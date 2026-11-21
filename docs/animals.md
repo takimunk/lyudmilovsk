@@ -288,7 +288,8 @@ pets are added to the model after the strays, so a saved bond with one is not re
   a clear line to him at every step, sniffs, greets another walked dog, goes indoors after; a flat's cat is on the
   sill by day, at the door at feeding time, indoors at night; the feeders stay empty till the lady puts the food
   down; hedgehogs come out at dusk in July, curl up by the hero, a cat sniffs one and backs off, none in December.
-- `tools/peoplesim/run.sh town`: the dogs' owners are out morning and evening and never off those hours.
+- `tools/peoplesim/run.sh town`: the ten owners are out with the dog morning and evening (they set off about a
+  quarter of an hour ahead and are back on time; a holiday on the square thins the evening's walk), never at other hours.
 - `tools/animalsim/run.sh day && python3 tools/animalsim/render_animals.py`: `Saved/AnimalSim/animals_day_map.png`
   and `animals_day_acts.txt` (what they do, hour by hour); `run.sh trace <id> <hour> <hours>` follows one animal.
 - `tools/birdsim/run.sh test`: birds flush from a running dog well before a walking cat, a stalking cat gets closest.
