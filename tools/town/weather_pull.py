@@ -33,8 +33,10 @@ PULL = [
     # the club hall up on the spur and the town's two culture clubs and the hall: company under a roof, evenings too
     dict(kinds=["club", "culture_club", "hall"], rain=0.7, cold=0.4, storm=0.5, dark=0.2, about="the clubs and the hall"),
     dict(kinds=["culture"], rain=0.6, cold=0.3, about="the sport hall"),
-    # the sanatorium's lounge (a pull for whatever activity uses its visit spots: item 26's dominoes)
-    dict(kinds=["hotel"], rain=0.6, cold=0.4, storm=0.4, about="the sanatorium's lounge"),
+    # the sanatorium (its visit spots) and its lounge's dominoes (item 26): the pensioners' rainy afternoon
+    dict(kinds=["hotel", "sanatorium_lounge"], rain=0.6, cold=0.4, storm=0.4, about="the sanatorium and its lounge"),
+    # the cinema's day and evening shows (item 26): a film is what a wet evening is for
+    dict(kinds=["cinema_hall"], rain=0.8, cold=0.4, storm=0.5, dark=0.15, about="the cinema hall"),
     # shops under a roof: errands are run in the rain anyway, a little more willingly there
     dict(kinds=["shop", "market"], rain=0.25, cold=0.2, about="shops and the market hall"),
 ]
