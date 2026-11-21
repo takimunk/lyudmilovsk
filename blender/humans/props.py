@@ -22,6 +22,7 @@ Metres. How each lies in its own frame is what ANpcBody::PlaceMannerProp expects
     mop                        the shaft's top at the origin, along +X to the head (1.32 m), the strands' face +Z
     torch                      the grip at the origin, the lens along +X (0.2 m)
     bucket                     origin on the ground under it, +Z up (stands by the cleaner like the easel)
+    suitcase                   origin at the handle's grip, the case hangs along -Z, its broad sides +Y and -Y
 """
 import math
 import os
@@ -476,6 +477,27 @@ def bucket():
     p.rod(zinc, (0.0, -0.148, 0.27), (0.13, -0.07, 0.3), 0.004, seg=5)
     p.rod(zinc, (0.13, -0.07, 0.3), (0.13, 0.07, 0.3), 0.004, seg=5)
     p.rod(zinc, (0.13, 0.07, 0.3), (0.0, 0.148, 0.27), 0.004, seg=5)
+def suitcase():
+    """A sanatorium guest's suitcase (EHold::Hanging): the handle's grip at the origin, the case hanging under it along
+    -Z, its broad sides facing +Y and -Y (beside the leg)."""
+    p = Prop("suitcase")
+    hide = p.mat("leatherette", (0.36, 0.2, 0.12), 0.7)
+    trim = p.mat("trim", (0.2, 0.12, 0.08), 0.6)
+    metal = p.mat("locks", (0.7, 0.66, 0.55), 0.35)
+    top, bot = -0.06, -0.44
+    p.box(hide, (-0.28, -0.085, bot), (0.28, 0.085, top))
+    # the corners' caps and the band round the lid's seam
+    for x in (-0.28, 0.28):
+        for z in (bot, top):
+            p.box(trim, (x - 0.03 if x > 0 else x - 0.004, -0.089, z - 0.004 if z == bot else z - 0.03),
+                  (x + 0.004 if x > 0 else x + 0.03, 0.089, z + 0.03 if z == bot else z + 0.004))
+    p.box(trim, (-0.283, -0.004, bot - 0.002), (0.283, 0.004, top + 0.002))
+    # two locks on the top, the handle between its posts
+    for x in (-0.15, 0.15):
+        p.box(metal, (x - 0.02, -0.012, top), (x + 0.02, 0.012, top + 0.008))
+    for x in (-0.06, 0.06):
+        p.rod(trim, (x, 0.0, top), (x * 0.9, 0.0, 0.0), 0.007, seg=6)
+    p.rod(trim, (-0.056, 0.0, 0.0), (0.056, 0.0, 0.0), 0.011, seg=8)
     return p
 
 
@@ -511,7 +533,7 @@ def easel():
 
 
 MAKERS = [phone, cigarette, camera, umbrella, rod, brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, easel,
-          spade, watering_can, mop, torch, bucket]
+          spade, watering_can, mop, torch, bucket, suitcase]
 
 
 def preview(o, name):

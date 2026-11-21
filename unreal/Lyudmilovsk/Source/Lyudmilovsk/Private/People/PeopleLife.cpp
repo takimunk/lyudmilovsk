@@ -644,6 +644,7 @@ bool UPeopleLifeSubsystem::UpdateClock(bool bFirst)
 	const double Seconds = (Now - GetDefault<UGameCalendar>()->StartDate).GetTotalSeconds();
 	S.Hour = PeopleDayHour(Now);
 	S.Weekday = (int)Now.GetDayOfWeek();     // Monday = 0
+	S.Week = (int)FMath::FloorToDouble((Now - FDateTime(2001, 1, 1)).GetTotalDays() / 7.0);     // 1 January 2001 was a Monday: who is on a stay now
 	S.Time = Seconds;
 	const int32 Day = Now.GetDayOfYear() + Now.GetYear() * 400;
 	if (Day != SunDay)

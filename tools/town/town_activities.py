@@ -276,6 +276,8 @@ def build():
     out[PLACES] = dump(pd)
 
     # the people: the beds' keepers, those who play, the postman
+    # (the sanatorium's guests are sanatorium_guests.py's own: their likes are left as it wrote them)
+    people = [p for p in people if p.get("occupation") != "guest"]
     for p in people:
         for a in OWN_LIKES:
             (p.get("likes") or {}).pop(a, None)

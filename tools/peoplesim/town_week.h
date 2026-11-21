@@ -24,6 +24,7 @@ namespace TownWeek
 			const double H = Abs / 3600.0;
 			W.Hour = (float)std::fmod(H, 24.0);
 			W.Weekday = (int)std::fmod(std::floor(H / 24.0), 7.0);
+			W.Week = (int)std::floor(H / 168.0);
 			W.Time = Abs - StartAbs;
 			W.Sunrise = 7.75f;
 			W.Sunset = 17.25f;

@@ -2861,3 +2861,335 @@ say = town.cinema_house.1..4
 [piano_hall]
 doing = play_piano
 say = town.piano_hall.1..3
+
+# The sanatorium's guests in turn (docs/town_life.md, "The sanatorium's guests"; tools/town/sanatorium_guests.py):
+# the day they come and the day they go, the regime's outings, and each guest's own story told in pieces through the
+# week at the table, over the dominoes and at the pump room (job = guest_<name>: their own; the pieces go by the
+# weekday: Saturday and Sunday, Monday and Tuesday, Wednesday and Thursday, Friday)
+# --- Pyotr Gromov: the stand-in's stand-in of 1975, the watches on both wrists
+# --- Sonya Mironova: bronchi to cure, a violin to practise, an entrance exam in September
+# --- Boris Tamm: a navigator, the chess final of 1961
+# --- Nikolai Sazonov: a mathematics teacher, the same final
+# --- Zinaida Krylova of Vologda: a telephone operator who knew every voice in town
+# --- Raisa Abdullina of Kazan: a seamstress who sewed a town's wedding dresses
+# --- Arkady Levin of Murmansk: an icebreaker's navigator who has never swum in a warm sea
+# --- Tamara Levina of Murmansk: a music teacher who waited on the pier for forty years
+# --- Yuri Beketov of Norilsk: a mining engineer who came for the sun
+# --- Haruo Matsumoto of Otaru: a watchmaker with one watch he could never mend
+# --- Lidia Kovalchuk of Irkutsk: a train conductor on holiday from trains, with her granddaughter
+# --- Asya Kovalchuk, twelve: collects flat stones and one stone a day goes home
+
+[guest_arrive]
+doing = san_arrive
+say = town.guest_arrive.1..4
+
+[guest_depart]
+doing = san_depart
+say = town.guest_depart.1..4
+
+[guest_goodbye]
+doing = san_depart
+to = hero
+bond = friendly friend close
+weight = 4
+say = town.guest_goodbye.1..3
+
+[guest_promenade]
+doing = san_promenade
+say = town.guest_promenade.1..4
+
+[guest_postcards]
+doing = san_postcards
+say = town.guest_postcards.1..3
+
+[guest_gromov_1]
+job = guest_gromov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say = town.guest_gromov.1
+
+[guest_gromov_2]
+job = guest_gromov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say = town.guest_gromov.2
+
+[guest_gromov_3]
+job = guest_gromov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say = town.guest_gromov.3
+
+[guest_gromov_4]
+job = guest_gromov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say = town.guest_gromov.4
+
+[guest_mironova_1]
+job = guest_mironova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = sat sun
+say = town.guest_mironova.1
+
+[guest_mironova_2]
+job = guest_mironova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = mon tue
+say = town.guest_mironova.2
+
+[guest_mironova_3]
+job = guest_mironova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = wed thu
+say = town.guest_mironova.3
+
+[guest_mironova_4]
+job = guest_mironova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = fri
+say = town.guest_mironova.4
+
+[guest_tamm_1]
+job = guest_tamm
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say = town.guest_tamm.1
+
+[guest_tamm_2]
+job = guest_tamm
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say = town.guest_tamm.2
+
+[guest_tamm_3]
+job = guest_tamm
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say = town.guest_tamm.3
+
+[guest_tamm_4]
+job = guest_tamm
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say = town.guest_tamm.4
+
+[guest_sazonov_1]
+job = guest_sazonov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say = town.guest_sazonov.1
+
+[guest_sazonov_2]
+job = guest_sazonov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say = town.guest_sazonov.2
+
+[guest_sazonov_3]
+job = guest_sazonov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say = town.guest_sazonov.3
+
+[guest_sazonov_4]
+job = guest_sazonov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say = town.guest_sazonov.4
+
+[guest_krylova_1]
+job = guest_krylova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say = town.guest_krylova.1
+
+[guest_krylova_2]
+job = guest_krylova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say = town.guest_krylova.2
+
+[guest_krylova_3]
+job = guest_krylova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say = town.guest_krylova.3
+
+[guest_krylova_4]
+job = guest_krylova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say = town.guest_krylova.4
+
+[guest_abdullina_1]
+job = guest_abdullina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = sat sun
+say = town.guest_abdullina.1
+
+[guest_abdullina_2]
+job = guest_abdullina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = mon tue
+say = town.guest_abdullina.2
+
+[guest_abdullina_3]
+job = guest_abdullina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = wed thu
+say = town.guest_abdullina.3
+
+[guest_abdullina_4]
+job = guest_abdullina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = fri
+say = town.guest_abdullina.4
+
+[guest_levin_1]
+job = guest_levin
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say = town.guest_levin.1
+
+[guest_levin_2]
+job = guest_levin
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say = town.guest_levin.2
+
+[guest_levin_3]
+job = guest_levin
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say = town.guest_levin.3
+
+[guest_levin_4]
+job = guest_levin
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say = town.guest_levin.4
+
+[guest_levina_1]
+job = guest_levina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = sat sun
+say = town.guest_levina.1
+
+[guest_levina_2]
+job = guest_levina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = mon tue
+say = town.guest_levina.2
+
+[guest_levina_3]
+job = guest_levina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = wed thu
+say = town.guest_levina.3
+
+[guest_levina_4]
+job = guest_levina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = fri
+say = town.guest_levina.4
+
+[guest_beketov_1]
+job = guest_beketov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say = town.guest_beketov.1
+
+[guest_beketov_2]
+job = guest_beketov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say = town.guest_beketov.2
+
+[guest_beketov_3]
+job = guest_beketov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say = town.guest_beketov.3
+
+[guest_beketov_4]
+job = guest_beketov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say = town.guest_beketov.4
+
+[guest_matsumoto_1]
+job = guest_matsumoto
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say = town.guest_matsumoto.1
+
+[guest_matsumoto_2]
+job = guest_matsumoto
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say = town.guest_matsumoto.2
+
+[guest_matsumoto_3]
+job = guest_matsumoto
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say = town.guest_matsumoto.3
+
+[guest_matsumoto_4]
+job = guest_matsumoto
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say = town.guest_matsumoto.4
+
+[guest_kovalchuk_1]
+job = guest_kovalchuk
+age = adult elder
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = sat sun
+say = town.guest_kovalchuk.1
+
+[guest_kovalchuk_2]
+job = guest_kovalchuk
+age = adult elder
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = mon tue
+say = town.guest_kovalchuk.2
+
+[guest_kovalchuk_3]
+job = guest_kovalchuk
+age = adult elder
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = wed thu
+say = town.guest_kovalchuk.3
+
+[guest_kovalchuk_4]
+job = guest_kovalchuk
+age = adult elder
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = fri
+say = town.guest_kovalchuk.4
+
+[guest_asya_1]
+job = guest_kovalchuk
+age = kid
+weekday = sat sun
+say = town.guest_asya.1
+
+[guest_asya_2]
+job = guest_kovalchuk
+age = kid
+weekday = mon tue
+say = town.guest_asya.2
+
+[guest_asya_3]
+job = guest_kovalchuk
+age = kid
+weekday = wed thu
+say = town.guest_asya.3
+
+[guest_asya_4]
+job = guest_kovalchuk
+age = kid
+weekday = fri
+say = town.guest_asya.4

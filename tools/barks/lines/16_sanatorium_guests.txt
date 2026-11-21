@@ -1,0 +1,310 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The sanatorium's guests in turn (docs/town_life.md, "The sanatorium's guests"; tools/town/sanatorium_guests.py):
+## the day they come and the day they go, the regime's outings, and each guest's own story told in pieces through the
+## week at the table, over the dominoes and at the pump room (job = guest_<name>: their own; the pieces go by the
+## weekday: Saturday and Sunday, Monday and Tuesday, Wednesday and Thursday, Friday)
+## ---------------------------------------------------------------------------------------------------------------
+
+[guest_arrive]
+doing = san_arrive
+say town.guest_arrive.1 | Здравствуйте. У меня путёвка на две недели. | Good day. I have a voucher for two weeks. | こんにちは。二週間の療養券を持ってきました。
+say town.guest_arrive.2 | От поезда шёл пешком. Чемодан за дорогу потяжелел. | I walked from the train. The suitcase got heavier on the way. | 駅から歩いてきました。道中でスーツケースが重くなった。
+say town.guest_arrive.3 | Морем пахнет уже с платформы. | You can smell the sea right from the platform. | ホームに降りた時から海の匂いがする。
+say town.guest_arrive.4 | Комната с окном на море? Тогда я согласен на любой режим. | A room with a sea view? Then I agree to any regime. | 海の見える部屋？それならどんな日課でも従います。
+
+[guest_depart]
+doing = san_depart
+say town.guest_depart.1 | Две недели как один день. | Two weeks like a single day. | 二週間が一日のようだった。
+say town.guest_depart.2 | Поезд в десять сорок пять. Постою, подышу напоследок. | The train's at ten forty-five. I'll stand and breathe a last while. | 列車は十時四十五分。最後にもう少し、ここの空気を吸っていこう。
+say town.guest_depart.3 | В чемодане янтарь, открытки и местная вода. Не разбить бы. | Amber, postcards and the local water in the suitcase. Mustn't break it. | スーツケースには琥珀と絵はがきとここの水。割らないようにしないと。
+say town.guest_depart.4 | Через год опять сюда. Уже решено. | Back here in a year. It's settled. | 一年後にまたここへ。もう決めた。
+
+[guest_goodbye]
+doing = san_depart
+to = hero
+bond = friendly friend close
+weight = 4
+say town.guest_goodbye.1 | Пришёл проводить? Спасибо. Напиши мне, адрес у дежурной. | Come to see me off? Thank you. Write to me, the desk has my address. | 見送りに来てくれたの？ありがとう。手紙をください、住所は受付にあります。
+say town.guest_goodbye.2 | Ну, прощай, сосед по столовой. Береги свой город. | Well, goodbye, my dining-room neighbour. Look after your town. | では、さようなら、食堂のお隣さん。君の町を大事にね。
+say town.guest_goodbye.3 | Хорошо, что успели познакомиться. Приеду через год, проверю, как ты вырос. | Good that we got to meet. I'll be back in a year to see how you've grown. | 知り合えてよかった。一年後に来て、君がどれだけ大きくなったか確かめるよ。
+
+[guest_promenade]
+doing = san_promenade
+say town.guest_promenade.1 | После обеда положено гулять. Режим есть режим. | After lunch one is meant to walk. A regime is a regime. | 昼食のあとは散歩と決まっている。日課は日課。
+say town.guest_promenade.2 | До конца набережной и обратно — ровно тысяча шагов. Я считал. | To the end of the promenade and back is exactly a thousand steps. I counted. | 遊歩道の端まで行って戻ると、ちょうど千歩。数えたんだ。
+say town.guest_promenade.3 | Доктор сказал: дышать морем. Дышу. | The doctor said: breathe the sea. I'm breathing. | 先生が言った、海の空気を吸いなさいと。吸っています。
+say town.guest_promenade.4 | Дома такого воздуха нет. Увезти бы банку. | There's no air like this at home. If only I could take a jar. | うちにはこんな空気はない。瓶に詰めて持って帰りたい。
+
+[guest_postcards]
+doing = san_postcards
+say town.guest_postcards.1 | Мне три открытки с маяком. И одну с канаткой, для внука. | Three postcards with the lighthouse. And one with the cable car, for my grandson. | 灯台の絵はがきを三枚。それとロープウェイのを一枚、孫に。
+say town.guest_postcards.2 | Домой пишу каждый день. Читают раз в неделю. | I write home every day. They read once a week. | 家には毎日書いている。読まれるのは週に一度だけど。
+say town.guest_postcards.3 | «Доехал хорошо, кормят хорошо, вода солёная». Что ещё писать? | "Arrived well, fed well, the water's salty." What else is there to write? | 「無事に着いた、食事はいい、水はしょっぱい」。ほかに何を書けばいい？
+
+## --- Pyotr Gromov: the stand-in's stand-in of 1975, the watches on both wrists
+[guest_gromov_1]
+job = guest_gromov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say town.guest_gromov.1 | Суп остывает за одиннадцать минут. Я засёк. | The soup cools in eleven minutes. I timed it. | スープは十一分で冷める。計ったんだ。
+[guest_gromov_2]
+job = guest_gromov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say town.guest_gromov.2 | В семьдесят пятом нас готовили троих на один корабль. Полетел первый. | In seventy-five they trained three of us for one ship. The first one flew. | 七五年、一隻の船のために三人が訓練を受けた。飛んだのは一人目だ。
+[guest_gromov_3]
+job = guest_gromov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say town.guest_gromov.3 | На центрифуге я пел, чтобы не потерять сознание. Не спрашивайте что. | On the centrifuge I sang so as not to pass out. Don't ask what. | 遠心機では気を失わないように歌った。何の歌かは聞かないでくれ。
+[guest_gromov_4]
+job = guest_gromov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say town.guest_gromov.4 | Готовность — это тоже полёт. Я долетел сюда. | Being ready is a flight too. I flew as far as here. | 備えることも飛行のうち。私はここまで飛んできた。
+
+## --- Sonya Mironova: bronchi to cure, a violin to practise, an entrance exam in September
+[guest_mironova_1]
+job = guest_mironova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = sat sun
+say town.guest_mironova.1 | Я вообще-то лечу бронхи. А скрипка сама приехала. | Actually I'm here for my bronchi. The violin came along by itself. | 本当は気管支の治療で来たの。バイオリンは勝手についてきた。
+[guest_mironova_2]
+job = guest_mironova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = mon tue
+say town.guest_mironova.2 | Играть разрешают только до тихого часа. А поступление в сентябре. | They only let me play until quiet hour. And the entrance exam is in September. | 弾いていいのは静養時間まで。なのに入試は九月。
+[guest_mironova_3]
+job = guest_mironova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = wed thu
+say town.guest_mironova.3 | В зимнем саду в пять никого нет. Там и занимаюсь. | There's nobody in the winter garden at five. That's where I practise. | 五時の温室には誰もいない。そこで練習してるの。
+[guest_mironova_4]
+job = guest_mironova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = fri
+say town.guest_mironova.4 | Вчера под дверью слушали. Двое плакали. Говорят, это не жалоба. | Yesterday people listened at the door. Two cried. They say that's not a complaint. | 昨日はドアの外で聴いてる人がいた。二人泣いてた。苦情じゃないって。
+
+## --- Boris Tamm: a navigator, the chess final of 1961
+[guest_tamm_1]
+job = guest_tamm
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say town.guest_tamm.1 | Ноль семь сорок, ветер норд, каша овсяная. Записал. | Oh-seven-forty, wind north, porridge of oats. Logged. | 七時四十分、北風、朝食はオートミール。記録した。
+[guest_tamm_2]
+job = guest_tamm
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say town.guest_tamm.2 | Ладья стояла на d7. Шестьдесят первый год, финал кружка. Я помню! | The rook stood on d7. Sixty-one, the club final. I remember! | ルークはd7にいた。六一年、クラブの決勝だ。覚えているとも！
+[guest_tamm_3]
+job = guest_tamm
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say town.guest_tamm.3 | Переиграли. Он выиграл. Но в шестьдесят первом у меня колено не болело. | We replayed it. He won. But in sixty-one my knee didn't hurt. | 指し直した。彼が勝った。だが六一年の私は膝が痛くなかった。
+[guest_tamm_4]
+job = guest_tamm
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say town.guest_tamm.4 | Ничья так ничья. Зато завтра будет норд-вест, вот увидите. | A draw is a draw. But tomorrow it'll be a north-wester, you'll see. | 引き分けなら引き分けだ。だが明日は北西の風になる、見ていなさい。
+
+## --- Nikolai Sazonov: a mathematics teacher, the same final
+[guest_sazonov_1]
+job = guest_sazonov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say town.guest_sazonov.1 | Мы с Борисом дружим с шестьдесят первого. Спорим с того же года. | Boris and I have been friends since sixty-one. Arguing since the same year. | ボリスとは六一年からの友人。口論も同じ年からだ。
+[guest_sazonov_2]
+job = guest_sazonov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say town.guest_sazonov.2 | Не было никакой ладьи на d7. Я сорок лет учил детей не выдумывать условия задачи. | There was no rook on d7. I spent forty years teaching children not to invent the terms of a problem. | d7にルークなどなかった。問題の条件を勝手に作るなと、四十年子どもに教えてきたんだ。
+[guest_sazonov_3]
+job = guest_sazonov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say town.guest_sazonov.3 | Тридцать третий ход восстановили на салфетках. Официантка их отобрала. | We rebuilt the thirty-third move on napkins. The waitress took them away. | 三十三手目までナプキンの上で再現した。給仕さんに取り上げられたが。
+[guest_sazonov_4]
+job = guest_sazonov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say town.guest_sazonov.4 | Ничью предложил я. Но ему не говорите: пусть думает. | I offered the draw. But don't tell him: let him wonder. | 引き分けを申し出たのは私だ。彼には言わないで。考えさせておこう。
+
+## --- Zinaida Krylova of Vologda: a telephone operator who knew every voice in town
+[guest_krylova_1]
+job = guest_krylova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say town.guest_krylova.1 | Я из Вологды. Тридцать лет на коммутаторе: «Соединяю!» | I'm from Vologda. Thirty years at the switchboard: "Putting you through!" | ヴォログダから来ました。交換台に三十年、「おつなぎします！」ってね。
+[guest_krylova_2]
+job = guest_krylova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say town.guest_krylova.2 | Весь город знала по голосам. В лицо почти никого. | I knew the whole town by voice. Hardly anyone by face. | 町じゅうの人を声で知っていた。顔はほとんど知らないのに。
+[guest_krylova_3]
+job = guest_krylova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say town.guest_krylova.3 | Один голос звонил каждую пятницу в Мурманск. Двадцать лет. Потом перестал. | One voice rang Murmansk every Friday. Twenty years. Then it stopped. | ある声は毎週金曜にムルマンスクへ電話していた。二十年間。それから途絶えた。
+[guest_krylova_4]
+job = guest_krylova
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say town.guest_krylova.4 | Здесь на набережной я его услышала. Тот самый голос. Просил мороженое. | Here on the promenade I heard it. That very voice. Asking for an ice cream. | この遊歩道であの声を聞いたの。まさにあの声。アイスクリームを頼んでいた。
+
+## --- Raisa Abdullina of Kazan: a seamstress who sewed a town's wedding dresses
+[guest_abdullina_1]
+job = guest_abdullina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = sat sun
+say town.guest_abdullina.1 | Я из Казани, портниха. Вижу человека и сразу знаю его мерки. | I'm from Kazan, a seamstress. I see a person and know their measurements at once. | カザンから来た仕立屋です。人を見れば寸法がすぐ分かるの。
+[guest_abdullina_2]
+job = guest_abdullina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = mon tue
+say town.guest_abdullina.2 | Двести свадебных платьев сшила. Своего так и не было: расписались в обед. | I sewed two hundred wedding dresses. Never had my own: we signed in the lunch break. | 婚礼衣装を二百着縫った。自分のは結局なし。昼休みに届けを出したから。
+[guest_abdullina_3]
+job = guest_abdullina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = wed thu
+say town.guest_abdullina.3 | Купила тут белой ткани в универмаге. Не спрашивайте зачем. | I bought some white cloth at the department store here. Don't ask what for. | ここのデパートで白い生地を買ったの。何のためかは聞かないで。
+[guest_abdullina_4]
+job = guest_abdullina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = fri
+say town.guest_abdullina.4 | Шью по вечерам в комнате. Через год золотая свадьба. Успею. | I sew in my room in the evenings. Our golden wedding is in a year. I'll make it. | 夜は部屋で縫っています。一年後は金婚式。間に合わせるわ。
+
+## --- Arkady Levin of Murmansk: an icebreaker's navigator who has never swum in a warm sea
+[guest_levin_1]
+job = guest_levin
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say town.guest_levin.1 | Мы из Мурманска. Я сорок лет водил ледоколы, а моря без льда почти не видел. | We're from Murmansk. Forty years I steered icebreakers and hardly saw a sea without ice. | ムルマンスクから来ました。四十年砕氷船を操ったが、氷のない海はほとんど見たことがない。
+[guest_levin_2]
+job = guest_levin
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say town.guest_levin.2 | Здешнее море тихое. Смотрю на него и жду, когда затрещит. | The sea here is quiet. I look at it and wait for it to crack. | ここの海は静かだ。眺めながら、いつ割れる音がするかと待ってしまう。
+[guest_levin_3]
+job = guest_levin
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say town.guest_levin.3 | Встаю к рассвету по привычке. Вахта с четырёх, никто не отменял. | I get up for the dawn out of habit. The watch from four, nobody cancelled it. | 習慣で夜明けに起きる。四時からの当直は、誰も取り消していないからね。
+[guest_levin_4]
+job = guest_levin
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say town.guest_levin.4 | Вчера зашёл в воду по колено. Тамара говорит, это уже плавание. | Yesterday I went in up to the knees. Tamara says that already counts as a voyage. | 昨日は膝まで海に入った。タマーラはそれも立派な航海だと言う。
+
+## --- Tamara Levina of Murmansk: a music teacher who waited on the pier for forty years
+[guest_levina_1]
+job = guest_levina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = sat sun
+say town.guest_levina.1 | Я сорок лет учила детей музыке и ждала мужа с моря. Теперь он ждёт меня с процедур. | Forty years I taught music and waited for my husband from the sea. Now he waits for me. | 四十年、子どもに音楽を教えながら夫を海から待った。今は夫が治療から戻る私を待っている。
+[guest_levina_2]
+job = guest_levina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = mon tue
+say town.guest_levina.2 | В холле стоит рояль. Расстроен, но честный. | There's a grand piano in the hall. Out of tune, but honest. | ホールにグランドピアノがある。調子は狂っているけど、正直な音。
+[guest_levina_3]
+job = guest_levina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = wed thu
+say town.guest_levina.3 | Аркадий не знает ни одной ноты. Зато узнаёт мои шаги за два этажа. | Arkady doesn't know a single note. But he knows my footsteps from two floors away. | アルカージーは音符ひとつ読めない。でも二階下からでも私の足音が分かるの。
+[guest_levina_4]
+job = guest_levina
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = fri
+say town.guest_levina.4 | Вечером сыграю в зале клуба. Он сядет в последний ряд и будет смотреть на часы. От гордости. | Tonight I'll play in the club hall. He'll sit in the last row and look at his watch. Out of pride. | 今夜はクラブのホールで弾きます。彼は最後列に座って時計を見るでしょう。誇らしくてね。
+
+## --- Yuri Beketov of Norilsk: a mining engineer who came for the sun
+[guest_beketov_1]
+job = guest_beketov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say town.guest_beketov.1 | Я из Норильска. У нас сейчас ночь, до января. | I'm from Norilsk. It's night there now, until January. | ノリリスクから来ました。あちらは今、一月まで夜です。
+[guest_beketov_2]
+job = guest_beketov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say town.guest_beketov.2 | Тридцать лет под землёй, на руднике. Солнце видел по графику отпусков. | Thirty years underground, at the mine. I saw the sun by the holiday rota. | 三十年、鉱山の地下で働いた。太陽は休暇の当番表どおりにしか見られなかった。
+[guest_beketov_3]
+job = guest_beketov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say town.guest_beketov.3 | Здесь оно садится в море каждый вечер, и никто не удивляется. Я хожу удивляться за всех. | Here it sets into the sea every evening and nobody's surprised. I go and am surprised for everyone. | ここでは毎晩太陽が海に沈むのに、誰も驚かない。私がみんなの分まで驚きに行くんです。
+[guest_beketov_4]
+job = guest_beketov
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say town.guest_beketov.4 | Харуо починил мои часы. Сказал, они отставали на одну полярную ночь. | Haruo mended my watch. He said it was running one polar night slow. | 春雄さんが私の時計を直してくれた。極夜ひとつ分遅れていたそうです。
+
+## --- Haruo Matsumoto of Otaru: a watchmaker with one watch he could never mend
+[guest_matsumoto_1]
+job = guest_matsumoto
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = sat sun
+say town.guest_matsumoto.1 | Я из Отару. Часовщик. У нас тоже море, только с другой стороны. | I'm from Otaru. A watchmaker. We have a sea too, only from the other side. | 小樽から来ました。時計職人です。うちにも海がある、向こう側の海ですが。
+[guest_matsumoto_2]
+job = guest_matsumoto
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = mon tue
+say town.guest_matsumoto.2 | За жизнь я починил девять тысяч часов. Не смог одни: отцовские. | In my life I've mended nine thousand watches. One I couldn't: my father's. | 生涯で九千個の時計を直しました。直せなかったのはひとつ、父の時計です。
+[guest_matsumoto_3]
+job = guest_matsumoto
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = wed thu
+say town.guest_matsumoto.3 | В столовой часы идут точно. Я проверял три дня. Это редкость и радость. | The dining room clock keeps exact time. I checked for three days. A rarity and a joy. | 食堂の時計は正確です。三日かけて確かめました。珍しく、うれしいことです。
+[guest_matsumoto_4]
+job = guest_matsumoto
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure dominoes
+weekday = fri
+say town.guest_matsumoto.4 | Отцовские я решил не чинить. Пусть показывают его время. У меня есть своё. | I've decided not to mend my father's. Let it show his time. I have my own. | 父の時計は直さないことにしました。父の時間を指していればいい。私には私の時間がある。
+
+## --- Lidia Kovalchuk of Irkutsk: a train conductor on holiday from trains, with her granddaughter
+[guest_kovalchuk_1]
+job = guest_kovalchuk
+age = adult elder
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = sat sun
+say town.guest_kovalchuk.1 | Мы с внучкой из Иркутска. Я проводница: четверо суток до Москвы, четверо обратно. | My granddaughter and I are from Irkutsk. I'm a train conductor: four days to Moscow, four back. | 孫とイルクーツクから来ました。私は車掌、モスクワまで四昼夜、帰りも四昼夜。
+[guest_kovalchuk_2]
+job = guest_kovalchuk
+age = adult elder
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = mon tue
+say town.guest_kovalchuk.2 | Первую ночь не спала: кровать не качается. | I didn't sleep the first night: the bed doesn't rock. | 最初の晩は眠れなかった。ベッドが揺れないんだもの。
+[guest_kovalchuk_3]
+job = guest_kovalchuk
+age = adult elder
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = wed thu
+say town.guest_kovalchuk.3 | Здешний поезд идёт по морю двадцать минут. Я проехала и расстроилась: только чай заварила. | The train here crosses the sea in twenty minutes. I rode it and was upset: I'd just made the tea. | ここの列車は海の上を二十分走る。乗ってがっかりしたわ、お茶をいれたところで着いちゃって。
+[guest_kovalchuk_4]
+job = guest_kovalchuk
+age = adult elder
+doing = eat_sanatorium_breakfast eat_sanatorium_lunch eat_sanatorium_supper san_cure
+weekday = fri
+say town.guest_kovalchuk.4 | Ася спросила, почему я всем в столовой разношу чай. Привычка. Никто не жалуется. | Asya asked why I carry tea round to everyone in the dining room. Habit. Nobody complains. | 食堂でどうしてみんなにお茶を配るのって、アーシャに聞かれた。習慣よ。誰も文句は言わないし。
+
+## --- Asya Kovalchuk, twelve: collects flat stones and one stone a day goes home
+[guest_asya_1]
+job = guest_kovalchuk
+age = kid
+weekday = sat sun
+say town.guest_asya.1 | Мы с бабушкой ехали сюда пять дней. Я считала мосты. Сто сорок два. | Granny and I were five days on the way here. I counted the bridges. A hundred and forty-two. | おばあちゃんとここまで五日かかったの。橋を数えたら百四十二あった。
+[guest_asya_2]
+job = guest_kovalchuk
+age = kid
+weekday = mon tue
+say town.guest_asya.2 | У нас Байкал, там камни круглые. А тут плоские, как раз для блинчиков. | We have Baikal, the stones there are round. Here they're flat, just right for skipping. | うちのバイカル湖の石は丸いの。ここのは平たくて、水切りにぴったり。
+[guest_asya_3]
+job = guest_kovalchuk
+age = kid
+weekday = wed thu
+say town.guest_asya.3 | Мой рекорд — девять. Местные говорят, у них двенадцать. Не верю, пока не увижу. | My record is nine. The local kids say theirs is twelve. I won't believe it till I see it. | わたしの記録は九回。ここの子は十二回って言うけど、見るまで信じない。
+[guest_asya_4]
+job = guest_kovalchuk
+age = kid
+weekday = fri
+say town.guest_asya.4 | Один камень в день я не бросаю, а кладу в чемодан. Бабушка пока не знает, почему он тяжёлый. | One stone a day I don't throw, I put it in the suitcase. Granny doesn't know yet why it's heavy. | 一日ひとつだけ、投げずにスーツケースに入れてる。なぜ重いのか、おばあちゃんはまだ知らない。

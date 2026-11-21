@@ -715,7 +715,7 @@ of three procedures, bench.
 
 ## 50. Sanatorium guests come and go
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The four sanatorium guests (`tools/town/sanatorium_guests.py`) live there for
+`[~] sanatorium-rotation 2026-11-21` **Cloud-only. Brief (Opus 5.5):** The four sanatorium guests (`tools/town/sanatorium_guests.py`) live there for
 ever. Make the sanatorium a place people come to: a nine-day stay (the same as the hero's course) with arrivals and
 departures on Saturdays by the train (item 21's passengers: they get off with a suitcase and walk to «Корона», the
 departing ones wait on the platform), a pool of a dozen guests from the residents generator's spare bodies who rotate,
