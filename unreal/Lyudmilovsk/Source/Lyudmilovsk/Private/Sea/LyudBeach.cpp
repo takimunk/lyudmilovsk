@@ -831,11 +831,10 @@ void ULyudBeach::UpdateCastle(ALyudSea& Sea, float Dt)
 		{
 			// he slept or the game was closed: the tides of the hours between, ten minutes at a time
 			double Lon = 20.40, Offset = 2.0;
-			for (TActorIterator<ALyudSky> It(World); It; ++It)
+			if (TActorIterator<ALyudSky> It(World); It)
 			{
 				Lon = It->LongitudeDeg;
 				Offset = It->UtcOffsetHours;
-				break;
 			}
 			const double Span = FMath::Min(Away, 4.0 * 86400.0);
 			for (double T = 0.0; T < Span && !bGone; T += 600.0)
@@ -1493,11 +1492,10 @@ void ULyudBeach::UpdateInput(AHeroCharacter& Hero, ALyudSea& Sea, APlayerControl
 					Stamp(TEXT("castle_flag"));
 					// when will the tide be here: the level of the coming hours against the sand it stands on
 					double Lon = 20.40, Offset = 2.0;
-					for (TActorIterator<ALyudSky> It(GetWorld()); It; ++It)
+					if (TActorIterator<ALyudSky> It(GetWorld()); It)
 					{
 						Lon = It->LongitudeDeg;
 						Offset = It->UtcOffsetHours;
-						break;
 					}
 					const FDateTime Utc = UGameCalendar::NowIn(GetWorld()) - FTimespan::FromHours(Offset);
 					const double Datum = Sea.DatumZ() / 100.0;
