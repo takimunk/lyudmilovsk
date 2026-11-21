@@ -38,7 +38,9 @@ Four pages, keys and arguments only (so a save shows it in the language of the m
    his big deeds).
 4. **Holidays and cinema**: today's club tournament (its start and venue: sign up at the bracket), up to three festivals of the next two weeks with their dates (`festivals.json` through
    `LyudFest::FCalendar`, weekly and trigger ones left out), the Rassvet's poster of the weekday (`city.rassvet.poster.<day>`, the
-   festival one on a holiday), three small ads of the season. On the 1st of a month also the photo club's contest
+   festival one on a holiday), the library's «Книга месяца» (`FFacts::Club`, from `ULyudReading::PaperLines`: the book, "tonight"
+   on a club Thursday, next month's book in the month's last week; docs/books.md "The book club"), three small ads of the season.
+   On the 1st of a month also the photo club's contest
    (`paper.contest.open`: the month's theme, prints until the 25th, the jury on the 26th; see "The photo contest").
 
 The hero's deeds are read from what the game already keeps with dates: `ULyudBirdBook` (`Friends[].Tamed`, `Seen[].When`; rare

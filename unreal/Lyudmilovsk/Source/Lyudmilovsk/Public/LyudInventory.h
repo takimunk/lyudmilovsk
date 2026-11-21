@@ -214,6 +214,8 @@ public:
 
 	/** One line near the bottom of the screen for Key's interactable; an empty line takes it away. */
 	void SetPrompt(const UObject* Key, const FText& Text);
+	/** Whose line the prompt is now (null: none shown). */
+	const UObject* GetPromptOwner() const { return Prompt ? PromptKey.Get() : nullptr; }
 
 	/** The icon picture of an item for the world (the label on goods), null when it has none. */
 	UTexture2D* IconTexture(FName Id);

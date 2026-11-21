@@ -46,6 +46,18 @@ namespace LyudPeople
 
 		bool Same(const V3& A, const V3& B) { return (A - B).Len() < 0.02f; }
 
+		/** A bench out of doors with no approach of its own: they come up to stand before it (the seat clips' standing
+		 *  point, 30 cm in front: blender/humans/life_anims.py), never onto the seat's own point through the bench. */
+		void SeatApproach(const FPlace& Pl, FSlot& Sl, bool bGiven)
+		{
+			if (!bGiven && !Pl.bIndoor && Sl.Height > 0.f && (Pl.Kind == "bench" || Pl.Kind == "fountain"))
+			{
+				const float A = Sl.Yaw / 57.29578f;
+				Sl.Approach = Sl.Pos + V3(std::cos(A) * 0.3f, std::sin(A) * 0.3f, 0.f);
+				Sl.bFrontApproach = true;
+			}
+		}
+
 		float YawTo(const V3& From, const V3& To)
 		{
 			return std::atan2(To.Y - From.Y, To.X - From.X) * 57.29578f;
@@ -148,7 +160,9 @@ namespace LyudPeople
 		// the winter's places (tools/winter_play/winter_play.py: the rink, the banya, the ice hole), after the town's (their
 		// ways on start on the town's ground); the residents' life without the town has them too
 		const std::string Spots = bTownOk ? ReadFile(Dir + "/winter_spots.json") : std::string();
-		const bool bSpotsOk = Spots.empty() || LoadSpots(Spots);
+		// and the yards the children play in (tools/yard/yard_areas.py, docs/yard_games.md), in the same format
+		const std::string Yards = bTownOk ? ReadFile(Dir + "/yard_spots.json") : std::string();
+		const bool bSpotsOk = (Spots.empty() || LoadSpots(Spots)) && (Yards.empty() || LoadSpots(Yards));
 		bLoading = false;
 		if (!bSpotsOk)
 		{
@@ -519,6 +533,7 @@ namespace LyudPeople
 			Sl.Yaw = S["yaw"].F();
 			Sl.Approach = S.Find("approach") ? Vec(S["approach"]) : Sl.Pos;
 			Sl.Height = S["height"].F();
+			SeatApproach(Pl, Sl, S.Find("approach") ? true : false);
 			Sl.Capacity = std::max(1, S["capacity"].I(1));
 			Sl.Tag = S["tag"].S();
 			Sl.Thing = S["thing"].S();
@@ -1321,6 +1336,7 @@ namespace LyudPeople
 				Sl.Yaw = S.Find("yaw") ? S["yaw"].F() : Pl.Yaw;
 				Sl.Approach = S.Find("approach") && !Pl.bShell ? Vec(S["approach"]) : Sl.Pos;
 				Sl.Height = S["height"].F();
+				SeatApproach(Pl, Sl, Pl.bShell || (S.Find("approach") ? true : false));
 				Sl.Capacity = std::max(1, S["capacity"].I(1));
 				Sl.Tag = S["tag"].S();
 				Sl.Thing = S["thing"].S();
@@ -2089,12 +2105,15 @@ namespace LyudPeople
 		}
 		for (const FDuty& D : P.Duties)
 		{
-			if (bDayOff)
 			{
 				const int A = ActOf(D);
-				if (A >= 0 && Activities[A].bHolidayOff)
+				if (bDayOff && A >= 0 && Activities[A].bHolidayOff)
 				{
 					continue;       // a public holiday: no school, the offices shut
+				}
+				if (A >= 0 && !ConditionOk(Activities[(size_t)A]))
+				{
+					continue;       // a duty at a "when" activity is kept only while the game has its condition on (the book club)
 				}
 			}
 			// a weekday duty that started yesterday evening (a night shift) counts for yesterday
@@ -2677,6 +2696,35 @@ namespace LyudPeople
 		P.Reserved = -1;
 	}
 
+	/** The outdoor way to a slot's approach; to a bench from a step out in front of it, so that the last of the way runs
+	 *  square to the seat and nobody comes along the bench through its end. */
+	void FWorld::WayToSlot(const V3& From, const FSlot& To, std::vector<FPerson::FWay>& Out) const
+	{
+		if (To.bFrontApproach && (From - To.Approach).Len2D() > 1.5f)
+		{
+			V3 Front = To.Pos + (To.Approach - To.Pos) * 3.f;
+			Front.Z = To.Approach.Z;
+			const size_t First = Out.size();
+			OutdoorWay(From, Front, Out);
+			// coming from behind the bench the way would run through it: round its end, on the side they come from
+			const V3 Prev = Out.size() >= First + 2 ? Out[Out.size() - 2].P : From;
+			const V3 Dir = (To.Approach - To.Pos) * (1.f / 0.3f);
+			const V3 Rel = Prev - To.Pos;
+			if (Rel.X * Dir.X + Rel.Y * Dir.Y < 0.3f)
+			{
+				const float Lat = -Rel.X * Dir.Y + Rel.Y * Dir.X >= 0.f ? 1.7f : -1.7f;
+				FPerson::FWay Side;
+				Side.P = To.Approach + V3(-Dir.Y * Lat, Dir.X * Lat, 0.f);
+				Out.insert(Out.end() - 1, Side);
+			}
+			FPerson::FWay Last;
+			Last.P = To.Approach;
+			Out.push_back(Last);
+			return;
+		}
+		OutdoorWay(From, To.Approach, Out);
+	}
+
 	void FWorld::OutdoorWay(const V3& From, const V3& To, std::vector<FPerson::FWay>& Out) const
 	{
 		// off the walk grid (the sea island): straight, over its own ground
@@ -2861,7 +2909,14 @@ namespace LyudPeople
 			}
 			Cur = B.Portal;
 		}
-		OutdoorWay(Cur, Goal, Out);
+		if (ToPl.bIndoor)
+		{
+			OutdoorWay(Cur, Goal, Out);
+		}
+		else
+		{
+			WayToSlot(Cur, To, Out);
+		}
 		if (ToPl.bIndoor)
 		{
 			for (size_t I = 1; I < To.Inside.size(); I++)
@@ -3778,7 +3833,7 @@ namespace LyudPeople
 					&& Route(P, P.Pos, Was, Next, P.Path)))
 				{
 					P.Path.clear();
-					OutdoorWay(P.Pos, Slots[Next].Approach, P.Path);
+					WayToSlot(P.Pos, Slots[Next], P.Path);
 				}
 				P.PathI = 0;
 				P.Pose = EPose::Walk;
@@ -3909,7 +3964,7 @@ namespace LyudPeople
 		P.Slot = S;
 		P.Place = Slots[S].Place;
 		P.Path.clear();
-		OutdoorWay(P.Pos, Slots[S].Approach, P.Path);
+		WayToSlot(P.Pos, Slots[S], P.Path);
 		P.PathI = 0;
 		P.Pose = EPose::Walk;
 	}

@@ -1894,7 +1894,7 @@ void ABirdLifeRenderer::DriveBody(AActor* Body, const FWorld& World, int32 Id)
 	{
 		Pitch = FMath::RadiansToDegrees(FMath::Atan2(B.Vel.Z, FMath::Max(B.Vel.Len2D(), 0.1f))) * 0.6f;
 	}
-	Bird->SetActorLocationAndRotation(ToUE(World.RenderPos(B)), FRotator(Pitch, FMath::RadiansToDegrees(B.Yaw), 0.f));
+	Bird->Place(ToUE(World.RenderPos(B)), FMath::RadiansToDegrees(B.Yaw), Pitch, IsAirborne(B.Act));
 	// a new state (or a new peck) only when the bird starts it: the body plays its own clips in between
 	float& Started = BodyActs.FindOrAdd(Id);
 	const float Key = (float)(uint8)B.Act * 1000.f + B.ActLen;
