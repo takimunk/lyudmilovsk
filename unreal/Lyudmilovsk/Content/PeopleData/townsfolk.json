@@ -6645,6 +6645,17 @@
       3,
       4
      ]
+    },
+    {
+     "activity": "book_club",
+     "place": "P-LIBRARY-CLUB",
+     "hours": [
+      18.17,
+      20.0
+     ],
+     "days": [
+      3
+     ]
     }
    ],
    "friends": [
@@ -31249,17 +31260,6 @@
       0,
       1,
       2
-     ]
-    },
-    {
-     "activity": "book_club",
-     "place": "P-LIBRARY-CLUB",
-     "hours": [
-      18.17,
-      20.0
-     ],
-     "days": [
-      3
      ]
     }
    ],
