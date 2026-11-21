@@ -15,8 +15,9 @@ namespace LyudAudio
 			return T * T * (3.f - 2.f * T);
 		}
 		constexpr int WBlock = 32;
-		/** The fog signal's minute: two blasts of 2.5 s, 5 s apart (start, length) in seconds. */
-		constexpr float SignalPeriod = 60.f;
+		/** The fog signal's half minute (the Mayak lighthouse's horn, docs/lighthouse.md): two blasts of 2.5 s, 5 s apart
+		 *  (start, length) in seconds, every 30 s. */
+		constexpr float SignalPeriod = 30.f;
 		constexpr float Blasts[2][2] = { { 0.f, 2.5f }, { 5.f, 2.5f } };
 		/** Footstep kinds. */
 		enum EStep { DryEarth = 0, WetEarth, Puddle, Crunch, Fluff, Squeak, Slush, IceStep };

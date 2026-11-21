@@ -3,6 +3,8 @@
 #include "Books/LyudBooks.h"
 
 #include "Books/BookLayout.h"
+#include "Books/LyudReading.h"
+#include "Books/ReadingModel.h"
 #include "Books/SLyudBook.h"
 #include "City/LyudBenchSit.h"
 #include "City/LyudCityThings.h"
@@ -87,10 +89,20 @@ void ULyudBooks::Initialize(FSubsystemCollectionBase& Collection)
 		{
 			if (Save && !Save->Records.Contains(TEXT("Books")))
 			{
-				// a save from before the library lent books: nothing on loan
-				BorrowedKeys.Reset();
-				Marks.Reset();
-				FinishedKeys.Reset();
+				// a save from before the library lent books: nothing on loan, and nothing of the game played before this
+				// load either (this subsystem lives through it: its quotes, pages read, club months and advice would stay)
+				ResetAll();
+			}
+			if (Save && Save->Records.Contains(TEXT("Books")))
+			{
+				// a save from before reading anywhere: its loans count from today
+				for (const FString& K : BorrowedKeys)
+				{
+					if (!BorrowDays.Contains(K))
+					{
+						BorrowDays.Add(K, Today());
+					}
+				}
 			}
 			SyncPocket();
 		});
@@ -255,6 +267,7 @@ bool ULyudBooks::Borrow(const FString& Key)
 		return false;
 	}
 	BorrowedKeys.Add(Key);
+	BorrowDays.Add(Key, Today());
 	SyncPocket();
 	ULyudQuests::Notify(this, TEXT("borrow"), Key);
 	UE_LOG(LogLyudBooks, Display, TEXT("Books: borrowed %s (%d on loan)"), *Key, BorrowedKeys.Num());
@@ -267,6 +280,7 @@ bool ULyudBooks::Return(const FString& Key)
 	{
 		return false;
 	}
+	BorrowDays.Remove(Key);
 	SyncPocket();
 	UE_LOG(LogLyudBooks, Display, TEXT("Books: returned %s (%d on loan)"), *Key, BorrowedKeys.Num());
 	return true;
@@ -289,7 +303,128 @@ void ULyudBooks::MarkFinished(const FString& Key)
 	{
 		FinishedKeys.Add(Key);
 		ULyudQuests::Notify(this, TEXT("read_book"), Key);
+		if (ULyudQuests* Q = ULyudQuests::Get(this))
+		{
+			FString Lang, Work;
+			Q->AddNote(TEXT("reading.note.finished"), { TEXT("@book.title.") + (Key.Split(TEXT("/"), &Lang, &Work) ? Work : Key) });
+		}
 	}
+}
+
+int32 ULyudBooks::DayOf(const FDateTime& When)
+{
+	// the game's first day (UGameCalendar's StartDate, 2026-10-20) is day 0
+	static const FDateTime Start(2026, 10, 20);
+	return (int32)FMath::FloorToInt((When - Start).GetTotalDays());
+}
+
+int32 ULyudBooks::Today() const
+{
+	const UGameInstance* GI = GetGameInstance();
+	return DayOf(UGameCalendar::NowIn(GI ? GI->GetWorld() : nullptr));
+}
+
+int32 ULyudBooks::BorrowedOn(const FString& Key) const
+{
+	const int32* D = BorrowDays.Find(Key);
+	return D ? *D : Today();
+}
+
+bool ULyudBooks::AddQuote(const FString& Book, int32 Offset, const FString& Text)
+{
+	if (Text.IsEmpty())
+	{
+		return false;
+	}
+	for (const FLyudBookQuote& Q : Quotes)
+	{
+		if (Q.Book == Book && Q.Offset == Offset)
+		{
+			return false;
+		}
+	}
+	FLyudBookQuote Q;
+	Q.Book = Book;
+	Q.Offset = Offset;
+	Q.Text = Text;
+	const UGameInstance* GI = GetGameInstance();
+	Q.When = UGameCalendar::NowIn(GI ? GI->GetWorld() : nullptr);
+	Quotes.Add(MoveTemp(Q));
+	if (Quotes.Num() > (int32)LyudReading::FQuotes::MaxQuotes)
+	{
+		Quotes.RemoveAt(0);
+	}
+	ULyudQuests::Notify(this, TEXT("quote"), Book);
+	return true;
+}
+
+void ULyudBooks::NoteRead(const FString& Key, int32 Chars)
+{
+	if (Chars <= 0)
+	{
+		return;
+	}
+	ReadChars.FindOrAdd(Key) += Chars;
+	const int32 D = Today();
+	if (D != TodayDay)
+	{
+		TodayDay = D;
+		TodayChars.Reset();
+	}
+	TodayChars.FindOrAdd(Key) += Chars;
+}
+
+int32 ULyudBooks::PagesRead() const
+{
+	int32 N = 0;
+	for (const TPair<FString, int32>& P : ReadChars)
+	{
+		N += LyudReading::StdPages(P.Value, P.Key.StartsWith(TEXT("ja/")));
+	}
+	return N;
+}
+
+int32 ULyudBooks::PagesReadOf(const FString& Key) const
+{
+	const int32* C = ReadChars.Find(Key);
+	return C ? LyudReading::StdPages(*C, Key.StartsWith(TEXT("ja/"))) : 0;
+}
+
+FString ULyudBooks::LongestFinished(int32* OutPages) const
+{
+	FString Best;
+	int32 BestPages = 0;
+	ULyudBooks* Self = const_cast<ULyudBooks*>(this);
+	for (const FString& K : FinishedKeys)
+	{
+		const FLyudBookInfo* B = Self->Find(K);
+		const int32 Pages = B ? LyudReading::StdPages(B->Chars, B->Lang == TEXT("ja")) : 0;
+		if (Pages > BestPages)
+		{
+			Best = K;
+			BestPages = Pages;
+		}
+	}
+	if (OutPages)
+	{
+		*OutPages = BestPages;
+	}
+	return Best;
+}
+
+TArray<FString> ULyudBooks::FinishedWorks() const
+{
+	TArray<FString> Out;
+	for (int32 I = FinishedKeys.Num() - 1; I >= 0; --I)
+	{
+		FString Lang, Work;
+		if (!FinishedKeys[I].Split(TEXT("/"), &Lang, &Work))
+		{
+			Work = FinishedKeys[I];
+		}
+		Out.AddUnique(Work);
+	}
+	return Out;
 }
 
 void ULyudBooks::SyncPocket()
@@ -316,6 +451,14 @@ void ULyudBooks::ResetAll()
 	BorrowedKeys.Reset();
 	Marks.Reset();
 	FinishedKeys.Reset();
+	BorrowDays.Reset();
+	OverdueNoticed.Reset();
+	Quotes.Reset();
+	ReadChars.Reset();
+	TodayDay = -1;
+	TodayChars.Reset();
+	ClubMonths.Reset();
+	Advice.Reset();
 	SyncPocket();
 }
 
@@ -441,12 +584,29 @@ void ULyudBookScreen::OpenReader(const FString& InKey)
 		UE_LOG(LogLyudBooks, Warning, TEXT("Books: no book %s"), *Key);
 		return;
 	}
+	// the light first (docs/books.md "Reading anywhere"): too dark or raining outdoors, the book stays shut
+	float Bright = 1.f;
+	if (const ULyudReading* Reading = ULyudReading::Get(World))
+	{
+		FText Why;
+		if (!Reading->CanReadHere(&Why, &Bright))
+		{
+			if (ULyudGameScreen* G = ULyudGameScreen::Get(World))
+			{
+				G->Toast(Why);
+			}
+			UE_LOG(LogLyudBooks, Display, TEXT("Books: not here: %s"), *Why.ToString());
+			return;
+		}
+	}
 	TWeakObjectPtr<ULyudBookScreen> Self = this;
 	CatalogPage.Reset();
+	SessionChars = 0;
 	Reader = SNew(SLyudBookReader)
 		.Book(*Book)
 		.Bookmark(Books->Bookmark(Key))
 		.OnClose_Lambda([Self] { if (Self.IsValid()) { Self->Close(); } });
+	Reader->SetBright(Bright);
 	Show(Reader.ToSharedRef());
 	UE_LOG(LogLyudBooks, Display, TEXT("Books: reading %s from offset %d"), *Key, Books->Bookmark(Key));
 }
@@ -470,6 +630,22 @@ void ULyudBookScreen::Close()
 			{
 				Books->SetBookmark(Reader->BookKey(), Reader->Offset());
 			}
+			// a sitting of two pages or more: a line in the diary, one a book a day
+			const FString Key = Reader->BookKey();
+			const bool bJa = Reader->Lang() == TEXT("ja");
+			const int32 Pages = LyudReading::StdPages(SessionChars, bJa);
+			const int32 Day = Books->Today();
+			const int32* WasDay = NotedDay.Find(Key);
+			if (SessionChars >= 2 * LyudReading::CharsPerPage(bJa) && (!WasDay || *WasDay != Day))
+			{
+				NotedDay.Add(Key, Day);
+				if (ULyudQuests* Q = ULyudQuests::Get(GetWorld()))
+				{
+					FString Lang, Work;
+					Q->AddNote(TEXT("reading.note.session"), { TEXT("@book.title.") + (Key.Split(TEXT("/"), &Lang, &Work) ? Work : Key), FString::FromInt(Pages) });
+				}
+			}
+			SessionChars = 0;
 		}
 	}
 	if (UWorld* World = GetWorld())
@@ -499,15 +675,55 @@ void ULyudBookScreen::Turn(int32 Spreads)
 	if (Read > 0)
 	{
 		PassReadingTime(Read, Reader->Lang());
+		SessionChars += Read;
 	}
 	if (ULyudBooks* Books = ULyudBooks::Get(GetWorld()))
 	{
+		Books->NoteRead(Reader->BookKey(), Read);
 		Books->SetBookmark(Reader->BookKey(), Reader->Offset());
 		if (Reader->AtEnd())
 		{
 			Books->MarkFinished(Reader->BookKey());
 		}
 	}
+}
+
+void ULyudBookScreen::SetPageBright(float Bright)
+{
+	if (Reader.IsValid())
+	{
+		Reader->SetBright(Bright);
+	}
+}
+
+bool ULyudBookScreen::CopyQuote(bool bFirst)
+{
+	ULyudBooks* Books = ULyudBooks::Get(GetWorld());
+	if (!Reader.IsValid() || !Books)
+	{
+		return false;
+	}
+	if (bFirst && !Reader->InQuote() && !Reader->EnterQuote())
+	{
+		return false;
+	}
+	FString Text;
+	int32 Offset = 0;
+	ULyudGameScreen* G = ULyudGameScreen::Get(GetWorld());
+	if (!Reader->ChosenQuote(Text, Offset))
+	{
+		return false;
+	}
+	const bool bNew = Books->AddQuote(Reader->BookKey(), Offset, Text);
+	Reader->LeaveQuote();
+	if (G)
+	{
+		// the toast shows its start only
+		const FString Short = Text.Len() > 60 ? Text.Left(57) + TEXT("…") : Text;
+		G->Toast(bNew ? LyudText::Get(TEXT("reading.quote.saved"), { FStringFormatArg(Short) }) : LyudText::Get(TEXT("reading.quote.again")));
+	}
+	UE_LOG(LogLyudBooks, Display, TEXT("Books: quote from %s at %d: %s"), *Reader->BookKey(), Offset, bNew ? TEXT("copied") : TEXT("already there"));
+	return bNew;
 }
 
 void ULyudBookScreen::PassReadingTime(int32 Chars, const FString& Lang)
@@ -563,6 +779,38 @@ void ULyudBookScreen::Tick(float DeltaTime)
 		return;
 	}
 	auto Pressed = [PC](const FKey& K) { return PC->WasInputKeyJustPressed(K); };
+	if (Reader->InQuote())
+	{
+		if (Pressed(EKeys::C))
+		{
+			Reader->LeaveQuote();
+		}
+		else if (Pressed(EKeys::W) || Pressed(EKeys::Up) || Pressed(EKeys::A) || Pressed(EKeys::Left))
+		{
+			Reader->QuoteStep(-1);
+		}
+		else if (Pressed(EKeys::S) || Pressed(EKeys::Down) || Pressed(EKeys::D) || Pressed(EKeys::Right))
+		{
+			Reader->QuoteStep(1);
+		}
+		else if (Pressed(EKeys::E) || Pressed(EKeys::Enter) || Pressed(EKeys::SpaceBar))
+		{
+			CopyQuote();
+		}
+		Reader->TakeAskedTurns();
+		return;
+	}
+	if (Pressed(EKeys::C) && !Reader->ContentsShown())
+	{
+		if (!Reader->EnterQuote())
+		{
+			if (ULyudGameScreen* G = ULyudGameScreen::Get(World))
+			{
+				G->Toast(LyudText::Get(TEXT("reading.quote.none")));
+			}
+		}
+		return;
+	}
 	if (Reader->ContentsShown())
 	{
 		if (Pressed(EKeys::Q) || Pressed(EKeys::BackSpace))
@@ -613,7 +861,7 @@ void ULyudBookScreen::Tick(float DeltaTime)
 // ------------------------------------------------------------------------------------------------------------------- console
 
 static FAutoConsoleCommandWithWorldAndArgs GBooksCmd(TEXT("lyud.Books"),
-	TEXT("lyud.Books list [lang] | borrow <key> | return <key> | read [key] | desk | mine | turn <n> | close | reset | stats"),
+	TEXT("lyud.Books list [lang] | borrow <key> | return <key> | read [key] | desk | mine | turn <n> | quote | close | reset | stats"),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
 	{
 		ULyudBooks* Books = ULyudBooks::Get(World);
@@ -673,6 +921,10 @@ static FAutoConsoleCommandWithWorldAndArgs GBooksCmd(TEXT("lyud.Books"),
 		else if (Cmd == TEXT("reset"))
 		{
 			Books->ResetAll();
+		}
+		else if (Cmd == TEXT("quote"))
+		{
+			Screen->CopyQuote(true);
 		}
 		else
 		{

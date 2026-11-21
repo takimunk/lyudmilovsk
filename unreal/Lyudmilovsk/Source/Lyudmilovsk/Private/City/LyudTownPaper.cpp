@@ -11,6 +11,7 @@
 #include "Festival/LyudFestival.h"
 #include "Fishing/LyudFishing.h"
 #include "People/LyudTownRumours.h"
+#include "Books/LyudReading.h"
 #include "HAL/IConsoleManager.h"
 #include "LyudText.h"
 #include "Misc/FileHelper.h"
@@ -378,6 +379,23 @@ void ULyudTownPaper::BuildFacts(int32 Since, LyudPaper::FFacts& Out) const
 	}
 
 	// --- the talk of the town about the hero yesterday (ULyudTownRumours: the column «Говорят в городе»)
+	// --- the library's book club (docs/books.md "The book club")
+	if (const ULyudReading* Reading = ULyudReading::Get(World))
+	{
+		TArray<TPair<FString, TArray<FString>>> Lines;
+		Reading->PaperLines(Day, Lines);
+		for (const TPair<FString, TArray<FString>>& L : Lines)
+		{
+			LyudPaper::FLine Line;
+			Line.Key = LyudTownPaperImpl::Std(L.Key);
+			for (const FString& A : L.Value)
+			{
+				Line.Args.push_back(LyudTownPaperImpl::Std(A));
+			}
+			Out.Club.push_back(MoveTemp(Line));
+		}
+	}
+
 	if (const ULyudTownRumours* Rumours = ULyudTownRumours::Get(World))
 	{
 		TArray<TPair<FString, TArray<FString>>> Lines;

@@ -70,6 +70,15 @@ boards' jobs staffed by the shifts, a planned week of the hero that holds all of
 profit, the week's pay against what tonight's things cost, the icons pinned, the quests' events sent by code.
 `run_all_suites.sh` runs both (`togethersim.data`, and `togethersim.week` outside `--quick`: about four minutes).
 
+## Children's games in the yards (tools/yardsim)
+
+`tools/yardsim/run.sh` (docs/yard_games.md) checks that the generated yard data is up to date (`tools/yard/yard_areas.py
+--check`), plays each game's rules from a script (hopscotch turns and misses, rope swaps, hide-and-seek rounds, goals,
+tags, leaving, the end), the hero hiding and seeking, then a Monday and a Saturday afternoon (13:00–20:30) of the real
+town's children on the real people's life: they go out to the yards, games start and end, roles hold, nobody is in two
+games. `run.sh rules` is the seconds-long part; `run_all_suites.sh` runs it as `yardsim.rules`, and the whole thing as
+`yardsim.town` outside `--quick` (about a minute).
+
 Known failures on main (2026-11-13): `audiosim.test` (2: thunderstorm peak, far-storm rumble), `check_data` and
 `check_localization` (the fishing gear, the fish, the diner's fish and the restaurant's dishes have no imported icon).
 

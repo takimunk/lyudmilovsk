@@ -104,11 +104,14 @@ def _anchors():
     # the track from the back of the town's upper terrace through the old dunes' pass to Topi's sand (tools/east.py)
     pts += [("town_east", (-730.0, 905.0)), ("topi", (-1170.0, 905.0))]
     pts += list(W._north().ANCHORS.items())           # the North's trail (tools/north.py)
+    pts += list(W._south().ANCHORS.items())           # the Aton coast's (tools/south.py)
     return dict(pts)
 
 
-TRACKS = [("alley_end", "town"), ("alley_end", "woods_inland"), ("club_back", "woods_south"),
-          ("alley_end", "cable_top"), ("town_east", "topi")] + list(W._north().TRACKS)
+# (the old tracks from the alley's end to the town and the inland woods are the Aton coast's designed trails now:
+# tools/south.py fixed_tracks and TRACKS)
+TRACKS = [("club_back", "woods_south"), ("alley_end", "cable_top"), ("town_east", "topi")] + list(W._north().TRACKS) + \
+    list(W._south().TRACKS)
 
 
 def _route(a, b, step=8.0):
@@ -202,7 +205,7 @@ def tracks():
             r = _route(an[a], an[b])
             if r:
                 out.append(r)
-    return out + [list(t) for t in W._north().fixed_tracks()]
+    return out + [list(t) for t in W._north().fixed_tracks()] + W._south().fixed_tracks()
 
 
 # --- inputs for the C++ build ----------------------------------------------------------------
@@ -337,6 +340,7 @@ def _write_inputs(out_dir, log):
     snow, scoria, lava, sulfur, gravel = bytearray(), bytearray(), bytearray(), bytearray(), bytearray()
     N = W._north()
     R = W._river()
+    S = W._south()
     north_floor = _north_floor()
     rail_y = _railway_line_y()
     has_cliff = hasattr(W, "cliff")
@@ -383,7 +387,10 @@ def _write_inputs(out_dir, log):
                 if f > 0.0:                           # a drawn wood's glades keep no needle floor
                     f *= min(1.0, max(0.0, (W.forest_cover(x, y) - 0.2) / 0.25))
                 forest.append(int(255 * f))
-            gravel.append(int(round(255 * R.gravel(x, y) * (0.55 + 0.45 * R.wet(x, y)))) if s > 0 else 0)
+            if y < 400.0:                             # the brook's bed and wet banks (tools/south.py)
+                gravel.append(int(round(255 * S.gravel(x, y))) if s > 0 else 0)
+            else:
+                gravel.append(int(round(255 * R.gravel(x, y) * (0.55 + 0.45 * R.wet(x, y)))) if s > 0 else 0)
             cliff.append(int(255 * min(1.0, max(0.0, W.cliff(x, y)))) if has_cliff and 0 < s < 250 else 0)
             raise_.append(int(round(255 * raise_only(x, y))) if abs(x) < 25 and y < -25 else 0)
             keep.append(int(round(255 * sea_keep(x, y, rail_y))) if s <= 0 else 0)

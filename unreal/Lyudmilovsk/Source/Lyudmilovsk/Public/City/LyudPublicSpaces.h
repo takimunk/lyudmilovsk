@@ -46,6 +46,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "City") bool IsNight() const { return bNight; }
 	UFUNCTION(BlueprintCallable, Category = "City") bool IsSummer() const { return bSummer; }
+	/** The nearest street lamp lit now (they are lit at night) from a point, cm; -1 by day or with none. */
+	float NearestLitLampCm(const FVector& From) const;
 	UFUNCTION(BlueprintCallable, Category = "City") FString DebugReport() const;
 	/** Instances of a prop kind (tests). */
 	UFUNCTION(BlueprintCallable, Category = "City") int32 CountProps(const FString& Kind) const;

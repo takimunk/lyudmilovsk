@@ -27,7 +27,8 @@ namespace LyudTransport
 		uint8_t D = 0;
 		for (const LyudJson::FValue& X : V.Items)
 		{
-			D |= (uint8_t)(1u << (X.I() % 7));
+			// (a negative day in the data must not shift by a negative count)
+			D |= (uint8_t)(1u << (((X.I() % 7) + 7) % 7));
 		}
 		return V.Items.empty() ? (uint8_t)0x7F : D;
 	}

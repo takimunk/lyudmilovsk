@@ -677,14 +677,14 @@ namespace AtonLabUI
 						+ SVerticalBox::Slot().AutoHeight()
 						[
 							SNew(STextBlock).Font(AtonStyle::Font(15, true)).ColorAndOpacity(AtonStyle::Ink).AutoWrapText(true)
-							.Text_Lambda([this] { return T(Status()); })
+							.Text_Lambda([this] { return StatusText(); })
 						]
 						+ SVerticalBox::Slot().AutoHeight().Padding(0, 8, 0, 2)[Label(L(TEXT("ui.aton.chess.level")), 13, AtonStyle::InkSoft)]
 						+ SVerticalBox::Slot().AutoHeight()[Levels]
 						+ SVerticalBox::Slot().AutoHeight().Padding(0, 8, 0, 0)
 						[
 							SNew(STextBlock).Font(AtonStyle::Font(13)).ColorAndOpacity(AtonStyle::InkSoft).AutoWrapText(true)
-							.Text_Lambda([this] { return T(Score()); })
+							.Text_Lambda([this] { return ScoreText(); })
 						]
 						+ SVerticalBox::Slot().AutoHeight().Padding(0, 8)[Divider(AtonStyle::BarDim)]
 						+ SVerticalBox::Slot().FillHeight(1)
@@ -799,6 +799,34 @@ namespace AtonLabUI
 			const AtonLab::FLabState& S = StateOf(Shell);
 			return L(TEXT("ui.aton.chess.score"), { FStringFormatArg(Level), FStringFormatArg(S.ChessWon[Level - 1]), FStringFormatArg(S.ChessDrawn[Level - 1]),
 				FStringFormatArg(S.ChessLost[Level - 1]) });
+		}
+
+		/** The status line and the score, asked on every repaint while he sits at the board: their words are looked up
+		 *  (LyudText) only when what they say changes. */
+		FText StatusText() const
+		{
+			const int32 Code = int32(Game.Result()) * 4 + (bThinking ? 2 : 0) + (Game.InCheck() ? 1 : 0);
+			if (Code != StatusCode)
+			{
+				StatusCode = Code;
+				StatusShown = T(Status());
+			}
+			return StatusShown;
+		}
+
+		FText ScoreText() const
+		{
+			const AtonLab::FLabState& S = StateOf(Shell);
+			const int32 Now[4] = { Level, S.ChessWon[Level - 1], S.ChessDrawn[Level - 1], S.ChessLost[Level - 1] };
+			if (Now[0] != ScoreOf[0] || Now[1] != ScoreOf[1] || Now[2] != ScoreOf[2] || Now[3] != ScoreOf[3])
+			{
+				for (int32 I = 0; I < 4; ++I)
+				{
+					ScoreOf[I] = Now[I];
+				}
+				ScoreShown = T(Score());
+			}
+			return ScoreShown;
 		}
 
 		void Click(int32 Sq)
@@ -936,6 +964,11 @@ namespace AtonLabUI
 		FText SheetText;
 		bool bThinking = false;
 		double ThinkAt = 0.0;
+		// what StatusText and ScoreText last made, and from what
+		mutable int32 StatusCode = -1;
+		mutable FText StatusShown;
+		mutable int32 ScoreOf[4] = { -1, -1, -1, -1 };
+		mutable FText ScoreShown;
 		TSharedPtr<SScrollBox> SheetScroll;
 	};
 

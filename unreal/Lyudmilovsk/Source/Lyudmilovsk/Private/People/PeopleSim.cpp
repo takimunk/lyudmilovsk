@@ -160,7 +160,9 @@ namespace LyudPeople
 		// the winter's places (tools/winter_play/winter_play.py: the rink, the banya, the ice hole), after the town's (their
 		// ways on start on the town's ground); the residents' life without the town has them too
 		const std::string Spots = bTownOk ? ReadFile(Dir + "/winter_spots.json") : std::string();
-		const bool bSpotsOk = Spots.empty() || LoadSpots(Spots);
+		// and the yards the children play in (tools/yard/yard_areas.py, docs/yard_games.md), in the same format
+		const std::string Yards = bTownOk ? ReadFile(Dir + "/yard_spots.json") : std::string();
+		const bool bSpotsOk = (Spots.empty() || LoadSpots(Spots)) && (Yards.empty() || LoadSpots(Yards));
 		bLoading = false;
 		if (!bSpotsOk)
 		{
@@ -326,6 +328,7 @@ namespace LyudPeople
 			A.bStaff = V["staff"].F() > 0.f;
 			A.Pace = V["pace"].F(1.f);
 			A.bRainOk = V["rain"].S() == "ok";
+			A.bOnTime = V["on_time"].I(0) != 0;
 			A.bShelter = V["shelter"].F() > 0.f;
 			if (V["wind"].Size() == 2)
 			{
@@ -467,6 +470,14 @@ namespace LyudPeople
 				Duty.Role = D["role"].S();
 				Duty.From = D["hours"][0].F(9.f);
 				Duty.To = D["hours"][1].F(17.f);
+				const std::string SunTie = D["sun"].S();
+				if (SunTie == "set" || SunTie == "rise")
+				{
+					Duty.Sun = SunTie == "set" ? 1 : 2;
+					Duty.Off0 = Duty.From;
+					Duty.Off1 = Duty.To;
+					DutySunrise = DutySunset = -1.f;     // set by SyncSunDuties
+				}
 				Duty.Days = 0;
 				for (const LyudJson::FValue& Day : D["days"].Items)
 				{
@@ -476,7 +487,17 @@ namespace LyudPeople
 				{
 					Duty.Days = 0x7F;
 				}
+				Duty.StayDay = D["stay_day"].IsNull() ? -1 : D["stay_day"].I();
 				P.Duties.push_back(Duty);
+			}
+			if (!V["stay"].IsNull())
+			{
+				const LyudJson::FValue& St = V["stay"];
+				P.StayCycle = std::max(0, St["cycle"].I());
+				P.StayFrom = St["from"].I();
+				P.StayDays = St["days"].I(14);
+				P.StayArrive = St["arrive"].F(11.f);
+				P.StayLeave = St["leave"].F(10.75f);
 			}
 			P.ClubSeat = V["club_seat"].S();
 			P.OwnSlot = V["own_slot"].S();
@@ -1641,6 +1662,7 @@ namespace LyudPeople
 		}
 		SleepAct = FindActivity("sleep");
 		RestHomeAct = FindActivity("rest_home");
+		GoneAct = FindActivity("stay_gone");
 		MindAct = FindActivity("mind_child");
 		PlayActs[0] = FindActivity("playground");
 		PlayActs[1] = FindActivity("play_run");
@@ -1844,9 +1866,15 @@ namespace LyudPeople
 			}
 		}
 		FPlace& Flat = Places[F];
+		// guests on a stay have a room one after another: two such households in it is in order
+		bool bStay = false;
+		for (const FPerson& P : People)
+		{
+			bStay |= P.Household == Household && P.StayCycle > 0;
+		}
 		for (const int Id : Flat.Residents)
 		{
-			if (People[Id].Household != Household)
+			if (People[Id].Household != Household && !(bStay && People[Id].StayCycle > 0))
 			{
 				return false;       // somebody else's
 			}
@@ -2093,9 +2121,30 @@ namespace LyudPeople
 		return 0.5f;
 	}
 
+	float FWorld::StayAt(const FPerson& P) const
+	{
+		const float Cycle = (float)P.StayCycle;
+		float At = std::fmod((float)(Week % P.StayCycle) * 7.f + (float)Weekday + Hour / 24.f - (float)P.StayFrom, Cycle);
+		return At < 0.f ? At + Cycle : At;
+	}
+
+	bool FWorld::Gone(const FPerson& P) const
+	{
+		if (P.StayCycle <= 0 || GoneAct < 0)
+		{
+			return false;
+		}
+		const float At = StayAt(P);
+		return At < P.StayArrive / 24.f || At >= (float)P.StayDays + P.StayLeave / 24.f;
+	}
+
 	int FWorld::DutyNow(const FPerson& P, bool& bSleep) const
 	{
 		bSleep = false;
+		if (Gone(P))
+		{
+			return GoneAct;     // not in the town: no bed here tonight either
+		}
 		if (InHours(BedOf(P), WakeOf(P), Hour))
 		{
 			bSleep = true;
@@ -2103,13 +2152,20 @@ namespace LyudPeople
 		}
 		for (const FDuty& D : P.Duties)
 		{
-			if (bDayOff)
 			{
 				const int A = ActOf(D);
-				if (A >= 0 && Activities[A].bHolidayOff)
+				if (bDayOff && A >= 0 && Activities[A].bHolidayOff)
 				{
 					continue;       // a public holiday: no school, the offices shut
 				}
+				if (A >= 0 && !ConditionOk(Activities[(size_t)A]))
+				{
+					continue;       // a duty at a "when" activity is kept only while the game has its condition on (the book club)
+				}
+			}
+			if (D.StayDay >= 0 && D.StayDay != StayDayOf(P))
+			{
+				continue;           // the day they come, the day they leave
 			}
 			// a weekday duty that started yesterday evening (a night shift) counts for yesterday
 			const bool bDay = (D.Days >> Weekday) & 1;
@@ -2132,7 +2188,7 @@ namespace LyudPeople
 		for (const FDuty& D : P.Duties)
 		{
 			const float In = D.From - Hour;
-			if (((D.Days >> Weekday) & 1) && In > 0.f && In < Left)
+			if (((D.Days >> Weekday) & 1) && (D.StayDay < 0 || D.StayDay == StayDayOf(P)) && In > 0.f && In < Left)
 			{
 				Left = In;
 			}
@@ -2710,7 +2766,15 @@ namespace LyudPeople
 				const float Lat = -Rel.X * Dir.Y + Rel.Y * Dir.X >= 0.f ? 1.7f : -1.7f;
 				FPerson::FWay Side;
 				Side.P = To.Approach + V3(-Dir.Y * Lat, Dir.X * Lat, 0.f);
-				Out.insert(Out.end() - 1, Side);
+				// (before the step out in front; a way that added no point has no end to go before)
+				if (Out.size() > First)
+				{
+					Out.insert(Out.end() - 1, Side);
+				}
+				else
+				{
+					Out.push_back(Side);
+				}
 			}
 			FPerson::FWay Last;
 			Last.P = To.Approach;
@@ -3128,6 +3192,10 @@ namespace LyudPeople
 			return false;
 		}
 		P.Recheck = 90.f + 60.f * Rand(P.Rng);
+		if (P.Activity == GoneAct)
+		{
+			return false;       // not in the town: nothing here calls them
+		}
 		if (P.Why == "ordered")
 		{
 			return false;
@@ -3281,6 +3349,12 @@ namespace LyudPeople
 			if (Left < 0.f)
 			{
 				Left += 24.f;
+			}
+			if (Duty == GoneAct && P.StayCycle > 0)
+			{
+				// gone till the hour they come (again)
+				float Days = P.StayArrive / 24.f - StayAt(P);
+				Left = (Days <= 0.f ? Days + (float)P.StayCycle : Days) * 24.f;
 			}
 			if (S >= 0)
 			{
@@ -3701,6 +3775,19 @@ namespace LyudPeople
 		const FSlot& Sl = Slots[P.Slot];
 		P.bIndoors = Roofed(Sl.Place);
 		P.Until = Time + P.Minutes * 60.0;
+		if (A.bOnTime)
+		{
+			// the way there was a part of it: home by the duty's end (a walk begun at seven is over at half past, wherever it led)
+			for (const FDuty& D : P.Duties)
+			{
+				if (D.Activity == A.Id)
+				{
+					float Left = D.To - Hour;
+					Left += Left < -12.f ? 24.f : 0.f;
+					P.Until = std::min(P.Until, Time + std::max(1.f, Left * 60.f) * 60.0);
+				}
+			}
+		}
 		P.StateStart = Time;
 		P.WanderAt = Time + (A.bPauseSet ? A.PauseMin + (A.PauseMax - A.PauseMin) * Rand(P.Rng) : 30.0 + 60.0 * Rand(P.Rng));
 		Emit(EEvent::Arrive, P);
@@ -4760,6 +4847,29 @@ namespace LyudPeople
 		}
 	}
 
+	void FWorld::SyncSunDuties()
+	{
+		if (DutySunrise == Sunrise && DutySunset == Sunset)
+		{
+			return;
+		}
+		DutySunrise = Sunrise;
+		DutySunset = Sunset;
+		auto Wrap = [](float H) { return std::fmod(std::fmod(H, 24.f) + 24.f, 24.f); };
+		for (FPerson& P : People)
+		{
+			for (FDuty& D : P.Duties)
+			{
+				if (D.Sun)
+				{
+					const float At = D.Sun == 1 ? Sunset : Sunrise;
+					D.From = Wrap(At + D.Off0);
+					D.To = Wrap(At + D.Off1);
+				}
+			}
+		}
+	}
+
 	void FWorld::Step(float Dt)
 	{
 		if (Dt <= 0.f)
@@ -4767,6 +4877,7 @@ namespace LyudPeople
 			return;
 		}
 		Time += Dt;
+		SyncSunDuties();
 		if (!Queues.empty())
 		{
 			StepQueues();       // (a few dozen lines of a few spots: every step, so nobody stands behind a gap)
@@ -5011,8 +5122,16 @@ namespace LyudPeople
 			{
 				bool bSleep = false;
 				const int Duty = DutyNow(P, bSleep);
-				if (Time >= P.Until || (Duty >= 0 && Duty != P.Activity))
+				if (P.Activity == GoneAct ? !Gone(P) : Time >= P.Until || (Duty >= 0 && Duty != P.Activity))
 				{
+					if (P.Activity == GoneAct)
+					{
+						// off the train after the journey: a little hungry, a little tired, nothing worse
+						for (float& Need : P.N)
+						{
+							Need = std::min(Need, 0.35f);
+						}
+					}
 					// back from town: out of the way they went
 					P.PrevActivity = P.Activity;
 					P.PrevActivityEnd = Time;
@@ -5035,6 +5154,7 @@ namespace LyudPeople
 
 	void FWorld::Resettle()
 	{
+		SyncSunDuties();
 		for (FSlot& S : Slots)
 		{
 			S.Users.clear();

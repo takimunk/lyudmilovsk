@@ -1052,9 +1052,12 @@ def main():
     write_counters(people, workplaces)
     # the market's stalls and the queues at the counters (docs/counters.md): a post-pass on town_places.json
     subprocess.check_call([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "counters.py")])
-    # what is added to the town after it is made: the sanatorium's guests, then the new things to do (both idempotent)
-    for extra_script in ("sanatorium_guests.py", "town_activities.py", "town_night.py"):
+    # what is added to the town after it is made: the sanatorium's guests, the new things to do, the night jobs, the pets,
+    # the Aton coast's people, the Mayak lighthouse's keeper (all idempotent; each keeps the later ones' rows after its own)
+    for extra_script in ("sanatorium_guests.py", "town_activities.py", "town_night.py", "town_pets.py", "south_people.py", "lighthouse_keeper.py"):
         subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), extra_script)], check=True)
+    # the library's book club (docs/books.md "The book club"): its members, its seats round the lounge's table
+    subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "reading", "build_reading.py")], check=True)
 
     jobs = sum(1 for p in people if any(d.get("place") for d in p["duties"]) and p["occupation"] != "pupil")
     open_posts = sum(sum(c for _, c, _, _ in w["staff"]) for w in workplaces)

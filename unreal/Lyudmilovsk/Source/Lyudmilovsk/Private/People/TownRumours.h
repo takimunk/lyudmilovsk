@@ -385,7 +385,7 @@ namespace LyudRumour
 			}
 			Spread(R, Ties);
 			// the oldest goes when the store is full
-			if ((int)Rumours.size() >= MaxRumours)
+			if (!Rumours.empty() && (int)Rumours.size() >= MaxRumours)
 			{
 				Rumours.erase(Rumours.begin());
 			}

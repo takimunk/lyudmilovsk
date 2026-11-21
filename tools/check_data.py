@@ -234,8 +234,11 @@ for i, s in enumerate(seats["seats"]):
     in_map_ue_m("Restaurant/seats.json seat %d" % i, s["pos"])
 
 all_place_ids = town_place_ids | pp_ids | flat_ids | plan_ids | tplan_ids
+# the yards the children play in (tools/yard/yard_areas.py): spots loaded by the life like the winter's
+yard_spots = load("PeopleData/yard_spots.json")["spots"] if os.path.exists(os.path.join(CONTENT, "PeopleData", "yard_spots.json")) else []
+all_place_ids |= {s["id"] for s in yard_spots}
 # "snow": the winter's path patches, made at run time (PeopleLife.cpp, PeopleSim.cpp KindNames)
-all_kinds = town_kinds | pp_kinds | plan_kinds | {"home", "club", "flat", "snow"}
+all_kinds = town_kinds | pp_kinds | plan_kinds | {"home", "club", "flat", "snow"} | {s["kind"] for s in yard_spots}
 
 acts = load("PeopleData/activities.json")
 act_ids = dups("PeopleData/activities.json", [a["id"] for a in acts["activities"]])
@@ -287,6 +290,12 @@ for p in people:
         if du.get("place") and du["place"] not in all_place_ids:
             bad(w, "duty place %r is no place" % du["place"])
         a, b = du["hours"]
+        if du.get("sun") is not None:
+            # tied to the sun ("sun": "set" | "rise"): hours are offsets from today's sunset/sunrise (PeopleSim SyncSunDuties);
+            # they move through the year, so they are left out of the overlap check below
+            if du["sun"] not in ("set", "rise") or not (-6 <= a < b <= 6):
+                bad(w, "sun duty %s hours %s" % (du["sun"], du["hours"]))
+            continue
         if not (0 <= a <= 24 and 0 <= b <= 24) or a == b:
             bad(w, "duty hours %s" % du["hours"])
             continue

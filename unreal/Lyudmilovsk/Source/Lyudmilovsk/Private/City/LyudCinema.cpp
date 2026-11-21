@@ -12,6 +12,7 @@
 #include "LyudText.h"
 #include "Plants/GameCalendar.h"
 #include "UI/LyudGameScreen.h"
+#include "UI/LyudQuests.h"
 #include "World/LyudCityBuilding.h"
 
 #include "Components/AudioComponent.h"
@@ -48,7 +49,7 @@ namespace LyudCinemaImpl
 	constexpr float LampFloorCm = 900.f;      // the hall's lamps: up to the ceiling over the middle
 	constexpr float PictureGapCm = 2.f;       // the picture in front of the screen's own card
 	constexpr float PortholeCm = 14.f;        // the beam's mouth at the booth
-	constexpr float LooseWalkAway = 3000.f;   // a console run ends when he wanders off this far
+	constexpr float LooseWalkAway = 3000.f;   // a run he is not seated for ends when he wanders off this far
 
 	FString Str(const std::string& S) { return FString(UTF8_TO_TCHAR(S.c_str())); }
 	FVector Vec(const double P[3]) { return FVector(P[0], P[1], P[2]); }
@@ -435,6 +436,8 @@ void ULyudCinema::EndFilm(bool bWatched)
 	if (QueueAt >= 0 && QueueAt < Queue.Num() && bWatched)
 	{
 		const FName Id(*LyudCinemaImpl::Str(Model->Films[(size_t)Queue[QueueAt]].Id));
+		// every film watched to its end (quests, the diary's day: docs/diary.md)
+		ULyudQuests::Notify(this, TEXT("film_watched"), Id.ToString());
 		if (!SeenFilms.Contains(Id))
 		{
 			SeenFilms.Add(Id);
@@ -526,13 +529,14 @@ void ULyudCinema::Tick(float DeltaTime)
 	{
 		return;
 	}
-	// he leaves: E or Esc, up from the seat, a screen comes up, walks off (a console run)
+	// he leaves: E or Esc, up from the seat, a screen comes up, walks off (any run he stands for: a session watched on foot
+	// would else follow him out of the hall with its captions, and the city's things offer nothing while it is held)
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	APlayerController* PC = UGameplayStatics::GetPlayerController(World, 0);
 	const ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
 	const bool bKey = PC && GFrameCounter != StartFrame && (PC->WasInputKeyJustPressed(EKeys::E) || PC->WasInputKeyJustPressed(EKeys::Escape));
 	if (!Hero || !PC || bKey || (UI && UI->IsOpen()) || (bSeatedRun && !Hero->IsSeated())
-		|| (bLooseRun && FVector::Dist(Hero->GetActorLocation(), StartAt) > LyudCinemaImpl::LooseWalkAway))
+		|| (!bSeatedRun && FVector::Dist(Hero->GetActorLocation(), StartAt) > LyudCinemaImpl::LooseWalkAway))
 	{
 		Stop(false);
 		return;
@@ -597,7 +601,8 @@ void ULyudCinema::Tick(float DeltaTime)
 	}
 	if ((Duration > 0.0 && Time >= Duration - 0.15) || Now - LastProgress > LyudCinemaImpl::StallSeconds)
 	{
-		EndFilm(Share > 0.8f || Time >= Duration - 0.15);
+		// (a copy that broke off with its length gone is not a film seen)
+		EndFilm(Share > 0.8f || (Duration > 0.0 && Time >= Duration - 0.15));
 	}
 }
 

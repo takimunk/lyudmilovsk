@@ -206,11 +206,12 @@ An act is what happens when the hero presses E at a thing:
 | `event`/`target` | reported to the quests: always `do` + the act id |
 | `daily` | how many times a day it gives its reward (0: no limit) |
 | `shop` | opens the trade screen with this stock of `shops` when `needs_staff` is on shift |
-| `screen` | a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
+| `screen` | `scope`, `scope_coin`, `scope_sun`: a telescope, the act opens the eyepiece (docs/telescopes.md; its line is the caption, its minutes do not pass, it is never watched from a seat). Otherwise a screen show (`film`, `stage`, `tv`, `slides`): the page in the dark wide style, the line cut into subtitles shown one after another, the minutes passing with them; a sitting show on a thing that is not a seat wants the hero seated first (a seat of the plot within 25 m) and is then offered from the seat |
 | `open` | another system's screen opens instead of the act's page (`ULyudCityThings::OnOpen(screen, thing)`; one of `OPEN_SCREENS` in `interiors.py`): `books` (the library's classics, `ULyudBookScreen`), `photo_lab` (the photo studio takes films in and gives prints out), `photo_darkroom` (the hero develops his own film), `photo_contest` (the photo club's monthly contest at its table: hand a print in, hear the result) and `photo_wall` (the wall of the contest's winners; all four `Private/Photo/LyudPhoto.cpp`, docs/photo.md). The act still takes its price, gives its items, plays its sound and reports its event; its line is taken but not shown, its `minutes` do not pass, and a counter's staff talk is not offered |
 | `collect` | a stamp every run gives (`"shelves/birds"`), or `"set/{line}"`: every line it shows is a piece of its own (the line's key: the films of «Рассвет»'s programme, a jukebox's records); an act `like` it inherits it (`"collect": ""` drops it) |
 | `closed` | what things doing this act say while their plot is shut: an act id or a line key (see "Closed") |
 | `game` | a mini-game played instead of showing `lines` (see "Mini-games"); an act `like` it inherits it (`"game": null` drops it) |
+| `proc` | a procedure: a short hands-on scene (pick, pour, sip on the clock, breathe with a ring, tap, cuts, the doctor's numbers, a guest's word) played first, the act running when it is over with the result's words on top (docs/sanatorium_procedures.md); not with `game` |
 | `read` | `{"texts": ["<text id>", ...], "rotate": "use"|"daily"}`: the reading view opens one of these texts instead of the lines (in turn at each use, or one a game day); only on a `shelf`, `board`, `seat` or `take` (see "The reading page") |
 | `sleep` | `true` (with `pose: lie`): the hero chooses the hour he wakes at instead of the act's `minutes`/`until` (which give the first hour offered; see "Sitting and lying") |
 | `stay` | `{"id": "<stay>", "days": 1..60}`: running it puts the hero on that stay for so many days (added to the days left of one he is on): a sanatorium's voucher (see "Stays") |
@@ -522,6 +523,22 @@ The windows shut behind him when he walks into another plot or starts over (`FMo
 lamps); not saved. The windows are not drawn open (no moving sash yet). Developer mode: `interiors.window_nearest`.
 Checked in citysim ("small things that answer a touch").
 
+### Things to open and pick up
+
+The furnished homes answer more than a sit: a **wardrobe** (`what=wardrobe`, act `open_wardrobe`: what hangs inside by the
+weather, a cold day finds the winter coat at the front) and a **kitchen cupboard** (`what=cupboard`, `open_cupboard`: jars,
+the holiday's hidden sweets, the morning's coffee) open on E; a **kettle** goes on (`what=kettle`, `put_kettle`: five
+minutes, a tea once a day) where the home had none; each home's **photo** on the bedside table is picked up (its first
+line: what it shows) and turned over (the second: what is written on the back); a **note** left on the kitchen table
+(`what=note`, `"rotate": "daily"`) is the resident's word of the day, another one tomorrow. Content
+`tools/city/content/x_home_touch.json` (+ `strings/x_home_touch.json`): generic acts by `what`, the photos and notes by id
+rule per home (`<plot>/<prefix>_photo`, `_note`). Things from `blender/city/buildings/_homekit.py` (`wardrobe_thing`,
+`cupboard_thing`, `kettle` with its mesh, `photo_frame` with a small standing frame, `note_left` with a folded paper),
+placed in four homes so far: Holm (P-T1H2, cobogo_house), Lev Markovich (P-T4H1, pilotis_curve_slab, his new red kettle),
+Colette Bauer (P-SERPENTINE, serpentine_slab), Priya Tulegenova (P-UNITE, unite_block; her wardrobe keeps its old
+"store" board). Reach audit clean; citysim "things to open and pick up in the homes". The Mac reimports the four types
+(the frames, notes and the kettle are new meshes).
+
 ### Sitting and lying
 
 What is a real pose and what is a stand-in:
@@ -628,6 +645,10 @@ A text with `gen` is set by the game each day (`ULyudTownPaper`, docs/town_paper
 (`town_paper`) and the library rack's archive `paper_archive`; its own pages show only when the paper's data is missing. The
 notice boards (`look_lost`, `look_club`, `look_health`, `look_wallpaper` and the acts like them without lines of their own)
 read `notices_<board>` (`tools/city/content/x_notices.json`, written by `tools/paper/paper.py`): dated notices by the calendar.
+
+
+The course's procedures are played as scenes on the voucher (the pump room, inhalation, the mud bath, the Charcot shower,
+massage, the doctor's check, the evening waltz): docs/sanatorium_procedures.md.
 
 ### Lifts and storey links
 

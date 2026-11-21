@@ -7,7 +7,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 PROJ="$ROOT/unreal/Lyudmilovsk/Lyudmilovsk.uproject"
 LOGS="$ROOT/unreal/Lyudmilovsk/Saved/Logs"
 mkdir -p "$LOGS"
-NAMES="${*:-phone cigarette camera umbrella rod brush binoculars newspaper book knitting ice_cream cup bag easel spade watering_can}"
+NAMES="${*:-phone cigarette camera umbrella rod brush binoculars newspaper book knitting ice_cream cup bag easel spade watering_can suitcase}"
 for N in $NAMES; do
     sh "$ROOT/tools/wait_ue_queue.sh"
     PROPS="$N" nice -n 19 taskpolicy -b "$UE/Engine/Binaries/Mac/UnrealEditor-Cmd" "$PROJ" -run=pythonscript \

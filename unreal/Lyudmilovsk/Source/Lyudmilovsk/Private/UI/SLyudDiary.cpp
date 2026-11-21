@@ -19,6 +19,7 @@
 #include "Slate/WidgetRenderer.h"
 #include "Styling/CoreStyle.h"
 #include "UI/LyudBirdGuide.h"
+#include "UI/LyudDayLog.h"
 #include "UI/LyudQuests.h"
 #include "UI/LyudUIText.h"
 #include "UI/SLyudMapView.h"
@@ -249,17 +250,34 @@ void SLyudDiarySpread::Construct(const FArguments& InArgs)
 		R = QuestsRight();
 		break;
 	case ESection::Diary:
-		if (Spread.Part >= State->DiarySpreads + State->PeopleSpreads)
+		if (Spread.Part >= State->DiarySpreads + State->DaySpreads + State->PeopleSpreads)
 		{
-			// last: the sets of stamps and what each gave
-			L = CollectionsPage((Spread.Part - State->DiarySpreads - State->PeopleSpreads) * 2);
-			R = CollectionsPage((Spread.Part - State->DiarySpreads - State->PeopleSpreads) * 2 + 1);
+			const int32 B = Spread.Part - State->DiarySpreads - State->DaySpreads - State->PeopleSpreads;
+			if (B >= State->BookSpreads)
+			{
+				// last: the sets of stamps and what each gave
+				L = CollectionsPage((B - State->BookSpreads) * 2);
+				R = CollectionsPage((B - State->BookSpreads) * 2 + 1);
+			}
+			else
+			{
+				// after the people: the books he read and the quotes he copied
+				L = BooksPage(B * 2);
+				R = BooksPage(B * 2 + 1);
+			}
+		}
+		else if (Spread.Part >= State->DiarySpreads + State->DaySpreads)
+		{
+			// after the days: the people he knows
+			const int32 P = Spread.Part - State->DiarySpreads - State->DaySpreads;
+			L = PeoplePage(P * 2);
+			R = PeoplePage(P * 2 + 1);
 		}
 		else if (Spread.Part >= State->DiarySpreads)
 		{
-			// after the entries: the people he knows
-			L = PeoplePage((Spread.Part - State->DiarySpreads) * 2);
-			R = PeoplePage((Spread.Part - State->DiarySpreads) * 2 + 1);
+			// after the entries: what each day was (docs/diary.md, Days)
+			L = DaysPage((Spread.Part - State->DiarySpreads) * 2);
+			R = DaysPage((Spread.Part - State->DiarySpreads) * 2 + 1);
 		}
 		else
 		{
@@ -1030,6 +1048,371 @@ TSharedRef<SWidget> SLyudDiarySpread::CollectionsPage(int32 PageIndex)
 	return Box;
 }
 
+// ------------------------------------------------------------------ books: what he read, the quotes he copied (docs/books.md)
+
+namespace
+{
+	constexpr int32 QuotesFirstPage = 2;
+	constexpr int32 QuotesPerPage = 4;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::BooksPage(int32 PageIndex)
+{
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	ULyudBooks* Books = ULyudBooks::Get(Owner.Get());
+	if (!Books)
+	{
+		return Box;
+	}
+	auto Arg = [](const FText& T) { return FStringFormatArg(T.ToString()); };
+	auto TitleOf = [Books](const FString& BookKey)
+	{
+		const FLyudBookInfo* B = Books->Find(BookKey);
+		FString Lang, Work;
+		return B ? FText::FromString(B->TitleNow()) : LyudText::Get(TEXT("book.title.") + (BookKey.Split(TEXT("/"), &Lang, &Work) ? Work : BookKey));
+	};
+	if (PageIndex == 0)
+	{
+		Box->AddSlot().AutoHeight()[Title(LyudText::Get(TEXT("reading.diary.title")))];
+		Box->AddSlot().AutoHeight().Padding(0, 10, 0, 0)
+		[
+			Words(LyudText::Get(TEXT("reading.diary.stats"), { FStringFormatArg(Books->NumFinished()), FStringFormatArg(Books->PagesRead()) }), 28.f, Ink, false, true)
+		];
+		int32 LongPages = 0;
+		const FString Longest = Books->LongestFinished(&LongPages);
+		if (!Longest.IsEmpty())
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+			[
+				Words(LyudText::Get(TEXT("reading.diary.longest"), { Arg(TitleOf(Longest)), FStringFormatArg(LongPages) }), 26.f, Ink, false, true)
+			];
+		}
+		for (const FString& BookKey : Books->Borrowed())
+		{
+			const FLyudBookInfo* B = Books->Find(BookKey);
+			if (B && B->Chars > 0 && Books->Bookmark(BookKey) > 0 && !Books->IsFinished(BookKey))
+			{
+				const int32 Pct = FMath::Clamp(FMath::RoundToInt(100.f * Books->Bookmark(BookKey) / (float)B->Chars), 1, 99);
+				Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+				[
+					Words(LyudText::Get(TEXT("reading.diary.reading_now"), { Arg(TitleOf(BookKey)), FStringFormatArg(Pct) }), 26.f, Pencil, false, true)
+				];
+			}
+		}
+		if (Books->ClubMonths.Num() > 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 4, 0, 0)
+			[
+				Words(LyudText::Get(TEXT("reading.diary.club"), { FStringFormatArg(Books->ClubMonths.Num()) }), 26.f, Green, false, true)
+			];
+		}
+		Box->AddSlot().AutoHeight().Padding(0, 22, 0, 6)[Subtitle(LyudText::Get(TEXT("reading.diary.quotes")))];
+		if (Books->GetQuotes().Num() == 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 6, 0, 0)[Key(TEXT("reading.diary.empty"), 26.f, PencilFaint, false, true)];
+			return Box;
+		}
+	}
+	if (!State->QuotePages.IsValidIndex(PageIndex))
+	{
+		return Box;
+	}
+	const TArray<FLyudBookQuote>& Quotes = Books->GetQuotes();
+	for (const int32 I : State->QuotePages[PageIndex])
+	{
+		if (!Quotes.IsValidIndex(I))
+		{
+			continue;
+		}
+		const FLyudBookQuote& Q = Quotes[I];
+		TSharedRef<SVerticalBox> Card = SNew(SVerticalBox);
+		Card->AddSlot().AutoHeight()[Words(FText::FromString(Q.Text), 25.f, Ink, false, true)];
+		Card->AddSlot().AutoHeight().HAlign(HAlign_Right).Padding(0, 2, 0, 0)
+		[
+			Words(LyudText::Get(TEXT("reading.diary.quote_src"), { Arg(TitleOf(Q.Book)), Arg(LyudUIText::Date(Q.When)) }), 22.f, Pencil)
+		];
+		Box->AddSlot().AutoHeight().Padding(0, 8, 0, 14)[Card];
+	}
+	return Box;
+}
+
+// ------------------------------------------------------------------ days: the entry the hero wrote for each day (docs/diary.md, Days)
+
+namespace
+{
+	constexpr float DayBody = 27.f, DayDate = 34.f, DoodleSize = 132.f, DoodleGap = 18.f;
+
+	/** A doodle in the margin drawn in pencil for the day's weather: a sun, a cloud with rain, a snowflake... (100 x 100 units). */
+	class SLyudDoodle : public SLeafWidget
+	{
+	public:
+		SLATE_BEGIN_ARGS(SLyudDoodle) : _Seed(1) {}
+			SLATE_ARGUMENT(FString, Code)
+			SLATE_ARGUMENT(uint32, Seed)
+		SLATE_END_ARGS()
+
+		void Construct(const FArguments& InArgs)
+		{
+			Code = InArgs._Code;
+			Seed = InArgs._Seed;
+			SetVisibility(EVisibility::HitTestInvisible);
+		}
+
+		virtual FVector2D ComputeDesiredSize(float) const override { return FVector2D(DoodleSize, DoodleSize); }
+
+		virtual int32 OnPaint(const FPaintArgs& Args, const FGeometry& G, const FSlateRect& MyCullingRect, FSlateWindowElementList& Out,
+			int32 LayerId, const FWidgetStyle& InWidgetStyle, bool bParentEnabled) const override
+		{
+			const float K = FMath::Min(G.GetLocalSize().X, G.GetLocalSize().Y) / 100.f;
+			const FLinearColor Lead = Pencil * InWidgetStyle.GetColorAndOpacityTint();
+			uint32 S = Seed;
+			auto Line = [&](TArray<FVector2D> P, const FLinearColor& C, float Th = 2.f)
+			{
+				for (FVector2D& V : P)
+				{
+					V *= K;
+				}
+				DrawStroke(Out, LayerId, G, P, C, Th, ++S, 1.1f);
+			};
+			auto Arc = [&](FVector2D C, float R, float From, float To, const FLinearColor& Col, float Th = 2.f)
+			{
+				TArray<FVector2D> P;
+				const int32 N = FMath::Max(4, FMath::CeilToInt(FMath::Abs(To - From) / 15.f));
+				for (int32 I = 0; I <= N; ++I)
+				{
+					const float A = FMath::DegreesToRadians(FMath::Lerp(From, To, float(I) / N));
+					P.Add(C + FVector2D(FMath::Cos(A), -FMath::Sin(A)) * R);
+				}
+				Line(P, Col, Th);
+			};
+			auto Sun = [&](FVector2D C, float R)
+			{
+				Arc(C, R, 0.f, 370.f, Lead);
+				for (int32 I = 0; I < 9; ++I)
+				{
+					const float A = I * 40.f + Hash(Seed, I) * 10.f;
+					const FVector2D D(FMath::Cos(FMath::DegreesToRadians(A)), -FMath::Sin(FMath::DegreesToRadians(A)));
+					Line({ C + D * (R + 6.f), C + D * (R + 15.f) }, Lead);
+				}
+			};
+			auto Cloud = [&](FVector2D C)
+			{
+				// three bumps on a flat bottom
+				Arc(C + FVector2D(-18, 4), 12.f, 90.f, 260.f, Lead);
+				Arc(C + FVector2D(0, -6), 17.f, 20.f, 165.f, Lead);
+				Arc(C + FVector2D(20, 3), 13.f, -80.f, 70.f, Lead);
+				Line({ C + FVector2D(-21, 16), C + FVector2D(22, 16) }, Lead);
+			};
+			const FVector2D Mid(50, 50);
+			if (Code == TEXT("clear") || Code == TEXT("hot"))
+			{
+				Sun(Mid + FVector2D(0, Code == TEXT("hot") ? -8 : 0), 17.f);
+				if (Code == TEXT("hot"))
+				{
+					for (int32 I = 0; I < 3; ++I)
+					{
+						Line({ FVector2D(28 + I * 16, 92), FVector2D(32 + I * 16, 84), FVector2D(28 + I * 16, 76) }, Lead, 1.6f);
+					}
+				}
+			}
+			else if (Code == TEXT("mixed"))
+			{
+				Sun(FVector2D(38, 38), 13.f);
+				Cloud(FVector2D(58, 58));
+			}
+			else if (Code == TEXT("cloudy"))
+			{
+				Cloud(FVector2D(42, 40));
+				Cloud(FVector2D(60, 66));
+			}
+			else if (Code == TEXT("rain") || Code == TEXT("drizzle") || Code == TEXT("thunder") || Code == TEXT("snow"))
+			{
+				Cloud(FVector2D(50, 36));
+				for (int32 I = 0; I < 5; ++I)
+				{
+					const FVector2D P(30 + I * 10, 64 + (I % 2) * 10);
+					if (Code == TEXT("rain"))
+					{
+						Line({ P, P + FVector2D(-5, 13) }, Ink * InWidgetStyle.GetColorAndOpacityTint(), 1.8f);
+					}
+					else if (Code == TEXT("drizzle"))
+					{
+						Line({ P, P + FVector2D(-1.5f, 4) }, Ink * InWidgetStyle.GetColorAndOpacityTint(), 1.8f);
+					}
+					else if (Code == TEXT("snow"))
+					{
+						Line({ P + FVector2D(-4, 0), P + FVector2D(4, 0) }, Lead, 1.5f);
+						Line({ P + FVector2D(-2.5f, -3.5f), P + FVector2D(2.5f, 3.5f) }, Lead, 1.5f);
+						Line({ P + FVector2D(2.5f, -3.5f), P + FVector2D(-2.5f, 3.5f) }, Lead, 1.5f);
+					}
+				}
+				if (Code == TEXT("thunder"))
+				{
+					Line({ FVector2D(54, 54), FVector2D(44, 72), FVector2D(54, 72), FVector2D(44, 92) }, Red * InWidgetStyle.GetColorAndOpacityTint(), 2.4f);
+				}
+			}
+			else if (Code == TEXT("fog"))
+			{
+				for (int32 I = 0; I < 4; ++I)
+				{
+					TArray<FVector2D> P;
+					for (int32 X = 0; X <= 6; ++X)
+					{
+						P.Add(FVector2D(18 + X * 11, 30 + I * 14 + ((X % 2) ? -3.f : 3.f)));
+					}
+					Line(P, Lead, 1.7f);
+				}
+			}
+			else if (Code == TEXT("rainbow"))
+			{
+				const FLinearColor Cols[3] = { Red, FLinearColor(0.85f, 0.62f, 0.1f), Ink };
+				for (int32 I = 0; I < 3; ++I)
+				{
+					Arc(FVector2D(50, 78), 38.f - I * 8.f, 0.f, 180.f, Cols[I] * InWidgetStyle.GetColorAndOpacityTint(), 2.4f);
+				}
+			}
+			else if (Code == TEXT("aurora"))
+			{
+				for (int32 I = 0; I < 5; ++I)
+				{
+					TArray<FVector2D> P;
+					for (int32 Y = 0; Y <= 4; ++Y)
+					{
+						P.Add(FVector2D(22 + I * 13 + ((Y % 2) ? 4.f : -4.f), 24 + Y * 13));
+					}
+					Line(P, Green * InWidgetStyle.GetColorAndOpacityTint(), 2.f);
+				}
+				Line({ FVector2D(20, 88), FVector2D(80, 88) }, Lead);
+			}
+			else if (Code == TEXT("frost"))
+			{
+				for (int32 I = 0; I < 6; ++I)
+				{
+					const float A = FMath::DegreesToRadians(I * 60.f + 90.f);
+					const FVector2D D(FMath::Cos(A), -FMath::Sin(A)), N(-D.Y, D.X);
+					Line({ Mid, Mid + D * 32.f }, Ink * InWidgetStyle.GetColorAndOpacityTint(), 1.8f);
+					Line({ Mid + D * 18.f, Mid + D * 24.f + N * 7.f }, Ink * InWidgetStyle.GetColorAndOpacityTint(), 1.5f);
+					Line({ Mid + D * 18.f, Mid + D * 24.f - N * 7.f }, Ink * InWidgetStyle.GetColorAndOpacityTint(), 1.5f);
+				}
+			}
+			return LayerId + 1;
+		}
+
+	private:
+		FString Code;
+		uint32 Seed = 1;
+	};
+
+	/** The margin picture of a day: the bird met (its drawing), the thing caught or eaten (its sketch), else the weather. */
+	TSharedRef<SWidget> DayDoodle(const FString& Doodle, const FString& Weather, uint32 Seed)
+	{
+		FString Kind, Id;
+		Doodle.Split(TEXT(":"), &Kind, &Id);
+		const FSlateBrush* B = nullptr;
+		if (Kind == TEXT("bird"))
+		{
+			B = ULyudBirdBook::Drawing(FName(*Id), false);
+		}
+		else if (Kind == TEXT("item"))
+		{
+			B = SketchBrush(FName(*Id));
+		}
+		TSharedRef<SWidget> W = B ? StaticCastSharedRef<SWidget>(SNew(SImage).Image(B))
+			: StaticCastSharedRef<SWidget>(SNew(SLyudDoodle).Code(Kind == TEXT("weather") ? Id : Weather).Seed(Seed));
+		return SNew(SBox).WidthOverride(DoodleSize).HeightOverride(DoodleSize)[W];
+	}
+
+	FString WeatherOfDoodle(const ULyudDayLog::FEntry& E)
+	{
+		// a bird or a thing with no picture falls back on the day's own weather, not a stock sun-and-cloud
+		return E.Doodle.StartsWith(TEXT("weather:")) ? E.Doodle.Mid(8) : !E.Weather.IsEmpty() ? E.Weather : FString(TEXT("mixed"));
+	}
+
+	/** How many lines a text takes at a width in a font (words wrapped greedily; Japanese, with no spaces, by its width). */
+	int32 WrappedLines(const FSlateFontMeasure& Measure, const FString& Text, const FSlateFontInfo& Font, float Width)
+	{
+		TArray<FString> List;
+		Text.ParseIntoArray(List, TEXT(" "));
+		if (List.Num() <= 1)
+		{
+			return FMath::Max(1, FMath::CeilToInt(Measure.Measure(Text, Font).X / Width));
+		}
+		const float Space = Measure.Measure(TEXT(" "), Font).X;
+		float X = 0.f;
+		int32 Lines = 1;
+		for (const FString& W : List)
+		{
+			const float Wd = Measure.Measure(W, Font).X;
+			if (X > 0.f && X + Space + Wd > Width)
+			{
+				++Lines;
+				X = Wd;
+			}
+			else
+			{
+				X += (X > 0.f ? Space : 0.f) + Wd;
+			}
+		}
+		return Lines;
+	}
+
+	float DayTextWidth()
+	{
+		return PageW - 2.f * Margin - 28.f - DoodleSize - DoodleGap;
+	}
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::DaysPage(int32 PageIndex)
+{
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	if (PageIndex == 0)
+	{
+		Box->AddSlot().AutoHeight()[Title(LyudText::Get(TEXT("diary.days.title")))];
+		if (State->Days.Num() == 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 20, 0, 0)[Key(TEXT("diary.days.empty"), 30.f, PencilFaint, false, true)];
+			return Box;
+		}
+	}
+	if (!State->DayPages.IsValidIndex(PageIndex))
+	{
+		return Box;
+	}
+	for (const int32 I : State->DayPages[PageIndex])
+	{
+		if (!State->Days.IsValidIndex(I))
+		{
+			continue;
+		}
+		const ULyudDayLog::FEntry& E = State->Days[I];
+		const FText D = E.bToday ? LyudText::Get(TEXT("diary.days.today"), { FStringFormatArg(LyudUIText::Date(E.Day).ToString()) }) : LyudUIText::Date(E.Day);
+		const uint32 Seed = SeedOf(D.ToString());
+		TSharedRef<SVerticalBox> Text = SNew(SVerticalBox);
+		Text->AddSlot().AutoHeight().Padding(0, 0, 0, 4).HAlign(HAlign_Left)[Marked(Words(D, DayDate, Ink, true), EMark::Underline, InkSoft, Seed)];
+		for (const FText& L : E.Lines)
+		{
+			Text->AddSlot().AutoHeight().Padding(0, 0, 0, 2)[Words(L, DayBody, Ink, false, true)];
+		}
+		// the doodle on the outer side, a little tilted by hand: left on even days, right on odd
+		const bool bLeft = (I % 2) == 0;
+		TSharedRef<SWidget> Pic = SNew(SBox).Padding(FMargin(0, 8, 0, 0)).RenderTransformPivot(FVector2D(0.5f, 0.5f))
+			.RenderTransform(FSlateRenderTransform(FQuat2D(FMath::DegreesToRadians((Hash(Seed, 3) - 0.5f) * 10.f))))
+			[DayDoodle(E.Doodle, WeatherOfDoodle(E), Seed)];
+		TSharedRef<SHorizontalBox> Row = SNew(SHorizontalBox);
+		if (bLeft)
+		{
+			Row->AddSlot().AutoWidth().VAlign(VAlign_Top).Padding(0, 0, DoodleGap, 0)[Pic];
+		}
+		Row->AddSlot().FillWidth(1.f).VAlign(VAlign_Top)[Text];
+		if (!bLeft)
+		{
+			Row->AddSlot().AutoWidth().VAlign(VAlign_Top).Padding(DoodleGap, 0, 0, 0)[Pic];
+		}
+		Box->AddSlot().AutoHeight().Padding(0, 6, 0, 18)[Row];
+	}
+	return Box;
+}
+
 TSharedRef<SWidget> SLyudDiarySpread::BirdCard(FName Species)
 {
 	const ULyudBirdBook* Book = ULyudBirdBook::Get(Owner.Get());
@@ -1056,12 +1439,33 @@ TSharedRef<SWidget> SLyudDiarySpread::BirdCard(FName Species)
 	}
 	// when and where it was first met, and how
 	const FText Where = Seen->Place.IsNone() ? FText::GetEmpty() : ULyudQuests::PlaceName(Seen->Place);
-	const TCHAR* HowKey = Seen->How == TEXT("binoculars") ? TEXT("ui.birds.how_binoculars") : Seen->How == TEXT("bird") ? TEXT("ui.birds.how_bird") : TEXT("ui.birds.how_hand");
+	const TCHAR* HowKey = Seen->How == TEXT("binoculars") ? TEXT("ui.birds.how_binoculars") : Seen->How == TEXT("telescope") ? TEXT("ui.birds.how_telescope") : Seen->How == TEXT("bird") ? TEXT("ui.birds.how_bird") : TEXT("ui.birds.how_hand");
 	Text->AddSlot().AutoHeight().Padding(0, 6, 0, 0)
 	[
 		Words(LyudText::Get(Where.IsEmpty() ? TEXT("ui.birds.first") : TEXT("ui.birds.first_at"),
 			{ FStringFormatArg(LyudUIText::Date(Seen->When).ToString()), FStringFormatArg(Where.ToString()), FStringFormatArg(LyudText::Get(HowKey).ToString()) }), 26.f, Ink, false, true)
 	];
+	// its habits: the ones he has watched with the day, the others still a blank to fill (docs/bird_habits.md)
+	const TArray<FName> HabitNames = ULyudBirdBook::HabitsOfSpecies(Species);
+	if (HabitNames.Num())
+	{
+		Text->AddSlot().AutoHeight().Padding(0, 8, 0, 0)[Words(LyudText::Get(TEXT("ui.birds.habits")), 24.f, InkSoft, true)];
+		for (const FName Habit : HabitNames)
+		{
+			if (const FLyudBirdHabitSeen* H = Book->FindHabit(Habit))
+			{
+				Text->AddSlot().AutoHeight().Padding(0, 2, 0, 0)
+				[
+					Words(LyudText::Get(TEXT("ui.birds.habit_seen"),
+						{ FStringFormatArg(LyudText::Get(*(FString(TEXT("bird.habit.")) + Habit.ToString())).ToString()), FStringFormatArg(LyudUIText::Date(H->When).ToString()) }), 24.f, Ink, false, true)
+				];
+			}
+			else
+			{
+				Text->AddSlot().AutoHeight().Padding(0, 2, 0, 0)[Words(LyudText::Get(TEXT("ui.birds.habit_unknown")), 24.f, PencilFaint, false, true)];
+			}
+		}
+	}
 	// the friends: when each first ate from the hand, how often it came, and the call
 	for (const FLyudBirdFriend* F : Friends)
 	{
@@ -1727,6 +2131,27 @@ void SLyudDiaryScreen::PaginateCollections()
 	}
 }
 
+void SLyudDiaryScreen::PaginateQuotes()
+{
+	// the newest quotes first: two under the stats on the first page, four a page after it
+	State->QuotePages.Reset();
+	State->QuotePages.AddDefaulted();
+	const ULyudBooks* Books = ULyudBooks::Get(Owner.Get());
+	if (!Books)
+	{
+		return;
+	}
+	for (int32 I = Books->GetQuotes().Num() - 1; I >= 0; --I)
+	{
+		const int32 Room = State->QuotePages.Num() == 1 ? QuotesFirstPage : QuotesPerPage;
+		if (State->QuotePages.Last().Num() >= Room)
+		{
+			State->QuotePages.AddDefaulted();
+		}
+		State->QuotePages.Last().Add(I);
+	}
+}
+
 void SLyudDiaryScreen::PaginateFriends()
 {
 	// the friends start on a page of their own after the birds'; none: no pages
@@ -1748,6 +2173,43 @@ void SLyudDiaryScreen::PaginateFriends()
 	}
 }
 
+void SLyudDiaryScreen::PaginateDays()
+{
+	// the days as a page takes them: the date line, the entry's lines wrapped beside the doodle, at least the doodle's height
+	State->Days.Reset();
+	State->DayPages.Reset();
+	State->DayPages.AddDefaulted();
+	if (const ULyudDayLog* Log = ULyudDayLog::Get(Owner.Get()))
+	{
+		Log->Entries(State->Days);
+	}
+	if (!State->Days.Num())
+	{
+		return;
+	}
+	const TSharedRef<FSlateFontMeasure> Measure = FSlateApplication::Get().GetRenderer()->GetFontMeasureService();
+	const FSlateFontInfo Body = Hand(DayBody), DateF = Hand(DayDate, true);
+	const float LineH = Measure->GetMaxCharacterHeight(Body) * 1.02f;
+	const float Room0 = PageH - 96.f - 80.f - 110.f, Room = PageH - 96.f - 80.f;
+	float Left = Room0;
+	for (int32 I = 0; I < State->Days.Num(); ++I)
+	{
+		float Text = Measure->GetMaxCharacterHeight(DateF) + 4.f;
+		for (const FText& L : State->Days[I].Lines)
+		{
+			Text += WrappedLines(*Measure, L.ToString(), Body, DayTextWidth()) * LineH + 2.f;
+		}
+		const float H = FMath::Max(Text, DoodleSize + 8.f) + 24.f;
+		if (H > Left && State->DayPages.Last().Num())
+		{
+			State->DayPages.AddDefaulted();
+			Left = Room;
+		}
+		State->DayPages.Last().Add(I);
+		Left -= H;
+	}
+}
+
 void SLyudDiaryScreen::Rebuild()
 {
 	Language = LyudText::Language();
@@ -1756,17 +2218,22 @@ void SLyudDiaryScreen::Rebuild()
 	PaginateFriends();
 	const int32 DiarySpreads = FMath::Max(1, (State->DiaryPages.Num() + 1) / 2);
 	PaginatePeople();
+	PaginateDays();
 	State->DiarySpreads = DiarySpreads;
+	State->DaySpreads = FMath::Max(1, (State->DayPages.Num() + 1) / 2);
 	const int32 PeopleSpreads = FMath::Max(1, (State->PeoplePages.Num() + 1) / 2);
-	PaginateCollections();
 	State->PeopleSpreads = PeopleSpreads;
+	PaginateQuotes();
+	const int32 BookSpreads = FMath::Max(1, (State->QuotePages.Num() + 1) / 2);
+	State->BookSpreads = BookSpreads;
+	PaginateCollections();
 	const int32 CollectionSpreads = FMath::Max(1, (State->CollectionPages.Num() + 1) / 2);
 	const int32 BirdSpreads = FMath::Max(1, (State->BirdPages.Num() + State->FriendPages.Num() + 1) / 2);
 	const FLyudDiarySpread Was = Spreads.IsValidIndex(Current) ? Spreads[Current] : FLyudDiarySpread();
 	Spreads.Reset();
 	Spreads.Add({ ESection::Things, 0 });
 	Spreads.Add({ ESection::Quests, 0 });
-	for (int32 P = 0; P < DiarySpreads + PeopleSpreads + CollectionSpreads; ++P)
+	for (int32 P = 0; P < DiarySpreads + State->DaySpreads + PeopleSpreads + BookSpreads + CollectionSpreads; ++P)
 	{
 		Spreads.Add({ ESection::Diary, P });
 	}

@@ -42,6 +42,7 @@ quest.owner_supper.done = owner.supper_after.1
 quest.owner_supper.buy.if.night+no:cheese_braid+no:drink_baikal = owner.supper_night_hurry.1
 quest.owner_supper.buy.if.have:drink_baikal+no:cheese_braid = owner.supper_soda_first.1
 quest.owner_supper.buy.if.have:cheese_braid+no:drink_baikal = owner.supper_braid_first.1
+aside.town_road.lookout,descent,bridge,stele,terrace,square,bread = owner.road_trail.1
 
 [Clerk]
 first = clerk.first.1 | hero.clerk_first.2 | clerk.first.3 | hero.clerk_first.4 | clerk.first.5
@@ -152,6 +153,8 @@ aside.explore.walk.again = guy_b.four_places_two_by_cable.1
 aside.explore.walk.again = guy_b.never_got_swift.1
 aside.explore.walk.if.low = guy_b.sunset_promenade_now.1 | guy_b.sunset_promenade_now.2
 aside.explore.done = guy_b.never_been_beach.1 | guy_b.never_been_beach.2
+aside.town_road.lookout,descent,bridge,stele,terrace,square,bread = guy_b.road_on_foot.1 | hero.road_on_foot.2 | guy_b.road_on_foot.3
+aside.town_road.done = guy_b.road_back.1
 
 [Girl_a]
 first = girl_a.first.1 | hero.girl_a_first.2 | girl_a.first.3 | girl_a.first.4
@@ -183,6 +186,8 @@ again = girl_b.again5.1
 again = hero.girl_b_again6.1 | girl_b.again6.2
 again = girl_b.again7.1
 quest.waxwing.prepare = girl_b.waxwing_guide.1 | girl_b.waxwing_guide.2
+aside.town_road.lookout,descent,bridge,stele = girl_b.road_stele.1 | girl_b.road_stele.2
+aside.town_road.done = hero.road_stele_told.1 | girl_b.road_stele_told.2
 
 sun.day = girl_b.sun_day.1
 sun.low = girl_b.sun_low.1
@@ -540,3 +545,28 @@ again = savin_gleb.river.1
 first = okada_kiyo.first.1
 again = okada_kiyo.again1.1
 again = okada_kiyo.spring.1
+[Vetrov_gordey]
+first = vetrov_gordey.first.1 | hero.lh_first.2 | vetrov_gordey.first.3
+again = vetrov_gordey.flash.1
+again = vetrov_gordey.log.1
+again = vetrov_gordey.lens.1
+again = vetrov_gordey.tower.1
+again = vetrov_gordey.weather.1
+again = vetrov_gordey.navy.1
+again = vetrov_gordey.fog.1
+again = vetrov_gordey.current.1
+again = vetrov_gordey.clock.1
+again = vetrov_gordey.town.1
+again = vetrov_gordey.ships.1
+sun.day = vetrov_gordey.sun_day.1
+sun.low = vetrov_gordey.sun_low.1
+sun.night = vetrov_gordey.sun_night.1
+sun.cloudy = vetrov_gordey.sun_cloudy.1
+quest.lighthouse_paraffin.ask = vetrov_gordey.paraffin_ask.1 | hero.lh_paraffin_ask.2 | vetrov_gordey.paraffin_ask.3 | vetrov_gordey.paraffin_ask.4
+quest.lighthouse_paraffin.fetch = vetrov_gordey.paraffin_hint.1
+quest.lighthouse_paraffin.fetch.again = vetrov_gordey.paraffin_hint.2
+quest.lighthouse_paraffin.fetch.again = vetrov_gordey.paraffin_hint.1
+quest.lighthouse_paraffin.fetch.if.have:paraffin = vetrov_gordey.paraffin_part.1
+quest.lighthouse_paraffin.bring = vetrov_gordey.paraffin_bring.1 | vetrov_gordey.paraffin_bring.2 | hero.lh_paraffin_bring.3 | vetrov_gordey.paraffin_bring.4
+quest.lighthouse_paraffin.bring_empty = vetrov_gordey.paraffin_hint.1
+quest.lighthouse_paraffin.done = vetrov_gordey.paraffin_done.1

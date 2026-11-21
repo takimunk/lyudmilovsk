@@ -1,0 +1,18 @@
+{
+ "_doc": "The travel card's stamp set (tools/city/content/x_stations.json, docs/front_door.md). Hero's voice; ja: 僕.",
+ "city.coll.stations.title": {
+  "ru": "Все станции",
+  "en": "All the stations",
+  "ja": "全駅"
+ },
+ "city.coll.reward.stations.name": {
+  "ru": "Значок «Канатная дорога»",
+  "en": "«Cable car» badge",
+  "ja": "「ロープウェイ」バッジ"
+ },
+ "city.coll.reward.stations.note": {
+  "ru": "Все семь станций на карточке! На «Атоне» мне дали значок с кабинкой.",
+  "en": "All seven stations on the card! At Aton they gave me a badge with a little cabin on it.",
+  "ja": "カードに七つの駅が全部そろった！«アトン»でゴンドラのバッジをもらった。"
+ }
+}

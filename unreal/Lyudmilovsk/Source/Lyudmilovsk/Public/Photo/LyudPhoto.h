@@ -59,6 +59,9 @@ public:
 	/** 0 down .. 1 at the eye. */
 	float RaiseAmount() const { return Raise; }
 	bool IsRaised() const { return bRaised; }
+	/** The camera is at the eye or on its way: the left button is the shutter's, so the hand's other uses (a bite, a
+	 *  drink, the binoculars) stand back. */
+	static bool IsUp(const UObject* WorldContext);
 	void SetRaised(bool bUp);
 	/** The focus ring's distance, metres (1e9: infinity). */
 	float FocusDistance() const;
@@ -134,6 +137,8 @@ private:
 	void CloseAlbum();
 	void FinishDarkroom();
 	void LockHero(bool bLock);
+	/** The camera down at once, the view's angle given back (a screen of ours opens over it). */
+	void DropCamera();
 	void EnsureOverlay();
 	float CaptureFov(const APlayerController& PC) const;
 

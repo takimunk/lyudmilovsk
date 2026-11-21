@@ -1,6 +1,7 @@
 #include "BirdSim.h"
 
 #include "BirdCorvid.h"
+#include "BirdHabit.h"
 #include "BirdMurmur.h"
 #include "BirdNest.h"
 
@@ -33,8 +34,35 @@ namespace LyudBirds
 		bool IsExposed(EHabitat H)
 		{
 			return H == EHabitat::Sea || H == EHabitat::Beach || H == EHabitat::Cliff || H == EHabitat::Meadow || H == EHabitat::Wire
-				|| H == EHabitat::Tower || H == EHabitat::Roof;
+				|| H == EHabitat::Tower || H == EHabitat::Roof || H == EHabitat::Mouth;     // (the brook's bed lies in a cut: lee)
 		}
+
+		/** The brook's sites lie on its shallow edges and stones with the stream a step away (and the Mouth's beside its
+		 *  channel): a bird walking about there keeps to the patch itself, where elsewhere a step past the rim does no harm,
+		 *  so it never wades into the water. */
+		bool KeepsToPatch(EHabitat H) { return H == EHabitat::Brook || H == EHabitat::Mouth; }
+
+		/** P pulled onto the site's patch (within Radius of its point or segment), at the site's height when moved. */
+		V3 OnPatch(const FSite& Site, const V3& P)
+		{
+			const V3 AB = Site.B - Site.A;
+			const float L2 = AB.X * AB.X + AB.Y * AB.Y;
+			const float T = L2 > 1e-6f ? Clamp(((P.X - Site.A.X) * AB.X + (P.Y - Site.A.Y) * AB.Y) / L2, 0.f, 1.f) : 0.f;
+			const V3 C = Site.A + AB * T;
+			const V3 D = (P - C).Flat();
+			const float L = D.Len2D();
+			if (L <= Site.Radius)
+			{
+				return P;
+			}
+			const float K = Site.Radius / L;
+			return V3(C.X + D.X * K, C.Y + D.Y * K, C.Z);
+		}
+	}
+
+	V3 FWorld::KeptOnPatch(const FBird& B, const V3& P) const
+	{
+		return B.Site >= 0 && B.Site < (int)Sites.size() && KeepsToPatch(Sites[B.Site].Kind) ? OnPatch(Sites[B.Site], P) : P;
 	}
 
 	/** How much the wind makes a soarer take to the air: the gulls hang on the cliff wind, the albatross needs a
@@ -95,13 +123,15 @@ namespace LyudBirds
 
 	const char* HabitatName(EHabitat H)
 	{
-		static const char* const Names[] = { "Sea", "Beach", "Cliff", "Meadow", "Reed", "Street", "Roof", "Tower", "Wire", "Garden", "Broadleaf", "Conifer", "ForestFloor" };
+		static const char* const Names[] = { "Sea", "Beach", "Cliff", "Meadow", "Reed", "Street", "Roof", "Tower", "Wire", "Garden", "Broadleaf", "Conifer", "ForestFloor", "Brook", "Mouth" };
+		static_assert(sizeof(Names) / sizeof(Names[0]) == NumHabitats, "a name for every habitat kind");
 		return (int)H < NumHabitats ? Names[(int)H] : "?";
 	}
 
 	bool IsGroundHabitat(EHabitat H)
 	{
-		return H == EHabitat::Sea || H == EHabitat::Beach || H == EHabitat::Meadow || H == EHabitat::Street || H == EHabitat::ForestFloor || H == EHabitat::Reed;
+		return H == EHabitat::Sea || H == EHabitat::Beach || H == EHabitat::Meadow || H == EHabitat::Street || H == EHabitat::ForestFloor || H == EHabitat::Reed
+			|| H == EHabitat::Brook || H == EHabitat::Mouth;
 	}
 
 	const char* ActName(EAct A)
@@ -295,15 +325,29 @@ namespace LyudBirds
 		case 1: W = S.bWinterForage && IsWinter() ? S.WinterForage[K] : S.Forage[K]; break;
 		case 2: W = S.Roost[K]; break;
 		case 3: W = S.Stage[K]; break;
-		case 5: W = Kind == EHabitat::Beach ? 1.f : (Kind == EHabitat::Reed ? 0.8f : (Kind == EHabitat::Sea && S.Length > 0.3f ? 0.6f : 0.f)); break;
+		case 5:
+			// the bath: the sand at the water's edge, the reed, the sea for the big ones; the brook's fresh water where it
+			// crosses the beach (gulls go there to wash the salt off), its shallow edges inland mostly for the small birds
+			W = Kind == EHabitat::Beach ? 1.f
+				: Kind == EHabitat::Mouth ? (S.Length > 0.3f ? 1.f : 0.5f)
+				: Kind == EHabitat::Reed ? 0.8f
+				: Kind == EHabitat::Brook ? (S.Length > 0.3f ? 0.3f : 0.7f)
+				: Kind == EHabitat::Sea && S.Length > 0.3f ? 0.6f : 0.f;
+			break;
 		default: W = S.Perch[K]; break;
 		}
-		if (Kind == EHabitat::Beach)
+		if (Kind == EHabitat::Beach || Kind == EHabitat::Mouth)
 		{
 			// the tide: low water lays bare the wet sand (waders, gulls, crows and wagtails go down to it to feed), high
-			// water covers it (nobody stands about on what's left of it either)
+			// water covers it (nobody stands about on what's left of it either); the brook's fan on the beach the same
 			const float Low = Clamp((MeanSeaZ - SeaZ) / 0.6f, 0.f, 1.f), High = Clamp((SeaZ - MeanSeaZ) / 0.6f, 0.f, 1.f);
 			W *= (1.f - 0.85f * High) * (S.bTidal && (Plan == 1 || Plan == 5) ? 1.f + 2.5f * Low : 1.f);
+		}
+		else if (Kind == EHabitat::Brook && Plan == 1)
+		{
+			// the brook at first light: fish and insects near the surface and nobody about yet (the heron's hour in the bends)
+			const float Dawn = Smooth((Hour - Sunrise + 0.5f) / 0.5f) * (1.f - Smooth((Hour - Sunrise - 1.5f) / 1.f));
+			W *= 1.f + 1.5f * Dawn;
 		}
 		return W;
 	}
@@ -316,7 +360,8 @@ namespace LyudBirds
 			return 0.f;            // feeders: ChooseSite asks FeederScore
 		}
 		float W = Taste(S, Plan, Site.Kind);
-		if (W <= 0.f)
+		// (a patch of the brook's fan the tide has covered is sea now: nobody goes to stand in it)
+		if (W <= 0.f || (Site.Kind == EHabitat::Mouth && std::max(Site.A.Z, Site.B.Z) < SeaZ + 0.05f))
 		{
 			return 0.f;
 		}
@@ -340,6 +385,10 @@ namespace LyudBirds
 		}
 		// crowding: a site full of others is worth less, full of bigger birds much less
 		const int Size = (int)G.Members.size();
+		if (KeepsToPatch(Site.Kind) && Site.Occupants + Size > Site.Capacity)
+		{
+			return 0.f;            // the brook's edge holds a few birds (and its mouth a small flock): a big flock goes elsewhere
+		}
 		const float Free = 1.f - Clamp((float)(Site.Occupants + Size) / (float)(Site.Capacity + Size), 0.f, 1.f) * 0.8f;
 		W *= Free;
 		if (Site.TopDominance > S.Dominance + 10 && Site.Occupants > 0)
@@ -358,7 +407,7 @@ namespace LyudBirds
 			const float K = Smooth((Stress - 0.6f) / 0.6f);
 			W *= IsExposed(Site.Kind) ? 1.f - 0.92f * K : 1.f + 0.8f * K;
 		}
-		else if (Soars(S) && (Site.Kind == EHabitat::Cliff || Site.Kind == EHabitat::Sea || Site.Kind == EHabitat::Beach))
+		else if (Soars(S) && (Site.Kind == EHabitat::Cliff || Site.Kind == EHabitat::Sea || Site.Kind == EHabitat::Beach || Site.Kind == EHabitat::Mouth))
 		{
 			W *= 1.f + 0.5f * Clamp(Wind.Len2D() / 10.f, 0.f, 1.f);
 		}
@@ -430,6 +479,19 @@ namespace LyudBirds
 						BestW = W;
 						Best = F.Site;
 					}
+				}
+			}
+		}
+		// the brook mouth's few sites, likewise, for whatever the group means to do
+		for (const int I : MouthSites)
+		{
+			if (I != Except && I < N)
+			{
+				const float W = SiteScore(G, Sites[I], Plan) * (0.6f + 0.8f * Rand(R));
+				if (W > BestW)
+				{
+					BestW = W;
+					Best = I;
 				}
 			}
 		}
@@ -610,6 +672,14 @@ namespace LyudBirds
 	{
 		Birds.clear();
 		Groups.clear();
+		MouthSites.clear();
+		for (int I = 0; I < (int)Sites.size(); I++)
+		{
+			if (Sites[I].Kind == EHabitat::Mouth && !(Sites[I].Flags & SiteFeeder))
+			{
+				MouthSites.push_back(I);
+			}
+		}
 		Predators.clear();
 		Murm.reset();
 		Corv.reset();
@@ -621,6 +691,11 @@ namespace LyudBirds
 		if (Opt.bNests)
 		{
 			Nest = std::make_shared<FNesting>();
+		}
+		Hab.reset();
+		if (Opt.bHabits)
+		{
+			Hab = std::make_shared<FHabits>();
 		}
 		if (OffshoreD.empty())
 		{
@@ -911,6 +986,10 @@ namespace LyudBirds
 		{
 			Corv = std::make_shared<FCorvids>();
 		}
+		if (!Hab && Opt.bHabits)
+		{
+			Hab = std::make_shared<FHabits>();
+		}
 		BuildHash();
 		return First;
 	}
@@ -920,6 +999,10 @@ namespace LyudBirds
 		if (Murm)
 		{
 			Murm->Clear();
+		}
+		if (Hab)
+		{
+			Hab->Resettle(*this);
 		}
 		if (Corv)
 		{
@@ -1898,6 +1981,9 @@ namespace LyudBirds
 		bool bCatNear = false;
 		float CatSeen = 0.f;
 		V3 CatAt;
+		// (the look at a cat is a sight line, a trace in the game: only a bird that would scold it takes one, and not on
+		// every step while it is scolding already, only as its alarm runs out)
+		const bool bLooksForCat = !bGround && B.Tier <= 1 && B.Act != EAct::Sleep && B.AlarmT <= 1.f && VoiceTraits(B.Species).bScolds;
 		for (const FBeast& M : Beasts)
 		{
 			const V3 D = B.Pos - M.Pos;
@@ -1937,14 +2023,14 @@ namespace LyudBirds
 			bCatNear |= M.bCat && Dist < 20.f && !M.bStalking;
 			// (a bird on its twig scolds a cat it can see from much farther than it would fly from it; a cat creeping low
 			// is only found out close by)
-			if (M.bCat && !bGround && Dist < (M.bStalking ? 5.f : 18.f) && (CatSeen <= 0.f || Dist < CatSeen) && (!Sight || Sight(B.Pos, M.Pos + V3(0.f, 0.f, 0.2f))))
+			if (bLooksForCat && M.bCat && Dist < (M.bStalking ? 5.f : 18.f) && (CatSeen <= 0.f || Dist < CatSeen) && (!Sight || Sight(B.Pos, M.Pos + V3(0.f, 0.f, 0.2f))))
 			{
 				CatSeen = Dist;
 				CatAt = M.Pos;
 			}
 		}
 		// (the scolding goes on for as long as the cat is in sight, and the neighbours take it up: BirdVoice.cpp)
-		if (CatSeen > 0.f && B.Tier <= 1 && B.Act != EAct::Sleep && VoiceTraits(B.Species).bScolds)
+		if (CatSeen > 0.f)
 		{
 			RaiseAlarm(B, CatAt);
 		}
@@ -2227,6 +2313,10 @@ namespace LyudBirds
 		{
 			Corv->Events.clear();      // (last step's: the game read them after it, if anybody did)
 		}
+		if (Hab)
+		{
+			Hab->Events.clear();
+		}
 		Player.ExtraThreat = std::max(0.f, Player.ExtraThreat - Dt * 1.5f);
 		UpdateTiers();
 		BuildHash();
@@ -2308,6 +2398,10 @@ namespace LyudBirds
 			{
 				// flown by the murmuration below
 			}
+			else if (B.bHabitMoves)
+			{
+				// flown by its habit below
+			}
 			else if (B.Tier <= 1)
 			{
 				Move(B, Dt);
@@ -2332,6 +2426,10 @@ namespace LyudBirds
 		if (Nest)
 		{
 			Nest->Step(*this, Dt);
+		}
+		if (Hab)
+		{
+			Hab->Step(*this, Dt);
 		}
 		if (bMoveFar)
 		{
@@ -2412,12 +2510,21 @@ namespace LyudBirds
 			ThinkVoice(B, Dt);
 		}
 
-		// a bird busy at its nest (BirdNest.cpp), a corvid busy with something of its own (BirdCorvid.cpp)
+		// a bird in one of its species' habits (BirdHabit.cpp), busy at its nest (BirdNest.cpp), a corvid busy with
+		// something of its own (BirdCorvid.cpp)
+		if (Hab && Hab->Busy(*this, B, Dt))
+		{
+			return;
+		}
 		if (Nest && Nest->Think(*this, B, Dt))
 		{
 			return;
 		}
 		if (Corv && Corv->Think(*this, B, Dt))
+		{
+			return;
+		}
+		if (Hab && Hab->Consider(*this, B, Dt))
 		{
 			return;
 		}
@@ -2666,7 +2773,11 @@ namespace LyudBirds
 		{
 		case EAct::Forage:
 		{
-			// walk or hop to the spot
+			// walk or hop to the spot (by the brook never into it: a step aside or away is kept on the bank)
+			if (B.Site >= 0 && KeepsToPatch(Sites[B.Site].Kind))
+			{
+				B.Spot = OnPatch(Sites[B.Site], B.Spot);
+			}
 			const V3 D = B.Spot - B.Pos;
 			const float L = D.Len2D();
 			const float V = S.Gait * (S.bHops ? (std::fmod(B.Phase, 1.f) < 0.5f ? 1.8f : 0.2f) : 1.f);

@@ -37,8 +37,10 @@ namespace LyudBirds
 		V3 Flat() const { return { X, Y, 0.f }; }
 	};
 
-	/** Habitat kinds; tools/bird_habitats.py KINDS has the same order. */
-	enum class EHabitat : uint8_t { Sea, Beach, Cliff, Meadow, Reed, Street, Roof, Tower, Wire, Garden, Broadleaf, Conifer, ForestFloor, Num };
+	/** Habitat kinds; tools/bird_habitats.py KINDS has the same order (new kinds go at the end: the habitats file stores the
+	 *  index). Brook: the brook's shallow edges and stones (tools/south.py), never its water. Mouth: the brook's fan across the
+	 *  beach, wet sand and shallows that the tide lays bare and covers like the beach. */
+	enum class EHabitat : uint8_t { Sea, Beach, Cliff, Meadow, Reed, Street, Roof, Tower, Wire, Garden, Broadleaf, Conifer, ForestFloor, Brook, Mouth, Num };
 	constexpr int NumHabitats = (int)EHabitat::Num;
 	const char* HabitatName(EHabitat H);
 	/** Birds stand on the ground or water here (walk, hop, peck, swim) rather than sit on a perch. */
@@ -190,6 +192,10 @@ namespace LyudBirds
 		uint8_t AlarmHop = 0;
 		uint32_t VoiceRng = 0;      // the voice's own dice: what a bird says never changes what it does
 		V3 AlarmFrom;
+		// its signature behaviour now (BirdHabit.h: EHabit, 0 = none), the seconds into it, and the rest before the next
+		uint8_t Habit = 0;
+		bool bHabitMoves = false;   // the habit flies it; Move keeps off
+		float HabitT = 0.f, HabitCool = 0.f;
 		float ThinkTimer = 0.f;
 		float Seen = 0.f;           // how long it has watched the player
 		float Unseen = 0.f;         // s since it last perceived the player
@@ -311,6 +317,7 @@ namespace LyudBirds
 	class FMurmuration;
 	class FCorvids;
 	class FNesting;
+	class FHabits;
 
 	struct FOptions
 	{
@@ -333,6 +340,8 @@ namespace LyudBirds
 		bool bCorvids = true;
 		/** The breeding year: nests, eggs, chicks, fledglings (BirdNest.h); off = no nests (A/B, lyud.Birds.Nests 0). */
 		bool bNests = true;
+		/** The species' signature behaviours near the hero (BirdHabit.h); off = none (A/B, lyud.Birds.Habits 0). */
+		bool bHabits = true;
 	};
 
 	/** Line-of-sight test from the wrapper (true = clear); null = always clear. */
@@ -418,6 +427,10 @@ namespace LyudBirds
 		FCorvids* Corvids() const { return Corv.get(); }
 		/** The breeding year: nests and their birds (BirdNest.h). */
 		FNesting* Nesting() const { return Nest.get(); }
+		/** The species' signature behaviours (BirdHabit.h). */
+		FHabits* Habits() const { return Hab.get(); }
+		/** P kept on the patch of B's site where birds keep to it (the brook's edges, its mouth: never into the water); P itself elsewhere. */
+		V3 KeptOnPatch(const FBird& B, const V3& P) const;
 		/** Turns the corvids' minds on or off while running (off: their items go, they live like the other birds; A/B). */
 		void SetCorvids(bool bOn);
 		/** One calm bird on the ground at P that keeps to that spot (tests, tutorials); returns its id. */
@@ -479,7 +492,12 @@ namespace LyudBirds
 		friend class FCorvids;
 		std::shared_ptr<FNesting> Nest;
 		friend class FNesting;
+		std::shared_ptr<FHabits> Hab;
+		friend class FHabits;
 		std::vector<int> NearScratch;
+		/** The brook's mouth: a handful of sites among thousands, so ChooseSite always weighs them (as it does the feeders)
+		 *  instead of hoping its sample finds one. Filled by Populate. */
+		std::vector<int> MouthSites;
 		float StepAcc[4] = {};
 		double LastThink[4] = {};
 		struct FPredator { int Bird = -1; int Prey = -1; float Timer = 0.f; float Mobbed = 0.f; };

@@ -1,0 +1,856 @@
+{
+ "frame": "metres, origin on the ground under the middle unless the kind's notes say otherwise, Blender -Y is the front, Z up; seats [x, y, z, yaw]: yaw = degrees of the sitter's facing, counter-clockwise seen from above, 0 = toward the object's front (-Y); size and bounds are in Blender axes (x, y, z)",
+ "front_yaw": 90.0,
+ "asset_names": "SM_South_<Kind>[_V<n>] (_V only for kinds with several variants)",
+ "atlas": "M_North_Atlas (the North's, blender/north/gen); text slots M_South_Text_<id> from textures/localized/<lang>/south_<id>.png",
+ "meshes": [
+  {
+   "kind": "lighthouse",
+   "variant": 0,
+   "file": "lighthouse.glb",
+   "tris": 4878,
+   "size": [
+    7.9,
+    6.9,
+    24.95
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "the «Маяк» lighthouse for the cliff top: a whitewashed round masonry tower tapering from r 2.30 (z 0.9) to r 1.55 (z 19.2) with two red bands (z 8.2..10.4 and 13.8..16.0), on a stone socle (r 2.42, to z 0.9) and a round concrete plinth r 3.1 (top z 0.3, bedded to z -0.5, nothing else under ground); three small windows up the shaft; a corbelled gallery (deck z 20.0, r 2.38) with a black rail (top z 21.06); a lantern room (drum to z 20.92, 12-sided glazing, one quad per pane in the slot M_South_LanternGlass (UV 0..1), z 20.92..22.50 with black bars; the lantern floor and the cap's underside are closed discs, nothing opaque inside between them: the lens (kind lighthouse_lens) is a separate mesh at the lamp point), a black cap, a ball and a wind vane (top z 24.45). Origin on the ground under the tower's axis. Front (-Y): a plank door (0.9 x 2.0 m, closed, not enterable) between white jambs on the plinth and two steps off the plinth (treads z 0.2 and 0.1, out to y -3.8). A keeper's annex on +X (x 1.2..4.6, y +-1.5, flat concrete roof z 2.9, its door on -Y at x 3.8, windows on -Y and +X). The gallery is walkable: a hatch in the deck on the front (-Y; 0.62 m iron coaming round a dark hole at x 0, y -1.765, the lid standing open against the drum, two iron stiles curving up 0.9 m as hand holds). Collision: box (collision_boxes, axis-aligned, mesh space): plinth, steps, door surround, annex, the tower as a stack of squares (side 1.8 r), the deck (top z 20.0, one slab, the hatch is no hole), 32 rail posts (0.3 m, to z 21.06; gaps under 0.2 m), the lantern as two crossed boxes from the deck up. Manifest points (mesh frame, metres; yaw = degrees counter-clockwise seen from above, 0 = toward -Y the front): lamp = lens = the lantern's centre; hatch = where the hero stands on the deck by the hatch, facing outward; gallery_view = a standing point on the deck on the sea side (map +X = west = the sea, so with the thing's yaw 140 the sea is toward mesh (0.643, 0.766)), facing the sea; door_stand = on the first step in front of the door, facing it",
+   "lamp": [
+    0.0,
+    0.0,
+    21.71
+   ],
+   "lens": [
+    0.0,
+    0.0,
+    21.71
+   ],
+   "gallery_z": 20.0,
+   "hatch": {
+    "x": 0.8,
+    "y": -1.765,
+    "z": 20.0,
+    "yaw": 0.0
+   },
+   "gallery_view": {
+    "x": 1.125,
+    "y": 1.34,
+    "z": 20.0,
+    "yaw": 140.0
+   },
+   "door_stand": {
+    "x": 0.0,
+    "y": -2.98,
+    "z": 0.2,
+    "yaw": 180.0
+   },
+   "annex_door": {
+    "x": 3.8,
+    "y": -1.62,
+    "z": 0.23,
+    "yaw": 0.0
+   },
+   "door": {
+    "x": [
+     -0.45,
+     0.45
+    ],
+    "z": [
+     0.3,
+     2.4
+    ],
+    "y": -2.5
+   },
+   "plinth_depth": 0.5,
+   "collision_boxes": [
+    {
+     "name": "plinth",
+     "center": [
+      0,
+      0,
+      -0.1
+     ],
+     "size": [
+      5.6,
+      5.6,
+      0.8
+     ]
+    },
+    {
+     "name": "step_0",
+     "center": [
+      0,
+      -3.175,
+      -0.05
+     ],
+     "size": [
+      1.6,
+      0.55,
+      0.5
+     ]
+    },
+    {
+     "name": "step_1",
+     "center": [
+      0,
+      -3.625,
+      -0.1
+     ],
+     "size": [
+      1.6,
+      0.35,
+      0.4
+     ]
+    },
+    {
+     "name": "door",
+     "center": [
+      0,
+      -2.27,
+      1.35
+     ],
+     "size": [
+      1.22,
+      0.56,
+      2.1
+     ]
+    },
+    {
+     "name": "annex",
+     "center": [
+      3.0,
+      0,
+      1.3
+     ],
+     "size": [
+      3.6,
+      3.4,
+      3.2
+     ]
+    },
+    {
+     "name": "tower_0",
+     "center": [
+      0,
+      0,
+      2.15
+     ],
+     "size": [
+      4.14,
+      4.14,
+      3.7
+     ]
+    },
+    {
+     "name": "tower_1",
+     "center": [
+      0,
+      0,
+      6.0
+     ],
+     "size": [
+      3.911,
+      3.911,
+      4.0
+     ]
+    },
+    {
+     "name": "tower_2",
+     "center": [
+      0,
+      0,
+      10.0
+     ],
+     "size": [
+      3.616,
+      3.616,
+      4.0
+     ]
+    },
+    {
+     "name": "tower_3",
+     "center": [
+      0,
+      0,
+      14.0
+     ],
+     "size": [
+      3.321,
+      3.321,
+      4.0
+     ]
+    },
+    {
+     "name": "tower_4",
+     "center": [
+      0,
+      0,
+      17.6
+     ],
+     "size": [
+      3.026,
+      3.026,
+      3.2
+     ]
+    },
+    {
+     "name": "gallery_deck",
+     "center": [
+      0,
+      0,
+      19.6
+     ],
+     "size": [
+      4.7,
+      4.7,
+      0.8
+     ]
+    },
+    {
+     "name": "rail_0",
+     "center": [
+      2.269,
+      0.223,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_1",
+     "center": [
+      2.182,
+      0.662,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_2",
+     "center": [
+      2.011,
+      1.075,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_3",
+     "center": [
+      1.762,
+      1.446,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_4",
+     "center": [
+      1.446,
+      1.762,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_5",
+     "center": [
+      1.075,
+      2.011,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_6",
+     "center": [
+      0.662,
+      2.182,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_7",
+     "center": [
+      0.223,
+      2.269,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_8",
+     "center": [
+      -0.223,
+      2.269,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_9",
+     "center": [
+      -0.662,
+      2.182,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_10",
+     "center": [
+      -1.075,
+      2.011,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_11",
+     "center": [
+      -1.446,
+      1.762,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_12",
+     "center": [
+      -1.762,
+      1.446,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_13",
+     "center": [
+      -2.011,
+      1.075,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_14",
+     "center": [
+      -2.182,
+      0.662,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_15",
+     "center": [
+      -2.269,
+      0.223,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_16",
+     "center": [
+      -2.269,
+      -0.223,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_17",
+     "center": [
+      -2.182,
+      -0.662,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_18",
+     "center": [
+      -2.011,
+      -1.075,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_19",
+     "center": [
+      -1.762,
+      -1.446,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_20",
+     "center": [
+      -1.446,
+      -1.762,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_21",
+     "center": [
+      -1.075,
+      -2.011,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_22",
+     "center": [
+      -0.662,
+      -2.182,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_23",
+     "center": [
+      -0.223,
+      -2.269,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_24",
+     "center": [
+      0.223,
+      -2.269,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_25",
+     "center": [
+      0.662,
+      -2.182,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_26",
+     "center": [
+      1.075,
+      -2.011,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_27",
+     "center": [
+      1.446,
+      -1.762,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_28",
+     "center": [
+      1.762,
+      -1.446,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_29",
+     "center": [
+      2.011,
+      -1.075,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_30",
+     "center": [
+      2.182,
+      -0.662,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "rail_31",
+     "center": [
+      2.269,
+      -0.223,
+      20.53
+     ],
+     "size": [
+      0.3,
+      0.3,
+      1.06
+     ]
+    },
+    {
+     "name": "lantern_x",
+     "center": [
+      0,
+      0,
+      21.75
+     ],
+     "size": [
+      2.5,
+      1.44,
+      3.5
+     ]
+    },
+    {
+     "name": "lantern_y",
+     "center": [
+      0,
+      0,
+      21.75
+     ],
+     "size": [
+      1.44,
+      2.5,
+      3.5
+     ]
+    }
+   ],
+   "bounds_min": [
+    -3.1,
+    -3.8,
+    -0.5
+   ],
+   "bounds_max": [
+    4.8,
+    3.1,
+    24.45
+   ],
+   "materials": [
+    "M_North_Atlas",
+    "M_South_LanternGlass"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "bunker",
+   "variant": 0,
+   "file": "bunker.glb",
+   "tris": 1113,
+   "size": [
+    5.758,
+    5.609,
+    2.435
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "WW2 concrete pillbox half sunk into the cliff top: body 4.8 x 3.8 m (walls), roof slab 5.0 x 4.0 m, slab top z 1.6 (walkable roof), the body goes down to z -0.8 under ground. Front (-Y, toward the sea): a horizontal embrasure 1.4 x 0.3 m (z 0.68..0.98) splaying in to a dark back 0.6 m inside, a visor over it. Back (+Y): a doorway 0.9 x 1.1 m whose sill is at ground level, two steps down inside the wall (treads z -0.17, -0.34) to a dark liner 0.6 m in (not enterable), low wing walls either side (to y 2.80). The +X -Y corner is broken: the slab's corner is gone and the wall's edge chipped from z 0.4 up, rusty rebar stubs stick out, broken chunks lie at its foot (out to x 3.2, y -2.75). Damp dark band to z 0.35, lichen-grey roof with moss cushions. Collision: exact",
+   "roof_z": 1.6,
+   "embrasure": {
+    "x": [
+     -0.7,
+     0.7
+    ],
+    "z": [
+     0.68,
+     0.98
+    ],
+    "y": -1.9
+   },
+   "doorway": {
+    "x": [
+     -0.45,
+     0.45
+    ],
+    "z": [
+     0.0,
+     1.1
+    ],
+    "y": 1.9
+   },
+   "depth": 0.8,
+   "bounds_min": [
+    -2.5,
+    -2.809,
+    -0.8
+   ],
+   "bounds_max": [
+    3.258,
+    2.8,
+    1.635
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "shipwreck",
+   "variant": 0,
+   "file": "shipwreck.glb",
+   "tris": 1564,
+   "size": [
+    9.622,
+    2.931,
+    3.159
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "the ribs and keel of an old wooden fishing boat half buried in beach sand, about 9 m long along X (stem at +X, curving up to z ~2.4 and leaning over to -Y; the sternpost at -X broken off at z ~0.8), beam ~3 m, heeled 11 degrees so the +Y side lies lower: 9 pairs of dark ribs of uneven height (five broken low, one gone), five strakes of grey planking left on the +Y side (partly running into the sand), a bit of gunwale on the high (-Y) side, a rusty strap, ring bolt on the stem. Origin on the sand under the middle; keel, rib feet and plank ends go down to z -0.5 (under the sand). No front (yaw freely). Collision: box (collision_boxes, mesh space; rot_x_deg right-handed about +X): the keel line (walkable along its top), the planked side as one tilted slab, the stem; nothing on the ribs, so one walks through between them",
+   "axis": "x",
+   "buried_to_z": -0.5,
+   "collision_boxes": [
+    {
+     "name": "keel",
+     "center": [
+      0.0,
+      -0.072,
+      -0.19
+     ],
+     "size": [
+      8.6,
+      0.45,
+      0.62
+     ]
+    },
+    {
+     "name": "planked_side",
+     "center": [
+      -0.1,
+      0.944,
+      0.101
+     ],
+     "size": [
+      7.4,
+      1.229,
+      0.25
+     ],
+     "rot_x_deg": 32.481
+    },
+    {
+     "name": "stem",
+     "center": [
+      4.537,
+      -0.092,
+      1.247
+     ],
+     "size": [
+      0.6,
+      0.35,
+      2.734
+     ]
+    }
+   ],
+   "bounds_min": [
+    -4.48,
+    -1.248,
+    -0.506
+   ],
+   "bounds_max": [
+    5.142,
+    1.683,
+    2.653
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "erratic",
+   "variant": 0,
+   "file": "erratic_v0.glb",
+   "tris": 1173,
+   "size": [
+    4.503,
+    3.512,
+    3.181
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "a big glacial erratic (a Baltic \"Devil's stone\"): rounded granite 4.5 x 3.5 m, top z 2.78, with a shallow hollow on top (near x 0.35, y 0.15) and a pale lichen crust on the front (-Y) shoulder; bedded 0.4 m (cut flat at z -0.4, nothing else under ground). Origin on the ground under the middle. No real front (the lichen side, -Y, reads best toward a path). Collision: exact",
+   "bedded": 0.4,
+   "top_z": 2.781,
+   "bounds_min": [
+    -2.247,
+    -1.758,
+    -0.4
+   ],
+   "bounds_max": [
+    2.256,
+    1.754,
+    2.781
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "erratic",
+   "variant": 1,
+   "file": "erratic_v1.glb",
+   "tris": 1029,
+   "size": [
+    3.625,
+    2.904,
+    2.672
+   ],
+   "collision": "exact",
+   "seats": [],
+   "notes": "a split glacial erratic: one granite boulder (about 3.5 m across overall, 2.9 m deep, top z 2.23) cracked along a plane into two halves standing 1.0 m apart at the ground (the gap runs along Y through the origin), leaning a little away from each other: one can walk through. A lichen crust on the -X half's top. Bedded 0.4 m (cut flat at z -0.4). Origin on the ground in the middle of the gap. No front. Collision: exact (the gap stays open)",
+   "bedded": 0.4,
+   "gap": 1.0,
+   "gap_axis": "y",
+   "bounds_min": [
+    -1.774,
+    -1.437,
+    -0.439
+   ],
+   "bounds_max": [
+    1.851,
+    1.466,
+    2.233
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  }
+ ]
+}

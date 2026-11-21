@@ -2057,6 +2057,19 @@
    }
   },
   {
+   "id": "tul_cupboard",
+   "kind": "board",
+   "pos": [
+    -8.45,
+    17.5,
+    21.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "cupboard"
+   }
+  },
+  {
    "id": "tul_sink",
    "kind": "machine",
    "pos": [
@@ -2080,6 +2093,19 @@
    "yaw": 270.0,
    "props": {
     "what": "stove"
+   }
+  },
+  {
+   "id": "tul_note",
+   "kind": "take",
+   "pos": [
+    -9.45,
+    17.07,
+    21.8
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "note"
    }
   },
   {
@@ -2146,6 +2172,19 @@
    "props": {
     "rest": "private",
     "height": 0.5
+   }
+  },
+  {
+   "id": "tul_photo",
+   "kind": "take",
+   "pos": [
+    -10.18,
+    8.65,
+    18.65
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "photo"
    }
   },
   {
@@ -25447,9 +25486,11 @@
  "notes": [
   "196 flats (duplex), 15 storeys on 6 m pilotis"
  ],
+ "dress": [],
  "tris": {
   "shell": 40634,
-  "detail": 63870,
-  "windows": 3740
+  "detail": 63894,
+  "windows": 3740,
+  "dress": 0
  }
 }

@@ -7,7 +7,7 @@
  },
  "item.skates.desc": {
   "ru": "Прогулочные коньки «Снегурочка» на кожаных ботинках. Надеть — и на пруд.",
-  "en": "«Snegurochka» leisure skates on leather boots. Put them on and go to the pond.",
+  "en": "“Snegurochka” leisure skates on leather boots. Put them on and go to the pond.",
   "ja": "革のブーツに付いた散歩用スケート「スネグーロチカ」。履いて池へ。"
  },
  "item.banya_hat.name": {
@@ -32,7 +32,7 @@
  },
  "item.birch_venik.name": {
   "ru": "Берёзовый веник",
-  "en": "Birch venik",
+  "en": "Birch whisk",
   "ja": "白樺のヴェニク"
  },
  "item.birch_venik.desc": {
@@ -78,7 +78,7 @@
  "winter.radio.walrus": {
   "ru": "Клуб моржей приглашает: завтра в девять утра — заплыв в проруби у пирса. Баня у пирса топится с двух часов.",
   "en": "The walruses' club invites you: tomorrow at nine, a swim in the ice hole by the pier. The banya by the pier is heated from two.",
-  "ja": "寒中水泳クラブからのお知らせ。明日の朝九時、桟橋そばの氷の穴で泳ぎます。桟橋のサウナは二時から焚いています。"
+  "ja": "寒中水泳クラブからのお知らせ。明日の朝九時、桟橋そばの氷の穴で泳ぎます。桟橋のバーニャは二時から焚いています。"
  },
  "winter.radio.new_year": {
   "ru": "С Новым годом, Людмиловск! Моржи ждут всех смелых у пирса до часу дня.",
@@ -122,17 +122,17 @@
  },
  "winter.banya.prompt_steam": {
   "ru": "E — плеснуть на камни · Пробел — выйти",
-  "en": "E: pour on the stones · Space: go out",
+  "en": "E — pour on the stones · Space — go out",
   "ja": "E：石に水をかける · スペース：外へ"
  },
  "winter.banya.prompt_steam_venik": {
   "ru": "E — плеснуть на камни · G — веник · Пробел — выйти",
-  "en": "E: pour on the stones · G: the venik · Space: go out",
+  "en": "E — pour on the stones · G — the birch whisk · Space — go out",
   "ja": "E：石に水をかける · G：ヴェニク · スペース：外へ"
  },
  "winter.banya.prompt_door": {
-  "ru": "E — в баню ({0} ₽) · T — веники и шапки",
-  "en": "E: into the banya ({0} rub.) · T: veniks and hats",
+  "ru": "E — в баню ({0} руб.) · T — веники и шапки",
+  "en": "E — into the banya ({0} rub.) · T — birch whisks and hats",
   "ja": "E：バーニャに入る（{0}ルーブル） · T：ヴェニクと帽子"
  },
  "winter.banya.closed": {
@@ -157,7 +157,7 @@
  },
  "winter.banya.no_venik": {
   "ru": "Веника нет. Его продают у двери.",
-  "en": "No venik. They sell them at the door.",
+  "en": "No birch whisk. They sell them at the door.",
   "ja": "ヴェニクがない。入口で売っている。"
  },
  "winter.banya.shop": {
@@ -166,7 +166,7 @@
   "ja": "バーニャの番人"
  },
  "winter.banya.no_money": {
-  "ru": "Вход {0} ₽, а в кармане меньше.",
+  "ru": "Вход {0} руб., а в кармане меньше.",
   "en": "Entry is {0} rub., and my pocket holds less.",
   "ja": "入場は{0}ルーブル、ポケットにはそれより少ない。"
  },
@@ -202,7 +202,7 @@
  },
  "winter.banya.coal": {
   "ru": "Банщик сунул мне уголёк из печки: «Снеговику на глаза».",
-  "en": "The banya keeper slipped me a coal from the stove: «For a snowman's eyes».",
+  "en": "The banya keeper slipped me a coal from the stove: “For a snowman's eyes”.",
   "ja": "番人がストーブの炭をくれた。「雪だるまの目にどうぞ」"
  },
  "winter.banya.snow.1": {
@@ -247,7 +247,7 @@
  },
  "winter.walrus.club": {
   "ru": "Моржи кивают: «Наш человек».",
-  "en": "The walruses nod: «One of us».",
+  "en": "The walruses nod: “One of us”.",
   "ja": "寒中水泳の仲間がうなずく。「われらの仲間だ」"
  },
  "winter.walrus.counted": {
@@ -302,7 +302,7 @@
  },
  "winter.fight.join.1": {
   "ru": "«Снежки-и-и!» — дети бегут лепить.",
-  "en": "«Snowballs!» The children run to pack some.",
+  "en": "“Snowballs!” The children run to pack some.",
   "ja": "「雪合戦だー！」子どもたちが雪玉を作りに走る。"
  },
  "winter.fight.join.2": {
@@ -312,7 +312,7 @@
  },
  "winter.fight.join.3": {
   "ru": "«Наших бьют!» — подбегает ещё один.",
-  "en": "«They're hitting ours!» Another one runs up.",
+  "en": "“They're hitting ours!” Another one runs up.",
   "ja": "「仲間がやられた！」もう一人走ってくる。"
  },
  "winter.fight.score": {
@@ -322,17 +322,17 @@
  },
  "winter.snowman.prompt_start": {
   "ru": "E — скатать ком",
-  "en": "E: roll a ball",
+  "en": "E — roll a ball",
   "ja": "E：雪玉を転がす"
  },
  "winter.snowman.prompt_leave": {
   "ru": "E — оставить ком ({0} см)",
-  "en": "E: leave the ball ({0} cm)",
+  "en": "E — leave the ball ({0} cm)",
   "ja": "E：雪玉を置く（{0}cm）"
  },
  "winter.snowman.prompt_lift": {
   "ru": "E — поставить ком сверху ({0} см)",
-  "en": "E: lift the ball on top ({0} cm)",
+  "en": "E — lift the ball on top ({0} cm)",
   "ja": "E：雪玉を上にのせる（{0}cm）"
  },
  "winter.snowman.prompt_too_big": {
@@ -352,17 +352,17 @@
  },
  "winter.snowman.prompt_arms": {
   "ru": "E — воткнуть веточки-руки",
-  "en": "E: stick in twig arms",
+  "en": "E — stick in twig arms",
   "ja": "E：小枝の腕をさす"
  },
  "winter.snowman.prompt_nose": {
   "ru": "E — морковку вместо носа",
-  "en": "E: a carrot for a nose",
+  "en": "E — a carrot for a nose",
   "ja": "E：にんじんの鼻をつける"
  },
  "winter.snowman.prompt_eyes": {
   "ru": "E — угольки вместо глаз",
-  "en": "E: coals for eyes",
+  "en": "E — coals for eyes",
   "ja": "E：炭の目をつける"
  },
  "winter.snowman.dressed": {
@@ -392,7 +392,7 @@
  },
  "dev.action.winter.kit": {
   "ru": "Зима: коньки, веник, шапка, полотенце, морковь, уголь",
-  "en": "Winter: skates, venik, hat, towel, carrot, coal",
+  "en": "Winter: skates, birch whisk, hat, towel, carrot, coal",
   "ja": "冬：スケート靴、ヴェニク、帽子、タオル、にんじん、炭"
  },
  "dev.action.winter.rink": {

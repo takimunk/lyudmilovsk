@@ -717,6 +717,7 @@ void ULyudWinterPlay::ShowSnowman(int32 Index)
 		if (B >= Sm.Balls || R <= 1.f)
 		{
 			C->SetVisibility(false);
+			C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			continue;
 		}
 		Z += B == 0 ? R * 0.9f * Squash : (TopR * 0.78f + R * 0.82f) * Squash;
@@ -724,6 +725,11 @@ void ULyudWinterPlay::ShowSnowman(int32 Index)
 		C->SetWorldLocationAndRotation(At, Face);
 		C->SetWorldScale3D(FVector(R / 100.f, R / 100.f, R / 100.f * Squash));
 		C->SetVisibility(true);
+		if (B == 0)
+		{
+			// the bottom ball is the one that blocks (MakePart); its collision goes and comes with it (HideSnowmen)
+			C->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		}
 		Top = At;
 		TopR = R;
 	}
@@ -787,7 +793,9 @@ void ULyudWinterPlay::HideSnowmen()
 	{
 		if (C && C->IsVisible())
 		{
+			// hidden is not enough: a melted snowman's bottom ball would go on blocking the way and the snowballs
 			C->SetVisibility(false);
+			C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 }
