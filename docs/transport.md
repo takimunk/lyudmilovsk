@@ -425,8 +425,9 @@ ride, the hour and the weather (fog: visibility under 1.5 km; rain over 0.1 mm/h
 - else sitting.
 In the player's cabin someone says a word every 30-60 s (`line.transport.ride.<sea|any|fog|rain|night|kid>.N`; the child at
 the glass says the "kid" ones) and a neighbour answers 3.5 s later (`line.transport.ride.reply.N`). Only the station life's
-riders do this; the town's own people riding (RiderPose) sit as before. Children among the riders are few (the pupils'
-trips): more children aboard needs family trips in tools/station_life.py.
+riders do this; the town's own people riding (RiderPose) sit as before. Children aboard: the pupils, and the children (7..13)
+of a beach-goer's household going along on the parent's free days that are theirs too (`"group": "family"`, `"with"`: the
+parent; the day's chance is the parent's draw and they wait the parent's minutes in the hall, so they ride together).
 
 ## Assets
 

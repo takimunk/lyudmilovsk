@@ -19,6 +19,7 @@ namespace LyudTransport
 	struct FLifeRider
 	{
 		std::string Key, Group, Mesh;
+		std::string With;           // a child along with a parent: the day's chance is drawn by the parent's key
 		int Age = 35;
 		bool bRegular = false;
 	};

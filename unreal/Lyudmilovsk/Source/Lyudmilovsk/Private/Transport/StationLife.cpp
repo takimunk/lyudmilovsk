@@ -54,6 +54,7 @@ namespace LyudTransport
 			Rd.Group = R["group"].S();
 			Rd.Mesh = R["mesh"].S();
 			Rd.Age = R["age"].I(35);
+			Rd.With = R["with"].S();
 			Rd.bRegular = std::find(Regulars.begin(), Regulars.end(), Rd.Key) != Regulars.end();
 			const int RI = (int)Riders.size();
 			bool bAny = false;
@@ -111,7 +112,8 @@ namespace LyudTransport
 				continue;
 			}
 			// the chance by the rider and the day (both trips of a beach day go or neither: the rider's draw, not the trip's)
-			if (Tr.Chance < 1.f && LifeHash(Riders[Tr.Rider].Key, 7919u * (uint32_t)(InDay + 1)) >= Tr.Chance)
+			const FLifeRider& Rd = Riders[Tr.Rider];
+			if (Tr.Chance < 1.f && LifeHash(Rd.With.empty() ? Rd.Key : Rd.With, 7919u * (uint32_t)(InDay + 1)) >= Tr.Chance)
 			{
 				continue;
 			}
@@ -120,6 +122,23 @@ namespace LyudTransport
 			R.At = Tr.At;
 			R.HallMinutes = 2.f + 6.f * LifeHash(Riders[Tr.Rider].Key, 31u + (uint32_t)T);
 			Today.push_back(R);
+		}
+		// a child along with a parent keeps to the parent's minutes in the hall: the same cabin
+		for (FLifeRun& K : Today)
+		{
+			const FLifeTrip& KT = Trips[K.Trip];
+			if (Riders[KT.Rider].With.empty())
+			{
+				continue;
+			}
+			for (const FLifeRun& P : Today)
+			{
+				const FLifeTrip& PT = Trips[P.Trip];
+				if (Riders[PT.Rider].Key == Riders[KT.Rider].With && PT.From == KT.From && PT.To == KT.To && PT.At == KT.At)
+				{
+					K.HallMinutes = P.HallMinutes;
+				}
+			}
 		}
 	}
 

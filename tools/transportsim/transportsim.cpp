@@ -431,8 +431,46 @@ static void HallMoods(const FStationLife& L)
 		Old += R.Age >= 60 ? 1 : 0;
 	}
 	CHECK(Old > 10, "only %d riders of 60 and over (no ages in station_life.json?)", Old);
-	std::printf("hall moods: %d at the counter at 8:00, %d children at the windows, %d of 5 old seated (%d reading), rain +%.1f people; riders %d under 18, %d over 60\n",
-		Queue, KidsAtWindows, Seated, Reading, (Wet - Dry) / 200.f, Kids, Old);
+	// a child along with a parent goes on the same days (the parent's draw) and from the same hall
+	int Families = 0;
+	for (int R = 0; R < (int)L.Riders.size(); R++)
+	{
+		if (L.Riders[R].With.empty())
+		{
+			continue;
+		}
+		Families++;
+		int Parent = -1;
+		for (int Q = 0; Q < (int)L.Riders.size(); Q++)
+		{
+			Parent = L.Riders[Q].Key == L.Riders[R].With ? Q : Parent;
+		}
+		CHECK(Parent >= 0 && L.Riders[R].Age < 14, "%s goes along with nobody", L.Riders[R].Key.c_str());
+		for (int D = 0; D < 14 && Parent >= 0; D++)
+		{
+			FStationLife Day = L;
+			Day.StartDay(D, D % 7, true);
+			int Kid = 0, Par = 0;
+			for (const FLifeRun& Run : Day.Today)
+			{
+				Kid += Day.Trips[Run.Trip].Rider == R ? 1 : 0;
+				Par += Day.Trips[Run.Trip].Rider == Parent ? 1 : 0;
+			}
+			CHECK(Kid == 0 || Par > 0, "%s off to the beach on day %d without %s", L.Riders[R].Key.c_str(), D, L.Riders[R].With.c_str());
+			for (const FLifeRun& K : Day.Today)
+			{
+				for (const FLifeRun& P : Day.Today)
+				{
+					const FLifeTrip &KT = Day.Trips[K.Trip], &PT = Day.Trips[P.Trip];
+					CHECK(!(KT.Rider == R && PT.Rider == Parent && KT.At == PT.At) || K.HallMinutes == P.HallMinutes,
+						"%s and %s wait different minutes in the hall", L.Riders[R].Key.c_str(), L.Riders[R].With.c_str());
+				}
+			}
+		}
+	}
+	CHECK(Families > 0, "no children along with a parent in station_life.json");
+	std::printf("hall moods: %d at the counter at 8:00, %d children at the windows, %d of 5 old seated (%d reading), rain +%.1f people; riders %d under 18 (%d along with a parent), %d over 60\n",
+		Queue, KidsAtWindows, Seated, Reading, (Wet - Dry) / 200.f, Kids, Families, Old);
 }
 
 // the cabins' life (docs/transport.md "Cabin life"): who stands at the glass, who reads, the words aboard
