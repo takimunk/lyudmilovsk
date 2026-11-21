@@ -56,5 +56,13 @@
  "south.board.reeds.1": "夏にはヨシキリがここで子育てをします。",
  "south.board.reeds.2": "夕方にはムクドリがねぐらに集まります。数千羽になることもあります。",
  "south.board.reeds.3": "観察小屋のそばでは静かに話しましょう。",
- "south.board.reeds.4": "木道から出ないでください。ヨシの中には巣があり、足もとはぬかるんでいます。"
+ "south.board.reeds.4": "木道から出ないでください。ヨシの中には巣があり、足もとはぬかるんでいます。",
+ "place.mayak_lighthouse.name": "灯台",
+ "dev.tp.mayak_lighthouse": "灯台",
+ "place.coast_bunker.name": "古いトーチカ",
+ "dev.tp.coast_bunker": "古いトーチカ",
+ "place.boat_wreck.name": "漁船の残骸",
+ "dev.tp.boat_wreck": "漁船の残骸",
+ "place.devils_stone.name": "悪魔の石",
+ "dev.tp.devils_stone": "悪魔の石"
 }

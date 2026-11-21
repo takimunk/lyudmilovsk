@@ -101,6 +101,42 @@
    "yaw": 0.0
   },
   {
+   "id": "mayak_lighthouse",
+   "name": "place.mayak_lighthouse.name",
+   "x": 105.0,
+   "y": -426.0,
+   "r": 14.0,
+   "kind": "building",
+   "yaw": 300.0
+  },
+  {
+   "id": "coast_bunker",
+   "name": "place.coast_bunker.name",
+   "x": 64.0,
+   "y": -128.0,
+   "r": 9.0,
+   "kind": "building",
+   "yaw": 0.0
+  },
+  {
+   "id": "boat_wreck",
+   "name": "place.boat_wreck.name",
+   "x": 116.0,
+   "y": 132.0,
+   "r": 10.0,
+   "kind": "nature",
+   "yaw": 0.0
+  },
+  {
+   "id": "devils_stone",
+   "name": "place.devils_stone.name",
+   "x": -299.0,
+   "y": 256.0,
+   "r": 9.0,
+   "kind": "nature",
+   "yaw": 200.0
+  },
+  {
    "id": "mayak_station",
    "name": "place.mayak_station.name",
    "x": 88.0,
@@ -141,8 +177,8 @@
   {
    "id": "trail_sign_1",
    "kind": "trail_sign",
-   "x": -22.27,
-   "y": 124.87,
+   "x": -22.4,
+   "y": 121.4,
    "yaw": 90.0,
    "variant": 0,
    "set": "south"
@@ -1030,6 +1066,303 @@
    "yaw": 0.0,
    "variant": 0,
    "set": "north"
+  },
+  {
+   "id": "lighthouse_1",
+   "kind": "lighthouse",
+   "x": 112.0,
+   "y": -432.0,
+   "yaw": 140.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_bench_1",
+   "kind": "park_bench",
+   "x": 119.0,
+   "y": -423.0,
+   "yaw": 0.0,
+   "variant": 1,
+   "set": "south"
+  },
+  {
+   "id": "bunker_1",
+   "kind": "bunker",
+   "x": 69.0,
+   "y": -128.0,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "erratic_1",
+   "kind": "erratic",
+   "x": 90.0,
+   "y": -306.0,
+   "yaw": 35.0,
+   "variant": 1,
+   "set": "south"
+  },
+  {
+   "id": "shipwreck_1",
+   "kind": "shipwreck",
+   "x": 121.0,
+   "y": 132.0,
+   "yaw": 12.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "driftwood_4",
+   "kind": "driftwood",
+   "x": 126.0,
+   "y": 125.0,
+   "yaw": 80.0,
+   "variant": 1,
+   "set": "north"
+  },
+  {
+   "id": "erratic_2",
+   "kind": "erratic",
+   "x": -304.0,
+   "y": 254.0,
+   "yaw": 250.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "halt_shelter_1",
+   "kind": "halt_shelter",
+   "x": 113.5,
+   "y": 25.0,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_1",
+   "kind": "park_lamp",
+   "x": 112.5,
+   "y": 30.0,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "litter_urn_1",
+   "kind": "litter_urn",
+   "x": 114.0,
+   "y": 21.8,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_2",
+   "kind": "park_lamp",
+   "x": 2.35,
+   "y": 24.5,
+   "yaw": 180.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_3",
+   "kind": "park_lamp",
+   "x": -6.6,
+   "y": 37.5,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_4",
+   "kind": "park_lamp",
+   "x": 1.25,
+   "y": 50.5,
+   "yaw": 180.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_5",
+   "kind": "park_lamp",
+   "x": -8.5,
+   "y": 63.5,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_6",
+   "kind": "park_lamp",
+   "x": -1.46,
+   "y": 76.5,
+   "yaw": 180.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_7",
+   "kind": "park_lamp",
+   "x": -12.03,
+   "y": 89.5,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_8",
+   "kind": "park_lamp",
+   "x": -5.8,
+   "y": 102.5,
+   "yaw": 180.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_bench_2",
+   "kind": "park_bench",
+   "x": -5.45,
+   "y": 24.5,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "litter_urn_2",
+   "kind": "litter_urn",
+   "x": -5.45,
+   "y": 26.2,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_bench_3",
+   "kind": "park_bench",
+   "x": 1.2,
+   "y": 37.5,
+   "yaw": 180.0,
+   "variant": 1,
+   "set": "south"
+  },
+  {
+   "id": "litter_urn_3",
+   "kind": "litter_urn",
+   "x": 1.2,
+   "y": 39.2,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_bench_4",
+   "kind": "park_bench",
+   "x": -9.26,
+   "y": 76.5,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "litter_urn_4",
+   "kind": "litter_urn",
+   "x": -9.26,
+   "y": 78.2,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_bench_5",
+   "kind": "park_bench",
+   "x": -4.23,
+   "y": 89.5,
+   "yaw": 180.0,
+   "variant": 1,
+   "set": "south"
+  },
+  {
+   "id": "litter_urn_5",
+   "kind": "litter_urn",
+   "x": -4.23,
+   "y": 91.2,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "flower_bed_1",
+   "kind": "flower_bed",
+   "x": -12.46,
+   "y": 96.0,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "flower_bed_2",
+   "kind": "flower_bed",
+   "x": -5.26,
+   "y": 96.0,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_9",
+   "kind": "park_lamp",
+   "x": -10.0,
+   "y": 121.8,
+   "yaw": 200.0,
+   "variant": 1,
+   "set": "south"
+  },
+  {
+   "id": "drinking_fountain_1",
+   "kind": "drinking_fountain",
+   "x": -7.8,
+   "y": 118.8,
+   "yaw": 200.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "bike_rack_1",
+   "kind": "bike_rack",
+   "x": -27.7,
+   "y": 118.5,
+   "yaw": 80.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_10",
+   "kind": "park_lamp",
+   "x": 21.5,
+   "y": 170.0,
+   "yaw": 60.0,
+   "variant": 1,
+   "set": "south"
+  },
+  {
+   "id": "park_bench_6",
+   "kind": "park_bench",
+   "x": 35.0,
+   "y": 173.5,
+   "yaw": 90.0,
+   "variant": 0,
+   "set": "south"
+  },
+  {
+   "id": "park_lamp_11",
+   "kind": "park_lamp",
+   "x": 68.89,
+   "y": 33.0,
+   "yaw": 0.0,
+   "variant": 0,
+   "set": "south"
   }
  ],
  "brook": {

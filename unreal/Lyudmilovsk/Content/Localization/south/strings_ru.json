@@ -56,5 +56,13 @@
  "south.board.reeds.1": "Летом здесь гнездятся камышовки.",
  "south.board.reeds.2": "По вечерам на ночлег слетаются скворцы, иногда тысячами.",
  "south.board.reeds.3": "У скрадка говорите тихо.",
- "south.board.reeds.4": "Не сходите с настила: в камышах гнёзда и топко."
+ "south.board.reeds.4": "Не сходите с настила: в камышах гнёзда и топко.",
+ "place.mayak_lighthouse.name": "Маяк",
+ "dev.tp.mayak_lighthouse": "Маяк",
+ "place.coast_bunker.name": "Старый дот",
+ "dev.tp.coast_bunker": "Старый дот",
+ "place.boat_wreck.name": "Остов баркаса",
+ "dev.tp.boat_wreck": "Остов баркаса",
+ "place.devils_stone.name": "Чёртов камень",
+ "dev.tp.devils_stone": "Чёртов камень"
 }

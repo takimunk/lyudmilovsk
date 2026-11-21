@@ -349,7 +349,15 @@ ORCHARD_R = (95.0, 48.0)
 STELE = (-207.0, 356.0)          # the town's name by the track, where the valley ends and the first terrace begins
 PICNIC = (-168.0, 262.0)         # the bench half way down the shoulder (its last bend)
 
-PADS = [(BELVEDERE, 7.0, 6.0)]   # (centre, radius, fade): the macro height is kept exactly (no hummocks, no gullies)
+# the second round's landmarks (docs/south.md "Landmarks"); the cliff's ones stand back from the edge
+LIGHT = (112.0, -432.0)       # the lighthouse south of the Mayak station
+BUNKER = (69.0, -128.0)       # the old pillbox on the cliff walk, its slit to the sea
+WRECK = (121.0, 132.0)           # the boat's ribs in the sand between the brook's mouth and the stair
+STONE = (-304.0, 254.0)                            # the erratic boulder on the meadow by the spring trail
+SPLIT_STONE = (90.0, -306.0)  # the split one on the cliff walk
+HALT = (113.5, STAIR_Y - 13.0)     # the shelter on the beach's top by the stair's foot
+
+PADS = [(BELVEDERE, 7.0, 6.0), (LIGHT, 7.0, 5.0), (BUNKER, 4.5, 4.0)]   # (centre, radius, fade): the macro height is kept exactly (no hummocks, no gullies)
 
 
 def stair_line():
@@ -487,9 +495,9 @@ def fixed_tracks():
 # anchors and routed tracks for tools/terrain.py: the town trail's end to the town; the spring to the inland woods; the
 # cliff-top walk from the club's forecourt south to the Mayak station
 ANCHORS = {"south_gate": GATE, "south_spring": (SPRING[0] + 5.0, SPRING[1] - 3.0), "south_forecourt": (17.0, 12.0),
-           "south_cliff": (62.0, -150.0), "south_mayak": MAYAK}
+           "south_cliff": (62.0, -150.0), "south_mayak": MAYAK, "south_light": (LIGHT[0] - 7.0, LIGHT[1] + 6.0)}
 TRACKS = [("south_gate", "town"), ("south_spring", "woods_inland"), ("south_forecourt", "south_cliff"),
-          ("south_cliff", "south_mayak")]
+          ("south_cliff", "south_mayak"), ("south_mayak", "south_light")]
 
 
 def cliff_lookout():
@@ -585,9 +593,10 @@ def forests(tiles):
 def tree_free(x, y):
     """Forest tiles of the others keep off the places and the trails here."""
     x0, x1, y0, y1 = BOX
-    if not (x0 < x < x1 and y0 - 300.0 < y < y1 + 20.0):
+    if not (x0 < x < x1 and y0 - 400.0 < y < y1 + 20.0):
         return False
-    for (px, py), r in ((BELVEDERE, 12.0), (HIDE_AT, 7.0), (SPRING, 6.0), (STELE, 9.0)):
+    for (px, py), r in ((BELVEDERE, 12.0), (HIDE_AT, 7.0), (SPRING, 6.0), (STELE, 9.0), (LIGHT, 14.0), (BUNKER, 8.0),
+                        (STONE, 6.0), (SPLIT_STONE, 6.0)):
         if math.hypot(x - px, y - py) < r:
             return True
     return False
@@ -662,6 +671,10 @@ def places():
         ("spring_ravine", rav[0], rav[1], 18.0, "nature", 225.0),
         ("cliff_stair", tx - 3.0, ty, 7.0, "building", 0.0),
         ("cliff_lookout", lx, ly, 9.0, "nature", 0.0),
+        ("mayak_lighthouse", LIGHT[0] - 7.0, LIGHT[1] + 6.0, 14.0, "building", 300.0),
+        ("coast_bunker", BUNKER[0] - 5.0, BUNKER[1], 9.0, "building", 0.0),
+        ("boat_wreck", WRECK[0] - 5.0, WRECK[1], 10.0, "nature", 0.0),
+        ("devils_stone", STONE[0] + 5.0, STONE[1] + 2.0, 9.0, "nature", 200.0),
         ("mayak_station", MAYAK[0], MAYAK[1], 18.0, "transport", 270.0),
     ]
     return [{"id": i, "name": "place.%s.name" % i, "x": round(x, 1), "y": round(y, 1), "r": r, "kind": k, "yaw": yaw}
@@ -705,7 +718,7 @@ def _axis_yaw(heading):
 # at SIGN_YAW; sign_planks() gives each plank's turn on the post for blender/south/props_land.py.
 SIGN_YAW = 90.0
 SIGNS = {
-    0: ((ALLEY_END[0] - 3.2, ALLEY_END[1] + 1.0), [("town", "0_5km", (-56.0, 139.0)), ("lookout", "60m", BELVEDERE),
+    0: ((ALLEY_END[0] - 3.2, ALLEY_END[1] - 1.6), [("town", "0_5km", (-56.0, 139.0)), ("lookout", "60m", BELVEDERE),
                                                    ("sea", "110m", (74.0, STAIR_Y))]),
     1: ((FOOT[0] + 3.0, FOOT[1] - 1.0), [("aton", "0_3km", (-151.0, 255.0)), ("town", "0_2km", (-207.0, 342.0)),
                                          ("spring", "0_4km", (-256.0, 275.0))]),
@@ -726,7 +739,8 @@ def sign_planks():
     return out
 
 
-BESIDE = {"trail_sign": 1.9, "info_board": 2.3, "picnic_table": 2.6, "town_stele": 5.2}     # kind: metres from a trail's middle
+BESIDE = {"trail_sign": 1.9, "info_board": 2.3, "picnic_table": 2.6, "town_stele": 5.2, "erratic": 4.6, "park_lamp": 1.8,
+          "park_bench": 1.9, "bike_rack": 2.4, "drinking_fountain": 1.9, "flower_bed": 2.2, "litter_urn": 1.7}     # kind: metres from a trail's middle
 
 
 def _beside(x, y, r):
@@ -842,6 +856,44 @@ def things():
     # the cliff walk: the bench on the edge
     lx, ly = cliff_lookout()
     put("brow_bench", lx, ly, 0.0, kit="north")
+    # landmarks: the lighthouse past the Mayak station (its door to the track), the pillbox and the split stone on the
+    # cliff walk, the wreck on the beach (its keel along the shore), the Devil's stone on the meadow
+    put("lighthouse", LIGHT[0], LIGHT[1], 140.0)
+    put("park_bench", LIGHT[0] + 7.0, LIGHT[1] + 9.0, 0.0, 1)
+    put("bunker", BUNKER[0], BUNKER[1], 0.0)
+    put("erratic", SPLIT_STONE[0], SPLIT_STONE[1], 35.0, 1)
+    put("shipwreck", WRECK[0], WRECK[1], 12.0)
+    put("driftwood", WRECK[0] + 5.0, WRECK[1] - 7.0, 80.0, 1, kit="north")
+    put("erratic", STONE[0], STONE[1], 250.0, 0)
+    # the halt's shelter on the bank by the stair's foot, open to the sea
+    put("halt_shelter", HALT[0], HALT[1], 0.0)
+    put("park_lamp", HALT[0] - 1.0, HALT[1] + 5.0, 0.0, 0)
+    put("litter_urn", HALT[0] + 0.5, HALT[1] - 3.2, 0.0)
+    # the alley from the club's door to the station (world_map.alley_trees: pairs every 13 m, 4.2 m off the middle):
+    # lamps in the trees' line between the pairs, taking sides in turn; benches facing the path, an urn by each
+    alley = W.path_points(0.5)
+
+    def at(y, off):
+        cx, cy = min(alley, key=lambda q: abs(q[1] - y))
+        return cx + off, cy
+
+    for i, y in enumerate((24.5, 37.5, 50.5, 63.5, 76.5, 89.5, 102.5)):
+        put("park_lamp", *at(y, 4.3 if i % 2 == 0 else -4.3), 180.0 if i % 2 == 0 else 0.0, 0)
+    for i, y in enumerate((24.5, 37.5, 76.5, 89.5)):          # across the path from that spot's lamp, between the trees
+        side = -1.0 if i % 2 == 0 else 1.0
+        bx_, by_ = at(y, side * 3.5)
+        put("park_bench", bx_, by_, 0.0 if side < 0 else 180.0, i % 2)
+        put("litter_urn", bx_, by_ + 1.7, 0.0)
+    for side in (-1.0, 1.0):
+        put("flower_bed", *at(96.0, side * 3.6), 0.0)
+    # the junction at the alley's end: a two-globe lamp, water, the bicycles
+    put("park_lamp", ALLEY_END[0] + 9.2, ALLEY_END[1] - 1.2, 200.0, 1)
+    put("drinking_fountain", ALLEY_END[0] + 11.4, ALLEY_END[1] - 4.2, 200.0)
+    put("bike_rack", ALLEY_END[0] - 8.5, ALLEY_END[1] - 4.5, 80.0)
+    # the lookout and the stair's top: a lamp and a bench each
+    put("park_lamp", BELVEDERE[0] - 5.5, BELVEDERE[1] - 6.0, 60.0, 1)
+    put("park_bench", BELVEDERE[0] + 8.0, BELVEDERE[1] - 2.5, 90.0, 0)
+    put("park_lamp", tx - 6.0, ty - 5.0, 0.0, 0)
     return out
 
 
@@ -912,6 +964,10 @@ def check():
             bad.append("a cable car pylon stands %.1f m from the brook at (%.0f, %.0f)" % (b[0], x, y))
         if _near_trail(x, y, 4.0):
             bad.append("a cable car pylon stands on a trail at (%.0f, %.0f)" % (x, y))
+    for sx, sy in W.cable_car()["stations"]:
+        for t in things():
+            if abs(t["x"] - sx) < 9.5 and abs(t["y"] - sy) < 9.5:
+                bad.append("%s stands in a cable car station's footprint at (%.1f, %.1f)" % (t["id"], t["x"], t["y"]))
     for sx, sy in (W.STATION_UP,):
         if abs(W.height(sx, sy)) > 0.01 or abs(W.height(sx + 20.0, sy + 8.0)) > 0.01:
             bad.append("the Aton station's ground is not level")

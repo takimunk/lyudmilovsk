@@ -56,5 +56,13 @@
  "south.board.reeds.1": "Reed warblers nest here in summer.",
  "south.board.reeds.2": "At dusk starlings fly in to roost, sometimes in their thousands.",
  "south.board.reeds.3": "Speak softly by the hide.",
- "south.board.reeds.4": "Do not leave the boardwalk: there are nests in the reeds and the ground is soft."
+ "south.board.reeds.4": "Do not leave the boardwalk: there are nests in the reeds and the ground is soft.",
+ "place.mayak_lighthouse.name": "Lighthouse",
+ "dev.tp.mayak_lighthouse": "Lighthouse",
+ "place.coast_bunker.name": "Old pillbox",
+ "dev.tp.coast_bunker": "Old pillbox",
+ "place.boat_wreck.name": "Wreck of a fishing boat",
+ "dev.tp.boat_wreck": "Wreck of a fishing boat",
+ "place.devils_stone.name": "Devil's Stone",
+ "dev.tp.devils_stone": "Devil's Stone"
 }
