@@ -307,6 +307,7 @@ void ULyudTransportSubsystem::Deinitialize()
 		}
 	}
 	LifeBodies.Reset();
+	LifeNoBody.Reset();
 	Life.Reset();
 	Net.Reset();
 	Super::Deinitialize();
@@ -699,6 +700,10 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 			const FTransform T = A->Seat(FMath::Max(0, Net->Riders[RI].Seat) % 4);
 			if (!Body)
 			{
+				if (LifeNoBody.Contains(Who))
+				{
+					continue;       // no model to show them by: not tried again every frame
+				}
 				// their own face: the model the town shows them by, else their pool model
 				const FString Key = UTF8_TO_TCHAR(Life->Riders[Rider].Key.c_str());
 				const int32 Pid = People ? People->FindPerson(Key) : -1;
@@ -718,6 +723,7 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 				}
 				if (!Body)
 				{
+					LifeNoBody.Add(Who);
 					continue;
 				}
 				Body->Tags.Add(TEXT("StationLife"));

@@ -917,6 +917,10 @@ void AAnimalLifeRenderer::Draw(const FWorld& World, const FVector& Camera)
 	TArray<TPair<float, int32>> Want;
 	for (const FAnimal& A : World.Animals)
 	{
+		if (A.Pet == EPet::Indoors)
+		{
+			continue;       // somebody's pet behind its door (AnimalPetsSim.cpp)
+		}
 		const float D = (float)FVector::Dist(ToUE(World.RenderPos(A)), Camera);
 		const float Lim = A.Kind == EKind::Cat ? CatDist : CatDist * 1.6f;
 		if (D < Lim)

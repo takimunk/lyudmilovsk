@@ -130,12 +130,16 @@ namespace
 	const V3 Door(-1.93f, 7.9f + 4.f, 0.f);
 
 	/** bAsGame: a fifth of the groups live round the club's door, as UBirdLifeSubsystem sets the world up (FOptions::Focus). */
-	bool Setup(FWorld& W, float StartHour, bool bAsGame = false)
+	bool Setup(FWorld& W, float StartHour, bool bAsGame = false, int KeepSites = -1)
 	{
 		if (!W.LoadHabitats(Dir()))
 		{
 			std::fprintf(stderr, "birdsim: %s\n", W.LastError.c_str());
 			return false;
+		}
+		if (KeepSites >= 0 && KeepSites < (int)W.Sites.size())
+		{
+			W.Sites.resize(KeepSites);         // the map as it was before sites were appended (the brook's)
 		}
 		W.DayOfYear = 297.f;
 		SunTimes(W.DayOfYear, W.Sunrise, W.Sunset);
@@ -370,6 +374,7 @@ namespace
 	}
 
 	void Wind(FResult& R);
+	void Brook(FResult& R);
 	bool IsGullName(const std::string& Id) { return Id.find("Gull") != std::string::npos; }
 
 	/** The species' days (docs/bird_life.md "Daily routines"): starlings and their murmuration, swallows on the wires, the tide. */
@@ -734,6 +739,203 @@ namespace
 		Wind(R);
 	}
 
+	/**
+	 * The brook (tools/bird_habitats_brook.py, docs/bird_life.md "The brook"): the heron at the mouth at low water, nobody
+	 * standing in the brook's water or in the sea over the mouth's fan, and the night's roosts as they were without the
+	 * brook's sites (they are appended at the end of the habitats file: dropping them gives the old map).
+	 */
+	void Brook(FResult& R)
+	{
+		// the brook's water from the South's data (Content/South/south.json "brook" "water": [x, y, surface z, half width],
+		// map metres) in the sim's frame (Unreal metres: Y from the portal face)
+		struct FWater { float X, Y, Z, Half; };
+		std::vector<FWater> Water;
+		{
+			std::ifstream F("unreal/Lyudmilovsk/Content/South/south.json");
+			std::stringstream SS;
+			SS << F.rdbuf();
+			const std::string T = SS.str();
+			const size_t At = T.find("\"water\"");
+			const char* P = At == std::string::npos ? "" : T.c_str() + At + 7;
+			while (*P && *P != '[') P++;
+			if (*P) P++;
+			while (*P && *P != ']')
+			{
+				while (*P && *P != '[' && *P != ']') P++;
+				if (*P != '[') break;
+				P++;
+				float V[4] = {};
+				for (float& X : V)
+				{
+					char* End = nullptr;
+					X = std::strtof(P, &End);
+					P = End;
+					while (*P == ',' || *P == ' ') P++;
+				}
+				while (*P && *P != ']') P++;
+				if (*P) P++;
+				Water.push_back({ V[0], V[1] + 7.9f, V[2], V[3] });
+			}
+		}
+		FWorld W;
+		if (!Setup(W, 12.f))
+		{
+			Check(R, false, "the world loads");
+			return;
+		}
+		int First = -1, Brooks = 0, Mouths = 0;
+		for (int I = 0; I < (int)W.Sites.size(); I++)
+		{
+			const EHabitat K = W.Sites[I].Kind;
+			if (K == EHabitat::Brook || K == EHabitat::Mouth)
+			{
+				First = First < 0 ? I : First;
+				Brooks += K == EHabitat::Brook;
+				Mouths += K == EHabitat::Mouth;
+			}
+		}
+		std::printf("the brook: %d Brook and %d Mouth sites (from site %d on), its water in %zu pieces\n", Brooks, Mouths, First, Water.size());
+		Check(R, Brooks >= 10 && Mouths >= 2 && Water.size() > 20, "the brook has its sites and its water");
+		if (First < 0 || Water.size() < 2)
+		{
+			return;
+		}
+		// how far into the water a point is (> 0: in it, m short of the edge), and the water's surface there
+		auto InWater = [&](const V3& P, float& Surface)
+		{
+			float Best = 1e9f, Deep = -1e9f;
+			for (size_t K = 0; K + 1 < Water.size(); K++)
+			{
+				const FWater& A = Water[K];
+				const FWater& B = Water[K + 1];
+				const float DX = B.X - A.X, DY = B.Y - A.Y;
+				const float T = std::max(0.f, std::min(1.f, ((P.X - A.X) * DX + (P.Y - A.Y) * DY) / std::max(DX * DX + DY * DY, 1e-6f)));
+				const float D = std::hypot(P.X - A.X - DX * T, P.Y - A.Y - DY * T);
+				if (D < Best)
+				{
+					Best = D;
+					Deep = A.Half + (B.Half - A.Half) * T - D;
+					Surface = A.Z + (B.Z - A.Z) * T;
+				}
+			}
+			return Deep;
+		};
+		const int Heron = FindSpecies("GreyHeron");
+		int Wet = 0, InSea = 0, Looked = 0;
+		float WorstIn = -1e9f, WorstSea = -1e9f;
+		std::map<std::string, long> AtBrook;
+		auto Watch = [&](long& HeronsAtMouth)
+		{
+			for (const FBird& B : W.Birds)
+			{
+				if (!B.bGone && B.Site >= 0 && B.Act == EAct::Hawk && W.Sites[B.Site].Kind == EHabitat::Brook)
+				{
+					AtBrook[std::string("over the Brook ") + SpeciesTable()[B.Species].Id]++;     // swallows drinking on the wing
+				}
+				if (B.bGone || B.Site < 0 || IsAirborne(B.Act))
+				{
+					continue;
+				}
+				const FSite& St = W.Sites[B.Site];
+				const EHabitat K = St.Kind;
+				// (standing on the site, not still somewhere else on the way to it)
+				if ((K != EHabitat::Brook && K != EHabitat::Mouth) || (B.Pos - St.Center()).Len2D() > St.Radius + 2.f)
+				{
+					continue;
+				}
+				Looked++;
+				AtBrook[std::string(HabitatName(K)) + " " + SpeciesTable()[B.Species].Id]++;
+				HeronsAtMouth += B.Species == Heron && K == EHabitat::Mouth;
+				float Surface = 0.f;
+				const float Deep = InWater(B.Pos, Surface);
+				WorstIn = std::max(WorstIn, Deep);
+				Wet += Deep > 0.05f;           // a toe in the edge, no more
+				if (Deep > 0.05f && std::getenv("BIRD_TRACE_BROOK"))
+				{
+					float Sz = 0.f;
+					std::printf("    wet: %s %s act %s at %.2f %.2f %.2f, %.2f m in; site %d %.2f %.2f r %.2f (its own %.2f in) off %.2f spot off %.2f\n", SpeciesTable()[B.Species].Id.c_str(),
+						HabitatName(K), ActName(B.Act), B.Pos.X, B.Pos.Y, B.Pos.Z, Deep, B.Site, St.A.X, St.A.Y, St.Radius, InWater(St.A, Sz), (B.Pos - St.A).Len2D(), (B.Spot - St.A).Len2D());
+				}
+				if (K == EHabitat::Mouth)
+				{
+					WorstSea = std::max(WorstSea, W.SeaZ - B.Pos.Z);
+					InSea += B.Pos.Z < W.SeaZ - 0.1f;
+				}
+			}
+		};
+		// low water from mid-morning, then high water: the heron goes down to the mouth's bare sand, and off it
+		auto Tide = [&](float Height, float From, float Hours)
+		{
+			W.SeaZ = W.MeanSeaZ + Height;
+			W.Hour = From;
+			W.Resettle();
+			long Herons = 0, Steps = 0;
+			Advance(W, Hours, 0.25f, [&]
+			{
+				Steps++;
+				if (Steps % 8 == 0)
+				{
+					Watch(Herons);
+				}
+			});
+			return (float)Herons / (float)std::max(1L, Steps / 8);
+		};
+		const float Low = Tide(-0.8f, 9.f, 4.f), High = Tide(0.8f, 9.f, 4.f);
+		// dawn on the brook, at mean water
+		Tide(0.f, W.Sunrise - 0.3f, 2.f);
+		W.SeaZ = W.MeanSeaZ;
+		std::printf("herons at the mouth from 9 to 13, on average: %.2f at low tide, %.2f at high tide; birds by the brook (bird-looks):", Low, High);
+		for (auto& [K, N] : AtBrook)
+		{
+			std::printf(" %s %ld,", K.c_str(), N);
+		}
+		std::printf("\n  %d looks at birds on the brook's sites: %d in its water (deepest %.2f m past the edge), %d in the sea over the fan (%.2f m)\n",
+			Looked, Wet, WorstIn, InSea, WorstSea);
+		Check(R, Low > 0.05f && Low > 2.f * High, "a heron stands at the brook's mouth at low tide (and keeps off it at high water)");
+		Check(R, Looked > 0 && Wet == 0, "no bird stands in the brook's water");
+		Check(R, InSea == 0, "no bird stands in the sea over the mouth's fan");
+		Check(R, AtBrook["Brook WhiteWagtail"] + AtBrook["Mouth WhiteWagtail"] > 0 && AtBrook["Brook GreyHeron"] > 0,
+			"wagtails and the heron use the brook");
+
+		// the night: everybody sleeps where they slept before the brook's sites came (none of them is a roost)
+		auto Roosts = [&](int Keep, std::map<std::string, int>& By)
+		{
+			FWorld N;
+			Setup(N, 1.f, false, Keep);
+			N.Camera = V3(0.f, -2000.f, 500.f);
+			Advance(N, 0.5f, 0.25f, [] {});
+			int Asleep = 0;
+			for (const FBird& B : N.Birds)
+			{
+				if (!B.bGone && B.Act == EAct::Sleep && B.Site >= 0)
+				{
+					By[HabitatName(N.Sites[B.Site].Kind)]++;
+					By[std::string("communal ") + SpeciesTable()[B.Species].Id] += SpeciesTable()[B.Species].bCommunalRoost;
+					Asleep++;
+				}
+			}
+			return Asleep;
+		};
+		std::map<std::string, int> With, Without;
+		const int AsleepWith = Roosts(-1, With), AsleepWithout = Roosts(First, Without);
+		bool bSame = true;
+		std::printf("asleep at 1:30 with the brook's sites %d, without %d:", AsleepWith, AsleepWithout);
+		for (auto& [K, N] : Without)
+		{
+			const int M = With.count(K) ? With[K] : 0;
+			if (M || N)
+			{
+				std::printf(" %s %d/%d", K.c_str(), M, N);
+			}
+			// every communal roost holds the same birds; a lone pair's roost near its home is any tree or roof it likes, so
+			// the kinds' counts move by chance (each pick of a site samples the whole map, and the map has more sites now)
+			bSame &= K.rfind("communal ", 0) != 0 || M == N;
+		}
+		std::printf("\n");
+		Check(R, With["Brook"] == 0 && With["Mouth"] == 0, "nobody roosts on the brook or its mouth");
+		Check(R, AsleepWith == AsleepWithout && bSame, "the night's roosts are as they were without the brook's sites (all asleep, the communal roosts full)");
+	}
+
 	/** The wind (BirdBio's flying qualities): in a gale the small birds keep to the lee, the soarers take to the air. */
 	void Wind(FResult& R)
 	{
@@ -1078,6 +1280,7 @@ namespace
 		{
 			// BIRD_ONLY=routines (or murm: the starlings' evening and morning only; wind: the gale only)
 			if (!std::strcmp(std::getenv("BIRD_ONLY"), "wind")) Wind(R);
+			else if (!std::strcmp(std::getenv("BIRD_ONLY"), "brook")) Brook(R);
 			else Routines(R);
 			std::printf("birdsim test: %d passed, %d failed\n", R.Pass, R.Fail);
 			return R.Fail ? 1 : 0;
@@ -1375,6 +1578,7 @@ namespace
 		Feeders(R);
 		Ranged(R);
 		Routines(R);
+		Brook(R);
 		int CorvidPasses = 0;
 		R.Fail += CorvidTests(&CorvidPasses);
 		R.Pass += CorvidPasses;

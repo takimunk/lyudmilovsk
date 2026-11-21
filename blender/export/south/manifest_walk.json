@@ -1,0 +1,2731 @@
+{
+ "frame": "metres, origin on the ground under the middle unless the kind's notes say otherwise, Blender -Y is the front, Z up; seats [x, y, z, yaw]: yaw = degrees of the sitter's facing, counter-clockwise seen from above, 0 = toward the object's front (-Y); size and bounds are in Blender axes (x, y, z)",
+ "front_yaw": 90.0,
+ "asset_names": "SM_South_<Kind>[_V<n>] (_V only for kinds with several variants)",
+ "atlas": "M_North_Atlas (the North's, blender/north/gen); text slots M_South_Text_<id> from textures/localized/<lang>/south_<id>.png",
+ "meshes": [
+  {
+   "kind": "cliff_stair",
+   "variant": 0,
+   "file": "cliff_stair.glb",
+   "tris": 25374,
+   "size": [
+    8.66,
+    35.028,
+    45.716
+   ],
+   "collision": "box",
+   "seats": [
+    [
+     3.86,
+     -16.565,
+     -14.377,
+     270.0
+    ],
+    [
+     3.86,
+     -15.915,
+     -14.377,
+     270.0
+    ],
+    [
+     -3.86,
+     -26.565,
+     -29.234,
+     90.0
+    ],
+    [
+     -3.86,
+     -25.915,
+     -29.234,
+     90.0
+    ],
+    [
+     -1.625,
+     -2.42,
+     0.48,
+     0.0
+    ],
+    [
+     -0.875,
+     -2.42,
+     0.48,
+     0.0
+    ]
+   ],
+   "notes": "timber stair down the 41.6 m sea cliff (stair_profile.json): origin = the top deck's landward walking edge on the brow (profile distance 0, ground z 0; the deck's walking surface is z 0.03 so it never z-fights the flat brow); the cliff falls toward the front (-Y): profile distance d = -y. A top deck (x -4.25..0.85, y 0..-3.2) entered through a timber arch at x 0, y 0, a strip down its west side to flight 1, then 14 flights of 18 risers (0.165 m) x 17 treads (0.30 m), 30.2 deg ramp, clear width 1.3 m, zigzagging along local X between x -2.55 and 2.55 with 1.7 m landings at |x| 2.55..4.25 (overall width 8.5 m); flight centre lines at y -6.62, -9.09, -11.24, -13.24, -15.24, -17.24, -19.24, -21.24, -23.24, -25.24, -27.24, -29.24, -31.24, -34.10. Benches on landings (5, 10) and on the top deck. Posts reach 1.5 m below the profile at their spot. The last flight ends on the beach at x -3.35, y -34.10, z -41.57 (last step sunk 0.4 m into the sand). collision_boxes: mesh space, Blender axes; one sloped ramp per flight (top plane = the nosing line, rot_y_deg right-handed about +Y: positive tips +X down), one box per landing, rail walls 1.1 m high along every open edge",
+   "axis": "y",
+   "drop": 41.6,
+   "riser": 0.1651,
+   "tread": 0.3,
+   "flights": 14,
+   "risers_per_flight": 18,
+   "flight_slope_deg": 30.23,
+   "clear_width": 1.3,
+   "landing_z": [
+    0.03,
+    -2.941,
+    -5.913,
+    -8.884,
+    -11.856,
+    -14.827,
+    -17.799,
+    -20.77,
+    -23.742,
+    -26.713,
+    -29.684,
+    -32.656,
+    -35.627,
+    -38.599,
+    -41.57
+   ],
+   "flight_y": [
+    -6.62,
+    -9.09,
+    -11.24,
+    -13.24,
+    -15.24,
+    -17.24,
+    -19.24,
+    -21.24,
+    -23.24,
+    -25.24,
+    -27.24,
+    -29.24,
+    -31.24,
+    -34.1
+   ],
+   "top": [
+    0.0,
+    0.0,
+    0.03
+   ],
+   "foot": [
+    -3.35,
+    -34.1,
+    -41.57
+   ],
+   "walk_path": [
+    [
+     0.0,
+     0.0,
+     0.03
+    ],
+    [
+     0.0,
+     -1.2,
+     0.03
+    ],
+    [
+     -3.4,
+     -1.2,
+     0.03
+    ],
+    [
+     -3.4,
+     -6.62,
+     0.03
+    ],
+    [
+     -2.55,
+     -6.62,
+     0.03
+    ],
+    [
+     2.55,
+     -6.62,
+     -2.941
+    ],
+    [
+     3.4,
+     -6.62,
+     -2.941
+    ],
+    [
+     3.4,
+     -9.09,
+     -2.941
+    ],
+    [
+     2.55,
+     -9.09,
+     -2.941
+    ],
+    [
+     -2.55,
+     -9.09,
+     -5.913
+    ],
+    [
+     -3.4,
+     -9.09,
+     -5.913
+    ],
+    [
+     -3.4,
+     -11.24,
+     -5.913
+    ],
+    [
+     -2.55,
+     -11.24,
+     -5.913
+    ],
+    [
+     2.55,
+     -11.24,
+     -8.884
+    ],
+    [
+     3.4,
+     -11.24,
+     -8.884
+    ],
+    [
+     3.4,
+     -13.24,
+     -8.884
+    ],
+    [
+     2.55,
+     -13.24,
+     -8.884
+    ],
+    [
+     -2.55,
+     -13.24,
+     -11.856
+    ],
+    [
+     -3.4,
+     -13.24,
+     -11.856
+    ],
+    [
+     -3.4,
+     -15.24,
+     -11.856
+    ],
+    [
+     -2.55,
+     -15.24,
+     -11.856
+    ],
+    [
+     2.55,
+     -15.24,
+     -14.827
+    ],
+    [
+     3.4,
+     -15.24,
+     -14.827
+    ],
+    [
+     3.4,
+     -17.24,
+     -14.827
+    ],
+    [
+     2.55,
+     -17.24,
+     -14.827
+    ],
+    [
+     -2.55,
+     -17.24,
+     -17.799
+    ],
+    [
+     -3.4,
+     -17.24,
+     -17.799
+    ],
+    [
+     -3.4,
+     -19.24,
+     -17.799
+    ],
+    [
+     -2.55,
+     -19.24,
+     -17.799
+    ],
+    [
+     2.55,
+     -19.24,
+     -20.77
+    ],
+    [
+     3.4,
+     -19.24,
+     -20.77
+    ],
+    [
+     3.4,
+     -21.24,
+     -20.77
+    ],
+    [
+     2.55,
+     -21.24,
+     -20.77
+    ],
+    [
+     -2.55,
+     -21.24,
+     -23.742
+    ],
+    [
+     -3.4,
+     -21.24,
+     -23.742
+    ],
+    [
+     -3.4,
+     -23.24,
+     -23.742
+    ],
+    [
+     -2.55,
+     -23.24,
+     -23.742
+    ],
+    [
+     2.55,
+     -23.24,
+     -26.713
+    ],
+    [
+     3.4,
+     -23.24,
+     -26.713
+    ],
+    [
+     3.4,
+     -25.24,
+     -26.713
+    ],
+    [
+     2.55,
+     -25.24,
+     -26.713
+    ],
+    [
+     -2.55,
+     -25.24,
+     -29.684
+    ],
+    [
+     -3.4,
+     -25.24,
+     -29.684
+    ],
+    [
+     -3.4,
+     -27.24,
+     -29.684
+    ],
+    [
+     -2.55,
+     -27.24,
+     -29.684
+    ],
+    [
+     2.55,
+     -27.24,
+     -32.656
+    ],
+    [
+     3.4,
+     -27.24,
+     -32.656
+    ],
+    [
+     3.4,
+     -29.24,
+     -32.656
+    ],
+    [
+     2.55,
+     -29.24,
+     -32.656
+    ],
+    [
+     -2.55,
+     -29.24,
+     -35.627
+    ],
+    [
+     -3.4,
+     -29.24,
+     -35.627
+    ],
+    [
+     -3.4,
+     -31.24,
+     -35.627
+    ],
+    [
+     -2.55,
+     -31.24,
+     -35.627
+    ],
+    [
+     2.55,
+     -31.24,
+     -38.599
+    ],
+    [
+     3.4,
+     -31.24,
+     -38.599
+    ],
+    [
+     3.4,
+     -34.1,
+     -38.599
+    ],
+    [
+     2.55,
+     -34.1,
+     -38.599
+    ],
+    [
+     -2.55,
+     -34.1,
+     -41.57
+    ],
+    [
+     -3.35,
+     -34.1,
+     -41.57
+    ]
+   ],
+   "collision_boxes": [
+    {
+     "name": "flight_1",
+     "center": [
+      -0.032,
+      -6.62,
+      -1.61
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_1_rail_n",
+     "center": [
+      0.0,
+      -5.83,
+      -0.956
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_1_rail_s",
+     "center": [
+      0.0,
+      -7.41,
+      -0.956
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_2",
+     "center": [
+      0.032,
+      -9.09,
+      -4.582
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_2_rail_n",
+     "center": [
+      0.0,
+      -8.3,
+      -3.927
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_2_rail_s",
+     "center": [
+      0.0,
+      -9.88,
+      -3.927
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_3",
+     "center": [
+      -0.032,
+      -11.24,
+      -7.553
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_3_rail_n",
+     "center": [
+      0.0,
+      -10.45,
+      -6.899
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_3_rail_s",
+     "center": [
+      0.0,
+      -12.03,
+      -6.899
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_4",
+     "center": [
+      0.032,
+      -13.24,
+      -10.525
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_4_rail_n",
+     "center": [
+      0.0,
+      -12.45,
+      -9.87
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_4_rail_s",
+     "center": [
+      0.0,
+      -14.03,
+      -9.87
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_5",
+     "center": [
+      -0.032,
+      -15.24,
+      -13.496
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_5_rail_n",
+     "center": [
+      0.0,
+      -14.45,
+      -12.841
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_5_rail_s",
+     "center": [
+      0.0,
+      -16.03,
+      -12.841
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_6",
+     "center": [
+      0.032,
+      -17.24,
+      -16.468
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_6_rail_n",
+     "center": [
+      0.0,
+      -16.45,
+      -15.813
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_6_rail_s",
+     "center": [
+      0.0,
+      -18.03,
+      -15.813
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_7",
+     "center": [
+      -0.032,
+      -19.24,
+      -19.439
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_7_rail_n",
+     "center": [
+      0.0,
+      -18.45,
+      -18.784
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_7_rail_s",
+     "center": [
+      0.0,
+      -20.03,
+      -18.784
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_8",
+     "center": [
+      0.032,
+      -21.24,
+      -22.411
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_8_rail_n",
+     "center": [
+      0.0,
+      -20.45,
+      -21.756
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_8_rail_s",
+     "center": [
+      0.0,
+      -22.03,
+      -21.756
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_9",
+     "center": [
+      -0.032,
+      -23.24,
+      -25.382
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_9_rail_n",
+     "center": [
+      0.0,
+      -22.45,
+      -24.727
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_9_rail_s",
+     "center": [
+      0.0,
+      -24.03,
+      -24.727
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_10",
+     "center": [
+      0.032,
+      -25.24,
+      -28.353
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_10_rail_n",
+     "center": [
+      0.0,
+      -24.45,
+      -27.699
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_10_rail_s",
+     "center": [
+      0.0,
+      -26.03,
+      -27.699
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_11",
+     "center": [
+      -0.032,
+      -27.24,
+      -31.325
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_11_rail_n",
+     "center": [
+      0.0,
+      -26.45,
+      -30.67
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_11_rail_s",
+     "center": [
+      0.0,
+      -28.03,
+      -30.67
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_12",
+     "center": [
+      0.032,
+      -29.24,
+      -34.296
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_12_rail_n",
+     "center": [
+      0.0,
+      -28.45,
+      -33.642
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_12_rail_s",
+     "center": [
+      0.0,
+      -30.03,
+      -33.642
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_13",
+     "center": [
+      -0.032,
+      -31.24,
+      -37.268
+     ],
+     "size": [
+      6.002,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_13_rail_n",
+     "center": [
+      0.0,
+      -30.45,
+      -36.613
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_13_rail_s",
+     "center": [
+      0.0,
+      -32.03,
+      -36.613
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 30.227
+    },
+    {
+     "name": "flight_14",
+     "center": [
+      -0.054,
+      -34.1,
+      -40.29
+     ],
+     "size": [
+      6.202,
+      1.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_14_rail_n",
+     "center": [
+      0.0,
+      -33.31,
+      -39.584
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "flight_14_rail_s",
+     "center": [
+      0.0,
+      -34.89,
+      -39.584
+     ],
+     "size": [
+      6.203,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -30.227
+    },
+    {
+     "name": "landing_1",
+     "center": [
+      3.4,
+      -7.855,
+      -3.091
+     ],
+     "size": [
+      1.9,
+      4.19,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_1_rail_out",
+     "center": [
+      4.18,
+      -7.855,
+      -2.441
+     ],
+     "size": [
+      0.14,
+      4.19,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_1_rail_up",
+     "center": [
+      3.4,
+      -5.83,
+      -2.441
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_1_rail_sea",
+     "center": [
+      3.4,
+      -9.88,
+      -2.441
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_1_rail_in",
+     "center": [
+      2.62,
+      -7.855,
+      -2.441
+     ],
+     "size": [
+      0.14,
+      1.03,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_2",
+     "center": [
+      -3.4,
+      -10.165,
+      -6.063
+     ],
+     "size": [
+      1.9,
+      3.87,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_2_rail_out",
+     "center": [
+      -4.18,
+      -10.165,
+      -5.413
+     ],
+     "size": [
+      0.14,
+      3.87,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_2_rail_up",
+     "center": [
+      -3.4,
+      -8.3,
+      -5.413
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_2_rail_sea",
+     "center": [
+      -3.4,
+      -12.03,
+      -5.413
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_2_rail_in",
+     "center": [
+      -2.62,
+      -10.165,
+      -5.413
+     ],
+     "size": [
+      0.14,
+      0.71,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_3",
+     "center": [
+      3.4,
+      -12.24,
+      -9.034
+     ],
+     "size": [
+      1.9,
+      3.72,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_3_rail_out",
+     "center": [
+      4.18,
+      -12.24,
+      -8.384
+     ],
+     "size": [
+      0.14,
+      3.72,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_3_rail_up",
+     "center": [
+      3.4,
+      -10.45,
+      -8.384
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_3_rail_sea",
+     "center": [
+      3.4,
+      -14.03,
+      -8.384
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_3_rail_in",
+     "center": [
+      2.62,
+      -12.24,
+      -8.384
+     ],
+     "size": [
+      0.14,
+      0.56,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_4",
+     "center": [
+      -3.4,
+      -14.24,
+      -12.006
+     ],
+     "size": [
+      1.9,
+      3.72,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_4_rail_out",
+     "center": [
+      -4.18,
+      -14.24,
+      -11.356
+     ],
+     "size": [
+      0.14,
+      3.72,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_4_rail_up",
+     "center": [
+      -3.4,
+      -12.45,
+      -11.356
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_4_rail_sea",
+     "center": [
+      -3.4,
+      -16.03,
+      -11.356
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_4_rail_in",
+     "center": [
+      -2.62,
+      -14.24,
+      -11.356
+     ],
+     "size": [
+      0.14,
+      0.56,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_5",
+     "center": [
+      3.4,
+      -16.24,
+      -14.977
+     ],
+     "size": [
+      1.9,
+      3.72,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_5_rail_out",
+     "center": [
+      4.18,
+      -16.24,
+      -14.327
+     ],
+     "size": [
+      0.14,
+      3.72,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_5_rail_up",
+     "center": [
+      3.4,
+      -14.45,
+      -14.327
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_5_rail_sea",
+     "center": [
+      3.4,
+      -18.03,
+      -14.327
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_5_rail_in",
+     "center": [
+      2.62,
+      -16.24,
+      -14.327
+     ],
+     "size": [
+      0.14,
+      0.56,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_5_bench",
+     "center": [
+      3.84,
+      -16.24,
+      -14.527
+     ],
+     "size": [
+      0.5,
+      1.34,
+      0.6
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_6",
+     "center": [
+      -3.4,
+      -18.24,
+      -17.949
+     ],
+     "size": [
+      1.9,
+      3.72,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_6_rail_out",
+     "center": [
+      -4.18,
+      -18.24,
+      -17.299
+     ],
+     "size": [
+      0.14,
+      3.72,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_6_rail_up",
+     "center": [
+      -3.4,
+      -16.45,
+      -17.299
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_6_rail_sea",
+     "center": [
+      -3.4,
+      -20.03,
+      -17.299
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_6_rail_in",
+     "center": [
+      -2.62,
+      -18.24,
+      -17.299
+     ],
+     "size": [
+      0.14,
+      0.56,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_7",
+     "center": [
+      3.4,
+      -20.24,
+      -20.92
+     ],
+     "size": [
+      1.9,
+      3.72,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_7_rail_out",
+     "center": [
+      4.18,
+      -20.24,
+      -20.27
+     ],
+     "size": [
+      0.14,
+      3.72,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_7_rail_up",
+     "center": [
+      3.4,
+      -18.45,
+      -20.27
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_7_rail_sea",
+     "center": [
+      3.4,
+      -22.03,
+      -20.27
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_7_rail_in",
+     "center": [
+      2.62,
+      -20.24,
+      -20.27
+     ],
+     "size": [
+      0.14,
+      0.56,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_8",
+     "center": [
+      -3.4,
+      -22.24,
+      -23.892
+     ],
+     "size": [
+      1.9,
+      3.72,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_8_rail_out",
+     "center": [
+      -4.18,
+      -22.24,
+      -23.242
+     ],
+     "size": [
+      0.14,
+      3.72,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_8_rail_up",
+     "center": [
+      -3.4,
+      -20.45,
+      -23.242
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_8_rail_sea",
+     "center": [
+      -3.4,
+      -24.03,
+      -23.242
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_8_rail_in",
+     "center": [
+      -2.62,
+      -22.24,
+      -23.242
+     ],
+     "size": [
+      0.14,
+      0.56,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_9",
+     "center": [
+      3.4,
+      -24.24,
+      -26.863
+     ],
+     "size": [
+      1.9,
+      3.72,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_9_rail_out",
+     "center": [
+      4.18,
+      -24.24,
+      -26.213
+     ],
+     "size": [
+      0.14,
+      3.72,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_9_rail_up",
+     "center": [
+      3.4,
+      -22.45,
+      -26.213
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_9_rail_sea",
+     "center": [
+      3.4,
+      -26.03,
+      -26.213
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_9_rail_in",
+     "center": [
+      2.62,
+      -24.24,
+      -26.213
+     ],
+     "size": [
+      0.14,
+      0.56,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_10",
+     "center": [
+      -3.4,
+      -26.24,
+      -29.834
+     ],
+     "size": [
+      1.9,
+      3.72,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_10_rail_out",
+     "center": [
+      -4.18,
+      -26.24,
+      -29.184
+     ],
+     "size": [
+      0.14,
+      3.72,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_10_rail_up",
+     "center": [
+      -3.4,
+      -24.45,
+      -29.184
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_10_rail_sea",
+     "center": [
+      -3.4,
+      -28.03,
+      -29.184
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_10_rail_in",
+     "center": [
+      -2.62,
+      -26.24,
+      -29.184
+     ],
+     "size": [
+      0.14,
+      0.56,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_10_bench",
+     "center": [
+      -3.84,
+      -26.24,
+      -29.384
+     ],
+     "size": [
+      0.5,
+      1.34,
+      0.6
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_11",
+     "center": [
+      3.4,
+      -28.24,
+      -32.806
+     ],
+     "size": [
+      1.9,
+      3.72,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_11_rail_out",
+     "center": [
+      4.18,
+      -28.24,
+      -32.156
+     ],
+     "size": [
+      0.14,
+      3.72,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_11_rail_up",
+     "center": [
+      3.4,
+      -26.45,
+      -32.156
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_11_rail_sea",
+     "center": [
+      3.4,
+      -30.03,
+      -32.156
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_11_rail_in",
+     "center": [
+      2.62,
+      -28.24,
+      -32.156
+     ],
+     "size": [
+      0.14,
+      0.56,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_12",
+     "center": [
+      -3.4,
+      -30.24,
+      -35.777
+     ],
+     "size": [
+      1.9,
+      3.72,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_12_rail_out",
+     "center": [
+      -4.18,
+      -30.24,
+      -35.127
+     ],
+     "size": [
+      0.14,
+      3.72,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_12_rail_up",
+     "center": [
+      -3.4,
+      -28.45,
+      -35.127
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_12_rail_sea",
+     "center": [
+      -3.4,
+      -32.03,
+      -35.127
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_12_rail_in",
+     "center": [
+      -2.62,
+      -30.24,
+      -35.127
+     ],
+     "size": [
+      0.14,
+      0.56,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_13",
+     "center": [
+      3.4,
+      -32.67,
+      -38.749
+     ],
+     "size": [
+      1.9,
+      4.58,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_13_rail_out",
+     "center": [
+      4.18,
+      -32.67,
+      -38.099
+     ],
+     "size": [
+      0.14,
+      4.58,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_13_rail_up",
+     "center": [
+      3.4,
+      -30.45,
+      -38.099
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_13_rail_sea",
+     "center": [
+      3.4,
+      -34.89,
+      -38.099
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "landing_13_rail_in",
+     "center": [
+      2.62,
+      -32.67,
+      -38.099
+     ],
+     "size": [
+      0.14,
+      1.42,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "top_bench",
+     "center": [
+      -1.25,
+      -2.4,
+      0.33
+     ],
+     "size": [
+      1.54,
+      0.5,
+      0.6
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "top_deck",
+     "center": [
+      -1.7,
+      -1.6,
+      -0.12
+     ],
+     "size": [
+      5.1,
+      3.2,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "top_strip",
+     "center": [
+      -3.4,
+      -5.34,
+      -0.12
+     ],
+     "size": [
+      1.9,
+      4.28,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "top_rail_0",
+     "center": [
+      -2.48,
+      -0.07,
+      0.53
+     ],
+     "size": [
+      3.54,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "top_rail_1",
+     "center": [
+      -4.18,
+      -3.74,
+      0.53
+     ],
+     "size": [
+      0.14,
+      7.48,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "top_rail_2",
+     "center": [
+      0.78,
+      -1.6,
+      0.53
+     ],
+     "size": [
+      0.14,
+      3.2,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "top_rail_3",
+     "center": [
+      -0.92,
+      -3.13,
+      0.53
+     ],
+     "size": [
+      3.54,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "top_rail_4",
+     "center": [
+      -2.62,
+      -4.48,
+      0.53
+     ],
+     "size": [
+      0.14,
+      2.84,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "top_rail_5",
+     "center": [
+      -3.4,
+      -7.41,
+      0.53
+     ],
+     "size": [
+      1.7,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    }
+   ],
+   "bounds_min": [
+    -4.33,
+    -35.0,
+    -43.127
+   ],
+   "bounds_max": [
+    4.33,
+    0.028,
+    2.589
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "plank_bridge",
+   "variant": 0,
+   "file": "plank_bridge_v0.glb",
+   "tris": 1084,
+   "size": [
+    6.069,
+    1.802,
+    2.6
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "plank footbridge 6 m over a brook 2.5..4 m wide with banks ~0.9 m high: deck along local X (\"axis\": \"x\"), origin = the middle of the deck on its walking surface (z 0), deck 1.3 m wide and level over x -2.40..2.40, a 0.6 m ramp at each end drops 0.25 m to the ground (toes at x +-3.0, z -0.25); stringers rest on log sills at x +-2.15 (sill tops z -0.24); post pairs at x -2.15, -1.1, 1.1, 2.15 reach z -1.6, carry the two handrails (top z 1.0) and, at x -1.1, 1.1, the trestle cap beams and X braces; collision_boxes in mesh space (rot_y_deg right-handed about +Y, positive tips +X down)",
+   "axis": "x",
+   "length": 6.0,
+   "deck_length": 4.8,
+   "width": 1.3,
+   "ramp_length": 0.6,
+   "ramp_drop": 0.25,
+   "post_depth": 1.6,
+   "collision_boxes": [
+    {
+     "name": "deck",
+     "center": [
+      0,
+      0,
+      -0.15
+     ],
+     "size": [
+      4.8,
+      1.5,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "ramp_east",
+     "center": [
+      2.642,
+      0,
+      -0.263
+     ],
+     "size": [
+      0.7,
+      1.5,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 22.62
+    },
+    {
+     "name": "ramp_west",
+     "center": [
+      -2.642,
+      0,
+      -0.263
+     ],
+     "size": [
+      0.7,
+      1.5,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -22.62
+    },
+    {
+     "name": "rail_n",
+     "center": [
+      0,
+      0.71,
+      0.5
+     ],
+     "size": [
+      5.04,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "rail_s",
+     "center": [
+      0,
+      -0.71,
+      0.5
+     ],
+     "size": [
+      5.04,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    }
+   ],
+   "bounds_min": [
+    -3.031,
+    -0.901,
+    -1.6
+   ],
+   "bounds_max": [
+    3.038,
+    0.901,
+    1.0
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "plank_bridge",
+   "variant": 1,
+   "file": "plank_bridge_v1.glb",
+   "tris": 1448,
+   "size": [
+    9.073,
+    1.802,
+    2.6
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "plank footbridge 9 m over a brook 2.5..4 m wide with banks ~0.9 m high: deck along local X (\"axis\": \"x\"), origin = the middle of the deck on its walking surface (z 0), deck 1.3 m wide and level over x -3.90..3.90, a 0.6 m ramp at each end drops 0.25 m to the ground (toes at x +-4.5, z -0.25); stringers rest on log sills at x +-3.65 (sill tops z -0.24); post pairs at x -3.65, -1.85, 0, 1.85, 3.65 reach z -1.6, carry the two handrails (top z 1.0) and, at x -1.85, 1.85, the trestle cap beams and X braces; collision_boxes in mesh space (rot_y_deg right-handed about +Y, positive tips +X down)",
+   "axis": "x",
+   "length": 9.0,
+   "deck_length": 7.8,
+   "width": 1.3,
+   "ramp_length": 0.6,
+   "ramp_drop": 0.25,
+   "post_depth": 1.6,
+   "collision_boxes": [
+    {
+     "name": "deck",
+     "center": [
+      0,
+      0,
+      -0.15
+     ],
+     "size": [
+      7.8,
+      1.5,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "ramp_east",
+     "center": [
+      4.142,
+      0,
+      -0.263
+     ],
+     "size": [
+      0.7,
+      1.5,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 22.62
+    },
+    {
+     "name": "ramp_west",
+     "center": [
+      -4.142,
+      0,
+      -0.263
+     ],
+     "size": [
+      0.7,
+      1.5,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": -22.62
+    },
+    {
+     "name": "rail_n",
+     "center": [
+      0,
+      0.71,
+      0.5
+     ],
+     "size": [
+      8.04,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "rail_s",
+     "center": [
+      0,
+      -0.71,
+      0.5
+     ],
+     "size": [
+      8.04,
+      0.14,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    }
+   ],
+   "bounds_min": [
+    -4.531,
+    -0.901,
+    -1.6
+   ],
+   "bounds_max": [
+    4.542,
+    0.901,
+    1.0
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "boardwalk",
+   "variant": 0,
+   "file": "boardwalk_v0.glb",
+   "tris": 768,
+   "size": [
+    5.994,
+    1.4,
+    1.7
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "reedbed boardwalk (мостки) piece, straight 6 m, plain: deck along local X (\"axis\": \"x\"), 1.2 m wide, walking surface z 0.50 over the ground, origin = on the ground under the middle; piles reach z -1.2; ends at x -3.0 / +3.0 exactly with the same cross-section, so pieces butt end to end (piles at x -2.25, -0.75, 0.75, 2.25 keep a 1.5 m rhythm across joints); collision_boxes in mesh space (rot_y_deg right-handed about +Y, positive tips +X down)",
+   "axis": "x",
+   "width": 1.2,
+   "deck_z": 0.5,
+   "length": 6.0,
+   "pile_depth": 1.2,
+   "collision_boxes": [
+    {
+     "name": "deck",
+     "center": [
+      0,
+      0,
+      0.35
+     ],
+     "size": [
+      6.0,
+      1.2,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    }
+   ],
+   "bounds_min": [
+    -2.997,
+    -0.7,
+    -1.2
+   ],
+   "bounds_max": [
+    2.997,
+    0.7,
+    0.5
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "boardwalk",
+   "variant": 1,
+   "file": "boardwalk_v1.glb",
+   "tris": 912,
+   "size": [
+    5.996,
+    1.46,
+    2.7
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "reedbed boardwalk (мостки) piece, straight 6 m, a handrail on +Y (top z 1.50): deck along local X (\"axis\": \"x\"), 1.2 m wide, walking surface z 0.50 over the ground, origin = on the ground under the middle; piles reach z -1.2; ends at x -3.0 / +3.0 exactly with the same cross-section, so pieces butt end to end (piles at x -2.25, -0.75, 0.75, 2.25 keep a 1.5 m rhythm across joints); collision_boxes in mesh space (rot_y_deg right-handed about +Y, positive tips +X down)",
+   "axis": "x",
+   "width": 1.2,
+   "deck_z": 0.5,
+   "length": 6.0,
+   "pile_depth": 1.2,
+   "collision_boxes": [
+    {
+     "name": "deck",
+     "center": [
+      0,
+      0,
+      0.35
+     ],
+     "size": [
+      6.0,
+      1.2,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "rail",
+     "center": [
+      0,
+      0.67,
+      1.0
+     ],
+     "size": [
+      6.0,
+      0.12,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    }
+   ],
+   "bounds_min": [
+    -2.998,
+    -0.7,
+    -1.2
+   ],
+   "bounds_max": [
+    2.998,
+    0.76,
+    1.5
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "boardwalk",
+   "variant": 2,
+   "file": "boardwalk_v2.glb",
+   "tris": 1610,
+   "size": [
+    5.994,
+    3.53,
+    2.7
+   ],
+   "collision": "box",
+   "seats": [
+    [
+     -0.35,
+     -1.45,
+     0.92,
+     0.0
+    ],
+    [
+     0.35,
+     -1.45,
+     0.92,
+     0.0
+    ]
+   ],
+   "notes": "reedbed boardwalk (мостки) piece, 6 m with a 2.2 x 2.2 m viewing bay on -Y (x -1.1..1.1, y -0.6..-2.8, rails round it) and a low backless bench facing -Y (seat z 0.92): deck along local X (\"axis\": \"x\"), 1.2 m wide, walking surface z 0.50 over the ground, origin = on the ground under the middle; piles reach z -1.2; ends at x -3.0 / +3.0 exactly with the same cross-section, so pieces butt end to end (piles at x -2.25, -0.75, 0.75, 2.25 keep a 1.5 m rhythm across joints); collision_boxes in mesh space (rot_y_deg right-handed about +Y, positive tips +X down)",
+   "axis": "x",
+   "width": 1.2,
+   "deck_z": 0.5,
+   "length": 6.0,
+   "pile_depth": 1.2,
+   "collision_boxes": [
+    {
+     "name": "deck",
+     "center": [
+      0,
+      0,
+      0.35
+     ],
+     "size": [
+      6.0,
+      1.2,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "bay",
+     "center": [
+      0,
+      -1.7,
+      0.35
+     ],
+     "size": [
+      2.2,
+      2.2,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "bay_rail_w",
+     "center": [
+      -1.04,
+      -1.7,
+      1.0
+     ],
+     "size": [
+      0.12,
+      2.2,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "bay_rail_e",
+     "center": [
+      1.04,
+      -1.7,
+      1.0
+     ],
+     "size": [
+      0.12,
+      2.2,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "bay_rail_s",
+     "center": [
+      0,
+      -2.74,
+      1.0
+     ],
+     "size": [
+      2.2,
+      0.12,
+      1.1
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    },
+    {
+     "name": "bay_bench",
+     "center": [
+      0,
+      -1.45,
+      0.72
+     ],
+     "size": [
+      1.44,
+      0.46,
+      0.44
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 0.0
+    }
+   ],
+   "bay": {
+    "x": [
+     -1.1,
+     1.1
+    ],
+    "y": [
+     -2.8,
+     -0.6
+    ]
+   },
+   "bounds_min": [
+    -2.997,
+    -2.83,
+    -1.2
+   ],
+   "bounds_max": [
+    2.997,
+    0.7,
+    1.5
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  },
+  {
+   "kind": "boardwalk",
+   "variant": 3,
+   "file": "boardwalk_v3.glb",
+   "tris": 356,
+   "size": [
+    2.993,
+    1.502,
+    1.699
+   ],
+   "collision": "box",
+   "seats": [],
+   "notes": "reedbed boardwalk (мостки) piece, end ramp 3 m long: from deck height (z 0.5) at x -1.5 down to the ground (z 0.02) at x +1.5, 9.1 deg: deck along local X (\"axis\": \"x\"), 1.2 m wide, walking surface z 0.50 over the ground, origin = on the ground under the middle; piles reach z -1.2; its high end at x -1.5 butts a piece's end (same cross-section): to continue a walk that ends at a piece's +X end, place the ramp 4.5 m further along with the same yaw (yaw + 180 for a -X end); collision_boxes in mesh space (rot_y_deg right-handed about +Y, positive tips +X down)",
+   "axis": "x",
+   "width": 1.2,
+   "deck_z": 0.5,
+   "length": 3.0,
+   "pile_depth": 1.2,
+   "collision_boxes": [
+    {
+     "name": "ramp",
+     "center": [
+      -0.024,
+      0,
+      0.112
+     ],
+     "size": [
+      3.138,
+      1.2,
+      0.3
+     ],
+     "rot_x_deg": 0.0,
+     "rot_y_deg": 9.09
+    }
+   ],
+   "join_x": -1.5,
+   "bounds_min": [
+    -1.499,
+    -0.751,
+    -1.2
+   ],
+   "bounds_max": [
+    1.493,
+    0.751,
+    0.499
+   ],
+   "materials": [
+    "M_North_Atlas"
+   ],
+   "uv_lint": 0
+  }
+ ]
+}

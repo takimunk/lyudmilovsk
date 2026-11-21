@@ -1929,7 +1929,8 @@ void ULyudCityThings::StartStay(const FString& Id, int32 Days)
 
 bool ULyudCityThings::IsClearNow() const
 {
-	return (LyudCityThingsImpl::When(GetWorld()).Weather & LyudCity::WeatherClear) != 0;
+	// (only the weather: asked every frame from the beach chair, and the full moment allocates the holidays' names)
+	return (LyudCityThingsImpl::WeatherNow(GetWorld()) & LyudCity::WeatherClear) != 0;
 }
 
 void ULyudCityThings::CollectionViews(TArray<FCollectionView>& Out) const

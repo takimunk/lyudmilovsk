@@ -1,0 +1,12 @@
+{
+ "about": "Ambient sound points (tools/sound_points.py, docs/sound.md \"Sound points\"): a loop of `sound` (an audio/sounds.json id) from within `radius` of the point, heard to `audible` m, in `months`, between `hours` or at night, over `min_temp_c`, not in rain when `no_rain`.",
+ "frame": "map metres (docs/world_map.md): x west, y north, z up from the club's floor",
+ "points": [
+  {"id": "orchard_bees", "sound": "bees_hive", "x": -396.25, "y": 174.72, "z": -33.52, "radius": 9.8, "audible": 18.0, "volume": 0.45, "months": [5, 6, 7, 8, 9], "hours": [9.0, 19.0], "min_temp_c": 14.0, "no_rain": true},
+  {"id": "reed_frogs_1", "sound": "frogs_reed", "x": -34.53, "y": 301.07, "z": -38.17, "radius": 10.0, "audible": 60.0, "volume": 0.5, "months": [4, 5, 6], "night": true, "min_temp_c": 10.0, "no_rain": false},
+  {"id": "reed_frogs_2", "sound": "frogs_reed", "x": -2.6, "y": 292.67, "z": -38.22, "radius": 10.0, "audible": 60.0, "volume": 0.5, "months": [4, 5, 6], "night": true, "min_temp_c": 10.0, "no_rain": false},
+  {"id": "reed_frogs_3", "sound": "frogs_reed", "x": 20.37, "y": 283.19, "z": -38.26, "radius": 10.0, "audible": 60.0, "volume": 0.5, "months": [4, 5, 6], "night": true, "min_temp_c": 10.0, "no_rain": false},
+  {"id": "reed_frogs_4", "sound": "frogs_reed", "x": 41.49, "y": 267.07, "z": -38.3, "radius": 10.0, "audible": 60.0, "volume": 0.5, "months": [4, 5, 6], "night": true, "min_temp_c": 10.0, "no_rain": false},
+  {"id": "reed_frogs_5", "sound": "frogs_reed", "x": 67.81, "y": 259.99, "z": -38.34, "radius": 10.0, "audible": 60.0, "volume": 0.5, "months": [4, 5, 6], "night": true, "min_temp_c": 10.0, "no_rain": false}
+ ]
+}

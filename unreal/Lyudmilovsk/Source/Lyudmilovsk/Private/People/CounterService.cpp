@@ -153,6 +153,13 @@ void ULyudCounterService::Tick(float DeltaTime)
 	const UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(this);
 	if (!Hero || !Life || !Life->GetSim())
 	{
+		// no boy to stand in a line (he flies as a bird now): the spot he held is free again, or the line waits behind
+		// nobody till he is back
+		if (bHeldOn && Life && Life->GetSim())
+		{
+			Life->GetSim()->SetHeroAt(LyudPeople::V3(), false);
+		}
+		bHeldOn = false;
 		return;
 	}
 	HoldClock += DeltaTime;

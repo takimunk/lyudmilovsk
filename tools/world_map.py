@@ -101,10 +101,7 @@ def _east():
 def spur(x, y):
     """0..1: the terrace in front of the door (open to the sea in the west; its east and north
     sides fall to the valley)."""
-    dx = max(SPUR_C[0] - x, 0.0) / SPUR_RX           # only the east side is bounded
-    dy = (y - SPUR_C[1]) / SPUR_RY if y > SPUR_C[1] else 0.0
-    d = math.hypot(dx, dy)
-    return 1.0 - _smooth((d - 1.0) * SPUR_RY / SPUR_FALL)
+    return _south().spur(x, y)                       # its natural outline and flanks: tools/south.py
 
 
 def north_hills(x, y):
@@ -174,7 +171,7 @@ def plateau_south(x, y):
     z = z + (TOP_Z - z) * upland(x, y) * (1.0 - forecourt_level(x, y)) if TOP_Z > z else z
     if abs(x) <= 37.0 and -60.0 <= y <= 12.0:        # the hillside right round the portal
         z = max(z, mound(x, y))
-    return z
+    return _south().shape(x, y, z)                   # the shoulder down to the town, the brook (tools/south.py)
 
 
 def plateau(x, y):
@@ -218,6 +215,11 @@ def _north():
 def _river():
     import north_river
     return north_river
+
+
+def _south():
+    import south                                     # the Aton coast (docs/south.md); imports this module: load it lazily
+    return south
 
 
 def height(x, y):
@@ -306,7 +308,7 @@ def _height(x, y):
     z = _height0(x, y)
     if 1700.0 < y < 2150.0 and inland(x, y) > -40.0:     # the river breaks through the beach (tools/north_river.py)
         z = min(z, _river().outlet(x, y))
-    return z
+    return _south().outlet(x, y, z)                  # the brook breaks through the valley's beach (tools/south.py)
 
 
 def cliff(x, y):
@@ -588,7 +590,8 @@ FOREST_CELL = 40.0                # carving grid for keeping trees out of places
 def _tree_free(x, y):
     """True where no forest tree may stand (the Academgorodok's ground and the sight line to it)."""
     free = globals().get("academ_tree_free")
-    return bool(free and free(x, y)) or _city().tree_free(x, y) or (y > 1450.0 and _north().tree_free(x, y))
+    return bool(free and free(x, y)) or _city().tree_free(x, y) or (y > 1450.0 and _north().tree_free(x, y)) or \
+        (y < 400.0 and _south().tree_free(x, y))
 
 
 def _carve(x, y, hx, hy):
@@ -625,6 +628,10 @@ def forest_cover(x, y):
     """0..1: the share of a forest tile's trees that stand at (x, y); 1 where the tiles' own rectangles are the wood.
     The woods with natural outlines are drawn here: the tiles there only say which wood grows where. The game reads
     it as Content/World/forest_cover.fcv (tools/forest_cover.py; AProceduralForest drops the trees it leaves out)."""
+    if y < 400.0:                                    # the brook's alders, the old orchard (tools/south.py)
+        c = _south().cover(x, y)
+        if c is not None:
+            return c
     east = _east()                                   # the east and south-east (tools/east.py)
     if east.claims(x, y):
         return east.wood(x, y)
@@ -679,6 +686,10 @@ def forests():
         add(x, y, hx, hy, "town", z0, z1, 1.0)
     # (the valley's dune bank, wet copses and sparse town trees are gone: the town's terraces stand there now,
     # docs/city_plan.md; its parks and streets are planted by the town's own plants)
+    # the Aton coast (tools/south.py): alders along the brook, the old orchard, the copse under the headland; last,
+    # so the tiles before them keep their seeds
+    for x, y, hx, hy, mix, density, z0, z1 in _south().forests(_tiles):
+        add(x, y, hx, hy, mix, z0, z1, density)
     return out
 
 
@@ -706,7 +717,7 @@ def coast_plants():
     end = path_points()[-1]
     add(end[0] - 7, end[1] - 14, "Rowan", 18)
     add(end[0] + 7, end[1] - 20, "Aspen", 25)
-    return out
+    return out + _south().plants()                   # the oak by the lookout, the poplars by the stele... (tools/south.py)
 
 
 def grass_patches():
@@ -741,6 +752,7 @@ def grass_patches():
     x, y, hx, hy = REEDBED
     out.append((x, y, hx, hy, "CommonReed", 731, 2.5, -100.0, LOW_Z + 2.0))
     out += _north().grass_patches()                   # the North's meadows round its places and along its trail
+    out += _south().grass_patches()                   # the Aton coast's trails and the brook's banks
     return out
 
 
@@ -797,6 +809,8 @@ def keep_flat(x, y):
     k = max(k, academ_flat(x, y))
     if y > 1450.0:
         k = max(k, _north().keep_flat(x, y))
+    elif y < 380.0:
+        k = max(k, _south().keep_flat(x, y))
     return k
 
 

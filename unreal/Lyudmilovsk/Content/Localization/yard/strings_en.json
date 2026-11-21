@@ -58,7 +58,7 @@
  "yard.game.hopscotch": "Hopscotch",
  "yard.game.rope": "Skipping rope",
  "yard.game.tag": "Tag",
- "yard.prompt.find": "E — \"Found you!\"",
+ "yard.prompt.find": "E — “Found you!”",
  "yard.prompt.join": "E — ask to join hide-and-seek",
  "yard.toast.all_found": "Everyone's found! {0} is it next.",
  "yard.toast.counting": "Counting… {0}",

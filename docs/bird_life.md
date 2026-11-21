@@ -16,17 +16,23 @@ species' looks, sizes and animations are the species table's (`Content/BirdsData
 | Game side: subsystem, drawing, API | `Public/Birds/BirdLife.h`, `Private/Birds/BirdLife.cpp` |
 | Places birds can be, from the map | `tools/bird_habitats.py` -> `Content/BirdsData/bird_habitats.json`, `bird_world.bin` |
 | The North's places (north of Y 1450), from its land functions | `tools/bird_habitats_north.py` (used by bird_habitats.py; `python3 tools/bird_habitats_north.py` prints its extras) |
+| The brook's places (the Aton coast, `tools/south.py`): its edges and stones, its mouth, the fishermen's shed | `tools/bird_habitats_brook.py` (used by bird_habitats.py; `python3 tools/bird_habitats_brook.py` prints them) |
 | Run it outside the engine, tests, maps | `tools/birdsim/run.sh day|test|trace`, `tools/birdsim/render_birds.py` |
 | Offscreen play test | `unreal/scripts/test_birds.sh` (test_birds.py) |
 
-Rebuild the habitats whenever `tools/world_map.py`, `tools/north.py`, `tools/north_river.py`, the terrain or the wires change: `python3 tools/academ_wires.py && python3 tools/bird_habitats.py`.
+Rebuild the habitats whenever `tools/world_map.py`, `tools/north.py`, `tools/north_river.py`, `tools/south.py`, the terrain or the wires change: `python3 tools/academ_wires.py && python3 tools/bird_habitats.py`.
+Without the built terrain (a cloud checkout: `tools/terrain.py` falls back to the macro height, and a full run would move
+thousands of sites), `python3 tools/bird_habitats.py --only-brook` appends just the brook's sites to the committed
+`bird_habitats.json` (every other site kept byte for byte, `bird_world.bin` untouched); the next full run on the Mac
+gives them their exact heights.
 
 ## How it works
 
-**Places.** `bird_habitats.py` writes ~7350 sites of 13 kinds: sea, beach (wet sand), the clay cliff's face,
+**Places.** `bird_habitats.py` writes ~7350 sites of 15 kinds: sea, beach (wet sand), the clay cliff's face,
 meadows and fields, reed, streets and yards, roof ridges and eaves (the Academgorodok's houses), the church tower, wires
 (the cable car's ropes and the Academgorodok's power lines, each conductor in sagging pieces of up to 4 m), gardens,
-broadleaf and conifer crowns, the forest floor. A site is a point or a segment (a ridge, a rope) with a patch
+broadleaf and conifer crowns, the forest floor, and the brook's two (below): its edges (Brook) and its mouth (Mouth).
+The kinds are stored by index (`KINDS` in bird_habitats.py, `LyudBirds::EHabitat`, same order): a new kind goes at the end. A site is a point or a segment (a ridge, a rope) with a patch
 round it. In the game the guessed tree sites are replaced by the real crowns of the forests and hero plants
 (`AProceduralForest::ForEachTree`, `PlantModel::Summary`), so birds sit in real trees. An 8 m grid of the ground
 and of the tallest thing on it (crowns, roofs) keeps flights over obstacles.
@@ -46,6 +52,23 @@ post are wire; driftwood and boulders are cliff. Nothing on fumaroles or sulfur.
 fixed populations, ~33% of the non-starling birds live north of 1450 (23% before the North's own habitats, when
 the map stopped at Y 2200). In the game the guessed tree sites are replaced by real crowns there too, so the
 North's tree birds follow its real forests.
+
+**The brook** (`tools/south.py`'s brook, docs/south.md; `bird_habitats_brook.py`, its own random stream, appended after
+every other site so nothing else moves). Two kinds of its own, both ground (birds walk and peck there):
+
+| Kind | Where | How it behaves |
+|---|---|---|
+| Brook | every 25-40 m along the valley's and the reedbed's reaches, a patch of 0.45 m on the inside of the bend, its middle 0.6 m from the water's edge (~20 sites); four stones on the ravine's bed edge | in the lee of its cut (not exposed to a gale); a bird walking there keeps to the patch (`OnPatch`), so it never wades into the stream (0.28 m deep in the valley); its edge holds a few birds, a bigger flock goes elsewhere; feeding there is worth more at first light (up to 2.5x at sunrise, from half an hour before it, easing off between one and a half and two and a half hours after) |
+| Mouth | the fan where the brook crosses the beach: 2.5 m patches on both sides of the channel, 14 m and 6.5 m inland of the waterline (4 sites) | tidal like the beach (bare and rich at low water for the species that follow the tide, mostly given up at high water) and never chosen while the sea covers it; exposed; always among a group's candidates (a sample of 96 of ~7350 sites would hardly ever see four), and a small flock at most per patch |
+
+The fishermen's shed by the mouth (`south.things()` `fisher_shed`) adds a Roof ridge, 3.2 m up along its front axis. Who
+goes there (BirdEcology.cpp): the grey heron stalks the bends and the mouth (strongly at low water: it follows the tide),
+white wagtails run on the stones and the mouth's sand, gulls loaf at the mouth and bathe there, swallows and martins hawk
+low over the pools (drinking on the wing), rooks and jackdaws come down now and then to drink, the cormorant may dry its
+wings on a roof (the shed's among them). The midday bath: the mouth for the big birds as much as the beach, half that for
+the small; the brook's edges mostly for the small birds. Swallows and martins pick up nest mud at both. Nobody roosts
+there. Kingfisher and dipper are queued for the bird models thread (new species, models first). A hot day's drinking
+boost waits for the sim to know the temperature (it has none yet).
 
 **Groups.** Every species lives in groups (rook flocks of 8-24, pairs of crows, single robins and thrushes) with a
 home spread out from the other groups of its species (best-of-10 farthest picks), so birds are all over the map
@@ -119,16 +142,16 @@ fast, a sharp view turn or standing up and walking flushes it. Trust is per bird
 
 | Species | Wakes (min from sunrise) | Groups leave over | Feeds | Rests | Before the night | Roost (min from sunset) | Midday bath | Other | Winter |
 |---|---|---|---|---|---|---|---|---|---|
-| Rook | -25 | 20 min | fields, beach, street | crowns, wires, roofs | gathers on a field near the rookery, 50 min | rookery in tall trees (communal), +5 | rarely | mobs hawks | town refuse too, flocks ×1.5 |
+| Rook | -25 | 20 min | fields, beach, street; drinks at the brook | crowns, wires, roofs | gathers on a field near the rookery, 50 min | rookery in tall trees (communal), +5 | rarely | mobs hawks | town refuse too, flocks ×1.5 |
 | Hooded crow | -20 | 15 | beach (low tide), fields, streets | conifers, roofs, tower | tall trees, 30 min | conifers (communal), 0 | sometimes | steals food, mobs | ×1 |
-| Jackdaw | -20 | 15 | fields, streets | roofs, tower | chatters on roofs and the tower, 30 min | church tower (communal), +10 | sometimes | steals, mobs | flocks ×1.4 |
+| Jackdaw | -20 | 15 | fields, streets; drinks at the brook | roofs, tower | chatters on roofs and the tower, 30 min | church tower (communal), +10 | sometimes | steals, mobs | flocks ×1.4 |
 | Magpie | -15 | 5 | fields, streets, gardens | gardens | — | gardens, -5 | yes | steals, mobs | — |
 | Feral pigeon | 0 | 10 | streets | roofs, tower, wires | roofs, 15 min | tower, roofs, -5 | often | tame | — |
 | Wood pigeon | -10 | 15 | fields, gardens, forest floor | crowns, wires | conifers, 15 min | conifers, -10 | sometimes | — | fields, flocks ×2 |
-| Herring gull | -30 | 30 | sea, beach (tide), street | roofs, beach, sea | on the beach, 40 min | on the sea (communal), +20 | often | soars, steals | — |
-| Black-headed gull | -30 | 30 | fields, beach (tide), sea, street | beach, sea, wires | on the beach, 40 min | on the sea (communal), +15 | often | soars, steals | the town's streets, flocks ×1.3 |
-| Common gull | -30 | 30 | fields, beach (tide), sea | beach, sea, roofs | on the beach, 40 min | on the sea (communal), +15 | often | soars, steals | — |
-| Cormorant | -10 | 20 | the sea (dives) | beach, cliff: stands drying its wings | on the beach, 20 min | beach (communal), 0 | — | — | — |
+| Herring gull | -30 | 30 | sea, beach (tide), street | roofs, beach, sea, the brook's mouth | on the beach, 40 min | on the sea (communal), +20 | often | soars, steals | — |
+| Black-headed gull | -30 | 30 | fields, beach (tide), sea, street | beach, sea, wires, the brook's mouth | on the beach, 40 min | on the sea (communal), +15 | often | soars, steals | the town's streets, flocks ×1.3 |
+| Common gull | -30 | 30 | fields, beach (tide), sea | beach, sea, roofs, the brook's mouth | on the beach, 40 min | on the sea (communal), +15 | often | soars, steals | — |
+| Cormorant | -10 | 20 | the sea (dives) | beach, cliff, a roof (the fishermen's shed): stands drying its wings | on the beach, 20 min | beach (communal), 0 | — | — | — |
 | Mute swan | -20 | 10 | sea, the reed's edge | beach, sea | — | on the water, +10 | sometimes | — | — |
 | Great tit | -15 | 5 | gardens, crowns | gardens, crowns | — | broadleaf crowns, -20 | often | dawn song, mobs | gardens and feeders, flocks ×1.5 (the core of mixed flocks) |
 | Blue tit | -15 | 5 | gardens, crowns, reed | gardens, reed | — | broadleaf crowns, -20 | often | mobs | roams with the great tits, ×1.5 |
@@ -136,7 +159,7 @@ fast, a sharp view turn or standing up and walking flushes it. Trust is per bird
 | Chaffinch | -15 | 10 | forest floor, fields | crowns | — | conifers, -20 | sometimes | dawn song | fields, flocks ×2 |
 | Bullfinch | -5 | 10 | gardens, crowns | gardens | — | conifers, -20 | sometimes | — | berries |
 | Waxwing | 0 | 10 | gardens (berries) | crowns, wires | crowns, wires, 10 min | conifers, -20 | rarely | — | gardens only, ×1.5 |
-| White wagtail | 0 | 10 | beach (tide), streets, fields | roofs, wires | gathers on roofs, 20 min | the reed (communal), -10 | often | mobs | (migrant) |
+| White wagtail | 0 | 10 | beach and the brook's mouth (tide), the brook's stones, streets, fields | roofs, wires, the brook's stones | gathers on roofs, 20 min | the reed (communal), -10 | often | mobs | (migrant) |
 | House sparrow | -10 | 5 | streets, gardens | gardens, roofs | gardens, 15 min | roofs, gardens, -20 | dust and water baths, often | — | flocks ×1.3 |
 | Tree sparrow | -10 | 5 | fields, gardens | crowns, wires | gardens, 15 min | gardens, -20 | often | — | fields, ×1.5 |
 | Starling | -30 | 25 | fields, town lawns and streets, beach wrack (tide) | wires, roofs, crowns | wires and trees near the roost, 35 min | **the murmuration** from -40, then the reedbed (communal), down by +30 | sometimes | mobs | — |
@@ -145,8 +168,8 @@ fast, a sharp view turn or standing up and walking flushes it. Trust is per bird
 | Blackbird | -40 | 10 | gardens, forest floor | gardens, crowns | — | conifers, gardens, +15 | often | dawn and dusk song, mobs | gardens, forest floor |
 | Robin | -45 | 5 | forest floor, gardens | crowns, gardens | — | crowns, +20 | often | dawn song, mobs, very tame | — |
 | Common swift | +10 | 10 | hawks high over streets, fields, sea | tower, cliff | screams round the tower, 20 min | **sleeps on the wing** 400-700 m up | — | clings, never perches | (away) |
-| Barn swallow | 0 | 10 | hawks low over fields, reed, water | wires, roofs | in rows on the wires, 40 min | the reed (communal), -10 | — | mobs | (away; October stragglers) |
-| Sand martin | 0 | 10 | hawks over the sea, beach, reed | wires, cliff | on the wires, 30 min | the reed (communal), -10 | — | mobs | (away; October stragglers) |
+| Barn swallow | 0 | 10 | hawks low over fields, reed, water, the brook's pools | wires, roofs | in rows on the wires, 40 min | the reed (communal), -10 | — | mobs | (away; October stragglers) |
+| Sand martin | 0 | 10 | hawks over the sea, beach, reed, the brook and its mouth | wires, cliff | on the wires, 30 min | the reed (communal), -10 | — | mobs | (away; October stragglers) |
 | Sparrowhawk | 0 | — | hunts gardens, streets | conifers | — | conifers, -10 | — | hunts small birds | — |
 | Peregrine | 0 | — | hunts over the town, beach, sea | tower, cliff | — | tower, cliff, +25 (hunts the murmuration at dusk) | — | stoops | — |
 
@@ -157,7 +180,7 @@ fast, a sharp view turn or standing up and walking flushes it. Trust is per bird
 | Jay | -15 | 10 | oaks, the forest floor, gardens | broadleaf, conifers | — | conifers, -10 | sometimes | buries acorns all autumn (docs/corvids.md) | oaks, gardens |
 | Nutcracker | -10 | 10 | spruces, the forest floor, gardens | conifers | — | conifers, -15 | sometimes | hides hazelnuts and cones far off, very tame | conifers, gardens |
 | Carrion crow | -20 | 15 | beach (low tide), fields, streets | conifers, roofs, tower | tall trees, 30 min | conifers (with the hooded crows), 0 | sometimes | as the hooded crow | as the hooded crow |
-| Grey heron | -20 | 10 | the reed, the sand at low tide | conifers, the reed | — | conifers (communal heronry), +10 | — | stalks the waterline | — |
+| Grey heron | -20 | 10 | the reed, the brook's mouth and the sand at low tide, the brook's bends (most at dawn) | conifers, the reed | — | conifers (communal heronry), +10 | — | stalks the waterline | — |
 | Black-browed albatross | 0 | — | the sea | on the sea | — | on the sea, +30 | — | a lost wanderer: sits on the sea in a calm, soars low over the waves in a blow | — |
 
 ## Wind
@@ -229,7 +252,10 @@ away from the danger, or from the player wherever they are, for one to two minut
   sunrise, feeding on fields and in town by mid-morning), October's swallows (stragglers, hawking, rows on the wires
   no closer than 10 cm, asleep in the reed, gone by 6 November), gulls on the beach at low tide, rooks' pre-roost
   gathering, swifts asleep on the wing. `BIRD_ONLY=routines` (or `murm`) runs only those; the murmuration's cost
-  is printed (~0.1 ms a frame for 1200 birds).
+  is printed (~0.1 ms a frame for 1200 birds). The brook (`BIRD_ONLY=brook`): a heron stands at the mouth at low
+  tide and not at high water, no bird stands in the brook's water (`Content/South/south.json` "brook" "water") or in
+  the sea over the mouth's fan, wagtails and the heron use the brook, nobody roosts there, and the night's roosts are as
+  without the brook's sites (all asleep, every communal roost full).
   The bird world is deterministic on one platform only: rounding differs between Linux x86-64 and the Mac (which
   fuses multiply-adds), and after a few thousand steps the flocks are elsewhere. A check must hold in every such
   world, so it measures what the behaviour does over time (the mean number of gulls on the sand over an hour, not

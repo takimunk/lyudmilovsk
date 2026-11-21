@@ -656,7 +656,7 @@
  },
  "city.xh.choir.prompt": {
   "ru": "E — послушать хор «Прибой»",
-  "en": "E — listen to the «Surf» choir",
+  "en": "E — listen to the “Surf” choir",
   "ja": "E：合唱団「プリボイ」を聴く"
  },
  "city.xh.steps.prompt": {
@@ -706,7 +706,7 @@
  },
  "city.xh.prompter.line.1": {
   "ru": "Суфлёрская стойка у левой кулисы. На наклонной доске лежит толстая тетрадь: пьеса «Время, вперёд!», каждая страница исчёркнута карандашом.",
-  "en": "The prompter's stand at the left wing. A thick notebook lies on the slanted board: the play «Time, Forward!», every page scribbled over in pencil.",
+  "en": "The prompter's stand at the left wing. A thick notebook lies on the slanted board: the play “Time, Forward!”, every page scribbled over in pencil.",
   "ja": "舞台の左袖のプロンプター台。斜めの板の上に分厚いノートが置かれている。劇「時よ、前へ！」の台本で、どのページも鉛筆で書き込まれている。"
  },
  "city.xh.prompter.line.2": {
@@ -716,12 +716,12 @@
  },
  "city.xh.text.script.title": {
   "ru": "«Время, вперёд!»: суфлёрский экземпляр",
-  "en": "«Time, Forward!»: the prompter's copy",
+  "en": "“Time, Forward!”: the prompter's copy",
   "ja": "「時よ、前へ！」プロンプター用の台本"
  },
  "city.xh.script.1": {
   "ru": "ВРЕМЯ, ВПЕРЁД!\nКомедия в трёх действиях для театра «Волна».\nДействующие лица: Часовщик, хозяин мастерской на площади. Мэр. Почтальонша. Хор часов (за сценой).\nНа полях: «Суфлёр! Читай тихо. Эхо в Сводах повторяет всё, включая тебя».",
-  "en": "TIME, FORWARD!\nA comedy in three acts for the «Wave» theatre.\nCharacters: the Watchmaker, who keeps a workshop on the square. The Mayor. The Postwoman. A Chorus of Clocks (offstage).\nIn the margin: \"Prompter! Read quietly. The echo in the Vaults repeats everything, you included.\"",
+  "en": "TIME, FORWARD!\nA comedy in three acts for the “Wave” theatre.\nCharacters: the Watchmaker, who keeps a workshop on the square. The Mayor. The Postwoman. A Chorus of Clocks (offstage).\nIn the margin: \"Prompter! Read quietly. The echo in the Vaults repeats everything, you included.\"",
   "ja": "時よ、前へ！\n劇団「ヴォルナ」のための三幕の喜劇。\n登場人物：広場で店を構える時計職人。市長。郵便配達の女性。時計たちの合唱（舞台裏）。\n余白に：「プロンプターへ。小声で読むこと。ヴォールトのエコーはあなたの声まで繰り返します」"
  },
  "city.xh.script.2": {
@@ -796,7 +796,7 @@
  },
  "city.xh.booklet.2": {
   "ru": "Что когда: вторник — лекция, среда — хор «Прибой», четверг — репетиция театра «Волна», пятница — танцы, суббота — премьера и танцы после, воскресенье — чайные танцы. Понедельник отдыхаем. Вход свободный, места по любви.",
-  "en": "What when: Tuesday the lecture, Wednesday the «Surf» choir, Thursday a rehearsal of the «Wave» theatre, Friday dancing, Saturday the premiere and dancing after, Sunday tea dances. Mondays we rest. Admission is free, seats by love.",
+  "en": "What when: Tuesday the lecture, Wednesday the “Surf” choir, Thursday a rehearsal of the “Wave” theatre, Friday dancing, Saturday the premiere and dancing after, Sunday tea dances. Mondays we rest. Admission is free, seats by love.",
   "ja": "いつ何があるか。火曜は講義、水曜は合唱団「プリボイ」、木曜は劇団「ヴォルナ」の稽古、金曜はダンス、土曜は初日とその後のダンス、日曜はお茶のダンス。月曜は休みです。入場は無料、席は好きなところへ。"
  },
  "city.xh.booklet.3": {
@@ -806,17 +806,17 @@
  },
  "city.xh.booklet.4": {
   "ru": "Кто есть кто. Смотритель: ключи, гардероб, буфет. Хормейстер Айла Берзиня: «Прибой», со среды по воскресенье с пяти до девяти. Завхоз он же Часовщик: до девяти вечера, по договорённости. Кухня: хлеб с утра, суп днём, пироги к вечеру, чай до закрытия.",
-  "en": "Who is who. The caretaker: keys, cloakroom, bar. The choir leader Isla Bērziņa: «Surf», Wednesday to Sunday, five to nine. The steward, who is also the Watchmaker: until nine in the evening, by agreement. The kitchen: bread in the morning, soup by day, pies towards evening, tea until closing.",
+  "en": "Who is who. The caretaker: keys, cloakroom, bar. The choir leader Isla Bērziņa: “Surf”, Wednesday to Sunday, five to nine. The steward, who is also the Watchmaker: until nine in the evening, by agreement. The kitchen: bread in the morning, soup by day, pies towards evening, tea until closing.",
   "ja": "だれが何をするか。管理人：鍵、クローク、バー。合唱指揮者アイラ・ベールジニャ：「プリボイ」、水曜から日曜の五時から九時。管財係（兼時計職人）：夜九時まで、相談の上で。厨房：朝はパン、昼はスープ、夕方にはパイ、閉館まで紅茶。"
  },
  "city.xh.text.sheet_stage.title": {
   "ru": "Ноты на рояле: «Вальс „Своды“»",
-  "en": "Music on the grand piano: the «Vaults» waltz",
+  "en": "Music on the grand piano: the “Vaults” waltz",
   "ja": "グランドピアノの楽譜：ワルツ「ヴォールト」"
  },
  "city.xh.sheet.stage.1": {
   "ru": "Ноты для рояля: «Вальс „Своды“», сочинение местного учителя музыки. На полях карандашом: «Левая рука как шаги по пустому залу. Правая как эхо, которое не торопится».",
-  "en": "Sheet music for the piano: the «Vaults» waltz, composed by a local music teacher. In the margin in pencil: \"The left hand like steps across an empty hall. The right like an echo in no hurry.\"",
+  "en": "Sheet music for the piano: the “Vaults” waltz, composed by a local music teacher. In the margin in pencil: \"The left hand like steps across an empty hall. The right like an echo in no hurry.\"",
   "ja": "ピアノの楽譜：地元の音楽教師が作曲したワルツ「ヴォールト」。余白に鉛筆で：「左手は誰もいないホールを歩く足音のように。右手は急がないエコーのように」"
  },
  "city.xh.sheet.stage.2": {
@@ -836,37 +836,37 @@
  },
  "city.xh.sheet.dance.2": {
   "ru": "Ноты польки «Весёлые ноги». Над третьей строчкой нарисованы туфли с крылышками. Подпись: «Играть быстрее, чем кажется разумным».",
-  "en": "The music of the polka «Merry Feet». Over the third line, a drawing of shoes with little wings. Written: \"Play faster than seems sensible.\"",
+  "en": "The music of the polka “Merry Feet”. Over the third line, a drawing of shoes with little wings. Written: \"Play faster than seems sensible.\"",
   "ja": "ポルカ「陽気な足」の楽譜。三段目の上に羽の生えた靴の絵。書き込み：「常識で考えるより速く弾くこと」"
  },
  "city.xh.exh.east.1": {
   "ru": "«Море, которое мы знаем». Сегодня на стене работы любителей: рыбацкие лодки, маяк в тумане, песчаная коса. К табличке пришпилен лист: «Голосуем карандашом: какое море лучшее». Лидирует то, которое с чайкой.",
-  "en": "«The Sea We Know». On the wall this week: amateurs' work, fishing boats, a lighthouse in fog, a sand spit. A sheet is pinned to the label: \"We vote in pencil: which sea is best.\" The one with the gull is ahead.",
+  "en": "“The Sea We Know”. On the wall this week: amateurs' work, fishing boats, a lighthouse in fog, a sand spit. A sheet is pinned to the label: \"We vote in pencil: which sea is best.\" The one with the gull is ahead.",
   "ja": "「わたしたちの知る海」。今週の壁には素人画家の作品。漁船、霧の中の灯台、砂州。札には紙が留めてある。「鉛筆で投票：いちばんいい海は？」今はカモメのいる海がリード。"
  },
  "city.xh.exh.east.2": {
   "ru": "«Соседи». Новая развеска: портреты жильцов серпантинного дома, написанные маслом, но в манере открытки. Под каждым имя и этаж. Один сосед вышел очень похоже, и теперь прячется от собственного портрета.",
-  "en": "«Neighbours». A new hang: portraits of the residents of the serpentine house, painted in oils but in the manner of a postcard. Under each, a name and a floor. One neighbour came out so true that he now hides from his own portrait.",
+  "en": "“Neighbours”. A new hang: portraits of the residents of the serpentine house, painted in oils but in the manner of a postcard. Under each, a name and a floor. One neighbour came out so true that he now hides from his own portrait.",
   "ja": "「お隣さん」。展示替え。蛇行する集合住宅の住人の肖像が、油絵でありながら絵はがき風に描かれている。それぞれの下に名前と階。ある住人はそっくりに描かれすぎて、自分の肖像から逃げ回っている。"
  },
  "city.xh.exh.east.3": {
   "ru": "«Вечера в Сводах». Фотографии хора и танцев, отпечатанные в клубе. На одной хор поёт с открытыми ртами, а звука не слышно, и от этого слышнее весь зал.",
-  "en": "«Evenings in the Vaults». Photographs of the choir and the dances, printed at the club. In one the choir sings with open mouths and no sound, and that makes the whole hall louder.",
+  "en": "“Evenings in the Vaults”. Photographs of the choir and the dances, printed at the club. In one the choir sings with open mouths and no sound, and that makes the whole hall louder.",
   "ja": "「ヴォールトの夜」。クラブで焼いた合唱とダンスの写真。一枚では合唱団が口を開けて歌っているのに音は聞こえない。それがかえってホール全体を賑やかに感じさせる。"
  },
  "city.xh.exh.east.4": {
   "ru": "«Город глазами третьего „Б“». Детские рисунки: башня, чайка, большая белая ладонь потолка. Под одним корявая подпись: «Это мама на кухне». Мама нарисована очень большой и очень тёплой.",
-  "en": "«The Town Through the Eyes of Class 3B». Children's drawings: a tower, a gull, the ceiling like a big white palm. Under one, a crooked caption: \"This is mum in the kitchen.\" Mum is drawn very large and very warm.",
+  "en": "“The Town Through the Eyes of Class 3B”. Children's drawings: a tower, a gull, the ceiling like a big white palm. Under one, a crooked caption: \"This is mum in the kitchen.\" Mum is drawn very large and very warm.",
   "ja": "「3年B組の目で見る町」。子どもの絵。塔、カモメ、大きな白い手のひらのような天井。ある絵の下にはゆがんだ字で「台所のお母さん」。お母さんはとても大きく、とても暖かく描かれている。"
  },
  "city.xh.exh.east.5": {
   "ru": "«Постоянная экспозиция». Сезонные выставки ушли в запасник, остались любимые картины смотрителя. Подписей нет: висят, значит, нужны.",
-  "en": "«The Permanent Collection». The seasonal shows have gone to storage, and the caretaker's favourite pictures remain. No captions: they hang, so they are needed.",
+  "en": "“The Permanent Collection”. The seasonal shows have gone to storage, and the caretaker's favourite pictures remain. No captions: they hang, so they are needed.",
   "ja": "「常設展示」。季節の展示は倉庫へ戻り、管理人のお気に入りの絵が残った。説明はない。掛かっているのだから、必要なのだ。"
  },
  "city.xh.exh.north.1": {
   "ru": "«Три берега». Маяк, тихое море, дюны. В тихом море нет ни одной волны: художник забыл. Но это самая тёплая картина в ряду.",
-  "en": "«Three Shores». A lighthouse, a calm sea, dunes. There is not one wave in the calm sea: the painter forgot. But it is the warmest picture in the row.",
+  "en": "“Three Shores”. A lighthouse, a calm sea, dunes. There is not one wave in the calm sea: the painter forgot. But it is the warmest picture in the row.",
   "ja": "「三つの岸辺」。灯台、凪の海、砂丘。凪の海には波が一つもない。画家が描き忘れたのだ。それでも並びの中でいちばん暖かい絵だ。"
  },
  "city.xh.exh.north.2": {
@@ -891,12 +891,12 @@
  },
  "city.xh.exh.west.1": {
   "ru": "«Куда уезжают». Туристические плакаты шестидесятых: поезд, пальма, гора. Рядом приклеена бумажка: «Самое далёкое место в этом зале — вот этот плакат. Остальное рядом».",
-  "en": "«Where People Go». Tourist posters of the sixties: a train, a palm, a mountain. A slip is stuck beside them: \"The farthest place in this hall is this poster. The rest is nearby.\"",
+  "en": "“Where People Go”. Tourist posters of the sixties: a train, a palm, a mountain. A slip is stuck beside them: \"The farthest place in this hall is this poster. The rest is nearby.\"",
   "ja": "「みんなが旅立つところ」。六十年代の観光ポスター。列車、ヤシ、山。横に紙が貼ってある。「このホールでいちばん遠い場所はこのポスターです。ほかは近所です」"
  },
  "city.xh.exh.west.2": {
   "ru": "«Шторм». Единственное место, где в зале шумно: на картине волны бьют в пирс. Говорят, в дождь звук к картине действительно добавляется, хотя это, конечно, свод.",
-  "en": "«Storm». The only noisy spot in the hall: in the painting the waves hit a pier. They say that in rain the sound really does join the picture, though it is of course the vault.",
+  "en": "“Storm”. The only noisy spot in the hall: in the painting the waves hit a pier. They say that in rain the sound really does join the picture, though it is of course the vault.",
   "ja": "「嵐」。ホールで唯一にぎやかな場所。絵の中では波が桟橋を打っている。雨の日には本当に音が絵に加わるという。もちろんそれは天井のヴォールトの仕業だ。"
  },
  "city.xh.exh.west.3": {
@@ -906,7 +906,7 @@
  },
  "city.xh.exh.west.4": {
   "ru": "Неделя «Школьных путешествий»: карты с булавками, где побывали классы. Дальше всех забрался шестой «А»: до пирса и обратно, с ночёвкой.",
-  "en": "«School Journeys» week: maps with pins where the classes went. The farthest was class 6A: to the pier and back, overnight.",
+  "en": "“School Journeys” week: maps with pins where the classes went. The farthest was class 6A: to the pier and back, overnight.",
   "ja": "「学校の遠足」の週。クラスが訪れた場所にピンを刺した地図。いちばん遠くへ行ったのは6年A組：桟橋まで往復、一泊付き。"
  },
  "city.xh.exh.west.5": {
@@ -1326,12 +1326,12 @@
  },
  "city.xh.choirtalk.t1": {
   "ru": "Про хор «Прибой»",
-  "en": "About the «Surf» choir",
+  "en": "About the “Surf” choir",
   "ja": "合唱団「プリボイ」のこと"
  },
  "city.xh.choirtalk.t1.1": {
   "ru": "— «Прибой» — это двадцать два человека и ни одного идеального слуха, — улыбается Айла. — Слух мы растим. Первый год поём в унисон, второй в терцию, а на третий кто-нибудь обязательно запоёт соло, и все делают вид, что так и надо.",
-  "en": "\"«Surf» is twenty-two people and not one perfect ear,\" Isla smiles. \"We grow the ear. The first year we sing in unison, the second in thirds, and in the third somebody always starts a solo and everyone acts as if that was the plan.\"",
+  "en": "\"“Surf” is twenty-two people and not one perfect ear,\" Isla smiles. \"We grow the ear. The first year we sing in unison, the second in thirds, and in the third somebody always starts a solo and everyone acts as if that was the plan.\"",
   "ja": "「『プリボイ』は二十二人で、完璧な耳の持ち主は一人もいないの」とアイラは微笑む。「耳は育てるもの。一年目は斉唱、二年目は三度、三年目には必ず誰かがソロを歌い出して、みんな最初からそのつもりだったという顔をするの」"
  },
  "city.xh.choirtalk.t1.2": {
@@ -1356,7 +1356,7 @@
  },
  "city.xh.choirtalk.t3": {
   "ru": "Про пьесу «Время, вперёд!»",
-  "en": "About the play «Time, Forward!»",
+  "en": "About the play “Time, Forward!”",
   "ja": "劇「時よ、前へ！」のこと"
  },
  "city.xh.choirtalk.t3.1": {
@@ -1406,7 +1406,7 @@
  },
  "city.xh.cook.t2.1": {
   "ru": "— Слышите, как по вытяжке доносится хор? — повар поднимает палец. — Третий год готовлю под «Прибой». Борщ у меня от этого стал ровнее.",
-  "en": "\"Hear how the choir comes through the vent?\" the cook raises a finger. \"This is my third year cooking to «Surf». My borscht has come out steadier for it.\"",
+  "en": "\"Hear how the choir comes through the vent?\" the cook raises a finger. \"This is my third year cooking to “Surf”. My borscht has come out steadier for it.\"",
   "ja": "「換気口から合唱が聞こえるだろう？」料理人は指を立てる。「三年めだよ、『プリボイ』を聴きながら料理しているのは。おかげでボルシチが安定した」"
  },
  "city.xh.cook.t2.2": {
@@ -1536,7 +1536,7 @@
  },
  "quest.hall_audition.desc": {
   "ru": "В вестибюле «Сводов» на столике лежат программки. В одной сказано, что хор «Прибой» берёт новых людей, хотя и не всех, и что в пьесе хор изображает часы. Интересно, как.",
-  "en": "On a table in the lobby of the Vaults lie programmes. One says the «Surf» choir takes new people, though not everyone, and that in the play the choir plays the clocks. I wonder how.",
+  "en": "On a table in the lobby of the Vaults lie programmes. One says the “Surf” choir takes new people, though not everyone, and that in the play the choir plays the clocks. I wonder how.",
   "ja": "「ヴォールト」のロビーのテーブルにプログラムが置いてある。それによると、合唱団「プリボイ」は誰でもではないが新しい人を迎えるし、劇の中では合唱団が時計を演じるらしい。どんなふうにだろう。"
  },
  "quest.hall_audition.script.log": {

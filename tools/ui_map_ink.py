@@ -114,7 +114,12 @@ def main(out_png):
         j0, j1 = int((W.SHEET_Y_MAX - (fy + hy)) / U.PX), int((W.SHEET_Y_MAX - (fy - hy)) / U.PX) + 1
         i0, j0 = max(i0, 0), max(j0, 0)
         sub = H[j0:j1, i0:i1]
-        forest_mask[j0:j1, i0:i1] |= (sub >= z0) & (sub <= z1) & (slope[j0:j1, i0:i1] < 0.8)
+        on = (sub >= z0) & (sub <= z1) & (slope[j0:j1, i0:i1] < 0.8)
+        if fy < 400.0 and mix == "wet":            # the brook's alders: only where tools/south.py's cover draws them
+            cov = np.array([[(W.forest_cover(X[j, ii], Y[j, ii]) > 0.3) for ii in range(i0, min(i1, w))]
+                            for j in range(j0, min(j1, h))], bool)
+            on &= cov
+        forest_mask[j0:j1, i0:i1] |= on
     # a ragged edge, as in the painted map
     n = np.vectorize(lambda x, y: U.noise(x, y, 22.0))(X[::4, ::4], Y[::4, ::4])
     n = np.asarray(Image.fromarray((n * 255).astype(np.uint8)).resize((w, h), Image.BILINEAR), np.float32) / 255
@@ -206,6 +211,17 @@ def main(out_png):
     path = [px(x, y) for x, y in W.path_points(2.0)]
     for k2 in range(0, len(path) - 1, 3):
         d.line((path[k2], path[min(k2 + 1, len(path) - 1)]), fill=INK + (220,), width=3)
+    # the Aton coast (tools/south.py): its trails as dashes, the brook in blue pencil, the stair down the cliff as rungs
+    S = W._south()
+    for trail in S.trails().values():
+        tp = [px(x, y) for x, y in trail]
+        for k2 in range(0, len(tp) - 1, 3):
+            d.line((tp[k2], tp[min(k2 + 1, len(tp) - 1)]), fill=INK + (200,), width=3)
+    d.line([px(x, y) for x, y in S._course()["pts"]], fill=BLUE + (235,), width=4, joint="curve")
+    (sx0, sy0), (sx1, _) = S.stair_line()
+    for k2 in range(9):
+        xs = sx0 + (sx1 - sx0) * k2 / 8.0
+        d.line((px(xs, sy0 - 3.0), px(xs, sy0 + 3.0)), fill=INK + (220,), width=2)
     a, b = px(W.DOOR_X, 0.0)
     d.rectangle((a - 12, b - 4, a + 12, b + 8), outline=INK + (240,), width=3)
     for yv in range(0, int(W.CORRIDOR_END_Y), -14):

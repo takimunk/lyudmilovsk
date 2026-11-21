@@ -28,6 +28,7 @@
 #include "Sea/LyudSwim.h"
 #include "../Transport/LyudMeshKit.h"
 #include "UI/LyudGameScreen.h"
+#include "UI/LyudQuests.h"
 #include "Weather/LyudWind.h"
 
 namespace
@@ -995,6 +996,8 @@ void ULyudKiteFlying::TickHero(float DeltaTime)
 		if (UpFor > 20.f && UpFor - DeltaTime <= 20.f)
 		{
 			Stamp(TEXT("first_flight"));
+			// a flight of twenty seconds: quests, the diary's day (docs/diary.md)
+			ULyudQuests::Notify(this, TEXT("kite_flown"));
 			Say(TEXT("ui.kite.flying"), 3.f);
 		}
 		if (Now == LyudKite::EState::Flying && Sim.Pos.Z - Hero.Hand.Z * 0.01 > 30.0)

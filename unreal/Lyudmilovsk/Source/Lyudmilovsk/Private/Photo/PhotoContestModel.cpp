@@ -252,7 +252,8 @@ namespace PhotoContest
 
 	bool FState::CanEnter(int Year, int Month, int Day) const
 	{
-		return Day >= 1 && Day <= LastEntryDay && Find(ContestOf(Year, Month)) == nullptr;
+		// (the entries stay in the order of their months, as Restore asks: a clock set back enters nothing)
+		return Day >= 1 && Day <= LastEntryDay && (All.empty() || All.back().Contest < ContestOf(Year, Month));
 	}
 
 	bool FState::Enter(int Year, int Month, int Day, const PhotoModel::FShot& Shot)

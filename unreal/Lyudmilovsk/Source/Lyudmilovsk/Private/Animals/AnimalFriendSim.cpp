@@ -235,6 +235,10 @@ namespace LyudAnimals
 		{
 			return false;
 		}
+		if (A.Pet == EPet::Indoors || A.Pet == EPet::Sill || (A.Pet == EPet::Leash && A.Sniffed <= 0.f))
+		{
+			return false;       // out of reach, or on a leash and the owner has not been asked (AllowStroke)
+		}
 		if (A.Friend != EFriend::None)
 		{
 			return true;        // already at the hand
@@ -389,9 +393,9 @@ namespace LyudAnimals
 		}
 		FAnimal& A = Animals[Id];
 		const bool bNight = Hour >= BedHour || Hour < UpHour;
-		if (FrCat(A) || A.Bond < FriendBond || FrAway(A) || bNight)
+		if (FrCat(A) || A.Bond < FriendBond || FrAway(A) || bNight || A.Pet != EPet::None)
 		{
-			return false;
+			return false;       // (somebody's dog walks with its owner, not with the player)
 		}
 		if (Walker == Id)
 		{
