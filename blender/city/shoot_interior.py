@@ -10,6 +10,9 @@ stand), standing 2.5 m in front of the spot and looking at it; falls back to the
 --top Z0,Z1: one more orthographic plan view from above with everything over Z1 clipped away (furniture layout
 check); Z0 is the floor of the storey.
 Lights: the building's own lamps (B.lamp), as in the game; day sky outside. Writes renders/city/interior/<type>_<n>.jpg.
+--dress NOW: which swappable dressing sets (B.dress, docs/city_dress.md) are in the shot: "none" (default), "all", or a
+game moment "month=1,weekday=2,hour=9,since=4,weather=rain+wet,festival=new_year,open=1" (the sets whose condition holds
+then; the names go into the file name as _d<tag> when --dress-tag is given).
 """
 import math
 import os
@@ -145,12 +148,47 @@ def main():
     if not cams:
         cams = auto_cams(B, int(opt("--auto", 4)))
     top = opt("--top", "")
-    shoot(B, out_id, cams, samples=int(opt("--samples", 32)), res=opt("--res", "1120x700"), lens=float(opt("--lens", 20)),
+    show = dress_filter(B, out_id, opt("--dress", "none"))
+    tag = opt("--dress-tag", "")
+    if tag:
+        out_id = "%s_d%s" % (out_id, tag)
+    shoot(B, out_id, cams, dress=show, samples=int(opt("--samples", 32)), res=opt("--res", "1120x700"), lens=float(opt("--lens", 20)),
           out=opt("--out", os.path.join(bc.ROOT, "renders", "city", "interior")), exposure=float(opt("--exposure", 0.6)),
           top=[float(t) for t in top.split(",")] if top else None)
 
 
-def shoot(B, out_id, cams, samples=32, res="1120x700", lens=20.0, out=None, exposure=0.6, top=None, sun=3.0):
+def dress_now(text):
+    """"month=1,weekday=2,hour=9,since=4,weather=rain+wet,festival=new_year,open=1" -> the `now` of citykit.dress_visible."""
+    now = {"since": 0, "day": 0, "hour": 12.0, "weekday": 0, "month": 6, "weather": set(), "festivals": set(),
+           "festival_today": False, "open": True}
+    for part in [t for t in text.split(",") if t]:
+        k, v = part.split("=", 1)
+        if k == "weather":
+            now["weather"] = set(v.split("+"))
+        elif k == "festival":
+            now["festivals"] = set(v.split("+"))
+            now["festival_today"] = True
+        elif k == "open":
+            now["open"] = v not in ("0", "false")
+        elif k == "hour":
+            now["hour"] = float(v)
+        else:
+            now[k] = int(v)
+    now["day"] = now["day"] or 20000 + now["since"]
+    return now
+
+
+def dress_filter(B, plot, text):
+    """The ids of B's dressing sets in the shot (see --dress)."""
+    if text == "none":
+        return set()
+    if text == "all":
+        return {d["id"] for d in B.dresses}
+    now = dress_now(text)
+    return {d["id"] for d in B.dresses if citykit.dress_visible(d["when"], plot, d["id"], now)}
+
+
+def shoot(B, out_id, cams, samples=32, res="1120x700", lens=20.0, out=None, exposure=0.6, top=None, sun=3.0, dress=()):
     """Render the Building B (already built and linted) from cams [(x, y, z, yaw, pitch, name)] to
     out/<out_id>_<n>_<name>.jpg; top = (z0, z1) adds the plan view. Returns the written paths."""
     bc.clear_scene()
@@ -160,6 +198,9 @@ def shoot(B, out_id, cams, samples=32, res="1120x700", lens=20.0, out=None, expo
         bc.to_object("SM_%s_Detail" % out_id, B.detail)
     if B.win.faces:
         bc.to_object("SM_%s_Windows" % out_id, B.win, slots=B.win_slot, lit=set())
+    for d in B.dresses:
+        if d["id"] in (dress or ()):
+            bc.to_object("SM_%s_Dress_%s" % (out_id, d["id"]), d["mesh"])
 
     scn = bpy.context.scene
     scn.render.engine = "CYCLES"

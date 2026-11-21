@@ -674,6 +674,26 @@
   "en": "Lyudmilovsk Pravda writes: {0}",
   "ja": "「リュドミロフスク・プラウダ」紙によると：{0}"
  },
+ "music.radio.show.festival": {
+  "ru": "«Праздничный эфир»",
+  "en": "The Holiday Broadcast",
+  "ja": "「祝日特別放送」"
+ },
+ "music.radio.fest.sign_on": {
+  "ru": "С праздником, город! Сегодня у нас {0}, и эфир до самой ночи праздничный.",
+  "en": "Happy holiday, town! Today is {0}, and the air is festive right up to the night.",
+  "ja": "町の皆さん、おめでとうございます！今日は{0}。放送は夜まで祝日特別編成です。"
+ },
+ "music.radio.fest.news": {
+  "ru": "Главная новость дня известна всем: сегодня {0}. Программа праздника — на афишах и в газете.",
+  "en": "Everyone knows the day's main news: today is {0}. The holiday's programme is on the posters and in the paper.",
+  "ja": "今日いちばんのニュースは皆さんご存じのとおり、{0}です。催しの予定はポスターと新聞でどうぞ。"
+ },
+ "music.radio.fest.hour": {
+  "ru": "В эфире праздничная программа: сегодня {0}. Музыка для тех, кто уже на улице, и для тех, кто ещё ищет второй ботинок.",
+  "en": "This is the holiday programme: today is {0}. Music for those already out in the street, and for those still looking for the other shoe.",
+  "ja": "祝日特別番組をお送りしています。今日は{0}。もう通りに出た方にも、まだ靴の片方を探している方にも、音楽を。"
+ },
  "music.radio.news.1": {
   "ru": "Канатная дорога закрыта на профилактику с часу до трёх. Вагончики моют, тросы смазывают, кондукторы пьют чай.",
   "en": "The cable car closes for maintenance from one to three. Cabins are washed, cables greased, conductors drink tea.",

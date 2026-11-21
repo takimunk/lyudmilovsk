@@ -13,7 +13,11 @@
 // (Collect, "cups/<id>"), shown on the board's cup case and printed in the paper the next morning.
 //
 // Saved in the model's flat map under "k:" keys (the model's own LoadState skips them): "k:s:<cup>@<day>" signed up,
-// "k:r:<cup>@<day>" the hero's results in order ('W' won, 'L' lost).
+// "k:r:<cup>@<day>" the hero's results in order ('W' won, 'L' lost), "k:f:<cup>@<day>" that day was a holiday's cup.
+//
+// A holiday's cup (docs/festivals.md "The new toys"): when the tournament's weekday falls on a holiday (FWhen::bFestival), the
+// board is headed with FestTitle and says so, and the champion takes a second stamp (FestCollect) beside the weekly one.
+// Only a holiday that is not a public day off: on a day off (IsHoliday) the town is at the festival and there is no cup at all.
 
 #include "CityThingsModel.h"
 
@@ -34,6 +38,9 @@ namespace LyudCity
 		float Step = 1.5f;
 		/** The champion's stamp ("cups/<id>"; empty: none). */
 		std::string Collect;
+		/** On a holiday: the board's heading (empty: the usual one) and the champion's second stamp (empty: none). */
+		std::string FestTitle;
+		std::string FestCollect;
 		/** The regulars who may be drawn (indices into FModel::Regulars, in id order): bound by FCups::Bind. */
 		std::vector<int> Pool;
 	};
@@ -95,6 +102,8 @@ namespace LyudCity
 		ECupNote Note = ECupNote::None;
 		int Round = -1;
 		float NextHour = 0.f;
+		/** The champion won a holiday's cup. */
+		bool bFestival = false;
 		std::vector<std::string> NewStamps;
 	};
 
@@ -137,6 +146,8 @@ namespace LyudCity
 				D.Start = V["start"].F(13.f);
 				D.Step = std::max(0.25f, V["step"].F(1.5f));
 				D.Collect = V["collect"].S();
+				D.FestTitle = V["fest_title"].S();
+				D.FestCollect = V["fest_collect"].S();
 				if (!D.Id.empty() && !D.Game.empty() && !D.Plot.empty())
 				{
 					Defs.push_back(std::move(D));
@@ -237,6 +248,24 @@ namespace LyudCity
 				Day -= 7;     // a holiday was played by nobody: the last cup before it
 			}
 			return Day >= 0 ? Day : -1;
+		}
+		/** Was (or is) that tournament day a holiday's cup: remembered once a match of it was recorded on a holiday, and today
+		 *  while Now says a holiday is on. */
+		bool IsFestDay(int Cup, long long Day, const FWhen* Now = nullptr) const
+		{
+			const FCupDef* D = Def(Cup);
+			if (!D || (D->FestTitle.empty() && D->FestCollect.empty()) || IsOff(Day))
+			{
+				return false;
+			}
+			return (Now && Now->bFestival && Day == Now->Since) || FestDays.count(Key(Cup, Day)) > 0;
+		}
+		/** The name key the tournament goes by on that day. */
+		const std::string& TitleOn(int Cup, long long Day, const FWhen* Now = nullptr) const
+		{
+			static const std::string None;
+			const FCupDef* D = Def(Cup);
+			return !D ? None : (IsFestDay(Cup, Day, Now) && !D->FestTitle.empty() ? D->FestTitle : D->Title);
 		}
 		bool IsSigned(int Cup, long long Day) const { return Def(Cup) && Signed.count(Key(Cup, Day)) > 0; }
 		/** The hero writes his name on the sheet (for NextDay). False: signed already (or no such cup). */
@@ -383,13 +412,17 @@ namespace LyudCity
 		}
 
 		/** The hero's match of Round ended so. A win of the final gives the cup's stamp (into M, listed in the result). */
-		FCupResult Record(FModel& M, int Cup, long long Day, int Round, EGameResult Result)
+		FCupResult Record(FModel& M, int Cup, long long Day, int Round, EGameResult Result, bool bFestival = false)
 		{
 			FCupResult R;
 			R.Round = Round;
 			if (!Def(Cup))
 			{
 				return R;
+			}
+			if (bFestival && !IsOff(Day))
+			{
+				FestDays.insert(Key(Cup, Day));
 			}
 			std::string& Rec = Results[Key(Cup, Day)];
 			if (Round != (int)Rec.size() || Round >= FBracket::Rounds || Result == EGameResult::None)
@@ -410,6 +443,11 @@ namespace LyudCity
 			{
 				R.Note = ECupNote::Champion;
 				M.GiveStamp(Defs[(size_t)Cup].Collect, &R.NewStamps);
+				if (IsFestDay(Cup, Day) && !Defs[(size_t)Cup].FestCollect.empty())
+				{
+					R.bFestival = true;
+					M.GiveStamp(Defs[(size_t)Cup].FestCollect, &R.NewStamps);
+				}
 			}
 			else
 			{
@@ -489,7 +527,12 @@ namespace LyudCity
 			{
 				FCupPage P;
 				const long long Next = NextDay(Cup, Now);
-				P.push_back({ "city.cup.head", { "@" + D->Title } });
+				const bool bFestNext = IsFestDay(Cup, Next, &Now);
+				P.push_back({ "city.cup.head", { "@" + TitleOn(Cup, Next, &Now) } });
+				if (bFestNext)
+				{
+					P.push_back({ "city.cup.fest", {} });
+				}
 				P.push_back({ "city.cup.when", { "@city.cup.dow." + std::to_string(D->Weekday), Hm(D->Start), "@" + D->Venue } });
 				P.push_back({ "city.cup.rules", { Hm(D->Start), Hm(D->Start + D->Step), Hm(D->Start + 2.f * D->Step) } });
 				P.push_back({ "city.cup.rules." + D->Game, {} });
@@ -508,6 +551,10 @@ namespace LyudCity
 				const FBracket B = Bracket(M, Cup, Shown, Now);
 				FCupPage P;
 				P.push_back({ Shown == Now.Since ? "city.cup.bracket_today" : "city.cup.bracket_last", { Date(Shown) } });
+				if (IsFestDay(Cup, Shown, &Now))
+				{
+					P.push_back({ "city.cup.fest_bracket", { "@" + TitleOn(Cup, Shown, &Now) } });
+				}
 				for (int Round = 0; Round < FBracket::Rounds; ++Round)
 				{
 					P.push_back({ "city.cup.round." + std::to_string(Round), { Hm(RoundFrom(Cup, Round)) } });
@@ -611,6 +658,10 @@ namespace LyudCity
 					Out["k:r:" + P.first] = P.second;
 				}
 			}
+			for (const std::string& S : FestDays)
+			{
+				Out["k:f:" + S] = "1";
+			}
 		}
 		void LoadState(const std::map<std::string, std::string>& In)
 		{
@@ -625,17 +676,24 @@ namespace LyudCity
 				{
 					Results[P.first.substr(4)] = P.second.substr(0, FBracket::Rounds);
 				}
+				else if (P.first.compare(0, 4, "k:f:") == 0)
+				{
+					FestDays.insert(P.first.substr(4));
+				}
 			}
 		}
 		void Reset()
 		{
 			Signed.clear();
 			Results.clear();
+			FestDays.clear();
 		}
 
 	private:
 		std::set<std::string> Signed;
 		std::map<std::string, std::string> Results;
+		/** The tournament days played on a holiday ("<cup>@<day>"). */
+		std::set<std::string> FestDays;
 
 		std::string Key(int Cup, long long Day) const
 		{

@@ -113,6 +113,9 @@ namespace LyudCity
 		std::vector<std::string> Festivals;
 		/** EWeatherBit words of the weather now; 0: unknown (every weather condition then fails). */
 		uint8_t Weather = 0;
+		/** The kinds of the rumours about the hero going round now (ULyudTownRumours, docs/town_rumours.md): the lines' "rumour"
+		 *  condition. Null: none known (a "rumour" line then fails, a "!kind" line holds). */
+		const std::vector<std::string>* Rumours = nullptr;
 	};
 
 	/** Is Hour inside [Open, Close)? Close below Open runs past midnight; Close - Open >= 24 is always. */
@@ -197,6 +200,8 @@ namespace LyudCity
 		std::string Heard;
 		/** "stay": the id of a stay (a sanatorium's voucher: FStayDef) the hero is on today; "!id": not on it (empty: no condition). */
 		std::string Stay;
+		/** "rumour": a kind of rumour about the hero going round now (FWhen::Rumours), "any" any, "!kind" not (empty: no condition). */
+		std::string Rumour;
 
 		bool IsFestive() const { return Festival == EFestivalCond::Any || Festival == EFestivalCond::Ids; }
 
@@ -239,6 +244,17 @@ namespace LyudCity
 			if (!Heard.empty() && !HasName(HeardSet, Heard))
 			{
 				return false;
+			}
+			if (!Rumour.empty())
+			{
+				const bool bNot = Rumour[0] == '!';
+				const std::string Kind = bNot ? Rumour.substr(1) : Rumour;
+				const bool bOn = W.Rumours && (Kind == "any" ? !W.Rumours->empty()
+					: std::find(W.Rumours->begin(), W.Rumours->end(), Kind) != W.Rumours->end());
+				if (bOn == bNot)
+				{
+					return false;
+				}
 			}
 			if (HourFrom >= 0.f && !InHours(W.Hour, HourFrom, HourTo))
 			{
@@ -399,6 +415,8 @@ namespace LyudCity
 		/** The conditions under which the topic is offered (its Key unused). */
 		FLine When;
 		bool bOnce = false;
+		/** "everywhere": offered by every counter that has staff talk (first; the talk of the town, docs/town_rumours.md). */
+		bool bEverywhere = false;
 		std::vector<FLine> Lines;
 		std::string Collect;
 	};
@@ -1052,6 +1070,8 @@ namespace LyudCity
 		std::vector<FTone> Tones;
 		/** The stays ("stays" of interiors.json). */
 		std::vector<FStayDef> Stays;
+		/** The topics every counter with staff talk offers (FTopic::bEverywhere), indices into Topics. */
+		std::vector<int> Everywhere;
 		/** The most topics a chooser offers at once. */
 		static constexpr int MaxTopics = 8;
 		/** The most lines an answer has. */
@@ -1073,6 +1093,7 @@ namespace LyudCity
 			TextIndex.clear();
 			Topics.clear();
 			TopicIndex.clear();
+			Everywhere.clear();
 			Tones.clear();
 			ToneIndex.clear();
 			PlotTone.clear();
@@ -1107,6 +1128,10 @@ namespace LyudCity
 				if (!T.Lines.empty() && TopicIndex.count(T.Id) == 0)
 				{
 					TopicIndex[T.Id] = (int)Topics.size();
+					if (T.bEverywhere)
+					{
+						Everywhere.push_back((int)Topics.size());
+					}
 					Topics.push_back(std::move(T));
 				}
 			}
@@ -1736,6 +1761,7 @@ namespace LyudCity
 					}
 				}
 			};
+			Add(Everywhere);
 			Add(A->Topics);
 			Add(Things[(size_t)Thing].Topics);
 			return (int)Out.size();
@@ -3605,6 +3631,7 @@ namespace LyudCity
 			Line.Did = L["did"].S();
 			Line.Heard = L["heard"].S();
 			Line.Stay = L["stay"].S();
+			Line.Rumour = L["rumour"].S();
 		}
 
 		/** A topic of "topics": {"k": title key, "lines": [line], <line conditions: when it is offered>, "once": true (offered until
@@ -3619,6 +3646,7 @@ namespace LyudCity
 			T.When.bOnce = false;
 			T.When.Collect.clear();
 			T.bOnce = V["once"].Type == LyudJson::FValue::Bool ? V["once"].B : V["once"].I(0) != 0;
+			T.bEverywhere = V["everywhere"].Type == LyudJson::FValue::Bool ? V["everywhere"].B : V["everywhere"].I(0) != 0;
 			T.Collect = V["collect"].S();
 			for (const LyudJson::FValue& L : V["lines"].Items)
 			{

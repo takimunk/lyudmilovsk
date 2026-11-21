@@ -30,6 +30,7 @@ import math
 
 import furn_int3 as fu
 import interior_kit as kit
+import dress_kit as dk
 from citykit import box, prism
 from _cons_util import wall, win, hface, rect
 
@@ -357,8 +358,8 @@ def _foyer(B):
     B.thing("ticket_counter", "counter", (-9.0, 11.0, 1.05), 0.0, role="clerk", service="tickets")
     # ---------------------------------------------------------------- cloakroom
     kit.shop_counter(B, -15.8, 10.2, 0.0, 0.0, w=2.4, d=0.6, h=1.05, top="CT_WoodLight", front="CT_SteelRed", till=False)
-    kit.coat_rack(B, -15.8, 11.75, 0.0, 0.0, w=2.4, coats=0.8, seed=5)
-    kit.coat_rack(B, -15.8, 11.2, 0.0, 180.0, w=2.4, coats=0.5, seed=6, solid=False)
+    kit.coat_rack(B, -15.8, 11.75, 0.0, 0.0, w=2.4, coats=0, seed=5)   # coats come from the cloak_* dressing sets
+    kit.coat_rack(B, -15.8, 11.2, 0.0, 180.0, w=2.4, coats=0, seed=6, solid=False)
     kit.sign_plate(B, -15.8, yp, 0.0, 0.0, name="sign_cloakroom", w=1.9, zc=2.7)
     kit.plates(B, -16.6, 10.2, 1.05, 0.0, n=2)
     kit.hat_stand(B, -14.55, 9.0, 0.0, 0.0)
@@ -547,6 +548,7 @@ def _deepen(B):
     box(det, "CT_Paper", -2.2, -1.95, 13.5, 13.65, 0.4, 0.42)                    # the label, still unread
     B.thing("reel_seat", "screen", (0.0, 15.2, 0.16 + 0.45), 0.0, what="cinema", height=0.45)
     _third(B)
+    _dress(B)
     import os
     if os.environ.get("KIT_CHECK"):
         print("KITCHECK", kit.check(B))
@@ -617,3 +619,48 @@ def _third(B):
         kit.picture(B, xs_ - 0.52 + 0.52 * k, ys_ - 0.03, 0.0, 0.0, name=nm, w=0.4, zc=1.5)
     # ---- dance shoes on a rack by the floor
     kit.shoe_rack(B, 11.35, YF + 0.4, 0.0, 180.0, w=0.9, rows=3)
+
+
+def _dress(B):
+    """Lived-in dressing (docs/city_dress.md): the cloakroom's coats by the season, wet umbrellas at the doors on rain
+    days, the buffet's leftovers after lunch and in the evenings, a book left in the lounge, flowers on holidays."""
+    # ---- the cloakroom: both rails, exactly one of the three seasonal sets shows in every month
+    with B.dress("cloak_winter", months=(12, 1, 2)):
+        dk.coats_on_rail(B, -15.8, 11.75, 0.0, 0.0, w=2.4, share=0.6, season="winter", seed=5)
+    with B.dress("cloak_winter_b", months=(12, 1, 2)):
+        dk.coats_on_rail(B, -15.8, 11.2, 0.0, 180.0, w=2.4, share=0.5, season="winter", seed=6)
+    with B.dress("cloak_autumn", months=(3, 4, 10, 11)):
+        dk.coats_on_rail(B, -15.8, 11.75, 0.0, 0.0, w=2.4, share=0.5, season="autumn", seed=5)
+    with B.dress("cloak_autumn_b", months=(3, 4, 10, 11)):
+        dk.coats_on_rail(B, -15.8, 11.2, 0.0, 180.0, w=2.4, share=0.3, season="autumn", seed=6)
+    with B.dress("cloak_summer", months=(5, 6, 7, 8, 9)):
+        dk.coats_on_rail(B, -15.8, 11.75, 0.0, 0.0, w=2.4, share=0.12, season="summer", seed=5)
+    # ---- the main door: wet mats, umbrellas drying, a stand, galoshes
+    with B.dress("door_rain", weather=("rain", "wet")):
+        dk.doormat_wet(B, -0.7, 4.05, 0.0, 0.0)
+        dk.doormat_wet(B, 0.7, 4.05, 0.0, 0.0)
+        dk.umbrella_open(B, -2.7, 5.0, 0.0, 30, seed=1)
+        dk.umbrella_open(B, 2.6, 5.2, 0.0, 200, seed=2)
+        dk.umbrella_stand(B, -1.9, 3.75, 0.0, 0, n=3, seed=3)
+        dk.boots(B, 1.9, 3.8, 0.0, 5, kind="galoshes", seed=4)
+    with B.dress("door_winter", months=(12, 1, 2), weather_not=("rain",)):
+        dk.boots(B, -1.9, 3.8, 0.0, -5, kind="felt", seed=5)
+        dk.boots(B, 1.9, 3.8, 0.0, 8, kind="felt", seed=6)
+    # ---- the buffet and the round tables after lunch, and in the evenings of the cinema sessions
+    with B.dress("buffet_lunch", hours=(13, 16), chance=0.75):
+        dk.plate_crumbs(B, 4.0, 10.2, 1.05, 0.0, seed=7)
+        dk.plate_crumbs(B, -8.8, 8.45, 0.75, 0.0, seed=8)
+    with B.dress("buffet_evening", hours=(18, 23.5), weekdays=(4, 5, 6, 2)):
+        kit.glass(B, 3.9, 7.2, 1.0, 0.0)
+        kit.cup(B, 8.6, 7.3, 1.0, 0.0)
+        kit.cup(B, 7.3, 4.8, 0.75, 0.0)
+        dk.plate_crumbs(B, 6.9, 5.2, 0.75, 20.0, seed=9)
+    with B.dress("club_evening", hours=(17, 23)):
+        kit.cup(B, -8.2, 5.7, 0.75, 0.0)
+        kit.cup(B, -15.2, 6.6, 0.72, 0.0)
+        kit.cup(B, -12.8, 6.6, 0.72, 0.0)
+    with B.dress("lounge_book", hours=(10, 22), chance=0.6):
+        dk.book_face_down(B, 15.55, 9.3, 0.42, 15.0, seed=10)
+    with B.dress("festive_flowers", festival="any"):
+        kit.vase(B, -9.8, 10.95, 1.05, 0.0, seed=31)
+        kit.vase(B, 1.65, 10.3, 1.05, 0.0, seed=32)

@@ -355,7 +355,7 @@ the other, or split by building (28 public rooms, 31 houses). Everyone touching 
 
 ## 22. The town reacts to the hero's day
 
-`[ ]` **Brief (Fable 5.2):** Tonight added many things the hero can do (jobs, kites, beach games, cinema, tournaments,
+`[~] town-talk-hero 2026-11-20 (branch ready, waiting for merge; docs/town_rumours.md)` **Brief (Fable 5.2):** Tonight added many things the hero can do (jobs, kites, beach games, cinema, tournaments,
 letters, friends, the sanatorium course, instruments). Make the town notice. Collect the hero's notable events of the day
 (quest events `ULyudQuests::Notify` already carry most of them: wins, catches, jobs done, festival watches, birds tamed) into
 a small "talk of the town" store (saved, decays over 3-5 game days), and feed it to: barks of residents who saw it or heard
@@ -375,7 +375,7 @@ synthetic events, Mac shot of the page.
 
 ## 24. Festival days use the new toys
 
-`[ ]` **Brief (Opus 5.5):** Festivals (`Content/PeopleData/festivals.json`, `docs/festivals.md`) know nothing of tonight's
+`[~] festival-toys 2026-11-20` (branch `festival-toys`; what was built: `docs/festivals.md` "The new toys"; never compiled or seen in the engine) **Brief (Opus 5.5):** Festivals (`Content/PeopleData/festivals.json`, `docs/festivals.md`) know nothing of tonight's
 features. Tie them: the cinema shows a festival programme (the sea festival, New Year cartoons), the radio plays a festival
 broadcast, the tournament of the week becomes a festival cup on its day, kites fly on Children's Day and the blossom
 picnic, the beach games become contests on Fisherman's Day (stone skipping championship), the sanatorium has a dance
@@ -395,7 +395,7 @@ never per-frame). Done: Blender previews of three rooms in two states, perf benc
 
 ## 26. Residents do the new activities
 
-`[ ]` **Brief (Fable 5.2):** Make the townsfolk use tonight's features by persona and weather: kids fly kites and skip
+`[~] residents-activities 2026-11-20` (docs/town_life.md "The new activities") **Brief (Fable 5.2):** Make the townsfolk use tonight's features by persona and weather: kids fly kites and skip
 stones, pensioners take the sanatorium cure and play dominoes in its lounge, the regulars go to the cinema (seats fill,
 `FindFreeThing`), people read the paper on benches (the `read_bench` activity holding the new paper prop), someone plays the
 piano in the hall in the evening (item 15's synth, rarely), allotment neighbours dig and water, the postman does his round,
@@ -405,7 +405,7 @@ Mac shots of three new activities, bench (no new per-frame cost per person).
 
 ## 27. Counters with real service
 
-`[ ]` **Brief (Opus 5.5):** At counters the hero buys from a menu. Make it a little scene: the staff turns to him, says the
+`[~]` counter-service 2026-11-20 (branch ready, waiting for merge; docs/counters.md; Mac compile and queue shots by the merge thread) **Brief (Opus 5.5):** At counters the hero buys from a menu. Make it a little scene: the staff turns to him, says the
 greeting by hour and by whether they know him (friends, item 12), the item is put on the counter and the hero takes it (the
 hand reaches, `UHeroReachComponent::Take`), change is counted, a queue forms behind him at busy hours and residents wait
 their turn (customer pairs exist: `LyudBarks::AtCounter`, `CounterTrade.cpp`). Fix P-MARKET counters never firing

@@ -14,7 +14,7 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 SRC = os.path.join(ROOT, "Saved", "ClipSources", "props")
 DEST = "/Game/Characters/Humans/Props"
 NAMES = ["phone", "cigarette", "camera", "umbrella", "rod", "brush", "binoculars", "newspaper", "book", "knitting",
-         "ice_cream", "cup", "bag", "easel"]
+         "ice_cream", "cup", "bag", "easel", "spade", "watering_can"]
 if os.environ.get("PROPS"):
     NAMES = [n for n in os.environ["PROPS"].split(",") if n]
 eal = unreal.EditorAssetLibrary
