@@ -26,7 +26,7 @@ import content as C  # noqa: E402
 LANGS = ("ru", "en", "ja")
 
 RULES = {"levels": [0, 10, 30, 70, 130], "greet": 2, "heard": 1, "heard_cap": 3, "visit": 4, "quest": 20,
-         "gift_loved": 12, "gift_liked": 6, "gift_plain": 2, "card": 8, "bench": 6, "tea": 12, "outing": 12,
+         "gift_loved": 12, "gift_liked": 6, "gift_plain": 2, "card": 8, "bench": 6, "tea": 12, "outing": 12, "festival": 8, "festival_level": 3,
          "tea_level": 2, "tea_every": 7, "tea_ahead": 2, "outing_level": 4, "outing_every": 21, "bench_level": 3,
          "wave_level": 2, "nick_level": 3}
 
@@ -143,7 +143,7 @@ def build():
     needed |= {"friends.diary.title", "friends.diary.empty", "friends.fact.home", "friends.fact.job", "friends.fact.nick",
                "friends.fact.likes", "friends.fact.cards", "friends.fact.teas", "friends.fact.outing", "friends.fact.met",
                "friends.fact.family", "friends.tea.prompt", "friends.tea.title", "friends.tea.keys", "friends.tea.not_now",
-               "friends.tea.diary", "friends.outing.diary", "friends.outing.toast", "friends.gift.prompt", "friends.gift.title",
+               "friends.tea.diary", "friends.outing.diary", "friends.outing.toast", "friends.festival.toast", "friends.festival.diary", "friends.gift.prompt", "friends.gift.title",
                "friends.gift.keys", "friends.gift.none", "friends.gift.diary", "friends.bench.toast", "friends.know.toast",
                "friends.gift.loved.1", "friends.gift.liked.1", "friends.gift.plain.1", "friends.gift.again.1",
                "friends.tea.served.1", "dev.group.friends"}

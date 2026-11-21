@@ -1,4 +1,5 @@
 #include "UI/LyudQuests.h"
+#include "People/LyudTownRumours.h"
 
 #include "Dom/JsonObject.h"
 #include "Engine/GameInstance.h"
@@ -288,6 +289,8 @@ void ULyudQuests::Notify(const UObject* WorldContext, FName Event, const FString
 	{
 		Q->HandleEvent(Event, Target, N);
 	}
+	// the town hears of it too, when it is news (docs/town_rumours.md)
+	ULyudTownRumours::OnGameEvent(WorldContext, Event, Target);
 }
 
 void ULyudQuests::Initialize(FSubsystemCollectionBase& Collection)

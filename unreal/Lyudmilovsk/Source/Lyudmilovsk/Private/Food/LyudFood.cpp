@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "LyudGoodsItem.h"
 #include "LyudInventory.h"
+#include "People/CounterService.h"
 #include "Misc/FileHelper.h"
 #include "Misc/PackageName.h"
 #include "Misc/Paths.h"
@@ -427,9 +428,16 @@ void ULyudFoodSubsystem::Tick(float DeltaTime)
 	{
 		const APlayerController* PC = Cast<APlayerController>(Hero->GetController());
 		const FRotator Yaw(0.f, PC ? PC->GetControlRotation().Yaw : Hero->GetActorRotation().Yaw, 0.f);
+		const ULyudCounterService* Counter = ULyudCounterService::Get(this);
 		for (int32 I = 0; I < FMath::Min(Bought.Num(), 3); ++I)
 		{
-			HandOver(Bought[I], Hero->EyeLocation() + Yaw.RotateVector(FVector(52.f, 4.f - 6.f * I, -42.f)));
+			// on the counter between him and the one who served him (docs/counters.md), else just before him
+			FVector Where;
+			if (!Counter || !Counter->HandoverPoint(I, Where))
+			{
+				Where = Hero->EyeLocation() + Yaw.RotateVector(FVector(52.f, 4.f - 6.f * I, -42.f));
+			}
+			HandOver(Bought[I], Where);
 		}
 		Bought.Reset();
 	}

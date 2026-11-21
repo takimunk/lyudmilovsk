@@ -4,6 +4,11 @@
   "ja": "アルバムを開く",
   "ru": "Открыть альбом"
  },
+ "dev.action.photo.contest": {
+  "en": "The photo contest box",
+  "ja": "写真コンテストの箱",
+  "ru": "Ящик фотоконкурса"
+ },
  "dev.action.photo.develop": {
   "en": "Develop every film now",
   "ja": "すべてのフィルムを今すぐ現像",
@@ -13,6 +18,11 @@
   "en": "Give a camera, 3 films and 200 roubles",
   "ja": "カメラ、フィルム3本、200ルーブルをもらう",
   "ru": "Дать фотоаппарат, 3 плёнки и 200 руб."
+ },
+ "dev.action.photo.wall": {
+  "en": "The photo club's wall",
+  "ja": "写真クラブの壁",
+  "ru": "Стена фотоклуба"
  },
  "dev.group.photo": {
   "en": "Camera",
@@ -48,6 +58,91 @@
   "en": "Album",
   "ja": "アルバム",
   "ru": "Альбом"
+ },
+ "ui.photo.contest.closed": {
+  "en": "Entries for this month are closed. Next month's theme is {0}.",
+  "ja": "今月の受付は終わった。来月のテーマは{0}。",
+  "ru": "Приём на этот месяц окончен. Тема следующего — {0}."
+ },
+ "ui.photo.contest.entered": {
+  "en": "The print is in the contest box. The jury sits on the {0}th.",
+  "ja": "プリントをコンテストの箱に入れた。審査は{0}日。",
+  "ru": "Отпечаток опустили в ящик конкурса. Жюри соберётся {0}-го числа."
+ },
+ "ui.photo.contest.no_prints": {
+  "en": "This month's theme is {0}. Prints are taken until the {1}th, and the album is still empty.",
+  "ja": "今月のテーマは{0}。プリントの受付は{1}日まで。アルバムはまだ空だ。",
+  "ru": "Тема месяца — {0}. Отпечатки принимают до {1}-го числа, а в альбоме пока пусто."
+ },
+ "ui.photo.contest.pick.caption": {
+  "en": "[{0}]  {1}",
+  "ja": "[{0}]  {1}",
+  "ru": "[{0}]  {1}"
+ },
+ "ui.photo.contest.pick.keys": {
+  "en": "1–4 — hand in that print   ·   A, D — turn pages   ·   P — not now",
+  "ja": "1〜4：そのプリントを出す   ·   A・D：ページをめくる   ·   P：やめておく",
+  "ru": "1–4 — отдать этот отпечаток   ·   A, D — листать   ·   P — не сейчас"
+ },
+ "ui.photo.contest.pick.title": {
+  "en": "For the contest: {0}",
+  "ja": "コンテストに出す：{0}",
+  "ru": "На конкурс: {0}"
+ },
+ "ui.photo.contest.placed": {
+  "en": "The {0} contest: place {1} of {2}. The jury's advice: closer to the theme, sharper, and shoot when the sun is low.",
+  "ja": "コンテスト{0}：{2}人中{1}位。審査員の助言：テーマに近く、もっとシャープに、日の低い時間に撮ること。",
+  "ru": "Конкурс {0}: {1}-е место из {2}. Жюри советует: ближе к теме, резче, и снимать при низком солнце."
+ },
+ "ui.photo.contest.prize": {
+  "en": "The {0} contest: place {1}. The prize is {2} roubles, and the print hangs on the club's wall.",
+  "ja": "コンテスト{0}：{1}位。賞金{2}ルーブル。プリントはクラブの壁に飾られた。",
+  "ru": "Конкурс {0}: {1}-е место. Приз {2} руб., отпечаток повесили на стену клуба."
+ },
+ "ui.photo.contest.theme.birds": {
+  "en": "“Birds”",
+  "ja": "「鳥」",
+  "ru": "«Птицы»"
+ },
+ "ui.photo.contest.theme.festival": {
+  "en": "“The Festival”",
+  "ja": "「祭り」",
+  "ru": "«Праздник»"
+ },
+ "ui.photo.contest.theme.sea": {
+  "en": "“The Sea”",
+  "ja": "「海」",
+  "ru": "«Море»"
+ },
+ "ui.photo.contest.theme.work": {
+  "en": "“People at Work”",
+  "ja": "「働く人びと」",
+  "ru": "«Люди за работой»"
+ },
+ "ui.photo.contest.wait": {
+  "en": "The print is already in the box. The jury sits on the {0}th.",
+  "ja": "プリントはもう箱の中。審査は{0}日。",
+  "ru": "Отпечаток уже в ящике. Жюри соберётся {0}-го числа."
+ },
+ "ui.photo.contest.wall.caption": {
+  "en": "Place {0}, {1}. {2}",
+  "ja": "{0}位　{1}　{2}",
+  "ru": "{0}-е место, {1}. {2}"
+ },
+ "ui.photo.contest.wall.empty": {
+  "en": "None of your prints hang here yet.",
+  "ja": "ここにはまだ自分のプリントがない。",
+  "ru": "Твоих отпечатков здесь пока нет."
+ },
+ "ui.photo.contest.wall.title": {
+  "en": "The photo club's wall",
+  "ja": "写真クラブの壁",
+  "ru": "Стена фотоклуба"
+ },
+ "ui.photo.contest.won": {
+  "en": "The {0} contest: first place! The prize is {2} roubles, and the print hangs on the club's wall.",
+  "ja": "コンテスト{0}：1位！賞金{2}ルーブル。プリントはクラブの壁に飾られた。",
+  "ru": "Конкурс {0}: первое место! Приз {2} руб., отпечаток повесили на стену клуба."
  },
  "ui.photo.dark.bath.0": {
   "en": "Developer",

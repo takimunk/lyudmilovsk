@@ -10,6 +10,7 @@
 
 #include "../People/MiniJson.h"
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -48,6 +49,8 @@ namespace LyudFilm
 		std::vector<FFilm> Films;
 		std::vector<std::vector<int>> Programme;   // Monday 0 .. Sunday 6: film indices in order
 		std::vector<int> Festival;
+		/** A holiday's own programme (cinema.json "festivals": festival id -> films), docs/festivals.md "The new toys". */
+		std::map<std::string, std::vector<int>> FestivalOf;
 		std::vector<FCinema> Cinemas;
 		std::string LastError;
 
@@ -63,6 +66,7 @@ namespace LyudFilm
 			Films.clear();
 			Programme.clear();
 			Festival.clear();
+			FestivalOf.clear();
 			Cinemas.clear();
 			for (const LyudJson::FValue& V : Root["films"].Items)
 			{
@@ -100,6 +104,18 @@ namespace LyudFilm
 			if (!Resolve(Root["festival"], Festival))
 			{
 				return false;
+			}
+			for (const auto& KV : Root["festivals"].Fields)
+			{
+				std::vector<int> Ids;
+				if (!Resolve(KV.second, Ids))
+				{
+					return false;
+				}
+				if (!Ids.empty())
+				{
+					FestivalOf[KV.first] = Ids;
+				}
 			}
 			for (const auto& KV : Root["cinemas"].Fields)
 			{
@@ -163,10 +179,19 @@ namespace LyudFilm
 			return -1;
 		}
 
-		/** The day's newsreel (Monday 0); a holiday shows the festival's. */
-		const std::vector<int>& ProgrammeFor(int Weekday, bool bFestival) const
+		/** The day's newsreel (Monday 0); a holiday shows the festival's: its own programme when one of the festivals on
+		 *  today (Ids, in their order) has one, else the common one. */
+		const std::vector<int>& ProgrammeFor(int Weekday, bool bFestival, const std::vector<std::string>* Ids = nullptr) const
 		{
 			static const std::vector<int> None;
+			for (const std::string& Id : Ids ? *Ids : std::vector<std::string>())
+			{
+				const auto It = FestivalOf.find(Id);
+				if (It != FestivalOf.end())
+				{
+					return It->second;
+				}
+			}
 			if (bFestival && !Festival.empty())
 			{
 				return Festival;

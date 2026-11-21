@@ -30,15 +30,15 @@ the data.
 | new_year | Новый год | 31 December, days off 31 Dec – 2 Jan | the tree 22:00, fireworks at midnight, dancing till 3, a walk in the park on the 1st |
 | maslenitsa | Масленица | Orthodox Easter − 49 days (Sunday) | pancake fair 11–16, the straw doll burns on the beach 16–18 |
 | bird_day | День птиц | 1 April | birdhouses in the park, 8–12 |
-| blossom | Праздник цветения | 2nd Sunday of May | picnics in the park 11–17 |
+| blossom | Праздник цветения | 2nd Sunday of May | picnics in the park 11–17 under the kites |
 | midsummer | Ночь середины лета | 23 June | bonfire on the beach 20–02, then everybody watches the sunrise (the sun motif, docs/story/motifs.md) |
-| fisherman_day | День рыбака | 2nd Sunday of July | fish fair on the promenade, concert on the square |
+| fisherman_day | День рыбака | 2nd Sunday of July | fish fair on the promenade, the stone skipping championship on the beach 12–14, concert on the square |
 | perseids | Ночь Персеид | 12 August | on the beach watching the shooting stars 22:30–02 |
-| harvest_fair | Ярмарка урожая | 4th Saturday of September | fair 9–17 |
+| harvest_fair | Ярмарка урожая | 4th Saturday of September | fair 9–15, the judges give the prizes 15–16:30 (the hero's own harvest is judged at the market's scales) |
 | lunar_new_year | Новый год по лунному календарю (China, East Asia) | the new moon from 21 Jan (China's date) | dumpling fair, drums on the square 17, firecrackers and fireworks at midnight; red lanterns |
 | holi | Холи (India) | the day after the full moon from 24 Feb (India's date) | colour powder and drums in the park 11–14 |
 | nowruz | Навруз (Iran, Central Asia) | 21 March | picnic in the park, a bonfire in the evening |
-| children_day | День защиты детей | 1 June | balloons and games in the park |
+| children_day | День защиты детей | 1 June | balloons, games and kites in the park |
 | tanabata | Танабата (Japan) | 7 July | wish bamboo on the promenade (the hero ties a wish), stars at night |
 | toro_nagashi | Торо-нагаси (Japan, Obon) | 15 August | floating lanterns from the beach at dusk (the hero sets one afloat, 20 ₽) |
 | mid_autumn | Праздник середины осени (China, Vietnam) | the full moon from 8 Sep | lanterns on the square, watching the moon from the promenade |
@@ -125,6 +125,32 @@ Backlog (not done): smoked glass to look at the star through (an item, a view ef
 morning (items, an icon each); fluff lying in drifts along the kerbs and burning with a match; a calmer wind on a held-fair
 day; people flying the kites by hand (the kites fly by themselves over the crowd now); the after_storm trigger also for
 the diary and the forecast.
+
+## The new toys (backlog item 24)
+
+The holidays use what the town got on the night of 2026-11-20. Data first; code only where a hook was missing. Each tie is
+tested outside the engine by the sim named with it.
+
+| What | On a holiday | Data | Code | Test |
+|---|---|---|---|---|
+| The clubs' tournaments | A tournament whose weekday falls on a holiday that is not a public day off (on a day off, the four `holiday` festivals, no cup is played: docs/city_interiors.md "Holidays") is played as the holiday's cup: the board is headed with the cup's holiday title and says so, the bracket keeps the label afterwards, the champion also takes a ribbon stamp of the holiday cups' collection (the fields: docs/city_interiors.md "Tournaments") | `tools/city/content/x_tournaments.json` → `Content/City/tournaments.json` | `CityCupsModel.h` (`IsFestDay`, `TitleOn`, `Record(..., bFestival)`, saved `k:f:<cup>@<day>`), `LyudCityThings.cpp` | citysim (`cupchecks.h`) |
+| The Rassvet's newsreel | A holiday with a programme of its own shows it (New Year: the cartoon and the tricks; the Sea Festival's gala; Children's Day; City Day: the very first films; Christmas; Halloween); the others show the common festival one | `tools/films/catalog.py` `FESTIVALS` → `cinema.json` "festivals", strings `film.programme.fest.<id>` | `CinemaModel.h` `ProgrammeFor(weekday, holiday, ids)`, `LyudCinema.cpp` | cinemasim |
+| The paper | Prints that programme (`town_paper.json` "newsreel_fest"); festival issues (`paper.fest.<id>.<n>`) for the harvest fair, Children's Day, the blossom, City Day, the Big Sun, Kite Day as well | `tools/paper/strings_src.py` `FEST`, `tools/paper/paper.py` | `TownPaperModel.h` | papersim |
+| The radio | The holiday broadcast: the station greets the town at sign-on and in every bulletin (`music.radio.fest.*`), the music hours go out as «Праздничный эфир» (`music.radio.show.festival`) | `tools/music/strings.json` | `MusicModel.h` `FFacts::Festival`, `LyudMusic.cpp` | musicsim |
+| Kites | The show `kites` over the park on Children's Day and at the blossom picnic | `festivals.json` | none | festivalsim |
+| The beach | Fisherman's Day has the stone skipping championship on the beach 12–14 (the town watches the sea; the hero's own throw waits for the beach games, backlog item 8) | `festivals.json` | none | festivalsim |
+| The sanatorium | The lobby's holiday dance evening 19–23, open to people from the street; a guest on a course gets it counted as a treatment (`san_course/dance`); by day the notice of it | `tools/city/content/x_p_sanatorium.json`, strings `x_festival_toys.json` | none | citysim |
+| Friends | A friend asks the hero along (`friend_fest_invite*`: `to = hero`, `bond = friend close`, `festival = any`); at a running part's venue a friend within 15 m waves, says a line (`on = friend_festival`), the diary notes it and the bond grows (`rules.festival` 8, once a day a friend, from `festival_level` 3). The correspondents' letters of invitation were there before (docs/letters.md) | `tools/friends/build_friends.py`, `tools/friends/content.py`, `tools/barks/lines/15_festival_toys.txt` | `Friends.h/.cpp` `FModel::Festival`, `LyudFriends.cpp` `TickFestival` | mannersim, barksim |
+| The allotment | On the harvest fair's day the first harvest the hero brings to the market's control scales is also judged (`LyudGarden::FairPlace`: how well it was kept, how many crops, how much; no luck in it): 80 / 40 / 20 roubles, a toast and a diary note, quest events `do garden_fair_place` / `garden_fair_done`. There is no pumpkin crop yet: the prize is for the hero's own vegetables, the pumpkins are the neighbours' | `tools/garden/data.py` `FAIR` → `garden.json` "fair" | `GardenModel.h`, `LyudGarden.cpp` | gardensim |
+| Town talk | Lines about the day's cup, the Rassvet's programme and the radio, the kites, the judges, the stone skipping | `tools/barks/lines/15_festival_toys.txt` | none | barksim |
+
+To walk through it on the Mac: `lyud.Festival.Go harvest_fair fair` (sell a harvest at the market's scales), `lyud.Festival.Go
+children_day games` (kites over the park), `lyud.Festival.Go sea_festival fair` on a Saturday (the Cog's board is the holiday
+chess cup; the Rassvet's programme; the radio), `lyud.Festival.Go fisherman_day skipping`, any holiday after 19:00 at the
+sanatorium's lobby. None of this has been seen in the engine yet (written in the cloud on 2026-11-20).
+
+Not done: the hero skipping stones himself (needs the beach games), a pumpkin crop of his own, voices for the new radio
+captions and lines, the club's summer screen on festival nights (docs/cinema.md).
 
 ## How it works in the game
 

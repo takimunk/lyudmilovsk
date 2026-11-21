@@ -249,7 +249,13 @@ void SLyudDiarySpread::Construct(const FArguments& InArgs)
 		R = QuestsRight();
 		break;
 	case ESection::Diary:
-		if (Spread.Part >= State->DiarySpreads)
+		if (Spread.Part >= State->DiarySpreads + State->PeopleSpreads)
+		{
+			// last: the sets of stamps and what each gave
+			L = CollectionsPage((Spread.Part - State->DiarySpreads - State->PeopleSpreads) * 2);
+			R = CollectionsPage((Spread.Part - State->DiarySpreads - State->PeopleSpreads) * 2 + 1);
+		}
+		else if (Spread.Part >= State->DiarySpreads)
 		{
 			// after the entries: the people he knows
 			L = PeoplePage((Spread.Part - State->DiarySpreads) * 2);
@@ -931,6 +937,99 @@ TSharedRef<SWidget> SLyudDiarySpread::PeoplePage(int32 PageIndex)
 	return Box;
 }
 
+// ------------------------------------------------------------------ collections: every set of stamps, its slots and its reward
+
+namespace
+{
+	constexpr int32 CollectionsPerPage = 6;
+}
+
+TSharedRef<SWidget> SLyudDiarySpread::CollectionsPage(int32 PageIndex)
+{
+	TSharedRef<SVerticalBox> Box = SNew(SVerticalBox);
+	if (PageIndex == 0)
+	{
+		Box->AddSlot().AutoHeight()[Title(LyudText::Get(TEXT("city.coll.page.title")))];
+		int32 Complete = 0, Begun = 0;
+		for (const ULyudCityThings::FCollectionView& V : State->Collections)
+		{
+			Complete += V.Got >= V.Slots.Num() && V.Slots.Num() > 0 ? 1 : 0;
+			Begun += V.Got > 0 ? 1 : 0;
+		}
+		if (State->Collections.Num() > 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 0, 0, 6)
+			[
+				Words(LyudText::Get(TEXT("city.coll.page.sum"), { FStringFormatArg(Complete), FStringFormatArg(State->Collections.Num()) }), 26.f, Pencil)
+			];
+		}
+		if (Begun == 0)
+		{
+			Box->AddSlot().AutoHeight().Padding(0, 10, 0, 10)[Key(TEXT("city.coll.page.empty"), 28.f, PencilFaint, false, true)];
+		}
+	}
+	if (!State->CollectionPages.IsValidIndex(PageIndex))
+	{
+		return Box;
+	}
+	for (const int32 I : State->CollectionPages[PageIndex])
+	{
+		if (!State->Collections.IsValidIndex(I))
+		{
+			continue;
+		}
+		const ULyudCityThings::FCollectionView& V = State->Collections[I];
+		const uint32 Seed = SeedOf(V.Title.ToString());
+		const bool bBegun = V.Got > 0;
+		TSharedRef<SVerticalBox> Card = SNew(SVerticalBox);
+		Card->AddSlot().AutoHeight()
+		[
+			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().FillWidth(1.f)
+			[
+				SNew(SBox).HAlign(HAlign_Left)
+				[
+					V.bRewarded ? Marked(Words(V.Title, 30.f, Ink, true, true), EMark::Underline, InkSoft, Seed)
+						: StaticCastSharedRef<SWidget>(Words(V.Title, 30.f, bBegun ? Ink : PencilFaint, bBegun, true))
+				]
+			]
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Bottom).Padding(10, 0, 0, 0)
+			[
+				Words(LyudText::Get(TEXT("city.coll.page.count"), { FStringFormatArg(V.Got), FStringFormatArg(V.Slots.Num()) }), 24.f, bBegun ? Pencil : PencilFaint)
+			]
+		];
+		// the slots: a box for every piece, the ones he has ticked
+		TSharedRef<SWrapBox> Slots = SNew(SWrapBox).PreferredSize(PageW - 2 * Margin - 28).InnerSlotPadding(FVector2D(5.f, 5.f));
+		for (int32 K = 0; K < V.Slots.Num(); ++K)
+		{
+			Slots->AddSlot()
+			[
+				SNew(SBox).WidthOverride(20.f).HeightOverride(20.f)
+				[
+					SNew(SOverlay)
+					+ SOverlay::Slot()[SNew(SLyudInkMark).Kind(EMark::Box).Color(V.Slots[K] ? Pencil : PencilFaint).Seed(Seed + (uint32)K * 2u + 2u).Thickness(1.4f)]
+					+ SOverlay::Slot()[SNew(SLyudInkMark).Kind(EMark::Tick).Color(V.bRewarded ? Green : Ink).Seed(Seed + (uint32)K * 2u + 4u).Thickness(2.4f).Show(V.Slots[K])]
+				]
+			];
+		}
+		Card->AddSlot().AutoHeight().Padding(4, 6, 0, 4)[Slots];
+		if (!V.Reward.IsEmpty())
+		{
+			Card->AddSlot().AutoHeight().Padding(4, 0, 0, 0)
+			[
+				Words(LyudText::Get(V.bRewarded ? TEXT("city.coll.page.reward") : TEXT("city.coll.page.promise"), { FStringFormatArg(V.Reward.ToString()) }),
+					23.f, V.bRewarded ? Green : PencilFaint, false, true)
+			];
+		}
+		if (V.FreeDays > 0)
+		{
+			Card->AddSlot().AutoHeight().Padding(4, 0, 0, 0)[Words(LyudText::Get(TEXT("city.coll.page.free"), { FStringFormatArg(V.FreeDays) }), 22.f, Pencil)];
+		}
+		Box->AddSlot().AutoHeight().Padding(0, 6, 0, 12)[Card];
+	}
+	return Box;
+}
+
 TSharedRef<SWidget> SLyudDiarySpread::BirdCard(FName Species)
 {
 	const ULyudBirdBook* Book = ULyudBirdBook::Get(Owner.Get());
@@ -1604,6 +1703,30 @@ void SLyudDiaryScreen::PaginatePeople()
 	}
 }
 
+void SLyudDiaryScreen::PaginateCollections()
+{
+	// six sets a page (the first has the title and the count); a set with many slots takes the room of two
+	State->Collections.Reset();
+	State->CollectionPages.Reset();
+	if (const ULyudCityThings* Things = ULyudCityThings::Get(Owner.Get()))
+	{
+		Things->CollectionViews(State->Collections);
+	}
+	State->CollectionPages.AddDefaulted();
+	int32 Used = 1;
+	for (int32 I = 0; I < State->Collections.Num(); ++I)
+	{
+		const int32 Takes = State->Collections[I].Slots.Num() > 54 ? 2 : 1;
+		if (Used + Takes > CollectionsPerPage)
+		{
+			State->CollectionPages.AddDefaulted();
+			Used = 0;
+		}
+		State->CollectionPages.Last().Add(I);
+		Used += Takes;
+	}
+}
+
 void SLyudDiaryScreen::PaginateFriends()
 {
 	// the friends start on a page of their own after the birds'; none: no pages
@@ -1635,12 +1758,15 @@ void SLyudDiaryScreen::Rebuild()
 	PaginatePeople();
 	State->DiarySpreads = DiarySpreads;
 	const int32 PeopleSpreads = FMath::Max(1, (State->PeoplePages.Num() + 1) / 2);
+	PaginateCollections();
+	State->PeopleSpreads = PeopleSpreads;
+	const int32 CollectionSpreads = FMath::Max(1, (State->CollectionPages.Num() + 1) / 2);
 	const int32 BirdSpreads = FMath::Max(1, (State->BirdPages.Num() + State->FriendPages.Num() + 1) / 2);
 	const FLyudDiarySpread Was = Spreads.IsValidIndex(Current) ? Spreads[Current] : FLyudDiarySpread();
 	Spreads.Reset();
 	Spreads.Add({ ESection::Things, 0 });
 	Spreads.Add({ ESection::Quests, 0 });
-	for (int32 P = 0; P < DiarySpreads + PeopleSpreads; ++P)
+	for (int32 P = 0; P < DiarySpreads + PeopleSpreads + CollectionSpreads; ++P)
 	{
 		Spreads.Add({ ESection::Diary, P });
 	}

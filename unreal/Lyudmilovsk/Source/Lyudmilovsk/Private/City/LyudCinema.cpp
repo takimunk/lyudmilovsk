@@ -139,7 +139,13 @@ TArray<int32> ULyudCinema::TodaysFilms(int32 Cinema) const
 	}
 	const int32 Weekday = (int32)UGameCalendar::NowIn(World).GetDayOfWeek();     // Monday 0
 	const ULyudFestivalSubsystem* Fest = ULyudFestivalSubsystem::Get(World);
-	for (int I : Model->ProgrammeFor(Weekday, Fest && Fest->IsFestivalToday()))
+	// (a holiday with a programme of its own shows that: New Year's cartoons, the Sea Festival's gala)
+	std::vector<std::string> FestIds;
+	for (const FLyudFestivalNow& F : Fest ? Fest->ActiveFestivals() : TArray<FLyudFestivalNow>())
+	{
+		FestIds.push_back(std::string(TCHAR_TO_UTF8(*F.Id.ToString())));
+	}
+	for (int I : Model->ProgrammeFor(Weekday, Fest && Fest->IsFestivalToday(), &FestIds))
 	{
 		Out.Add(I);
 	}

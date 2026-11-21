@@ -111,6 +111,8 @@ private:
 	void TickNear(AHeroCharacter* Hero);
 	void TickBench(AHeroCharacter* Hero);
 	void TickOuting(AHeroCharacter* Hero);
+	/** A holiday's gathering: a friend near him there waves and they keep the holiday together (once a day each). */
+	void TickFestival(AHeroCharacter* Hero);
 	void TickVisits(AHeroCharacter* Hero);
 	void TickTeaChair(AHeroCharacter* Hero);
 	void TickOffer(AHeroCharacter* Hero, APlayerController* PC);

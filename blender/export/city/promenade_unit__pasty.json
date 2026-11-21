@@ -398,9 +398,81 @@
  "notes": [
   "promenade unit room, variant pasty: placed at each W1 unit whose plan variant is pasty"
  ],
+ "dress": [
+  {
+   "id": "unit_rain",
+   "when": {
+    "weather": [
+     "rain",
+     "wet"
+    ]
+   },
+   "tris": 291,
+   "bounds": [
+    [
+     0.715,
+     0.73,
+     0.02
+    ],
+    [
+     3.8,
+     1.664,
+     0.89
+    ]
+   ]
+  },
+  {
+   "id": "pasty_used",
+   "when": {
+    "hours": [
+     12.5,
+     15.5
+    ]
+   },
+   "tris": 32,
+   "bounds": [
+    [
+     -3.682,
+     1.368,
+     1.08
+    ],
+    [
+     -2.618,
+     3.332,
+     1.19
+    ]
+   ]
+  },
+  {
+   "id": "pasty_mittens",
+   "when": {
+    "months": [
+     1,
+     2,
+     3,
+     11,
+     12
+    ]
+   },
+   "tris": 172,
+   "bounds": [
+    [
+     -1.15,
+     6.235,
+     0.72
+    ],
+    [
+     -0.86,
+     6.4,
+     0.747
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 202,
   "detail": 5921,
-  "windows": 0
+  "windows": 0,
+  "dress": 495
  }
 }

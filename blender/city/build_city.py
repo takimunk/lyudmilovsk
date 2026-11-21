@@ -7,7 +7,9 @@ Writes per type:
     blender/export/city/<type>.glb    SM_<type> (shell, collision), SM_<type>_Detail (no collision), SM_<type>_Windows
                                       (window cards: UV0 over the pane, UV1 = the light texel; CT_Window outside,
                                       CT_WindowIn the room side)
-    blender/export/city/<type>.json   footprint, entrances, spots, flats, windows (the life thread's contract), tris
+                                      SM_<type>_Dress_<id>: one mesh per swappable dressing set (B.dress, no collision)
+    blender/export/city/<type>.json   footprint, entrances, spots, flats, windows (the life thread's contract), tris,
+                                      dress (id, when, tris, bounds: docs/city_dress.md)
     renders/city/<type>_day.jpg, <type>_night.jpg   preview renders (unless --no-render)
 and prints a lint (triangles, UV stretch, degenerate faces, coplanar fights fixed).
 """
@@ -57,9 +59,12 @@ def lint(B):
     out = []
     moved = geom.separate_coplanar(B.m)
     moved += geom.separate_coplanar(B.detail)
+    for d in B.dresses:
+        moved += geom.separate_coplanar(d["mesh"])
     if moved:
         out.append("coplanar faces lifted: %d" % moved)
-    for label, m in (("shell", B.m), ("detail", B.detail), ("windows", B.win)):
+    for label, m in [("shell", B.m), ("detail", B.detail), ("windows", B.win)] + \
+            [("dress " + d["id"], d["mesh"]) for d in B.dresses]:
         bad_uv = degenerate = 0
         for mat, idx, uv in m.faces:
             pts = [m.verts[i] for i in idx]
@@ -447,6 +452,8 @@ def build_one(type_id, variant=None):
             obs.append(to_object("SM_%s_Detail" % out_id, B.detail, night=night))
         if B.win.faces:
             obs.append(to_object("SM_%s_Windows" % out_id, B.win, slots=B.win_slot, lit=lit, night=night))
+        for d in B.dresses:            # swappable dressing: one mesh per set (docs/city_dress.md)
+            obs.append(to_object("SM_%s_Dress_%s" % (out_id, d["id"]), d["mesh"], night=night))
         if not night:
             results["glb"] = export(out_id, obs)
         if DO_RENDER:

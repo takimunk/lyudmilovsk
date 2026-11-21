@@ -158,11 +158,102 @@ namespace LyudPeople
 		{
 			return false;
 		}
+		// what the weather draws people to (tools/town/weather_pull.py; none without the file)
+		const std::string PullText = ReadFile(Dir + "/weather_pull.json");
+		if (!PullText.empty() && !LoadWeatherPull(PullText))
+		{
+			return false;
+		}
 		Index();
 		return true;
 	}
 
-	bool FWorld::LoadActivities(const std::string& Text)
+	bool FWorld::LoadWeatherPull(const std::string& Text)
+	{
+		LyudJson::FValue J;
+		if (!LyudJson::Parse(Text, J, LastError))
+		{
+			LastError = "weather_pull.json: " + LastError;
+			return false;
+		}
+		Pulls.clear();
+		for (const LyudJson::FValue& V : J["pull"].Items)
+		{
+			FWeatherPull Row;
+			for (const LyudJson::FValue& K : V["kinds"].Items)
+			{
+				Row.Kinds.push_back(K.S());
+			}
+			for (const LyudJson::FValue& K : V["places"].Items)
+			{
+				Row.Ids.push_back(K.S());
+			}
+			Row.Rain = V["rain"].F(0.f);
+			Row.Cold = V["cold"].F(0.f);
+			Row.Hot = V["hot"].F(0.f);
+			Row.Storm = V["storm"].F(0.f);
+			Row.Dark = V["dark"].F(0.f);
+			Pulls.push_back(Row);
+		}
+		IndexPulls();
+		// and its own activities (waiting out the rain under a roof): after activities.json's, whose indices stay
+		if (!J["activities"].Items.empty() && !LoadActivities(Text, true))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	void FWorld::IndexPulls()
+	{
+		for (FPlace& Pl : Places)
+		{
+			Pl.Pull = -1;
+			// an id names the place itself: it wins over a row of its kind
+			for (int R = 0; R < (int)Pulls.size() && Pl.Pull < 0; R++)
+			{
+				Pl.Pull = Has(Pulls[(size_t)R].Ids, Pl.Id) ? R : -1;
+			}
+			for (int R = 0; R < (int)Pulls.size() && Pl.Pull < 0; R++)
+			{
+				Pl.Pull = Has(Pulls[(size_t)R].Kinds, Pl.Kind) ? R : -1;
+			}
+		}
+	}
+
+	float FWorld::WeatherPull(int Place) const
+	{
+		const int Row = Place >= 0 && Place < (int)Places.size() ? Places[(size_t)Place].Pull : -1;
+		if (Row < 0)
+		{
+			return 0.f;
+		}
+		const FWeatherPull& W = Pulls[(size_t)Row];
+		float V = 0.f;
+		if (bRain)
+		{
+			V += W.Rain * (0.6f + 0.4f * std::min(1.f, Rain / 4.f));     // (Rain: mm/h; a steady rain 4)
+		}
+		if (TempC < 2.f)
+		{
+			V += W.Cold * std::min(1.f, (2.f - TempC) / 8.f);
+		}
+		if (TempC > 22.f && bSunUp && !bRain)
+		{
+			V += W.Hot * std::min(1.f, (TempC - 22.f) / 6.f);
+		}
+		if (Wind > 12.f)
+		{
+			V += W.Storm * std::min(1.f, (Wind - 12.f) / 8.f);
+		}
+		if (!bSunUp)
+		{
+			V += W.Dark;
+		}
+		return V;
+	}
+
+	bool FWorld::LoadActivities(const std::string& Text, bool bAppend)
 	{
 		LyudJson::FValue J;
 		if (!LyudJson::Parse(Text, J, LastError))
@@ -170,7 +261,10 @@ namespace LyudPeople
 			LastError = "activities.json: " + LastError;
 			return false;
 		}
-		Activities.clear();
+		if (!bAppend)
+		{
+			Activities.clear();
+		}
 		for (const LyudJson::FValue& V : J["activities"].Items)
 		{
 			FActivity A;
@@ -220,6 +314,7 @@ namespace LyudPeople
 			A.bStaff = V["staff"].F() > 0.f;
 			A.Pace = V["pace"].F(1.f);
 			A.bRainOk = V["rain"].S() == "ok";
+			A.bShelter = V["shelter"].F() > 0.f;
 			if (V["wind"].Size() == 2)
 			{
 				A.WindMin = V["wind"][size_t(0)].F();
@@ -251,6 +346,11 @@ namespace LyudPeople
 				A.DipMax = std::max(A.DipMin, V["dip"][1].F());
 			}
 			A.Regulars = V["regulars"].F(0.f);
+			if (V["temp"].Size() == 2)
+			{
+				A.TempMin = V["temp"][size_t(0)].F();
+				A.TempMax = V["temp"][size_t(1)].F();
+			}
 			if (A.bGather)
 			{
 				const std::string M = V["mode"].S("mingle");
@@ -1189,6 +1289,7 @@ namespace LyudPeople
 			Pl.Yaw = V["yaw"].F();
 			Pl.Portal = V.Find("door") ? Vec(V["door"]) : Vec(V["pos"]);
 			Pl.bShell = V["shell"].F() > 0.f;
+			Pl.bOpen = V["open"].F() > 0.f;
 			Pl.bIndoor = Pl.bShell;
 			// a walked interior (the restaurant): in by its door and the way inside to each slot
 			std::vector<V3> Prefix;
@@ -1222,10 +1323,33 @@ namespace LyudPeople
 				Sl.Height = S["height"].F();
 				Sl.Capacity = std::max(1, S["capacity"].I(1));
 				Sl.Tag = S["tag"].S();
-			Sl.Thing = S["thing"].S();
+				Sl.Thing = S["thing"].S();
+				Sl.OwnerKey = S["owner"].S();
+				if (S.Find("queue") && S.Find("q"))
+				{
+					// a counter's line: interned, its spots put in order once everything is loaded
+					const std::string QId = S["queue"].S();
+					auto It = std::find(QueueIds.begin(), QueueIds.end(), QId);
+					Sl.Queue = (int)(It - QueueIds.begin());
+					if (It == QueueIds.end())
+					{
+						QueueIds.push_back(QId);
+						Queues.emplace_back();
+					}
+					Sl.QueueN = std::max(0, S["q"].I());
+					Queues[(size_t)Sl.Queue].push_back((int)Slots.size());
+				}
 				if (!Prefix.empty())
 				{
 					Sl.Inside = Prefix;
+					// its own way on from the place's (an aisle of the cinema, a doorway further in)
+					for (const V3& Pt : Line(S["path"]))
+					{
+						if (!Same(Sl.Inside.back(), Pt))
+						{
+							Sl.Inside.push_back(Pt);
+						}
+					}
 					if (!Same(Sl.Inside.back(), Sl.Approach))
 					{
 						Sl.Inside.push_back(Sl.Approach);
@@ -1246,6 +1370,10 @@ namespace LyudPeople
 				Slots.push_back(Sl);
 			}
 			Places.push_back(Pl);
+		}
+		for (std::vector<int>& L : Queues)
+		{
+			std::stable_sort(L.begin(), L.end(), [this](int A, int B) { return Slots[(size_t)A].QueueN < Slots[(size_t)B].QueueN; });
 		}
 		if (!bLoading)
 		{
@@ -1597,8 +1725,11 @@ namespace LyudPeople
 	bool FWorld::FlatLitNow(int Place) const
 	{
 		const FPlace& Pl = Places[Place];
-		// daylight indoors is enough till a little before sunset (and from a little after sunrise)
-		const bool bDark = !bSunUp || Hour > Sunset - 0.4f || Hour < Sunrise + 0.3f;
+		// daylight indoors is enough till a little before sunset (and from a little after sunrise); on a dark day (thick
+		// cloud, rain) the lamps go on up to three hours sooner and stay on longer in the morning, and in the gloomiest
+		// all day long
+		const float Lead = 3.f * std::max(0.f, Gloom - 0.45f) / 0.55f;
+		const bool bDark = !bSunUp || Hour > Sunset - 0.4f - Lead || Hour < Sunrise + 0.3f + Lead || Gloom > 0.92f;
 		if (!bDark)
 		{
 			return false;
@@ -1880,6 +2011,15 @@ namespace LyudPeople
 
 	void FWorld::ReserveOwnSlots()
 	{
+		for (FSlot& Sl : Slots)
+		{
+			if (!Sl.OwnerKey.empty())
+			{
+				const int Who = FindPerson(Sl.OwnerKey);
+				// a keeper who isn't in the town (any more): nobody's, and nobody else's either
+				Sl.Owner = Who >= 0 ? Who : -2;
+			}
+		}
 		for (const FPerson& P : People)
 		{
 			const size_t Colon = P.OwnSlot.find(':');
@@ -2038,7 +2178,7 @@ namespace LyudPeople
 		{
 			return false;
 		}
-		if (Sl.Owner >= 0 && Sl.Owner != P.Id && !(bBed && bFlat && Sl.Place == P.Home && Sl.Capacity > 1))
+		if (Sl.Owner != -1 && Sl.Owner != P.Id && !(bBed && bFlat && Sl.Place == P.Home && Sl.Capacity > 1))
 		{
 			return false;
 		}
@@ -2063,6 +2203,11 @@ namespace LyudPeople
 					return false;
 				}
 			}
+		}
+		// a counter's queue: only the first free spot of its line (and none the hero stands on)
+		if ((Sl.Queue >= 0 || Sl.bHeld) && !QueueOpenFor(S) && std::find(Sl.Users.begin(), Sl.Users.end(), P.Id) == Sl.Users.end())
+		{
+			return false;
 		}
 		// away (work in another town, school, the lab's gate): a door to leave the world by, not a seat: no room to keep
 		return A.bAway || Sl.Free(P.Id);
@@ -2229,6 +2374,11 @@ namespace LyudPeople
 						}
 					}
 				}
+				// the weather's pull: a roof in the rain, the ice-cream kiosk in the heat (weather_pull.json)
+				if (Pl.Pull >= 0 && Pi != P.Home && !A.bGather && !A.bStaff)
+				{
+					Score -= WeatherPull(Pi) * Opt.PullMeters;
+				}
 				// a little variety among equal spots
 				uint32_t H = (uint32_t)(S * 2654435761u) ^ (uint32_t)(P.Id * 40503u) ^ (uint32_t)(Time / 1800.0);
 				Score += Rand(H) * 25.f;
@@ -2335,6 +2485,11 @@ namespace LyudPeople
 		{
 			return -1e9f;
 		}
+		// a shelter (waiting out the weather under a roof) only where the weather pulls now
+		if (A.bShelter && WeatherPull(Slots[(size_t)S].Place) < 0.3f)
+		{
+			return -1e9f;
+		}
 		OutSlot = S;
 		// time left before bed or the day's next duty: free time ends 20 minutes before it
 		const float Left = FreeHoursLeft(P);
@@ -2387,8 +2542,13 @@ namespace LyudPeople
 		Score -= TravelH * Opt.WalkCostPerHour;
 		// the weather: nobody chooses to be out in the rain (those who love the open air mind it less), the frost empties
 		// the benches and the lookouts, a warm day draws to the water
-		if (!Places[Sl.Place].bIndoor && !A.bAway && !A.bGather)
+		if (!Roofed(Sl.Place) && !A.bAway && !A.bGather)
 		{
+			// an activity of the season (the allotment's beds, a paper on a bench): not in the frost, not in the heat
+			if (TempC < A.TempMin || TempC > A.TempMax)
+			{
+				return -1e9f;
+			}
 			if (bRain && !A.bRainOk)
 			{
 				Score -= (0.9f + 0.8f * Rain) * (1.f - 0.35f * P.NatureLove);
@@ -2416,8 +2576,13 @@ namespace LyudPeople
 				}
 			}
 		}
+		// and what it draws them to: the cafes, the library and the clubs fill in the rain, the ice-cream kiosk in the heat
+		if (!A.bAway && !A.bGather && !bHome)
+		{
+			Score += WeatherPull(Sl.Place);
+		}
 		// a fine evening: the town comes out to walk the sea front (the warmer, the more of them; nobody in the rain)
-		if (Hour >= 18.f && Hour < 21.5f && !bRain && TempC > 12.f && !A.bAway && !A.bGather && !Places[Sl.Place].bIndoor
+		if (Hour >= 18.f && Hour < 21.5f && !bRain && TempC > 12.f && !A.bAway && !A.bGather && !Roofed(Sl.Place)
 			&& (A.bWander || A.Pose == EPose::Look))
 		{
 			const std::string& K = Places[Sl.Place].Kind;
@@ -2768,7 +2933,7 @@ namespace LyudPeople
 			P.PathI = 0;
 			P.Pos = IsSeated(A.Pose) || A.Pose == EPose::Sleep || A.Pose == EPose::Work ? SpotOf(P, Slot) : Sl.Approach;
 			P.Yaw = YawAt(P, Slot, A.Pose);
-			P.bIndoors = Places[Sl.Place].bIndoor;
+			P.bIndoors = Roofed(Sl.Place);
 			P.Island = std::max(0, Places[Sl.Place].Island);
 			P.Until = Time + Minutes * 60.0;
 			P.State = A.bAway ? EState::Away : EState::Doing;
@@ -2952,7 +3117,7 @@ namespace LyudPeople
 		}
 		// caught by the rain out of doors at something they chose: they don't sit it out (each looks up at their own
 		// moment, so a square empties over a couple of minutes, not at once)
-		if (bRain && Cur.bFree && Duty < 0 && !Cur.bRainOk && !Cur.bGather && !P.bIndoors && P.Place >= 0 && !Places[P.Place].bIndoor)
+		if (bRain && Cur.bFree && Duty < 0 && !Cur.bRainOk && !Cur.bGather && !P.bIndoors && P.Place >= 0 && !Roofed(P.Place))
 		{
 			return true;
 		}
@@ -3484,7 +3649,7 @@ namespace LyudPeople
 		}
 		const FActivity& A = Activities[P.Activity];
 		const FSlot& Sl = Slots[P.Slot];
-		P.bIndoors = Places[Sl.Place].bIndoor;
+		P.bIndoors = Roofed(Sl.Place);
 		P.Until = Time + P.Minutes * 60.0;
 		P.StateStart = Time;
 		P.WanderAt = Time + (A.bPauseSet ? A.PauseMin + (A.PauseMax - A.PauseMin) * Rand(P.Rng) : 30.0 + 60.0 * Rand(P.Rng));
@@ -4337,6 +4502,207 @@ namespace LyudPeople
 		}
 	}
 
+	// --- counters' queues (docs/counters.md) ------------------------------------------------------------------
+
+	bool FWorld::QueueOpenFor(int S) const
+	{
+		// a line fills from the front: a spot is open only when every spot before it is taken (by somebody or the hero)
+		const FSlot& Sl = Slots[(size_t)S];
+		if (Sl.bHeld)
+		{
+			return false;
+		}
+		if (Sl.Queue < 0 || Sl.QueueN <= 0)
+		{
+			return true;
+		}
+		for (const int T : Queues[(size_t)Sl.Queue])
+		{
+			const FSlot& Before = Slots[(size_t)T];
+			if (Before.QueueN >= Sl.QueueN)
+			{
+				break;
+			}
+			if (Before.Users.empty() && !Before.bHeld)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	void FWorld::SetHeroAt(const V3& P, bool bOn)
+	{
+		for (const std::vector<int>& L : Queues)
+		{
+			for (const int S : L)
+			{
+				FSlot& Sl = Slots[(size_t)S];
+				Sl.bHeld = bOn && (Sl.Pos - P).Len2D() < 0.6f && std::fabs(Sl.Pos.Z - P.Z) < 1.5f;
+			}
+		}
+	}
+
+	void FWorld::QueueState(int Q, std::vector<int>& Out) const
+	{
+		Out.clear();
+		if (Q < 0 || Q >= (int)Queues.size())
+		{
+			return;
+		}
+		for (const int S : Queues[(size_t)Q])
+		{
+			const FSlot& Sl = Slots[(size_t)S];
+			int Who = Sl.bHeld ? -2 : -1;
+			for (const int U : Sl.Users)
+			{
+				if (People[(size_t)U].Slot == S)
+				{
+					Who = U;
+				}
+			}
+			Out.push_back(Who);
+		}
+	}
+
+	int FWorld::NearestQueue(const V3& P, float MaxM) const
+	{
+		int Best = -1;
+		float BestD = MaxM;
+		for (int Q = 0; Q < (int)Queues.size(); Q++)
+		{
+			const float D = (Slots[(size_t)Queues[(size_t)Q][0]].Pos - P).Len2D();
+			if (!Queues[(size_t)Q].empty() && D < BestD && std::fabs(Slots[(size_t)Queues[(size_t)Q][0]].Pos.Z - P.Z) < 3.f)
+			{
+				Best = Q;
+				BestD = D;
+			}
+		}
+		return Best;
+	}
+
+	int FWorld::SendToQueue(int Q, int Count)
+	{
+		const int Act = FindActivity("shop_town");
+		if (Q < 0 || Q >= (int)Queues.size() || Act < 0)
+		{
+			return 0;
+		}
+		const V3 Front = Slots[(size_t)Queues[(size_t)Q][0]].Pos;
+		int Sent = 0;
+		while (Sent < Count)
+		{
+			// the first open spot of the line, and the nearest grown-up out and about with nothing they must do
+			int Spot = -1;
+			for (const int S : Queues[(size_t)Q])
+			{
+				if (Spot < 0 && Slots[(size_t)S].Users.empty() && QueueOpenFor(S))
+				{
+					Spot = S;
+				}
+			}
+			int Who = -1;
+			float BestD = 250.f;
+			for (const FPerson& P : People)
+			{
+				bool bSleep = false;
+				const bool bFree = P.bTown && P.Age >= 14 && P.State == EState::Doing && P.Activity >= 0 &&
+					!Activities[(size_t)P.Activity].bStaff && Activities[(size_t)P.Activity].Id != "sleep" && P.Island == Places[(size_t)Slots[(size_t)Queues[(size_t)Q][0]].Place].Island;
+				const float D = (P.Pos - Front).Len2D();
+				if (bFree && D < BestD && DutyNow(P, bSleep) < 0 && (P.Slot < 0 || Slots[(size_t)P.Slot].Queue < 0))
+				{
+					Who = P.Id;
+					BestD = D;
+				}
+			}
+			if (Spot < 0 || Who < 0 || !Start(People[(size_t)Who], Act, Spot, 10.0, false, "counter crowd"))
+			{
+				break;
+			}
+			Sent++;
+		}
+		return Sent;
+	}
+
+	void FWorld::StepQueues()
+	{
+		// the one at the front is served for a minute or two, then goes; the ones behind wait (up to ten minutes) and step up
+		// into the spot before them as soon as it is free
+		for (const std::vector<int>& L : Queues)
+		{
+			for (size_t N = 0; N < L.size(); N++)
+			{
+				FSlot& Sl = Slots[(size_t)L[N]];
+				int Who = -1, Coming = -1;
+				for (const int U : Sl.Users)
+				{
+					const FPerson& Q = People[(size_t)U];
+					if (Q.Slot == L[N] && Q.State == EState::Doing && Q.Path.empty())
+					{
+						Who = U;
+					}
+					else if (Q.Slot == L[N] && !Q.Path.empty() && (Q.State == EState::Going || Q.State == EState::Doing))
+					{
+						Coming = U;
+					}
+				}
+				if (N > 0 && Who < 0 && Coming >= 0)
+				{
+					// on the way to a spot whose one ahead has meanwhile come free: they make for that one instead
+					FSlot& Ahead = Slots[(size_t)L[N - 1]];
+					if (Ahead.Users.empty() && !Ahead.bHeld)
+					{
+						FPerson& P = People[(size_t)Coming];
+						Reserve(P, L[N - 1]);
+						P.Slot = L[N - 1];
+						P.Path.back().P = Ahead.Approach;
+						QueueMoves++;
+					}
+					continue;
+				}
+				if (N == 0)
+				{
+					if (Who != Sl.FrontWho)
+					{
+						Sl.FrontWho = Who;
+						Sl.FrontSince = Time;
+					}
+					if (Who >= 0)
+					{
+						FPerson& P = People[(size_t)Who];
+						const double Serve = 60.0 + (double)(((uint32_t)P.Id * 2654435761u) % 90u);
+						P.Until = std::min(P.Until, Sl.FrontSince + Serve);
+					}
+					continue;
+				}
+				if (Who < 0)
+				{
+					continue;
+				}
+				FPerson& P = People[(size_t)Who];
+				FSlot& Ahead = Slots[(size_t)L[N - 1]];
+				if (Ahead.Users.empty() && !Ahead.bHeld)
+				{
+					// step up: the spot ahead is theirs, a short walk within what they are doing
+					Reserve(P, L[N - 1]);
+					P.Slot = L[N - 1];
+					P.Path.clear();
+					FPerson::FWay W;
+					W.P = Ahead.Approach;
+					W.Kind = P.bIndoors ? 1 : 0;
+					P.Path.push_back(W);
+					P.PathI = 0;
+					P.Pose = EPose::Walk;
+					QueueMoves++;
+				}
+				else if (Time - P.StateStart < 600.0)
+				{
+					P.Until = std::max(P.Until, Time + 30.0);      // still their turn to come: they wait
+				}
+			}
+		}
+	}
+
 	void FWorld::Step(float Dt)
 	{
 		if (Dt <= 0.f)
@@ -4344,6 +4710,10 @@ namespace LyudPeople
 			return;
 		}
 		Time += Dt;
+		if (!Queues.empty())
+		{
+			StepQueues();       // (a few dozen lines of a few spots: every step, so nobody stands behind a gap)
+		}
 		// everybody's day is rolled once a day at 14:00 (tonight's bedtime, tomorrow's waking)
 		if (PrevHour >= 0.f && PrevHour < 14.f && Hour >= 14.f)
 		{

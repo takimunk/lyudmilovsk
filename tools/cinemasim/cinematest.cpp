@@ -55,6 +55,16 @@ int main()
 	}
 	CHECK(Shown.size() == M.Films.size(), "%zu of %zu films are on no day", M.Films.size() - Shown.size(), M.Films.size());
 	CHECK(M.ProgrammeFor(2, true) == M.Festival, "a holiday must show the festival programme");
+	{
+		// a holiday's own programme (docs/festivals.md "The new toys")
+		const std::vector<std::string> NewYear = { "weekend_market", "new_year" }, Plain = { "lantern_night" };
+		CHECK(M.FestivalOf.count("new_year") && M.FestivalOf.count("sea_festival") && M.FestivalOf.count("children_day"), "New Year, the Sea Festival and Children's Day have programmes of their own (%d festivals do)", (int)M.FestivalOf.size());
+		CHECK(M.FestivalOf.count("new_year") && M.ProgrammeFor(2, true, &NewYear) == M.FestivalOf.at("new_year") && M.ProgrammeFor(2, true, &NewYear) != M.Festival, "New Year's Eve shows its own films, not the common festival ones");
+		CHECK(M.ProgrammeFor(2, true, &Plain) == M.Festival && M.ProgrammeFor(2, false, &Plain) == M.Programme[2], "a holiday without a programme of its own shows the common one; a plain day the weekday's");
+		bool bCartoon = false;
+		for (int I : M.FestivalOf.count("new_year") ? M.FestivalOf.at("new_year") : std::vector<int>()) bCartoon = bCartoon || M.Films[(size_t)I].Id == "cohl_fantasmagorie";
+		CHECK(bCartoon, "New Year's programme has the cartoon");
+	}
 	CHECK(M.ProgrammeFor(9, false).empty(), "an out-of-range weekday shows nothing");
 
 	// the Rassvet: its two session acts have the newsreel, the quest's reel and other plots do not

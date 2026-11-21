@@ -1,0 +1,19 @@
+{
+ "id": "grandfather_clock",
+ "tris": 3998,
+ "raw_tris": 1196079,
+ "tex": 1024,
+ "origin": "base",
+ "front_yaw": 0.0,
+ "min": [
+  -0.2,
+  -0.341,
+  0.0
+ ],
+ "max": [
+  0.201,
+  0.34,
+  2.2
+ ],
+ "radius": 0.392
+}
