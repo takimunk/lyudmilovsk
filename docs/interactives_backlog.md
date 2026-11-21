@@ -120,7 +120,7 @@ citysim + questsim tests of each job, quest audit clean.
 
 ## 5. Telescopes that show the sky
 
-`[ ]` **Brief (Fable 5.2):** Today the telescopes (the café «Тарелка»'s gallery, the lighthouse gallery, the Santos
+`[~] «Сделать телескопы с настоящим небом» 2026-11-20 (branch `telescopes`, docs/telescopes.md)` **Brief (Fable 5.2):** Today the telescopes (the café «Тарелка»'s gallery, the lighthouse gallery, the Santos
 family's loft, `home_santos`) are a line of text. Make looking through one a view: a round eyepiece view with a slow
 manual aim (mouse, inertia), focus, magnification steps, the real sky of the game (`ALyudSky`, the sun motif, the moon
 phase from the festival calendar's Meeus code, the planets the sky already places, the rare sky: aurora, noctilucent
@@ -453,7 +453,7 @@ walk tests in two buildings with lifts.
 
 ## 32. Children's games in the yards
 
-`[ ]` **Brief (Fable 5.2):** Children of the town play together after school: hopscotch on chalked squares, a skipping
+`[~] yard-games 2026-11-21 (branch ready, docs/yard_games.md; awaits Mac build, shots, bench)` **Brief (Fable 5.2):** Children of the town play together after school: hopscotch on chalked squares, a skipping
 rope, hide-and-seek in the yards (one counts at a wall, others hide behind the town's own cover; the hero can join and be
 found or find), football with a ball that rolls (physics, a code-built ball), tag. A small group behaviour in the people
 sim (a game leader, roles, a play area from the city plan's yard spots), gestures by the hand-goal IK layer. Done: peoplesim
@@ -582,7 +582,7 @@ Mac shots of each interaction, bench.
 
 ## 40. The Aton station as the club's front door
 
-`[ ]` **Brief (Opus 5.5):** The Aton station is the first hall the hero sees and stands next to the club
+`[x]` aton-front-door 2026-11-21 (docs/front_door.md; Mac compile, shots and bench owed) **Brief (Opus 5.5):** The Aton station is the first hall the hero sees and stands next to the club
 (`docs/transport.md`: the swept wing, its coffee bar with `coffee` goods; `stations-v3` dresses the halls). Make it the
 club's front door: the coffee bar served by its barista through item 27's counter service (a line in the morning, the
 cup set on the counter, the regulars' "the usual"), a departures board that shows the real next cabins of the Sun line
@@ -636,7 +636,7 @@ unchanged), habitats regenerated after rebase, the sound points as data.
 
 ## 44. Signature behaviours of each bird species
 
-`[ ]` **Brief (Fable 5.2):** Birds feed, rest, bathe and roost by species (`docs/bird_life.md` "Daily routines"), but they
+`[~] bird flight thread 2026-11-21: model, 63 habits, tests, book lines, stamps in (docs/bird_habits.md); own clips, sketches, page shot, bench on the Mac owed` **Brief (Fable 5.2):** Birds feed, rest, bathe and roost by species (`docs/bird_life.md` "Daily routines"), but they
 do it alike. Give each of the 39 species one or two things it alone does, that a patient hero with binoculars sees and
 writes in the bird book (`ULyudBirdBook`, `docs/bird_guide.md`): hooded crows dropping a walnut or a shell on the
 promenade's paving from 5 m and walking down to eat it; herring gulls snatching food from a resident's bench and from the
@@ -665,7 +665,7 @@ the soundscape mix unchanged at night.
 
 ## 46. Animals with people
 
-`[ ]` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
+`[x] animals-with-people 2026-11-21 (model, data, lines, hedgehog model and offline checks done; engine side never compiled or seen: Mac build, hedgehog.py + import_props.sh hedgehog hedgehog_ball, shots, bench owed)` **Brief (Fable 5.2):** Cats and dogs live on their own (`docs/animals.md`) and residents never own one. Tie them:
 some households have a dog that a resident walks on a leash morning and evening along their usual paths (the town-life
 walk activity carries an animal id; the dog follows at the owner's heel, sniffs, greets other dogs; the leash a simple
 cable between hand and collar, out of Lumen), cats that belong to a flat and sit on its window sill by day (the flats'
@@ -678,7 +678,7 @@ model (owner and dog keep together, leash never stretched through a wall), peopl
 
 ## 47. Reading anywhere
 
-`[~] book-club 2026-11-21 (branch book-club)` **Cloud-only. Brief (Opus 5.5):** The classics (`docs/books.md`, `SLyudBookReader`, `ULyudBenchSit`) can be read
+`[~] book-club 2026-11-21 (branch book-club: written and tested offline, Mac compile pending)` **Cloud-only. Brief (Opus 5.5):** The classics (`docs/books.md`, `SLyudBookReader`, `ULyudBenchSit`) can be read
 only on a park bench. Let a book on loan be read wherever the hero sits or rides: any public seat (`ULyudPublicSpots`
 "bench" and "chair" spots, the sanatorium lounge, the café tables), the beach towel, the cable car cabin and the train's
 window seat (the clock moves as he reads, so a ride passes in pages), the hero's own room (item 19). Light matters: after
@@ -691,7 +691,7 @@ and the hero gets a polite postcard (item 11's letters). Done: unit tests of the
 
 ## 48. The book club
 
-`[~] book-club 2026-11-21 (branch book-club)` **Cloud-only. Brief (Opus 5.5):** Give the library a social side. A reading circle meets on Thursday evenings in
+`[~] book-club 2026-11-21 (branch book-club: written and tested offline, Mac compile pending)` **Cloud-only. Brief (Opus 5.5):** Give the library a social side. A reading circle meets on Thursday evenings in
 the reading room (a town-life gathering of four or five residents by persona: the retired teacher, the student, the
 librarian, a scientist from Academgorodok), each month one book from the catalogue (`tools/books/catalog.json`, in all
 three languages); they sit, talk in turns (bark lines about the month's book, written for each of twelve books, ru/en/ja,
@@ -703,7 +703,7 @@ fills on Thursdays, not on festival days), barksim for the lines, questsim for t
 
 ## 49. The sanatorium's procedures
 
-`[ ]` **Brief (Fable 5.2):** The course at «Корона» (`sanatorium-cure`, `docs/city_interiors.md` "Stays") stamps the
+`[~] san-procedures 2026-11-21 (branch san-procedures, docs/sanatorium_procedures.md; scenes, wing, guests and citysim done; Mac compile, shots of three procedures and bench owed)` **Brief (Fable 5.2):** The course at «Корона» (`sanatorium-cure`, `docs/city_interiors.md` "Stays") stamps the
 hero's book, but the procedures happen as a word and a fade. Make each a short hands-on scene in the room where it
 happens: the pump room (pick a cup, fill it at the brass tap, sip it slowly while the clock ticks; the water's taste line
 changes by spring), the inhalation room (sit, a mask, breathe in time with a slow ring on the screen), the mud bath and
@@ -716,7 +716,7 @@ of three procedures, bench.
 
 ## 50. Sanatorium guests come and go
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The four sanatorium guests (`tools/town/sanatorium_guests.py`) live there for
+`[~] sanatorium-rotation 2026-11-21` **Cloud-only. Brief (Opus 5.5):** The four sanatorium guests (`tools/town/sanatorium_guests.py`) live there for
 ever. Make the sanatorium a place people come to: a nine-day stay (the same as the hero's course) with arrivals and
 departures on Saturdays by the train (item 21's passengers: they get off with a suitcase and walk to «Корона», the
 departing ones wait on the platform), a pool of a dozen guests from the residents generator's spare bodies who rotate,

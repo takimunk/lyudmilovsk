@@ -1802,5 +1802,21 @@
  "npc.t_tamm_boris.name": "Борис Тамм",
  "npc.t_tamm_boris.role": "отдыхающий в санатории",
  "npc.t_sazonov_nikolai.name": "Николай Сазонов",
- "npc.t_sazonov_nikolai.role": "отдыхающий в санатории"
+ "npc.t_sazonov_nikolai.role": "отдыхающий в санатории",
+ "npc.t_krylova_zinaida.name": "Зинаида Крылова",
+ "npc.t_krylova_zinaida.role": "отдыхающая в санатории",
+ "npc.t_abdullina_raisa.name": "Раиса Абдуллина",
+ "npc.t_abdullina_raisa.role": "отдыхающая в санатории",
+ "npc.t_levin_arkady.name": "Аркадий Левин",
+ "npc.t_levin_arkady.role": "отдыхающий в санатории",
+ "npc.t_levina_tamara.name": "Тамара Левина",
+ "npc.t_levina_tamara.role": "отдыхающая в санатории",
+ "npc.t_beketov_yuri.name": "Юрий Бекетов",
+ "npc.t_beketov_yuri.role": "отдыхающий в санатории",
+ "npc.t_matsumoto_haruo.name": "Харуо Мацумото",
+ "npc.t_matsumoto_haruo.role": "отдыхающий в санатории",
+ "npc.t_kovalchuk_lidia.name": "Лидия Ковальчук",
+ "npc.t_kovalchuk_lidia.role": "отдыхающая в санатории",
+ "npc.t_kovalchuk_asya.name": "Ася Ковальчук",
+ "npc.t_kovalchuk_asya.role": "отдыхающая в санатории"
 }

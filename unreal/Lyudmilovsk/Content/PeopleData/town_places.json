@@ -29543,7 +29543,7 @@
    "slots": [
     {
      "kind": "staff",
-     "tag": "guest_gromov_pyotr",
+     "tag": "guest_seat_1a",
      "pos": [
       -710.7,
       1260.79,
@@ -29555,7 +29555,7 @@
     },
     {
      "kind": "staff",
-     "tag": "guest_mironova_sonya",
+     "tag": "guest_seat_1b",
      "pos": [
       -711.59,
       1261.36,
@@ -29567,7 +29567,7 @@
     },
     {
      "kind": "staff",
-     "tag": "guest_tamm_boris",
+     "tag": "guest_seat_2a",
      "pos": [
       -710.38,
       1258.49,
@@ -29579,7 +29579,7 @@
     },
     {
      "kind": "staff",
-     "tag": "guest_sazonov_nikolai",
+     "tag": "guest_seat_2b",
      "pos": [
       -711.17,
       1259.19,
@@ -29597,6 +29597,209 @@
      -709.7,
      1256.05,
      -8.0
+    ]
+   ]
+  },
+  {
+   "id": "P-SANATORIUM-INHALE",
+   "kind": "sanatorium_inhale",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "staff",
+     "tag": "inhale_1",
+     "pos": [
+      -717.59,
+      1243.07,
+      -8.0
+     ],
+     "yaw": 302.2,
+     "height": 0.45,
+     "thing": "P-SANATORIUM/inhale_2"
+    },
+    {
+     "kind": "staff",
+     "tag": "inhale_2",
+     "pos": [
+      -718.43,
+      1242.54,
+      -8.0
+     ],
+     "yaw": 302.2,
+     "height": 0.45,
+     "thing": "P-SANATORIUM/inhale_3"
+    }
+   ],
+   "roles": [],
+   "building": "P-SANATORIUM",
+   "path": [
+    [
+     -711.6,
+     1253.22,
+     -8.0
+    ],
+    [
+     -713.61,
+     1248.98,
+     -8.0
+    ],
+    [
+     -715.09,
+     1246.02,
+     -8.0
+    ],
+    [
+     -715.41,
+     1244.21,
+     -8.0
+    ],
+    [
+     -716.68,
+     1243.96,
+     -8.0
+    ]
+   ]
+  },
+  {
+   "id": "S-RAIL-GUESTS",
+   "kind": "guest_platform",
+   "door": [
+    126.5,
+    -29.1,
+    -42.27
+   ],
+   "yaw": 90.0,
+   "island": 0,
+   "open": 1,
+   "slots": [
+    {
+     "kind": "stand",
+     "pos": [
+      146.7,
+      -55.3,
+      -41.43
+     ],
+     "yaw": 90.0,
+     "height": 0.0,
+     "approach": [
+      146.7,
+      -55.3,
+      -41.43
+     ]
+    },
+    {
+     "kind": "stand",
+     "pos": [
+      149.3,
+      -55.3,
+      -41.43
+     ],
+     "yaw": 90.0,
+     "height": 0.0,
+     "approach": [
+      149.3,
+      -55.3,
+      -41.43
+     ]
+    },
+    {
+     "kind": "stand",
+     "pos": [
+      151.99,
+      -55.3,
+      -41.43
+     ],
+     "yaw": 90.0,
+     "height": 0.0,
+     "approach": [
+      151.99,
+      -55.3,
+      -41.43
+     ]
+    },
+    {
+     "kind": "stand",
+     "pos": [
+      154.59,
+      -55.3,
+      -41.43
+     ],
+     "yaw": 90.0,
+     "height": 0.0,
+     "approach": [
+      154.59,
+      -55.3,
+      -41.43
+     ]
+    },
+    {
+     "kind": "stand",
+     "pos": [
+      157.27,
+      -55.3,
+      -41.43
+     ],
+     "yaw": 90.0,
+     "height": 0.0,
+     "approach": [
+      157.27,
+      -55.3,
+      -41.43
+     ]
+    },
+    {
+     "kind": "stand",
+     "pos": [
+      159.87,
+      -55.3,
+      -41.43
+     ],
+     "yaw": 90.0,
+     "height": 0.0,
+     "approach": [
+      159.87,
+      -55.3,
+      -41.43
+     ]
+    }
+   ],
+   "roles": [],
+   "path": [
+    [
+     128.0,
+     -43.1,
+     -42.53
+    ],
+    [
+     129.5,
+     -49.6,
+     -42.51
+    ],
+    [
+     129.5,
+     -54.6,
+     -42.44
+    ],
+    [
+     132.5,
+     -56.6,
+     -42.72
+    ],
+    [
+     140.0,
+     -56.6,
+     -43.32
+    ],
+    [
+     143.5,
+     -56.1,
+     -41.43
     ]
    ]
   },
@@ -129112,6 +129315,39 @@
    ]
   },
   {
+   "id": "S-CAT-FEEDERS",
+   "kind": "cat_feeder",
+   "pos": [
+    -229.52,
+    620.52,
+    -36.16
+   ],
+   "yaw": 0.0,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "stand",
+     "pos": [
+      -229.52,
+      620.52,
+      -36.16
+     ],
+     "yaw": 180.0,
+     "tag": "bowls"
+    },
+    {
+     "kind": "stand",
+     "pos": [
+      -227.82,
+      621.92,
+      -36.16
+     ],
+     "yaw": -152.0,
+     "tag": "watch"
+    }
+   ]
+  },
+  {
    "id": "P-CAFE-CLEAN",
    "kind": "clean_round",
    "door": [
@@ -133633,6 +133869,98 @@
      ],
      "yaw": 320.0
     }
+   ]
+  },
+  {
+   "id": "P-LIBRARY-CLUB",
+   "kind": "book_club",
+   "door": [
+    -414.05,
+    996.73,
+    -22.0
+   ],
+   "yaw": -5.6,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "club_seat",
+     "pos": [
+      -420.44,
+      995.1,
+      -22.01
+     ],
+     "yaw": 264.4,
+     "height": 0.45,
+     "thing": "P-LIBRARY/lounge_armchair_1",
+     "owner": "t_mensah_beatriz"
+    },
+    {
+     "kind": "club_seat",
+     "pos": [
+      -420.78,
+      991.62,
+      -22.01
+     ],
+     "yaw": 84.4,
+     "height": 0.45,
+     "thing": "P-LIBRARY/lounge_armchair_2",
+     "owner": "t_girma_zsofia"
+    },
+    {
+     "kind": "club_seat",
+     "pos": [
+      -421.6,
+      994.01,
+      -22.0
+     ],
+     "yaw": 354.4,
+     "height": 0.45,
+     "thing": "P-LIBRARY/lounge_sofa",
+     "owner": "t_lee_brandon"
+    },
+    {
+     "kind": "club_seat",
+     "pos": [
+      -421.65,
+      993.46,
+      -22.0
+     ],
+     "yaw": 354.4,
+     "height": 0.45,
+     "thing": "P-LIBRARY/lounge_sofa",
+     "owner": "t_le_ondrej"
+    },
+    {
+     "kind": "club_seat",
+     "pos": [
+      -421.71,
+      992.91,
+      -22.0
+     ],
+     "yaw": 354.4,
+     "height": 0.45,
+     "thing": "P-LIBRARY/lounge_sofa",
+     "owner": "t_kjaer_nour"
+    }
+   ],
+   "roles": [],
+   "building": "P-LIBRARY",
+   "path": [
+    [
+     -415.64,
+     996.89,
+     -22.0
+    ],
+    [
+     -418.72,
+     994.18,
+     -22.0
+    ],
+    [
+     -419.31,
+     993.23,
+     -22.0
+    ]
    ]
   }
  ]

@@ -72,11 +72,15 @@ all_keys = set(keys) | story_keys
 
 # --- homes: a flat that exists, one household each, no more people than its beds sleep
 bad_home, households = [], collections.defaultdict(set)
+stays = []
 residents = collections.defaultdict(list)
 for p in folk:
     f = by_id.get(p.get("home"))
     if not f or f["kind"] != "flat":
         bad_home.append("%s: home %s" % (p["key"], p.get("home")))
+        continue
+    if p.get("stay"):
+        stays.append(p)     # a guest in turn (tools/town/sanatorium_guests.py): the room is theirs for the stay only, checked below
         continue
     households[p["home"]].add(p["household"])
     residents[p["home"]].append(p)
@@ -95,6 +99,31 @@ for fid, rs in residents.items():
     if len(rs) > beds + sofas:
         over.append("%s: %d people, %d beds + %d sofas" % (fid, len(rs), beds, sofas))
 check(not over, "no flat holds more than its beds and sofas sleep (%d over)" % len(over), *over)
+# the guests in turn: nobody else's flat, no room and no chair two stays at once, four of them here on any day
+def stay_days(p):
+    st = p["stay"]
+    return {(st["from"] + i) % st["cycle"] for i in range(st["days"] + 1)}       # the day they come to the day they go
+clash = []
+for i, p in enumerate(stays):
+    if p["home"] in residents:
+        clash.append("%s: %s is somebody's flat" % (p["key"], p["home"]))
+    for q in stays[i + 1:]:
+        both = stay_days(p) & stay_days(q)
+        # the day one goes and the other comes is shared: out by the morning train, in by the next
+        both = {d for d in both if not ((d == (p["stay"]["from"] + p["stay"]["days"]) % p["stay"]["cycle"] and d == q["stay"]["from"] and p["stay"]["leave"] <= q["stay"]["arrive"])
+                                        or (d == (q["stay"]["from"] + q["stay"]["days"]) % q["stay"]["cycle"] and d == p["stay"]["from"] and q["stay"]["leave"] <= p["stay"]["arrive"]))}
+        if not both:
+            continue
+        if p["home"] == q["home"]:
+            clash.append("%s and %s: both in %s on cycle days %s" % (p["key"], q["key"], p["home"], sorted(both)[:3]))
+        roles = {d.get("role") for d in p["duties"] if d.get("role", "").startswith("guest_seat")} & {d.get("role") for d in q["duties"]}
+        if roles:
+            clash.append("%s and %s: both at %s on cycle days %s" % (p["key"], q["key"], sorted(roles), sorted(both)[:3]))
+if stays:
+    cycle = stays[0]["stay"]["cycle"]
+    here = [sum(1 for p in stays if d in {(p["stay"]["from"] + i) % cycle for i in range(1, p["stay"]["days"])}) for d in range(cycle)]
+    check(not clash and min(here) >= 2 and max(here) <= 4, "the guests in turn: no room or chair two stays at once (%d clashes), %d-%d of them between trains on any day"
+          % (len(clash), min(here), max(here)), *clash)
 
 # --- duties: the place exists, its kind is one the activity goes to, a slot for the role, room for everybody on shift
 bad_duty, no_slot = [], []
@@ -115,8 +144,10 @@ for p in folk:
             continue
         if pl["kind"] not in a.get("places", []):
             bad_duty.append("%s: %s at a %s (%s goes to %s)" % (p["key"], d["place"], pl["kind"], d["activity"], a.get("places")))
-        if a.get("round"):
-            continue        # a round's workplace is its doors, one after another: no staff slot to stand at
+        if a.get("round") or a.get("when"):
+            continue        # a round's workplace is its doors, one after another; a meeting (the book club) has its members' own seats
+        if "stay_day" in d:
+            continue        # a guest's day of coming or going: the reception, the platform, no job
         staff = [s for s in pl.get("slots", []) if s.get("kind") == "staff"]
         tagged = [s for s in staff if s.get("tag") == d.get("role")]
         if not (tagged or staff):
@@ -126,7 +157,8 @@ for p in folk:
         for day in d["days"]:
             for i in range(int(span * 2)):
                 t = day * 24 + h0 + i * 0.5
-                on_shift[(d["place"], d.get("role"))][(int(t // 24) % 7, round(t % 24 * 2))] += 1
+                if not p.get("stay"):       # guests in turn share a chair one after another (checked with the stays)
+                    on_shift[(d["place"], d.get("role"))][(int(t // 24) % 7, round(t % 24 * 2))] += 1
 check(not bad_duty, "every duty is a known duty activity at a place that exists, of a kind it goes to (%d not)" % len(bad_duty), *bad_duty)
 check(not no_slot, "every job has a staff slot at its workplace (%d not)" % len(no_slot), *no_slot)
 crowded = []
@@ -160,7 +192,7 @@ for p in folk:
             cut.append("%s: %s %s, asleep %.2f-%.2f" % (p["key"], d["activity"], d["hours"], p["bed"], p["wake"]))
 check(not short, "everybody's night is 7 to 10.5 hours (a child's more) (%d not)" % len(short), *short)
 check(not cut, "no duty starts or ends while they sleep (%d do)" % len(cut), *cut)
-kids = [p["key"] for p in folk if p["age"] < 16 and any(d["activity"] not in ("school_town", "school") for d in p["duties"])]
+kids = [p["key"] for p in folk if p["age"] < 16 and not p.get("stay") and any(d["activity"] not in ("school_town", "school") for d in p["duties"])]
 check(not kids, "children under 16 have no job (%d do)" % len(kids), *kids)
 pupils = [p for p in folk if any(d.get("role") == "pupil" for d in p["duties"])]
 odd = ["%s %d" % (p["key"], p["age"]) for p in pupils if not 7 <= p["age"] <= 18]

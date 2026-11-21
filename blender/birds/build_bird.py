@@ -1862,8 +1862,10 @@ def solve_pose(P):
             deform(f"shin.{side}", Rb @ nose_up(-30 * tuck * (1 - trail) - 80 * trail), head=knee)
             Rtar = Rb @ rx(math.radians(-66 * tuck * (1 - trail) + 92 * trail) + reach)
             deform(f"tarsus.{side}", Rtar)
-            deform(f"toes.{side}", Rtar @ rx(math.radians(70 * tuck * (1 - trail) + 88 * trail)))
-            deform(f"hallux.{side}", Rtar @ rx(math.radians(-40 * tuck * (1 - trail) - 122 * trail)))
+            # raptors (fly_clench) close the feet into a fist under the tail coverts instead of a heron's straight toes
+            clench = M.get("fly_clench", 0.0) * tuck
+            deform(f"toes.{side}", Rtar @ rx(math.radians(70 * tuck * (1 - trail) + 88 * trail + 75 * clench)))
+            deform(f"hallux.{side}", Rtar @ rx(math.radians(-40 * tuck * (1 - trail) - 122 * trail + 30 * clench)))
     for side in ("L", "R"):
         deform(f"toetip.{side}", R[f"toes.{side}"])
         deform(f"halluxtip.{side}", R[f"hallux.{side}"])

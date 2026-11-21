@@ -141,6 +141,20 @@ UStaticMeshComponent* ALyudPublicSpaces::MakePart(UStaticMesh* Mesh, const FStri
 	return C;
 }
 
+float ALyudPublicSpaces::NearestLitLampCm(const FVector& From) const
+{
+	if (!bNight || LampHeads.Num() == 0)
+	{
+		return -1.f;
+	}
+	double Best = TNumericLimits<double>::Max();
+	for (const FVector& L : LampHeads)
+	{
+		Best = FMath::Min(Best, FVector::DistSquared(L, From));
+	}
+	return (float)FMath::Sqrt(Best);
+}
+
 bool ALyudPublicSpaces::Build(const TSharedPtr<FJsonObject>& Doc)
 {
 	if (!Doc) return false;

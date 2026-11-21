@@ -173,14 +173,14 @@ curled). So a gesture goes with any pose and any body, melts into the next one, 
 hand. Standing with folded arms uses the `FoldArms` clip (`LyudGesture::ClipFor`).
 
 Props are static meshes `/Game/Characters/Humans/Props/SM_Prop_<name>` (phone, cigarette, camera, umbrella, rod,
-brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, spade, watering_can, and easel), made by `blender/humans/props.py` and
+brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, spade, watering_can, suitcase, and easel), made by `blender/humans/props.py` and
 imported by `unreal/scripts/import_props.py`. A manner whose prop's mesh is missing is never picked. How each sits in
 the hands is `LyudGesture::HoldOf`:
 
 | hold | props | the mesh |
 | --- | --- | --- |
 | Upright | umbrella, ice_cream, cup, watering_can | origin at the grip, +Z up (the can's spout +X) |
-| Hanging | bag | origin at the handles, hangs along -Z |
+| Hanging | bag, suitcase | origin at the handles, hangs along -Z |
 | Palm | phone | long axis X, the screen +Z |
 | Fingers | cigarette, brush | along +X from the fingers |
 | TwoHands | camera, binoculars, newspaper, book, knitting | length X, the face the holder looks at +Z |

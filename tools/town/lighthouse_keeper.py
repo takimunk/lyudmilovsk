@@ -31,6 +31,7 @@ import south_people as SP        # noqa: E402  (the coast's frames; its places a
 import terrain as T              # noqa: E402
 import town_activities as TA     # noqa: E402
 import town_night as TN          # noqa: E402
+import town_pets as PETS         # noqa: E402
 
 ROOT = SP.ROOT
 PLACES = SP.PLACES
@@ -154,16 +155,16 @@ def build():
     assert [p["id"] for p in new] == PLACE_IDS
     pd = SP.load(PLACES)
     places = [p for p in pd["places"] if p["id"] not in PLACE_IDS]
-    # before south_people's, town_night's and town_activities' (the order of the add-ons: lighthouse_keeper, south_people,
+    # before south_people's, town_night's and town_activities' (the order of the add-ons: lighthouse_keeper, south_people, town_pets,
     # town_night, town_activities; each keeps the later ones after its own, so any of them may run again)
-    after = set(SP.PLACE_IDS) | set(TN.PLACE_IDS) | set(TA.PLACE_IDS)
+    after = set(SP.PLACE_IDS) | {PETS.FEED_PLACE} | set(TN.PLACE_IDS) | set(TA.PLACE_IDS)
     at = next((i for i, p in enumerate(places) if p["id"] in after), len(places))
     pd["places"] = places[:at] + new + places[at:]
     out[PLACES] = SP.dump(pd)
 
     text = open(ACTIVITIES, encoding="utf-8").read()
     lines = [l for l in text.split("\n") if not any('"id": "%s"' % a in l for a in ACT_IDS)]
-    later = SP.ACT_IDS + TN.ACT_IDS + TA.ACT_IDS
+    later = SP.ACT_IDS + PETS.ACT_IDS + TN.ACT_IDS + TA.ACT_IDS
     first = next((i for i, l in enumerate(lines) if any('"id": "%s"' % a in l for a in later)), None)
     rows = ["    " + r + "," for r in ACTIVITIES_ROWS]
     if first is None:

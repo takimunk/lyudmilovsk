@@ -320,6 +320,28 @@ ULyudPhoto* ULyudPhoto::Get(const UObject* WorldContext)
 	return World ? World->GetSubsystem<ULyudPhoto>() : nullptr;
 }
 
+bool ULyudPhoto::IsUp(const UObject* WorldContext)
+{
+	const ULyudPhoto* Photo = Get(WorldContext);
+	return Photo && (Photo->bRaised || Photo->Raise > 0.f);
+}
+
+void ULyudPhoto::DropCamera()
+{
+	bRaised = false;
+	if (Raise > 0.f)
+	{
+		Raise = 0.f;
+		Dark = 0.f;
+		APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+		if (PC && PC->PlayerCameraManager)
+		{
+			PC->PlayerCameraManager->UnlockFOV();
+		}
+		NormalFov = 0.f;
+	}
+}
+
 PhotoModel::FState& ULyudPhoto::State()
 {
 	if (!Model.IsValid())
@@ -606,6 +628,12 @@ void ULyudPhoto::SetRaised(bool bUp)
 	ULyudInventory* Inv = ULyudInventory::Get(this);
 	if (bUp && !(Inv && Inv->Count(CameraId) > 0))
 	{
+		return;
+	}
+	const APlayerController* Player = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
+	if (bUp && Player && Player->IsInputKeyDown(EKeys::RightMouseButton))
+	{
+		// the binoculars are at the eyes: both would turn the view's angle and each take the other's for the normal one
 		return;
 	}
 	bRaised = bUp;
@@ -1061,6 +1089,9 @@ void ULyudPhoto::TakePicture(const FVector& Eye, const FRotator& Look, float Sha
 	}
 	Capture->FOVAngle = CaptureFov(*PC);
 	Capture->SetWorldLocationAndRotation(Eye, Look);
+	// every shot is a cut: the kept render state still holds the last shot's exposure and temporal history, taken
+	// minutes ago somewhere else (the flag clears itself after the capture)
+	Capture->bCameraCutThisFrame = true;
 	Capture->CaptureScene();
 
 	FTextureRenderTargetResource* Resource = Target->GameThread_GetRenderTargetResource();
@@ -1229,7 +1260,7 @@ void ULyudPhoto::StartDarkroom()
 		Say(TEXT("ui.photo.dark.nothing"));
 		return;
 	}
-	bRaised = false;
+	DropCamera();
 	// the panel lives in the finder's overlay
 	EnsureOverlay();
 	Bath = 0;
@@ -1282,7 +1313,7 @@ void ULyudPhoto::ToggleAlbum()
 
 void ULyudPhoto::OpenPages(int32 Mode)
 {
-	bRaised = false;
+	DropCamera();
 	AlbumMode = Mode;
 	// it opens on the newest prints (ShowAlbumPage holds the page to what there is)
 	AlbumPage = MAX_int32 / 2;

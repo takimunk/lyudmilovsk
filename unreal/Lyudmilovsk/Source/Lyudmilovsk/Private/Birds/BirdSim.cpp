@@ -1,6 +1,7 @@
 #include "BirdSim.h"
 
 #include "BirdCorvid.h"
+#include "BirdHabit.h"
 #include "BirdMurmur.h"
 #include "BirdNest.h"
 
@@ -622,6 +623,11 @@ namespace LyudBirds
 		{
 			Nest = std::make_shared<FNesting>();
 		}
+		Hab.reset();
+		if (Opt.bHabits)
+		{
+			Hab = std::make_shared<FHabits>();
+		}
 		if (OffshoreD.empty())
 		{
 			BuildOffshore();
@@ -911,6 +917,10 @@ namespace LyudBirds
 		{
 			Corv = std::make_shared<FCorvids>();
 		}
+		if (!Hab && Opt.bHabits)
+		{
+			Hab = std::make_shared<FHabits>();
+		}
 		BuildHash();
 		return First;
 	}
@@ -920,6 +930,10 @@ namespace LyudBirds
 		if (Murm)
 		{
 			Murm->Clear();
+		}
+		if (Hab)
+		{
+			Hab->Resettle(*this);
 		}
 		if (Corv)
 		{
@@ -1898,6 +1912,9 @@ namespace LyudBirds
 		bool bCatNear = false;
 		float CatSeen = 0.f;
 		V3 CatAt;
+		// (the look at a cat is a sight line, a trace in the game: only a bird that would scold it takes one, and not on
+		// every step while it is scolding already, only as its alarm runs out)
+		const bool bLooksForCat = !bGround && B.Tier <= 1 && B.Act != EAct::Sleep && B.AlarmT <= 1.f && VoiceTraits(B.Species).bScolds;
 		for (const FBeast& M : Beasts)
 		{
 			const V3 D = B.Pos - M.Pos;
@@ -1937,14 +1954,14 @@ namespace LyudBirds
 			bCatNear |= M.bCat && Dist < 20.f && !M.bStalking;
 			// (a bird on its twig scolds a cat it can see from much farther than it would fly from it; a cat creeping low
 			// is only found out close by)
-			if (M.bCat && !bGround && Dist < (M.bStalking ? 5.f : 18.f) && (CatSeen <= 0.f || Dist < CatSeen) && (!Sight || Sight(B.Pos, M.Pos + V3(0.f, 0.f, 0.2f))))
+			if (bLooksForCat && M.bCat && Dist < (M.bStalking ? 5.f : 18.f) && (CatSeen <= 0.f || Dist < CatSeen) && (!Sight || Sight(B.Pos, M.Pos + V3(0.f, 0.f, 0.2f))))
 			{
 				CatSeen = Dist;
 				CatAt = M.Pos;
 			}
 		}
 		// (the scolding goes on for as long as the cat is in sight, and the neighbours take it up: BirdVoice.cpp)
-		if (CatSeen > 0.f && B.Tier <= 1 && B.Act != EAct::Sleep && VoiceTraits(B.Species).bScolds)
+		if (CatSeen > 0.f)
 		{
 			RaiseAlarm(B, CatAt);
 		}
@@ -2227,6 +2244,10 @@ namespace LyudBirds
 		{
 			Corv->Events.clear();      // (last step's: the game read them after it, if anybody did)
 		}
+		if (Hab)
+		{
+			Hab->Events.clear();
+		}
 		Player.ExtraThreat = std::max(0.f, Player.ExtraThreat - Dt * 1.5f);
 		UpdateTiers();
 		BuildHash();
@@ -2308,6 +2329,10 @@ namespace LyudBirds
 			{
 				// flown by the murmuration below
 			}
+			else if (B.bHabitMoves)
+			{
+				// flown by its habit below
+			}
 			else if (B.Tier <= 1)
 			{
 				Move(B, Dt);
@@ -2332,6 +2357,10 @@ namespace LyudBirds
 		if (Nest)
 		{
 			Nest->Step(*this, Dt);
+		}
+		if (Hab)
+		{
+			Hab->Step(*this, Dt);
 		}
 		if (bMoveFar)
 		{
@@ -2412,12 +2441,21 @@ namespace LyudBirds
 			ThinkVoice(B, Dt);
 		}
 
-		// a bird busy at its nest (BirdNest.cpp), a corvid busy with something of its own (BirdCorvid.cpp)
+		// a bird in one of its species' habits (BirdHabit.cpp), busy at its nest (BirdNest.cpp), a corvid busy with
+		// something of its own (BirdCorvid.cpp)
+		if (Hab && Hab->Busy(*this, B, Dt))
+		{
+			return;
+		}
 		if (Nest && Nest->Think(*this, B, Dt))
 		{
 			return;
 		}
 		if (Corv && Corv->Think(*this, B, Dt))
+		{
+			return;
+		}
+		if (Hab && Hab->Consider(*this, B, Dt))
 		{
 			return;
 		}
