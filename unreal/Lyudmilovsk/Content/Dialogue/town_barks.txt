@@ -2920,6 +2920,9 @@ say = town.aton_brook.1..4
 # Events (on = ...), sent by ULyudPets: pet_talk (the owner to the dog on the walk), pet_stroke_yes / pet_stroke_no
 # (the hero asked to stroke the dog), cat_call (the lady puts the bowls down), cat_sill (the hero stops under a
 # window with the flat's cat on the sill, its owner near), hedgehog (somebody near a hedgehog at dusk).
+# The yard cats and the townsfolk (docs/animals.md "Town cats"). Events sent by ULyudPets: cat_friend (a resident
+# to the yard cat that sees them home), cat_scrap (the fishmonger throws a begging cat a scrap), cat_shoo (the
+# fishmonger, a cleaner, the watchman or somebody with a snow shovel sends a cat out of the way).
 
 [dog_owner_walk]
 doing = walk_dog walk_dog_late
@@ -2956,6 +2959,18 @@ say = town.cat_sill.1..4
 [hedgehog_seen]
 on = hedgehog
 say = town.hedgehog_seen.1..4
+
+[cat_friend]
+on = cat_friend
+say = town.cat_friend.1..6
+
+[cat_scrap]
+on = cat_scrap
+say = town.cat_scrap.1..5
+
+[cat_shoo]
+on = cat_shoo
+say = town.cat_shoo.1..5
 
 # The sanatorium's guests in turn (docs/town_life.md, "The sanatorium's guests"; tools/town/sanatorium_guests.py):
 # the day they come and the day they go, the regime's outings, and each guest's own story told in pieces through the

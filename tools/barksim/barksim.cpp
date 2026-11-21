@@ -454,7 +454,7 @@ static int Run(bool bDay, const std::string& Lang)
 	CHECK(OwnsTalk * 2 >= Owns, "a grown-up and the child they mind have a word (%d of %d)", OwnsTalk, Owns);
 	CHECK(Pairs > 0 && PairsTalk > Pairs * 0.3, "pairs side by side or talking find an exchange (%.0f%% of %d)", Pairs ? 100.0 * PairsTalk / Pairs : 0.0, Pairs);
 	CHECK(EventAsks > 0 && EventLines == EventAsks, "the restaurant's waiter and cook have a line at every moment (%d of %d)", EventLines, EventAsks);
-	int Never = 0, GuestSets = 0;
+	int Never = 0, GuestSets = 0, Moments = 0;
 	for (size_t I = 0; I < Book.Sets.size(); I++)
 	{
 		// the sanatorium's guests in turn (16_sanatorium_guests.txt): each one's own pieces, a piece a weekday, and most
@@ -464,6 +464,12 @@ static int Run(bool bDay, const std::string& Lang)
 			GuestSets++;
 			continue;
 		}
+		if (!FitA[I] && !Book.Sets[I].On.empty())
+		{
+			// said at a moment the game raises (a cat fed at the stall, a dog stroked), not by anybody's day: told apart, not counted
+			Moments++;
+			continue;
+		}
 		if (!FitA[I])
 		{
 			Never++;
@@ -471,7 +477,7 @@ static int Run(bool bDay, const std::string& Lang)
 		}
 	}
 	// a Wednesday in October can't fit everything (summer, weekends, a festival of its own date): the rest are told
-	CHECK(Never <= ((int)Book.Sets.size() - GuestSets) / 10, "nearly every set fits somebody of the town on a day (%d don't)", Never);
+	CHECK(Never <= ((int)Book.Sets.size() - GuestSets - Moments) / 10, "nearly every set fits somebody of the town on a day (%d don't; %d more wait for their moment)", Never, Moments);
 	if (bDay)
 	{
 		std::vector<std::pair<int, std::string>> Top;

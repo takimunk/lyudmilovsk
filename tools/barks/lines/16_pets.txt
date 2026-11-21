@@ -74,3 +74,34 @@ say town.hedgehog_seen.1 | Тише. Ёж вышел. Каждый вечер т
 say town.hedgehog_seen.2 | Не трогай, он свернётся и будет обижаться полчаса. | Don't touch, he'll curl up and sulk for half an hour. | さわらないで。丸くなって三十分はすねるから。
 say town.hedgehog_seen.3 | Слышишь, пыхтит? Маленький, а шуму как от паровоза. | Hear him puffing? So small, and noisy as a steam engine. | ふうふう言ってるの、聞こえる？小さいのに機関車みたいな音。
 say town.hedgehog_seen.4 | Коты к нему уже не лезут. Один раз понюхали, хватило. | The cats leave him be now. One sniff was enough. | 猫はもう近づかないよ。一度においをかいで、こりたんだ。
+
+## ---------------------------------------------------------------------------------------------------------------
+## The yard cats and the townsfolk (docs/animals.md "Town cats"). Events sent by ULyudPets: cat_friend (a resident
+## to the yard cat that sees them home), cat_scrap (the fishmonger throws a begging cat a scrap), cat_shoo (the
+## fishmonger, a cleaner, the watchman or somebody with a snow shovel sends a cat out of the way).
+## ---------------------------------------------------------------------------------------------------------------
+
+[cat_friend]
+on = cat_friend
+say town.cat_friend.1 | Опять ты? Ну проводи, проводи. | You again? Go on then, see me home. | またあんたかい。じゃあ送っておくれ。
+say town.cat_friend.2 | До двери, а дальше нельзя. Сама знаешь. | To the door and no further. You know that yourself. | 玄関までだよ、そこから先はだめ。わかってるでしょ。
+say town.cat_friend.3 | Хвост трубой. Значит, день хороший. | Tail straight up. So it's a good day. | しっぽがぴんと立ってる。今日はいい日ってことだ。
+say town.cat_friend.4 | Я тебе завтра вынесу. Сегодня только сметана была, и ту съели. | I'll bring you something tomorrow. Today there was only sour cream, and that got eaten. | あしたは何か持ってくるよ。今日はサワークリームしかなくて、それも食べちゃった。
+say town.cat_friend.5 | Весь двор тебя кормит, а провожаешь меня. Спасибо. | The whole yard feeds you, and it's me you see home. Thank you. | 団地じゅうがあんたにごはんをやってるのに、送ってくれるのは私なんだね。ありがとう。
+say town.cat_friend.6 | Ну всё, пришли. Иди гуляй. | Well, here we are. Off you go. | さあ、着いたよ。遊んでおいで。
+
+[cat_scrap]
+on = cat_scrap
+say town.cat_scrap.1 | На, держи. И чтобы я тебя до обеда не видел. | There, take it. And don't let me see you before lunch. | ほら、やるよ。昼まで顔を見せるんじゃないぞ。
+say town.cat_scrap.2 | Хвост от трески. Больше не проси, это всё. | A cod's tail. Don't ask for more, that's the lot. | タラのしっぽだ。もうおしまい、ねだっても出ないよ。
+say town.cat_scrap.3 | Лучший мой покупатель. Не платит, зато каждый день. | My best customer. Doesn't pay, but comes every day. | うちの一番のお得意さんだ。払わないけど、毎日来る。
+say town.cat_scrap.4 | Ешь тут, под прилавок не таскай. | Eat it here, don't drag it under the counter. | ここで食べな。台の下に持っていくんじゃないよ。
+say town.cat_scrap.5 | Салака сегодня мелкая. Тебе в самый раз. | The sprats are small today. Just right for you. | 今日のイワシは小さいんだ。おまえにはちょうどいい。
+
+[cat_shoo]
+on = cat_shoo
+say town.cat_shoo.1 | Брысь. Брысь, кому сказано. | Shoo. Shoo, I said. | しっ。しっ、って言ってるの。
+say town.cat_shoo.2 | Иди, иди, дай убрать. | Off you go, let me clean up. | どいた、どいた。掃除させておくれ。
+say town.cat_shoo.3 | Не под ноги. Наступлю ведь. | Not under my feet. I'll tread on you. | 足もとに来るんじゃない。踏んじゃうよ。
+say town.cat_shoo.4 | Потом придёшь. Сейчас не до тебя. | Come back later. No time for you now. | あとでおいで。今はかまってられないの。
+say town.cat_shoo.5 | Сидит и смотрит, будто это я ему мешаю. | Sits there and stares, as if I were the one in his way. | 座ってじっと見てる。邪魔なのはこっちだと言わんばかりに。

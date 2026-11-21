@@ -642,7 +642,6 @@ namespace LyudAnimals
 	static constexpr float TailBack = 2.2f;         // m behind the person a cat keeps
 	static constexpr float TailSee = 30.f;          // m from which it sets off after them
 	static constexpr float StallReach = 90.f;       // m from which a hungry cat comes to an open stall
-	static constexpr float StallFront = 1.3f;       // m in front of the counter
 	static constexpr float ShooRun = 14.f;          // m it gets out of the way
 
 	/** Free to go about with people: nobody's cat, awake enough, not busy with the player, a dog or a bird. */
@@ -713,12 +712,13 @@ namespace LyudAnimals
 		return true;
 	}
 
-	int FWorld::AddStall(const V3& Pos, float Yaw)
+	int FWorld::AddStall(const V3& Pos, float Yaw, float Front)
 	{
 		FStall S;
 		S.Id = (int)Stalls.size();
 		S.Pos = Pos;
 		S.Yaw = Yaw;
+		S.Front = Front > 0.2f ? Front : 1.3f;
 		S.Next = 5.f;
 		Stalls.push_back(S);
 		return S.Id;
@@ -771,7 +771,7 @@ namespace LyudAnimals
 		return true;
 	}
 
-	int FWorld::Shoo(const V3& P, float R)
+	int FWorld::Shoo(const V3& P, float R, bool bAnyGround)
 	{
 		int N = 0;
 		for (FAnimal& A : Animals)
@@ -784,7 +784,7 @@ namespace LyudAnimals
 			}
 			const V3 D = (A.Pos - P).Flat();
 			const float L = D.Len2D();
-			if (L > R)
+			if (L > R || (!bAnyGround && !LineWalkable(P, A.Pos)))
 			{
 				continue;
 			}
@@ -987,7 +987,7 @@ namespace LyudAnimals
 			}
 			const FStall& S = Stalls[A.Stall];
 			const V3 Side = PtDir(S.Yaw + PtPi * 0.5f) * ((A.Id & 1) ? 0.45f : -0.45f);
-			const V3 Spot = S.Pos + PtDir(S.Yaw) * StallFront + Side;
+			const V3 Spot = S.Pos + PtDir(S.Yaw) * S.Front + Side;
 			A.Look = S.Pos + V3(0.f, 0.f, 1.4f);
 			if (!A.bDoThere)
 			{

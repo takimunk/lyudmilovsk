@@ -227,6 +227,7 @@ namespace LyudAnimals
 		int Id = -1;
 		V3 Pos;                     // where the seller stands
 		float Yaw = 0.f;            // the way the counter faces (the cats sit on that side)
+		float Front = 1.3f;         // m from the seller to where the cats sit (the buyers' side of the counter)
 		bool bOpen = false;
 		float Next = 0.f;           // s to the next look for a cat to call over
 	};
@@ -510,15 +511,16 @@ namespace LyudAnimals
 		/** Every frame while the resident the cat likes walks home within its sight. True: it is with them (or sets off). */
 		bool FavouriteHome(int Cat, const V3& Feet, const V3& Vel, const V3& Door);
 		std::vector<FStall> Stalls;
-		int AddStall(const V3& Pos, float Yaw);
+		int AddStall(const V3& Pos, float Yaw, float Front = 1.3f);
 		/** The seller is at the counter (or gone): cats come to beg only at an open stall. */
 		void StallOpen(int Stall, bool bOpen);
 		/** The seller throws a scrap: the nearest cat begging there gets it. False: nobody is begging. */
 		bool ThrowScrap(int Stall);
 		/** How many cats sit begging at the stall now. */
 		int Begging(int Stall) const;
-		/** Somebody sweeping or mopping at P: the cats within R get out of the way (not a fright). Returns how many. */
-		int Shoo(const V3& P, float R);
+		/** Somebody sweeping or mopping at P: the cats within R get out of the way (not a fright). Returns how many.
+		 *  Not through a wall (a cleaner indoors, a cat under the window) unless bAnyGround (over a counter). */
+		int Shoo(const V3& P, float R, bool bAnyGround = false);
 		FPetWeather Weather;
 		/** A flat's cat keeps its sill only in the dry, and in the cold only in the sun. */
 		bool SillWeather() const { return !Weather.bRain && (Weather.TempC >= 8.f || (Weather.Sun > 0.5f && Weather.TempC >= 0.f)); }
