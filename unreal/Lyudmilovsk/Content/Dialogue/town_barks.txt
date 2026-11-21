@@ -2861,3 +2861,47 @@ say = town.cinema_house.1..4
 [piano_hall]
 doing = play_piano
 say = town.piano_hall.1..3
+
+# Animals that live with people (docs/animals.md "With people"): the owners out with their dogs on the leash, what
+# they say to the dog and about it, the answer to "may I stroke it?", the lady with the bowls for the yard cats,
+# the flats' cats, the hedgehogs at dusk.
+# Events (on = ...), sent by ULyudPets: pet_talk (the owner to the dog on the walk), pet_stroke_yes / pet_stroke_no
+# (the hero asked to stroke the dog), cat_call (the lady puts the bowls down), cat_sill (the hero stops under a
+# window with the flat's cat on the sill, its owner near), hedgehog (somebody near a hedgehog at dusk).
+
+[dog_owner_walk]
+doing = walk_dog
+say = town.dog_owner_walk.1..7
+
+[dog_owner_walk_evening]
+doing = walk_dog
+hours = 18.5 20
+say = town.dog_owner_walk_evening.1..2
+
+[pet_talk]
+on = pet_talk
+say = town.pet_talk.1..8
+
+[pet_stroke_yes]
+on = pet_stroke_yes
+say = town.pet_stroke_yes.1..4
+
+[pet_stroke_no]
+on = pet_stroke_no
+say = town.pet_stroke_no.1..3
+
+[cat_call]
+on = cat_call
+say = town.cat_call.1..5
+
+[cat_lady_round]
+doing = feed_cats
+say = town.cat_lady_round.1..4
+
+[cat_sill]
+on = cat_sill
+say = town.cat_sill.1..4
+
+[hedgehog_seen]
+on = hedgehog
+say = town.hedgehog_seen.1..4

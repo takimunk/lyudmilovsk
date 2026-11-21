@@ -389,16 +389,29 @@ namespace LyudAnimals
 			}
 			return true;
 		}
-		// indoors, on the sill, at the door: where it was put
+		// indoors, on the sill, at the door: where it was put (and put back, should a jump of the clock have resettled it)
 		A.Speed = 0.f;
 		A.Vel = V3();
+		A.Path.clear();
 		if (A.Pet == EPet::Sill)
 		{
 			A.Pos = A.SillPos;
 			A.Yaw = A.SillYaw;
 		}
+		else if (A.Pet == EPet::Indoors)
+		{
+			A.Pos = A.DoorPos;
+		}
 		else if (A.Pet == EPet::Door)
 		{
+			if ((A.Pos - A.DoorPos).Len2D() > 1.5f)
+			{
+				A.Pos = FreeSpot(A.DoorPos, 0.8f, A.Rng);
+			}
+			if (A.Act != EAct::Sit)
+			{
+				SetAct(A, EAct::Sit, 1e9f);
+			}
 			A.Pos.Z = ZAt(A);
 			const float Off = PtWrap(PtYaw((A.DoorPos - A.Pos).Flat()) - A.Yaw);
 			A.Yaw = PtWrap(A.Yaw + PtClamp(Off, -2.f * Dt, 2.f * Dt));
