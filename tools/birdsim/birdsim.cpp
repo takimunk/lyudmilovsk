@@ -7,6 +7,7 @@
 // solar formula for the game's place (54.96 N, 20.40 E, UTC+2) on the game's date.
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Birds/BirdSim.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Birds/BirdMurmur.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Birds/BirdHabit.h"
 
 #include <chrono>
 #include <cmath>
@@ -896,6 +897,82 @@ namespace
 		Check(R, InSea == 0, "no bird stands in the sea over the mouth's fan");
 		Check(R, AtBrook["Brook WhiteWagtail"] + AtBrook["Mouth WhiteWagtail"] > 0 && AtBrook["Brook GreyHeron"] > 0,
 			"wagtails and the heron use the brook");
+
+		// the brook's pools (the wide, still pieces of its water above the tide): the swallows hawking over the brook drink
+		// there on the wing (their habit, docs/bird_habits.md), the game reads the same samples by the same rule
+		if (FHabits* Hab = W.Habits())
+		{
+			for (const FWater& P : Water)
+			{
+				if (FHabits::IsPool(P.Z, P.Half, W.MeanSeaZ))
+				{
+					Hab->Pools.push_back(V3(P.X, P.Y, P.Z));
+				}
+			}
+			W.Hour = 11.f;
+			W.Resettle();
+			Advance(W, 0.3f, 0.25f, [] {});
+			// swallows on the wing, each put a dozen metres over the trees of another stretch of the brook (they come by themselves too, the
+			// looks above count them, but not at an hour a check can name)
+			std::vector<int> Stretches;
+			for (int I = First; I < (int)W.Sites.size(); I++)
+			{
+				if (W.Sites[I].Kind == EHabitat::Brook)
+				{
+					Stretches.push_back(I);
+				}
+			}
+			std::vector<int> Drinkers;
+			const int Swallow = FindSpecies("BarnSwallow");
+			int Over = 0;
+			for (FBird& B : W.Birds)
+			{
+				if (B.bGone || B.Species != Swallow || B.Act != EAct::Hawk || B.Habit != 0 || Over >= (int)Stretches.size())
+				{
+					continue;
+				}
+				const FSite& At = W.Sites[Stretches[Over++]];
+				B.Pos = V3(At.Center().X, At.Center().Y, W.TopZ(At.Center().X, At.Center().Y) + 12.f);
+				if (Hab->Start(W, B, EHabit::SwallowDrink))
+				{
+					Drinkers.push_back(B.Id);
+				}
+			}
+			std::vector<float> Closest(Drinkers.size(), 1e9f);
+			float Under = 0.f;
+			for (int K = 0; K < 1500; K++)
+			{
+				W.Step(0.02f);
+				for (size_t D = 0; D < Drinkers.size(); D++)
+				{
+					const FBird& B = W.Birds[Drinkers[D]];
+					if (B.Habit == 0)
+					{
+						continue;
+					}
+					for (const V3& P : Hab->Pools)
+					{
+						Closest[D] = std::min(Closest[D], (B.Pos - P).Len());
+					}
+					float Surface = 0.f;
+					if (InWater(B.Pos, Surface) > 0.f)
+					{
+						Under = std::max(Under, Surface - B.Pos.Z);
+					}
+				}
+			}
+			float Worst = 0.f;
+			int StillAtIt = 0;
+			for (size_t D = 0; D < Drinkers.size(); D++)
+			{
+				Worst = std::max(Worst, Closest[D]);
+				StillAtIt += W.Birds[Drinkers[D]].Habit != 0;
+			}
+			std::printf("  %zu pools; of %d swallows over the brook's stretches %zu go down to drink: the worst comes within %.2f m of its pool, %.2f m under the water, %d still at it after 30 s\n",
+				Hab->Pools.size(), Over, Drinkers.size(), Worst, Under, StillAtIt);
+			Check(R, Hab->Pools.size() >= 8 && Drinkers.size() >= 6 && Worst < 0.3f && Under <= 0.f && StillAtIt == 0,
+				"swallows over the brook drink from its pools on the wing (each touches its pool, none goes under)");
+		}
 
 		// the night: everybody sleeps where they slept before the brook's sites came (none of them is a roost)
 		auto Roosts = [&](int Keep, std::map<std::string, int>& By)

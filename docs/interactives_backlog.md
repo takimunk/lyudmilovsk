@@ -622,7 +622,7 @@ Blender lint 0/0, Mac import through `import_south.sh`, night shots from the tow
 
 ## 43. Birds and beasts of the brook
 
-`[ ]` **Cloud-only. Brief (Opus 5.5):** The new brook (`south.brook_cut`) and its mouth have no habitat on purpose
+`[~] 2026-11-21: built on branch brook-birds (PR #62, lands after aton-coast): Brook and Mouth kinds, tastes, checks (BIRD_ONLY=brook), sound points as data; the habits by the brook on habits-brook (docs/bird_habits.md "The brook"); a look at it in the game owed` **Cloud-only. Brief (Opus 5.5):** The new brook (`south.brook_cut`) and its mouth have no habitat on purpose
 (`docs/south_backlog.md` "Animals"). Add a `brook` habitat kind in `tools/bird_habitats.py` (the valley bed and the
 ravine's stones) and a `mouth` kind (the shallow fan over the beach), and let existing species use them by taste in
 `species.json`: the grey heron standing at the mouth at low tide and in the brook's slow bends at dawn, white wagtails on
