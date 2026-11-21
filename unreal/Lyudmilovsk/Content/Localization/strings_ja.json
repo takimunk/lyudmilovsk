@@ -2304,5 +2304,14 @@
  "dev.group.kite": "凧",
  "dev.action.kite.give": "凧をもらう（ひし形と箱）",
  "dev.action.kite.test": "風下に凧を10個（ベンチマーク）",
- "dev.tp.kite_beach": "凧揚げの浜"
+ "dev.tp.kite_beach": "凧揚げの浜",
+ "line.transport.wait.rain.1": "すごい雨だね。ここでやり過ごそう。",
+ "line.transport.wait.rain.2": "待合室が暖かくてよかった。",
+ "line.transport.wait.rain.3": "よりによって傘は家に置いてきちゃった。",
+ "line.transport.wait.rain.4": "見て、ガラスを雨が流れていくよ。",
+ "line.transport.barista.order.1": "少々お待ちください、今お注ぎしますね。",
+ "line.transport.barista.order.2": "ピロシキ、温めましょうか？",
+ "line.transport.barista.order.3": "おつりをお忘れなく。",
+ "transport.hall.bell_prompt": "E：呼び鈴を鳴らす",
+ "transport.hall.closed_note": "誰も出てこない。駅は{0}に開く。"
 }

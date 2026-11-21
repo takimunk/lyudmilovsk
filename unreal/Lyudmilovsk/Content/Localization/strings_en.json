@@ -2304,5 +2304,14 @@
  "dev.group.kite": "Kites",
  "dev.action.kite.give": "Give kites (diamond and box)",
  "dev.action.kite.test": "Ten kites downwind (benchmark)",
- "dev.tp.kite_beach": "Kite beach"
+ "dev.tp.kite_beach": "Kite beach",
+ "line.transport.wait.rain.1": "It's pouring. We'll wait it out in here.",
+ "line.transport.wait.rain.2": "Good thing the hall is warm.",
+ "line.transport.wait.rain.3": "My umbrella is at home, of course.",
+ "line.transport.wait.rain.4": "Look at it running down the glass.",
+ "line.transport.barista.order.1": "One moment, I'll pour it now.",
+ "line.transport.barista.order.2": "Shall I warm the pie up?",
+ "line.transport.barista.order.3": "Don't forget your change.",
+ "transport.hall.bell_prompt": "E: ring the bell",
+ "transport.hall.closed_note": "Nobody comes. The station opens at {0}."
 }

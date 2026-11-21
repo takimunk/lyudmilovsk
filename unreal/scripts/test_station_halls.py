@@ -159,9 +159,24 @@ def staff_view(w, sid, style, role):
         if p.get("role") == role:
             a = math.radians(p.get("yaw", 0.0))
             x, y = p["at"][0] + math.cos(a) * 200.0, p["at"][1] + math.sin(a) * 200.0
-            go(w, world_pt(sid, x, y, EYE), -8.0, world_yaw(sid, p.get("yaw", 0.0) + 180.0))
+            # from 2.3 m up, looking down past whoever stands at the counter's customer spot
+            go(w, world_pt(sid, x, y, 230.0), -24.0, world_yaw(sid, p.get("yaw", 0.0) + 180.0))
             return
     log("hall %s: no %s in halls.json" % (sid, role))
+
+
+def planter_view(w, sid, style):
+    """1.8 m in front of the hall's first planter (halls.json, station frame), looking at its plant"""
+    pl = HALLS.get(style, {}).get("planters", [])
+    if not pl:
+        log("hall %s: no planters" % sid)
+        return
+    p = pl[0]
+    a = math.radians(p.get("yaw", 0.0))           # the planter's yaw points at the wall behind it: stand on the room side
+    x, y = p["at"][0] - math.cos(a) * 180.0, p["at"][1] - math.sin(a) * 180.0
+    yaw = math.degrees(math.atan2(p["at"][1] - y, p["at"][0] - x))
+    go(w, world_pt(sid, x, y, EYE), -12.0, world_yaw(sid, yaw))
+    log("hall %s planter %s" % (sid, p.get("plant")))
 
 
 def plan():
@@ -193,6 +208,8 @@ def plan():
                 for role in ("barista", "attendant"):
                     add(3.5, lambda w, s=sid, st=st["style"], r=role: (s in S["frames"]) and staff_view(w, s, st, r))
                     add(0.5, lambda w, s=sid, g=tag, r=role: shot(w, "%s_%s_%s" % (s, g, r)))
+                add(3.5, lambda w, s=sid, st=st["style"]: (s in S["frames"]) and planter_view(w, s, st))
+                add(0.5, lambda w, s=sid, g=tag: shot(w, "%s_%s_planter" % (s, g)))
             add(3.5, lambda w, s=sid: (s in S["frames"]) and view(w, s, "corner"))
             add(0.5, lambda w, s=sid, g=tag: shot(w, "%s_%s_corner" % (s, g)))
             # the hall's signature piece: a standing one (piece) or one hanging beside the core (centre)
