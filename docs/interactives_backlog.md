@@ -444,7 +444,7 @@ quest audit clean.
 
 ## 31. Small touch details
 
-`[ ]` **Brief (Opus 5.5):** A pass over houses and lobbies (P2 of `docs/city_backlog.md`) for small things that answer a
+`[~] touch-details 2026-11-21 (branch ready, waiting for merge; docs/city_interiors.md "Small things that answer a touch")` **Brief (Opus 5.5):** A pass over houses and lobbies (P2 of `docs/city_backlog.md`) for small things that answer a
 touch: mailboxes (the hero's own one has letters: item 11), light switches and wall clocks that no building declares yet
 (`what=switch`, `look_clock` exist), a radio to turn on, a tap to run, a window to open (the room's tone changes), a cat on
 the radiator to stroke (item 1), a lift button (the lifts' `to`/`floors` exist but no building declares a link: declare

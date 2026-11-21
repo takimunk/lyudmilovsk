@@ -454,6 +454,7 @@ void ULyudCityThings::StartOver()
 		Lights->ClearSwitched();
 	}
 	SwitchedPlot = NAME_None;
+	ApplyOpenAir();     // ResetState shut the windows
 }
 
 void ULyudCityThings::OnGameSaving_Implementation()
@@ -488,6 +489,7 @@ void ULyudCityThings::OnGameLoaded_Implementation()
 			Model->ResetState();
 		}
 		ApplySaved();
+		ApplyOpenAir();
 	}
 }
 
@@ -563,6 +565,12 @@ void ULyudCityThings::TrackPlot(const AHeroCharacter* Hero)
 		}
 		SwitchedPlot = NAME_None;
 	}
+	if (Model->OpenAir() > 0.f)
+	{
+		// the windows he opened in the last building are shut behind him (somebody closes them)
+		Model->ShutWindows();
+		ApplyOpenAir();
+	}
 	if (!Plot.empty())
 	{
 		UE_LOG(LogLyudCity, Verbose, TEXT("CityThings: in %s"), *LyudCityThingsImpl::Str(Plot));
@@ -583,7 +591,8 @@ void ULyudCityThings::SetPrompted(int32 Thing)
 	FText Line;
 	if (const LyudCity::FAct* A = Model && Act >= 0 ? &Model->Acts[(size_t)Act] : nullptr)
 	{
-		const FText Base = LyudText::Get(LyudCityThingsImpl::Str(A->Prompt));
+		const bool bShutOffer = A->Window > 0.f && Model->IsWindowOpen(Thing);
+		const FText Base = bShutOffer ? LyudText::Get(TEXT("city.act.window.shut_prompt")) : LyudText::Get(LyudCityThingsImpl::Str(A->Prompt));
 		Line = A->Price > 0 ? LyudText::Get(TEXT("city.act.prompt_price"), { FStringFormatArg(Base.ToString()), FStringFormatArg(A->Price) }) : Base;
 	}
 	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
@@ -1099,6 +1108,12 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 		return;
 	}
 	EndTalk();
+	// an open window: E shuts it at once (opening ran the act: the look out, its minutes)
+	if (!bShutWords && Model->IsWindowOpen(Thing))
+	{
+		ToggleWindow(Thing);
+		return;
+	}
 	// the staff talk is asked before the act runs (a daily act's count or the money spent must not hide it): its topics now
 	std::vector<int> TalkOffer;
 	if (!bShutWords && Model->HasTopics(Thing))
@@ -1193,6 +1208,10 @@ void ULyudCityThings::Run(int32 Thing, bool bFromConsole, bool bFromSeat)
 	if (!O.bClosed && LyudCity::FModel::SwitchRadiusCm(T) > 0.0)
 	{
 		FlipSwitch(Thing);
+	}
+	if (!O.bClosed && Model->WindowShare(Thing) > 0.f && !Model->IsWindowOpen(Thing))
+	{
+		ToggleWindow(Thing);
 	}
 
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
@@ -2139,6 +2158,34 @@ void ULyudCityThings::FlipSwitch(int32 Thing)
 	SwitchedPlot = LyudCityThingsImpl::Name(T.Plot);
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: switch %s: %d lamps %s"), *LyudCityThingsImpl::Str(T.Id), N, bOn ? TEXT("on") : TEXT("off"));
 	Note(LyudText::Get(bOn ? TEXT("city.act.switch.on") : TEXT("city.act.switch.off")));
+}
+
+// --- windows that open (docs/city_interiors.md "Windows that open"): the open air comes into the room for this visit
+
+void ULyudCityThings::ToggleWindow(int32 Thing)
+{
+	if (!Model || Thing < 0 || Thing >= NumThings() || Model->WindowShare(Thing) <= 0.f)
+	{
+		return;
+	}
+	const bool bOpen = Model->ToggleWindow(Thing);
+	ApplyOpenAir();
+	if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+	{
+		Sound->PlayEffect(TEXT("rest_door"), ThingLocation(Thing), 0.5f);
+	}
+	const LyudCity::FWhen Now = LyudCityThingsImpl::When(GetWorld());
+	UE_LOG(LogLyudCity, Display, TEXT("CityThings: window %s %s (open air %.2f)"), *LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id),
+		bOpen ? TEXT("open") : TEXT("shut"), Model->OpenAir());
+	Note(LyudText::Get(LyudCityThingsImpl::Str(LyudCity::FModel::WindowNote(bOpen, Now))));
+}
+
+void ULyudCityThings::ApplyOpenAir()
+{
+	if (ULyudSoundscapeSubsystem* Sound = ULyudSoundscapeSubsystem::Get(this))
+	{
+		Sound->SetOpenAir(Model ? Model->OpenAir() : 0.f);
+	}
 }
 
 // --- mini-games (docs/city_interiors.md "Mini-games"): the model plays, this draws the panel, polls the keys and pays out
@@ -3688,6 +3735,25 @@ bool ULyudCityThings::UseNearestLift()
 	return false;
 }
 
+bool ULyudCityThings::ToggleNearestWindow()
+{
+	const APawn* Pawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	if (!Model || !Pawn)
+	{
+		return false;
+	}
+	for (const std::pair<int, double>& P : Model->Nearest(LyudCityThingsImpl::Vec(Pawn->GetActorLocation()), 256))
+	{
+		if (Model->WindowShare(P.first) > 0.f)
+		{
+			ToggleWindow(P.first);
+			return true;
+		}
+	}
+	UE_LOG(LogLyudCity, Warning, TEXT("CityThings: no window that opens near"));
+	return false;
+}
+
 // --- the staff talk (docs/city_interiors.md "Staff talk"): a chooser on the page, the answers one per E
 
 bool ULyudCityThings::OpenShopOf(const FString& Shop, const FString& TitleKey)
@@ -4845,6 +4911,13 @@ static LyudDev::FAutoAction GCityDevLift(TEXT("interiors.lift_nearest"), TEXT("i
 	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
 	{
 		Things->UseNearestLift();
+	}
+});
+static LyudDev::FAutoAction GCityDevWindow(TEXT("interiors.window_nearest"), TEXT("interiors"), TEXT("dev.action.interiors.window_nearest"), [](UWorld* W)
+{
+	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
+	{
+		Things->ToggleNearestWindow();
 	}
 });
 static LyudDev::FAutoAction GCityDevTone(TEXT("interiors.tone"), TEXT("interiors"), TEXT("dev.action.interiors.tone"), [](UWorld* W)
