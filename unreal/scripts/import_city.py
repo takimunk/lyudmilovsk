@@ -36,6 +36,9 @@ MATS = DEST + "/Materials"
 ACADEM_MATS = "/Game/Academgorodok/Materials"
 TAG = "City"
 FOLDER = "Outside/City/Buildings"
+# ALyudCityBuilding::LampKinds: 0 open hours, 1 dusk to dawn (stair, lobby, ...), 2 the night lamp of a closed room
+LAMP_KINDS = {"public": 0, "closed": 2}
+
 # public rooms' open hours by building type (the rest: 8..21)
 HOURS = {"shell_market": (7, 19), "department_store": (9, 20), "saucer_pavilion": (8, 22), "workers_club": (10, 23),
          "school": (7.5, 17), "clinic": (8, 20), "bus_stop_kiosk": (8, 22), "culture_block": (8, 22),
@@ -408,7 +411,7 @@ def place(face_y):
         b.set_editor_property("lamp_lumens", [float(l["lumens"]) for l in lamps])
         b.set_editor_property("lamp_colors", [unreal.LinearColor(*[(int(l["colour"][k:k + 2], 16) / 255.0) ** 2.2 for k in (1, 3, 5)], 1.0) for l in lamps])
         b.set_editor_property("lamp_radii", [float(l.get("radius", 7.0)) * 100 for l in lamps])
-        b.set_editor_property("lamp_kinds", [0 if l["kind"] == "public" else 1 for l in lamps])
+        b.set_editor_property("lamp_kinds", [LAMP_KINDS.get(l["kind"], 1) for l in lamps])
         oh = HOURS.get(t.split("__")[0], (8, 21))
         b.set_editor_property("open_hour", float(oh[0]))
         b.set_editor_property("close_hour", float(oh[1]))
@@ -476,7 +479,7 @@ def place_units(face_y, eas, cls, kinds):
         b.set_editor_property("lamp_lumens", [float(l["lumens"]) for l in lamps])
         b.set_editor_property("lamp_colors", [unreal.LinearColor(*[(int(l["colour"][k:k + 2], 16) / 255.0) ** 2.2 for k in (1, 3, 5)], 1.0) for l in lamps])
         b.set_editor_property("lamp_radii", [float(l.get("radius", 7.0)) * 100 for l in lamps])
-        b.set_editor_property("lamp_kinds", [0 if l["kind"] == "public" else 1 for l in lamps])
+        b.set_editor_property("lamp_kinds", [LAMP_KINDS.get(l["kind"], 1) for l in lamps])
         staff = [s for s in (u.get("staff") or []) if s[2][1] > s[2][0]]
         oh = (min(s[2][0] for s in staff), max(s[2][1] for s in staff)) if staff else (8, 21)
         b.set_editor_property("open_hour", float(oh[0]))
