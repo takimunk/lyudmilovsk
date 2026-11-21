@@ -1,0 +1,132 @@
+{
+ "teleports": [
+  {
+   "id": "aton_belvedere",
+   "group": "south",
+   "name": "dev.tp.aton_belvedere",
+   "x": 27.0,
+   "y": 187.0,
+   "yaw": 90.0
+  },
+  {
+   "id": "aton_descent",
+   "group": "south",
+   "name": "dev.tp.aton_descent",
+   "x": -139.0,
+   "y": 222.0,
+   "yaw": 120.0
+  },
+  {
+   "id": "brook_bridge",
+   "group": "south",
+   "name": "dev.tp.brook_bridge",
+   "x": -206.6,
+   "y": 315.7,
+   "yaw": 110.0
+  },
+  {
+   "id": "south_stele",
+   "group": "south",
+   "name": "dev.tp.south_stele",
+   "x": -211.0,
+   "y": 348.0,
+   "yaw": 80.0
+  },
+  {
+   "id": "bird_hide",
+   "group": "south",
+   "name": "dev.tp.bird_hide",
+   "x": -52.0,
+   "y": 277.0,
+   "yaw": 0.0
+  },
+  {
+   "id": "brook_mouth",
+   "group": "south",
+   "name": "dev.tp.brook_mouth",
+   "x": 118.4,
+   "y": 247.0,
+   "yaw": 60.0
+  },
+  {
+   "id": "old_orchard",
+   "group": "south",
+   "name": "dev.tp.old_orchard",
+   "x": -372.0,
+   "y": 196.0,
+   "yaw": 180.0
+  },
+  {
+   "id": "south_spring",
+   "group": "south",
+   "name": "dev.tp.south_spring",
+   "x": -536.0,
+   "y": 130.0,
+   "yaw": 200.0
+  },
+  {
+   "id": "spring_ravine",
+   "group": "south",
+   "name": "dev.tp.spring_ravine",
+   "x": -584.0,
+   "y": 104.0,
+   "yaw": 225.0
+  },
+  {
+   "id": "cliff_stair",
+   "group": "south",
+   "name": "dev.tp.cliff_stair",
+   "x": 71.9,
+   "y": 38.0,
+   "yaw": 0.0
+  },
+  {
+   "id": "cliff_lookout",
+   "group": "south",
+   "name": "dev.tp.cliff_lookout",
+   "x": 83.8,
+   "y": -236.0,
+   "yaw": 0.0
+  },
+  {
+   "id": "mayak_lighthouse",
+   "group": "south",
+   "name": "dev.tp.mayak_lighthouse",
+   "x": 105.0,
+   "y": -426.0,
+   "yaw": 300.0
+  },
+  {
+   "id": "coast_bunker",
+   "group": "south",
+   "name": "dev.tp.coast_bunker",
+   "x": 64.0,
+   "y": -128.0,
+   "yaw": 0.0
+  },
+  {
+   "id": "boat_wreck",
+   "group": "south",
+   "name": "dev.tp.boat_wreck",
+   "x": 116.0,
+   "y": 132.0,
+   "yaw": 0.0
+  },
+  {
+   "id": "devils_stone",
+   "group": "south",
+   "name": "dev.tp.devils_stone",
+   "x": -299.0,
+   "y": 256.0,
+   "yaw": 200.0
+  },
+  {
+   "id": "mayak_station",
+   "group": "south",
+   "name": "dev.tp.mayak_station",
+   "x": 88.0,
+   "y": -384.0,
+   "yaw": 270.0
+  }
+ ]
+}

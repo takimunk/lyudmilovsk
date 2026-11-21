@@ -667,8 +667,8 @@ void ULyudGameScreen::UpdateWear(float DeltaTime)
 
 	// the binoculars: held to the eyes while the right mouse button is down
 	// (not while a cigarette is in the hand: its right button puts it out, ULyudSmoking)
-	// (nor with the film camera at the eye: both turn the view's angle, ULyudPhoto)
-	const bool bLook = bFree && !ULyudPhoto::IsUp(this) && Inv->IsWorn(TEXT("binoculars")) && ((PC->IsInputKeyDown(EKeys::RightMouseButton) && !ULyudSmoking::HasHand(this) && !ULyudFishing::HasHand(this) && !ULyudKiteFlying::HasHand(this)) || CVarBinoculars.GetValueOnGameThread() != 0);
+	// (nor with the film camera at the eye: both turn the view's angle, ULyudPhoto; or a lookout's fixed viewer holds the same view up: HoldViewer)
+	const bool bLook = bFree && !ULyudPhoto::IsUp(this) && (Viewer.IsValid() || (Inv->IsWorn(TEXT("binoculars")) && ((PC->IsInputKeyDown(EKeys::RightMouseButton) && !ULyudSmoking::HasHand(this) && !ULyudFishing::HasHand(this) && !ULyudKiteFlying::HasHand(this)) || CVarBinoculars.GetValueOnGameThread() != 0)));
 	const float Before = Binoculars;
 	Binoculars = FMath::FInterpConstantTo(Binoculars, bLook ? 1.f : 0.f, DeltaTime, 3.5f);
 	if (Binoculars > 0.f)

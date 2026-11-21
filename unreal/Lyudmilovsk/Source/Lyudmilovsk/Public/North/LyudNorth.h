@@ -124,6 +124,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "North") FString DebugReport() const;
 	/** The river's water (north.json "river"; null without it). */
 	UFUNCTION(BlueprintPure, Category = "North") ALyudNorthRiver* GetRiver() const { return River; }
+	/** The brook between the club and the town (Content/South/south.json "brook", docs/south.md; null without it): the
+	 *  same kind of water sheet as the river, a couple of metres wide. */
+	UFUNCTION(BlueprintPure, Category = "North") ALyudNorthRiver* GetBrook() const { return Brook; }
 
 	/** The player entered (true) or left (false) the North. */
 	UPROPERTY(BlueprintAssignable, Category = "North") FLyudNorthRegionEvent OnRegionChanged;
@@ -170,6 +173,8 @@ private:
 	void UpdateAir();
 	void SpawnPlumes();
 	void SpawnRiver();
+	void SpawnBrook();
+	void LocalizeSouthBoards();
 	bool PlayerLocation(FVector& Out) const;
 
 	TArray<FLyudFumaroleInfo> Fumaroles;
@@ -180,6 +185,7 @@ private:
 	UPROPERTY(Transient) TObjectPtr<ALyudNorthSteam> SteamFx;
 	UPROPERTY(Transient) TArray<TObjectPtr<ALyudNorthPlume>> Plumes;
 	UPROPERTY(Transient) TObjectPtr<ALyudNorthRiver> River;
+	UPROPERTY(Transient) TObjectPtr<ALyudNorthRiver> Brook;
 	/** north.json river.water: world cm (X, Y, water Z), W half width cm; its threads (count) and mouth (world cm). */
 	TArray<FVector4> RiverWater;
 	int32 RiverThreads = 0;
