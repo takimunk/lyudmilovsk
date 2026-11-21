@@ -174,9 +174,9 @@ namespace
 	{
 		FTransform T = CS.GetComponentSpaceTransform(B);
 		T.SetRotation((Delta * T.GetRotation()).GetNormalized());
-		TArray<FBoneTransform> Out;
-		Out.Add(FBoneTransform(B, T));
-		CS.SafeSetCSBoneTransforms(Out);
+		// one bone: from the stack, no array allocated per call (a flying bird makes dozens of these a frame)
+		const FBoneTransform Out(B, T);
+		CS.SafeSetCSBoneTransforms(TConstArrayView<FBoneTransform>(&Out, 1));
 	}
 }
 

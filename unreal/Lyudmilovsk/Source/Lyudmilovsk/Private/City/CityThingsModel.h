@@ -397,6 +397,9 @@ namespace LyudCity
 		std::string Collect;
 		/** Index into FModel::Games: the act plays a mini-game instead of showing its lines (-1: none). */
 		int Game = -1;
+		/** Index into FModel::Procs: the act is a procedure played as a short scene first (docs/sanatorium_procedures.md);
+		 *  the act runs when the scene is done (-1: none). */
+		int Proc = -1;
 		/** "read": the texts (indices into FModel::Texts) the reading view opens instead of the lines: one per use in turn, or
 		 *  (bReadDaily) one a game day. Empty: the act shows its lines. */
 		std::vector<int> Texts;
@@ -730,6 +733,165 @@ namespace LyudCity
 		int Pay = 0;
 	};
 
+	// --- procedures (docs/sanatorium_procedures.md): an act played as a short hands-on scene before it runs
+
+	/** say: a line for some seconds (E goes on); pick: one of three (keys 1-3); pour: hold E, let go inside the mark; sip: E on
+	 *  the clock's ticks; breathe: hold E while the ring grows, let go while it shrinks; tap: E so many times in time; cut: the
+	 *  screen fades and game minutes pass; measure: the doctor's numbers; guest: a guest at the same procedure says a word;
+	 *  news: the town's talk (an "everywhere" topic). */
+	enum class EProcStep : uint8_t
+	{
+		Say,
+		Pick,
+		Pour,
+		Sip,
+		Breathe,
+		Tap,
+		Cut,
+		Measure,
+		Guest,
+		News,
+	};
+
+	inline EProcStep ProcStepOf(const std::string& Word, bool* bKnown = nullptr)
+	{
+		static const char* const Names[] = { "say", "pick", "pour", "sip", "breathe", "tap", "cut", "measure", "guest", "news" };
+		for (int I = 0; I < (int)(sizeof(Names) / sizeof(Names[0])); ++I)
+		{
+			if (Word == Names[I])
+			{
+				if (bKnown)
+				{
+					*bKnown = true;
+				}
+				return (EProcStep)I;
+			}
+		}
+		if (bKnown)
+		{
+			*bKnown = false;
+		}
+		return EProcStep::Say;
+	}
+
+	/** Does a step score the scene (the hands-on ones)? */
+	inline bool ProcStepScores(EProcStep S)
+	{
+		return S == EProcStep::Pour || S == EProcStep::Sip || S == EProcStep::Breathe || S == EProcStep::Tap;
+	}
+
+	/** One step of a procedure. Lines: the step's line set (the first that holds now; a "pick"'s options are its first three;
+	 *  "by_pick": the line of the option picked earlier). Guests: "guest" lines by the guest's key, "" the line for anyone. */
+	struct FProcStep
+	{
+		EProcStep Do = EProcStep::Say;
+		FAct Lines;
+		std::vector<std::pair<std::string, FAct>> Guests;
+		bool bByPick = false;
+		/** say/cut/measure/guest/news: how long it shows; pour: how long the cup takes to fill; tap: the time allowed. */
+		double Secs = 4.0;
+		/** sip: sips (ticks); breathe: breaths; tap: presses needed. */
+		int Count = 5;
+		/** sip: seconds between the clock's ticks; window: how near a tick a press counts (s, either side). */
+		double Every = 1.0;
+		double Window = 0.3;
+		/** breathe: seconds breathing in (the ring grows) and out (it shrinks). */
+		double In = 3.5;
+		double Out = 4.5;
+		/** pour: the mark on the cup (0..1 full). */
+		double MarkLo = 0.72;
+		double MarkHi = 0.86;
+		/** cut: game minutes that pass in the dark (the robe and slippers). */
+		int Minutes = 0;
+	};
+
+	/** A procedure ("proc" of an act): its steps, when it is played (else the act runs plainly), the result lines. */
+	struct FProcDef
+	{
+		std::string Id;
+		std::string Title;
+		/** The key line of the panel (empty: by the step). */
+		std::string Keys;
+		FLine When;
+		std::vector<FProcStep> Steps;
+		/** good, fair, poor ([0] [1] [2]): by the share of the hands-on steps done well. */
+		FAct Results[3];
+		double Good = 0.7;
+		double Fair = 0.35;
+		/** A collection piece the first good result gives ("set/piece", may be empty). */
+		std::string Collect;
+		/** "vitals": the scene measures the hero (the doctor's check): the numbers go on the card. */
+		bool bVitals = false;
+	};
+
+	/** Someone at the same procedure now: a guest's key ("gromov") and their name key ("npc.t_gromov_pyotr.name"). */
+	struct FProcCompanion
+	{
+		std::string Key;
+		std::string Name;
+	};
+
+	/** The hero's numbers at the doctor's: weight (kg), pressure (upper, lower), pulse, the lungs' capacity (ml). */
+	struct FVitals
+	{
+		double Weight = 0.0;
+		int Sys = 0;
+		int Dia = 0;
+		int Pulse = 0;
+		int Lungs = 0;
+		bool Valid() const { return Weight > 0.0; }
+	};
+
+	enum class EProcBeat : uint8_t
+	{
+		None,
+		Step,        // a new step began
+		Good,        // a press in time, the cup filled to the mark, a breath in time
+		Miss,        // a press off the beat, a spill, short of the mark
+		Done,        // the scene is over
+	};
+
+	/** A procedure being played. Plain data: FModel::TickProc / PressProc move it on. */
+	struct FProcState
+	{
+		int Thing = -1;
+		int Act = -1;
+		int Def = -1;
+		int Step = -1;
+		/** Seconds since the start, since the step began, and the pause before a press is taken. */
+		double Clock = 0.0;
+		double StepFrom = 0.0;
+		double Wait = 0.0;
+		/** The line shown now (key) and its arguments: "{0}".. ("@key": a text key the game looks up; else as is). */
+		std::string Line;
+		std::vector<std::string> Args;
+		/** pick: the option chosen (0..2; -1 none yet); options' keys. */
+		int Picked = -1;
+		std::string Options[3];
+		/** pour: the cup's level; breathe: the ring's size; sip: the clock hand (0..1 a tick); tap: presses made. */
+		double Level = 0.0;
+		bool bDown = false;
+		bool bWasDown = false;
+		int Hits = 0;
+		int Tries = 0;
+		double InTime = 0.0;
+		double Timed = 0.0;
+		/** The step's result (0..1) is added to Score; Scored counts the hands-on steps. */
+		double Score = 0.0;
+		int Scored = 0;
+		/** The step is settled (pour: let go; tap: enough presses); the scene goes on after a short pause. */
+		bool bSettled = false;
+		EProcBeat Beat = EProcBeat::None;
+		int BeatSerial = 0;
+		bool bOver = false;
+		/** Who is at the same procedure (the first is the one who speaks). */
+		std::vector<FProcCompanion> Companions;
+		/** Game minutes the cuts let pass (added to the act's at the end). */
+		int CutMinutes = 0;
+		FVitals Vitals;
+		FRng Rng;
+	};
+
 	/** "{time}" in a line: the game's clock ("16:40"), for the wall clocks. */
 	inline std::string FillTime(const std::string& Text, float Hour)
 	{
@@ -900,6 +1062,20 @@ namespace LyudCity
 		int NeedMoney = 0;
 		std::string NeedItem;
 	};
+
+	/** What a finished procedure gives (FModel::FinishProc): the act's run, the result line, the numbers measured. */
+	struct FProcEnd
+	{
+		FOutcome Run;
+		/** good 0, fair 1, poor 2. */
+		int Result = 0;
+		std::string Line;
+		std::vector<std::string> Args;
+		std::vector<std::string> NewStamps;
+		FVitals Vitals;
+		FVitals First;
+	};
+
 
 	/** Parses a weekday list: "", "daily", "mon-sun", "tue-sun", "fri-mon", "mon,wed,fri", "sat-sun". Bit 0 = Monday. */
 	inline uint8_t ParseDays(const std::string& Text)
@@ -1092,6 +1268,8 @@ namespace LyudCity
 		std::vector<FCollection> Collections;
 		/** The acts' mini-games (FAct::Game) and the regulars who play them ("regulars" of interiors.json, in id order). */
 		std::vector<FGameDef> Games;
+		/** The acts' procedures (FAct::Proc; docs/sanatorium_procedures.md). */
+		std::vector<FProcDef> Procs;
 		std::vector<FRegular> Regulars;
 		/** The texts of the reading view ("texts" of interiors.json), in the file's order. */
 		std::vector<FReadText> Texts;
@@ -1118,6 +1296,7 @@ namespace LyudCity
 			Shops.clear();
 			Collections.clear();
 			Games.clear();
+			Procs.clear();
 			Regulars.clear();
 			Texts.clear();
 			TextIndex.clear();
@@ -1189,6 +1368,16 @@ namespace LyudCity
 					{
 						A.Game = (int)Games.size();
 						Games.push_back(std::move(Def));
+					}
+				}
+				const LyudJson::FValue& ProcField = Field.second["proc"];
+				if (ProcField.Type == LyudJson::FValue::Object)
+				{
+					FProcDef Def = ReadProc(Field.first, ProcField);
+					if (!Def.Steps.empty())
+					{
+						A.Proc = (int)Procs.size();
+						Procs.push_back(std::move(Def));
 					}
 				}
 				ActIndex[A.Id] = (int)Acts.size();
@@ -2355,7 +2544,8 @@ namespace LyudCity
 		}
 
 		/** Is this act a screen show (a film, a play, the TV: the page in the screen style, its line as subtitles)? */
-		static bool IsScreen(const FAct& A) { return !A.Screen.empty(); }
+		/** A show to watch from a seat (a telescope's "scope..." is looked into, not watched). */
+		static bool IsScreen(const FAct& A) { return !A.Screen.empty() && A.Screen.rfind("scope", 0) != 0; }
 		/** Does the hero sit on the thing itself (a seat, a bed, or anything with a seat height: the cinema's hall seats)? */
 		static bool IsSeatThing(const FThing& T) { return T.Kind == "seat" || T.Kind == "bed" || T.Props.count("height") > 0; }
 
@@ -2977,6 +3167,347 @@ namespace LyudCity
 			return E;
 		}
 
+		// --- procedures (docs/sanatorium_procedures.md): the game asks ProcNow when E is pressed at a thing; when it gives a
+		// procedure it calls StartProc, then TickProc every frame (with E held or not) and PressProc on a key, draws the step,
+		// and calls FinishProc once bOver: the act runs then (its price, stamps and lines), with the scene's result line.
+		// Walking off or any screen ends the scene with nothing given. Nothing here allocates per frame.
+
+		static constexpr double ProcLead = 1.0;        // seconds before a timed step's first beat
+		static constexpr double ProcGoOn = 0.9;        // the pause after a settled step
+		static constexpr double ProcSkipAfter = 0.7;   // a line may be skipped with E after this long
+		static constexpr double ProcIdle = 10.0;       // a pour or a pick never begun is settled after this long
+		static constexpr double ProcBreathGrace = 0.45;
+		/** The course's numbers improve over this many treatments (procedures done and course stamps). */
+		static constexpr double VitalsCourse = 30.0;     // procedures to the full effect (a week of about five a day)
+
+		const FProcDef* ProcDef(int Def) const { return Def >= 0 && Def < (int)Procs.size() ? &Procs[(size_t)Def] : nullptr; }
+
+		/** The procedure Thing plays now when used (index into Procs), or -1: none, or the act would not run (closed, off its
+		 *  hours, without the stay, done for today, no money...: the plain act answers then), or its "when" does not hold. */
+		int ProcNow(int Thing, const FWhen& When, const FAsk& Ask) const
+		{
+			const int Index = ActIndexNow(Thing, When, Ask.bOpenAll);
+			if (Index < 0 || Index != Things[(size_t)Thing].Act)
+			{
+				return -1;
+			}
+			const FAct& A = Acts[(size_t)Index];
+			const FProcDef* D = ProcDef(A.Proc);
+			if (!D || !HoldsNow(D->When, When) || Check(Thing, When, Ask) != EVerdict::Ok)
+			{
+				return -1;
+			}
+			return A.Proc;
+		}
+
+		/** Begins Thing's procedure now (ProcNow must have given it), with who else is at it. */
+		bool StartProc(int Thing, const FWhen& When, const std::vector<FProcCompanion>& Companions, FProcState& G) const
+		{
+			G = FProcState();
+			const FAct* A = ActOf(Thing);
+			const FProcDef* D = A ? ProcDef(A->Proc) : nullptr;
+			if (!D)
+			{
+				return false;
+			}
+			G.Thing = Thing;
+			G.Act = Things[(size_t)Thing].Act;
+			G.Def = A->Proc;
+			G.Companions = Companions;
+			G.Rng.State = HashText(Things[(size_t)Thing].Id) ^ ((uint64_t)When.Day * 0x9E3779B97F4A7C15ull)
+				^ ((uint64_t)TotalUses(A->Id) * 0xC2B2AE3D27D4EB4Full);
+			ProcWhen = When;
+			BeginProcStep(*D, G, 0);
+			return true;
+		}
+
+		/** The scene's clock moves on Dt seconds with E held (bDown) or not: a cup fills, the ring breathes, the clock ticks. */
+		void TickProc(FProcState& G, double Dt, bool bDown) const
+		{
+			const FProcDef* D = ProcDef(G.Def);
+			if (!D || G.bOver || G.Step < 0 || G.Step >= (int)D->Steps.size())
+			{
+				return;
+			}
+			const double Step = Dt > 0.0 ? std::min(Dt, MaxGameStep) : 0.0;
+			G.Clock += Step;
+			G.bDown = bDown;
+			const FProcStep& S = D->Steps[(size_t)G.Step];
+			const double T = G.Clock - G.StepFrom;
+			if (G.bSettled)
+			{
+				if (G.Clock >= G.Wait)
+				{
+					NextProcStep(*D, G);
+				}
+				G.bWasDown = bDown;
+				return;
+			}
+			switch (S.Do)
+			{
+			case EProcStep::Pour:
+				if (bDown)
+				{
+					G.Tries = 1;
+					G.Level = std::min(1.0, G.Level + Step / std::max(0.5, S.Secs));
+					if (G.Level >= 1.0)
+					{
+						SettleProc(G, 0.0, EProcBeat::Miss);     // spilt over the brim
+					}
+				}
+				else if (G.bWasDown)
+				{
+					const double Got = G.Level >= S.MarkLo && G.Level <= S.MarkHi ? 1.0
+						: G.Level >= S.MarkLo - 0.12 && G.Level < S.MarkLo ? 0.5 : G.Level > S.MarkHi ? 0.3 : 0.0;
+					SettleProc(G, Got, Got >= 1.0 ? EProcBeat::Good : EProcBeat::Miss);
+				}
+				else if (G.Tries == 0 && T > ProcIdle)
+				{
+					SettleProc(G, 0.0, EProcBeat::Miss);
+				}
+				break;
+			case EProcStep::Sip:
+			{
+				const double From = ProcLead, End = ProcLead + S.Count * S.Every;
+				G.Level = T < From ? 0.0 : std::fmod(T - From, S.Every) / S.Every;
+				if (T > End + S.Window)
+				{
+					SettleProc(G, S.Count > 0 ? std::min(1.0, (double)G.Hits / S.Count) : 1.0, EProcBeat::None);
+				}
+				break;
+			}
+			case EProcStep::Breathe:
+			{
+				const double Period = S.In + S.Out, End = ProcLead + S.Count * Period;
+				if (T >= ProcLead && T < End)
+				{
+					const double Ph = std::fmod(T - ProcLead, Period);
+					const bool bGrow = Ph < S.In;
+					G.Level = bGrow ? Ph / S.In : 1.0 - (Ph - S.In) / S.Out;
+					const double SinceTurn = bGrow ? Ph : Ph - S.In;
+					if (bGrow && bDown)
+					{
+						G.Tries |= 1;     // this breath was taken in (letting go then counts as breathing out)
+					}
+					if (SinceTurn > ProcBreathGrace)
+					{
+						G.Timed += Step;
+						if (bDown == bGrow && (bGrow || (G.Tries & 1)))
+						{
+							G.InTime += Step;
+						}
+					}
+					const int Breath = (int)((T - ProcLead) / Period);
+					if (Breath != G.Hits)
+					{
+						G.Hits = Breath;
+						G.Tries = 0;
+						Beat(G, G.Timed > 0.0 && G.InTime / G.Timed > 0.7 ? EProcBeat::Good : EProcBeat::Miss);
+					}
+				}
+				else if (T >= End)
+				{
+					G.Level = 0.0;
+					SettleProc(G, G.Timed > 0.0 ? std::min(1.0, G.InTime / G.Timed / 0.85) : 0.0, EProcBeat::None);
+				}
+				break;
+			}
+			case EProcStep::Tap:
+				G.Level = S.Count > 0 ? std::min(1.0, (double)G.Hits / S.Count) : 1.0;
+				if (T > S.Secs)
+				{
+					SettleProc(G, G.Level, G.Level >= 1.0 ? EProcBeat::Good : EProcBeat::Miss);
+				}
+				break;
+			case EProcStep::Pick:
+				if (T > ProcIdle)
+				{
+					G.Picked = 0;
+					SettleProc(G, -1.0, EProcBeat::None);
+				}
+				break;
+			default:
+				if (T >= S.Secs)
+				{
+					NextProcStep(*D, G);
+				}
+				break;
+			}
+			G.bWasDown = bDown;
+		}
+
+		/** A key: E (Choice -1) sips on the tick, taps, or goes on past a line; a pick takes 0..2. */
+		void PressProc(FProcState& G, int Choice) const
+		{
+			const FProcDef* D = ProcDef(G.Def);
+			if (!D || G.bOver || G.bSettled || G.Step < 0 || G.Step >= (int)D->Steps.size())
+			{
+				return;
+			}
+			const FProcStep& S = D->Steps[(size_t)G.Step];
+			const double T = G.Clock - G.StepFrom;
+			switch (S.Do)
+			{
+			case EProcStep::Pick:
+				if (Choice >= 0 && Choice < 3 && !G.Options[Choice].empty())
+				{
+					G.Picked = Choice;
+					SettleProc(G, -1.0, EProcBeat::Good);
+				}
+				break;
+			case EProcStep::Sip:
+			{
+				if (Choice >= 0 || T < ProcLead - S.Window)
+				{
+					break;
+				}
+				const int K = (int)std::floor((T - ProcLead) / S.Every + 0.5);
+				const double Off = std::fabs(T - ProcLead - K * S.Every);
+				// a sip on the tick, each tick once (the bits of Tries hold the ticks sipped)
+				if (K >= 0 && K < S.Count && K < 30 && Off <= S.Window && !(G.Tries & (1 << K)))
+				{
+					G.Tries |= 1 << K;
+					G.Hits += 1;
+					Beat(G, EProcBeat::Good);
+				}
+				else
+				{
+					Beat(G, EProcBeat::Miss);
+				}
+				break;
+			}
+			case EProcStep::Tap:
+				if (Choice < 0)
+				{
+					G.Hits += 1;
+					Beat(G, EProcBeat::Good);
+					if (G.Hits >= S.Count)
+					{
+						G.Level = 1.0;
+						SettleProc(G, 1.0, EProcBeat::Good);
+					}
+				}
+				break;
+			case EProcStep::Say:
+			case EProcStep::Cut:
+			case EProcStep::Measure:
+			case EProcStep::Guest:
+			case EProcStep::News:
+				if (Choice < 0 && T > ProcSkipAfter)
+				{
+					NextProcStep(*D, G);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+
+		/** The scene is over: its result line by how well it went, the stamp a good one gives, the numbers measured. The act
+		 *  itself is not run here (the game runs it as usual next: FinishProc does both). Given once. */
+		FProcEnd EndProc(FProcState& G, const FWhen& When)
+		{
+			FProcEnd E;
+			const FProcDef* D = ProcDef(G.Def);
+			if (!D || !G.bOver || G.Thing < 0 || G.Thing >= (int)Things.size())
+			{
+				return E;
+			}
+			const double Share = G.Scored > 0 ? G.Score / G.Scored : 1.0;
+			E.Result = Share >= D->Good ? 0 : Share >= D->Fair ? 1 : 2;
+			const FAct& Lines = D->Results[E.Result].Lines.empty() ? D->Results[1] : D->Results[E.Result];
+			const std::string Page = Things[(size_t)G.Thing].Id + "#proc" + std::to_string(E.Result);
+			if (CountUsable(Page, Lines, When) > 0)
+			{
+				E.Line = TakeLineAt(Page, Lines, When, &E.NewStamps);
+			}
+			if (E.Result == 0)
+			{
+				GiveStamp(D->Collect, &E.NewStamps);
+			}
+			ProcDone[D->Id] += 1;
+			if (D->bVitals && G.Vitals.Valid())
+			{
+				if (!VitalsFirst.Valid())
+				{
+					VitalsFirst = G.Vitals;
+				}
+				VitalsLast = G.Vitals;
+				E.Vitals = G.Vitals;
+				E.First = VitalsFirst;
+				E.Args = VitalsArgs(E.Vitals, E.First);
+			}
+			G.Def = -1;     // given once
+			return E;
+		}
+
+		/** EndProc, then the act runs (its price, stamps, lines) less the minutes the scene's cuts let pass (citysim's way). */
+		FProcEnd FinishProc(FProcState& G, const FWhen& When, const FAsk& Ask)
+		{
+			const int Thing = G.Thing, Cut = G.CutMinutes;
+			if (!ProcDef(G.Def) || !G.bOver)
+			{
+				return FProcEnd();
+			}
+			FProcEnd E = EndProc(G, When);
+			E.Run = Run(Thing, When, Ask);
+			E.Run.Minutes = std::max(0, E.Run.Minutes - Cut);
+			return E;
+		}
+
+		/** How many times the hero went through a procedure (Id; empty: all of them). */
+		int ProcCount(const std::string& Id = std::string()) const
+		{
+			if (!Id.empty())
+			{
+				const auto It = ProcDone.find(Id);
+				return It == ProcDone.end() ? 0 : It->second;
+			}
+			int N = 0;
+			for (const auto& P : ProcDone)
+			{
+				N += P.second;
+			}
+			return N;
+		}
+
+		/** The hero's numbers at the doctor's on Day: they get better with the procedures he has gone through, with a little of
+		 *  the day's own in them. */
+		FVitals VitalsOn(long long Day) const
+		{
+			const double F = std::min(1.0, ProcCount() / VitalsCourse);
+			FRng R;
+			R.State = HashText("vitals") ^ ((uint64_t)(Day + 1) * 0x9E3779B97F4A7C15ull);
+			auto Jit = [&R](double Amp) { return (R.Unit() * 2.0 - 1.0) * Amp; };
+			FVitals V;
+			V.Weight = std::round((63.8 - 1.4 * F + Jit(0.2)) * 10.0) / 10.0;
+			V.Sys = (int)std::lround(132.0 - 14.0 * F + Jit(2.0));
+			V.Dia = (int)std::lround(86.0 - 8.0 * F + Jit(1.5));
+			V.Pulse = (int)std::lround(82.0 - 10.0 * F + Jit(2.0));
+			V.Lungs = (int)(std::lround((3100.0 + 500.0 * F + Jit(40.0)) / 10.0) * 10);
+			return V;
+		}
+		/** The numbers measured first and last (Valid() false: never measured). */
+		const FVitals& FirstVitals() const { return VitalsFirst; }
+		const FVitals& LastVitals() const { return VitalsLast; }
+
+		/** A line's arguments for the numbers: {0} weight, {1}/{2} pressure, {3} pulse, {4} lungs; {5}..{9} the first ones. */
+		static std::vector<std::string> VitalsArgs(const FVitals& Now, const FVitals& First)
+		{
+			char Buf[32];
+			std::vector<std::string> Out;
+			for (const FVitals* V : { &Now, &First })
+			{
+				std::snprintf(Buf, sizeof(Buf), "%.1f", V->Weight);
+				Out.push_back(Buf);
+				Out.push_back(std::to_string(V->Sys));
+				Out.push_back(std::to_string(V->Dia));
+				Out.push_back(std::to_string(V->Pulse));
+				Out.push_back(std::to_string(V->Lungs));
+			}
+			return Out;
+		}
+
 		// --- windows that open (docs/city_interiors.md "Windows that open"): for this visit, like the switches' lamps
 
 		/** How wide Thing's window opens (its act's "window"); 0: not a window that opens. */
@@ -3093,6 +3624,9 @@ namespace LyudCity
 			Done.clear();
 			StayUntil.clear();
 			Rewarded.clear();
+			ProcDone.clear();
+			VitalsFirst = FVitals();
+			VitalsLast = FVitals();
 			CountDay = 0;
 		}
 
@@ -3162,6 +3696,20 @@ namespace LyudCity
 			{
 				Out["g:" + P.first] = std::to_string(P.second);
 			}
+			for (const auto& P : ProcDone)
+			{
+				Out["p:" + P.first] = std::to_string(P.second);
+			}
+			for (const auto& P : { std::make_pair("first", &VitalsFirst), std::make_pair("last", &VitalsLast) })
+			{
+				if (P.second->Valid())
+				{
+					char Buf[96];
+					std::snprintf(Buf, sizeof(Buf), "%.1f,%d,%d,%d,%d", P.second->Weight, P.second->Sys, P.second->Dia, P.second->Pulse,
+						P.second->Lungs);
+					Out[std::string("m:") + P.first] = Buf;
+				}
+			}
 		}
 		void LoadState(const std::map<std::string, std::string>& In)
 		{
@@ -3190,6 +3738,16 @@ namespace LyudCity
 					case 'w': Done.insert(Name); break;
 					case 's': StayUntil[Name] = V; break;
 					case 'g': Rewarded[Name] = V; break;
+					case 'p': ProcDone[Name] = (int)V; break;
+					case 'm':
+					{
+						FVitals M;
+						if (std::sscanf(P.second.c_str(), "%lf,%d,%d,%d,%d", &M.Weight, &M.Sys, &M.Dia, &M.Pulse, &M.Lungs) == 5)
+						{
+							(Name == "first" ? VitalsFirst : VitalsLast) = M;
+						}
+						break;
+					}
 					case 'c':
 					{
 						// kept even when the data no longer declares it (a piece may come back with the content)
@@ -3217,6 +3775,255 @@ namespace LyudCity
 		}
 
 	private:
+		/** The day and hour the scene began (its lines' conditions are asked at that time). */
+		mutable FWhen ProcWhen;
+		std::map<std::string, int> ProcDone;
+		FVitals VitalsFirst, VitalsLast;
+
+		static void Beat(FProcState& G, EProcBeat B)
+		{
+			G.Beat = B;
+			G.BeatSerial += 1;
+		}
+		/** The step is done: its result (0..1; < 0: it does not score) and the pause before the next. */
+		static void SettleProc(FProcState& G, double Got, EProcBeat B)
+		{
+			G.bSettled = true;
+			G.Wait = G.Clock + ProcGoOn;
+			if (Got >= 0.0)
+			{
+				G.Score += std::min(1.0, std::max(0.0, Got));
+				G.Scored += 1;
+			}
+			if (B != EProcBeat::None)
+			{
+				Beat(G, B);
+			}
+		}
+		/** The first line of a set that holds now, or one of them by the scene's dice (empty: none holds). */
+		std::string ProcLineOf(const FAct& Set, FProcState& G, bool bRandom) const
+		{
+			int N = 0;
+			for (const FLine& L : Set.Lines)
+			{
+				N += HoldsNow(L, ProcWhen) ? 1 : 0;
+			}
+			if (N == 0)
+			{
+				return std::string();
+			}
+			int Pick = bRandom ? G.Rng.Below(N) : 0;
+			for (const FLine& L : Set.Lines)
+			{
+				if (HoldsNow(L, ProcWhen) && Pick-- == 0)
+				{
+					return L.Key;
+				}
+			}
+			return std::string();
+		}
+		void NextProcStep(const FProcDef& D, FProcState& G) const
+		{
+			BeginProcStep(D, G, G.Step + 1);
+		}
+		void BeginProcStep(const FProcDef& D, FProcState& G, int Index) const
+		{
+			for (; Index < (int)D.Steps.size(); ++Index)
+			{
+				const FProcStep& S = D.Steps[(size_t)Index];
+				G.Step = Index;
+				G.StepFrom = G.Clock;
+				G.Wait = 0.0;
+				G.Level = 0.0;
+				G.bSettled = false;
+				G.Hits = 0;
+				G.Tries = 0;
+				G.InTime = 0.0;
+				G.Timed = 0.0;
+				G.Line.clear();
+				G.Args.clear();
+				switch (S.Do)
+				{
+				case EProcStep::Guest:
+				{
+					if (G.Companions.empty())
+					{
+						continue;     // nobody else at it now
+					}
+					const FProcCompanion& C = G.Companions.front();
+					const FAct* Set = nullptr;
+					for (const auto& P : S.Guests)
+					{
+						if (P.first == C.Key || (P.first.empty() && !Set))
+						{
+							Set = &P.second;
+							if (P.first == C.Key)
+							{
+								break;
+							}
+						}
+					}
+					G.Line = Set ? ProcLineOf(*Set, G, true) : std::string();
+					G.Args.push_back("@" + C.Name);
+					break;
+				}
+				case EProcStep::News:
+					for (const int Topic : Everywhere)
+					{
+						const FTopic* T = TopicAt(Topic);
+						if (!T || !HoldsNow(T->When, ProcWhen))
+						{
+							continue;
+						}
+						for (const FLine& L : T->Lines)
+						{
+							if (HoldsNow(L, ProcWhen))
+							{
+								G.Line = L.Key;
+								break;
+							}
+						}
+						if (!G.Line.empty())
+						{
+							break;
+						}
+					}
+					if (G.Line.empty())
+					{
+						G.Line = ProcLineOf(S.Lines, G, true);
+					}
+					break;
+				case EProcStep::Measure:
+					G.Vitals = VitalsOn(ProcWhen.Since);
+					G.Args = VitalsArgs(G.Vitals, VitalsFirst.Valid() ? VitalsFirst : G.Vitals);
+					G.Line = ProcLineOf(S.Lines, G, false);
+					break;
+				case EProcStep::Pick:
+				{
+					G.Picked = -1;
+					G.Line = ProcLineOf(S.Lines, G, false);
+					// the options are the lines after the prompt: the first that holds is the prompt
+					int K = 0;
+					bool bPrompt = true;
+					for (const FLine& L : S.Lines.Lines)
+					{
+						if (!HoldsNow(L, ProcWhen))
+						{
+							continue;
+						}
+						if (bPrompt)
+						{
+							bPrompt = false;
+							continue;
+						}
+						if (K < 3)
+						{
+							G.Options[K++] = L.Key;
+						}
+					}
+					for (; K < 3; ++K)
+					{
+						G.Options[K].clear();
+					}
+					break;
+				}
+				default:
+					if (S.bByPick && G.Picked >= 0)
+					{
+						int K = 0;
+						for (const FLine& L : S.Lines.Lines)
+						{
+							if (HoldsNow(L, ProcWhen) && K++ == G.Picked)
+							{
+								G.Line = L.Key;
+								break;
+							}
+						}
+					}
+					if (G.Line.empty())
+					{
+						G.Line = ProcLineOf(S.Lines, G, S.Do == EProcStep::Say || S.Do == EProcStep::Cut);
+					}
+					break;
+				}
+				if (S.Do == EProcStep::Cut)
+				{
+					G.CutMinutes += S.Minutes;
+				}
+				if (S.Do == EProcStep::Say && G.Line.empty())
+				{
+					continue;     // nothing to say now
+				}
+				Beat(G, EProcBeat::Step);
+				return;
+			}
+			G.bOver = true;
+			G.Step = (int)D.Steps.size();
+			Beat(G, EProcBeat::Done);
+		}
+
+		/** An act's "proc" (see FProcDef; interiors.py writes every field it knows). */
+		static FProcDef ReadProc(const std::string& Id, const LyudJson::FValue& V)
+		{
+			FProcDef D;
+			D.Id = V["id"].S(Id);
+			D.Title = V["title"].S();
+			D.Keys = V["keys"].S();
+			const LyudJson::FValue& When = V["when"];
+			if (When.Type == LyudJson::FValue::Object)
+			{
+				ReadLine(When, D.When);
+			}
+			D.Good = std::min(1.0, std::max(0.0, (double)V["good_share"].F(0.7f)));
+			D.Fair = std::min(D.Good, std::max(0.0, (double)V["fair_share"].F(0.35f)));
+			D.Collect = V["collect"].S();
+			D.bVitals = V["vitals"].Type == LyudJson::FValue::Bool ? V["vitals"].B : V["vitals"].I(0) != 0;
+			for (const LyudJson::FValue& St : V["steps"].Items)
+			{
+				bool bKnown = false;
+				FProcStep S;
+				S.Do = ProcStepOf(St["do"].S(), &bKnown);
+				if (!bKnown)
+				{
+					continue;
+				}
+				ReadLines(St["lines"], S.Lines);
+				for (const auto& G : St["guests"].Fields)
+				{
+					FAct Set;
+					ReadLines(G.second, Set);
+					if (!Set.Lines.empty())
+					{
+						S.Guests.emplace_back(G.first, std::move(Set));
+					}
+				}
+				S.bByPick = St["by_pick"].Type == LyudJson::FValue::Bool ? St["by_pick"].B : St["by_pick"].I(0) != 0;
+				const double DefSecs = S.Do == EProcStep::Pour ? 5.0 : S.Do == EProcStep::Tap ? 6.0 : S.Do == EProcStep::Cut ? 3.0 : 4.5;
+				S.Secs = std::min(60.0, std::max(0.5, (double)St["secs"].F((float)DefSecs)));
+				S.Count = std::min(24, std::max(1, St["count"].I(S.Do == EProcStep::Tap ? 8 : 5)));
+				S.Every = std::min(4.0, std::max(0.4, (double)St["every"].F(1.0f)));
+				S.Window = std::min(S.Every * 0.45, std::max(0.05, (double)St["window"].F(0.3f)));
+				S.In = std::min(10.0, std::max(1.0, (double)St["in"].F(3.5f)));
+				S.Out = std::min(12.0, std::max(1.0, (double)St["out"].F(4.5f)));
+				const LyudJson::FValue& Mark = St["mark"];
+				if (Mark.Type == LyudJson::FValue::Array && Mark.Size() >= 2)
+				{
+					S.MarkLo = std::min(0.95, std::max(0.2, (double)Mark[0].F(0.72f)));
+					S.MarkHi = std::min(0.98, std::max(S.MarkLo + 0.03, (double)Mark[1].F(0.86f)));
+				}
+				S.Minutes = std::min(120, std::max(0, St["minutes"].I(0)));
+				D.Steps.push_back(std::move(S));
+			}
+			static const char* const Names[3] = { "good", "fair", "poor" };
+			for (int I = 0; I < 3; ++I)
+			{
+				D.Results[I].Id = Names[I];
+				D.Results[I].Target = Names[I];
+				ReadLines(V[Names[I]], D.Results[I]);
+			}
+			return D;
+		}
+
 		std::unordered_map<std::string, int> ActIndex;
 		std::unordered_map<std::string, int> ThingIndex;
 		std::unordered_map<std::string, int> TextIndex;

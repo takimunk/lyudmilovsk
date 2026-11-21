@@ -29601,6 +29601,72 @@
    ]
   },
   {
+   "id": "P-SANATORIUM-INHALE",
+   "kind": "sanatorium_inhale",
+   "door": [
+    -708.1,
+    1255.45,
+    -8.0
+   ],
+   "yaw": -6.4,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "staff",
+     "tag": "inhale_1",
+     "pos": [
+      -717.59,
+      1243.07,
+      -8.0
+     ],
+     "yaw": 302.2,
+     "height": 0.45,
+     "thing": "P-SANATORIUM/inhale_2"
+    },
+    {
+     "kind": "staff",
+     "tag": "inhale_2",
+     "pos": [
+      -718.43,
+      1242.54,
+      -8.0
+     ],
+     "yaw": 302.2,
+     "height": 0.45,
+     "thing": "P-SANATORIUM/inhale_3"
+    }
+   ],
+   "roles": [],
+   "building": "P-SANATORIUM",
+   "path": [
+    [
+     -711.6,
+     1253.22,
+     -8.0
+    ],
+    [
+     -713.61,
+     1248.98,
+     -8.0
+    ],
+    [
+     -715.09,
+     1246.02,
+     -8.0
+    ],
+    [
+     -715.41,
+     1244.21,
+     -8.0
+    ],
+    [
+     -716.68,
+     1243.96,
+     -8.0
+    ]
+   ]
+  },
+  {
    "id": "P-BRIDGEHOUSE",
    "kind": "office",
    "door": [
@@ -132529,6 +132595,98 @@
      ],
      "yaw": 173.6
     }
+   ]
+  },
+  {
+   "id": "P-LIBRARY-CLUB",
+   "kind": "book_club",
+   "door": [
+    -414.05,
+    996.73,
+    -22.0
+   ],
+   "yaw": -5.6,
+   "island": 0,
+   "slots": [
+    {
+     "kind": "club_seat",
+     "pos": [
+      -420.44,
+      995.1,
+      -22.01
+     ],
+     "yaw": 264.4,
+     "height": 0.45,
+     "thing": "P-LIBRARY/lounge_armchair_1",
+     "owner": "t_mensah_beatriz"
+    },
+    {
+     "kind": "club_seat",
+     "pos": [
+      -420.78,
+      991.62,
+      -22.01
+     ],
+     "yaw": 84.4,
+     "height": 0.45,
+     "thing": "P-LIBRARY/lounge_armchair_2",
+     "owner": "t_girma_zsofia"
+    },
+    {
+     "kind": "club_seat",
+     "pos": [
+      -421.6,
+      994.01,
+      -22.0
+     ],
+     "yaw": 354.4,
+     "height": 0.45,
+     "thing": "P-LIBRARY/lounge_sofa",
+     "owner": "t_lee_brandon"
+    },
+    {
+     "kind": "club_seat",
+     "pos": [
+      -421.65,
+      993.46,
+      -22.0
+     ],
+     "yaw": 354.4,
+     "height": 0.45,
+     "thing": "P-LIBRARY/lounge_sofa",
+     "owner": "t_le_ondrej"
+    },
+    {
+     "kind": "club_seat",
+     "pos": [
+      -421.71,
+      992.91,
+      -22.0
+     ],
+     "yaw": 354.4,
+     "height": 0.45,
+     "thing": "P-LIBRARY/lounge_sofa",
+     "owner": "t_kjaer_nour"
+    }
+   ],
+   "roles": [],
+   "building": "P-LIBRARY",
+   "path": [
+    [
+     -415.64,
+     996.89,
+     -22.0
+    ],
+    [
+     -418.72,
+     994.18,
+     -22.0
+    ],
+    [
+     -419.31,
+     993.23,
+     -22.0
+    ]
    ]
   }
  ]

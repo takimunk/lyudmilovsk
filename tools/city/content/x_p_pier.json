@@ -627,6 +627,7 @@
   },
   "px_scope": {
    "like": "look_misc",
+   "screen": "scope",
    "prompt": "city.px.scope.prompt",
    "any_hour": true,
    "minutes": 5,

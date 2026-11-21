@@ -166,7 +166,12 @@ def main():
     heard_ok = {}
 
     def stamp_reachable(s):
-        return s in pieces_given
+        if s in pieces_given:
+            return True
+        # a collection by code: the game gives its declared pieces itself (GiveStamp), nothing in town does
+        cid, _, piece = s.partition("/")
+        cdef = colls.get(cid) or {}
+        return bool(cdef.get("by")) and piece in (cdef.get("pieces") or [])
 
     def conds_ok(c, ws, where, depth=0):
         """Line/topic conditions that can hold within the open week ws; returns a reason or ''."""

@@ -72,6 +72,7 @@ the add-on is what brings these back).
 
 | activity | who, when | where |
 |---|---|---|
+| `book_club` (a duty, `"when": "book_club"`) | the five club members (`tools/reading/build_reading.py`), Thursdays 18:10–20:00 while the game holds the condition on; not on festivals or holidays | `P-LIBRARY-CLUB`: the library lounge's armchairs and sofa, a seat each (docs/books.md "The book club") |
 | `cinema_day`, `cinema_evening` | anybody who likes it (the curious, the warm), going in before the 15:00 and 19:00 sessions | `P-CLUB2-CINEMA`: 145 of the hall's seats, each walked to along its aisle; six of them are the hero's seats and are held through the slot's `thing` |
 | `san_cure` | 60 and over and the sanatorium's guests, mornings but Sunday | `P-SANATORIUM-PUMP`: the pump room's bench and stool, the lobby's benches; the drink manner with a cup |
 | `dominoes` | 58 and over, 15:00 to 20:00, a talk | `P-SANATORIUM-LOUNGE`: the lounge's four seats |
