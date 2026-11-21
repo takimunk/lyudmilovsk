@@ -823,6 +823,11 @@ the list (their ids play nothing from an act).
    board's generic act (`look_club_cog` keeps `target: look_club`). A refurnished home that renames a thing id breaks its
    rule (the check says which): rename the rule with it.
 
+Rooms on no plot of the town plan are listed in `tools/city/extra_places.json` (front and yaw in Unreal metres and degrees)
+and get their things like any plot: `P-HOME`, the hero's room in the club (`docs/hero_room.md`). An act with
+`"open": "<screen>"` hands E to another system through `ULyudCityThings::OnOpen` (`books`: the library's classics; `home`:
+the places of the hero's room).
+
 ## 3. Game
 
 * `ULyudCityThings` (tickable world subsystem, `Public/City/LyudCityThings.h`, `Private/City/LyudCityThings.cpp`): at world

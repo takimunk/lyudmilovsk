@@ -120,6 +120,12 @@ MAIN_STRINGS = os.path.join(CONTENT, "Localization", "strings_ru.json")
 TOWN_STRINGS = os.path.join(CONTENT, "Localization", "town", "strings_ru.json")
 PROP_ORDER = ("topic", "what", "service", "item", "to", "role", "shop")
 MIN_GAP = 0.3
+# rooms that stand on no plot of the plan (the hero's room in the club, docs/hero_room.md): [{"id", "kind", "building", "front"
+# (Unreal metres), "yaw", "name_ru", "name_en"}]; their things, acts and teleports are made like a plot's
+EXTRA_PLACES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "extra_places.json")
+# the places of the hero's room are his own screen too (Private/Home/LyudHeroRoom.cpp); kept apart from the list above
+# so that the two do not collide in merges
+OPEN_SCREENS += ("home",)
 UNIT_TYPE = "promenade_unit"   # the promenade units' rooms (exports promenade_unit__<variant>.json)
 FOOTPRINT_SLACK = 3.0
 
@@ -1401,7 +1407,19 @@ def places(plan):
         out.append({"id": u["id"], "kind": u["kind"], "building": "unit_" + u["kind"], "front": ue_m(plan, u["door"]), "yaw": u["yaw"],
                     "staff": u.get("staff") or [], "name_ru": u.get("name_ru", ""), "name_en": u.get("name_en", ""),
                     "export": export, "w": w, "d": 6.0, "unit": 1})
+    for e in extra_places():
+        out.append({"id": e["id"], "kind": e["kind"], "building": e["building"], "front": list(e["front"]), "yaw": e["yaw"],
+                    "staff": [], "name_ru": e.get("name_ru", ""), "name_en": e.get("name_en", ""),
+                    "export": building_export(e["building"], e["id"]), "w": e.get("w", 6.0), "d": e.get("d", 6.0), "extra": 1})
     return out
+
+
+def extra_places():
+    return load(EXTRA_PLACES).get("places", []) if os.path.exists(EXTRA_PLACES) else []
+
+
+def all_plot_ids(plan):
+    return {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])} | {e["id"] for e in extra_places()}
 
 
 def staff_variant(pl, props, kind, act, acts, tid):
@@ -2415,9 +2433,9 @@ def main():
             err("rule %s: unknown kind %s" % (k, r["kind"]))
     things, summary, skipped = build_things(plan, rules, defaults, by_plot_kind, acts, strings, CONTENT_EXTRA["closed_by"])
     stays = build_stays(CONTENT_EXTRA["stays"], acts, strings,
-                        {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])})
+                        all_plot_ids(plan))
     n_lifts = build_lifts(things, strings)
-    all_plots = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])}
+    all_plots = all_plot_ids(plan)
     regs = build_regulars(CONTENT_EXTRA["regulars"], strings, all_plots)
     for aid, a in sorted(acts.items()):
         g = a.get("game")
@@ -2446,7 +2464,7 @@ def main():
     existing = [q["id"] for q in json.loads(qtext)["quests"]]
     ours = {q["id"] for q in quests}
     map_places = {p["id"] for p in load(MAP)["places"]}
-    plot_ids = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])}
+    plot_ids = all_plot_ids(plan)
     check_quests(quests, acts, strings, items, plot_ids, map_places, [q for q in existing if q not in ours])
     # every quest step a thing must make must have a thing in town that makes it, with its staff on that plot
     staff_of = {pl["id"]: {r[0] for r in pl["staff"]} for pl in places(plan)}

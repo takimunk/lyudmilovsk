@@ -67,6 +67,7 @@
   {"id": "city.w1_u30", "group": "interiors", "name": "dev.tp.city.w1_u30", "x": 144.66, "y": 1375.93, "z": -3950.0, "yaw": 171.6},
   {"id": "city.w1_u31", "group": "interiors", "name": "dev.tp.city.w1_u31", "x": 149.18, "y": 1405.61, "z": -3950.0, "yaw": 171.0},
   {"id": "city.w1_u32", "group": "interiors", "name": "dev.tp.city.w1_u32", "x": 154.02, "y": 1435.23, "z": -3950.0, "yaw": 170.3},
+  {"id": "city.p_home", "group": "interiors", "name": "dev.tp.city.p_home", "x": -4.5, "y": -6.9, "z": 0.0, "yaw": 180.0},
   {"id": "city.q.city_tour.1", "group": "interiors", "name": "dev.tp.city.q.city_tour.1", "x": -416.76, "y": 984.68, "z": -2200.0, "yaw": 174.4},
   {"id": "city.q.library_day.1", "group": "interiors", "name": "dev.tp.city.q.library_day.1", "x": -420.59, "y": 983.62, "z": -2200.0, "yaw": -95.6},
   {"id": "city.q.cinema_night.1", "group": "interiors", "name": "dev.tp.city.q.cinema_night.1", "x": -75.55, "y": 1059.65, "z": -3620.0, "yaw": -5.5},

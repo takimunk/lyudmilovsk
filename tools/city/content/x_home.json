@@ -1,0 +1,82 @@
+{
+ "_doc": "The hero's own room behind the club's hall (docs/hero_room.md, plot P-HOME of tools/city/extra_places.json, building hero_room). The bed sleeps until an hour he chooses; the places for his own things, the flower pot and the switch open ULyudHeroRoom's choosers (\"open\": \"home\"); Maru's basket and the map of the coast say a line.",
+ "acts": {
+  "myroom_sleep": {
+   "like": "sleep_night",
+   "prompt": "city.myroom.sleep.prompt",
+   "lines": "city.myroom.bed",
+   "target": "myroom_sleep"
+  },
+  "myroom_place": {
+   "prompt": "city.myroom.place.prompt",
+   "open": "home",
+   "any_hour": true
+  },
+  "myroom_pot": {
+   "prompt": "city.myroom.pot.prompt",
+   "open": "home",
+   "any_hour": true
+  },
+  "myroom_switch": {
+   "prompt": "city.myroom.switch.prompt",
+   "open": "home",
+   "any_hour": true
+  },
+  "myroom_basket": {
+   "prompt": "city.myroom.basket.prompt",
+   "minutes": 1,
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.myroom.basket.day.*",
+     "h": [
+      6,
+      21
+     ]
+    },
+    {
+     "k": "city.myroom.basket.night.*",
+     "h": [
+      21,
+      6
+     ]
+    }
+   ]
+  },
+  "myroom_map": {
+   "prompt": "city.myroom.map.prompt",
+   "minutes": 2,
+   "any_hour": true,
+   "lines": "city.myroom.map"
+  }
+ },
+ "rules": {
+  "hero_room/bed": {
+   "act": "myroom_sleep"
+  },
+  "hero_room/pin_*": {
+   "act": "myroom_place"
+  },
+  "hero_room/frame_*": {
+   "act": "myroom_place"
+  },
+  "hero_room/shelf_*": {
+   "act": "myroom_place"
+  },
+  "hero_room/top_*": {
+   "act": "myroom_place"
+  },
+  "hero_room/pot": {
+   "act": "myroom_pot"
+  },
+  "hero_room/switch": {
+   "act": "myroom_switch"
+  },
+  "hero_room/basket": {
+   "act": "myroom_basket"
+  },
+  "hero_room/coast_map": {
+   "act": "myroom_map"
+  }
+ }
+}
