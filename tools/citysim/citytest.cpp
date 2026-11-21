@@ -1744,6 +1744,7 @@ static void JobChecks(const std::string& Path)
 }
 
 #include "cupchecks.h"
+#include "rewardchecks.h"
 
 int main(int Argc, char** Argv)
 {
@@ -1761,6 +1762,7 @@ int main(int Argc, char** Argv)
 	CourseChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	JobChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	CupChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	RewardChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;
 }

@@ -81,6 +81,9 @@ After the birds' pages come the friends among the cats and dogs (`ULyudAnimalFri
 friends and how, the strokes, treats and walks so far, and for one without a name of its own the link "give a name" (the diary shuts and
 a box to type it in opens).
 
+The diary's own section ends with the «Коллекции» pages, after the people (`docs/city_interiors.md` "A complete set pays"):
+every set of stamps with a box for each piece and the keepsake its complete set gave or will give.
+
 ## Assets
 
 | Asset | Made by | Import |

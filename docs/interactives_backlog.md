@@ -429,7 +429,7 @@ with it: same `B.dress` mechanism, one of you writes it). Done: Blender previews
 
 ## 30. Collections pay off
 
-`[~] collections-payoff 2026-11-20` **Brief (Opus 5.5):** Stamp sets exist (library shelves, films, jukebox records, kiosks, chess wins, the sanatorium
+`[~] collections-payoff 2026-11-21 (model, data, diary pages, citysim and quest audit done; never compiled or seen in the engine)` **Brief (Opus 5.5):** Stamp sets exist (library shelves, films, jukebox records, kiosks, chess wins, the sanatorium
 card, tonight's new sets) but a complete set gives nothing (backlog P4). Give each set a reward that fits: a library reader's
 card with a photo, a framed film poster for the hero's room (item 19), a record of your choice, the kiosk keepers' free
 paper for a month, a chess club badge on the jacket, the sanatorium diploma. A diary page "Коллекции" with all sets, filled

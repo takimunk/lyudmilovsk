@@ -34,6 +34,24 @@ sys.path.insert(0, HERE)
 import interiors as I  # noqa: E402  (main() is guarded; we only use its readers)
 
 DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
+
+_CODE_EVENTS = None
+
+
+def code_events():
+    """The quest events the game's code sends by name: every ULyudQuests::Notify(<context>, TEXT("<event>"), ...) of the
+    source tree (the town's things send theirs from the data: do, win, visit, ask, read are checked against it instead)."""
+    global _CODE_EVENTS
+    if _CODE_EVENTS is None:
+        _CODE_EVENTS = set()
+        src = os.path.join(HERE, "..", "..", "unreal", "Lyudmilovsk", "Source")
+        for base, _, names in os.walk(src):
+            for name in names:
+                if name.endswith(".cpp"):
+                    with open(os.path.join(base, name), encoding="utf-8", errors="replace") as f:
+                        _CODE_EVENTS.update(re.findall(r'Quests::Notify\(\s*[\w()*.>-]+\s*,\s*TEXT\("(\w+)"\)', f.read()))
+    return _CODE_EVENTS
 ERRORS, WARNINGS = [], []
 
 
@@ -422,6 +440,10 @@ def main():
                         err("%s: not a map place" % where)
                     elif ev == "photo" and not item_ok("camera", qid, n):
                         err("%s: nothing open in town gives a camera" % where)
+                elif ev in code_events():
+                    # an event the game's own code reports (ULyudQuests::Notify(.., TEXT("round_done"), ..)): no thing in town
+                    # has to make it, so there is nothing here to walk to
+                    pass
                 else:
                     err("%s: event not checked by the audit" % where)
                 # a later stage's step raised by an earlier one: the engine skips ahead (stage n done too soon)
