@@ -139,6 +139,16 @@ bool ULyudTownRumours::EnsureTies()
 	return true;
 }
 
+void ULyudTownRumours::ReadPending() const
+{
+	// the save is applied the tick after BeginPlay and the people's life starts half a second later: the store waits in
+	// Saved till then, and is read by whoever asks first once the town's people are there
+	if (bSavedPending)
+	{
+		const_cast<ULyudTownRumours*>(this)->EnsureTies();
+	}
+}
+
 void ULyudTownRumours::OnGameSaving_Implementation()
 {
 	const UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(this);
@@ -265,6 +275,7 @@ int32 ULyudTownRumours::Add(int32 Kind, const std::string& Detail, int32 Witness
 
 bool ULyudTownRumours::RemarkReady() const
 {
+	ReadPending();
 	const UWorld* World = GetWorld();
 	return bLoaded && World && !Town->Rumours.empty() && World->GetTimeSeconds() - LastRemarkAt >= RemarkEvery;
 }
@@ -320,6 +331,7 @@ void ULyudTownRumours::PaperColumn(int32 Day, TArray<TPair<FString, TArray<FStri
 	{
 		return;
 	}
+	ReadPending();
 	std::vector<std::pair<std::string, std::vector<std::string>>> Lines;
 	Town->PaperColumn(Day, Lines);
 	for (const std::pair<std::string, std::vector<std::string>>& L : Lines)
@@ -335,6 +347,7 @@ void ULyudTownRumours::PaperColumn(int32 Day, TArray<TPair<FString, TArray<FStri
 
 bool ULyudTownRumours::PostScript(int32 Day, FString& Key, TArray<FString>& Args) const
 {
+	ReadPending();
 	std::string K;
 	std::vector<std::string> A;
 	if (!bLoaded || !Town->PostScript(Day, K, A))
@@ -357,6 +370,7 @@ int32 ULyudTownRumours::DayOf(const FDateTime& When)
 
 const std::vector<std::string>& ULyudTownRumours::KindsGoingRound()
 {
+	ReadPending();
 	const int32 Day = bLoaded ? Today() : -1;
 	if (Day != GoingRoundDay || Town->Rumours.size() != GoingRoundN)
 	{
@@ -386,6 +400,7 @@ FString ULyudTownRumours::DetailOf(const FString& Kind) const
 	{
 		return FString();
 	}
+	ReadPending();
 	const int K = Town->FindKind(LyudTownRumoursImpl::Std(Kind));
 	for (auto It = Town->Rumours.rbegin(); It != Town->Rumours.rend(); ++It)
 	{

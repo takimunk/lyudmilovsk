@@ -12,6 +12,7 @@
 #include "LyudGameMenu.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "Photo/LyudPhoto.h"
 #include "Sea/LyudSwim.h"
 #include "UI/LyudGameScreen.h"
 #include "World/LyudLadder.h"
@@ -266,7 +267,8 @@ bool ULyudHandUse::ButtonDown(const APlayerController* PC)
 		bClickDown = false;
 		return bForced;
 	}
-	return bForced || (PC && CVarHandUse.GetValueOnGameThread() != 0 && PC->IsInputKeyDown(EKeys::LeftMouseButton));
+	// (not with the camera at the eye: the left button is its shutter)
+	return bForced || (PC && CVarHandUse.GetValueOnGameThread() != 0 && PC->IsInputKeyDown(EKeys::LeftMouseButton) && !ULyudPhoto::IsUp(PC));
 }
 
 void ULyudHandUse::Use(ELyudMouthUse InKind)

@@ -140,6 +140,8 @@ private:
 	void Stamp(const FString& Piece);
 	void Event(const FString& What);
 	void SetPrompt(const FText& Text);
+	/** A prompt by its LyudText key (and one whole number for its {0}, if any): looked up only when it changes. */
+	void SetPromptKey(const TCHAR* Key, int32 Arg = MIN_int32);
 
 	// the clock and the weather, every few seconds
 	void RefreshFacts(bool bForce);
@@ -236,6 +238,8 @@ private:
 	// prompts
 	FText PromptShown;
 	bool bPrompt = false;
+	const TCHAR* PromptKey = nullptr;   // SetPromptKey's last key (a literal's address: compared, never read) and number
+	int32 PromptArg = 0;
 
 	UPROPERTY(Transient) TObjectPtr<AActor> Holder;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> PropMaterial;
