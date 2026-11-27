@@ -189,6 +189,10 @@ void ULyudSmoking::OnWorldBeginPlay(UWorld& InWorld)
 	{
 		ULyudPrefetch::Ready(&InWorld, Asset);
 	}
+	for (int32 I = 1; I <= 3; I++)
+	{
+		LyudText::WarmVoice(&InWorld, FString::Printf(TEXT("line.hero.cough.%d"), I));   // Cough()'s lines, the same way
+	}
 	if (ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(&InWorld))
 	{
 		Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*)
