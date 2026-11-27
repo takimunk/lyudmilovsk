@@ -1,0 +1,311 @@
+{
+ "_doc": "The yacht school's rules and places (docs/yacht_school.md, part B): the single source of every number of Content/City/sailing.json. Places in the terrace frame of tools/city_plan.py (s = metres inland from the high-water line, y = map Y along the coast; d = -s = metres out to sea). Times are local hours, weekdays 0 = Monday, winds m/s, tide metres over the datum (0 = high water, -4.5 = spring low). Words are other agents' work: only keys here. Run python3 tools/sailing/sailing.py after a change.",
+
+ "school": {
+  "_doc": "ДЮСШ парусного спорта «Луч»: the boathouse on the sand by the south side of the pier's root (the pier's deck: y 899..911), the fenced boat park between it and the pier, the board slip from the park's gate to the sea. Rectangles are s [from, to] x y [from, to]. Heights are the generator's guesses; the game traces the ground.",
+  "id": "sail_school", "kind": "sail_school", "name": "sail.school.name",
+  "boathouse": {
+   "_doc": "S-SAIL-SCHOOL. 16.5 m deep (to the sea) x 9 m along the coast, its ridge along s, gable to the sea. The landward room is the classroom, the rest the boat hall. Both doors are in the NORTH wall (y 882.7), onto the park's aisle. The floor is level with the sand at the boat door; the mesh stands on a plinth toward the sea and is cut into the sand at the back.",
+   "plan_id": "S-SAIL-SCHOOL", "s": [7.0, 23.5], "y": [873.7, 882.7], "wall_h": 3.4, "ridge_h": 5.6,
+   "classroom_s": [18.2, 23.5],
+   "door": {"s": 21.0, "w": 1.1}, "boat_door": {"s": 16.1, "w": 3.2}, "floor_over_door_ground": 0.08
+  },
+  "park": {
+   "_doc": "S-SAIL-PARK. The fenced boat park: 15 m deep x 13.8 m along the coast (the gap between the summer loungers and the pier is 25 m: not the 20 m first meant). An aisle 3.5 m wide along the boathouse's wall leads to the gate in the seaward fence; the boats stand north of it in three rows, bows to the sea.",
+   "plan_id": "S-SAIL-PARK", "s": [8.5, 23.5], "y": [882.7, 896.5], "fence_h": 1.5,
+   "aisle_y": [882.7, 886.2], "gate_y": [882.9, 886.3],
+   "rows": [
+    {"s": [18.8, 23.4], "boats": [["optimist", 8, 1.22, 2], ["cadet", 3, 1.6, 1]]},
+    {"s": [14.0, 18.6], "boats": [["cadet", 1, 1.6, 1], ["launch", 1, 2.2, 1], ["luch", 3, 1.6, 1]]},
+    {"s": [9.2, 13.8], "boats": [["luch", 6, 1.6, 1]]}
+   ],
+   "rows_y0": 886.4
+  },
+  "slip": {
+   "_doc": "S-SAIL-SLIP. Boards over the sand from the gate down past the high-water line; below it the hard sand of the flat. The launch line runs on out to sea along the same y.",
+   "plan_id": "S-SAIL-SLIP", "y": 884.6, "width": 3.4, "s": [8.5, -14.0]
+  },
+  "hall": {
+   "_doc": "Laid up (out of season): the boats under covers on three-tier racks in the boat hall, the launch on the floor by the boat door.",
+   "bays_s": [9.4, 13.9], "columns_y": [874.7, 876.5, 878.3, 880.1], "tiers": 3, "tier_h": 0.95, "launch": [16.1, 880.9]
+  },
+  "points": {
+   "_doc": "Named places (hooks for the people, the interiors and the engine). face: sea | land | north | south or Unreal degrees; level: ground | floor (the boathouse's) | deck (the pier's) | water. n > 1: a row of n slots 'step' metres apart along 'along' (y or s), centred on the point.",
+   "entrance": {"s": 7.4, "y": 884.6, "face": "land", "what": "outside the gate, at the slip's head: where members arrive"},
+   "gate": {"s": 8.5, "y": 884.6, "face": "sea", "what": "the gate in the seaward fence"},
+   "boathouse_door": {"s": 21.0, "y": 883.3, "face": "south", "what": "in front of the people's door (in the aisle)"},
+   "boat_door": {"s": 16.1, "y": 883.5, "face": "south", "what": "in front of the boat door (in the aisle)"},
+   "notice_board": {"s": 18.9, "y": 883.2, "face": "south", "what": "the board on the wall between the doors: the timetable, the results sheet, the skippers' meeting"},
+   "bosun": {"s": 14.2, "y": 883.9, "face": "north", "what": "the bosun by the boat door: hire of a boat, the keys"},
+   "wash": {"s": 11.8, "y": 884.4, "face": "south", "n": 3, "step": 1.6, "along": "s", "what": "the tap and the hose on the boathouse's wall: boats are hosed down here"},
+   "classroom": {"s": 20.85, "y": 878.1, "face": "south", "level": "floor", "what": "the classroom's middle"},
+   "classroom_seat": {"s": 20.85, "y": 879.6, "face": "south", "level": "floor", "n": 4, "step": 1.1, "along": "s", "rows": 3, "row_step": 1.3, "what": "12 seats facing the blackboard on the south wall"},
+   "blackboard": {"s": 20.85, "y": 874.7, "face": "north", "level": "floor", "what": "the coach at the blackboard"},
+   "tea_table": {"s": 19.0, "y": 881.7, "face": "south", "level": "floor", "what": "the samovar by the door: tea after the water"},
+   "changing": {"s": 11.5, "y": 882.0, "face": "south", "level": "floor", "n": 6, "step": 1.2, "along": "s", "what": "the benches along the hall's north wall: life jackets, boots"},
+   "rigging": {"s": 12.6, "y": 891.3, "face": "sea", "what": "the middle of the boats' rows: rigging is done at each boat's own slot (park_slots)"},
+   "signal_mast": {"s": 6.6, "y": 887.4, "face": "sea", "what": "the signal mast (10 m) on the sand north of the slip's head; the horn hangs on it"},
+   "coach_mast": {"s": 7.4, "y": 888.2, "face": "sea", "what": "the duty coach at the mast's halyards"},
+   "windsock": {"s": 7.0, "y": 878.2, "face": "sea", "z_over_ridge": 2.0, "what": "the windsock on the boathouse's seaward gable"},
+   "coach_slip": {"s": 5.6, "y": 886.8, "face": "sea", "what": "a coach watching the launching from the slip's side"},
+   "slip_head": {"s": 8.0, "y": 884.6, "face": "sea", "what": "the top of the boards"},
+   "slip_foot": {"s": -14.0, "y": 884.6, "face": "sea", "what": "the end of the boards"},
+   "shore_lawn": {"s": 6.9, "y": 892.0, "face": "north", "what": "the shore lesson's ground: the strip of sand before the park's fence (there is no grass on the beach)"},
+   "shore_pupil": {"s": 7.4, "y": 892.6, "face": "south", "n": 4, "step": 1.3, "along": "y", "rows": 2, "row_step": -1.3, "row_along": "s", "what": "8 pupils in two rows on the sand, facing the demonstration boat"},
+   "shore_boat": {"s": 6.6, "y": 889.2, "face": "sea", "what": "the rigged boat on its trolley the coach shows on"},
+   "coach_shore": {"s": 7.6, "y": 890.2, "face": "north", "what": "the coach at the shore lesson"},
+   "knot_bench": {"s": 10.4, "y": 884.0, "face": "south", "n": 4, "step": 1.0, "along": "s", "what": "the knot board on the boathouse's wall in the aisle"},
+   "paint_trestle": {"s": 6.4, "y": 893.0, "face": "sea", "n": 3, "step": 2.3, "along": "y", "what": "fitting out: hulls keel up on trestles outside the park, scraped and painted"},
+   "podium": {"s": 6.2, "y": 888.5, "face": "land", "what": "the prize-giving: winners stand here, the fleet in the aisle and on the slip"},
+   "spectators_beach": {"s": 6.0, "y": 868.0, "face": "sea", "n": 10, "step": 1.0, "along": "y", "what": "the sand south of the boathouse on regatta days"},
+   "spectators_pier": {"s": -75.0, "y": 899.9, "face": "south", "level": "deck", "n": 16, "step": 6.0, "along": "s", "what": "along the pier's south railing: the best view of the starts"},
+   "spectators_promenade": {"s": 25.9, "y": 890.0, "face": "sea", "level": "promenade", "what": "the promenade's rail over the park (the plan's S-RAIL-13, S-KERB-26 are here already)"}
+  },
+  "clearance_m": 1.0,
+  "hard": {
+   "_doc": "What sailing.py --check holds the footprints clear of (radii, m).",
+   "prop_r": {"lounger": 1.1, "umbrella": 1.4, "changing_booth": 1.0, "railing": 0.2, "lamp": 0.4, "bin": 0.4, "default": 0.8},
+   "banya_r": 3.2, "pier_y": [899.0, 911.0], "pier_s": [25.0, -158.0]
+  }
+ },
+
+ "fleet": {
+  "_doc": "The boats and who sails them. Sailor slots are bound to real townsfolk by the people's part (F): 'person' stays empty here. skill 0..1; heavy -1 (a light-wind sailor) .. 1 (likes a blow). Cadets race two up: the helm's slot scores, 'crew' is the other child.",
+  "boats": {"optimist": 8, "cadet": 4, "luch": 9, "launch": 1},
+  "hero_boat": "luch_9",
+  "loa_m": {"optimist": 2.30, "cadet": 3.22, "luch": 4.23, "launch": 4.6},
+  "speed_ms": {"optimist": 1.7, "cadet": 2.4, "luch": 3.0},
+  "sailors": [
+   {"slot": "kids_1", "group": "kids", "boat": "optimist", "skill": 0.78, "heavy": 0.2},
+   {"slot": "kids_2", "group": "kids", "boat": "optimist", "skill": 0.70, "heavy": -0.4},
+   {"slot": "kids_3", "group": "kids", "boat": "optimist", "skill": 0.62, "heavy": 0.5},
+   {"slot": "kids_4", "group": "kids", "boat": "optimist", "skill": 0.55, "heavy": 0.0},
+   {"slot": "kids_5", "group": "kids", "boat": "optimist", "skill": 0.48, "heavy": -0.2},
+   {"slot": "kids_6", "group": "kids", "boat": "optimist", "skill": 0.40, "heavy": 0.3},
+   {"slot": "kids_7", "group": "kids", "boat": "optimist", "skill": 0.32, "heavy": -0.6},
+   {"slot": "kids_8", "group": "kids", "boat": "optimist", "skill": 0.22, "heavy": 0.0},
+   {"slot": "jun_c1", "group": "juniors", "boat": "cadet", "skill": 0.80, "heavy": 0.3, "crew": "jun_x1"},
+   {"slot": "jun_c2", "group": "juniors", "boat": "cadet", "skill": 0.66, "heavy": -0.3, "crew": "jun_x2"},
+   {"slot": "jun_c3", "group": "juniors", "boat": "cadet", "skill": 0.54, "heavy": 0.1, "crew": "jun_x3"},
+   {"slot": "jun_c4", "group": "juniors", "boat": "cadet", "skill": 0.40, "heavy": -0.1, "crew": "jun_x4"},
+   {"slot": "jun_l1", "group": "juniors", "boat": "luch", "skill": 0.74, "heavy": 0.4},
+   {"slot": "jun_l2", "group": "juniors", "boat": "luch", "skill": 0.60, "heavy": -0.5},
+   {"slot": "jun_l3", "group": "juniors", "boat": "luch", "skill": 0.46, "heavy": 0.0},
+   {"slot": "adult_1", "group": "adults", "boat": "luch", "skill": 0.84, "heavy": 0.6},
+   {"slot": "adult_2", "group": "adults", "boat": "luch", "skill": 0.72, "heavy": -0.2},
+   {"slot": "adult_3", "group": "adults", "boat": "luch", "skill": 0.58, "heavy": 0.2},
+   {"slot": "adult_4", "group": "adults", "boat": "luch", "skill": 0.44, "heavy": -0.6},
+   {"slot": "adult_5", "group": "adults", "boat": "luch", "skill": 0.30, "heavy": 0.1}
+  ],
+  "hero_skill": 0.5
+ },
+
+ "groups": {
+  "_doc": "The contract's groups: the people's condition each sets while its session is on, its coach, its boat classes, its drills (in the order they are tried).",
+  "kids": {"condition": "sail_kids", "coach": "coach_kids", "boats": ["optimist"], "ages": [7, 11],
+   "drills": ["follow", "figure8", "triangle", "tack_whistle", "capsize", "free"]},
+  "juniors": {"condition": "sail_juniors", "coach": "coach_juniors", "boats": ["cadet", "luch"], "ages": [12, 17],
+   "drills": ["triangle", "tack_whistle", "starts", "figure8", "capsize", "free"]},
+  "adults": {"condition": "sail_adults", "coach": "coach_head", "boats": ["luch"], "ages": [18, 99],
+   "drills": ["tack_whistle", "triangle", "starts", "figure8", "capsize", "free"]},
+  "race": {"condition": "sail_race", "coach": "coach_head", "boats": ["optimist", "cadet", "luch"], "ages": [7, 99], "drills": []}
+ },
+ "coaches": {
+  "_doc": "Staff slots (the people's part binds them). On the water the session's coach is in the launch; on race days the head coach is the race officer in the launch and the bosun lays the marks.",
+  "coach_head": {"role": "head coach, race officer", "name": "sail.staff.coach_head"},
+  "coach_kids": {"role": "the children's coach", "name": "sail.staff.coach_kids"},
+  "coach_juniors": {"role": "the juniors' coach", "name": "sail.staff.coach_juniors"},
+  "bosun": {"role": "the boathouse, hire, repairs; the mast when the coaches are afloat", "name": "sail.staff.bosun"}
+ },
+
+ "season": {
+  "_doc": "Opening: the first Saturday on or after 'opening'. Closing: the 'closing_nth' Sunday of 'closing_month'. The fortnight before the opening is the fitting out, the week after the closing the laying up. Out of season the coach is in on the theory days. Sea ice closes the water whatever the date. Summer = the school holidays: mornings and afternoons instead of after school.",
+  "opening": [4, 25], "opening_weekday": 5, "closing_month": 11, "closing_nth": 1, "closing_weekday": 6,
+  "fitout_days": 14, "layup_days": 7,
+  "summer": [[6, 1], [8, 31]],
+  "theory_days": [1, 3, 5], "theory_hours": [15.0, 18.0],
+  "fitout_hours": [10.0, 17.0],
+  "latitude": 54.95, "longitude": 20.3, "tz_hours": 2.0, "daylight_margin_h": 0.5
+ },
+
+ "limits": {
+  "_doc": "The day's go / no-go (the contract's limits). wind [min, max] of the mean wind by class; a gust over max + gust_over keeps a class ashore; once afloat the boats are recalled when the mean passes max + recall_margin (or a gust max + gust_over + recall_margin), on thunder, fog or dark. storm: the cone goes up and nobody sails. Low water: the trolleys are rolled out over the flat no farther than max_haul_m from the slip's foot; the children's area must hold min depth, else the children are towed out to the race area if the wind is under kids_deep_wind. reef: luches reef from this wind.",
+  "wind": {"optimist": [1.5, 8.0], "cadet": [1.5, 10.0], "luch": [1.5, 12.0]},
+  "gust_over": 3.0, "recall_margin": 1.5, "storm_wind": 14.0, "storm_gust": 19.0,
+  "fog_visibility_m": 400.0, "launch_depth_m": 0.5, "bar_depth_m": 0.3, "board_full_depth_m": 1.0,
+  "max_haul_m": 260.0, "kids_deep_wind": 6.0, "reef_wind": 9.0,
+  "capsize_drill_water_c": 15.0, "capsize_drill_wind": 6.0,
+  "min_water_h": 0.75,
+  "rescue": {"kids_capsized_s": 20.0, "capsized_s": 60.0, "tow_speed": 2.5, "launch_speed": 6.0, "stray_m": 40.0}
+ },
+
+ "signals": {
+  "_doc": "The signal mast, by the school's state: the flags hoisted (mesh ids, top first) and the horn (count of blasts when the state is entered). The start sequence's flags fly on the launch's staff (races.start).",
+  "closed": {"flags": [], "horn": 0},
+  "fitout": {"flags": ["flag_school"], "horn": 0},
+  "shore": {"flags": ["flag_school", "flag_shore"], "horn": 0},
+  "wait": {"flags": ["flag_school", "flag_ap"], "horn": 2},
+  "sail": {"flags": ["flag_school"], "class_flags": {"optimist": "flag_optimist", "cadet": "flag_cadet", "luch": "flag_luch"}, "horn": 1},
+  "race": {"flags": ["flag_school", "flag_race"], "class_flags": {"optimist": "flag_optimist", "cadet": "flag_cadet", "luch": "flag_luch"}, "horn": 1},
+  "recall": {"flags": ["flag_school", "flag_recall"], "horn": 3},
+  "storm": {"flags": ["storm_cone"], "horn": 0}
+ },
+
+ "timetable": {
+  "_doc": "The week. term: school days outside the summer holidays (after school); summer: June 1 - August 31. A session: weekdays, the hour it starts, its length (h), the group. One launch: no two sessions afloat at once. A day off (a public holiday from the game) has no lessons, only hire. Sessions whose time on the water would not fit the daylight are held ashore as theory evenings.",
+  "term": [
+   {"days": [1, 3], "from": 15.0, "len": 2.5, "group": "kids"},
+   {"days": [1, 3], "from": 18.0, "len": 2.5, "group": "adults"},
+   {"days": [2, 4], "from": 15.0, "len": 2.75, "group": "juniors"},
+   {"days": [5], "from": 10.0, "len": 2.5, "group": "kids"},
+   {"days": [5], "from": 13.0, "len": 3.0, "group": "juniors"},
+   {"days": [5], "from": 16.5, "len": 2.5, "group": "adults"}
+  ],
+  "summer": [
+   {"days": [0, 1, 2, 3, 4], "from": 10.0, "len": 2.5, "group": "kids"},
+   {"days": [0, 1, 2, 3, 4], "from": 13.5, "len": 3.0, "group": "juniors"},
+   {"days": [1, 3], "from": 18.5, "len": 2.5, "group": "adults"},
+   {"days": [5], "from": 10.0, "len": 2.5, "group": "kids"},
+   {"days": [5], "from": 13.0, "len": 3.0, "group": "juniors"},
+   {"days": [5], "from": 16.5, "len": 2.5, "group": "adults"}
+  ],
+  "phases": {
+   "_doc": "A session's parts in order, minutes (water: what is left), each with the place (a key of school.points, or water:<area>) and what the people do there (an activity name for the people's part to map). shore: the session held ashore; race: a regatta day (water = the races); theory: an evening in the classroom out of season or after dark.",
+   "lesson": [["gather", 10, "changing", "sail_change"], ["rig", 15, "rigging", "sail_rig"], ["launch", 10, "slip_head", "sail_launch"],
+              ["water", 0, "water", "sail_drill"], ["return", 10, "slip_foot", "sail_land"], ["derig", 15, "wash", "sail_derig"],
+              ["debrief", 10, "classroom_seat", "sail_tea"]],
+   "shore": [["gather", 10, "changing", "sail_change"], ["shore", 0, "shore_pupil", "sail_shore_lesson"], ["debrief", 15, "classroom_seat", "sail_tea"]],
+   "theory": [["gather", 10, "boathouse_door", "sail_arrive"], ["theory", 0, "classroom_seat", "sail_theory"], ["debrief", 15, "tea_table", "sail_tea"]],
+   "race": [["briefing", 20, "notice_board", "sail_briefing"], ["rig", 20, "rigging", "sail_rig"], ["launch", 15, "slip_head", "sail_launch"],
+            ["water", 0, "water", "sail_race"], ["return", 15, "slip_foot", "sail_land"], ["derig", 20, "wash", "sail_derig"],
+            ["prizes", 20, "podium", "sail_prizes"]],
+   "recall": [["return", 15, "slip_foot", "sail_land"], ["derig", 15, "wash", "sail_derig"], ["shore", 0, "classroom_seat", "sail_theory"]],
+   "fitout": [["fitout", 0, "paint_trestle", "sail_paint"]],
+   "layup": [["layup", 0, "boat_door", "sail_layup"]]
+  },
+  "shore_topics": ["knots", "rigging", "theory", "rules"],
+  "drill_blocks": 2,
+  "hire": {"_doc": "Open hire for a certificate holder: in season, from 'from' to an hour before sunset, when luches may sail, no race is on and no session has the luches out.", "from": 10.0, "before_sunset_h": 1.0, "fee": 50, "boat": "luch"}
+ },
+
+ "drills": {
+  "_doc": "On-water drills: the area, the wind they suit [min, max], what the coach's launch does (station: where it lies in the drill's frame, metres upwind/right of the drill's middle).",
+  "follow": {"area": "kids", "wind": [1.5, 7.0], "launch": "lead", "what": "a file behind the coach's launch, each boat in the wake of the one ahead"},
+  "triangle": {"area": "group", "wind": [2.0, 12.0], "launch": [0.0, 0.0], "course": "kids_triangle", "what": "laps of a small triangle, marks to port"},
+  "tack_whistle": {"area": "group", "wind": [2.0, 10.0], "launch": [-30.0, 0.0], "what": "a beat in line abreast: everybody tacks on the whistle", "whistle_s": [20.0, 45.0]},
+  "figure8": {"area": "group", "wind": [1.5, 9.0], "launch": [0.0, 25.0], "course": "figure8", "what": "figure-eights round two buoys across the wind: a tack at one, a gybe at the other"},
+  "capsize": {"area": "kids", "wind": [1.5, 6.0], "launch": [0.0, 12.0], "warm_only": true, "what": "capsize and right the boat by the launch, one at a time"},
+  "starts": {"area": "group", "wind": [2.0, 11.0], "launch": "line", "course": "start_line", "what": "practice starts on a short line, three minutes each"},
+  "free": {"area": "group", "wind": [1.5, 12.0], "launch": [0.0, 0.0], "what": "free sailing inside the area"}
+ },
+
+ "water": {
+  "_doc": "The school's water off the beach south-west of the pier, in d (metres seaward of the high-water line) and map Y; sailing.py turns it into world polygons that follow the shore. corridor: from the slip out through the bathers' strip (a line of small buoys either side). kids: the children's area on the flat. race: beyond the flat's knee, deep at every tide. Kept clear of: the pier and its anglers (the deck y 899..911), the rowing boat's mooring line (y 894.5), the walruses' ice hole (north of the pier), the bathers' strip (d < swim_line_m outside the corridor), the railway's bank (y -60, 900 m south) and its island.",
+  "launch_y": 884.6,
+  "swim_line_m": 60.0,
+  "areas": {
+   "corridor": {"d": [-2.0, 130.0], "y": [872.0, 888.0], "min_depth": 0.5, "step_m": 44.0},
+   "kids": {"d": [90.0, 370.0], "y": [700.0, 876.0], "min_depth": 0.8, "step_m": 44.0},
+   "race": {"d": [360.0, 850.0], "y": [480.0, 880.0], "min_depth": 1.2, "step_m": 50.0}
+  },
+  "group_area": {"kids": ["kids", "race"], "juniors": ["race", "kids"], "adults": ["race", "kids"], "race": ["race"]},
+  "class_area": {"optimist": ["kids", "race"], "cadet": ["race", "kids"], "luch": ["race", "kids"]},
+  "keep_clear": {
+   "_doc": "Distances the areas are checked to keep (m).",
+   "pier_m": 8.0, "pier_head_m": 28.0, "mooring_m": 6.0, "ice_hole_m": 20.0, "bank_m": 300.0, "island_m": 500.0
+  },
+  "profile": {"_doc": "The bed along the launch line, sampled every step_m out to to_m.", "step_m": 5.0, "to_m": 520.0},
+  "shore_y": [440.0, 960.0, 20.0]
+ },
+
+ "course": {
+  "_doc": "Courses are set from the wind at the time, square to it, inside the class's area (shrunk, then moved, to fit with margin_m inside and min depth under every mark), the same for the same date and race. leg_m: the beat's length at wind_ref m/s, scaled by scale[0] + scale[1] * wind / wind_ref and clamped. The line: line_per_boat x LOA x boats, at least line_min. All marks to port; the wing mark of a triangle is wing_deg off the beat on the port side. figure8: two buoys across the wind, gap_m apart, rounded opposite ways.",
+  "wind_ref": 6.0, "scale": [0.6, 0.4], "margin_m": 15.0, "shrink": 0.88, "min_leg_m": 40.0,
+  "leg_m": {"optimist": 130.0, "cadet": 220.0, "luch": 300.0}, "leg_clamp": [0.55, 1.25],
+  "kids_triangle_leg_m": 70.0, "wing_deg": 45.0, "leeward_gap_m": 20.0,
+  "line_per_boat": 1.5, "line_min_m": 24.0, "figure8_gap_m": 50.0, "start_line_practice_m": 30.0,
+  "laps": {"windward_leeward": 2, "triangle": 1, "kids_triangle": 2},
+  "mark_r_m": 0.45
+ },
+
+ "races": {
+  "_doc": "start: the launch's flags and horn, seconds before the gun; a boat over the line at the gun is OCS until it comes wholly back (flag X, a horn); more than general_recall_frac of the fleet over: a general recall, the sequence once more. A boat not started start_window_s after the gun is DNS. zone_m: a mark is rounded when the track crosses the ray from the mark outward within this distance. touch_m: nearer the mark's middle is a touch: one full turn (penalty_turn_deg within penalty_window_s) or DSQ. Time limit for the first boat by class; others have finish_window_s after it.",
+  "start": {"warning_s": 180.0, "prep_s": 60.0, "x_flag_s": 120.0, "start_window_s": 240.0, "general_recall_frac": 0.5,
+            "flags": {"warning": "flag_class", "prep": "flag_p", "ocs": "flag_x", "general": "flag_first_sub", "finish": "flag_blue", "abandon": "flag_n", "shorten": "flag_s"}},
+  "zone_m": 60.0, "touch_m": 1.1, "penalty_turn_deg": 360.0, "penalty_window_s": 90.0,
+  "time_limit_s": {"optimist": 1500.0, "cadet": 1800.0, "luch": 2100.0}, "finish_window_s": 600.0,
+  "between_races_s": 600.0,
+  "resolve": {"_doc": "The cheap resolver of a race nobody watches: performance = skill + luck (sigma) + heavy x (wind - wind_ref) / wind_ref x heavy_gain; time = course length / class speed(wind) x (time_base - time_gain x performance); a capsize that ends the race (DNF) likelier with wind near the class's limit and low skill; a small chance of OCS and DNS.",
+              "luck_sigma": 0.2, "heavy_gain": 0.12, "time_base": 1.3, "time_gain": 0.4, "dnf_base": 0.01, "dnf_wind": 0.22, "ocs": 0.03, "dns": 0.03, "beat_factor": 1.45},
+  "scoring": {"_doc": "Low point: a place's number is its points, a tie shares the places' mean; DNF, DNS, DSQ, OCS score the entries + 1. discards: [races sailed at least, worst scores dropped].", "discards": [[4, 1], [9, 2], [16, 3]]},
+  "events": [
+   {"id": "sail_opening", "rule": "opening", "from": 11.0, "len": 4.5, "classes": ["optimist", "cadet", "luch"], "races": 1, "course": "triangle", "parade": true, "pull": 1.2, "entry_fee": 0, "stamp": "opening", "festival": "sail_opening"},
+   {"id": "sail_closing", "rule": "closing", "from": 11.0, "len": 3.5, "classes": ["optimist", "cadet", "luch"], "races": 1, "course": "triangle", "layup_after": true, "pull": 0.9, "entry_fee": 0, "stamp": "closing", "festival": "sail_closing"},
+   {"id": "optimist_day", "rule": "date", "date": [6, 1], "from": 11.0, "len": 3.5, "classes": ["optimist"], "races": 2, "course": "kids_triangle", "pull": 0.9, "entry_fee": 0, "festival": "children_day"},
+   {"id": "cup_lyudmilovsk", "rule": "weekend_on_or_after", "date": [6, 20], "days": 2, "from": 11.0, "len": 5.0, "classes": ["optimist", "cadet", "luch"], "races": 3, "course": "triangle", "pull": 1.0, "entry_fee": 20, "stamp": "cup_lyudmilovsk", "cup": true},
+   {"id": "wednesday", "rule": "weekly", "weekday": 2, "from": 18.0, "len": 3.0, "classes": ["luch"], "races": 2, "course": "windward_leeward", "pull": 0.25, "entry_fee": 0, "evening": true},
+   {"id": "sunday", "rule": "weekly", "weekday": 6, "from": 11.0, "len": 4.0, "classes": ["optimist", "cadet", "luch"], "races": 2, "course": "triangle", "pull": 0.5, "entry_fee": 0, "championship": true}
+  ]
+ },
+
+ "hero": {
+  "_doc": "Joining: a talk with the head coach, the fee, the membership book sail_card. Lessons with the duty coach on any season day when luches may sail (lesson 'shore' any day the coach is in, also out of season), from lesson_hours[0] to lesson_before_sunset_h before sunset, not during a regatta. The certificate (rank helm3) lets him hire a boat alone and enter races.",
+  "join_fee": 150, "card_item": "sail_card", "boat": "luch",
+  "lesson_hours_from": 10.0, "lesson_before_sunset_h": 1.5, "lesson_fee": 0,
+  "ranks": [
+   {"id": "none"},
+   {"id": "yunga", "lessons": ["shore"], "name": "sail.rank.yunga"},
+   {"id": "helm3", "lessons": ["shore", "first_sail", "tacking", "points", "gybing", "capsize", "irons", "mob", "landing"], "name": "sail.rank.helm3", "certificate": true},
+   {"id": "helm2", "lessons": ["racing"], "races": 5, "miles": 20.0, "name": "sail.rank.helm2"},
+   {"id": "helm1", "races": 15, "miles": 60.0, "podiums": 3, "name": "sail.rank.helm1"}
+  ],
+  "wear": {"_doc": "The hire boat's wear 0..1: a capsize and every hour afloat add; the bosun mends it on Mondays.", "per_capsize": 0.03, "per_hour": 0.004, "mend_weekday": 0},
+  "telemetry": {"_doc": "How the lesson objectives read the boat: in irons under irons_speed within irons_twa of the wind; astern when the speed along the bow is under -astern_speed; a tack / gybe is the wind crossing the bow / stern.", "irons_speed": 0.35, "irons_twa": 30.0, "irons_s": 4.0, "astern_speed": 0.2, "follow_m": 25.0}
+ },
+
+ "lessons": [
+  {"id": "shore", "afloat": false, "wind": [0.0, 99.0], "objectives": [
+    {"kind": "event", "event": "knot", "count": 3}, {"kind": "event", "event": "parts", "count": 1}, {"kind": "event", "event": "rig", "count": 1}]},
+  {"id": "first_sail", "afloat": true, "wind": [1.5, 7.0], "area": "kids", "objectives": [
+    {"kind": "follow", "seconds": 90.0}, {"kind": "hold", "twa": [70.0, 110.0], "seconds": 60.0}]},
+  {"id": "tacking", "afloat": true, "wind": [2.0, 8.0], "area": "kids", "objectives": [
+    {"kind": "hold", "twa": [35.0, 58.0], "seconds": 45.0}, {"kind": "tacks", "count": 5, "no_irons": true}]},
+  {"id": "points", "afloat": true, "wind": [2.0, 9.0], "area": "kids", "objectives": [
+    {"kind": "hold", "twa": [35.0, 58.0], "seconds": 30.0}, {"kind": "hold", "twa": [70.0, 110.0], "seconds": 30.0},
+    {"kind": "hold", "twa": [115.0, 150.0], "seconds": 30.0}, {"kind": "hold", "twa": [155.0, 180.0], "seconds": 30.0}]},
+  {"id": "gybing", "afloat": true, "wind": [2.0, 8.0], "area": "kids", "objectives": [
+    {"kind": "gybes", "count": 2, "no_capsize": true}, {"kind": "course", "course": "figure8", "laps": 2}]},
+  {"id": "capsize", "afloat": true, "wind": [1.5, 6.0], "area": "kids", "warm_only": true, "objectives": [
+    {"kind": "right", "count": 2, "within_s": 90.0}]},
+  {"id": "irons", "afloat": true, "wind": [2.0, 8.0], "area": "kids", "objectives": [
+    {"kind": "astern", "seconds": 3.0}, {"kind": "stop", "radius_m": 4.0, "max_speed": 0.6, "seconds": 3.0}]},
+  {"id": "mob", "afloat": true, "wind": [2.0, 9.0], "area": "kids", "objectives": [
+    {"kind": "pickup", "count": 2, "radius_m": 1.8, "max_speed": 1.0}]},
+  {"id": "landing", "afloat": true, "wind": [2.0, 9.0], "area": "kids", "objectives": [
+    {"kind": "course", "course": "kids_triangle", "laps": 1}, {"kind": "land", "radius_m": 6.0, "max_speed": 1.2}]},
+  {"id": "racing", "afloat": true, "wind": [2.5, 10.0], "area": "race", "needs_rank": "helm3", "objectives": [
+    {"kind": "start", "within_s": 5.0}, {"kind": "course", "course": "windward_leeward", "laps": 1}]}
+ ],
+
+ "stamps": {
+  "_doc": "The collection 'sailing': the piece each thing gives. The quest event is 'sail <what>' (docs/quests.md), listed in quest_events.",
+  "set": "sailing",
+  "pieces": ["joined", "first_sail", "capsize", "certificate", "helm2", "helm1", "first_race", "race_win", "opening", "closing", "cup_lyudmilovsk", "miles_10", "miles_100", "recall"]
+ },
+ "quest_events": ["join", "lesson <id>", "rank <id>", "certificate", "hire", "race", "race_win", "podium", "cup <series>", "capsize", "recall", "miles <n>", "opening", "closing"],
+ "miles": {"_doc": "Nautical miles: the log's stamps.", "metres": 1852.0, "stamps": [[10, "miles_10"], [100, "miles_100"]]},
+
+ "radio": {
+  "_doc": "Keys of the lines the radio and the paper build from the facts of ForecastForSailors / NewsOfDay ({0}.. arguments in the doc).",
+  "forecast": {"sail": "sail.radio.sail", "shore": "sail.radio.shore", "storm": "sail.radio.storm", "closed": "sail.radio.closed", "race": "sail.radio.race", "reef": "sail.radio.reef"},
+  "news": {"result": "sail.news.result", "abandoned": "sail.news.abandoned", "hero_won": "sail.news.hero_won", "hero_place": "sail.news.hero_place", "cup": "sail.news.cup", "opening": "sail.news.opening", "closing": "sail.news.closing"}
+ },
+
+ "teleports": [
+  {"id": "sailing.school", "point": "entrance", "name": "dev.tp.sailing.school"},
+  {"id": "sailing.park", "point": "rigging", "name": "dev.tp.sailing.park"},
+  {"id": "sailing.slip", "point": "slip_foot", "name": "dev.tp.sailing.slip"},
+  {"id": "sailing.mast", "point": "coach_mast", "name": "dev.tp.sailing.mast"},
+  {"id": "sailing.pier_view", "point": "spectators_pier", "name": "dev.tp.sailing.pier_view"}
+ ]
+}

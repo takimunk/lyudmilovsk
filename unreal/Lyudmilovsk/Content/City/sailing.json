@@ -1,0 +1,3376 @@
+{
+ "_doc": "Built by tools/sailing/sailing.py from tools/sailing/content.json (docs/yacht_school.md, part B). Do not edit by hand. Unreal metres (x = map X to the sea, y = map Y + face_y, z), yaw Unreal degrees (0 = +x = the sea). bed_source macro: heights and the bed are the macro shape's (rerun with --built on the Mac); the game traces the ground and asks the sea for the depth.",
+ "version": 1,
+ "bed_source": "macro",
+ "face_y": 7.9,
+ "sea_z": -43.0,
+ "tide": {
+  "neap_low": -2.0,
+  "spring_low": -4.5
+ },
+ "school": {
+  "id": "sail_school",
+  "kind": "sail_school",
+  "name": "sail.school.name",
+  "yaw": -4.5,
+  "boathouse": {
+   "at": [
+    148.952,
+    886.649,
+    -42.201
+   ],
+   "yaw": -4.5,
+   "size": [
+    16.5,
+    9.0
+   ],
+   "corners": [
+    [
+     156.82,
+     881.52
+    ],
+    [
+     157.53,
+     890.49
+    ],
+    [
+     141.08,
+     891.78
+    ],
+    [
+     140.37,
+     882.81
+    ]
+   ],
+   "ground_z": [
+    -42.8,
+    -42.8,
+    -41.6,
+    -41.6
+   ],
+   "s": [
+    7.0,
+    23.5
+   ],
+   "y": [
+    873.7,
+    882.7
+   ],
+   "plan_id": "S-SAIL-SCHOOL",
+   "wall_h": 3.4,
+   "ridge_h": 5.6,
+   "floor_z": -42.06,
+   "classroom_s": [
+    18.2,
+    23.5
+   ],
+   "door": {
+    "pos": [
+     143.573,
+     891.587,
+     -42.06
+    ],
+    "w": 1.1,
+    "yaw": 85.5
+   },
+   "boat_door": {
+    "pos": [
+     148.458,
+     891.202,
+     -42.06
+    ],
+    "w": 3.2,
+    "yaw": 85.5
+   }
+  },
+  "park": {
+   "at": [
+    149.099,
+    898.073,
+    -42.146
+   ],
+   "yaw": -4.5,
+   "size": [
+    15.0,
+    13.8
+   ],
+   "corners": [
+    [
+     156.03,
+     890.61
+    ],
+    [
+     157.12,
+     904.36
+    ],
+    [
+     142.16,
+     905.54
+    ],
+    [
+     141.08,
+     891.78
+    ]
+   ],
+   "ground_z": [
+    -42.69,
+    -42.69,
+    -41.6,
+    -41.6
+   ],
+   "s": [
+    8.5,
+    23.5
+   ],
+   "y": [
+    882.7,
+    896.5
+   ],
+   "plan_id": "S-SAIL-PARK",
+   "fence_h": 1.5,
+   "gate": {
+    "pos": [
+     156.184,
+     892.5,
+     -42.688
+    ],
+    "w": 3.4,
+    "yaw": -4.5
+   }
+  },
+  "slip": {
+   "at": [
+    167.399,
+    891.617,
+    -43.335
+   ],
+   "yaw": -4.5,
+   "size": [
+    22.5,
+    3.4
+   ],
+   "corners": [
+    [
+     156.05,
+     890.81
+    ],
+    [
+     156.32,
+     894.19
+    ],
+    [
+     178.75,
+     892.43
+    ],
+    [
+     178.48,
+     889.04
+    ]
+   ],
+   "ground_z": [
+    -42.69,
+    -42.69,
+    -43.48,
+    -43.48
+   ],
+   "s": [
+    8.5,
+    -14.0
+   ],
+   "y": [
+    882.9,
+    886.3000000000001
+   ],
+   "plan_id": "S-SAIL-SLIP",
+   "width": 3.4,
+   "head": [
+    156.184,
+    892.5,
+    -42.688
+   ],
+   "foot": [
+    178.614,
+    890.735,
+    -43.476
+   ]
+  },
+  "park_slots": [
+   {
+    "id": "luch_1",
+    "boat": "luch",
+    "pos": [
+     148.91,
+     899.492,
+     -42.124
+    ],
+    "yaw": -4.5,
+    "rig": [
+     148.863,
+     898.894,
+     -42.124
+    ]
+   },
+   {
+    "id": "luch_2",
+    "boat": "luch",
+    "pos": [
+     149.035,
+     901.087,
+     -42.124
+    ],
+    "yaw": -4.5,
+    "rig": [
+     148.988,
+     900.489,
+     -42.124
+    ]
+   },
+   {
+    "id": "luch_3",
+    "boat": "luch",
+    "pos": [
+     149.161,
+     902.682,
+     -42.124
+    ],
+    "yaw": -4.5,
+    "rig": [
+     149.114,
+     902.084,
+     -42.124
+    ]
+   },
+   {
+    "id": "luch_4",
+    "boat": "luch",
+    "pos": [
+     153.397,
+     895.327,
+     -42.471
+    ],
+    "yaw": -4.5,
+    "rig": [
+     153.35,
+     894.729,
+     -42.471
+    ]
+   },
+   {
+    "id": "luch_5",
+    "boat": "luch",
+    "pos": [
+     153.522,
+     896.922,
+     -42.471
+    ],
+    "yaw": -4.5,
+    "rig": [
+     153.475,
+     896.324,
+     -42.471
+    ]
+   },
+   {
+    "id": "luch_6",
+    "boat": "luch",
+    "pos": [
+     153.648,
+     898.517,
+     -42.471
+    ],
+    "yaw": -4.5,
+    "rig": [
+     153.601,
+     897.919,
+     -42.471
+    ]
+   },
+   {
+    "id": "luch_7",
+    "boat": "luch",
+    "pos": [
+     153.773,
+     900.113,
+     -42.471
+    ],
+    "yaw": -4.5,
+    "rig": [
+     153.726,
+     899.514,
+     -42.471
+    ]
+   },
+   {
+    "id": "luch_8",
+    "boat": "luch",
+    "pos": [
+     153.899,
+     901.708,
+     -42.47
+    ],
+    "yaw": -4.5,
+    "rig": [
+     153.852,
+     901.109,
+     -42.47
+    ]
+   },
+   {
+    "id": "luch_9",
+    "boat": "luch",
+    "pos": [
+     154.024,
+     903.303,
+     -42.47
+    ],
+    "yaw": -4.5,
+    "rig": [
+     153.977,
+     902.705,
+     -42.47
+    ]
+   },
+   {
+    "id": "cadet_1",
+    "boat": "cadet",
+    "pos": [
+     144.209,
+     900.946,
+     -41.777
+    ],
+    "yaw": -4.5,
+    "rig": [
+     144.162,
+     900.347,
+     -41.777
+    ]
+   },
+   {
+    "id": "cadet_2",
+    "boat": "cadet",
+    "pos": [
+     144.335,
+     902.541,
+     -41.777
+    ],
+    "yaw": -4.5,
+    "rig": [
+     144.288,
+     901.942,
+     -41.777
+    ]
+   },
+   {
+    "id": "cadet_3",
+    "boat": "cadet",
+    "pos": [
+     144.46,
+     904.136,
+     -41.777
+    ],
+    "yaw": -4.5,
+    "rig": [
+     144.413,
+     903.538,
+     -41.777
+    ]
+   },
+   {
+    "id": "cadet_4",
+    "boat": "cadet",
+    "pos": [
+     148.612,
+     895.704,
+     -42.124
+    ],
+    "yaw": -4.5,
+    "rig": [
+     148.565,
+     895.106,
+     -42.124
+    ]
+   },
+   {
+    "id": "optimist_1",
+    "boat": "optimist",
+    "pos": [
+     144.958,
+     895.801,
+     -41.861
+    ],
+    "yaw": -4.5,
+    "rig": [
+     144.926,
+     895.392,
+     -41.861
+    ]
+   },
+   {
+    "id": "optimist_2",
+    "boat": "optimist",
+    "pos": [
+     145.054,
+     897.017,
+     -41.861
+    ],
+    "yaw": -4.5,
+    "rig": [
+     145.022,
+     896.608,
+     -41.861
+    ]
+   },
+   {
+    "id": "optimist_3",
+    "boat": "optimist",
+    "pos": [
+     145.149,
+     898.233,
+     -41.861
+    ],
+    "yaw": -4.5,
+    "rig": [
+     145.117,
+     897.825,
+     -41.861
+    ]
+   },
+   {
+    "id": "optimist_4",
+    "boat": "optimist",
+    "pos": [
+     145.245,
+     899.45,
+     -41.86
+    ],
+    "yaw": -4.5,
+    "rig": [
+     145.213,
+     899.041,
+     -41.86
+    ]
+   },
+   {
+    "id": "optimist_5",
+    "boat": "optimist",
+    "pos": [
+     142.665,
+     895.981,
+     -41.695
+    ],
+    "yaw": -4.5,
+    "rig": [
+     142.633,
+     895.573,
+     -41.695
+    ]
+   },
+   {
+    "id": "optimist_6",
+    "boat": "optimist",
+    "pos": [
+     142.761,
+     897.198,
+     -41.695
+    ],
+    "yaw": -4.5,
+    "rig": [
+     142.729,
+     896.789,
+     -41.695
+    ]
+   },
+   {
+    "id": "optimist_7",
+    "boat": "optimist",
+    "pos": [
+     142.856,
+     898.414,
+     -41.694
+    ],
+    "yaw": -4.5,
+    "rig": [
+     142.824,
+     898.005,
+     -41.694
+    ]
+   },
+   {
+    "id": "optimist_8",
+    "boat": "optimist",
+    "pos": [
+     142.952,
+     899.63,
+     -41.694
+    ],
+    "yaw": -4.5,
+    "rig": [
+     142.92,
+     899.221,
+     -41.694
+    ]
+   },
+   {
+    "id": "launch_1",
+    "boat": "launch",
+    "pos": [
+     148.761,
+     897.598,
+     -42.124
+    ],
+    "yaw": -4.5,
+    "rig": [
+     148.69,
+     896.701,
+     -42.124
+    ]
+   }
+  ],
+  "hall_slots": [
+   {
+    "id": "luch_1",
+    "pos": [
+     154.51,
+     882.701,
+     -41.71
+    ],
+    "yaw": -4.5,
+    "tier": 0
+   },
+   {
+    "id": "luch_2",
+    "pos": [
+     154.651,
+     884.496,
+     -41.71
+    ],
+    "yaw": -4.5,
+    "tier": 0
+   },
+   {
+    "id": "luch_3",
+    "pos": [
+     154.792,
+     886.29,
+     -41.71
+    ],
+    "yaw": -4.5,
+    "tier": 0
+   },
+   {
+    "id": "luch_4",
+    "pos": [
+     154.933,
+     888.084,
+     -41.71
+    ],
+    "yaw": -4.5,
+    "tier": 0
+   },
+   {
+    "id": "luch_5",
+    "pos": [
+     150.023,
+     883.054,
+     -41.71
+    ],
+    "yaw": -4.5,
+    "tier": 0
+   },
+   {
+    "id": "luch_6",
+    "pos": [
+     150.165,
+     884.849,
+     -41.71
+    ],
+    "yaw": -4.5,
+    "tier": 0
+   },
+   {
+    "id": "luch_7",
+    "pos": [
+     150.306,
+     886.643,
+     -41.71
+    ],
+    "yaw": -4.5,
+    "tier": 0
+   },
+   {
+    "id": "luch_8",
+    "pos": [
+     150.447,
+     888.438,
+     -41.71
+    ],
+    "yaw": -4.5,
+    "tier": 0
+   },
+   {
+    "id": "luch_9",
+    "pos": [
+     154.51,
+     882.701,
+     -40.76
+    ],
+    "yaw": -4.5,
+    "tier": 1
+   },
+   {
+    "id": "cadet_1",
+    "pos": [
+     154.651,
+     884.496,
+     -40.76
+    ],
+    "yaw": -4.5,
+    "tier": 1
+   },
+   {
+    "id": "cadet_2",
+    "pos": [
+     154.792,
+     886.29,
+     -40.76
+    ],
+    "yaw": -4.5,
+    "tier": 1
+   },
+   {
+    "id": "cadet_3",
+    "pos": [
+     154.933,
+     888.084,
+     -40.76
+    ],
+    "yaw": -4.5,
+    "tier": 1
+   },
+   {
+    "id": "cadet_4",
+    "pos": [
+     150.023,
+     883.054,
+     -40.76
+    ],
+    "yaw": -4.5,
+    "tier": 1
+   },
+   {
+    "id": "optimist_1",
+    "pos": [
+     150.165,
+     884.849,
+     -40.76
+    ],
+    "yaw": -4.5,
+    "tier": 1
+   },
+   {
+    "id": "optimist_2",
+    "pos": [
+     150.306,
+     886.643,
+     -40.76
+    ],
+    "yaw": -4.5,
+    "tier": 1
+   },
+   {
+    "id": "optimist_3",
+    "pos": [
+     150.447,
+     888.438,
+     -40.76
+    ],
+    "yaw": -4.5,
+    "tier": 1
+   },
+   {
+    "id": "optimist_4",
+    "pos": [
+     154.51,
+     882.701,
+     -39.81
+    ],
+    "yaw": -4.5,
+    "tier": 2
+   },
+   {
+    "id": "optimist_5",
+    "pos": [
+     154.651,
+     884.496,
+     -39.81
+    ],
+    "yaw": -4.5,
+    "tier": 2
+   },
+   {
+    "id": "optimist_6",
+    "pos": [
+     154.792,
+     886.29,
+     -39.81
+    ],
+    "yaw": -4.5,
+    "tier": 2
+   },
+   {
+    "id": "optimist_7",
+    "pos": [
+     154.933,
+     888.084,
+     -39.81
+    ],
+    "yaw": -4.5,
+    "tier": 2
+   },
+   {
+    "id": "optimist_8",
+    "pos": [
+     150.023,
+     883.054,
+     -39.81
+    ],
+    "yaw": -4.5,
+    "tier": 2
+   },
+   {
+    "id": "launch_1",
+    "pos": [
+     148.317,
+     889.408,
+     -42.06
+    ],
+    "yaw": -4.5,
+    "tier": 0
+   }
+  ],
+  "points": {
+   "entrance": {
+    "pos": [
+     157.28,
+     892.414,
+     -42.767
+    ],
+    "yaw": 175.5
+   },
+   "gate": {
+    "pos": [
+     156.184,
+     892.5,
+     -42.688
+    ],
+    "yaw": -4.5
+   },
+   "boathouse_door": {
+    "pos": [
+     143.62,
+     892.185,
+     -41.785
+    ],
+    "yaw": -94.5
+   },
+   "boat_door": {
+    "pos": [
+     148.521,
+     892.0,
+     -42.139
+    ],
+    "yaw": -94.5
+   },
+   "notice_board": {
+    "pos": [
+     145.706,
+     891.92,
+     -41.937
+    ],
+    "yaw": -94.5
+   },
+   "bosun": {
+    "pos": [
+     150.446,
+     892.249,
+     -42.276
+    ],
+    "yaw": 85.5
+   },
+   "wash": {
+    "pos": [
+     152.878,
+     892.56,
+     -42.45
+    ],
+    "yaw": -94.5,
+    "slots": [
+     {
+      "pos": [
+       154.473,
+       892.434,
+       -42.565
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       152.878,
+       892.56,
+       -42.45
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       151.283,
+       892.685,
+       -42.334
+      ],
+      "yaw": -94.5
+     }
+    ]
+   },
+   "classroom": {
+    "pos": [
+     143.362,
+     886.989,
+     -42.06
+    ],
+    "yaw": -94.5
+   },
+   "classroom_seat": {
+    "pos": [
+     143.581,
+     889.78,
+     -42.06
+    ],
+    "yaw": -94.5,
+    "slots": [
+     {
+      "pos": [
+       145.124,
+       888.355,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       144.028,
+       888.441,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       142.931,
+       888.528,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       141.834,
+       888.614,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       145.226,
+       889.651,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       144.13,
+       889.737,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       143.033,
+       889.824,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       141.936,
+       889.91,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       145.328,
+       890.947,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       144.232,
+       891.033,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       143.135,
+       891.12,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       142.038,
+       891.206,
+       -42.06
+      ],
+      "yaw": -94.5
+     }
+    ]
+   },
+   "blackboard": {
+    "pos": [
+     143.095,
+     883.599,
+     -42.06
+    ],
+    "yaw": 85.5
+   },
+   "tea_table": {
+    "pos": [
+     145.488,
+     890.433,
+     -42.06
+    ],
+    "yaw": -94.5
+   },
+   "changing": {
+    "pos": [
+     152.989,
+     890.143,
+     -42.06
+    ],
+    "yaw": -94.5,
+    "slots": [
+     {
+      "pos": [
+       155.98,
+       889.908,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       154.783,
+       890.002,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       153.587,
+       890.096,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       152.391,
+       890.19,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       151.194,
+       890.285,
+       -42.06
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       149.998,
+       890.379,
+       -42.06
+      ],
+      "yaw": -94.5
+     }
+    ]
+   },
+   "rigging": {
+    "pos": [
+     152.622,
+     899.501,
+     -42.391
+    ],
+    "yaw": -4.5
+   },
+   "signal_mast": {
+    "pos": [
+     158.297,
+     895.142,
+     -42.825
+    ],
+    "yaw": -4.5
+   },
+   "coach_mast": {
+    "pos": [
+     157.563,
+     896.003,
+     -42.767
+    ],
+    "yaw": -4.5
+   },
+   "windsock": {
+    "pos": [
+     157.177,
+     886.002,
+     -34.46
+    ],
+    "yaw": -4.5
+   },
+   "coach_slip": {
+    "pos": [
+     159.247,
+     894.466,
+     -42.897
+    ],
+    "yaw": -4.5
+   },
+   "slip_head": {
+    "pos": [
+     156.682,
+     892.461,
+     -42.724
+    ],
+    "yaw": -4.5
+   },
+   "slip_foot": {
+    "pos": [
+     178.614,
+     890.735,
+     -43.476
+    ],
+    "yaw": -4.5
+   },
+   "shore_lawn": {
+    "pos": [
+     158.359,
+     899.752,
+     -42.803
+    ],
+    "yaw": 85.5
+   },
+   "shore_pupil": {
+    "pos": [
+     158.556,
+     900.338,
+     -42.814
+    ],
+    "yaw": -94.5,
+    "slots": [
+     {
+      "pos": [
+       157.755,
+       898.445,
+       -42.767
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       157.857,
+       899.741,
+       -42.767
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       157.959,
+       901.037,
+       -42.767
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       158.061,
+       902.333,
+       -42.766
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       159.051,
+       898.343,
+       -42.861
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       159.153,
+       899.639,
+       -42.861
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       159.255,
+       900.935,
+       -42.86
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       159.357,
+       902.231,
+       -42.86
+      ],
+      "yaw": -94.5
+     }
+    ]
+   },
+   "shore_boat": {
+    "pos": [
+     158.439,
+     896.937,
+     -42.825
+    ],
+    "yaw": -4.5
+   },
+   "coach_shore": {
+    "pos": [
+     157.52,
+     898.012,
+     -42.753
+    ],
+    "yaw": 85.5
+   },
+   "knot_bench": {
+    "pos": [
+     154.243,
+     892.051,
+     -42.551
+    ],
+    "yaw": -94.5,
+    "slots": [
+     {
+      "pos": [
+       155.738,
+       891.933,
+       -42.659
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       154.741,
+       892.012,
+       -42.587
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       153.744,
+       892.09,
+       -42.515
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       152.747,
+       892.169,
+       -42.442
+      ],
+      "yaw": -94.5
+     }
+    ]
+   },
+   "paint_trestle": {
+    "pos": [
+     158.936,
+     900.709,
+     -42.839
+    ],
+    "yaw": -4.5,
+    "slots": [
+     {
+      "pos": [
+       158.756,
+       898.416,
+       -42.839
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       158.936,
+       900.709,
+       -42.839
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       159.117,
+       903.002,
+       -42.838
+      ],
+      "yaw": -4.5
+     }
+    ]
+   },
+   "podium": {
+    "pos": [
+     158.782,
+     896.208,
+     -42.854
+    ],
+    "yaw": 175.5
+   },
+   "spectators_beach": {
+    "pos": [
+     157.374,
+     875.755,
+     -42.868
+    ],
+    "yaw": -4.5,
+    "slots": [
+     {
+      "pos": [
+       157.02,
+       871.269,
+       -42.867
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       157.099,
+       872.266,
+       -42.867
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       157.177,
+       873.263,
+       -42.867
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       157.256,
+       874.26,
+       -42.868
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       157.334,
+       875.257,
+       -42.868
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       157.413,
+       876.253,
+       -42.868
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       157.491,
+       877.25,
+       -42.868
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       157.57,
+       878.247,
+       -42.868
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       157.648,
+       879.244,
+       -42.868
+      ],
+      "yaw": -4.5
+     },
+     {
+      "pos": [
+       157.727,
+       880.241,
+       -42.868
+      ],
+      "yaw": -4.5
+     }
+    ]
+   },
+   "spectators_pier": {
+    "pos": [
+     240.918,
+     907.8,
+     -41.5
+    ],
+    "yaw": -94.5,
+    "slots": [
+     {
+      "pos": [
+       285.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       279.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       273.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       267.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       261.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       255.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       249.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       243.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       237.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       231.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       225.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       219.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       213.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       207.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       201.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     },
+     {
+      "pos": [
+       195.918,
+       907.8,
+       -41.5
+      ],
+      "yaw": -94.5
+     }
+    ]
+   },
+   "spectators_promenade": {
+    "pos": [
+     139.215,
+     897.9,
+     -39.5
+    ],
+    "yaw": -4.5
+   }
+  },
+  "displaced": [
+   {
+    "by": "boathouse",
+    "file": "City/public_spaces.json",
+    "id": "S-BEACH",
+    "kind": "sit_ground",
+    "pos": [
+     156.01,
+     883.9
+    ]
+   },
+   {
+    "by": "park",
+    "file": "City/public_spaces.json",
+    "id": "S-TOWEL-07",
+    "kind": "lie",
+    "pos": [
+     155.67,
+     892.3
+    ]
+   },
+   {
+    "by": "park",
+    "file": "City/public_spaces.json",
+    "id": "S-TOWEL-07",
+    "kind": "beach",
+    "pos": [
+     155.72,
+     892.9
+    ]
+   },
+   {
+    "by": "park",
+    "file": "City/public_spaces.json",
+    "id": "S-TOWEL-07",
+    "kind": "lie",
+    "pos": [
+     155.76,
+     893.5
+    ]
+   },
+   {
+    "by": "park",
+    "file": "City/public_spaces.json",
+    "id": "S-BEACH",
+    "kind": "sit_ground",
+    "pos": [
+     153.46,
+     897.2
+    ]
+   }
+  ]
+ },
+ "water": {
+  "swim_line_m": 60.0,
+  "group_area": {
+   "kids": [
+    "kids",
+    "race"
+   ],
+   "juniors": [
+    "race",
+    "kids"
+   ],
+   "adults": [
+    "race",
+    "kids"
+   ],
+   "race": [
+    "race"
+   ]
+  },
+  "class_area": {
+   "optimist": [
+    "kids",
+    "race"
+   ],
+   "cadet": [
+    "race",
+    "kids"
+   ],
+   "luch": [
+    "race",
+    "kids"
+   ]
+  },
+  "shore": [
+   [
+    447.9,
+    141.36
+   ],
+   [
+    467.9,
+    142.06
+   ],
+   [
+    487.9,
+    142.78
+   ],
+   [
+    507.9,
+    143.52
+   ],
+   [
+    527.9,
+    144.28
+   ],
+   [
+    547.9,
+    145.07
+   ],
+   [
+    567.9,
+    145.88
+   ],
+   [
+    587.9,
+    146.72
+   ],
+   [
+    607.9,
+    147.59
+   ],
+   [
+    627.9,
+    148.5
+   ],
+   [
+    647.9,
+    149.44
+   ],
+   [
+    667.9,
+    150.42
+   ],
+   [
+    687.9,
+    151.44
+   ],
+   [
+    707.9,
+    152.5
+   ],
+   [
+    727.9,
+    153.61
+   ],
+   [
+    747.9,
+    154.76
+   ],
+   [
+    767.9,
+    155.96
+   ],
+   [
+    787.9,
+    157.21
+   ],
+   [
+    807.9,
+    158.52
+   ],
+   [
+    827.9,
+    159.88
+   ],
+   [
+    847.9,
+    161.3
+   ],
+   [
+    867.9,
+    162.78
+   ],
+   [
+    887.9,
+    164.32
+   ],
+   [
+    907.9,
+    165.93
+   ],
+   [
+    927.9,
+    167.6
+   ],
+   [
+    947.9,
+    169.34
+   ],
+   [
+    967.9,
+    171.15
+   ]
+  ],
+  "areas": {
+   "corridor": {
+    "min_depth": 0.5,
+    "d": [
+     -2.0,
+     130.0
+    ],
+    "poly": [
+     [
+      161.7,
+      879.9
+     ],
+     [
+      162.95,
+      895.9
+     ],
+     [
+      294.95,
+      895.9
+     ],
+     [
+      293.7,
+      879.9
+     ]
+    ],
+    "bed": [
+     -1.95,
+     -0.34
+    ]
+   },
+   "kids": {
+    "min_depth": 0.8,
+    "d": [
+     90.0,
+     370.0
+    ],
+    "poly": [
+     [
+      242.5,
+      707.9
+     ],
+     [
+      244.99,
+      751.9
+     ],
+     [
+      247.73,
+      795.9
+     ],
+     [
+      250.72,
+      839.9
+     ],
+     [
+      254.01,
+      883.9
+     ],
+     [
+      534.01,
+      883.9
+     ],
+     [
+      530.72,
+      839.9
+     ],
+     [
+      527.73,
+      795.9
+     ],
+     [
+      524.99,
+      751.9
+     ],
+     [
+      522.5,
+      707.9
+     ]
+    ],
+    "bed": [
+     -7.28,
+     -1.5
+    ]
+   },
+   "race": {
+    "min_depth": 1.2,
+    "d": [
+     360.0,
+     850.0
+    ],
+    "poly": [
+     [
+      502.78,
+      487.9
+     ],
+     [
+      504.67,
+      537.9
+     ],
+     [
+      506.72,
+      587.9
+     ],
+     [
+      508.96,
+      637.9
+     ],
+     [
+      511.44,
+      687.9
+     ],
+     [
+      514.18,
+      737.9
+     ],
+     [
+      517.21,
+      787.9
+     ],
+     [
+      520.58,
+      837.9
+     ],
+     [
+      524.32,
+      887.9
+     ],
+     [
+      1014.32,
+      887.9
+     ],
+     [
+      1010.58,
+      837.9
+     ],
+     [
+      1007.21,
+      787.9
+     ],
+     [
+      1004.18,
+      737.9
+     ],
+     [
+      1001.44,
+      687.9
+     ],
+     [
+      998.96,
+      637.9
+     ],
+     [
+      996.72,
+      587.9
+     ],
+     [
+      994.67,
+      537.9
+     ],
+     [
+      992.78,
+      487.9
+     ]
+    ],
+    "bed": [
+     -14.78,
+     -5.83
+    ]
+   }
+  },
+  "launch": {
+   "origin": [
+    164.66,
+    891.83
+   ],
+   "dir": [
+    0.99692,
+    -0.07846
+   ],
+   "step_m": 5.0,
+   "bed": [
+    -0.3,
+    -0.363,
+    -0.426,
+    -0.488,
+    -0.551,
+    -0.614,
+    -0.68,
+    -0.752,
+    -0.828,
+    -0.907,
+    -0.986,
+    -1.049,
+    -1.06,
+    -1.0,
+    -0.926,
+    -0.943,
+    -1.088,
+    -1.295,
+    -1.477,
+    -1.596,
+    -1.673,
+    -1.737,
+    -1.8,
+    -1.862,
+    -1.918,
+    -1.943,
+    -1.908,
+    -1.826,
+    -1.775,
+    -1.832,
+    -2.003,
+    -2.211,
+    -2.376,
+    -2.481,
+    -2.551,
+    -2.615,
+    -2.677,
+    -2.739,
+    -2.789,
+    -2.798,
+    -2.744,
+    -2.662,
+    -2.637,
+    -2.733,
+    -2.926,
+    -3.127,
+    -3.273,
+    -3.363,
+    -3.429,
+    -3.492,
+    -3.555,
+    -3.615,
+    -3.655,
+    -3.644,
+    -3.573,
+    -3.499,
+    -3.512,
+    -3.648,
+    -3.854,
+    -4.041,
+    -4.164,
+    -4.243,
+    -4.307,
+    -4.372,
+    -4.449,
+    -4.538,
+    -4.622,
+    -4.673,
+    -4.709,
+    -4.806,
+    -5.043,
+    -5.422,
+    -5.86,
+    -6.27,
+    -6.627,
+    -6.945,
+    -7.24,
+    -7.504,
+    -7.759,
+    -8.102,
+    -8.419,
+    -8.709,
+    -9.01,
+    -9.36,
+    -9.741,
+    -10.109,
+    -10.435,
+    -10.719,
+    -10.977,
+    -11.219,
+    -11.447,
+    -11.662,
+    -11.862,
+    -12.05,
+    -12.226,
+    -12.391,
+    -12.545,
+    -12.689,
+    -12.824,
+    -12.95,
+    -13.069,
+    -13.179,
+    -13.283,
+    -13.38,
+    -13.471
+   ],
+   "slip_foot_d": 14.0
+  },
+  "keep_clear": {
+   "pier": {
+    "a": [
+     141.34,
+     912.9
+    ],
+    "b": [
+     324.34,
+     912.9
+    ],
+    "half_w": 6.0,
+    "clear_m": 8.0,
+    "head_clear_m": 28.0
+   },
+   "mooring": {
+    "a": [
+     162.34,
+     902.4
+    ],
+    "b": [
+     324.34,
+     902.4
+    ],
+    "clear_m": 6.0
+   },
+   "ice_hole": {
+    "at": [
+     300.0,
+     921.0
+    ],
+    "clear_m": 20.0
+   },
+   "bank": {
+    "a": [
+     123.0,
+     -52.1
+    ],
+    "b": [
+     2505.0,
+     -52.1
+    ],
+    "clear_m": 300.0
+   },
+   "island": {
+    "at": [
+     2400.0,
+     -64.1
+    ],
+    "r": 105.0,
+    "clear_m": 500.0
+   }
+  }
+ },
+ "fleet": {
+  "boats": {
+   "optimist": 8,
+   "cadet": 4,
+   "luch": 9,
+   "launch": 1
+  },
+  "hero_boat": "luch_9",
+  "loa_m": {
+   "optimist": 2.3,
+   "cadet": 3.22,
+   "luch": 4.23,
+   "launch": 4.6
+  },
+  "speed_ms": {
+   "optimist": 1.7,
+   "cadet": 2.4,
+   "luch": 3.0
+  },
+  "sailors": [
+   {
+    "slot": "kids_1",
+    "group": "kids",
+    "boat": "optimist",
+    "skill": 0.78,
+    "heavy": 0.2
+   },
+   {
+    "slot": "kids_2",
+    "group": "kids",
+    "boat": "optimist",
+    "skill": 0.7,
+    "heavy": -0.4
+   },
+   {
+    "slot": "kids_3",
+    "group": "kids",
+    "boat": "optimist",
+    "skill": 0.62,
+    "heavy": 0.5
+   },
+   {
+    "slot": "kids_4",
+    "group": "kids",
+    "boat": "optimist",
+    "skill": 0.55,
+    "heavy": 0.0
+   },
+   {
+    "slot": "kids_5",
+    "group": "kids",
+    "boat": "optimist",
+    "skill": 0.48,
+    "heavy": -0.2
+   },
+   {
+    "slot": "kids_6",
+    "group": "kids",
+    "boat": "optimist",
+    "skill": 0.4,
+    "heavy": 0.3
+   },
+   {
+    "slot": "kids_7",
+    "group": "kids",
+    "boat": "optimist",
+    "skill": 0.32,
+    "heavy": -0.6
+   },
+   {
+    "slot": "kids_8",
+    "group": "kids",
+    "boat": "optimist",
+    "skill": 0.22,
+    "heavy": 0.0
+   },
+   {
+    "slot": "jun_c1",
+    "group": "juniors",
+    "boat": "cadet",
+    "skill": 0.8,
+    "heavy": 0.3,
+    "crew": "jun_x1"
+   },
+   {
+    "slot": "jun_c2",
+    "group": "juniors",
+    "boat": "cadet",
+    "skill": 0.66,
+    "heavy": -0.3,
+    "crew": "jun_x2"
+   },
+   {
+    "slot": "jun_c3",
+    "group": "juniors",
+    "boat": "cadet",
+    "skill": 0.54,
+    "heavy": 0.1,
+    "crew": "jun_x3"
+   },
+   {
+    "slot": "jun_c4",
+    "group": "juniors",
+    "boat": "cadet",
+    "skill": 0.4,
+    "heavy": -0.1,
+    "crew": "jun_x4"
+   },
+   {
+    "slot": "jun_l1",
+    "group": "juniors",
+    "boat": "luch",
+    "skill": 0.74,
+    "heavy": 0.4
+   },
+   {
+    "slot": "jun_l2",
+    "group": "juniors",
+    "boat": "luch",
+    "skill": 0.6,
+    "heavy": -0.5
+   },
+   {
+    "slot": "jun_l3",
+    "group": "juniors",
+    "boat": "luch",
+    "skill": 0.46,
+    "heavy": 0.0
+   },
+   {
+    "slot": "adult_1",
+    "group": "adults",
+    "boat": "luch",
+    "skill": 0.84,
+    "heavy": 0.6
+   },
+   {
+    "slot": "adult_2",
+    "group": "adults",
+    "boat": "luch",
+    "skill": 0.72,
+    "heavy": -0.2
+   },
+   {
+    "slot": "adult_3",
+    "group": "adults",
+    "boat": "luch",
+    "skill": 0.58,
+    "heavy": 0.2
+   },
+   {
+    "slot": "adult_4",
+    "group": "adults",
+    "boat": "luch",
+    "skill": 0.44,
+    "heavy": -0.6
+   },
+   {
+    "slot": "adult_5",
+    "group": "adults",
+    "boat": "luch",
+    "skill": 0.3,
+    "heavy": 0.1
+   }
+  ],
+  "hero_skill": 0.5
+ },
+ "groups": {
+  "kids": {
+   "condition": "sail_kids",
+   "coach": "coach_kids",
+   "boats": [
+    "optimist"
+   ],
+   "ages": [
+    7,
+    11
+   ],
+   "drills": [
+    "follow",
+    "figure8",
+    "triangle",
+    "tack_whistle",
+    "capsize",
+    "free"
+   ]
+  },
+  "juniors": {
+   "condition": "sail_juniors",
+   "coach": "coach_juniors",
+   "boats": [
+    "cadet",
+    "luch"
+   ],
+   "ages": [
+    12,
+    17
+   ],
+   "drills": [
+    "triangle",
+    "tack_whistle",
+    "starts",
+    "figure8",
+    "capsize",
+    "free"
+   ]
+  },
+  "adults": {
+   "condition": "sail_adults",
+   "coach": "coach_head",
+   "boats": [
+    "luch"
+   ],
+   "ages": [
+    18,
+    99
+   ],
+   "drills": [
+    "tack_whistle",
+    "triangle",
+    "starts",
+    "figure8",
+    "capsize",
+    "free"
+   ]
+  },
+  "race": {
+   "condition": "sail_race",
+   "coach": "coach_head",
+   "boats": [
+    "optimist",
+    "cadet",
+    "luch"
+   ],
+   "ages": [
+    7,
+    99
+   ],
+   "drills": []
+  }
+ },
+ "coaches": {
+  "coach_head": {
+   "role": "head coach, race officer",
+   "name": "sail.staff.coach_head"
+  },
+  "coach_kids": {
+   "role": "the children's coach",
+   "name": "sail.staff.coach_kids"
+  },
+  "coach_juniors": {
+   "role": "the juniors' coach",
+   "name": "sail.staff.coach_juniors"
+  },
+  "bosun": {
+   "role": "the boathouse, hire, repairs; the mast when the coaches are afloat",
+   "name": "sail.staff.bosun"
+  }
+ },
+ "season": {
+  "opening": [
+   4,
+   25
+  ],
+  "opening_weekday": 5,
+  "closing_month": 11,
+  "closing_nth": 1,
+  "closing_weekday": 6,
+  "fitout_days": 14,
+  "layup_days": 7,
+  "summer": [
+   [
+    6,
+    1
+   ],
+   [
+    8,
+    31
+   ]
+  ],
+  "theory_days": [
+   1,
+   3,
+   5
+  ],
+  "theory_hours": [
+   15.0,
+   18.0
+  ],
+  "fitout_hours": [
+   10.0,
+   17.0
+  ],
+  "latitude": 54.95,
+  "longitude": 20.3,
+  "tz_hours": 2.0,
+  "daylight_margin_h": 0.5
+ },
+ "limits": {
+  "wind": {
+   "optimist": [
+    1.5,
+    8.0
+   ],
+   "cadet": [
+    1.5,
+    10.0
+   ],
+   "luch": [
+    1.5,
+    12.0
+   ]
+  },
+  "gust_over": 3.0,
+  "recall_margin": 1.5,
+  "storm_wind": 14.0,
+  "storm_gust": 19.0,
+  "fog_visibility_m": 400.0,
+  "launch_depth_m": 0.5,
+  "bar_depth_m": 0.3,
+  "board_full_depth_m": 1.0,
+  "max_haul_m": 260.0,
+  "kids_deep_wind": 6.0,
+  "reef_wind": 9.0,
+  "capsize_drill_water_c": 15.0,
+  "capsize_drill_wind": 6.0,
+  "min_water_h": 0.75,
+  "rescue": {
+   "kids_capsized_s": 20.0,
+   "capsized_s": 60.0,
+   "tow_speed": 2.5,
+   "launch_speed": 6.0,
+   "stray_m": 40.0
+  }
+ },
+ "signals": {
+  "closed": {
+   "flags": [],
+   "horn": 0
+  },
+  "fitout": {
+   "flags": [
+    "flag_school"
+   ],
+   "horn": 0
+  },
+  "shore": {
+   "flags": [
+    "flag_school",
+    "flag_shore"
+   ],
+   "horn": 0
+  },
+  "wait": {
+   "flags": [
+    "flag_school",
+    "flag_ap"
+   ],
+   "horn": 2
+  },
+  "sail": {
+   "flags": [
+    "flag_school"
+   ],
+   "class_flags": {
+    "optimist": "flag_optimist",
+    "cadet": "flag_cadet",
+    "luch": "flag_luch"
+   },
+   "horn": 1
+  },
+  "race": {
+   "flags": [
+    "flag_school",
+    "flag_race"
+   ],
+   "class_flags": {
+    "optimist": "flag_optimist",
+    "cadet": "flag_cadet",
+    "luch": "flag_luch"
+   },
+   "horn": 1
+  },
+  "recall": {
+   "flags": [
+    "flag_school",
+    "flag_recall"
+   ],
+   "horn": 3
+  },
+  "storm": {
+   "flags": [
+    "storm_cone"
+   ],
+   "horn": 0
+  }
+ },
+ "timetable": {
+  "term": [
+   {
+    "days": [
+     1,
+     3
+    ],
+    "from": 15.0,
+    "len": 2.5,
+    "group": "kids"
+   },
+   {
+    "days": [
+     1,
+     3
+    ],
+    "from": 18.0,
+    "len": 2.5,
+    "group": "adults"
+   },
+   {
+    "days": [
+     2,
+     4
+    ],
+    "from": 15.0,
+    "len": 2.75,
+    "group": "juniors"
+   },
+   {
+    "days": [
+     5
+    ],
+    "from": 10.0,
+    "len": 2.5,
+    "group": "kids"
+   },
+   {
+    "days": [
+     5
+    ],
+    "from": 13.0,
+    "len": 3.0,
+    "group": "juniors"
+   },
+   {
+    "days": [
+     5
+    ],
+    "from": 16.5,
+    "len": 2.5,
+    "group": "adults"
+   }
+  ],
+  "summer": [
+   {
+    "days": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "from": 10.0,
+    "len": 2.5,
+    "group": "kids"
+   },
+   {
+    "days": [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    "from": 13.5,
+    "len": 3.0,
+    "group": "juniors"
+   },
+   {
+    "days": [
+     1,
+     3
+    ],
+    "from": 18.5,
+    "len": 2.5,
+    "group": "adults"
+   },
+   {
+    "days": [
+     5
+    ],
+    "from": 10.0,
+    "len": 2.5,
+    "group": "kids"
+   },
+   {
+    "days": [
+     5
+    ],
+    "from": 13.0,
+    "len": 3.0,
+    "group": "juniors"
+   },
+   {
+    "days": [
+     5
+    ],
+    "from": 16.5,
+    "len": 2.5,
+    "group": "adults"
+   }
+  ],
+  "phases": {
+   "lesson": [
+    [
+     "gather",
+     10,
+     "changing",
+     "sail_change"
+    ],
+    [
+     "rig",
+     15,
+     "rigging",
+     "sail_rig"
+    ],
+    [
+     "launch",
+     10,
+     "slip_head",
+     "sail_launch"
+    ],
+    [
+     "water",
+     0,
+     "water",
+     "sail_drill"
+    ],
+    [
+     "return",
+     10,
+     "slip_foot",
+     "sail_land"
+    ],
+    [
+     "derig",
+     15,
+     "wash",
+     "sail_derig"
+    ],
+    [
+     "debrief",
+     10,
+     "classroom_seat",
+     "sail_tea"
+    ]
+   ],
+   "shore": [
+    [
+     "gather",
+     10,
+     "changing",
+     "sail_change"
+    ],
+    [
+     "shore",
+     0,
+     "shore_pupil",
+     "sail_shore_lesson"
+    ],
+    [
+     "debrief",
+     15,
+     "classroom_seat",
+     "sail_tea"
+    ]
+   ],
+   "theory": [
+    [
+     "gather",
+     10,
+     "boathouse_door",
+     "sail_arrive"
+    ],
+    [
+     "theory",
+     0,
+     "classroom_seat",
+     "sail_theory"
+    ],
+    [
+     "debrief",
+     15,
+     "tea_table",
+     "sail_tea"
+    ]
+   ],
+   "race": [
+    [
+     "briefing",
+     20,
+     "notice_board",
+     "sail_briefing"
+    ],
+    [
+     "rig",
+     20,
+     "rigging",
+     "sail_rig"
+    ],
+    [
+     "launch",
+     15,
+     "slip_head",
+     "sail_launch"
+    ],
+    [
+     "water",
+     0,
+     "water",
+     "sail_race"
+    ],
+    [
+     "return",
+     15,
+     "slip_foot",
+     "sail_land"
+    ],
+    [
+     "derig",
+     20,
+     "wash",
+     "sail_derig"
+    ],
+    [
+     "prizes",
+     20,
+     "podium",
+     "sail_prizes"
+    ]
+   ],
+   "recall": [
+    [
+     "return",
+     15,
+     "slip_foot",
+     "sail_land"
+    ],
+    [
+     "derig",
+     15,
+     "wash",
+     "sail_derig"
+    ],
+    [
+     "shore",
+     0,
+     "classroom_seat",
+     "sail_theory"
+    ]
+   ],
+   "fitout": [
+    [
+     "fitout",
+     0,
+     "paint_trestle",
+     "sail_paint"
+    ]
+   ],
+   "layup": [
+    [
+     "layup",
+     0,
+     "boat_door",
+     "sail_layup"
+    ]
+   ]
+  },
+  "shore_topics": [
+   "knots",
+   "rigging",
+   "theory",
+   "rules"
+  ],
+  "drill_blocks": 2,
+  "hire": {
+   "from": 10.0,
+   "before_sunset_h": 1.0,
+   "fee": 50,
+   "boat": "luch"
+  }
+ },
+ "drills": {
+  "follow": {
+   "area": "kids",
+   "wind": [
+    1.5,
+    7.0
+   ],
+   "launch": "lead",
+   "what": "a file behind the coach's launch, each boat in the wake of the one ahead"
+  },
+  "triangle": {
+   "area": "group",
+   "wind": [
+    2.0,
+    12.0
+   ],
+   "launch": [
+    0.0,
+    0.0
+   ],
+   "course": "kids_triangle",
+   "what": "laps of a small triangle, marks to port"
+  },
+  "tack_whistle": {
+   "area": "group",
+   "wind": [
+    2.0,
+    10.0
+   ],
+   "launch": [
+    -30.0,
+    0.0
+   ],
+   "what": "a beat in line abreast: everybody tacks on the whistle",
+   "whistle_s": [
+    20.0,
+    45.0
+   ]
+  },
+  "figure8": {
+   "area": "group",
+   "wind": [
+    1.5,
+    9.0
+   ],
+   "launch": [
+    0.0,
+    25.0
+   ],
+   "course": "figure8",
+   "what": "figure-eights round two buoys across the wind: a tack at one, a gybe at the other"
+  },
+  "capsize": {
+   "area": "kids",
+   "wind": [
+    1.5,
+    6.0
+   ],
+   "launch": [
+    0.0,
+    12.0
+   ],
+   "warm_only": true,
+   "what": "capsize and right the boat by the launch, one at a time"
+  },
+  "starts": {
+   "area": "group",
+   "wind": [
+    2.0,
+    11.0
+   ],
+   "launch": "line",
+   "course": "start_line",
+   "what": "practice starts on a short line, three minutes each"
+  },
+  "free": {
+   "area": "group",
+   "wind": [
+    1.5,
+    12.0
+   ],
+   "launch": [
+    0.0,
+    0.0
+   ],
+   "what": "free sailing inside the area"
+  }
+ },
+ "course": {
+  "wind_ref": 6.0,
+  "scale": [
+   0.6,
+   0.4
+  ],
+  "margin_m": 15.0,
+  "shrink": 0.88,
+  "min_leg_m": 40.0,
+  "leg_m": {
+   "optimist": 130.0,
+   "cadet": 220.0,
+   "luch": 300.0
+  },
+  "leg_clamp": [
+   0.55,
+   1.25
+  ],
+  "kids_triangle_leg_m": 70.0,
+  "wing_deg": 45.0,
+  "leeward_gap_m": 20.0,
+  "line_per_boat": 1.5,
+  "line_min_m": 24.0,
+  "figure8_gap_m": 50.0,
+  "start_line_practice_m": 30.0,
+  "laps": {
+   "windward_leeward": 2,
+   "triangle": 1,
+   "kids_triangle": 2
+  },
+  "mark_r_m": 0.45
+ },
+ "races": {
+  "start": {
+   "warning_s": 180.0,
+   "prep_s": 60.0,
+   "x_flag_s": 120.0,
+   "start_window_s": 240.0,
+   "general_recall_frac": 0.5,
+   "flags": {
+    "warning": "flag_class",
+    "prep": "flag_p",
+    "ocs": "flag_x",
+    "general": "flag_first_sub",
+    "finish": "flag_blue",
+    "abandon": "flag_n",
+    "shorten": "flag_s"
+   }
+  },
+  "zone_m": 60.0,
+  "touch_m": 1.1,
+  "penalty_turn_deg": 360.0,
+  "penalty_window_s": 90.0,
+  "time_limit_s": {
+   "optimist": 1500.0,
+   "cadet": 1800.0,
+   "luch": 2100.0
+  },
+  "finish_window_s": 600.0,
+  "between_races_s": 600.0,
+  "resolve": {
+   "luck_sigma": 0.2,
+   "heavy_gain": 0.12,
+   "time_base": 1.3,
+   "time_gain": 0.4,
+   "dnf_base": 0.01,
+   "dnf_wind": 0.22,
+   "ocs": 0.03,
+   "dns": 0.03,
+   "beat_factor": 1.45
+  },
+  "scoring": {
+   "discards": [
+    [
+     4,
+     1
+    ],
+    [
+     9,
+     2
+    ],
+    [
+     16,
+     3
+    ]
+   ]
+  },
+  "events": [
+   {
+    "id": "sail_opening",
+    "rule": "opening",
+    "from": 11.0,
+    "len": 4.5,
+    "classes": [
+     "optimist",
+     "cadet",
+     "luch"
+    ],
+    "races": 1,
+    "course": "triangle",
+    "parade": true,
+    "pull": 1.2,
+    "entry_fee": 0,
+    "stamp": "opening",
+    "festival": "sail_opening"
+   },
+   {
+    "id": "sail_closing",
+    "rule": "closing",
+    "from": 11.0,
+    "len": 3.5,
+    "classes": [
+     "optimist",
+     "cadet",
+     "luch"
+    ],
+    "races": 1,
+    "course": "triangle",
+    "layup_after": true,
+    "pull": 0.9,
+    "entry_fee": 0,
+    "stamp": "closing",
+    "festival": "sail_closing"
+   },
+   {
+    "id": "optimist_day",
+    "rule": "date",
+    "date": [
+     6,
+     1
+    ],
+    "from": 11.0,
+    "len": 3.5,
+    "classes": [
+     "optimist"
+    ],
+    "races": 2,
+    "course": "kids_triangle",
+    "pull": 0.9,
+    "entry_fee": 0,
+    "festival": "children_day"
+   },
+   {
+    "id": "cup_lyudmilovsk",
+    "rule": "weekend_on_or_after",
+    "date": [
+     6,
+     20
+    ],
+    "days": 2,
+    "from": 11.0,
+    "len": 5.0,
+    "classes": [
+     "optimist",
+     "cadet",
+     "luch"
+    ],
+    "races": 3,
+    "course": "triangle",
+    "pull": 1.0,
+    "entry_fee": 20,
+    "stamp": "cup_lyudmilovsk",
+    "cup": true
+   },
+   {
+    "id": "wednesday",
+    "rule": "weekly",
+    "weekday": 2,
+    "from": 18.0,
+    "len": 3.0,
+    "classes": [
+     "luch"
+    ],
+    "races": 2,
+    "course": "windward_leeward",
+    "pull": 0.25,
+    "entry_fee": 0,
+    "evening": true
+   },
+   {
+    "id": "sunday",
+    "rule": "weekly",
+    "weekday": 6,
+    "from": 11.0,
+    "len": 4.0,
+    "classes": [
+     "optimist",
+     "cadet",
+     "luch"
+    ],
+    "races": 2,
+    "course": "triangle",
+    "pull": 0.5,
+    "entry_fee": 0,
+    "championship": true
+   }
+  ]
+ },
+ "hero": {
+  "join_fee": 150,
+  "card_item": "sail_card",
+  "boat": "luch",
+  "lesson_hours_from": 10.0,
+  "lesson_before_sunset_h": 1.5,
+  "lesson_fee": 0,
+  "ranks": [
+   {
+    "id": "none"
+   },
+   {
+    "id": "yunga",
+    "lessons": [
+     "shore"
+    ],
+    "name": "sail.rank.yunga"
+   },
+   {
+    "id": "helm3",
+    "lessons": [
+     "shore",
+     "first_sail",
+     "tacking",
+     "points",
+     "gybing",
+     "capsize",
+     "irons",
+     "mob",
+     "landing"
+    ],
+    "name": "sail.rank.helm3",
+    "certificate": true
+   },
+   {
+    "id": "helm2",
+    "lessons": [
+     "racing"
+    ],
+    "races": 5,
+    "miles": 20.0,
+    "name": "sail.rank.helm2"
+   },
+   {
+    "id": "helm1",
+    "races": 15,
+    "miles": 60.0,
+    "podiums": 3,
+    "name": "sail.rank.helm1"
+   }
+  ],
+  "wear": {
+   "per_capsize": 0.03,
+   "per_hour": 0.004,
+   "mend_weekday": 0
+  },
+  "telemetry": {
+   "irons_speed": 0.35,
+   "irons_twa": 30.0,
+   "irons_s": 4.0,
+   "astern_speed": 0.2,
+   "follow_m": 25.0
+  }
+ },
+ "lessons": [
+  {
+   "id": "shore",
+   "afloat": false,
+   "wind": [
+    0.0,
+    99.0
+   ],
+   "objectives": [
+    {
+     "kind": "event",
+     "event": "knot",
+     "count": 3
+    },
+    {
+     "kind": "event",
+     "event": "parts",
+     "count": 1
+    },
+    {
+     "kind": "event",
+     "event": "rig",
+     "count": 1
+    }
+   ]
+  },
+  {
+   "id": "first_sail",
+   "afloat": true,
+   "wind": [
+    1.5,
+    7.0
+   ],
+   "area": "kids",
+   "objectives": [
+    {
+     "kind": "follow",
+     "seconds": 90.0
+    },
+    {
+     "kind": "hold",
+     "twa": [
+      70.0,
+      110.0
+     ],
+     "seconds": 60.0
+    }
+   ]
+  },
+  {
+   "id": "tacking",
+   "afloat": true,
+   "wind": [
+    2.0,
+    8.0
+   ],
+   "area": "kids",
+   "objectives": [
+    {
+     "kind": "hold",
+     "twa": [
+      35.0,
+      58.0
+     ],
+     "seconds": 45.0
+    },
+    {
+     "kind": "tacks",
+     "count": 5,
+     "no_irons": true
+    }
+   ]
+  },
+  {
+   "id": "points",
+   "afloat": true,
+   "wind": [
+    2.0,
+    9.0
+   ],
+   "area": "kids",
+   "objectives": [
+    {
+     "kind": "hold",
+     "twa": [
+      35.0,
+      58.0
+     ],
+     "seconds": 30.0
+    },
+    {
+     "kind": "hold",
+     "twa": [
+      70.0,
+      110.0
+     ],
+     "seconds": 30.0
+    },
+    {
+     "kind": "hold",
+     "twa": [
+      115.0,
+      150.0
+     ],
+     "seconds": 30.0
+    },
+    {
+     "kind": "hold",
+     "twa": [
+      155.0,
+      180.0
+     ],
+     "seconds": 30.0
+    }
+   ]
+  },
+  {
+   "id": "gybing",
+   "afloat": true,
+   "wind": [
+    2.0,
+    8.0
+   ],
+   "area": "kids",
+   "objectives": [
+    {
+     "kind": "gybes",
+     "count": 2,
+     "no_capsize": true
+    },
+    {
+     "kind": "course",
+     "course": "figure8",
+     "laps": 2
+    }
+   ]
+  },
+  {
+   "id": "capsize",
+   "afloat": true,
+   "wind": [
+    1.5,
+    6.0
+   ],
+   "area": "kids",
+   "warm_only": true,
+   "objectives": [
+    {
+     "kind": "right",
+     "count": 2,
+     "within_s": 90.0
+    }
+   ]
+  },
+  {
+   "id": "irons",
+   "afloat": true,
+   "wind": [
+    2.0,
+    8.0
+   ],
+   "area": "kids",
+   "objectives": [
+    {
+     "kind": "astern",
+     "seconds": 3.0
+    },
+    {
+     "kind": "stop",
+     "radius_m": 4.0,
+     "max_speed": 0.6,
+     "seconds": 3.0
+    }
+   ]
+  },
+  {
+   "id": "mob",
+   "afloat": true,
+   "wind": [
+    2.0,
+    9.0
+   ],
+   "area": "kids",
+   "objectives": [
+    {
+     "kind": "pickup",
+     "count": 2,
+     "radius_m": 1.8,
+     "max_speed": 1.0
+    }
+   ]
+  },
+  {
+   "id": "landing",
+   "afloat": true,
+   "wind": [
+    2.0,
+    9.0
+   ],
+   "area": "kids",
+   "objectives": [
+    {
+     "kind": "course",
+     "course": "kids_triangle",
+     "laps": 1
+    },
+    {
+     "kind": "land",
+     "radius_m": 6.0,
+     "max_speed": 1.2
+    }
+   ]
+  },
+  {
+   "id": "racing",
+   "afloat": true,
+   "wind": [
+    2.5,
+    10.0
+   ],
+   "area": "race",
+   "needs_rank": "helm3",
+   "objectives": [
+    {
+     "kind": "start",
+     "within_s": 5.0
+    },
+    {
+     "kind": "course",
+     "course": "windward_leeward",
+     "laps": 1
+    }
+   ]
+  }
+ ],
+ "stamps": {
+  "set": "sailing",
+  "pieces": [
+   "joined",
+   "first_sail",
+   "capsize",
+   "certificate",
+   "helm2",
+   "helm1",
+   "first_race",
+   "race_win",
+   "opening",
+   "closing",
+   "cup_lyudmilovsk",
+   "miles_10",
+   "miles_100",
+   "recall"
+  ]
+ },
+ "quest_events": [
+  "join",
+  "lesson <id>",
+  "rank <id>",
+  "certificate",
+  "hire",
+  "race",
+  "race_win",
+  "podium",
+  "cup <series>",
+  "capsize",
+  "recall",
+  "miles <n>",
+  "opening",
+  "closing"
+ ],
+ "miles": {
+  "metres": 1852.0,
+  "stamps": [
+   [
+    10,
+    "miles_10"
+   ],
+   [
+    100,
+    "miles_100"
+   ]
+  ]
+ },
+ "radio": {
+  "forecast": {
+   "sail": "sail.radio.sail",
+   "shore": "sail.radio.shore",
+   "storm": "sail.radio.storm",
+   "closed": "sail.radio.closed",
+   "race": "sail.radio.race",
+   "reef": "sail.radio.reef"
+  },
+  "news": {
+   "result": "sail.news.result",
+   "abandoned": "sail.news.abandoned",
+   "hero_won": "sail.news.hero_won",
+   "hero_place": "sail.news.hero_place",
+   "cup": "sail.news.cup",
+   "opening": "sail.news.opening",
+   "closing": "sail.news.closing"
+  }
+ }
+}
