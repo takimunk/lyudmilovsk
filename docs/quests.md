@@ -201,3 +201,42 @@ line goes last in its section, because the first quest talk that fits is said an
 People a quest needs must be findable: Sorokin, Aya and Lange have a daily duty on a bench (`birdwatch_yard`, `sketch_yard`,
 `mend_nets` in `PeopleData/activities.json`, duties in `people.json`), and the journal says when; the laboratory's people and
 the Korneevs sit out an hour or two in the square after work (`yard_evening`).
+
+## The town bundle (`tq_*`)
+
+Ten small stories that send the hero from the club and the Academgorodok down to the town's newer systems. Data and
+words only: no new item, no new event, no code. Every giver is one of the story's people (the townsfolk cannot be talked
+to), so each has branching talk, a bystander's aside, a remark with a diary line, and `dev` blocks on every stage. The
+developer mode point `tq.wave_requests` (`Content/Dev/teleports/tq.json`) is the request box of the Wave.
+
+| Quest | Giver, where and when | Steps (events) | System |
+|---|---|---|---|
+| `tq_saturn` «Кольцо Сатурна» | Tyoma (`Kid_boy`), the club after school till 21 | `do telescope`, tell | telescopes |
+| `tq_reel` «Последняя бобина» | Ivan Korneev, yard bench 15:00–17:30 | `do cinema` + `have ticket_stub`, `bring ticket_stub@Korneev_ivan`; starts `tq_log` | cinema |
+| `tq_request` «Концерт по заявкам» | Nika (`Streamer`), the club from noon | `radio request`, `radio request_heard`, tell | records, radio |
+| `tq_round` «Три будильника» | Stas (`Guy_a`), the club after 14:00 | `round_done paper`, tell | bicycle rounds |
+| `tq_quote` «Строчка у весов» | Tanya Orlova, the Gastronom kiosk 9–19, Mon–Sat | `have library_book`, `quote *`, tell | books |
+| `tq_square` «Клетка за клеткой» | Yamada (`Clerk`), the club 10–19 on weekdays | `have camera`, `photo square` + `photo market` (`no_skip`), show | film camera |
+| `tq_card` «Открытка до двери» | Nao, the club door 10–21 | `letter_sent nao`, tell | letters |
+| `tq_lullaby` «Два такта» | Vera (`Girl_a`), the club after 15:00 | `play_tune brahms_lullaby`, tell | instruments |
+| `tq_water` «По глотку, под счёт» | Timur (`Guy_b`), the club after 15:00 | `do pump_room`, `bring water@Guy_b` | sanatorium |
+| `tq_log` «Дыра в семь дней» | Lev Zotov, yard bench from 17:30 for about an hour; begun by `tq_reel`'s reward | `read lighthouse_log`, tell | lighthouse |
+
+What writing them showed:
+
+- **Only repeatable events are safe objectives.** `observe <sight>`, `read_book` and `learn_tune` are sent once in a game
+  (the first sight, the first time to the end, the first lesson). A quest waiting for one is stuck for a hero who has
+  already done it. So Saturn is `do telescope` (every use of a coin, café or library telescope; the bridge house's,
+  the lighthouse's and the home telescopes have their own act ids and do not count), the lullaby is `play_tune` (every
+  play with a star) and the book is `have library_book` plus `quote`.
+- **A talk that begins a quest also finishes its first stage.** If the same talk belongs to another quest whose lines
+  stand earlier in the section, those are said and the new quest's `ask` passes unheard. So no giver here has another
+  quest that begins by talking to them, and `tq_log` is begun by `tq_reel`'s reward, not by a talk with Zotov (Olya's
+  `overdue_journal` sends the hero to him too). Two overlaps remain, both rare: `hot_corn`'s cob handed to Korneev and
+  `overdue_journal`'s visit to Zotov on the same talk as these quests' `ask`. The stage after `ask` and its journal
+  entry repeat the whole errand, so nothing is lost but the first exchange.
+- **A card can go to a story person** only when a quest already begun has a `talk` objective with them
+  (`ULyudLetters::BeginCard`): Nao is the addressee of the quest she gives.
+- A `[Section]` written twice in `npc_dialogue.txt` starts over: new lines go at the end of the person's own section.
+
+Not checked in the engine: the bundle was written and proven with the offline tools only.

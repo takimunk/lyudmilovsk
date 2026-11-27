@@ -377,7 +377,7 @@ quest.tq_reel.film.if.done:hot_corn.again = korneev_ivan.tq_reel_last.1
 quest.tq_reel.bring_empty = korneev_ivan.tq_reel_nostub.1
 quest.tq_reel.bring = korneev_ivan.tq_reel_thanks.1 | hero.tq_reel_thanks.2 | korneev_ivan.tq_reel_thanks.3 | korneev_ivan.tq_reel_thanks.4
 quest.tq_reel.done = korneev_ivan.tq_reel_after.1
-aside.tq_log.read = korneev_ivan.tq_log_bench.1
+aside.tq_log.ask,read = korneev_ivan.tq_log_bench.1
 
 [Korneeva_nina]
 first = korneeva_nina.first.1
