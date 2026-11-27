@@ -260,8 +260,19 @@ bool ALyudDoorBase::PlayerCanUse(const APawn* Pawn, const FVector& Eye, const FV
 	}
 	bool bHit = false;
 	float Best = InteractRange;
-	// the doorway itself (closed leaf or the open hole) ...
 	const FTransform& T = GetActorTransform();
+	// every door in the world is asked (DoorInView, several times a second from the things', the letters' pick): a far one
+	// is dropped before the transforms and the leaf list. A leaf (at any angle) stays within twice the doorway-and-sweep box's
+	// diagonal of its middle, and a hit counts only within InteractRange of the eye.
+	{
+		const FBox Near = GetDoorwayLocalBox() + GetSweepLocalBox();
+		const float Reach = InteractRange + 2.f * (float)Near.GetSize().Size() * (float)T.GetScale3D().GetAbsMax();
+		if (FVector::DistSquared(Eye, T.TransformPosition(Near.GetCenter())) > FMath::Square(Reach))
+		{
+			return false;
+		}
+	}
+	// the doorway itself (closed leaf or the open hole) ...
 	const FVector LocalEye = T.InverseTransformPosition(Eye);
 	const FVector LocalDir = T.InverseTransformVector(Dir).GetSafeNormal();
 	float Hit = 0.f;
