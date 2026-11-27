@@ -23,6 +23,8 @@
 #include "LyudText.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
+#include "People/PeopleLife.h"
+#include "People/TownTalk.h"
 #include "Plants/GameCalendar.h"
 #include "Rendering/DrawElements.h"
 #include "Sea/LyudSea.h"
@@ -262,6 +264,18 @@ namespace LyudBeachImpl
 		[](UWorld* World) { if (ULyudBeach* Beach = ULyudBeach::Get(World)) { Beach->SetStorm(1.f); } });
 	LyudDev::FAutoAction GDevRace(TEXT("beach.race"), TEXT("beach"), TEXT("dev.action.beach.race"),
 		[](UWorld* World) { if (ULyudBeach* Beach = ULyudBeach::Get(World)) { Beach->RaceNow(); } });
+	// a pocket of finds to test the souvenir counter and the paper flag on the castle
+	LyudDev::FAutoAction GDevFinds(TEXT("beach.finds"), TEXT("beach"), TEXT("dev.action.beach.finds"),
+		[](UWorld* World)
+		{
+			if (ULyudInventory* Inv = ULyudInventory::Get(World))
+			{
+				Inv->Add(TEXT("seashell"), 6);
+				Inv->Add(TEXT("amber_piece"), 5);
+				Inv->Add(TEXT("amber_fly"), 1);
+				Inv->Add(TEXT("sand_flag"), 1);
+			}
+		});
 }
 
 // ------------------------------------------------------------------ the book
@@ -292,6 +306,8 @@ void ULyudBeachBook::Reset()
 	CastleWork = CastleWorn = 0.f;
 	PickDay = 0;
 	Picked.Reset();
+	bCastleHelped = bCastlePaperFlag = false;
+	SwimWins = SoldRoubles = 0;
 }
 
 // ------------------------------------------------------------------ the beach
@@ -476,6 +492,17 @@ void ULyudBeach::MakeProps()
 	CastleMeshes.Add(AddShape(CastleRoot, Cylinder, Wood, FVector(0.f, 0.f, 53.f), FVector(0.012f, 0.012f, 0.24f)));
 	CastleMeshes.Add(AddShape(CastleRoot, Cube, Red, FVector(5.f, 0.f, 61.f), FVector(0.1f, 0.006f, 0.06f)));
 
+	// the summer visitors' swimming caps in the buoy swim (white, yellow, blue rubber caps; moved only while a swim is on)
+	for (const FLinearColor Cap : { FLinearColor(0.85f, 0.85f, 0.82f), FLinearColor(0.85f, 0.65f, 0.05f), FLinearColor(0.08f, 0.25f, 0.65f) })
+	{
+		UStaticMeshComponent* Mesh = AddShape(Root, Sphere, Cap, FVector::ZeroVector, FVector(0.22f, 0.22f, 0.14f));
+		if (Mesh)
+		{
+			Mesh->SetVisibility(false);
+		}
+		RivalMeshes.Add(Mesh);
+	}
+
 	// the swim's posts and buoys: two shapes each, placed when the lifeguards' towers are known
 	for (int32 I = 0; I < 4; ++I)
 	{
@@ -605,6 +632,10 @@ void ULyudBeach::Tick(float DeltaTime)
 	{
 		UpdateStone(*Sea, DeltaTime);
 	}
+	if (NearSouvenir >= 0 && Offer > 0 && !PC->IsMoveInputIgnored() && PC->WasInputKeyJustPressed(EKeys::Y))
+	{
+		Sell();
+	}
 	if (RaceState != static_cast<uint8>(LyudBeach::ERace::Idle) || NearPost >= 0)
 	{
 		UpdateRace(*Hero, *Sea, DeltaTime);
@@ -640,7 +671,34 @@ void ULyudBeach::SlowTick(AHeroCharacter& Hero, ALyudSea& Sea, float Dt)
 		PlacePosts(Sea);
 	}
 	UpdateShore(Hero, Sea);
+	UpdateSouvenirs();
 	UpdateCastle(Sea, Dt);
+	if (bBuilding)
+	{
+		if (const ULyudBeachBook* Book = ULyudBeachBook::Get(this); Book && Book->bCastle)
+		{
+			int32 One = -1;
+			Helpers = CountHelpers(Book->CastleAt, &One);
+			// now and then one of them says something over the sand
+			KidLineIn -= Dt;
+			if (Helpers > 0 && One >= 0 && KidLineIn <= 0.f)
+			{
+				KidLineIn = FMath::FRandRange(7.f, 12.f);
+				UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+				ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(this);
+				if (AActor* Body = People ? People->GetShownBody(One) : nullptr; Body && Talk)
+				{
+					static const TCHAR* Lines[6] = { TEXT("town.beach_castle_kid.1"), TEXT("town.beach_castle_kid.2"), TEXT("town.beach_castle_kid.3"),
+						TEXT("town.beach_castle_kid.4"), TEXT("town.beach_castle_kid.5"), TEXT("town.beach_castle_kid.6") };
+					Talk->SayLine(Body, Lines[FMath::RandRange(0, 5)], One);
+				}
+			}
+		}
+	}
+	else
+	{
+		Helpers = 0;
+	}
 	if (Shore.bOnSand)
 	{
 		UpdateFinds(Sea);
@@ -902,6 +960,15 @@ void ULyudBeach::ShowCastle()
 		// the water rounds it off: lower and a little wider
 		CastleRoot->SetWorldScale3D(FVector(1.f + (1.f - Standing) * 0.25f, 1.f + (1.f - Standing) * 0.25f, FMath::Max(0.05f, Standing)));
 	}
+	// the kiosk's paper flag stands taller on a proper stick and is a real pennant
+	if (CastleMeshes.Num() > 16 && CastleMeshes[15] && CastleMeshes[16])
+	{
+		const bool bPaper = Book->bCastlePaperFlag;
+		CastleMeshes[15]->SetRelativeScale3D(bPaper ? FVector(0.012f, 0.012f, 0.36f) : FVector(0.012f, 0.012f, 0.24f));
+		CastleMeshes[15]->SetRelativeLocation(bPaper ? FVector(0.f, 0.f, 59.f) : FVector(0.f, 0.f, 53.f));
+		CastleMeshes[16]->SetRelativeScale3D(bPaper ? FVector(0.18f, 0.006f, 0.11f) : FVector(0.1f, 0.006f, 0.06f));
+		CastleMeshes[16]->SetRelativeLocation(bPaper ? FVector(9.f, 0.f, 71.f) : FVector(5.f, 0.f, 61.f));
+	}
 	for (int32 I = 0; I < CastleMeshes.Num(); ++I)
 	{
 		const int32 From = I == 0 ? 5 : I == 1 ? 0 : I == 2 ? 2 : I <= 10 ? 3 : I <= 14 ? 4 : 6;
@@ -1003,6 +1070,7 @@ void ULyudBeach::UpdateRace(AHeroCharacter& Hero, ALyudSea& Sea, float Dt)
 	{
 		Hud->Clock = LyudBeachImpl::Seconds(RaceSeconds);
 	}
+	UpdateRivals(Sea);
 	switch (Event)
 	{
 	case ERaceEvent::Started:
@@ -1014,6 +1082,7 @@ void ULyudBeach::UpdateRace(AHeroCharacter& Hero, ALyudSea& Sea, float Dt)
 		break;
 	case ERaceEvent::GaveUp:
 		Say(LyudText::Get(TEXT("beach.race.gave_up")));
+		HideRivals();
 		if (Hud.IsValid())
 		{
 			Hud->Clock = FText::GetEmpty();
@@ -1034,7 +1103,30 @@ void ULyudBeach::UpdateRace(AHeroCharacter& Hero, ALyudSea& Sea, float Dt)
 			LyudBeachImpl::FromModel(*Book, Model);
 		}
 		static const TCHAR* Lines[4] = { TEXT("beach.race.done.0"), TEXT("beach.race.done.1"), TEXT("beach.race.done.2"), TEXT("beach.race.done.3") };
-		Say(LyudText::Get(bBeatGuard ? TEXT("beach.race.beat_guard") : Lines[Medal], { FStringFormatArg(LyudBeachImpl::Seconds(RaceSeconds).ToString()) }), 9.f);
+		FText Done = LyudText::Get(bBeatGuard ? TEXT("beach.race.beat_guard") : Lines[Medal], { FStringFormatArg(LyudBeachImpl::Seconds(RaceSeconds).ToString()) });
+		if (RivalNum > 0)
+		{
+			// his place among the summer visitors
+			double Times[LyudBeach::MaxRivals] = {};
+			for (int32 I = 0; I < RivalNum; ++I)
+			{
+				Times[I] = LyudBeach::RivalSeconds(RivalIdx[I], Race.CourseM, RaceDay);
+			}
+			const int32 Place = LyudBeach::RacePlace(Race.Seconds, Times, RivalNum);
+			Done = LyudText::Get(Place == 1 ? TEXT("beach.race.first") : TEXT("beach.race.place"),
+				{ FStringFormatArg(Done.ToString()), FStringFormatArg(Place), FStringFormatArg(RivalNum + 1) });
+			if (Place == 1)
+			{
+				if (Book)
+				{
+					Book->SwimWins++;
+				}
+				Stamp(TEXT("swim_first"));
+				ULyudQuests::Notify(this, TEXT("beach"), TEXT("swim_first"));
+			}
+		}
+		Say(Done, 10.f);
+		HideRivals();
 		Stamp(TEXT("swim"));
 		ULyudQuests::Notify(this, TEXT("beach"), TEXT("swim"));
 		if (Medal >= 3)
@@ -1098,8 +1190,28 @@ bool ULyudBeach::RaceNow()
 	RaceSeconds = RaceReadyFor = RaceOut = 0.f;
 	RaceCourse = static_cast<float>(Race.CourseM);
 	Play(TEXT("whistle_short"), Posts[Best].At);
-	Say(LyudText::Get(TEXT("beach.race.ready"), { FStringFormatArg(FMath::RoundToInt32(RaceCourse)),
-		FStringFormatArg(LyudBeachImpl::Seconds(static_cast<float>(LyudBeach::LifeguardSeconds(RaceCourse))).ToString()) }), 9.f);
+	// in the summer season a few of the visitors on the beach swim it too (the same ones all day)
+	const FDateTime Now = UGameCalendar::NowIn(World);
+	RaceDay = LyudBeachImpl::DayOf(Now);
+	float SeaC = 10.f;
+	if (const ULyudWeatherSubsystem* Weather = ULyudWeatherSubsystem::Get(this))
+	{
+		SeaC = Weather->GetState().SeaTempC;
+	}
+	RivalNum = LyudBeach::TodaysRivals(RaceDay, Now.GetMonth(), Now.GetDay(), SeaC, RivalIdx);
+	HideRivals();
+	FText Line = LyudText::Get(TEXT("beach.race.ready"), { FStringFormatArg(FMath::RoundToInt32(RaceCourse)),
+		FStringFormatArg(LyudBeachImpl::Seconds(static_cast<float>(LyudBeach::LifeguardSeconds(RaceCourse))).ToString()) });
+	if (RivalNum > 0)
+	{
+		FString Names;
+		for (int32 I = 0; I < RivalNum; ++I)
+		{
+			Names += (I ? TEXT(", ") : TEXT("")) + LyudText::Get(FString(TEXT("beach.rival.")) + UTF8_TO_TCHAR(LyudBeach::Rival(RivalIdx[I]).Id)).ToString();
+		}
+		Line = LyudText::Get(TEXT("beach.race.rivals"), { FStringFormatArg(Line.ToString()), FStringFormatArg(Names) });
+	}
+	Say(Line, 10.f);
 	return true;
 }
 
@@ -1327,6 +1439,7 @@ bool ULyudBeach::CastleHere(float Work)
 	Book->CastleAt = OnGround(Shore.Feet + Shore.Toward * 110.f);
 	Book->CastleWork = FMath::Clamp(Work, 0.f, static_cast<float>(LyudBeach::CastleStages));
 	Book->CastleWorn = 0.f;
+	Book->bCastleHelped = Book->bCastlePaperFlag = false;
 	Book->CastleBegun = Book->CastleSeen = UGameCalendar::NowIn(World);
 	ShownStage = -1;
 	ShowCastle();
@@ -1365,7 +1478,7 @@ void ULyudBeach::Pick(int32 Index)
 	LyudBeachImpl::FromModel(*Book, Model);
 	if (ULyudInventory* Inv = ULyudInventory::Get(this))
 	{
-		Inv->Add(bAmber ? FName(TEXT("amber_piece")) : FName(TEXT("seashell")));
+		Inv->Add(FName(UTF8_TO_TCHAR(LyudBeach::FindItem(Kind))));
 	}
 	Play(TEXT("rest_clink"), Found.At);
 	Say(LyudText::Get(TEXT("beach.picked.") + Id), News.bFirstOfKind ? 6.f : 3.f);
@@ -1475,7 +1588,12 @@ void ULyudBeach::UpdateInput(AHeroCharacter& Hero, ALyudSea& Sea, APlayerControl
 		if (bBuilding && bDown && bCanAct && Book->bCastle && FVector::Dist(Book->CastleAt, Shore.Feet) < LyudBeachImpl::CastleReachCm + 60.f)
 		{
 			LyudBeach::FCastle Castle = LyudBeachImpl::CastleOf(*Book);
-			if (LyudBeach::Build(Castle, Dt))
+			if (Helpers > 0 && !Book->bCastleHelped)
+			{
+				Book->bCastleHelped = true;
+				Say(LyudText::Get(TEXT("beach.castle.helped")), 4.f);
+			}
+			if (LyudBeach::Build(Castle, Dt, Helpers))
 			{
 				const int32 Stage = Castle.Stage();
 				Play(TEXT("rest_plate"), Book->CastleAt);
@@ -1491,6 +1609,19 @@ void ULyudBeach::UpdateInput(AHeroCharacter& Hero, ALyudSea& Sea, APlayerControl
 				{
 					Book->CastlesBuilt++;
 					Stamp(TEXT("castle_flag"));
+					// the kiosk's paper flag, if he has one, instead of the splinter and the sweet wrapper
+					if (ULyudInventory* Inv = ULyudInventory::Get(this); Inv && Inv->Count(TEXT("sand_flag")) > 0 && Inv->Remove(TEXT("sand_flag")))
+					{
+						Book->bCastlePaperFlag = true;
+						ShownStage = -1;
+						ULyudQuests::Notify(this, TEXT("beach"), TEXT("castle_paper_flag"));
+						Say(LyudText::Get(TEXT("beach.castle.paper_flag")), 5.f);
+					}
+					if (Book->bCastleHelped)
+					{
+						Stamp(TEXT("castle_kids"));
+						ULyudQuests::Notify(this, TEXT("beach"), TEXT("castle_kids"));
+					}
 					// when will the tide be here: the level of the coming hours against the sand it stands on
 					double Lon = 20.40, Offset = 2.0;
 					if (TActorIterator<ALyudSky> It(GetWorld()); It)
@@ -1548,6 +1679,14 @@ void ULyudBeach::UpdatePrompt()
 		else if (NearPost >= 0 && RaceState == static_cast<uint8>(LyudBeach::ERace::Idle))
 		{
 			Text = LyudText::Get(TEXT("beach.prompt.post"));
+			if (Book->BestSkips > 0 || Book->BestSwim > 0.f)
+			{
+				// the sign carries his own records under the beach's
+				const FText Swim = Book->BestSwim > 0.f ? LyudText::Get(TEXT("beach.board.seconds"), { FStringFormatArg(LyudBeachImpl::Seconds(Book->BestSwim).ToString()) })
+					: LyudText::Get(TEXT("beach.board.none"));
+				Text = LyudText::Get(TEXT("beach.prompt.post_mine"), { FStringFormatArg(Text.ToString()), FStringFormatArg(Book->BestSkips),
+					FStringFormatArg(Swim.ToString()), FStringFormatArg(Book->SwimWins) });
+			}
 		}
 		else if (bAtCastle)
 		{
@@ -1562,11 +1701,215 @@ void ULyudBeach::UpdatePrompt()
 			Text = LyudText::Get(TEXT("beach.prompt.throw"), { FStringFormatArg(Stones) });
 		}
 	}
+	if (Text.IsEmpty() && NearSouvenir >= 0 && Offer > 0)
+	{
+		Text = LyudText::Get(TEXT("beach.prompt.sell"), { FStringFormatArg(Offer) });
+	}
 	if (!Text.EqualTo(LastPrompt))
 	{
 		UI->SetPrompt(this, Text);
 		LastPrompt = Text;
 	}
+}
+
+// ------------------------------------------------------------------ the children at the castle
+
+void ULyudBeach::ReadKids()
+{
+	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	if (bKidsRead || !People || !People->IsRunning() || People->NumPeople() <= 0)
+	{
+		return;
+	}
+	bKidsRead = true;
+	for (int32 Id = 0; Id < People->NumPeople(); ++Id)
+	{
+		FPersonInfo Info;
+		if (People->GetPerson(Id, Info) && Info.Age >= 4 && Info.Age <= 12)
+		{
+			Kids.Add(Id);
+		}
+	}
+}
+
+int32 ULyudBeach::CountHelpers(const FVector& At, int32* OutOne)
+{
+	ReadKids();
+	const UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	if (!People)
+	{
+		return 0;
+	}
+	// children out on the sand near the castle (at play, building their own, or just passing) come and help
+	int32 N = 0;
+	for (const int32 Kid : Kids)
+	{
+		int32 Act = -1;
+		bool bDoing = false;
+		EPersonPose Pose = EPersonPose::Hidden;
+		FVector Where;
+		if (People->GetActivityState(Kid, Act, bDoing, Pose, Where) && Pose != EPersonPose::Hidden && Pose != EPersonPose::Sit
+			&& FVector::DistSquared2D(Where, At) < FMath::Square(1400.f) && FMath::Abs(Where.Z - At.Z) < 300.f)
+		{
+			if (OutOne && (N == 0 || FMath::RandBool()))
+			{
+				*OutOne = Kid;
+			}
+			if (++N >= LyudBeach::MaxHelpers)
+			{
+				break;
+			}
+		}
+	}
+	return N;
+}
+
+// ------------------------------------------------------------------ the summer visitors in the swim
+
+void ULyudBeach::HideRivals()
+{
+	if (!bRivalsShown)
+	{
+		return;
+	}
+	bRivalsShown = false;
+	for (UStaticMeshComponent* Mesh : RivalMeshes)
+	{
+		if (Mesh)
+		{
+			Mesh->SetVisibility(false);
+		}
+	}
+}
+
+void ULyudBeach::UpdateRivals(ALyudSea& Sea)
+{
+	using namespace LyudBeach;
+	const bool bOn = (RaceState == static_cast<uint8>(ERace::Out) || RaceState == static_cast<uint8>(ERace::Back)) && Posts.IsValidIndex(RacePost);
+	if (!bOn || RivalNum <= 0)
+	{
+		HideRivals();
+		return;
+	}
+	const FPost& Post = Posts[RacePost];
+	const FVector Dir = (Post.Buoy - Post.At).GetSafeNormal2D();
+	const FVector Side(-Dir.Y, Dir.X, 0.f);
+	bRivalsShown = true;
+	for (int32 I = 0; I < RivalNum && I < RivalMeshes.Num(); ++I)
+	{
+		UStaticMeshComponent* Mesh = RivalMeshes[I];
+		if (!Mesh)
+		{
+			continue;
+		}
+		const double Along = RivalAlong(RivalIdx[I], RaceCourse, RaceSeconds, RaceDay);
+		const bool bIn = Along >= 2.0 * RaceCourse - 0.01;
+		// out to the buoy on its one side, back on the other; in: hidden (gone up the beach)
+		const double Out = Along <= RaceCourse ? Along : 2.0 * RaceCourse - Along;
+		const float Lane = (I - 1) * 300.f + (Along <= RaceCourse ? 250.f : -250.f);
+		const FVector P = Post.At + Dir * static_cast<float>(Out * 100.0) + Side * Lane;
+		if (bIn || Sea.DepthAt(P) < 60.f)
+		{
+			Mesh->SetVisibility(false);
+			continue;
+		}
+		Mesh->SetWorldLocation(FVector(P.X, P.Y, Sea.SurfaceZ(P) + 4.f));
+		Mesh->SetVisibility(true);
+	}
+}
+
+// ------------------------------------------------------------------ selling finds
+
+void ULyudBeach::UpdateSouvenirs()
+{
+	if (!bSouvenirsRead)
+	{
+		if (const ULyudCityThings* Things = ULyudCityThings::Get(this))
+		{
+			TArray<FCityThingRef> Counters;
+			Things->GetThingsByAct([](const FString& Act) { return Act == TEXT("buy_souvenirs"); }, Counters);
+			if (Counters.Num())
+			{
+				bSouvenirsRead = true;
+				for (const FCityThingRef& C : Counters)
+				{
+					Souvenirs.Add(C.Location);
+				}
+			}
+		}
+	}
+	NearSouvenir = -1;
+	for (int32 I = 0; I < Souvenirs.Num(); ++I)
+	{
+		if (FVector::DistSquared(Souvenirs[I], Shore.Feet + FVector(0.f, 0.f, 100.f)) < FMath::Square(320.f))
+		{
+			NearSouvenir = I;
+		}
+	}
+	Offer = 0;
+	if (NearSouvenir >= 0)
+	{
+		const FDateTime Now = UGameCalendar::NowIn(GetWorld());
+		const double Hour = Now.GetHour() + Now.GetMinute() / 60.0;
+		Offer = Hour >= LyudBeach::ShopFrom && Hour < LyudBeach::ShopTo ? SellOffer() : 0;
+	}
+}
+
+int32 ULyudBeach::SellOffer(TArray<TPair<FName, int32>>* OutItems) const
+{
+	const ULyudInventory* Inv = ULyudInventory::Get(this);
+	if (!Inv)
+	{
+		return 0;
+	}
+	// the seller wants to see three pieces of amber for "The amber shore" first: those stay in his pocket until then
+	const ULyudQuests* Quests = ULyudQuests::Get(this);
+	const FLyudQuestProgress* AmberShore = Quests ? Quests->FindProgress(TEXT("amber_shore")) : nullptr;
+	const bool bQuestDone = AmberShore && AmberShore->State == ELyudQuestState::Done;
+	int32 Total = 0;
+	for (const TCHAR* Item : { TEXT("seashell"), TEXT("amber_piece"), TEXT("amber_fly") })
+	{
+		int32 N = Inv->Count(Item);
+		if (!bQuestDone && FCString::Strcmp(Item, TEXT("amber_piece")) == 0)
+		{
+			N = FMath::Max(0, N - LyudBeach::KeepForQuest);
+		}
+		if (N > 0)
+		{
+			Total += N * LyudBeach::SellPrice(TCHAR_TO_UTF8(Item));
+			if (OutItems)
+			{
+				OutItems->Add(TPair<FName, int32>(FName(Item), N));
+			}
+		}
+	}
+	return Total;
+}
+
+void ULyudBeach::Sell()
+{
+	ULyudInventory* Inv = ULyudInventory::Get(this);
+	ULyudBeachBook* Book = ULyudBeachBook::Get(this);
+	TArray<TPair<FName, int32>> Items;
+	const int32 Pay = SellOffer(&Items);
+	if (!Inv || !Book || Pay <= 0)
+	{
+		return;
+	}
+	bool bAmber = false;
+	for (const TPair<FName, int32>& It : Items)
+	{
+		Inv->Remove(It.Key, It.Value);
+		bAmber |= It.Key != FName(TEXT("seashell"));
+	}
+	Inv->Earn(Pay);
+	Book->SoldRoubles += Pay;
+	Play(TEXT("rest_coins"), Souvenirs.IsValidIndex(NearSouvenir) ? Souvenirs[NearSouvenir] : Shore.Feet);
+	Say(LyudText::Get(bAmber ? TEXT("beach.sell.amber") : TEXT("beach.sell.shells"), { FStringFormatArg(Pay) }), 6.f);
+	Stamp(TEXT("sold"));
+	ULyudQuests::Notify(this, TEXT("beach"), TEXT("sold"));
+	UE_LOG(LogLyudBeach, Display, TEXT("BEACH sold %d item kinds for %d roubles (all told %d)"), Items.Num(), Pay, Book->SoldRoubles);
+	Offer = 0;
 }
 
 FString ULyudBeach::Report() const
@@ -1580,6 +1923,10 @@ FString ULyudBeach::Report() const
 		Out += FString::Printf(TEXT("; book: best %d skips of %d throws, stones %d, swim best %.1f s of %d, castle %d work %.1f worn %.2f (built %d, washed %d), shells %d amber %d"),
 			Book->BestSkips, Book->Throws, Book->Stones.Num(), Book->BestSwim, Book->Swims, Book->bCastle ? 1 : 0, Book->CastleWork, Book->CastleWorn,
 			Book->CastlesBuilt, Book->CastlesWashed, Book->Shells, Book->Ambers);
+		Out += FString::Printf(TEXT("; helped %d flag %d, swim wins %d, sold %d rub"),
+			Book->bCastleHelped ? 1 : 0, Book->bCastlePaperFlag ? 1 : 0, Book->SwimWins, Book->SoldRoubles);
 	}
+	Out += FString::Printf(TEXT("; kids %d helpers %d; rivals today %d (day %d, shown %d); souvenir counters %d (near %d, offer %d)"),
+		Kids.Num(), Helpers, RivalNum, RaceDay, bRivalsShown ? 1 : 0, Souvenirs.Num(), NearSouvenir, Offer);
 	return Out;
 }

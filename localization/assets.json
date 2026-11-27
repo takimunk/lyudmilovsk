@@ -1434,6 +1434,20 @@
    "prompt": "A small rough piece of raw Baltic amber, cloudy honey-yellow with a matte weathered crust, a strand of dark seaweed beside it.",
    "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_amber_piece (fal, one picture; docs/beach.md)"
   },
+  "icon_amber_fly": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small polished drop of clear honey-coloured Baltic amber with a tiny dark fly caught inside it, lit from behind.",
+   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_amber_fly (fal, one picture; docs/beach.md)"
+  },
+  "icon_sand_flag": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small red paper flag glued to a thin wooden stick, the kind children put on top of a sandcastle.",
+   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_sand_flag (fal, one picture; docs/beach.md)"
+  },
   "icon_travel_card": {
    "kind": "icon",
    "style": "icon",

@@ -1,6 +1,7 @@
 // The beach model's checks (tools/beachsim/run.sh): skipping stones, the sandcastle and the tide, the buoy swim, the finds.
 #include "BeachModel.h"
 
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -319,6 +320,88 @@ static void TestFinds()
 	}
 }
 
+static void TestHelpers()
+{
+	std::printf("children at the castle\n");
+	auto Time = [](int Helpers)
+	{
+		FCastle C;
+		C.bAlive = true;
+		double T = 0.0;
+		while (C.Work < CastleStages && T < 600.0)
+		{
+			Build(C, 0.1, Helpers);
+			T += 0.1;
+		}
+		return T;
+	};
+	const double Alone = Time(0), One = Time(1), Two = Time(2), Five = Time(5);
+	CHECK(std::fabs(Alone - CastleStages * StageSeconds) < 0.2, "alone a castle takes %.1f s (%.1f)", Alone, CastleStages * StageSeconds);
+	CHECK(One < Alone && Two < One, "each child helping speeds it: %.1f, %.1f, %.1f s", Alone, One, Two);
+	CHECK(std::fabs(Two - Alone / (1.0 + HelperBoost * MaxHelpers)) < 0.3, "two children: %.1f s", Two);
+	CHECK(std::fabs(Five - Two) < 0.11, "more than %d help no more: %.1f vs %.1f", MaxHelpers, Five, Two);
+	FCastle Dead;
+	CHECK(!Build(Dead, 1.0, 2), "no castle, nothing to help with");
+}
+
+static void TestRivals()
+{
+	std::printf("summer visitors at the buoy\n");
+	int Out[MaxRivals];
+	CHECK(TodaysRivals(9000, 10, 5, 18.0, Out) == 0, "no visitors in October");
+	CHECK(TodaysRivals(9000, 7, 20, 13.0, Out) == 0, "none in cold water");
+	CHECK(TodaysRivals(9000, 6, 10, 19.0, Out) == 0, "none before mid-June");
+	int Days = 0, Total = 0;
+	for (int D = 0; D < 300; ++D)
+	{
+		const int N = TodaysRivals(9000 + D, 7, 20, 19.0, Out);
+		CHECK(N >= 0 && N <= MaxRivals, "never more than %d visitors (%d)", MaxRivals, N);
+		Days += N > 0 ? 1 : 0;
+		Total += N;
+		for (int I = 0; I < N; ++I)
+		{
+			CHECK(Out[I] >= 0 && Out[I] < RivalCount, "a real visitor (%d)", Out[I]);
+		}
+	}
+	CHECK(Days > 270 && Total > 600, "most summer days somebody swims with him: %d days, %.2f a day", Days, Total / 300.0);
+	int A[MaxRivals], B[MaxRivals];
+	const int Na = TodaysRivals(9123, 8, 1, 20.0, A), Nb = TodaysRivals(9123, 8, 1, 20.0, B);
+	CHECK(Na == Nb && std::equal(A, A + Na, B), "the same visitors all day");
+	// a course like the first tower's: the buoy 170 m out
+	const double Course = 170.0;
+	double Fastest = 1e9, Slowest = 0.0;
+	for (int I = 0; I < RivalCount; ++I)
+	{
+		const double T = RivalSeconds(I, Course, 9050);
+		Fastest = std::min(Fastest, T);
+		Slowest = std::max(Slowest, T);
+		const double End = RivalAlong(I, Course, T, 9050);
+		CHECK(std::fabs(End - 2.0 * Course) < 0.05, "%s is in at its time (%.2f of %.0f m)", Rival(I).Id, End, 2.0 * Course);
+		CHECK(RivalAlong(I, Course, T * 0.5, 9050) > Course * 0.95, "%s: half the time, past half the way (it fades)", Rival(I).Id);
+		CHECK(RivalAlong(I, Course, 0.0, 9050) == 0.0 && RivalAlong(I, Course, T * 3.0, 9050) <= 2.0 * Course, "%s starts at 0, never past the end", Rival(I).Id);
+		const double Mean = 2.0 * Course / T;
+		CHECK(Mean > 1.1 && Mean < 1.8, "%s swims a believable %.2f m/s", Rival(I).Id, Mean);
+	}
+	// the hero swims 1.6 m/s: he beats some, not all
+	const double Hero = 2.0 * Course / 1.6;
+	double All[RivalCount];
+	for (int I = 0; I < RivalCount; ++I) { All[I] = RivalSeconds(I, Course, 9050); }
+	const int Place = RacePlace(Hero, All, RivalCount);
+	CHECK(Place > 1 && Place < RivalCount + 1, "at 1.6 m/s against all six: mid-field (place %d)", Place);
+	CHECK(Fastest < LifeguardSeconds(Course), "the fastest visitor beats the lifeguards' time (%.0f < %.0f)", Fastest, LifeguardSeconds(Course));
+	CHECK(RacePlace(1.0, All, RivalCount) == 1 && RacePlace(1e9, All, RivalCount) == RivalCount + 1, "first and last places");
+}
+
+static void TestSelling()
+{
+	std::printf("selling finds\n");
+	CHECK(!std::strcmp(FindItem(EFind::Cockle), "seashell") && !std::strcmp(FindItem(EFind::Whelk), "seashell"), "shells are shells");
+	CHECK(!std::strcmp(FindItem(EFind::Amber), "amber_piece") && !std::strcmp(FindItem(EFind::AmberFly), "amber_fly"), "amber, and amber with a fly");
+	CHECK(SellPrice("seashell") > 0 && SellPrice("amber_piece") > SellPrice("seashell") && SellPrice("amber_fly") > SellPrice("amber_piece"),
+		"a fly in amber dearest, then amber, then shells (%d, %d, %d)", SellPrice("seashell"), SellPrice("amber_piece"), SellPrice("amber_fly"));
+	CHECK(SellPrice("amber_charm") == 0 && SellPrice(nullptr) == 0, "the seller buys only what the sea gave");
+}
+
 static void TestBook()
 {
 	std::printf("the book\n");
@@ -380,6 +463,9 @@ int main(int Argc, char** Argv)
 	TestCastle();
 	TestRace();
 	TestFinds();
+	TestHelpers();
+	TestRivals();
+	TestSelling();
 	TestBook();
 	std::printf("beachsim: %d checks, %d failed\n", GPassed + GFailed, GFailed);
 	return GFailed ? 1 : 0;

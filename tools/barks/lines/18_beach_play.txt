@@ -1,0 +1,33 @@
+
+## ---------------------------------------------------------------------------------------------------------------
+## The beach at play, deeper (docs/beach.md "Children at the castle", "Summer visitors at the buoy"): children building
+## castles on warm days (town life's beach_castle; the same lines are said by a child who comes to help the hero with
+## his castle, ULyudBeach), and the grown-ups on the sand talking about the summer folk who race to the buoy.
+## Russian: the speaker's own words never agree in gender.
+## ---------------------------------------------------------------------------------------------------------------
+
+[beach_castle_kid]
+doing = beach_castle
+age = kid
+say town.beach_castle_kid.1 | Я копаю ров! Ров — это самое главное. | I'm digging the moat! The moat is the most important part. | ぼくがお堀を掘る！お堀がいちばん大事なんだ。
+say town.beach_castle_kid.2 | Песок надо мокрый. Сухой сразу рассыпается. | The sand has to be wet. Dry sand just falls apart. | 砂はぬれてなきゃ。かわいた砂はすぐくずれる。
+say town.beach_castle_kid.3 | Давай ещё одну башню, вон там, с краю. | Let's do one more tower, over there, at the edge. | もうひとつ塔をつくろう、あっちのはじっこに。
+say town.beach_castle_kid.4 | Сейчас волна придёт. Строй быстрее! | A wave's coming soon. Build faster! | もうすぐ波が来るよ。はやくつくって！
+say town.beach_castle_kid.5 | Я ракушки на стену налеплю. Будет красиво. | I'll stick shells on the wall. It'll be pretty. | 壁に貝殻をはりつけるね。きれいになるよ。
+say town.beach_castle_kid.6 | А флажок есть? Без флажка замок не считается. | Have you got a flag? A castle without a flag doesn't count. | 旗ある？旗のないお城はお城じゃないよ。
+
+[beach_castle_mind]
+doing = mind_child
+at = beach
+age = adult elder
+weather = warm
+say town.beach_castle_mind.1 | Третий замок за утро. Море пока выигрывает. | The third castle this morning. The sea's winning so far. | 今朝はこれで三つ目の城。今のところ海の勝ち。
+say town.beach_castle_mind.2 | Не уходи далеко от воды! И близко тоже не подходи. | Don't go far from the water! And don't go close to it either. | 水から離れないで！でも近づきすぎもだめ。
+
+[beach_race_talk]
+doing = swim_look sea_air
+at = beach
+weather = warm
+say town.beach_race_talk.1 | Дачники опять наперегонки до буйка. Спасатель их всех по секундомеру считает. | The summer folk are racing to the buoy again. The lifeguard times every one of them. | 別荘の人たちがまたブイまで競争してる。監視員がみんなストップウォッチで計ってるよ。
+say town.beach_race_talk.2 | Та, в белой шапочке, каждое лето первая. Говорят, в молодости за город плавала. | The one in the white cap is first every summer. They say she swam for the town when she was young. | 白い帽子の人、毎年夏は一番なんだ。若いころ町の代表だったって話だ。
+say town.beach_race_talk.3 | На табличке у спасателя теперь новое имя. Интересно чьё. | There's a new name on the lifeguard's sign. I wonder whose. | 監視員の札に新しい名前がある。だれのだろう。

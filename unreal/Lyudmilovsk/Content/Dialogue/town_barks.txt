@@ -4083,6 +4083,29 @@ age = elder
 weight = 5
 say = town.fv_amber_morning_elder.1
 
+# The beach at play, deeper (docs/beach.md "Children at the castle", "Summer visitors at the buoy"): children building
+# castles on warm days (town life's beach_castle; the same lines are said by a child who comes to help the hero with
+# his castle, ULyudBeach), and the grown-ups on the sand talking about the summer folk who race to the buoy.
+# Russian: the speaker's own words never agree in gender.
+
+[beach_castle_kid]
+doing = beach_castle
+age = kid
+say = town.beach_castle_kid.1..6
+
+[beach_castle_mind]
+doing = mind_child
+at = beach
+age = adult elder
+weather = warm
+say = town.beach_castle_mind.1..2
+
+[beach_race_talk]
+doing = swim_look sea_air
+at = beach
+weather = warm
+say = town.beach_race_talk.1..3
+
 # The town cooks at home too (docs/kitchen.md "The town cooks"): what people carry home from the shops and the
 # market by the season (the same Baltic dishes the hero learns: spring smelt, summer okroshka, autumn herring and
 # draniki), and a word over the table at home

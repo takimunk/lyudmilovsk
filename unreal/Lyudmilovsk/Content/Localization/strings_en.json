@@ -2360,5 +2360,9 @@
  "line.transport.ride.reply.2": "That's right.",
  "line.transport.ride.reply.3": "Tell me about it.",
  "line.transport.ride.reply.4": "I think so too.",
- "ui.held.waiting": "Birds that spotted the feed and wait: {0}"
+ "ui.held.waiting": "Birds that spotted the feed and wait: {0}",
+ "item.amber_fly.name": "Amber with a fly",
+ "item.amber_fly.desc": "A piece of amber with a small fly inside. It has sat there since before there was a sea here, or a town.",
+ "item.sand_flag.name": "Paper flag",
+ "item.sand_flag.desc": "A little flag on a stick, for the top of a sandcastle. The kiosk says a castle without a flag does not count."
 }

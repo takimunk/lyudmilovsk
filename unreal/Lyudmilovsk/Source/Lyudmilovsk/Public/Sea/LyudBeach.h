@@ -51,6 +51,14 @@ public:
 	/** The game's time the castle was last looked after (the water between then and now is made up for). */
 	UPROPERTY(SaveGame) FDateTime CastleSeen;
 
+	/** Children helped build this castle (the stamp "castle_kids"); its flag is the kiosk's paper one (sand_flag), not a
+	 *  splinter and a sweet wrapper. */
+	UPROPERTY(SaveGame) bool bCastleHelped = false;
+	UPROPERTY(SaveGame) bool bCastlePaperFlag = false;
+	/** Swims won against the summer visitors; roubles the souvenir units have paid for finds. */
+	UPROPERTY(SaveGame) int32 SwimWins = 0;
+	UPROPERTY(SaveGame) int32 SoldRoubles = 0;
+
 	/** The day (days since 2000) the picked cells are of, and the cells of the waterline already emptied that day. */
 	UPROPERTY(SaveGame) int32 PickDay = 0;
 	UPROPERTY(SaveGame) TArray<int32> Picked;
@@ -68,7 +76,12 @@ public:
  *   - E (held): builds a sandcastle a step in front of him: a heap, a keep, towers, walls, a moat, a flag. The tide washes
  *     it away hours later (LyudBeach::Wash by the sea's level, also over the hours the hero slept or was away);
  *   - shells always and amber after a storm lie along the waterline (the same ones all day): E picks one up;
- *   - at the post below each lifeguard tower E starts the swim to the buoy and back against the clock.
+ *   - at the post below each lifeguard tower E starts the swim to the buoy and back against the clock; in the summer season
+ *     a few summer visitors (LyudBeach::Rival) swim it with him, their caps out on the water, and he gets his place;
+ *   - the town's children at play on the sand near his castle join in (faster building, their words); the kiosk's paper
+ *     flag (sand_flag) goes on the finished castle;
+ *   - Y at a souvenir unit's counter sells what the waterline gave (keeping three pieces of amber while the seller still
+ *     wants to see them for "The amber shore").
  *
  * The rules are LyudBeach (Private/Sea/BeachModel, plain C++, tools/beachsim). Stamps "beach/<piece>", quest events
  * "beach <what>" (skip3, skip5, skip_record, castle, castle_washed, swim, swim_gold, shell, amber), diary notes.
@@ -152,6 +165,16 @@ private:
 	FVector OnGround(const FVector& At) const;
 	bool Seaward(ALyudSea& Sea, const FVector& At, FVector& Out) const;
 	void EnsureHud();
+	/** The children (ages 4 .. 12) of the people's life, read once it runs; how many of them are at play by the castle. */
+	void ReadKids();
+	int32 CountHelpers(const FVector& At, int32* OutOne = nullptr);
+	/** The visitors' caps on the water while a swim is on (every frame, three meshes at most). */
+	void UpdateRivals(ALyudSea& Sea);
+	void HideRivals();
+	/** The souvenir counters (the things with the act buy_souvenirs), the one he stands at and what it would pay now. */
+	void UpdateSouvenirs();
+	void Sell();
+	int32 SellOffer(TArray<TPair<FName, int32>>* OutItems = nullptr) const;
 
 	bool bBegun = false;
 	float SlowClock = 0.f;
@@ -198,6 +221,25 @@ private:
 	uint8 RaceState = 0;
 	float RaceSeconds = 0.f, RaceReadyFor = 0.f, RaceOut = 0.f, RaceCourse = 60.f;
 
+	// the children at the castle
+	TArray<int32> Kids;
+	bool bKidsRead = false;
+	int32 Helpers = 0;
+	float KidLineIn = 3.f;
+
+	// the summer visitors in the swim (indices into LyudBeach::Rival), the game day the race is on
+	int32 RivalIdx[3] = { 0, 0, 0 };
+	int32 RivalNum = 0;
+	int32 RaceDay = 0;
+	bool bRivalsShown = false;
+
+	// the souvenir counters
+	TArray<FVector> Souvenirs;
+	bool bSouvenirsRead = false;
+	int32 NearSouvenir = -1;
+	int32 Offer = 0;
+
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> RivalMeshes;
 	UPROPERTY(Transient) TObjectPtr<AActor> Props;
 	UPROPERTY(Transient) TObjectPtr<USceneComponent> CastleRoot;
 	UPROPERTY(Transient) TObjectPtr<UStaticMeshComponent> StoneMesh;
