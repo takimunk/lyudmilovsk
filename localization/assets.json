@@ -117,6 +117,34 @@
    "aspect": "1:1",
    "prompt": "A neatly folded loose camel-coloured corduroy overshirt with two chest pockets and buttons, the sleeves rolled."
   },
+  "icon_wind_jacket": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a neatly folded bottle-green zip windbreaker of thin crisp fabric with a stand-up collar and elastic cuffs",
+   "source": "localization/icon_grids_look.json: icons_look, cell 1 (row 1, left), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_raincoat": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a neatly folded yellow rubberised raincoat with a hood and big press studs, a matte sheen on the folds",
+   "source": "localization/icon_grids_look.json: icons_look, cell 2 (row 1, right), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_winter_coat": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a neatly folded heavy navy blue woollen winter coat with a dark fur collar and large buttons",
+   "source": "localization/icon_grids_look.json: icons_look, cell 3 (row 2, left), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_cap": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a grey herringbone tweed flat cap with a short stiff peak, seen from the front at three quarters",
+   "source": "localization/icon_grids_look.json: icons_look, cell 4 (row 2, right), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
   "icon_hoodie": {
    "kind": "icon",
    "style": "icon",

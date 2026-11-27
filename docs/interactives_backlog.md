@@ -291,7 +291,9 @@ a furnished room, save/load test.
 
 ## 20. Haircut and clothes
 
-`[ ]` **Brief (Fable 5.2):** The barber's haircut and the department store's clothes departments exist as acts, but change
+`[~]` (branch `hero-look`, `docs/look.md`: rules, pages, words, engine side and the mesh builder done in the cloud; first
+Mac compile, the meshes on the real hero, icons, shots and bench owed.)
+**Brief (Fable 5.2):** The barber's haircut and the department store's clothes departments exist as acts, but change
 nothing (backlog P3/P1 "thin"). Make them change the hero's look: three or four haircuts (hair meshes on the hero's skeleton,
 `Content/Characters/Hero` is local-only: work on the Mac), clothes as items worn (the inventory's "worn" page,
 `diary/screens/03_inventory_worn.png`): a jacket, a raincoat for rain, a winter coat, a cap; the hero's shadow mesh and the

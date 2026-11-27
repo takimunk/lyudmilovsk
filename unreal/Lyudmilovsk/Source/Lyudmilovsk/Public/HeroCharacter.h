@@ -37,6 +37,9 @@ class LYUDMILOVSK_API AHeroCharacter : public ACharacter
 public:
 	AHeroCharacter();
 
+	/** The shadow's full body (head and all): the look's hair and cap sit on its head (ULyudLook). */
+	UHeroShadowMesh* GetShadowBody() const { return ShadowBody.Get(); }
+
 	UPROPERTY(EditAnywhere, Category = "Hero")
 	TSoftObjectPtr<USkeletalMesh> BodyMesh;
 

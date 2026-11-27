@@ -7,6 +7,7 @@
 #include "People/LyudFriends.h"
 #include "People/LyudTownRumours.h"
 #include "HeroCharacter.h"
+#include "Look/LyudLook.h"
 #include "LyudText.h"
 #include "Plants/GameCalendar.h"
 #include "Sky/LyudSky.h"
@@ -895,6 +896,11 @@ void ULyudTownTalkSubsystem::Scan()
 				if (ULyudFriends* F = ULyudFriends::Get(this))
 				{
 					F->OnGreeted(Id);
+				}
+				// a word about a new haircut, or about a shirt in the rain (docs/look.md)
+				if (ULyudLook* HeroLook = ULyudLook::Get(this))
+				{
+					HeroLook->OnGreeted(Id);
 				}
 				CountSaid(SetIx);
 				NextGreetAt = Clock + 4.f;
