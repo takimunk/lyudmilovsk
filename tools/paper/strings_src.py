@@ -468,6 +468,31 @@ FEST = {
          "A quiet holiday: Christmas. The editors wish everyone a warm home, hot tea and neighbours who say hello first.",
          "静かな祝日、クリスマス。編集部は皆さんに、暖かい家と熱いお茶と、先に挨拶してくれるご近所を願う。"),
     ],
+    # Science Day, the Old New Year, Neptune Day (docs/festivals.md)
+    "science_day": [
+        ("День науки! Институт вышел на ярмарку: юные техники заряжают лейденскую банку, в лотерейном ряду блиц-викторина, а кислородный коктейль сегодня наливают бесплатно. В три на площади лекция «Отчего светит Солнце».",
+         "Science Day! The institute has come out to the fair: the young technicians are charging a Leyden jar, the lottery row runs a blitz quiz, and the oxygen cocktail is poured free today. At three, on the square, the lecture “Why the Sun shines”.",
+         "科学の日！研究所が市に出てきた。少年技術者たちはライデン瓶に電気をため、くじ売り場では早押しクイズ、酸素カクテルは今日は無料。三時に広場で講演「太陽はなぜ光るのか」。"),
+        ("Сегодня День науки. В половине пятого на площади городская викторина: дворы против лабораторий. Вечером астрономический кружок выносит телескопы на набережную. Редакция напоминает: свет от Солнца идёт до нас восемь минут, а до ярмарки от любой остановки пять.",
+         "Science Day today. At half past four the town quiz on the square: the yards against the laboratories. In the evening the astronomy club takes its telescopes out onto the promenade. The editors remind you: the Sun's light takes eight minutes to reach us, and the fair is five from any stop.",
+         "今日は科学の日。四時半から広場で町のクイズ大会、中庭 対 研究室。夜は天文クラブが遊歩道に望遠鏡を出す。編集部よりひとこと：太陽の光がここまで八分、市まではどの停留所からも五分。"),
+    ],
+    "old_new_year": [
+        ("Старый Новый год. Вечером дети пойдут по дворам с бумажным солнцем: приготовьте пряники и мелочь. В пельменной на набережной лепят вареники с сюрпризом и льют воск, а к полуночи город снова соберётся у ёлки.",
+         "The Old New Year. In the evening the children will go round the yards with a paper sun: have gingerbread and small change ready. The dumpling bar on the promenade is making dumplings with a surprise and pouring wax, and by midnight the town will gather at the tree once more.",
+         "旧暦の新年。夕方、子どもたちが紙の太陽を持って中庭をまわる。ジンジャーブレッドと小銭のご用意を。遊歩道のペリメニ食堂ではおたのしみ入りのヴァレーニキとろう占い、真夜中には町がもう一度ツリーの下に集まる。"),
+        ("Сегодня Новый год встречают во второй раз, уже без спешки. Ёлка на площади горит последнюю ночь. Редакция советует жевать вареники осторожно: пуговица в варенике к обнове, а не к стоматологу.",
+         "Today the New Year is seen in a second time, without the rush. The tree on the square is lit for its last night. The editors advise chewing your dumplings with care: a button in a dumpling means new clothes, not the dentist.",
+         "今日は二度めの新年。こんどはあわてずに。広場のツリーの灯は今夜かぎり。編集部より：ヴァレーニキはそっとかむこと。中のボタンは新しい服のしるしで、歯医者のしるしではない。"),
+    ],
+    "neptune_day": [
+        ("День Нептуна! В полдень морской царь со свитой выходит на городской пляж. До трёх суд, канат и заплыв на автомобильных камерах, в три от пирса парад лодок, потом уха из общего котла. Сухим сегодня не останется никто, включая нашего корреспондента.",
+         "Neptune Day! At noon the sea king and his court come ashore on the town beach. Until three, his court, the tug of war and the race on inner tubes; at three the boat parade from the pier; then fish soup from the common pot. Nobody stays dry today, our correspondent included.",
+         "ネプチューンの日！正午、海の王がお供をつれて町の浜に上がる。三時までお裁きと綱引きとタイヤチューブ競争、三時に桟橋からボートのパレード、そのあとはみんなの大鍋のウハー。今日は誰もぬれずにはすまない。本紙記者もふくめて。"),
+        ("Сегодня День Нептуна. Спасательная станция просит: рыбу для общей ухи нести к первой вышке до полудня, камеры для заплыва брать в прокате, документы и часы оставлять дома. Грамоты «Житель моря» выдаются мокрыми.",
+         "Neptune Day today. The lifeguard station asks: bring fish for the common soup to the first tower before noon, collect inner tubes for the race at the rental, and leave papers and watches at home. The certificates “Citizen of the Sea” are issued wet.",
+         "今日はネプチューンの日。救助所からのお願い：ウハー用の魚は正午までに第一監視塔へ、競争用のチューブは貸し出し屋で、書類と時計は家に置いてくること。「海の住人」の賞状は、ぬれた状態でお渡しします。"),
+    ],
 }
 
 # --- front stories for days without news: (ru, en, ja, months or None)
@@ -905,6 +930,33 @@ NOTICES += [
      "Итоги фотоконкурса подведены. Три лучших снимка висят в фотолаборатории «Шестерни», на стене у лески. С первого числа — новая тема.",
      "The photo contest has been judged. The three best prints hang in the Cog's photo lab, on the wall by the drying line. A new theme from the first of the month.",
      "写真コンクールの結果が出ました。上位三点は「歯車」の写真室、干し紐のそばの壁に。一日からは新しいテーマです。"),
+]
+# Science Day, the Old New Year, Neptune Day (docs/festivals.md): a notice before each and a report after it
+NOTICES += [
+    ("school", "nh_science_soon", ("11-22", "11-30"), None,
+     "В первую субботу декабря День науки. Кружку юных техников нужны на ярмарку: старые радиолампы, велосипедный звонок и шестой «Б» в полном составе за прилавок. Выручка от пирожных идёт на телескоп.",
+     "Science Day is on the first Saturday of December. For the fair the young technicians' club needs: old radio valves, a bicycle bell and the whole of class 6B behind the counter. The takings from the cakes go towards a telescope.",
+     "十二月の第一土曜は科学の日。少年技術者クラブが市のために募集：古い真空管、自転車のベル、そして売り子として六年B組全員。ケーキの売り上げは望遠鏡になります。"),
+    ("school", "nh_science_done", ("12-08", "12-16"), None,
+     "Итоги Дня науки. Викторину выиграл двор дома на Террасах: лаборатория уступила одно очко дворнику. На телескоп собрано сорок два рубля. Лейденская банка цела, пострадал один палец, владелец пальца доволен.",
+     "Science Day, the results. The quiz was won by a yard on the Terraces: the laboratory lost by one point to the caretaker. Forty-two roubles were raised for the telescope. The Leyden jar is whole; one finger suffered, and the finger's owner is pleased.",
+     "科学の日の結果。クイズはテラスの中庭チームが優勝、研究室は管理人さんに一点差で負けました。望遠鏡の募金は四十二ルーブル。ライデン瓶は無事、指が一本やられましたが、持ち主は満足しています。"),
+    ("club", "nh_ony_soon", ("01-08", "01-13"), None,
+     "13 января, Старый Новый год. С половины пятого дети ходят по дворам с бумажным солнцем. Солнце клеят в клубе в четверг, клей и фольга есть, нужны руки. В полночь встречаемся у ёлки, она стоит последнюю ночь.",
+     "13 January, the Old New Year. From half past four the children go round the yards with a paper sun. The sun is being glued at the club on Thursday; there is glue and foil, hands are wanted. At midnight we meet at the tree, on its last night.",
+     "一月十三日は旧暦の新年。四時半から子どもたちが紙の太陽を持って中庭をまわります。太陽は木曜にクラブで作ります。のりと銀紙はあり、人手を募集。真夜中はツリーの下で。ツリーは今夜かぎりです。"),
+    ("lost", "nh_ony_done", ("01-14", "01-21"), None,
+     "В пельменной на набережной после Старого Нового года остались: варежка, два шарфа и пуговица из вареника, которую никто не признал своей. Восковые фигурки сохнут на подоконнике, забрать до конца недели.",
+     "Left at the dumpling bar on the promenade after the Old New Year: a mitten, two scarves and a button out of a dumpling that nobody will own to. The wax figures are drying on the windowsill; collect by the end of the week.",
+     "旧暦の新年のあと、遊歩道のペリメニ食堂に忘れ物：手袋片方、マフラー二本、そして誰も自分のだと言わないヴァレーニキのボタン。ろうの形は窓台で乾かしています。週末までにお引き取りを。"),
+    ("health", "nh_neptune_soon", ("07-12", "07-24"), None,
+     "В последнее воскресенье июля День Нептуна. Спасательная станция предупреждает: обливать будут всех. Заплыв на камерах только до буя, уху варим у первой вышки, рыбу несите с утра. Часы и документы оставьте дома.",
+     "Neptune Day is on the last Sunday of July. The lifeguard station gives warning: everyone will get a bucket. The inner-tube race goes to the buoy and no farther; the soup is cooked at the first tower, bring fish in the morning. Leave watches and papers at home.",
+     "七月の最終日曜はネプチューンの日。救助所より予告：全員に水がかかります。チューブ競争はブイまで。ウハーは第一監視塔で煮ます。魚は朝のうちに。時計と書類は家に置いてきてください。"),
+    ("lost", "nh_neptune_done", ("08-01", "08-09"), None,
+     "После Дня Нептуна на первой вышке ждут хозяев: шесть полотенец, одна сандалия и борода из мочалки. Автомобильную камеру с надписью «чемпион» просят вернуть в прокат, она с грузовика директора клуба.",
+     "Waiting for their owners at the first tower after Neptune Day: six towels, one sandal and a loofah beard. The inner tube chalked “champion” is asked back at the rental: it is off the club director's lorry.",
+     "ネプチューンの日のあと、第一監視塔で持ち主を待っています：タオル六枚、サンダル片方、へちまのひげ。「優勝」と書かれたタイヤチューブは貸し出し屋へお返しください。クラブ所長のトラックのものです。"),
 ]
 # the photo circle's own sheet (text notices_photo, read at P-CLUB3/photo_board in turn with the lab's guide): its title and
 # its rules; the page before them is the contest notice of the day (the seven above)

@@ -70,6 +70,16 @@
   "en": "Lost: a blue bucket and spade. The owner is four, very upset, and building castles with her hands.",
   "ja": "青いバケツとスコップをなくしました。持ち主は四歳。とても心配して、手で砂の城を作っています。"
  },
+ "city.note.lost.nh_ony_done": {
+  "ru": "В пельменной на набережной после Старого Нового года остались: варежка, два шарфа и пуговица из вареника, которую никто не признал своей. Восковые фигурки сохнут на подоконнике, забрать до конца недели.",
+  "en": "Left at the dumpling bar on the promenade after the Old New Year: a mitten, two scarves and a button out of a dumpling that nobody will own to. The wax figures are drying on the windowsill; collect by the end of the week.",
+  "ja": "旧暦の新年のあと、遊歩道のペリメニ食堂に忘れ物：手袋片方、マフラー二本、そして誰も自分のだと言わないヴァレーニキのボタン。ろうの形は窓台で乾かしています。週末までにお引き取りを。"
+ },
+ "city.note.lost.nh_neptune_done": {
+  "ru": "После Дня Нептуна на первой вышке ждут хозяев: шесть полотенец, одна сандалия и борода из мочалки. Автомобильную камеру с надписью «чемпион» просят вернуть в прокат, она с грузовика директора клуба.",
+  "en": "Waiting for their owners at the first tower after Neptune Day: six towels, one sandal and a loofah beard. The inner tube chalked “champion” is asked back at the rental: it is off the club director's lorry.",
+  "ja": "ネプチューンの日のあと、第一監視塔で持ち主を待っています：タオル六枚、サンダル片方、へちまのひげ。「優勝」と書かれたタイヤチューブは貸し出し屋へお返しください。クラブ所長のトラックのものです。"
+ },
  "city.notices.club.title": {
   "ru": "Клубная доска",
   "en": "Club notice board",
@@ -150,6 +160,11 @@
   "en": "The photo contest has been judged. The three best prints hang in the Cog's photo lab, on the wall by the drying line. A new theme from the first of the month.",
   "ja": "写真コンクールの結果が出ました。上位三点は「歯車」の写真室、干し紐のそばの壁に。一日からは新しいテーマです。"
  },
+ "city.note.club.nh_ony_soon": {
+  "ru": "13 января, Старый Новый год. С половины пятого дети ходят по дворам с бумажным солнцем. Солнце клеят в клубе в четверг, клей и фольга есть, нужны руки. В полночь встречаемся у ёлки, она стоит последнюю ночь.",
+  "en": "13 January, the Old New Year. From half past four the children go round the yards with a paper sun. The sun is being glued at the club on Thursday; there is glue and foil, hands are wanted. At midnight we meet at the tree, on its last night.",
+  "ja": "一月十三日は旧暦の新年。四時半から子どもたちが紙の太陽を持って中庭をまわります。太陽は木曜にクラブで作ります。のりと銀紙はあり、人手を募集。真夜中はツリーの下で。ツリーは今夜かぎりです。"
+ },
  "city.notices.health.title": {
   "ru": "Доска здоровья",
   "en": "Health board",
@@ -184,6 +199,11 @@
   "ru": "Школьный медосмотр: с первого сентября по классам. Приносите карточку и хорошее настроение, рост измерим бесплатно.",
   "en": "School check-ups from the first of September, class by class. Bring your card and a good mood; we'll measure your height free.",
   "ja": "学校の健康診断：九月一日からクラスごとに。カードとご機嫌を持参で。身長は無料で測ります。"
+ },
+ "city.note.health.nh_neptune_soon": {
+  "ru": "В последнее воскресенье июля День Нептуна. Спасательная станция предупреждает: обливать будут всех. Заплыв на камерах только до буя, уху варим у первой вышки, рыбу несите с утра. Часы и документы оставьте дома.",
+  "en": "Neptune Day is on the last Sunday of July. The lifeguard station gives warning: everyone will get a bucket. The inner-tube race goes to the buoy and no farther; the soup is cooked at the first tower, bring fish in the morning. Leave watches and papers at home.",
+  "ja": "七月の最終日曜はネプチューンの日。救助所より予告：全員に水がかかります。チューブ競争はブイまで。ウハーは第一監視塔で煮ます。魚は朝のうちに。時計と書類は家に置いてきてください。"
  },
  "city.notices.school.title": {
   "ru": "Стенгазета",
@@ -239,6 +259,16 @@
   "ru": "День лыжника: если выпадет снег — гонка вокруг пруда. Если не выпадет — чай и надежда.",
   "en": "Ski day: if the snow comes, a race round the pond. If not, tea and hope.",
   "ja": "スキーの日：雪が降れば池のまわりでレース。降らなければ、お茶と希望。"
+ },
+ "city.note.school.nh_science_soon": {
+  "ru": "В первую субботу декабря День науки. Кружку юных техников нужны на ярмарку: старые радиолампы, велосипедный звонок и шестой «Б» в полном составе за прилавок. Выручка от пирожных идёт на телескоп.",
+  "en": "Science Day is on the first Saturday of December. For the fair the young technicians' club needs: old radio valves, a bicycle bell and the whole of class 6B behind the counter. The takings from the cakes go towards a telescope.",
+  "ja": "十二月の第一土曜は科学の日。少年技術者クラブが市のために募集：古い真空管、自転車のベル、そして売り子として六年B組全員。ケーキの売り上げは望遠鏡になります。"
+ },
+ "city.note.school.nh_science_done": {
+  "ru": "Итоги Дня науки. Викторину выиграл двор дома на Террасах: лаборатория уступила одно очко дворнику. На телескоп собрано сорок два рубля. Лейденская банка цела, пострадал один палец, владелец пальца доволен.",
+  "en": "Science Day, the results. The quiz was won by a yard on the Terraces: the laboratory lost by one point to the caretaker. Forty-two roubles were raised for the telescope. The Leyden jar is whole; one finger suffered, and the finger's owner is pleased.",
+  "ja": "科学の日の結果。クイズはテラスの中庭チームが優勝、研究室は管理人さんに一点差で負けました。望遠鏡の募金は四十二ルーブル。ライデン瓶は無事、指が一本やられましたが、持ち主は満足しています。"
  },
  "city.notices.photo.title": {
   "ru": "Фотокружок: конкурс месяца",
