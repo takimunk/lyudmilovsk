@@ -327,6 +327,11 @@ def dress_when(w):
     s.set_editor_property("phase_from", int(ph[1]))
     s.set_editor_property("phase_to", int(ph[2]))
     s.set_editor_property("open", -1 if "open" not in w else (1 if w["open"] else 0))
+    # a trace of a visit (docs/city_dress.md "Traces of a visit"): the people's activities, the place, who, how long
+    s.set_editor_property("visit_acts", [unreal.Name(a) for a in w.get("visit", [])])
+    s.set_editor_property("visit_at", w.get("at", ""))
+    s.set_editor_property("visit_who", list(w.get("who", [])))
+    s.set_editor_property("visit_keep", float(w.get("keep", 0.0)) if w.get("visit") else 0.0)
     return s
 
 

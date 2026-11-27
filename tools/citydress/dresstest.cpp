@@ -22,8 +22,8 @@ int main(int argc, char** argv)
 		LyudCity::FDressWhen C;
 		int Wa, Wn, Mo, Wd, Per, From, To, Open;
 		std::string Fest, Bar;
-		float Hf, Ht, Ch;
-		S >> Wa >> Wn >> Mo >> Wd >> Hf >> Ht >> Fest >> Ch >> Per >> From >> To >> Open >> Bar;
+		float Hf, Ht, Ch, Keep;
+		S >> Wa >> Wn >> Mo >> Wd >> Hf >> Ht >> Fest >> Ch >> Per >> From >> To >> Open >> Keep >> Bar;
 		C.WeatherAny = (uint8_t)Wa;
 		C.WeatherNone = (uint8_t)Wn;
 		C.Months = (uint16_t)Mo;
@@ -36,9 +36,11 @@ int main(int argc, char** argv)
 		C.PhaseFrom = From;
 		C.PhaseTo = To;
 		C.Open = Open;
+		C.VisitKeep = Keep;
 		LyudCity::FWhen W;
 		int Fest01, Wx, Op, NF;
-		S >> W.Day >> W.Hour >> W.Weekday >> W.MonthDay >> W.Since >> Fest01 >> Wx >> Op >> NF;
+		float Ago;
+		S >> W.Day >> W.Hour >> W.Weekday >> W.MonthDay >> W.Since >> Fest01 >> Wx >> Op >> Ago >> NF;
 		W.bFestival = Fest01 != 0;
 		W.Weather = (uint8_t)Wx;
 		for (int I = 0; I < NF; ++I)
@@ -50,7 +52,7 @@ int main(int argc, char** argv)
 		std::string Plot, Id;
 		int Expected;
 		S >> Bar >> Plot >> Id >> Expected;
-		const bool Got = LyudCity::DressVisible(C, W, Plot, Id, Op != 0);
+		const bool Got = LyudCity::DressVisible(C, W, Plot, Id, Op != 0, Ago);
 		++N;
 		Shown += Got ? 1 : 0;
 		if (Got != (Expected != 0))
