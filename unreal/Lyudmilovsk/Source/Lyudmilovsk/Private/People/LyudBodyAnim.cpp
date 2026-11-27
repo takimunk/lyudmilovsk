@@ -21,6 +21,7 @@
 #include "UObject/UObjectIterator.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudText.h"
+#include "World/LyudPrefetch.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
@@ -763,6 +764,13 @@ void ULyudBodyAnimInstance::UpdateComputer(USkeletalMeshComponent* Mesh)
 	if (!Seq)
 	{
 		const FString Path = FString::Printf(TEXT("/Game/Characters/Humans/Anims/A_Human_%s.A_Human_%s"), *Pick.ToString(), *Pick.ToString());
+		// the club's placed people don't have the shared clips prefetched (the life's bodies do): loaded in the
+		// background, the pick made again shortly (a LoadObject here stalled the frame once per computer clip)
+		if (!ULyudPrefetch::Ready(this, Path))
+		{
+			PcUntil = Clock + 0.5f;
+			return;
+		}
 		Seq = LoadObject<UAnimSequence>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet);
 	}
 	if (!Seq)
@@ -781,7 +789,7 @@ void ULyudBodyAnimInstance::UpdateGamepad(USkeletalMeshComponent* Mesh)
 	// the gamepad loop itself playing (not still blending in from another): PcClips holds the clip loaded for PC_Gamepad
 	const TObjectPtr<UAnimSequence>* Pad = PcClip == NamePcGamepad ? PcClips.Find(NamePcGamepad) : nullptr;
 	const bool bShow = Pad && *Pad && CurrentClip() == Pad->Get();
-	if (bShow && !Gamepad && Mesh->GetOwner())
+	if (bShow && !Gamepad && Mesh->GetOwner() && ULyudPrefetch::Ready(this, TEXT("/Game/Characters/Humans/Props/SM_Gamepad.SM_Gamepad")))
 	{
 		if (UStaticMesh* SM = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Gamepad.SM_Gamepad")))
 		{
