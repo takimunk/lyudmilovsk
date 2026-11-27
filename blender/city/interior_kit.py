@@ -137,6 +137,9 @@ CATALOGUE  (name: footprint w x d x h, m; what it is; notable options)
   menu_board       w x h  menu_*/price_* board
   fire_extinguisher       red, on a bracket
   wall_phone              payphone with handset and dial
+  soda_machine     0.70x0.56x1.88 the street «Газированная вода» automat: red lit head, two coin plates (1 / 3 kop.),
+                   buttons, a steel niche with the glass washer and the one faceted glass upside down on it
+                   (glass=False: none), the coin-return cup; returns plain, syrup (the buttons), niche, washer, side
   pendant          [ceiling] (x, y, ceiling z) a lamp on a cord; light=False: only when the caller asks it calls B.lamp
   ceiling_fan      [ceiling] four blades
  round 2 (transport, services, shop goods, studio, sport, canteen)
@@ -4783,6 +4786,76 @@ def tray_stack(B, x, y, z=0.0, yaw=0.0, n=5, mat="CT_PlasterBlue", solid=False):
     return p.done(top=n * 0.024 + 0.002)
 
 
+def soda_machine(B, x, y, z=0.0, yaw=0.0, mat="CT_SteelWhite", head="CT_PlasterRed", glass=True, solid=True):
+    """The late-Soviet street soda-water automat (after the AT-101/AT-110 family, our own proportions): an enamelled cabinet
+    on a rubber plinth, a red head panel with the lit «ГАЗИРОВАННАЯ ВОДА» card, the price plates over two coin slots (1 kop.
+    plain, 3 kop. with syrup) and their buttons, a stainless niche at chest height with the nozzle, the drip grille and the
+    star-shaped glass washer on which the one shared faceted glass stands upside down, and the coin-return cup below.
+    Returns the usual dict plus plain / syrup (the two buttons), niche (the niche's middle), washer (the glass on it) and
+    side (a point on the right side at thumping height), all building coordinates."""
+    p = _P(B, x, y, z, yaw, "soda_machine")
+    w, d = 0.68, 0.52
+    hw, y0, y1 = w / 2, -d / 2, d / 2
+    nx, nz0, nz1, nd = 0.2, 0.92, 1.24, 0.17          # the niche: half width, bottom, top, depth
+    # plinth and the cabinet in five blocks round the niche (a real recess, not a painted one)
+    p.box("CT_Rubber", -hw + 0.02, hw - 0.02, y0 + 0.02, y1 - 0.02, 0.0, 0.06, f="xXyYZ")
+    p.box(mat, -hw, hw, y0, y1, 0.06, nz0, f="xXyY")
+    p.box(mat, -hw, -nx, y0, y1, nz0, nz1, f="xyY")
+    p.box(mat, nx, hw, y0, y1, nz0, nz1, f="XyY")
+    p.box(mat, -nx, nx, y0 + nd, y1, nz0, nz1, f="Y")
+    p.box(mat, -hw, hw, y0, y1, nz1, 1.62, f="xXyY")
+    # the niche lined with stainless steel: floor (a drip grille), ceiling, back and jambs
+    p.box(ALU, -nx, nx, y0, y0 + nd, nz0, nz0 + 0.004, f="Z")
+    p.face(ALU, [(-nx, y0, nz1), (-nx, y0 + nd, nz1), (nx, y0 + nd, nz1), (nx, y0, nz1)])
+    p.face(ALU, [(-nx, y0 + nd, nz0), (nx, y0 + nd, nz0), (nx, y0 + nd, nz1), (-nx, y0 + nd, nz1)])
+    p.face(ALU, [(-nx, y0, nz0), (-nx, y0 + nd, nz0), (-nx, y0 + nd, nz1), (-nx, y0, nz1)])
+    p.face(ALU, [(nx, y0, nz0), (nx, y0, nz1), (nx, y0 + nd, nz1), (nx, y0 + nd, nz0)])
+    for k in range(5):                                  # the grille's bars over the drip tray, right half
+        gx = 0.02 + k * 0.036
+        p.box(STEEL, gx, gx + 0.012, y0 + 0.02, y0 + nd - 0.02, nz0 + 0.004, nz0 + 0.016, f="xXyYZ")
+    # the nozzle over the grille and the washer under the glass (a stainless cup with a star of jets)
+    p.cyl(ALU, 0.09, y0 + nd * 0.5, nz1 - 0.06, nz1, 0.016, 8, top=False)
+    p.cyl(STEEL, 0.09, y0 + nd * 0.5, nz1 - 0.075, nz1 - 0.06, 0.008, 6, top=False, bottom=True)
+    wx, wy = -0.09, y0 + nd * 0.5
+    p.lathe(ALU, wx, wy, [(0.05, nz0 + 0.004), (0.052, nz0 + 0.03), (0.044, nz0 + 0.034), (0.03, nz0 + 0.022)], 8, top=True)
+    if glass:
+        g0 = nz0 + 0.034
+        p.lathe("CT_Glass", wx, wy, [(0.0345, g0), (0.031, g0 + 0.07), (0.029, g0 + 0.11)], 8, top=True, a0=math.pi / 8)
+    # the head: overhangs the front a little; the lit card «ГАЗИРОВАННАЯ ВОДА» (Neon frame behind it glows at night)
+    p.bev(head, -hw - 0.01, hw + 0.01, y0 - 0.035, y1, 1.62, 1.88, 0.008, 0.015, bottom=True)
+    p.box("CT_Neon", -0.31, 0.31, y0 - 0.045, y0 - 0.035, 1.655, 1.845, f="y")
+    p.label("soda_sign", 0.0, 1.75, y0 - 0.049, 0.6, 0.16)
+    # the price plates (left plain, right with syrup), the coin slots in chrome bezels, the buttons
+    p.label("soda_plates", 0.0, 1.49, y0 - 0.004, 0.6, 0.15)
+    out = {}
+    for side, key in ((-1, "plain"), (1, "syrup")):
+        bx = side * 0.17
+        p.box(ALU, bx - 0.035, bx + 0.035, y0 - 0.016, y0, 1.375, 1.405, f="xXyZz")
+        p.box("CT_Rubber", bx - 0.016, bx + 0.016, y0 - 0.0165, y0 - 0.016, 1.387, 1.393, f="y")
+        _knob(p, ALU, bx, 1.32, 0.03, y0, y0 - 0.01, 10)
+        _knob(p, "CT_SteelRed" if side > 0 else STEEL, bx, 1.32, 0.022, y0 - 0.01, y0 - 0.022, 10)
+        out[key] = (bx, y0 - 0.02, 1.33)
+    p.label("soda_rinse", -0.1, 1.272, y0 - 0.004, 0.18, 0.045)
+    # the coin-return cup, the louvres of the lower service door, its lock; the side's keyhole
+    p.box(ALU, 0.12, 0.24, y0 - 0.05, y0, 0.74, 0.76, f="xXyZz")
+    p.box(ALU, 0.12, 0.24, y0 - 0.05, y0 - 0.04, 0.76, 0.81, f="xXyZ")
+    for k in range(6):
+        lz = 0.16 + k * 0.045
+        p.box(STEEL, -0.22, 0.22, y0 - 0.008, y0, lz, lz + 0.018, f="xXyZz")
+    p.box(LAQ, -0.25, 0.25, y0 - 0.004, y0, 0.12, 0.13, f="yZz")
+    p.box(LAQ, -0.25, 0.25, y0 - 0.004, y0, 0.66, 0.67, f="yZz")
+    _knob(p, BRASS, 0.27, 0.42, 0.012, y0, y0 - 0.008, 6)
+    p.box(BRASS, hw, hw + 0.008, 0.16, 0.18, 1.05, 1.08, f="XyYZz")       # the side door's lock
+    for k in range(4):                                  # vents high on both sides
+        vz = 1.38 + k * 0.05
+        p.box(STEEL, -hw - 0.006, -hw, -0.15, 0.15, vz, vz + 0.016, f="xyYZz")
+        p.box(STEEL, hw, hw + 0.006, -0.15, 0.15, vz, vz + 0.016, f="XyYZz")
+    p.core(-hw + 0.03, hw - 0.03, y0 + nd + 0.02, y1 - 0.03, 0.08, 1.8)
+    p.core(-hw + 0.03, hw - 0.03, y0 + 0.03, y1 - 0.03, 0.08, nz0 - 0.02)
+    out.update(niche=(0.0, y0 + nd * 0.5, (nz0 + nz1) / 2), washer=(wx, wy, nz0 + 0.09), side=(hw + 0.02, 0.0, 1.1))
+    return p.done(solid=solid, top=1.88, front=0.55, **out)
+
+
 # every placeable piece by name (kit_showroom.py walks this)
 PIECES = {f.__name__: f for f in (
     chair, stool, bar_stool, armchair, sofa, bench, cinema_row, waiting_row, bean_bag, zabuton,
@@ -4804,7 +4877,7 @@ PIECES = {f.__name__: f for f in (
     kitchen_scales, crate, sack, cardboard_box, tools, chess_set, paint_jars, lamp_green,
     # round 2: transport, services, shop goods, studio, sport, canteen
     bicycle, pram, mailboxes, washing_machine, deck_chair, barber_chair, teller_grille, mic_stand, lifebuoy, rope_coil, ice_cream_chest, notice_stand, sandwich_board, awning, planter, bird_feeder, rod_rack, toy_bin, toy_house, bread_rack, bin_rack, first_aid_box, ring_buoy, springboard, ballet_barre, choir_riser, kiln, model_plane, parquet, court_lines, palm, camera_tripod, photo_backdrop, oars_rack, tub_chair, high_table, beer_taps,
-    fish_ice_counter, dumpling_pot, serving_line, tray_stack)}
+    fish_ice_counter, dumpling_pot, serving_line, tray_stack, soda_machine)}
 
 BUDGET = {"chair": 140, "stool": 80, "bar_stool": 140, "table": 100, "table_round": 100, "bookshelf": 400, "piano": 500,
           "grand_piano": 500,
@@ -4816,4 +4889,4 @@ BUDGET = {"chair": 140, "stool": 80, "bar_stool": 140, "table": 100, "table_roun
           "springboard": 130, "ballet_barre": 130, "choir_riser": 40, "kiln": 240, "model_plane": 120, "parquet": 420,
           "court_lines": 120, "palm": 500, "camera_tripod": 220, "photo_backdrop": 120, "oars_rack": 200,
           "tub_chair": 220, "high_table": 200, "beer_taps": 220, "fish_ice_counter": 340, "dumpling_pot": 470,
-          "serving_line": 760, "tray_stack": 220}
+          "serving_line": 760, "tray_stack": 220, "soda_machine": 1400}

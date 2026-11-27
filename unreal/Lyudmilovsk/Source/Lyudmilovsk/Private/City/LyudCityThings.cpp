@@ -5378,6 +5378,10 @@ static LyudDev::FAutoAction GCityDevProc(TEXT("interiors.proc_nearest"), TEXT("i
 		Things->StartNearestProc();
 	}
 });
+// the street soda machines (docs/soda_machines.md): the swallowed coin and the thump on the side every time (toggle)
+static LyudDev::FAutoAction GCityDevSodaJam(TEXT("interiors.soda_jam"), TEXT("interiors"), TEXT("dev.action.interiors.soda_jam"),
+	[](UWorld*) { LyudCity::GDevChanceSteps = !LyudCity::GDevChanceSteps; },
+	[](UWorld*) { return LyudCity::GDevChanceSteps; });
 static LyudDev::FAutoAction GCityDevGameWin(TEXT("interiors.game_win"), TEXT("interiors"), TEXT("dev.action.interiors.game_win"), [](UWorld* W)
 {
 	if (ULyudCityThings* Things = ULyudCityThings::Get(W))

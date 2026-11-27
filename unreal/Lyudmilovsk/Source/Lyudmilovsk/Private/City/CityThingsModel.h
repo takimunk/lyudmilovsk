@@ -538,6 +538,50 @@ namespace LyudCity
 		int Below(int N) { return N > 0 ? (int)(Next() % (uint64_t)N) : 0; }
 	};
 
+	/** The 32-bit FNV-1a state over Text, continued from H (2166136261 to begin): the first half of DayDie's key. */
+	inline uint32_t Fnv32(const std::string& Text, uint32_t H = 2166136261u)
+	{
+		for (const char C : Text)
+		{
+			H ^= (uint32_t)(unsigned char)C;
+			H *= 16777619u;
+		}
+		return H;
+	}
+
+	/** The stable die of a day, [0, 1): Seed = Fnv32("<plot>/<id>@"), the day's digits hashed on and mixed. The same number as
+	 *  LyudCity::DressHash01(plot, id, day) (CityDressModel.h; citykit.dress_hash01), so a thing shut on a "broken" day and its
+	 *  building's "broken" dressing set agree. No allocation. */
+	inline float DayDie(uint32_t Seed, long long Day)
+	{
+		char Digits[24];
+		int N = 0;
+		unsigned long long V = Day < 0 ? (unsigned long long)(-Day) : (unsigned long long)Day;
+		do
+		{
+			Digits[N++] = (char)('0' + (int)(V % 10ull));
+			V /= 10ull;
+		} while (V > 0ull && N < 22);
+		if (Day < 0)
+		{
+			Digits[N++] = '-';
+		}
+		uint32_t H = Seed;
+		while (N > 0)
+		{
+			H ^= (uint32_t)(unsigned char)Digits[--N];
+			H *= 16777619u;
+		}
+		H ^= H >> 15;
+		H *= 2246822519u;
+		H ^= H >> 13;
+		return (float)(H & 0xFFFFFFu) / (float)(1u << 24);
+	}
+
+	/** Developer mode ("interiors.soda_jam"): every scene step with a "chance" plays, past its die and its once a day (the soda
+	 *  machine's swallowed coin and the thump, to test them). */
+	inline bool GDevChanceSteps = false;
+
 	/** FNV-1a of a text (a thing id into a game's seed). */
 	inline uint64_t HashText(const std::string& Text)
 	{
@@ -803,6 +847,12 @@ namespace LyudCity
 		double MarkHi = 0.86;
 		/** cut: game minutes that pass in the dark (the robe and slippers). */
 		int Minutes = 0;
+		/** "chance" (< 1): the step is played only by the scene's die, at most once a game day at a thing (the coin a soda
+		 *  machine swallows now and then, the thump on its side that frees it); else it is left out like a say with no line. */
+		double Chance = 1.0;
+		/** "stop_below": a hands-on step that scores under this ends the scene there (the coin never came back: no pouring,
+		 *  no sipping); 0: never. */
+		double StopBelow = 0.0;
 	};
 
 	/** A procedure ("proc" of an act): its steps, when it is played (else the act runs plainly), the result lines. */
@@ -876,9 +926,10 @@ namespace LyudCity
 		int Tries = 0;
 		double InTime = 0.0;
 		double Timed = 0.0;
-		/** The step's result (0..1) is added to Score; Scored counts the hands-on steps. */
+		/** The step's result (0..1) is added to Score; Scored counts the hands-on steps; LastGot: the last scored step's (-1 none). */
 		double Score = 0.0;
 		int Scored = 0;
+		double LastGot = -1.0;
 		/** The step is settled (pour: let go; tap: enough presses); the scene goes on after a short pause. */
 		bool bSettled = false;
 		EProcBeat Beat = EProcBeat::None;
@@ -937,6 +988,13 @@ namespace LyudCity
 		bool bHours = false;
 		float Open = 0.f, Close = 24.f;
 		uint8_t Days = 0x7F;
+		/** Months it works in (bit m-1 for month m; 0: all year): out of them it is shut, like out of its hours (a street soda
+		 *  machine in winter). A rule's "months". */
+		uint16_t Months = 0;
+		/** The share of days it stands broken and shut (0: never; a rule's "broken"): DayDie(BrokenSeed, day) under it, the die of
+		 *  its building's dressing set "broken" (BrokenSeed = Fnv32("<plot>/broken@"), made at load). */
+		float Broken = 0.f;
+		uint32_t BrokenSeed = 0;
 		/** Topics of this thing's own (a rule's "topics"), offered after its act's (indices into FModel::Topics). */
 		std::vector<int> Topics;
 		/** A lift or a stair's door: where it takes the hero (one stop: at once; more: a chooser); empty: not a link. */
@@ -1490,6 +1548,16 @@ namespace LyudCity
 					Th.Close = Hours[1].F(24.f);
 				}
 				Th.Days = ParseDays(T["days"].S());
+				for (const LyudJson::FValue& M : T["months"].Items)
+				{
+					const int Month = M.I(0);
+					if (Month >= 1 && Month <= 12)
+					{
+						Th.Months |= (uint16_t)(1u << (Month - 1));
+					}
+				}
+				Th.Broken = std::min(1.f, std::max(0.f, T["broken"].F(0.f)));
+				Th.BrokenSeed = Th.Broken > 0.f ? Fnv32(Th.Plot + "/broken@") : 0u;
 				const std::string ActId = T["act"].S();
 				const auto Found = ActIndex.find(ActId);
 				Th.Act = ActId.empty() || Found == ActIndex.end() ? DefaultAct(Th) : Found->second;
@@ -1668,7 +1736,22 @@ namespace LyudCity
 				return false;
 			}
 			const FThing& T = Things[Thing];
+			if (T.Months != 0 && When.MonthDay >= 100 && !(T.Months & (1u << ((When.MonthDay / 100 - 1) % 12))))
+			{
+				return true;     // out of its season
+			}
+			if (T.Broken > 0.f && DayDie(T.BrokenSeed, When.Day) < T.Broken)
+			{
+				return true;     // broken today (its building shows the sign)
+			}
 			return T.bHours && (!(T.Days & (1u << (When.Weekday % 7))) || !InHours(When.Hour, T.Open, T.Close));
+		}
+
+		/** Is Thing broken today (a rule's "broken": the die of the day under its share)? */
+		bool IsBroken(int Thing, const FWhen& When) const
+		{
+			return Thing >= 0 && Thing < (int)Things.size() && Things[(size_t)Thing].Broken > 0.f
+				&& DayDie(Things[(size_t)Thing].BrokenSeed, When.Day) < Things[(size_t)Thing].Broken;
 		}
 
 		/** The act Thing does now: its closed act while its plot is shut (if it has one), else its own; -1 none. */
@@ -3777,6 +3860,9 @@ namespace LyudCity
 	private:
 		/** The day and hour the scene began (its lines' conditions are asked at that time). */
 		mutable FWhen ProcWhen;
+		/** A "chance" step played today at a thing: "<thing>#<proc>#<step>" -> the game day + 1 (not saved: a load the same day
+		 *  may roll it once more). */
+		mutable std::map<std::string, long long> ProcRolled;
 		std::map<std::string, int> ProcDone;
 		FVitals VitalsFirst, VitalsLast;
 
@@ -3792,7 +3878,8 @@ namespace LyudCity
 			G.Wait = G.Clock + ProcGoOn;
 			if (Got >= 0.0)
 			{
-				G.Score += std::min(1.0, std::max(0.0, Got));
+				G.LastGot = std::min(1.0, std::max(0.0, Got));
+				G.Score += G.LastGot;
 				G.Scored += 1;
 			}
 			if (B != EProcBeat::None)
@@ -3824,6 +3911,17 @@ namespace LyudCity
 		}
 		void NextProcStep(const FProcDef& D, FProcState& G) const
 		{
+			if (G.Step >= 0 && G.Step < (int)D.Steps.size())
+			{
+				const FProcStep& S = D.Steps[(size_t)G.Step];
+				if (S.StopBelow > 0.0 && ProcStepScores(S.Do) && G.LastGot >= 0.0 && G.LastGot < S.StopBelow)
+				{
+					G.bOver = true;     // it went wrong past mending: the scene ends here
+					G.Step = (int)D.Steps.size();
+					Beat(G, EProcBeat::Done);
+					return;
+				}
+			}
 			BeginProcStep(D, G, G.Step + 1);
 		}
 		void BeginProcStep(const FProcDef& D, FProcState& G, int Index) const
@@ -3831,6 +3929,17 @@ namespace LyudCity
 			for (; Index < (int)D.Steps.size(); ++Index)
 			{
 				const FProcStep& S = D.Steps[(size_t)Index];
+				if (S.Chance < 1.0 && !GDevChanceSteps && G.Thing >= 0 && G.Thing < (int)Things.size())
+				{
+					// at most once a game day at this thing, and then only by the scene's die
+					const std::string Key = Things[(size_t)G.Thing].Id + "#" + D.Id + "#" + std::to_string(Index);
+					long long& Rolled = ProcRolled[Key];
+					if (Rolled == ProcWhen.Day + 1 || G.Rng.Unit() >= S.Chance)
+					{
+						continue;
+					}
+					Rolled = ProcWhen.Day + 1;
+				}
 				G.Step = Index;
 				G.StepFrom = G.Clock;
 				G.Wait = 0.0;
@@ -3840,6 +3949,7 @@ namespace LyudCity
 				G.Tries = 0;
 				G.InTime = 0.0;
 				G.Timed = 0.0;
+				G.LastGot = -1.0;
 				G.Line.clear();
 				G.Args.clear();
 				switch (S.Do)
@@ -4012,6 +4122,8 @@ namespace LyudCity
 					S.MarkHi = std::min(0.98, std::max(S.MarkLo + 0.03, (double)Mark[1].F(0.86f)));
 				}
 				S.Minutes = std::min(120, std::max(0, St["minutes"].I(0)));
+				S.Chance = std::min(1.0, std::max(0.0, (double)St["chance"].F(1.0f)));
+				S.StopBelow = std::min(1.0, std::max(0.0, (double)St["stop_below"].F(0.0f)));
 				D.Steps.push_back(std::move(S));
 			}
 			static const char* const Names[3] = { "good", "fair", "poor" };

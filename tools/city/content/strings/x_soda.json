@@ -1,0 +1,428 @@
+{
+ "_doc": "The street soda-water automats (tools/city/content/x_soda.json, docs/soda_machines.md): prompts, the scene's lines, the syrups, the closed words, the stamp set, the teleport names. Russian is the source.",
+ "city.soda.plain.prompt": {
+  "ru": "E — газировка без сиропа",
+  "en": "E — plain soda water",
+  "ja": "E：シロップなしの炭酸水"
+ },
+ "city.soda.syrup.prompt": {
+  "ru": "E — газировка с сиропом",
+  "en": "E — soda water with syrup",
+  "ja": "E：シロップ入りの炭酸水"
+ },
+ "city.soda.closed.prompt": {
+  "ru": "E — посмотреть на автомат",
+  "en": "E — look at the machine",
+  "ja": "E：自販機を見る"
+ },
+ "city.soda.p.title": {
+  "ru": "Газированная вода",
+  "en": "Soda water",
+  "ja": "炭酸水"
+ },
+ "city.soda.p.coin.1": {
+  "ru": "Монетка проваливается в щель и звякает где-то внутри. Автомат вздыхает и начинает урчать.",
+  "en": "The coin drops into the slot and clinks somewhere inside. The machine sighs and starts to hum.",
+  "ja": "硬貨が投入口に落ち、中のどこかでチャリンと鳴る。自販機がため息をつき、うなり始めた。"
+ },
+ "city.soda.p.coin.2": {
+  "ru": "Нащупываю в кармане монету, опускаю. Щелчок, и внутри что-то оживает.",
+  "en": "I fish a coin out of my pocket and drop it in. A click, and something comes alive inside.",
+  "ja": "ポケットから硬貨を探り出して入れる。カチッ、中で何かが動き出した。"
+ },
+ "city.soda.p.coin.3": {
+  "ru": "Монета катится по жёлобу с таким звуком, будто её там ждали.",
+  "en": "The coin rolls down the chute as if it had been expected.",
+  "ja": "硬貨が待っていたかのように溝を転がっていく。"
+ },
+ "city.soda.p.coin.cold": {
+  "ru": "Пальцы замёрзли, монета дважды выскальзывает, на третий раз попадаю в щель.",
+  "en": "My fingers are cold; the coin slips out twice, and goes into the slot on the third try.",
+  "ja": "指がかじかんで硬貨が二度すべる。三度目でやっと入った。"
+ },
+ "city.soda.p.coin.rain": {
+  "ru": "Монетка мокрая и липнет к пальцам. Щель тоже мокрая. Но автомат её принимает.",
+  "en": "The coin is wet and sticks to my fingers. So is the slot. The machine takes it anyway.",
+  "ja": "硬貨が濡れて指にくっつく。投入口も濡れている。それでも自販機は受け取った。"
+ },
+ "city.soda.p.jam": {
+  "ru": "Монета провалилась, а автомат молчит. Ни урчания, ни воды. Говорят, надо стукнуть по боку — вот сюда, у замка.",
+  "en": "The coin went in, and the machine says nothing. No hum, no water. They say you thump it on the side, right here by the lock.",
+  "ja": "硬貨は入ったのに自販機は黙ったまま。うなりも水もない。横を叩けばいいと聞いた。鍵のあたり、ここだ。"
+ },
+ "city.soda.p.rinse.ask": {
+  "ru": "Стакан один на всех: гранёный, стоит вверх дном на мойке. Сполоснуть?",
+  "en": "There's one glass for everybody, a faceted one, upside down on the washer. Rinse it?",
+  "ja": "コップはみんなで一つ。面取りのコップが洗浄台に逆さに置いてある。すすぐ？"
+ },
+ "city.soda.p.rinse.yes": {
+  "ru": "Сполоснуть",
+  "en": "Rinse it",
+  "ja": "すすぐ"
+ },
+ "city.soda.p.rinse.no": {
+  "ru": "Налить так",
+  "en": "Fill it as it is",
+  "ja": "そのまま注ぐ"
+ },
+ "city.soda.p.rinsed.yes.1": {
+  "ru": "Нажимаю стаканом на мойку, и в донышко бьёт тугой фонтанчик. Стекло скрипит от чистоты.",
+  "en": "I press the glass down on the washer and a tight little fountain hits the bottom. The glass squeaks clean.",
+  "ja": "コップを洗浄台に押しつけると、底に勢いよく水が噴き上がる。ガラスがきゅっと鳴るほどきれいになった。"
+ },
+ "city.soda.p.rinsed.yes.2": {
+  "ru": "Ополаскиваю стакан, стряхиваю капли. Женщина в очереди одобрительно кивает.",
+  "en": "I rinse the glass and shake off the drops. A woman in the queue gives an approving nod.",
+  "ja": "コップをすすいで、しずくを振り落とす。並んでいたおばさんが満足そうにうなずいた。"
+ },
+ "city.soda.p.rinsed.yes.3": {
+  "ru": "Фонтанчик брызгает мне на рукав. Зато стакан чистый, на гранях играет солнце.",
+  "en": "The little fountain splashes my sleeve. But the glass is clean, and the sun plays on its facets.",
+  "ja": "噴水が袖にはねた。でもコップはきれいで、面に日がきらめいている。"
+ },
+ "city.soda.p.rinsed.no.1": {
+  "ru": "— Молодой человек, стакан-то сполосни! — говорят у меня за спиной. — Тут до тебя полгорода пило.",
+  "en": "\"Young man, rinse the glass!\" someone says behind me. \"Half the town drank from it before you.\"",
+  "ja": "「ちょっと、コップをすすぎなさいよ！」と後ろから声。「あんたの前に町の半分が飲んでるんだから」"
+ },
+ "city.soda.p.rinsed.no.2": {
+  "ru": "Старик с газетой качает головой: — Мы в твои годы мыли. Хоть для вида.",
+  "en": "An old man with a newspaper shakes his head. \"At your age we rinsed it. For the look of it, at least.\"",
+  "ja": "新聞を持ったおじいさんが首を振る。「わしらは君の年ごろ、洗ったもんだ。形だけでもな」"
+ },
+ "city.soda.p.rinsed.no.3": {
+  "ru": "Девчонка с мячом морщит нос: — Фу. Не мыл. Я после тебя сполосну, ладно уж.",
+  "en": "A girl with a ball wrinkles her nose. \"Ew. You didn't rinse it. Fine, I'll rinse it after you.\"",
+  "ja": "ボールを持った女の子が鼻にしわを寄せる。「うえっ、洗ってない。まあいいや、あとで私がすすぐから」"
+ },
+ "city.soda.p.syrup.cherry": {
+  "ru": "Сегодня в автомате вишнёвый сироп: в стакан падает тёмно-красная струйка, густая, как варенье.",
+  "en": "Today the machine has cherry syrup: a dark red trickle falls into the glass, thick as jam.",
+  "ja": "今日のシロップはさくらんぼ。ジャムみたいに濃い暗い赤が、細くコップに落ちる。"
+ },
+ "city.soda.p.syrup.duchesse": {
+  "ru": "Сегодня сироп «Дюшес»: струйка янтарная, пахнет грушей и немного леденцами.",
+  "en": "Today it's Duchesse syrup: an amber trickle that smells of pear and a little of boiled sweets.",
+  "ja": "今日はドゥシェスのシロップ。琥珀色の細い流れで、洋梨と少しドロップの匂いがする。"
+ },
+ "city.soda.p.syrup.cream_soda": {
+  "ru": "Сегодня крем-сода: сироп почти прозрачный, а пахнет ванилью на всю улицу.",
+  "en": "Today it's cream soda: the syrup is almost clear, but it smells of vanilla down the whole street.",
+  "ja": "今日はクリームソーダ。シロップはほとんど透明なのに、通りじゅうにバニラの香りが広がる。"
+ },
+ "city.soda.p.syrup.tarragon": {
+  "ru": "Сегодня тархун: в стакан стекает изумрудная струйка, ярче, чем трава в парке.",
+  "en": "Today it's tarragon: an emerald trickle runs into the glass, greener than the grass in the park.",
+  "ja": "今日はタルフン。エメラルド色の流れがコップに注がれる。公園の芝生より鮮やかだ。"
+ },
+ "city.soda.p.syrup.lemon": {
+  "ru": "Сегодня лимонный сироп: бледно-жёлтый, и в носу сразу щиплет.",
+  "en": "Today it's lemon syrup: pale yellow, and it tickles my nose at once.",
+  "ja": "今日はレモンのシロップ。淡い黄色で、すぐに鼻がむずむずする。"
+ },
+ "city.soda.p.syrup.apple": {
+  "ru": "Сегодня яблочный сироп: золотистый, пахнет августом и дачей.",
+  "en": "Today it's apple syrup: golden, smelling of August and somebody's dacha.",
+  "ja": "今日はりんごのシロップ。金色で、八月とダーチャの匂いがする。"
+ },
+ "city.soda.p.pour.plain": {
+  "ru": "Ставлю стакан под рожок. Шипит, бежит холодная вода с пузырьками. Отпустить кнопку у риски.",
+  "en": "I put the glass under the spout. A hiss, and cold water runs with bubbles. Let go of the button at the line.",
+  "ja": "コップを注ぎ口の下に置く。シューッと冷たい泡の水が流れ出す。目盛りのところでボタンを離す。"
+ },
+ "city.soda.p.pour.syrup": {
+  "ru": "Сироп на дне, теперь газировка сверху. Пена поднимается быстро. Отпустить у риски, пока не перелилось.",
+  "en": "Syrup at the bottom, now the fizz on top. The foam rises fast. Let go at the line before it spills.",
+  "ja": "底にシロップ、上から炭酸水。泡がすぐに上がってくる。あふれる前に目盛りで離す。"
+ },
+ "city.soda.p.sip.1": {
+  "ru": "Пить надо глотками, а то газ ударит в нос. Пузырьки щёлкают о стекло: глоток на щелчок.",
+  "en": "You drink it in sips, or the fizz goes up your nose. The bubbles tick against the glass: a sip to each tick.",
+  "ja": "少しずつ飲まないと、炭酸が鼻にくる。泡がガラスにぱちぱち当たる。ぱちっとするごとにひと口。"
+ },
+ "city.soda.p.sip.2": {
+  "ru": "Холодная, колючая. Глоток, ещё глоток, в такт пузырькам.",
+  "en": "Cold and prickly. A sip, another, in time with the bubbles.",
+  "ja": "冷たくて、ちくちくする。泡に合わせて、ひと口、またひと口。"
+ },
+ "city.soda.p.sip.hot": {
+  "ru": "В жару стакан запотевает сразу. Пить медленно, в такт пузырькам, иначе заломит зубы.",
+  "en": "In the heat the glass mists over at once. Drink slowly, in time with the bubbles, or your teeth will ache.",
+  "ja": "暑さでコップがすぐ曇る。泡に合わせてゆっくり飲まないと、歯にしみる。"
+ },
+ "city.soda.p.back.1": {
+  "ru": "Ставлю стакан обратно на мойку вверх дном. Он остаётся ждать следующего.",
+  "en": "I put the glass back on the washer upside down. It stays there for the next one.",
+  "ja": "コップを洗浄台に逆さに戻す。次の人を待って、そこに残る。"
+ },
+ "city.soda.p.back.2": {
+  "ru": "Стакан возвращается на место. Его никто не уносит: так уж тут заведено.",
+  "en": "The glass goes back in its place. Nobody takes it away; that's just how it is here.",
+  "ja": "コップは元の場所へ。持っていく人はいない。ここではそういう決まりだ。"
+ },
+ "city.soda.p.back.3": {
+  "ru": "Возвращаю стакан на мойку. На гранях остаётся капля, и в ней — кусочек неба.",
+  "en": "I put the glass back on the washer. A drop stays on a facet, with a bit of sky in it.",
+  "ja": "コップを洗浄台に戻す。面にしずくが一つ残り、その中に空のかけらが映っている。"
+ },
+ "city.soda.p.good.plain.1": {
+  "ru": "Выпил залпом последнюю треть и даже не чихнул. Вода как из родника, только с иголочками.",
+  "en": "I downed the last third and didn't even sneeze. Water like a spring's, only with needles in it.",
+  "ja": "最後の三分の一を一気に飲んで、くしゃみも出なかった。湧き水みたいで、ちくちくする針入り。"
+ },
+ "city.soda.p.good.plain.2": {
+  "ru": "Без сиропа, зато честно: холодная, колючая, и жажды как не бывало.",
+  "en": "No syrup, but honest: cold, prickly, and my thirst is simply gone.",
+  "ja": "シロップはないけど正直な味。冷たくて、ちくちくして、のどの渇きがすっかり消えた。"
+ },
+ "city.soda.p.good.plain.3": {
+  "ru": "За одну монетку — целое море пузырьков. Отличная сделка.",
+  "en": "A whole sea of bubbles for one coin. A fine bargain.",
+  "ja": "硬貨一枚で泡の海がまるごと。いい買い物だ。"
+ },
+ "city.soda.p.fair.plain.1": {
+  "ru": "Чуть не перелил и чуть не поперхнулся. Но в целом — вода.",
+  "en": "Nearly overfilled it and nearly choked. But all in all, it was water.",
+  "ja": "あふれそうになって、むせそうになった。でもまあ、水は水だ。"
+ },
+ "city.soda.p.fair.plain.2": {
+  "ru": "Газ ударил в нос, глаза заслезились. Пить тоже надо уметь.",
+  "en": "The fizz went up my nose and my eyes watered. Drinking takes practice too.",
+  "ja": "炭酸が鼻にきて涙が出た。飲むのにもコツがいる。"
+ },
+ "city.soda.p.good.syrup.cherry": {
+  "ru": "Вишнёвая газировка — как будто лето налили в стакан. Губы теперь красные.",
+  "en": "Cherry soda, like summer poured into a glass. My lips are red now.",
+  "ja": "さくらんぼソーダ。夏をコップに注いだみたい。唇が赤くなった。"
+ },
+ "city.soda.p.good.syrup.duchesse": {
+  "ru": "«Дюшес» из автомата вкуснее, чем из бутылки. Грушевый, сладкий, и пузырьки в нос.",
+  "en": "Duchesse from the machine tastes better than from a bottle. Pear, sweet, bubbles up the nose.",
+  "ja": "自販機のドゥシェスは瓶のよりおいしい。洋梨で甘くて、泡が鼻にくる。"
+ },
+ "city.soda.p.good.syrup.cream_soda": {
+  "ru": "Крем-сода. Ванильная, мягкая, и в конце немного жжёт язык. Хочется ещё.",
+  "en": "Cream soda. Vanilla, soft, and it stings the tongue a little at the end. I want another.",
+  "ja": "クリームソーダ。バニラでまろやか、最後に少し舌がぴりっとする。もう一杯ほしい。"
+ },
+ "city.soda.p.good.syrup.tarragon": {
+  "ru": "Тархун: зелёный, травяной, немного аптечный. Странно, но вкусно.",
+  "en": "Tarragon: green, herbal, a little like a chemist's. Strange, but good.",
+  "ja": "タルフン。緑で、ハーブっぽくて、ちょっと薬局みたい。変だけどおいしい。"
+ },
+ "city.soda.p.good.syrup.lemon": {
+  "ru": "Лимонная газировка кислит ровно настолько, чтобы зажмуриться и улыбнуться.",
+  "en": "Lemon soda, just sour enough to make you squint and smile.",
+  "ja": "レモンソーダ。目をつぶって笑ってしまうくらい、ちょうどいい酸っぱさ。"
+ },
+ "city.soda.p.good.syrup.apple": {
+  "ru": "Яблочная. Как сок, только с пузырьками и холоднее. Прямо осень заранее.",
+  "en": "Apple. Like juice, only colder and fizzy. Autumn ahead of time.",
+  "ja": "りんご味。ジュースみたいだけど、泡があってもっと冷たい。ひと足早い秋だ。"
+ },
+ "city.soda.p.fair.syrup.cherry": {
+  "ru": "Вишнёвый сироп осел на дне, а сверху одна вода. Перемешать было нечем.",
+  "en": "The cherry syrup sank to the bottom with plain water on top. Nothing to stir it with.",
+  "ja": "さくらんぼのシロップが底に沈んで、上はただの水。かき混ぜるものもない。"
+ },
+ "city.soda.p.fair.syrup.duchesse": {
+  "ru": "«Дюшес» пошёл не в то горло. Откашлялся, допил. Всё равно вкусно.",
+  "en": "The Duchesse went down the wrong way. I coughed, finished it. Still good.",
+  "ja": "ドゥシェスが気管に入った。せきこんでから飲み干した。それでもおいしい。"
+ },
+ "city.soda.p.fair.syrup.cream_soda": {
+  "ru": "Пена крем-соды осталась на носу. Прохожий хмыкнул. Ладно.",
+  "en": "The cream soda foam ended up on my nose. A passer-by snorted. Fine.",
+  "ja": "クリームソーダの泡が鼻についた。通りがかりの人が鼻で笑った。まあいい。"
+ },
+ "city.soda.p.fair.syrup.tarragon": {
+  "ru": "Тархун пролился на кеды. Теперь они немного зелёные и пахнут травой.",
+  "en": "Tarragon spilled on my sneakers. Now they're a little green and smell of herbs.",
+  "ja": "タルフンがスニーカーにこぼれた。ちょっと緑になって、草の匂いがする。"
+ },
+ "city.soda.p.fair.syrup.lemon": {
+  "ru": "Лимонная ударила в нос так, что чихнул трижды. Голуби разлетелись.",
+  "en": "The lemon went up my nose so hard I sneezed three times. The pigeons scattered.",
+  "ja": "レモンが鼻にきて三回くしゃみ。ハトが飛び散った。"
+ },
+ "city.soda.p.fair.syrup.apple": {
+  "ru": "Яблочную пил слишком быстро и икал потом до самого угла.",
+  "en": "Drank the apple too fast and hiccuped all the way to the corner.",
+  "ja": "りんご味を急いで飲みすぎて、角までしゃっくりが止まらなかった。"
+ },
+ "city.soda.p.poor.1": {
+  "ru": "Автомат так и не отдал ни воды, ни монеты. Стою, смотрю на него. Он на меня.",
+  "en": "The machine gave back neither water nor coin. I stand there looking at it. It looks at me.",
+  "ja": "自販機は水も硬貨も返してくれなかった。僕はじっと見る。向こうも僕を見ている。"
+ },
+ "city.soda.p.poor.2": {
+  "ru": "Всё мимо: пена через край, газ в нос, полстакана на асфальте. Ничего, в другой раз.",
+  "en": "All wrong: foam over the rim, fizz up my nose, half a glass on the pavement. Never mind, next time.",
+  "ja": "全部だめ。泡はあふれ、炭酸は鼻にきて、半分は地面に。まあいいや、また今度。"
+ },
+ "city.soda.p.poor.3": {
+  "ru": "Одна монетка, а столько суеты. Автомат урчит, будто посмеивается.",
+  "en": "One coin, and so much fuss. The machine hums as if it were chuckling.",
+  "ja": "硬貨一枚でこの騒ぎ。自販機がくすくす笑うみたいにうなっている。"
+ },
+ "city.soda.note.1": {
+  "ru": "На боку автомата кто-то нацарапал: «Здесь был Вова, 1979». Краска давно закрасила, буквы проступают.",
+  "en": "Someone scratched on the side of the machine: \"Vova was here, 1979\". It's long been painted over; the letters still show.",
+  "ja": "自販機の横に誰かが「ヴォーヴァ参上、1979」と刻んでいる。とっくに塗り直されたのに、字が浮き出ている。"
+ },
+ "city.soda.note.2": {
+  "ru": "Под автоматом лужица и пара ос. Осы явно за сиропом.",
+  "en": "A puddle under the machine and a couple of wasps. The wasps are clearly here for the syrup.",
+  "ja": "自販機の下に水たまりとハチが二匹。明らかにシロップ目当てだ。"
+ },
+ "city.soda.note.3": {
+  "ru": "На табличке мелом: «Стаканы не уносить!». Ниже другим почерком: «И не бить».",
+  "en": "In chalk on the plate: \"Do not take the glasses away!\" Below, in another hand: \"Or break them.\"",
+  "ja": "札にチョークで「コップを持ち去らないこと！」。その下に別の字で「割らないこと」。"
+ },
+ "city.soda.note.4": {
+  "ru": "Автомат гудит ровно, как холодильник на кухне. Изнутри тянет холодом.",
+  "en": "The machine hums steadily, like a kitchen fridge. Cold breathes out of it.",
+  "ja": "自販機は台所の冷蔵庫みたいに一定の音でうなる。中から冷気が流れてくる。"
+ },
+ "city.soda.note.5": {
+  "ru": "Мимо проходит мастер с чемоданчиком, похлопывает автомат по боку, как коня. Тот довольно урчит.",
+  "en": "A repairman with a little case walks past and pats the machine on the side like a horse. It hums contentedly.",
+  "ja": "工具箱を持った修理屋さんが通りがかりに、馬をなでるみたいに自販機の横をぽんと叩く。自販機は満足そうにうなる。"
+ },
+ "city.soda.note.hot": {
+  "ru": "В жару к автомату очередь: каждый держит монетку наготове и смотрит, как пьёт тот, кто впереди.",
+  "en": "In the heat there's a queue at the machine: everyone holds a coin ready and watches the one ahead drink.",
+  "ja": "暑い日は自販機に行列。みんな硬貨を握りしめて、前の人が飲むのを見ている。"
+ },
+ "city.soda.note.evening": {
+  "ru": "Вечером у автомата загорается красная вывеска, и вокруг неё кружат мошки.",
+  "en": "In the evening the red sign on the machine lights up, and midges circle round it.",
+  "ja": "夕方になると自販機の赤い看板が灯り、そのまわりを羽虫が回る。"
+ },
+ "city.soda.note.night": {
+  "ru": "Ночью автомат светится один на всю улицу. Урчит тихо, чтобы никого не разбудить.",
+  "en": "At night the machine is the only light on the street. It hums quietly so as not to wake anyone.",
+  "ja": "夜、通りで光っているのは自販機だけ。誰も起こさないように静かにうなっている。"
+ },
+ "city.soda.note.morning": {
+  "ru": "Утром вода самая холодная: автомат за ночь отдохнул.",
+  "en": "In the morning the water is coldest: the machine has rested overnight.",
+  "ja": "朝の水がいちばん冷たい。自販機がひと晩休んだからだ。"
+ },
+ "city.soda.note.fest": {
+  "ru": "В праздник у автомата толчея и смех. Стакан ходит по рукам, как эстафетная палочка.",
+  "en": "On a holiday there's a crowd and laughter at the machine. The glass goes from hand to hand like a relay baton.",
+  "ja": "祝日の自販機はにぎやかで笑い声が絶えない。コップがリレーのバトンみたいに手から手へ渡る。"
+ },
+ "city.soda.closed.winter.1": {
+  "ru": "Автомат укутан брезентом и перевязан верёвкой. До весны газировки не будет.",
+  "en": "The machine is wrapped in tarpaulin and tied with rope. No soda water until spring.",
+  "ja": "自販機は防水布にくるまれ、ロープで縛ってある。春まで炭酸水はおあずけだ。"
+ },
+ "city.soda.closed.winter.2": {
+  "ru": "Из-под брезента торчит только краешек красной вывески. Автомат зимует.",
+  "en": "Only an edge of the red sign peeks out from under the tarpaulin. The machine is wintering.",
+  "ja": "防水布の下から赤い看板の端がのぞいているだけ。自販機は冬ごもり中。"
+ },
+ "city.soda.closed.winter.snow": {
+  "ru": "На брезенте шапка снега. Под ним где-то спит газировка.",
+  "en": "A cap of snow on the tarpaulin. Somewhere under it, the soda water sleeps.",
+  "ja": "防水布の上に雪の帽子。その下のどこかで炭酸水が眠っている。"
+ },
+ "city.soda.closed.broken.1": {
+  "ru": "В нише картонка: «Автомат не работает». Монетоприёмник заклеен изолентой.",
+  "en": "A piece of cardboard in the niche: \"Out of order\". The coin slot is taped over.",
+  "ja": "受け口に段ボールの札。「故障中」。投入口はビニールテープでふさがれている。"
+ },
+ "city.soda.closed.broken.2": {
+  "ru": "«Не работает». Кто-то дописал карандашом: «Мастер будет завтра». Хочется верить.",
+  "en": "\"Out of order\". Someone has added in pencil: \"The repairman comes tomorrow\". One would like to believe it.",
+  "ja": "「故障中」。誰かが鉛筆で「修理は明日」と書き足している。信じたい。"
+ },
+ "city.soda.closed.broken.3": {
+  "ru": "Автомат сегодня молчит, табличка «Не работает». Придётся до следующего, а их в городе несколько.",
+  "en": "The machine is silent today, the sign says \"Out of order\". I'll have to find another; there are a few in town.",
+  "ja": "今日は自販機が黙っている。札には「故障中」。別のを探そう。町にはいくつかある。"
+ },
+ "city.coll.soda_syrups.title": {
+  "ru": "Сиропы газировки",
+  "en": "Soda syrups",
+  "ja": "炭酸水のシロップ"
+ },
+ "city.coll.soda_syrups.cherry": {
+  "ru": "Вишня",
+  "en": "Cherry",
+  "ja": "さくらんぼ"
+ },
+ "city.coll.soda_syrups.duchesse": {
+  "ru": "Дюшес",
+  "en": "Duchesse",
+  "ja": "ドゥシェス"
+ },
+ "city.coll.soda_syrups.cream_soda": {
+  "ru": "Крем-сода",
+  "en": "Cream soda",
+  "ja": "クリームソーダ"
+ },
+ "city.coll.soda_syrups.tarragon": {
+  "ru": "Тархун",
+  "en": "Tarragon",
+  "ja": "タルフン"
+ },
+ "city.coll.soda_syrups.lemon": {
+  "ru": "Лимон",
+  "en": "Lemon",
+  "ja": "レモン"
+ },
+ "city.coll.soda_syrups.apple": {
+  "ru": "Яблоко",
+  "en": "Apple",
+  "ja": "りんご"
+ },
+ "city.coll.reward.soda_syrups.name": {
+  "ru": "Свой гранёный стакан",
+  "en": "A faceted glass of my own",
+  "ja": "自分の面取りコップ"
+ },
+ "city.coll.reward.soda_syrups.note": {
+  "ru": "Все шесть сиропов перепробованы. Мастер по автоматам вручил мне гранёный стакан: «Свой носи, раз такой знаток».",
+  "en": "All six syrups tried. The machines' repairman handed me a faceted glass: \"Carry your own, since you're such an expert.\"",
+  "ja": "六種類のシロップを全部試した。自販機の修理屋さんが面取りのコップをくれた。「そんなに詳しいなら、自分のを持ち歩きな」"
+ },
+ "city.plot.sm_soda1.name": {
+  "ru": "Автомат газводы на набережной",
+  "en": "Soda machine on the promenade",
+  "ja": "遊歩道の炭酸水自販機"
+ },
+ "city.plot.sm_soda2.name": {
+  "ru": "Автомат газводы у остановки 4",
+  "en": "Soda machine at bus stop 4",
+  "ja": "4番停留所の炭酸水自販機"
+ },
+ "city.plot.sm_soda3.name": {
+  "ru": "Автомат газводы у спуска на пляж",
+  "en": "Soda machine at the beach steps",
+  "ja": "浜への階段の炭酸水自販機"
+ },
+ "city.plot.sm_soda4.name": {
+  "ru": "Автомат газводы у станции «Янтарь»",
+  "en": "Soda machine at Amber station",
+  "ja": "「琥珀」駅前の炭酸水自販機"
+ },
+ "city.plot.sm_soda5.name": {
+  "ru": "Автомат газводы на площади Солнца",
+  "en": "Soda machine on Sun Square",
+  "ja": "太陽広場の炭酸水自販機"
+ },
+ "city.plot.sm_soda6.name": {
+  "ru": "Автомат газводы в парке",
+  "en": "Soda machine in the park",
+  "ja": "公園の炭酸水自販機"
+ },
+ "dev.action.interiors.soda_jam": {
+  "ru": "Интерьеры: автомат газводы глотает монету (каждый раз)",
+  "en": "Interiors: soda machine swallows the coin (every time)",
+  "ja": "内装：炭酸水自販機が硬貨を飲み込む（毎回）"
+ }
+}
