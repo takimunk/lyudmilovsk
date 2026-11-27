@@ -148,6 +148,8 @@ private:
 	float SeaWindScale = -1.f;
 	float WadeSpeed = -1.f;
 	float SweepTimer = 0.f;
+	/** Out of season (no snow, ice, snowfall or flakes showing): the step runs at 4 Hz with the time gathered here. */
+	float QuietDt = 0.f;
 	/** SetIceHole's holes (centres, cm), and whether the tiles must be laid again for a change. */
 	TMap<FName, FVector> IceHoles;
 	bool bIceHolesChanged = false;
