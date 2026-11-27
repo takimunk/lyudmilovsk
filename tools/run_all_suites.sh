@@ -14,8 +14,11 @@
 # Logs: Saved/Suites/<row>.log. Needs clang++, python3 (with PIL for underwater bed). The LFS worlds that animalsim and
 # birdsim read (Content/AnimalsData/animal_world.bin, Content/BirdsData/bird_world.bin) must be pulled:
 #   git lfs pull --include=unreal/Lyudmilovsk/Content/AnimalsData/animal_world.bin,unreal/Lyudmilovsk/Content/BirdsData/bird_world.bin
-# Known on main: audiosim test has 2 failures (thunderstorm peak, far-storm rumble); check_localization lists items
-# whose icon pictures are missing.
+# Without them (a checkout without LFS has only pointer files) the rows that need the animals' grid (animalsim, barksim,
+# mannersim) are SKIP "needs LFS", not run: some of them would exit 0 having checked nothing.
+# Known on main: birdsim test ~6 failures; instrumentsim's cost check (< 60 ms) can fail on a loaded machine;
+# gen.town_life does not give the committed town back here (not even at the commit that wrote it: another shuffle of
+# jobs and friends), so do not commit its output from this row; check_data and check_localization list data problems.
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT" || exit 1
@@ -32,7 +35,7 @@ while [ $# -gt 0 ]; do
 	--keep) KEEP=1 ;;
 	--no-werror) WERROR=0 ;;
 	--only) shift; ONLY="${1:-}" ;;
-	-h|--help) sed -n '2,20p' "$0"; exit 0 ;;
+	-h|--help) sed -n '2,21p' "$0"; exit 0 ;;
 	*) echo "unknown option $1 (see --help)"; exit 2 ;;
 	esac
 	shift
@@ -73,6 +76,21 @@ summary_of() {
 	l="$(grep -aiE 'pass|fail|all ok|problems|error|warning:' "$1" | tail -1)"
 	[ -n "$l" ] || l="$(grep -av '^[[:space:]]*$' "$1" | tail -1)"
 	printf '%s' "$l" | cut -c1-90
+}
+
+# the animals' walk grid is in LFS: a pointer file starts with "version"
+ANIMAL_GRID="$ROOT/$CONTENT/AnimalsData/animal_world.bin"
+LFS_GRID=1
+[ "$(head -c 7 "$ANIMAL_GRID" 2>/dev/null)" = "version" ] && LFS_GRID=0
+
+# grid_suite <row> <slow|-> <command...>: a suite that reads animal_world.bin; SKIP when that is only an LFS pointer
+grid_suite() {
+	wanted "$1" "$2" || return 0
+	if [ "$LFS_GRID" = 0 ]; then
+		record "$1" SKIP 0 "needs LFS: animal_world.bin is a pointer (git lfs pull, see the top of this file)"
+		return 0
+	fi
+	suite "$@"
 }
 
 # suite <row> <slow|-> <command...>: passes when the command exits 0
@@ -131,18 +149,18 @@ echo "suites: $ROOT (EXTRA_CXXFLAGS=$EXTRA_CXXFLAGS)"
 printf '%-34s %-4s %6s  %s\n' "row" "" "time" "result"
 
 # --- 1. the host suites (tools/*/run.sh), every mode -----------------------------------------------------------------
-suite animalsim.test              - bash tools/animalsim/run.sh test
-suite animalsim.day               - bash tools/animalsim/run.sh day 6 2
+grid_suite animalsim.test           - bash tools/animalsim/run.sh test
+grid_suite animalsim.day            - bash tools/animalsim/run.sh day 6 2
 suite atonsim.test                - bash tools/atonsim/run.sh test
 suite photosim.test               - bash tools/photosim/run.sh test
 suite audiosim.test               - bash tools/audiosim/run.sh test
 suite audiosim.fountain           - bash tools/audiosim/run.sh fountain
 suite audiosim.weather            - bash tools/audiosim/run.sh weather
 suite audiosim.render             slow bash tools/audiosim/run.sh render
-suite barksim.test                - bash tools/barksim/run.sh
-suite barksim.day.ru              - bash tools/barksim/run.sh day ru
-suite barksim.day.en              slow bash tools/barksim/run.sh day en
-suite barksim.day.ja              slow bash tools/barksim/run.sh day ja
+grid_suite barksim.test             - bash tools/barksim/run.sh
+grid_suite barksim.day.ru           - bash tools/barksim/run.sh day ru
+grid_suite barksim.day.en           slow bash tools/barksim/run.sh day en
+grid_suite barksim.day.ja           slow bash tools/barksim/run.sh day ja
 suite birdsim.test                slow bash tools/birdsim/run.sh test
 suite festivalsim.test            - bash tools/festivalsim/run.sh test
 suite festivalsim.year            - bash tools/festivalsim/run.sh year 2026
@@ -157,7 +175,8 @@ if wanted peoplesim; then
 fi
 suite lettersim.test              - bash tools/lettersim/run.sh
 suite lettersim.story             - bash tools/lettersim/run.sh story ru
-suite mannersim.friends           - bash tools/mannersim/run.sh friends
+grid_suite mannersim.test           - bash tools/mannersim/run.sh
+grid_suite mannersim.friends        - bash tools/mannersim/run.sh friends
 suite gardensim.test              - bash tools/gardensim/run.sh
 suite peoplesim.test              - bash tools/peoplesim/run.sh test
 suite peoplesim.town              - bash tools/peoplesim/run.sh town
@@ -192,6 +211,24 @@ suite weather.winters             - bash tools/weather/run.sh winters
 suite winter.test                 - bash tools/winter/run.sh test
 suite winter.perf                 - bash tools/winter/run.sh perf
 suite winter.images               - bash tools/winter/run.sh images
+# (the suites that build with their own strict flags, not EXTRA_CXXFLAGS)
+suite booksim.layout              - bash tools/booksim/run.sh
+suite cinemasim.test              - bash tools/cinemasim/run.sh
+suite citydress.test              - bash tools/citydress/run.sh
+suite cityplan.test               - bash tools/cityplan/run.sh
+suite citysim.test                - bash tools/citysim/run.sh
+suite countersim.test             - bash tools/countersim/run.sh
+suite daylog.test                 - bash tools/daylog/run.sh
+suite instrumentsim.test          - bash tools/instrumentsim/run.sh
+suite kitesim.test                - bash tools/kitesim/run.sh
+suite lighthousesim.test          - bash tools/lighthousesim/run.sh test
+suite musicsim.test               - bash tools/musicsim/run.sh
+suite papersim.test               - bash tools/papersim/run.sh
+suite plantsim.test               - bash tools/plantsim/run.sh
+suite questsim.test               - bash tools/questsim/run.sh
+suite roundsim.test               - bash tools/roundsim/run.sh
+suite topi.test                   - bash tools/topi/run.sh test
+suite winterplaysim.test          - bash tools/winterplaysim/run.sh
 
 # --- 2. deterministic generators: their committed output must come out the same ---------------------------------------
 # (Generators that read the built terrain - public_spaces, people_map, animal_map, bird_habitats, europa_site, railway,
@@ -201,12 +238,13 @@ generator gen.city_plan       "$CONTENT/City/city_plan.json"                    
 generator gen.academ_fountain "$CONTENT/Academgorodok/fountain.json"             python3 tools/academ_fountain.py
 generator gen.academ_wires    "$CONTENT/BirdsData/wires.json"                    python3 tools/academ_wires.py
 generator gen.restaurant_seats "$CONTENT/Restaurant/seats.json"                  python3 tools/restaurant/seats.py
-generator gen.town_life       "$CONTENT/PeopleData $CONTENT/Localization/town"   python3 tools/town/town_life.py
+# (town_life.py also runs its add-ons and build_reading.py: the pets' and the book club's files are its output too)
+generator gen.town_life       "$CONTENT/PeopleData $CONTENT/Localization/town $CONTENT/AnimalsData/pets.json $CONTENT/Localization/pets $CONTENT/Reading/reading.json" python3 tools/town/town_life.py
 generator gen.barks           "$CONTENT/Dialogue/town_barks.txt $CONTENT/Localization/barks" python3 tools/barks/build_barks.py
 generator gen.letters         "$CONTENT/Letters/letters.json $CONTENT/Localization/letters" python3 tools/letters/build_letters.py
 generator gen.friends         "$CONTENT/PeopleData/friends.json $CONTENT/Localization/friends" python3 tools/friends/build_friends.py
 generator gen.weather_pull    "$CONTENT/PeopleData/weather_pull.json" python3 tools/town/weather_pull.py
-generator gen.reading         "$CONTENT/Reading/reading.json $CONTENT/Localization/reading" python3 tools/reading/build_reading.py
+generator gen.reading         "$CONTENT/Reading/reading.json $CONTENT/Localization/reading $CONTENT/PeopleData" python3 tools/reading/build_reading.py
 generator gen.garden          "$CONTENT/Garden/garden.json $CONTENT/Localization/garden" python3 tools/garden/build_garden.py
 generator gen.strings         "$CONTENT/Localization/strings_ru.json $CONTENT/Localization/strings_en.json $CONTENT/Localization/strings_ja.json" \
 	bash -c 'python3 tools/restaurant/strings.py && python3 tools/lobby_strings.py && python3 tools/smoking_strings.py && python3 tools/characters/nao_strings.py'
