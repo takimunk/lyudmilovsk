@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <string>
 
 namespace LyudBeach
 {
@@ -150,6 +151,12 @@ namespace LyudBeach
 		return Castle.Stage() > Before;
 	}
 
+	bool Build(FCastle& Castle, double Dt, int Helpers)
+	{
+		const int H = std::max(0, std::min(MaxHelpers, Helpers));
+		return Build(Castle, Dt * (1.0 + HelperBoost * H));
+	}
+
 	bool Wash(FCastle& Castle, double SeaZ, double WaveM, bool bRain, double Dt)
 	{
 		if (!Castle.bAlive || Dt <= 0.0)
@@ -267,6 +274,94 @@ namespace LyudBeach
 	double LifeguardSeconds(double CourseM)
 	{
 		return 2.0 * CourseM / 1.5;
+	}
+
+	// ------------------------------------------------------------------ summer visitors at the buoy
+
+	const FRival& Rival(int Index)
+	{
+		// a Leningrad girl who swims evenly, a student who starts too fast, a teacher, an old man who never stops, a fast
+		// Estonian who fades hard, a woman from the dacha by the lighthouse
+		static const FRival Rivals[RivalCount] = {
+			{ "zoya", 1.62, 0.08 }, { "gena", 1.82, 0.20 }, { "lida", 1.45, 0.03 },
+			{ "arkady", 1.30, 0.02 }, { "tomas", 1.86, 0.22 }, { "nina", 1.55, 0.05 },
+		};
+		return Rivals[std::max(0, std::min(RivalCount - 1, Index))];
+	}
+
+	bool RivalSeason(int Month, int Day, double SeaC)
+	{
+		const int Key = Month * 100 + Day;
+		return Key >= 615 && Key <= 831 && SeaC >= 16.0;
+	}
+
+	int TodaysRivals(int GameDay, int Month, int Day, double SeaC, int* Out)
+	{
+		if (!RivalSeason(Month, Day, SeaC))
+		{
+			return 0;
+		}
+		int N = 0;
+		for (int I = 0; I < RivalCount && N < MaxRivals; ++I)
+		{
+			// about half of them are on the beach on a day
+			if (Unit(Hash(static_cast<uint32_t>(GameDay), 0xB0E1u, static_cast<uint32_t>(I))) < 0.55)
+			{
+				Out[N++] = I;
+			}
+		}
+		return N;
+	}
+
+	static double RivalPace(int Index, int GameDay)
+	{
+		return Rival(Index).Speed * (0.96 + 0.08 * Unit(Hash(static_cast<uint32_t>(GameDay), 0x5EEDu, static_cast<uint32_t>(Index))));
+	}
+
+	double RivalAlong(int Index, double CourseM, double T, int GameDay)
+	{
+		// speed v(x) = V (1 - F x / L): dx/dt = V - (V F / L) x, so x(t) = (L / F) (1 - exp(-V F t / L))
+		const double L = 2.0 * std::max(1.0, CourseM);
+		const double V = RivalPace(Index, GameDay);
+		const double F = std::max(1e-4, Rival(Index).Fade);
+		const double X = (L / F) * (1.0 - std::exp(-V * F * std::max(0.0, T) / L));
+		return std::min(L, X);
+	}
+
+	double RivalSeconds(int Index, double CourseM, int GameDay)
+	{
+		const double L = 2.0 * std::max(1.0, CourseM);
+		const double V = RivalPace(Index, GameDay);
+		const double F = std::max(1e-4, std::min(0.95, Rival(Index).Fade));
+		// x(t) = L at t = -(L / (V F)) ln(1 - F)
+		return -(L / (V * F)) * std::log(1.0 - F);
+	}
+
+	int RacePlace(double HeroSeconds, const double* Rivals, int Count)
+	{
+		int Place = 1;
+		for (int I = 0; I < Count; ++I)
+		{
+			Place += Rivals[I] < HeroSeconds ? 1 : 0;
+		}
+		return Place;
+	}
+
+	// ------------------------------------------------------------------ selling finds
+
+	const char* FindItem(EFind Find)
+	{
+		return Find == EFind::AmberFly ? "amber_fly" : Find == EFind::Amber ? "amber_piece" : "seashell";
+	}
+
+	int SellPrice(const char* Item)
+	{
+		if (!Item)
+		{
+			return 0;
+		}
+		const std::string I(Item);
+		return I == "seashell" ? 4 : I == "amber_piece" ? 30 : I == "amber_fly" ? 150 : 0;
 	}
 
 	// ------------------------------------------------------------------ shells and amber

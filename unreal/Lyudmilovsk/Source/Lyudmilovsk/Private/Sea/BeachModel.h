@@ -104,6 +104,10 @@ namespace LyudBeach
 	bool CanBuild(double GroundZ, double SeaZ, double WetLineZ);
 	/** Holding E for Dt: true when a stage was just finished. */
 	bool Build(FCastle& Castle, double Dt);
+	/** Children who join in (the town's kids at play on the sand near him) speed it up, each by HelperBoost, at most MaxHelpers. */
+	constexpr int MaxHelpers = 2;
+	constexpr double HelperBoost = 0.5;
+	bool Build(FCastle& Castle, double Dt, int Helpers);
 	/** The sea at SeaZ with waves WaveM (the swash runs up some 40% of the wave height) for Dt: the castle wears while the
 	 *  water reaches its foot; a moat takes the first run-ups (it must fill first). Rain wears it slowly too.
 	 *  True when it was just washed away. */
@@ -151,6 +155,31 @@ namespace LyudBeach
 	/** The lifeguards' own time for a course, s (the record on the board). */
 	double LifeguardSeconds(double CourseM);
 
+	// ------------------------------------------------------------------ summer visitors at the buoy
+
+	/** The summer visitors (дачники) who swim the buoy course with the hero in the lifeguards' season: a pace at the start,
+	 *  how much of it they lose by the end (a fast starter fades), and a cap's colour (0 .. 5). Words: beach.rival.<Id>. */
+	struct FRival
+	{
+		const char* Id;
+		double Speed;
+		double Fade;
+	};
+	constexpr int RivalCount = 6;
+	constexpr int MaxRivals = 3;
+	const FRival& Rival(int Index);
+	/** Visitors swim from mid-June to the end of August, in water of 16 C and warmer. */
+	bool RivalSeason(int Month, int Day, double SeaC);
+	/** Who swims with him on a day (indices into the rivals, up to MaxRivals; the same all day), the count. */
+	int TodaysRivals(int GameDay, int Month, int Day, double SeaC, int* Out);
+	/** How far round the course (there and back, 0 .. 2 x CourseM) a visitor has swum T seconds after the whistle. Their pace
+	 *  on the day varies a little (GameDay), and falls off linearly to (1 - Fade) by the end. */
+	double RivalAlong(int Index, double CourseM, double T, int GameDay);
+	/** The visitor's time over the whole course, s. */
+	double RivalSeconds(int Index, double CourseM, int GameDay);
+	/** The hero's place among the visitors (1 = first): one more than those who were in before him. */
+	int RacePlace(double HeroSeconds, const double* Rivals, int Count);
+
 	// ------------------------------------------------------------------ shells and amber
 
 	enum class EFind : uint8_t { Cockle, Mussel, Tellin, Whelk, Amber, AmberFly, Num };
@@ -179,6 +208,18 @@ namespace LyudBeach
 	bool FindIn(int Cell, int Day, double Storm, FFind& Out);
 	/** The cells from CellFrom to CellTo (inclusive), appended to Out. */
 	void Finds(int CellFrom, int CellTo, int Day, double Storm, std::vector<FFind>& Out);
+
+	// ------------------------------------------------------------------ selling finds
+
+	/** The pocket item a find becomes: "seashell", "amber_piece", or "amber_fly" for amber with a fly in it. */
+	const char* FindItem(EFind Find);
+	/** What the souvenir units on the promenade pay for one of a find's items, roubles (a fly in amber is a museum piece);
+	 *  0 for anything else. */
+	int SellPrice(const char* Item);
+	/** How many pieces of amber the seller lets him keep before the quest "The amber shore" is done (she wants to see three). */
+	constexpr int KeepForQuest = 3;
+	/** The souvenir seller buys between these hours. */
+	constexpr double ShopFrom = 10.0, ShopTo = 20.0;
 
 	// ------------------------------------------------------------------ the book
 
