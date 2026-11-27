@@ -92,7 +92,7 @@ struct FClock
 };
 
 /** The skies the test goes through: what ULyudWeatherSubsystem would give (cloud, rain mm/h, snow part, fog, C, wet). */
-struct FSky { const char* Name; float Cloud, Rain, Snow, Fog, TempC, Wet; const char* Show = nullptr; };
+struct FSky { const char* Name; float Cloud, Rain, Snow, Fog, TempC, Wet; const char* Show = nullptr; float WindMs = 4.f; };
 static const FSky Skies[] = {
 	{ "clear", 0.15f, 0.f, 0.f, 0.f, 9.f, 0.f },
 	{ "overcast", 0.9f, 0.f, 0.f, 0.1f, 7.f, 0.1f },
@@ -104,6 +104,9 @@ static const FSky Skies[] = {
 	{ "aurora", 0.15f, 0.f, 0.f, 0.f, 4.f, 0.f, "aurora" },
 	{ "rainbow", 0.5f, 0.1f, 0.f, 0.f, 12.f, 0.6f, "rainbow" },
 	{ "fireworks", 0.2f, 0.f, 0.f, 0.f, 10.f, 0.f, "fireworks" },
+	// the wind (LyudBarks::WindWords: weather = windy, calm)
+	{ "windy", 0.4f, 0.f, 0.f, 0.f, 11.f, 0.f, nullptr, 11.f },
+	{ "calm", 0.2f, 0.f, 0.f, 0.f, 14.f, 0.f, nullptr, 0.8f },
 };
 
 static void SetNow(const FWorld& W, const FClock& C, const FSky& Sky, int Month, FNow& Now)
@@ -117,6 +120,7 @@ static void SetNow(const FWorld& W, const FClock& C, const FSky& Sky, int Month,
 	{
 		Now.Weather.push_back(Sky.Show);
 	}
+	LyudBarks::WindWords(Sky.WindMs, Now.Weather);
 }
 
 /** Two people side by side: seated at the same place within 2 m (a bench, a table, the club's row of computers). */

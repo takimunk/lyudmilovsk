@@ -668,3 +668,189 @@ and pivots: `blender/sailing/README.md`.
   `sign.sail.school_name`, `sign.sail.door_line1`, `sign.sail.door_line2` (proposed texts in
   `blender/sailing/sign_strings.json` until part G puts them in the strings tables).
 - Previews: `/mnt/project-files/yacht-school/`.
+
+## Town: festivals, paper, radio, talk
+
+What the town makes of the school: three festival days, a sailing column and notices in the town paper, a sailors'
+forecast and results on the radio, ~80 townsfolk lines, five rumours about the hero and the letters that follow them.
+None of it needs the school to be built: without the school's engine the paper and the radio simply say nothing about
+sailing, and the festivals, notices and barks run on the calendar alone.
+
+### Festivals (`Content/PeopleData/festivals.json`, `docs/festivals.md` "The yacht school's days")
+
+| id | rule | phases (hours) |
+|---|---|---|
+| `sail_opening` | `weekday_on_after` 25 April, Saturday | flag 10–11 beach, parade of sail 11–11:45 pier, regatta 11:45–15:30 promenade, tea 15:30–17 beach |
+| `sail_cup` | `weekday_on_after` 20 June, Saturday, 2 days | races 11–16 pier (both days), prizes 16–17 pier (day 2) |
+| `sail_closing` | `nth_weekday` November, 1st Sunday | regatta 11–14:30 pier, prizes 14:30–15:30, boats in 15:30–16:30, flag down 16:30–17 (beach), bonfire 17–20:30 |
+| `children_day` | (unchanged date) | new phase `optimists` 11–14:30 on the pier: the children's Optimist regatta |
+
+`weekday_on_after` (new in `LyudFest::StartsOn`, helper `WeekdayOnOrAfter(Y, M, D, Wd)`): the first given weekday on
+or after a date. Each day has a menu, flags and bunting on the pier, beach and promenade, four festival voices
+(`fv_sail_<day>_{bring,grump,kid,elder}`), names in the main tables (`festival.sail_opening/sail_cup/sail_closing
+.name/.desc/.today`), and the opening and the closing have quests (`fest_sail_opening`: the parade and the tea;
+`fest_sail_closing`: the boats in and the bonfire). The cup is `cup_lyudmilovsk` in the school's data.
+
+The dates agree with the school's `LyudSail::SeasonOpening / SeasonClosing / RaceDayOn` (festivalsim checks every year
+2026–2060; `tools/festivalsim/run.sh sail [Y0 [Y1]]` prints the table):
+
+| year | opening | cup (2 days) | children's regatta | closing |
+|---|---|---|---|---|
+| 2026 | Sat 25 Apr | Sat 20 Jun | 1 Jun | Sun 1 Nov |
+| 2027 | Sat 1 May | Sat 26 Jun | 1 Jun | Sun 7 Nov |
+| 2028 | Sat 29 Apr | Sat 24 Jun | 1 Jun | Sun 5 Nov |
+| 2029 | Sat 28 Apr | Sat 23 Jun | 1 Jun | Sun 4 Nov |
+| 2030 | Sat 27 Apr | Sat 22 Jun | 1 Jun | Sun 3 Nov |
+
+### Engine facts: `Public/Sailing/LyudSailNews.h`
+
+The paper and the radio ask through two free functions. They answer nothing until the school's engine registers
+providers, so the town builds and runs with or without the school. The default implementation is in
+`Private/Sailing/LyudSailNews.cpp`.
+
+```cpp
+struct FLyudSailNewsItem   // one class's racing on a day
+{
+	FName Event;            // sail_opening, sail_closing, optimist_day, cup_lyudmilovsk, wednesday, sunday
+	FName Class;            // optimist, cadet, luch
+	TArray<FName> Podium;   // up to 3: townsfolk key (npc.<key>.name), "hero", or NAME_None (a nameless sailor)
+	float WindMs = 0.f;     // mean wind of the racing
+	int32 Boats = 0;        // starters (largest race of the day in this class)
+	int32 Capsizes = 0;
+	bool bRecall = false;   // a general recall at any start
+	int32 Day = 0;          // the event's day (the cup: 0 and 1)
+	int32 HeroPlace = 0;    // 0 = the hero did not race
+	bool bAbandoned = false;
+};
+
+struct FLyudSailMorning    // the morning's facts for the sailors' forecast
+{
+	int32 Season = -1;      // LyudSail::ESeasonState: 0 laid up, 1 fitting out, 2 open, 3 laying up; -1 unknown
+	int32 Call = 0;         // 0 nothing, 1 sail, 2 reef, 3 race, 4 shore, 5 storm, 6 closed
+	FName Reason;           // calm, wind, gust, thunder, fog, dark, ice, low_water (shore/closed days)
+	FName Event;            // today's regatta or NAME_None
+	FString EventTime;      // its warning signal "HH:MM"
+	float WindMs = 0.f, GustMs = 0.f, FromDeg = 0.f;   // FromDeg: compass, 270 = from the west (off the sea)
+	int32 Shift = 0;        // 0 steady, 1 veers, 2 backs, 3 dies away, 4 freshens
+	bool bRecallRisk = false;
+	FString BestHour;       // "HH:MM" or empty
+	FString LowWater;       // "HH:MM" when the trolleys go far over the flats, or empty
+};
+
+using FLyudSailNewsProvider = TFunction<void(const UObject* WorldContext, int32 DayNumber, TArray<FLyudSailNewsItem>& Out)>;
+using FLyudSailMorningProvider = TFunction<bool(const UObject* WorldContext, int32 DayNumber, FLyudSailMorning& Out)>;
+
+LYUDMILOVSK_API void LyudSailNewsOfDay(const UObject* WorldContext, int32 DayNumber, TArray<FLyudSailNewsItem>& Out);
+LYUDMILOVSK_API bool LyudSailMorningOf(const UObject* WorldContext, int32 DayNumber, FLyudSailMorning& Out);
+LYUDMILOVSK_API void LyudSetSailNewsProviders(FLyudSailNewsProvider News, FLyudSailMorningProvider Morning);
+```
+
+`DayNumber` is the number of days since 1970-01-01 of the game's local date (`LyudFest::DaysFromCivil`, the same as
+`LyudSail::SchoolDayNumber`). What the school's engine (ULyudSailing) still has to do:
+
+- Call `LyudSetSailNewsProviders` in `Initialize`, and call it again with empty functions in `Deinitialize`.
+- The news provider maps `SchoolNewsOfDay` to one item per class. For **today** it should give only races already
+  finished: the radio's evening bulletin (after 16:00) reads today's results.
+- The morning provider maps `SchoolForecastForSailors` and the season state.
+- Fire the quest event **`sail towed`** (`ULyudQuests::Notify("sail", "towed")`) when the coach's launch tows the
+  hero's boat home. The rumour `tow` hangs on it; the other rumours use the events already listed (`sail join`,
+  `sail capsize`, `sail race_win`, `sail certificate`).
+
+Who calls the functions:
+
+- `ULyudTownPaper::BuildFacts` asks for yesterday's news and the morning's season.
+- `ULyudMusic::RefreshFacts` asks for yesterday's and today's news and today's morning.
+
+### Town paper (`TownPaperModel.h`, `tools/paper/strings_src.py` SAIL)
+
+- **Town page sailing column** (after the cups):
+  - a head;
+  - the opening or closing feature;
+  - one line per class: the podium by townsfolk name key, "the hero" or "a sailor of the school"; or "few finished";
+    or "abandoned"; and "all abandoned" when every race was off;
+  - the wind, once;
+  - a recall, capsizes, and the hero's place.
+- **Front page**: `front.sail_win` when the hero won.
+- **Weather page**: a storm warning for sailors, when the season is open and the wind is 14 m/s or more.
+- **Bills page**:
+  - today's Wednesday or Sunday race (not on festival days);
+  - the fitting out in April (season 1);
+  - the laying up (season 3).
+- **Other pieces**:
+  - four archive pieces on the school's history;
+  - four small ads;
+  - six festival blurbs.
+- **Notice boards** (8, via `x_notices`):
+  - club: enrolment, opening, closing, winter theory;
+  - school: enrolment, Optimist day;
+  - lost & found: a lost item at the cup, a lost item at laying up.
+- **Keys**: about 45 `paper.sail.*`.
+
+### Radio (`MusicModel.h`, `tools/music/strings.json`: 58 `music.radio.sail.*`)
+
+- **Morning weather** (before 12:00, on the school's days): the sailors' forecast. It gives:
+  - the wind by its Pomor name from the compass (`dir.0..7`: сиверко, полуночник, … шелоник, побережник);
+  - the speed and the gusts;
+  - the sea state (`force.0..5`; white horses from 6 m/s);
+  - the call (`call.sail / sail_any / reef / race / shore / storm / closed`) with its reason;
+  - the shift through the day, a recall risk, and low water.
+- **News bulletins**: yesterday's results in the morning, a race-day notice at noon, today's results in the evening.
+- **Sign-on**: on the school's own days (opening, closing, cup, Optimist day), a special line.
+
+### Talk
+
+- **Barks** (`tools/barks/lines/18_sailing.txt`, 70 lines: 62 single lines and 8 in two pier talks):
+  - spectators on the pier and the promenade;
+  - parents on the beach;
+  - children bragging and hurrying to the boathouse;
+  - old men remembering;
+  - sailors' weather;
+  - winter longing and spring fitting out;
+  - greetings to the hero for each rumour.
+- **Festival voices**: 12 more lines in `17_festival_voices.txt`.
+- **New weather words**: `windy` (the area's mean wind 8 m/s or more) and `calm` (under 1.5 m/s). They come from
+  `ULyudWindSubsystem::GetMeanSpeed` through `LyudBarks::WindWords(float MeanWindMs, std::vector<std::string>& Out)`,
+  which `ULyudTownTalk` calls after `WeatherWords`.
+- **Rumours** (`tools/rumours/rumours.py`, 19 kinds now). Each kind has paper and ask-in-shop lines and a letter
+  postscript:
+
+  | kind | event | rank | note |
+  |---|---|---|---|
+  | `sail` | `sail join` | 4 | once |
+  | `capsize` | `sail capsize` | 2 | |
+  | `regatta` | `sail race_win` | 8 | 0.3 chance of the paper |
+  | `tow` | `sail towed` | 3 | |
+  | `skipper` | `sail certificate` | 6 | once |
+
+### Checks
+
+- `tools/festivalsim/run.sh`: the new rule, each day's window, the cup's length, and the school's dates against the
+  festivals' for 2026–2060 (140 days).
+- `tools/papersim/run.sh` (36 checks):
+  - the column on race days only;
+  - the features;
+  - townsfolk name keys on the podium;
+  - the hero's front page;
+  - the storm warning in season only;
+  - today's race, the fitting out and the laying up;
+  - nothing about sailing without the school.
+- `tools/musicsim/run.sh`:
+  - the forecast in the morning weather only;
+  - the results in the right bulletins, the noon race notice, the sign-on specials;
+  - at least 12 word families on air;
+  - the podium's keys, the compass names, the sea by the wind;
+  - nothing about sailing without the school.
+- `tools/barksim/run.sh`:
+  - every line within the bubble limits;
+  - `windy` and `calm` skies;
+  - every rumour kind has a greeting.
+
+### Known gaps
+
+- Not yet compiled in Unreal: the host suites build the models, but `LyudSailNews.cpp`, the `LyudTownPaper.cpp` and
+  `LyudMusic.cpp` hooks and the `TownTalk.cpp` wind call still need a Mac build.
+- The school's own spectator pull (`SchoolSpectatorPull`) and the festivals' `watch sea` phases both draw people to
+  the pier on the opening, the cup and the closing. Part F should let the festival lead on those days, so the crowd is
+  not counted twice.
+- The pier sets `sail_watch_pier` and `sail_pier_talk1` fit nobody on barksim's sample day: the people sim seldom puts
+  adults on the pier. They will fit once part F's spectator activities send people there.

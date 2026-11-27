@@ -2,7 +2,10 @@
 //   festivalsim test                 checks of the date rules and of festivals.json
 //   festivalsim year [YYYY]          every festival day of a year with its program
 //   festivalsim at YYYY-MM-DD HH.H   what is on at a moment
+//   festivalsim sail [Y0 [Y1]]       the yacht school's days (Content/City/sailing.json) beside the festivals' (2026..2030)
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Festival/FestivalCalendar.h"
+// the yacht school's rules (header only): its season's days must be the festivals' days (docs/yacht_school.md "Town")
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Sailing/SailSchoolModel.h"
 
 #include <algorithm>
 #include <cmath>
@@ -305,6 +308,7 @@ static void Deep(FCalendar& C)
 					const FDate R = AddDays(D, -Fe.Offset);
 					bool bOk = Valid(D);
 					if (Fe.Rule == "date") bOk = bOk && R.M == Fe.Month && R.D == Fe.DayOfMonth;
+					if (Fe.Rule == "weekday_on_after") bOk = bOk && Weekday(R) == Fe.Wd && !(R < FDate{ R.Y, Fe.Month, Fe.DayOfMonth }) && R < AddDays(FDate{ R.Y, Fe.Month, Fe.DayOfMonth }, 7);
 					if (Fe.Rule == "nth_weekday") bOk = bOk && R.M == Fe.Month && Weekday(R) == Fe.Wd && (Fe.Nth > 0 ? (R.D - 1) / 7 + 1 == Fe.Nth : R.D + 7 > DaysInMonth(R.Y, R.M));
 					if (Fe.Rule == "easter_orthodox") bOk = bOk && AddDays(OrthodoxEaster(Y), Fe.Offset) == D;
 					if (Fe.Rule == "easter_western") bOk = bOk && AddDays(WesternEaster(Y), Fe.Offset) == D;
@@ -348,6 +352,65 @@ static void Deep(FCalendar& C)
 		Between("mid_autumn", 9, 6, 10, 7, -1);
 		Between("diwali", 10, 17, 11, 16, -1);
 		Between("loy_krathong", 10, 30, 11, 29, -1);
+		Between("sail_opening", 4, 25, 5, 1, 5);        // the yacht school's opening: the first Saturday on or after 25 April
+		Between("sail_closing", 11, 1, 11, 7, 6);       // its closing: the first Sunday of November
+		Between("sail_cup", 6, 20, 6, 26, 5);           // the Lyudmilovsk Cup: the weekend on or after 20 June
+	}
+
+	// ---- the rule weekday_on_after by itself
+	{
+		std::string Bad;
+		for (int Y = 2026; Y <= 2060; Y++)
+		{
+			for (int M = 1; M <= 12; M++)
+			{
+				for (int Wd = 0; Wd < 7; Wd++)
+				{
+					const FDate D = WeekdayOnOrAfter(Y, M, 25, Wd);
+					const int In = DaysFromCivil(D) - DaysFromCivil({ Y, M, 25 });
+					if (Weekday(D) != Wd || In < 0 || In > 6 || !Valid(D)) Bad += " " + DateStr(D);
+				}
+			}
+		}
+		const FDate A = WeekdayOnOrAfter(2026, 4, 25, 5), B = WeekdayOnOrAfter(2027, 4, 25, 5), E = WeekdayOnOrAfter(2026, 12, 30, 6);
+		CHECK(Bad.empty() && A == FDate({ 2026, 4, 25 }) && B == FDate({ 2027, 5, 1 }) && E == FDate({ 2027, 1, 3 }),
+			"weekday_on_after: the first weekday on or after a day, over a month's and a year's end (2026-04-25, 2027-05-01, 2027-01-03)%s", Bad.c_str());
+	}
+
+	// ---- the yacht school's season and the festivals agree (Content/City/sailing.json, LyudSail::SeasonOpening/Closing,
+	// RaceDayOn): the opening, the closing, the children's regatta and the Lyudmilovsk Cup fall on their festivals' days
+	{
+		LyudSail::FSchoolParams P;
+		std::string Error;
+		const bool bLoaded = P.Load(ReadFile("unreal/Lyudmilovsk/Content/City/sailing.json"), Error);
+		CHECK(bLoaded, "the yacht school's data reads (Content/City/sailing.json) %s", Error.c_str());
+		std::string Bad;
+		int Days = 0;
+		const struct { const char* Event; const char* Festival; } Pairs[] = {
+			{ "sail_opening", "sail_opening" }, { "sail_closing", "sail_closing" }, { "optimist_day", "children_day" }, { "cup_lyudmilovsk", "sail_cup" } };
+		for (int Y = 2026; bLoaded && Y <= 2060; Y++)
+		{
+			const LyudSail::FSchoolDate O = LyudSail::SeasonOpening(P, Y), Cl = LyudSail::SeasonClosing(P, Y);
+			if (!C.StartsOn(C.Find("sail_opening"), FDate{ O.Y, O.M, O.D })) Bad += " opening@" + DateStr(FDate{ O.Y, O.M, O.D });
+			if (!C.StartsOn(C.Find("sail_closing"), FDate{ Cl.Y, Cl.M, Cl.D })) Bad += " closing@" + DateStr(FDate{ Cl.Y, Cl.M, Cl.D });
+			for (int Dn = DaysFromCivil({ Y, 1, 1 }); Dn < DaysFromCivil({ Y + 1, 1, 1 }); Dn++)
+			{
+				const FDate D = CivilFromDays(Dn);
+				const LyudSail::FRaceDay R = LyudSail::RaceDayOn(P, LyudSail::FSchoolDate(D.Y, D.M, D.D));
+				const std::string Ev = R.Event >= 0 ? P.Events[(size_t)R.Event].Id : std::string();
+				for (const auto& Pr : Pairs)
+				{
+					const int F = C.Find(Pr.Festival);
+					const bool bSchool = Ev == Pr.Event && R.Day == 0;
+					const bool bFest = F >= 0 && C.StartsOn(F, D);
+					if (bSchool != bFest) Bad += std::string(" ") + Pr.Event + (bSchool ? "@" : "!@") + DateStr(D);
+					Days += bSchool ? 1 : 0;
+				}
+			}
+		}
+		CHECK(bLoaded && Bad.empty() && Days == 4 * 35, "2026..2060: the school's opening, closing, June 1 regatta and Cup start on the days of sail_opening, sail_closing, children_day, sail_cup (%d days)%s", Days, Bad.c_str());
+		const int Cup = C.Find("sail_cup");
+		CHECK(Cup >= 0 && C.Festivals[(size_t)Cup].Days == 2, "the Cup festival lasts its two racing days");
 	}
 
 	// ---- the program's hours: inside the decorations' time, inside what At can see, sane for the people's life
@@ -486,7 +549,7 @@ static void Deep(FCalendar& C)
 		{
 			if (C.Festivals[U.second].Rule != "weekly") Got += " " + C.Festivals[U.second].Id + "@" + DateStr(U.first);
 		}
-		const std::string Want = " sea_festival@2026-10-24 halloween@2026-10-31 dia_de_muertos@2026-11-01 diwali@2026-11-08 lantern_night@2026-11-14 first_snow@2026-11-20 loy_krathong@2026-11-24";
+		const std::string Want = " sea_festival@2026-10-24 halloween@2026-10-31 dia_de_muertos@2026-11-01 sail_closing@2026-11-01 diwali@2026-11-08 lantern_night@2026-11-14 first_snow@2026-11-20 loy_krathong@2026-11-24";
 		CHECK(Got == Want, "the first 40 days of the game:%s", Got.c_str());
 	}
 
@@ -751,6 +814,37 @@ int main(int Argc, char** Argv)
 		PrintAt(C, D, (float)std::atof(Argv[3]));
 		return 0;
 	}
-	std::printf("festivalsim test | year [YYYY] | at YYYY-MM-DD HH.H\n");
+	if (Cmd == "sail")
+	{
+		// the yacht school's days beside the festivals': a table for docs/yacht_school.md
+		LyudSail::FSchoolParams P;
+		std::string Error;
+		if (!P.Load(ReadFile("unreal/Lyudmilovsk/Content/City/sailing.json"), Error))
+		{
+			std::printf("sailing.json: %s\n", Error.c_str());
+			return 2;
+		}
+		const int From = Argc > 2 ? std::atoi(Argv[2]) : 2026, To = Argc > 3 ? std::atoi(Argv[3]) : From + 4;
+		std::printf("year  opening: school / festival   cup: school / festival   closing: school / festival\n");
+		for (int Y = From; Y <= To; Y++)
+		{
+			const LyudSail::FSchoolDate O = LyudSail::SeasonOpening(P, Y), Cl = LyudSail::SeasonClosing(P, Y);
+			std::string Cup = "-";
+			for (int Dn = DaysFromCivil({ Y, 6, 1 }); Dn < DaysFromCivil({ Y, 8, 1 }); Dn++)
+			{
+				const FDate D = CivilFromDays(Dn);
+				const LyudSail::FRaceDay R = LyudSail::RaceDayOn(P, LyudSail::FSchoolDate(D.Y, D.M, D.D));
+				if (R.Event >= 0 && R.Day == 0 && P.Events[(size_t)R.Event].Id == "cup_lyudmilovsk") Cup = DateStr(D);
+			}
+			FDate Fo, Fc, Fcl;
+			C.Next(C.Find("sail_opening"), { Y, 1, 1 }, Fo);
+			C.Next(C.Find("sail_cup"), { Y, 1, 1 }, Fc);
+			C.Next(C.Find("sail_closing"), { Y, 1, 1 }, Fcl);
+			std::printf("%d  %s / %s %s   %s / %s %s   %s / %s %s\n", Y, DateStr(FDate{ O.Y, O.M, O.D }).c_str(), DateStr(Fo).c_str(), DayName(Weekday(Fo)),
+				Cup.c_str(), DateStr(Fc).c_str(), DayName(Weekday(Fc)), DateStr(FDate{ Cl.Y, Cl.M, Cl.D }).c_str(), DateStr(Fcl).c_str(), DayName(Weekday(Fcl)));
+		}
+		return 0;
+	}
+	std::printf("festivalsim test | year [YYYY] | at YYYY-MM-DD HH.H | sail [Y0 [Y1]]\n");
 	return 1;
 }

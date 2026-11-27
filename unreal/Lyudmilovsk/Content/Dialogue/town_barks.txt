@@ -26,7 +26,8 @@
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
 # sun =       day, low (sunrise or sunset), night, cloudy (overcast by day)
-# weather =   rain, snow, fog, cold (under 2 C), warm (over 22 C), clear (few clouds), wet (ULyudWeatherSubsystem)
+# weather =   rain, snow, fog, cold (under 2 C), warm (over 22 C), clear (few clouds), wet (ULyudWeatherSubsystem);
+#             windy (mean wind 8 m/s and over), calm (under 1.5 m/s) (ULyudWindSubsystem)
 #             aurora, rainbow, fireworks: while people look up at one (UPeopleLifeSubsystem::GetSkyShow)
 # festival =  festivals.json ids, or any: the festival on now (ULyudFestivalSubsystem::ActiveFestival); phase = its phase ids
 # near = hero the player is within 10 m of the speaker (remarks about him)
@@ -4082,3 +4083,203 @@ festival = amber_morning
 age = elder
 weight = 5
 say = town.fv_amber_morning_elder.1
+
+[fv_sail_opening_bring]
+festival = sail_opening
+age = adult
+weight = 5
+say = town.fv_sail_opening_bring.1
+
+[fv_sail_opening_grump]
+festival = sail_opening
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_sail_opening_grump.1
+
+[fv_sail_opening_kid]
+festival = sail_opening
+age = kid
+weight = 5
+say = town.fv_sail_opening_kid.1
+
+[fv_sail_opening_elder]
+festival = sail_opening
+age = elder
+weight = 5
+say = town.fv_sail_opening_elder.1
+
+[fv_sail_cup_bring]
+festival = sail_cup
+age = adult
+weight = 5
+say = town.fv_sail_cup_bring.1
+
+[fv_sail_cup_grump]
+festival = sail_cup
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_sail_cup_grump.1
+
+[fv_sail_cup_kid]
+festival = sail_cup
+age = kid
+weight = 5
+say = town.fv_sail_cup_kid.1
+
+[fv_sail_cup_elder]
+festival = sail_cup
+age = elder
+weight = 5
+say = town.fv_sail_cup_elder.1
+
+[fv_sail_closing_bring]
+festival = sail_closing
+age = adult
+weight = 5
+say = town.fv_sail_closing_bring.1
+
+[fv_sail_closing_grump]
+festival = sail_closing
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_sail_closing_grump.1
+
+[fv_sail_closing_kid]
+festival = sail_closing
+age = kid
+weight = 5
+say = town.fv_sail_closing_kid.1
+
+[fv_sail_closing_elder]
+festival = sail_closing
+age = elder
+weight = 5
+say = town.fv_sail_closing_elder.1
+
+# The yacht school «Луч» (docs/yacht_school.md "Town: festivals, paper, radio, talk"): people on the pier and the promenade
+# watching the boats, parents on the beach, children after a session and on the way to it, old men and the regattas of
+# their youth, the sailors' weather (weather = calm / windy: ULyudWindSubsystem's mean), the winter's longing, the talk
+# about the hero's sailing (heard_of = sail, capsize, regatta, tow, skipper: docs/town_rumours.md).
+# The season by the months (the school's own conditions sail_* are the people's, not the barks'): May to October on the
+# water, April the fitting out, December to March the longing. Russian lines never agree with the speaker's sex.
+# --- the talk of the town about the hero's sailing (docs/town_rumours.md: kinds sail, capsize, regatta, tow, skipper)
+
+[sail_watch_pier]
+at = pier
+months = 5-10
+hours = 10-20
+say = town.sail_watch_pier.1..8
+
+[sail_watch_promenade]
+at = promenade
+months = 5-10
+hours = 10-20
+say = town.sail_watch_promenade.1..5
+
+[sail_parents_beach]
+at = beach
+age = adult
+months = 5-9
+hours = 10-18
+weight = 2
+say = town.sail_parents_beach.1..6
+
+[sail_kids_brag]
+age = kid teen
+months = 5-10
+hours = 12-20
+at = beach pier promenade
+say = town.sail_kids_brag.1..6
+
+[sail_kids_hurry]
+job = pupil
+age = kid teen
+months = 4-10
+weekday = tue thu
+hours = 14-15
+say = town.sail_kids_hurry.1..3
+
+[sail_kids_hurry_summer]
+age = kid teen
+months = 6-8
+weekday = mon tue wed thu fri
+hours = 9-10
+say = town.sail_kids_hurry_summer.1..2
+
+[sail_old_men]
+age = elder
+at = pier promenade bench
+months = 5-10
+hours = 9-20
+say = town.sail_old_men.1..6
+
+[sail_calm]
+weather = calm
+months = 5-10
+at = pier beach promenade
+hours = 9-20
+say = town.sail_calm.1..4
+
+[sail_blow]
+weather = windy
+months = 5-10
+at = pier beach promenade
+hours = 9-20
+say = town.sail_blow.1..5
+
+[sail_winter]
+months = 12-3
+at = pier promenade beach
+say = town.sail_winter.1..4
+
+[sail_spring]
+months = 4
+at = beach promenade pier
+say = town.sail_spring.1..3
+
+[sail_pier_talk1]
+at = pier
+age = adult elder
+months = 5-10
+hours = 10-20
+talk = town.sail_pier_talk1.1 | town.sail_pier_talk1.2 | town.sail_pier_talk1.3 | town.sail_pier_talk1.4
+
+[sail_pier_talk2]
+at = pier promenade
+age = adult elder
+months = 5-10
+hours = 10-20
+talk = town.sail_pier_talk2.1 | town.sail_pier_talk2.2 | town.sail_pier_talk2.3 | town.sail_pier_talk2.4
+
+[rumour_sail_greet]
+to = hero
+heard_of = sail
+weight = 7
+say = town.rumour_sail_greet.1..2
+
+[rumour_capsize_greet]
+to = hero
+heard_of = capsize
+weight = 7
+say = town.rumour_capsize_greet.1..2
+
+[rumour_regatta_greet]
+to = hero
+heard_of = regatta
+weight = 7
+say = town.rumour_regatta_greet.1..2
+
+[rumour_tow_greet]
+to = hero
+heard_of = tow
+weight = 7
+say = town.rumour_tow_greet.1..2
+
+[rumour_skipper_greet]
+to = hero
+heard_of = skipper
+weight = 7
+say = town.rumour_skipper_greet.1..2

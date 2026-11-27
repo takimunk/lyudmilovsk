@@ -934,4 +934,16 @@ namespace LyudBarks
 			Out.push_back("wet");
 		}
 	}
+
+	void WindWords(float MeanWindMs, std::vector<std::string>& Out)
+	{
+		if (MeanWindMs >= 8.f)
+		{
+			Out.push_back("windy");
+		}
+		else if (MeanWindMs < 1.5f)
+		{
+			Out.push_back("calm");
+		}
+	}
 }

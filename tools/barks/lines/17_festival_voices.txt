@@ -779,3 +779,78 @@ festival = amber_morning
 age = elder
 weight = 5
 say town.fv_amber_morning_elder.1 | После шторма бабушка будила нас затемно. Говорила: море ночью щедрое, а утром жадное. | After a storm grandmother woke us before dawn. The sea gives by night, she said, and grudges by day. | 嵐のあとは祖母がまだ暗いうちに起こしに来た。海は夜は気前がよくて、朝はけちになる、と言ってね。
+
+[fv_sail_opening_bring]
+festival = sail_opening
+age = adult
+weight = 5
+say town.fv_sail_opening_bring.1 | Несу на эллинг термос и пирожки. Ребятам после парада всегда холодно. | I'm taking a thermos and pies to the boathouse. The kids are always cold after the parade. | 艇庫に魔法瓶とピロシキを持っていく。パレードのあと、子どもたちはいつも寒がるから。
+
+[fv_sail_opening_grump]
+festival = sail_opening
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_sail_opening_grump.1 | Оркестр с девяти утра репетирует. Под самыми окнами, и всё одну и ту же «Славянку». | The band's been rehearsing since nine. Right under the windows, the same march over and over. | 楽団が朝九時から練習してる。窓の真下で、同じ行進曲ばかり。
+
+[fv_sail_opening_kid]
+festival = sail_opening
+age = kid
+weight = 5
+say town.fv_sail_opening_kid.1 | Сегодня номера на паруса дают! Я попрошу семёрку, она счастливая. | They're giving out sail numbers today! I'll ask for seven, it's lucky. | 今日、帆の番号をもらえるの！7番をお願いするんだ。ラッキーだから。
+
+[fv_sail_opening_elder]
+festival = sail_opening
+age = elder
+weight = 5
+say town.fv_sail_opening_elder.1 | Раньше флаг поднимал старый боцман, без всяких речей. Свистнул, и пошли. | The old bosun used to raise the flag with no speeches. One whistle, and off they went. | 昔は老いた甲板長が旗を揚げた。演説なんかなし。笛ひとつで出艇さ。
+
+[fv_sail_cup_bring]
+festival = sail_cup
+age = adult
+weight = 5
+say town.fv_sail_cup_bring.1 | Беру бинокль и складной стул. С пирса весь треугольник как на ладони. | I'm bringing binoculars and a folding chair. From the pier you see the whole triangle. | 双眼鏡と折りたたみ椅子を持っていく。桟橋からならコースが全部見える。
+
+[fv_sail_cup_grump]
+festival = sail_cup
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_sail_cup_grump.1 | На пирсе не протолкнуться, рыбакам удочку закинуть некуда. Два дня так. | You can't move on the pier, and the anglers have nowhere to cast. Two days of this. | 桟橋はぎゅうぎゅう、釣り人は竿も出せない。これが二日続く。
+
+[fv_sail_cup_kid]
+festival = sail_cup
+age = kid
+weight = 5
+say town.fv_sail_cup_kid.1 | Мы считаем, кто перевернётся. Уже двое! Их катер сразу подбирает. | We're counting who capsizes. Two already! The launch picks them up right away. | だれがひっくり返るか数えてるの。もう二人！すぐボートが助けに行くよ。
+
+[fv_sail_cup_elder]
+festival = sail_cup
+age = elder
+weight = 5
+say town.fv_sail_cup_elder.1 | Этот кубок мне вручали в шестьдесят восьмом. Он тогда был потяжелее. | I held that cup in sixty-eight. It was heavier back then. | あの杯は六八年にこの手で持ったよ。あの頃はもっと重かった。
+
+[fv_sail_closing_bring]
+festival = sail_closing
+age = adult
+weight = 5
+say town.fv_sail_closing_bring.1 | Несу рукавицы и брезент. Лодки в эллинг носим всем миром, рук всегда мало. | I'm bringing mittens and a tarpaulin. Everyone carries the boats in, there are never enough hands. | 手袋と防水布を持っていく。艇はみんなで運ぶんだ。人手はいつも足りない。
+
+[fv_sail_closing_grump]
+festival = sail_closing
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_sail_closing_grump.1 | Ноябрь, ветер с моря, а они ещё гоняются. Простудят детей, вот увидите. | November, wind off the sea, and they're still racing. They'll give the kids a chill, you'll see. | 十一月で海風なのに、まだレースだって。子どもが風邪をひくよ。
+
+[fv_sail_closing_kid]
+festival = sail_closing
+age = kid
+weight = 5
+say town.fv_sail_closing_kid.1 | Свою лодку укрою своими руками. Ей до апреля спать, пусть будет тепло. | I'll cover my boat myself. It sleeps till April, it should be warm. | ぼくの艇はぼくがカバーをかける。四月まで眠るんだから、あったかくね。
+
+[fv_sail_closing_elder]
+festival = sail_closing
+age = elder
+weight = 5
+say town.fv_sail_closing_elder.1 | Флаг на закате спускают молча. Так всегда было: сезон проводили, и тихо. | They lower the flag at sunset without a word. It was always so: see the season off, quietly. | 日没の旗降ろしは黙ってやる。昔からそうだ。季節を見送るのは静かに。

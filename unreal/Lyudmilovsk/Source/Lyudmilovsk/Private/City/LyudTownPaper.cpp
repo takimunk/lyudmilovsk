@@ -17,6 +17,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Photo/LyudPhoto.h"
+#include "Sailing/LyudSailNews.h"
 #include "Plants/GameCalendar.h"
 #include "Sea/LyudEcosystem.h"
 #include "Sea/Tide.h"
@@ -409,6 +410,40 @@ void ULyudTownPaper::BuildFacts(int32 Since, LyudPaper::FFacts& Out) const
 				Line.Args.push_back(LyudTownPaperImpl::Std(A));
 			}
 			Out.Talk.push_back(MoveTemp(Line));
+		}
+	}
+
+	// --- the yacht school (docs/yacht_school.md "Town"): yesterday's races for the sailing column, the season this morning;
+	// both empty until the school's engine registers its providers (Public/Sailing/LyudSailNews.h)
+	{
+		auto NameStd = [](const FName N) { return N.IsNone() ? std::string() : LyudTownPaperImpl::Std(N.ToString()); };
+		TArray<FLyudSailNewsItem> Races;
+		LyudSailNewsOfDay(World, LyudFest::DaysFromCivil(Yesterday), Races);
+		for (const FLyudSailNewsItem& R : Races)
+		{
+			LyudPaper::FSailRace Race;
+			Race.Event = NameStd(R.Event);
+			Race.Class = NameStd(R.Class);
+			for (const FName P : R.Podium)
+			{
+				Race.Podium.push_back(NameStd(P));
+			}
+			Race.WindMs = FMath::RoundToInt(R.WindMs);
+			Race.Boats = R.Boats;
+			Race.Capsizes = R.Capsizes;
+			Race.HeroPlace = R.HeroPlace;
+			Race.Day = R.Day;
+			Race.bRecall = R.bRecall;
+			Race.bAbandoned = R.bAbandoned;
+			if (!Race.Event.empty() && !Race.Class.empty())
+			{
+				Out.SailYesterday.push_back(MoveTemp(Race));
+			}
+		}
+		FLyudSailMorning Morning;
+		if (LyudSailMorningOf(World, LyudFest::DaysFromCivil(Out.Date), Morning))
+		{
+			Out.SailSeason = Morning.Season;
 		}
 	}
 
