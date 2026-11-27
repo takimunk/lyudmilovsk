@@ -160,6 +160,7 @@ suite lettersim.test              - bash tools/lettersim/run.sh
 suite lettersim.story             - bash tools/lettersim/run.sh story ru
 suite mannersim.friends           - bash tools/mannersim/run.sh friends
 suite gardensim.test              - bash tools/gardensim/run.sh
+suite kitchensim.test             - bash tools/kitchensim/run.sh test
 suite peoplesim.test              - bash tools/peoplesim/run.sh test
 suite peoplesim.town              - bash tools/peoplesim/run.sh town
 suite peoplesim.weather           - bash tools/peoplesim/run.sh weather

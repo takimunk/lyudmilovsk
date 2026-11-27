@@ -450,6 +450,39 @@
     "warm",
     "reader"
    ]
+  },
+  {
+   "item": "dish_ukha",
+   "hints": [
+    "elder",
+    "adult",
+    "warm",
+    "sea"
+   ]
+  },
+  {
+   "item": "dish_fried_potatoes",
+   "hints": [
+    "teen",
+    "adult",
+    "warm"
+   ]
+  },
+  {
+   "item": "dish_fried_fish",
+   "hints": [
+    "elder",
+    "adult",
+    "sea"
+   ]
+  },
+  {
+   "item": "dish_salad",
+   "hints": [
+    "adult",
+    "tidy",
+    "artist"
+   ]
   }
  ],
  "hosts": [

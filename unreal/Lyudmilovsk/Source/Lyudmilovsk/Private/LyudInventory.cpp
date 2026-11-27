@@ -265,6 +265,11 @@ namespace
 		Good(TEXT("tomatoes"), K::Food, L::Pack, FVector(7.f, 10.f, 14.f), FLinearColor(0.85f, 0.2f, 0.12f), 5, 5.f);
 		Good(TEXT("strawberries"), K::Food, L::Cup, FVector(8.f, 8.f, 12.f), FLinearColor(0.85f, 0.12f, 0.18f), 6, 4.f);
 		Good(TEXT("jam_strawberry"), K::Food, L::Glass, FVector(8.f, 8.f, 12.f), FLinearColor(0.6f, 0.05f, 0.1f), 40, 4.f);
+		// cooked by the hero himself from the bed and the catch (docs/kitchen.md, ULyudKitchen): a bowl or a plate, eaten by hand
+		Good(TEXT("dish_ukha"), K::Food, L::Pack, FVector(7.f, 16.f, 16.f), FLinearColor(0.82f, 0.74f, 0.5f), 35, 8.f);
+		Good(TEXT("dish_fried_potatoes"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.85f, 0.65f, 0.25f), 25, 8.f);
+		Good(TEXT("dish_fried_fish"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.72f, 0.47f, 0.18f), 30, 8.f);
+		Good(TEXT("dish_salad"), K::Food, L::Pack, FVector(6.f, 16.f, 16.f), FLinearColor(0.75f, 0.3f, 0.2f), 20, 8.f);
 		// the diner by the lower station (docs/diner.md): ordered over its counter and served on a plate or in a cup there (ALyudDiner,
 		// Content/Food/food.json "plated"), eaten with a fork or a spoon or drunk at the counter; the burger in the hand. The looks here are
 		// only fallbacks (a burger left in the pocket)

@@ -1,4 +1,5 @@
 #include "Fishing/LyudFishing.h"
+#include "Kitchen/LyudKitchen.h"
 
 #include "../Sea/EcoModel.h"
 #include "../Sea/FishModel.h"
@@ -974,15 +975,22 @@ void ULyudFishing::Kitchens(float DeltaTime, APawn* Hero, APlayerController* PC)
 	int32 Roubles = 0;
 	const int32 N = bOpen ? State->KitchenOffer(this, K.Id, K.PerDay, &Roubles) : 0;
 	const int32 Held = State->FishHeld(this);
-	if (bOpen && N > 0 && PC->WasInputKeyJustPressed(EKeys::Y) && !PC->IsMoveInputIgnored())
+	// the same door takes fresh vegetables from the hero's bed (docs/kitchen.md): with the fish, or alone
+	ULyudKitchen* Cooking = ULyudKitchen::Get(this);
+	int32 VegRoubles = 0;
+	const int32 Veg = bOpen && Cooking ? Cooking->VegOffer(&VegRoubles) : 0;
+	if (bOpen && (N > 0 || Veg > 0) && PC->WasInputKeyJustPressed(EKeys::Y) && !PC->IsMoveInputIgnored())
 	{
-		const int32 Got = State->SellToKitchen(this, K.Id, K.PerDay);
-		UI->SetPrompt(State, LyudText::Get(TEXT("ui.fish.kitchen_sold"), { FStringFormatArg(N), FStringFormatArg(Got) }));
+		const int32 Got = N > 0 ? State->SellToKitchen(this, K.Id, K.PerDay) : 0;
+		const int32 VegGot = Veg > 0 ? Cooking->SellVeg() : 0;
+		UI->SetPrompt(State, N > 0 ? LyudText::Get(TEXT("ui.fish.kitchen_sold"), { FStringFormatArg(N), FStringFormatArg(Got + VegGot) })
+			: LyudText::Get(TEXT("ui.cook.kitchen_sold_veg"), { FStringFormatArg(Veg), FStringFormatArg(VegGot) }));
 		KitchenKey = 1;
 		return;
 	}
 	// rebuilt only when what it says changes
-	const uint64 Key = 2 | (uint64(bOpen) << 2) | (uint64(N) << 3) | (uint64(FMath::Min(Held, 255)) << 11) | (uint64(Roubles) << 20);
+	const uint64 Key = 2 | (uint64(bOpen) << 2) | (uint64(N) << 3) | (uint64(FMath::Min(Held, 255)) << 11) | (uint64(Roubles + VegRoubles) << 20)
+		| (uint64(FMath::Min(Veg, 255)) << 44);
 	if (Key == KitchenKey || KitchenKey == 1)
 	{
 		// the "sold" line stays until the hero steps away and back
@@ -991,7 +999,9 @@ void ULyudFishing::Kitchens(float DeltaTime, APawn* Hero, APlayerController* PC)
 	KitchenKey = Key;
 	FText Text;
 	if (!bOpen) Text = LyudText::Get(TEXT("ui.fish.kitchen_closed"), { FStringFormatArg(K.Open), FStringFormatArg(K.Close) });
+	else if (N > 0 && Veg > 0) Text = LyudText::Get(TEXT("ui.cook.kitchen_offer_both"), { FStringFormatArg(N), FStringFormatArg(Veg), FStringFormatArg(Roubles + VegRoubles) });
 	else if (N > 0) Text = LyudText::Get(TEXT("ui.fish.kitchen_offer"), { FStringFormatArg(N), FStringFormatArg(Roubles) });
+	else if (Veg > 0) Text = LyudText::Get(TEXT("ui.cook.kitchen_offer_veg"), { FStringFormatArg(Veg), FStringFormatArg(VegRoubles) });
 	else Text = LyudText::Get(Held > 0 ? TEXT("ui.fish.kitchen_none") : TEXT("ui.fish.kitchen_bring"));
 	UI->SetPrompt(State, Text);
 }

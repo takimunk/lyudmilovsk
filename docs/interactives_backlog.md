@@ -469,7 +469,7 @@ grandson, the old pier before it is repainted, Maru for the club's wall). Done: 
 
 ## 34. Allotment to kitchen
 
-`[ ]` **Brief (Opus 5.5):** Tie the allotment (item 9), fishing and food: cook at the commune canteen's stove, the
+`[~] kitchen 2026-11-20 (branch kitchen, docs/kitchen.md; awaits a Mac build, icons and a shot)` **Brief (Opus 5.5):** Tie the allotment (item 9), fishing and food: cook at the commune canteen's stove, the
 sanatorium kitchen or the hero's room (a hot plate) from what he grew and caught: fish soup (ukha), fried potatoes with dill,
 a salad, strawberry jam in jars (the market's jam contest). Short recipes (combine items, wait minutes, a sizzle sound), the
 dish as a food item to eat (`ULyudFoodSubsystem`) or give to friends (bond). The restaurant buys fresh vegetables. Done:

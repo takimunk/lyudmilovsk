@@ -1030,7 +1030,8 @@ static void RealChecks(const std::string& Path)
 	// repair.grandpa.done, keeper.pier.done, cog.cl.maru.done: each heard after the topic that gives its quest)
 	// + 2: the telescopes' topics that wait for a stamp of the sky log (docs/telescopes.md)
 	// + 1: the beach's topic that waits for a stamp of the shore's finds (docs/beach.md)
-	CHECK((int)Reached.size() + 6 + 3 >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count)",
+	// + 1: the canteen cook's "taste it" waits for the stamp cook/fine (docs/kitchen.md)
+	CHECK((int)Reached.size() + 6 + 4 >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count)",
 		(int)Reached.size(), (int)M.Topics.size());
 	// the room tones: every tone a plot names is there, a closed tone is a tone, volumes in 0..1, every min <= max
 	int BadTone = 0, Loud = 0;

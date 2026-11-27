@@ -82,6 +82,9 @@ ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "
 OPEN_SCREENS = ("books", "piano", "photo_lab", "photo_darkroom", "photo_contest", "photo_wall")
 # the beach's own quest event (ULyudBeach, docs/beach.md): beach shell | amber | skip3 | skip5 | skip_record | castle | swim ...
 QUEST_EVENTS += ("beach",)
+# the kitchen (ULyudKitchen, docs/kitchen.md): a hot plate opens its recipes; its quest event: cook dish | ukha | fried_potatoes | fried_fish | salad | jam
+OPEN_SCREENS += ("cook",)
+QUEST_EVENTS += ("cook",)
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
