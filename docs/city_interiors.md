@@ -304,6 +304,11 @@ section `{"<plot id | building type | plot kind>": {"<thing kind> | *": "<act or
 kind; `tools/city/content/collections.json`). A line key (or `"<prefix>.*"`) becomes an act `_closed:<key>`
 (`city.act.look.prompt`, event `look`, target `closed`). Things open round the clock never get one. No geometry changes.
 
+**Season and broken days.** A rule may also give `"months": [5, ..., 10]` (the thing is shut outside them) and
+`"broken": 0.12` (shut on that share of days, by the same die as the building's dress set `broken`, so its sign shows
+on exactly those days). Both need a closed act and work even for things open round the clock. The soda-water automats
+use them (`docs/soda_machines.md`).
+
 **Lines by the day and the hour.** In the content an entry of `lines` may be `{"k": "<key or prefix.*>", <conditions>}`;
 interiors.py writes each line it gives as `{"k": key, <conditions>}` (plain keys stay strings, so old data reads the same):
 `"h": [from, to]` hours (`[21, 6]` runs past midnight), `"d": "mon-fri"` weekdays, `"date": "05-09"` or `["12-20", "01-10"]`

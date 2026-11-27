@@ -4402,3 +4402,22 @@ festival = neptune_day
 doing = gather_mingle chat
 weight = 5
 talk = town.nh_nep_talk.1 | town.nh_nep_talk.2 | town.nh_nep_talk.3
+
+# At the soda-water automats on a hot day (docs/soda_machines.md): the one shared glass, the syrup of the day,
+# the coin the machine swallows, the queue of two. Russian: the speaker's own words never agree in gender.
+
+[soda_kid]
+doing = soda_drink
+age = kid teen
+say = town.soda_kid.1..4
+
+[soda_grown]
+doing = soda_drink
+age = adult elder
+say = town.soda_grown.1..5
+
+[soda_elder]
+doing = soda_drink
+age = elder
+weight = 0.6
+say = town.soda_elder.1..2

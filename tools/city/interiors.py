@@ -1399,8 +1399,8 @@ def build_tones(plan_places, reg):
 # ------------------------------------------------------------------ the plots
 
 def places(plan):
-    """Every plot with a building, and the promenade units (a room behind the sea wall's face, dressed as its variant; a unit
-    whose variant is not built yet: one counter at its door)."""
+    """Every plot with a building, the promenade units (a room behind the sea wall's face, dressed as its variant; a unit
+    whose variant is not built yet: one counter at its door) and the plan's street machines (a building on no plot)."""
     out = []
     for p in plan["plots"]:
         if not p.get("building"):
