@@ -13,7 +13,8 @@ seen from the hall, toward the corridor), y into the room, z 0 = the hall's floo
 
 What stands there: a bed in the far left corner (the hero sleeps until an hour he chooses), a bedside table with a
 lamp, a desk with a chair and a record player, a pin board over the desk, open shelves and a wall shelf, a radiator, a
-rug, a map of the coast, a clock, an empty flower pot in the corner and Maru's basket by the door.
+rug, a map of the coast, a clock, a small table with a hot plate (cooking: docs/kitchen.md), an empty flower pot in
+the corner and Maru's basket by the door.
 
 Places for the hero's own things (things with `place`; ULyudHeroRoom puts what he owns on them, docs/hero_room.md):
     pin_1..6    cards on the pin board (postcards, prints)
@@ -125,6 +126,22 @@ def _pot(B, x, y):
     return 0.015 + 0.28
 
 
+def _hot_plate(B, x, y, z, yaw):
+    """A one-ring electric hot plate: a white enamel body on rubber feet, the dark ring, a red knob, a cord (0.26 x 0.26 x 0.08)."""
+    p = kit._P(B, x, y, z, yaw, "hot_plate")
+    p.kind = "prop"
+    p.bev("CT_SteelWhite", -0.13, 0.13, -0.13, 0.13, 0.012, 0.07, b=0.008, c=0.02)
+    for sx in (-0.1, 0.1):
+        for sy in (-0.1, 0.1):
+            p.cyl("CT_Rubber", sx, sy, 0.0, 0.012, 0.012, 5)
+    p.cyl("CT_Steel", 0.0, 0.01, 0.07, 0.076, 0.095, 12)
+    p.cyl("CT_ConcreteDark", 0.0, 0.01, 0.076, 0.082, 0.085, 12)
+    p.cyl("CT_Steel", 0.0, 0.01, 0.082, 0.084, 0.03, 8)
+    p.cyl("CT_SteelRed", 0.085, -0.134, 0.03, 0.05, 0.014, 6, top=True)
+    p.rod("CT_Rubber", (-0.09, 0.13, 0.03), (-0.2, 0.2, 0.004), 0.008, 3)
+    return p.done(top=0.084)
+
+
 def build(B):
     _shell(B)
     R = kit.Room(B, (X0, Y0, X1, Y1), seed=19)
@@ -178,6 +195,15 @@ def build(B):
         n.done()
     kit.poster(B, X1, 1.55, 0.0, 270.0, name="map_coast", w=0.8, zc=1.55)
     B.thing("coast_map", "board", (X1 - 0.02, 1.55, 1.55), 270.0, topic="home_map")
+
+    # ---- the kitchen corner on the right wall, past the map: a small table, the hot plate (the cooking's own act
+    # "hot_plate" finds it by what=hot_plate, docs/kitchen.md), a kettle's cup and a plate
+    kx, ky = X1 - 0.27, 2.36
+    kt = R.place(kit.table, kx, ky, 270.0, w=0.72, d=0.46, h=0.72, mat="CT_WoodLight")
+    _hot_plate(B, kx + 0.02, ky - 0.14, kt["top"], 270.0)
+    B.thing("hot_plate", "machine", (kx + 0.02, ky - 0.14, kt["top"] + 0.1), 270.0, what="hot_plate")
+    kit.cup(B, kx - 0.05, ky + 0.2, kt["top"], 0.0)
+    kit.plates(B, kx + 0.08, ky + 0.22, kt["top"], 0.0, n=2)
 
     # ---- the flower pot in the far right corner
     pz = _pot(B, X1 - 0.34, Y1 - 0.34)

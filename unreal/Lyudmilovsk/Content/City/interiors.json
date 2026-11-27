@@ -607,6 +607,7 @@
   {"id": "P-HOME/frame_1", "plot": "P-HOME", "kind": "board", "ue": [-509.0, 458.0, 160.0], "yaw": -90.0, "props": {"place": "frame"}, "act": "myroom_place", "hours": [0, 24], "days": "mon-sun"},
   {"id": "P-HOME/frame_2", "plot": "P-HOME", "kind": "board", "ue": [-599.0, 458.0, 160.0], "yaw": -90.0, "props": {"place": "frame"}, "act": "myroom_place", "hours": [0, 24], "days": "mon-sun"},
   {"id": "P-HOME/frame_3", "plot": "P-HOME", "kind": "board", "ue": [-575.0, 12.0, 160.0], "yaw": 90.0, "props": {"place": "frame"}, "act": "myroom_place", "hours": [0, 24], "days": "mon-sun"},
+  {"id": "P-HOME/hot_plate", "plot": "P-HOME", "kind": "machine", "ue": [-522.0, 35.0, 82.0], "yaw": 90.0, "props": {"what": "hot_plate"}, "act": "hot_plate", "hours": [0, 24], "days": "mon-sun"},
   {"id": "P-HOME/kit_clock_1", "plot": "P-HOME", "kind": "board", "ue": [-665.0, 272.0, 220.0], "yaw": 0.0, "props": {"what": "clock"}, "act": "look_clock", "hours": [0, 24], "days": "mon-sun"},
   {"id": "P-HOME/pin_1", "plot": "P-HOME", "kind": "board", "ue": [-665.5, 193.0, 183.0], "yaw": 0.0, "props": {"place": "card"}, "act": "myroom_place", "hours": [0, 24], "days": "mon-sun"},
   {"id": "P-HOME/pin_2", "plot": "P-HOME", "kind": "board", "ue": [-665.5, 148.0, 183.0], "yaw": 0.0, "props": {"place": "card"}, "act": "myroom_place", "hours": [0, 24], "days": "mon-sun"},
