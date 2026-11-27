@@ -1,0 +1,18 @@
+{
+ "_doc": "PROPOSAL from part C (meshes) to part G (words): the sign keys the boathouse's pictures need. Move them into Content/Localization/sailing/strings_<lang>.json (or the main table) and delete this file; tools/make_sailing_signs.py reads the tables first.",
+ "ru": {
+  "sign.sail.school_name": "ДЮСШ ПАРУСНОГО СПОРТА «ЛУЧ»",
+  "sign.sail.door_line1": "ДЮСШ «Луч»",
+  "sign.sail.door_line2": "парусная секция"
+ },
+ "en": {
+  "sign.sail.school_name": "\"LUCH\" YOUTH SAILING SCHOOL",
+  "sign.sail.door_line1": "\"Luch\" School",
+  "sign.sail.door_line2": "sailing section"
+ },
+ "ja": {
+  "sign.sail.school_name": "ヨット学校「ルーチ」",
+  "sign.sail.door_line1": "ヨット学校「ルーチ」",
+  "sign.sail.door_line2": "セーリング部"
+ }
+}
