@@ -110,6 +110,9 @@ namespace
 		Good(TEXT("postcard"), K::Misc, L::Flat, FVector(0.2f, 10.f, 15.f), FLinearColor(0.8f, 0.78f, 0.7f), 4, 3.f);
 		Good(TEXT("badge"), K::Misc, L::Flat, FVector(0.5f, 3.f, 3.5f), FLinearColor(0.8f, 0.6f, 0.15f), 12, 2.f);
 		Good(TEXT("amber_charm"), K::Misc, L::Flat, FVector(1.2f, 3.5f, 4.5f), FLinearColor(0.9f, 0.5f, 0.05f), 90, 2.f);
+		// picked up on the waterline (docs/beach.md, ULyudBeach): a shell any day, amber after a storm
+		Good(TEXT("seashell"), K::Misc, L::Flat, FVector(1.5f, 4.5f, 5.f), FLinearColor(0.88f, 0.82f, 0.74f), 3, 2.f);
+		Good(TEXT("amber_piece"), K::Misc, L::Flat, FVector(1.5f, 2.5f, 3.f), FLinearColor(0.85f, 0.5f, 0.08f), 25, 1.5f);
 		// the sanatorium's diploma for a full course of cure (docs/city_interiors.md "Stays"): a stiff sheet; carried, it lengthens
 		// the hero's breath underwater (ULyudSwimComponent's air)
 		Good(TEXT("san_diploma"), K::Misc, L::Flat, FVector(0.3f, 21.f, 15.f), FLinearColor(0.92f, 0.86f, 0.7f), 0, 3.f);

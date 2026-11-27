@@ -1392,6 +1392,20 @@
    "prompt": "a glass jar of dark red strawberry jam with whole berries visible, a square of white gauze tied over the lid with string, a blank paper label",
    "source": "localization/icon_grids_garden.json: icons_garden_2, cell 6 (row 2, right), one 3x2 Higgsfield grid (the game-assets rule)"
   },
+  "icon_seashell": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A single small Baltic cockle shell, pale cream with fine ribs, a few grains of wet sand on it.",
+   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_seashell (fal, one picture; docs/beach.md)"
+  },
+  "icon_amber_piece": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small rough piece of raw Baltic amber, cloudy honey-yellow with a matte weathered crust, a strand of dark seaweed beside it.",
+   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_amber_piece (fal, one picture; docs/beach.md)"
+  },
   "icon_travel_card": {
    "kind": "icon",
    "style": "icon",
