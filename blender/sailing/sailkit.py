@@ -97,6 +97,8 @@ def slot_colour(slot):
     cs = city_spec()
     if slot in cs:
         return cs[slot][0], cs[slot][1], 0.6 if slot == "CT_Aluminium" else 0.0
+    if slot.startswith("SLP_"):
+        return "#EEE8D8", 0.8, 0.0       # a picture slot without its picture (the notice board: the engine writes it)
     return "#FF00FF", 0.5, 0.0
 
 
@@ -176,7 +178,8 @@ class Mesh:
         return V_, out
 
     # ---------------------------------------------------------------- primitives
-    def box(self, c, size, slot, rot=None, faces="all", smooth=False):
+    def box(self, c, size, slot, rot=None, faces="all", smooth=False, slots=None):
+        """slots: {side: slot} overrides per side (sides xXyYzZ = -x +x -y +y -z +z)."""
         r = rot or Matrix.Identity(3)
         h = Vector(size) / 2
         c = Vector(c)
@@ -184,10 +187,12 @@ class Mesh:
         sides = {"z": (0, 2, 3, 1), "Z": (4, 5, 7, 6), "y": (0, 1, 5, 4), "Y": (2, 6, 7, 3), "x": (0, 4, 6, 2), "X": (1, 3, 7, 5)}
         for k, ids in sides.items():
             if faces == "all" or k in faces:
-                self.face([v[i] for i in ids], slot, smooth=smooth)
+                self.face([v[i] for i in ids], (slots or {}).get(k, slot), smooth=smooth)
 
-    def bx(self, slot, x0, x1, y0, y1, z0, z1, faces="all"):
-        self.box(((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), (x1 - x0, y1 - y0, z1 - z0), slot, faces=faces)
+    def bx(self, slot, x0, x1, y0, y1, z0, z1, faces="all", slots=None):
+        if x1 - x0 < 1e-5 or y1 - y0 < 1e-5 or z1 - z0 < 1e-5:
+            return
+        self.box(((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2), (x1 - x0, y1 - y0, z1 - z0), slot, faces=faces, slots=slots)
 
     def beam(self, a, b, w, h, slot, up=(0, 0, 1)):
         """A rectangular bar from a to b, w across, h along up."""

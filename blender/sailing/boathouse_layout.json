@@ -1,0 +1,966 @@
+{
+ "_doc": "Sailing-school boathouse layout (blender/sailing/boathouse.py). Building frame: metres, origin on the floor in the middle of the 16.5 x 9 m footprint, +X to the sea, -Y the north (door) wall, +Z up; Unreal X = x, Y = -y, Z = z (cm x100), yaw_unreal = -yaw. Props: mesh, pos, yaw (deg about +Z; a prop's front is its -Y), room, interactive (a kind for the engine). boats: hull meshes placed on racks / trolleys (rot_deg = Blender XYZ Euler degrees; pos z None = on its trolley's boat_origin). doors: place_doors.py entries. sliding_doors: the boat door's two leaves (closed position, open offset in x). outside: pos z = the sand (ground(x) = -0.0727 (x + 0.85)) unless given.",
+ "footprint": {
+  "x": [-8.25, 8.25],
+  "y": [-4.5, 4.5],
+  "wall_h": 3.4,
+  "ridge": 5.6,
+  "floor_z": 0.0,
+  "ground_slope": "-0.0727 per m toward +x, 0 at x = -0.85"
+ },
+ "props": [
+  {
+   "mesh": "SM_Sail_Prop_Blackboard",
+   "pos": [-7.93, 0.0, 0.02],
+   "yaw": 90,
+   "room": "classroom",
+   "interactive": "blackboard"
+  },
+  {
+   "mesh": "SM_Sail_Prop_CoachDesk",
+   "pos": [-6.85, -2.2, 0.02],
+   "yaw": 90,
+   "room": "classroom"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Chair",
+   "pos": [-7.4, -2.2, 0.02],
+   "yaw": 90,
+   "room": "classroom",
+   "seat": "coach"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Desk",
+   "pos": [-5.95, -1.2, 0.02],
+   "yaw": -90,
+   "room": "classroom",
+   "seats": 2
+  },
+  {
+   "mesh": "SM_Sail_Prop_Desk",
+   "pos": [-5.95, 1.2, 0.02],
+   "yaw": -90,
+   "room": "classroom",
+   "seats": 2
+  },
+  {
+   "mesh": "SM_Sail_Prop_Desk",
+   "pos": [-5.0, -1.2, 0.02],
+   "yaw": -90,
+   "room": "classroom",
+   "seats": 2
+  },
+  {
+   "mesh": "SM_Sail_Prop_Desk",
+   "pos": [-5.0, 1.2, 0.02],
+   "yaw": -90,
+   "room": "classroom",
+   "seats": 2
+  },
+  {
+   "mesh": "SM_Sail_Prop_Desk",
+   "pos": [-4.05, -1.2, 0.02],
+   "yaw": -90,
+   "room": "classroom",
+   "seats": 2
+  },
+  {
+   "mesh": "SM_Sail_Prop_Desk",
+   "pos": [-4.05, 1.2, 0.02],
+   "yaw": -90,
+   "room": "classroom",
+   "seats": 2
+  },
+  {
+   "mesh": "SM_Sail_Prop_KnotBoard",
+   "pos": [-3.025, -1.5, 0.02],
+   "yaw": -90,
+   "room": "classroom",
+   "interactive": "knot_board"
+  },
+  {
+   "mesh": "SM_Sail_Prop_FlagChart",
+   "pos": [-7.93, 2.4, 0.02],
+   "yaw": 90,
+   "room": "classroom",
+   "interactive": "flag_chart"
+  },
+  {
+   "mesh": "SM_Sail_Prop_SeaChart",
+   "pos": [-7.93, -2.6, 0.3],
+   "yaw": 90,
+   "room": "classroom"
+  },
+  {
+   "mesh": "SM_Sail_Prop_TrophyShelf",
+   "pos": [-6.0, 4.2, 0.02],
+   "yaw": 0,
+   "room": "classroom",
+   "interactive": "trophies"
+  },
+  {
+   "mesh": "SM_Sail_Prop_KettleTable",
+   "pos": [-3.55, 3.75, 0.02],
+   "yaw": 0,
+   "room": "classroom",
+   "interactive": "samovar"
+  },
+  {
+   "mesh": "SM_Sail_Prop_WallClock",
+   "pos": [-3.025, 0.8, 2.45],
+   "yaw": -90,
+   "room": "classroom"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Barometer",
+   "pos": [-3.025, 0.2, 1.65],
+   "yaw": -90,
+   "room": "classroom",
+   "interactive": "barometer"
+  },
+  {
+   "mesh": "SM_Sail_Prop_AnemometerDisplay",
+   "pos": [-3.025, 0.75, 1.65],
+   "yaw": -90,
+   "room": "classroom",
+   "interactive": "wind_display"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Radio",
+   "pos": [-3.55, 3.75, 0.75],
+   "yaw": 0,
+   "room": "classroom",
+   "interactive": "radio"
+  },
+  {
+   "mesh": "SM_Sail_Prop_ShipBell",
+   "pos": [-4.85, -4.2, 1.7],
+   "yaw": 180,
+   "room": "classroom",
+   "interactive": "bell"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Photo0",
+   "pos": [-7.6, 4.2, 1.9],
+   "yaw": 0,
+   "room": "classroom"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Photo1",
+   "pos": [-7.0, 4.2, 2.0],
+   "yaw": 0,
+   "room": "classroom"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Photo2",
+   "pos": [-6.0, 4.2, 1.9],
+   "yaw": 0,
+   "room": "classroom"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Photo3",
+   "pos": [-5.4, 4.2, 2.0],
+   "yaw": 0,
+   "room": "classroom"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lamp",
+   "pos": [-6.9, 0.0, 3.2],
+   "yaw": 0.0,
+   "room": "classroom"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lamp",
+   "pos": [-5.3, 0.0, 3.2],
+   "yaw": 0.0,
+   "room": "classroom"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lamp",
+   "pos": [-3.7, 0.0, 3.2],
+   "yaw": 0.0,
+   "room": "classroom"
+  },
+  {
+   "mesh": "SM_Sail_Prop_OptiRack",
+   "pos": [-1.475, 3.45, 0.0],
+   "yaw": 0,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_OptiRack",
+   "pos": [0.875, 3.45, 0.0],
+   "yaw": 0,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Trolley_Luch",
+   "pos": [1.5, -1.6, 0.0],
+   "yaw": 0,
+   "room": "hall",
+   "kind": "trolley"
+  },
+  {
+   "mesh": "SM_Sail_Trolley_Luch",
+   "pos": [1.5, 0.6, 0.0],
+   "yaw": 0,
+   "room": "hall",
+   "kind": "trolley"
+  },
+  {
+   "mesh": "SM_Sail_Trolley_Cadet",
+   "pos": [-0.8, 2.1, 0.0],
+   "yaw": 0,
+   "room": "hall",
+   "kind": "trolley"
+  },
+  {
+   "mesh": "SM_Sail_Prop_MastBracket",
+   "pos": [-2.275, -4.2, 1.6],
+   "yaw": 180,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_MastBracket",
+   "pos": [-2.275, -4.2, 2.1],
+   "yaw": 180,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_MastBracket",
+   "pos": [1.525, -4.2, 1.6],
+   "yaw": 180,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_MastBracket",
+   "pos": [1.525, -4.2, 2.1],
+   "yaw": 180,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Workbench",
+   "pos": [3.975, -3.75, 0.0],
+   "yaw": 180,
+   "room": "hall",
+   "interactive": "workbench"
+  },
+  {
+   "mesh": "SM_Sail_Prop_ToolBoard",
+   "pos": [3.975, -4.2, 0.0],
+   "yaw": 180,
+   "room": "hall",
+   "interactive": "tools"
+  },
+  {
+   "mesh": "SM_Sail_Prop_PaintTins",
+   "pos": [4.775, -3.85, 0.0],
+   "yaw": 0.0,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Trestle",
+   "pos": [2.6, -0.4, 0.0],
+   "yaw": 90,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Trestle",
+   "pos": [4.1, -0.4, 0.0],
+   "yaw": 90,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_HullFrame",
+   "pos": [3.35, -0.4, 0.74],
+   "yaw": 0,
+   "room": "hall",
+   "interactive": "boat_build",
+   "note": "the cadet being built, on the trestles"
+  },
+  {
+   "mesh": "SM_Sail_SparsRack",
+   "pos": [-0.475, -3.75, 0.0],
+   "yaw": 180,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_SailBag",
+   "pos": [4.575, 3.6, 0.0],
+   "yaw": 90,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lamp",
+   "pos": [-1.875, 0.0, 3.1],
+   "yaw": 0.0,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lamp",
+   "pos": [0.125, 0.0, 3.1],
+   "yaw": 0.0,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lamp",
+   "pos": [2.125, 0.0, 3.1],
+   "yaw": 0.0,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lamp",
+   "pos": [4.125, 0.0, 3.1],
+   "yaw": 0.0,
+   "room": "hall"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lockers",
+   "pos": [6.6, -3.95, 0.0],
+   "yaw": 180,
+   "room": "changing",
+   "interactive": "locker"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lockers",
+   "pos": [7.7, -2.4, 0.0],
+   "yaw": -90,
+   "room": "changing",
+   "interactive": "locker"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Bench",
+   "pos": [6.6, -2.4, 0.0],
+   "yaw": 0,
+   "room": "changing"
+  },
+  {
+   "mesh": "SM_Sail_Prop_JacketRail",
+   "pos": [6.6, -0.08, 0.0],
+   "yaw": 0,
+   "room": "changing",
+   "interactive": "life_jacket"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lamp",
+   "pos": [6.6, -2.1, 2.7],
+   "yaw": 0.0,
+   "room": "changing"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Shelf",
+   "pos": [6.6, 3.95, 0.0],
+   "yaw": 0,
+   "room": "wet_store"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Shelf",
+   "pos": [7.7, 2.0, 0.0],
+   "yaw": -90,
+   "room": "wet_store"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Paddle",
+   "pos": [5.6, 0.25, 0.05],
+   "yaw": 0,
+   "room": "wet_store",
+   "rot_deg": [0, -80, 90]
+  },
+  {
+   "mesh": "SM_Sail_Prop_Paddle",
+   "pos": [5.7, 0.25, 0.05],
+   "yaw": 0,
+   "room": "wet_store",
+   "rot_deg": [0, -80, 90]
+  },
+  {
+   "mesh": "SM_Sail_Prop_Paddle",
+   "pos": [5.8, 0.25, 0.05],
+   "yaw": 0,
+   "room": "wet_store",
+   "rot_deg": [0, -80, 90]
+  },
+  {
+   "mesh": "SM_Sail_Prop_Paddle",
+   "pos": [5.9, 0.25, 0.05],
+   "yaw": 0,
+   "room": "wet_store",
+   "rot_deg": [0, -80, 90]
+  },
+  {
+   "mesh": "SM_Sail_Prop_Bailer",
+   "pos": [6.0, 2.0, 0.0],
+   "yaw": 0.0,
+   "room": "wet_store"
+  },
+  {
+   "mesh": "SM_Sail_Buoy",
+   "pos": [6.9, 1.5, 0.22],
+   "yaw": 0.0,
+   "room": "wet_store"
+  },
+  {
+   "mesh": "SM_Sail_MOB",
+   "pos": [7.4, 1.0, 0.07],
+   "yaw": 0.0,
+   "room": "wet_store"
+  },
+  {
+   "mesh": "SM_Sail_Prop_Lamp",
+   "pos": [6.6, 2.1, 2.7],
+   "yaw": 0.0,
+   "room": "wet_store"
+  },
+  {
+   "mesh": "SM_Sail_SailBag",
+   "pos": [6.6, -3.6, 2.8],
+   "yaw": 0,
+   "room": "loft"
+  },
+  {
+   "mesh": "SM_Sail_SailBag",
+   "pos": [6.6, -3.0, 2.8],
+   "yaw": 0,
+   "room": "loft"
+  },
+  {
+   "mesh": "SM_Sail_SailBag",
+   "pos": [6.6, -2.4, 2.8],
+   "yaw": 0,
+   "room": "loft"
+  },
+  {
+   "mesh": "SM_Sail_SailBag",
+   "pos": [6.6, 0.2, 2.8],
+   "yaw": 0,
+   "room": "loft"
+  },
+  {
+   "mesh": "SM_Sail_SailBag",
+   "pos": [6.6, 0.8, 2.8],
+   "yaw": 0,
+   "room": "loft"
+  }
+ ],
+ "boats": [
+  {
+   "mesh": "SM_Sail_Optimist_Hull",
+   "pos": [-1.475, 3.45, 0.76],
+   "rot_deg": [180, 0, 90],
+   "note": "upside down across the rack (bow to +Y)",
+   "tint_index": 0
+  },
+  {
+   "mesh": "SM_Sail_Optimist_Hull",
+   "pos": [-1.475, 3.45, 1.46],
+   "rot_deg": [180, 0, 90],
+   "note": "upside down across the rack (bow to +Y)",
+   "tint_index": 1
+  },
+  {
+   "mesh": "SM_Sail_Optimist_Hull",
+   "pos": [-1.475, 3.45, 2.16],
+   "rot_deg": [180, 0, 90],
+   "note": "upside down across the rack (bow to +Y)",
+   "tint_index": 2
+  },
+  {
+   "mesh": "SM_Sail_Optimist_Hull",
+   "pos": [0.875, 3.45, 0.76],
+   "rot_deg": [180, 0, 90],
+   "note": "upside down across the rack (bow to +Y)",
+   "tint_index": 3
+  },
+  {
+   "mesh": "SM_Sail_Optimist_Hull",
+   "pos": [0.875, 3.45, 1.46],
+   "rot_deg": [180, 0, 90],
+   "note": "upside down across the rack (bow to +Y)",
+   "tint_index": 4
+  },
+  {
+   "mesh": "SM_Sail_Optimist_Hull",
+   "pos": [0.875, 3.45, 2.16],
+   "rot_deg": [180, 0, 90],
+   "note": "upside down across the rack (bow to +Y)",
+   "tint_index": 5
+  },
+  {
+   "mesh": "SM_Sail_Luch_Hull",
+   "pos": [
+    1.5,
+    -1.6,
+    null
+   ],
+   "on_trolley": "SM_Sail_Trolley_Luch",
+   "rot_deg": [0, 0, 0],
+   "winter_cover": "SM_Sail_Cover_Luch"
+  },
+  {
+   "mesh": "SM_Sail_Luch_Hull",
+   "pos": [
+    1.5,
+    0.6,
+    null
+   ],
+   "on_trolley": "SM_Sail_Trolley_Luch",
+   "rot_deg": [0, 0, 0],
+   "winter_cover": "SM_Sail_Cover_Luch"
+  },
+  {
+   "mesh": "SM_Sail_Cadet_Hull",
+   "pos": [
+    -0.8,
+    2.1,
+    null
+   ],
+   "on_trolley": "SM_Sail_Trolley_Cadet",
+   "rot_deg": [0, 0, 0],
+   "winter_cover": "SM_Sail_Cover_Cadet"
+  }
+ ],
+ "spars": [
+  {
+   "mesh": "SM_Sail_Cadet_Mast",
+   "pos": [-2.675, -4.08, 1.49],
+   "rot_deg": [0, 90, 0],
+   "note": "lying along +X on the brackets"
+  },
+  {
+   "mesh": "SM_Sail_Cadet_Mast",
+   "pos": [-2.675, -3.96, 1.49],
+   "rot_deg": [0, 90, 0],
+   "note": "lying along +X on the brackets"
+  },
+  {
+   "mesh": "SM_Sail_Luch_Mast",
+   "pos": [-2.675, -4.08, 1.99],
+   "rot_deg": [0, 90, 0],
+   "note": "lying along +X on the brackets"
+  },
+  {
+   "mesh": "SM_Sail_Luch_Mast",
+   "pos": [-2.675, -3.96, 1.99],
+   "rot_deg": [0, 90, 0],
+   "note": "lying along +X on the brackets"
+  }
+ ],
+ "hanging_sails": [
+  {
+   "mesh": "SM_Sail_Cadet_Main",
+   "pos": [0.1, -2.0, 3.1],
+   "rot_deg": [-90.0, -90.0, 0.0],
+   "hang": "drying on the tie beam: luff along the beam (+y), the sail hanging down"
+  },
+  {
+   "mesh": "SM_Sail_Cadet_Jib",
+   "pos": [2.85, -1.4, 3.1],
+   "rot_deg": [-90.0, -90.0, 0.0],
+   "hang": "drying on the tie beam: luff along the beam (+y), the sail hanging down"
+  }
+ ],
+ "doors": [
+  {
+   "name": "people",
+   "at": [-5.75, -4.35, 0.0],
+   "out": [0, 1],
+   "hole": [1.2, 2.18],
+   "wall": 0.3,
+   "leaves": 1,
+   "hinge": "left",
+   "frame": true,
+   "open": false,
+   "locked": false,
+   "outside": true
+  },
+  {
+   "name": "class_hall",
+   "at": [-2.95, 2.5, 0.0],
+   "out": [1, 0],
+   "hole": [1.2, 2.18],
+   "wall": 0.15,
+   "leaves": 1,
+   "hinge": "right",
+   "frame": true,
+   "open": true,
+   "locked": false
+  },
+  {
+   "name": "changing",
+   "at": [5.25, -2.25, 0.0],
+   "out": [1, 0],
+   "hole": [1.2, 2.18],
+   "wall": 0.15,
+   "leaves": 1,
+   "hinge": "left",
+   "frame": true,
+   "open": false,
+   "locked": false
+  },
+  {
+   "name": "wet_store",
+   "at": [5.25, 2.25, 0.0],
+   "out": [1, 0],
+   "hole": [1.2, 2.18],
+   "wall": 0.15,
+   "leaves": 1,
+   "hinge": "right",
+   "frame": true,
+   "open": false,
+   "locked": false
+  }
+ ],
+ "sliding_doors": [
+  {
+   "name": "boat_door",
+   "mesh": "SM_Sail_Boathouse_DoorLeaf",
+   "leaves": [
+    {
+     "closed": [-1.675, -4.7, 0.0],
+     "open_dx": -1.65
+    },
+    {
+     "closed": [-0.025, -4.7, 0.0],
+     "open_dx": 1.65
+    }
+   ],
+   "hole": [3.2, 2.95],
+   "note": "leaves hang on the outside rail and slide apart along x"
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [-6.9, 0.0, 2.2],
+   "room": "classroom",
+   "lumens": 900
+  },
+  {
+   "pos": [-5.3, 0.0, 2.2],
+   "room": "classroom",
+   "lumens": 900
+  },
+  {
+   "pos": [-3.7, 0.0, 2.2],
+   "room": "classroom",
+   "lumens": 900
+  },
+  {
+   "pos": [-1.875, 0.0, 2.1],
+   "room": "hall",
+   "lumens": 1400
+  },
+  {
+   "pos": [0.125, 0.0, 2.1],
+   "room": "hall",
+   "lumens": 1400
+  },
+  {
+   "pos": [2.125, 0.0, 2.1],
+   "room": "hall",
+   "lumens": 1400
+  },
+  {
+   "pos": [4.125, 0.0, 2.1],
+   "room": "hall",
+   "lumens": 1400
+  },
+  {
+   "pos": [6.6, -2.1, 1.7000000000000002],
+   "room": "changing",
+   "lumens": 900
+  },
+  {
+   "pos": [6.6, 2.1, 1.7000000000000002],
+   "room": "wet_store",
+   "lumens": 900
+  }
+ ],
+ "rooms": {
+  "classroom": [
+   [-7.95, -4.2, 0],
+   [-3.0250000000000004, 4.2, 3.2]
+  ],
+  "hall": [
+   [-2.875, -4.2, 0],
+   [5.175, 4.2, 5.6]
+  ],
+  "changing": [
+   [5.325, -4.2, 0],
+   [7.95, -0.075, 2.7]
+  ],
+  "wet_store": [
+   [5.325, 0.075, 0],
+   [7.95, 4.2, 2.7]
+  ],
+  "loft": [
+   [5.175, -4.2, 2.8],
+   [7.95, 4.2, 5.6]
+  ]
+ },
+ "spots": [
+  {
+   "id": "coach_board",
+   "kind": "teach",
+   "pos": [-7.3500000000000005, 0.6, 0.02],
+   "yaw": 90
+  },
+  {
+   "id": "bench_work",
+   "kind": "work",
+   "pos": [3.9749999999999996, -3.1, 0.0],
+   "yaw": 180
+  },
+  {
+   "id": "boat_build",
+   "kind": "work",
+   "pos": [3.35, 0.7, 0.0],
+   "yaw": 180
+  },
+  {
+   "id": "changing",
+   "kind": "change",
+   "pos": [6.6, -1.8, 0.0],
+   "yaw": 0
+  },
+  {
+   "id": "kettle",
+   "kind": "tea",
+   "pos": [-3.5500000000000003, 3.1, 0.02],
+   "yaw": 0
+  },
+  {
+   "id": "desk_5",
+   "kind": "pupil",
+   "pos": [-5.5, -1.5, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_6",
+   "kind": "pupil",
+   "pos": [-5.5, -0.8999999999999999, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_7",
+   "kind": "pupil",
+   "pos": [-5.5, 0.8999999999999999, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_8",
+   "kind": "pupil",
+   "pos": [-5.5, 1.5, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_9",
+   "kind": "pupil",
+   "pos": [-4.55, -1.5, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_10",
+   "kind": "pupil",
+   "pos": [-4.55, -0.8999999999999999, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_11",
+   "kind": "pupil",
+   "pos": [-4.55, 0.8999999999999999, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_12",
+   "kind": "pupil",
+   "pos": [-4.55, 1.5, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_13",
+   "kind": "pupil",
+   "pos": [-3.5999999999999996, -1.5, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_14",
+   "kind": "pupil",
+   "pos": [-3.5999999999999996, -0.8999999999999999, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_15",
+   "kind": "pupil",
+   "pos": [-3.5999999999999996, 0.8999999999999999, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  },
+  {
+   "id": "desk_16",
+   "kind": "pupil",
+   "pos": [-3.5999999999999996, 1.5, 0.02],
+   "yaw": 90,
+   "seat_z": 0.45
+  }
+ ],
+ "outside": [
+  {
+   "mesh": "SM_Sail_Prop_Park",
+   "pos": [-6.5, -8.1, -0.134],
+   "yaw": 0.0,
+   "note": "slab origin (landward corner at the aisle)"
+  },
+  {
+   "mesh": "SM_Sail_Trolley_Optimist",
+   "pos": [-5.25, -17.1, -0.134],
+   "yaw": 90,
+   "kind": "trolley",
+   "boat": "optimist",
+   "note": "bow to the north (-Y), in a bay"
+  },
+  {
+   "mesh": "SM_Sail_Trolley_Optimist",
+   "pos": [-2.75, -17.1, -0.134],
+   "yaw": 90,
+   "kind": "trolley",
+   "boat": "optimist",
+   "note": "bow to the north (-Y), in a bay"
+  },
+  {
+   "mesh": "SM_Sail_Trolley_Luch",
+   "pos": [-0.25, -17.1, -0.134],
+   "yaw": 90,
+   "kind": "trolley",
+   "boat": "luch",
+   "note": "bow to the north (-Y), in a bay"
+  },
+  {
+   "mesh": "SM_Sail_Trolley_Luch",
+   "pos": [2.25, -17.1, -0.134],
+   "yaw": 90,
+   "kind": "trolley",
+   "boat": "luch",
+   "note": "bow to the north (-Y), in a bay"
+  },
+  {
+   "mesh": "SM_Sail_Trolley_Cadet",
+   "pos": [4.75, -17.1, -0.134],
+   "yaw": 90,
+   "kind": "trolley",
+   "boat": "cadet",
+   "note": "bow to the north (-Y), in a bay"
+  },
+  {
+   "mesh": "SM_Sail_Trolley_Optimist",
+   "pos": [7.25, -17.1, -0.134],
+   "yaw": 90,
+   "kind": "trolley",
+   "boat": "optimist",
+   "note": "bow to the north (-Y), in a bay"
+  },
+  {
+   "mesh": "SM_Sail_Prop_SlipBoard",
+   "pos": [9.1, -9.9, -0.723],
+   "yaw": 0.0,
+   "note": "first of 19 sections down to 22.5 m; repeat +1.2 m in x at ground(x)"
+  },
+  {
+   "mesh": "SM_Sail_Prop_SlipBoard",
+   "pos": [10.3, -9.9, -0.811],
+   "yaw": 0.0,
+   "note": "first of 19 sections down to 22.5 m; repeat +1.2 m in x at ground(x)"
+  },
+  {
+   "mesh": "SM_Sail_Prop_SlipBoard",
+   "pos": [11.5, -9.9, -0.898],
+   "yaw": 0.0,
+   "note": "first of 19 sections down to 22.5 m; repeat +1.2 m in x at ground(x)"
+  },
+  {
+   "mesh": "SM_Sail_Prop_SlipBoard",
+   "pos": [12.7, -9.9, -0.985],
+   "yaw": 0.0,
+   "note": "first of 19 sections down to 22.5 m; repeat +1.2 m in x at ground(x)"
+  },
+  {
+   "mesh": "SM_Sail_Prop_SlipBoard",
+   "pos": [13.9, -9.9, -1.072],
+   "yaw": 0.0,
+   "note": "first of 19 sections down to 22.5 m; repeat +1.2 m in x at ground(x)"
+  },
+  {
+   "mesh": "SM_Sail_Prop_SlipBoard",
+   "pos": [15.1, -9.9, -1.16],
+   "yaw": 0.0,
+   "note": "first of 19 sections down to 22.5 m; repeat +1.2 m in x at ground(x)"
+  },
+  {
+   "mesh": "SM_Sail_Prop_SignalMast",
+   "pos": [9.5, -13.1, -0.752],
+   "yaw": 0.0,
+   "note": "10 m; flags hoist at the yard ends (y +-1.5, z 7.5) and the top"
+  },
+  {
+   "mesh": "SM_Sail_Prop_WindsockPole",
+   "pos": [8.1, 0.0, 5.8],
+   "yaw": 0.0,
+   "note": "on the seaward gable's ridge; SM_Sail_Windsock at z +2.0 of it"
+  },
+  {
+   "mesh": "SM_Sail_Prop_HoseStand",
+   "pos": [1.75, -5.7, -0.189],
+   "yaw": 0.0
+  },
+  {
+   "mesh": "SM_Sail_Prop_NoticeBoard",
+   "pos": [-3.95, -5.4, 0.225],
+   "yaw": 0,
+   "interactive": "timetable"
+  },
+  {
+   "mesh": "SM_Sail_Prop_OutdoorBench",
+   "pos": [10.25, -2.0, -0.807],
+   "yaw": 90
+  },
+  {
+   "mesh": "SM_Sail_Prop_OutdoorBench",
+   "pos": [10.25, 2.0, -0.807],
+   "yaw": 90
+  },
+  {
+   "mesh": "SM_Sail_Prop_Bollard",
+   "pos": [8.8, -8.5, -0.702],
+   "yaw": 0.0
+  },
+  {
+   "mesh": "SM_Sail_Prop_Bollard",
+   "pos": [8.8, -10.0, -0.702],
+   "yaw": 0.0
+  },
+  {
+   "mesh": "SM_Sail_Prop_Bollard",
+   "pos": [8.8, -11.5, -0.702],
+   "yaw": 0.0
+  },
+  {
+   "mesh": "SM_Sail_Prop_Winch",
+   "pos": [9.1, -7.8, -0.723],
+   "yaw": 90
+  }
+ ],
+ "flag_points": {
+  "yard_port": [9.5, -11.6, 7.5],
+  "yard_stbd": [9.5, -14.6, 7.5],
+  "top": [9.5, -13.1, 9.9]
+ }
+}

@@ -46,7 +46,7 @@ def setup_material(mat, tint=None, sail_tex=None):
     elif slot == "SLP_Flags":
         pic = "sail_flags.png"
     elif slot.startswith("SLP_Sign"):
-        pic = "sign_%s_ru.png" % slot[len("SLP_Sign_"):].lower()
+        pic = "../../../../textures/localized/ru/sail_sign_%s.png" % slot[len("SLP_Sign_"):].lower()
     if pic and _img(pic):
         t = nt.nodes.new("ShaderNodeTexImage")
         t.image = _img(pic)
@@ -116,10 +116,11 @@ def rigged(reg, b, M=Matrix.Identity(4), sheet_deg=18.0, tint=None, prefix=None,
             place("Jib", Matrix.Rotation(math.radians(sheet_deg * 0.9), 4, ax), sail_tex="sail_cadet_jib.png")
     if b == "optimist":
         place("Sprit", yaw)
+    if not board_down:          # on its trolley: the rudder and the board are off (stowed in the boat)
+        return objs
     rud = Matrix.Rotation(math.radians(-6), 4, "Z")
     place("Rudder", rud)
-    tip = sk["Tiller"]["pivot"]
-    o = place("Tiller", Matrix.Translation(Vector((0, 0, 0))) @ rud)
+    place("Tiller", rud)
     # the extension at the tiller's tip, swung up toward the helm's side
     L = B.BOATS[b]["rudder"]["tiller_len"]
     ext_M = Matrix.Translation(Vector(sk["Tiller"]["pivot"]) - Vector(sk["Ext"]["pivot"])) @ rud @ Matrix.Translation((L, 0, 0.02)) @ \
