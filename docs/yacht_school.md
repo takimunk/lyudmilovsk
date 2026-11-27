@@ -66,3 +66,36 @@ localization skill (ru/en/ja). Items: game-items skill. Dev mode: dev-mode skill
 - Stamps collection `sailing`, quest ids `sail_*`, quest event `sail <what>`.
 - Items: `sail_gloves`, `life_jacket` (worn), `sail_card` (the school's membership book), `knot_cord`.
 - Meshes `/Game/Sailing/SM_Sail_<Name>`; sounds group `Sailing`, `audio/sfx/sailing/`.
+
+## Meshes (part C)
+
+Script-built in Blender (`blender/sailing/`, one command: `python3 blender/sailing/build_all.py`; on the Mac
+`unreal/scripts/import_sailing.sh` builds and imports to `/Game/Sailing/SM_Sail_<Name>`). Details, the full part list
+and pivots: `blender/sailing/README.md`.
+
+- **Boat frame**: metres, origin at the static waterline amidships, **+X forward, +Y port**, +Z up; Unreal X = x,
+  Y = -y (Unreal +Y = starboard), Z = z. Every part's origin is its pivot (`blender/sailing/sockets.json` → `parts`).
+- **Dinghies** (`optimist`, `cadet`, `luch`): `SM_Sail_<Optimist|Cadet|Luch>_{Hull, Mast, Boom, Main, Rudder, Tiller,
+  Ext, Board}` + `SM_Sail_Optimist_Sprit`, `SM_Sail_Cadet_Jib`; LOD1 inside each part; `SM_Sail_<C>_Far` = the whole
+  boat < 300 triangles. Rigged LOD0: luch ≈ 5.9k, cadet ≈ 6.1k, optimist ≈ 4.8k triangles.
+- **Sockets** (`sockets.json`, both sides): helm, hike, cadet crew / crew_hike / crew_low (pelvis, facing, feet under
+  the strap), hiking straps, mainsheet block and hand, tiller / extension hand grips (in the part's frame), boom end,
+  painter, trolley contact.
+- **Custom primitive data** for the boat's parts: [0] camber −1..1, [1] luff flutter 0..1, [2] sail number 0..999,
+  [3..5] hull tint (linear RGB). Masters: `unreal/scripts/make_sailing_materials.py` (M_Sail_Cloth, M_Sail_Hull,
+  M_Sail_Flag, M_Sail_Windsock).
+- **Gear**: trolleys (`SM_Sail_Trolley_<C>`, the boat's origin at manifest `boat_origin`), winter covers
+  (`SM_Sail_Cover_<C>`), sail bag, spars rack, the coach's launch `SM_Sail_Launch` + `SM_Sail_Launch_Motor`,
+  `SM_Sail_Mark`, `SM_Sail_Pin`, `SM_Sail_Buoy`, `SM_Sail_MOB`, `SM_Sail_AnchorBlock`, `SM_Sail_Rope`, `SM_Sail_Block`.
+- **Boathouse** after part B's site (16.5 × 9 m, ridge to the sea, wall 3.4, ridge 5.6, both doors in the north wall:
+  boat door 3.2 m sliding (two `SM_Sail_Boathouse_DoorLeaf`), people's door ALyudDoor 1.20 × 2.18 hole; classroom in
+  the landward 5.3 m, then the hall, changing room + wet store with a sail loft at the seaward end; plinth to −0.85 for
+  the 7 % sand slope). `SM_Sail_Boathouse` (collision exact), `_Glass`, ~40 `SM_Sail_Prop_*`, 10 signal flags
+  `SM_Sail_Flag_<id>`, windsock, park slab + fence + gate, slip boards. Placement: `blender/sailing/boathouse_layout.json`
+  (building frame: origin on the floor in the middle of the footprint, +X to the sea, −Y the north wall): props with
+  rooms and `interactive` kinds, boats on racks / trolleys, doors for `place_doors.py`, sliding doors, lamps, rooms,
+  people's spots, the outside kit, flag hoist points.
+- **Signs**: `tools/make_sailing_signs.py` → `textures/localized/<lang>/sail_sign_{name,door}.png`, keys
+  `sign.sail.school_name`, `sign.sail.door_line1`, `sign.sail.door_line2` (proposed texts in
+  `blender/sailing/sign_strings.json` until part G puts them in the strings tables).
+- Previews: `/mnt/project-files/yacht-school/`.
