@@ -174,6 +174,9 @@ if wanted peoplesim.test.norail && [ -f "$RAIL" ]; then
 	mv -f "$RAIL.suites" "$RAIL"
 	trap - EXIT INT TERM
 fi
+suite sailsim.quick               - bash tools/sailsim/run.sh quick
+suite sailsim.test                slow bash tools/sailsim/run.sh test
+suite sailsim.polar               - bash tools/sailsim/run.sh polar
 suite sea.test                    - bash tools/sea/run.sh test
 suite skyeventsim.test            - bash tools/skyeventsim/run.sh test
 suite sea.days                    - bash tools/sea/run.sh days
