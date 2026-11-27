@@ -1032,6 +1032,7 @@ static void RealChecks(const std::string& Path)
 	// + 1: the beach's topic that waits for a stamp of the shore's finds (docs/beach.md)
 	// + 1: the canteen cook's "taste it" waits for the stamp cook/fine (docs/kitchen.md)
 	// + 1: the canteen's recipes topic (kitchen depth: the five Baltic recipes) waits too
+	// + 2: the Vaults bar's dance topics: the ladies' choice waits for the rules heard, "who asked me" for the dance (docs/dances.md)
 	// + the topics of one holiday (docs/festivals.md "Science Day, the Old New Year, Neptune Day"): offered on its day only
 	// (holidaychecks.h asks them on their days)
 	int Festive = 0;
@@ -1039,7 +1040,7 @@ static void RealChecks(const std::string& Path)
 	{
 		Festive += M.Topics[(size_t)I].When.IsFestive() && !Reached.count(I) ? 1 : 0;
 	}
-	CHECK((int)Reached.size() + 6 + 5 + Festive >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count; %d for their holiday)",
+	CHECK((int)Reached.size() + 6 + 5 + 2 + Festive >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count; %d for their holiday)",
 		(int)Reached.size(), (int)M.Topics.size(), Festive);
 	// the room tones: every tone a plot names is there, a closed tone is a tone, volumes in 0..1, every min <= max
 	int BadTone = 0, Loud = 0;
