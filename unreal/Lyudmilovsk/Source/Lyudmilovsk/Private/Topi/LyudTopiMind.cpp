@@ -254,7 +254,9 @@ void ULyudTopiMind::BeginPlay()
 		Want(TopiMusicPath);
 		Want(UralMusicPath);
 		const FString& Lang = LyudText::Language();
-		for (const TCHAR* Line : { TEXT("turn_1"), TEXT("turn_2"), TEXT("turn_3"), TEXT("turn_4"), TEXT("wake_1") })
+		// (with the four thoughts of UpdateThoughts: they too were read on the spot when the place opened before him)
+		for (const TCHAR* Line : { TEXT("turn_1"), TEXT("turn_2"), TEXT("turn_3"), TEXT("turn_4"), TEXT("wake_1"),
+			TEXT("see_1"), TEXT("glow_1"), TEXT("river_1"), TEXT("towels_1") })
 		{
 			const FString Name = FString::Printf(TEXT("V_line_hero_topi_%s"), Line);
 			Want(FString::Printf(TEXT("/Game/Voice/%s/%s.%s"), *Lang, *Name, *Name));
