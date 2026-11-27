@@ -46,6 +46,7 @@ if "--out" in ARGS:
 
 HEAD_BONES = ("head",)
 NOT_SKULL = ("hair", "eyebrow", "eyelash", "lash", "brow")
+SKIN = ("body", "skin")      # the skin's material, when the export has one (zoomer.body on the hero)
 SEGMENTS = 40          # around the head
 RINGS = 14             # from the crown down
 
@@ -111,6 +112,11 @@ def skull_mesh(objs):
             continue
         me = ob.data
         bad = {i for i, m in enumerate(me.materials) if m and any(w in m.name.lower() for w in NOT_SKULL)}
+        # the skin only when the export names it: the clothes' collar and hood (Fleece, Corduroy) and the teeth are
+        # weighted to the head too, and a shell shrink-wrapped onto them wraps the hood at the nape
+        skin = {i for i, m in enumerate(me.materials) if m and any(w in m.name.lower() for w in SKIN) and i not in bad}
+        if skin:
+            bad = set(range(len(me.materials))) - skin
         on_head = [False] * len(me.vertices)
         for v in me.vertices:
             w = sum(g.weight for g in v.groups if g.group in groups)
@@ -163,13 +169,25 @@ class Head:
             self.front = Vector((math.copysign(1.0, fx.x - self.cx), 0.0, 0.0))
         self.left = Vector((0, 0, 1)).cross(self.front)          # his own left
 
+    def ellipsoid(self, direction):
+        """The brain case's ellipsoid along a direction from the middle: the point and its outward normal."""
+        d = direction.normalized()
+        t = 1.0 / math.sqrt((d.x / self.rx) ** 2 + (d.y / self.ry) ** 2 + (d.z / self.rz) ** 2)
+        p = self.c + d * t
+        q = p - self.c
+        n = Vector((q.x / self.rx ** 2, q.y / self.ry ** 2, q.z / self.rz ** 2)).normalized()
+        return p, n
+
     def on_skull(self, direction):
-        """The skull's surface and normal seen from far out along a direction from the middle."""
-        hit = self.bvh.ray_cast(self.c + direction * 1.0, -direction, 2.0)
-        if hit[0] is None:
-            near = self.bvh.find_nearest(self.c + direction * max(self.rx, self.ry, self.rz))
-            return near[0], direction
-        n = hit[1] if hit[1].dot(direction) > 0 else -hit[1]
+        """The skull's surface and normal seen from far out along a direction from the middle. Where the skin has a hole
+        (the hero's scalp under the grown-out hair has no skin at the back) the ray falls through and meets the far side:
+        there the brain case's ellipsoid stands in."""
+        d = direction.normalized()
+        hit = self.bvh.ray_cast(self.c + d * 1.0, -d, 2.0)
+        e, en = self.ellipsoid(d)
+        if hit[0] is None or (hit[0] - self.c).dot(d) < 0.6 * (e - self.c).length:
+            return e, en
+        n = hit[1] if hit[1].dot(d) > 0 else -hit[1]
         return hit[0], n
 
 
@@ -344,9 +362,10 @@ def shape_check(ob, head, min_clear, max_out):
     inside = 0
     far = 0.0
     for v in ob.data.vertices:
-        near = head.bvh.find_nearest(v.co)
-        dist = (v.co - near[0]).length
-        if (v.co - near[0]).dot(near[1]) < -1e-4 and dist > min_clear:
+        # against the same surface the shell was built on (the skin, or the ellipsoid over its holes)
+        p, n = head.on_skull(v.co - head.c)
+        dist = (v.co - p).length
+        if (v.co - p).dot(n) < -1e-4 and dist > min_clear:
             inside += 1
         far = max(far, dist)
     zs = [v.co.z for v in ob.data.vertices]
@@ -365,8 +384,10 @@ def export(ob):
     return path
 
 
-def preview(objs, head_objs):
-    """Four views of each look on the head (renders/hero/looks_<name>.png): what the Mac looks at before the import."""
+def preview(objs, head_objs, skull=None):
+    """Four views of each look on the head (renders/hero/looks_<name>.png): what the Mac looks at before the import.
+    With the skull given, the head is drawn without its own grown-out hair (as the shadow wears a cut: ULyudLook hides
+    it), so the cut's hairline, the ears and the cap's level can be judged; the look in its own colour."""
     out = os.path.normpath(os.path.join(HERE, "..", "..", "renders", "hero"))
     os.makedirs(out, exist_ok=True)
     scene = bpy.context.scene
@@ -377,6 +398,14 @@ def preview(objs, head_objs):
     scene.camera = cam
     cam.data.type = "ORTHO"
     cam.data.ortho_scale = 0.75
+    if skull is not None:
+        me = bpy.data.meshes.new("SkullPreview")
+        skull.to_mesh(me)
+        bald = bpy.data.objects.new("SkullPreview", me)
+        scene.collection.objects.link(bald)
+        for o in head_objs:
+            o.hide_render = True
+        scene.display.shading.color_type = "MATERIAL"
     for ob in objs:
         for o in objs:
             o.hide_render = o != ob
@@ -419,7 +448,7 @@ def main():
         json.dump(report, f, indent=1)
         f.write("\n")
     if PREVIEW:
-        preview([m[0] for m in made], head_objs)
+        preview([m[0] for m in made], head_objs, skull)
     skull.free()
     if not ok:
         raise SystemExit("LOOKS FAILED: see the lines above")
