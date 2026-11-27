@@ -54,7 +54,7 @@ def hip_hand(r, side, f=Vector((0, -1, 0)), left=Vector((1, 0, 0))):
 
 def walk_legs(r, t, T, speed, lean=8.0, yaw=0.0, twist_k=1.0):
     """A walk in place at `speed` m/s (one cycle = two steps in T s): planted feet move back at exactly the speed (no
-    sliding at rate 1), heel strike, toe off, the knee through; the pelvis bobs (highest mid-stance), yaws with the step
+    sliding at rate 1), heel strike, toe off, the knee through; the pelvis rides the standing leg (highest mid-stance), yaws with the step
     and shifts over the standing foot. Returns (f, left, phase)."""
     rest = rest_pelvis(r)
     duty = 0.62
@@ -64,13 +64,11 @@ def walk_legs(r, t, T, speed, lean=8.0, yaw=0.0, twist_k=1.0):
     ph = (t / T) % 1.0
     f, left = yaw_axes(yaw)
     ankle_z = _rest["ankle"]
-    reach = 0.97 * _rest["leg"]
+    reach = 0.995 * _rest["leg"]
     hip_drop = rest - _rest["hip"]
-    pz = ankle_z + math.sqrt(max(reach ** 2 - land ** 2, 0.1)) + hip_drop - 0.02
-    bob = 0.018 * math.cos(2 * TAU * (ph - duty / 2))
     sway = 0.018 * math.cos(TAU * (ph - duty / 2))
-    pel = Vector((0, 0, pz + bob)) + left * sway
     legs = {}
+    pz = 9.0
     for s, sign, off_ph in (("l", 1, 0.0), ("r", -1, 0.5)):
         q = (ph - off_ph) % 1.0
         if q < duty:
@@ -78,6 +76,8 @@ def walk_legs(r, t, T, speed, lean=8.0, yaw=0.0, twist_k=1.0):
             y = land + (off - land) * u
             zf = 0.075 * sm((u - 0.6) / 0.4)
             pitch = 8.0 * (1 - sm(u / 0.15)) - 26.0 * sm((u - 0.6) / 0.4)
+            # the pelvis rides the standing leg(s) like an inverted pendulum: as high as the planted ankle lets it
+            pz = min(pz, ankle_z + zf + math.sqrt(max(reach ** 2 - y ** 2, 0.1)) + hip_drop)
         else:
             u = (q - duty) / (1 - duty)
             y = off + (land - off) * sm(u * 1.05)
@@ -88,6 +88,7 @@ def walk_legs(r, t, T, speed, lean=8.0, yaw=0.0, twist_k=1.0):
         pr = math.radians(pitch)
         toes = (f * math.cos(pr) * 0.95 + Vector((0, 0, math.sin(pr) - 0.42 * math.cos(pr)))).normalized()
         legs[s] = (a, toes, (f + left * sign * 0.08 + Vector((0, 0, 0.1))).normalized())
+    pel = Vector((0, 0, pz - 0.006)) + left * sway
     yaw_hip = 5.0 * math.cos(TAU * (ph + 0.02)) * twist_k
     body(r, pel, yaw + yaw_hip, tilt=3.0, lean=lean, side=-sway * 40.0, twist=-yaw_hip * 1.5, legs=legs)
     return f, left, ph
