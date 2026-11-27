@@ -829,6 +829,11 @@ def _bauer_flat(B, FP, BP, GP, ctx, zs):
         dk.plate_crumbs(B, *at(6.5 - 0.25, 10.0 - 0.2), tt, 0.0, seed=1)
         kit.cup(B, *at(6.5 + 0.25, 10.0 - 0.2), tt, 40.0)
         kit.glass(B, *at(6.5 + 0.2, 10.0 + 0.27), tt, 0.0)
+    # a trace of a visit (docs/city_dress.md "Traces of a visit"): after Colette ate or sat at home with the radio or a book,
+    # her glass of tea in its holder and her reading glasses stay on the table for a while (flat 1-17 is hers)
+    with B.dress("bauer_tea", visit=("eat_home", "radio_hour", "read_home", "pastime_home"), at="/1-17", keep=2.5):
+        dk.tea_in_holder(B, *at(6.5 - 0.3, 10.0 + 0.25), tt, 0.0)
+        dk.spectacles(B, *at(6.5 + 0.05, 10.0 + 0.3), tt, 30.0)
     cvx, cvy = at(5.75, 5.05)
     for nm, (a, b) in (("fresh", (0, 6)), ("wilt", (6, 8)), ("empty", (8, 9))):
         with B.dress("bauer_flowers_" + nm, phase=(9, a, b)):

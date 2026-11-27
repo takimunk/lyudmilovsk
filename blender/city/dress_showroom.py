@@ -57,6 +57,19 @@ def build(B):
         dk.book_face_down(B, 3.75, 2.35, t2["top"], 20, seed=10)
         dk.mitten_pair(B, 3.4, 2.45, t2["top"], 0, seed=11)
         dk.towel_hat(B, 2.95, 2.45, t2["top"], 0, seed=12)
+    # the traces of a visit (docs/city_dress.md "Traces of a visit") on a long table of their own
+    t3 = kit.table(B, 0.6, 1.3, 0.0, 0, w=1.8, d=0.9, solid=False)
+    zt = t3["top"]
+    with B.dress("traces_games"):
+        dk.chess_left(B, 0.05, 1.35, zt, 0, seed=2)
+        dk.dominoes_left(B, 1.05, 1.3, zt, 0, seed=3)
+    with B.dress("traces_desk"):
+        dk.tea_in_holder(B, -0.15, 0.95, zt, 0)
+        dk.spectacles(B, 0.15, 0.95, zt, 15)
+        dk.exercise_books(B, 0.65, 0.95, zt, 0, seed=4)
+        dk.class_register(B, 1.25, 0.95, zt, 0)
+        dk.sheet_music(B, 0.55, 1.62, zt, 180, seed=5)
+        dk.ticket_stubs(B, 0.6, 0.35, 0.0, 0, seed=6)
     return B
 
 
@@ -74,7 +87,7 @@ def main():
         print("LINT " + line)
     out = opt("--out", os.path.join(bc.ROOT, "renders", "city", "interior"))
     cams = [(0.0, -0.6, 1.65, 0.0 + 180.0, -14.0, "wide"), (2.4, 0.6, 1.5, 180.0 + 10.0, -30.0, "tables"),
-            (-2.0, 1.6, 1.3, 180.0 - 10.0, -24.0, "hooks")]
+            (-2.0, 1.6, 1.3, 180.0 - 10.0, -24.0, "hooks"), (0.6, 0.1, 1.35, 180.0, -42.0, "traces")]
     si.shoot(B, "dress_showroom", cams, samples=int(opt("--samples", 24)), res=opt("--res", "1400x800"), out=out,
              dress={d["id"] for d in B.dresses}, lens=18.0)
 

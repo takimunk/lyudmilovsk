@@ -424,6 +424,7 @@ def _furnish_hall(B, hall, t):
     pb = kit.bench(B, *_at(12.95, pc, -0.2), yaw=_yout(pc), w=1.6, kind="park")
     B.thing("pump_bench", "seat", pb["seats"][0][:3], _yout(pc), height=0.45)
     tr = kit.table_round(B, *_at(14.2, pc, 0.75), r=0.4, h=0.78)
+    _ANCH["pump"] = (pc, tr["top"])
     kit.cup(B, *_at(14.2, pc, 0.75), z=tr["top"])
     kit.teapot(B, *_at(14.25, pc, 0.62), z=tr["top"], yaw=20)
     for sg in (-1, 1):
@@ -993,6 +994,18 @@ def _dress(B):
         dk.jigsaw(B, jx - 0.15, jy, jt, 180.0, stage=stages, stages=stages, seed=7)
     with B.dress("book_table", hours=(9, 20), chance=0.5):
         dk.book_face_down(B, jx + 0.37, jy, jt, 90.0, seed=5)
+    # traces of a visit (docs/city_dress.md "Traces of a visit"): the pensioners' glasses of tea at the ends of the lounge
+    # table after their dominoes; the cure-takers' drinking glasses on the pump room's round table after the cure
+    thl = -91.5
+    with B.dress("lounge_tea", visit="dominoes", at="-LOUNGE", keep=2.0):
+        dk.tea_in_holder(B, *pol(14.1, thl + _dth(0.38, 14.0)), 0.42, 0.0)
+        dk.tea_in_holder(B, *pol(13.92, thl - _dth(0.4, 14.0)), 0.42, 140.0, lemon=False)
+    if "pump" in _ANCH:
+        pc, ptop = _ANCH["pump"]
+        with B.dress("pump_glasses", visit="san_cure", at="-PUMP", keep=1.5):
+            interior_kit.glass(B, *_at(14.0, pc, 0.92), z=ptop)
+            interior_kit.glass(B, *_at(14.42, pc, 0.95), z=ptop)
+            interior_kit.glass(B, *_at(14.08, pc, 0.55), z=ptop)
     # flowers on the dining buffet: fresh, wilting, an empty vase, over a 7-day round
     thb, bz = _ANCH["buffet"]
     vx, vy = _at(17.0, thb, 0.72)

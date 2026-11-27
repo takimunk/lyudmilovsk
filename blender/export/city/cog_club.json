@@ -4674,6 +4674,62 @@
    ]
   },
   {
+   "id": "chess_left_0",
+   "when": {
+    "phase": [
+     14,
+     0,
+     7
+    ],
+    "visit": [
+     "culture_evening"
+    ],
+    "at": "",
+    "keep": 20.0
+   },
+   "tris": 1388,
+   "bounds": [
+    [
+     -15.269,
+     15.76,
+     0.722
+    ],
+    [
+     -14.688,
+     16.271,
+     0.803
+    ]
+   ]
+  },
+  {
+   "id": "chess_left_1",
+   "when": {
+    "phase": [
+     14,
+     7,
+     14
+    ],
+    "visit": [
+     "culture_evening"
+    ],
+    "at": "",
+    "keep": 20.0
+   },
+   "tris": 1216,
+   "bounds": [
+    [
+     -15.269,
+     15.76,
+     0.722
+    ],
+    [
+     -14.705,
+     16.259,
+     0.803
+    ]
+   ]
+  },
+  {
    "id": "buffet_after",
    "when": {
     "hours": [
@@ -4756,8 +4812,8 @@
  ],
  "tris": {
   "shell": 6692,
-  "detail": 38278,
+  "detail": 38134,
   "windows": 380,
-  "dress": 9280
+  "dress": 11884
  }
 }

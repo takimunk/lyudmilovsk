@@ -6662,6 +6662,66 @@
    ]
   },
   {
+   "id": "teacher_left",
+   "when": {
+    "visit": [
+     "work_office"
+    ],
+    "at": "",
+    "keep": 3.0,
+    "who": [
+     "teacher"
+    ]
+   },
+   "tris": 178,
+   "bounds": [
+    [
+     -13.95,
+     12.656,
+     0.91
+    ],
+    [
+     -13.412,
+     13.138,
+     1.05
+    ]
+   ]
+  },
+  {
+   "id": "pupils_books",
+   "when": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     5,
+     9,
+     10,
+     11,
+     12
+    ],
+    "visit": [
+     "school_town"
+    ],
+    "at": "",
+    "keep": 1.5
+   },
+   "tris": 264,
+   "bounds": [
+    [
+     -16.513,
+     7.4,
+     0.76
+    ],
+    [
+     -9.75,
+     11.58,
+     0.79
+    ]
+   ]
+  },
+  {
    "id": "door_rain",
    "when": {
     "weather": [
@@ -6750,6 +6810,6 @@
   "shell": 6678,
   "detail": 43112,
   "windows": 696,
-  "dress": 3471
+  "dress": 3913
  }
 }
