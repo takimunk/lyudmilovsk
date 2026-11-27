@@ -12,7 +12,8 @@
 class UStaticMeshComponent;
 class ULyudWindSubsystem;
 
-UENUM(BlueprintType)
+// ScriptName: Python strips the E and the A, so the enum and ALyudWindTell would both be unreal.LyudWindTell
+UENUM(BlueprintType, meta = (ScriptName = "LyudWindTellKind"))
 enum class ELyudWindTell : uint8
 {
 	/** A sock of five red and white bands, 2.4 m long: each band that stands out is about 1.5 m/s (3 knots) of wind;
