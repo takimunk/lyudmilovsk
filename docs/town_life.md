@@ -125,6 +125,7 @@ the add-on is what brings these back).
 | `dominoes` | 58 and over, 15:00 to 20:00 (not a talk: partners on one sofa would turn into each other) | `P-SANATORIUM-LOUNGE`: the lounge's four seats |
 | `read_paper` | readers, 7:00 to 11:30 | any bench; the newspaper manner is forced |
 | `skip_stones` | children first, the bold; by day, wind under 7.5 m/s, above 3 °C | `S-BEACH-STONES` (kind `stone_shore`): spots every 45 m on the wet sand's edge, 6.5 m up from the mean water line, facing the sea |
+| `beach_castle` (hand-written in activities.json, docs/beach.md) | children 4 to 11, 10:00 to 19:00, by day, 17 °C and warmer; they also help the hero with his castle when he builds near them | the `beach` places, wandering a few metres while they dig |
 | `tend_allotment`, `water_allotment` | the four keepers of the allotment's beds, morning and evening, not in frost | `P-T2H2-ALLOTMENT`: two slots a bed at its lane side (reached along the lane: the slot's `path`), each with its `owner` |
 | `play_piano` | one in three of the musicians and teachers, one in thirty of the rest; 18:00 to 20:30, seldom | `P-HALL-STAGE`: the stool at the club hall's piano |
 | `post_round` | the postwoman (`t_hernandez_lyudmila`), a duty 8:30 to 12:00 but Sunday, rain or not | `S-POST-ROUND`: 37 house doors, one after another |
