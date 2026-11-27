@@ -89,7 +89,7 @@
    }
   },
   "nh_sci_globe": {
-   "like": "fortune",
+   "like": "tch_globe",
    "target": "fortune",
    "proc": {
     "title": "city.nh.sci.globe.title",

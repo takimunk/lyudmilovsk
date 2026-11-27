@@ -97,7 +97,7 @@ LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", 
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
-            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments", "rewards")
+            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments", "rewards", "dev_points")
 # what a complete collection gives (docs/city_interiors.md "A complete set pays"): a reward's fields
 REWARD_FIELDS = ("name", "note", "pay", "item", "count", "item_from", "like", "free", "days")
 # the staff talk (docs/city_interiors.md "Staff talk"): a topic's fields besides its line conditions (when it is offered)
@@ -315,7 +315,8 @@ def load_strings():
 
 
 CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}, "topics": {}, "topic_sets": {},
-                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}, "rewards": {}}
+                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}, "rewards": {},
+                 "dev_points": {}}
 
 
 def content_files():
@@ -357,7 +358,8 @@ def load_content():
                               ("topics", CONTENT_EXTRA["topics"]), ("topic_sets", CONTENT_EXTRA["topic_sets"]),
                               ("tones", CONTENT_EXTRA["tones"]), ("tone_by", CONTENT_EXTRA["tone_by"]),
                               ("sound_alias", CONTENT_EXTRA["sound_alias"]), ("stays", CONTENT_EXTRA["stays"]),
-                              ("tournaments", CONTENT_EXTRA["tournaments"]), ("rewards", CONTENT_EXTRA["rewards"])):
+                              ("tournaments", CONTENT_EXTRA["tournaments"]), ("rewards", CONTENT_EXTRA["rewards"]),
+                              ("dev_points", CONTENT_EXTRA["dev_points"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -777,7 +779,7 @@ def opponents_at(regs, vs, plot):
 
 # procedures (docs/sanatorium_procedures.md): an act's "proc" is played as a short hands-on scene before the act runs
 PROC_STEPS = ("say", "pick", "pour", "sip", "breathe", "tap", "cut", "measure", "guest", "news")
-PROC_FIELDS = ("id", "title", "keys", "when", "steps", "good", "fair", "poor", "good_share", "fair_share", "collect", "vitals")
+PROC_FIELDS = ("id", "title", "keys", "when", "steps", "good", "fair", "poor", "good_share", "fair_share", "collect", "vitals", "scene")
 PROC_STEP_FIELDS = ("do", "lines", "guests", "by_pick", "secs", "count", "every", "window", "in", "out", "mark", "minutes")
 PROC_RANGES = {"secs": (0.5, 60), "count": (1, 24), "every": (0.4, 4.0), "window": (0.05, 1.8), "in": (1.0, 10.0), "out": (1.0, 12.0),
                "minutes": (0, 120)}
@@ -885,6 +887,10 @@ def build_proc(where, pr, strings):
         STAMPS_USED.append((where + " proc", out["collect"]))
     if pr.get("vitals"):
         out["vitals"] = True
+    if pr.get("scene"):
+        if pr.get("vitals"):
+            err("%s: a scene of the town measures no cure: not both scene and vitals" % where)
+        out["scene"] = True
     return out
 
 
@@ -2239,6 +2245,38 @@ def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_id
             err("quest string %s is missing" % k)
 
 
+def dev_points(points, things, plan, strings, gen_strings):
+    """Developer mode: a teleport in front of a thing a content file names ("dev_points": {"<id>": {"thing": "<plot>/<id>",
+    "name": "<string key>"}}), "city.pt.<id>" in the interiors group, the clock an hour after the thing opens. For a small
+    mechanic on one thing that no quest stage reaches (docs/city_interiors.md "Coins, scales and strips")."""
+    pf = plan["portal_face_y"] / 100.0
+    by_id = {t["id"]: t for t in things}
+    floors_of = {pl["id"]: spot_floors(pl) for pl in places(plan)}
+    tps = []
+    for pid, pt in sorted(points.items()):
+        if not isinstance(pt, dict) or not pt.get("thing") or not pt.get("name"):
+            err("dev point %s: needs {\"thing\": \"<plot>/<id>\", \"name\": \"<string key>\"}" % pid)
+            continue
+        t = by_id.get(pt["thing"])
+        if not t:
+            err("dev point %s: no thing %s" % (pid, pt["thing"]))
+            continue
+        if pt["name"] not in strings:
+            err("dev point %s: string %s is missing" % (pid, pt["name"]))
+            continue
+        floor = thing_floor(t, floors_of.get(t["plot"], []))
+        p = step([t["ue"][0] / 100.0, t["ue"][1] / 100.0, floor / 100.0], t["yaw"], 1.2 if t["kind"] not in ("seat", "bed") else 0.9)
+        yaw = (t["yaw"] + 180.0) % 360.0
+        tid = "city.pt." + pid
+        tp = {"id": tid, "group": "interiors", "name": "dev.tp." + tid, "x": round(p[0], 2), "y": round(p[1] - pf, 2),
+              "z": round(floor, 1), "yaw": round(yaw - 360.0 if yaw > 180.0 else yaw, 1)}
+        if t["hours"] != [0, 24]:
+            tp["time"] = "%02d:00" % ((int(t["hours"][0]) + 1) % 24)
+        tps.append(tp)
+        gen_strings["dev.tp." + tid] = {l: strings[pt["name"]][l] for l in LANGS}
+    return tps
+
+
 def quest_dev(quests, things, acts, shops, plan, strings, gen_strings):
     """Developer mode (docs/dev_mode.md): a "dev" block for every stage of our quests, so a jump to the stage lands where it is
     played and when it can be: a teleport in front of a thing that makes the stage's first objective ("city.q.<quest>.<n>"),
@@ -2495,6 +2533,7 @@ def main():
             err("rule %s matches no thing (the id changed? fix or drop it)" % k)
 
     teleports += quest_dev(quests, things, acts, shops, plan, strings, gen_strings)
+    teleports += dev_points(CONTENT_EXTRA["dev_points"], things, plan, strings, gen_strings)
     all_strings = dict(strings)
     for k, v in gen_strings.items():
         if k in all_strings:

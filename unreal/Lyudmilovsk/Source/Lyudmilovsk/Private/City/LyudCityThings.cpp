@@ -2999,6 +2999,7 @@ void ULyudCityThings::FinishProcedure()
 	const int32 Cut = Proc->CutMinutes;
 	const LyudCity::FProcDef* D = Model->ProcDef(Proc->Def);
 	const FString Id = D ? LyudCityThingsImpl::Str(D->Id) : FString();
+	const bool bScene = D && D->bScene;
 	LyudCity::FProcEnd End = Model->EndProc(*Proc, LyudCityThingsImpl::When(World));
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: procedure %s over: result %d line=%s%s"), *Id, End.Result, *LyudCityThingsImpl::Str(End.Line),
 		End.Vitals.Valid() ? *FString::Printf(TEXT(" vitals %.1f kg %d/%d pulse %d lungs %d"), End.Vitals.Weight, End.Vitals.Sys, End.Vitals.Dia, End.Vitals.Pulse, End.Vitals.Lungs) : TEXT(""));
@@ -3011,7 +3012,10 @@ void ULyudCityThings::FinishProcedure()
 		}
 		AnnounceStamps(Fresh);
 	}
-	ULyudQuests::Notify(this, TEXT("procedure"), Id);
+	if (!bScene)
+	{
+		ULyudQuests::Notify(this, TEXT("procedure"), Id);     // a town scene (a payphone's dial) is no cure: its act reports it
+	}
 	TArray<FString> Args;
 	for (const std::string& A : End.Args)
 	{

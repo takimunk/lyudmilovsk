@@ -822,6 +822,9 @@ namespace LyudCity
 		std::string Collect;
 		/** "vitals": the scene measures the hero (the doctor's check): the numbers go on the card. */
 		bool bVitals = false;
+		/** "scene": a small scene of the town (a payphone's dial, a street scale), not a cure: not counted as a procedure
+		 *  (ProcCount, the numbers' course) and no "procedure" event. */
+		bool bScene = false;
 	};
 
 	/** Someone at the same procedure now: a guest's key ("gromov") and their name key ("npc.t_gromov_pyotr.name"). */
@@ -3425,7 +3428,10 @@ namespace LyudCity
 			{
 				GiveStamp(D->Collect, &E.NewStamps);
 			}
-			ProcDone[D->Id] += 1;
+			if (!D->bScene)
+			{
+				ProcDone[D->Id] += 1;
+			}
 			if (D->bVitals && G.Vitals.Valid())
 			{
 				if (!VitalsFirst.Valid())
@@ -3978,6 +3984,7 @@ namespace LyudCity
 			D.Fair = std::min(D.Good, std::max(0.0, (double)V["fair_share"].F(0.35f)));
 			D.Collect = V["collect"].S();
 			D.bVitals = V["vitals"].Type == LyudJson::FValue::Bool ? V["vitals"].B : V["vitals"].I(0) != 0;
+			D.bScene = V["scene"].Type == LyudJson::FValue::Bool ? V["scene"].B : V["scene"].I(0) != 0;
 			for (const LyudJson::FValue& St : V["steps"].Items)
 			{
 				bool bKnown = false;
