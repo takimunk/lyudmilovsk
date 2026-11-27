@@ -1412,7 +1412,7 @@
  "dev.action.topi.night": "トーピ：夜と川のオン／オフ",
  "dev.action.interiors.dress_all": "室内：部屋の小物をすべて表示／日付どおりに戻す",
  "dev.action.interiors.dress_hide": "室内：部屋の小物を隠す／日付どおりに戻す",
- "dev.action.interiors.dress_visits": "室内：どこにも訪問の跡（たった今だれかが帰ったように）",
+ "dev.action.interiors.dress_visits": "室内：すべての部屋に人がいた跡（たった今だれかが帰ったように）",
  "dev.action.weather.fluff": "ポプラの綿毛のオン／オフ",
  "dev.action.festival.sun_day": "祭り：大きな太陽の日、正午",
  "dev.action.festival.street_bunting": "町じゅうのペナント飾りのオン／オフ",
