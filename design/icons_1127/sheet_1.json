@@ -1,0 +1,33 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Every dish is seen from a three-quarter view from above, on plain crockery. Row 1, left: a small glass bowl of finely grated orange carrot mixed with apple. Row 1, middle: a stack of three golden lacy potato pancakes on a plate. Row 1, right: a white plate with one whole small fried fish with a golden crisp crust and a sprig of dill beside it. Row 2, left: a cast iron frying pan of golden fried potato slices with a crisp crust, chopped fresh dill scattered on top. Row 2, middle: a plate of small golden crisp fried smelt fish laid in a row, a lemon wedge. Row 2, right: a plate with two small silver Baltic herring, boiled potatoes in their skins and dill. Row 3, left: a white enamel bowl of cold kefir soup with diced radish, potato and chopped green dill, an aluminium spoon. Row 3, middle: an enamel bowl of salad of red tomato wedges, sliced pink radishes and green dill, coarse salt. Row 3, right: a white enamel bowl of clear golden fish soup with a piece of white fish, potato chunks and a sprig of dill, an aluminium spoon beside it."
+ },
+ "job_id": "9a260b09-5ce2-4f8c-b683-e3414044ab74",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261127_233258_9a260b09-5ce2-4f8c-b683-e3414044ab74.png",
+ "credits": 0.75,
+ "date": "2026-11-27",
+ "what": "dishes of the town kitchen",
+ "grid": [
+  3,
+  3
+ ],
+ "cells_row_major": [
+  "dish_carrot_salad",
+  "dish_draniki",
+  "dish_fried_fish",
+  "dish_fried_potatoes",
+  "dish_fried_smelt",
+  "dish_herring_potatoes",
+  "dish_okroshka",
+  "dish_salad",
+  "dish_ukha"
+ ],
+ "sha256": null,
+ "note": "Cut by tools/icons_from_sheets.py on the Mac (this cloud box cannot reach the CDN); it fills sha256 and saves the picture as sheet_1.png next to this file."
+}

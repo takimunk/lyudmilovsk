@@ -8,6 +8,10 @@
 
 Run with the editor closed:
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=unreal/scripts/import_hall_assets.py
+
+Only some icons (no labels, no materials; safe in a worktree without the LFS pictures of the others):
+  ICONS=icon_a,icon_b UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=unreal/scripts/import_hall_assets.py
+  (ids with or without the icon_ prefix; tools/icons_from_sheets.py prints this line with the ids it wrote)
 """
 import glob
 import os
@@ -19,6 +23,11 @@ mel = unreal.MaterialEditingLibrary
 tools = unreal.AssetToolsHelpers.get_asset_tools()
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+
+
+# ICONS=icon_a,icon_b: import just these icons and skip the labels and the bottle materials
+ONLY = {i.strip()[len("icon_"):] if i.strip().startswith("icon_") else i.strip()
+        for i in os.environ.get("ICONS", "").split(",") if i.strip()}
 
 
 def log(msg):
@@ -49,64 +58,74 @@ def import_texture(src, folder, name, ui=False):
 
 for lang_dir in sorted(glob.glob(os.path.join(ROOT, "textures", "localized", "*"))):
     lang = os.path.basename(lang_dir)
-    for path in sorted(glob.glob(os.path.join(lang_dir, "label_*.jpg"))):
+    for path in [] if ONLY else sorted(glob.glob(os.path.join(lang_dir, "label_*.jpg"))):
         flavor = os.path.basename(path)[len("label_"):-4]
         import_texture(path, "/Game/Hall/Localized/" + lang, "T_Label_" + flavor)
         log("label %s %s" % (lang, flavor))
     for path in sorted(glob.glob(os.path.join(lang_dir, "icon_*.jpg"))):
         item = os.path.basename(path)[len("icon_"):-4]
+        if ONLY and item not in ONLY:
+            continue
+        with open(path, "rb") as f:
+            if f.read(7) == b"version":                     # an LFS pointer, not a picture (git lfs pull first)
+                log("skip %s: LFS pointer" % path)
+                continue
         import_texture(path, "/Game/Inventory/Localized/" + lang, "T_Icon_" + item, ui=True)
         log("icon %s %s" % (lang, item))
 
 
-def new_material(path):
-    if eal.does_asset_exist(path):
-        eal.delete_asset(path)
-    folder, name = path.rsplit("/", 1)
-    return tools.create_asset(name, folder, unreal.Material, unreal.MaterialFactoryNew())
+def build_materials():
+    def new_material(path):
+        if eal.does_asset_exist(path):
+            eal.delete_asset(path)
+        folder, name = path.rsplit("/", 1)
+        return tools.create_asset(name, folder, unreal.Material, unreal.MaterialFactoryNew())
 
+    def node(m, cls, x, y, **props):
+        e = mel.create_material_expression(m, cls, x, y)
+        for k, v in props.items():
+            e.set_editor_property(k, v)
+        return e
 
-def node(m, cls, x, y, **props):
-    e = mel.create_material_expression(m, cls, x, y)
-    for k, v in props.items():
-        e.set_editor_property(k, v)
-    return e
+    def prop(m, expr, out, prop_):
+        mel.connect_material_property(expr, out, prop_)
 
+    MP = unreal.MaterialProperty
 
-def prop(m, expr, out, prop_):
-    mel.connect_material_property(expr, out, prop_)
-
-
-MP = unreal.MaterialProperty
-
-# label: paper with a slight gloss
-m = new_material("/Game/Hall/M_BottleLabel")
-tex = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -600, 0, parameter_name="Label",
-           texture=unreal.load_asset("/Engine/EngineResources/WhiteSquareTexture"))
-tint = node(m, unreal.MaterialExpressionVectorParameter, -600, 250, parameter_name="Color", default_value=unreal.LinearColor(1, 1, 1, 1))
-mul = node(m, unreal.MaterialExpressionMultiply, -300, 100)
-mel.connect_material_expressions(tex, "RGB", mul, "A")
-mel.connect_material_expressions(tint, "", mul, "B")
-prop(m, mul, "", MP.MP_BASE_COLOR)
-rough = node(m, unreal.MaterialExpressionConstant, -300, 300, r=0.5)
-prop(m, rough, "", MP.MP_ROUGHNESS)
-m.set_editor_property("two_sided", True)
-mel.recompile_material(m)
-eal.save_loaded_asset(m)
-
-# glass and liquid: translucent, tinted by Color
-for name, opacity, rough_v, spec in (("M_BottleGlass", 0.32, 0.06, 0.7), ("M_BottleLiquid", 0.78, 0.15, 0.5)):
-    m = new_material("/Game/Hall/" + name)
-    m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
+    # label: paper with a slight gloss
+    m = new_material("/Game/Hall/M_BottleLabel")
+    tex = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -600, 0, parameter_name="Label",
+               texture=unreal.load_asset("/Engine/EngineResources/WhiteSquareTexture"))
+    tint = node(m, unreal.MaterialExpressionVectorParameter, -600, 250, parameter_name="Color", default_value=unreal.LinearColor(1, 1, 1, 1))
+    mul = node(m, unreal.MaterialExpressionMultiply, -300, 100)
+    mel.connect_material_expressions(tex, "RGB", mul, "A")
+    mel.connect_material_expressions(tint, "", mul, "B")
+    prop(m, mul, "", MP.MP_BASE_COLOR)
+    rough = node(m, unreal.MaterialExpressionConstant, -300, 300, r=0.5)
+    prop(m, rough, "", MP.MP_ROUGHNESS)
     m.set_editor_property("two_sided", True)
-    col = node(m, unreal.MaterialExpressionVectorParameter, -500, 0, parameter_name="Color", default_value=unreal.LinearColor(0.1, 0.3, 0.15, 1))
-    prop(m, col, "", MP.MP_BASE_COLOR)
-    op = node(m, unreal.MaterialExpressionConstant, -500, 200, r=opacity)
-    prop(m, op, "", MP.MP_OPACITY)
-    ro = node(m, unreal.MaterialExpressionConstant, -500, 300, r=rough_v)
-    prop(m, ro, "", MP.MP_ROUGHNESS)
-    sp = node(m, unreal.MaterialExpressionConstant, -500, 400, r=spec)
-    prop(m, sp, "", MP.MP_SPECULAR)
     mel.recompile_material(m)
     eal.save_loaded_asset(m)
-log("materials done")
+
+    # glass and liquid: translucent, tinted by Color
+    for name, opacity, rough_v, spec in (("M_BottleGlass", 0.32, 0.06, 0.7), ("M_BottleLiquid", 0.78, 0.15, 0.5)):
+        m = new_material("/Game/Hall/" + name)
+        m.set_editor_property("blend_mode", unreal.BlendMode.BLEND_TRANSLUCENT)
+        m.set_editor_property("two_sided", True)
+        col = node(m, unreal.MaterialExpressionVectorParameter, -500, 0, parameter_name="Color", default_value=unreal.LinearColor(0.1, 0.3, 0.15, 1))
+        prop(m, col, "", MP.MP_BASE_COLOR)
+        op = node(m, unreal.MaterialExpressionConstant, -500, 200, r=opacity)
+        prop(m, op, "", MP.MP_OPACITY)
+        ro = node(m, unreal.MaterialExpressionConstant, -500, 300, r=rough_v)
+        prop(m, ro, "", MP.MP_ROUGHNESS)
+        sp = node(m, unreal.MaterialExpressionConstant, -500, 400, r=spec)
+        prop(m, sp, "", MP.MP_SPECULAR)
+        mel.recompile_material(m)
+        eal.save_loaded_asset(m)
+    log("materials done")
+
+
+if ONLY:
+    log("icons only: %d ids, labels and materials skipped" % len(ONLY))
+else:
+    build_materials()

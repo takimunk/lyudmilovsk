@@ -1,0 +1,33 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Clothes are neatly folded or laid flat so they fit inside the cell. Row 1, left: a grey herringbone tweed flat cap with a short stiff peak, seen from the front at three quarters. Row 1, middle: a neatly folded yellow rubberised raincoat with a hood and big press studs, a matte sheen on the folds. Row 1, right: a neatly folded bottle-green zip windbreaker of thin crisp fabric with a stand-up collar and elastic cuffs. Row 2, left: a neatly folded heavy navy blue woollen winter coat with a dark fur collar and large buttons. Row 2, middle: a pointed felted wool banya cap of natural off-white felt with a rolled brim and a little loop at the tip. Row 2, right: a neatly folded thick white terry towel with a thin blue stripe across its end, soft loops visible. Row 3, left: a bath whisk of fresh birch twigs with glossy green leaves, its handle tied tight with rough twine, the leaves wet and glistening. Row 3, middle: a pair of Soviet leisure ice skates on white leather lace-up boots with polished steel blades, the laces tied together. Row 3, right: a small torn pink paper cinema ticket stub with a perforated torn edge and a faded violet stamp, no lettering."
+ },
+ "job_id": "a9d1bfb0-f255-42bc-9acb-e1d0e4b04090",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261127_233258_a9d1bfb0-f255-42bc-9acb-e1d0e4b04090.png",
+ "credits": 0.75,
+ "date": "2026-11-27",
+ "what": "clothes, the banya and skates",
+ "grid": [
+  3,
+  3
+ ],
+ "cells_row_major": [
+  "cap",
+  "raincoat",
+  "wind_jacket",
+  "winter_coat",
+  "banya_hat",
+  "banya_towel",
+  "birch_venik",
+  "skates",
+  "ticket_stub"
+ ],
+ "sha256": null,
+ "note": "Cut by tools/icons_from_sheets.py on the Mac (this cloud box cannot reach the CDN); it fills sha256 and saves the picture as sheet_2.png next to this file."
+}

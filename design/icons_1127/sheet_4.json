@@ -1,0 +1,33 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a single small Baltic cockle shell, pale cream with fine ribs, a few grains of wet sand on it. Row 1, middle: a small rough piece of raw Baltic amber, cloudy honey-yellow with a matte weathered crust, a strand of dark seaweed beside it. Row 1, right: a small polished drop of clear honey-coloured Baltic amber with a tiny dark fly caught inside it, lit from behind. Row 2, left: a small red paper flag glued to a thin wooden stick, the kind children put on top of a sandcastle. Row 2, middle: a small dented aluminium milk can with a wire handle and a tight lid, beads of cold condensation on its side, a little dark amber kvass foam at the rim. Row 2, right: a bright red fruit ice lolly on a flat wooden stick, glossy and slightly melting, one drip running down, half unwrapped from a plain paper wrapper. Row 3, left: a small red tin can of lamp paraffin with a screw cap on a little chain and a wire handle, no readable words. Row 3, middle: one fresh orange carrot with its feathery green top, a little dark soil still on it, lying diagonally. Row 3, right: two small lumps of glossy black coal with sharp shiny facets, side by side."
+ },
+ "job_id": "f2181a98-440c-4384-92c1-37dae4b5229a",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261127_233258_f2181a98-440c-4384-92c1-37dae4b5229a.png",
+ "credits": 0.75,
+ "date": "2026-11-27",
+ "what": "beach finds and street odds and ends",
+ "grid": [
+  3,
+  3
+ ],
+ "cells_row_major": [
+  "seashell",
+  "amber_piece",
+  "amber_fly",
+  "sand_flag",
+  "kvass_can",
+  "fruit_ice",
+  "paraffin",
+  "carrot",
+  "coal"
+ ],
+ "sha256": null,
+ "note": "Cut by tools/icons_from_sheets.py on the Mac (this cloud box cannot reach the CDN); it fills sha256 and saves the picture as sheet_4.png next to this file."
+}
