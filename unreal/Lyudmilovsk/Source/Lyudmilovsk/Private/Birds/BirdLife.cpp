@@ -510,6 +510,9 @@ void UBirdLifeSubsystem::Stop()
 	}
 	SyncTrust(true);       // a restart keeps the trust earned since the last save
 	Sim.Reset();
+	// by bird id: after a restart the same id is another bird (it would inherit the watching time)
+	HabitWatch.Reset();
+	HabitWatchTimer = 0.f;
 	bPosesReady = false;   // asked again before the next start (a month on, another plumage)
 	PosePoll = 0.f;
 	bStarted = false;
