@@ -489,6 +489,7 @@ void AHeroCharacter::SitOn(USceneComponent* Base, const FTransform& InSeatLocal,
 	SeatLeave = nullptr;
 	SeatBase = Base;
 	StandOffset = FVector(38.f, 0.f, 0.f);
+	SeatExit.Reset();
 	SeatLocal = InSeatLocal;
 	SeatZ = InSeatZ;
 	UCharacterMovementComponent* Move = GetCharacterMovement();
@@ -509,6 +510,7 @@ void AHeroCharacter::LeaveLostSeat()
 {
 	bSeatHeld = false;
 	SeatBase.Reset();
+	SeatExit.Reset();
 	SeatMove = nullptr;
 	SeatLeave = nullptr;
 	GetCapsuleComponent()->SetCollisionEnabled(SeatedCollision);
@@ -519,6 +521,15 @@ void AHeroCharacter::LeaveLostSeat()
 	}
 }
 
+void AHeroCharacter::SitOn(USceneComponent* Base, const FTransform& InSeatLocal, float InSeatZ, const FVector& ExitLocal)
+{
+	SitOn(Base, InSeatLocal, InSeatZ);
+	if (IsSeated())
+	{
+		SeatExit = ExitLocal;
+	}
+}
+
 void AHeroCharacter::StandUp()
 {
 	if (!IsSeated())
@@ -526,12 +537,15 @@ void AHeroCharacter::StandUp()
 		return;
 	}
 	const FTransform W = SeatWorld();
+	const USceneComponent* B = SeatBase.Get();
+	const FVector Floor = SeatExit.IsSet() && B ? B->GetComponentTransform().TransformPosition(*SeatExit) : W.TransformPosition(StandOffset);
 	SeatBase.Reset();
 	bSeatHeld = false;
 	SeatMove = nullptr;
 	SeatLeave = nullptr;
-	// a step forward off the cushion, standing on the floor
-	const FVector At = W.TransformPosition(StandOffset) + FVector(0.f, 0.f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 2.f);
+	SeatExit.Reset();
+	// a step forward off the cushion (or out to the seat's exit), standing on the floor
+	const FVector At = Floor + FVector(0.f, 0.f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 2.f);
 	GetCapsuleComponent()->SetCollisionEnabled(SeatedCollision);
 	SetActorLocation(At, false, nullptr, ETeleportType::TeleportPhysics);
 	GetCharacterMovement()->SetMovementMode(MOVE_Walking);

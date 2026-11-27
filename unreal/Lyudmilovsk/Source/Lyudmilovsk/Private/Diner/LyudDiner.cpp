@@ -1,5 +1,6 @@
 #include "Diner/LyudDiner.h"
 
+#include "Components/CapsuleComponent.h"
 #include "NpcDialogue.h"
 #include "Components/PointLightComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -519,6 +520,7 @@ void ALyudDiner::EndPlay(const EEndPlayReason::Type Reason)
 	{
 		UI->OnShopBought.RemoveAll(this);
 		UI->SetPrompt(this, FText::GetEmpty());
+		UI->SetPrompt(SeatPromptKey, FText::GetEmpty());
 	}
 	Super::EndPlay(Reason);
 }
@@ -558,6 +560,7 @@ void ALyudDiner::LoadLayout()
 			Serving.Add(S);
 		}
 	}
+	LoadSeats(L);
 	const TSharedPtr<FJsonObject>* Coffee = nullptr;
 	if (L->TryGetObjectField(TEXT("coffee"), Coffee))
 	{
@@ -628,7 +631,7 @@ void ALyudDiner::FindParts()
 			for (const FName& Slot : M->GetMaterialSlotNames())
 			{
 				const FString S = Slot.ToString();
-				if (S.StartsWith(TEXT("DN_Opal")) || S.StartsWith(TEXT("DN_Sign_")))
+				if (S.StartsWith(TEXT("DN_Opal")) || S.StartsWith(TEXT("DN_Neon")) || S.StartsWith(TEXT("DN_Sign_")))
 				{
 					if (UMaterialInstanceDynamic* MID = M->CreateDynamicMaterialInstance(M->GetMaterialIndex(Slot)))
 					{
@@ -767,7 +770,7 @@ int32 ALyudDiner::FreeSpotNear(const FVector& WorldPos) const
 	float BestD = TNumericLimits<float>::Max();
 	for (int32 I = 0; I < Serving.Num(); ++I)
 	{
-		const bool bTaken = Serving[I].Dish.IsValid() || Pending.ContainsByPredicate([I](const FPending& P) { return P.Spot == I; });
+		const bool bTaken = Serving[I].bTable || Serving[I].Dish.IsValid() || Pending.ContainsByPredicate([I](const FPending& P) { return P.Spot == I; });
 		const float D = FVector::DistSquared2D(ToWorld(Serving[I].Stool), WorldPos);
 		if (!bTaken && D < BestD)
 		{
@@ -805,8 +808,7 @@ ALyudDinerDish* ALyudDiner::SpawnDish(FName Item, const FTransform& At, float Le
 
 ALyudDinerDish* ALyudDiner::Serve(FName Item)
 {
-	const AHeroCharacter* Hero = LyudDiner::Hero(GetWorld());
-	const int32 Spot = FreeSpotNear(Hero ? Hero->GetActorLocation() : GetActorLocation());
+	const int32 Spot = SpotForHero();
 	if (Spot < 0)
 	{
 		return nullptr;
@@ -850,7 +852,7 @@ void ALyudDiner::OnBought(FName Item, int32 Count)
 	{
 		FPending P;
 		P.Item = Item;
-		P.Spot = FreeSpotNear(Hero->GetActorLocation());
+		P.Spot = SpotForHero();
 		P.Due = GetWorld()->GetTimeSeconds() + FMath::FRandRange(5.f, 9.f) + 3.f * Pending.Num();
 		Pending.Add(P);
 	}
@@ -878,12 +880,11 @@ void ALyudDiner::Tick(float DeltaTime)
 		}
 		const FPending P = Pending[I];
 		Pending.RemoveAt(I);
-		// the spot it was meant for may have been taken meanwhile: the nearest free one then
-		int32 Spot = P.Spot;
-		if (!Serving.IsValidIndex(Spot) || Serving[Spot].Dish.IsValid())
+		// where the hero is now: his table if he has sat down since (or the spot was taken meanwhile), else the one meant
+		int32 Spot = SpotForHero();
+		if (!(HeroSeat >= 0 && Spot >= 0 && Serving[Spot].bTable) && Serving.IsValidIndex(P.Spot) && !Serving[P.Spot].Dish.IsValid())
 		{
-			const AHeroCharacter* Hero = LyudDiner::Hero(GetWorld());
-			Spot = FreeSpotNear(Hero ? Hero->GetActorLocation() : GetActorLocation());
+			Spot = P.Spot;
 		}
 		if (Serving.IsValidIndex(Spot))
 		{
@@ -905,6 +906,7 @@ void ALyudDiner::Tick(float DeltaTime)
 		}
 	}
 	TickCoffee(DeltaTime);
+	TickSeats(DeltaTime);
 }
 
 // ---- self-service coffee ------------------------------------------------------------------------------------------------------
@@ -1132,6 +1134,311 @@ void ALyudDiner::TickCoffee(float DeltaTime)
 }
 
 // ---- console -----------------------------------------------------------------------------------------------------------------------
+
+// ---- seats --------------------------------------------------------------------------------------------------------------------
+
+void ALyudDiner::LoadSeats(const TSharedPtr<FJsonObject>& L)
+{
+	SeatPromptKey = NewObject<USceneComponent>(this, TEXT("SeatPrompt"));
+	const TArray<TSharedPtr<FJsonValue>>* List = nullptr;
+	if (!L->TryGetArrayField(TEXT("hero_seats"), List))
+	{
+		return;
+	}
+	for (const TSharedPtr<FJsonValue>& V : *List)
+	{
+		const TSharedPtr<FJsonObject> O = V->AsObject();
+		FSeat S;
+		S.Kind = FName(O->GetStringField(TEXT("kind")));
+		S.At = LyudDiner::Vec(O, TEXT("at"));
+		S.Yaw = (float)O->GetNumberField(TEXT("yaw"));
+		const float Foot = O->HasTypedField<EJson::Number>(TEXT("foot_z")) ? (float)O->GetNumberField(TEXT("foot_z")) : 0.f;
+		// a stool's sitter rests his feet on the counter's foot rail: the seat's floor is the rail
+		S.At.Z += Foot;
+		S.SeatZ = (float)O->GetNumberField(TEXT("seat_z")) - Foot;
+		const TArray<TSharedPtr<FJsonValue>>* Table = nullptr;
+		if (O->TryGetArrayField(TEXT("table"), Table) && Table->Num() >= 3)
+		{
+			const FVector T = LyudDiner::Vec(O, TEXT("table"));
+			// a stool's plate is the counter's place in front of it; a booth's is a place of its own on the table
+			int32 Near = -1;
+			for (int32 I = 0; I < Serving.Num(); ++I)
+			{
+				if (!Serving[I].bTable && FVector::Dist2D(Serving[I].Plate, T) < 0.2f)
+				{
+					Near = I;
+				}
+			}
+			if (Near < 0)
+			{
+				FServing Sv;
+				Sv.Plate = T;
+				Sv.Stool = S.At;
+				Sv.bTable = true;
+				Near = Serving.Add(Sv);
+			}
+			S.Serving = Near;
+		}
+		Seats.Add(S);
+	}
+}
+
+FTransform ALyudDiner::SeatFrameWorld(const FSeat& S) const
+{
+	return FTransform(YawToWorld(S.Yaw), ToWorld(S.At));
+}
+
+FVector ALyudDiner::SeatCushionWorld(const FSeat& S) const
+{
+	// the cushion's middle: a little back from its front edge, on its top
+	return SeatFrameWorld(S).TransformPosition(FVector(S.Kind == TEXT("stool") ? -18.f : -22.f, 0.f, S.SeatZ * 100.f));
+}
+
+bool ALyudDiner::SeatTaken(int32 Index) const
+{
+	const FVector C = SeatCushionWorld(Seats[Index]);
+	for (TActorIterator<ANpcBody> It(GetWorld()); It; ++It)
+	{
+		if (!It->IsHidden() && FVector::Dist2D(It->GetActorLocation(), C) < 40.f && FMath::Abs(It->GetActorLocation().Z - C.Z) < 150.f)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+int32 ALyudDiner::SeatInView() const
+{
+	// a free seat within reach (1.3 m from the feet) that the view points at
+	const AHeroCharacter* Hero = LyudDiner::Hero(GetWorld());
+	const APlayerController* PC = LyudDiner::Controller(GetWorld());
+	if (!Hero || !PC || Hero->IsSeated() || Seats.Num() == 0 || !IsHeroInside())
+	{
+		return -1;
+	}
+	const FVector Eye = Hero->EyeLocation(), Look = PC->GetControlRotation().Vector();
+	const FVector Feet = Hero->GetActorLocation() - FVector(0.f, 0.f, Hero->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	int32 Best = -1;
+	float BestDot = 0.8f;
+	for (int32 I = 0; I < Seats.Num(); ++I)
+	{
+		const FVector C = SeatCushionWorld(Seats[I]);
+		if (FVector::Dist2D(C, Feet) > 130.f || FMath::Abs(C.Z - Feet.Z) > 120.f)
+		{
+			continue;
+		}
+		const float Dot = FVector::DotProduct(Look, (C - Eye).GetSafeNormal());
+		if (Dot > BestDot && !SeatTaken(I))
+		{
+			BestDot = Dot;
+			Best = I;
+		}
+	}
+	return Best;
+}
+
+bool ALyudDiner::SitHero(int32 Index)
+{
+	AHeroCharacter* Hero = LyudDiner::Hero(GetWorld());
+	APlayerController* PC = Hero ? Cast<APlayerController>(Hero->GetController()) : nullptr;
+	if (!Hero || !PC)
+	{
+		return false;
+	}
+	if (Index < 0 || !Seats.IsValidIndex(Index))
+	{
+		if (Hero->IsSeated() && HeroSeat >= 0)
+		{
+			Hero->StandUp();
+		}
+		HeroSeat = -1;
+		return Index < 0;
+	}
+	if (SeatTaken(Index))
+	{
+		return false;
+	}
+	if (Hero->IsSeated())
+	{
+		Hero->StandUp();
+	}
+	const FSeat& S = Seats[Index];
+	const FTransform W = SeatFrameWorld(S);
+	// the way out: to the aisle from a booth (its table is in front), back off a stool, forward off the nose's bench; the first
+	// of a few floor points round the seat where a standing body fits
+	const UCapsuleComponent* Cap = Hero->GetCapsuleComponent();
+	const float Half = Cap->GetScaledCapsuleHalfHeight(), Rad = Cap->GetScaledCapsuleRadius();
+	const FVector Fwd = W.GetRotation().GetForwardVector(), Side = W.GetRotation().GetRightVector();
+	const FVector Floor = ToWorld(FVector(S.At.X, S.At.Y, 0.0));
+	TArray<FVector> Tries;
+	if (S.Kind == TEXT("stool"))
+	{
+		Tries = { Floor - Fwd * 62.f, Floor - Fwd * 78.f };      // At is the cushion's front edge: past the stool behind it
+	}
+	else if (S.Kind == TEXT("booth"))
+	{
+		// the aisle is on the booths' open side (+y of the car, past BOOTH_Y): straight across from the cushion
+		const FVector Cushion = ToLocal(SeatCushionWorld(S));
+		Tries = { ToWorld(FVector(Cushion.X, -1.35, 0.0)), ToWorld(FVector(Cushion.X, -1.2, 0.0)) };
+	}
+	Tries.Append({ Floor + Fwd * 45.f, Floor + Fwd * 65.f, Floor + Fwd * 30.f + Side * 60.f, Floor + Fwd * 30.f - Side * 60.f });
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(DinerSeatExit), false, Hero);
+	FVector Exit = Tries.Last();
+	for (const FVector& T : Tries)
+	{
+		if (!GetWorld()->OverlapAnyTestByChannel(T + FVector(0.f, 0.f, Half + 4.f), FQuat::Identity, ECC_Pawn,
+			FCollisionShape::MakeCapsule(Rad, Half), Q))
+		{
+			Exit = T;
+			break;
+		}
+	}
+	USceneComponent* Base = GetRootComponent();
+	const FTransform Local = W.GetRelativeTransform(Base->GetComponentTransform());
+	const FVector ExitLocal = Base->GetComponentTransform().InverseTransformPosition(Exit);
+	if (ULyudHandUse* Hand = ULyudHandUse::Get(this))
+	{
+		Hand->PutAway();
+	}
+	Hero->SitOn(Base, Local, S.SeatZ * 100.f, ExitLocal);
+	HeroSeat = Index;
+	// the view sits down too: to the table (or the counter), a little down
+	PC->SetControlRotation(FRotator(-14.f, W.Rotator().Yaw, 0.f));
+	StandPromptFor = 3.f;
+	UE_LOG(LogTemp, Display, TEXT("DINERTEST sit %d %s"), Index, *DescribeSeat(Index));
+	return true;
+}
+
+FString ALyudDiner::DescribeSeat(int32 Index) const
+{
+	if (!Seats.IsValidIndex(Index))
+	{
+		return TEXT("none");
+	}
+	const FSeat& S = Seats[Index];
+	const FVector C = SeatCushionWorld(S);
+	return FString::Printf(TEXT("%s cushion (%.0f %.0f %.0f) yaw %.0f seat %.0f cm table %d"), *S.Kind.ToString(), C.X, C.Y, C.Z,
+		SeatFrameWorld(S).Rotator().Yaw, S.SeatZ * 100.f, S.Serving);
+}
+
+int32 ALyudDiner::SpotForHero() const
+{
+	if (Seats.IsValidIndex(HeroSeat))
+	{
+		const int32 Own = Seats[HeroSeat].Serving;
+		if (Serving.IsValidIndex(Own) && !Serving[Own].Dish.IsValid() && !Pending.ContainsByPredicate([Own](const FPending& P) { return P.Spot == Own; }))
+		{
+			return Own;
+		}
+	}
+	const AHeroCharacter* Hero = LyudDiner::Hero(GetWorld());
+	return FreeSpotNear(Hero ? Hero->GetActorLocation() : GetActorLocation());
+}
+
+void ALyudDiner::TickSeats(float DeltaTime)
+{
+	AHeroCharacter* Hero = LyudDiner::Hero(GetWorld());
+	const APlayerController* PC = LyudDiner::Controller(GetWorld());
+	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
+	if (!Hero || !PC || Seats.Num() == 0)
+	{
+		return;
+	}
+	if (HeroSeat >= 0 && !Hero->IsSeated())
+	{
+		HeroSeat = -1;              // got up by a step or Space
+		StandPromptFor = 0.f;
+		if (UI)
+		{
+			UI->SetPrompt(SeatPromptKey, FText::GetEmpty());
+		}
+	}
+	const ULyudBiteSubsystem* Bite = ULyudBiteSubsystem::Get(this);
+	const bool bBusy = (Bite && Bite->IsEating()) || (UI && UI->IsOpen()) || Pour != EPour::None || bCoffeePrompt;
+	if (HeroSeat >= 0)
+	{
+		// "E: stand up" for a moment after sitting down; then the table's own prompts (eat, drink) have the line
+		if (StandPromptFor > 0.f)
+		{
+			StandPromptFor -= DeltaTime;
+			if (UI)
+			{
+				UI->SetPrompt(SeatPromptKey, StandPromptFor > 0.f ? LyudText::Get(TEXT("ui.diner.stand")) : FText::GetEmpty());
+			}
+		}
+		if (!bBusy && PC->WasInputKeyJustPressed(EKeys::E))
+		{
+			UseSeat();
+		}
+		return;
+	}
+	// the seat looked at: polled a few times a second (a dozen NPC bodies to check), the key every frame
+	SeatPollIn -= DeltaTime;
+	if (SeatPollIn <= 0.f)
+	{
+		SeatPollIn = 0.12f;
+		const int32 Was = SeatLooked;
+		SeatLooked = bBusy || Hero->IsOnBike() ? -1 : SeatInView();
+		if ((SeatLooked >= 0) != (Was >= 0) && UI)
+		{
+			UI->SetPrompt(SeatPromptKey, SeatLooked >= 0 ? LyudText::Get(TEXT("ui.diner.sit")) : FText::GetEmpty());
+		}
+	}
+	if (SeatLooked >= 0 && !bBusy && PC->WasInputKeyJustPressed(EKeys::E))
+	{
+		UseSeat();
+	}
+}
+
+bool ALyudDiner::UseSeat()
+{
+	const AHeroCharacter* Hero = LyudDiner::Hero(GetWorld());
+	if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(this))
+	{
+		UI->SetPrompt(SeatPromptKey, FText::GetEmpty());
+	}
+	StandPromptFor = 0.f;
+	if (Hero && Hero->IsSeated())
+	{
+		return HeroSeat >= 0 && SitHero(-1);
+	}
+	const int32 Seat = SeatInView();
+	SeatLooked = -1;
+	return Seat >= 0 && SitHero(Seat);
+}
+
+static FAutoConsoleCommandWithWorldAndArgs GDinerSit(TEXT("lyud.Diner.Sit"), TEXT("lyud.Diner.Sit <seat>|-1: sits the hero on a diner seat (layout hero_seats), -1 gets him up"),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (ALyudDiner* D = ALyudDiner::Find(World))
+		{
+			const int32 I = Args.Num() > 0 ? FCString::Atoi(*Args[0]) : 0;
+			UE_LOG(LogTemp, Display, TEXT("DINERTEST sit %d: %d"), I, D->SitHero(I) ? 1 : 0);
+		}
+	}));
+
+static FAutoConsoleCommandWithWorld GDinerUse(TEXT("lyud.Diner.Use"), TEXT("lyud.Diner.Use: what E does at a seat (sit on the one looked at, or get up)"),
+	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+	{
+		if (ALyudDiner* D = ALyudDiner::Find(World))
+		{
+			const bool bDid = D->UseSeat();
+			UE_LOG(LogTemp, Display, TEXT("DINERTEST use: %d, hero on %d"), bDid ? 1 : 0, D->HeroSeatIndex());
+		}
+	}));
+
+static FAutoConsoleCommandWithWorld GDinerSeats(TEXT("lyud.Diner.Seats"), TEXT("lyud.Diner.Seats: lists the diner's seats"),
+	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+	{
+		if (const ALyudDiner* D = ALyudDiner::Find(World))
+		{
+			for (int32 I = 0; I < D->NumSeats(); ++I)
+			{
+				UE_LOG(LogTemp, Display, TEXT("DINERTEST seat %d %s"), I, *D->DescribeSeat(I));
+			}
+			UE_LOG(LogTemp, Display, TEXT("DINERTEST seats %d, hero on %d"), D->NumSeats(), D->HeroSeatIndex());
+		}
+	}));
 
 static FAutoConsoleCommandWithWorld GDinerState(TEXT("lyud.Diner.State"), TEXT("lyud.Diner.State: open/closed, lit, doors, dishes"),
 	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
