@@ -1031,8 +1031,15 @@ static void RealChecks(const std::string& Path)
 	// + 2: the telescopes' topics that wait for a stamp of the sky log (docs/telescopes.md)
 	// + 1: the beach's topic that waits for a stamp of the shore's finds (docs/beach.md)
 	// + 1: the canteen cook's "taste it" waits for the stamp cook/fine (docs/kitchen.md)
-	CHECK((int)Reached.size() + 6 + 4 >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count)",
-		(int)Reached.size(), (int)M.Topics.size());
+	// + the topics of one holiday (docs/festivals.md "Science Day, the Old New Year, Neptune Day"): offered on its day only
+	// (holidaychecks.h asks them on their days)
+	int Festive = 0;
+	for (int I = 0; I < (int)M.Topics.size(); ++I)
+	{
+		Festive += M.Topics[(size_t)I].When.IsFestive() && !Reached.count(I) ? 1 : 0;
+	}
+	CHECK((int)Reached.size() + 6 + 4 + Festive >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count; %d for their holiday)",
+		(int)Reached.size(), (int)M.Topics.size(), Festive);
 	// the room tones: every tone a plot names is there, a closed tone is a tone, volumes in 0..1, every min <= max
 	int BadTone = 0, Loud = 0;
 	for (const FTone& T : M.Tones)
@@ -1992,6 +1999,7 @@ static void JobChecks(const std::string& Path)
 #include "homechecks.h"
 #include "rewardchecks.h"
 #include "rentalchecks.h"
+#include "holidaychecks.h"
 
 // The photo club's contest and the photo quests on the real data (docs/photo.md, tools/city/content/photo.json): the table
 // with the box of prints and the wall of winners hand over to the camera's code ("open"), the lab's board reads the guide and
@@ -2213,6 +2221,7 @@ int main(int Argc, char** Argv)
 	RentalChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	HomeTouchChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	RoomTouchChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
+	HolidayChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	std::printf("%d passed, %d failed\n", Passed, Failures);
 	return Failures ? 1 : 0;
 }

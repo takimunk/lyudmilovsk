@@ -1,0 +1,294 @@
+## ---------------------------------------------------------------------------------------------------------------
+## Science Day, the Old New Year and Neptune Day (docs/festivals.md "Science Day, the Old New Year, Neptune Day"):
+## the four voices every holiday has (fv_<id>_bring, _grump, _kid, _elder), a greeting, the day's talk by its parts,
+## who works the stalls and what the children do. Russian: the speaker's own words never agree in gender.
+## ---------------------------------------------------------------------------------------------------------------
+
+## ---- Science Day (the first Saturday of December)
+
+[fv_science_day_bring]
+festival = science_day
+age = adult
+weight = 5
+say town.fv_science_day_bring.1 | Несу на ярмарку осциллограф. Пусть дети посмотрят, как выглядит звук. | I'm taking an oscilloscope to the fair. Let the children see what sound looks like. | 市にオシロスコープを持っていく。音の形を子どもに見せたくてね。
+
+[fv_science_day_grump]
+festival = science_day
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_science_day_grump.1 | Раз в году институт открывает двери, и сразу очередь, как за апельсинами. | Once a year the institute opens its doors, and at once there's a queue as if for oranges. | 年に一度の研究所公開で、たちまちオレンジ売り場みたいな行列。
+
+[fv_science_day_kid]
+festival = science_day
+age = kid
+weight = 5
+say town.fv_science_day_kid.1 | Мы делаем вулкан из соды. Кто стоит ближе всех, тот потом идёт мыться. | We're making a volcano out of soda. Whoever stands nearest goes and washes afterwards. | 重曹で火山を作るの。いちばん近くの子は、あとで顔を洗いにいく。
+
+[fv_science_day_elder]
+festival = science_day
+age = elder
+weight = 5
+say town.fv_science_day_elder.1 | Первую лекцию на площади читали в мороз. Никто не ушёл, пока не дошло до Солнца. | The first lecture on the square was given in a hard frost. Nobody left till it got to the Sun. | 広場の最初の講演は凍える日だった。太陽の話まで誰も帰らなかったよ。
+
+[nh_sci_greet]
+to = hero
+festival = science_day
+age = teen adult elder
+weight = 6
+say town.nh_sci_greet.1 | С Днём науки! На ярмарке шар бьётся током. Сходи, это не больно. | Happy Science Day! The globe at the fair gives you a shock. Go on, it doesn't hurt. | 科学の日おめでとう！市の玉はびりっとくるよ。行ってごらん、痛くないから。
+say town.nh_sci_greet.2 | С Днём науки! В половине пятого викторина на площади. | Happy Science Day! The quiz on the square is at half past four. | 科学の日おめでとう！四時半から広場でクイズだよ。
+
+[nh_sci]
+at = outdoors
+festival = science_day
+weight = 3
+say town.nh_sci.1 | Сегодня институт вышел на улицу. Завтра опять закроется и будет думать. | Today the institute has come out into the street. Tomorrow it shuts again and thinks. | 今日は研究所が通りに出てきた。明日はまた閉じこもって考える。
+say town.nh_sci.2 | Говорят, всё, чем они там заняты, про Солнце. Даже буфет. | They say everything they do in there is about the Sun. Even the canteen. | あそこの仕事はみんな太陽のことだって。食堂までね。
+say town.nh_sci.3 | Кислородный коктейль дают бесплатно. Очередь за ним, правда, платная: полчаса жизни. | The oxygen cocktail is free. The queue for it does cost you: half an hour of your life. | 酸素カクテルは無料。ただし行列の代金は、人生の三十分。
+say town.nh_sci.4 | На блиц-викторине главное звонок. Знать ответ тоже неплохо. | At the blitz quiz the bell is what matters. Knowing the answer doesn't hurt either. | 早押しクイズはベルが命。答えも知っていれば、なおいい。
+
+[nh_sci_fair_kid]
+festival = science_day
+phase = fair
+age = kid teen
+weight = 6
+say town.nh_sci_fair_kid.1 | Мы сегодня сами продаём «Картошку». Сдачу считаем в столбик! | We're selling the potato cakes ourselves today. We do the change in a column! | 今日は自分たちで「じゃがいも」ケーキを売るの。おつりは筆算！
+say town.nh_sci_fair_kid.2 | Наш кружок копит на телескоп. Не хватает ещё ста сорока пирожных. | Our club is saving for a telescope. We're a hundred and forty cakes short. | クラブで望遠鏡のお金をためてる。あとケーキ百四十個ぶん。
+
+[nh_sci_fair_vendor]
+festival = science_day
+phase = fair
+job = vendor seller
+weight = 6
+say town.nh_sci_fair_vendor.1 | Сегодня за прилавком шестой «Б», а я при них кассиром и совестью. | Class 6B is behind the counter today, and I'm their cashier and their conscience. | 今日の売り子は六年B組。こっちは会計係と良心の係。
+say town.nh_sci_fair_vendor.2 | Кому коктейль из чистого кислорода? Умнеют от него до самого вечера! | Who wants a cocktail of pure oxygen? It makes you cleverer right up till evening! | 純粋な酸素のカクテルはいかが？夕方までかしこくなるよ！
+
+[nh_sci_lecture]
+at = outdoors
+festival = science_day
+phase = lecture
+weight = 6
+say town.nh_sci_lecture.1 | Тише, сейчас будет про то, отчего оно светит. | Hush, now comes the part about why it shines. | しっ、これから「なぜ光るのか」の話だよ。
+say town.nh_sci_lecture.2 | Восемь минут летит свет. А мы стоим и ждём его всю зиму. | The light flies for eight minutes. And we stand waiting for it all winter. | 光は八分で届く。こっちは冬じゅう立って待ってるのにね。
+
+[nh_sci_quiz]
+at = outdoors
+festival = science_day
+phase = quiz
+weight = 6
+say town.nh_sci_quiz.1 | Знаю ответ! Знаю! Нет, уже не знаю. | I know the answer! I know it! No, I don't any more. | 答え、わかる！わかる！…あ、もうわからない。
+say town.nh_sci_quiz.2 | Наш двор против лаборатории. Лаборатория пока проигрывает дворнику. | Our yard against the laboratory. So far the laboratory is losing to the caretaker. | うちの中庭 対 研究室。今のところ研究室は管理人さんに負けてる。
+
+[nh_sci_stars]
+at = outdoors
+festival = science_day
+phase = stars
+weight = 6
+say town.nh_sci_stars.1 | К телескопу очередь длиннее, чем к коктейлю. Значит, город у нас правильный. | The queue for the telescope is longer than the one for the cocktail. So it's a proper town. | 望遠鏡の列がカクテルより長い。ちゃんとした町ってことだね。
+say town.nh_sci_stars.2 | Вон та яркая не звезда, а планета. Мне только что объяснили. | That bright one isn't a star, it's a planet. I've just had it explained to me. | あの明るいのは星じゃなくて惑星。さっき教わったばかり。
+
+[nh_sci_talk]
+festival = science_day
+doing = gather_mingle chat
+weight = 5
+talk
+- town.nh_sci_talk.1 | Ты на лекцию? | Are you going to the lecture? | 講演、行く？
+- town.nh_sci_talk.2 | На лекцию. А ты на викторину? | To the lecture. And you, to the quiz? | 行く。そっちはクイズ？
+- town.nh_sci_talk.3 | На викторину. Буду отвечать то, что услышу у тебя на лекции. | To the quiz. I'll answer with whatever I hear at your lecture. | クイズ。講演で聞いたことをそのまま答えるよ。
+
+## ---- The Old New Year (13 January, the night to the 14th)
+
+[fv_old_new_year_bring]
+festival = old_new_year
+age = adult
+weight = 5
+say town.fv_old_new_year_bring.1 | Несу детям пряники и мелочь. Придут петь, а в доме должно быть чем ответить. | Gingerbread and small change for the children. They'll come singing, and a house should have something to give back. | 子どもたちにジンジャーブレッドと小銭を用意する。歌いに来たら、お返しをしなくちゃ。
+
+[fv_old_new_year_grump]
+festival = old_new_year
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_old_new_year_grump.1 | Один Новый год ещё не доели, а уже второй. Салат столько не живёт. | We haven't finished eating the first New Year, and here's a second. No salad lives that long. | 最初の新年をまだ食べ終わらないうちに二度めだ。サラダはそんなにもたないよ。
+
+[fv_old_new_year_kid]
+festival = old_new_year
+age = kid
+weight = 5
+say town.fv_old_new_year_kid.1 | Мы носим солнце на палке и поём. Кто держит солнце, тому пряников вдвое! | We carry the sun on a pole and sing. Whoever holds the sun gets double gingerbread! | 棒につけた太陽を持って歌うの。太陽を持つ子はジンジャーブレッド二倍！
+
+[fv_old_new_year_elder]
+festival = old_new_year
+age = elder
+weight = 5
+say town.fv_old_new_year_elder.1 | Воск лили всем двором. Одной вышла лодка, и летом она взаправду уплыла замуж. | The whole yard poured wax. One girl got a boat, and that summer she did sail off to be married. | 中庭じゅうでろうを流したものさ。舟が出た娘は、その夏ほんとうに船で嫁いでいったよ。
+
+[nh_ony_greet]
+to = hero
+festival = old_new_year
+age = teen adult elder
+weight = 6
+say town.nh_ony_greet.1 | Со Старым Новым годом! Вареник с сюрпризом уже ел? | Happy Old New Year! Have you had a dumpling with a surprise yet? | 古い新年おめでとう！おたのしみ入りヴァレーニキ、もう食べた？
+say town.nh_ony_greet.2 | Со старым новым! В полночь у ёлки, не проспи во второй раз. | Happy old new one! Midnight at the tree, don't sleep through it a second time. | 古い新年おめでとう！真夜中にツリーの下で。二度めは寝すごさないで。
+
+[nh_ony]
+at = outdoors
+festival = old_new_year
+weight = 3
+say town.nh_ony.1 | Хорошо придумано: не успел загадать в первый раз, загадай во второй. | Well thought of: if you missed making a wish the first time, make it the second. | うまくできてる。一度めに願いそびれたら、二度めに願えばいい。
+say town.nh_ony.2 | Ёлка стоит последнюю ночь. Завтра от неё останутся иголки до самого лета. | The tree stands its last night. Tomorrow all that's left is needles, right up to summer. | ツリーは今夜かぎり。明日からは、夏までモミの葉が落ちているだけ。
+say town.nh_ony.3 | В пельменной сегодня льют воск. Интересно, как это оформили по накладной. | They're pouring wax at the dumpling bar tonight. I wonder how that went down in the books. | ペリメニ食堂で今夜はろう占い。帳簿にはどう書いたんだろうね。
+
+[nh_ony_carols]
+at = outdoors
+festival = old_new_year
+phase = carols
+age = teen adult elder
+weight = 6
+say town.nh_ony_carols.1 | Слышишь, поют? Идут с солнцем. Готовь пряники. | Hear them singing? They're coming with the sun. Get the gingerbread ready. | 聞こえる？太陽を持って歌ってくる。ジンジャーブレッドの用意を。
+say town.nh_ony_carols.2 | У других носят звезду. А у нас всегда солнце, и никто не спрашивает почему. | Elsewhere they carry a star. Here it's always the sun, and nobody asks why. | よそは星を持つ。ここはいつも太陽で、誰もわけをきかない。
+
+[nh_ony_carols_kid]
+at = outdoors
+festival = old_new_year
+phase = carols
+age = kid
+weight = 8
+say town.nh_ony_carols_kid.1 | Сеем, веем, посеваем, с новым солнцем поздравляем! | We sow, we strew, we scatter grain, and wish you joy of the sun again! | まいて、まいて、種まいて、新しい太陽おめでとう！
+say town.nh_ony_carols_kid.2 | В том подъезде дали три пряника и яблоко. Пойдём туда ещё раз, в шапках! | That entrance gave us three gingerbreads and an apple. Let's go again, with hats on! | あの入口、ジンジャーブレッド三つとりんごくれた。帽子かぶってもう一回行こう！
+say town.nh_ony_carols_kid.3 | Моя очередь нести солнце! Ты уже нёс от почты до фонтана. | My turn to carry the sun! You carried it from the post office to the fountain. | 太陽を持つの、こんどはぼく！きみは郵便局から噴水まで持ったでしょ。
+
+[nh_ony_fortune]
+at = outdoors
+festival = old_new_year
+phase = fortune
+weight = 6
+say town.nh_ony_fortune.1 | Кидаю валенок. Куда носком ляжет, оттуда и ждать новостей. | I'm throwing a felt boot. Whichever way the toe points, that's where the news will come from. | フェルトの長靴を投げるよ。つま先の向いたほうから知らせが来る。
+say town.nh_ony_fortune.2 | Спроси имя у первого встречного. Только не у дворника, его все уже спросили. | Ask the first passer-by their name. Only not the caretaker: everyone has asked him already. | 最初に会った人に名前をきくの。管理人さんはだめ、もうみんながきいたから。
+say town.nh_ony_fortune.3 | Валенок показал на море. Значит, ждать до весны. | The boot pointed out to sea. So it's a wait till spring. | 長靴は海を指した。春まで待てってことだね。
+
+[nh_ony_midnight]
+at = outdoors
+festival = old_new_year
+phase = midnight
+weight = 7
+say town.nh_ony_midnight.1 | Второй раз за зиму полночь как полночь, с боем. | The second time this winter that midnight is a real midnight, with the chimes. | この冬二度め、鐘の鳴るほんものの真夜中だ。
+say town.nh_ony_midnight.2 | С новым старым! Теперь уж точно новый. | Happy new old one! Now it's the new year for certain. | 新しい古い年おめでとう！これでほんとに新年だ。
+
+[nh_ony_cook]
+festival = old_new_year
+job = cook waiter
+weight = 6
+say town.nh_ony_cook.1 | Сегодня в каждом десятом варенике сюрприз. В остальных, как всегда, вишня. | Tonight every tenth dumpling has a surprise. The rest have cherries, as ever. | 今夜は十個に一個がおたのしみ入り。あとはいつもどおり、さくらんぼ。
+say town.nh_ony_cook.2 | Пуговицы для вареников кипятим отдельно. У нас санитарная книжка. | We boil the buttons for the dumplings separately. We have a hygiene certificate. | ヴァレーニキ用のボタンは別に煮沸する。衛生手帳があるからね。
+
+[nh_ony_talk]
+festival = old_new_year
+doing = gather_mingle chat
+weight = 5
+talk
+- town.nh_ony_talk.1 | Что тебе попалось в варенике? | What did you get in your dumpling? | ヴァレーニキ、何が当たった？
+- town.nh_ony_talk.2 | Нитка. К дальней дороге. | A thread. A long journey. | 糸。遠い旅だって。
+- town.nh_ony_talk.3 | Отсюда? Дальняя дорога у нас до маяка и обратно. | From here? A long journey here is to the lighthouse and back. | ここから？この町で遠い旅といえば、灯台まで行って帰るくらい。
+
+## ---- Neptune Day (the last Sunday of July)
+
+[fv_neptune_day_bring]
+festival = neptune_day
+age = adult
+weight = 5
+say town.fv_neptune_day_bring.1 | Беру на пляж сухое полотенце на каждого и ещё одно, про запас. Знаю я этот день. | I'm taking a dry towel for everyone to the beach, and one more to spare. I know this day. | 浜には一人一枚の乾いたタオルと、予備をもう一枚。この日のことは知ってるから。
+
+[fv_neptune_day_grump]
+festival = neptune_day
+temper = nervy
+age = adult elder
+weight = 5
+say town.fv_neptune_day_grump.1 | Обольют из ведра и скажут «с праздником». А у человека в кармане квитанции. | They tip a bucket over you and say “happy holiday”. And a person has receipts in their pocket. | バケツの水をかけて「おめでとう」だって。こっちはポケットに領収書が入ってるのに。
+
+[fv_neptune_day_kid]
+festival = neptune_day
+age = kid
+weight = 5
+say town.fv_neptune_day_kid.1 | Мы черти! Мажем сажей всех, кто сухой. Тебя ещё не мазали? | We're the devils! We smear soot on everyone who's dry. Haven't you been smeared yet? | ぼくら小鬼！かわいてる人にはすすをぬるんだ。まだぬられてない？
+
+[fv_neptune_day_elder]
+festival = neptune_day
+age = elder
+weight = 5
+say town.fv_neptune_day_elder.1 | Нептуном тогда был боцман с буксира. Борода своя, а трезубец из вил, как и нынче. | Neptune was the tug's bosun then. His own beard, and a trident off a pitchfork, same as now. | あのころのネプチューンは引き船の水夫長。ひげは自前、ほこは今と同じで干し草フォークさ。
+
+[nh_nep_greet]
+to = hero
+festival = neptune_day
+age = teen adult elder
+weight = 6
+say town.nh_nep_greet.1 | С Днём Нептуна! Ты подозрительно сухой. | Happy Neptune Day! You look suspiciously dry. | ネプチューンの日おめでとう！あやしいくらい、かわいてるね。
+say town.nh_nep_greet.2 | С Днём Нептуна! В три парад лодок, смотреть лучше с пирса. | Happy Neptune Day! The boat parade is at three, best seen from the pier. | ネプチューンの日おめでとう！三時にボートのパレード、桟橋から見るのがいちばん。
+
+[nh_nep]
+at = outdoors
+festival = neptune_day
+weight = 3
+say town.nh_nep.1 | Сегодня на пляже один закон: кто сухой, тот не прав. | There's one law on the beach today: whoever is dry is in the wrong. | 今日の浜のきまりは一つ。かわいている者が悪い。
+say town.nh_nep.2 | Камеры для заплыва разобрали с утра. Последняя, говорят, у проката. | The inner tubes for the race went by morning. The last one, they say, is at the rental. | 競争用のチューブは朝のうちになくなった。最後の一本は貸し出し屋にあるって。
+say town.nh_nep.3 | Уху варят спасатели. Значит, никто не утонет даже в ухе. | The lifeguards are making the fish soup. So nobody will drown, not even in the soup. | ウハーを煮るのは監視員。なら、スープの中でも誰もおぼれない。
+
+[nh_nep_landing]
+at = outdoors
+festival = neptune_day
+phase = landing
+weight = 7
+say town.nh_nep_landing.1 | Идёт! Вон борода из мочалки, вон трезубец! | He's coming! There's the loofah beard, there's the trident! | 来た！ほら、へちまのひげ、三つ又のほこ！
+say town.nh_nep_landing.2 | Каждый год выходит из моря и каждый год спрашивает, кто тут главный. | Every year he walks out of the sea, and every year he asks who is in charge here. | 毎年海から上がってきて、毎年「ここの責任者は誰だ」ときく。
+
+[nh_nep_court]
+at = outdoors
+festival = neptune_day
+phase = court
+age = teen adult elder
+weight = 6
+say town.nh_nep_court.1 | Нептун судит быстро: виновен, макнуть. Невиновен, тоже макнуть. | Neptune judges quickly: guilty, duck him. Not guilty, duck him as well. | ネプチューンの裁きは早い。有罪、ざぶん。無罪も、ざぶん。
+say town.nh_nep_court.2 | Наших тянут за канат в воду. Пойду помогу. Чертям. | They're hauling our lot into the water on the rope. I'll go and help. The devils. | うちの連中が綱で海に引かれてる。手伝ってくる。小鬼のほうを。
+
+[nh_nep_court_kid]
+at = outdoors
+festival = neptune_day
+phase = court
+age = kid
+weight = 8
+say town.nh_nep_court_kid.1 | Я русалка! Русалкам можно брызгаться без спросу. | I'm a mermaid! Mermaids may splash without asking. | わたし人魚！人魚はことわらずに水をかけていいの。
+say town.nh_nep_court_kid.2 | Сажа кончилась. Мажем теперь мокрым песком, он даже лучше. | The soot's run out. We're smearing wet sand now, it's even better. | すすがなくなった。今はぬれた砂をぬる。こっちのほうがいいくらい。
+
+[nh_nep_parade]
+at = outdoors
+festival = neptune_day
+phase = boat_parade
+weight = 7
+say town.nh_nep_parade.1 | Первой идёт лодка с Нептуном. Гребут черти, потому и криво. | The boat with Neptune goes first. The devils are rowing, which is why it's crooked. | 先頭はネプチューンの舟。こいでるのが小鬼だから、曲がってる。
+say town.nh_nep_parade.2 | Считай лодки. В прошлом году было одиннадцать и один надувной матрас. | Count the boats. Last year there were eleven and one air mattress. | 舟を数えてごらん。去年は十一そうと空気マット一枚だった。
+
+[nh_nep_ukha]
+at = outdoors
+festival = neptune_day
+phase = ukha
+weight = 6
+say town.nh_nep_ukha.1 | В общий котёл каждый несёт что поймал. Кто ничего не поймал, несёт лавровый лист. | Everyone brings their catch for the common pot. Whoever caught nothing brings a bay leaf. | 大鍋にはめいめい釣った魚を。何も釣れなかった人は月桂樹の葉を。
+say town.nh_nep_ukha.2 | Миску бери любую. Сегодня уха ничья и для всех. | Take any bowl. Today the soup is nobody's and everybody's. | おわんはどれでもどうぞ。今日のウハーは誰のものでもなく、みんなのもの。
+
+[nh_nep_lifeguard]
+festival = neptune_day
+job = lifeguard
+weight = 7
+say town.nh_nep_lifeguard.1 | Сегодня дежурим вдвоём: один смотрит на воду, другой мешает уху. | Two of us on duty today: one watches the water, the other stirs the soup. | 今日の当番は二人。一人は海を見て、一人はウハーをかきまぜる。
+say town.nh_nep_lifeguard.2 | За буйки не заплывать! Нептуна это тоже касается. | No swimming past the buoys! That goes for Neptune too. | ブイの外へ泳がないこと！ネプチューンもだ。
+
+[nh_nep_talk]
+festival = neptune_day
+doing = gather_mingle chat
+weight = 5
+talk
+- town.nh_nep_talk.1 | Тебя уже макали? | Have they ducked you yet? | もう、ざぶんされた？
+- town.nh_nep_talk.2 | Дважды. Второй раз по ошибке. | Twice. The second time by mistake. | 二回。二回めは人ちがい。
+- town.nh_nep_talk.3 | У Нептуна ошибок не бывает. Значит, было за что. | Neptune makes no mistakes. So there was a reason. | ネプチューンに間違いはない。わけがあったのさ。

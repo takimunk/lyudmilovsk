@@ -4149,3 +4149,256 @@ doing = eat_home
 age = kid teen
 weight = 0.6
 say = town.cook_home_kid.1..3
+
+# Science Day, the Old New Year and Neptune Day (docs/festivals.md "Science Day, the Old New Year, Neptune Day"):
+# the four voices every holiday has (fv_<id>_bring, _grump, _kid, _elder), a greeting, the day's talk by its parts,
+# who works the stalls and what the children do. Russian: the speaker's own words never agree in gender.
+# ---- Science Day (the first Saturday of December)
+# ---- The Old New Year (13 January, the night to the 14th)
+# ---- Neptune Day (the last Sunday of July)
+
+[fv_science_day_bring]
+festival = science_day
+age = adult
+weight = 5
+say = town.fv_science_day_bring.1
+
+[fv_science_day_grump]
+festival = science_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_science_day_grump.1
+
+[fv_science_day_kid]
+festival = science_day
+age = kid
+weight = 5
+say = town.fv_science_day_kid.1
+
+[fv_science_day_elder]
+festival = science_day
+age = elder
+weight = 5
+say = town.fv_science_day_elder.1
+
+[nh_sci_greet]
+to = hero
+festival = science_day
+age = teen adult elder
+weight = 6
+say = town.nh_sci_greet.1..2
+
+[nh_sci]
+at = outdoors
+festival = science_day
+weight = 3
+say = town.nh_sci.1..4
+
+[nh_sci_fair_kid]
+festival = science_day
+phase = fair
+age = kid teen
+weight = 6
+say = town.nh_sci_fair_kid.1..2
+
+[nh_sci_fair_vendor]
+festival = science_day
+phase = fair
+job = vendor seller
+weight = 6
+say = town.nh_sci_fair_vendor.1..2
+
+[nh_sci_lecture]
+at = outdoors
+festival = science_day
+phase = lecture
+weight = 6
+say = town.nh_sci_lecture.1..2
+
+[nh_sci_quiz]
+at = outdoors
+festival = science_day
+phase = quiz
+weight = 6
+say = town.nh_sci_quiz.1..2
+
+[nh_sci_stars]
+at = outdoors
+festival = science_day
+phase = stars
+weight = 6
+say = town.nh_sci_stars.1..2
+
+[nh_sci_talk]
+festival = science_day
+doing = gather_mingle chat
+weight = 5
+talk = town.nh_sci_talk.1 | town.nh_sci_talk.2 | town.nh_sci_talk.3
+
+[fv_old_new_year_bring]
+festival = old_new_year
+age = adult
+weight = 5
+say = town.fv_old_new_year_bring.1
+
+[fv_old_new_year_grump]
+festival = old_new_year
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_old_new_year_grump.1
+
+[fv_old_new_year_kid]
+festival = old_new_year
+age = kid
+weight = 5
+say = town.fv_old_new_year_kid.1
+
+[fv_old_new_year_elder]
+festival = old_new_year
+age = elder
+weight = 5
+say = town.fv_old_new_year_elder.1
+
+[nh_ony_greet]
+to = hero
+festival = old_new_year
+age = teen adult elder
+weight = 6
+say = town.nh_ony_greet.1..2
+
+[nh_ony]
+at = outdoors
+festival = old_new_year
+weight = 3
+say = town.nh_ony.1..3
+
+[nh_ony_carols]
+at = outdoors
+festival = old_new_year
+phase = carols
+age = teen adult elder
+weight = 6
+say = town.nh_ony_carols.1..2
+
+[nh_ony_carols_kid]
+at = outdoors
+festival = old_new_year
+phase = carols
+age = kid
+weight = 8
+say = town.nh_ony_carols_kid.1..3
+
+[nh_ony_fortune]
+at = outdoors
+festival = old_new_year
+phase = fortune
+weight = 6
+say = town.nh_ony_fortune.1..3
+
+[nh_ony_midnight]
+at = outdoors
+festival = old_new_year
+phase = midnight
+weight = 7
+say = town.nh_ony_midnight.1..2
+
+[nh_ony_cook]
+festival = old_new_year
+job = cook waiter
+weight = 6
+say = town.nh_ony_cook.1..2
+
+[nh_ony_talk]
+festival = old_new_year
+doing = gather_mingle chat
+weight = 5
+talk = town.nh_ony_talk.1 | town.nh_ony_talk.2 | town.nh_ony_talk.3
+
+[fv_neptune_day_bring]
+festival = neptune_day
+age = adult
+weight = 5
+say = town.fv_neptune_day_bring.1
+
+[fv_neptune_day_grump]
+festival = neptune_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_neptune_day_grump.1
+
+[fv_neptune_day_kid]
+festival = neptune_day
+age = kid
+weight = 5
+say = town.fv_neptune_day_kid.1
+
+[fv_neptune_day_elder]
+festival = neptune_day
+age = elder
+weight = 5
+say = town.fv_neptune_day_elder.1
+
+[nh_nep_greet]
+to = hero
+festival = neptune_day
+age = teen adult elder
+weight = 6
+say = town.nh_nep_greet.1..2
+
+[nh_nep]
+at = outdoors
+festival = neptune_day
+weight = 3
+say = town.nh_nep.1..3
+
+[nh_nep_landing]
+at = outdoors
+festival = neptune_day
+phase = landing
+weight = 7
+say = town.nh_nep_landing.1..2
+
+[nh_nep_court]
+at = outdoors
+festival = neptune_day
+phase = court
+age = teen adult elder
+weight = 6
+say = town.nh_nep_court.1..2
+
+[nh_nep_court_kid]
+at = outdoors
+festival = neptune_day
+phase = court
+age = kid
+weight = 8
+say = town.nh_nep_court_kid.1..2
+
+[nh_nep_parade]
+at = outdoors
+festival = neptune_day
+phase = boat_parade
+weight = 7
+say = town.nh_nep_parade.1..2
+
+[nh_nep_ukha]
+at = outdoors
+festival = neptune_day
+phase = ukha
+weight = 6
+say = town.nh_nep_ukha.1..2
+
+[nh_nep_lifeguard]
+festival = neptune_day
+job = lifeguard
+weight = 7
+say = town.nh_nep_lifeguard.1..2
+
+[nh_nep_talk]
+festival = neptune_day
+doing = gather_mingle chat
+weight = 5
+talk = town.nh_nep_talk.1 | town.nh_nep_talk.2 | town.nh_nep_talk.3

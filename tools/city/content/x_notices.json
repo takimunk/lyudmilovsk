@@ -103,6 +103,20 @@
       "k": "city.note.lost.start_parrot",
       "after": 0,
       "before": 4
+     },
+     {
+      "k": "city.note.lost.nh_ony_done",
+      "date": [
+       "01-14",
+       "01-21"
+      ]
+     },
+     {
+      "k": "city.note.lost.nh_neptune_done",
+      "date": [
+       "08-01",
+       "08-09"
+      ]
      }
     ],
     [
@@ -181,6 +195,13 @@
       "k": "city.note.club.start_welcome",
       "after": 0,
       "before": 6
+     },
+     {
+      "k": "city.note.club.nh_ony_soon",
+      "date": [
+       "01-08",
+       "01-13"
+      ]
      }
     ],
     [
@@ -585,6 +606,13 @@
        "04-25",
        "06-10"
       ]
+     },
+     {
+      "k": "city.note.health.nh_neptune_soon",
+      "date": [
+       "07-12",
+       "07-24"
+      ]
      }
     ],
     [
@@ -676,6 +704,22 @@
       "date": [
        "01-10",
        "02-14"
+      ]
+     }
+    ],
+    [
+     {
+      "k": "city.note.school.nh_science_soon",
+      "date": [
+       "11-22",
+       "11-30"
+      ]
+     },
+     {
+      "k": "city.note.school.nh_science_done",
+      "date": [
+       "12-08",
+       "12-16"
       ]
      }
     ],
