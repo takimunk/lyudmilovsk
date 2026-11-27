@@ -2468,6 +2468,104 @@
    ],
    "note": "Galina Zotova on bench 0 of the Academgorodok's square 17:30-19:00, Lev on bench 1 beside it at the same hours: not at_once, so it is said when the hero has walked away and comes past again (that day or after the lighthouse).",
    "diary": "journal.heard.tq_log_galina"
+  },
+  {
+   "id": "tq2_whiteear_nao_door",
+   "person": "nao",
+   "quest": "tq2_whiteear",
+   "stages": [
+    "beach"
+   ],
+   "within_m": 5,
+   "lines": [
+    "nao.tq2_whiteear_door.1"
+   ],
+   "note": "Nao at the club's door 10-21: the hero passes her when he goes out to call Maru, who is at the door too.",
+   "diary": "journal.heard.tq2_whiteear_nao"
+  },
+  {
+   "id": "tq2_jam_clerk_dust",
+   "person": "clerk",
+   "quest": "tq2_jam",
+   "stages": [
+    "jar"
+   ],
+   "within_m": 6,
+   "lines": [
+    "clerk.tq2_jam_cough.1"
+   ],
+   "note": "Yamada at his seat in the club 10-19 on weekdays, a few steps from the owner's booth; heard when the hero walks back through the hall.",
+   "diary": "journal.heard.tq2_jam_clerk"
+  },
+  {
+   "id": "tq2_ukha_owner_smell",
+   "person": "owner",
+   "quest": "tq2_ukha",
+   "stages": [
+    "bring"
+   ],
+   "within_m": 6,
+   "lines": [
+    "owner.tq2_ukha_smell.1"
+   ],
+   "note": "The owner in his booth, across the hall from the hero's room with its hot plate: heard when the hero comes out with the bowl.",
+   "diary": "journal.heard.tq2_ukha_owner"
+  },
+  {
+   "id": "tq2_fortune_keeper_lunch",
+   "person": "vetrov_gordey",
+   "quest": "tq2_fortune",
+   "stages": [
+    "eat"
+   ],
+   "within_m": 10,
+   "lines": [
+    "vetrov_gordey.tq2_fortune_lunch.1"
+   ],
+   "note": "The keeper about the tower and the weather screen most of the day; heard once the hero has walked about the cape after arriving.",
+   "diary": "journal.heard.tq2_fortune_keeper"
+  },
+  {
+   "id": "tq2_plant_olya_forum",
+   "person": "girl_b",
+   "quest": "tq2_plant",
+   "stages": [
+    "care"
+   ],
+   "within_m": 5,
+   "lines": [
+    "girl_b.tq2_plant_forum.1"
+   ],
+   "note": "Olya at her seat in the club (not Wed-Sat 10-15): heard when the hero crosses the hall to his room.",
+   "diary": "journal.heard.tq2_plant_olya"
+  },
+  {
+   "id": "tq2_chess_galina_names",
+   "person": "zotova_galina",
+   "quest": "tq2_chess",
+   "stages": [
+    "done"
+   ],
+   "within_m": 6,
+   "lines": [
+    "zotova_galina.tq2_chess_names.1"
+   ],
+   "note": "Galina on the yard bench 17:30-19 beside Lev: heard on a later evening, after the hero has told him.",
+   "diary": "journal.heard.tq2_chess_galina"
+  },
+  {
+   "id": "tq2_science_vika_row",
+   "person": "li_vika",
+   "quest": "tq2_science",
+   "stages": [
+    "stars"
+   ],
+   "within_m": 6,
+   "lines": [
+    "li_vika.tq2_science_row.1"
+   ],
+   "note": "Vika on the yard bench from 18:00, beside the Zotovs: heard after the hero has told Lev and walked off a little.",
+   "diary": "journal.heard.tq2_science_vika"
   }
  ]
 }

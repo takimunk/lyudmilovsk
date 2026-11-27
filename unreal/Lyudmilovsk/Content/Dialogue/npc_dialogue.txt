@@ -43,6 +43,27 @@ quest.owner_supper.buy.if.night+no:cheese_braid+no:drink_baikal = owner.supper_n
 quest.owner_supper.buy.if.have:drink_baikal+no:cheese_braid = owner.supper_soda_first.1
 quest.owner_supper.buy.if.have:cheese_braid+no:drink_baikal = owner.supper_braid_first.1
 aside.town_road.lookout,descent,bridge,stele,terrace,square,bread = owner.road_trail.1
+quest.tq2_whiteear.call = owner.tq2_whiteear_strip.1
+quest.tq2_whiteear.home = hero.tq2_whiteear_ask.1 | owner.tq2_whiteear_ask.2 | owner.tq2_whiteear_ask.3 | owner.tq2_whiteear_ask.4 | owner.tq2_whiteear_ask.5
+quest.tq2_whiteear.beach = owner.tq2_whiteear_wait.1
+quest.tq2_whiteear.beach.again = owner.tq2_whiteear_hurry.1
+quest.tq2_whiteear.beach.if.night = owner.tq2_whiteear_night.1
+quest.tq2_whiteear.beach.if.cloudy = owner.tq2_whiteear_grey.1
+quest.tq2_whiteear.tell = hero.tq2_whiteear_tell.1 | owner.tq2_whiteear_tell.2 | owner.tq2_whiteear_tell.3 | owner.tq2_whiteear_tell.4
+quest.tq2_jam.jar = owner.tq2_jam_ask.1 | hero.tq2_jam_ask.2 | owner.tq2_jam_ask.3 | owner.tq2_jam_ask.4
+quest.tq2_jam.jar.again = owner.tq2_jam_wait.1
+quest.tq2_jam.jar.again = owner.tq2_jam_tea.1
+quest.tq2_jam.jar.if.night = owner.tq2_jam_night.1
+quest.tq2_jam.bring = owner.tq2_jam_thanks.1 | hero.tq2_jam_thanks.2 | owner.tq2_jam_thanks.3 | owner.tq2_jam_thanks.4
+quest.tq2_jam.bring_empty = owner.tq2_jam_empty.1
+quest.tq2_plant.thank = hero.tq2_plant_ask.1 | owner.tq2_plant_ask.2 | owner.tq2_plant_ask.3 | owner.tq2_plant_ask.4
+quest.tq2_plant.care = owner.tq2_plant_wait.1
+quest.tq2_plant.care.again = owner.tq2_plant_wife.1
+quest.tq2_plant.care.if.night = owner.tq2_plant_night.1
+aside.tq2_fortune.road,eat,shell = owner.tq2_fortune_card.1
+quest.tq2_whiteear.done = owner.tq2_whiteear_after.1
+quest.tq2_jam.done = owner.tq2_jam_after.1
+quest.tq2_plant.done = owner.tq2_plant_after.1
 
 [Clerk]
 first = clerk.first.1 | hero.clerk_first.2 | clerk.first.3 | hero.clerk_first.4 | clerk.first.5
@@ -68,6 +89,7 @@ quest.tq_square.shots.if.low = clerk.tq_square_low.1
 quest.tq_square.shots.if.cloudy = clerk.tq_square_grey.1
 quest.tq_square.show = clerk.tq_square_show.1 | clerk.tq_square_show.2 | hero.tq_square_show.3 | clerk.tq_square_show.4 | clerk.tq_square_show.5
 quest.tq_square.done = clerk.tq_square_after.1
+aside.tq2_whiteear.beach,tell = clerk.tq2_whiteear_aside.1
 
 [Streamer]
 first = streamer.first.1 | hero.streamer_first.2 | streamer.first.3 | streamer.first.4
@@ -256,6 +278,15 @@ quest.overdue_journal.visit.if.night = girl_b.overdue_dark_bench.1
 quest.overdue_journal.buy.if.cloudy = girl_b.overdue_cloudy_quiet.1
 aside.tq_quote.book,line = girl_b.tq_quote_card.1
 aside.tq_card.send = girl_b.tq_card_hello.1
+quest.tq2_fortune.show = hero.tq2_fortune_ask.1 | girl_b.tq2_fortune_ask.2 | girl_b.tq2_fortune_ask.3 | girl_b.tq2_fortune_ask.4
+quest.tq2_fortune.road = girl_b.tq2_fortune_wait.1
+quest.tq2_fortune.road.again = girl_b.tq2_fortune_thread.1
+quest.tq2_fortune.road.if.have:sandwich = girl_b.tq2_fortune_pocket.1
+quest.tq2_fortune.road.if.night = girl_b.tq2_fortune_night.1
+quest.tq2_fortune.eat = girl_b.tq2_fortune_eat.1
+quest.tq2_fortune.shell = girl_b.tq2_fortune_shell.1 | hero.tq2_fortune_shell.2 | girl_b.tq2_fortune_shell.3 | girl_b.tq2_fortune_shell.4
+quest.tq2_fortune.shell_empty = girl_b.tq2_fortune_noshell.1
+quest.tq2_fortune.done = girl_b.tq2_fortune_after.1
 
 [Nao]
 first = nao.first.1 | hero.nao_first.2 | nao.first.3 | nao.first.4
@@ -277,6 +308,7 @@ quest.tq_card.send.if.have:postcard = nao.tq_card_pocket.1
 quest.tq_card.send.if.night+no:postcard = nao.tq_card_night.1
 quest.tq_card.tell = nao.tq_card_tell.1 | hero.tq_card_tell.2 | nao.tq_card_tell.3 | nao.tq_card_tell.4
 quest.tq_card.done = nao.tq_card_after.1
+aside.tq2_plant.care = nao.tq2_plant_aside.1
 
 # The Academgorodok's residents (docs/people.md): [Id] is their own body id (people.json body), not the mesh they borrow for now.
 
@@ -298,6 +330,19 @@ quest.tq_log.read.if.cloudy = zotov_lev.tq_log_grey.1
 quest.tq_log.read.if.low = zotov_lev.tq_log_hands.1
 quest.tq_log.tell = zotov_lev.tq_log_tell.1 | hero.tq_log_tell.2 | zotov_lev.tq_log_tell.3 | zotov_lev.tq_log_tell.4
 quest.tq_log.done = zotov_lev.tq_log_after.1
+quest.tq2_chess.call = zotov_lev.tq2_chess_ask.1 | zotov_lev.tq2_chess_ask.2 | hero.tq2_chess_ask.3 | zotov_lev.tq2_chess_ask.4
+quest.tq2_chess.call.again = zotov_lev.tq2_chess_wait.1
+quest.tq2_chess.cog = zotov_lev.tq2_chess_cog.1
+quest.tq2_chess.cog.again = zotov_lev.tq2_chess_galina.1
+quest.tq2_chess.cog.if.night = zotov_lev.tq2_chess_late.1
+quest.tq2_chess.tell = hero.tq2_chess_tell.1 | zotov_lev.tq2_chess_tell.2 | zotov_lev.tq2_chess_tell.3 | zotov_lev.tq2_chess_tell.4
+quest.tq2_science.lecture = zotov_lev.tq2_science_before.1
+quest.tq2_science.lecture.again = zotov_lev.tq2_science_patient.1
+quest.tq2_science.tell = zotov_lev.tq2_science_tell.1 | hero.tq2_science_tell.2 | zotov_lev.tq2_science_tell.3 | zotov_lev.tq2_science_tell.4
+quest.tq2_science.stars = zotov_lev.tq2_science_scope.1
+quest.tq2_science.stars.if.cloudy = zotov_lev.tq2_science_clouds.1
+quest.tq2_chess.done = zotov_lev.tq2_chess_after.1
+quest.tq2_science.done = zotov_lev.tq2_science_after.1
 
 [Zotova_galina]
 first = zotova_galina.first.1
@@ -315,6 +360,7 @@ quest.soda_science.taste.again = zotova_galina.sodalab_where.1
 quest.soda_science.taste.again = zotova_galina.sodalab_empty_rows.1
 quest.soda_science.done = zotova_galina.green_confirmed.1 | zotova_galina.green_confirmed.2
 quest.soda_science.done.if.done:overdue_journal = zotova_galina.two_favours_lev.1
+aside.tq2_science.lecture,tell = zotova_galina.tq2_science_aside.1
 
 [Sato_kei]
 first = sato_kei.first.1
@@ -378,6 +424,7 @@ quest.tq_reel.bring_empty = korneev_ivan.tq_reel_nostub.1
 quest.tq_reel.bring = korneev_ivan.tq_reel_thanks.1 | hero.tq_reel_thanks.2 | korneev_ivan.tq_reel_thanks.3 | korneev_ivan.tq_reel_thanks.4
 quest.tq_reel.done = korneev_ivan.tq_reel_after.1
 aside.tq_log.ask,read = korneev_ivan.tq_log_bench.1
+aside.tq2_chess.call,cog = korneev_ivan.tq2_chess_aside.1
 
 [Korneeva_nina]
 first = korneeva_nina.first.1
@@ -462,6 +509,14 @@ quest.first_catch.done.if.low = lange_pyotr.angler_dusk_now.1
 quest.fisherman_cheese.ask.if.have:cheese_braid = lange_pyotr.cheese_smoked_pocket.1 | lange_pyotr.cheese_smoked_pocket.2
 quest.fisherman_cheese.buy.if.low = lange_pyotr.cheese_low_sun.1
 quest.fisherman_cheese.buy.if.cloudy = lange_pyotr.cheese_clouds.1
+quest.tq2_ukha.cook = lange_pyotr.tq2_ukha_ask.1 | hero.tq2_ukha_ask.2 | lange_pyotr.tq2_ukha_ask.3 | lange_pyotr.tq2_ukha_ask.4
+quest.tq2_ukha.cook.again = lange_pyotr.tq2_ukha_wait.1
+quest.tq2_ukha.cook.again = lange_pyotr.tq2_ukha_salt.1
+quest.tq2_ukha.cook.if.have:dish_ukha = lange_pyotr.tq2_ukha_old.1
+quest.tq2_ukha.cook.if.cloudy = lange_pyotr.tq2_ukha_grey.1
+quest.tq2_ukha.bring = lange_pyotr.tq2_ukha_taste.1 | lange_pyotr.tq2_ukha_taste.2 | hero.tq2_ukha_taste.3 | lange_pyotr.tq2_ukha_taste.4
+quest.tq2_ukha.bring_empty = lange_pyotr.tq2_ukha_empty.1
+quest.tq2_ukha.done = lange_pyotr.tq2_ukha_after.1
 
 [Kimura_dasha]
 first = kimura_dasha.first.1
@@ -578,6 +633,7 @@ quest.tent_neighbours.taste.if.done:hot_corn.again = khuazhev_aslan.taste_imagin
 quest.tent_neighbours.taste.again = khuazhev_aslan.taste_hours.1
 quest.tent_neighbours.taste.again = khuazhev_aslan.taste_imagined.1
 quest.tent_neighbours.done = khuazhev_aslan.letter_to_brother.1 | khuazhev_aslan.letter_to_brother.2
+aside.tq2_ukha.cook,bring = khuazhev_aslan.tq2_ukha_aside.1
 
 [Guseva_valentina]
 first = guseva_valentina.first.1
