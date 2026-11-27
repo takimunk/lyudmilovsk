@@ -1,5 +1,5 @@
 {
- "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) our own older clips (life_anims.py) the side-sleeping set (sleep_clips.py) the computer loops (sit_pc.py) and the run (run_clip.py), all posed on the target body. pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked). stance: the standing idles' feet re-planted [across, along] m apart (UAL stands in a wide lunge).",
+ "_doc": "Which clip comes from where (blender/humans/retarget_clips.py). target: the body the clips are baked on, whose SK_<Name> is every A_Human_* clip's retarget source. Sources: Quaternius Universal Animation Library 1 and 2 (CC0, fetched by blender/humans/fetch_clips.sh into Saved/ClipSources) our own older clips (life_anims.py) the side-sleeping set (sleep_clips.py) the computer loops (sit_pc.py) the run (run_clip.py) and the yacht school's (sail_clips.py), all posed on the target body. pelvis: scale (standing), seat (the house chair), abs (the bed layout as baked). stance: the standing idles' feet re-planted [across, along] m apart (UAL stands in a wide lunge).",
  "target": "blender/characters/guy_a/export/human_guy_a.glb",
  "sources": {
   "ual1": {
@@ -28,6 +28,10 @@
   },
   "run": {
    "file": "Saved/ClipSources/run.glb",
+   "ref": "rest"
+  },
+  "sail": {
+   "file": "Saved/ClipSources/sail_clips.glb",
    "ref": "rest"
   }
  },
@@ -203,6 +207,233 @@
   "SwimFwd": {
    "source": "ual1",
    "action": "Swim_Fwd_Loop"
+  },
+  "Sail_Helm_Port": {
+   "source": "sail",
+   "action": "S_Sail_Helm_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Helm_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Helm_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Hike_Half_Port": {
+   "source": "sail",
+   "action": "S_Sail_Hike_Half_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Hike_Half_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Hike_Half_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Hike_Full_Port": {
+   "source": "sail",
+   "action": "S_Sail_Hike_Full_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Hike_Full_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Hike_Full_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Cadet_Helm_Port": {
+   "source": "sail",
+   "action": "S_Sail_Cadet_Helm_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Cadet_Helm_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Cadet_Helm_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Tack_Port": {
+   "source": "sail",
+   "action": "S_Sail_Tack_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Tack_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Tack_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Gybe_Port": {
+   "source": "sail",
+   "action": "S_Sail_Gybe_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Gybe_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Gybe_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Lull_Port": {
+   "source": "sail",
+   "action": "S_Sail_Lull_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Lull_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Lull_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Opti_Helm_Port": {
+   "source": "sail",
+   "action": "S_Sail_Opti_Helm_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Opti_Helm_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Opti_Helm_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Opti_Bail_Port": {
+   "source": "sail",
+   "action": "S_Sail_Opti_Bail_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Opti_Bail_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Opti_Bail_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Crew_Jib_Port": {
+   "source": "sail",
+   "action": "S_Sail_Crew_Jib_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Crew_Jib_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Crew_Jib_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Crew_Tack_Port": {
+   "source": "sail",
+   "action": "S_Sail_Crew_Tack_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Crew_Tack_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Crew_Tack_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Capsize_Fall_Port": {
+   "source": "sail",
+   "action": "S_Sail_Capsize_Fall_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Capsize_Fall_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Capsize_Fall_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Swim_ToBoard_Port": {
+   "source": "sail",
+   "action": "S_Sail_Swim_ToBoard_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Swim_ToBoard_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Swim_ToBoard_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Right_Port": {
+   "source": "sail",
+   "action": "S_Sail_Right_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Right_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Right_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Climb_In_Port": {
+   "source": "sail",
+   "action": "S_Sail_Climb_In_Port",
+   "pelvis": "abs"
+  },
+  "Sail_Climb_In_Stbd": {
+   "source": "sail",
+   "action": "S_Sail_Climb_In_Stbd",
+   "pelvis": "abs"
+  },
+  "Sail_Rig_Mast": {
+   "source": "sail",
+   "action": "S_Sail_Rig_Mast",
+   "pelvis": "abs"
+  },
+  "Sail_Rig_Knot": {
+   "source": "sail",
+   "action": "S_Sail_Rig_Knot",
+   "pelvis": "abs"
+  },
+  "Sail_Trolley_Push": {
+   "source": "sail",
+   "action": "S_Sail_Trolley_Push",
+   "pelvis": "abs",
+   "walk": true
+  },
+  "Sail_Launch_Hold": {
+   "source": "sail",
+   "action": "S_Sail_Launch_Hold",
+   "pelvis": "abs"
+  },
+  "Sail_Hose": {
+   "source": "sail",
+   "action": "S_Sail_Hose",
+   "pelvis": "abs"
+  },
+  "Sail_Carry_Mast": {
+   "source": "sail",
+   "action": "S_Sail_Carry_Mast",
+   "pelvis": "abs",
+   "walk": true
+  },
+  "Sail_Knots_Sit": {
+   "source": "sail",
+   "action": "S_Sail_Knots_Sit",
+   "pelvis": "abs"
+  },
+  "Sail_Listen_Class": {
+   "source": "sail",
+   "action": "S_Sail_Listen_Class",
+   "pelvis": "abs"
+  },
+  "Sail_Coach_Point": {
+   "source": "sail",
+   "action": "S_Sail_Coach_Point",
+   "pelvis": "abs"
+  },
+  "Sail_Coach_Megaphone": {
+   "source": "sail",
+   "action": "S_Sail_Coach_Megaphone",
+   "pelvis": "abs"
+  },
+  "Sail_Coach_Drive": {
+   "source": "sail",
+   "action": "S_Sail_Coach_Drive",
+   "pelvis": "abs"
+  },
+  "Sail_Whistle": {
+   "source": "sail",
+   "action": "S_Sail_Whistle",
+   "pelvis": "abs"
+  },
+  "Sail_Flag_Hoist": {
+   "source": "sail",
+   "action": "S_Sail_Flag_Hoist",
+   "pelvis": "abs"
+  },
+  "Sail_Watch_Sea": {
+   "source": "sail",
+   "action": "S_Sail_Watch_Sea",
+   "pelvis": "abs"
+  },
+  "Sail_Cheer": {
+   "source": "sail",
+   "action": "S_Sail_Cheer",
+   "pelvis": "abs"
   }
  }
 }

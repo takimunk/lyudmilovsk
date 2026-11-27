@@ -74,6 +74,18 @@ namespace LyudPeople
 		// the night state of the public rooms (docs/city_night.md, backlog item 29)
 		Mop,            // the cleaner's mop swept side to side over the floor (prop mop; the bucket stands by them)
 		Torch,          // the night watchman's torch held out ahead, its beam swung over the dark floor (prop torch)
+		// the yacht school (docs/yacht_school.md "Clips (part D)"): each is a clip of its own (LyudGesture::ClipFor)
+		SailRig,        // the sail's sleeve threaded up the stepped mast, hand over hand
+		SailKnot,       // crouched at the boat on its trolley, tying off
+		SailHose,       // the hull rinsed with the hose (prop hose_nozzle)
+		SailKnots,      // seated at a desk in the class, a knot tied on a cord (prop knot_cord)
+		SailListen,     // seated at a desk in the class, listening, following the board
+		SailPoint,      // the coach pointing out to sea / at the board
+		SailMegaphone,  // the coach calling through the megaphone (prop megaphone)
+		SailWhistle,    // the coach's whistle, the other arm up (prop whistle)
+		SailFlag,       // a flag hoisted on the signal mast, hand over hand
+		SailWatch,      // a hand shading the eyes, the sea scanned
+		SailCheer,      // fists up, a bounce, clapping (the finish)
 		Num
 	};
 	const char* MannerName(EManner M);
@@ -84,8 +96,11 @@ namespace LyudPeople
 	enum class EProp : uint8_t
 	{
 		None, Phone, Cigarette, Camera, Umbrella, Rod, Brush, Binoculars, Newspaper, Book, Knitting, IceCream, Cup, Bag,
-		Spade, WateringCan, Mop, Torch, Suitcase, Num
+		Spade, WateringCan, Mop, Torch, Suitcase,
+		// the yacht school's (props.py); EProp::Num stays <= 32 (FManners::PropsReady is a bit per prop)
+		Megaphone, Whistle, Stopwatch, Clipboard, StartFlag, HoseNozzle, KnotCord, Bailer, Num
 	};
+	static_assert((int)EProp::Num <= 32, "FManners::PropsReady holds a bit per prop");
 	const char* PropName(EProp P);
 	EProp PropFromName(const std::string& S);       // Num if unknown
 

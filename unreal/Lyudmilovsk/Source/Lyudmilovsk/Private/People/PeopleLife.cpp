@@ -2386,15 +2386,19 @@ bool ANpcBody::DriveManner(EPersonPose Pose, int32 Transit, float Speed)
 	{
 		Anim->SetGesture(G);
 	}
-	PlaceMannerProp(bCan);
-	if (bCan && (Pose == EPersonPose::Stand || Pose == EPersonPose::Look))
+	// a clip of the manner's own: standing (a seated one on the chair); the yacht school's hold their prop in the right hand
+	const bool bClipPose = Pose == EPersonPose::Stand || Pose == EPersonPose::Look || (Pose == EPersonPose::Sit && LyudGesture::ClipSeated(M));
+	const FName Own = bCan && bClipPose ? LyudGesture::ClipFor(M) : NAME_None;
+	const bool bOwn = !Own.IsNone() && Clip(Own) != nullptr;
+	if (bOwn && M >= EManner::SailRig)
 	{
-		const FName Own = LyudGesture::ClipFor(M);
-		if (!Own.IsNone() && Clip(Own))
-		{
-			Play(Own, true);
-			return true;
-		}
+		bMannerLeft = false;
+	}
+	PlaceMannerProp(bCan);
+	if (bOwn)
+	{
+		Play(Own, true);
+		return true;
 	}
 	return false;
 }
