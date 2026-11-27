@@ -1896,6 +1896,7 @@ static int Day(int Argc, char** Argv, const char* TraceKey, bool bSummary = fals
 #include "book_club_people.h"
 #include "street_people.h"
 #include "town_days.h"
+#include "dance_people.h"
 
 int main(int Argc, char** Argv)
 {
@@ -1925,6 +1926,12 @@ int main(int Argc, char** Argv)
 	if (Mode == "street")
 	{
 		const int R = StreetLife();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return R;
+	}
+	if (Mode == "dances")
+	{
+		const int R = Dances();
 		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 		return R;
 	}
