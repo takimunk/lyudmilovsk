@@ -128686,7 +128686,7 @@
    "of": "P-KIOSK1",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       96.12,
       478.32,
@@ -128709,7 +128709,7 @@
    "of": "P-KIOSK2",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       103.14,
       648.28,
@@ -128732,7 +128732,7 @@
    "of": "P-KIOSK3",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       112.22,
       808.2,
@@ -128755,7 +128755,7 @@
    "of": "P-KIOSK4",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       130.7,
       1028.09,
@@ -128778,7 +128778,7 @@
    "of": "P-KIOSK5",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       146.29,
       1188.08,
@@ -128801,7 +128801,7 @@
    "of": "P-KIOSK6",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       163.5,
       1337.96,
@@ -128824,7 +128824,7 @@
    "of": "W1-U02",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       72.37,
       426.35,
@@ -128847,7 +128847,7 @@
    "of": "W1-U03",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       73.57,
       456.84,
@@ -128870,7 +128870,7 @@
    "of": "W1-U06",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       76.92,
       546.74,
@@ -128893,7 +128893,7 @@
    "of": "W1-U08",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       79.95,
       635.6,
@@ -128916,7 +128916,7 @@
    "of": "W1-U09",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       81.38,
       665.56,
@@ -128939,7 +128939,7 @@
    "of": "W1-U12",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       87.0,
       755.99,
@@ -128962,7 +128962,7 @@
    "of": "W1-U14",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       90.8,
       815.84,
@@ -128985,7 +128985,7 @@
    "of": "W1-U15",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       93.08,
       846.25,
@@ -129008,7 +129008,7 @@
    "of": "W1-U18",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       105.69,
       995.64,
@@ -129031,7 +129031,7 @@
    "of": "W1-U20",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       110.65,
       1054.36,
@@ -129054,7 +129054,7 @@
    "of": "W1-U21",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       113.52,
       1084.23,
@@ -129077,7 +129077,7 @@
    "of": "W1-U24",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       122.97,
       1174.35,
@@ -129100,7 +129100,7 @@
    "of": "W1-U26",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       132.46,
       1263.8,
@@ -129123,7 +129123,7 @@
    "of": "W1-U27",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       136.15,
       1294.07,
@@ -129146,7 +129146,7 @@
    "of": "W1-U30",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       148.0,
       1383.21,
@@ -129169,7 +129169,7 @@
    "of": "W1-U32",
    "slots": [
     {
-     "kind": "stand",
+     "kind": "staff",
      "pos": [
       156.37,
       1441.51,
