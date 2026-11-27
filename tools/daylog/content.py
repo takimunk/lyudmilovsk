@@ -45,6 +45,7 @@ RULES = [
     ("animal_walk", "", "animal_friend"),
     ("animal_lap", "Cat", "cat"), ("animal_stroked", "Cat", "cat"), ("animal_fed", "Cat", "cat"), ("animal_sniffed", "Cat", "cat"),
     ("animal_lap", "Dog", "dog"), ("animal_stroked", "Dog", "dog"), ("animal_fed", "Dog", "dog"), ("animal_sniffed", "Dog", "dog"),
+    ("procedure", "soda_plain", "soda"), ("procedure", "soda_syrup", "soda"),
     ("procedure", "", "cure"),
     ("observe", "jupiter_*", "jupiter"), ("observe", "", "sky"),
     ("bird_habit", "", "bird_habit"),
@@ -74,6 +75,7 @@ RULES = [
     ("do", "~paper", "paper"),
     ("do", "~tea", "tea"),
     ("do", "~bike", "bike"),
+    ("do", "soda_plain", "soda"), ("do", "soda_syrup", "soda"),
 ]
 
 # --- topics: id, rank, slot, doodle, flags. Lines: one ({0} a name), many ({0} a name, {1} how many), plain.
@@ -309,6 +311,11 @@ TOPICS = [
          plain=[("Собрал целый набор штампов! Есть чем гордиться.", "Completed a whole set of stamps! Something to be proud of.", "スタンプを一そろい集めた！ちょっと自慢。"),
                 ("Коллекция закрыта. Можно начинать следующую.", "A collection done. Time to start the next.", "コレクション完成。次を始めよう。"),
                 ("Последний штамп в наборе. Даже не верится.", "The last stamp of the set. Hard to believe.", "そろいの最後のスタンプ。信じられない。")]),
+    dict(id="soda", rank=34,
+         plain=[("Пил газировку из автомата. Стакан один на всех, сполоснул как следует.", "Had soda water from the machine. One glass for everybody, so I rinsed it well.", "自動販売機で炭酸水を飲んだ。コップはみんなで一つ、よくすすいだ。"),
+                ("Взял с сиропом. Сироп дня угадать нельзя, только попробовать.", "Took it with syrup. You can't guess the syrup of the day, only taste it.", "シロップ入りにした。今日のシロップは当てられない、飲んでみるしかない。"),
+                ("Газировка колется в носу. В жару лучше ничего нет.", "Soda water prickles your nose. Nothing better in the heat.", "炭酸水は鼻がつんとする。暑い日にはこれが一番。"),
+                ("Автомат съел монетку. Стукнул сбоку, и он передумал.", "The machine ate my coin. I knocked it on the side and it changed its mind.", "自販機に小銭をのまれた。横をたたいたら、思い直してくれた。")]),
     dict(id="eat", rank=15, slot="item", doodle="item", filler=True,
          one=[("Ел — {0}. Вкусно.", "Ate: {0}. Tasty.", "食べたもの：{0}。おいしかった。"),
               ("На обед было: {0}.", "Lunch was: {0}.", "お昼は{0}。"),

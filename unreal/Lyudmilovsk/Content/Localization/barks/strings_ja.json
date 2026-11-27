@@ -1595,5 +1595,16 @@
  "line.town.fv_amber_morning_bring.1": "ふるいとゴム長を持っていく。嵐のあとは琥珀が波打ちぎわに落ちているんだ。",
  "line.town.fv_amber_morning_grump.1": "夜明けから町じゅうが浜に出ている。こっちに残るのは海藻だけだ。",
  "line.town.fv_amber_morning_kid.1": "虫の入った琥珀を見つけた人がずっと一番。わたしのは泡が入ってたよ。",
- "line.town.fv_amber_morning_elder.1": "嵐のあとは祖母がまだ暗いうちに起こしに来た。海は夜は気前がよくて、朝はけちになる、と言ってね。"
+ "line.town.fv_amber_morning_elder.1": "嵐のあとは祖母がまだ暗いうちに起こしに来た。海は夜は気前がよくて、朝はけちになる、と言ってね。",
+ "line.town.soda_kid.1": "シロップ入り！おねがい、シロップ入りで！",
+ "line.town.soda_kid.2": "泡が鼻に！うわっ！",
+ "line.town.soda_kid.3": "小銭にひもをつけたら、戻ってくるかな？",
+ "line.town.soda_kid.4": "今日はさくらんぼ。昨日はタラゴン、緑のやつ。",
+ "line.town.soda_grown.1": "コップをすすいで、さぼらずに。みんなで一つなんだから。",
+ "line.town.soda_grown.2": "シロップなしのほうがいい。冷たくて、ぴりっとする。",
+ "line.town.soda_grown.3": "また小銭をのまれた。横をたたくんだ、ここを。",
+ "line.town.soda_grown.4": "この暑さじゃ、炭酸水だけが頼りだ。",
+ "line.town.soda_grown.5": "今日のシロップは薄いね。けちってる。",
+ "line.town.soda_elder.1": "昔はコップを鎖でつないでいた。それでも持っていかれたよ。",
+ "line.town.soda_elder.2": "昔はこの小銭でコップ二杯飲めたものさ。"
 }

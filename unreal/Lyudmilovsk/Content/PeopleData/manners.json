@@ -57,6 +57,7 @@
     {"id": "dig", "poses": ["stand"], "doing": ["tend_allotment"], "seconds": [20, 45], "weight": 9.0, "cooldown": 8, "prop": "spade"},
     {"id": "water", "poses": ["stand"], "doing": ["water_allotment"], "seconds": [25, 60], "weight": 9.0, "cooldown": 5, "prop": "watering_can"},
     {"id": "weed", "poses": ["stand"], "doing": ["tend_allotment", "water_allotment"], "seconds": [10, 25], "weight": 6.0, "cooldown": 8},
+    {"id": "drink", "poses": ["stand"], "doing": ["soda_drink"], "at": ["soda_machine"], "seconds": [25, 60], "weight": 6.0, "cooldown": 20, "prop": "cup"},
 
     {"id": "wave", "react": 1, "cooldown": 90},
     {"id": "nod", "react": 1, "cooldown": 90}
