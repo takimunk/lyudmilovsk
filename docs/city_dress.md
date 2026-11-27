@@ -54,10 +54,60 @@ Conditions (all given keys must hold; nothing given = always):
 | `phase=(period, from, to)` | days since the game began modulo period in [from, to): weekly turns, a thing that grows by days (a jigsaw stage k: `phase=(9, k, 9)` shows from day k of every 9-day round) |
 | `chance=0.6` | shown on that share of days: a stable die of (plot, set, day), the same all day and in every session |
 | `open=True` / `False` | in / out of the building's public open hours (`ALyudCityBuilding` OpenHour..CloseHour: import_city.py HOURS) |
+| `visit=("coffee",)`, `at=`, `keep=`, `who=` | a trace somebody left: see "Traces of a visit" below |
 
 Exclusive variants (fresh flowers / wilting / an empty vase) are sets with complementary phases over one period: the
 flowers `phase=(7, 0, 4)`, the wilting `phase=(7, 4, 6)`, the empty vase `phase=(7, 6, 7)`. Keep a set small (a few hundred
 triangles: it is drawn as its own mesh) and keep the number of sets of one building under about 16.
+
+## Traces of a visit
+
+The date and the weather say what a room looks like on a day; a visit says who was just there. A set with `visit=` shows
+for `keep` hours (default 3) after a townsperson ended one of the listed activities (`activities.json` ids) at the place
+`at` of the building's plot: `""` (default) any place of the building, `"/1-17"` its flat 1-17 (the people's place id
+`<plot>/1-17`), `"-LOUNGE"` the place `<plot>-LOUNGE`. `who=("teacher",)` keeps it to those occupations or person keys.
+It joins the other keys (`open=True` so a trace is not on a table while the chairs are up; `months=` for term time).
+
+```python
+with B.dress("coffee_left", visit=("coffee", "eat_out"), keep=1.5, open=True):
+    dk.tea_in_holder(B, x, y, top, a)
+    dk.spectacles(B, x2, y2, top, a2)
+```
+
+In the game `ULyudCityDress` binds to the people's life (`UPeopleLifeSubsystem::OnPersonEvent`): on `Arrive` it notes
+where a person came for a listened activity, on `Leave` it matches the activity, the place and `who` against the sets that
+listen (a table built when the buildings register, looked up by activity) and stamps the set with the game's hour. The
+sets are looked at again at the next tick (at most 2 s later); the condition is `LyudCity::DressVisible(..., VisitAgo)`.
+Nothing per frame, nothing per person per frame: only Arrive and Leave events, a map lookup each. The stamps are not
+saved: after a load a trace comes with the next visit. Most furnished flats have nobody living in them in
+`townsfolk.json`; a home trace only works where a household lives (Colette Bauer's 1-17, the maisonette 4-01).
+
+The traces in the town (2026-11-27):
+
+| Building (plot) | Set | Visit, place, keep | What is left |
+|---|---|---|---|
+| saucer_pavilion (P-CAFE) | `coffee_left` | coffee, eat_out; 1.5 h, open | a glass of tea in its holder, the paper, reading glasses on table 2 |
+| capsule_library (P-LIBRARY) | `reader_left` | read_library; 2 h | a book face down and glasses on the second reading table |
+| capsule_library (P-LIBRARY) | `bookclub_after` | book_club at -CLUB; 3 h | the club's glasses of tea and somebody's glasses on the lounge table |
+| round_sanatorium (P-SANATORIUM) | `lounge_tea` | dominoes at -LOUNGE; 2 h | two glasses of tea at the ends of the lounge table |
+| round_sanatorium | `pump_glasses` | san_cure at -PUMP; 1.5 h | three drinking glasses on the pump room's round table |
+| workers_club (P-CLUB2) | `cinema_stubs` | cinema_evening, cinema_day at -CINEMA; 12 h | ticket stubs and sweet wrappers in the rows |
+| cog_club (P-CLUB3) | `chess_left_0/1` | culture_evening; 20 h; a new position every week (phase 14) | a game left mid-way on the first chess table (its board is empty otherwise) |
+| school (P-SCHOOL) | `teacher_left` | work_office, who teacher; 3 h | the class register, duster, chalk and a glass of tea on the teacher's desk |
+| school | `pupils_books` | school_town; 2.5 h; term months | exercise books left open on three desks |
+| serpentine_slab (P-SERPENTINE) | `bauer_tea` | eat_home, radio_hour, read_home, pastime_home at /1-17; 2.5 h | Colette's tea and glasses on her kitchen table |
+| terrace_riser_housing (P-RISER1/2) | `astro_homework`, `rimma_homework` | homework at /4-01; 4 h | a child's exercise books on the coffee table |
+| shell_chapel_hall (P-HALL) | `piano_music` | play_piano at -STAGE; 14 h | the evening's music left up on the grand piano |
+
+New pieces in `dress_kit.py`: `chess_left` (six real middle-game positions, taken pieces by the board; `board=False` on a
+`kit.chess_table(..., pieces=False)`), `dominoes_left`, `tea_in_holder`, `spectacles`, `exercise_books`, `class_register`,
+`ticket_stubs`, `sheet_music` (all in the showroom's "traces" table). Previews: `renders/lived_rooms/` (before and half an
+hour after a visit), made with `shoot_interior.py --dress "hour=21.5,visit=0.5"` (`visit=H`: every visit set's visit ended
+H hours ago). The year scan (`tools/citydress/year_scan.py`) stands in for the people's life with usual end hours per
+activity (`VISIT_ENDS`), so a visit set that could never show is still caught.
+
+Not done: the hero's own room (docs/hero_room.md) is spawned by `ULyudHeroRoom`, not an `ALyudCityBuilding`, so it has no
+dressing yet (it would need that subsystem to register its sets with `ULyudCityDress`).
 
 ## In the game
 
@@ -71,7 +121,8 @@ nothing per frame. Nothing is saved: the dressing follows from the date and the 
 
 Console: `lyud.City.Dress 1` (auto, the default), `0` (all hidden), `2` (all shown: checks and shots);
 `lyud.City.Dress.Report` (each building's sets and which are shown). Developer mode (F7, Actions, group "Town interiors"):
-`interiors.dress_all` (every set shown; again: back to the day) and `interiors.dress_hide` (none shown). To see a set's
+`interiors.dress_all` (every set shown; again: back to the day), `interiors.dress_hide` (none shown) and
+`interiors.dress_visits` (every trace of a visit stamped as if somebody had just left: they show for their keep). To see a set's
 real moment, move the calendar and the weather from the panel's Time and World tabs.
 
 ## Checks

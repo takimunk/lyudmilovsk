@@ -12,7 +12,8 @@ check); Z0 is the floor of the storey.
 Lights: the building's own lamps (B.lamp), as in the game; day sky outside. Writes renders/city/interior/<type>_<n>.jpg.
 --dress NOW: which swappable dressing sets (B.dress, docs/city_dress.md) are in the shot: "none" (default), "all", or a
 game moment "month=1,weekday=2,hour=9,since=4,weather=rain+wet,festival=new_year,open=1" (the sets whose condition holds
-then; the names go into the file name as _d<tag> when --dress-tag is given).
+then; the names go into the file name as _d<tag> when --dress-tag is given). visit=H: every set with a visit condition
+had its visit end H hours ago (docs/city_dress.md "Traces of a visit"); without it no trace shows.
 --night: a dark sky and no sun, and only the lamps a shut building keeps (kinds other than "public": the "closed" night
 lamp, the stairs); pair it with --dress "hour=23,open=0" (docs/city_night.md).
 """
@@ -174,6 +175,8 @@ def dress_now(text):
             now["open"] = v not in ("0", "false")
         elif k == "hour":
             now["hour"] = float(v)
+        elif k == "visit":
+            now["visit_hours"] = float(v)
         else:
             now[k] = int(v)
     now["day"] = now["day"] or 20000 + now["since"]
@@ -187,6 +190,8 @@ def dress_filter(B, plot, text):
     if text == "all":
         return {d["id"] for d in B.dresses}
     now = dress_now(text)
+    if "visit_hours" in now:
+        now["visit_ago"] = {d["id"]: now["visit_hours"] for d in B.dresses if "visit" in d["when"]}
     return {d["id"] for d in B.dresses if citykit.dress_visible(d["when"], plot, d["id"], now)}
 
 

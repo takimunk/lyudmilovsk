@@ -41,6 +41,10 @@ namespace
 	LyudDev::FAutoAction GDressHide(TEXT("interiors.dress_hide"), TEXT("interiors"), TEXT("dev.action.interiors.dress_hide"),
 		[](UWorld*) { ToggleDressMode(0); }, [](UWorld*) { return CVarCityDress.GetValueOnGameThread() == 0; });
 
+	/** Developer mode: every set with a visit condition is stamped as if its visit ended now (they show for their keep). */
+	LyudDev::FAutoAction GDressVisits(TEXT("interiors.dress_visits"), TEXT("interiors"), TEXT("dev.action.interiors.dress_visits"),
+		[](UWorld* World) { if (ULyudCityDress* D = ULyudCityDress::Get(World)) { D->StampAllVisits(); } }, nullptr);
+
 	/** Every live subsystem (for the console's mode). Game thread only. */
 	TArray<TWeakObjectPtr<ULyudCityDress>>& Live()
 	{
@@ -316,6 +320,16 @@ void ULyudCityDress::OnLifeEvent(int32 PersonId, FName Event, int32 Other)
 		V.LastAt = Now;
 		bDirty = true;
 	}
+}
+
+void ULyudCityDress::StampAllVisits()
+{
+	const double Now = NowHours(GetWorld());
+	for (FVisitListen& V : Listens)
+	{
+		V.LastAt = V.B.IsValid() ? Now : V.LastAt;
+	}
+	bDirty = true;
 }
 
 float ULyudCityDress::VisitAgo(const ALyudCityBuilding* B, int32 I, double Now) const

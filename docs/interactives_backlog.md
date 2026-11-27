@@ -387,7 +387,7 @@ code only where a hook is missing. Done: festivalsim + citysim, `lyud.Festival.G
 
 ## 25. Lived-in rooms
 
-`[ ]` **Brief (Opus 5.5):** Interiors are furnished but static. Add clutter that tells time passing: a cup left on the
+`[~] lived-rooms 2026-11-27` (branch `lived-rooms`; docs/city_dress.md "Traces of a visit") **Brief (Opus 5.5):** Interiors are furnished but static. Add clutter that tells time passing: a cup left on the
 table after a resident's breakfast, a newspaper of today on the café table (item 6), wet umbrellas by doors on rain days,
 coats on racks in winter, a half-done jigsaw in the sanatorium lounge that grows day by day, children's drawings on the
 school wall that change weekly, flowers in a vase that wilt and get replaced (backlog P5 "seasonal dressing"). Build as a

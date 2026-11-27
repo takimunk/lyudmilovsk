@@ -1026,7 +1026,7 @@ def _dress(B, IY1):
     with B.dress("teacher_left", visit="work_office", who=("teacher",), keep=3.0):
         dk.class_register(B, -13.82, 12.82, 0.91, 8.0)
         dk.tea_in_holder(B, -13.45, 13.1, 0.91, 200.0, lemon=False)
-    with B.dress("pupils_books", visit="school_town", keep=1.5, months=(9, 10, 11, 12, 1, 2, 3, 4, 5)):
+    with B.dress("pupils_books", visit="school_town", keep=2.5, months=(9, 10, 11, 12, 1, 2, 3, 4, 5)):
         for r, c, s in ((0, 0, -0.28), (1, 2, 0.28), (3, 1, -0.28)):
             dk.exercise_books(B, cxs[c] + s + (0.15 if s < 0 else 0.0), ys[r] - 0.02, 0.76, 180.0, seed=r * 3 + c)
     # --- rain: a wet mat, galoshes and an umbrella stand by the street door, an umbrella left open to dry

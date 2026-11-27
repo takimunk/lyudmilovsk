@@ -1412,6 +1412,7 @@
  "dev.action.topi.night": "Topi: night and river on/off",
  "dev.action.interiors.dress_all": "Interiors: show every room dressing / back to the day",
  "dev.action.interiors.dress_hide": "Interiors: hide the room dressing / back to the day",
+ "dev.action.interiors.dress_visits": "Interiors: traces of a visit everywhere, as if somebody just left",
  "dev.action.weather.fluff": "Poplar fluff on/off",
  "dev.action.festival.sun_day": "Festival: Big Sun Day, noon",
  "dev.action.festival.street_bunting": "Pennant strings all over town on/off",

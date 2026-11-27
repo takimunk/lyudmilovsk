@@ -86,6 +86,9 @@ public:
 	UFUNCTION()
 	void OnLifeEvent(int32 PersonId, FName Event, int32 Other);
 
+	/** Developer mode (F7, interiors.dress_visits): every visit set's visit ended now. */
+	void StampAllVisits();
+
 	/** Hours since the last visit matching set I of B ended (< 0: none since the game was loaded). */
 	float VisitAgo(const ALyudCityBuilding* B, int32 I, double NowHours) const;
 
