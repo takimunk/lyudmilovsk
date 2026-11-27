@@ -483,6 +483,47 @@
     "tidy",
     "artist"
    ]
+  },
+  {
+   "item": "dish_okroshka",
+   "hints": [
+    "adult",
+    "elder",
+    "warm"
+   ]
+  },
+  {
+   "item": "dish_fried_smelt",
+   "hints": [
+    "sea",
+    "elder",
+    "adult"
+   ]
+  },
+  {
+   "item": "dish_herring_potatoes",
+   "hints": [
+    "sea",
+    "elder",
+    "adult"
+   ]
+  },
+  {
+   "item": "dish_draniki",
+   "hints": [
+    "kid",
+    "teen",
+    "elder",
+    "warm"
+   ]
+  },
+  {
+   "item": "dish_carrot_salad",
+   "hints": [
+    "kid",
+    "tidy",
+    "elder"
+   ]
   }
  ],
  "hosts": [

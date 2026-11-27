@@ -233,6 +233,17 @@ int32 ULyudKitchen::Held(const FString& Item) const
 	return Inv ? Inv->Count(FName(*Item)) : 0;
 }
 
+bool ULyudKitchen::KnowsRecipe(int32 Recipe) const
+{
+	const std::vector<LyudKitchen::FRecipe>& All = LyudKitchen::Recipes();
+	if (Recipe < 0 || Recipe >= static_cast<int32>(All.size()))
+	{
+		return false;
+	}
+	const ULyudCityThings* Things = ULyudCityThings::Get(this);
+	return LyudKitchen::Knows(All[(size_t)Recipe], [Things](const std::string& Stamp) { return Things && Things->HasStamp(KStr(Stamp)); });
+}
+
 void ULyudKitchen::SetPrompt(const FText& Text)
 {
 	if (Text.EqualTo(PromptText))
@@ -293,7 +304,8 @@ void ULyudKitchen::Tick(float DeltaTime)
 		}
 		// said once an approach, and only when there is something to cook: the stove's own prompt line stays the thing's
 		if (NearSpot >= 0 && !bHinted && !Pot->Busy() && SpotOpen(Spots[NearSpot])
-			&& LyudKitchen::AnyToCook(static_cast<LyudKitchen::EHeat>(Spots[NearSpot].Heat), [this](const std::string& Item) { return Held(KStr(Item)); }))
+			&& LyudKitchen::AnyToCook(static_cast<LyudKitchen::EHeat>(Spots[NearSpot].Heat), [this](const std::string& Item) { return Held(KStr(Item)); },
+				[Things = ULyudCityThings::Get(this)](const std::string& Stamp) { return Things && Things->HasStamp(KStr(Stamp)); }))
 		{
 			bHinted = true;
 			Toast(LyudText::Get(Spots[NearSpot].Heat ? TEXT("ui.cook.hint") : TEXT("ui.cook.hint_plate")));
@@ -369,10 +381,26 @@ void ULyudKitchen::OpenPage(int32 Spot, uint8 Heat)
 	const LyudKitchen::FPockets Pockets = [this](const std::string& Item) { return Held(KStr(Item)); };
 	FString Body;
 	int32 Line = 0;
-	for (const LyudKitchen::FRecipe& R : LyudKitchen::Recipes())
+	int32 Unknown = 0;
+	const int32 Month = UGameCalendar::NowIn(World).GetMonth();
+	PageRecipes.Reset();
+	const std::vector<LyudKitchen::FRecipe>& All = LyudKitchen::Recipes();
+	for (int32 Index = 0; Index < static_cast<int32>(All.size()); ++Index)
 	{
-		++Line;
-		const FString Name = RecipeName(R).ToString();
+		const LyudKitchen::FRecipe& R = All[(size_t)Index];
+		// only what he knows (the town teaches the rest), at most the ten digits
+		if (!KnowsRecipe(Index) || PageRecipes.Num() >= LyudKitchen::MaxPage)
+		{
+			Unknown += KnowsRecipe(Index) ? 0 : 1;
+			continue;
+		}
+		PageRecipes.Add(Index);
+		Line = PageRecipes.Num() % 10;
+		FString Name = RecipeName(R).ToString();
+		if (!LyudKitchen::InSeason(R, Month))
+		{
+			Name = LyudText::Get(TEXT("ui.cook.off_season"), { FStringFormatArg(Name) }).ToString();
+		}
 		const FString Needs = CookNeedList(R.Needs);
 		const std::vector<LyudKitchen::FNeed> Lack = LyudKitchen::Missing(R, Pockets);
 		if (!LyudKitchen::CanCookOn(R, static_cast<LyudKitchen::EHeat>(Heat)))
@@ -388,6 +416,10 @@ void ULyudKitchen::OpenPage(int32 Spot, uint8 Heat)
 			Body += LyudText::Get(TEXT("ui.cook.line_lack"), { FStringFormatArg(Line), FStringFormatArg(Name), FStringFormatArg(Needs), FStringFormatArg(CookNeedList(Lack)) }).ToString();
 		}
 		Body += TEXT("\n");
+	}
+	if (Unknown > 0)
+	{
+		Body += LyudText::Get(TEXT("ui.cook.unknown"), { FStringFormatArg(Unknown) }).ToString();
 	}
 	if (!Page)
 	{
@@ -446,8 +478,8 @@ void ULyudKitchen::TickPage(APlayerController* PC)
 		ClosePage();
 		return;
 	}
-	static const FKey Digits[] = { EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four, EKeys::Five, EKeys::Six, EKeys::Seven, EKeys::Eight, EKeys::Nine };
-	const int32 Num = FMath::Min<int32>(static_cast<int32>(LyudKitchen::Recipes().size()), UE_ARRAY_COUNT(Digits));
+	static const FKey Digits[] = { EKeys::One, EKeys::Two, EKeys::Three, EKeys::Four, EKeys::Five, EKeys::Six, EKeys::Seven, EKeys::Eight, EKeys::Nine, EKeys::Zero };
+	const int32 Num = FMath::Min<int32>(PageRecipes.Num(), UE_ARRAY_COUNT(Digits));
 	for (int32 I = 0; I < Num; ++I)
 	{
 		if (!PC->WasInputKeyJustPressed(Digits[I]))
@@ -458,8 +490,9 @@ void ULyudKitchen::TickPage(APlayerController* PC)
 		const uint8 Heat = PageHeat;
 		const APawn* Pawn = PC->GetPawn();
 		const FVector At = Spots.IsValidIndex(Spot) ? Spots[Spot].At : (Pawn ? Pawn->GetActorLocation() : FVector::ZeroVector);
+		const int32 Recipe = PageRecipes[I];
 		ClosePage();
-		Start(I, Heat, Spot, At);
+		Start(Recipe, Heat, Spot, At);
 		return;
 	}
 }
@@ -502,6 +535,14 @@ bool ULyudKitchen::Start(int32 Recipe, uint8 Heat, int32, const FVector& At)
 			for (int32 K = 0; Fish && K < N.Count; ++K)
 			{
 				Fish->TakeOne(this, Fish->BiggestHeld(this));
+			}
+		}
+		else if (N.Item.rfind("fish_", 0) == 0 && Fish)
+		{
+			// a recipe of one kind (the spring's smelt, the autumn's herring): those fish, their weight out of the bag too
+			for (int32 K = 0; K < N.Count; ++K)
+			{
+				Fish->TakeOne(this, FName(*KStr(N.Item)));
 			}
 		}
 		else
@@ -645,6 +686,11 @@ void ULyudKitchen::TakeOffNow()
 	}
 	ULyudQuests::Notify(this, TEXT("cook"), TEXT("dish"));
 	ULyudQuests::Notify(this, TEXT("cook"), KStr(R.Id));
+	// a recipe the town taught him (quest "kitchen_recipes": cook what people showed him)
+	if (!R.Learn.empty())
+	{
+		ULyudQuests::Notify(this, TEXT("cook"), TEXT("learnt"));
+	}
 }
 
 // --- the restaurant buys fresh vegetables ------------------------------------------------------------------------------
@@ -780,6 +826,34 @@ void ULyudKitchen::DevKit()
 	{
 		Fish->Pocket(TEXT("Perch"), 300.f);
 		Fish->Pocket(TEXT("Perch"), 300.f);
+	}
+	// the town's recipes (docs/kitchen.md "Recipes the town teaches"): their stamps, and enough for each once
+	Inv->Add(TEXT("potatoes"), 7);
+	Inv->Add(TEXT("dill"), 2);
+	Inv->Add(TEXT("radish"), 2);
+	Inv->Add(TEXT("kefir"), 1);
+	Inv->Add(TEXT("carrot"), 2);
+	Inv->Add(TEXT("apple"), 1);
+	Inv->Add(TEXT("fish_smelt"), 3);
+	Inv->Add(TEXT("fish_herring"), 2);
+	if (ULyudFishingState* Fish = ULyudFishingState::Get(this))
+	{
+		for (int32 K = 0; K < 3; ++K)
+		{
+			Fish->Pocket(TEXT("Smelt"), 40.f);
+		}
+		Fish->Pocket(TEXT("Herring"), 120.f);
+		Fish->Pocket(TEXT("Herring"), 120.f);
+	}
+	if (ULyudCityThings* Things = ULyudCityThings::Get(this))
+	{
+		for (const LyudKitchen::FRecipe& R : LyudKitchen::Recipes())
+		{
+			if (!R.Learn.empty())
+			{
+				Things->GiveStamp(KStr(R.Learn));
+			}
+		}
 	}
 }
 

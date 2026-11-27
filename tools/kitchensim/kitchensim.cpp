@@ -64,7 +64,7 @@ static FResult Cook(int Recipe, EHeat Heat, unsigned Tends, double TakeAfter, in
 static int Test(const std::string& Root)
 {
 	const std::vector<FRecipe>& All = Recipes();
-	CHECK(All.size() == 5, "five recipes, %zu", All.size());
+	CHECK(All.size() == 10 && static_cast<int>(All.size()) <= MaxPage, "ten recipes, the page's ten digits: %zu", All.size());
 	const std::string Items = ReadAll(Root + "/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/LyudInventory.cpp");
 	const std::string Food = ReadAll(Root + "/unreal/Lyudmilovsk/Content/Food/food.json");
 	// the kitchen's words are in the town's tables (tools/city/content/strings/kitchen.json), the jam's in the garden's
@@ -90,7 +90,12 @@ static int Test(const std::string& Root)
 		for (const FNeed& N : R.Needs)
 		{
 			CHECK(N.Count >= 1, "%s: need count", R.Id.c_str());
-			if (N.Item != AnyFish)
+			if (N.Item.rfind("fish_", 0) == 0)
+			{
+				// the catch's items are made in code from the species (FishingModel.cpp): their names are in the main table
+				CHECK(ReadAll(Loc + "strings_ru.json").find("\"item." + N.Item + ".name\"") != std::string::npos, "%s: no fish %s", R.Id.c_str(), N.Item.c_str());
+			}
+			else if (N.Item != AnyFish)
 			{
 				CHECK(Items.find("TEXT(\"" + N.Item + "\")") != std::string::npos, "%s: the ingredient %s is not an item", R.Id.c_str(), N.Item.c_str());
 			}
@@ -111,6 +116,46 @@ static int Test(const std::string& Root)
 		CHECK((1.0 - Last) * R.Seconds + 0.01 >= 0.0, "%s", R.Id.c_str());
 	}
 	CHECK(FindRecipe("ukha") == 0 && FindRecipe("jam") == 4 && FindRecipe("borscht") == -1, "FindRecipe");
+
+	// the recipes the town teaches (docs/kitchen.md "Recipes the town teaches"): a stamp from a resident's answer
+	{
+		const std::string Content = ReadAll(Root + "/tools/city/content/talk.json") + ReadAll(Root + "/tools/city/content/x_kitchen.json");
+		const std::string Collections = ReadAll(Root + "/tools/city/content/x_kitchen_recipes.json");
+		const std::string Cook = ReadAll(Root + "/tools/city/content/x_kitchen.json");
+		const auto None = [](const std::string&) { return false; };
+		const auto Every = [](const std::string&) { return true; };
+		int Taught = 0;
+		for (const FRecipe& R : All)
+		{
+			CHECK(Cook.find("\"" + R.Id + "\"") != std::string::npos, "%s: not a piece of the collection cook (x_kitchen.json)", R.Id.c_str());
+			if (R.Learn.empty())
+			{
+				CHECK(Knows(R, None) && R.Months == 0, "%s: a start recipe, known all year", R.Id.c_str());
+				continue;
+			}
+			++Taught;
+			CHECK(!Knows(R, None) && Knows(R, Every) && !Knows(R, nullptr), "%s: known only with its stamp", R.Id.c_str());
+			CHECK(R.Learn == "recipes/" + R.Id, "%s: its stamp is recipes/<id> (%s)", R.Id.c_str(), R.Learn.c_str());
+			CHECK(Content.find("\"collect\": \"" + R.Learn + "\"") != std::string::npos, "%s: no resident's answer gives %s", R.Id.c_str(), R.Learn.c_str());
+			CHECK(Collections.find("\"" + R.Id + "\"") != std::string::npos, "%s: not a piece of the collection recipes", R.Id.c_str());
+			int Months = 0;
+			for (int M = 1; M <= 12; ++M) Months += InSeason(R, M) ? 1 : 0;
+			CHECK(Months >= 3, "%s: in season %d months", R.Id.c_str(), Months);
+		}
+		CHECK(Taught == 5, "five taught recipes, %d", Taught);
+		const FRecipe& Smelt = All[static_cast<size_t>(FindRecipe("fried_smelt"))];
+		CHECK(InSeason(Smelt, 4) && !InSeason(Smelt, 8), "smelt in April, not in August");
+		CHECK(InSeason(All[static_cast<size_t>(FindRecipe("carrot_salad"))], 1), "carrot salad all year");
+		CHECK(Season({ 6, 7, 8 }) == ((1u << 6) | (1u << 7) | (1u << 8)) && Season({ 0, 13 }) == 0u, "Season bits");
+		// a recipe of one kind of fish wants that kind, not any fish
+		std::map<std::string, int> Catch = { { "fish_perch", 5 } };
+		const FPockets P = [&Catch](const std::string& Item) { const auto It = Catch.find(Item); return It == Catch.end() ? 0 : It->second; };
+		CHECK(Missing(Smelt, P).size() == 1 && Missing(Smelt, P)[0].Item == "fish_smelt", "perch is not smelt");
+		Catch["fish_smelt"] = 3;
+		CHECK(Missing(Smelt, P).empty(), "three smelt fry");
+		// what he doesn't know isn't offered as "something to cook here"
+		CHECK(!AnyToCook(EHeat::Plate, P) && AnyToCook(EHeat::Plate, P, Every), "smelt only once he has been taught it");
+	}
 
 	// the pockets
 	std::map<std::string, int> Bag = { { "fish", 1 }, { "potatoes", 2 }, { "dill", 1 } };

@@ -24,6 +24,11 @@
     "fried_fish",
     "salad",
     "jam",
+    "okroshka",
+    "fried_smelt",
+    "herring_potatoes",
+    "draniki",
+    "carrot_salad",
     "fine",
     "burnt",
     "veg"
@@ -47,6 +52,29 @@
     "lines": [
      "city.ask.canteen.taste.1",
      "city.ask.canteen.taste.2"
+    ]
+   },
+   {
+    "id": "canteen.recipe_draniki",
+    "k": "city.ask.canteen.recipe_draniki",
+    "lines": [
+     "city.ask.canteen.recipe_draniki.1",
+     "city.ask.canteen.recipe_draniki.2"
+    ],
+    "gives": {
+     "collect": "recipes/draniki"
+    }
+   },
+   {
+    "id": "canteen.recipes",
+    "k": "city.ask.canteen.recipes",
+    "count": [
+     "recipes",
+     2
+    ],
+    "lines": [
+     "city.ask.canteen.recipes.1",
+     "city.ask.canteen.recipes.2"
     ]
    }
   ]

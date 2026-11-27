@@ -1503,6 +1503,41 @@
    "aspect": "1:1",
    "prompt": "an enamel bowl of salad of red tomato wedges, sliced pink radishes and green dill, coarse salt",
    "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 4 (row 2, right), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_dish_okroshka": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a white enamel bowl of cold kefir soup with diced radish, potato and chopped green dill, an aluminium spoon",
+   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+  },
+  "icon_dish_fried_smelt": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a plate of small golden crisp fried smelt fish laid in a row, a lemon wedge",
+   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+  },
+  "icon_dish_herring_potatoes": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a plate with two small silver Baltic herring, boiled potatoes in their skins and dill",
+   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+  },
+  "icon_dish_draniki": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a stack of three golden lacy potato pancakes on a plate",
+   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+  },
+  "icon_dish_carrot_salad": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a small glass bowl of finely grated orange carrot mixed with apple",
+   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
   }
  }
 }

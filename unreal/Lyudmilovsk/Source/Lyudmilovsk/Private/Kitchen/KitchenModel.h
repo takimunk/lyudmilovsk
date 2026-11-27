@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <initializer_list>
 #include <string>
 #include <vector>
 
@@ -15,7 +16,7 @@ namespace LyudKitchen
 	/** What a place has to cook on: a hot plate (one ring: a room's), a stove (a canteen's, a kitchen's: big pots too). */
 	enum class EHeat : uint8_t { Plate, Stove };
 
-	/** "fish" in a recipe: any fish of the catch (fish_<species>), the biggest one in the pocket. */
+	/** "fish" in a recipe: any fish of the catch (fish_<species>), the biggest one in the pocket; "fish_<species>": that kind. */
 	extern const char* const AnyFish;
 
 	struct FNeed
@@ -48,7 +49,22 @@ namespace LyudKitchen
 		std::string Sound;
 		std::vector<FNeed> Needs;
 		std::vector<FStep> Steps;
+		/**
+		 * How he comes to know it: empty, from the start; else the town's stamp "recipes/<id>" that a resident's answer or a
+		 * card gives (tools/city/content/x_kitchen_recipes.json: the canteen's cook, the fishmonger, the dairy stall...).
+		 */
+		std::string Learn;
+		/** The months it belongs to, bit (1 << month), 1 .. 12; 0: all year. Out of season the page says so (it still cooks). */
+		unsigned Months = 0;
 	};
+
+	/** Months as bits: Season({ 6, 7, 8 }). */
+	unsigned Season(std::initializer_list<int> Months);
+	inline bool InSeason(const FRecipe& Recipe, int Month) { return Recipe.Months == 0 || (Month >= 1 && Month <= 12 && (Recipe.Months & (1u << Month))); }
+	/** Does he know it: a start recipe, or HasStamp(its Learn stamp). */
+	bool Knows(const FRecipe& Recipe, const std::function<bool(const std::string& Stamp)>& HasStamp);
+	/** The most recipes the page can list (digits 1 .. 9 and 0). */
+	constexpr int MaxPage = 10;
 
 	const std::vector<FRecipe>& Recipes();
 	/** -1 when there is none. */
@@ -60,8 +76,8 @@ namespace LyudKitchen
 	/** What of the recipe the pockets lack (Count: how many more); empty when he can cook it. */
 	std::vector<FNeed> Missing(const FRecipe& Recipe, const FPockets& Pockets);
 	inline bool CanCookOn(const FRecipe& Recipe, EHeat Heat) { return static_cast<int>(Heat) >= static_cast<int>(Recipe.Heat); }
-	/** Is there anything he could cook here now. */
-	bool AnyToCook(EHeat Heat, const FPockets& Pockets);
+	/** Is there anything he could cook here now (of what he knows: HasStamp as Knows). */
+	bool AnyToCook(EHeat Heat, const FPockets& Pockets, const std::function<bool(const std::string& Stamp)>& HasStamp = nullptr);
 
 	// ------------------------------------------------------------------ the pot
 

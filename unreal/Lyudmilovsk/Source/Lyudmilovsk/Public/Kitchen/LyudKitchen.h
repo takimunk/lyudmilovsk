@@ -93,6 +93,8 @@ private:
 	int32 NearestSpot(const FVector& From, float WithinCm, bool bByAct) const;
 	bool SpotOpen(const FSpot& Spot) const;
 	int32 Held(const FString& Item) const;
+	/** Does he know the recipe (a start one, or the town's stamp "recipes/<id>" a resident's answer gave). */
+	bool KnowsRecipe(int32 Recipe) const;
 	void OnCityOpen(FName Screen, int32 Thing);
 	void OpenPage(int32 Spot, uint8 Heat);
 	void ClosePage();
@@ -115,6 +117,8 @@ private:
 	TSharedPtr<SLyudCityPage> Page;
 	int32 PageSpot = -1;
 	uint8 PageHeat = 1;
+	/** The recipes the page lists, by the digit (1 .. 9, 0): indexes into LyudKitchen::Recipes(). */
+	TArray<int32> PageRecipes;
 	uint64 PageFrame = 0;
 	TWeakObjectPtr<APlayerController> MoveBlockedBy;
 

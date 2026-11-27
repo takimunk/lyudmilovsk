@@ -25,8 +25,42 @@ namespace LyudKitchen
 			{ "jam", "jam_strawberry", 1, 0, EHeat::Stove, 45.0, "steam_hiss",
 				{ { "strawberries", 6 } },
 				{ { 0.25, "skim" }, { 0.55, "stir" }, { 0.85, "skim" } } },
+			// taught by the town (docs/kitchen.md "Recipes the town teaches"): Baltic dishes of their season
+			{ "okroshka", "dish_okroshka", 1, 1, EHeat::Plate, 10.0, "",
+				{ { "kefir", 1 }, { "radish", 2 }, { "potatoes", 1 }, { "dill", 1 } },
+				{ { 0.55, "salt" } }, "recipes/okroshka", Season({ 6, 7, 8 }) },
+			{ "fried_smelt", "dish_fried_smelt", 1, 1, EHeat::Plate, 22.0, "pan_sizzle",
+				{ { "fish_smelt", 3 } },
+				{ { 0.40, "flour" }, { 0.70, "turn" } }, "recipes/fried_smelt", Season({ 3, 4, 5 }) },
+			{ "herring_potatoes", "dish_herring_potatoes", 2, 0, EHeat::Plate, 36.0, "steam_hiss",
+				{ { "fish_herring", 2 }, { "potatoes", 2 }, { "dill", 1 } },
+				{ { 0.35, "skim" }, { 0.80, "salt" } }, "recipes/herring_potatoes", Season({ 8, 9, 10, 11 }) },
+			{ "draniki", "dish_draniki", 1, 1, EHeat::Plate, 28.0, "pan_sizzle",
+				{ { "potatoes", 4 } },
+				{ { 0.30, "grate" }, { 0.65, "turn" } }, "recipes/draniki", Season({ 9, 10, 11, 12, 1, 2, 3 }) },
+			{ "carrot_salad", "dish_carrot_salad", 1, 1, EHeat::Plate, 8.0, "",
+				{ { "carrot", 2 }, { "apple", 1 } },
+				{ { 0.50, "grate" } }, "recipes/carrot_salad", 0 },
 		};
 		return All;
+	}
+
+	unsigned Season(std::initializer_list<int> Months)
+	{
+		unsigned Bits = 0;
+		for (const int M : Months)
+		{
+			if (M >= 1 && M <= 12)
+			{
+				Bits |= 1u << M;
+			}
+		}
+		return Bits;
+	}
+
+	bool Knows(const FRecipe& Recipe, const std::function<bool(const std::string& Stamp)>& HasStamp)
+	{
+		return Recipe.Learn.empty() || (HasStamp && HasStamp(Recipe.Learn));
 	}
 
 	int FindRecipe(const std::string& Id)
@@ -56,11 +90,11 @@ namespace LyudKitchen
 		return Out;
 	}
 
-	bool AnyToCook(EHeat Heat, const FPockets& Pockets)
+	bool AnyToCook(EHeat Heat, const FPockets& Pockets, const std::function<bool(const std::string& Stamp)>& HasStamp)
 	{
 		for (const FRecipe& R : Recipes())
 		{
-			if (CanCookOn(R, Heat) && Missing(R, Pockets).empty())
+			if (CanCookOn(R, Heat) && Knows(R, HasStamp) && Missing(R, Pockets).empty())
 			{
 				return true;
 			}

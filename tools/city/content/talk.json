@@ -1538,6 +1538,17 @@
     "gives": {
      "collect": "staff/market"
     }
+   },
+   {
+    "id": "dairy.recipe_okroshka",
+    "k": "city.ask.dairy.recipe_okroshka",
+    "lines": [
+     "city.ask.dairy.recipe_okroshka.1",
+     "city.ask.dairy.recipe_okroshka.2"
+    ],
+    "gives": {
+     "collect": "recipes/okroshka"
+    }
    }
   ],
   "buy_market_fruit": [
@@ -1865,6 +1876,17 @@
     ],
     "gives": {
      "collect": "staff/fish"
+    }
+   },
+   {
+    "id": "fish.recipe_fried_smelt",
+    "k": "city.ask.fish.recipe_fried_smelt",
+    "lines": [
+     "city.ask.fish.recipe_fried_smelt.1",
+     "city.ask.fish.recipe_fried_smelt.2"
+    ],
+    "gives": {
+     "collect": "recipes/fried_smelt"
     }
    }
   ],
@@ -2443,6 +2465,17 @@
     "gives": {
      "collect": "staff/sana"
     }
+   },
+   {
+    "id": "sanatorium.recipe_herring_potatoes",
+    "k": "city.ask.sanatorium.recipe_herring_potatoes",
+    "lines": [
+     "city.ask.sanatorium.recipe_herring_potatoes.1",
+     "city.ask.sanatorium.recipe_herring_potatoes.2"
+    ],
+    "gives": {
+     "collect": "recipes/herring_potatoes"
+    }
    }
   ],
   "buy_sanatorium_kiosk": [
@@ -2965,6 +2998,19 @@
     ],
     "gives": {
      "collect": "staff/keeper"
+    }
+   }
+  ],
+  "buy_school_canteen": [
+   {
+    "id": "school.recipe_carrot_salad",
+    "k": "city.ask.school.recipe_carrot_salad",
+    "lines": [
+     "city.ask.school.recipe_carrot_salad.1",
+     "city.ask.school.recipe_carrot_salad.2"
+    ],
+    "gives": {
+     "collect": "recipes/carrot_salad"
     }
    }
   ]

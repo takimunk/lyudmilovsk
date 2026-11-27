@@ -1,0 +1,238 @@
+{
+ "_doc": "The recipes the town teaches (docs/kitchen.md \"Recipes the town teaches\", tools/city/content/x_kitchen_recipes.json): the five dishes' item words, their page names and steps, the teachers' answers (city.ask.*.recipe_*), the collection \"recipes\" and the quest \"kitchen_recipes\".",
+ "item.dish_okroshka.name": {
+  "ru": "Окрошка на кефире",
+  "en": "Kefir okroshka",
+  "ja": "ケフィアのオクローシカ"
+ },
+ "item.dish_okroshka.desc": {
+  "ru": "Холодная окрошка: редиска, картошка, укроп и кефир. В июльскую жару лучше ничего нет.",
+  "en": "Cold okroshka: radishes, potatoes, dill and kefir. Nothing beats it in the July heat.",
+  "ja": "冷たいオクローシカ。ラディッシュ、じゃがいも、ディル、ケフィア。七月の暑さにはこれが一番。"
+ },
+ "item.dish_fried_smelt.name": {
+  "ru": "Жареная корюшка",
+  "en": "Fried smelt",
+  "ja": "キュウリウオのフライ"
+ },
+ "item.dish_fried_smelt.desc": {
+  "ru": "Корюшка в муке, с хрустом. Весной она пахнет свежим огурцом — так говорят рыбаки.",
+  "en": "Smelt in flour, crisp. In spring it smells of fresh cucumber, the anglers say.",
+  "ja": "粉をまぶしたキュウリウオ、カリカリ。春のキュウリウオはきゅうりのにおいがすると漁師は言う。"
+ },
+ "item.dish_herring_potatoes.name": {
+  "ru": "Салака с картошкой в мундире",
+  "en": "Herring with jacket potatoes",
+  "ja": "ニシンと皮つきじゃがいも"
+ },
+ "item.dish_herring_potatoes.desc": {
+  "ru": "Балтийская салака и отварная картошка в мундире, укроп сверху. Так обедают на взморье осенью.",
+  "en": "Baltic herring and potatoes boiled in their skins, dill on top. That's an autumn lunch on the seaside.",
+  "ja": "バルト海のニシンと皮ごとゆでたじゃがいも、上にディル。海辺の秋のお昼ごはん。"
+ },
+ "item.dish_draniki.name": {
+  "ru": "Драники",
+  "en": "Draniki",
+  "ja": "ドラニキ"
+ },
+ "item.dish_draniki.desc": {
+  "ru": "Картофельные оладьи, кружевные по краям. Едят горячими, прямо со сковородки.",
+  "en": "Potato pancakes, lacy at the edges. You eat them hot, straight from the pan.",
+  "ja": "ふちがレースのようなじゃがいものパンケーキ。フライパンから熱いうちに食べる。"
+ },
+ "item.dish_carrot_salad.name": {
+  "ru": "Салат из моркови с яблоком",
+  "en": "Carrot and apple salad",
+  "ja": "にんじんとりんごのサラダ"
+ },
+ "item.dish_carrot_salad.desc": {
+  "ru": "Тёртая морковь с яблоком, как в школьной столовой. Только вкуснее, потому что сам.",
+  "en": "Grated carrot with apple, like at the school canteen. Only better, because I made it.",
+  "ja": "すりおろしたにんじんとりんご。学校の食堂みたい。でも自分で作ったからもっとおいしい。"
+ },
+ "ui.cook.recipe.okroshka": {
+  "ru": "Окрошка",
+  "en": "Okroshka",
+  "ja": "オクローシカ"
+ },
+ "ui.cook.recipe.fried_smelt": {
+  "ru": "Жареная корюшка",
+  "en": "Fried smelt",
+  "ja": "キュウリウオのフライ"
+ },
+ "ui.cook.recipe.herring_potatoes": {
+  "ru": "Салака с картошкой",
+  "en": "Herring and potatoes",
+  "ja": "ニシンとじゃがいも"
+ },
+ "ui.cook.recipe.draniki": {
+  "ru": "Драники",
+  "en": "Draniki",
+  "ja": "ドラニキ"
+ },
+ "ui.cook.recipe.carrot_salad": {
+  "ru": "Морковный салат",
+  "en": "Carrot salad",
+  "ja": "にんじんサラダ"
+ },
+ "ui.cook.step.flour": {
+  "ru": "Сковородка раскалилась!   Y — обвалять в муке",
+  "en": "The pan is hot!   Y: roll them in flour",
+  "ja": "フライパンが熱くなった！   Y：粉をまぶす"
+ },
+ "ui.cook.step.grate": {
+  "ru": "Пора тереть!   Y — натереть",
+  "en": "Time to grate!   Y: grate it",
+  "ja": "すりおろす時間！   Y：すりおろす"
+ },
+ "ui.cook.off_season": {
+  "ru": "{0} (не сезон)",
+  "en": "{0} (out of season)",
+  "ja": "{0}（季節外れ）"
+ },
+ "ui.cook.unknown": {
+  "ru": "Рецептов, которых я ещё не знаю: {0}. Спрашивай у поваров и продавцов.",
+  "en": "Recipes I don't know yet: {0}. Ask the cooks and the sellers.",
+  "ja": "まだ知らないレシピ：あと{0}品。料理人や売り手にきいてみよう。"
+ },
+ "city.coll.recipes.title": {
+  "ru": "Рецепты от людей",
+  "en": "Recipes from people",
+  "ja": "人から教わったレシピ"
+ },
+ "city.ask.canteen.recipe_draniki": {
+  "ru": "Как у вас драники такие кружевные?",
+  "en": "How do you get your draniki so lacy?",
+  "ja": "どうしてドラニキがそんなにレースみたいなの？"
+ },
+ "city.ask.canteen.recipe_draniki.1": {
+  "ru": "Тереть на мелкой тёрке и отжать, вот и весь секрет. Четыре картошки — сковородка драников.",
+  "en": "Grate fine and squeeze it, that's the whole secret. Four potatoes make a pan of draniki.",
+  "ja": "細かくすりおろして絞る、それだけ。じゃがいも四つでフライパン一枚分。"
+ },
+ "city.ask.canteen.recipe_draniki.2": {
+  "ru": "Сковородку грей как следует, а ложкой — тонко. Перевернёшь, когда края зарумянятся.",
+  "en": "Heat the pan properly and spoon them thin. Turn them when the edges go golden.",
+  "ja": "フライパンをよく熱して薄く。ふちが色づいたら返して。"
+ },
+ "city.ask.fish.recipe_fried_smelt": {
+  "ru": "А корюшку как жарят?",
+  "en": "How do you fry smelt?",
+  "ja": "キュウリウオはどう焼くの？"
+ },
+ "city.ask.fish.recipe_fried_smelt.1": {
+  "ru": "Корюшка идёт весной, в апреле. Три рыбки — в муку и на раскалённую сковороду.",
+  "en": "Smelt runs in spring, in April. Three of them into flour and onto a hot pan.",
+  "ja": "キュウリウオは春、四月に来る。三匹を粉にまぶして熱いフライパンへ。"
+ },
+ "city.ask.fish.recipe_fried_smelt.2": {
+  "ru": "Не чисти её, мелкую-то. Минута с каждого бока — и хрустит, а пахнет огурцом.",
+  "en": "Don't bother cleaning the little ones. A minute a side and it's crisp, and it smells of cucumber.",
+  "ja": "小さいのはさばかなくていい。片面一分でカリッと、きゅうりのにおい。"
+ },
+ "city.ask.dairy.recipe_okroshka": {
+  "ru": "Что летом из кефира сделать?",
+  "en": "What can I make from kefir in summer?",
+  "ja": "夏、ケフィアで何が作れる？"
+ },
+ "city.ask.dairy.recipe_okroshka.1": {
+  "ru": "Окрошку! Редиска, картошка, укроп — и залей кефиром. Холодная, в жару в самый раз.",
+  "en": "Okroshka! Radishes, a potato, dill, and pour kefir over. Cold, just right in the heat.",
+  "ja": "オクローシカ！ラディッシュ、じゃがいも、ディルにケフィアをかける。冷たくて暑い日にぴったり。"
+ },
+ "city.ask.dairy.recipe_okroshka.2": {
+  "ru": "У нас на хуторе в неё ещё квас лили, но с кефиром мне больше нравится.",
+  "en": "Back on our farm they poured kvass in, but I like it better with kefir.",
+  "ja": "田舎ではクワスを入れたけど、私はケフィアのほうが好き。"
+ },
+ "city.ask.sanatorium.recipe_herring_potatoes": {
+  "ru": "Чем у вас кормят по осени?",
+  "en": "What do you feed people here in autumn?",
+  "ja": "秋はここで何を出してるの？"
+ },
+ "city.ask.sanatorium.recipe_herring_potatoes.1": {
+  "ru": "Салакой с картошкой в мундире. Диетично и по-нашему, по-балтийски.",
+  "en": "Baltic herring with jacket potatoes. Light, and our own Baltic way.",
+  "ja": "ニシンと皮つきじゃがいも。体にやさしい、バルトのやり方。"
+ },
+ "city.ask.sanatorium.recipe_herring_potatoes.2": {
+  "ru": "Две салаки, две картошки, укроп. Отдыхающие из Москвы просят добавки.",
+  "en": "Two herring, two potatoes, dill. The holidaymakers from Moscow ask for more.",
+  "ja": "ニシン二匹、じゃがいも二つ、ディル。モスクワから来た人がおかわりする。"
+ },
+ "city.ask.school.recipe_carrot_salad": {
+  "ru": "А как вы морковный салат делаете?",
+  "en": "How do you make your carrot salad?",
+  "ja": "にんじんサラダはどう作るの？"
+ },
+ "city.ask.school.recipe_carrot_salad.1": {
+  "ru": "Две морковки на тёрку, одно яблоко туда же. Даже двоечники доедают.",
+  "en": "Two carrots on the grater, one apple with them. Even the worst pupils finish it.",
+  "ja": "にんじん二本とりんご一個をすりおろす。勉強嫌いの子でも残さない。"
+ },
+ "city.ask.school.recipe_carrot_salad.2": {
+  "ru": "Сахару чуть-чуть можно, но лучше яблоко послаще возьми.",
+  "en": "A pinch of sugar if you like, but better take a sweeter apple.",
+  "ja": "砂糖を少し入れてもいいけど、甘いりんごを選ぶほうがいい。"
+ },
+ "city.ask.canteen.recipes": {
+  "ru": "Я научился новым блюдам!",
+  "en": "I've learnt some new dishes!",
+  "ja": "新しい料理を覚えたよ！"
+ },
+ "city.ask.canteen.recipes.1": {
+  "ru": "Вот это дело. Повар не тот, кто много знает, а тот, кто у всех спрашивает.",
+  "en": "That's the way. A cook isn't one who knows a lot, but one who asks everybody.",
+  "ja": "それでいい。料理人は物知りじゃなく、だれにでもきく人のことだよ。"
+ },
+ "city.ask.canteen.recipes.2": {
+  "ru": "Держи буханку, к ухе пригодится. Заходи ещё, расскажешь.",
+  "en": "Here's a loaf, it'll go with the ukha. Drop by again and tell me.",
+  "ja": "パンをどうぞ、ウハーに合うよ。また話しにおいで。"
+ },
+ "quest.kitchen_recipes.title": {
+  "ru": "Поварская тетрадь",
+  "en": "The cook's notebook",
+  "ja": "料理ノート"
+ },
+ "quest.kitchen_recipes.desc": {
+  "ru": "Повариха из столовой коммуны научила меня драникам и сказала: рецепты собирают по людям.",
+  "en": "The commune canteen's cook taught me draniki and said: recipes are gathered from people.",
+  "ja": "コミューン食堂のおばさんがドラニキを教えてくれた。レシピは人から集めるものだって。"
+ },
+ "quest.kitchen_recipes.learn.log": {
+  "ru": "Повариха говорит, корюшку лучше всех знает продавщица в рыбном. Схожу спрошу.",
+  "en": "The cook says the woman at the fish shop knows smelt best. I'll go and ask.",
+  "ja": "キュウリウオなら魚屋の売り手が一番くわしいらしい。きいてこよう。"
+ },
+ "quest.kitchen_recipes.ask_smelt.obj": {
+  "ru": "Спросить в рыбном про корюшку",
+  "en": "Ask at the fish shop about smelt",
+  "ja": "魚屋でキュウリウオのことをきく"
+ },
+ "quest.kitchen_recipes.cook.log": {
+  "ru": "Два рецепта в тетради. Теперь приготовить то, чему научили, — хоть пару раз.",
+  "en": "Two recipes in the notebook. Now to cook what they taught me, a couple of times at least.",
+  "ja": "ノートにレシピが二つ。教わった料理を少なくとも二回作ってみよう。"
+ },
+ "quest.kitchen_recipes.cook_learnt.obj": {
+  "ru": "Приготовить блюда по новым рецептам",
+  "en": "Cook dishes from the new recipes",
+  "ja": "新しいレシピで料理を作る"
+ },
+ "quest.kitchen_recipes.tell.log": {
+  "ru": "Получилось. Расскажу поварихе в столовой коммуны.",
+  "en": "It worked. I'll tell the cook at the commune canteen.",
+  "ja": "うまくいった。コミューン食堂のおばさんに話そう。"
+ },
+ "quest.kitchen_recipes.tell_cook.obj": {
+  "ru": "Рассказать поварихе",
+  "en": "Tell the cook",
+  "ja": "食堂のおばさんに話す"
+ },
+ "quest.kitchen_recipes.done": {
+  "ru": "Повариха довольна. Тетрадь пополняется: в санатории, в школе и на рынке тоже знают свои блюда.",
+  "en": "The cook is pleased. The notebook grows: the sanatorium, the school and the market know their own dishes too.",
+  "ja": "おばさんは満足そう。ノートはふえていく。療養所や学校や市場にも、それぞれの料理がある。"
+ }
+}
