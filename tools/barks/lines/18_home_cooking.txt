@@ -20,7 +20,7 @@ months = 6-8
 weight = 0.6
 say town.cook_shop_summer.1 | Кефиру две бутылки: в такую жару только окрошка. | Two bottles of kefir: in this heat it's okroshka or nothing. | ケフィア二本。この暑さじゃオクローシカしかない。
 say town.cook_shop_summer.2 | Редиска своя, огурцы свои, а кефир — магазинный. Почти всё сами. | Our own radishes, our own cucumbers, the kefir from the shop. Nearly all homemade. | ラディッシュも自分の、きゅうりも自分の、ケフィアだけ店で。ほとんど自家製。
-say town.cook_shop_summer.3 | Сахару на варенье, пять кило. Клубника в этом году — как никогда. | Sugar for jam, five kilos. The strawberries this year are like never before. | ジャム用の砂糖、五キロ。今年のいちごは最高だ。
+say town.cook_shop_summer.3 | Сахару на варенье, пять кило. Клубника в этом году — как никогда. | Sugar for jam, five kilos. The strawberries are better than ever this year. | ジャム用の砂糖、五キロ。今年のいちごは最高だ。
 say town.cook_shop_summer.4 | Внуки приедут — напеку им всего. Хоть бы погода постояла. | The grandchildren are coming, I'll bake them everything. If only the weather holds. | 孫が来るから何でも焼いてあげよう。天気がもてばいいけど。
 
 [cook_shop_autumn]
@@ -37,7 +37,7 @@ doing = shop shop_town
 age = adult elder
 months = 12-2
 weight = 0.5
-say town.cook_shop_winter.1 | Банку варенья открою к чаю. Летом сварила — зимой вспомнила. | I'll open a jar of jam for tea. Made it in summer, remembered it in winter. | お茶にジャムを一びん開けよう。夏に作って、冬に思い出す。
+say town.cook_shop_winter.1 | Банку варенья открою к чаю. Летом сварили — зимой вспомнили. | I'll open a jar of jam for tea. Made in summer, remembered in winter. | お茶にジャムを一びん開けよう。夏に作って、冬に思い出す。
 say town.cook_shop_winter.2 | Трески бы на уху. Зимой уха из трески — лучшая. | Some cod for ukha. In winter cod ukha is the best. | ウハ用にタラがほしい。冬はタラのウハが一番。
 
 [cook_home_table]
@@ -54,5 +54,5 @@ doing = eat_home
 age = kid teen
 weight = 0.6
 say town.cook_home_kid.1 | Опять морковный салат? Ну ладно, с яблоком можно. | Carrot salad again? Well, all right, with apple it's fine. | またにんじんサラダ？まあ、りんご入りならいいか。
-say town.cook_home_kid.2 | Можно мне пенку от варенья? Ну пожалуйста! | Can I have the jam foam? Please! | ジャムのあくもらっていい？おねがい！
-say town.cook_home_kid.3 | Я сам картошку чистил! Ну, почти сам. | I peeled the potatoes myself! Well, almost myself. | じゃがいも、自分でむいたんだ！まあ、ほとんど自分で。
+say town.cook_home_kid.2 | Можно мне пенку от варенья? Ну пожалуйста! | Can I have the jam foam? Please! | ジャムの泡、なめていい？おねがい！
+say town.cook_home_kid.3 | Мне доверили чистить картошку! Ну, почти всю. | They let me peel the potatoes! Well, nearly all of them. | じゃがいも、むかせてもらったんだ！まあ、ほとんど全部。

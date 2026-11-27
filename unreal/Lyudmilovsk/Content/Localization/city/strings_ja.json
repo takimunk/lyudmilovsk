@@ -9526,10 +9526,10 @@
  "quest.kitchen_recipes.cook.log": "ノートにレシピが二つ。教わった料理を少なくとも二回作ってみよう。",
  "quest.kitchen_recipes.cook_learnt.obj": "新しいレシピで料理を作る",
  "quest.kitchen_recipes.desc": "コミューン食堂のおばさんがドラニキを教えてくれた。レシピは人から集めるものだって。",
- "quest.kitchen_recipes.done": "おばさんは満足そう。ノートはふえていく。サナトリウムや学校や市場にも、それぞれの料理がある。",
+ "quest.kitchen_recipes.done": "おばさんは満足そう。ノートはふえていく。療養所や学校や市場にも、それぞれの料理がある。",
  "quest.kitchen_recipes.learn.log": "キュウリウオなら魚屋の売り手が一番くわしいらしい。きいてこよう。",
  "quest.kitchen_recipes.tell.log": "うまくいった。コミューン食堂のおばさんに話そう。",
- "quest.kitchen_recipes.tell_cook.obj": "おばさんに話す",
+ "quest.kitchen_recipes.tell_cook.obj": "食堂のおばさんに話す",
  "quest.kitchen_recipes.title": "料理ノート",
  "quest.library_1968.cup.obj": "火曜日に司書さんとお茶を飲む",
  "quest.library_1968.desc": "東の窓際の棚に、半世紀以上たって戻ってきた本があります。司書さんは、邪魔をしなければ読者は戻ってくると言います。あるいは、少し手伝えば。",
@@ -10108,5 +10108,5 @@
  "ui.cook.tended": "間に合った。",
  "ui.cook.title": "コンロの前で",
  "ui.cook.title_plate": "一口の電熱器",
- "ui.cook.unknown": "まだ知らないレシピ：{0}。料理人や売り手にきいてみよう。"
+ "ui.cook.unknown": "まだ知らないレシピ：あと{0}品。料理人や売り手にきいてみよう。"
 }

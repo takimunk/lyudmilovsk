@@ -2,7 +2,7 @@
  "_doc": "The recipes the town teaches (docs/kitchen.md \"Recipes the town teaches\", tools/city/content/x_kitchen_recipes.json): the five dishes' item words, their page names and steps, the teachers' answers (city.ask.*.recipe_*), the collection \"recipes\" and the quest \"kitchen_recipes\".",
  "item.dish_okroshka.name": {
   "ru": "Окрошка на кефире",
-  "en": "Okroshka on kefir",
+  "en": "Kefir okroshka",
   "ja": "ケフィアのオクローシカ"
  },
  "item.dish_okroshka.desc": {
@@ -91,9 +91,9 @@
   "ja": "{0}（季節外れ）"
  },
  "ui.cook.unknown": {
-  "ru": "Других рецептов не знаю: ещё {0}. Спрашивай у поваров и продавцов.",
+  "ru": "Рецептов, которых я ещё не знаю: {0}. Спрашивай у поваров и продавцов.",
   "en": "Recipes I don't know yet: {0}. Ask the cooks and the sellers.",
-  "ja": "まだ知らないレシピ：{0}。料理人や売り手にきいてみよう。"
+  "ja": "まだ知らないレシピ：あと{0}品。料理人や売り手にきいてみよう。"
  },
  "city.coll.recipes.title": {
   "ru": "Рецепты от людей",
@@ -126,8 +126,8 @@
   "ja": "キュウリウオは春、四月に来る。三匹を粉にまぶして熱いフライパンへ。"
  },
  "city.ask.fish.recipe_fried_smelt.2": {
-  "ru": "Не чисти её, мелкую-то. Минута с боку — и хрустит, как огурец пахнет.",
-  "en": "Don't bother cleaning the little ones. A minute a side and it's crisp, smells of cucumber.",
+  "ru": "Не чисти её, мелкую-то. Минута с каждого бока — и хрустит, а пахнет огурцом.",
+  "en": "Don't bother cleaning the little ones. A minute a side and it's crisp, and it smells of cucumber.",
   "ja": "小さいのはさばかなくていい。片面一分でカリッと、きゅうりのにおい。"
  },
  "city.ask.dairy.recipe_okroshka": {
@@ -228,11 +228,11 @@
  "quest.kitchen_recipes.tell_cook.obj": {
   "ru": "Рассказать поварихе",
   "en": "Tell the cook",
-  "ja": "おばさんに話す"
+  "ja": "食堂のおばさんに話す"
  },
  "quest.kitchen_recipes.done": {
   "ru": "Повариха довольна. Тетрадь пополняется: в санатории, в школе и на рынке тоже знают свои блюда.",
   "en": "The cook is pleased. The notebook grows: the sanatorium, the school and the market know their own dishes too.",
-  "ja": "おばさんは満足そう。ノートはふえていく。サナトリウムや学校や市場にも、それぞれの料理がある。"
+  "ja": "おばさんは満足そう。ノートはふえていく。療養所や学校や市場にも、それぞれの料理がある。"
  }
 }
