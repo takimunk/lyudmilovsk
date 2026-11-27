@@ -53,6 +53,9 @@ the data.
 | cat_day | День кошек | 1 March | treats in the park 11–15, the cats' walk to the pier 15–17 |
 | book_day | День книги | 23 April | reading on the grass in the park 12–18, reading aloud on the square 18 |
 | amber_morning | Янтарное утро | the morning after a gale (trigger `after_storm`, at most once in ten days) | the whole town on the beach 6:30–12 looking for amber |
+| science_day | День науки (the town's own, see below) | 1st Saturday of December (2026-12-05) | experiments at the fair 11–15, the lecture on the Sun on the square 15, the town quiz 16:30, telescopes on the promenade 19–21:30 |
+| old_new_year | Старый Новый год | 13 January, the night to the 14th | children carolling with a paper sun on the square 16:30–19, fortunes on the promenade 19–22, midnight at the tree, dancing till 1:30 |
+| neptune_day | День Нептуна | last Sunday of July (2027-07-25) | Neptune lands on the beach 12, his court 13–15, the boat parade seen from the pier 15–16, fish soup on the promenade 16–18:30, dancing 20–23 |
 
 `festivals.json`: `when.rule` is `date` (month, day), `new_moon` / `full_moon` (the first such moon on or after month/day
 within `window` days, its date reckoned in `tz` hours from UTC; Meeus ch. 49 in `FestivalCalendar.cpp`, tested against
@@ -106,6 +109,65 @@ the sea under the kites and see the star off from the promenade as it goes down 
   `bigsun*` in `tools/barks/lines/07_festivals.txt` (greetings, the eve, the zenith, the sea, the sunset, two exchanges).
 - Developer mode (F7, Actions, "Небо и сезон"): the Big Sun's noon, the town's strings on/off, poplar fluff on/off.
 
+## Science Day, the Old New Year, Neptune Day (proposal, not canon)
+
+Three holidays for the thin parts of the year: the month between the lantern nights and the winter fair, the week after the
+tree comes down, and the end of July. All three are data. No C++ was written for them, no item, mesh or sound was added.
+
+| | Science Day | The Old New Year | Neptune Day |
+|---|---|---|---|
+| Id, date | `science_day`, 1st Saturday of December | `old_new_year`, 13 January | `neptune_day`, last Sunday of July |
+| The idea | Once a year the institute comes out to the people. Whatever it does is about the Sun (the sun motif) | The New Year seen in a second time. The children carry a paper sun on a pole where others carry a star | The sea king lands on the beach and nobody leaves dry |
+| Dressed | flags, bunting, stalls, stage, lanterns at the fair and the square | tree, lanterns, wreaths, stage on the square from 18:00 the day before | flags, bunting, stalls, stage, balloons on the beach, the promenade, the square |
+| Who goes | the fair by day, the square for the lecture and the quiz, the promenade for the telescopes | the square for the carols and midnight, the promenade for the fortunes; people stay up till 1:30 | the beach at noon (pull 1.3), the pier for the parade, the promenade for the soup; up till 23:30 |
+| Who works | the fair's vendors with class 6B behind the counter (talk at the snack kiosk, barks of `job = vendor seller`) | the dumpling bar's cook and waiter (barks of `job = cook waiter`) | the lifeguards stir the soup (barks of `job = lifeguard`), the rental hands out inner tubes |
+| The children | sell their own cakes for a telescope, make a soda volcano | go round the yards with the sun and sing for gingerbread | are Neptune's devils and mermaids: soot, wet sand, buckets |
+| The hero's contest | the blitz quiz at the fair's lottery table `P-FAIR/lottery_tickets`: ring the bell first (tap), answer (pick) | the wax fortune at the dumpling bar's pot `W1-U17/dumpling_pot`: pour, blow, read the figure | the tug of war at lifeguard tower 1's rope `P-LIFEGUARD1/rope_coil`: heave in time, then the last pull |
+| The hero's game | the electric globe `P-FAIR/fortune_globe`: crank the machine, charge the jar to the line, pick the trick | dumplings with a surprise at the rolling board `W1-U17/dumpling_rolling`: pick the surprise, pinch, drop in time | the inner-tube race at the rental's pump `W1-U15/rental_pump`: pump, stop before it bursts, paddle in time; and the buoy swim of docs/beach.md |
+| The hero's food | the oxygen cocktail: ask at the fair's coffee kiosk | a plate of dumplings with a surprise: ask at the dumpling bar's counter | fish soup from the common pot: ask the lifeguard at the tea flask |
+| Restaurant | syrniki, coffee, medovik | pelmeni, Olivier, sbiten | festive ukha, fried flounder, mors |
+| Quest | `nh_science_day` | `nh_old_new_year` | `nh_neptune_day` |
+
+**How the hero's part works.** Each scene is a `proc` (docs/sanatorium_procedures.md) on an act that is `like` the thing's old
+act, with `"when": {"festival": "<id>", "h": [from, to]}`. On any other day, and outside those hours, the thing does what it
+always did. A good result gives a stamp. The food is a staff talk topic with the festival as its condition; asking gives the
+stamp. The topics are given by rules, so they sit on those counters only. Content: `tools/city/content/x_holidays.json`, words
+`strings/x_holidays.json` (`city.nh.*`).
+
+**Stamps.** The collection `nh_calendar` «Праздничный календарь», nine pieces, three a holiday: `sci_quiz`, `sci_globe`,
+`sci_cocktail`, `ony_vareniki`, `ony_wax`, `ony_treat`, `nep_rope`, `nep_tube`, `nep_ukha`. The full set pays 90 roubles and
+the keepsake "a tear-off calendar with three red days". It takes a game year to fill.
+
+**Quests** (hand-written in `Content/UI/quests.json`, words in `Localization/quests/`). Each starts on its festival's event
+and has one stage. The objectives are phases visited (`festival_visit`) and stamps (`stamp nh_calendar/<piece>`); Neptune
+Day also wants the buoy swim (`beach swim`). A stamp is given once in a save, so the scenes' hours begin no earlier than
+the first phase: the quest is already on when a stamp can come. A quest not finished on the day waits for next year.
+Their names do not begin with `fest_`: `check_festival_data.py` lets a `fest_` quest wait for festival events only.
+
+**The boat parade is a hook.** `neptune_day.boat_parade` (15–16, the pier, the town watches the sea) is only a gathering now:
+nothing sails. The yacht school and the steamer can put their boats out on it: `ULyudFestivalSubsystem::OnPhaseStart` and
+`OnPhaseEnd` are sent with the festival and the phase, and `ActivePhase()` returns `boat_parade` while it runs. The talk
+already says the yachts ask to join the line.
+
+**Words.** Barks: `tools/barks/lines/18_new_holidays.txt` (37 sets: the four voices of each holiday, greetings, the parts of
+each day, the stalls' people, the children, an exchange each). The paper: a front story of two wordings each
+(`strings_src.py` FEST), and on the boards a notice before and a report after each (`nh_science_soon`, `nh_science_done` on
+the school boards; `nh_ony_soon` on the club boards and `nh_ony_done` among the lost things; `nh_neptune_soon` on the health
+boards and `nh_neptune_done` among the lost things). The photo album has a piece for each (`photo_life/fest_<id>`).
+
+**Developer mode.** F7, Town: each holiday has its "Day" button and a button a part, like every festival. F7, Teleports,
+group "Holidays": the fair, the dumpling bar, tower 1, the rental (`Content/Dev/teleports/new_holidays.json`). F7, Quests:
+the three quests' stage jumps move the calendar to the day (`lyud.Festival.Go <id> <part>`) and put the hero at the place.
+Console: `lyud.City.Proc <thing id>` plays a scene, `lyud.City.Ask <thing id> <topic id>` asks a topic.
+
+**Tests.** `tools/festivalsim/run.sh test` (the three dates, 2026–2060); `tools/citysim/run.sh` (`holidaychecks.h`: each
+scene only on its day and in its hours, good and poor results, the food topics, the nine stamps); barksim, papersim,
+questsim, `check_devdata.py`.
+
+Not done: the tree is down from 7 January (the winter fair's end) to the evening of the 12th, because decorations can go up
+a day early at most; Neptune and his court are words and a gathering, with no costumes or actors; the dishes at the stalls
+are talk, not items; nothing here has been seen in the engine (written in the cloud on 2026-11-27).
+
 ## Poplar fluff
 
 From the last days of May to the first of July the town's poplars shed their down (`ULyudPoplarFluffSubsystem`,
@@ -128,11 +190,11 @@ the diary and the forecast.
 
 ## Every holiday's voices
 
-`tools/barks/lines/17_festival_voices.txt`: each of the 31 holidays has four voices of its own, said only on that day: an
+`tools/barks/lines/17_festival_voices.txt`: each of the 34 holidays has four voices of its own, said only on that day: an
 adult says what they are bringing (`fv_<id>_bring`), a nervy one complains (`fv_<id>_grump`), a child tells the day's game
-(`fv_<id>_kid`), an elder remembers how it used to be (`fv_<id>_elder`). 124 lines in ru, en, ja, picked by the barks'
+(`fv_<id>_kid`), an elder remembers how it used to be (`fv_<id>_elder`). 136 lines in ru, en, ja, picked by the barks'
 ordinary conditions (festival, age, temper); the Russian never agrees with the speaker's gender. A new holiday gets its
-four sets in the same file; `tools/barksim/run.sh` checks the conditions and that every line fits a bubble.
+four sets in the same file (the three of 2026-11-27 have theirs in `18_new_holidays.txt`); `tools/barksim/run.sh` checks the conditions and that every line fits a bubble.
 
 ## The new toys (backlog item 24)
 
