@@ -453,6 +453,23 @@ void ULyudWinterSubsystem::Tick(float DeltaTime)
 		return;
 	}
 	LyudWinter::FWinterState& S = *State;
+	// nothing of the winter shows (spring to autumn, a thaw): the whole step at 4 Hz with the gathered time, not every
+	// frame (the MPC's dozen parameters, the weather read, the flakes' and near snow's checks); the first step after snow
+	// or ice comes back is at most a quarter second late
+	const bool bQuiet = (S.Phase == LyudWinter::EPhase::Idle || S.Phase == LyudWinter::EPhase::Ready)
+		&& S.In.LevelCm <= 0.2f && S.IceP.Cover <= 0.f && Now.SnowfallCmPerHour <= 0.02f && Now.BlowingSnow <= 0.f
+		&& (!Decal || !Decal->IsVisible()) && (!NearSnow || NearSnow->IsHidden()) && (!Ice || Ice->IsHidden())
+		&& (!Flakes || !Flakes->Flakes || !Flakes->Flakes->IsVisible()) && CVarWinterDebug.GetValueOnGameThread() == 0;
+	if (bQuiet)
+	{
+		QuietDt += DeltaTime;
+		if (QuietDt < 0.25f)
+		{
+			return;
+		}
+		DeltaTime = QuietDt;
+	}
+	QuietDt = 0.f;
 	if (!Sea.IsValid())
 	{
 		Sea = ALyudSea::Get(GetWorld());

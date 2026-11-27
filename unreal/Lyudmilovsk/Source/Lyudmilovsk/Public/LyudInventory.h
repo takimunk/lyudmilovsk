@@ -226,7 +226,8 @@ public:
 	/** The item as the hero's hand holds it, spawned at Pos; null for items with no look. */
 	AActor* SpawnHeld(FName Id, const FVector& Pos);
 
-	/** Walking and looking off, the mouse shown (a screen is up), or back. */
+	/** Walking and looking off, the mouse shown (a screen is up), or back. Counted: each Lock(true) is undone by one
+	 *  Lock(false), and the input comes back when the last screen lets go. */
 	void Lock(bool bLock);
 	/** Nothing else is going on that a screen would get in the way of. bNeedHero: only on foot (not as a bird). */
 	bool CanOpen(bool bNeedHero = true) const;
@@ -249,7 +250,9 @@ private:
 	TSharedPtr<SLyudPrompt> Prompt;
 	TWeakObjectPtr<const UObject> PromptKey;
 	TWeakObjectPtr<const UObject> ExternalScreen;
-	bool bLocked = false;
+	/** How many screens hold the lock (the shop, the diary, the restaurant's menu, the transit diagram, a naming box): one
+	 *  closing must not free the walk and the look while another is still up. */
+	int32 LockCount = 0;
 	uint64 ShopClosedFrame = 0;
 	/** The frame a shop opened: its own T press must not shut it again (the traders' ticks and this one run in any order). */
 	uint64 ShopOpenedFrame = 0;
