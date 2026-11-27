@@ -893,16 +893,30 @@ void UBirdTameSubsystem::UpdateHud(AHeroCharacter* Hero)
 	static const TCHAR* const HintKeys[] = { TEXT("ui.held.hint_out"), TEXT("ui.held.hint_crouched"), TEXT("ui.held.hint") };
 	const int32 Hint = bWantOffer || IsCalling() ? 0 : Hero->bIsCrouched ? 1 : 2;
 	const FSlateBrush* Brush = UI->IconBrush(Id);
-	// the texts are formatted only when something in them changes (the item, its count, the hint, the language)
-	if (Id != HudItem || Count != HudCount || Hint != HudHint || Brush != HudBrush || LyudText::Language() != HudLanguage)
+	// the birds that spotted the feed and came for it (they wait round the hero, docs/bird_taming.md "Birds come to the feed")
+	int32 Waiting = 0;
+#if LYUD_HAS_BIRDLIFE
+	if (const UBirdLifeSubsystem* Life = UBirdLifeSubsystem::Get(this))
+	{
+		Waiting = FMath::Max(0, Life->NumAtFeed(false));
+	}
+#endif
+	// the texts are formatted only when something in them changes (the item, its count, the hint, the waiting birds, the language)
+	if (Id != HudItem || Count != HudCount || Hint != HudHint || Waiting != HudWaiting || Brush != HudBrush || LyudText::Language() != HudLanguage)
 	{
 		HudItem = Id;
 		HudCount = Count;
 		HudHint = Hint;
+		HudWaiting = Waiting;
 		HudBrush = Brush;
 		HudLanguage = LyudText::Language();
 		const FText Title = LyudText::Get(TEXT("ui.held.item"), { FStringFormatArg(ULyudInventory::ItemName(Id).ToString()), FStringFormatArg(Count) });
-		Hud->Set(Brush, Title, LyudText::Get(HintKeys[Hint]));
+		FText HintText = LyudText::Get(HintKeys[Hint]);
+		if (Waiting > 0)
+		{
+			HintText = FText::FromString(HintText.ToString() + TEXT("\n") + LyudText::Get(TEXT("ui.held.waiting"), { FStringFormatArg(Waiting) }).ToString());
+		}
+		Hud->Set(Brush, Title, HintText);
 	}
 	// the bird the palm is held out to: how it feels about the hero, so creeping can be judged
 	FText Bird;

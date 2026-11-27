@@ -723,8 +723,8 @@
  "ui.use.unequip": "Убрать из руки",
  "ui.inventory.inhand": "в руке",
  "ui.held.item": "В руке: {0} ×{1}",
- "ui.held.hint": "F — протянуть ладонь с кормом   C — присесть",
- "ui.held.hint_crouched": "F — протянуть ладонь с кормом   Shift — красться ещё тише",
+ "ui.held.hint": "F — протянуть ладонь с кормом   G — бросить горсть   C — присесть",
+ "ui.held.hint_crouched": "F — протянуть ладонь с кормом   G — бросить горсть   Shift — красться ещё тише",
  "ui.held.hint_out": "Не делай резких движений   F — убрать руку",
  "ui.tame.a_bird": "Птица",
  "ui.tame.notice": "{0} замечает тебя",
@@ -2358,5 +2358,6 @@
  "line.transport.ride.reply.1": "Ага.",
  "line.transport.ride.reply.2": "Точно.",
  "line.transport.ride.reply.3": "И не говорите.",
- "line.transport.ride.reply.4": "Я тоже так думаю."
+ "line.transport.ride.reply.4": "Я тоже так думаю.",
+ "ui.held.waiting": "Птицы заметили корм и ждут: {0}"
 }

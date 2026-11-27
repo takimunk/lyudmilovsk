@@ -440,14 +440,15 @@ bool UCorvidLifeSubsystem::ThrowFeed(bool bFromInventory)
 	FWorld* W = Sim();
 	FCorvids* C = W ? W->Corvids() : nullptr;
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-	if (!C || !PC)
+	if (!W || !PC)
 	{
 		return false;
 	}
+	FName Feed = TEXT("bird_feed");
 	if (bFromInventory)
 	{
 		ULyudInventory* Inv = ULyudInventory::Get(this);
-		const FName Feed = Inv ? Inv->EquippedItem() : FName();
+		Feed = Inv ? Inv->EquippedItem() : FName();
 		const FLyudItemDef* Def = ULyudInventory::FindDef(Feed);
 		if (!Def || Def->Kind != ELyudItemKind::Feed || !Inv->Remove(Feed, 1))
 		{
@@ -466,10 +467,14 @@ bool UCorvidLifeSubsystem::ThrowFeed(bool bFromInventory)
 	{
 		At = Hit.ImpactPoint;
 	}
-	C->PlayerDrop(*W, EItem::FeedPile, FromUE(At));
+	if (C)
+	{
+		C->PlayerDrop(*W, EItem::FeedPile, FromUE(At));      // (the crows' own heap of it, which they find and take)
+	}
 	if (UBirdLifeSubsystem* Birds = UBirdLifeSubsystem::Get(this))
 	{
 		Birds->AddPlayerThreat(0.25f);       // the throw itself makes them look up
+		Birds->AddFeedPile(At, Feed, 1.f);   // and every bird round about that eats it comes down to it
 	}
 	ULyudQuests::Notify(this, TEXT("corvid_feed_thrown"));
 	return true;

@@ -293,6 +293,11 @@ void ULyudBenchmark::BuildRoute()
 		{ Map(-60, -120, 2500), FRotator(-12, 100, 0), 0.f },
 		{ Map(-160, 250, 2500), FRotator(-15, 110, 0), 14.f },
 		{ Map(-330, 900, 2500), FRotator(-20, 80, 0), 30.f } });
+	// the Academgorodok's street between its houses, under the power lines and their birds (the bird sites' street spots)
+	Seg(TEXT("academ"), true, {
+		{ FVector(-21720, 60320, 170), FRotator(0, 178, 0), 0.f },
+		{ FVector(-24930, 60280, 170), FRotator(3, 150, 0), 9.f },
+		{ FVector(-27620, 63790, 170), FRotator(6, 100, 0), 18.f } });
 }
 
 bool ULyudBenchmark::ForestsBaked(int32& OutTrees, int32& OutBaked) const

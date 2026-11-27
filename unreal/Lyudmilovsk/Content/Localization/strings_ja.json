@@ -723,8 +723,8 @@
  "ui.use.unequip": "しまう",
  "ui.inventory.inhand": "手に持っている",
  "ui.held.item": "手に：{0} ×{1}",
- "ui.held.hint": "F — えさをのせた手を差し出す   C — しゃがむ",
- "ui.held.hint_crouched": "F — えさをのせた手を差し出す   Shift — もっと静かに忍び寄る",
+ "ui.held.hint": "F — えさをのせた手を差し出す   G — えさをひとつかみまく   C — しゃがむ",
+ "ui.held.hint_crouched": "F — えさをのせた手を差し出す   G — えさをひとつかみまく   Shift — もっと静かに忍び寄る",
  "ui.held.hint_out": "急に動かないで   F — 手を引っこめる",
  "ui.tame.a_bird": "鳥",
  "ui.tame.notice": "{0}がこちらに気づいた",
@@ -2358,5 +2358,6 @@
  "line.transport.ride.reply.1": "うん。",
  "line.transport.ride.reply.2": "そうだね。",
  "line.transport.ride.reply.3": "本当にね。",
- "line.transport.ride.reply.4": "私もそう思う。"
+ "line.transport.ride.reply.4": "私もそう思う。",
+ "ui.held.waiting": "えさに気づいて待っている鳥：{0}"
 }

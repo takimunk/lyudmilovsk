@@ -4,6 +4,9 @@
 
 #include "BirdSim.h"
 #include "BirdHabit.h"
+#include "BirdPerches.h"
+#include "LyudInventory.h"
+#include "People/PeopleLife.h"
 #include "Birds/BirdBook.h"
 #include "UI/LyudGameScreen.h"
 #include "BirdMurmur.h"
@@ -71,6 +74,10 @@ static TAutoConsoleVariable<int32> CVarBirdsIgnorePlayer(TEXT("lyud.Birds.Ignore
 	TEXT("1: birds don't perceive the player (close-up screenshots, debugging)."));
 static TAutoConsoleVariable<float> CVarBirdsDrawScale(TEXT("lyud.Birds.DrawDistance"), 700.f,
 	TEXT("Birds are drawn within this many of their own lengths from the camera (graphics levels: View distance)."), ECVF_Scalability);
+static TAutoConsoleVariable<int32> CVarBirdsPerchCheck(TEXT("lyud.Birds.PerchCheck"), 1,
+	TEXT("1: a perch near the camera goes on the real branch or roof under it (none there: the bird goes elsewhere); 0: off (A/B)."));
+static TAutoConsoleVariable<int32> CVarBirdsAvoid(TEXT("lyud.Birds.Avoid"), 1,
+	TEXT("1: flying birds swerve round the player and the people near; 0: off (A/B)."));
 static TAutoConsoleVariable<int32> CVarBirdsNests(TEXT("lyud.Birds.Nests"), 1,
 	TEXT("The breeding year (docs/bird_nests.md): nests, eggs, chicks, fledglings; 0 = none (switching it restarts the bird life; A/B)."));
 static TAutoConsoleVariable<int32> CVarBirdsCorvids(TEXT("lyud.Birds.Corvids"), 1,
@@ -230,6 +237,38 @@ bool UBirdLifeSubsystem::Start()
 	S.Opt.bMigration = CVarBirdsMigration.GetValueOnGameThread() != 0;
 
 	AddRealTrees();
+	// the cable car's two ropes (bird_habitats.py, pieces of ~15-20 m along the old line): the line was rebuilt (ALyudCableway)
+	// and a haul rope runs all day, so a bird there sat on air; the Academgorodok's wires (ALyudWires) are pieces of 4 m at most
+	for (FSite& Site : S.Sites)
+	{
+		if (Site.Kind == EHabitat::Wire && (Site.B - Site.A).Len() > 5.f)
+		{
+			Site.Flags |= 8;
+		}
+	}
+	S.RemoveSites(8);
+	// a perch near the camera goes on the real thing: a branch of the drawn tree, the roof or rail under it; none there is
+	// a spot in the air (a crown's guessed volume between bare twigs), and the bird goes elsewhere
+	Perches = MakeShared<FBirdPerches>();
+	PerchFn = [this, World](const FBird& B, const FSite& Site, V3& Spot) -> int
+	{
+		if (Site.Kind == EHabitat::Wire)
+		{
+			return 1;            // the wires are drawn from the same file the sites come from (ALyudWires)
+		}
+		const float Len = SpeciesTable()[B.Species].Length * 100.f;
+		Perches->SetBird(0.25f, FMath::Clamp(Len * 0.22f, 1.5f, 12.f), Len * 0.2f, Len * 0.3f);
+		const bool bTree = Site.Kind == EHabitat::Broadleaf || Site.Kind == EHabitat::Conifer || Site.Kind == EHabitat::Garden;
+		FBirdPerches::FPerch Out;
+		bool bUnknown = false;
+		if (Perches->FindNear(World, ToUE(Spot), bTree ? FMath::Max(150.f, Site.Radius * 60.f) : 120.f, bTree, Out, &bUnknown))
+		{
+			Spot = FromUE(Out.Point);
+			return 1;
+		}
+		return bUnknown ? -1 : 0;
+	};
+	S.Perch = PerchFn;
 
 	// the player's usual place: the club's door, at the map's origin (face y from the habitat file)
 	S.Opt.Focus = V3(0.f, 12.f, 0.f);
@@ -498,6 +537,8 @@ int32 UBirdLifeSubsystem::SpawnBird(FName Species, FVector Location)
 
 void UBirdLifeSubsystem::Stop()
 {
+	PerchFn = nullptr;
+	Perches.Reset();
 	if (Renderer)
 	{
 		Renderer->Destroy();
@@ -686,9 +727,22 @@ void UBirdLifeSubsystem::UpdatePlayer(float DeltaTime)
 		bOffer = false;
 	}
 	P.bOffer = bOffer;
-	if (bOffer)
+	// feed in the hand (the bag carried, or a handful held out): birds that like it notice it from their distance and come
+	FName Held = bOffer ? OfferFood : FName();
+	if (Held.IsNone() && !Pawn->IsHidden())
 	{
-		LyudBirdFeeds::LikeTable(OfferFood, P.OfferLike);
+		if (const ULyudInventory* Inv = ULyudInventory::Get(this))
+		{
+			const FName Item = Inv->EquippedItem();
+			const FLyudItemDef* Def = Item.IsNone() ? nullptr : ULyudInventory::FindDef(Item);
+			Held = Def && Def->Kind == ELyudItemKind::Feed ? Item : FName();
+		}
+	}
+	P.bFeed = !Held.IsNone();
+	if (P.bFeed && Held != FeedLiked)
+	{
+		LyudBirdFeeds::LikeTable(Held, P.OfferLike);
+		FeedLiked = Held;
 	}
 	P.Palm = FromUE(LastPalm);
 	P.HandSpeed = HandSpeed;
@@ -794,6 +848,25 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 	{
 		MigrationTimer = 5.f;
 		S.UpdateMigration();
+		if (Perches)
+		{
+			Perches->TrimCache(48);
+		}
+	}
+	UpdateBodies(DeltaTime);
+	S.Opt.bAvoid = CVarBirdsAvoid.GetValueOnGameThread() != 0;
+	const bool bPerchCheck = CVarBirdsPerchCheck.GetValueOnGameThread() != 0 && (bool)PerchFn;
+	if (bPerchCheck != (bool)S.Perch)
+	{
+		S.Perch = nullptr;
+		if (bPerchCheck)
+		{
+			S.Perch = PerchFn;
+		}
+	}
+	if (Perches)
+	{
+		Perches->ResetBuildBudget(1);      // one tree's branch skeleton a frame at most (a few ms)
 	}
 	S.Step(DeltaTime);
 	DispatchEvents();
@@ -1347,6 +1420,124 @@ void UBirdLifeSubsystem::SetOffer(FVector PalmLocation, FName Food, bool bOn)
 	(void)Food;
 }
 
+int32 UBirdLifeSubsystem::AddFeedPile(FVector Location, FName Feed, float Handfuls)
+{
+	if (!Sim)
+	{
+		return -1;
+	}
+	float Like[64];
+	LyudBirdFeeds::LikeTable(Feed, Like);
+	return Sim->AddPile(FromUE(Location), Handfuls, Like);
+}
+
+FString UBirdLifeSubsystem::PerchAudit(float Radius)
+{
+	if (!Sim || !Perches)
+	{
+		return TEXT("not running");
+	}
+	// every bird sitting near the camera: on a perch, wood or a roof within 25 cm of its feet; on the ground, the ground
+	// within 30 cm (a trace); the ones in the air listed
+	UWorld* World = GetWorld();
+	const FWorld& S = *Sim;
+	int32 Perched = 0, OnGround = 0, InAir = 0;
+	TArray<FString> Bad;
+	FCollisionQueryParams Q(SCENE_QUERY_STAT(BirdAudit), false);
+	if (APawn* Pawn = UGameplayStatics::GetPlayerPawn(World, 0))
+	{
+		Q.AddIgnoredActor(Pawn);
+	}
+	if (ALyudSea* SeaActor = Sea.Get())
+	{
+		Q.AddIgnoredActor(SeaActor);
+	}
+	for (const FBird& B : S.Birds)
+	{
+		if (B.bGone || IsAirborne(B.Act) || B.Act == EAct::Claimed || B.Act == EAct::Eat || B.Act == EAct::Swim || (ToUE(B.Pos) - ToUE(S.Camera)).Size() > Radius)
+		{
+			continue;
+		}
+		const FVector P = ToUE(B.Pos);
+		const bool bGround = B.Site < 0 || IsGroundHabitat(S.Sites[B.Site].Kind);
+		bool bOk;
+		if (bGround)
+		{
+			OnGround++;
+			FHitResult Hit;
+			bOk = World->LineTraceSingleByChannel(Hit, P + FVector(0, 0, 30.f), P - FVector(0, 0, 30.f), ECC_Visibility, Q) || P.Z < S.SeaZ * 100.f + 30.f;
+		}
+		else
+		{
+			Perched++;
+			const LyudBirds::EHabitat Kind = S.Sites[B.Site].Kind;
+			if (Kind == EHabitat::Wire)
+			{
+				bOk = true;
+			}
+			else
+			{
+				FBirdPerches::FPerch Out;
+				const bool bTree = Kind == EHabitat::Broadleaf || Kind == EHabitat::Conifer || Kind == EHabitat::Garden;
+				Perches->ResetBuildBudget(1000);
+				bOk = Perches->FindNear(World, P, 25.f, bTree, Out);
+			}
+		}
+		if (!bOk)
+		{
+			InAir++;
+			if (Bad.Num() < 10)
+			{
+				Bad.Add(FString::Printf(TEXT("%s#%d %s on %s at %.0f %.0f %.0f"), UTF8_TO_TCHAR(SpeciesTable()[B.Species].Id.c_str()), B.Id, UTF8_TO_TCHAR(ActName(B.Act)),
+					B.Site >= 0 ? UTF8_TO_TCHAR(HabitatName(S.Sites[B.Site].Kind)) : TEXT("-"), P.X, P.Y, P.Z));
+			}
+		}
+	}
+	return FString::Printf(TEXT("within %.0f m: %d on perches, %d on the ground; in the air %d%s%s"), Radius / 100.f, Perched, OnGround, InAir,
+		Bad.Num() ? TEXT(": ") : TEXT(""), *FString::Join(Bad, TEXT(", ")));
+}
+
+int32 UBirdLifeSubsystem::NumAtFeed(bool bThrown) const
+{
+	int32 N = 0;
+	if (Sim)
+	{
+		for (const FBird& B : Sim->Birds)
+		{
+			N += bThrown ? B.Lure >= 0 : B.Lure == -1;
+		}
+	}
+	return N;
+}
+
+void UBirdLifeSubsystem::UpdateBodies(float DeltaTime)
+{
+	BodiesTimer -= DeltaTime;
+	if (BodiesTimer > 0.f)
+	{
+		return;
+	}
+	BodiesTimer = 0.25f;
+	// the people walking about near the camera (their bodies), the nearest few: flying birds swerve round them
+	FWorld& S = *Sim;
+	S.Bodies.clear();
+	const FVector Cam = ToUE(S.Camera);
+	for (TActorIterator<ANpcBody> It(GetWorld()); It; ++It)
+	{
+		if (It->IsHidden() || FVector::DistSquared2D(It->GetActorLocation(), Cam) > FMath::Square(8000.0))
+		{
+			continue;
+		}
+		FBody Body;
+		Body.Feet = FromUE(It->GetActorLocation());
+		S.Bodies.push_back(Body);
+		if (S.Bodies.size() >= 24)
+		{
+			break;
+		}
+	}
+}
+
 void UBirdLifeSubsystem::AddPlayerThreat(float Amount)
 {
 	if (Sim)
@@ -1549,6 +1740,16 @@ static FAutoConsoleCommandWithWorldAndArgs GBirdsReportCmd(TEXT("lyud.Birds.Repo
 		if (const UBirdLifeSubsystem* B = UBirdLifeSubsystem::Get(World))
 		{
 			UE_LOG(LogTemp, Display, TEXT("%s"), *B->Report());
+		}
+	}));
+
+static FAutoConsoleCommandWithWorldAndArgs GBirdsPerchAuditCmd(TEXT("lyud.Birds.PerchAudit"),
+	TEXT("lyud.Birds.PerchAudit [m=60]: BIRDPERCH line: the birds sitting within that distance of the camera, and how many have nothing (branch, roof, ground) under their feet."),
+	FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+	{
+		if (UBirdLifeSubsystem* B = UBirdLifeSubsystem::Get(World))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("BIRDPERCH %s"), *B->PerchAudit(Args.Num() ? FCString::Atof(*Args[0]) * 100.f : 6000.f));
 		}
 	}));
 
@@ -1886,9 +2087,9 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		}
 		const float Fade = bSteady ? FMath::Clamp((Limit - Dist) / (Limit * 0.2f), 0.f, 1.f) : (Dist > Limit ? 0.f : 1.f);
 		Why[B.Id] = Fade <= 0.f ? 4 : 5;
-		if (Fade <= 0.f || (B.Act == EAct::Peck && P.Z < -4350.0))
+		if (Fade <= 0.f || (B.Act == EAct::Peck && P.Z < World.SeaZ * 100.f - 50.f))
 		{
-			continue;            // too small to see, or a cormorant under water
+			continue;            // too small to see, or a cormorant under water (a gull pecking at the tide's edge is not)
 		}
 		Why[B.Id] = 0;
 		const bool bHadBody = BodyOf(B.Id) != nullptr;
