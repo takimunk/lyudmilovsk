@@ -2375,5 +2375,9 @@
  "dev.tp.nh_science_fair": "科学の日：市（クイズ、玉、カクテル）",
  "dev.tp.nh_ony_dumplings": "古い新年：ペリメニ食堂（ヴァレーニキ、ろう）",
  "dev.tp.nh_neptune_tower": "ネプチューンの日：監視塔（綱、ウハー）",
- "dev.tp.nh_neptune_rental": "ネプチューンの日：貸し出し屋（チューブ）"
+ "dev.tp.nh_neptune_rental": "ネプチューンの日：貸し出し屋（チューブ）",
+ "item.kvass_can.name": "クワスの缶",
+ "item.kvass_can.desc": "樽から注いだ冷たいクワスでいっぱいの、三リットルのアルミ缶。歩くたびにふたがかちゃかちゃ鳴る。",
+ "item.fruit_ice.name": "フルーツアイス",
+ "item.fruit_ice.desc": "棒つきの赤い氷。さくらんぼのコンポートみたいに甘酸っぱい。食べるより早く溶ける。"
 }

@@ -811,6 +811,10 @@ namespace CityKit
 
 	bool PropCollides(const FString& K)
 	{
+		if (K == TEXT("laundry_washing") || K == TEXT("trunk_white") || K == TEXT("leaf_pile"))
+		{
+			return StreetPropCollides(K);
+		}
 		return !(K == TEXT("umbrella") || K == TEXT("lounger") || K == TEXT("tree_grate") || K == TEXT("sandpit"));
 	}
 
@@ -853,6 +857,7 @@ namespace CityKit
 		else if (K == TEXT("climber")) Climber(M);
 		else if (K == TEXT("seesaw")) Seesaw(M);
 		else if (K == TEXT("sandpit")) Sandpit(M);
+		else BuildStreetProp(M, K, V);
 	}
 
 	void SkinsOf(const FString& Skin, FSkin& Top, FSkin& Side)

@@ -2375,5 +2375,9 @@
  "dev.tp.nh_science_fair": "Science Day: the fair (quiz, globe, cocktail)",
  "dev.tp.nh_ony_dumplings": "Old New Year: the dumpling bar (dumplings, wax)",
  "dev.tp.nh_neptune_tower": "Neptune Day: the tower (rope, fish soup)",
- "dev.tp.nh_neptune_rental": "Neptune Day: the rental (inner tube)"
+ "dev.tp.nh_neptune_rental": "Neptune Day: the rental (inner tube)",
+ "item.kvass_can.name": "A can of kvass",
+ "item.kvass_can.desc": "A three-litre aluminium can full of cold kvass from the barrel. The lid clinks with every step.",
+ "item.fruit_ice.name": "Fruit ice",
+ "item.fruit_ice.desc": "Red ice on a stick, sweet and sour like cherry compote. It melts faster than you can eat it."
 }

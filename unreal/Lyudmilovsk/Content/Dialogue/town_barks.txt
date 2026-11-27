@@ -4402,3 +4402,105 @@ festival = neptune_day
 doing = gather_mingle chat
 weight = 5
 talk = town.nh_nep_talk.1 | town.nh_nep_talk.2 | town.nh_nep_talk.3
+
+# The town's everyday street life (docs/street_life.md): the kvass barrel and the ice-cream cart on a hot day, the
+# dawn sweep and the milk round, the shutters going up, the washing in the yards, the grandmothers' benches, the
+# evening's dominoes, the autumn's leaves and the spring subbotnik. Russian: the speaker's own words never agree in
+# gender (no "я повесила").
+
+[street_kvass_vendor]
+doing = vend_kvass
+say = town.street_kvass_vendor.1..5
+
+[street_kvass_vendor_near]
+doing = vend_kvass
+near = hero
+weight = 3
+say = town.street_kvass_vendor_near.1..2
+
+[street_icecream_vendor]
+doing = vend_icecream
+say = town.street_icecream_vendor.1..4
+
+[street_icecream_vendor_near]
+doing = vend_icecream
+near = hero
+weight = 3
+say = town.street_icecream_vendor_near.1..2
+
+[street_kvass_buyer]
+doing = buy_kvass
+age = adult elder
+say = town.street_kvass_buyer.1..4
+
+[street_icecream_kid]
+doing = buy_icecream
+age = kid teen
+say = town.street_icecream_kid.1..4
+
+[street_icecream_grown]
+doing = buy_icecream
+age = adult elder
+say = town.street_icecream_grown.1..2
+
+[street_sweep]
+doing = sweep_street
+say = town.street_sweep.1..4
+
+[street_sweep_near]
+doing = sweep_street
+near = hero
+weight = 3
+say = town.street_sweep_near.1..2
+
+[street_milk]
+doing = deliver_milk
+say = town.street_milk.1..4
+
+[street_shutters]
+doing = open_shutters
+say = town.street_shutters.1..3
+
+[street_hang_laundry]
+doing = hang_laundry
+say = town.street_hang_laundry.1..4
+
+[street_take_laundry]
+doing = take_laundry
+say = town.street_take_laundry.1..4
+
+[street_grannies]
+doing = granny_bench
+say = town.street_grannies.1..5
+
+[street_grannies_near]
+doing = granny_bench
+near = hero
+weight = 4
+say = town.street_grannies_near.1..4
+
+[street_yard_dominoes]
+doing = yard_dominoes
+say = town.street_yard_dominoes.1..5
+
+[street_rake_leaves]
+doing = rake_leaves
+say = town.street_rake_leaves.1..4
+
+[street_subbotnik_paint]
+doing = subbotnik_paint
+say = town.street_subbotnik_paint.1..3
+
+[street_subbotnik_whitewash]
+doing = subbotnik_whitewash
+say = town.street_subbotnik_whitewash.1..3
+
+[street_subbotnik_sweep]
+doing = subbotnik_sweep
+say = town.street_subbotnik_sweep.1..3
+
+[street_subbotnik_near]
+doing = subbotnik_paint subbotnik_whitewash subbotnik_sweep
+near = hero
+weight = 3
+say = town.street_subbotnik_near.1..2

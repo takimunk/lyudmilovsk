@@ -1,0 +1,187 @@
+{
+ "city.plot.p_street_kvass.name": {
+  "ru": "Бочка с квасом",
+  "en": "The kvass barrel",
+  "ja": "クワスの樽"
+ },
+ "city.plot.p_street_icecart.name": {
+  "ru": "Тележка с мороженым",
+  "en": "The ice-cream cart",
+  "ja": "アイスクリームの屋台車"
+ },
+ "city.plot.p_street_subbotnik.name": {
+  "ru": "Субботник во дворе",
+  "en": "The subbotnik in the yard",
+  "ja": "中庭のスボートニク"
+ },
+ "city.plot.p_street_leaves.name": {
+  "ru": "Листья во дворе",
+  "en": "Leaves in the yard",
+  "ja": "中庭の落ち葉"
+ },
+ "city.plot.p_street_domino.name": {
+  "ru": "Доминошный стол во дворе",
+  "en": "The domino table in the yard",
+  "ja": "中庭のドミノ台"
+ },
+ "city.shop.street_kvass.title": {
+  "ru": "Квас из бочки",
+  "en": "Kvass from the barrel",
+  "ja": "樽のクワス"
+ },
+ "city.shop.street_icecream.title": {
+  "ru": "Мороженое с тележки",
+  "en": "Ice cream from the cart",
+  "ja": "屋台車のアイス"
+ },
+ "city.coll.street.title": {
+  "ru": "Улица летом",
+  "en": "The street in summer",
+  "ja": "夏の通り"
+ },
+ "city.street.whitewash.prompt": {
+  "ru": "E — побелить ствол",
+  "en": "E — whitewash a trunk",
+  "ja": "E — 幹を白く塗る"
+ },
+ "city.street.whitewash.1": {
+  "ru": "Ведро извести и широкая кисть. Ствол белеет снизу до колена, как в носках. Соседка кивает: ровно.",
+  "en": "A bucket of lime and a wide brush. The trunk goes white up to the knee, like socks. The neighbour nods: nice and even.",
+  "ja": "石灰のバケツと太い刷毛。幹がひざの高さまで白くなる、靴下みたいに。隣のおばさんがうなずく。きれいに塗れてる。"
+ },
+ "city.street.whitewash.2": {
+  "ru": "Известь брызгает на кеды. «Это на память», — смеётся кто-то с граблями.",
+  "en": "Lime splashes onto my sneakers. \"That's a keepsake,\" laughs someone with a rake.",
+  "ja": "石灰がスニーカーに飛ぶ。「記念だよ」と熊手を持った誰かが笑う。"
+ },
+ "city.street.whitewash.3": {
+  "ru": "Белю вторую яблоню. Говорят, от жучков. А по-моему, просто чтобы двор был нарядный.",
+  "en": "I whitewash the second apple tree. They say it's against beetles. I think it's just so the yard looks smart.",
+  "ja": "二本目のりんごの木を塗る。虫よけだって。でも本当は中庭をきれいに見せたいだけだと思う。"
+ },
+ "city.street.whitewash.4": {
+  "ru": "Кто-то включил на подоконнике радио. Под марш белится быстрее.",
+  "en": "Someone has put a radio on a windowsill. Whitewashing goes faster to a march.",
+  "ja": "誰かが窓辺でラジオをつけた。行進曲だと塗るのが速くなる。"
+ },
+ "city.street.whitewash.done": {
+  "ru": "Сегодня я уже побелил своё. Дальше справятся без меня.",
+  "en": "I've done my share of whitewashing today. They'll manage the rest without me.",
+  "ja": "今日の分はもう塗った。あとはみんなでやってくれる。"
+ },
+ "city.street.rake.prompt": {
+  "ru": "E — помочь сгрести листья",
+  "en": "E — help rake the leaves",
+  "ja": "E — 落ち葉かきを手伝う"
+ },
+ "city.street.rake.1": {
+  "ru": "Грабли длиннее меня. Листья шуршат и пахнут яблоками. Дворник машет: «Вот спасибо, держи на мороженое».",
+  "en": "The rake is taller than me. The leaves rustle and smell of apples. The yard keeper waves: \"Thanks, here's something for an ice cream.\"",
+  "ja": "熊手はぼくより長い。落ち葉がかさかさ鳴って、りんごのにおいがする。用務員さんが手を振る。「ありがとう、アイス代だよ」"
+ },
+ "city.street.rake.2": {
+  "ru": "Сгрёб кучу до пояса. Очень хочется в неё прыгнуть. Дворник смотрит строго.",
+  "en": "Raked a pile up to my waist. I really want to jump in it. The yard keeper gives me a stern look.",
+  "ja": "腰の高さまで集めた。飛びこみたくてたまらない。用務員さんがきびしい目で見てる。"
+ },
+ "city.street.rake.3": {
+  "ru": "Клён сбросил всё за одну ночь. Под листьями нашлась чья-то варежка.",
+  "en": "The maple dropped everything in one night. Under the leaves there's somebody's mitten.",
+  "ja": "カエデが一晩で葉を全部落とした。落ち葉の下から誰かの手袋が出てきた。"
+ },
+ "city.street.rake.done": {
+  "ru": "Двор и так чистый. Грабли отдыхают у стены.",
+  "en": "The yard is clean already. The rake is resting against the wall.",
+  "ja": "中庭はもうきれい。熊手は壁にもたれて休んでる。"
+ },
+ "city.street.dominoes.prompt": {
+  "ru": "E — сесть забить козла",
+  "en": "E — sit in for a game of dominoes",
+  "ja": "E — 座ってドミノに入る"
+ },
+ "city.street.dominoes.1": {
+  "ru": "Костяшки щёлкают по фанере. «Рыба!» — и все смеются, хотя проиграл я.",
+  "en": "The tiles clack on the plywood. \"Blocked!\" and everyone laughs, though I'm the one who lost.",
+  "ja": "牌が合板にぱちんと当たる。「詰みだ！」みんな笑う。負けたのはぼくなのに。"
+ },
+ "city.street.dominoes.2": {
+  "ru": "Дед в майке учит: «Не держи дубли до конца». Комары тоже играют.",
+  "en": "The old man in a vest teaches me: \"Don't keep the doubles to the end.\" The mosquitoes are in the game too.",
+  "ja": "ランニングシャツのおじいさんが教えてくれる。「ダブルは最後まで取っておくな」蚊も参加してる。"
+ },
+ "city.street.dominoes.3": {
+  "ru": "Темнеет. Кто-то вынес лампу на длинном проводе из окна первого этажа.",
+  "en": "It's getting dark. Someone has run a lamp out of a ground-floor window on a long cord.",
+  "ja": "暗くなってきた。一階の窓から誰かが長いコードでランプを出してくれた。"
+ },
+ "city.ask.street_kvass.size": {
+  "ru": "А какая кружка?",
+  "en": "What size is the mug?",
+  "ja": "ジョッキの大きさは？"
+ },
+ "city.ask.street_kvass.size.1": {
+  "ru": "Маленькая — пол-литра, большая — литр. Бидон свой — наливаю сколько влезет.",
+  "en": "The small one's half a litre, the big one a litre. Bring your own can and I'll fill it to the brim.",
+  "ja": "小さいのは半リットル、大きいのは一リットル。缶を持ってくれば、入るだけ注いであげる。"
+ },
+ "city.ask.street_kvass.size.2": {
+  "ru": "Бидончик у меня есть, трёхлитровый. Бери, вернёшь — не вернёшь, дело твоё.",
+  "en": "I've got a three-litre can here. Take it; bring it back or don't, that's up to you.",
+  "ja": "三リットルの缶ならあるよ。持っていきな。返すかどうかは任せる。"
+ },
+ "city.ask.street_kvass.when": {
+  "ru": "А вы каждый день тут?",
+  "en": "Are you here every day?",
+  "ja": "毎日ここにいるの？"
+ },
+ "city.ask.street_kvass.when.1": {
+  "ru": "Как жара — так и я. Бочку привозят к десяти, а к семи увозят. В дождь не стою, квас не любит.",
+  "en": "When it's hot, I'm here. They bring the barrel by ten and take it away by seven. Not in the rain, the kvass doesn't like it.",
+  "ja": "暑い日はいるよ。樽は十時までに来て、七時には引き上げる。雨の日は出ない。クワスが嫌がるから。"
+ },
+ "city.ask.street_kvass.when.2": {
+  "ru": "Сегодня ещё ничего, а вчера к обеду очередь до фонтана стояла.",
+  "en": "Today's not bad. Yesterday by lunchtime the queue went all the way to the fountain.",
+  "ja": "今日はまだまし。昨日はお昼には噴水まで行列ができてた。"
+ },
+ "city.ask.street_kvass.cold": {
+  "ru": "А почему он такой холодный?",
+  "en": "Why is it so cold?",
+  "ja": "どうしてこんなに冷たいの？"
+ },
+ "city.ask.street_kvass.cold.1": {
+  "ru": "Бочка двойная, а с утра её льдом обкладывают. Секрет фирмы, никому не говори.",
+  "en": "The barrel has double walls, and they pack it with ice in the morning. Trade secret, don't tell anyone.",
+  "ja": "樽は二重になってて、朝に氷を詰めるの。企業秘密だよ、誰にも言わないで。"
+ },
+ "city.ask.street_icecream.which": {
+  "ru": "А что вкуснее?",
+  "en": "Which one's best?",
+  "ja": "どれが一番おいしい？"
+ },
+ "city.ask.street_icecream.which.1": {
+  "ru": "Эскимо — для солидных людей. Фруктовый лёд — для тех, кому жарко по-настоящему.",
+  "en": "The eskimo is for serious people. Fruit ice is for those who are really hot.",
+  "ja": "エスキモーはちゃんとした人向け。フルーツアイスは本当に暑い人向け。"
+ },
+ "city.ask.street_icecream.which.2": {
+  "ru": "Пломбир в рожке. Только ешь быстро, у нас тут солнце, а не холодильник.",
+  "en": "The cone. Just eat it fast, it's the sun out here, not a fridge.",
+  "ja": "コーンのアイス。でも早く食べてね。ここは冷蔵庫じゃなくて太陽の下だから。"
+ },
+ "city.ask.street_icecream.cart": {
+  "ru": "А тележка тяжёлая?",
+  "en": "Is the cart heavy?",
+  "ja": "屋台車は重い？"
+ },
+ "city.ask.street_icecream.cart.1": {
+  "ru": "С утра тяжёлая, к вечеру лёгкая. Это и есть торговля.",
+  "en": "Heavy in the morning, light by evening. That's what trade is.",
+  "ja": "朝は重くて、夕方には軽い。それが商売ってもの。"
+ },
+ "city.ask.street_icecream.cart.2": {
+  "ru": "Внутри сухой лёд. Не трогай, он кусается, хоть и не горячий.",
+  "en": "There's dry ice inside. Don't touch it, it bites even though it isn't hot.",
+  "ja": "中にドライアイスが入ってる。触らないで。熱くないのにかみつくから。"
+ }
+}

@@ -1421,9 +1421,11 @@ def places(plan):
                     "staff": u.get("staff") or [], "name_ru": u.get("name_ru", ""), "name_en": u.get("name_en", ""),
                     "export": export, "w": w, "d": 6.0, "unit": 1})
     for e in extra_places():
+        # an entry may bring its own staff (the street's vendors, docs/street_life.md) and its export inline (a stall with
+        # one thing: no building module behind it)
         out.append({"id": e["id"], "kind": e["kind"], "building": e["building"], "front": list(e["front"]), "yaw": e["yaw"],
-                    "staff": [], "name_ru": e.get("name_ru", ""), "name_en": e.get("name_en", ""),
-                    "export": building_export(e["building"], e["id"]), "w": e.get("w", 6.0), "d": e.get("d", 6.0), "extra": 1})
+                    "staff": [list(r) for r in e.get("staff", [])], "name_ru": e.get("name_ru", ""), "name_en": e.get("name_en", ""),
+                    "export": e.get("export") or building_export(e["building"], e["id"]), "w": e.get("w", 6.0), "d": e.get("d", 6.0), "extra": 1})
     return out
 
 
