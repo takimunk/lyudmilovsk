@@ -38,7 +38,7 @@ age = adult elder
 months = 12-2
 weight = 0.5
 say town.cook_shop_winter.1 | Банку варенья открою к чаю. Летом сварили — зимой вспомнили. | I'll open a jar of jam for tea. Made in summer, remembered in winter. | お茶にジャムを一びん開けよう。夏に作って、冬に思い出す。
-say town.cook_shop_winter.2 | Трески бы на уху. Зимой уха из трески — лучшая. | Some cod for ukha. In winter cod ukha is the best. | ウハ用にタラがほしい。冬はタラのウハが一番。
+say town.cook_shop_winter.2 | Трески бы на уху. Зимой уха из трески — лучшая. | Some cod for ukha. In winter cod ukha is the best. | ウハー用にタラがほしい。冬はタラのウハーが一番。
 
 [cook_home_table]
 doing = eat_home
