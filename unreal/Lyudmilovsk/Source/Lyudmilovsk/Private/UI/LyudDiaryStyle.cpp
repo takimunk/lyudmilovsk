@@ -188,20 +188,11 @@ namespace LyudDiary
 	const FSlateBrush* SketchBrush(FName Item)
 	{
 		struct FSketch { TSharedPtr<FSlateBrush> Brush; UTexture2D* Tex = nullptr; };
-		static TMap<FName, FSketch> Cache;
-		static FString CacheLang;
-		if (CacheLang != LyudText::Language())
-		{
-			for (TPair<FName, FSketch>& Old : Cache)
-			{
-				if (Old.Value.Tex)
-				{
-					Old.Value.Tex->RemoveFromRoot();
-				}
-			}
-			Cache.Reset();
-			CacheLang = LyudText::Language();
-		}
+		// one cache per language (three at most), never emptied: a page still on screen (the other half of the spread,
+		// the turning sheet) holds raw brush pointers from before a language change, and freeing those brushes and
+		// unrooting their pictures left it drawing freed memory
+		static TMap<FString, TMap<FName, FSketch>> ByLanguage;
+		TMap<FName, FSketch>& Cache = ByLanguage.FindOrAdd(LyudText::Language());
 		if (FSketch* S = Cache.Find(Item))
 		{
 			return S->Brush.Get();
