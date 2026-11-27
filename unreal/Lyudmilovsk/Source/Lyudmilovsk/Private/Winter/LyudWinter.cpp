@@ -1392,19 +1392,34 @@ void ULyudWinterSubsystem::KeepOffDecals()
 			It->SetReceivesDecals(false);
 		}
 	}
-	// the plants carry their own snow (their materials read MPC_LyudWinter)
-	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+	// the plants carry their own snow (their materials read MPC_LyudWinter). Walked by their classes (the object hash),
+	// not every actor of the level tested with WinterIsPlant: this runs every 2 s all winter long, and the whole-level
+	// walk was a periodic spike on a city of thousands of actors.
+	auto KeepOffPlant = [](AActor* A)
 	{
-		if (WinterIsPlant(*It))
+		A->ForEachComponent<UPrimitiveComponent>(false, [](UPrimitiveComponent* C)
 		{
-			It->ForEachComponent<UPrimitiveComponent>(false, [](UPrimitiveComponent* C)
+			if (C->bReceivesDecals)
 			{
-				if (C->bReceivesDecals)
-				{
-					C->SetReceivesDecals(false);
-				}
-			});
-		}
+				C->SetReceivesDecals(false);
+			}
+		});
+	};
+	for (TActorIterator<AProceduralPlant> It(GetWorld()); It; ++It)
+	{
+		KeepOffPlant(*It);
+	}
+	for (TActorIterator<AProceduralForest> It(GetWorld()); It; ++It)
+	{
+		KeepOffPlant(*It);
+	}
+	for (TActorIterator<AProceduralGrass> It(GetWorld()); It; ++It)
+	{
+		KeepOffPlant(*It);
+	}
+	for (TActorIterator<AProceduralVine> It(GetWorld()); It; ++It)
+	{
+		KeepOffPlant(*It);
 	}
 	if (Ice && Ice->Sheet && Ice->Sheet->bReceivesDecals)
 	{

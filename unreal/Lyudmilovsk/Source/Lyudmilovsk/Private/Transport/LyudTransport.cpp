@@ -1226,7 +1226,11 @@ void ULyudTransportSubsystem::HandleEvents()
 					{
 						ViewWhat = FName(*FString::Printf(TEXT("view_%s_%s"), *Key(Net->Stations[E.Station].Id), *Key(Net->Stations[Next].Id)));
 						ViewTimer = 20.f;
+						// the view's line (in 20 s) and the arrival's below start loading in the background now:
+						// Announce's LoadVoice read each on the spot, a hitch on the ride
+						LyudText::WarmVoice(this, FString::Printf(TEXT("line.transport.%s.1"), *ViewWhat.ToString()));
 					}
+					LyudText::WarmVoice(this, FString::Printf(TEXT("line.transport.arrive_%s.1"), *Key(Net->Stations[Next].Id)));
 				}
 			}
 			else if (E.Kind == LT::EEvent::Arrive && SimValid(Net->Stations, E.Station))

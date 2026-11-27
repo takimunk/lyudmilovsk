@@ -239,6 +239,11 @@ void ULyudSunGlare::OnWorldBeginPlay(UWorld& InWorld)
 		M->FlashesSeen.Reset();
 		M->ResetFor = &InWorld;
 	}
+	// the hero's three "ow" lines load in the background now: Ow() read each on the spot the moment the sun hit his eyes
+	for (int32 I = 1; I <= 3; I++)
+	{
+		LyudText::WarmVoice(&InWorld, FString::Printf(TEXT("line.hero.sun_ow.%d"), I));
+	}
 }
 
 void ULyudSunGlare::Deinitialize()
