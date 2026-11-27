@@ -914,7 +914,8 @@ void AAnimalLifeRenderer::Draw(const FWorld& World, const FVector& Camera)
 	const int32 Max = FMath::Max(0, CVarAnimalsBodies.GetValueOnGameThread());
 	const float CatDist = CVarAnimalsDrawCat.GetValueOnGameThread() * 100.f;
 	// the nearest animals within their draw distance (dogs are bigger: seen farther), not ones gone into a cellar
-	TArray<TPair<float, int32>> Want;
+	// inline: no heap per frame (a crowd beyond 64 in range spills over, as before)
+	TArray<TPair<float, int32>, TInlineAllocator<64>> Want;
 	for (const FAnimal& A : World.Animals)
 	{
 		if (A.Pet == EPet::Indoors)
@@ -933,14 +934,11 @@ void AAnimalLifeRenderer::Draw(const FWorld& World, const FVector& Camera)
 	{
 		Want.SetNum(Max);
 	}
-	TSet<int32> Keep;
-	for (const auto& W : Want)
-	{
-		Keep.Add(W.Value);
-	}
+	// Want is at most lyud.Animals.Bodies long (20): a look along it, not a set built every frame
 	for (auto It = Bodies.CreateIterator(); It; ++It)
 	{
-		if (!Keep.Contains(It->Key))
+		const int32 BodyId = It->Key;
+		if (!Want.ContainsByPredicate([BodyId](const TPair<float, int32>& W) { return W.Value == BodyId; }))
 		{
 			if (It->Value)
 			{
@@ -956,9 +954,9 @@ void AAnimalLifeRenderer::Draw(const FWorld& World, const FVector& Camera)
 		const int32 Id = W.Value;
 		const FAnimal& A = World.Animals[Id];
 		AAnimalActor* Body = BodyOf(Id);
-		const FName Breed = BreedName(A);
 		if (!Body)
 		{
+			const FName Breed = BreedName(A);     // a name-table lookup: only for a body being given out
 			// a spare body of the same breed if there is one (its mesh stays loaded), else a new one
 			int32 Pick = INDEX_NONE;
 			for (int32 I = Spare.Num() - 1; I >= 0; --I)

@@ -526,11 +526,13 @@ UMaterialInstanceDynamic* ULyudGarden::Mat(const FLinearColor& Colour)
 
 UStaticMeshComponent* ULyudGarden::AddBox(const FVector& At, const FVector& HalfCm, float Yaw, const FLinearColor& Colour, bool bCollide)
 {
-	static UStaticMesh* Cube = nullptr;
-	if (!Cube)
+	// weak: a raw static outlives a world reload, and the engine cube can be collected in between
+	static TWeakObjectPtr<UStaticMesh> CubeRef;
+	if (!CubeRef.IsValid())
 	{
-		Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+		CubeRef = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
 	}
+	UStaticMesh* Cube = CubeRef.Get();
 	if (!Site || !Cube)
 	{
 		return nullptr;
@@ -550,11 +552,12 @@ UStaticMeshComponent* ULyudGarden::AddBox(const FVector& At, const FVector& Half
 
 UStaticMeshComponent* ULyudGarden::AddCylinder(const FVector& At, float RadiusCm, float HalfHeightCm, const FLinearColor& Colour)
 {
-	static UStaticMesh* Cyl = nullptr;
-	if (!Cyl)
+	static TWeakObjectPtr<UStaticMesh> CylRef;
+	if (!CylRef.IsValid())
 	{
-		Cyl = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+		CylRef = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
 	}
+	UStaticMesh* Cyl = CylRef.Get();
 	if (!Site || !Cyl)
 	{
 		return nullptr;

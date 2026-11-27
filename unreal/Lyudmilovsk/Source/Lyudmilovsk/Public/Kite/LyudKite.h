@@ -34,6 +34,8 @@ public:
 	/** 0 diamond, 1 box; Colours picks one of the colourways (a child's kite: its own by their id). */
 	void Build(int32 Shape, int32 Colours, bool bWithReel);
 	int32 GetShape() const { return Shape; }
+	/** Repaints a built kite in another colourway (a pooled kite handed to another child). */
+	void Repaint(int32 Colours);
 
 	/** Places it for this frame: the kite (cm, its nose and sail normal), the line through Points (cm, hand first), the wind (m/s). */
 	void Show(const FVector& KitePos, const FVector& Forward, const FVector& Normal, const TArray<FVector>& Points, const FVector& Wind, float DeltaTime);
