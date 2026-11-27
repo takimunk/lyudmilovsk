@@ -79,6 +79,9 @@ Dog), sanatorium procedures (`procedure`), the telescopes (`observe`, Jupiter's 
 the paper and post rounds (`round_done`), winter play (`winter`: snow, skating, the banya, the walrus swim), cups and wins (`cup_won`,
 `beat`), quotes and the book club, a fine on the train, a stamp set completed. The test checks where each of these lands.
 
+Since 2026-11-27: calls from the payphones (`phone_call`) and the fortune cards of the bus-stop weighing machine and the fair's
+globe (`fortune`), docs/city_interiors.md "Coins, scales and strips".
+
 New events for it (quests can use them too): `film_watched <film>` (ULyudCinema), `kite_flown` (ULyudKiteFlying). A new system
 gets into the diary by a rule and a topic in `content.py`: no C++.
 

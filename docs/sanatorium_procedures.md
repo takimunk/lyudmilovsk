@@ -31,10 +31,13 @@ The wing passes lint at 0/0. It has two lit pendants, and it doesn't shift any e
 ```
 "proc": {"title": key, "keys": key, "when": {line conditions}, "steps": [step, ...],
          "good": [lines], "fair": [lines], "poor": [lines], "good_share": 0.7, "fair_share": 0.35,
-         "collect": "set/piece", "vitals": true}
+         "collect": "set/piece", "vitals": true, "scene": false}
 step: {"do": "say|pick|pour|sip|breathe|tap|cut|measure|guest|news", "lines": [...], "guests": {"<key>"|"": [...]},
        "by_pick": true, "secs": s, "count": n, "every": s, "window": s, "in": s, "out": s, "mark": [lo, hi], "minutes": n}
 ```
+
+`"scene": true` makes it a small scene of the town instead of a cure (a payphone's dial, a street scale: docs/city_interiors.md
+"Coins, scales and strips"): it is not counted by `ProcCount` and sends no `procedure` event.
 
 `tools/city/interiors.py` checks every field and string. `CityThingsModel.h` holds the model: `FProcDef`, `FProcState`,
 `ProcNow`, `StartProc`, `TickProc`, `PressProc`, `EndProc` and `FinishProc`.

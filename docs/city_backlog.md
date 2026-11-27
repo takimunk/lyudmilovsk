@@ -40,7 +40,7 @@ Unreal on the Mac. Whoever takes an item writes their mark and the date here.
 
 | Plot | Building | Rooms and what to do there | Status |
 |---|---|---|---|
-| P-LIBRARY | capsule_library | hall with shelves by topic, lending desk (bird guide for the ornithologist quest), card catalogue, reading pods with different moods on three levels, periodicals table, children's corner, a quiet librarian's office | [x] content 2026-11-13: lending desks sell the bird guide, 12 shelf topics + pods, catalogue, rules; thin: the office is only a staff door |
+| P-LIBRARY | capsule_library | hall with shelves by topic, lending desk (bird guide for the ornithologist quest), card catalogue, reading pods with different moods on three levels, periodicals table, children's corner, a quiet librarian's office | [x] content 2026-11-13: lending desks sell the bird guide, 12 shelf topics + pods, catalogue, rules; the office door answers a knock by the hour (2026-11-27, "Coins, scales and strips") |
 | P-STORE | department_store | two floors of departments (groceries, fabrics, clothes, shoes, toys, records and radios, household, stationery, sports and fishing), tills, a cloakroom, a café corner, a lost-and-found | [x] content 2026-11-13: 8 department shops, cafeteria, shoes (talk), toy house, records/radio catalogue; thin: no clothes, toys or records to buy (no items) |
 | P-CAFE | saucer_pavilion | café «Тарелка»: bar, tables by the ring window, jukebox, an ice-cream counter, telescope on the gallery | [x] content 2026-11-13: bar and ice-cream counter shops, jukebox, telescope |
 | P-CLUB2 | workers_club | house of culture «Рассвет»: foyer with ticket office and buffet, cinema hall (film sessions by the clock), hobby rooms (chess, radio, dance), cloakroom, poster wall | [x] content 2026-11-13: cinema (projectionist), tickets (clerk), buffet, cloakroom, chess, dance, radio bench; thin: the film is lines only (no screen) |
@@ -155,6 +155,11 @@ rental, souvenirs, a dumpling house, a cheburek house, a beer bar). Each is now 
   declares a link yet (the unite block, the stacked beam tower and the capsule towers' modules), no lift sound or doors
   that open
 
+- [~] Things that only printed a line, first depth pass (2026-11-27, city_interiors.md "Coins, scales and strips"): the
+  payphones dial (the speaking clock, numbers torn off the bus-stop notices), the bus-stop weighing machine and the fair's
+  globe give fortune cards, the clinic's scales say the weight, the fountains and the clinic's cooler are held to the mark,
+  «Морской бой» at the Cog, the library's and the store's staff doors answer a knock, the lobby magazines are taken. Not
+  built on the Mac yet. Still open: a soda-water machine (needs a mesh), the silent sound ids
 - [ ] Unique wall art per building from the atlas (no picture repeated inside one room)
 - [~] Room sounds (reverb by room size, clock ticks, a radio behind a wall, the store's tannoy). 2026-11-13: room tones
   by data (`tones`, `tone_by`: a quiet loop and sparse one-shots per plot, its own when shut; one pooled 2D component,

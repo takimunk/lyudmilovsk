@@ -510,6 +510,51 @@ After changing a module: `python3 blender/city/build_city.py -- <type> --no-rend
 pip's `bpy` in the cloud too), `python3 tools/city/interiors.py`, `python3 tools/city/reach_audit.py <type>`; on the Mac
 also `unreal/scripts/import_city.py` for the meshes.
 
+### Coins, scales and strips
+
+The depth pass of 2026-11-27 on the things a player passes most (bus stops, the promenade, the clinic, the library, the
+store, the clubs) that only printed a line. Content `tools/city/content/x_touch_town.json` (acts `tch_*`, words
+`strings/x_touch_town.json`, keys `city.tch.*`), plus small changes to the kiosks' acts in `x_p_kiosk.json`. No new
+geometry, no new items.
+
+| Where | Thing | What happens now |
+|---|---|---|
+| every payphone (W1-U12/U24 at the pasty house, bus stop 1, the lobbies, the unite block's street) | `what=payphone` (rule `machine:what=payphone,id=*phone*`, act `tch_call`; kiosk 1's `xk1_phone` is `like` it) | a scene: the coin drops (rain, cold), the dial offers three numbers (keys 1-3): **100, the speaking clock**, which reads the game's time (`{time}`), any number torn off a notice, 09 the enquiries, a random number. The answer is the picked number's own. 1 rouble. Stamp `coin_slots/phone` |
+| the bus-stop notices (all six kiosks) | `stop_notices` (`xk_notices`, `xk1_notices`) | the first four looks at each board (one a day) find a new notice with a fringe of numbers: the hero tears one off (stamp `strips/puppy`, `cat`, `guitar`, `swap`, a `once` line per board). Each number torn joins the payphone's dial, with its own answer (the puppy with a white ear, Peach the cat found, the guitar teacher, the old stamp collector at the Cog) |
+| bus stop 3's weighing machine | `k3_scales` (`xk3_weigh` `like` `tch_fortune_scale`) | a scene: a coin, the needle stops at the hero's weight (`measure`, `{0}` kg: `FModel::VitalsOn`, the same numbers as the doctor's card), then a fortune card (eight, in turn: `fortunes/1..8`). Stamp `coin_slots/scale` |
+| the fair's fortune globe | `P-FAIR/fortune_globe` (`tch_globe`, `like` `fortune`) | the same eight cards, in another order. Stamp `coin_slots/globe` |
+| the clinic's and the sanatorium's scales | `P-CLINIC/patient_0`, `P-SANATORIUM/treat_scales` (`tch_med_scales`, target `scales`, so the `checkup` quest still counts it) | a scene: the nurse (8-20) or nobody, the weight in kg written on the card or remembered |
+| «Морской бой» | `P-CLUB3/arcade_1` (`tch_seabattle`) | the club's arcade is the periscope game: an aim game of its own (torpedo when the ship is in the crosshair), 5 roubles. Stamp `coin_slots/seabattle` on a win |
+| the drinking fountains of bus stops 2 and 5 | `k2_fountain`, `k5_fountain` (`like` `tch_fountain`) | a `pour` scene: hold E, let go at the mark for a proper drink, hold on and the jet hits your nose. Off in frost or snow (`when`) |
+| the clinic's water cooler | `P-CLINIC/water_cooler` (`tch_cooler`) | a `pour` scene with a paper cone that soaks from below |
+| the librarian's door | `P-LIBRARY/office_door` (`tch_knock` prompt, act `tch_lib_knock`) | a knock answers by the hour: catalogue cards rustling, lunch with dill, the librarian over her glasses, Thursday's new books in brown paper, a note "gone to the stacks" once; shut (Monday, night): its own words (`city.tch.lib.shut.*`) |
+| the store's staff door | `P-STORE/g_staff_door` (`tch_store_knock`) | a knock: crates in the morning, someone counting, a loader's tip about Monday's oranges, Saturday's football on the radio, a cat at night |
+| the capsule towers' lobby magazines | `P-CAPSULE/lobby_magazine`, `P-T5H1/lobby_magazine` | they gave nothing (`take_any`); now `take_magazine_travel` puts the «Берега» magazine in the pocket once a day |
+
+* **Scenes, not cures.** A proc with `"scene": true` (`FProcDef::bScene`) plays like a procedure but is not counted by
+  `FModel::ProcCount` (so a phone call never improves the sanatorium card's numbers) and the game sends no `procedure`
+  event for it (`ULyudCityThings::FinishProcedure`); its act still reports `do <act>`. `interiors.py` refuses `scene` with
+  `vitals`.
+* **Numbers on the dial by stamps.** A `pick` step shows the first three options whose conditions hold; a later `by_pick`
+  step must list its answers in the same order with the same conditions (`have: strips/<x>`), so the n-th option shown and
+  the n-th answer that holds are the same number.
+* **Collections** (all with rewards in the same file): `coin_slots` «Монетка в щель» (phone, scale, globe, seabattle: 30
+  roubles), `strips` «Отрывные телефончики» (4: 20 roubles), `fortunes` «Билетики судьбы» (8: 25 roubles).
+* **Diary** (`tools/daylog/content.py`): topics `phone_call` (`do tch_call`, `do xk1_phone`) and `fortune` (`do xk3_weigh`,
+  `do tch_globe`).
+* **Developer mode.** A content file's `dev_points` section (`{"<id>": {"thing": "<plot>/<id>", "name": "<key>"}}`) makes a
+  teleport `city.pt.<id>` in front of that thing in the interiors group, the clock an hour after it opens (the weekday is
+  not set: `lyud.City.Weekday fri` for the fair). Eleven points: the pasty house's payphone, bus stop 2's notices and
+  fountain, bus stop 3's weighing machine, the fair's globe, the clinic's scales and cooler, «Морской бой», the
+  librarian's and the store's staff doors, the capsule tower's magazines. `lyud.City.Collections grant strips` puts every
+  number on the dial at once.
+* Checks: citysim `CoinChecks` (`tools/citysim/coinchecks.h`): the dial without and with a torn number, the speaking clock's
+  `{time}`, four strips then the board's own notices, eight weighings and eight cards, the globe's cards, the clinic's
+  weight and its `scales` target, a drink and a splash and the frost, the cooler, the procedure count untouched, the
+  knocks by the hour and when shut, the magazine in the pocket, the arcade's game and stamp.
+* Not done: no soda-water machine (no building has one; a mesh and a thing would be needed), the sounds `phone_dial`,
+  `scale_clunk`, `water_sip` are still silent ids, the dial is a list of keys, not a drawn dial.
+
 ### Windows that open
 
 Any act with `"window": 0.1..1` (how wide: a vent 0.3, a casement 0.5, a balcony door 0.8) is a window that opens. E on a
