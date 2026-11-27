@@ -104,6 +104,9 @@ public:
 	/** Scales the walk, run and crouch speeds ReadInput sets every frame (1 normal; ULyudTopiMind slows him in the dunes). */
 	void SetSpeedScale(float Scale) { SpeedScale = FMath::Clamp(Scale, 0.05f, 1.f); }
 	float GetSpeedScale() const { return SpeedScale; }
+	/** A second, separate scale on the same speeds: deep snow off the paths (ULyudWinterSubsystem::Wade). Kept apart from
+	 *  SpeedScale so the dunes or the skates and the snow don't undo each other. */
+	void SetWadeScale(float Scale) { WadeScale = FMath::Clamp(Scale, 0.05f, 1.f); }
 	/** Scales the speed the legs' clips see (1 normal; on skates the body glides faster than the strides go, 0 a pure glide). */
 	void SetAnimSpeedScale(float Scale) { AnimSpeedScale = FMath::Max(0.f, Scale); }
 
@@ -180,6 +183,7 @@ private:
 	float ViewZoomTarget = 1.f;
 	float ViewZoom = 1.f;
 	float SpeedScale = 1.f;
+	float WadeScale = 1.f;
 	float AnimSpeedScale = 1.f;
 	double SwimClock = 0.0;
 	bool bHeadShown = false;
