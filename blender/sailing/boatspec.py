@@ -26,7 +26,7 @@ BOATS = {
         # hull: (x fraction from transom 0 .. bow 1) -> values, piecewise-linear through these keys
         "sheer_z":   [(0.0, 0.20), (0.5, 0.27), (0.85, 0.33), (1.0, 0.37)],      # deck edge above the waterline
         "keel_z":    [(0.0, -0.06), (0.35, -0.13), (0.6, -0.13), (0.88, -0.05), (1.0, 0.18)],
-        "half_beam": [(0.0, 0.57), (0.40, 0.685), (0.62, 0.66), (0.85, 0.46), (0.97, 0.15), (1.0, 0.02)],
+        "half_beam": [(0.0, 0.57), (0.40, 0.685), (0.62, 0.66), (0.80, 0.52), (0.92, 0.30), (1.0, 0.012)],
         "chine_frac": 0.86,          # bilge (chine) half-width as a fraction of the deck half-beam
         "chine_up": 0.40,            # chine height between keel and sheer (fraction)
         "deadrise": 0.05,            # bottom rise from keel to chine, m
@@ -37,7 +37,7 @@ BOATS = {
         "mast_foot_z": -0.05,        # the step tube in the hull: the mast stands in it to this depth
         "gooseneck_z": 1.15, "boom_len": 2.74, "boom_d": 0.055,
         # mainsail outline in the MAIN frame: x aft = negative from the mast axis, z absolute (boat frame)
-        "main": {"tack": (0.0, 1.20), "head": (0.0, 6.12), "clew": (-2.62, 1.22), "roach": 0.30, "battens": 3,
+        "main": {"tack": (0.0, 1.20), "head": (0.0, 5.95), "clew": (-2.52, 1.22), "roach": 0.24, "battens": 3,
                  "head_w": 0.12, "window": (0.30, 0.55, 0.40, 0.62)},
         "rudder": {"x": -2.115 - 0.04, "z_top": 0.30, "z_bot": -0.92, "chord": 0.26, "stock_h": 0.42,
                    "tiller_len": 1.02, "tiller_z": 0.38, "ext_len": 1.00},
@@ -82,9 +82,9 @@ BOATS = {
         "mast_x": 0.62, "mast_d": 0.058, "mast_d_top": 0.045, "mast_joint_z": None, "mast_top_z": 5.25,
         "mast_foot_z": -0.10,
         "gooseneck_z": 1.12, "boom_len": 2.15, "boom_d": 0.05,
-        "main": {"tack": (0.0, 1.16), "head": (0.0, 5.10), "clew": (-2.05, 1.18), "roach": 0.22, "battens": 3,
+        "main": {"tack": (0.0, 1.16), "head": (0.0, 4.95), "clew": (-1.90, 1.18), "roach": 0.16, "battens": 3,
                  "head_w": 0.08, "window": None},
-        "jib": {"tack": (1.52, 0.50), "head": (0.66, 3.75), "clew": (0.12, 0.85)},
+        "jib": {"tack": (1.555, 0.52), "head": (0.672, 3.70), "clew": (0.55, 0.80)},
         "forestay": {"bow": (1.58, 0.0, 0.47), "hound_z": 3.85},
         "shrouds": {"x": 0.42, "y": 0.60, "z": 0.36},
         "rudder": {"x": -1.61 - 0.03, "z_top": 0.30, "z_bot": -0.80, "chord": 0.26, "stock_h": 0.42,
@@ -127,6 +127,76 @@ def deck_z(b, x, y=0.0):
     s = BOATS[b]
     hb = max(half_beam(b, x), 1e-3)
     return sheer(b, x) + s.get("crown", 0.0) * max(0.0, 1.0 - (y / hb) ** 2)
+
+
+# ------------------------------------------------------------------------------------------------ sail geometry
+def _l(a, b, t):
+    return (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
+
+
+def sail_edges(b, which="main"):
+    """(luff0, luff1, leech0, leech1, roach, foot_round) of a sail in boat x/z (x aft = smaller)."""
+    m = BOATS[b][which]
+    if which == "jib":
+        t, h, c = m["tack"], m["head"], m["clew"]
+        return t, h, c, (h[0] - 0.04, h[1] - 0.03), -0.04, 0.03
+    if "peak" in m:
+        return m["tack"], m["throat"], m["clew"], m["peak"], m["roach"], 0.04
+    hd = m["head"]
+    return m["tack"], hd, m["clew"], (hd[0] - m.get("head_w", 0.1), hd[1] - 0.02), m["roach"], 0.05
+
+
+def sail_point(b, sv, hv, which="main"):
+    """Point (x, z) on the flat sail at (s = 0 luff .. 1 leech, h = 0 foot .. 1 head)."""
+    L0, L1, E0, E1, roach, foot = sail_edges(b, which)
+    L = _l(L0, L1, hv)
+    E = _l(E0, E1, hv)
+    # roach: the leech bows out, perpendicular to the straight leech and away from the luff, by sin(pi h)
+    dx, dz = E1[0] - E0[0], E1[1] - E0[1]
+    n = math.hypot(dx, dz)
+    nx, nz = dz / n, -dx / n
+    if nx > 0:
+        nx, nz = -nx, -nz
+    bulge = roach * math.sin(math.pi * hv) ** 0.9 * sv ** 2
+    p = _l(L, E, sv)
+    p = (p[0] + nx * bulge, p[1] + nz * bulge)
+    # foot round: the foot sags a little between tack and clew
+    return (p[0], p[1] - foot * math.sin(math.pi * sv) * max(0.0, 1.0 - hv * 8.0))
+
+
+def sail_box(b, which="main"):
+    """UV box of a sail picture (xmin, xmax, zmin, zmax); u = (xmax - x) / W (0 at the luff), v = (z - zmin) / H."""
+    pts = [sail_point(b, i / 20.0, j / 20.0, which) for i in range(21) for j in range(21)]
+    xs, zs = [p[0] for p in pts], [p[1] for p in pts]
+    return min(xs) - 0.01, max(xs) + 0.01, min(zs) - 0.01, max(zs) + 0.01
+
+
+def sail_uv(b, p, which="main"):
+    x0, x1, z0, z1 = sail_box(b, which)
+    return ((x1 - p[0]) / (x1 - x0), (p[1] - z0) / (z1 - z0))
+
+
+# where things sit on each sail, in (s, h): emblem centre + size (fraction of the sail's height), number boxes per side
+# (starboard higher, as the rules have it), number height (fraction of the sail's height), battens (h), panels
+SAIL_MARKS = {
+    "luch": {"emblem": (0.56, 0.79, 0.07), "num_stbd": (0.40, 0.655), "num_port": (0.40, 0.555), "num_h": 0.055,
+             "battens": [0.30, 0.52, 0.74], "batten_len": 0.20, "panels": 11},
+    "optimist": {"emblem": (0.62, 0.80, 0.15), "num_stbd": (0.45, 0.50), "num_port": (0.45, 0.33), "num_h": 0.10,
+                 "battens": [], "batten_len": 0.0, "panels": 6},
+    "cadet": {"emblem": (0.40, 0.82, 0.08), "num_stbd": (0.40, 0.62), "num_port": (0.40, 0.50), "num_h": 0.06,
+              "battens": [0.30, 0.55, 0.78], "batten_len": 0.22, "panels": 9},
+    "cadet_jib": {"emblem": None, "battens": [], "batten_len": 0.0, "panels": 5},
+}
+
+
+def sail_area(b, which="main", n=40):
+    """Area of the flat sail, m^2."""
+    a = 0.0
+    for i in range(n):
+        for j in range(n):
+            p = [sail_point(b, (i + di) / n, (j + dj) / n, which) for di, dj in ((0, 0), (1, 0), (1, 1), (0, 1))]
+            a += 0.5 * abs(sum(p[k][0] * p[(k + 1) % 4][1] - p[(k + 1) % 4][0] * p[k][1] for k in range(4)))
+    return a
 
 
 def ue(p):
