@@ -53,12 +53,17 @@ on = tc_hello
 weather = cold
 say town.tc_hello_cold.1 | Здравствуй. Не стой на месте, замёрзнешь. Что хотел? | Hello. Don't stand still, you'll freeze. What is it? | こんにちは。立ってると凍えるよ。なあに？
 
+[tc_hello_new_elder]
+on = tc_hello
+met = new
+age = elder
+say town.tc_hello_new_elder.1 | Здравствуй, мальчик. Ты чей будешь? | Hello, lad. Whose boy are you? | こんにちは、坊や。どこの子だい？
+
 [tc_hello_new]
 on = tc_hello
 met = new
 age = adult elder
 say town.tc_hello_new.1 | Здравствуй. Мы, кажется, не знакомы? | Hello. I don't think we've met? | こんにちは。初めて会うよね？
-say town.tc_hello_new.2 | Здравствуй, мальчик. Ты чей будешь? | Hello, lad. Whose boy are you? | こんにちは、坊や。どこの子だい？
 
 [tc_hello_known]
 on = tc_hello
@@ -349,6 +354,8 @@ hours = 5-11
 age = adult elder
 say town.tc_day_morning.1 | Сначала чай, потом посмотрим. Утром загадывать рано. | Tea first, then we'll see. Too early to plan in the morning. | まずはお茶、それから。朝に予定を立てるのは早いよ。
 say town.tc_day_morning.2 | Хочу успеть на рынок, пока всё свежее. | I want to make the market while everything's fresh. | 新鮮なうちに市場へ行きたいんだ。
+say town.tc_day_morning.3 | Утро — лучшее время. Пока все спят, город мой. | Morning's the best time. While everyone sleeps, the town's mine. | 朝がいちばん。みんなが寝てるうちは、町はわたしのもの。
+say town.tc_day_morning.4 | Дел на утро — на целый день. Начну, а там видно будет. | A whole day's jobs for one morning. I'll start and see how it goes. | 朝のうちに一日分の用事。とりあえず始めてみるよ。
 
 [tc_day_evening]
 on = tc_day
@@ -609,7 +616,7 @@ say town.tc_weather_night.1 | Звёзды сегодня — хоть счит�
 [tc_weather_autumn]
 on = tc_weather
 months = 9-11
-say town.tc_weather_autumn.1 | Осень. Листья шуршат, море темнеет. Самое время для чая. | Autumn. Leaves rustle, the sea darkens. Just the time for tea. | 秋だね。葉が鳴って、海が暗くなる。お茶の季節だよ。
+say town.tc_weather_autumn.1 | Осень. Листья шуршат, море темнеет. Скоро в шапке ходить. | Autumn. Leaves rustle, the sea goes dark. Hat weather soon. | 秋だね。落ち葉がかさかさ、海は暗くなって。もうすぐ帽子の季節。
 
 [tc_weather_spring]
 on = tc_weather
@@ -740,7 +747,7 @@ say town.tc_rumour_crows.1 | Говорят, вороны тебе подарк�
 
 [tc_friend]
 on = tc_friend
-say town.tc_friend.1 | С {6} мы дружим давно. Спроси — про меня расскажут всё. | {6} and I go back a long way. Ask, and you'll hear all about me. | {6}さんとは長い付き合い。聞けば私のこと全部話すよ。
+say town.tc_friend.1 | С {6} мы дружим давно. Спроси {5} обо мне — столько всего расскажет! | {6} and I go back a long way. Ask {5} about me, you'll hear plenty! | {6}さんとは長い付き合い。{5}さんに聞けば私のこと全部わかるよ。
 say town.tc_friend.2 | {2} — вот с кем не скучно. Видимся каждую неделю. | {2}: never a dull moment there. We meet every week. | {2}さんといると退屈しないよ。毎週会ってる。
 say town.tc_friend.3 | Увидишь {5} — передай привет от меня. | If you see {5}, say hello from me. | {5}さんに会ったら、よろしく伝えて。
 say town.tc_friend.4 | Без {3} в этом городе было бы скучнее. | This town would be duller without {3}. | {3}さんがいなかったら、この町はもっと退屈だよ。
@@ -775,12 +782,12 @@ say town.tc_kin_daughter.2 | С {6} не соскучишься. Вчера пр
 [tc_kin_mum]
 on = tc_kin_mum
 say town.tc_kin_mum.1 | Мама — {2}. Она добрая, только заставляет есть суп. | My mum's {2}. She's nice, she just makes me eat soup. | ママは{2}。やさしいけど、スープを食べなさいって言うの。
-say town.tc_kin_mum.2 | Мама велит быть дома к ужину. А {5} лучше слушаться. | Mum says home by supper. And {5} is best obeyed. | 晩ごはんまでに帰りなさいって。ママの{5}には逆らえない。
+say town.tc_kin_mum.2 | Мама велит быть дома к ужину. А {3} лучше слушаться. | Mum says home by supper. And {3} is best obeyed. | 晩ごはんまでに帰りなさいって。ママの{3}には逆らえない。
 
 [tc_kin_dad]
 on = tc_kin_dad
 say town.tc_kin_dad.1 | Папа — {2}. Он всё умеет чинить, даже велосипед. | My dad's {2}. He can fix anything, even a bike. | パパは{2}。なんでも直せるんだよ、自転車だって。
-say town.tc_kin_dad.2 | С папой мы по выходным ходим к морю. {2} знает всех чаек. | Dad and I go to the sea at weekends. {2} knows every gull. | 週末はパパと海へ行くの。{2}パパはカモメをみんな知ってる。
+say town.tc_kin_dad.2 | По выходным мы с папой ходим к морю. Его там все рыбаки знают: «Здорово, {2}!» | Dad and I go to the sea at weekends. All the fishermen know him: "Morning, {2}!" | 週末はパパと海へ行くの。漁師さんはみんな「やあ、{2}！」って。
 
 [tc_kin_sister]
 on = tc_kin_sister

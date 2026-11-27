@@ -46,8 +46,8 @@ E on a townsperson who is free for a word opens a short talk on the page the cit
   `tools/townchat/names_ru.py`); a line uses `{2}`..`{7}` for them. English and Japanese hold the plain name in all six.
 - **The bond.** The first thing heard in a talk gives 1 point, once a day; answering their question gives 1 more;
   2 a day at most (docs/friends.md). The first talk with somebody is written in the diary.
-- **Variety.** The same person has the same talk through a third of a day and another one after. 164 sets, 323
-  lines of theirs in ru/en/ja; asked all at one moment in the test, 910 residents give 886
+- **Variety.** The same person has the same talk through a third of a day and another one after. 165 sets, 325
+  lines of theirs in ru/en/ja; asked all at one moment in the test, 910 residents give 892
   different talks.
 
 For quests: a talk reports `talk <resident key>` (`t_sokolov_ilya`), and `bring <item>@<resident key>` works with

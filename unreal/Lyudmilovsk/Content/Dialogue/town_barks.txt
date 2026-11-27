@@ -4586,11 +4586,17 @@ on = tc_hello
 weather = cold
 say = town.tc_hello_cold.1
 
+[tc_hello_new_elder]
+on = tc_hello
+met = new
+age = elder
+say = town.tc_hello_new_elder.1
+
 [tc_hello_new]
 on = tc_hello
 met = new
 age = adult elder
-say = town.tc_hello_new.1..2
+say = town.tc_hello_new.1
 
 [tc_hello_known]
 on = tc_hello
@@ -4825,7 +4831,7 @@ say = town.tc_day.1..2
 on = tc_day
 hours = 5-11
 age = adult elder
-say = town.tc_day_morning.1..2
+say = town.tc_day_morning.1..4
 
 [tc_day_evening]
 on = tc_day
