@@ -1,0 +1,559 @@
+{
+ "_doc": "Three holidays of the town's own calendar (docs/festivals.md \"Science Day, the Old New Year, Neptune Day\"): what the hero does at them. Six things get an act like their old one plus a hands-on scene (\"proc\") that plays only on the holiday, in its hours: the fair's lottery table (the blitz quiz) and glass globe (the electric globe) on Science Day; the dumpling bar W1-U17's rolling board (dumplings with a surprise) and pot (the wax fortune) on the Old New Year; lifeguard tower 1's rope (the tug of war) and the rental W1-U15's pump (the inner-tube race) on Neptune Day. Staff talk topics of the day (given by rules, so they sit on those counters only) at the fair's coffee and snack kiosks, the dumpling bar, the lifeguards' tea flask and the rental; three of them are the day's food. The collection nh_calendar (nine stamps, three a holiday) and its reward. The quests nh_science_day, nh_old_new_year and nh_neptune_day are hand-written in Content/UI/quests.json (they wait for festival events and stamps). Words: strings/x_holidays.json (city.nh.*).",
+ "acts": {
+  "nh_sci_quiz": {
+   "like": "lottery",
+   "target": "lottery",
+   "proc": {
+    "title": "city.nh.sci.quiz.title",
+    "when": {
+     "festival": "science_day",
+     "h": [
+      11,
+      19
+     ]
+    },
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.sci.quiz.host"
+      ],
+      "secs": 6
+     },
+     {
+      "do": "tap",
+      "lines": [
+       "city.nh.sci.quiz.bell1"
+      ],
+      "count": 6,
+      "secs": 4
+     },
+     {
+      "do": "pick",
+      "lines": [
+       "city.nh.sci.quiz.q1",
+       "city.nh.sci.quiz.q1.a",
+       "city.nh.sci.quiz.q1.b",
+       "city.nh.sci.quiz.q1.c"
+      ]
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.sci.quiz.v1.a",
+       "city.nh.sci.quiz.v1.b",
+       "city.nh.sci.quiz.v1.c"
+      ],
+      "by_pick": true,
+      "secs": 6
+     },
+     {
+      "do": "tap",
+      "lines": [
+       "city.nh.sci.quiz.bell2"
+      ],
+      "count": 7,
+      "secs": 4
+     },
+     {
+      "do": "pick",
+      "lines": [
+       "city.nh.sci.quiz.q2",
+       "city.nh.sci.quiz.q2.a",
+       "city.nh.sci.quiz.q2.b",
+       "city.nh.sci.quiz.q2.c"
+      ]
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.sci.quiz.v2.a",
+       "city.nh.sci.quiz.v2.b",
+       "city.nh.sci.quiz.v2.c"
+      ],
+      "by_pick": true,
+      "secs": 6
+     }
+    ],
+    "good": [
+     "city.nh.sci.quiz.good.1"
+    ],
+    "fair": [
+     "city.nh.sci.quiz.fair.1"
+    ],
+    "poor": [
+     "city.nh.sci.quiz.poor.1"
+    ],
+    "collect": "nh_calendar/sci_quiz"
+   }
+  },
+  "nh_sci_globe": {
+   "like": "fortune",
+   "target": "fortune",
+   "proc": {
+    "title": "city.nh.sci.globe.title",
+    "when": {
+     "festival": "science_day",
+     "h": [
+      11,
+      19
+     ]
+    },
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.sci.globe.intro"
+      ],
+      "secs": 6
+     },
+     {
+      "do": "tap",
+      "lines": [
+       "city.nh.sci.globe.crank"
+      ],
+      "count": 12,
+      "secs": 6
+     },
+     {
+      "do": "pour",
+      "lines": [
+       "city.nh.sci.globe.charge"
+      ],
+      "secs": 4,
+      "mark": [
+       0.72,
+       0.88
+      ]
+     },
+     {
+      "do": "pick",
+      "lines": [
+       "city.nh.sci.globe.pick",
+       "city.nh.sci.globe.opt.1",
+       "city.nh.sci.globe.opt.2",
+       "city.nh.sci.globe.opt.3"
+      ]
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.sci.globe.show.1",
+       "city.nh.sci.globe.show.2",
+       "city.nh.sci.globe.show.3"
+      ],
+      "by_pick": true,
+      "secs": 6
+     }
+    ],
+    "good": [
+     "city.nh.sci.globe.good.1"
+    ],
+    "fair": [
+     "city.nh.sci.globe.fair.1"
+    ],
+    "poor": [
+     "city.nh.sci.globe.poor.1"
+    ],
+    "collect": "nh_calendar/sci_globe"
+   }
+  },
+  "nh_ony_vareniki": {
+   "like": "pu_dumpling_rolling",
+   "target": "pu_dumpling_rolling",
+   "proc": {
+    "title": "city.nh.ony.var.title",
+    "when": {
+     "festival": "old_new_year",
+     "h": [
+      17,
+      21
+     ]
+    },
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.ony.var.intro"
+      ],
+      "secs": 6
+     },
+     {
+      "do": "pick",
+      "lines": [
+       "city.nh.ony.var.pick",
+       "city.nh.ony.var.opt.1",
+       "city.nh.ony.var.opt.2",
+       "city.nh.ony.var.opt.3"
+      ]
+     },
+     {
+      "do": "tap",
+      "lines": [
+       "city.nh.ony.var.pinch"
+      ],
+      "count": 10,
+      "secs": 6
+     },
+     {
+      "do": "sip",
+      "lines": [
+       "city.nh.ony.var.boil"
+      ],
+      "count": 5,
+      "every": 1.3,
+      "window": 0.35
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.ony.var.out.1",
+       "city.nh.ony.var.out.2",
+       "city.nh.ony.var.out.3"
+      ],
+      "by_pick": true,
+      "secs": 6
+     }
+    ],
+    "good": [
+     "city.nh.ony.var.good.1"
+    ],
+    "fair": [
+     "city.nh.ony.var.fair.1"
+    ],
+    "poor": [
+     "city.nh.ony.var.poor.1"
+    ],
+    "collect": "nh_calendar/ony_vareniki"
+   }
+  },
+  "nh_ony_wax": {
+   "like": "pu_dumpling_pot",
+   "target": "pu_dumpling_pot",
+   "proc": {
+    "title": "city.nh.ony.wax.title",
+    "when": {
+     "festival": "old_new_year",
+     "h": [
+      17,
+      21
+     ]
+    },
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.ony.wax.intro"
+      ],
+      "secs": 6
+     },
+     {
+      "do": "pour",
+      "lines": [
+       "city.nh.ony.wax.pour"
+      ],
+      "secs": 4.5,
+      "mark": [
+       0.6,
+       0.8
+      ]
+     },
+     {
+      "do": "breathe",
+      "lines": [
+       "city.nh.ony.wax.blow"
+      ],
+      "count": 3,
+      "in": 2.5,
+      "out": 3.5
+     },
+     {
+      "do": "pick",
+      "lines": [
+       "city.nh.ony.wax.pick",
+       "city.nh.ony.wax.opt.1",
+       "city.nh.ony.wax.opt.2",
+       "city.nh.ony.wax.opt.3"
+      ]
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.ony.wax.read.1",
+       "city.nh.ony.wax.read.2",
+       "city.nh.ony.wax.read.3"
+      ],
+      "by_pick": true,
+      "secs": 7
+     }
+    ],
+    "good": [
+     "city.nh.ony.wax.good.1"
+    ],
+    "fair": [
+     "city.nh.ony.wax.fair.1"
+    ],
+    "poor": [
+     "city.nh.ony.wax.poor.1"
+    ],
+    "collect": "nh_calendar/ony_wax"
+   }
+  },
+  "nh_nep_rope": {
+   "like": "lg_rope",
+   "target": "lg_rope",
+   "proc": {
+    "title": "city.nh.nep.rope.title",
+    "when": {
+     "festival": "neptune_day",
+     "h": [
+      12,
+      17
+     ]
+    },
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.nep.rope.intro"
+      ],
+      "secs": 6
+     },
+     {
+      "do": "sip",
+      "lines": [
+       "city.nh.nep.rope.heave"
+      ],
+      "count": 6,
+      "every": 1.1,
+      "window": 0.3
+     },
+     {
+      "do": "tap",
+      "lines": [
+       "city.nh.nep.rope.last"
+      ],
+      "count": 14,
+      "secs": 5
+     }
+    ],
+    "good": [
+     "city.nh.nep.rope.good.1"
+    ],
+    "fair": [
+     "city.nh.nep.rope.fair.1"
+    ],
+    "poor": [
+     "city.nh.nep.rope.poor.1"
+    ],
+    "collect": "nh_calendar/nep_rope"
+   }
+  },
+  "nh_nep_tube": {
+   "like": "pu_rental_pump",
+   "target": "pu_rental_pump",
+   "proc": {
+    "title": "city.nh.nep.tube.title",
+    "when": {
+     "festival": "neptune_day",
+     "h": [
+      12,
+      17
+     ]
+    },
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       "city.nh.nep.tube.intro"
+      ],
+      "secs": 6
+     },
+     {
+      "do": "tap",
+      "lines": [
+       "city.nh.nep.tube.pump"
+      ],
+      "count": 16,
+      "secs": 7
+     },
+     {
+      "do": "pour",
+      "lines": [
+       "city.nh.nep.tube.top"
+      ],
+      "secs": 4,
+      "mark": [
+       0.7,
+       0.86
+      ]
+     },
+     {
+      "do": "sip",
+      "lines": [
+       "city.nh.nep.tube.swim"
+      ],
+      "count": 6,
+      "every": 1.0,
+      "window": 0.3
+     }
+    ],
+    "good": [
+     "city.nh.nep.tube.good.1"
+    ],
+    "fair": [
+     "city.nh.nep.tube.fair.1"
+    ],
+    "poor": [
+     "city.nh.nep.tube.poor.1"
+    ],
+    "collect": "nh_calendar/nep_tube"
+   }
+  }
+ },
+ "rules": {
+  "P-FAIR/lottery_tickets": {
+   "act": "nh_sci_quiz"
+  },
+  "P-FAIR/fortune_globe": {
+   "act": "nh_sci_globe"
+  },
+  "W1-U17/dumpling_rolling": {
+   "act": "nh_ony_vareniki"
+  },
+  "W1-U17/dumpling_pot": {
+   "act": "nh_ony_wax"
+  },
+  "P-LIFEGUARD1/rope_coil": {
+   "act": "nh_nep_rope"
+  },
+  "W1-U15/rental_pump": {
+   "act": "nh_nep_tube"
+  },
+  "P-FAIR/kiosk1_counter": {
+   "topics": [
+    {
+     "id": "nh_fair.cocktail",
+     "k": "city.nh.ask.cocktail",
+     "lines": [
+      "city.nh.ask.cocktail.1",
+      "city.nh.ask.cocktail.2"
+     ],
+     "gives": {
+      "collect": "nh_calendar/sci_cocktail"
+     },
+     "festival": "science_day"
+    }
+   ]
+  },
+  "P-FAIR/kiosk5_counter": {
+   "topics": [
+    {
+     "id": "nh_fair.kids_stall",
+     "k": "city.nh.ask.kids_stall",
+     "lines": [
+      "city.nh.ask.kids_stall.1",
+      "city.nh.ask.kids_stall.2"
+     ],
+     "festival": "science_day"
+    }
+   ]
+  },
+  "W1-U17/dumpling_counter": {
+   "topics": [
+    {
+     "id": "nh_dumplings.surprise",
+     "k": "city.nh.ask.surprise",
+     "lines": [
+      "city.nh.ask.surprise.1",
+      "city.nh.ask.surprise.2"
+     ],
+     "gives": {
+      "collect": "nh_calendar/ony_treat"
+     },
+     "festival": "old_new_year",
+     "h": [
+      17,
+      21
+     ]
+    }
+   ]
+  },
+  "W1-U17/dumpling_chat": {
+   "topics": [
+    {
+     "id": "nh_dumplings.carols",
+     "k": "city.nh.ask.carols",
+     "lines": [
+      "city.nh.ask.carols.1",
+      "city.nh.ask.carols.2"
+     ],
+     "festival": "old_new_year"
+    }
+   ]
+  },
+  "lifeguard_tower/flask_tea": {
+   "topics": [
+    {
+     "id": "nh_lifeguard.ukha",
+     "k": "city.nh.ask.ukha",
+     "lines": [
+      "city.nh.ask.ukha.1",
+      "city.nh.ask.ukha.2"
+     ],
+     "gives": {
+      "collect": "nh_calendar/nep_ukha"
+     },
+     "festival": "neptune_day",
+     "h": [
+      12,
+      19
+     ]
+    },
+    {
+     "id": "nh_lifeguard.parade",
+     "k": "city.nh.ask.parade",
+     "lines": [
+      "city.nh.ask.parade.1",
+      "city.nh.ask.parade.2"
+     ],
+     "festival": "neptune_day"
+    }
+   ]
+  },
+  "W1-U15/rental_counter": {
+   "topics": [
+    {
+     "id": "nh_rental.tubes",
+     "k": "city.nh.ask.tubes",
+     "lines": [
+      "city.nh.ask.tubes.1"
+     ],
+     "festival": "neptune_day"
+    }
+   ]
+  }
+ },
+ "collections": {
+  "nh_calendar": {
+   "title": "city.nh.coll.title",
+   "pieces": [
+    "sci_quiz",
+    "sci_globe",
+    "sci_cocktail",
+    "ony_vareniki",
+    "ony_wax",
+    "ony_treat",
+    "nep_rope",
+    "nep_tube",
+    "nep_ukha"
+   ]
+  }
+ },
+ "rewards": {
+  "nh_calendar": {
+   "pay": 90
+  }
+ }
+}
