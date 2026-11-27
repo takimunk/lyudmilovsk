@@ -1,0 +1,22 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Home cooking of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a white enamel bowl of clear golden fish soup with a piece of white fish, potato chunks and a sprig of dill, an aluminium spoon beside it. Row 1, right: a cast iron frying pan of golden fried potato slices with a crisp crust, chopped fresh dill scattered on top. Row 2, left: a white plate with one whole small fried fish with a golden crisp crust and a sprig of dill beside it. Row 2, right: an enamel bowl of salad of red tomato wedges, sliced pink radishes and green dill, coarse salt."
+ },
+ "job_id": "439f5dfe-e184-4894-b26b-60a9e3222c1d",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_231354_439f5dfe-e184-4894-b26b-60a9e3222c1d.png",
+ "credits": 1,
+ "generated": "2026-11-20",
+ "cells_row_major": [
+  "dish_ukha",
+  "dish_fried_potatoes",
+  "dish_fried_fish",
+  "dish_salad"
+ ],
+ "sha256": "5b789aa99dbc89edef0fd77f7cc9297f1cb86d7d0a9dfc2ede8a59f8d5f76eb0"
+}

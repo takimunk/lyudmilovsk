@@ -1,0 +1,22 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object per cell, no text, letters, numbers or logos anywhere, not even on the objects. Clothes from a department store of a 1970s-80s Soviet seaside town, no real brands, no people. Row 1, left: a neatly folded bottle-green zip windbreaker of thin crisp fabric with a stand-up collar and elastic cuffs. Row 1, right: a neatly folded yellow rubberised raincoat with a hood and big press studs, a matte sheen on the folds. Row 2, left: a neatly folded heavy navy blue woollen winter coat with a dark fur collar and large buttons. Row 2, right: a grey herringbone tweed flat cap with a short stiff peak, seen from the front at three quarters."
+ },
+ "job_id": "b41e6b20-af32-4946-aacc-bebe20b87165",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261121_001113_b41e6b20-af32-4946-aacc-bebe20b87165.png",
+ "credits": 1,
+ "generated": "2026-11-21",
+ "cells_row_major": [
+  "wind_jacket",
+  "raincoat",
+  "winter_coat",
+  "cap"
+ ],
+ "sha256": "5a6af2c63fb69d131aab3a7f0701d82fddf50ee9ccce7f274a1b13c6539db986"
+}
