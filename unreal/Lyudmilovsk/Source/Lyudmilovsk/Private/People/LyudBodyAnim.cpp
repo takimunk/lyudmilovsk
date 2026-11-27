@@ -534,9 +534,41 @@ float ULyudBodyAnimInstance::CurrentClipPhase() const
 	return L > 0.f ? FMath::Frac(C.Time / L) : 0.f;
 }
 
+void ULyudBodyAnimInstance::DropProps()
+{
+	// the instance is initialised again (a new mesh, the component re-registered) or made anew for the same actor (a
+	// new anim class): the eyes it made for the old face stayed on the owner, registered, and a second set went on top.
+	// Not while collecting garbage or the world/owner is going anyway (they go with it)
+	const UWorld* PropWorld = GetWorld();
+	const AActor* PropOwner = GetOwningActor();
+	const bool bDestroy = !IsGarbageCollecting() && PropWorld && !PropWorld->bIsTearingDown && PropOwner && !PropOwner->IsActorBeingDestroyed();
+	for (UStaticMeshComponent* C : Eyeballs)
+	{
+		if (bDestroy && IsValid(C))
+		{
+			C->DestroyComponent();
+		}
+	}
+	Eyeballs.Reset();
+	EyeMIDs.Reset();
+	bEyesMade = false;
+	if (bDestroy && IsValid(Gamepad))
+	{
+		Gamepad->DestroyComponent();
+	}
+	Gamepad = nullptr;
+}
+
+void ULyudBodyAnimInstance::NativeUninitializeAnimation()
+{
+	DropProps();
+	Super::NativeUninitializeAnimation();
+}
+
 void ULyudBodyAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
+	DropProps();
 	USkeletalMeshComponent* Mesh = GetSkelMeshComponent();
 	Rng.Initialize((int32)GetTypeHash(GetOuter()->GetName()) ^ (int32)GetUniqueID());
 	BlinkAt = Rng.FRandRange(0.5f, 4.f);
@@ -753,7 +785,8 @@ void ULyudBodyAnimInstance::UpdateGamepad(USkeletalMeshComponent* Mesh)
 	{
 		if (UStaticMesh* SM = LoadObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Gamepad.SM_Gamepad")))
 		{
-			Gamepad = NewObject<UStaticMeshComponent>(Mesh->GetOwner(), TEXT("Gamepad"));
+			// a unique name: a fixed one collides with the gamepad of an earlier instance on the same actor
+			Gamepad = NewObject<UStaticMeshComponent>(Mesh->GetOwner(), MakeUniqueObjectName(Mesh->GetOwner(), UStaticMeshComponent::StaticClass(), TEXT("Gamepad")));
 			Gamepad->SetStaticMesh(SM);
 			Gamepad->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 			// moved every frame in the hands: out of the distance fields and Lumen (perf checklist)
