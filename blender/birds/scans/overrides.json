@@ -1,0 +1,83 @@
+{
+ "_doc": "Per-species scan overrides. scan_prep: lateral/flip/beak_base/body_end/pitch_deg/tail_cut/cut_margin/root_margin/tris0. build_bird: wing_paint = photo (every wing card from the scan's wing photo) or art (default: flight feathers keep species_art.py's painted pattern, coverts from the photo). art_all: every wing card painted (no photo), for two-tone wings where the photo matched to the back goes wrong.",
+ "Rook": {
+  "wing_paint": "photo"
+ },
+ "HoodedCrow": {
+  "wing_paint": "art_all"
+ },
+ "CarrionCrow": {
+  "wing_paint": "art"
+ },
+ "Raven": {
+  "wing_paint": "art"
+ },
+ "Jackdaw": {
+  "wing_paint": "photo"
+ },
+ "Blackbird": {
+  "wing_paint": "art"
+ },
+ "CommonSwift": {
+  "wing_paint": "photo",
+  "keep_old": "scan body broke into debris (clinging pose). Old model kept."
+ },
+ "SandMartin": {
+  "wing_paint": "photo"
+ },
+ "Cormorant": {
+  "wing_paint": "photo"
+ },
+ "MuteSwan": {
+  "wing_paint": "photo",
+  "centreline": "medial",
+  "keep_old": "S-neck: chord centreline loses the head; medial centreline reaches it but the template's neck pose folds the head onto the chest. Old model kept; needs a straight-neck re-scan (sheet_11 ready, no hi3d points)."
+ },
+ "Robin": {
+  "wing_paint": "photo"
+ },
+ "HouseSparrow": {
+  "wing_paint": "photo"
+ },
+ "TreeSparrow": {
+  "wing_paint": "photo"
+ },
+ "CommonBuzzard": {
+  "wing_paint": "photo",
+  "keep_old": "huge wing-root cut leaves a hollow back, far wing sticks up. Old model kept."
+ },
+ "GoldenEagle": {
+  "wing_paint": "photo"
+ },
+ "WhiteTailedEagle": {
+  "wing_paint": "photo"
+ },
+ "Starling": {
+  "wing_paint": "photo"
+ },
+ "GreyHeron": {
+  "centreline": "medial",
+  "keep_old": "S-neck like MuteSwan. Old model kept."
+ },
+ "BlueTit": {
+  "keep_old": "folded wing/scapular cards stick out of the scan body. Old model kept for now."
+ },
+ "GreatTit": {
+  "wing_paint": "art_all"
+ },
+ "Jay": {
+  "wing_paint": "art_all"
+ },
+ "BlackBrowedAlbatross": {
+  "wing_paint": "art_all"
+ },
+ "Goldfinch": {
+  "wing_paint": "art_all"
+ },
+ "Chaffinch": {
+  "wing_paint": "art_all"
+ },
+ "WhiteWagtail": {
+  "wing_paint": "art_all"
+ }
+}
