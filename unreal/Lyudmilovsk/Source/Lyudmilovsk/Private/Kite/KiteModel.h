@@ -5,7 +5,7 @@
 // The kite is a flat plate on a bridle: its plane stands square to the line, tipped back by the bridle angle, so
 // the higher it climbs the flatter it meets the wind and the less it lifts; it settles where lift, drag, its
 // weight and the line's pull balance (a real kite's "window"). The air is the game's real wind (the caller
-// samples ULyudWindSubsystem::GetWindAt at the kite, gusts and the log profile with height included), so a calm
+// samples ULyudWindSubsystem::GetLocalWind at the kite: gusts, height, the land's lee and lift included), so a calm
 // lets it fall, a breeze holds it, a gust makes it surge and a gale makes it spin.
 //
 //   - Lift and drag of a flat plate: Cl = ClMax sin 2a, Cd = Cd0 + CdPlate sin^2 a (a = angle of attack).

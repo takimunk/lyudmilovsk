@@ -1098,6 +1098,27 @@
    "prompt": "A box kite of two blue cloth cells on four thin wooden slats with cross braces, a small wooden line reel with white string beside it.",
    "source": "design/kites/icon_kites_grid.json: one 2x2 Higgsfield grid (the game-assets rule), the better bottom-row cell cut"
   },
+  "icon_kite_delta": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A delta kite: a wide triangular wing of light orange ripstop cloth with one pale yellow stripe, a thin wooden spine and two leading-edge spars, a small keel under it, no tail, a small wooden line reel with white string beside it.",
+   "source": "design/kites/icon_kites_grid_2.json: one 2x2 Higgsfield grid (the game-assets rule), pinned and not generated yet; cell 1 (top left)"
+  },
+  "icon_kite_stunt": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A two-line stunt kite: a swept-back delta wing of teal and white ripstop cloth on thin dark spars with a small T-shaped centre fitting, two thin lines neatly coiled, two short padded wrist-strap handles lying beside it, no reel.",
+   "source": "design/kites/icon_kites_grid_2.json: one 2x2 Higgsfield grid (the game-assets rule), pinned and not generated yet; cell 2 (top right)"
+  },
+  "icon_kite_dragon": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A dragon kite laid out in a loose coil: a round hand-painted paper-and-bamboo dragon head in crimson and gold with big painted eyes, and a very long narrow crimson cloth tail with a gold edge curled in loops behind it, a small wooden line reel with white string beside it.",
+   "source": "design/kites/icon_kites_grid_2.json: one 2x2 Higgsfield grid (the game-assets rule), pinned and not generated yet; cell 3 or 4 (bottom row, the better one)"
+  },
   "icon_san_diploma": {
    "kind": "icon",
    "style": "icon",

@@ -193,6 +193,7 @@ private:
 		float GoneIn = 600.f;
 		float Shake = 0.f;          // a tug just shook it
 		float LookIn = 0.f;
+		float HintIn = 0.f;         // s to the next look at what to tell the hero who holds its line
 	};
 
 	void TickHero(float DeltaTime);
@@ -205,10 +206,10 @@ private:
 	void Event(const TCHAR* What);
 	/**
 	 * One step of a flight: the air at the kite, the ground under it, a sweep for what it hits; then drawn. Reel, and the
-	 * flight's Steer and Pull, are the flyer's hands. Tricks (the hero's): what the step finished comes back as a
+	 * flight's Steer and Pull, are the flyer's hands. InTricks (the hero's): what the step finished comes back as a
 	 * LyudKite::ETrick number (0 none).
 	 */
-	int32 Fly(FFlight& F, float Reel, float DeltaTime, const AActor* Ignore, LyudKite::FTricks* Tricks = nullptr);
+	int32 Fly(FFlight& F, float Reel, float DeltaTime, const AActor* Ignore, LyudKite::FTricks* InTricks = nullptr);
 	/** A flight nobody steers by hand (the town's, the bench's): launched, reeled or steered as a practised flyer would. */
 	void FlyItself(FFlight& F, float DeltaTime, const AActor* Ignore, bool bHoldWound);
 	void TickTown(float DeltaTime);
@@ -218,11 +219,11 @@ private:
 	void AddCaught(const TSharedPtr<LyudKite::FKite>& Sim, ALyudKite* Actor, int32 Person, FName Item, const FVector& Hand, const FVector& Wind);
 	void RemoveCaught(int32 Index, bool bDestroyActor);
 	void FinishRescue(int32 Index);
-	/** Somebody of the town within reach who is out with the kites (flying one or watching), or -1. */
-	int32 FindHelper(const FVector& Near) const;
+	/** The nearest of the town within WithinCm who is out with the kites (flying one or watching), or -1. */
+	int32 FindHelper(const FVector& Near, float WithinCm = 400.f) const;
 	void LookUpActivities();
 	/** A townsperson says a moment's line (town barks' on = <Event>); false when no line is written for it yet. */
-	bool Bark(int32 Person, const TCHAR* Event);
+	bool Bark(int32 Person, const TCHAR* InEvent);
 	/** The prompt while a kite is out: what the keys do now, and under it what the air is like where the hero stands. */
 	void RefreshPrompt(const AHeroCharacter* H);
 	FText WindLine(const AHeroCharacter* H) const;
@@ -241,8 +242,11 @@ private:
 	bool bWindingAway = false;
 	/** Stood on the sand by the hero and not yet pulled up: the line follows him as he backs off. */
 	bool bLaid = false;
+	/** A stunt kite's launch pull is still held (the buttons steer only once they were let go). */
+	bool bLaunchPull = false;
 	/** Who of the town holds the hero's kite up for a long launch (-1 nobody), and that the launch now flying was theirs. */
 	int32 Helper = -1;
+	FVector HelperAt = FVector::ZeroVector;     // where they stood when they took it, cm (they walk off: they give it back)
 	bool bHelperLaunch = false;
 	int32 NearHelper = -1;
 	float HelperScanIn = 0.f;

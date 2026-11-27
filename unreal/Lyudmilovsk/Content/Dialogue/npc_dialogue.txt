@@ -93,6 +93,10 @@ sun.night = kid_boy.sun_night.1
 sun.cloudy = kid_boy.sun_cloudy.1
 aside.awakening.outside = kid_boy.went_out_once.1 | kid_boy.went_out_once.2
 aside.awakening.outside.if.night = kid_boy.pines_rustle_night.1
+quest.kite_poplar.rescue = kid_boy.kite_stuck.1 | hero.kite_stuck.2 | kid_boy.kite_stuck.3 | kid_boy.kite_stuck.4
+quest.kite_poplar.rescue.again = kid_boy.kite_stuck_again.1
+quest.kite_poplar.return = kid_boy.kite_back.1 | hero.kite_back.2 | kid_boy.kite_back.3 | kid_boy.kite_back.4
+quest.kite_poplar.done = kid_boy.kite_flies_again.1
 
 [Kid_girl]
 first = kid_girl.first.1 | hero.kid_girl_first.2 | kid_girl.first.3 | kid_girl.first.4
@@ -133,6 +137,13 @@ sun.low = guy_a.sun_low.1
 sun.night = guy_a.sun_night.1
 sun.cloudy = guy_a.sun_cloudy.1
 aside.awakening.outside = guy_a.better_signal_outside.1
+quest.kite_eight.dare = guy_a.kite_dare.1 | hero.kite_dare.2 | guy_a.kite_dare.3 | guy_a.kite_dare.4 | guy_a.kite_dare.5
+quest.kite_eight.fly = guy_a.kite_fly_wait.1
+quest.kite_eight.fly.again = guy_a.kite_fly_tip.1
+quest.kite_eight.fly.again = guy_a.kite_fly_tip2.1
+quest.kite_eight.fly.if.no:kite_stunt = guy_a.kite_lost.1
+quest.kite_eight.tell = guy_a.kite_done.1 | hero.kite_done.2 | guy_a.kite_done.3 | guy_a.kite_done.4
+quest.kite_eight.done = guy_a.kite_saturday.1
 
 [Guy_b]
 first = guy_b.first.1 | hero.guy_b_first.2 | guy_b.first.3 | guy_b.first.4
@@ -290,6 +301,7 @@ again = korneev_ivan.again1.1
 again = korneev_ivan.again2.1
 again = hero.korneev_ivan_again3.1 | korneev_ivan.again3.2
 again = korneev_ivan.again4.1
+again = korneev_ivan.kite_hint.1
 sun.low = korneev_ivan.sun_low.1
 sun.day = korneev_ivan.sun_day.1
 quest.hot_corn.carry = korneev_ivan.corn_handover.1 | korneev_ivan.corn_handover.2 | korneev_ivan.corn_handover.3
@@ -298,6 +310,13 @@ quest.hot_corn.tell = korneev_ivan.corn_eaten.1
 quest.hot_corn.carry.if.done:evening_paper = korneev_ivan.corn_paper_boy.1 | korneev_ivan.corn_paper_boy.2
 quest.hot_corn.done = korneev_ivan.cart_visit_secret.1 | korneev_ivan.cart_visit_secret.2
 quest.hot_corn.tell.if.done:first_catch = korneev_ivan.corn_angler_news.1 | korneev_ivan.corn_angler_news.2
+quest.kite_lesson.meet = korneev_ivan.kite_meet.1 | hero.kite_meet.2 | korneev_ivan.kite_meet.3 | korneev_ivan.kite_meet.4 | korneev_ivan.kite_meet.5
+quest.kite_lesson.launch,climb,land = korneev_ivan.kite_wait.1
+quest.kite_lesson.launch,climb,land.again = korneev_ivan.kite_wait_calm.1
+quest.kite_lesson.launch,climb,land.again = korneev_ivan.kite_wait_gale.1
+quest.kite_lesson.launch,climb,land.if.night = korneev_ivan.kite_dark.1
+quest.kite_lesson.tell = korneev_ivan.kite_tell.1 | hero.kite_tell.2 | korneev_ivan.kite_tell.3 | korneev_ivan.kite_tell.4 | korneev_ivan.kite_tell.5
+quest.kite_lesson.done = korneev_ivan.kite_after.1
 
 [Korneeva_nina]
 first = korneeva_nina.first.1

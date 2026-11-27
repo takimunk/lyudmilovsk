@@ -2295,6 +2295,36 @@
    ],
    "note": "the hero comes back to the club after his first walk to the town and passes Aslan's cheese tent by the club door (Tue-Sun till 20:00); said once, the braid's offer leads into the owner's supper if it is still open",
    "diary": "journal.heard.khuazhev_aslan.town_road"
+  },
+  {
+   "id": "nina_kite_glue",
+   "person": "korneeva_nina",
+   "quest": "kite_lesson",
+   "stages": [
+    "launch",
+    "climb",
+    "land"
+   ],
+   "within_m": 6,
+   "lines": [
+    "korneeva_nina.kite_glue.1"
+   ],
+   "note": "Nina on her bench in the Academgorodok's yard (or at home with Ivan) while the hero is out learning to fly the kite her husband sent him off with; said once, after he has been out of reach",
+   "diary": "journal.heard.nina_kite_glue"
+  },
+  {
+   "id": "sonya_kite_saved",
+   "person": "kid_girl",
+   "quest": "kite_poplar",
+   "stages": [
+    "done"
+   ],
+   "within_m": 5,
+   "lines": [
+    "kid_girl.kite_saved.1"
+   ],
+   "note": "Sonya at the iMac beside Tyoma's station in the club, after he gave the hero his toy car for the kite got down from the poplar",
+   "diary": "journal.heard.sonya_kite_saved"
   }
  ]
 }

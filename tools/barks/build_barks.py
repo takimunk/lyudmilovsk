@@ -40,7 +40,11 @@ EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
           # the hero walks with a dog that is his friend (docs/animals.md "Friends")
           "dog_walk",
           # animals that live with people (docs/animals.md "With people", ULyudPets)
-          "pet_talk", "pet_stroke_yes", "pet_stroke_no", "cat_call", "cat_sill", "hedgehog", "cat_friend", "cat_scrap", "cat_shoo"}
+          "pet_talk", "pet_stroke_yes", "pet_stroke_no", "cat_call", "cat_sill", "hedgehog", "cat_friend", "cat_scrap", "cat_shoo",
+          # the hero's kite (docs/kites.md, ULyudKiteFlying::Bark): a helper holds it for a long launch and lets go, a stunt
+          # flier has shown him a loop, a child whose kite he got out of a tree; somebody near when his own stunt kite
+          # loops, somebody it passes low over
+          "kite_hold_yes", "kite_hold_go", "kite_lesson", "kite_rescue_thanks", "kite_loop_cheer", "kite_low_pass"}
 
 sets = []          # [{name, conds: [(k, v)], say: [keys], talk: [[keys]], file}]
 strings = collections.OrderedDict()   # key -> (ru, en, ja)
