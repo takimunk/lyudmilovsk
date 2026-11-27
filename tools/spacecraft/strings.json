@@ -605,9 +605,9 @@
   "ja": "注意"
  },
  "flight.lamp.record": {
-  "ru": "ПЛАСТИНКА",
-  "en": "RECORD",
-  "ja": "レコード"
+  "ru": "ЗАПИСЬ",
+  "en": "REC",
+  "ja": "記録"
  },
  "flight.inst.globe": {
   "ru": "ГЛОБУС",

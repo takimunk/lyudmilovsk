@@ -466,21 +466,9 @@
   }
  },
  "layout": {
-  "source": "auto",
-  "note": "kit.json has no label plate list (labels | label_plates | label_rects | plates)",
+  "source": "kit",
+  "note": "kit.json plates: 65 rects",
   "rects": {
-   "dataplate": [
-    6,
-    6,
-    500,
-    170
-   ],
-   "nameplate": [
-    512,
-    6,
-    500,
-    110
-   ],
    "lamp_power": [
     6,
     182,
@@ -722,142 +710,154 @@
     44
    ],
    "sw_power": [
-    708,
-    622,
+    240,
+    672,
     164,
     44
    ],
    "sw_air": [
-    6,
+    410,
     672,
     164,
     44
    ],
    "sw_gyro": [
-    176,
+    580,
     672,
     164,
     44
    ],
    "sw_seal": [
-    346,
+    750,
     672,
     164,
     44
    ],
    "sw_arm": [
-    516,
-    672,
-    164,
-    44
-   ],
-   "sw_launch": [
-    686,
-    672,
-    164,
-    44
-   ],
-   "sw_light": [
     6,
     722,
     164,
     44
    ],
-   "sw_crt": [
+   "sw_launch": [
     176,
     722,
     164,
     44
    ],
-   "sw_radio": [
+   "sw_light": [
     346,
     722,
     164,
     44
    ],
-   "mark_chute": [
+   "sw_crt": [
     516,
     722,
-    228,
+    164,
     44
    ],
-   "mark_manual": [
-    750,
+   "sw_radio": [
+    686,
     722,
-    228,
+    164,
     44
    ],
    "mark_on": [
-    6,
-    772,
+    856,
+    722,
     100,
     40
    ],
    "mark_off": [
-    112,
+    6,
     772,
     100,
     40
    ],
    "mark_open": [
-    218,
+    112,
     772,
     100,
     40
    ],
    "mark_shut": [
+    218,
+    772,
+    100,
+    40
+   ],
+   "mark_chute": [
+    708,
+    622,
+    228,
+    44
+   ],
+   "mark_manual": [
+    6,
+    672,
+    228,
+    44
+   ],
+   "unit_km": [
     324,
     772,
     100,
     40
    ],
-   "unit_km": [
+   "unit_kms": [
     430,
     772,
     100,
     40
    ],
-   "unit_kms": [
+   "unit_ms": [
     536,
     772,
     100,
     40
    ],
-   "unit_ms": [
+   "unit_g": [
     642,
     772,
     100,
     40
    ],
-   "unit_g": [
+   "unit_degc": [
     748,
     772,
     100,
     40
    ],
-   "unit_degc": [
+   "unit_volt": [
     854,
     772,
     100,
     40
    ],
-   "unit_volt": [
+   "unit_pct": [
     6,
     818,
     100,
     40
    ],
-   "unit_pct": [
+   "unit_mmhg": [
     112,
     818,
     100,
     40
    ],
-   "unit_mmhg": [
-    218,
-    818,
-    100,
-    40
+   "nameplate": [
+    512,
+    6,
+    500,
+    110
+   ],
+   "dataplate": [
+    6,
+    6,
+    500,
+    170
    ]
   }
  }

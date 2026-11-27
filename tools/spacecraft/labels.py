@@ -61,7 +61,10 @@ def kit_plates(size):
         return None, {}, "no kit.json yet"
     kit = load(KIT)
     found = None
-    for parent in KIT_PARENTS:
+    panel_labels = (kit.get("panel") or {}).get("labels")  # blender/spacecraft/spacecraft_kit.py: panel.labels.plates
+    if isinstance(panel_labels, dict) and panel_labels.get("plates"):
+        found = (panel_labels, "plates")
+    for parent in () if found else KIT_PARENTS:
         box = kit if parent is None else kit.get(parent)
         if not isinstance(box, dict):
             continue
