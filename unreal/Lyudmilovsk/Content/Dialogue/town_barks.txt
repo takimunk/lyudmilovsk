@@ -4082,3 +4082,47 @@ festival = amber_morning
 age = elder
 weight = 5
 say = town.fv_amber_morning_elder.1
+
+# The town cooks at home too (docs/kitchen.md "The town cooks"): what people carry home from the shops and the
+# market by the season (the same Baltic dishes the hero learns: spring smelt, summer okroshka, autumn herring and
+# draniki), and a word over the table at home
+
+[cook_shop_spring]
+doing = shop shop_town
+age = adult elder
+months = 3-5
+weight = 0.6
+say = town.cook_shop_spring.1..3
+
+[cook_shop_summer]
+doing = shop shop_town
+age = adult elder
+months = 6-8
+weight = 0.6
+say = town.cook_shop_summer.1..4
+
+[cook_shop_autumn]
+doing = shop shop_town
+age = adult elder
+months = 9-11
+weight = 0.6
+say = town.cook_shop_autumn.1..3
+
+[cook_shop_winter]
+doing = shop shop_town
+age = adult elder
+months = 12-2
+weight = 0.5
+say = town.cook_shop_winter.1..2
+
+[cook_home_table]
+doing = eat_home
+age = adult elder
+weight = 0.8
+say = town.cook_home_table.1..4
+
+[cook_home_kid]
+doing = eat_home
+age = kid teen
+weight = 0.6
+say = town.cook_home_kid.1..3

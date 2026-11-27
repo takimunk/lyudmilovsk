@@ -29,7 +29,11 @@
        "event": "ask",
        "target": "fish.recipe_fried_smelt"
       }
-     ]
+     ],
+     "dev": {
+      "tp": "city.w1_u02",
+      "time": "11:00"
+     }
     },
     {
      "id": "cook",
@@ -40,7 +44,13 @@
        "target": "learnt",
        "need": 2
       }
-     ]
+     ],
+     "dev": {
+      "time": "12:00",
+      "exec": [
+       "lyud.Kitchen.Kit"
+      ]
+     }
     },
     {
      "id": "tell",
@@ -56,6 +66,12 @@
       "items": {
        "bread_loaf": 1
       }
+     },
+     "dev": {
+      "time": "12:00",
+      "exec": [
+       "lyud.City.Collections grant recipes"
+      ]
      }
     }
    ]
