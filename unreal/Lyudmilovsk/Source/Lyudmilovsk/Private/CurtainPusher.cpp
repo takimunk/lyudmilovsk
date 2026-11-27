@@ -22,9 +22,30 @@ void ACurtainPusher::Tick(float DeltaSeconds)
 	const FVector Here = GetActorLocation();
 	FVector Best[2] = {FVector(0, 0, -100000.f), FVector(0, 0, -100000.f)};
 	float BestDist[2] = {Range, Range};
-	for (TActorIterator<ACharacter> It(GetWorld()); It; ++It)
+	// every character of the world is walked only 5 times a second (per curtain, every frame before), keeping those
+	// within reach of the range by the next sweep; the frames between look at those few
+	SweepIn -= DeltaSeconds;
+	if (SweepIn <= 0.f)
 	{
-		const FVector P = It->GetActorLocation();
+		SweepIn = 0.2f;
+		Nearby.Reset();
+		const float Reach = Range + 500.f;   // a running person covers ~150 cm in 0.2 s: plenty of margin
+		for (TActorIterator<ACharacter> It(GetWorld()); It; ++It)
+		{
+			if (FVector::Dist2D(It->GetActorLocation(), Here) < Reach)
+			{
+				Nearby.Add(*It);
+			}
+		}
+	}
+	for (const TWeakObjectPtr<ACharacter>& Weak : Nearby)
+	{
+		const ACharacter* Who = Weak.Get();
+		if (!Who)
+		{
+			continue;
+		}
+		const FVector P = Who->GetActorLocation();
 		const float D = FVector::Dist2D(P, Here);
 		if (D < BestDist[0])
 		{
