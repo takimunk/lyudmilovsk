@@ -795,7 +795,20 @@ void UBirdLifeSubsystem::Tick(float DeltaTime)
 		MigrationTimer = 5.f;
 		S.UpdateMigration();
 	}
+	// habit events made by a handler during the last dispatch: Step clears the habits' list, so they wait aside and
+	// go out ahead of this step's
+	LyudBirds::FHabits* const Hab = S.Habits();
+	if (Hab && Dispatched.IsValid())
+	{
+		Dispatched->HabitPending.clear();
+		std::swap(Dispatched->HabitPending, Hab->Events);
+	}
 	S.Step(DeltaTime);
+	if (Hab && Dispatched.IsValid() && !Dispatched->HabitPending.empty() && S.Habits() == Hab)
+	{
+		Hab->Events.insert(Hab->Events.begin(), Dispatched->HabitPending.begin(), Dispatched->HabitPending.end());
+		Dispatched->HabitPending.clear();
+	}
 	DispatchEvents();
 	WatchHabits(DeltaTime);
 	if (Renderer)
@@ -827,12 +840,33 @@ void UBirdLifeSubsystem::SetBeasts(const TArray<FBirdBeast>& Beasts)
 	}
 }
 
+struct FBirdDispatchBuffers
+{
+	std::vector<LyudBirds::FEvent> Events;
+	std::vector<FNestEvent> NestEvents;
+	std::vector<LyudBirds::FHabitEvent> HabitEvents;
+	/** Habit events a handler made during the last dispatch, kept over FWorld::Step (which starts the list afresh). */
+	std::vector<LyudBirds::FHabitEvent> HabitPending;
+};
+
 void UBirdLifeSubsystem::DispatchEvents()
 {
+	// a handler that ends up here again (through the simulation) leaves the new events for the next frame
+	if (bDispatching)
+	{
+		return;
+	}
+	TGuardValue<bool> Guard(bDispatching, true);
+	if (!Dispatched.IsValid())
+	{
+		Dispatched = MakePimpl<FBirdDispatchBuffers>();
+	}
 	FWorld& S = *Sim;
-	// copy: handlers may call back into the simulation
-	const std::vector<LyudBirds::FEvent> Events = S.Events;
-	S.Events.clear();
+	// swapped out, not copied (a new vector every frame): handlers may call back into the simulation, and what they
+	// make lands in the sim's own (empty) vector for the next frame
+	std::vector<LyudBirds::FEvent>& Events = Dispatched->Events;
+	Events.clear();
+	std::swap(Events, S.Events);
 	for (const LyudBirds::FEvent& E : Events)
 	{
 		switch (E.Kind)
@@ -876,8 +910,9 @@ void UBirdLifeSubsystem::DispatchEvents()
 	// the nests' (the feeds make the chicks gape; the rest is for whoever listens)
 	if (FNesting* N = S.Nesting())
 	{
-		const std::vector<FNestEvent> NestEvents = N->Events;
-		N->Events.clear();
+		std::vector<FNestEvent>& NestEvents = Dispatched->NestEvents;
+		NestEvents.clear();
+		std::swap(NestEvents, N->Events);
 		for (const FNestEvent& E : NestEvents)
 		{
 			if (E.Kind == ENestEvent::Feed && NestRenderer)
@@ -896,7 +931,10 @@ void UBirdLifeSubsystem::DispatchEvents()
 	if (LyudBirds::FHabits* H = S.Habits())
 	{
 		static const FName Whats[] = { TEXT("start"), TEXT("beat"), TEXT("end") };
-		const std::vector<LyudBirds::FHabitEvent> HabitEvents = H->Events;
+		// only what is dispatched now is taken: events a handler makes meanwhile stay in the sim's vector
+		std::vector<LyudBirds::FHabitEvent>& HabitEvents = Dispatched->HabitEvents;
+		HabitEvents.clear();
+		std::swap(HabitEvents, H->Events);
 		for (const LyudBirds::FHabitEvent& E : HabitEvents)
 		{
 			if (E.Bird < 0 || E.Bird >= (int32)S.Birds.size())
@@ -924,7 +962,6 @@ void UBirdLifeSubsystem::DispatchEvents()
 			}
 			OnBirdHabit.Broadcast(E.Bird, FName(LyudBirds::HabitName(E.Habit)), Whats[(int32)E.Kind]);
 		}
-		H->Events.clear();
 	}
 }
 
