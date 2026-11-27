@@ -476,6 +476,8 @@ void ALyudRailTrack::BuildHalt(const TSharedPtr<FJsonObject>& St)
 		Wc->SetSlateWidget(W);
 		// a still sign: redraw rarely, not every frame
 		Wc->SetRedrawTime(5.f);
+		// and its component looks at that (world-time) redraw clock once a second, not every frame
+		Wc->SetComponentTickInterval(1.f);
 		AddInstanceComponent(Wc);
 	}
 	// lamps: a post with a warm globe at either end of the deck, lit at dusk
