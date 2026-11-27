@@ -1,0 +1,167 @@
+{
+ "_doc": "The street's things (docs/street_life.md): the kvass barrel and the ice-cream cart that come out on hot days (ULyudStreetLife shows them and their counters only while the condition street_hot holds; the vendor is a resident on the duty vend_kvass / vend_icecream, so the counter serves while she is there), the subbotnik's bucket of lime, the yard keeper's rake by the leaf piles and a yard's domino table in the evening. Places: tools/city/extra_places.json (P-STREET-*, written by tools/town/street_life.py). Words: strings/x_street.json.",
+ "acts": {
+  "buy_street_kvass": {
+   "like": "_buy",
+   "shop": "street_kvass",
+   "needs_staff": "vendor",
+   "title": "city.shop.street_kvass.title",
+   "collect": "street/kvass"
+  },
+  "buy_street_icecream": {
+   "like": "_buy",
+   "shop": "street_icecream",
+   "needs_staff": "vendor",
+   "title": "city.shop.street_icecream.title",
+   "collect": "street/icecream"
+  },
+  "street_whitewash": {
+   "prompt": "city.street.whitewash.prompt",
+   "lines": [
+    "city.street.whitewash.1",
+    "city.street.whitewash.2",
+    "city.street.whitewash.3",
+    "city.street.whitewash.4"
+   ],
+   "minutes": 30,
+   "pose": "stand",
+   "sound": "brush_stroke",
+   "daily": 1,
+   "collect": "street/subbotnik",
+   "any_hour": true
+  },
+  "street_rake": {
+   "prompt": "city.street.rake.prompt",
+   "lines": [
+    {
+     "k": "city.street.rake.1",
+     "pay": 5
+    },
+    "city.street.rake.2",
+    "city.street.rake.3"
+   ],
+   "minutes": 20,
+   "pose": "stand",
+   "sound": "leaves_rustle",
+   "daily": 1,
+   "collect": "street/leaves",
+   "any_hour": true
+  },
+  "street_dominoes": {
+   "like": "dominoes",
+   "lines": [
+    "city.street.dominoes.1",
+    "city.street.dominoes.2",
+    "city.street.dominoes.3"
+   ],
+   "collect": "street/dominoes",
+   "any_hour": true
+  }
+ },
+ "shops": {
+  "street_kvass": {
+   "role": "vendor",
+   "goods": [
+    {
+     "item": "kvass",
+     "price": 6,
+     "count": 30
+    },
+    {
+     "item": "kvass_can",
+     "price": 15,
+     "count": 4
+    }
+   ]
+  },
+  "street_icecream": {
+   "role": "vendor",
+   "goods": [
+    {
+     "item": "ice_cream",
+     "price": 28,
+     "count": 14
+    },
+    {
+     "item": "eskimo",
+     "price": 22,
+     "count": 12
+    },
+    {
+     "item": "fruit_ice",
+     "price": 12,
+     "count": 16
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-STREET-SUBBOTNIK/whitewash_bucket": {
+   "act": "street_whitewash",
+   "hours": [
+    0,
+    24
+   ],
+   "days": "mon-sun"
+  },
+  "P-STREET-LEAVES/rake": {
+   "act": "street_rake",
+   "hours": [
+    0,
+    24
+   ],
+   "days": "mon-sun"
+  },
+  "P-STREET-DOMINO/domino_table": {
+   "act": "street_dominoes",
+   "hours": [
+    0,
+    24
+   ],
+   "days": "mon-sun"
+  }
+ },
+ "topics": {
+  "buy_street_kvass": [
+   {
+    "id": "street_kvass.size",
+    "k": "city.ask.street_kvass.size",
+    "lines": "city.ask.street_kvass.size"
+   },
+   {
+    "id": "street_kvass.when",
+    "k": "city.ask.street_kvass.when",
+    "lines": "city.ask.street_kvass.when"
+   },
+   {
+    "id": "street_kvass.cold",
+    "k": "city.ask.street_kvass.cold",
+    "lines": "city.ask.street_kvass.cold"
+   }
+  ],
+  "buy_street_icecream": [
+   {
+    "id": "street_icecream.which",
+    "k": "city.ask.street_icecream.which",
+    "lines": "city.ask.street_icecream.which"
+   },
+   {
+    "id": "street_icecream.cart",
+    "k": "city.ask.street_icecream.cart",
+    "lines": "city.ask.street_icecream.cart"
+   }
+  ]
+ },
+ "collections": {
+  "street": {
+   "title": "city.coll.street.title",
+   "pieces": [
+    "kvass",
+    "icecream",
+    "dominoes",
+    "leaves",
+    "subbotnik"
+   ]
+  }
+ }
+}

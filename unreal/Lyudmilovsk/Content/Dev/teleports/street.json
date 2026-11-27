@@ -1,0 +1,49 @@
+{
+ "teleports": [
+  {
+   "id": "street.kvass",
+   "group": "street",
+   "name": "dev.tp.street.kvass",
+   "x": 36.6,
+   "y": 897.0,
+   "yaw": 180.0,
+   "time": "14:00"
+  },
+  {
+   "id": "street.icecart",
+   "group": "street",
+   "name": "dev.tp.street.icecart",
+   "x": 127.4,
+   "y": 990.0,
+   "yaw": 0.0,
+   "time": "14:00"
+  },
+  {
+   "id": "street.sweep",
+   "group": "street",
+   "name": "dev.tp.street.sweep",
+   "x": 121.2,
+   "y": 616.7,
+   "yaw": 90.0,
+   "time": "05:45"
+  },
+  {
+   "id": "street.yard",
+   "group": "street",
+   "name": "dev.tp.street.yard",
+   "x": -580.2,
+   "y": 1058.6,
+   "yaw": 84.5,
+   "time": "10:30"
+  },
+  {
+   "id": "street.dominoes",
+   "group": "street",
+   "name": "dev.tp.street.dominoes",
+   "x": -581.8,
+   "y": 1061.7,
+   "yaw": 175.0,
+   "time": "19:00"
+  }
+ ]
+}

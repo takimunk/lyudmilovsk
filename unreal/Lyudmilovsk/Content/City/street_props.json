@@ -1,0 +1,835 @@
+{
+ "_doc": "Written by tools/town/street_life.py (docs/street_life.md): do not edit by hand. The street's things ULyudStreetLife builds (CityKit meshes, one instanced set per kind and condition) and shows while their condition holds (\"\": always). at: Unreal metres (z the ground), yaw: Unreal degrees.",
+ "version": 1,
+ "items": [
+  {
+   "kind": "kvass_barrel",
+   "at": [
+    40.0,
+    897.0,
+    -36.16
+   ],
+   "yaw": 180.0,
+   "when": "street_hot"
+  },
+  {
+   "kind": "icecream_cart",
+   "at": [
+    124.0,
+    990.0,
+    -39.5
+   ],
+   "yaw": 0.0,
+   "when": "street_hot"
+  },
+  {
+   "kind": "laundry_line_posts",
+   "at": [
+    -573.1,
+    1063.98,
+    -15.0
+   ],
+   "yaw": 265.0,
+   "when": ""
+  },
+  {
+   "kind": "laundry_washing",
+   "at": [
+    -573.1,
+    1063.98,
+    -15.0
+   ],
+   "yaw": 265.0,
+   "when": "laundry_out",
+   "variant": 2
+  },
+  {
+   "kind": "domino_table",
+   "at": [
+    -584.82,
+    1061.99,
+    -15.0
+   ],
+   "yaw": 175.0,
+   "when": ""
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -566.08,
+    1053.41,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -567.15,
+    1074.62,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -572.46,
+    1080.53,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "laundry_line_posts",
+   "at": [
+    -630.18,
+    1024.35,
+    -15.0
+   ],
+   "yaw": 267.5,
+   "when": ""
+  },
+  {
+   "kind": "laundry_washing",
+   "at": [
+    -630.18,
+    1024.35,
+    -15.0
+   ],
+   "yaw": 267.5,
+   "when": "laundry_out",
+   "variant": 2
+  },
+  {
+   "kind": "domino_table",
+   "at": [
+    -641.8,
+    1021.85,
+    -15.0
+   ],
+   "yaw": 177.5,
+   "when": ""
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -630.81,
+    1009.74,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -624.69,
+    1035.23,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -638.35,
+    1007.21,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -630.26,
+    1040.91,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "laundry_line_posts",
+   "at": [
+    -558.27,
+    988.65,
+    -15.0
+   ],
+   "yaw": 297.0,
+   "when": ""
+  },
+  {
+   "kind": "laundry_washing",
+   "at": [
+    -558.27,
+    988.65,
+    -15.0
+   ],
+   "yaw": 297.0,
+   "when": "laundry_out",
+   "variant": 1
+  },
+  {
+   "kind": "domino_table",
+   "at": [
+    -567.16,
+    980.75,
+    -15.0
+   ],
+   "yaw": 207.0,
+   "when": ""
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -558.86,
+    970.57,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -551.63,
+    995.76,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -566.5,
+    968.37,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -556.95,
+    1001.68,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "laundry_line_posts",
+   "at": [
+    -562.87,
+    940.87,
+    -15.0
+   ],
+   "yaw": 297.0,
+   "when": ""
+  },
+  {
+   "kind": "laundry_washing",
+   "at": [
+    -562.87,
+    940.87,
+    -15.0
+   ],
+   "yaw": 297.0,
+   "when": "laundry_out",
+   "variant": 1
+  },
+  {
+   "kind": "domino_table",
+   "at": [
+    -571.76,
+    932.97,
+    -15.0
+   ],
+   "yaw": 207.0,
+   "when": ""
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -563.46,
+    922.79,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -556.23,
+    947.99,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -571.1,
+    920.59,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -561.55,
+    953.9,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "laundry_line_posts",
+   "at": [
+    -248.34,
+    1068.55,
+    -29.0
+   ],
+   "yaw": 296.8,
+   "when": ""
+  },
+  {
+   "kind": "laundry_washing",
+   "at": [
+    -248.34,
+    1068.55,
+    -29.0
+   ],
+   "yaw": 296.8,
+   "when": "laundry_out",
+   "variant": 0
+  },
+  {
+   "kind": "domino_table",
+   "at": [
+    -257.25,
+    1060.68,
+    -29.0
+   ],
+   "yaw": 206.8,
+   "when": ""
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -248.98,
+    1050.47,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -241.67,
+    1075.64,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -256.64,
+    1048.3,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -246.97,
+    1081.58,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "laundry_line_posts",
+   "at": [
+    -471.38,
+    1154.18,
+    -22.0
+   ],
+   "yaw": 292.5,
+   "when": ""
+  },
+  {
+   "kind": "laundry_washing",
+   "at": [
+    -471.38,
+    1154.18,
+    -22.0
+   ],
+   "yaw": 292.5,
+   "when": "laundry_out",
+   "variant": 0
+  },
+  {
+   "kind": "domino_table",
+   "at": [
+    -480.86,
+    1147.01,
+    -22.0
+   ],
+   "yaw": 202.5,
+   "when": ""
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -471.52,
+    1136.81,
+    -22.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -465.41,
+    1162.3,
+    -22.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -479.07,
+    1134.27,
+    -22.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -470.98,
+    1167.97,
+    -22.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "laundry_line_posts",
+   "at": [
+    -254.3,
+    1008.84,
+    -29.0
+   ],
+   "yaw": 296.8,
+   "when": ""
+  },
+  {
+   "kind": "laundry_washing",
+   "at": [
+    -254.3,
+    1008.84,
+    -29.0
+   ],
+   "yaw": 296.8,
+   "when": "laundry_out",
+   "variant": 1
+  },
+  {
+   "kind": "domino_table",
+   "at": [
+    -263.21,
+    1000.98,
+    -29.0
+   ],
+   "yaw": 206.8,
+   "when": ""
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -254.94,
+    990.77,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -247.63,
+    1015.94,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -262.6,
+    988.59,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -252.93,
+    1021.88,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "laundry_line_posts",
+   "at": [
+    -409.74,
+    1208.28,
+    -22.0
+   ],
+   "yaw": 264.2,
+   "when": ""
+  },
+  {
+   "kind": "laundry_washing",
+   "at": [
+    -409.74,
+    1208.28,
+    -22.0
+   ],
+   "yaw": 264.2,
+   "when": "laundry_out",
+   "variant": 2
+  },
+  {
+   "kind": "domino_table",
+   "at": [
+    -421.48,
+    1206.46,
+    -22.0
+   ],
+   "yaw": 174.2,
+   "when": ""
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -411.21,
+    1193.74,
+    -22.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -403.63,
+    1218.83,
+    -22.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -418.88,
+    1191.64,
+    -22.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -408.87,
+    1224.82,
+    -22.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "laundry_line_posts",
+   "at": [
+    -259.06,
+    961.08,
+    -29.0
+   ],
+   "yaw": 296.8,
+   "when": ""
+  },
+  {
+   "kind": "laundry_washing",
+   "at": [
+    -259.06,
+    961.08,
+    -29.0
+   ],
+   "yaw": 296.8,
+   "when": "laundry_out",
+   "variant": 1
+  },
+  {
+   "kind": "domino_table",
+   "at": [
+    -267.98,
+    953.22,
+    -29.0
+   ],
+   "yaw": 206.8,
+   "when": ""
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -259.71,
+    943.0,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -252.4,
+    968.18,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -267.36,
+    940.83,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "trunk_white",
+   "at": [
+    -257.69,
+    974.11,
+    -29.0
+   ],
+   "yaw": 0.0,
+   "when": "trunks_white"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -581.01,
+    1070.61,
+    -15.0
+   ],
+   "yaw": 326,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -576.47,
+    1060.33,
+    -15.0
+   ],
+   "yaw": 20,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -638.37,
+    1030.63,
+    -15.0
+   ],
+   "yaw": 66,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -633.38,
+    1020.55,
+    -15.0
+   ],
+   "yaw": 89,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -565.5,
+    991.76,
+    -15.0
+   ],
+   "yaw": 243,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -560.95,
+    981.48,
+    -15.0
+   ],
+   "yaw": 78,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -570.1,
+    943.98,
+    -15.0
+   ],
+   "yaw": 90,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -565.55,
+    933.7,
+    -15.0
+   ],
+   "yaw": 230,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -255.54,
+    1071.68,
+    -29.0
+   ],
+   "yaw": 83,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -251.05,
+    1061.39,
+    -29.0
+   ],
+   "yaw": 144,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -479.08,
+    1157.69,
+    -22.0
+   ],
+   "yaw": 241,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -474.09,
+    1147.61,
+    -22.0
+   ],
+   "yaw": 70,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -261.5,
+    1011.98,
+    -29.0
+   ],
+   "yaw": 296,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -257.0,
+    1001.69,
+    -29.0
+   ],
+   "yaw": 292,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -417.55,
+    1215.02,
+    -22.0
+   ],
+   "yaw": 48,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -413.15,
+    1204.68,
+    -22.0
+   ],
+   "yaw": 137,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -266.27,
+    964.22,
+    -29.0
+   ],
+   "yaw": 334,
+   "when": "leaf_piles"
+  },
+  {
+   "kind": "leaf_pile",
+   "at": [
+    -261.77,
+    953.93,
+    -29.0
+   ],
+   "yaw": 33,
+   "when": "leaf_piles"
+  }
+ ]
+}

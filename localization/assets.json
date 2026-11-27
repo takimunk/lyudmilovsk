@@ -1552,6 +1552,20 @@
    "aspect": "1:1",
    "prompt": "a small glass bowl of finely grated orange carrot mixed with apple",
    "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+   },
+  "icon_kvass_can": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small dented aluminium milk can with a wire handle and a tight lid, beads of cold condensation on its side, a little dark amber kvass foam at the rim.",
+   "source": "owed: docs/street_life.md (the lead generates the icons of /home/user/wt/_brief/icons_owed.md)"
+  },
+  "icon_fruit_ice": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A bright red fruit ice lolly on a flat wooden stick, glossy and slightly melting, one drip running down, half unwrapped from a plain paper wrapper.",
+   "source": "owed: docs/street_life.md (the lead generates the icons of /home/user/wt/_brief/icons_owed.md)"
   }
  }
 }
