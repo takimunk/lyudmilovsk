@@ -39,7 +39,12 @@ Everything is a thing of the town (`ULyudCityThings`, `docs/city_interiors.md`),
 - **The bed**: lie down, then sleep until an hour he picks (the act `myroom_sleep`, the same chooser as a hotel bed, any hour,
   free).
 - **The chair, the clock, the coast map, Maru's basket**: sit, the time, a few lines.
-- **The record player**: his own records (`ULyudMusic`, `docs/music.md`).
+- **The record player**: his own records (`ULyudMusic`, `docs/music.md`): the ones in his pocket and the ones standing
+  on the room's shelves and nails (`ULyudHeroRoom::Holds`). Only this player counts the room's records; a player
+  elsewhere plays what he carries.
+- **The hot plate**: a small table by the right wall with a one-ring plate, a cup and plates. The thing `hot_plate` has
+  `what=hot_plate`, so the kitchen's own rule gives it the act `hot_plate` and E opens the cooking screen
+  (`docs/kitchen.md`). No code of the room is involved.
 - **The switch**: the lamps on and off.
 - **Places for his things**: 6 cards on the pin board (`pin_1..6`), 3 nails (`frame_1..3`), 8 spots on the shelves
   (`shelf_1..6`, `top_1..2`). E opens a one-line chooser on the prompt line: A/D turn the choice, E takes it, S shuts it.
@@ -51,9 +56,29 @@ Everything is a thing of the town (`ULyudCityThings`, `docs/city_interiors.md`),
     while he has the stamp, and each stands in one place.
   The item leaves the pocket and stands there as the hand would hold it (`ULyudInventoryUI::SpawnHeld`, so its icon is its
   picture); taking it back returns it.
+- **His own photographs**: a card or a nail also takes a print of the album (`docs/photo.md`). The chooser offers the
+  eight newest prints that hang nowhere yet. A print is no item: its id is `print:<roll>:<frame>`, the album keeps the
+  picture and the wall shows it (15 x 10 cm pinned to the board, 30 x 20 on a nail). One print hangs in one place.
+  Taking it down just frees the place. The picture is read from the game's photo folder once and kept
+  (`ULyudPhoto::LoadPrint`); a print whose file is gone shows as a white card.
 - **The flower pot**: plant a cutting of one of six house plants (the procedural plant system's indoor species), water it
   once a day, look at it, pull it out. It grows one day a day and one more for every day it was watered; its age for the
   generator is `0.12 + 0.05 * days`, set when the day changes, never per frame.
+- **Thirst**: a plant left without water hangs its leaves: after 5 dry days, an aloe after 14, a cactus after 21
+  (`FModel::Thirst`, `Droops`). "Look" then says how long it has been dry, and one watering sets it right (its own
+  line, the pour sound `rest_pour`). It never dies. The plant actor gets `SetWithered`, which changes the look only for
+  species that have a withered state.
+- **The owner looks in**: when the plant has hung for two more days and the hero is out of the room, the owner waters
+  it once (`FModel::Mind`, at most once a day). It gives no extra growth. The next time the hero walks in, a note on
+  the prompt line says so (three notes in turn, `city.myroom.pot.minded.*`). Quests hear `do myroom_minded`; a watering
+  of his own is `do myroom_water`.
+
+## Weather and season
+
+The room has no window, so the weather comes in as words. The bed, Maru's basket and the coast map have extra lines by
+weather (rain, snow, fog, cold, warm) and by date (summer nights, the New Year lights in the hall, the winter bay). They
+are line conditions of the acts in `tools/city/content/x_home.json`, strings `city.myroom.bed.<weather>.*`,
+`city.myroom.basket.<weather>.*`, `city.myroom.map.<weather>.*`.
 
 While the chooser is up it holds the inventory's "external screen" (nothing else opens, the town's things offer nothing)
 and the move input; the menu or losing the hero shuts it.
@@ -61,17 +86,24 @@ and the move input; the menu or losing the hero shuts it.
 ## Save
 
 `ULyudHeroRoom` is saved as "HeroRoom": what stands where (`p:<place>`), the plant (species, day planted, last watering,
-days watered), the lamp. A place that a later version of the room no longer has hands its item back to the pocket on load.
+days watered, times the owner watered it), the lamp. A print is saved by its id like any other thing. A place that a later version of the room no longer has hands its item back to the pocket on load.
 
 ## Developer mode and the console
 
 Teleport `city.p_home` (group interiors). Actions, group "home": furnish for a look (`home.fill`), clear (`home.clear`),
-grow the plant ten days (`home.plant_grow`), the lamp (`home.light`). Console: `lyud.Home.Report`, `lyud.Home.Fill`,
-`lyud.Home.Clear`, `lyud.Home.Grow <days>`, `lyud.Home.Light`, `lyud.Home.Use <place> [next|prev|ok|cancel ...]`.
+grow the plant ten days (`home.plant_grow`), leave it dry for eight days (`home.plant_dry`: the leaves hang; step out of the
+room and back in for the owner's note), the lamp (`home.light`). `home.fill` also hangs up to four album prints when the
+album has any (developer action `photo.develop` first). Console: `lyud.Home.Report`, `lyud.Home.Fill`,
+`lyud.Home.Clear`, `lyud.Home.Grow <days>`, `lyud.Home.Dry <days>`, `lyud.Home.Light`, `lyud.Home.Use <place> [next|prev|ok|cancel ...]`.
 
 ## Known limits
 
-- A record put on a shelf is out of the pocket, so the player does not offer it until it is taken back.
-- Camera prints (item 2) and the friendship with Maru (item 1) do not exist yet: the cards take any small flat item, the
-  basket is furniture with a few lines.
+- Maru does not come to the basket herself: it is furniture with lines by hour and weather.
+- Nobody but the owner's note visits the room: no resident walks in.
+- Nothing in the room moves with the time of day (no cup left after breakfast, no wet coat): the room is spawned by
+  `ULyudHeroRoom`, outside the town's dressing, and such pieces need new meshes and a Mac to look at them.
+- A print on the wall is a plain card with the photograph: no frame mesh, no paper border.
+- Owed on the Mac (written in the cloud, never compiled): the first compile of the prints, the room's records on the
+  player, thirst and the owner's note; `TYPES=hero_room STEPS=import unreal/scripts/import_city.sh` for the hot plate
+  table; shots of a furnished room with prints; a check that the photograph is the right way up on the card.
 - The doorway has no door leaf.

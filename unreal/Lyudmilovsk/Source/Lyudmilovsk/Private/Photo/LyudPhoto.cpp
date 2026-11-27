@@ -493,6 +493,28 @@ FString ULyudPhoto::PhotoFile(int32 Roll, int32 Frame) const
 	return PhotoDir() / FString::Printf(TEXT("film%03d_%02d.jpg"), Roll, Frame);
 }
 
+UTexture2D* ULyudPhoto::LoadPrint(int32 Roll, int32 Frame)
+{
+	for (const PhotoModel::FShot* Shot : State().Album())
+	{
+		if (Shot->Roll == Roll && Shot->Frame == Frame)
+		{
+			const FString File = PhotoFile(Roll, Frame);
+			return FPaths::FileExists(File) ? FImageUtils::ImportFileAsTexture2D(File) : nullptr;
+		}
+	}
+	return nullptr;
+}
+
+void ULyudPhoto::NewestPrints(int32 Max, TArray<FIntPoint>& Out)
+{
+	const std::vector<const PhotoModel::FShot*> All = State().Album();
+	for (size_t I = All.size(); I > 0 && Out.Num() < Max; --I)
+	{
+		Out.Add(FIntPoint(All[I - 1]->Roll, All[I - 1]->Frame));
+	}
+}
+
 float ULyudPhoto::FocusDistance() const
 {
 	return PhotoModel::FocusStop(FocusIndex);

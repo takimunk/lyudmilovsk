@@ -121,9 +121,9 @@
   "ja": "まだボードに貼るものがない。絵はがきや写真が合う。"
  },
  "city.myroom.ui.nothing.frame": {
-  "ru": "На гвоздь пока нечего повесить. Подойдёт диплом, пластинка или газета.",
-  "en": "Nothing to hang on the nail yet. A diploma, a record or a newspaper will do.",
-  "ja": "まだ釘に掛けるものがない。賞状やレコード、新聞が合う。"
+  "ru": "На гвоздь пока нечего повесить. Подойдёт диплом, пластинка, газета или свой снимок.",
+  "en": "Nothing to hang on the nail yet. A diploma, a record, a newspaper or a print of my own will do.",
+  "ja": "まだ釘に掛けるものがない。賞状やレコード、新聞、自分の写真が合う。"
  },
  "city.myroom.ui.nothing.shelf": {
   "ru": "На полку пока нечего поставить.",
@@ -289,5 +289,130 @@
   "ru": "Свет в комнате",
   "en": "The room's light",
   "ja": "部屋の明かり"
+ },
+ "city.myroom.bed.rain.1": {
+  "ru": "Дождь стучал по крыше клуба всю ночь. В своей комнате под него спится лучше, чем под любую пластинку.",
+  "en": "Rain drummed on the club's roof all night. In my own room I sleep to it better than to any record.",
+  "ja": "雨が一晩じゅうクラブの屋根を叩いていた。自分の部屋では、どんなレコードよりもこの音でよく眠れる。"
+ },
+ "city.myroom.bed.rain.2": {
+  "ru": "Куртку повесил на спинку стула, сохнуть. Засыпал под то, как с неё капает на пол.",
+  "en": "I hung my jacket on the back of the chair to dry. I fell asleep to it dripping on the floor.",
+  "ja": "上着を椅子の背に掛けて乾かした。床にしずくが落ちる音を聞きながら眠った。"
+ },
+ "city.myroom.bed.snow.1": {
+  "ru": "За стеной было тихо, как бывает только в снег. Батарея щёлкала, и я натянул одеяло до носа.",
+  "en": "It was quiet behind the wall, the way it only is in snow. The radiator ticked, and I pulled the blanket up to my nose.",
+  "ja": "壁の向こうは、雪の日だけの静けさだった。暖房がかちかち鳴り、僕は毛布を鼻まで引き上げた。"
+ },
+ "city.myroom.bed.snow.2": {
+  "ru": "Утром в холле пахло мокрыми варежками. Значит, снег всё ещё идёт.",
+  "en": "In the morning the hall smelt of wet mittens. So it was still snowing.",
+  "ja": "朝、ホールは濡れた手袋の匂いがした。まだ雪が降っているらしい。"
+ },
+ "city.myroom.bed.fog.1": {
+  "ru": "В тумане с моря гудел маяк, редко и ровно. Я считал гудки и на девятом уснул.",
+  "en": "In the fog the lighthouse horn sounded from the sea, slow and even. I counted the blasts and fell asleep on the ninth.",
+  "ja": "霧の中、海から灯台の霧笛がゆっくり規則正しく聞こえた。数えているうちに、九つ目で眠ってしまった。"
+ },
+ "city.myroom.bed.cold.1": {
+  "ru": "Батарея у кровати еле тёплая. Положил поверх одеяла куртку и свернулся, как Мару.",
+  "en": "The radiator by the bed was barely warm. I put my jacket over the blanket and curled up like Maru.",
+  "ja": "ベッドのそばの暖房はほとんどぬるい。毛布の上に上着を掛けて、マルのように丸くなった。"
+ },
+ "city.myroom.bed.summer.1": {
+  "ru": "Жарко. Спал поверх одеяла, а дверь в холл оставил открытой, чтобы тянуло прохладой.",
+  "en": "Hot. I slept on top of the blanket and left the door to the hall open for the cool draught.",
+  "ja": "暑い。毛布の上で寝て、涼しい風が入るようにホールへのドアを開けておいた。"
+ },
+ "city.myroom.bed.newyear.1": {
+  "ru": "Из холла всю ночь мигала гирлянда, и по потолку ходили цветные пятна. Я не стал закрывать дверь.",
+  "en": "The fairy lights in the hall blinked all night, and coloured spots walked across my ceiling. I did not shut the door.",
+  "ja": "ホールの電飾が一晩じゅう点滅して、天井に色の光が動いていた。ドアは閉めなかった。"
+ },
+ "city.myroom.basket.rain.1": {
+  "ru": "Одеяло в корзинке сырое и пахнет мокрой собакой. Мару сегодня уже гуляла.",
+  "en": "The blanket in the basket is damp and smells of wet dog. Maru has been out already today.",
+  "ja": "かごの毛布は湿っていて、濡れた犬の匂いがする。マルは今日もう散歩に出たらしい。"
+ },
+ "city.myroom.basket.rain.2": {
+  "ru": "У корзинки на полу цепочка мокрых следов. Ведут от двери и обратно.",
+  "en": "There is a chain of wet paw prints on the floor by the basket. They lead from the door and back.",
+  "ja": "かごのそばの床に濡れた足跡が続いている。ドアから来て、また戻っている。"
+ },
+ "city.myroom.basket.snow.1": {
+  "ru": "В корзинке тает комок снега размером с грецкий орех. Кто-то принёс его на лапе.",
+  "en": "A lump of snow the size of a walnut is melting in the basket. Somebody brought it in on a paw.",
+  "ja": "かごの中でくるみほどの雪のかたまりが溶けている。誰かが足につけて持ってきたのだ。"
+ },
+ "city.myroom.basket.cold.1": {
+  "ru": "Холодно. Подвинул корзинку ближе к батарее: ночью Мару это оценит.",
+  "en": "It is cold. I moved the basket nearer the radiator: Maru will like that tonight.",
+  "ja": "寒い。かごを暖房の近くに寄せた。今夜、マルは喜ぶだろう。"
+ },
+ "city.myroom.basket.warm.1": {
+  "ru": "В жару Мару в корзинке не лежит: спит в холле на плитке, где прохладнее.",
+  "en": "In the heat Maru does not lie in the basket: she sleeps on the hall tiles, where it is cooler.",
+  "ja": "暑い日、マルはかごで寝ない。涼しいホールのタイルの上で眠る。"
+ },
+ "city.myroom.map.fog.1": {
+  "ru": "Сегодня берег за дверью выглядит как на этой карте: бледный и без подробностей.",
+  "en": "Today the coast outside looks the way it does on this map: pale and without detail.",
+  "ja": "今日の外の海岸は、この地図そっくりだ。淡くて、細かいところが何もない。"
+ },
+ "city.myroom.map.rain.1": {
+  "ru": "В дождь хорошо ходить по карте пальцем. Дошёл до острова и не промок.",
+  "en": "In the rain it is good to walk the map with a finger. I reached the island and stayed dry.",
+  "ja": "雨の日は、地図の上を指で歩くのがいい。島まで行って、少しも濡れなかった。"
+ },
+ "city.myroom.map.winter.1": {
+  "ru": "Зимой бухта на карте всё такая же голубая. Картограф, видно, рисовал её в июле.",
+  "en": "In winter the bay on the map is as blue as ever. The mapmaker must have drawn it in July.",
+  "ja": "冬でも地図の入り江は相変わらず青い。地図を描いた人は、きっと七月に描いたのだ。"
+ },
+ "city.myroom.print": {
+  "ru": "Снимок: плёнка {0}, кадр {1}",
+  "en": "A print: film {0}, frame {1}",
+  "ja": "写真：フィルム{0}、{1}コマ目"
+ },
+ "city.myroom.ui.take_print": {
+  "ru": "Снять со стены: {0}",
+  "en": "Take off the wall: {0}",
+  "ja": "壁から外す：{0}"
+ },
+ "city.myroom.ui.taken_print": {
+  "ru": "{0}: снял со стены. В альбоме он остался.",
+  "en": "{0}: off the wall. It is still in the album.",
+  "ja": "{0}：壁から外した。アルバムには残っている。"
+ },
+ "city.myroom.pot.droops": {
+  "ru": "{0}: листья повисли. Не поливал уже {1} дн. Надо полить.",
+  "en": "{0}: its leaves hang. No water for {1} days now. It needs watering.",
+  "ja": "{0}：葉がしおれている。もう{1}日水をやっていない。水をやらないと。"
+ },
+ "city.myroom.pot.revived": {
+  "ru": "Полил. {0} пил долго, земля шипела. К утру листья поднимутся.",
+  "en": "Watered. {0} drank for a long time, the soil hissed. The leaves will be up by morning.",
+  "ja": "水をやった。{0}は長いこと水を吸い、土がしゅうっと鳴った。朝には葉が起き上がるだろう。"
+ },
+ "city.myroom.pot.minded.1": {
+  "ru": "Под горшком записка от хозяина: «Полил твой {0}. Цветы не виноваты, что ты гуляешь».",
+  "en": "A note from the owner under the pot: \"Watered your {0}. It is not the plant's fault you are out and about.\"",
+  "ja": "鉢の下にオーナーのメモ。「君の{0}に水をやった。君が出歩いているのは花のせいじゃない」"
+ },
+ "city.myroom.pot.minded.2": {
+  "ru": "Земля в горшке мокрая, а рядом стоит хозяйская кружка. {0} полили без меня.",
+  "en": "The soil in the pot is wet, and the owner's mug stands beside it. {0} was watered without me.",
+  "ja": "鉢の土が濡れていて、そばにオーナーのマグが置いてある。{0}は僕のいない間に水をもらった。"
+ },
+ "city.myroom.pot.minded.3": {
+  "ru": "На блюдце записка: «{0} опять сох. Поливаю в последний раз. Шучу, не в последний».",
+  "en": "A note on the saucer: \"{0} was dry again. This is the last time I water it. Joking, it is not.\"",
+  "ja": "受け皿にメモ。「{0}がまた乾いていた。水をやるのはこれが最後だ。冗談、最後じゃない」"
+ },
+ "dev.action.home.plant_dry": {
+  "ru": "Растение: 8 дней без воды",
+  "en": "The plant: 8 days without water",
+  "ja": "植物：8日間水なし"
  }
 }

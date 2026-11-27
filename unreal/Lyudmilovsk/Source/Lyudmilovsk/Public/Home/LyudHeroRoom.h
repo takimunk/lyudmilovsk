@@ -10,6 +10,7 @@
 class AActor;
 class AProceduralPlant;
 class UMaterialInterface;
+class UTexture2D;
 class UPointLightComponent;
 class UPrimitiveComponent;
 class UStaticMesh;
@@ -34,9 +35,13 @@ namespace LyudHome { class FModel; }
  * not items: they are offered while he has their stamp. The pot takes a cutting of a house plant of the procedural plant
  * system, which grows by the days and faster when watered once a day. All of it is saved ("HeroRoom").
  *
+ * His own photographs (ULyudPhoto's album) hang on the board and the nails too: a print is no item, the album keeps it and
+ * the wall shows its picture. A record standing in the room is still his: the room's player plays it (Holds). A plant left
+ * dry hangs its leaves, and after two more days the owner waters it while the hero is out and a note says so.
+ *
  * The rules are plain C++ (Private/Home/HomeModel.h, checked offline by tools/homesim/run.sh), the data
  * Content/Home/home.json (tools/home/home.py). Nothing per frame but a box test while no chooser is up; the plant's age is
- * set when the day changes. Console: lyud.Home.Report, lyud.Home.Fill, lyud.Home.Clear, lyud.Home.Grow <days>,
+ * set when the day changes. Console: lyud.Home.Report, lyud.Home.Fill, lyud.Home.Clear, lyud.Home.Grow <days>, lyud.Home.Dry <days>,
  * lyud.Home.Light. Developer mode: group "home"; the teleport is the interiors' "city.p_home".
  */
 UCLASS()
@@ -71,12 +76,17 @@ public:
 	/** The line the chooser shows now (empty: no chooser). */
 	FString ChoiceLine() const;
 
+	/** Is this item standing somewhere in the room (ULyudMusic: a record on the shelf still plays on the room's player)? */
+	bool Holds(FName Item) const;
+
 	/** Developer mode: gives the hero a thing for every place and puts it there, plants and grows a plant. */
 	void DevFill();
 	/** Everything back in the pocket, the pot empty. */
 	void DevClear();
 	/** The plant as if planted so many days earlier. */
 	void DevGrow(int32 Days);
+	/** The plant as if nobody had watered it for so many days: its leaves hang, and the owner comes once the hero is out. */
+	void DevDry(int32 Days);
 	void ToggleLight();
 	bool IsLightOn() const;
 	/** What stands where, the plant and the lamp, as lines (the log, the tests). */
@@ -117,6 +127,10 @@ private:
 	void RefreshPlant();
 	void ApplyLight();
 	AActor* SpawnTrophy(const FString& What, const FVector& At, float Yaw);
+	/** A print of the album on a wall place: a thin card with the photograph on it (a white card when the file is gone). */
+	AActor* SpawnPrint(const FString& What, int32 Slot);
+	/** The owner looks in while the hero is out (once the day has turned) and the note about it waits for him. */
+	void TickAway();
 	UStaticMesh* TrophyMesh(const FString& Shape, int32 Tint);
 	void Note(const FText& What);
 	long long Today() const;
@@ -128,6 +142,8 @@ private:
 	float Clock = 0.f;
 	long long PlantDayShown = -1;
 	double NoteUntil = 0.0;
+	long long MindDay = -1;
+	bool bMindNote = false;
 
 	// the chooser
 	TArray<FOption> Options;
@@ -143,4 +159,8 @@ private:
 	UPROPERTY(Transient) TObjectPtr<AProceduralPlant> PlantActor;
 	UPROPERTY(Transient) TArray<TObjectPtr<UPointLightComponent>> Lights;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> PropMaterial;
+	/** The prints on the wall: their pictures by id ("print:1:2"), read once and kept while the game is the same. */
+	UPROPERTY(Transient) TMap<FString, TObjectPtr<UTexture2D>> PrintTextures;
+	UPROPERTY(Transient) TObjectPtr<UStaticMesh> PrintMesh;
+	UPROPERTY(Transient) TObjectPtr<UMaterialInterface> PrintMaterial;
 };

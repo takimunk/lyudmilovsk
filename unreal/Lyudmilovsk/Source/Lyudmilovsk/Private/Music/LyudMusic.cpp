@@ -10,6 +10,7 @@
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
 #include "Festival/LyudFestival.h"
+#include "Home/LyudHeroRoom.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudInventory.h"
@@ -418,17 +419,19 @@ float ULyudMusic::MusicLevel() const
 
 // ------------------------------------------------------------------ the city's things
 
-TArray<int32> ULyudMusic::OwnedRecords() const
+TArray<int32> ULyudMusic::OwnedRecords(bool bWithRoom) const
 {
 	TArray<int32> Out;
 	const ULyudInventory* Inv = ULyudInventory::Get(this);
+	const ULyudHeroRoom* Room = bWithRoom ? ULyudHeroRoom::Get(this) : nullptr;
 	if (!Inv || !Model)
 	{
 		return Out;
 	}
 	for (int32 I = 0; I < (int32)Model->Records.size(); ++I)
 	{
-		if (Inv->Count(FName(*LyudMusicImpl::Str(Model->Records[(size_t)I].Id))) > 0)
+		const FName Id(*LyudMusicImpl::Str(Model->Records[(size_t)I].Id));
+		if (Inv->Count(Id) > 0 || (Room && Room->Holds(Id)))
 		{
 			Out.Add(I);
 		}
@@ -514,7 +517,8 @@ bool ULyudMusic::OnCityAct(const FCityActInfo& Info, FText& Line)
 	}
 	case LyudMusic::ERole::Player:
 	{
-		const TArray<int32> Owned = OwnedRecords();
+		// (the player of his own room plays what stands on its shelves too: docs/hero_room.md)
+		const TArray<int32> Owned = OwnedRecords(Info.Thing.StartsWith(TEXT("P-HOME/")));
 		std::vector<int> OwnedV(Owned.GetData(), Owned.GetData() + Owned.Num());
 		const int32 Rec = Model->NextOwned(Std(Info.Thing), OwnedV);
 		if (Rec >= 0)
