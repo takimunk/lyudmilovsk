@@ -309,6 +309,7 @@ void ULyudTransportSubsystem::Deinitialize()
 	}
 	LifeBodies.Reset();
 	LifeNoBody.Reset();
+	PresentCount.Reset();
 	Life.Reset();
 	Net.Reset();
 	Super::Deinitialize();
@@ -664,6 +665,39 @@ void ULyudTransportSubsystem::StepLife(float DeltaTime)
 	Life->Step(*Net, LifeClock);
 }
 
+void ULyudTransportSubsystem::PresentPerson(int32 Pid, bool bShown)
+{
+	if (Pid < 0)
+	{
+		return;
+	}
+	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	if (bShown)
+	{
+		int32& Count = PresentCount.FindOrAdd(Pid);
+		if (Count++ == 0 && People)
+		{
+			People->SetPresentedExternally(Pid, true);
+		}
+		return;
+	}
+	const int32* Count = PresentCount.Find(Pid);
+	if (!Count)
+	{
+		return;             // not shown by us (an unmatched let-go must not clear another place's flag)
+	}
+	if (*Count > 1)
+	{
+		PresentCount.Add(Pid, *Count - 1);
+		return;
+	}
+	PresentCount.Remove(Pid);
+	if (People)
+	{
+		People->SetPresentedExternally(Pid, false);
+	}
+}
+
 void ULyudTransportSubsystem::TickCabinTalk(float DeltaTime)
 {
 	if (!Life || !Net || RidingCabin < 0 || RidingCabin >= SimNum(Net->Cabins))
@@ -838,10 +872,7 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 				}
 				Body->Tags.Add(TEXT("StationLife"));
 				Slot = Body;
-				if (Pid >= 0)
-				{
-					People->SetPresentedExternally(Pid, true);
-				}
+				PresentPerson(Pid, true);
 				Body->Drive(T.GetLocation(), T.Rotator().Yaw, EPersonPose::Sit, 0, 0.f, 44.f, 0.f, true);
 			}
 			const LT::ECabinAct Act = K >= 0 && K < Aboard ? (LT::ECabinAct)Acts[K] : LT::ECabinAct::Sit;
@@ -879,10 +910,7 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 			if (People && SimValid(Life->Riders, Rider))
 			{
 				const int32 Pid = People->FindPerson(UTF8_TO_TCHAR(Life->Riders[Rider].Key.c_str()));
-				if (Pid >= 0)
-				{
-					People->SetPresentedExternally(Pid, false);
-				}
+				PresentPerson(Pid, false);
 			}
 			It.RemoveCurrent();
 		}
