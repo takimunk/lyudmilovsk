@@ -342,11 +342,12 @@ namespace LyudTownChat
 		{
 			Duty.clear();
 		}
-		if (!Did.empty() && (Duty.empty() || Rand01(Seed) < 0.6f))
+		// one of the three, so that the same person has other news another day
+		if (!Did.empty() && Rand01(Seed) < 0.5f)
 		{
 			return Did;
 		}
-		return !Duty.empty() ? Duty : std::string("tc_day");
+		return !Duty.empty() && Rand01(Seed) < 0.6f ? Duty : std::string("tc_day");
 	}
 
 	void Build(const FWorld& W, const FPerson& P, const FData& D, const LyudBarks::FBook& Book, const LyudBarks::FWho& Who,

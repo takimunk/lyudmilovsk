@@ -77,9 +77,9 @@ say town.tc_hello_friendly.2 | Привет! Есть минутка — поб�
 on = tc_hello
 bond = friend close
 weight = 3
-say town.tc_hello_friend.1 | {0}! Вот это встреча. Ну, как ты? | {0}! Fancy meeting you. So, how are you? | {0}！会えてうれしいな。元気？
+say town.tc_hello_friend.1 | Вот это встреча, {0}! Ну, как ты? | Fancy meeting you, {0}! So, how are you? | 会えてうれしいな、{0}！元気？
 say town.tc_hello_friend.2 | Привет, {0}! Иди сюда, рассказывай. | Hi, {0}! Come here and tell me everything. | やあ、{0}！こっち来て、話聞かせて。
-say town.tc_hello_friend.3 | {0}, дружище! Давно тебя жду. | {0}, my friend! I've been waiting for you. | {0}、待ってたよ！
+say town.tc_hello_friend.3 | Давно тебя жду, {0}! Садись, рассказывай. | I've been waiting for you, {0}! Sit down and tell me everything. | 待ってたよ、{0}！さあ、話を聞かせて。
 
 [tc_hello_kid]
 on = tc_hello
@@ -363,6 +363,7 @@ age = kid
 weight = 2
 say town.tc_day_kid.1 | Сегодня уже три шишки и ни одной слезинки! | Three bumps already today and not one tear! | 今日はもうたんこぶ三つ、でも泣いてない！
 say town.tc_day_kid.2 | Мы строим штаб. Где — не скажу, это секрет. | We're building a hideout. I won't say where, it's a secret. | ひみつ基地つくってるの。場所はないしょ。
+say town.tc_day_kid.3 | Я сегодня капитан. Скамейка — это корабль, не садись на корму! | I'm the captain today. The bench is a ship, don't sit on the stern! | 今日は船長なの。ベンチは船だから、うしろに座らないで！
 
 [tc_day_teen]
 on = tc_day
@@ -370,6 +371,7 @@ age = teen
 weight = 2
 say town.tc_day_teen.1 | Да нормально. Уроки, потом в клуб, если пустят. | Yeah, fine. Lessons, then the club if they let me. | まあふつう。勉強して、行けたらクラブ。
 say town.tc_day_teen.2 | Ничего особенного. Жду, когда что-нибудь случится. | Nothing special. Waiting for something to happen. | 別に。何か起きるのを待ってるとこ。
+say town.tc_day_teen.3 | Сижу, думаю, чем заняться. Это тоже занятие. | Sitting here thinking what to do. That's a thing to do too. | 何しようか考えてるとこ。それも立派な用事。
 
 [tc_day_elder]
 on = tc_day
@@ -380,21 +382,35 @@ say town.tc_day_elder.1 | Проснуться, дойти до скамейки
 on = tc_day
 doing = sit_bench read_bench read_paper
 say town.tc_day_bench.1 | Сижу, смотрю на людей. Лучше всякого кино. | Sitting, watching people. Beats any film. | 座って人をながめてる。どんな映画よりいいよ。
+say town.tc_day_bench.2 | Отдыхаю. Скамейка тёплая, вид хороший, торопиться некуда. | Resting. The bench is warm, the view's good, no hurry at all. | ひと休み。ベンチはあったかいし、ながめもいい。
+say town.tc_day_bench.3 | Сижу, считаю прохожих. Ты сегодня сорок третий. | Sitting and counting passers-by. You're number forty-three today. | 通る人を数えてるの。君は今日四十三人目。
 
 [tc_day_shop]
 on = tc_day
 doing = shop shop_town
 say town.tc_day_shop.1 | Хожу за покупками. Список дома, вспоминаю по памяти. | Out shopping. The list's at home, I'm working from memory. | 買い物中。メモを家に忘れて、記憶がたより。
+say town.tc_day_shop.2 | Выбираю. Купить надо одно, а хочется всё. | Choosing. I need one thing and want everything. | えらんでるとこ。買うのは一つなのに、全部ほしくなる。
 
 [tc_day_eat]
 on = tc_day
 doing = eat_out coffee
-say town.tc_day_eat.1 | Обедаю не дома. Иногда надо себя баловать. | Eating out. One has to spoil oneself sometimes. | 今日は外でごはん。たまには自分を甘やかさないと。
+say town.tc_day_eat.1 | Ем сегодня не дома. Иногда надо себя баловать. | Eating out today. One has to spoil oneself sometimes. | 今日は外でごはん。たまには自分を甘やかさないと。
+say town.tc_day_eat.2 | Сижу, жду заказ. Самое приятное ожидание на свете. | Sitting, waiting for my order. The nicest wait in the world. | 注文を待ってるとこ。世界でいちばん楽しい待ち時間。
 
 [tc_day_walk]
 on = tc_day
-doing = walk stroll night_walk
+doing = walk stroll
 say town.tc_day_walk.1 | Гуляю. Врач велел десять тысяч шагов, считаю примерно. | Out walking. Doctor's orders: ten thousand steps, roughly counted. | 散歩中。医者に一万歩って言われてね。数え方は適当。
+say town.tc_day_walk.2 | Иду куда глаза глядят. Глаза глядят в сторону моря. | Walking wherever my eyes lead. They lead towards the sea. | 足の向くまま歩いてる。足は海のほうへ向くんだ。
+say town.tc_day_walk.3 | Просто хожу. Мысли на ходу сами раскладываются по полкам. | Just walking. Thoughts sort themselves onto shelves as you go. | ただ歩いてるの。歩くと考えが勝手に片づくから。
+
+[tc_day_night_walk]
+on = tc_day
+doing = night_walk
+say town.tc_day_night_walk.1 | День кончился, а спать рано. Вот и хожу. | The day's over and it's too early for bed. So I walk. | 一日は終わったけど寝るには早い。だから歩いてるの。
+say town.tc_day_night_walk.2 | Ночью город другой. Днём я его таким не знаю. | The town's different at night. I don't know it like this by day. | 夜の町は別の顔だよ。昼には見られない。
+say town.tc_day_night_walk.3 | Не спится. Море шумит — и мне спокойнее. | Can't sleep. The sea murmurs and I feel calmer. | 眠れなくてね。波の音を聞くと落ち着くんだ。
+say town.tc_day_night_walk.4 | День был длинный. Выгуливаю его перед сном. | It's been a long day. I'm walking it off before bed. | 長い一日だった。寝る前に歩いてほぐしてるとこ。
 
 [tc_day_fish]
 on = tc_day
@@ -405,6 +421,7 @@ say town.tc_day_fish.1 | Ловлю. Точнее, жду. Рыбалка — э
 on = tc_day
 doing = work
 say town.tc_day_work.1 | Весь день на ногах. Смена кончится — выдохну. | On my feet all day. I'll breathe out when the shift ends. | 一日立ちっぱなし。仕事が終わったら一息つくよ。
+say town.tc_day_work.2 | Работаю. Но для хорошего человека минутка найдётся. | Working. But there's a minute for a decent person. | 仕事中。でもいい人のためなら少し時間はあるよ。
 
 [tc_day_child]
 on = tc_day
@@ -418,30 +435,39 @@ on = tc_day_before_work
 job = !pupil !student
 say town.tc_day_before_work.1 | Скоро на работу. Ловлю последние свободные минуты. | Work soon. I'm catching the last free minutes. | もうすぐ仕事。最後の自由時間を味わってるの。
 say town.tc_day_before_work.2 | Смена ещё впереди. Набираюсь сил. | The shift's still ahead. Gathering my strength. | 仕事はこれから。力をためてるところ。
+say town.tc_day_before_work.3 | Через час на смену. Дышу воздухом про запас. | On shift in an hour. Breathing the air in while I can. | あと一時間で仕事。今のうちに外の空気を吸っておくの。
+say town.tc_day_before_work.4 | До работы ещё есть время. Трачу его с умом — ничего не делаю. | Still some time before work. Spending it wisely: doing nothing. | 仕事までまだ時間がある。かしこく使ってるよ、何もせずに。
 
 [tc_day_before_school]
 on = tc_day_before_work
 job = pupil student
 say town.tc_day_before_school.1 | Сейчас на уроки. Портфель тяжёлый, как якорь. | Lessons in a bit. My bag's as heavy as an anchor. | これから授業。かばんがいかりみたいに重い。
 say town.tc_day_before_school.2 | Учёба ещё впереди. Досыпаю на ходу. | Classes still ahead. I'm finishing my sleep on the move. | 授業はこれから。歩きながら寝てるとこ。
+say town.tc_day_before_school.3 | Сегодня контрольная. Надеюсь на чудо и на соседа по парте. | A test today. I'm counting on a miracle and my desk-mate. | 今日はテスト。奇跡ととなりの席の子がたより。
+say town.tc_day_before_school.4 | Иду учиться. Знания тяжёлые, а нести мне. | Off to learn. Knowledge is heavy and I'm the one carrying it. | 勉強しに行くとこ。知識は重いのに、運ぶのは自分。
 
 [tc_day_after_work]
 on = tc_day_after_work
 job = !pupil !student
 say town.tc_day_after_work.1 | Отработали на сегодня. Теперь город мой. | Done for today. Now the town is mine. | 今日の仕事はおしまい。ここからは自分の時間。
 say town.tc_day_after_work.2 | Смена позади. Иду медленно — имею право. | Shift's behind me. I'm walking slowly: I've earned it. | 仕事は終わり。ゆっくり歩く権利があるよ。
+say town.tc_day_after_work.3 | Работа кончилась, а день ещё нет. Люблю это время. | Work's over and the day isn't. I love this hour. | 仕事は終わったけど一日はまだ。この時間が好き。
+say town.tc_day_after_work.4 | На сегодня всё. Голова пустая, ноги сами несут к морю. | That's it for today. Empty head, and my feet carry me to the sea. | 今日はここまで。頭はからっぽ、足は勝手に海へ向かう。
 
 [tc_day_after_school]
 on = tc_day_after_work
 job = pupil student
 say town.tc_day_after_school.1 | Уроки кончились! До ужина я свободный человек. | Lessons are over! I'm a free person till supper. | 授業おわり！晩ごはんまで自由だ。
 say town.tc_day_after_school.2 | Отучились. Домашку сделаю потом. Наверное. | Classes done. I'll do the homework later. Probably. | 授業は終わり。宿題はあとで。たぶん。
+say town.tc_day_after_school.3 | Свобода! Портфель брошу дома — и во двор. | Freedom! I'll dump my bag at home and out into the yard. | 自由だ！かばんを置いたらすぐ外へ。
+say town.tc_day_after_school.4 | Сегодня меня не спросили. Лучший день недели. | I didn't get asked today. Best day of the week. | 今日は当てられなかった。今週いちばんの日。
 
 [tc_day_off]
 on = tc_day_off
 job = !pupil !student
 say town.tc_day_off.1 | Выходной! Никуда не тороплюсь, и это прекрасно. | Day off! I'm in no hurry, and it's wonderful. | 休みだよ！急がなくていいって最高。
 say town.tc_day_off.2 | Сегодня не работаю. Учусь ничего не делать, пока плохо получается. | Not working today. Learning to do nothing; not very good at it yet. | 今日は休み。何もしない練習中。まだ下手だけど。
+say town.tc_day_off.3 | Выходной. Будильник молчит, совесть тоже. | A day off. The alarm clock's silent and so is my conscience. | 休みの日。目覚ましも良心も静かだよ。
 
 [tc_day_off_school]
 on = tc_day_off

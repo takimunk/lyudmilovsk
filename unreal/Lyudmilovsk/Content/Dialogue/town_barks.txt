@@ -4837,13 +4837,13 @@ say = town.tc_day_evening.1..2
 on = tc_day
 age = kid
 weight = 2
-say = town.tc_day_kid.1..2
+say = town.tc_day_kid.1..3
 
 [tc_day_teen]
 on = tc_day
 age = teen
 weight = 2
-say = town.tc_day_teen.1..2
+say = town.tc_day_teen.1..3
 
 [tc_day_elder]
 on = tc_day
@@ -4853,22 +4853,27 @@ say = town.tc_day_elder.1
 [tc_day_bench]
 on = tc_day
 doing = sit_bench read_bench read_paper
-say = town.tc_day_bench.1
+say = town.tc_day_bench.1..3
 
 [tc_day_shop]
 on = tc_day
 doing = shop shop_town
-say = town.tc_day_shop.1
+say = town.tc_day_shop.1..2
 
 [tc_day_eat]
 on = tc_day
 doing = eat_out coffee
-say = town.tc_day_eat.1
+say = town.tc_day_eat.1..2
 
 [tc_day_walk]
 on = tc_day
-doing = walk stroll night_walk
-say = town.tc_day_walk.1
+doing = walk stroll
+say = town.tc_day_walk.1..3
+
+[tc_day_night_walk]
+on = tc_day
+doing = night_walk
+say = town.tc_day_night_walk.1..4
 
 [tc_day_fish]
 on = tc_day
@@ -4878,7 +4883,7 @@ say = town.tc_day_fish.1
 [tc_day_work]
 on = tc_day
 doing = work
-say = town.tc_day_work.1
+say = town.tc_day_work.1..2
 
 [tc_day_child]
 on = tc_day
@@ -4888,27 +4893,27 @@ say = town.tc_day_child.1
 [tc_day_before_work]
 on = tc_day_before_work
 job = !pupil !student
-say = town.tc_day_before_work.1..2
+say = town.tc_day_before_work.1..4
 
 [tc_day_before_school]
 on = tc_day_before_work
 job = pupil student
-say = town.tc_day_before_school.1..2
+say = town.tc_day_before_school.1..4
 
 [tc_day_after_work]
 on = tc_day_after_work
 job = !pupil !student
-say = town.tc_day_after_work.1..2
+say = town.tc_day_after_work.1..4
 
 [tc_day_after_school]
 on = tc_day_after_work
 job = pupil student
-say = town.tc_day_after_school.1..2
+say = town.tc_day_after_school.1..4
 
 [tc_day_off]
 on = tc_day_off
 job = !pupil !student
-say = town.tc_day_off.1..2
+say = town.tc_day_off.1..3
 
 [tc_day_off_school]
 on = tc_day_off

@@ -115,7 +115,7 @@ namespace LyudTownChat
 	/** The friend they would speak of, -1 none. */
 	int FriendOf(const LyudPeople::FWorld& W, const LyudPeople::FPerson& P, const FData& D, uint32_t Seed);
 	/** Their day's news: tc_did_<group> (what they did before this), tc_day_before_work, tc_day_after_work, tc_day_off,
-	 *  or tc_day; the first of them (by Seed) that has a line now. */
+	 *  or tc_day (the hour, what they are doing now): one of those that have a line now, by Seed. */
 	std::string DayEvent(const LyudPeople::FWorld& W, const LyudPeople::FPerson& P, const FData& D, const LyudBarks::FBook& Book,
 		const LyudBarks::FWho& Who, const LyudBarks::FNow& Now, uint32_t Seed);
 
