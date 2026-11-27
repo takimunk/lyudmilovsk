@@ -54,6 +54,16 @@ def cut_out(rgb):
     bgd, fgd = np.zeros((1, 65), np.float64), np.zeros((1, 65), np.float64)
     cv2.grabCut(cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR), mask, None, bgd, fgd, 6, cv2.GC_INIT_WITH_MASK)
     m = np.where((mask == cv2.GC_FGD) | (mask == cv2.GC_PR_FGD), 1, 0).astype(np.uint8)
+    # a thing nearly the cloth's own colour and brightness (the navy winter coat: Lab within ~8 of the cloth) is eaten by
+    # GrabCut down to a few fragments, and no colour key separates it either. When GrabCut keeps less than half of the
+    # edges' hull, the whole cell is drawn: a rounded box a margin in from the edges (such things fill their cell)
+    if guess.sum() > 0 and m.sum() < 0.5 * guess.sum():
+        m = np.zeros((h, w), np.uint8)
+        r = 6 * b
+        cv2.rectangle(m, (b + r, b), (w - b - r, h - b), 1, -1)
+        cv2.rectangle(m, (b, b + r), (w - b, h - b - r), 1, -1)
+        for cx, cy in ((b + r, b + r), (w - b - r, b + r), (b + r, h - b - r), (w - b - r, h - b - r)):
+            cv2.circle(m, (cx, cy), r, 1, -1)
     # the biggest pieces only (crumbs of cloth go), holes filled
     n, lab, stats, _ = cv2.connectedComponentsWithStats(m)
     if n > 1:
