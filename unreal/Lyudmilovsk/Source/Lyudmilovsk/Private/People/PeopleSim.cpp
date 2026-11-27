@@ -3591,6 +3591,13 @@ namespace LyudPeople
 			}
 			P.BikeAct = EBikeAct::None;
 		}
+		if (P.HoldFor > 0.f)
+		{
+			// stopped for a word with the hero (HoldWalk): they stand, then go on
+			P.HoldFor -= Dt;
+			P.Speed = 0.f;
+			return;
+		}
 		if (P.BreathAt >= 0 && P.PathI > P.BreathAt)
 		{
 			// getting their breath back (Start): they stand a while, then go on (not in the rain)
@@ -5287,6 +5294,14 @@ namespace LyudPeople
 		}
 		const FActivity& Act = Activities[A];
 		return Start(P, A, Best, (Act.MinMinutes + Act.MaxMinutes) * 0.5f, false, "ordered");
+	}
+
+	void FWorld::HoldWalk(int Person, float Seconds)
+	{
+		if (Person >= 0 && Person < (int)People.size())
+		{
+			People[(size_t)Person].HoldFor = Seconds > 0.f ? Seconds : 0.f;
+		}
 	}
 
 	bool FWorld::OrderBeside(int Person, const V3& Pos, float MaxDist, double Minutes)

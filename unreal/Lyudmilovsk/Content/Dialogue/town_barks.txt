@@ -4523,3 +4523,834 @@ doing = subbotnik_paint subbotnik_whitewash subbotnik_sweep
 near = hero
 weight = 3
 say = town.street_subbotnik_near.1..2
+
+# A talk with the hero (docs/town_talk.md "A talk"): E on a townsperson who is free for a word opens a page with their
+# greeting, two to four things to ask about, now and then a question back, and a goodbye. These are their lines:
+# sets with on = tc_*, picked like any other line of theirs (job, age, the hour, the weather, the bond, the rumours).
+# The hero's side (his questions and answers), the events and which activity or like belongs to which event:
+# tools/townchat/content.py; python3 tools/townchat/build_town_chat.py checks this file against it.
+# {0}: the nickname a friend gave him (only in sets with bond = friend close). {1}: a rumour's detail (only on =
+# tc_rumour with heard_of). {2}..{7}: the given name of whoever the line names, in the six cases (only tc_friend,
+# tc_kin_*); the same numbers in ru, en and ja (English and Japanese get the plain name for each).
+# Russian: the speaker never speaks of themselves in the past tense (no gender); the hero is a boy, they say «ты».
+# A page shows one line: ru and en up to 100 characters, ja up to 48 (tools/barksim checks).
+# --- the greeting that opens the talk (by the hour, the weather, how well they know him, the bond)
+# --- the goodbye
+# --- not now: at their counter with a customer, late, a child who doesn't know him yet (said over the head, no page)
+# --- their work, their studies, their retirement (the topic «Как работа?»)
+# --- their day (the topic «Как день?»): by the hour, by what they are doing now
+# --- their job or school today: still ahead, behind them, a day off
+# --- what they did before this (the people's life's PrevActivity, tools/townchat/content.py DID): the day's news
+# --- the weather (the topic «Ну и погода…»)
+# --- the holiday on now (the topic is offered only while a festival is on)
+# --- what the town says of him (docs/town_rumours.md): offered while they know a rumour; {1} its detail
+# --- a friend of theirs (townsfolk.json friends). The friend's given name: {2} who, {3} of whom, {4} to whom, {5} whom,
+# --- {6} with whom, {7} about whom (townchat.fn.<id>.<form>). Their sex is not known here: no past tense about them.
+# --- their household (tc_kin_<who the other is to them>); the name's forms as above
+# --- what they like to do (townsfolk.json likes; tools/townchat/content.py HOBBIES)
+# --- the town: where to go (the topic «Что тут стоит посмотреть?»)
+# --- a question back to him (tools/townchat/content.py ASKS: his answers are townchat.ask.<id>.a<n>), then their reply to answer n
+
+[tc_hello]
+on = tc_hello
+weight = 0.5
+say = town.tc_hello.1..3
+
+[tc_hello_morning]
+on = tc_hello
+hours = 5-11
+say = town.tc_hello_morning.1..2
+
+[tc_hello_evening]
+on = tc_hello
+hours = 18-23
+say = town.tc_hello_evening.1..2
+
+[tc_hello_night]
+on = tc_hello
+hours = 23-5
+say = town.tc_hello_night.1..2
+
+[tc_hello_rain]
+on = tc_hello
+weather = rain
+say = town.tc_hello_rain.1
+
+[tc_hello_snow]
+on = tc_hello
+weather = snow
+say = town.tc_hello_snow.1
+
+[tc_hello_cold]
+on = tc_hello
+weather = cold
+say = town.tc_hello_cold.1
+
+[tc_hello_new_elder]
+on = tc_hello
+met = new
+age = elder
+say = town.tc_hello_new_elder.1
+
+[tc_hello_new]
+on = tc_hello
+met = new
+age = adult elder
+say = town.tc_hello_new.1
+
+[tc_hello_known]
+on = tc_hello
+met = known
+say = town.tc_hello_known.1..2
+
+[tc_hello_friendly]
+on = tc_hello
+bond = friendly
+weight = 2
+say = town.tc_hello_friendly.1..2
+
+[tc_hello_friend]
+on = tc_hello
+bond = friend close
+weight = 3
+say = town.tc_hello_friend.1..3
+
+[tc_hello_kid]
+on = tc_hello
+age = kid
+weight = 2
+say = town.tc_hello_kid.1..2
+
+[tc_hello_teen]
+on = tc_hello
+age = teen
+weight = 2
+say = town.tc_hello_teen.1..2
+
+[tc_hello_elder]
+on = tc_hello
+age = elder
+say = town.tc_hello_elder.1..2
+
+[tc_hello_work]
+on = tc_hello
+doing = work
+say = town.tc_hello_work.1..2
+
+[tc_hello_sit]
+on = tc_hello
+pose = sit
+age = adult elder
+at = outdoors
+say = town.tc_hello_sit.1
+
+[tc_hello_festival]
+on = tc_hello
+festival = any
+say = town.tc_hello_festival.1
+
+[tc_bye]
+on = tc_bye
+weight = 0.5
+say = town.tc_bye.1..3
+
+[tc_bye_evening]
+on = tc_bye
+hours = 18-5
+say = town.tc_bye_evening.1..2
+
+[tc_bye_rain]
+on = tc_bye
+weather = rain
+say = town.tc_bye_rain.1
+
+[tc_bye_cold]
+on = tc_bye
+weather = cold snow
+say = town.tc_bye_cold.1
+
+[tc_bye_friend]
+on = tc_bye
+bond = friend close
+weight = 3
+say = town.tc_bye_friend.1..2
+
+[tc_bye_friendly]
+on = tc_bye
+bond = friendly
+weight = 2
+say = town.tc_bye_friendly.1
+
+[tc_bye_kid]
+on = tc_bye
+age = kid
+weight = 2
+say = town.tc_bye_kid.1..2
+
+[tc_bye_teen]
+on = tc_bye
+age = teen
+weight = 2
+say = town.tc_bye_teen.1
+
+[tc_bye_elder]
+on = tc_bye
+age = elder
+say = town.tc_bye_elder.1
+
+[tc_bye_work]
+on = tc_bye
+doing = work
+say = town.tc_bye_work.1
+
+[tc_bye_new]
+on = tc_bye
+met = new
+age = adult elder
+say = town.tc_bye_new.1
+
+[tc_no_work]
+on = tc_no_work
+say = town.tc_no_work.1..3
+
+[tc_no_hurry]
+on = tc_no_hurry
+say = town.tc_no_hurry.1..3
+
+[tc_no_hurry_young]
+on = tc_no_hurry
+age = kid teen
+weight = 2
+say = town.tc_no_hurry_young.1
+
+[tc_no_shy]
+on = tc_no_shy
+say = town.tc_no_shy.1..3
+
+[tc_work]
+on = tc_work
+weight = 0.3
+say = town.tc_work.1..2
+
+[tc_work_pensioner]
+on = tc_work
+job = pensioner
+say = town.tc_work_pensioner.1..4
+
+[tc_work_pupil]
+on = tc_work
+job = pupil
+say = town.tc_work_pupil.1..4
+
+[tc_work_student]
+on = tc_work
+job = student
+say = town.tc_work_student.1..2
+
+[tc_work_away]
+on = tc_work
+job = away
+say = town.tc_work_away.1..2
+
+[tc_work_researcher]
+on = tc_work
+job = researcher
+say = town.tc_work_researcher.1..3
+
+[tc_work_fisherman]
+on = tc_work
+job = fisherman
+say = town.tc_work_fisherman.1..3
+
+[tc_work_writer]
+on = tc_work
+job = writer
+say = town.tc_work_writer.1..2
+
+[tc_work_seller]
+on = tc_work
+job = seller vendor stallholder cashier bookseller butcher baker fishmonger
+say = town.tc_work_seller.1..3
+
+[tc_work_programmer]
+on = tc_work
+job = programmer
+say = town.tc_work_programmer.1..2
+
+[tc_work_station]
+on = tc_work
+job = station_barista station_attendant
+say = town.tc_work_station.1..2
+
+[tc_work_homemaker]
+on = tc_work
+job = homemaker
+say = town.tc_work_homemaker.1..2
+
+[tc_work_musician]
+on = tc_work
+job = musician choir_leader
+say = town.tc_work_musician.1..2
+
+[tc_work_unemployed]
+on = tc_work
+job = unemployed
+say = town.tc_work_unemployed.1..2
+
+[tc_work_artist]
+on = tc_work
+job = artist photographer
+say = town.tc_work_artist.1..2
+
+[tc_work_cook]
+on = tc_work
+job = cook waiter barista bartender
+say = town.tc_work_cook.1..2
+
+[tc_work_office]
+on = tc_work
+job = clerk manager director receptionist librarian teacher doctor nurse
+say = town.tc_work_office.1..2
+
+[tc_work_guest]
+on = tc_work
+job = guest renter
+say = town.tc_work_guest.1..2
+
+[tc_work_keeper]
+on = tc_work
+job = lifeguard guard janitor cleaner caretaker repairman lighthouse_keeper postman
+say = town.tc_work_keeper.1..2
+
+[tc_day]
+on = tc_day
+weight = 0.4
+say = town.tc_day.1..2
+
+[tc_day_morning]
+on = tc_day
+hours = 5-11
+age = adult elder
+say = town.tc_day_morning.1..4
+
+[tc_day_evening]
+on = tc_day
+hours = 17-23
+age = adult elder
+say = town.tc_day_evening.1..2
+
+[tc_day_kid]
+on = tc_day
+age = kid
+weight = 2
+say = town.tc_day_kid.1..3
+
+[tc_day_teen]
+on = tc_day
+age = teen
+weight = 2
+say = town.tc_day_teen.1..3
+
+[tc_day_elder]
+on = tc_day
+age = elder
+say = town.tc_day_elder.1
+
+[tc_day_bench]
+on = tc_day
+doing = sit_bench read_bench read_paper
+say = town.tc_day_bench.1..3
+
+[tc_day_shop]
+on = tc_day
+doing = shop shop_town
+say = town.tc_day_shop.1..2
+
+[tc_day_eat]
+on = tc_day
+doing = eat_out coffee
+say = town.tc_day_eat.1..2
+
+[tc_day_walk]
+on = tc_day
+doing = walk stroll
+say = town.tc_day_walk.1..3
+
+[tc_day_night_walk]
+on = tc_day
+doing = night_walk
+say = town.tc_day_night_walk.1..4
+
+[tc_day_fish]
+on = tc_day
+doing = fish_shore
+say = town.tc_day_fish.1
+
+[tc_day_work]
+on = tc_day
+doing = work
+say = town.tc_day_work.1..2
+
+[tc_day_child]
+on = tc_day
+doing = mind_child
+say = town.tc_day_child.1
+
+[tc_day_before_work]
+on = tc_day_before_work
+job = !pupil !student
+say = town.tc_day_before_work.1..4
+
+[tc_day_before_school]
+on = tc_day_before_work
+job = pupil student
+say = town.tc_day_before_school.1..4
+
+[tc_day_after_work]
+on = tc_day_after_work
+job = !pupil !student
+say = town.tc_day_after_work.1..4
+
+[tc_day_after_school]
+on = tc_day_after_work
+job = pupil student
+say = town.tc_day_after_school.1..4
+
+[tc_day_off]
+on = tc_day_off
+job = !pupil !student
+say = town.tc_day_off.1..3
+
+[tc_day_off_school]
+on = tc_day_off
+job = pupil student
+say = town.tc_day_off_school.1
+
+[tc_did_shop]
+on = tc_did_shop
+say = town.tc_did_shop.1..2
+
+[tc_did_eat]
+on = tc_did_eat
+say = town.tc_did_eat.1..2
+
+[tc_did_sea]
+on = tc_did_sea
+say = town.tc_did_sea.1..2
+
+[tc_did_walk]
+on = tc_did_walk
+say = town.tc_did_walk.1..2
+
+[tc_did_bench]
+on = tc_did_bench
+say = town.tc_did_bench.1..2
+
+[tc_did_club]
+on = tc_did_club
+say = town.tc_did_club.1..2
+
+[tc_did_library]
+on = tc_did_library
+say = town.tc_did_library.1..2
+
+[tc_did_fish]
+on = tc_did_fish
+say = town.tc_did_fish.1..2
+
+[tc_did_fair]
+on = tc_did_fair
+say = town.tc_did_fair.1..2
+
+[tc_did_culture]
+on = tc_did_culture
+say = town.tc_did_culture.1..2
+
+[tc_did_sport]
+on = tc_did_sport
+say = town.tc_did_sport.1..2
+
+[tc_did_garden]
+on = tc_did_garden
+say = town.tc_did_garden.1..2
+
+[tc_did_play]
+on = tc_did_play
+say = town.tc_did_play.1..2
+
+[tc_did_school]
+on = tc_did_school
+say = town.tc_did_school.1..2
+
+[tc_did_clinic]
+on = tc_did_clinic
+say = town.tc_did_clinic.1..2
+
+[tc_weather]
+on = tc_weather
+weight = 0.4
+say = town.tc_weather.1..2
+
+[tc_weather_rain]
+on = tc_weather
+weather = rain
+weight = 2
+say = town.tc_weather_rain.1..3
+
+[tc_weather_snow]
+on = tc_weather
+weather = snow
+weight = 2
+say = town.tc_weather_snow.1..2
+
+[tc_weather_fog]
+on = tc_weather
+weather = fog
+weight = 2
+say = town.tc_weather_fog.1..2
+
+[tc_weather_cold]
+on = tc_weather
+weather = cold
+say = town.tc_weather_cold.1..2
+
+[tc_weather_warm]
+on = tc_weather
+weather = warm
+say = town.tc_weather_warm.1..2
+
+[tc_weather_clear]
+on = tc_weather
+weather = clear
+sun = day low
+say = town.tc_weather_clear.1..2
+
+[tc_weather_night]
+on = tc_weather
+weather = clear
+sun = night
+say = town.tc_weather_night.1
+
+[tc_weather_autumn]
+on = tc_weather
+months = 9-11
+say = town.tc_weather_autumn.1
+
+[tc_weather_spring]
+on = tc_weather
+months = 3-5
+say = town.tc_weather_spring.1
+
+[tc_weather_kid]
+on = tc_weather
+age = kid
+weight = 2
+say = town.tc_weather_kid.1
+
+[tc_festival]
+on = tc_festival
+say = town.tc_festival.1..3
+
+[tc_festival_kid]
+on = tc_festival
+age = kid
+weight = 2
+say = town.tc_festival_kid.1
+
+[tc_festival_elder]
+on = tc_festival
+age = elder
+say = town.tc_festival_elder.1
+
+[tc_festival_fair]
+on = tc_festival
+festival = weekend_market harvest_fair winter_fair
+say = town.tc_festival_fair.1
+
+[tc_festival_new_year]
+on = tc_festival
+festival = new_year
+say = town.tc_festival_new_year.1
+
+[tc_festival_sea]
+on = tc_festival
+festival = sea_festival fisherman_day
+say = town.tc_festival_sea.1
+
+[tc_festival_lantern]
+on = tc_festival
+festival = lantern_night toro_nagashi mid_autumn loy_krathong
+say = town.tc_festival_lantern.1
+
+[tc_rumour]
+on = tc_rumour
+weight = 0.3
+say = town.tc_rumour.1..2
+
+[tc_rumour_cup]
+on = tc_rumour
+heard_of = cup
+weight = 4
+say = town.tc_rumour_cup.1
+
+[tc_rumour_beat]
+on = tc_rumour
+heard_of = beat
+weight = 4
+say = town.tc_rumour_beat.1
+
+[tc_rumour_job]
+on = tc_rumour
+heard_of = job
+weight = 4
+say = town.tc_rumour_job.1
+
+[tc_rumour_tamed]
+on = tc_rumour
+heard_of = tamed
+weight = 4
+say = town.tc_rumour_tamed.1
+
+[tc_rumour_catch]
+on = tc_rumour
+heard_of = catch
+weight = 4
+say = town.tc_rumour_catch.1
+
+[tc_rumour_tune]
+on = tc_rumour
+heard_of = tune
+weight = 4
+say = town.tc_rumour_tune.1
+
+[tc_rumour_kite]
+on = tc_rumour
+heard_of = kite
+weight = 4
+say = town.tc_rumour_kite.1
+
+[tc_rumour_garden]
+on = tc_rumour
+heard_of = garden
+weight = 4
+say = town.tc_rumour_garden.1
+
+[tc_rumour_fine]
+on = tc_rumour
+heard_of = fine
+weight = 4
+say = town.tc_rumour_fine.1
+
+[tc_rumour_radio]
+on = tc_rumour
+heard_of = radio
+weight = 4
+say = town.tc_rumour_radio.1
+
+[tc_rumour_crows]
+on = tc_rumour
+heard_of = crows
+weight = 4
+say = town.tc_rumour_crows.1
+
+[tc_friend]
+on = tc_friend
+say = town.tc_friend.1..5
+
+[tc_friend_young]
+on = tc_friend
+age = kid teen
+weight = 2
+say = town.tc_friend_young.1..2
+
+[tc_friend_elder]
+on = tc_friend
+age = elder
+weight = 2
+say = town.tc_friend_elder.1..2
+
+[tc_kin_son]
+on = tc_kin_son
+say = town.tc_kin_son.1..2
+
+[tc_kin_daughter]
+on = tc_kin_daughter
+say = town.tc_kin_daughter.1..2
+
+[tc_kin_mum]
+on = tc_kin_mum
+say = town.tc_kin_mum.1..2
+
+[tc_kin_dad]
+on = tc_kin_dad
+say = town.tc_kin_dad.1..2
+
+[tc_kin_sister]
+on = tc_kin_sister
+say = town.tc_kin_sister.1..2
+
+[tc_kin_brother]
+on = tc_kin_brother
+say = town.tc_kin_brother.1..2
+
+[tc_kin_wife]
+on = tc_kin_wife
+say = town.tc_kin_wife.1..2
+
+[tc_kin_husband]
+on = tc_kin_husband
+say = town.tc_kin_husband.1..2
+
+[tc_kin_mate]
+on = tc_kin_mate
+say = town.tc_kin_mate.1..2
+
+[tc_hobby_play_club]
+on = tc_hobby_play_club
+say = town.tc_hobby_play_club.1..2
+
+[tc_hobby_night_walk]
+on = tc_hobby_night_walk
+say = town.tc_hobby_night_walk.1..2
+
+[tc_hobby_watch_sunrise]
+on = tc_hobby_watch_sunrise
+say = town.tc_hobby_watch_sunrise.1..2
+
+[tc_hobby_fish_shore]
+on = tc_hobby_fish_shore
+say = town.tc_hobby_fish_shore.1..2
+
+[tc_hobby_stroll]
+on = tc_hobby_stroll
+say = town.tc_hobby_stroll.1..2
+
+[tc_hobby_coffee]
+on = tc_hobby_coffee
+say = town.tc_hobby_coffee.1..2
+
+[tc_hobby_eat_out]
+on = tc_hobby_eat_out
+say = town.tc_hobby_eat_out.1..2
+
+[tc_hobby_swim_look]
+on = tc_hobby_swim_look
+say = town.tc_hobby_swim_look.1..2
+
+[tc_hobby_fair_visit]
+on = tc_hobby_fair_visit
+say = town.tc_hobby_fair_visit.1..2
+
+[tc_hobby_sea_air]
+on = tc_hobby_sea_air
+say = town.tc_hobby_sea_air.1..2
+
+[tc_hobby_sit_bench]
+on = tc_hobby_sit_bench
+say = town.tc_hobby_sit_bench.1..2
+
+[tc_hobby_read_library]
+on = tc_hobby_read_library
+say = town.tc_hobby_read_library.1..2
+
+[tc_hobby_play_piano]
+on = tc_hobby_play_piano
+say = town.tc_hobby_play_piano.1..2
+
+[tc_town]
+on = tc_town
+say = town.tc_town.1..4
+
+[tc_town_young]
+on = tc_town
+age = kid teen
+weight = 2
+say = town.tc_town_young.1..2
+
+[tc_town_elder]
+on = tc_town
+age = elder
+weight = 2
+say = town.tc_town_elder.1..2
+
+[tc_town_winter]
+on = tc_town
+months = 12-2
+say = town.tc_town_winter.1
+
+[tc_town_summer]
+on = tc_town
+months = 6-8
+say = town.tc_town_summer.1
+
+[tc_ask_new]
+on = tc_ask_new
+say = town.tc_ask_new.1..2
+
+[tc_reply_new_1]
+on = tc_reply_new_1
+say = town.tc_reply_new_1.1..2
+
+[tc_reply_new_2]
+on = tc_reply_new_2
+say = town.tc_reply_new_2.1..2
+
+[tc_ask_sea]
+on = tc_ask_sea
+say = town.tc_ask_sea.1..2
+
+[tc_reply_sea_1]
+on = tc_reply_sea_1
+say = town.tc_reply_sea_1.1..2
+
+[tc_reply_sea_2]
+on = tc_reply_sea_2
+say = town.tc_reply_sea_2.1..2
+
+[tc_ask_birds]
+on = tc_ask_birds
+say = town.tc_ask_birds.1..2
+
+[tc_reply_birds_1]
+on = tc_reply_birds_1
+say = town.tc_reply_birds_1.1..2
+
+[tc_reply_birds_2]
+on = tc_reply_birds_2
+say = town.tc_reply_birds_2.1..2
+
+[tc_ask_like]
+on = tc_ask_like
+say = town.tc_ask_like.1..2
+
+[tc_reply_like_1]
+on = tc_reply_like_1
+say = town.tc_reply_like_1.1..2
+
+[tc_reply_like_2]
+on = tc_reply_like_2
+say = town.tc_reply_like_2.1..2
+
+[tc_ask_eat]
+on = tc_ask_eat
+say = town.tc_ask_eat.1..2
+
+[tc_reply_eat_1]
+on = tc_reply_eat_1
+say = town.tc_reply_eat_1.1..2
+
+[tc_reply_eat_2]
+on = tc_reply_eat_2
+say = town.tc_reply_eat_2.1..2
+
+[tc_ask_game]
+on = tc_ask_game
+say = town.tc_ask_game.1..2
+
+[tc_reply_game_1]
+on = tc_reply_game_1
+say = town.tc_reply_game_1.1..2
+
+[tc_reply_game_2]
+on = tc_reply_game_2
+say = town.tc_reply_game_2.1..2

@@ -141,6 +141,7 @@ suite audiosim.weather            - bash tools/audiosim/run.sh weather
 suite audiosim.render             slow bash tools/audiosim/run.sh render
 suite beachsim.test               - bash tools/beachsim/run.sh test
 suite barksim.test                - bash tools/barksim/run.sh
+suite townchatsim.test            - bash tools/townchatsim/run.sh
 suite barksim.day.ru              - bash tools/barksim/run.sh day ru
 suite barksim.day.en              slow bash tools/barksim/run.sh day en
 suite barksim.day.ja              slow bash tools/barksim/run.sh day ja

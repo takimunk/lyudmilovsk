@@ -1,0 +1,1007 @@
+## ---------------------------------------------------------------------------------------------------------------
+## A talk with the hero (docs/town_talk.md "A talk"): E on a townsperson who is free for a word opens a page with their
+## greeting, two to four things to ask about, now and then a question back, and a goodbye. These are their lines:
+## sets with on = tc_*, picked like any other line of theirs (job, age, the hour, the weather, the bond, the rumours).
+## The hero's side (his questions and answers), the events and which activity or like belongs to which event:
+## tools/townchat/content.py; python3 tools/townchat/build_town_chat.py checks this file against it.
+## {0}: the nickname a friend gave him (only in sets with bond = friend close). {1}: a rumour's detail (only on =
+## tc_rumour with heard_of). {2}..{7}: the given name of whoever the line names, in the six cases (only tc_friend,
+## tc_kin_*); the same numbers in ru, en and ja (English and Japanese get the plain name for each).
+## Russian: the speaker never speaks of themselves in the past tense (no gender); the hero is a boy, they say «ты».
+## A page shows one line: ru and en up to 100 characters, ja up to 48 (tools/barksim checks).
+## ---------------------------------------------------------------------------------------------------------------
+
+## --- the greeting that opens the talk (by the hour, the weather, how well they know him, the bond)
+
+[tc_hello]
+on = tc_hello
+weight = 0.5
+say town.tc_hello.1 | Здравствуй. Что-то хотел спросить? | Hello. Was there something you wanted to ask? | こんにちは。何か聞きたいことでも？
+say town.tc_hello.2 | А, здравствуй! Ну, рассказывай. | Ah, hello! Well, go on. | あら、こんにちは！どうしたの？
+say town.tc_hello.3 | Добрый день. Слушаю тебя. | Good day. I'm listening. | こんにちは。どうぞ、聞くよ。
+
+[tc_hello_morning]
+on = tc_hello
+hours = 5-11
+say town.tc_hello_morning.1 | Доброе утро! Рано ты сегодня. | Good morning! You're up early. | おはよう！今日は早いね。
+say town.tc_hello_morning.2 | Утро доброе. Город только просыпается. | Morning. The town's only just waking up. | おはよう。町はまだ起きたばかりだよ。
+
+[tc_hello_evening]
+on = tc_hello
+hours = 18-23
+say town.tc_hello_evening.1 | Добрый вечер. Гуляешь перед сном? | Good evening. A walk before bed? | こんばんは。寝る前の散歩かい？
+say town.tc_hello_evening.2 | Вечер добрый! Хорошо сейчас на улице, правда? | Evening! Lovely out just now, isn't it? | こんばんは！今の外は気持ちいいね。
+
+[tc_hello_night]
+on = tc_hello
+hours = 23-5
+say town.tc_hello_night.1 | Поздно уже. Ты чего не спишь? | It's late. Why aren't you asleep? | もう遅いよ。どうして起きてるの？
+say town.tc_hello_night.2 | Ночь на дворе, а ты гуляешь. Ну, здравствуй. | The middle of the night and you're out walking. Well, hello. | こんな夜中に散歩かい。まあ、こんばんは。
+
+[tc_hello_rain]
+on = tc_hello
+weather = rain
+say town.tc_hello_rain.1 | Здравствуй! Ну и льёт. Говори скорей, пока не размокли. | Hello! It's pouring. Out with it before we both dissolve. | こんにちは！すごい雨。溶けないうちに話そう。
+
+[tc_hello_snow]
+on = tc_hello
+weather = snow
+say town.tc_hello_snow.1 | Здравствуй! Снег-то какой, а? Ну, что у тебя? | Hello! Look at that snow, eh? So, what is it? | こんにちは！すごい雪だね。それで、どうしたの？
+
+[tc_hello_cold]
+on = tc_hello
+weather = cold
+say town.tc_hello_cold.1 | Здравствуй. Не стой на месте, замёрзнешь. Что хотел? | Hello. Don't stand still, you'll freeze. What is it? | こんにちは。立ってると凍えるよ。なあに？
+
+[tc_hello_new_elder]
+on = tc_hello
+met = new
+age = elder
+say town.tc_hello_new_elder.1 | Здравствуй, мальчик. Ты чей будешь? | Hello, lad. Whose boy are you? | こんにちは、坊や。どこの子だい？
+
+[tc_hello_new]
+on = tc_hello
+met = new
+age = adult elder
+say town.tc_hello_new.1 | Здравствуй. Мы, кажется, не знакомы? | Hello. I don't think we've met? | こんにちは。初めて会うよね？
+
+[tc_hello_known]
+on = tc_hello
+met = known
+say town.tc_hello_known.1 | А, это опять ты! Здравствуй, здравствуй. | Ah, you again! Hello, hello. | ああ、また君か！こんにちは。
+say town.tc_hello_known.2 | Здравствуй! Тебя тут уже все знают. | Hello! Everybody round here knows you by now. | こんにちは！もうみんな君を知ってるよ。
+
+[tc_hello_friendly]
+on = tc_hello
+bond = friendly
+weight = 2
+say town.tc_hello_friendly.1 | О, привет! Я как раз про тебя думаю. | Oh, hi! I was just thinking about you. | あ、やあ！ちょうど君のこと考えてたんだ。
+say town.tc_hello_friendly.2 | Привет! Есть минутка — поболтаем. | Hi! I've a minute, let's chat. | やあ！ちょっと時間あるから話そう。
+
+[tc_hello_friend]
+on = tc_hello
+bond = friend close
+weight = 3
+say town.tc_hello_friend.1 | Вот это встреча, {0}! Ну, как ты? | Fancy meeting you, {0}! So, how are you? | 会えてうれしいな、{0}！元気？
+say town.tc_hello_friend.2 | Привет, {0}! Иди сюда, рассказывай. | Hi, {0}! Come here and tell me everything. | やあ、{0}！こっち来て、話聞かせて。
+say town.tc_hello_friend.3 | Давно тебя жду, {0}! Садись, рассказывай. | I've been waiting for you, {0}! Sit down and tell me everything. | 待ってたよ、{0}！さあ、話を聞かせて。
+
+[tc_hello_kid]
+on = tc_hello
+age = kid
+weight = 2
+say town.tc_hello_kid.1 | Привет! А ты кто? | Hi! Who are you? | こんにちは！だあれ？
+say town.tc_hello_kid.2 | Привет. Ты из того клуба, да? | Hi. You're from that club, aren't you? | こんにちは。あのクラブの人でしょ？
+
+[tc_hello_teen]
+on = tc_hello
+age = teen
+weight = 2
+say town.tc_hello_teen.1 | Привет. Чего? | Hi. What's up? | やあ。何？
+say town.tc_hello_teen.2 | О, привет. Ты тут новенький? | Oh, hi. You new here? | あ、どうも。新入り？
+
+[tc_hello_elder]
+on = tc_hello
+age = elder
+say town.tc_hello_elder.1 | Здравствуй, милый. Подойди, я плохо слышу. | Hello, dear. Come closer, my hearing's not what it was. | こんにちは。耳が遠いから、近くへおいで。
+say town.tc_hello_elder.2 | Здравствуй, здравствуй. Приятно, когда молодёжь здоровается. | Hello, hello. It's nice when young people say hello. | こんにちは。若い人のあいさつはうれしいね。
+
+[tc_hello_work]
+on = tc_hello
+doing = work
+say town.tc_hello_work.1 | Здравствуй! Пока никого нет — спрашивай. | Hello! Nobody's waiting, so ask away. | こんにちは！今はお客さんいないから、どうぞ。
+say town.tc_hello_work.2 | Добрый день. Минутка у меня есть. | Good day. I've got a minute. | こんにちは。少しなら時間あるよ。
+
+[tc_hello_sit]
+on = tc_hello
+pose = sit
+age = adult elder
+at = outdoors
+say town.tc_hello_sit.1 | Здравствуй. Присаживайся, в ногах правды нет. | Hello. Sit down, no sense standing. | こんにちは。まあ座りなさい。
+
+[tc_hello_festival]
+on = tc_hello
+festival = any
+say town.tc_hello_festival.1 | С праздником! Ты тоже гуляешь? | Happy holiday! Out celebrating too? | お祭りおめでとう！君も遊びに来たの？
+
+## --- the goodbye
+
+[tc_bye]
+on = tc_bye
+weight = 0.5
+say town.tc_bye.1 | Ну, бывай. Заходи ещё. | Well, take care. Come again. | じゃあね。また来てね。
+say town.tc_bye.2 | Счастливо! Не пропадай. | All the best! Don't be a stranger. | 元気でね！また顔を見せて。
+say town.tc_bye.3 | До встречи. | See you. | またね。
+
+[tc_bye_evening]
+on = tc_bye
+hours = 18-5
+say town.tc_bye_evening.1 | Спокойной ночи. Не гуляй допоздна. | Good night. Don't stay out too late. | おやすみ。あまり遅くまで歩かないでね。
+say town.tc_bye_evening.2 | Доброго вечера! Смотри под ноги, темнеет. | Have a good evening! Mind your step, it's getting dark. | よい夜を！暗いから足元に気をつけて。
+
+[tc_bye_rain]
+on = tc_bye
+weather = rain
+say town.tc_bye_rain.1 | Беги, пока совсем не промок! | Run along before you're soaked through! | びしょぬれになる前に行きなさい！
+
+[tc_bye_cold]
+on = tc_bye
+weather = cold snow
+say town.tc_bye_cold.1 | Иди грейся. И шапку надень! | Go and get warm. And put a hat on! | 暖まっておいで。帽子もかぶってね！
+
+[tc_bye_friend]
+on = tc_bye
+bond = friend close
+weight = 3
+say town.tc_bye_friend.1 | Пока, {0}! Завтра увидимся? | Bye, {0}! See you tomorrow? | じゃあね、{0}！また明日？
+say town.tc_bye_friend.2 | Береги себя, {0}. | Look after yourself, {0}. | 体に気をつけてね、{0}。
+
+[tc_bye_friendly]
+on = tc_bye
+bond = friendly
+weight = 2
+say town.tc_bye_friendly.1 | Хорошо поговорили. Приходи ещё! | That was a good chat. Come again! | 楽しかった。また来てね！
+
+[tc_bye_kid]
+on = tc_bye
+age = kid
+weight = 2
+say town.tc_bye_kid.1 | Пока! Мне ещё играть надо. | Bye! I've still got playing to do. | バイバイ！まだ遊ばなきゃ。
+say town.tc_bye_kid.2 | Ну пока! | Bye then! | じゃあね！
+
+[tc_bye_teen]
+on = tc_bye
+age = teen
+weight = 2
+say town.tc_bye_teen.1 | Ладно, давай. Увидимся. | Right, later. See you around. | じゃ、また。
+
+[tc_bye_elder]
+on = tc_bye
+age = elder
+say town.tc_bye_elder.1 | Ступай с богом. И кушай хорошо. | Off you go, bless you. And eat properly. | 気をつけてお行き。ちゃんと食べるんだよ。
+
+[tc_bye_work]
+on = tc_bye
+doing = work
+say town.tc_bye_work.1 | Ну всё, мне работать надо. Заходи! | Right, back to work for me. Drop in! | さて、仕事に戻らなきゃ。また寄ってね！
+
+[tc_bye_new]
+on = tc_bye
+met = new
+age = adult elder
+say town.tc_bye_new.1 | Будем знакомы. Заглядывай. | Now we know each other. Look in some time. | これで知り合いだね。また顔を出して。
+
+## --- not now: at their counter with a customer, late, a child who doesn't know him yet (said over the head, no page)
+
+[tc_no_work]
+on = tc_no_work
+say town.tc_no_work.1 | Погоди минутку, у меня покупатель. | Just a moment, I've a customer. | ちょっと待って、お客さんがいるの。
+say town.tc_no_work.2 | Не сейчас, видишь — люди ждут. | Not now. See, people are waiting. | 今はだめ、お客さんが待ってるから。
+say town.tc_no_work.3 | Сначала работа. Подойди попозже. | Work first. Come back a bit later. | まず仕事。あとで来てね。
+
+[tc_no_hurry]
+on = tc_no_hurry
+say town.tc_no_hurry.1 | Прости, опаздываю! Потом! | Sorry, I'm late! Later! | ごめん、遅刻しそう！あとで！
+say town.tc_no_hurry.2 | Некогда, некогда! Бегу! | No time, no time! Must run! | 時間ないんだ！急いでるの！
+say town.tc_no_hurry.3 | Потом поговорим, ладно? Опаздываю. | We'll talk later, all right? I'm running late. | あとで話そう、ね？遅れそうなんだ。
+
+[tc_no_hurry_young]
+on = tc_no_hurry
+age = kid teen
+weight = 2
+say town.tc_no_hurry_young.1 | Не могу, в школу опаздываю! | Can't, I'm late for school! | むり、学校におくれちゃう！
+
+[tc_no_shy]
+on = tc_no_shy
+say town.tc_no_shy.1 | Мне мама не велит говорить с незнакомыми. | Mum says not to talk to strangers. | 知らない人と話しちゃだめって、ママが。
+say town.tc_no_shy.2 | Я тебя не знаю… | I don't know you… | あなた、知らない人だもん…。
+say town.tc_no_shy.3 | А ты кто? Я лучше пойду. | Who are you? I'd better go. | だあれ？もう行くね。
+
+## --- their work, their studies, their retirement (the topic «Как работа?»)
+
+[tc_work]
+on = tc_work
+weight = 0.3
+say town.tc_work.1 | Дел хватает, не жалуюсь. | Plenty to do, can't complain. | やることはたくさん。文句はないよ。
+say town.tc_work.2 | Потихоньку. Каждый день что-нибудь новое. | Ticking along. Something new every day. | ぼちぼち。毎日何かしら新しいことがあるよ。
+
+[tc_work_pensioner]
+on = tc_work
+job = pensioner
+say town.tc_work_pensioner.1 | На пенсии главная работа — никуда не спешить. Справляюсь. | In retirement the main job is not to hurry. I manage. | 年金暮らしの仕事は、急がないこと。うまくやってるよ。
+say town.tc_work_pensioner.2 | Давление скачет, а так — грех жаловаться. | My blood pressure's up and down, otherwise mustn't grumble. | 血圧は上がったり下がったり。でもまあ元気だよ。
+say town.tc_work_pensioner.3 | Живу помаленьку. Утром рынок, днём скамейка, вечером чай. | Getting along. Market in the morning, bench by day, tea at night. | ぼちぼちね。朝は市場、昼はベンチ、夜はお茶。
+say town.tc_work_pensioner.4 | Сорок лет отработано. Теперь моя смена — кормить голубей. | Forty years of work behind me. Now my shift is feeding pigeons. | 四十年働いたからね。今の仕事はハトのえさやり。
+
+[tc_work_pupil]
+on = tc_work
+job = pupil
+say town.tc_work_pupil.1 | Нормально. По математике пятёрка, по пению — лучше не спрашивай. | Fine. Top marks in maths; don't ask about singing. | ふつう。算数は満点、音楽は聞かないで。
+say town.tc_work_pupil.2 | Задали стих учить. Длинный, как набережная. | We've a poem to learn. It's as long as the promenade. | 詩の暗記の宿題。海岸通りくらい長いんだ。
+say town.tc_work_pupil.3 | Скорей бы каникулы. Всё лето буду на пляже жить. | Roll on the holidays. I'll live on the beach all summer. | 早く休みにならないかな。夏はずっと浜にいる。
+say town.tc_work_pupil.4 | У нас новая учительница. Строгая, но рисовать разрешает. | We've a new teacher. Strict, but she lets us draw. | 新しい先生が来たよ。きびしいけど絵はかかせてくれる。
+
+[tc_work_student]
+on = tc_work
+job = student
+say town.tc_work_student.1 | Сессия на носу, а я тут с тобой болтаю. Красота. | Exams any day now and here I am chatting. Bliss. | 試験直前なのにおしゃべりしてる。最高だね。
+say town.tc_work_student.2 | Курсовая сама себя не напишет. Я проверяю уже неделю. | The term paper won't write itself. I've been checking for a week. | レポートは勝手に書けないね。一週間たしかめてるけど。
+
+[tc_work_away]
+on = tc_work
+job = away
+say town.tc_work_away.1 | Работаю не здесь, каждый день в дороге. Зато возвращаться приятно. | I work out of town, on the road every day. Coming back is the good part. | 職場は町の外で、毎日通ってる。帰ってくるのがいいんだ。
+say town.tc_work_away.2 | С утра уезжаю, к вечеру обратно. Город вижу в основном в сумерках. | Off in the morning, back by evening. I mostly see the town at dusk. | 朝出て夕方戻る。町を見るのはたいてい夕暮れだよ。
+
+[tc_work_researcher]
+on = tc_work
+job = researcher
+say town.tc_work_researcher.1 | Считаем, меряем, спорим. Наука — это в основном спорить. | We count, we measure, we argue. Science is mostly arguing. | 数えて、測って、議論する。科学はほとんど議論だよ。
+say town.tc_work_researcher.2 | Опыт опять не сошёлся. Значит, будет что рассказать. | The experiment disagreed again. So there'll be something to tell. | 実験がまた合わなくてね。話の種にはなるよ。
+say town.tc_work_researcher.3 | В Академгородке говорят: если всё понятно, значит, плохо смотрели. | In Academgorodok we say: if it all makes sense, you didn't look hard enough. | 学術村では「全部わかったら見方が甘い」って言うんだ。
+
+[tc_work_fisherman]
+on = tc_work
+job = fisherman
+say town.tc_work_fisherman.1 | Море кормит, но по своему расписанию. Сегодня не балует. | The sea feeds you, on its own timetable. Not generous today. | 海は食わせてくれるけど気まぐれでね。今日は渋いよ。
+say town.tc_work_fisherman.2 | Сети целы, мотор тянет, ветер не злой. Чего ещё рыбаку? | Nets whole, engine pulling, wind not cross. What more could a fisherman ask? | 網は無事、エンジン快調、風もおだやか。それで十分さ。
+say town.tc_work_fisherman.3 | Рыба пошла. Приходи на пирс под вечер — увидишь. | The fish are running. Come to the pier towards evening and see. | 魚が来てる。夕方に桟橋へおいで。
+
+[tc_work_writer]
+on = tc_work
+job = writer
+say town.tc_work_writer.1 | Пишу. Вчера страница, сегодня запятая. Зато какая запятая! | Writing. A page yesterday, a comma today. But what a comma! | 書いてるよ。昨日は一ページ、今日は読点ひとつ。いい読点だ。
+say town.tc_work_writer.2 | Роман стоит. Хожу по городу, подслушиваю сюжеты. | The novel's stuck. I walk the town eavesdropping for plots. | 小説は止まってる。町を歩いて筋を立ち聞きしてるよ。
+
+[tc_work_seller]
+on = tc_work
+job = seller vendor stallholder cashier bookseller butcher baker fishmonger
+say town.tc_work_seller.1 | Торговля идёт. Утром хлеб разбирают, к вечеру — сплетни. | Trade's steady. Bread goes in the morning, gossip by evening. | 商売は順調。朝はパン、夕方はうわさ話がよく出るよ。
+say town.tc_work_seller.2 | Покупатель нынче разборчивый. Зато здороваются все. | Customers are choosy these days. But everyone says hello. | 最近のお客さんは目が高いね。でもみんなあいさつしてくれる。
+say town.tc_work_seller.3 | Стою весь день, ноги гудят. Но без людей скучно. | On my feet all day, they ache. But it's dull without people. | 一日立ちっぱなしで足が痛い。でも人がいないとつまらない。
+
+[tc_work_programmer]
+on = tc_work
+job = programmer
+say town.tc_work_programmer.1 | Чиню то, что вчера сломалось в моих же руках. Обычное дело. | Fixing what broke in my own hands yesterday. Business as usual. | 昨日自分の手で壊したところを直してる。いつものことさ。
+say town.tc_work_programmer.2 | Программа работает. Никто не знает почему. Не трогаем. | The program works. Nobody knows why. We don't touch it. | プログラムは動いてる。理由は誰も知らない。触らないよ。
+
+[tc_work_station]
+on = tc_work
+job = station_barista station_attendant
+say town.tc_work_station.1 | Канатка ходит, кофе варится. Пассажир нынче сонный, но вежливый. | The cable car runs, the coffee brews. Passengers are sleepy but polite. | ロープウェーは動く、コーヒーは沸く。お客さんは眠そうだけど丁寧。
+say town.tc_work_station.2 | Весь день на станции. Вагончики туда-сюда, а я на месте. | All day at the station. Cabins go back and forth, I stay put. | 一日じゅう駅にいるよ。ゴンドラは行き来、私はここ。
+
+[tc_work_homemaker]
+on = tc_work
+job = homemaker
+say town.tc_work_homemaker.1 | Дом — та же работа, только без выходных и премий. | Home is a job too, only with no days off and no bonus. | 家のことも仕事だよ。休みもボーナスもないけどね。
+say town.tc_work_homemaker.2 | Суп варится, бельё сохнет. Пять минут тишины — и обратно. | Soup's on, washing's drying. Five minutes of quiet, then back. | スープは火にかけた、洗濯物は干した。五分休んで戻るよ。
+
+[tc_work_musician]
+on = tc_work
+job = musician choir_leader
+say town.tc_work_musician.1 | Репетируем. Соседи уже знают программу наизусть. | Rehearsing. The neighbours know the programme by heart already. | 練習中。ご近所さんはもう曲を全部覚えたよ。
+say town.tc_work_musician.2 | Музыка есть, зал есть. Приходи послушать в дом культуры. | There's music and there's a hall. Come and listen at the culture house. | 音楽もホールもある。文化会館に聴きにおいで。
+
+[tc_work_unemployed]
+on = tc_work
+job = unemployed
+say town.tc_work_unemployed.1 | Ищу работу. Пока нашлись только море и свободное время. | Looking for work. So far I've found only the sea and spare time. | 仕事を探してる。今のところ見つけたのは海とひまだけ。
+say town.tc_work_unemployed.2 | Пока ничего. Зато город знаю лучше любого почтальона. | Nothing yet. But I know the town better than any postman. | まだ何も。でも町のことは郵便屋さんよりくわしいよ。
+
+[tc_work_artist]
+on = tc_work
+job = artist photographer
+say town.tc_work_artist.1 | Свет сегодня хороший. Для работы больше ничего и не надо. | The light's good today. That's all the work needs. | 今日は光がいい。仕事に必要なのはそれだけ。
+say town.tc_work_artist.2 | Третий день пишу один и тот же забор. Он того стоит. | Third day painting the same fence. It's worth it. | 同じ塀を三日描いてる。それだけの塀なんだ。
+
+[tc_work_cook]
+on = tc_work
+job = cook waiter barista bartender
+say town.tc_work_cook.1 | Кухня шумит с утра. К обеду будет суп — заходи. | The kitchen's been at it since morning. Soup by lunch, drop in. | 厨房は朝から大忙し。昼はスープがあるから寄ってね。
+say town.tc_work_cook.2 | Гости сытые, чаевые скромные. Жить можно. | The guests are fed, the tips are modest. One gets by. | お客さんは満腹、チップはひかえめ。まあやっていけるよ。
+
+[tc_work_office]
+on = tc_work
+job = clerk manager director receptionist librarian teacher doctor nurse
+say town.tc_work_office.1 | Бумаги, бумаги. К вечеру и люди шуршат. | Paper, paper. By evening even the people rustle. | 書類、書類。夕方には人までカサカサいうよ。
+say town.tc_work_office.2 | Работы много, но люди хорошие. Это главное. | Lots of work, but good people. That's the main thing. | 仕事は多いけど、人がいい。それがいちばん。
+
+[tc_work_guest]
+on = tc_work
+job = guest renter
+say town.tc_work_guest.1 | Отдыхаю! Процедуры, прогулки, кисель. Домой не хочется. | Resting! Treatments, walks, fruit kissel. I don't want to go home. | のんびりしてるよ！療養に散歩にキセーリ。帰りたくないな。
+say town.tc_work_guest.2 | Воздух у вас — хоть в банки закатывай. | The air here: you could bottle it. | ここの空気は瓶につめたいくらいだよ。
+
+[tc_work_keeper]
+on = tc_work
+job = lifeguard guard janitor cleaner caretaker repairman lighthouse_keeper postman
+say town.tc_work_keeper.1 | Служба тихая. Тихая служба — хорошая служба. | A quiet watch. A quiet watch is a good watch. | 静かな勤めだよ。静かなのがいちばん。
+say town.tc_work_keeper.2 | Порядок держим. Город сам себя не подметёт. | Keeping things in order. The town won't sweep itself. | きちんとやってるよ。町はひとりでにきれいにならないから。
+
+## --- their day (the topic «Как день?»): by the hour, by what they are doing now
+
+[tc_day]
+on = tc_day
+weight = 0.4
+say town.tc_day.1 | День как день. Но ещё не вечер. | A day like any other. But it's not over yet. | いつも通りの日。でもまだ終わってないよ。
+say town.tc_day.2 | Пока всё по плану. Плана, правда, нет. | All going to plan so far. Not that there is a plan. | 今のところ予定通り。予定はないんだけどね。
+
+[tc_day_morning]
+on = tc_day
+hours = 5-11
+age = adult elder
+say town.tc_day_morning.1 | Сначала чай, потом посмотрим. Утром загадывать рано. | Tea first, then we'll see. Too early to plan in the morning. | まずはお茶、それから。朝に予定を立てるのは早いよ。
+say town.tc_day_morning.2 | Хочу успеть на рынок, пока всё свежее. | I want to make the market while everything's fresh. | 新鮮なうちに市場へ行きたいんだ。
+say town.tc_day_morning.3 | Утро — лучшее время. Пока все спят, город мой. | Morning's the best time. While everyone sleeps, the town's mine. | 朝がいちばん。みんなが寝てるうちは、町はわたしのもの。
+say town.tc_day_morning.4 | Дел на утро — на целый день. Начну, а там видно будет. | A whole day's jobs for one morning. I'll start and see how it goes. | 朝のうちに一日分の用事。とりあえず始めてみるよ。
+
+[tc_day_evening]
+on = tc_day
+hours = 17-23
+age = adult elder
+say town.tc_day_evening.1 | Хороший был день. Ноги гудят — значит, не зря. | It was a good day. My feet ache, so it wasn't wasted. | いい一日だった。足が痛いのは、よく動いた証拠。
+say town.tc_day_evening.2 | Устаю к вечеру. Сейчас домой, чай — и спать. | I'm worn out by evening. Home now, tea and bed. | 夕方にはくたくた。帰ってお茶飲んで寝るよ。
+
+[tc_day_kid]
+on = tc_day
+age = kid
+weight = 2
+say town.tc_day_kid.1 | Сегодня уже три шишки и ни одной слезинки! | Three bumps already today and not one tear! | 今日はもうたんこぶ三つ、でも泣いてない！
+say town.tc_day_kid.2 | Мы строим штаб. Где — не скажу, это секрет. | We're building a hideout. I won't say where, it's a secret. | ひみつ基地つくってるの。場所はないしょ。
+say town.tc_day_kid.3 | Я сегодня капитан. Скамейка — это корабль, не садись на корму! | I'm the captain today. The bench is a ship, don't sit on the stern! | 今日は船長なの。ベンチは船だから、うしろに座らないで！
+
+[tc_day_teen]
+on = tc_day
+age = teen
+weight = 2
+say town.tc_day_teen.1 | Да нормально. Уроки, потом в клуб, если пустят. | Yeah, fine. Lessons, then the club if they let me. | まあふつう。勉強して、行けたらクラブ。
+say town.tc_day_teen.2 | Ничего особенного. Жду, когда что-нибудь случится. | Nothing special. Waiting for something to happen. | 別に。何か起きるのを待ってるとこ。
+say town.tc_day_teen.3 | Сижу, думаю, чем заняться. Это тоже занятие. | Sitting here thinking what to do. That's a thing to do too. | 何しようか考えてるとこ。それも立派な用事。
+
+[tc_day_elder]
+on = tc_day
+age = elder
+say town.tc_day_elder.1 | Проснуться, дойти до скамейки — уже день удался. | Wake up, get as far as the bench: a good day already. | 目が覚めてベンチまで歩けたら、もういい日だよ。
+
+[tc_day_bench]
+on = tc_day
+doing = sit_bench read_bench read_paper
+say town.tc_day_bench.1 | Сижу, смотрю на людей. Лучше всякого кино. | Sitting, watching people. Beats any film. | 座って人をながめてる。どんな映画よりいいよ。
+say town.tc_day_bench.2 | Отдыхаю. Скамейка тёплая, вид хороший, торопиться некуда. | Resting. The bench is warm, the view's good, no hurry at all. | ひと休み。ベンチはあったかいし、ながめもいい。
+say town.tc_day_bench.3 | Сижу, считаю прохожих. Ты сегодня сорок третий. | Sitting and counting passers-by. You're number forty-three today. | 通る人を数えてるの。君は今日四十三人目。
+
+[tc_day_shop]
+on = tc_day
+doing = shop shop_town
+say town.tc_day_shop.1 | Хожу за покупками. Список дома, вспоминаю по памяти. | Out shopping. The list's at home, I'm working from memory. | 買い物中。メモを家に忘れて、記憶がたより。
+say town.tc_day_shop.2 | Выбираю. Купить надо одно, а хочется всё. | Choosing. I need one thing and want everything. | えらんでるとこ。買うのは一つなのに、全部ほしくなる。
+
+[tc_day_eat]
+on = tc_day
+doing = eat_out coffee
+say town.tc_day_eat.1 | Ем сегодня не дома. Иногда надо себя баловать. | Eating out today. One has to spoil oneself sometimes. | 今日は外でごはん。たまには自分を甘やかさないと。
+say town.tc_day_eat.2 | Сижу, жду заказ. Самое приятное ожидание на свете. | Sitting, waiting for my order. The nicest wait in the world. | 注文を待ってるとこ。世界でいちばん楽しい待ち時間。
+
+[tc_day_walk]
+on = tc_day
+doing = walk stroll
+say town.tc_day_walk.1 | Гуляю. Врач велел десять тысяч шагов, считаю примерно. | Out walking. Doctor's orders: ten thousand steps, roughly counted. | 散歩中。医者に一万歩って言われてね。数え方は適当。
+say town.tc_day_walk.2 | Иду куда глаза глядят. Глаза глядят в сторону моря. | Walking wherever my eyes lead. They lead towards the sea. | 足の向くまま歩いてる。足は海のほうへ向くんだ。
+say town.tc_day_walk.3 | Просто хожу. Мысли на ходу сами раскладываются по полкам. | Just walking. Thoughts sort themselves onto shelves as you go. | ただ歩いてるの。歩くと考えが勝手に片づくから。
+
+[tc_day_night_walk]
+on = tc_day
+doing = night_walk
+say town.tc_day_night_walk.1 | День кончился, а спать рано. Вот и хожу. | The day's over and it's too early for bed. So I walk. | 一日は終わったけど寝るには早い。だから歩いてるの。
+say town.tc_day_night_walk.2 | Ночью город другой. Днём я его таким не знаю. | The town's different at night. I don't know it like this by day. | 夜の町は別の顔だよ。昼には見られない。
+say town.tc_day_night_walk.3 | Не спится. Море шумит — и мне спокойнее. | Can't sleep. The sea murmurs and I feel calmer. | 眠れなくてね。波の音を聞くと落ち着くんだ。
+say town.tc_day_night_walk.4 | День был длинный. Выгуливаю его перед сном. | It's been a long day. I'm walking it off before bed. | 長い一日だった。寝る前に歩いてほぐしてるとこ。
+
+[tc_day_fish]
+on = tc_day
+doing = fish_shore
+say town.tc_day_fish.1 | Ловлю. Точнее, жду. Рыбалка — это в основном ждать. | Fishing. Or rather waiting. Fishing is mostly waiting. | 釣りだよ。というか待ってる。釣りはほとんど待つことさ。
+
+[tc_day_work]
+on = tc_day
+doing = work
+say town.tc_day_work.1 | Весь день на ногах. Смена кончится — выдохну. | On my feet all day. I'll breathe out when the shift ends. | 一日立ちっぱなし。仕事が終わったら一息つくよ。
+say town.tc_day_work.2 | Работаю. Но для хорошего человека минутка найдётся. | Working. But there's a minute for a decent person. | 仕事中。でもいい人のためなら少し時間はあるよ。
+
+[tc_day_child]
+on = tc_day
+doing = mind_child
+say town.tc_day_child.1 | Смотрю за ребёнком. Отвернёшься — уже на дереве. | Minding the little one. Look away and they're up a tree. | 子どもを見てるの。目を離すともう木の上。
+
+## --- their job or school today: still ahead, behind them, a day off
+
+[tc_day_before_work]
+on = tc_day_before_work
+job = !pupil !student
+say town.tc_day_before_work.1 | Скоро на работу. Ловлю последние свободные минуты. | Work soon. I'm catching the last free minutes. | もうすぐ仕事。最後の自由時間を味わってるの。
+say town.tc_day_before_work.2 | Смена ещё впереди. Набираюсь сил. | The shift's still ahead. Gathering my strength. | 仕事はこれから。力をためてるところ。
+say town.tc_day_before_work.3 | Через час на смену. Дышу воздухом про запас. | On shift in an hour. Breathing the air in while I can. | あと一時間で仕事。今のうちに外の空気を吸っておくの。
+say town.tc_day_before_work.4 | До работы ещё есть время. Трачу его с умом — ничего не делаю. | Still some time before work. Spending it wisely: doing nothing. | 仕事までまだ時間がある。かしこく使ってるよ、何もせずに。
+
+[tc_day_before_school]
+on = tc_day_before_work
+job = pupil student
+say town.tc_day_before_school.1 | Сейчас на уроки. Портфель тяжёлый, как якорь. | Lessons in a bit. My bag's as heavy as an anchor. | これから授業。かばんがいかりみたいに重い。
+say town.tc_day_before_school.2 | Учёба ещё впереди. Досыпаю на ходу. | Classes still ahead. I'm finishing my sleep on the move. | 授業はこれから。歩きながら寝てるとこ。
+say town.tc_day_before_school.3 | Сегодня контрольная. Надеюсь на чудо и на соседа по парте. | A test today. I'm counting on a miracle and my desk-mate. | 今日はテスト。奇跡ととなりの席の子がたより。
+say town.tc_day_before_school.4 | Иду учиться. Знания тяжёлые, а нести мне. | Off to learn. Knowledge is heavy and I'm the one carrying it. | 勉強しに行くとこ。知識は重いのに、運ぶのは自分。
+
+[tc_day_after_work]
+on = tc_day_after_work
+job = !pupil !student
+say town.tc_day_after_work.1 | Отработали на сегодня. Теперь город мой. | Done for today. Now the town is mine. | 今日の仕事はおしまい。ここからは自分の時間。
+say town.tc_day_after_work.2 | Смена позади. Иду медленно — имею право. | Shift's behind me. I'm walking slowly: I've earned it. | 仕事は終わり。ゆっくり歩く権利があるよ。
+say town.tc_day_after_work.3 | Работа кончилась, а день ещё нет. Люблю это время. | Work's over and the day isn't. I love this hour. | 仕事は終わったけど一日はまだ。この時間が好き。
+say town.tc_day_after_work.4 | На сегодня всё. Голова пустая, ноги сами несут к морю. | That's it for today. Empty head, and my feet carry me to the sea. | 今日はここまで。頭はからっぽ、足は勝手に海へ向かう。
+
+[tc_day_after_school]
+on = tc_day_after_work
+job = pupil student
+say town.tc_day_after_school.1 | Уроки кончились! До ужина я свободный человек. | Lessons are over! I'm a free person till supper. | 授業おわり！晩ごはんまで自由だ。
+say town.tc_day_after_school.2 | Отучились. Домашку сделаю потом. Наверное. | Classes done. I'll do the homework later. Probably. | 授業は終わり。宿題はあとで。たぶん。
+say town.tc_day_after_school.3 | Свобода! Портфель брошу дома — и во двор. | Freedom! I'll dump my bag at home and out into the yard. | 自由だ！かばんを置いたらすぐ外へ。
+say town.tc_day_after_school.4 | Сегодня меня не спросили. Лучший день недели. | I didn't get asked today. Best day of the week. | 今日は当てられなかった。今週いちばんの日。
+
+[tc_day_off]
+on = tc_day_off
+job = !pupil !student
+say town.tc_day_off.1 | Выходной! Никуда не тороплюсь, и это прекрасно. | Day off! I'm in no hurry, and it's wonderful. | 休みだよ！急がなくていいって最高。
+say town.tc_day_off.2 | Сегодня не работаю. Учусь ничего не делать, пока плохо получается. | Not working today. Learning to do nothing; not very good at it yet. | 今日は休み。何もしない練習中。まだ下手だけど。
+say town.tc_day_off.3 | Выходной. Будильник молчит, совесть тоже. | A day off. The alarm clock's silent and so is my conscience. | 休みの日。目覚ましも良心も静かだよ。
+
+[tc_day_off_school]
+on = tc_day_off
+job = pupil student
+say town.tc_day_off_school.1 | Сегодня не учимся! Весь день — мой. | No lessons today! The whole day's mine. | 今日は学校なし！一日ぜんぶ自分のもの。
+
+## --- what they did before this (the people's life's PrevActivity, tools/townchat/content.py DID): the day's news
+
+[tc_did_shop]
+on = tc_did_shop
+say town.tc_did_shop.1 | Только что из магазина. Хлеб ещё тёплый, чуешь? | Just back from the shop. The bread's still warm, smell that? | 店から戻ったところ。パンがまだ温かいよ、ほら。
+say town.tc_did_shop.2 | С покупками покончено. Кошелёк легче, сумка тяжелее. | Shopping's done. Purse lighter, bag heavier. | 買い物は終わり。財布は軽く、かばんは重く。
+
+[tc_did_eat]
+on = tc_did_eat
+say town.tc_did_eat.1 | Только что из-за стола. Теперь бы ещё часок никуда не идти. | Just up from the table. Now for an hour of going nowhere. | 食べてきたところ。あと一時間はどこにも行きたくない。
+say town.tc_did_eat.2 | Кофе выпит, пирожное съедено. День уже удался. | Coffee drunk, cake eaten. The day's a success already. | コーヒーも飲んだしケーキも食べた。もういい日だ。
+
+[tc_did_sea]
+on = tc_did_sea
+say town.tc_did_sea.1 | Только что от моря. Волна сегодня ленивая, смотреть — одно удовольствие. | Just come from the sea. Lazy waves today, a pleasure to watch. | 海を見てきたところ。今日は波がのんびりでいいよ。
+say town.tc_did_sea.2 | С берега иду. В голове до сих пор шумит прибой. | Coming from the shore. The surf's still sounding in my head. | 浜から来たの。まだ頭の中で波の音がしてる。
+
+[tc_did_walk]
+on = tc_did_walk
+say town.tc_did_walk.1 | Круг по набережной уже есть. Можно с чистой совестью сидеть. | One lap of the promenade done. I can sit with a clear conscience. | 海岸通りはもう一周した。心おきなく座れるよ。
+say town.tc_did_walk.2 | Прогулка была что надо. Ноги спасибо не сказали, а голова — да. | A proper walk, that was. My legs didn't say thanks, my head did. | いい散歩だった。足は文句、頭は大満足。
+
+[tc_did_bench]
+on = tc_did_bench
+say town.tc_did_bench.1 | Сидели на скамейке, обсудили весь город. Тебя тоже. | Sat on a bench and talked the whole town over. You too. | ベンチで町じゅうのうわさをしたよ。君のこともね。
+say town.tc_did_bench.2 | Со скамейки иду. Голуби сегодня наглые, как никогда. | Coming from the bench. The pigeons are cheekier than ever today. | ベンチから来たの。今日のハトは図々しいったら。
+
+[tc_did_club]
+on = tc_did_club
+say town.tc_did_club.1 | Только что из клуба. Руки ещё помнят клавиши. | Just out of the club. My hands still remember the keys. | クラブから出てきたとこ。手がまだキーを覚えてる。
+say town.tc_did_club.2 | В клубе сегодня не везло. Завтра отыграюсь. | No luck at the club today. I'll win it back tomorrow. | 今日はクラブでついてなかった。明日取り返す。
+
+[tc_did_library]
+on = tc_did_library
+say town.tc_did_library.1 | Из библиотеки. Там тихо, как в подводной лодке. | From the library. Quiet as a submarine in there. | 図書館から。潜水艦みたいに静かだったよ。
+say town.tc_did_library.2 | Полдня за книгой. Глаза устали, голова довольна. | Half the day over a book. Tired eyes, contented head. | 半日本を読んでた。目は疲れたけど頭は満足。
+
+[tc_did_fish]
+on = tc_did_fish
+say town.tc_did_fish.1 | С рыбалки. Улов скромный, зато тишины — полное ведро. | Back from fishing. A modest catch, but a bucketful of quiet. | 釣りの帰り。釣果は少し、静けさはバケツいっぱい。
+say town.tc_did_fish.2 | Клевало плохо. Рыба нынче образованная. | The bites were poor. Fish are educated these days. | あまり釣れなかった。最近の魚は利口でね。
+
+[tc_did_fair]
+on = tc_did_fair
+say town.tc_did_fair.1 | С гулянья! Денег нет, зато есть пряник и настроение. | Back from the fun! No money left, but a gingerbread and good spirits. | お祭りの帰り！お金はないけどお菓子と元気はある。
+say town.tc_did_fair.2 | Там народу! Все знакомые, со всеми надо постоять. | The crowd there! All acquaintances, a word with each one. | すごい人出！みんな知り合いで、あいさつが大変。
+
+[tc_did_culture]
+on = tc_did_culture
+say town.tc_did_culture.1 | Из дома культуры. Хлопали так, что ладони горят. | From the culture house. We clapped till our palms burned. | 文化会館の帰り。手が痛くなるほど拍手したよ。
+say town.tc_did_culture.2 | Хорошо, когда в городе есть куда пойти вечером. | It's good to have somewhere to go of an evening in a town. | 夜に出かける場所がある町はいいね。
+
+[tc_did_sport]
+on = tc_did_sport
+say town.tc_did_sport.1 | После тренировки. Болит всё, даже то, чего нет. | After training. Everything hurts, even bits I haven't got. | 運動のあと。体じゅう痛い、ないところまで痛い。
+say town.tc_did_sport.2 | Размялись как следует. Теперь можно и пирожок. | A proper workout. Now a pasty is allowed. | しっかり体を動かした。これでパイを食べてもいいね。
+
+[tc_did_garden]
+on = tc_did_garden
+say town.tc_did_garden.1 | С огорода. Земля под ногтями — лучший маникюр. | From the allotment. Soil under the nails is the best manicure. | 畑の帰り。爪の土がいちばんのおしゃれだよ。
+say town.tc_did_garden.2 | Полили, пропололи. Морковка обещает быть. | Watered, weeded. The carrots look promising. | 水やりも草取りもした。にんじんは期待できそう。
+
+[tc_did_play]
+on = tc_did_play
+say town.tc_did_play.1 | Мы играли! Победа была близко, но позвали обедать. | We were playing! Victory was close, then they called us to lunch. | 遊んでたの！勝てそうだったのに、ごはんに呼ばれた。
+say town.tc_did_play.2 | Набегались. Теперь бы воды. Ведро. | All run out. Water now, please. A bucket. | 走りつかれた。お水ちょうだい。バケツで。
+
+[tc_did_school]
+on = tc_did_school
+say town.tc_did_school.1 | Из школы. Портфель полный, голова пустая. | From school. Bag full, head empty. | 学校の帰り。かばんはいっぱい、頭はからっぽ。
+say town.tc_did_school.2 | Шесть уроков. Шесть! Я заслуживаю мороженое. | Six lessons. Six! I deserve an ice cream. | 六時間授業。六時間！アイスをもらう権利がある。
+
+[tc_did_clinic]
+on = tc_did_clinic
+say town.tc_did_clinic.1 | От врача. Сказали — жить буду, но меньше солёного. | From the doctor's. I'll live, they say, but less salt. | お医者さんの帰り。長生きするけど塩分ひかえめに、だって。
+say town.tc_did_clinic.2 | С процедур. Очередь там — отдельное лечение. | From my treatments. The queue there is a cure in itself. | 治療の帰り。あそこの行列はそれだけで療法だね。
+
+## --- the weather (the topic «Ну и погода…»)
+
+[tc_weather]
+on = tc_weather
+weight = 0.4
+say town.tc_weather.1 | Погода как погода. У моря она всё равно через час другая. | Weather's weather. By the sea it's different in an hour anyway. | 天気は天気。海辺じゃどうせ一時間で変わるよ。
+say town.tc_weather.2 | Жить можно. Барометр, правда, что-то задумал. | Can't complain. Though the barometer's up to something. | 悪くないね。気圧計は何かたくらんでるけど。
+
+[tc_weather_rain]
+on = tc_weather
+weather = rain
+weight = 2
+say town.tc_weather_rain.1 | Льёт и льёт. Зато огороду радость. | Pouring and pouring. Still, the allotments are glad. | よく降るねえ。畑は喜んでるけど。
+say town.tc_weather_rain.2 | В такой дождь хорошо сидеть у окна, а не стоять тут с тобой. | In rain like this one should sit by a window, not stand here with you. | こんな雨の日は窓辺にいたいね、立ち話じゃなく。
+say town.tc_weather_rain.3 | Дождь — это море в гости пришло. Потерпим. | Rain is just the sea come visiting. We'll bear it. | 雨は海がお客に来たようなもの。がまんしよう。
+
+[tc_weather_snow]
+on = tc_weather
+weather = snow
+weight = 2
+say town.tc_weather_snow.1 | Снег! Город сразу чище и тише. | Snow! The town's cleaner and quieter at once. | 雪だ！町が急にきれいで静かになる。
+say town.tc_weather_snow.2 | Валит-то как. К утру дворникам работы на весь день. | Look at it come down. A day's work for the yardmen by morning. | よく降るね。朝には雪かきが大仕事だ。
+
+[tc_weather_fog]
+on = tc_weather
+weather = fog
+weight = 2
+say town.tc_weather_fog.1 | Туман — маяк гудит, чайки молчат. Люблю. | Fog: the lighthouse hoots, the gulls keep quiet. I love it. | 霧だと灯台が鳴って、カモメは黙る。好きだなあ。
+say town.tc_weather_fog.2 | Своего носа не видно. Иди осторожно. | Can't see your own nose. Walk carefully. | 自分の鼻も見えないね。気をつけて歩きなさい。
+
+[tc_weather_cold]
+on = tc_weather
+weather = cold
+say town.tc_weather_cold.1 | Холодно. Нос красный, зато голова ясная. | Cold. Red nose, clear head. | 寒いね。鼻は赤いけど頭はすっきり。
+say town.tc_weather_cold.2 | Мороз щиплется. Ты бы шарф надел. | The frost nips. You should put a scarf on. | 霜がぴりぴりするね。マフラーしたら？
+
+[tc_weather_warm]
+on = tc_weather
+weather = warm
+say town.tc_weather_warm.1 | Жара! В такой день вся жизнь — у воды. | What heat! On a day like this all of life is by the water. | 暑い！こんな日はみんな水辺だよ。
+say town.tc_weather_warm.2 | Тепло-то как. Мороженщик сегодня главный человек в городе. | So warm. The ice-cream man's the most important person in town today. | あったかいね。今日の主役はアイス屋さんだ。
+
+[tc_weather_clear]
+on = tc_weather
+weather = clear
+sun = day low
+say town.tc_weather_clear.1 | Небо чистое. В такой день даже забор красивый. | A clear sky. On a day like this even a fence is beautiful. | 空が澄んでる。こんな日は塀まできれいに見える。
+say town.tc_weather_clear.2 | Солнышко! Надо ловить, у нас оно не каждый день. | Sunshine! Catch it while you can, we don't get it every day. | お日さまだ！毎日は出ないから、今のうちにね。
+
+[tc_weather_night]
+on = tc_weather
+weather = clear
+sun = night
+say town.tc_weather_night.1 | Звёзды сегодня — хоть считай. Я дохожу до ста и сбиваюсь. | The stars tonight: you could count them. I get to a hundred and lose track. | 今夜は星が数えられそう。百まで行くとわからなくなる。
+
+[tc_weather_autumn]
+on = tc_weather
+months = 9-11
+say town.tc_weather_autumn.1 | Осень. Листья шуршат, море темнеет. Скоро в шапке ходить. | Autumn. Leaves rustle, the sea goes dark. Hat weather soon. | 秋だね。落ち葉がかさかさ、海は暗くなって。もうすぐ帽子の季節。
+
+[tc_weather_spring]
+on = tc_weather
+months = 3-5
+say town.tc_weather_spring.1 | Весна! Скворцы вернулись, и на душе светлее. | Spring! The starlings are back and the heart is lighter. | 春だ！ムクドリが戻って、心も軽くなる。
+
+[tc_weather_kid]
+on = tc_weather
+age = kid
+weight = 2
+say town.tc_weather_kid.1 | Мне любая погода нравится. Кроме «домой, уже темно». | I like any weather. Except "come home, it's dark". | どんな天気もすき。「暗いから帰りなさい」以外は。
+
+## --- the holiday on now (the topic is offered only while a festival is on)
+
+[tc_festival]
+on = tc_festival
+say town.tc_festival.1 | Праздник! Весь город на ногах, даже те, кто обычно сидит. | A holiday! The whole town's on its feet, even those who usually sit. | お祭りだよ！いつも座ってる人まで歩いてる。
+say town.tc_festival.2 | Сегодня гуляем. Дела подождут до завтра. | Today we celebrate. Chores can wait till tomorrow. | 今日はお祭り。用事は明日でいいの。
+say town.tc_festival.3 | Иди на площадь, там сейчас самое интересное. | Go to the square, that's where it's all happening. | 広場へ行ってごらん。今いちばんにぎやかだよ。
+
+[tc_festival_kid]
+on = tc_festival
+age = kid
+weight = 2
+say town.tc_festival_kid.1 | Праздник! Мне уже купили петушка на палочке! | It's a holiday! I've already got a lollipop cockerel! | お祭り！もうニワトリのあめ買ってもらった！
+
+[tc_festival_elder]
+on = tc_festival
+age = elder
+say town.tc_festival_elder.1 | Люблю праздники. В мои годы каждый — как подарок. | I love holidays. At my age each one is a present. | お祭りは好きだよ。この年になると一つ一つが贈り物。
+
+[tc_festival_fair]
+on = tc_festival
+festival = weekend_market harvest_fair winter_fair
+say town.tc_festival_fair.1 | Ярмарка! Пройди все прилавки, не торопись. Тут спешить грех. | The fair! Walk every stall and take your time. It's a sin to hurry here. | 市が立ってるよ！全部の店をゆっくり見てお行き。
+
+[tc_festival_new_year]
+on = tc_festival
+festival = new_year
+say town.tc_festival_new_year.1 | С наступающим! Желание уже загадано? | Happy New Year to come! Have you made your wish yet? | よいお年を！願いごとはもう決めた？
+
+[tc_festival_sea]
+on = tc_festival
+festival = sea_festival fisherman_day
+say town.tc_festival_sea.1 | Праздник у моря! Лодки в флажках, весь берег гуляет. | A holiday by the sea! Boats in bunting, the whole shore out celebrating. | 海のお祭りだよ！船は旗だらけ、浜じゅう大にぎわい。
+
+[tc_festival_lantern]
+on = tc_festival
+festival = lantern_night toro_nagashi mid_autumn loy_krathong
+say town.tc_festival_lantern.1 | Вечером будут фонарики. Не пропусти, это красиво. | There'll be lanterns this evening. Don't miss it, it's lovely. | 夕方には灯ろうがともるよ。きれいだから見逃さないで。
+
+## --- what the town says of him (docs/town_rumours.md): offered while they know a rumour; {1} its detail
+
+[tc_rumour]
+on = tc_rumour
+weight = 0.3
+say town.tc_rumour.1 | Говорят-говорят. Хорошее, не переживай. | Oh, they talk all right. Good things, don't worry. | うわさはしてるよ。いい話だから心配しないで。
+say town.tc_rumour.2 | Город маленький. Чихнёшь на рынке — на маяке скажут «будь здоров». | It's a small town. Sneeze at the market and the lighthouse says "bless you". | 小さい町だからね。市場でくしゃみしたら灯台まで届くよ。
+
+[tc_rumour_cup]
+on = tc_rumour
+heard_of = cup
+weight = 4
+say town.tc_rumour_cup.1 | Говорят, {1} теперь у тебя. Весь двор гордится. | They say {1} is yours now. The whole yard is proud. | {1}は君のものだって？近所じゅうの自慢だよ。
+
+[tc_rumour_beat]
+on = tc_rumour
+heard_of = beat
+weight = 4
+say town.tc_rumour_beat.1 | Говорят, {1} до сих пор требует реванша. Весь клуб гудит. | They say {1} is still demanding a rematch. The whole club's buzzing. | {1}がまだ再戦を求めてるって。クラブじゅう大騒ぎ。
+
+[tc_rumour_job]
+on = tc_rumour
+heard_of = job
+weight = 4
+say town.tc_rumour_job.1 | Говорят, ты работаешь {1}. Хвалят, между прочим. | They say you've got a job {1}. They speak well of you, by the way. | {1}働いてるんだって？評判いいよ。
+
+[tc_rumour_tamed]
+on = tc_rumour
+heard_of = tamed
+weight = 4
+say town.tc_rumour_tamed.1 | Говорят, у тебя с руки ест птица: {1}. Тут такое уважают. | They say a bird eats from your hand: {1}. People respect that here. | 手から鳥が食べるんだって？{1}。この町じゃ尊敬されるよ。
+
+[tc_rumour_catch]
+on = tc_rumour
+heard_of = catch
+weight = 4
+say town.tc_rumour_catch.1 | Про твой улов говорят: {1}! Рыбаки завидуют молча. | They're talking about your catch: {1}! The fishermen envy in silence. | 君の釣果のうわさだよ。{1}！漁師たちが黙ってうらやんでる。
+
+[tc_rumour_tune]
+on = tc_rumour
+heard_of = tune
+weight = 4
+say town.tc_rumour_tune.1 | Говорят, ты играешь «{1}». И чисто, говорят. | They say you play "{1}". And cleanly too. | 「{1}」を弾くんだって？上手だって聞いたよ。
+
+[tc_rumour_kite]
+on = tc_rumour
+heard_of = kite
+weight = 4
+say town.tc_rumour_kite.1 | Говорят про твоего змея. Выше маяка, говорят, стоял. | They talk about your kite. Higher than the lighthouse, they say. | 君の凧のうわさ。灯台より高く上がったって。
+
+[tc_rumour_garden]
+on = tc_rumour
+heard_of = garden
+weight = 4
+say town.tc_rumour_garden.1 | Говорят, твои грядки приз взяли. Огородники теперь здороваются первыми. | They say your beds took a prize. Now the allotment folk greet you first. | 君の畑が賞を取ったって。畑仲間が先にあいさつするよ。
+
+[tc_rumour_fine]
+on = tc_rumour
+heard_of = fine
+weight = 4
+say town.tc_rumour_fine.1 | Говорят, тебя в поезде оштрафовали. Ничего, с кем не бывает. | They say you were fined on the train. Never mind, it happens. | 列車で罰金取られたって？まあ、よくあることさ。
+
+[tc_rumour_radio]
+on = tc_rumour
+heard_of = radio
+weight = 4
+say town.tc_rumour_radio.1 | Твою заявку по радио слышал весь дом. Хороший выбор. | The whole house heard your request on the radio. A good choice. | 君のリクエスト、ラジオでみんな聞いたよ。いい選曲。
+
+[tc_rumour_crows]
+on = tc_rumour
+heard_of = crows
+weight = 4
+say town.tc_rumour_crows.1 | Говорят, вороны тебе подарки носят. Умные птицы, выбрали правильно. | They say the crows bring you presents. Clever birds, they chose well. | カラスが贈り物をくれるって？賢い鳥だ、人を見る目がある。
+
+## --- a friend of theirs (townsfolk.json friends). The friend's given name: {2} who, {3} of whom, {4} to whom, {5} whom,
+## --- {6} with whom, {7} about whom (townchat.fn.<id>.<form>). Their sex is not known here: no past tense about them.
+
+[tc_friend]
+on = tc_friend
+say town.tc_friend.1 | С {6} мы дружим давно. Спроси {5} обо мне — столько всего расскажет! | {6} and I go back a long way. Ask {5} about me, you'll hear plenty! | {6}さんとは長い付き合い。{5}さんに聞けば私のこと全部わかるよ。
+say town.tc_friend.2 | {2} — вот с кем не скучно. Видимся каждую неделю. | {2}: never a dull moment there. We meet every week. | {2}さんといると退屈しないよ。毎週会ってる。
+say town.tc_friend.3 | Увидишь {5} — передай привет от меня. | If you see {5}, say hello from me. | {5}さんに会ったら、よろしく伝えて。
+say town.tc_friend.4 | Без {3} в этом городе было бы скучнее. | This town would be duller without {3}. | {3}さんがいなかったら、この町はもっと退屈だよ。
+say town.tc_friend.5 | Про {7} могу говорить долго. Но лучше познакомься — не пожалеешь. | I could go on about {7} for hours. Better meet in person, you won't regret it. | {7}さんの話は長くなるよ。会ってみて、損はしないから。
+
+[tc_friend_young]
+on = tc_friend
+age = kid teen
+weight = 2
+say town.tc_friend_young.1 | Я дружу с {6}. Мы вместе строим штаб, только тс-с! | I'm friends with {6}. We're building a hideout together, only shh! | {6}とともだち。いっしょに基地つくってるの、ないしょだよ！
+say town.tc_friend_young.2 | У {3} есть настоящий бинокль. Мне дают посмотреть. | {3} has real binoculars. I get to have a look. | {3}は本物の双眼鏡持ってるの。見せてくれるんだ。
+
+[tc_friend_elder]
+on = tc_friend
+age = elder
+weight = 2
+say town.tc_friend_elder.1 | {2} заходит на чай по средам. Сто лет знакомы, а всё спорим. | {2} comes round for tea on Wednesdays. We've known each other for ages and still argue. | {2}さんは水曜にお茶に来るよ。長い仲でもまだ言い合いさ。
+say town.tc_friend_elder.2 | Передай {4} при случае: в шашки я всё равно сильнее. | Tell {4} if you get the chance: I'm still the better draughts player. | {4}さんに伝えておくれ。チェッカーは私のほうが強いって。
+
+## --- their household (tc_kin_<who the other is to them>); the name's forms as above
+
+[tc_kin_son]
+on = tc_kin_son
+say town.tc_kin_son.1 | {2} у нас растёт не по дням. Вчера ботинки купили — уже малы. | {2} is growing by the hour. New shoes yesterday, too small already. | {2}はどんどん大きくなるよ。昨日買った靴がもう小さい。
+say town.tc_kin_son.2 | За {6} глаз да глаз. Но парень добрый. | {6} needs watching every minute. A kind boy, though. | {6}は目が離せないの。でも優しい子だよ。
+
+[tc_kin_daughter]
+on = tc_kin_daughter
+say town.tc_kin_daughter.1 | {2} у нас умница. Читает быстрее, чем я успеваю покупать книжки. | {2} is our clever one. She reads faster than I can buy books. | {2}はかしこい子でね。本を買うのが追いつかないくらい。
+say town.tc_kin_daughter.2 | С {6} не соскучишься. Вчера принесла домой ежа. | Never a dull day with {6}. Yesterday she brought home a hedgehog. | {6}といると退屈しないよ。昨日はハリネズミを連れてきた。
+
+[tc_kin_mum]
+on = tc_kin_mum
+say town.tc_kin_mum.1 | Мама — {2}. Она добрая, только заставляет есть суп. | My mum's {2}. She's nice, she just makes me eat soup. | ママは{2}。やさしいけど、スープを食べなさいって言うの。
+say town.tc_kin_mum.2 | Мама велит быть дома к ужину. А {3} лучше слушаться. | Mum says home by supper. And {3} is best obeyed. | 晩ごはんまでに帰りなさいって。ママの{3}には逆らえない。
+
+[tc_kin_dad]
+on = tc_kin_dad
+say town.tc_kin_dad.1 | Папа — {2}. Он всё умеет чинить, даже велосипед. | My dad's {2}. He can fix anything, even a bike. | パパは{2}。なんでも直せるんだよ、自転車だって。
+say town.tc_kin_dad.2 | По выходным мы с папой ходим к морю. Его там все рыбаки знают: «Здорово, {2}!» | Dad and I go to the sea at weekends. All the fishermen know him: "Morning, {2}!" | 週末はパパと海へ行くの。漁師さんはみんな「やあ、{2}！」って。
+
+[tc_kin_sister]
+on = tc_kin_sister
+say town.tc_kin_sister.1 | Сестра — {2}. Вредная, но если что — заступится. | My sister's {2}. A pest, but she'll stand up for me if it comes to it. | {2}とはきょうだい。いじわるだけど、いざとなると味方。
+say town.tc_kin_sister.2 | Мы с {6} делим комнату. Граница проходит по ковру. | {6} and I share a room. The border runs along the rug. | {6}と同じ部屋なの。国境はじゅうたんの上。
+
+[tc_kin_brother]
+on = tc_kin_brother
+say town.tc_kin_brother.1 | Брат — {2}. Дерёмся каждый день, а друг без друга скучно. | My brother's {2}. We fight every day and get bored apart. | {2}とは兄弟。毎日けんかするけど、いないとつまらない。
+say town.tc_kin_brother.2 | {2} обещал научить меня нырять. Жду лета. | {2} promised to teach me to dive. I'm waiting for summer. | {2}がもぐり方を教えてくれるって。夏が待ち遠しい。
+
+[tc_kin_wife]
+on = tc_kin_wife
+say town.tc_kin_wife.1 | Жена моя, {2}, говорит, что я слишком много болтаю. Она права. | My wife, {2}, says I talk too much. She's right. | 妻の{2}に、しゃべりすぎだって言われるよ。その通りだ。
+say town.tc_kin_wife.2 | Мы с {6} каждый вечер гуляем к морю. Привычка. | {6} and I walk down to the sea every evening. A habit. | {6}と毎晩海まで歩くんだ。習慣でね。
+
+[tc_kin_husband]
+on = tc_kin_husband
+say town.tc_kin_husband.1 | Муж мой, {2}, опять мыслями на рыбалке. Но человек золотой. | My husband, {2}, has his mind on fishing again. But he's pure gold. | 夫の{2}はまた釣りのことばかり。でもいい人なの。
+say town.tc_kin_husband.2 | Мы с {6} по субботам ходим на рынок. Он торгуется, я краснею. | {6} and I go to the market on Saturdays. He haggles, I blush. | 土曜は{6}と市場へ行くの。夫は値切って、私は赤くなる。
+
+[tc_kin_mate]
+on = tc_kin_mate
+say town.tc_kin_mate.1 | Живём вдвоём с {6}. Посуду моем по очереди. В теории. | I share the flat with {6}. We take turns with the dishes. In theory. | {6}さんと二人暮らし。皿洗いは交代制。理論上はね。
+say town.tc_kin_mate.2 | С {6} жить легко: тихо, и чай всегда заварен. | {6} is easy to live with: quiet, and the tea's always made. | {6}さんとは暮らしやすいよ。静かだし、お茶はいつも入ってる。
+
+## --- what they like to do (townsfolk.json likes; tools/townchat/content.py HOBBIES)
+
+[tc_hobby_play_club]
+on = tc_hobby_play_club
+say town.tc_hobby_play_club.1 | Люблю поиграть в клубе. Там время идёт как-то боком. | I like a game at the club. Time goes sideways in there. | クラブでゲームするのが好き。あそこは時間が横に流れる。
+say town.tc_hobby_play_club.2 | Вечером — за компьютер. Только никому, я человек серьёзный. | Evenings, the computer. Not a word to anyone: I'm a serious person. | 夜はパソコンの前。ないしょだよ、まじめで通ってるから。
+
+[tc_hobby_night_walk]
+on = tc_hobby_night_walk
+say town.tc_hobby_night_walk.1 | Люблю гулять по ночам. Город тихий, и фонари только для тебя. | I like walking at night. The town's quiet and the lamps are all yours. | 夜の散歩が好き。町は静かで、街灯は自分だけのもの。
+say town.tc_hobby_night_walk.2 | Ночью у моря думается лучше всего. | One thinks best by the sea at night. | 夜の海辺がいちばん考えごとに向いてるよ。
+
+[tc_hobby_watch_sunrise]
+on = tc_hobby_watch_sunrise
+say town.tc_hobby_watch_sunrise.1 | Встаю до рассвета — смотреть, как солнце выходит из моря. | I'm up before dawn to watch the sun come out of the sea. | 夜明け前に起きて、海から日が昇るのを見るんだ。
+say town.tc_hobby_watch_sunrise.2 | Рассвет у нас бесплатный, а народу почти никого. Приходи. | Sunrise here is free and hardly anyone comes. Do come. | ここの日の出はただなのに、人はほとんどいない。おいで。
+
+[tc_hobby_fish_shore]
+on = tc_hobby_fish_shore
+say town.tc_hobby_fish_shore.1 | С удочкой на берегу — вот это по мне. | A rod on the shore: that's the thing for me. | 岸で釣り糸をたらす、それがいちばん。
+say town.tc_hobby_fish_shore.2 | Рыбалка. Клюёт или нет — дело десятое. | Fishing. Whether they bite is beside the point. | 釣りだね。釣れるかどうかは二の次。
+
+[tc_hobby_stroll]
+on = tc_hobby_stroll
+say town.tc_hobby_stroll.1 | Пройтись по набережной туда и обратно. Каждый день, в любую погоду. | A stroll along the promenade and back. Every day, any weather. | 海岸通りを行って帰る。毎日、どんな天気でも。
+say town.tc_hobby_stroll.2 | Гулять люблю. Город небольшой, а каждый раз что-то новое. | I like to walk. A small town, yet something new each time. | 歩くのが好き。小さい町なのに毎回発見がある。
+
+[tc_hobby_coffee]
+on = tc_hobby_coffee
+say town.tc_hobby_coffee.1 | Чашка кофе в кафе и никуда не бежать. Маленькое счастье. | A cup of coffee in the café and nowhere to rush. A small happiness. | カフェでコーヒー一杯、急がずに。小さな幸せ。
+say town.tc_hobby_coffee.2 | Кофе. Без него я не человек, а расписание. | Coffee. Without it I'm not a person, I'm a timetable. | コーヒーだね。あれがないと人間じゃなくて時刻表だよ。
+
+[tc_hobby_eat_out]
+on = tc_hobby_eat_out
+say town.tc_hobby_eat_out.1 | Люблю поесть не дома. Чужой суп всегда интереснее. | I like eating out. Someone else's soup is always more interesting. | 外で食べるのが好き。よそのスープはいつも面白い。
+say town.tc_hobby_eat_out.2 | В ресторане у нас хорошо. Официант подскажет, что сегодня удалось. | Our restaurant's good. The waiter will tell you what turned out well today. | 町のレストランはいいよ。今日のおすすめは給仕さんに聞いて。
+
+[tc_hobby_swim_look]
+on = tc_hobby_swim_look
+say town.tc_hobby_swim_look.1 | Сидеть у воды и смотреть на купальщиков. Смелые люди! | Sitting by the water watching the swimmers. Brave people! | 水辺で泳ぐ人をながめること。勇気があるよねえ！
+say town.tc_hobby_swim_look.2 | Море. Хоть рядом постоять — уже легче. | The sea. Just standing near it makes things easier. | 海だよ。そばに立つだけで気が楽になる。
+
+[tc_hobby_fair_visit]
+on = tc_hobby_fair_visit
+say town.tc_hobby_fair_visit.1 | Ярмарку люблю. Ничего не куплю, а всё потрогаю. | I love the fair. I'll buy nothing and handle everything. | 市が好き。何も買わずに全部さわるの。
+say town.tc_hobby_fair_visit.2 | На ярмарке карусель и пряники. Что ещё надо? | The fair has a carousel and gingerbread. What more is there? | 市にはメリーゴーラウンドとお菓子。ほかに何がいる？
+
+[tc_hobby_sea_air]
+on = tc_hobby_sea_air
+say town.tc_hobby_sea_air.1 | Дышать морем. Врачи советуют, а я и без них знаю. | Breathing the sea. Doctors recommend it; I knew without them. | 海の空気を吸うこと。医者に言われなくても知ってるよ。
+say town.tc_hobby_sea_air.2 | Стоять на пирсе и смотреть на волны. Могу час. | Standing on the pier looking at the waves. I can do an hour. | 桟橋で波を見てること。一時間でもいられるよ。
+
+[tc_hobby_sit_bench]
+on = tc_hobby_sit_bench
+say town.tc_hobby_sit_bench.1 | Сидеть на скамейке. Это не лень, это наблюдение. | Sitting on a bench. It's not laziness, it's observation. | ベンチに座ること。なまけじゃなくて観察だよ。
+say town.tc_hobby_sit_bench.2 | У меня своя скамейка есть. Приходи, место найдётся. | I've a bench of my own. Come along, there's room. | お気に入りのベンチがあるの。おいで、席はあるよ。
+
+[tc_hobby_read_library]
+on = tc_hobby_read_library
+say town.tc_hobby_read_library.1 | Читать. В библиотеке у меня своё кресло у окна. | Reading. I've my own chair by the window in the library. | 読書だね。図書館の窓ぎわに指定席があるの。
+say town.tc_hobby_read_library.2 | Книги. Возьмёшь одну на вечер — и утро уже. | Books. Take one for the evening and it's morning already. | 本だよ。夜に一冊開くと、もう朝。
+
+[tc_hobby_play_piano]
+on = tc_hobby_play_piano
+say town.tc_hobby_play_piano.1 | Играю на рояле в доме культуры. Заходи послушать, я не кусаюсь. | I play the grand piano at the culture house. Come and listen, I don't bite. | 文化会館でピアノを弾いてるの。聴きにおいで、こわくないよ。
+say town.tc_hobby_play_piano.2 | Музыка. Пальцы помнят то, что голова давно забыла. | Music. The fingers remember what the head forgot long ago. | 音楽だね。頭が忘れたことを指が覚えてる。
+
+## --- the town: where to go (the topic «Что тут стоит посмотреть?»)
+
+[tc_town]
+on = tc_town
+say town.tc_town.1 | Сходи на маяк. Оттуда весь город — как на ладони. | Go up to the lighthouse. The whole town lies in your palm from there. | 灯台へ行ってごらん。町がまるごと見わたせるよ。
+say town.tc_town.2 | На рынке по утрам самые свежие новости. И творог. | The market in the morning has the freshest news. And curd cheese. | 朝の市場には新鮮なうわさがあるよ。チーズもね。
+say town.tc_town.3 | Набережная на закате. Больше ничего советовать не буду. | The promenade at sunset. I'll recommend nothing else. | 夕暮れの海岸通り。ほかにすすめるものはないよ。
+say town.tc_town.4 | Садись на канатку и смотри вниз. Город сверху совсем другой. | Take the cable car and look down. The town's quite different from above. | ロープウェーに乗って下を見てごらん。町がちがって見える。
+
+[tc_town_young]
+on = tc_town
+age = kid teen
+weight = 2
+say town.tc_town_young.1 | На площадке есть горка и качели! А в клубе — компьютеры. | The playground has a slide and swings! And the club has computers. | 公園にすべり台とブランコがあるよ！クラブにはパソコンも。
+say town.tc_town_young.2 | На пляже после отлива остаются ракушки. Самые красивые — у пирса. | The tide leaves shells on the beach. The prettiest are by the pier. | 潮が引くと浜に貝がらが残るの。桟橋のそばがいちばんきれい。
+
+[tc_town_elder]
+on = tc_town
+age = elder
+weight = 2
+say town.tc_town_elder.1 | В санатории воду пробовал? Невкусная — значит, полезная. | Tried the water at the sanatorium? Tastes bad, so it's good for you. | 療養所の水は飲んだかい？まずいから体にいいよ。
+say town.tc_town_elder.2 | Сходи в библиотеку. Там тихо и никто не воспитывает. | Go to the library. It's quiet and nobody lectures you. | 図書館へお行き。静かだし、誰もお説教しないよ。
+
+[tc_town_winter]
+on = tc_town
+months = 12-2
+say town.tc_town_winter.1 | Зимой у пруда заливают каток. Скользко, зато весело. | In winter they flood a rink by the pond. Slippery, but fun. | 冬は池のそばにスケート場ができるよ。すべるけど楽しい。
+
+[tc_town_summer]
+on = tc_town
+months = 6-8
+say town.tc_town_summer.1 | Летом — на пляж, тут и думать нечего. | In summer it's the beach, no question. | 夏は浜だね。考えるまでもない。
+
+## --- a question back to him (tools/townchat/content.py ASKS: his answers are townchat.ask.<id>.a<n>), then their reply to answer n
+
+[tc_ask_new]
+on = tc_ask_new
+say town.tc_ask_new.1 | А ты ведь не здешний? Откуда к нам? | You're not from round here, are you? Where've you come from? | 君、このへんの子じゃないよね？どこから来たの？
+say town.tc_ask_new.2 | Постой, а ты чей? Что-то не припомню такого мальчика. | Wait, whose boy are you? I can't place you. | 待って、どこの子？見覚えがないなあ。
+
+[tc_reply_new_1]
+on = tc_reply_new_1
+say town.tc_reply_new_1.1 | А, из компьютерного! Говорят, там вообще не спят. | Ah, the computer club! They say nobody sleeps up there at all. | ああ、パソコンクラブ！あそこは誰も寝ないって聞くよ。
+say town.tc_reply_new_1.2 | С горы, значит. Высоко забрались. Ну, добро пожаловать вниз. | From up the hill, then. That's a climb. Well, welcome down here. | 山の上からか。高いところだね。下の町へようこそ。
+
+[tc_reply_new_2]
+on = tc_reply_new_2
+say town.tc_reply_new_2.1 | Гулять — дело хорошее. У нас есть где. | Walking's a fine thing. We've plenty of places for it. | 散歩はいいことだ。ここは歩く所がたくさんあるよ。
+say town.tc_reply_new_2.2 | Ну гуляй, гуляй. Только к морю в шторм не подходи. | Walk away, then. Just keep clear of the sea in a storm. | そう、ゆっくり歩きなさい。嵐の日は海に近づかないでね。
+
+[tc_ask_sea]
+on = tc_ask_sea
+say town.tc_ask_sea.1 | Ты у моря сегодня уже был? | Have you been down to the sea yet today? | 今日はもう海に行った？
+say town.tc_ask_sea.2 | На море-то ходил сегодня? Волна есть? | Been to the sea today? Any waves? | 今日は海へ行った？波はあった？
+
+[tc_reply_sea_1]
+on = tc_reply_sea_1
+say town.tc_reply_sea_1.1 | Правильно. День без моря — не день. | Quite right. A day without the sea isn't a day. | そうこなくちゃ。海を見ない日は一日じゃない。
+say town.tc_reply_sea_1.2 | И как оно? Хотя что я спрашиваю — оно всегда хорошо. | And how was it? Why do I ask: it's always fine. | どうだった？聞くまでもないか、いつもいいものね。
+
+[tc_reply_sea_2]
+on = tc_reply_sea_2
+say town.tc_reply_sea_2.1 | Сходи обязательно. Оно ждёт, но не вечно. | Do go. It waits, but not for ever. | ぜひ行っておいで。海は待ってるけど、永遠じゃないよ。
+say town.tc_reply_sea_2.2 | Как это — нет? Бросай всё и иди. Я серьёзно. | What do you mean, no? Drop everything and go. I mean it. | まだなの？全部ほうって行きなさい。本気だよ。
+
+[tc_ask_birds]
+on = tc_ask_birds
+say town.tc_ask_birds.1 | Говорят, ты птиц любишь. Правда? | They say you're fond of birds. Is it true? | 鳥が好きなんだって？本当？
+say town.tc_ask_birds.2 | Это ты с биноклем на птиц смотришь? | Is it you who watches the birds through binoculars? | 双眼鏡で鳥を見てるの、君？
+
+[tc_reply_birds_1]
+on = tc_reply_birds_1
+say town.tc_reply_birds_1.1 | Хорошее дело. Птицы — они честные, не то что барометр. | A fine thing. Birds are honest, unlike the barometer. | いいことだ。鳥は正直だよ、気圧計とちがって。
+say town.tc_reply_birds_1.2 | Тогда зимой не забудь про кормушку. Синицы запомнят. | Then don't forget a feeder in winter. The tits will remember. | じゃあ冬はえさ台を忘れずに。シジュウカラは覚えてるよ。
+
+[tc_reply_birds_2]
+on = tc_reply_birds_2
+say town.tc_reply_birds_2.1 | Компьютеры! Ну, тоже чирикают по-своему. | Computers! Well, they chirp too, in their way. | コンピューター！まあ、あれもあれなりにさえずるね。
+say town.tc_reply_birds_2.2 | Ничего, птицы подождут. Они терпеливые. | Never mind, the birds will wait. They're patient. | まあいいさ、鳥は待ってくれる。気が長いからね。
+
+[tc_ask_like]
+on = tc_ask_like
+say town.tc_ask_like.1 | Ну а как тебе у нас в городе? | And how do you like our town? | それで、この町はどう？
+say town.tc_ask_like.2 | Нравится тебе Людмиловск? Только честно. | Do you like Lyudmilovsk? Honestly, now. | リュドミロフスクは気に入った？正直にね。
+
+[tc_reply_like_1]
+on = tc_reply_like_1
+say town.tc_reply_like_1.1 | Вот и славно. Город это чувствует, между прочим. | That's grand. The town can tell, you know. | それはよかった。町にもちゃんと伝わるんだよ。
+say town.tc_reply_like_1.2 | Ещё бы. Море, канатка и никто не торопит. | I should think so. The sea, the cable car and nobody rushing you. | そうだろう。海とロープウェーがあって、誰も急がせない。
+
+[tc_reply_like_2]
+on = tc_reply_like_2
+say town.tc_reply_like_2.1 | Привыкнешь. Тут сначала тихо, потом — как дома. | You'll get used to it. Quiet at first here, then like home. | 慣れるよ。最初は静かで、そのうち我が家みたいになる。
+say town.tc_reply_like_2.2 | Не торопись. Город сам тебя выберет, когда присмотрится. | Don't hurry. The town will choose you once it's had a look. | あせらないで。町のほうが君を選んでくれるから。
+
+[tc_ask_eat]
+on = tc_ask_eat
+say town.tc_ask_eat.1 | Ты хоть обедал сегодня? Худой какой. | Have you had lunch today at all? So thin. | 今日はお昼食べたの？やせてるねえ。
+say town.tc_ask_eat.2 | А ел ты сегодня что-нибудь горячее? | And have you eaten anything hot today? | 今日は温かいもの食べた？
+
+[tc_reply_eat_1]
+on = tc_reply_eat_1
+say town.tc_reply_eat_1.1 | Вот и молодец. На голодный желудок город не тот. | Good lad. The town's not the same on an empty stomach. | えらいね。おなかがすいてると町もちがって見えるから。
+say town.tc_reply_eat_1.2 | Правильно. Суп — основа всего. | Quite right. Soup is the foundation of everything. | よろしい。スープはすべての基本だよ。
+
+[tc_reply_eat_2]
+on = tc_reply_eat_2
+say town.tc_reply_eat_2.1 | Забыл! Немедленно иди поешь. Потом доболтаем. | Forgot! Go and eat this minute. We'll finish talking after. | 忘れた！今すぐ食べておいで。話はそのあと。
+say town.tc_reply_eat_2.2 | Ох уж эта молодёжь. В кафе ещё кормят, беги. | You young people. The café's still serving, run along. | まったく若い子は。カフェはまだやってるよ、走って。
+
+[tc_ask_game]
+on = tc_ask_game
+say town.tc_ask_game.1 | А ты во что в клубе играешь? | What do you play at the club? | クラブで何のゲームしてるの？
+say town.tc_ask_game.2 | Ты же из клуба! Во что там сейчас рубятся? | You're from the club! What's everyone playing up there now? | クラブの人でしょ！今みんな何やってるの？
+
+[tc_reply_game_1]
+on = tc_reply_game_1
+say town.tc_reply_game_1.1 | Стратегии — это для умных. Научишь? | Strategy's for brainy people. Will you teach me? | ストラテジーって頭いい人のだ。教えてくれる？
+say town.tc_reply_game_1.2 | О, я тоже! Только меня всегда выносят в самом начале. | Oh, me too! Only I always get knocked out right at the start. | あ、同じ！でもいつも最初にやられちゃう。
+
+[tc_reply_game_2]
+on = tc_reply_game_2
+say town.tc_reply_game_2.1 | Смотреть тоже интересно. Я так всему и учусь. | Watching's fun too. That's how I learn everything. | 見てるのも面白いよね。そうやって全部覚えたんだ。
+say town.tc_reply_game_2.2 | Так нечестно, надо играть! Приходи, сыграем вдвоём. | That's not fair, you've got to play! Come along, we'll play together. | ずるい、やらなきゃ！こんど二人でやろうよ。

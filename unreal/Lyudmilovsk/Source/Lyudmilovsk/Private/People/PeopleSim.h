@@ -371,6 +371,7 @@ namespace LyudPeople
 		int Dips = 0;               // in the water how many times on this visit (an activity with "dip")
 		int PrevActivity = -1;      // what they did before this (the manners: a bag carried from the shop), -1 nothing yet
 		double PrevActivityEnd = -1e18;     // and when they left it (sim seconds)
+		float HoldFor = 0.f;        // stopped on their way for a word with the hero (FWorld::HoldWalk): s left to stand
 		std::string Why;            // a short reason for the last choice (debug)
 		int Choices = 0;
 	};
@@ -616,6 +617,9 @@ namespace LyudPeople
 		 *  some sitting activity of theirs fits, for Minutes; false if there is none. The seat the player is on is left out
 		 *  (nearer than 0.35 m to Pos). */
 		bool OrderBeside(int Person, const V3& Pos, float MaxDist, double Minutes);
+		/** Somebody on their way on foot stands for Seconds more (a talk with the hero, docs/town_talk.md), then goes on;
+		 *  0 lets them go at once. Nothing for whoever isn't walking a way. */
+		void HoldWalk(int Person, float Seconds);
 
 		/** Bicycles (docs/bikes.md): a household's bike lives in its entrance (a place on the stair's way in, Home) and
 		 *  goes where its rider leaves it. People ride it for an outdoor way of MinBikeWay or more on the valley's ground

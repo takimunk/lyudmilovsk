@@ -41,6 +41,10 @@ EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
           "dog_walk",
           # animals that live with people (docs/animals.md "With people", ULyudPets)
           "pet_talk", "pet_stroke_yes", "pet_stroke_no", "cat_call", "cat_sill", "hedgehog", "cat_friend", "cat_scrap", "cat_shoo"}
+# a talk with the hero (docs/town_talk.md "A talk"): the events are listed with its data (tools/townchat/content.py)
+sys.path.insert(0, os.path.join(HERE, "..", "townchat"))
+import content as townchat_content  # noqa: E402
+EVENTS |= set(townchat_content.EVENTS)
 
 sets = []          # [{name, conds: [(k, v)], say: [keys], talk: [[keys]], file}]
 strings = collections.OrderedDict()   # key -> (ru, en, ja)

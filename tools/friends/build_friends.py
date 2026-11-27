@@ -26,7 +26,7 @@ import content as C  # noqa: E402
 LANGS = ("ru", "en", "ja")
 
 RULES = {"levels": [0, 10, 30, 70, 130], "greet": 2, "heard": 1, "heard_cap": 3, "visit": 4, "quest": 20,
-         "gift_loved": 12, "gift_liked": 6, "gift_plain": 2, "card": 8, "bench": 6, "tea": 12, "outing": 12, "festival": 8, "festival_level": 3,
+         "gift_loved": 12, "gift_liked": 6, "gift_plain": 2, "card": 8, "bench": 6, "tea": 12, "outing": 12, "festival": 8, "festival_level": 3, "chat": 1, "chat_answer": 1, "chat_cap": 2,
          "tea_level": 2, "tea_every": 7, "tea_ahead": 2, "outing_level": 4, "outing_every": 21, "bench_level": 3,
          "wave_level": 2, "nick_level": 3}
 

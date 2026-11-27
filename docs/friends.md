@@ -12,8 +12,9 @@ grows, is saved, and changes what they do. Nothing is shown as a number or a bar
 | a line of theirs said within 6 m of him | 1 | 3 a day |
 | a host: his visit to their home (within 10 m of their table) | 4 | once a day |
 | a host: their home quest done (`home_<host>`) | 20 | once |
-| a gift (E on somebody he knows, then a pocket item) | 12 loved, 6 liked, 2 plain | one a day ("not every day!") |
+| a gift (E on somebody he knows, "give something" on the talk's page, then a pocket item) | 12 loved, 6 liked, 2 plain | one a day ("not every day!") |
 | his postcard delivered to them (docs/letters.md) | 8 | each card |
+| a talk with them (E, at least one thing asked: docs/town_talk.md) | 1, and 1 for answering their question | 2 a day |
 | they sat with him on a bench | 6 | once a day |
 | tea at a host's (at least one topic talked about) | 12 | each tea |
 | he joined their family's weekend outing | 12 | each invitation |
