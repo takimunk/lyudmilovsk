@@ -1,0 +1,443 @@
+{
+ "_doc": "Boat frame: metres, origin at the static waterline amidships on the centreline, +X forward, +Y PORT, +Z up (Blender). ue_cm = Unreal cm in the boat actor (X fwd, Y = -y: Unreal +Y is STARBOARD, Z up). Seat/hike positions are the PELVIS (hip joint midpoint) of a 1.75 m adult (luch) or the class's crew; feet = between the two ankles; facing = the yaw the torso faces (deg, 0 = forward, +90 = to port). Entries with 'frame' are in that part's own frame (its origin = its pivot, see parts). Side variants: _port / _stbd (sitting on the port / starboard side deck, i.e. starboard / port tack when hiking).",
+ "frame": {
+  "forward": "+X",
+  "port": "+Y",
+  "up": "+Z",
+  "units": "m",
+  "origin": "waterline amidships"
+ },
+ "luch": {
+  "parts": {
+   "Hull": {
+    "pivot": [0, 0, 0],
+    "note": "boat origin"
+   },
+   "Mast": {
+    "pivot": [1.13, 0, -0.05],
+    "axis": [0, 0, 1],
+    "note": "foot of the mast in its step; the mast rotates about its own axis (luch) / is fixed"
+   },
+   "Boom": {
+    "pivot": [1.13, 0, 1.15],
+    "axis": [0, 0, 1],
+    "note": "gooseneck ON THE MAST AXIS; the boom lies along -X; yaw = sheeting angle (+ to port)"
+   },
+   "Main": {
+    "pivot": [1.13, 0, 1.15],
+    "axis": [0, 0, 1],
+    "note": "same pivot as the boom: rotate the sail and the boom together"
+   },
+   "Rudder": {
+    "pivot": [-2.1550000000000002, 0, 0.0],
+    "axis": [0, 0, 1],
+    "note": "on the pintle axis at the waterline; yaw = rudder angle. Blender +yaw (right-handed about +Z) swings the blade's trailing edge to starboard and the tiller to port: the bow turns to starboard. Unreal yaw = -(Blender yaw)."
+   },
+   "Tiller": {
+    "pivot": [-2.1550000000000002, 0, 0.38],
+    "axis": [0, 0, 1],
+    "note": "child of the rudder head; tiller along +X; carries the extension joint at its tip"
+   },
+   "Ext": {
+    "pivot": [-1.135, 0, 0.4],
+    "note": "tiller extension universal joint at the tiller's tip; along +X at rest, swings freely"
+   },
+   "Board": {
+    "pivot": [0.3, 0, 0.0],
+    "slide_axis": [0, 0, 1],
+    "note": "daggerboard at the waterline on the slot's centre; slides along +Z: 0 = fully down, +0.59 = raised half, +1.30 = out"
+   }
+  },
+  "sockets": {
+   "helm_port": {
+    "pos": [-1.0, 0.6, 0.43],
+    "ue_cm": [-100.0, -60.0, 43.0],
+    "facing": -75,
+    "feet": [-1.05, 0.12, 0.1],
+    "feet_ue_cm": [-105.0, -12.0, 10.0],
+    "note": "sitting on the port side deck, facing inboard and forward"
+   },
+   "helm_stbd": {
+    "pos": [-1.0, -0.6, 0.43],
+    "ue_cm": [-100.0, 60.0, 43.0],
+    "facing": 75,
+    "feet": [-1.05, -0.12, 0.1],
+    "feet_ue_cm": [-105.0, 12.0, 10.0],
+    "note": "sitting on the stbd side deck, facing inboard and forward"
+   },
+   "hike_port": {
+    "pos": [-0.92, 0.7, 0.42],
+    "ue_cm": [-92.0, -70.0, 42.0],
+    "facing": -75,
+    "feet": [-1.25, 0.02, 0.12],
+    "feet_ue_cm": [-125.0, -2.0, 12.0],
+    "note": "sitting ON the gunwale, thighs on the side deck, torso leaning out to port, feet hooked under the hiking strap"
+   },
+   "hike_stbd": {
+    "pos": [-0.92, -0.7, 0.42],
+    "ue_cm": [-92.0, 70.0, 42.0],
+    "facing": 75,
+    "feet": [-1.25, -0.02, 0.12],
+    "feet_ue_cm": [-125.0, 2.0, 12.0],
+    "note": "sitting ON the gunwale, thighs on the side deck, torso leaning out to stbd, feet hooked under the hiking strap"
+   },
+   "strap": {
+    "from": [-1.8, 0.0, 0.1],
+    "to": [-0.8, 0.0, 0.1],
+    "note": "the strap line (feet go under it, toes up, on the hiking side of it)"
+   },
+   "mainsheet_block": {
+    "pos": [-0.95, 0.0, 0.1],
+    "ue_cm": [-95.0, -0.0, 10.0],
+    "note": "the ratchet block the sheet comes up from (fixed on the hull)"
+   },
+   "hand_mainsheet": {
+    "pos": [-0.95, 0.0, 0.55],
+    "ue_cm": [-95.0, -0.0, 55.0],
+    "note": "front hand holding the sheet 45 cm above the ratchet block (neutral); slide along the line block -> hand toward the helm's shoulder when trimming"
+   },
+   "hand_tiller_ext": {
+    "frame": "Ext",
+    "pos": [0.94, 0, 0],
+    "note": "aft hand: dagger grip on the extension 6 cm from its end (Ext frame)"
+   },
+   "hand_tiller": {
+    "frame": "Tiller",
+    "pos": [0.9, 0, 0.02],
+    "note": "a hand on the tiller itself (light airs, the cadet's helm)"
+   },
+   "boom_end": {
+    "frame": "Boom",
+    "pos": [-2.74, 0, 0]
+   },
+   "boom_block": {
+    "frame": "Boom",
+    "pos": [-1.1, 0, -0.06],
+    "note": "where the mainsheet leaves the boom (Boom frame)"
+   },
+   "painter": {
+    "pos": [2.065, 0, 0.368],
+    "note": "bow eye where the painter is made fast / the trolley winch strap hooks"
+   },
+   "trolley": {
+    "pos": [0, 0, -0.13],
+    "note": "lowest point of the keel: the hull rests on its trolley cradle this far below the waterline"
+   }
+  },
+  "dims": {
+   "loa": 4.23,
+   "beam": 1.37,
+   "mast_top_z": 6.33,
+   "deck_z_mid": 0.27,
+   "sail_area": 7.06
+  }
+ },
+ "optimist": {
+  "parts": {
+   "Hull": {
+    "pivot": [0, 0, 0],
+    "note": "boat origin"
+   },
+   "Mast": {
+    "pivot": [0.7, 0, -0.07],
+    "axis": [0, 0, 1],
+    "note": "foot of the mast in its step; the mast rotates about its own axis (luch) / is fixed"
+   },
+   "Boom": {
+    "pivot": [0.7, 0, 0.66],
+    "axis": [0, 0, 1],
+    "note": "gooseneck ON THE MAST AXIS; the boom lies along -X; yaw = sheeting angle (+ to port)"
+   },
+   "Main": {
+    "pivot": [0.7, 0, 0.66],
+    "axis": [0, 0, 1],
+    "note": "same pivot as the boom: rotate the sail and the boom together"
+   },
+   "Rudder": {
+    "pivot": [-1.18, 0, 0.0],
+    "axis": [0, 0, 1],
+    "note": "on the pintle axis at the waterline; yaw = rudder angle. Blender +yaw (right-handed about +Z) swings the blade's trailing edge to starboard and the tiller to port: the bow turns to starboard. Unreal yaw = -(Blender yaw)."
+   },
+   "Tiller": {
+    "pivot": [-1.18, 0, 0.38],
+    "axis": [0, 0, 1],
+    "note": "child of the rudder head; tiller along +X; carries the extension joint at its tip"
+   },
+   "Ext": {
+    "pivot": [-0.4, 0, 0.4],
+    "note": "tiller extension universal joint at the tiller's tip; along +X at rest, swings freely"
+   },
+   "Board": {
+    "pivot": [0.06, 0, 0.0],
+    "slide_axis": [0, 0, 1],
+    "note": "daggerboard at the waterline on the slot's centre; slides along +Z: 0 = fully down, +0.44 = raised half, +0.98 = out"
+   },
+   "Sprit": {
+    "pivot": [0.7, 0, 1.02],
+    "note": "the snotter on the mast; the sprit runs up and aft to the peak, rotate with the main"
+   }
+  },
+  "sockets": {
+   "helm_port": {
+    "pos": [-0.4, 0.47, 0.43],
+    "ue_cm": [-40.0, -47.0, 43.0],
+    "facing": -75,
+    "feet": [-0.3, 0.05, -0.05],
+    "feet_ue_cm": [-30.0, -5.0, -5.0],
+    "note": "sitting on the port side deck, facing inboard and forward"
+   },
+   "helm_stbd": {
+    "pos": [-0.4, -0.47, 0.43],
+    "ue_cm": [-40.0, 47.0, 43.0],
+    "facing": 75,
+    "feet": [-0.3, -0.05, -0.05],
+    "feet_ue_cm": [-30.0, 5.0, -5.0],
+    "note": "sitting on the stbd side deck, facing inboard and forward"
+   },
+   "hike_port": {
+    "pos": [-0.36, 0.53, 0.43],
+    "ue_cm": [-36.0, -53.0, 43.0],
+    "facing": -75,
+    "feet": [-0.45, 0.02, -0.03],
+    "feet_ue_cm": [-45.0, -2.0, -3.0],
+    "note": "sitting ON the gunwale, thighs on the side deck, torso leaning out to port, feet hooked under the hiking strap"
+   },
+   "hike_stbd": {
+    "pos": [-0.36, -0.53, 0.43],
+    "ue_cm": [-36.0, 53.0, 43.0],
+    "facing": 75,
+    "feet": [-0.45, -0.02, -0.03],
+    "feet_ue_cm": [-45.0, 2.0, -3.0],
+    "note": "sitting ON the gunwale, thighs on the side deck, torso leaning out to stbd, feet hooked under the hiking strap"
+   },
+   "strap": {
+    "from": [-0.7, 0.0, -0.05],
+    "to": [0.0, 0.0, -0.05],
+    "note": "the strap line (feet go under it, toes up, on the hiking side of it)"
+   },
+   "mainsheet_block": {
+    "pos": [-0.25, 0.0, -0.04],
+    "ue_cm": [-25.0, -0.0, -4.0],
+    "note": "the ratchet block the sheet comes up from (fixed on the hull)"
+   },
+   "hand_mainsheet": {
+    "pos": [-0.25, 0.0, 0.41000000000000003],
+    "ue_cm": [-25.0, -0.0, 41.0],
+    "note": "front hand holding the sheet 45 cm above the ratchet block (neutral); slide along the line block -> hand toward the helm's shoulder when trimming"
+   },
+   "hand_tiller_ext": {
+    "frame": "Ext",
+    "pos": [0.69, 0, 0],
+    "note": "aft hand: dagger grip on the extension 6 cm from its end (Ext frame)"
+   },
+   "hand_tiller": {
+    "frame": "Tiller",
+    "pos": [0.66, 0, 0.02],
+    "note": "a hand on the tiller itself (light airs, the cadet's helm)"
+   },
+   "boom_end": {
+    "frame": "Boom",
+    "pos": [-2.02, 0, 0]
+   },
+   "boom_block": {
+    "frame": "Boom",
+    "pos": [-1.05, 0, -0.06],
+    "note": "where the mainsheet leaves the boom (Boom frame)"
+   },
+   "painter": {
+    "pos": [1.1, 0, 0.418],
+    "note": "bow eye where the painter is made fast / the trolley winch strap hooks"
+   },
+   "trolley": {
+    "pos": [0, 0, -0.09],
+    "note": "lowest point of the keel: the hull rests on its trolley cradle this far below the waterline"
+   }
+  },
+  "dims": {
+   "loa": 2.3,
+   "beam": 1.13,
+   "mast_top_z": 2.3,
+   "deck_z_mid": 0.33,
+   "sail_area": 3.3
+  }
+ },
+ "cadet": {
+  "parts": {
+   "Hull": {
+    "pivot": [0, 0, 0],
+    "note": "boat origin"
+   },
+   "Mast": {
+    "pivot": [0.62, 0, -0.1],
+    "axis": [0, 0, 1],
+    "note": "foot of the mast in its step; the mast rotates about its own axis (luch) / is fixed"
+   },
+   "Boom": {
+    "pivot": [0.62, 0, 1.12],
+    "axis": [0, 0, 1],
+    "note": "gooseneck ON THE MAST AXIS; the boom lies along -X; yaw = sheeting angle (+ to port)"
+   },
+   "Main": {
+    "pivot": [0.62, 0, 1.12],
+    "axis": [0, 0, 1],
+    "note": "same pivot as the boom: rotate the sail and the boom together"
+   },
+   "Rudder": {
+    "pivot": [-1.6400000000000001, 0, 0.0],
+    "axis": [0, 0, 1],
+    "note": "on the pintle axis at the waterline; yaw = rudder angle. Blender +yaw (right-handed about +Z) swings the blade's trailing edge to starboard and the tiller to port: the bow turns to starboard. Unreal yaw = -(Blender yaw)."
+   },
+   "Tiller": {
+    "pivot": [-1.6400000000000001, 0, 0.4],
+    "axis": [0, 0, 1],
+    "note": "child of the rudder head; tiller along +X; carries the extension joint at its tip"
+   },
+   "Ext": {
+    "pivot": [-0.69, 0, 0.42000000000000004],
+    "note": "tiller extension universal joint at the tiller's tip; along +X at rest, swings freely"
+   },
+   "Board": {
+    "pivot": [0.3, 0, -0.1],
+    "axis": [0, 1, 0],
+    "note": "centreboard pivot bolt; rotates about +Y (pitch): 0 = down, ~ -80 deg = up into the case"
+   },
+   "Jib": {
+    "pivot": [1.52, 0, 0.5],
+    "axis": [-0.2732, 0, 0.962],
+    "note": "jib tack; the jib swings about the FORESTAY axis (given), sheeted to either side"
+   }
+  },
+  "sockets": {
+   "helm_port": {
+    "pos": [-0.9, 0.56, 0.46],
+    "ue_cm": [-90.0, -56.0, 46.0],
+    "facing": -75,
+    "feet": [-0.85, 0.15, -0.06],
+    "feet_ue_cm": [-85.0, -15.0, -6.0],
+    "note": "sitting on the port side deck, facing inboard and forward"
+   },
+   "helm_stbd": {
+    "pos": [-0.9, -0.56, 0.46],
+    "ue_cm": [-90.0, 56.0, 46.0],
+    "facing": 75,
+    "feet": [-0.85, -0.15, -0.06],
+    "feet_ue_cm": [-85.0, 15.0, -6.0],
+    "note": "sitting on the stbd side deck, facing inboard and forward"
+   },
+   "hike_port": {
+    "pos": [-0.85, 0.62, 0.46],
+    "ue_cm": [-85.0, -62.0, 46.0],
+    "facing": -75,
+    "feet": [-0.95, 0.3, -0.04],
+    "feet_ue_cm": [-95.0, -30.0, -4.0],
+    "note": "sitting ON the gunwale, thighs on the side deck, torso leaning out to port, feet hooked under the hiking strap"
+   },
+   "hike_stbd": {
+    "pos": [-0.85, -0.62, 0.46],
+    "ue_cm": [-85.0, 62.0, 46.0],
+    "facing": 75,
+    "feet": [-0.95, -0.3, -0.04],
+    "feet_ue_cm": [-95.0, 30.0, -4.0],
+    "note": "sitting ON the gunwale, thighs on the side deck, torso leaning out to stbd, feet hooked under the hiking strap"
+   },
+   "crew_port": {
+    "pos": [-0.15, 0.55, 0.48],
+    "ue_cm": [-15.0, -55.0, 48.0],
+    "facing": -75,
+    "feet": [-0.05, 0.12, -0.06],
+    "feet_ue_cm": [-5.0, -12.0, -6.0],
+    "note": "sitting on the port side deck, facing inboard and forward"
+   },
+   "crew_stbd": {
+    "pos": [-0.15, -0.55, 0.48],
+    "ue_cm": [-15.0, 55.0, 48.0],
+    "facing": 75,
+    "feet": [-0.05, -0.12, -0.06],
+    "feet_ue_cm": [-5.0, 12.0, -6.0],
+    "note": "sitting on the stbd side deck, facing inboard and forward"
+   },
+   "crew_hike_port": {
+    "pos": [-0.12, 0.62, 0.48],
+    "ue_cm": [-12.0, -62.0, 48.0],
+    "facing": -75,
+    "feet": [-0.1, 0.3, -0.04],
+    "feet_ue_cm": [-10.0, -30.0, -4.0],
+    "note": "sitting ON the gunwale, thighs on the side deck, torso leaning out to port, feet hooked under the hiking strap"
+   },
+   "crew_hike_stbd": {
+    "pos": [-0.12, -0.62, 0.48],
+    "ue_cm": [-12.0, 62.0, 48.0],
+    "facing": 75,
+    "feet": [-0.1, -0.3, -0.04],
+    "feet_ue_cm": [-10.0, 30.0, -4.0],
+    "note": "sitting ON the gunwale, thighs on the side deck, torso leaning out to stbd, feet hooked under the hiking strap"
+   },
+   "crew_low_port": {
+    "pos": [-0.2, 0.05, 0.12],
+    "ue_cm": [-20.0, -5.0, 12.0],
+    "facing": 0,
+    "feet": [0.2, 0.0, -0.06],
+    "feet_ue_cm": [20.0, -0.0, -6.0],
+    "note": "light airs: crouched on the floor on the centreline"
+   },
+   "strap": {
+    "from": [-1.2, 0.3, -0.06],
+    "to": [-0.1, 0.3, -0.06],
+    "note": "the strap line (feet go under it, toes up, on the hiking side of it)"
+   },
+   "strap_stbd": {
+    "from": [-1.2, -0.3, -0.06],
+    "to": [-0.1, -0.3, -0.06]
+   },
+   "mainsheet_block": {
+    "pos": [-0.55, 0.0, -0.02],
+    "ue_cm": [-55.0, -0.0, -2.0],
+    "note": "the ratchet block the sheet comes up from (fixed on the hull)"
+   },
+   "hand_mainsheet": {
+    "pos": [-0.55, 0.0, 0.43],
+    "ue_cm": [-55.0, -0.0, 43.0],
+    "note": "front hand holding the sheet 45 cm above the ratchet block (neutral); slide along the line block -> hand toward the helm's shoulder when trimming"
+   },
+   "hand_tiller_ext": {
+    "frame": "Ext",
+    "pos": [0.79, 0, 0],
+    "note": "aft hand: dagger grip on the extension 6 cm from its end (Ext frame)"
+   },
+   "hand_tiller": {
+    "frame": "Tiller",
+    "pos": [0.83, 0, 0.02],
+    "note": "a hand on the tiller itself (light airs, the cadet's helm)"
+   },
+   "boom_end": {
+    "frame": "Boom",
+    "pos": [-2.15, 0, 0]
+   },
+   "boom_block": {
+    "frame": "Boom",
+    "pos": [-1.1, 0, -0.06],
+    "note": "where the mainsheet leaves the boom (Boom frame)"
+   },
+   "hand_jibsheet": {
+    "pos": [-0.25, 0.3, 0.4],
+    "ue_cm": [-25.0, -30.0, 40.0],
+    "note": "crew's hand on the leeward jib sheet (port value; mirror y)"
+   },
+   "painter": {
+    "pos": [1.56, 0, 0.468],
+    "note": "bow eye where the painter is made fast / the trolley winch strap hooks"
+   },
+   "trolley": {
+    "pos": [0, 0, -0.12],
+    "note": "lowest point of the keel: the hull rests on its trolley cradle this far below the waterline"
+   }
+  },
+  "dims": {
+   "loa": 3.22,
+   "beam": 1.27,
+   "mast_top_z": 5.25,
+   "deck_z_mid": 0.36,
+   "sail_area": 5.2
+  }
+ }
+}

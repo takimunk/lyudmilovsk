@@ -1,0 +1,2200 @@
+{
+ "_doc": "Every sailing-school mesh (blender/sailing/build_all.py): kit glb, triangles, bounds (Blender metres: Unreal X = x, Y = -y, Z = z), material slots, collision ('none' | 'box' with collision_boxes in the mesh frame, rot_z_deg about +Z | 'exact'), lod_of (goes into LOD1 of that mesh). lint = what the mesh check found (empty = clean).",
+ "meshes": [
+  {
+   "asset": "SM_Sail_Cadet_Board",
+   "kit": "sailing_boats",
+   "tris": 240,
+   "bounds": [
+    [-0.3, -0.03, -0.95],
+    [0.16, 0.03, 0.05]
+   ],
+   "slots": [
+    "SL_FoilWood",
+    "SL_Steel"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Board_LOD1",
+   "kit": "sailing_boats",
+   "tris": 72,
+   "bounds": [
+    [-0.3, -0.03, -0.95],
+    [0.16, 0.03, 0.05]
+   ],
+   "slots": [
+    "SL_FoilWood",
+    "SL_Steel"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Cadet_Board"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Boom",
+   "kit": "sailing_boats",
+   "tris": 320,
+   "bounds": [
+    [-2.155, -0.03, -0.594],
+    [-0.024, 0.03, 0.034]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel",
+    "SL_Rope"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Boom_LOD1",
+   "kit": "sailing_boats",
+   "tris": 60,
+   "bounds": [
+    [-2.155, -0.03, -0.594],
+    [-0.024, 0.03, 0.03]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Rope"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Cadet_Boom"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Ext",
+   "kit": "sailing_boats",
+   "tris": 140,
+   "bounds": [
+    [0.0, -0.019, -0.02],
+    [0.85, 0.019, 0.02]
+   ],
+   "slots": [
+    "SL_Black",
+    "SL_Alu"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Ext_LOD1",
+   "kit": "sailing_boats",
+   "tris": 65,
+   "bounds": [
+    [0.0, -0.019, -0.02],
+    [0.85, 0.019, 0.016]
+   ],
+   "slots": [
+    "SL_Black",
+    "SL_Alu"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Cadet_Ext"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Far",
+   "kit": "sailing_boats",
+   "tris": 108,
+   "bounds": [
+    [-1.9, -0.617, -0.8],
+    [1.61, 0.617, 5.25]
+   ],
+   "slots": [
+    "SL_Hull",
+    "SL_HullDeck",
+    "SL_Alu",
+    "SL_Sail",
+    "SL_White",
+    "SL_FoilWood"
+   ],
+   "collision": "none",
+   "note": "whole boat, far fleet"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Hull",
+   "kit": "sailing_boats",
+   "tris": 2842,
+   "bounds": [
+    [-1.645, -0.661, -0.12],
+    [1.61, 0.661, 0.524]
+   ],
+   "slots": [
+    "SL_Hull",
+    "SL_Wood",
+    "SL_Rubber",
+    "SL_WoodRaw",
+    "SL_Black",
+    "SL_Steel",
+    "SL_Strap",
+    "SL_Rope",
+    "SL_Yellow"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Hull_LOD1",
+   "kit": "sailing_boats",
+   "tris": 1492,
+   "bounds": [
+    [-1.645, -0.657, -0.12],
+    [1.61, 0.657, 0.5]
+   ],
+   "slots": [
+    "SL_Hull",
+    "SL_Wood",
+    "SL_Rubber",
+    "SL_WoodRaw",
+    "SL_Black",
+    "SL_Steel",
+    "SL_Strap"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Cadet_Hull"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Jib",
+   "kit": "sailing_boats",
+   "tris": 572,
+   "bounds": [
+    [-1.005, -0.001, 0.0],
+    [0.0, 0.001, 3.18]
+   ],
+   "slots": [
+    "SL_Sail"
+   ],
+   "collision": "none",
+   "sail_picture": "sail_cadet_jib.png",
+   "sail_area_m2": 1.47
+  },
+  {
+   "asset": "SM_Sail_Cadet_Jib_LOD1",
+   "kit": "sailing_boats",
+   "tris": 156,
+   "bounds": [
+    [-1.005, -0.001, 0.0],
+    [0.0, 0.001, 3.18]
+   ],
+   "slots": [
+    "SL_Sail"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Cadet_Jib"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Main",
+   "kit": "sailing_boats",
+   "tris": 1192,
+   "bounds": [
+    [-1.9, -0.001, -0.0],
+    [-0.035, 0.001, 3.83]
+   ],
+   "slots": [
+    "SL_Sail"
+   ],
+   "collision": "none",
+   "sail_picture": "sail_cadet.png",
+   "number_boxes_uv": {
+    "num_stbd": [0.067, 0.5961, 0.2873, 0.6551],
+    "num_port": [0.1133, 0.4786, 0.3336, 0.5377]
+   },
+   "sail_area_m2": 4.23
+  },
+  {
+   "asset": "SM_Sail_Cadet_Main_LOD1",
+   "kit": "sailing_boats",
+   "tris": 332,
+   "bounds": [
+    [-1.9, -0.001, -0.0],
+    [-0.035, 0.001, 3.83]
+   ],
+   "slots": [
+    "SL_Sail"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Cadet_Main"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Mast",
+   "kit": "sailing_boats",
+   "tris": 436,
+   "bounds": [
+    [-0.202, -0.602, 0.0],
+    [0.962, 0.602, 5.362]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel",
+    "SL_RopeBlue",
+    "SL_RopeRed"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Mast_LOD1",
+   "kit": "sailing_boats",
+   "tris": 284,
+   "bounds": [
+    [-0.202, -0.602, 0.0],
+    [0.962, 0.602, 5.362]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel",
+    "SL_RopeBlue",
+    "SL_RopeRed"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Cadet_Mast"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Rudder",
+   "kit": "sailing_boats",
+   "tris": 316,
+   "bounds": [
+    [-0.311, -0.032, -0.8],
+    [0.025, 0.032, 0.43]
+   ],
+   "slots": [
+    "SL_FoilWood",
+    "SL_Black",
+    "SL_Steel"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Rudder_LOD1",
+   "kit": "sailing_boats",
+   "tris": 112,
+   "bounds": [
+    [-0.312, -0.032, -0.8],
+    [0.025, 0.032, 0.43]
+   ],
+   "slots": [
+    "SL_FoilWood",
+    "SL_Black",
+    "SL_Steel"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Cadet_Rudder"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Tiller",
+   "kit": "sailing_boats",
+   "tris": 24,
+   "bounds": [
+    [-0.15, -0.018, -0.022],
+    [0.95, 0.018, 0.022]
+   ],
+   "slots": [
+    "SL_Wood",
+    "SL_Black"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Cadet_Tiller_LOD1",
+   "kit": "sailing_boats",
+   "tris": 24,
+   "bounds": [
+    [-0.15, -0.018, -0.022],
+    [0.95, 0.018, 0.022]
+   ],
+   "slots": [
+    "SL_Wood",
+    "SL_Black"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Cadet_Tiller"
+  },
+  {
+   "asset": "SM_Sail_Luch_Board",
+   "kit": "sailing_boats",
+   "tris": 252,
+   "bounds": [
+    [-0.17, -0.02, -0.88],
+    [0.17, 0.02, 0.486]
+   ],
+   "slots": [
+    "SL_Foil",
+    "SL_Strap",
+    "SL_Black"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Luch_Board_LOD1",
+   "kit": "sailing_boats",
+   "tris": 84,
+   "bounds": [
+    [-0.17, -0.02, -0.88],
+    [0.17, 0.02, 0.486]
+   ],
+   "slots": [
+    "SL_Foil",
+    "SL_Strap",
+    "SL_Black"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Luch_Board"
+  },
+  {
+   "asset": "SM_Sail_Luch_Boom",
+   "kit": "sailing_boats",
+   "tris": 320,
+   "bounds": [
+    [-2.745, -0.032, -0.684],
+    [-0.027, 0.032, 0.036]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel",
+    "SL_Rope"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Luch_Boom_LOD1",
+   "kit": "sailing_boats",
+   "tris": 60,
+   "bounds": [
+    [-2.745, -0.032, -0.684],
+    [-0.027, 0.032, 0.032]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Rope"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Luch_Boom"
+  },
+  {
+   "asset": "SM_Sail_Luch_Ext",
+   "kit": "sailing_boats",
+   "tris": 140,
+   "bounds": [
+    [0.0, -0.019, -0.02],
+    [1.0, 0.019, 0.02]
+   ],
+   "slots": [
+    "SL_Black",
+    "SL_Alu"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Luch_Ext_LOD1",
+   "kit": "sailing_boats",
+   "tris": 65,
+   "bounds": [
+    [0.0, -0.019, -0.02],
+    [1.0, 0.019, 0.016]
+   ],
+   "slots": [
+    "SL_Black",
+    "SL_Alu"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Luch_Ext"
+  },
+  {
+   "asset": "SM_Sail_Luch_Far",
+   "kit": "sailing_boats",
+   "tris": 100,
+   "bounds": [
+    [-2.415, -0.674, -0.92],
+    [2.115, 0.674, 6.33]
+   ],
+   "slots": [
+    "SL_Hull",
+    "SL_HullDeck",
+    "SL_Alu",
+    "SL_Sail",
+    "SL_Foil"
+   ],
+   "collision": "none",
+   "note": "whole boat, far fleet"
+  },
+  {
+   "asset": "SM_Sail_Luch_Hull",
+   "kit": "sailing_boats",
+   "tris": 2780,
+   "bounds": [
+    [-2.15, -0.685, -0.13],
+    [2.115, 0.685, 0.42]
+   ],
+   "slots": [
+    "SL_Hull",
+    "SL_HullDeck",
+    "SL_Black",
+    "SL_Steel",
+    "SL_Strap",
+    "SL_Rope"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Luch_Hull_LOD1",
+   "kit": "sailing_boats",
+   "tris": 1306,
+   "bounds": [
+    [-2.15, -0.676, -0.13],
+    [2.115, 0.676, 0.42]
+   ],
+   "slots": [
+    "SL_Hull",
+    "SL_HullDeck",
+    "SL_Black",
+    "SL_Steel",
+    "SL_Strap",
+    "SL_Rope"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Luch_Hull"
+  },
+  {
+   "asset": "SM_Sail_Luch_Main",
+   "kit": "sailing_boats",
+   "tris": 1648,
+   "bounds": [
+    [-2.52, -0.034, 0.01],
+    [0.036, 0.034, 4.8]
+   ],
+   "slots": [
+    "SL_Sail"
+   ],
+   "collision": "none",
+   "sail_picture": "sail_luch.png",
+   "number_boxes_uv": {
+    "num_stbd": [0.0696, 0.6328, 0.2609, 0.6871],
+    "num_port": [0.1087, 0.5347, 0.3, 0.5891]
+   },
+   "sail_area_m2": 7.16
+  },
+  {
+   "asset": "SM_Sail_Luch_Main_LOD1",
+   "kit": "sailing_boats",
+   "tris": 472,
+   "bounds": [
+    [-2.52, -0.031, 0.01],
+    [0.036, 0.031, 4.8]
+   ],
+   "slots": [
+    "SL_Sail"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Luch_Main"
+  },
+  {
+   "asset": "SM_Sail_Luch_Mast",
+   "kit": "sailing_boats",
+   "tris": 404,
+   "bounds": [
+    [-0.057, -0.04, 0.0],
+    [0.053, 0.04, 6.392]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Luch_Mast_LOD1",
+   "kit": "sailing_boats",
+   "tris": 220,
+   "bounds": [
+    [-0.057, -0.04, 0.0],
+    [0.053, 0.04, 6.392]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Luch_Mast"
+  },
+  {
+   "asset": "SM_Sail_Luch_Rudder",
+   "kit": "sailing_boats",
+   "tris": 316,
+   "bounds": [
+    [-0.311, -0.032, -0.92],
+    [0.025, 0.032, 0.41]
+   ],
+   "slots": [
+    "SL_Foil",
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Luch_Rudder_LOD1",
+   "kit": "sailing_boats",
+   "tris": 112,
+   "bounds": [
+    [-0.312, -0.032, -0.92],
+    [0.025, 0.032, 0.41]
+   ],
+   "slots": [
+    "SL_Foil",
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Luch_Rudder"
+  },
+  {
+   "asset": "SM_Sail_Luch_Tiller",
+   "kit": "sailing_boats",
+   "tris": 24,
+   "bounds": [
+    [-0.15, -0.018, -0.022],
+    [1.02, 0.018, 0.022]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Luch_Tiller_LOD1",
+   "kit": "sailing_boats",
+   "tris": 24,
+   "bounds": [
+    [-0.15, -0.018, -0.022],
+    [1.02, 0.018, 0.022]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Luch_Tiller"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Board",
+   "kit": "sailing_boats",
+   "tris": 252,
+   "bounds": [
+    [-0.15, -0.02, -0.58],
+    [0.15, 0.02, 0.466]
+   ],
+   "slots": [
+    "SL_FoilWood",
+    "SL_Strap",
+    "SL_Black"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Board_LOD1",
+   "kit": "sailing_boats",
+   "tris": 84,
+   "bounds": [
+    [-0.15, -0.02, -0.58],
+    [0.15, 0.02, 0.466]
+   ],
+   "slots": [
+    "SL_FoilWood",
+    "SL_Strap",
+    "SL_Black"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Optimist_Board"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Boom",
+   "kit": "sailing_boats",
+   "tris": 196,
+   "bounds": [
+    [-2.025, -0.026, -0.085],
+    [-0.018, 0.026, 0.03]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel",
+    "SL_Rope"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Boom_LOD1",
+   "kit": "sailing_boats",
+   "tris": 48,
+   "bounds": [
+    [-2.025, -0.026, -0.026],
+    [-0.018, 0.026, 0.026]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Optimist_Boom"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Ext",
+   "kit": "sailing_boats",
+   "tris": 140,
+   "bounds": [
+    [0.0, -0.019, -0.02],
+    [0.75, 0.019, 0.02]
+   ],
+   "slots": [
+    "SL_Black",
+    "SL_Alu"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Ext_LOD1",
+   "kit": "sailing_boats",
+   "tris": 65,
+   "bounds": [
+    [0.0, -0.019, -0.02],
+    [0.75, 0.019, 0.016]
+   ],
+   "slots": [
+    "SL_Black",
+    "SL_Alu"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Optimist_Ext"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Far",
+   "kit": "sailing_boats",
+   "tris": 100,
+   "bounds": [
+    [-1.42, -0.551, -0.62],
+    [1.15, 0.551, 2.62]
+   ],
+   "slots": [
+    "SL_Hull",
+    "SL_HullDeck",
+    "SL_Alu",
+    "SL_Sail",
+    "SL_FoilWood"
+   ],
+   "collision": "none",
+   "note": "whole boat, far fleet"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Hull",
+   "kit": "sailing_boats",
+   "tris": 2654,
+   "bounds": [
+    [-1.185, -0.593, -0.09],
+    [1.15, 0.593, 0.474]
+   ],
+   "slots": [
+    "SL_Hull",
+    "SL_Wood",
+    "SL_Rubber",
+    "SL_WoodRaw",
+    "SL_Black",
+    "SL_Steel",
+    "SL_Strap",
+    "SL_Rope",
+    "SL_Yellow",
+    "SL_Buoyancy"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Hull_LOD1",
+   "kit": "sailing_boats",
+   "tris": 1184,
+   "bounds": [
+    [-1.185, -0.592, -0.09],
+    [1.15, 0.592, 0.42]
+   ],
+   "slots": [
+    "SL_Hull",
+    "SL_Wood",
+    "SL_Rubber",
+    "SL_WoodRaw",
+    "SL_Black",
+    "SL_Steel",
+    "SL_Strap",
+    "SL_Buoyancy"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Optimist_Hull"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Main",
+   "kit": "sailing_boats",
+   "tris": 776,
+   "bounds": [
+    [-1.98, -0.001, 0.0],
+    [-0.029, 0.001, 1.96]
+   ],
+   "slots": [
+    "SL_Sail"
+   ],
+   "collision": "none",
+   "sail_picture": "sail_optimist.png",
+   "number_boxes_uv": {
+    "num_stbd": [0.3492, 0.418, 0.4905, 0.4948],
+    "num_port": [0.3617, 0.2718, 0.503, 0.3486]
+   },
+   "sail_area_m2": 3.31
+  },
+  {
+   "asset": "SM_Sail_Optimist_Main_LOD1",
+   "kit": "sailing_boats",
+   "tris": 220,
+   "bounds": [
+    [-1.98, -0.001, 0.0],
+    [-0.029, 0.001, 1.96]
+   ],
+   "slots": [
+    "SL_Sail"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Optimist_Main"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Mast",
+   "kit": "sailing_boats",
+   "tris": 364,
+   "bounds": [
+    [-0.047, -0.032, 0.0],
+    [0.032, 0.032, 2.382]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel",
+    "SL_RopeRed"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Mast_LOD1",
+   "kit": "sailing_boats",
+   "tris": 212,
+   "bounds": [
+    [-0.047, -0.032, 0.0],
+    [0.032, 0.032, 2.382]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black",
+    "SL_Steel",
+    "SL_RopeRed"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Optimist_Mast"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Rudder",
+   "kit": "sailing_boats",
+   "tris": 316,
+   "bounds": [
+    [-0.291, -0.032, -0.62],
+    [0.025, 0.032, 0.41]
+   ],
+   "slots": [
+    "SL_FoilWood",
+    "SL_Black",
+    "SL_Steel"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Rudder_LOD1",
+   "kit": "sailing_boats",
+   "tris": 112,
+   "bounds": [
+    [-0.292, -0.032, -0.62],
+    [0.025, 0.032, 0.41]
+   ],
+   "slots": [
+    "SL_FoilWood",
+    "SL_Black",
+    "SL_Steel"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Optimist_Rudder"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Sprit",
+   "kit": "sailing_boats",
+   "tris": 48,
+   "bounds": [
+    [-1.615, 0.005, -0.012],
+    [0.042, 0.055, 1.595]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Sprit_LOD1",
+   "kit": "sailing_boats",
+   "tris": 28,
+   "bounds": [
+    [-1.615, 0.005, -0.012],
+    [0.042, 0.055, 1.595]
+   ],
+   "slots": [
+    "SL_Alu",
+    "SL_Black"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Optimist_Sprit"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Tiller",
+   "kit": "sailing_boats",
+   "tris": 24,
+   "bounds": [
+    [-0.15, -0.018, -0.022],
+    [0.78, 0.018, 0.022]
+   ],
+   "slots": [
+    "SL_Wood",
+    "SL_Black"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Optimist_Tiller_LOD1",
+   "kit": "sailing_boats",
+   "tris": 24,
+   "bounds": [
+    [-0.15, -0.018, -0.022],
+    [0.78, 0.018, 0.022]
+   ],
+   "slots": [
+    "SL_Wood",
+    "SL_Black"
+   ],
+   "collision": "none",
+   "lod_of": "SM_Sail_Optimist_Tiller"
+  },
+  {
+   "asset": "SM_Sail_AnchorBlock",
+   "kit": "sailing_gear",
+   "tris": 138,
+   "bounds": [
+    [-0.3, -0.3, 0.0],
+    [0.3, 0.3, 0.503]
+   ],
+   "slots": [
+    "CT_ConcreteDark",
+    "SL_Iron"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Block",
+   "kit": "sailing_gear",
+   "tris": 56,
+   "bounds": [
+    [-0.03, -0.012, -0.079],
+    [0.03, 0.012, -0.002]
+   ],
+   "slots": [
+    "SL_Black",
+    "SL_Steel"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Buoy",
+   "kit": "sailing_gear",
+   "tris": 372,
+   "bounds": [
+    [-0.22, -0.22, -0.17],
+    [0.22, 0.22, 0.346]
+   ],
+   "slots": [
+    "SL_Yellow",
+    "SL_Steel"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Cover_Cadet",
+   "kit": "sailing_gear",
+   "tris": 660,
+   "bounds": [
+    [-1.66, -0.674, -0.137],
+    [1.66, 0.674, 0.626]
+   ],
+   "slots": [
+    "SL_Canvas",
+    "SL_Rope"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Cover_Luch",
+   "kit": "sailing_gear",
+   "tris": 804,
+   "bounds": [
+    [-2.165, -0.721, -0.147],
+    [2.165, 0.721, 0.522]
+   ],
+   "slots": [
+    "SL_CanvasBlue",
+    "SL_Rope"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Cover_Optimist",
+   "kit": "sailing_gear",
+   "tris": 660,
+   "bounds": [
+    [-1.2, -0.605, -0.107],
+    [1.2, 0.605, 0.577]
+   ],
+   "slots": [
+    "SL_Canvas",
+    "SL_Rope"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Launch",
+   "kit": "sailing_gear",
+   "tris": 2472,
+   "bounds": [
+    [-2.72, -0.878, -0.219],
+    [2.3, 0.878, 1.82]
+   ],
+   "slots": [
+    "SL_AluDull",
+    "SL_Rubber",
+    "SL_White",
+    "SL_Glass",
+    "SL_WoodPaint",
+    "SL_Black",
+    "SL_WoodRaw",
+    "SL_Red",
+    "SL_Yellow",
+    "SL_Orange"
+   ],
+   "collision": "none",
+   "note": "boat: no collision (the engine floats it)"
+  },
+  {
+   "asset": "SM_Sail_Launch_Motor",
+   "kit": "sailing_gear",
+   "tris": 204,
+   "bounds": [
+    [-0.33, -0.175, -0.645],
+    [0.585, 0.175, 0.47]
+   ],
+   "slots": [
+    "SL_Engine",
+    "SL_White",
+    "SL_Steel",
+    "SL_Black"
+   ],
+   "collision": "none",
+   "pivot_on_launch": [-2.32, 0.0, 0.43],
+   "note": "steering axis at the transom clamp; yaw = steer, pitch = tilt"
+  },
+  {
+   "asset": "SM_Sail_MOB",
+   "kit": "sailing_gear",
+   "tris": 738,
+   "bounds": [
+    [-0.37, -0.37, -0.6],
+    [0.85, 0.37, 1.6]
+   ],
+   "slots": [
+    "SL_Orange",
+    "SL_White",
+    "SL_Yellow"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Mark",
+   "kit": "sailing_gear",
+   "tris": 532,
+   "bounds": [
+    [-0.456, -0.456, -0.43],
+    [0.456, 0.456, 0.88]
+   ],
+   "slots": [
+    "SL_Orange",
+    "SL_White",
+    "SL_Steel"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Pin",
+   "kit": "sailing_gear",
+   "tris": 126,
+   "bounds": [
+    [-0.26, -0.26, -0.2],
+    [0.55, 0.26, 1.9]
+   ],
+   "slots": [
+    "SL_Orange",
+    "SL_White"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Rope",
+   "kit": "sailing_gear",
+   "tris": 20,
+   "bounds": [
+    [0.0, -0.005, -0.004],
+    [1.0, 0.005, 0.004]
+   ],
+   "slots": [
+    "SL_Rope"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_SailBag",
+   "kit": "sailing_gear",
+   "tris": 700,
+   "bounds": [
+    [-1.2, -0.126, -0.003],
+    [1.2, 0.126, 0.243]
+   ],
+   "slots": [
+    "SL_CanvasBlue",
+    "SL_Strap"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.12],
+     "size": [2.4, 0.24, 0.24],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_SparsRack",
+   "kit": "sailing_gear",
+   "tris": 300,
+   "bounds": [
+    [-1.85, -0.4, 0.0],
+    [1.85, 0.4, 2.0]
+   ],
+   "slots": [
+    "SL_WoodPaint"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, -0.15, 1.0],
+     "size": [3.7, 0.5, 2.0],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Trolley_Cadet",
+   "kit": "sailing_gear",
+   "tris": 984,
+   "bounds": [
+    [-1.177, -0.706, 0.006],
+    [1.992, 0.706, 0.848]
+   ],
+   "slots": [
+    "SL_Galv",
+    "SL_Rubber",
+    "SL_White",
+    "SL_Black",
+    "SL_Canvas"
+   ],
+   "collision": "box",
+   "boat_origin": [0.0, 0.0, 0.54],
+   "note": "the boat rests with its origin at boat_origin"
+  },
+  {
+   "asset": "SM_Sail_Trolley_Luch",
+   "kit": "sailing_gear",
+   "tris": 1032,
+   "bounds": [
+    [-1.541, -0.756, 0.006],
+    [2.295, 0.756, 0.776]
+   ],
+   "slots": [
+    "SL_Galv",
+    "SL_Rubber",
+    "SL_White",
+    "SL_Black",
+    "SL_Canvas"
+   ],
+   "collision": "box",
+   "boat_origin": [0.0, 0.0, 0.55],
+   "note": "the boat rests with its origin at boat_origin"
+  },
+  {
+   "asset": "SM_Sail_Trolley_Optimist",
+   "kit": "sailing_gear",
+   "tris": 1020,
+   "bounds": [
+    [-0.846, -0.611, 0.005],
+    [1.716, 0.611, 0.776]
+   ],
+   "slots": [
+    "SL_Galv",
+    "SL_Rubber",
+    "SL_White",
+    "SL_Black",
+    "SL_Canvas"
+   ],
+   "collision": "box",
+   "boat_origin": [0.0, 0.0, 0.45],
+   "note": "the boat rests with its origin at boat_origin"
+  },
+  {
+   "asset": "SM_Sail_Boathouse",
+   "kit": "sailing_house",
+   "tris": 1778,
+   "bounds": [
+    [-8.63, -6.6, -0.85],
+    [8.63, 5.033, 5.871]
+   ],
+   "slots": [
+    "CT_ConcreteDark",
+    "CT_Floor",
+    "CT_Concrete",
+    "CT_Plaster",
+    "CT_Interior",
+    "CT_Frame",
+    "SLP_Atlas",
+    "CT_SteelWhite",
+    "SLP_Sign_Name",
+    "CT_Wood",
+    "CT_Roof",
+    "CT_Door",
+    "CT_Steel",
+    "CT_WoodLight",
+    "CT_Paving",
+    "SLP_Sign_Door"
+   ],
+   "collision": "exact"
+  },
+  {
+   "asset": "SM_Sail_Boathouse_DoorLeaf",
+   "kit": "sailing_house",
+   "tris": 132,
+   "bounds": [
+    [-0.825, -0.08, 0.0],
+    [0.825, 0.03, 3.1]
+   ],
+   "slots": [
+    "CT_Door",
+    "CT_Wood",
+    "CT_Steel"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 1.485],
+     "size": [1.65, 0.12, 2.97],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Boathouse_Glass",
+   "kit": "sailing_house",
+   "tris": 120,
+   "bounds": [
+    [-8.134, -4.384, 0.95],
+    [7.9, 4.384, 3.1]
+   ],
+   "slots": [
+    "SL_Glass"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Flag_class_cadet",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [0.0, -0.001, -0.66],
+    [0.9, 0.001, -0.0]
+   ],
+   "slots": [
+    "SLP_Flags"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Flag_class_luch",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [0.0, -0.001, -0.66],
+    [0.9, 0.001, -0.0]
+   ],
+   "slots": [
+    "SLP_Flags"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Flag_class_optimist",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [0.0, -0.001, -0.66],
+    [0.9, 0.001, -0.0]
+   ],
+   "slots": [
+    "SLP_Flags"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Flag_closed",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [0.0, -0.001, -0.66],
+    [0.9, 0.001, -0.0]
+   ],
+   "slots": [
+    "SLP_Flags"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Flag_prep",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [0.0, -0.001, -0.66],
+    [0.9, 0.001, -0.0]
+   ],
+   "slots": [
+    "SLP_Flags"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Flag_races",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [0.0, -0.001, -0.66],
+    [0.9, 0.001, -0.0]
+   ],
+   "slots": [
+    "SLP_Flags"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Flag_recall",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [0.0, -0.001, -0.66],
+    [0.9, 0.001, -0.0]
+   ],
+   "slots": [
+    "SLP_Flags"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Flag_sail_on",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [0.0, -0.001, -0.66],
+    [0.9, 0.001, -0.0]
+   ],
+   "slots": [
+    "SLP_Flags"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Flag_shore",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [0.0, -0.001, -0.66],
+    [0.9, 0.001, -0.0]
+   ],
+   "slots": [
+    "SLP_Flags"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Flag_storm",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [0.0, -0.001, -0.66],
+    [0.9, 0.001, -0.0]
+   ],
+   "slots": [
+    "SLP_Flags"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_LifeJacket_Worn",
+   "kit": "sailing_house",
+   "tris": 268,
+   "bounds": [
+    [-0.197, -0.164, -0.484],
+    [0.199, 0.164, -0.009]
+   ],
+   "slots": [
+    "SL_Buoyancy",
+    "SL_White",
+    "SL_Black"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_AnemometerDisplay",
+   "kit": "sailing_house",
+   "tris": 14,
+   "bounds": [
+    [-0.16, -0.081, -0.09],
+    [0.16, 0.0, 0.09]
+   ],
+   "slots": [
+    "SL_Dark",
+    "SLP_Atlas"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Bailer",
+   "kit": "sailing_house",
+   "tris": 72,
+   "bounds": [
+    [-0.075, -0.075, 0.0],
+    [0.103, 0.075, 0.1]
+   ],
+   "slots": [
+    "SL_Yellow"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Barometer",
+   "kit": "sailing_house",
+   "tris": 94,
+   "bounds": [
+    [-0.17, -0.041, -0.17],
+    [0.17, 0.04, 0.17]
+   ],
+   "slots": [
+    "SL_Brass",
+    "SLP_Atlas",
+    "CT_WoodLight"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Bench",
+   "kit": "sailing_house",
+   "tris": 48,
+   "bounds": [
+    [-0.9, -0.16, 0.0],
+    [0.9, 0.16, 0.46]
+   ],
+   "slots": [
+    "CT_WoodLight"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.23],
+     "size": [1.8, 0.32, 0.46],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_Blackboard",
+   "kit": "sailing_house",
+   "tris": 74,
+   "bounds": [
+    [-1.3, -0.12, 0.86],
+    [1.3, 0.04, 2.2]
+   ],
+   "slots": [
+    "SL_Dark",
+    "SLP_Atlas",
+    "SL_WoodRaw",
+    "SL_White"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, -0.04, 1.5],
+     "size": [2.6, 0.12, 1.4],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_Bollard",
+   "kit": "sailing_house",
+   "tris": 140,
+   "bounds": [
+    [-0.14, -0.136, 0.0],
+    [0.14, 0.136, 0.56]
+   ],
+   "slots": [
+    "SL_Iron"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.28],
+     "size": [0.28, 0.28, 0.56],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_Chair",
+   "kit": "sailing_house",
+   "tris": 96,
+   "bounds": [
+    [-0.21, -0.21, 0.0],
+    [0.21, 0.21, 0.88]
+   ],
+   "slots": [
+    "CT_WoodLight"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.44],
+     "size": [0.42, 0.42, 0.88],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_CoachDesk",
+   "kit": "sailing_house",
+   "tris": 136,
+   "bounds": [
+    [-0.7, -0.35, 0.0],
+    [0.7, 0.35, 0.79]
+   ],
+   "slots": [
+    "CT_WoodLight",
+    "SL_Brass",
+    "SL_Blue",
+    "SL_Steel"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.385],
+     "size": [1.4, 0.7, 0.77],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_Cup",
+   "kit": "sailing_house",
+   "tris": 336,
+   "bounds": [
+    [-0.14, -0.098, 0.0],
+    [0.14, 0.098, 0.33]
+   ],
+   "slots": [
+    "SL_Dark",
+    "SL_Brass"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Desk",
+   "kit": "sailing_house",
+   "tris": 144,
+   "bounds": [
+    [-0.6, -0.25, 0.0],
+    [0.6, 0.64, 0.8]
+   ],
+   "slots": [
+    "CT_WoodLight",
+    "SL_Iron"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0.2, 0.4],
+     "size": [1.2, 0.9, 0.8],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_FlagChart",
+   "kit": "sailing_house",
+   "tris": 14,
+   "bounds": [
+    [-0.4, -0.002, 1.15],
+    [0.4, 0.01, 1.95]
+   ],
+   "slots": [
+    "SL_WoodRaw",
+    "SLP_Atlas"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_HoseStand",
+   "kit": "sailing_house",
+   "tris": 632,
+   "bounds": [
+    [-0.25, -0.25, -0.2],
+    [0.25, 0.25, 1.02]
+   ],
+   "slots": [
+    "SL_Galv",
+    "CT_Concrete",
+    "SL_Brass",
+    "SL_Red",
+    "SL_Green"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_HullFrame",
+   "kit": "sailing_house",
+   "tris": 1208,
+   "bounds": [
+    [-1.585, -0.64, -0.014],
+    [1.585, 0.64, 0.633]
+   ],
+   "slots": [
+    "SL_WoodRaw",
+    "SL_Wood",
+    "SL_FoilWood"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_JacketRail",
+   "kit": "sailing_house",
+   "tris": 1780,
+   "bounds": [
+    [-1.02, -0.287, 1.15],
+    [1.02, 0.067, 1.8]
+   ],
+   "slots": [
+    "SL_Galv",
+    "SL_Steel",
+    "SL_Buoyancy",
+    "SL_White",
+    "SL_Black"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, -0.12, 1.4],
+     "size": [2.1, 0.35, 0.8],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_KettleTable",
+   "kit": "sailing_house",
+   "tris": 648,
+   "bounds": [
+    [-0.35, -0.3, 0.0],
+    [0.35, 0.3, 1.285]
+   ],
+   "slots": [
+    "CT_WoodLight",
+    "SL_Brass",
+    "SL_White",
+    "SL_Glass"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.6],
+     "size": [0.7, 0.6, 1.2],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_KnotBoard",
+   "kit": "sailing_house",
+   "tris": 14,
+   "bounds": [
+    [-0.45, -0.002, 1.05],
+    [0.45, 0.03, 1.95]
+   ],
+   "slots": [
+    "SL_WoodRaw",
+    "SLP_Atlas"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Lamp",
+   "kit": "sailing_house",
+   "tris": 204,
+   "bounds": [
+    [-0.18, -0.175, -1.07],
+    [0.18, 0.175, 0.0]
+   ],
+   "slots": [
+    "SL_Dark",
+    "SL_Green",
+    "SL_Lamp"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_LifeJacket",
+   "kit": "sailing_house",
+   "tris": 268,
+   "bounds": [
+    [-0.184, -0.153, 0.0],
+    [0.185, 0.153, 0.44]
+   ],
+   "slots": [
+    "SL_Buoyancy",
+    "SL_White",
+    "SL_Black"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Lockers",
+   "kit": "sailing_house",
+   "tris": 252,
+   "bounds": [
+    [-0.8, -0.27, 0.0],
+    [0.8, 0.25, 1.85]
+   ],
+   "slots": [
+    "SL_Green",
+    "SL_Dark",
+    "SL_Steel"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.93],
+     "size": [1.6, 0.5, 1.85],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_MastBracket",
+   "kit": "sailing_house",
+   "tris": 60,
+   "bounds": [
+    [-0.03, -0.4, -0.25],
+    [0.03, 0.0, 0.25]
+   ],
+   "slots": [
+    "SL_Galv"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_NoticeBoard",
+   "kit": "sailing_house",
+   "tris": 50,
+   "bounds": [
+    [-0.7, -0.12, 0.0],
+    [0.7, 0.08, 2.1]
+   ],
+   "slots": [
+    "CT_Steel",
+    "CT_Wood",
+    "SLP_Notice"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 1.05],
+     "size": [1.4, 0.2, 2.1],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_OptiRack",
+   "kit": "sailing_house",
+   "tris": 240,
+   "bounds": [
+    [-0.96, -0.62, 0.0],
+    [0.96, 0.62, 2.28]
+   ],
+   "slots": [
+    "SL_WoodPaint",
+    "SL_Canvas"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 1.14],
+     "size": [2.0, 1.3, 2.28],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_OutdoorBench",
+   "kit": "sailing_house",
+   "tris": 60,
+   "bounds": [
+    [-1.0, -0.21, 0.0],
+    [1.0, 0.21, 0.45]
+   ],
+   "slots": [
+    "CT_Concrete",
+    "CT_Wood"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.225],
+     "size": [2.0, 0.45, 0.45],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_Paddle",
+   "kit": "sailing_house",
+   "tris": 72,
+   "bounds": [
+    [-0.11, -0.075, -0.03],
+    [1.61, 0.075, 0.03]
+   ],
+   "slots": [
+    "SL_WoodRaw",
+    "SL_Black"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_PaintTins",
+   "kit": "sailing_house",
+   "tris": 852,
+   "bounds": [
+    [-0.242, -0.12, 0.0],
+    [0.55, 0.302, 0.205]
+   ],
+   "slots": [
+    "SL_PaintTin",
+    "SL_Red",
+    "SL_Blue",
+    "SL_White",
+    "SL_Green",
+    "SL_Yellow",
+    "SL_WoodRaw"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Park",
+   "kit": "sailing_house",
+   "tris": 2974,
+   "bounds": [
+    [-0.03, -14.03, -0.15],
+    [15.03, 0.03, 1.6]
+   ],
+   "slots": [
+    "CT_Paving",
+    "SL_White",
+    "SL_Galv",
+    "SLP_Atlas"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [7.5, -7.0, -0.075],
+     "size": [15.0, 14.0, 0.15],
+     "rot_z_deg": 0.0
+    },
+    {
+     "center": [15.0, -8.8, 0.75],
+     "size": [0.08, 10.4, 1.5],
+     "rot_z_deg": 0.0
+    },
+    {
+     "center": [7.5, -14.0, 0.75],
+     "size": [15.0, 0.08, 1.5],
+     "rot_z_deg": 0.0
+    },
+    {
+     "center": [0.0, -7.0, 0.75],
+     "size": [0.08, 14.0, 1.5],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_Pennant",
+   "kit": "sailing_house",
+   "tris": 18,
+   "bounds": [
+    [-0.13, -0.004, 0.0],
+    [0.13, 0.005, 0.305]
+   ],
+   "slots": [
+    "SL_Brass",
+    "SLP_Atlas",
+    "SL_Red"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Photo0",
+   "kit": "sailing_house",
+   "tris": 14,
+   "bounds": [
+    [-0.2, -0.002, -0.15],
+    [0.2, 0.02, 0.15]
+   ],
+   "slots": [
+    "SL_Dark",
+    "SLP_Atlas"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Photo1",
+   "kit": "sailing_house",
+   "tris": 14,
+   "bounds": [
+    [-0.2, -0.002, -0.15],
+    [0.2, 0.02, 0.15]
+   ],
+   "slots": [
+    "SL_Dark",
+    "SLP_Atlas"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Photo2",
+   "kit": "sailing_house",
+   "tris": 14,
+   "bounds": [
+    [-0.2, -0.002, -0.15],
+    [0.2, 0.02, 0.15]
+   ],
+   "slots": [
+    "SL_Dark",
+    "SLP_Atlas"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Photo3",
+   "kit": "sailing_house",
+   "tris": 14,
+   "bounds": [
+    [-0.2, -0.002, -0.15],
+    [0.2, 0.02, 0.15]
+   ],
+   "slots": [
+    "SL_Dark",
+    "SLP_Atlas"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Radio",
+   "kit": "sailing_house",
+   "tris": 98,
+   "bounds": [
+    [-0.25, -0.15, 0.0],
+    [0.25, 0.12, 0.751]
+   ],
+   "slots": [
+    "CT_WoodLight",
+    "SLP_Atlas",
+    "SL_Dark",
+    "SL_Steel"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_SeaChart",
+   "kit": "sailing_house",
+   "tris": 14,
+   "bounds": [
+    [-0.7, -0.002, 1.25],
+    [0.7, 0.01, 1.95]
+   ],
+   "slots": [
+    "SL_Dark",
+    "SLP_Atlas"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Shelf",
+   "kit": "sailing_house",
+   "tris": 342,
+   "bounds": [
+    [-1.02, -0.24, 0.0],
+    [1.02, 0.24, 2.0]
+   ],
+   "slots": [
+    "SL_Galv",
+    "SL_WoodRaw",
+    "SL_White",
+    "SL_CanvasBlue",
+    "SL_Yellow"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 1.0],
+     "size": [2.0, 0.48, 2.0],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_ShipBell",
+   "kit": "sailing_house",
+   "tris": 172,
+   "bounds": [
+    [-0.09, -0.23, -0.1],
+    [0.09, 0.03, 0.35]
+   ],
+   "slots": [
+    "CT_WoodLight",
+    "SL_Brass",
+    "SL_Rope"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_SignalMast",
+   "kit": "sailing_house",
+   "tris": 256,
+   "bounds": [
+    [-0.45, -1.6, -0.3],
+    [0.45, 1.6, 10.13]
+   ],
+   "slots": [
+    "SL_White",
+    "CT_Concrete",
+    "SL_Rope",
+    "SL_Black"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 5.0],
+     "size": [0.25, 0.25, 10.0],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_SlipBoard",
+   "kit": "sailing_house",
+   "tris": 132,
+   "bounds": [
+    [-0.6, -1.8, 0.0],
+    [0.6, 1.8, 0.09]
+   ],
+   "slots": [
+    "SL_WoodRaw"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.045],
+     "size": [1.2, 3.6, 0.09],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_ToolBoard",
+   "kit": "sailing_house",
+   "tris": 222,
+   "bounds": [
+    [-0.6, -0.06, 0.85],
+    [0.6, 0.02, 2.05]
+   ],
+   "slots": [
+    "SL_WoodRaw",
+    "SLP_Atlas",
+    "SL_Iron",
+    "SL_RopeRed",
+    "SL_Rope"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Trestle",
+   "kit": "sailing_house",
+   "tris": 60,
+   "bounds": [
+    [-0.45, -0.328, -0.011],
+    [0.45, 0.328, 0.74]
+   ],
+   "slots": [
+    "SL_WoodRaw"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.37],
+     "size": [0.9, 0.7, 0.74],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_TrophyShelf",
+   "kit": "sailing_house",
+   "tris": 1860,
+   "bounds": [
+    [-0.92, -0.25, 0.95],
+    [0.92, 0.01, 2.305]
+   ],
+   "slots": [
+    "CT_WoodLight",
+    "SL_Steel",
+    "SL_Brass",
+    "SLP_Atlas",
+    "SL_Red"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, -0.12, 1.45],
+     "size": [1.8, 0.25, 1.0],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_WallClock",
+   "kit": "sailing_house",
+   "tris": 82,
+   "bounds": [
+    [-0.17, -0.051, -0.17],
+    [0.17, 0.05, 0.17]
+   ],
+   "slots": [
+    "SL_Dark",
+    "SLP_Atlas"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Winch",
+   "kit": "sailing_house",
+   "tris": 748,
+   "bounds": [
+    [-0.25, -0.25, -0.2],
+    [0.25, 0.32, 0.96]
+   ],
+   "slots": [
+    "CT_Concrete",
+    "SL_Galv",
+    "SL_Rope"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.45],
+     "size": [0.5, 0.5, 0.9],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Prop_WindsockPole",
+   "kit": "sailing_house",
+   "tris": 60,
+   "bounds": [
+    [-0.05, -0.05, 0.0],
+    [0.05, 0.05, 2.05]
+   ],
+   "slots": [
+    "SL_White",
+    "SL_Black"
+   ],
+   "collision": "none"
+  },
+  {
+   "asset": "SM_Sail_Prop_Workbench",
+   "kit": "sailing_house",
+   "tris": 188,
+   "bounds": [
+    [-1.0, -0.52, 0.0],
+    [1.0, 0.4, 0.99]
+   ],
+   "slots": [
+    "SL_WoodRaw",
+    "SL_Iron"
+   ],
+   "collision": "box",
+   "collision_boxes": [
+    {
+     "center": [0, 0, 0.45],
+     "size": [2.0, 0.8, 0.9],
+     "rot_z_deg": 0.0
+    }
+   ]
+  },
+  {
+   "asset": "SM_Sail_Windsock",
+   "kit": "sailing_house",
+   "tris": 376,
+   "bounds": [
+    [0.0, -0.208, -0.4],
+    [1.62, 0.208, 0.203]
+   ],
+   "slots": [
+    "SL_Steel",
+    "SL_Orange",
+    "SL_White"
+   ],
+   "collision": "none"
+  }
+ ]
+}
