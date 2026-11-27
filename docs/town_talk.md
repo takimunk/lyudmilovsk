@@ -1,8 +1,8 @@
 # What the townsfolk say
 
-The townsfolk (docs/town_life.md) can't be talked to with E: their bodies are tagged `NoTalk`, and conversations belong to
-the story's people (npc_dialogue.txt). But they talk on their own: a short line over the head of somebody near the
-player, in the game's language, picked by who they are and what they do.
+The townsfolk (docs/town_life.md) talk on their own: a short line over the head of somebody near the player, in the
+game's language, picked by who they are and what they do. And the player can stop any of them for a word with E
+(see "A talk" below). The long conversations of the story's people (npc_dialogue.txt) are a different thing.
 
 - **Greetings.** Somebody the player walks past (within 3.5 m, in view) greets him, once a day each and not everybody
   (about two in three): by the hour, their age (kids, teens, grannies), their job (the seller, the postwoman) and the
@@ -20,6 +20,58 @@ player, in the game's language, picked by who they are and what they do.
 
 216 sets, 618 lines in ru/en/ja (426 said alone, 55 exchanges; 9 sets and 24 lines are the North's people, tools/barks/lines/09_north.txt, said only with `lyud.Barks.Residents 1` for now). They are proposals until Dima approves them. They
 aren't voiced yet.
+
+## A talk
+
+E on a townsperson who is free for a word opens a short talk on the page the city's staff and the tea use.
+
+- **The prompt.** Within 1.9 m, looking at them: "E — поговорить: <name>". Nobody asleep, indoors, away or riding
+  is offered.
+- **Manners.** Somebody serving a customer at their counter says "not now" over their head. So does somebody late
+  for work or school, without stopping. A child under 12 who doesn't know him is shy: they answer once they have
+  greeted him on two days (a try counts as a day) or the bond is "acquainted". Behind a counter the counter's own E
+  comes first: the talk is offered only when nothing of the counter is in view.
+- **The page.** Their greeting (by the bond, how well they know him, the hour, the sky, the holiday). Then two to
+  four things to ask, picked for that person and that part of the day: their day (what they did in the last four
+  hours, before or after work, a day off), their work or school, the weather, the holiday on now, what the town says
+  of him (docs/town_rumours.md), what they like doing, somebody of their household, a friend, the town. A topic is
+  offered only when they have a line for it at that moment. Each is asked once.
+- **A question back.** About two talks in five they ask him something after an answer (six questions, two answers
+  each); the curious and the warm ask more often. They reply to what he chose.
+- **A gift** is one of the page's entries for somebody he knows (docs/friends.md); it used to be the prompt itself.
+- **Goodbye.** Esc: their goodbye, then E or Esc closes the page. They stand still and look at him while the talk
+  is up, then go on with their day.
+- **Names.** A line about a relative or a friend names them. Russian needs the name in the right case, so every
+  given name of the town has six forms (`townchat.fn.<name>.<nom|gen|dat|acc|ins|pre>`, made by
+  `tools/townchat/names_ru.py`); a line uses `{2}`..`{7}` for them. English and Japanese hold the plain name in all six.
+- **The bond.** The first thing heard in a talk gives 1 point, once a day; answering their question gives 1 more;
+  2 a day at most (docs/friends.md). The first talk with somebody is written in the diary.
+- **Variety.** The same person has the same talk through a third of a day and another one after. 164 sets, 323
+  lines of theirs in ru/en/ja; asked all at one moment in the test, 910 residents give 886
+  different talks.
+
+For quests: a talk reports `talk <resident key>` (`t_sokolov_ilya`), and `bring <item>@<resident key>` works with
+it (docs/quests.md). A quest may give a resident lines of its own: strings `line.<resident key>.<quest>.<stage>.<n>`
+in `Content/Localization/quests`, numbered from 1, shown before the greeting while the quest is on that stage.
+
+Nothing runs on a clock: the talk is built when E is pressed (about 20 µs in the test). While the page is up the
+game looks four times a second at whether they are still there.
+
+| What | Where |
+| --- | --- |
+| Who may be asked, the topics, engine-free | `Private/People/TownChat.{h,cpp}` (`LyudTownChat`) |
+| Their lines | `tools/barks/lines/18_townchat.txt`: sets with `on = tc_*`, picked like every other line |
+| His questions and answers, names, rules | `tools/townchat/content.py`, `names_ru.py` → `build_town_chat.py` → `Content/PeopleData/town_chat.json`, `Content/Localization/townchat/` |
+| The page, the prompt, the bond | `ULyudFriends` (`Private/People/LyudFriendsTalk.cpp`, `TickOffer` in `LyudFriends.cpp`) |
+| Picking a line for the page | `ULyudTownTalkSubsystem::ChatBuild`, `ChatLine` |
+| Standing still | `LyudPeople::FWorld::HoldWalk` |
+| Test | `tools/townchatsim/run.sh` (`talks [lang] [n]` prints talks, `who <key> [lang]` one person's) |
+
+Console: `lyud.Friends.Talk [key]` opens a talk with the nearest townsperson (or the key) whatever they are doing,
+`lyud.Friends.TalkReport` logs what the nearest one would say. Developer mode: "friends" → talk to the nearest,
+the report.
+
+The bodies stay tagged `NoTalk`: that tag only keeps them out of the story's dialogue director.
 
 ## Files
 
@@ -115,7 +167,18 @@ the promenade and the fair, a different sky every couple of hours and a festival
 about every 120 s: at least 75% have a line (95% now), at least 90% greet (100%), at least 30% of the pairs side by side
 find an exchange (40%), the restaurant's staff have a line at every moment, and at most 10% of the sets fit nobody.
 
+`tools/townchatsim/run.sh` runs the talk on the town: every key has words in three languages, every placeholder is
+filled, every resident with a household or a friend can name them, a day sampled every 20 minutes (at least 90% of
+the residents can be talked to at some point, two to four topics, no line opens more than 12% of an hour's talks),
+the bond's cap, old saves, and that a held walker stands and then walks on.
+
 ## Known gaps
+
+- **The talk's game side is not compiled yet** (`LyudFriendsTalk.cpp`, the changes in `LyudFriends.cpp`,
+  `TownTalk.cpp`, `PeopleSim.cpp`): written on a machine without Unreal. Build it and try it with the developer
+  action before merging.
+- In a talk they turn their head to him, not their body. The talk's lines aren't voiced.
+- A talk has no line about a quest unless the quest brings its own (see above).
 
 - **Not compiled in Unreal yet:** written while the Mac's builds were blocked. `TownBarks.cpp` builds with clang and
   `-Wall -Wextra -Wshadow`; `TownTalk.cpp` passes a syntax check against stand-in engine headers. Build it before merging.

@@ -52,6 +52,7 @@ rest (the speakers are in `localization/voice.json`); `tools/check_localization.
 | Event, target | Sent when | By |
 |---|---|---|
 | `talk <Npc>` | a conversation starts (`<Npc>` = the dialogue id, the body's name: `Owner`, `Sorokin_oleg`) | `UNpcDialogueSubsystem` |
+| `talk <resident key>` | a talk with a townsperson opens (`t_sokolov_ilya`, the keys of townsfolk.json; docs/town_talk.md "A talk"). Their quest lines are strings `line.<resident key>.<quest>.<stage>.<n>`, not npc_dialogue.txt sections | `ULyudFriends` |
 | `leave_computer`, `walk` | the hero got up; took his first steps | the club computer, the game screen |
 | `reach <place>` | came within a place's radius (as the hero or as a bird) | `ULyudQuests::UpdatePosition` |
 | `get`, `use`, `wear <item>`; `have <item>` | pocket changes; `have` counts what is in the pocket | `ULyudInventory` |
