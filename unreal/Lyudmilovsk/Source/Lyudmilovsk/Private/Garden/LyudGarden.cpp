@@ -1496,7 +1496,8 @@ void ULyudGarden::TickNeighbour(float DeltaTime)
 	if (bWant && !NeighbourBody)
 	{
 		const FString ModelName = Life->ShownModel(NeighbourId);
-		if (ModelName.IsEmpty())
+		// the model loaded in the background first (asked again next tick): Setup's load stalled the frame
+		if (ModelName.IsEmpty() || !ANpcBody::IsModelReady(this, ModelName))
 		{
 			return;
 		}
@@ -1513,6 +1514,7 @@ void ULyudGarden::TickNeighbour(float DeltaTime)
 			NeighbourBody = nullptr;
 			return;
 		}
+		ANpcBody::ReleaseModel(this, ModelName);      // the body holds it now
 		Life->SetPresentedExternally(NeighbourId, true);
 		NeighbourBody->Drive(NeighbourStand, NeighbourYaw, EPersonPose::Shovel, 1, 0.f, 0.f, DeltaTime, true);
 		AdviceClock = 4.f;

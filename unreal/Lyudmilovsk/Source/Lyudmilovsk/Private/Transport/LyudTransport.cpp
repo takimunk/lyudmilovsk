@@ -856,6 +856,11 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 				{
 					Model = UTF8_TO_TCHAR(Life->Riders[Rider].Mesh.c_str());
 				}
+				// the model loaded in the background first (asked again next frame): Setup's load stalled the frame
+				if (!ANpcBody::IsModelReady(this, Model))
+				{
+					continue;
+				}
 				FActorSpawnParameters SP;
 				SP.ObjectFlags |= RF_Transient;
 				SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -870,6 +875,7 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 					LifeNoBody.Add(Who);
 					continue;
 				}
+				ANpcBody::ReleaseModel(this, Model);      // the body holds it now
 				Body->Tags.Add(TEXT("StationLife"));
 				Slot = Body;
 				PresentPerson(Pid, true);
