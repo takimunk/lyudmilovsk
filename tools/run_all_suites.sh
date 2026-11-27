@@ -151,6 +151,8 @@ suite fishing.test                - bash tools/fishing/run.sh -v
 suite booksim.reading             - bash tools/booksim/run.sh reading
 suite railsim.test                - bash tools/railsim/run.sh test
 suite railsim.table               - bash tools/railsim/run.sh table
+suite sailschoolsim.test          - bash tools/sailschoolsim/run.sh
+suite sailschoolsim.week          - bash tools/sailschoolsim/run.sh week 2026 7 6
 # peoplesim reads the gitignored railway timetable when it is there: once with it, once without
 if wanted peoplesim; then
 	[ -f "$RAIL" ] || python3 tools/railway.py > /dev/null 2>&1
@@ -220,6 +222,7 @@ if wanted barks; then
 fi
 suite railway.check           - python3 tools/railway.py --check
 suite transport.check         - python3 tools/transport.py --check
+suite sailing.check           - python3 tools/sailing/sailing.py --check
 
 # --- 3. the data's cross-checks and the string tables -----------------------------------------------------------------
 suite check_data              - python3 tools/check_data.py
