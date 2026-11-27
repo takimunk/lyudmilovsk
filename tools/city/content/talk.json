@@ -2576,6 +2576,49 @@
     "gives": {
      "collect": "staff/hall"
     }
+   },
+   {
+    "id": "hall.dnc_rules",
+    "k": "city.ask.hall.dnc_rules",
+    "lines": [
+     "city.ask.hall.dnc_rules.1",
+     "city.ask.hall.dnc_rules.2",
+     {
+      "k": "city.ask.hall.dnc_rules.3",
+      "d": "fri-sat",
+      "h": [
+       17,
+       22
+      ]
+     }
+    ],
+    "gives": {
+     "collect": "staff/hall"
+    }
+   },
+   {
+    "id": "hall.dnc_white",
+    "k": "city.ask.hall.dnc_white",
+    "heard": "hall.dnc_rules",
+    "lines": [
+     "city.ask.hall.dnc_white.1",
+     "city.ask.hall.dnc_white.2"
+    ],
+    "gives": {
+     "collect": "staff/hall"
+    }
+   },
+   {
+    "id": "hall.dnc_who",
+    "k": "city.ask.hall.dnc_who",
+    "did": "dnc_white",
+    "lines": [
+     "city.ask.hall.dnc_who.1",
+     "city.ask.hall.dnc_who.2"
+    ],
+    "gives": {
+     "collect": "staff/hall"
+    }
    }
   ],
   "buy_fair_coffee": [
