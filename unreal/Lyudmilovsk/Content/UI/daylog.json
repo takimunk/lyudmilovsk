@@ -534,6 +534,26 @@
    "event": "do",
    "target": "~bike",
    "topic": "bike"
+  },
+  {
+   "event": "do",
+   "target": "tch_call",
+   "topic": "phone_call"
+  },
+  {
+   "event": "do",
+   "target": "xk1_phone",
+   "topic": "phone_call"
+  },
+  {
+   "event": "do",
+   "target": "xk3_weigh",
+   "topic": "fortune"
+  },
+  {
+   "event": "do",
+   "target": "tch_globe",
+   "topic": "fortune"
   }
  ],
  "topics": [
@@ -1079,6 +1099,28 @@
   {
    "id": "collection",
    "rank": 60,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "phone_call",
+   "rank": 32,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "fortune",
+   "rank": 28,
    "slot": "",
    "doodle": "",
    "once": false,
