@@ -144,7 +144,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wind") FLyudWindSettings Settings;
 
-	/** The wind at a world point (cm) with its gust, at a height over the ground (m; 10 = the standard). */
+	/**
+	 * The wind at a world point (cm) with its gust, at a height over the ground (m; 10 = the standard).
+	 * Since the local wind (docs/wind.md) it also carries the swing of the direction and the land's lee and
+	 * speed-up at that point (horizontal only; lyud.Wind.Relief 0 gives the old open-air answer).
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Wind")
 	FLyudWindSample GetWindAt(const FVector& Location, float HeightAboveGroundM = 10.f, bool bOverWater = false) const;
 	/** The area's mean wind now (no gusts), world velocity m/s at 10 m. */
@@ -171,6 +175,10 @@ public:
 	/** The same for something that stands a known height over its ground (a flag on a 6 m pole, a mast head). */
 	UFUNCTION(BlueprintCallable, Category = "Wind")
 	FLyudLocalWind GetLocalWindAbove(const FVector& GroundLocation, float HeightM) const;
+	/** Many points in one call (a fleet of dinghies, a row of flags): Out is resized to Locations. Not for Blueprints. */
+	void GetLocalWinds(TConstArrayView<FVector> Locations, TArray<FLyudLocalWind>& Out) const;
+	/** The same through the old sample type, at a fixed height over the surface (what GetWindAt gives, batched). */
+	void GetWindsAt(TConstArrayView<FVector> Locations, float HeightAboveGroundM, bool bOverWater, TArray<FLyudWindSample>& Out) const;
 	/** The wind felt by something moving (world velocity cm/s) at a point: local wind minus its own motion, m/s. */
 	UFUNCTION(BlueprintCallable, Category = "Wind")
 	FVector GetApparentWind(const FVector& Location, const FVector& BodyVelocityCmS) const;
