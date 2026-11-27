@@ -54,10 +54,10 @@ WEEKDAYS6 = [0, 1, 2, 3, 4, 5]
 
 # --- activities (one a line; "when": the game's condition, ULyudStreetLife) -----------------------------------------
 ACTIVITIES_ROWS = [
-    '{"id": "vend_kvass", "places": ["street_stall"], "slots": ["staff"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.4, "hunger": 0.15}, "free": 0, "staff": 1, "when": "street_hot", "rain": "ok"}',
-    '{"id": "vend_icecream", "places": ["street_stall"], "slots": ["staff"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.4, "hunger": 0.15}, "free": 0, "staff": 1, "when": "street_hot", "rain": "ok"}',
-    '{"id": "buy_kvass", "places": ["P-STREET-KVASS"], "slots": ["visit"], "pose": "stand", "minutes": [3, 6], "hours": [11.5, 18.7], "ages": [6, 200], "temp": [20, 45], "when": "street_hot", "meets": {"hunger": 0.5, "fun": 0.4, "social": 0.3}, "base": -0.05, "trait": "sun"}',
-    '{"id": "buy_icecream", "places": ["P-STREET-ICECART"], "slots": ["visit"], "pose": "stand", "minutes": [3, 6], "hours": [11.5, 18.7], "ages": [4, 200], "temp": [20, 45], "when": "street_hot", "meets": {"hunger": 0.4, "fun": 0.6, "social": 0.2}, "base": -0.05, "trait": "sun"}',
+    '{"id": "vend_kvass", "places": ["kvass_stall"], "slots": ["staff"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.4, "hunger": 0.15}, "free": 0, "staff": 1, "when": "street_hot", "rain": "ok"}',
+    '{"id": "vend_icecream", "places": ["icecream_stall"], "slots": ["staff"], "pose": "stand", "minutes": [60, 60], "meets": {"social": 0.4, "hunger": 0.15}, "free": 0, "staff": 1, "when": "street_hot", "rain": "ok"}',
+    '{"id": "buy_kvass", "places": ["kvass_stall"], "slots": ["visit"], "pose": "stand", "minutes": [3, 6], "hours": [11.5, 18.7], "ages": [6, 200], "temp": [20, 45], "when": "street_hot", "meets": {"hunger": 0.5, "fun": 0.4, "social": 0.3}, "base": -0.05, "trait": "sun"}',
+    '{"id": "buy_icecream", "places": ["icecream_stall"], "slots": ["visit"], "pose": "stand", "minutes": [3, 6], "hours": [11.5, 18.7], "ages": [4, 200], "temp": [20, 45], "when": "street_hot", "meets": {"hunger": 0.4, "fun": 0.6, "social": 0.2}, "base": -0.05, "trait": "sun"}',
     '{"id": "sweep_street", "places": ["sweep_round"], "slots": ["stand"], "pose": "stand", "wander": 1, "round": 1, "wander_pause": [45, 110], "minutes": [60, 60], "meets": {"nature": 0.4, "mind": 0.1}, "costs": {"tired": 0.06, "hunger": 0.05}, "free": 0, "when": "street_sweep", "rain": "ok", "on_time": 1}',
     '{"id": "deliver_milk", "places": ["milk_round"], "slots": ["stand"], "pose": "stand", "wander": 1, "round": 1, "wander_pause": [25, 60], "minutes": [60, 60], "meets": {"social": 0.3, "nature": 0.3}, "costs": {"tired": 0.04, "hunger": 0.04}, "free": 0, "rain": "ok", "on_time": 1}',
     '{"id": "open_shutters", "places": ["shop_front"], "slots": ["stand"], "pose": "stand", "minutes": [15, 15], "meets": {"mind": 0.1}, "free": 0, "rain": "ok", "on_time": 1}',
@@ -398,8 +398,8 @@ def build():
     kv = clear_point(KVASS_NEAR, sq["pos"][2], props_xy, others, 180.0)
     prom = next(p for p in places if p["id"] == "S-KERB-30")
     ic = clear_point(ICECART_NEAR, prom["pos"][2], props_xy, others, 0.0)
-    kv_place = stall("P-STREET-KVASS", "street_stall", kv, 180.0, "vendor")
-    ic_place = stall("P-STREET-ICECART", "street_stall", ic, 0.0, "vendor")
+    kv_place = stall("P-STREET-KVASS", "kvass_stall", kv, 180.0, "vendor")
+    ic_place = stall("P-STREET-ICECART", "icecream_stall", ic, 0.0, "vendor")
     sweep = sweep_round(places)
     milk = milk_round(places)
     fronts = shop_fronts(places)
@@ -492,7 +492,7 @@ def build():
                         k = (d["hours"][0], zlib.crc32(p["key"].encode()))
                         if first is None or k < first[0]:
                             first = (k, p, d)
-            if (first and first[0][0] - 0.75 >= first[1].get("wake", 7.0) and first[0][0] >= 6.0
+            if (first and first[0][0] - 0.75 >= first[1].get("wake", 7.0) and 6.0 <= first[0][0] <= 10.5
                     and not any(d.get("activity") in later_a for d in first[1].get("duties", []))):
                 days_of.setdefault((first[1]["key"], first[0][0]), []).append(wd)
         for (key, h0), days in days_of.items():

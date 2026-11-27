@@ -1,6 +1,7 @@
 """The things the townsfolk's manners put in their hands (docs/town_manners.md): a phone, a cigarette, a camera, an
 umbrella, a fishing rod, a brush, binoculars, a newspaper, a book, knitting, an ice cream, a paper cup, a shopping
-bag, the painter's easel, the allotment's spade and watering can, the cleaner's mop and bucket, the night watchman's torch.
+bag, the painter's easel, the allotment's spade and watering can, the cleaner's mop and bucket, the night watchman's torch,
+the yard keeper's broom and rake.
 
     Blender -b -P blender/humans/props.py [-- --preview]
         -> Saved/ClipSources/props/<name>.glb (unreal/scripts/import_props.py -> /Game/Characters/Humans/Props/SM_Prop_<name>)
@@ -23,6 +24,7 @@ Metres. How each lies in its own frame is what ANpcBody::PlaceMannerProp expects
     torch                      the grip at the origin, the lens along +X (0.2 m)
     bucket                     origin on the ground under it, +Z up (stands by the cleaner like the easel)
     suitcase                   origin at the handle's grip, the case hangs along -Z, its broad sides +Y and -Y
+    broom, rake                as the mop: the shaft's top at the origin, along +X to the head, the head's face +Z
 """
 import math
 import os
@@ -445,6 +447,39 @@ def mop():
     return p
 
 
+def broom():
+    """The yard keeper's birch broom (EHold::Shaft, as the mop): a long pale shaft along +X, a wire band and a bundle
+    of thin dark twigs fanning out to 1.45 m, flattened a little across Z (the sweeping face +Z)."""
+    p = Prop("broom")
+    wood = p.mat("wood", (0.7, 0.58, 0.4), 0.7)
+    wire = p.mat("wire", (0.4, 0.4, 0.42), 0.5)
+    twig = p.mat("twig", (0.42, 0.3, 0.2), 0.9)
+    p.rod(wood, (0.0, 0.0, 0.0), (1.1, 0.0, 0.0), 0.015, 0.016, seg=8)
+    p.rod(wire, (1.04, 0.0, 0.0), (1.1, 0.0, 0.0), 0.034, seg=8)
+    # the twigs: two staggered fans of thin cones, wider across Y than Z
+    n = 16
+    for k in range(n):
+        a = 2.0 * math.pi * k / n
+        cy, cz = math.cos(a), math.sin(a)
+        end = 1.42 + 0.03 * math.sin(5 * a)
+        p.rod(twig, (0.98, 0.025 * cy, 0.02 * cz), (end, 0.11 * cy, 0.05 * cz), 0.007, 0.003, seg=4, smooth=False)
+    return p
+
+
+def rake():
+    """The yard keeper's leaf rake (EHold::Shaft, as the mop): a wooden shaft along +X, a cross bar at 1.4 m across
+    Y and twelve iron tines bent towards -Z (they comb the leaves under the holder)."""
+    p = Prop("rake")
+    wood = p.mat("wood", (0.62, 0.47, 0.28), 0.7)
+    iron = p.mat("iron", (0.3, 0.31, 0.33), 0.45)
+    p.rod(wood, (0.0, 0.0, 0.0), (1.4, 0.0, 0.0), 0.014, 0.015, seg=8)
+    p.rod(iron, (1.38, -0.22, 0.0), (1.38, 0.22, 0.0), 0.012, seg=6)
+    for k in range(12):
+        y = -0.2 + 0.4 * k / 11
+        p.rod(iron, (1.38, y, 0.0), (1.42, y, -0.07), 0.004, 0.003, seg=4, smooth=False)
+    return p
+
+
 def torch():
     """The night watchman's torch (EHold::Pointing, along +X): a black rubber tube, a chrome head with a pale lens at
     the far end, a red switch on top."""
@@ -536,7 +571,7 @@ def easel():
 
 
 MAKERS = [phone, cigarette, camera, umbrella, rod, brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, easel,
-          spade, watering_can, mop, torch, bucket, suitcase]
+          spade, watering_can, mop, torch, bucket, suitcase, broom, rake]
 
 
 def preview(o, name):

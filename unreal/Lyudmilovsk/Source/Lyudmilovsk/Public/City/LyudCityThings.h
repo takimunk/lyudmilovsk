@@ -173,6 +173,11 @@ public:
 	/** Developer mode (interiors.open_all_hours): every act runs whatever the hour, the day and the staff. */
 	static bool bOpenAllHours;
 
+	/** A plot whose things are not there now: never picked, no prompt (the street's barrel and cart on a cool day, the
+	 *  subbotnik's bucket out of its morning: ULyudStreetLife, docs/street_life.md). Plot ids, not saved. */
+	void SetPlotHidden(const FString& Plot, bool bHidden);
+	bool IsPlotHidden(const FString& Plot) const { return HiddenPlots.Contains(Plot); }
+
 	// --- collections
 
 	/** Logs every collection ("films: 3 of 12"); with bPage also shows them on the page (closed by E or walking off). */
@@ -504,6 +509,8 @@ private:
 	FString PlotName(const FString& Plot) const;
 
 	TPimplPtr<LyudCity::FModel> Model;
+	/** SetPlotHidden: the plots whose things are away now. */
+	TSet<FString> HiddenPlots;
 	/** The tournaments (City/tournaments.json, read once the model is in) and the cup match being played (Cup < 0: a casual
 	 *  game). */
 	TPimplPtr<LyudCity::FCups> Cups;

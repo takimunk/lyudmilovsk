@@ -128221,7 +128221,7 @@
   },
   {
    "id": "P-STREET-KVASS",
-   "kind": "street_stall",
+   "kind": "kvass_stall",
    "pos": [
     40.0,
     897.0,
@@ -128291,7 +128291,7 @@
   },
   {
    "id": "P-STREET-ICECART",
-   "kind": "street_stall",
+   "kind": "icecream_stall",
    "pos": [
     124.0,
     990.0,

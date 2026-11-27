@@ -75,6 +75,11 @@ namespace CityKit
 
 	/** The kit meshes by kind (see public_spaces.json props): Variant picks colours; Param a size (flowerbed radius...). */
 	void BuildProp(FMesh& M, const FString& Kind, int32 Variant, const TSharedPtr<FJsonObject>& Extra);
+	/** The street's things (CityKitStreet.cpp, docs/street_life.md): kvass_barrel, icecream_cart, laundry_line_posts,
+	 *  laundry_washing (Variant: the wash), domino_table, trunk_white, leaf_pile (Variant: the colours). False for another kind. */
+	bool BuildStreetProp(FMesh& M, const FString& Kind, int32 Variant);
+	/** Which of them block the player (the barrel, the cart, the line's posts, the table). */
+	bool StreetPropCollides(const FString& Kind);
 	/** Whether a kind blocks the player (benches, lamps, railings yes; umbrellas, loungers, towels no). */
 	bool PropCollides(const FString& Kind);
 	/** Whether a kind carries glowing glass (its component gets the lamps' MID). */
