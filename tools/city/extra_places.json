@@ -1,0 +1,7 @@
+{
+ "_doc": "Rooms on no plot of the town plan, read by tools/city/interiors.py (places). front: Unreal metres of the room's origin (the building frame's 0,0,0), yaw: Unreal degrees its front faces. P-HOME: the hero's room behind the club hall's left wall (docs/hero_room.md); the same numbers are in tools/home/home.py.",
+ "places": [
+  {"id": "P-HOME", "kind": "home", "building": "hero_room", "front": [-3.0, 1.0, 0.0], "yaw": 0.0, "w": 4.9, "d": 3.9,
+   "name_ru": "Своя комната в клубе", "name_en": "My room at the club"}
+ ]
+}

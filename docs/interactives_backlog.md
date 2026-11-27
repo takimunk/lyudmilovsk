@@ -282,7 +282,7 @@ snowman. Done: offline tests where pure, Mac shots of the pond, bench with skate
 
 ## 19. The hero's own room
 
-`[ ]` **Brief (Fable 5.2):** Give the hero a room of his own in the club (a small room off the hall: ask the coordinator
+`[~] hero-room 2026-11-20` **Brief (Fable 5.2):** Give the hero a room of his own in the club (a small room off the hall: ask the coordinator
 which), furnished from the interior kit (`blender/city/interior_kit.py`): a bed (sleep until an hour, the existing chooser),
 a shelf and a wall where things he owns can be placed: prints from the camera (item 2), records and a player (item 10),
 postcards (item 11), the bird book, trophies (cups, the sanatorium diploma), a plant in a pot that grows (procedural plants).

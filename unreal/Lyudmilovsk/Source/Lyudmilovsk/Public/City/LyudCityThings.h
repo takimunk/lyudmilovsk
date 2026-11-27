@@ -335,6 +335,10 @@ public:
 	void GetThingsByAct(TFunctionRef<bool(const FString& Act)> Match, TArray<FCityThingRef>& Out) const;
 	/** The act id of a thing ("<plot>/<thing id>"); empty when unknown. */
 	FString ActOfThing(const FString& Id) const;
+	/** The id of a thing by its index ("<plot>/<thing id>": what OnOpen hands over); empty when out of range. */
+	FString ThingId(int32 Thing) const;
+	/** Has the hero this stamp of a collection ("cups/cog_chess")? (docs/hero_room.md: the cups on his shelf.) */
+	bool HasStamp(const FString& Stamp) const;
 	/** Gives a stamp of a collection ("records/day_1") as an act's line would (the HUD note when it is new); false when it is
 	 *  not a piece of the data's collections or the hero has it. */
 	bool GiveStamp(const FString& Stamp);
