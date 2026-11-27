@@ -2358,5 +2358,16 @@
  "line.transport.ride.reply.1": "Mm-hm.",
  "line.transport.ride.reply.2": "That's right.",
  "line.transport.ride.reply.3": "Tell me about it.",
- "line.transport.ride.reply.4": "I think so too."
+ "line.transport.ride.reply.4": "I think so too.",
+ "festival.science_day.name": "Science Day",
+ "festival.science_day.today": "Science Day today: from eleven the young technicians' experiments at the fair, at three a lecture on the Sun on the square, at half past four the town quiz, and telescopes on the promenade in the evening.",
+ "festival.old_new_year.name": "Old New Year",
+ "festival.old_new_year.today": "Old New Year today: from half past four the children go round the yards singing with a paper sun, the dumpling bar makes dumplings with a surprise and tells fortunes in wax, and by midnight everyone gathers at the tree again.",
+ "festival.neptune_day.name": "Neptune Day",
+ "festival.neptune_day.today": "Neptune Day today: at noon the sea king comes ashore on the beach, until three his court, the tug of war and the inner-tube race, at three the boat parade seen from the pier, and then fish soup from the common pot on the promenade.",
+ "dev.group.holidays": "Holidays: science, Old New Year, Neptune",
+ "dev.tp.nh_science_fair": "Science Day: the fair (quiz, globe, cocktail)",
+ "dev.tp.nh_ony_dumplings": "Old New Year: the dumpling bar (dumplings, wax)",
+ "dev.tp.nh_neptune_tower": "Neptune Day: the tower (rope, fish soup)",
+ "dev.tp.nh_neptune_rental": "Neptune Day: the rental (inner tube)"
 }
