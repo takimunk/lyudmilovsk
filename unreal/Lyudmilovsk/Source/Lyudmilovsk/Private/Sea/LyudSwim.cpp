@@ -645,6 +645,7 @@ void ULyudSwimComponent::StartRealise()
 	bRealising = true;
 	RealiseTime = 0.f;
 	bLineStarted = false;
+	LyudText::WarmVoice(this, RealiseLine);   // said LineAt s from now: loaded in the background meanwhile, not on the spot
 	bChoking = false;
 	bLastStraw = false;
 	Sound(TEXT("swim_cough"), 1.f);
