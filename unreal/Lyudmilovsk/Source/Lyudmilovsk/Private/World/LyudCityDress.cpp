@@ -216,14 +216,41 @@ void ULyudCityDress::Register(ALyudCityBuilding* B)
 void ULyudCityDress::Unregister(ALyudCityBuilding* B)
 {
 	Buildings.Remove(B);
-	// its listens stay in the table with a dead building (skipped); a building that comes back gets new ones
+	// its listens are skipped from now on and dropped at the next tick; a building that comes back gets new ones
 	for (FVisitListen& V : Listens)
 	{
 		if (V.B.Get() == B)
 		{
 			ListenOf.Remove(ListenKey(B, V.Set));
 			V.B.Reset();
+			bListensStale = true;
 		}
+	}
+}
+
+void ULyudCityDress::PruneListens()
+{
+	bListensStale = false;
+	const int32 Before = Listens.Num();
+	Listens.RemoveAll([](const FVisitListen& V) { return !V.B.IsValid(); });
+	if (Listens.Num() == Before)
+	{
+		return;
+	}
+	ListenByAct.Reset();
+	ListenOf.Reset();
+	for (int32 L = 0; L < Listens.Num(); ++L)
+	{
+		const FVisitListen& V = Listens[L];
+		const ALyudCityBuilding* B = V.B.Get();
+		if (B->DressWhen.IsValidIndex(V.Set))
+		{
+			for (const FName& A : B->DressWhen[V.Set].VisitActs)
+			{
+				ListenByAct.Add(A, L);
+			}
+		}
+		ListenOf.Add(ListenKey(B, V.Set), L);
 	}
 }
 
@@ -371,6 +398,10 @@ void ULyudCityDress::Tick(float DeltaTime)
 	}
 	Accum = 0.f;
 	BindLife();
+	if (bListensStale)
+	{
+		PruneListens();
+	}
 	const int32 Mode = FMath::Clamp(CVarCityDress.GetValueOnGameThread(), 0, 2);
 	const LyudCity::FWhen W = Moment(GetWorld());
 	const uint64 Key = KeyOf(W, Mode);

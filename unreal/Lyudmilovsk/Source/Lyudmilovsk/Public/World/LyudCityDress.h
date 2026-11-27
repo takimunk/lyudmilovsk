@@ -105,6 +105,8 @@ private:
 		double LastAt = -1.0;
 	};
 	void AddListens(ALyudCityBuilding* B);
+	/** Drops the listens of unloaded buildings and rebuilds the indices (at a tick after an Unregister, not per frame). */
+	void PruneListens();
 	void BindLife();
 
 	TArray<FVisitListen> Listens;
@@ -116,6 +118,8 @@ private:
 	TMap<int32, int32> ArrivedAt;
 	TWeakObjectPtr<UPeopleLifeSubsystem> Life;
 	bool bLifeBound = false;
+	/** A building went away: its listens are dropped at the next tick. */
+	bool bListensStale = false;
 
 	TArray<TWeakObjectPtr<ALyudCityBuilding>> Buildings;
 	uint64 LastKey = 0;
