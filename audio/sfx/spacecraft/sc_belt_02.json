@@ -1,0 +1,32 @@
+{
+ "name": "sc_belt_02",
+ "asset": "/Game/Audio/Spacecraft/S_sc_belt_02",
+ "pool": "sc_belt",
+ "file": "audio/sfx/spacecraft/sc_belt_02.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7302,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.385,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -24.38,
+ "params": {
+  "scale": 0.96
+ },
+ "checks": {
+  "seconds": 0.385,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -24.38,
+  "crest_db": 18.4,
+  "centroid_hz": 3005,
+  "rolloff85_hz": 4303,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "aabb00a99c4f715b0f199de1ad9c9f5683b0a67d2542fd0420943463f608c97b",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

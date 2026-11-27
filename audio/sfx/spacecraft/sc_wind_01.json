@@ -1,0 +1,41 @@
+{
+ "name": "sc_wind_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_wind_01",
+ "pool": "sc_wind",
+ "file": "audio/sfx/spacecraft/sc_wind_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7501,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 24000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -20.74,
+ "params": {
+  "body_hz": 350,
+  "whistle_hz": 520.0,
+  "buffets": 6,
+  "stored_rate": 24000,
+  "energy_above_new_nyquist_db": -86.8
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 24000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -20.74,
+  "crest_db": 14.7,
+  "centroid_hz": 338,
+  "rolloff85_hz": 580,
+  "dc": -0.0,
+  "clipped": 0,
+  "seam_jump": 0.24,
+  "seam_jump_pct": 20.9,
+  "seam_energy": 2.0,
+  "seam_pct": 95.2,
+  "seam_level_db": -0.6
+ },
+ "sha256": "a24d78c2025885fe114f5cb27575456a35d59aaa7a3f23bb796c06212c064806",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

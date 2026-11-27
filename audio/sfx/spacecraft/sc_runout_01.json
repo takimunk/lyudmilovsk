@@ -1,0 +1,37 @@
+{
+ "name": "sc_runout_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_runout_01",
+ "pool": "sc_runout",
+ "file": "audio/sfx/spacecraft/sc_runout_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7651,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 7.2,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -26.26,
+ "params": {
+  "tick_every_s": 1.8
+ },
+ "checks": {
+  "seconds": 7.2,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -26.26,
+  "crest_db": 20.3,
+  "centroid_hz": 536,
+  "rolloff85_hz": 727,
+  "dc": -0.0,
+  "clipped": 0,
+  "seam_jump": 0.01,
+  "seam_jump_pct": 0.4,
+  "seam_energy": 1.51,
+  "seam_pct": 97.5,
+  "seam_level_db": 0.1
+ },
+ "sha256": "d1c86245a87b50ac14bdb18827f62609594f1ccbba105b25c4b5f8df2777b665",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

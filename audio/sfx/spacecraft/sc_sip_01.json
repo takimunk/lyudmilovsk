@@ -1,0 +1,32 @@
+{
+ "name": "sc_sip_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_sip_01",
+ "pool": "sc_sip",
+ "file": "audio/sfx/spacecraft/sc_sip_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7711,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.739,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -20.43,
+ "params": {
+  "gulp_s": 0.32
+ },
+ "checks": {
+  "seconds": 0.739,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -20.43,
+  "crest_db": 14.4,
+  "centroid_hz": 282,
+  "rolloff85_hz": 214,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "8309eed054231834184f980a809d1b381a0480729e10dc87d9e0f9d387da7cff",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

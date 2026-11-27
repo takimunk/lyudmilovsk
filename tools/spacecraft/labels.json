@@ -1,0 +1,864 @@
+{
+ "about": "The printed plates of the Lastochka's panel (docs/spacecraft.md). plates: plate id -> its string keys (one key per line of text) and its class; classes: the fallback rect size in px of a 1024 atlas and the text style. layout is WRITTEN by tools/spacecraft/labels.py: the rects it drew into (from kit.json when the kit defines them, else auto-packed here). Words live only in tools/spacecraft/strings.json.",
+ "size": 1024,
+ "gutter": 6,
+ "font": {
+  "ru": "fonts/MPLUS1p-Bold.ttf",
+  "en": "fonts/MPLUS1p-Bold.ttf",
+  "ja": "fonts/MPLUS1p-Bold.ttf"
+ },
+ "condense": {
+  "ru": 0.8,
+  "en": 0.8,
+  "ja": 0.92
+ },
+ "tracking": {
+  "ru": 0.06,
+  "en": 0.06,
+  "ja": 0.04
+ },
+ "classes": {
+  "lamp": {
+   "w": 164,
+   "h": 52,
+   "fill": 0.56,
+   "pad": 8
+  },
+  "inst": {
+   "w": 228,
+   "h": 44,
+   "fill": 0.6,
+   "pad": 8
+  },
+  "sw": {
+   "w": 164,
+   "h": 44,
+   "fill": 0.6,
+   "pad": 8
+  },
+  "mark": {
+   "w": 100,
+   "h": 40,
+   "fill": 0.6,
+   "pad": 6
+  },
+  "wide": {
+   "w": 228,
+   "h": 44,
+   "fill": 0.6,
+   "pad": 8
+  },
+  "name": {
+   "w": 500,
+   "h": 110,
+   "fill": 0.66,
+   "pad": 14,
+   "tracking": 0.16
+  },
+  "data": {
+   "w": 500,
+   "h": 170,
+   "fill": 0.72,
+   "pad": 12
+  }
+ },
+ "plates": {
+  "lamp_power": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.power"
+   ]
+  },
+  "lamp_air": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.air"
+   ]
+  },
+  "lamp_gyro": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.gyro"
+   ]
+  },
+  "lamp_hatch": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.hatch"
+   ]
+  },
+  "lamp_armed": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.armed"
+   ]
+  },
+  "lamp_engine": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.engine"
+   ]
+  },
+  "lamp_sep": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.sep"
+   ]
+  },
+  "lamp_zero_g": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.zero_g"
+   ]
+  },
+  "lamp_burn": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.burn"
+   ]
+  },
+  "lamp_comm": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.comm"
+   ]
+  },
+  "lamp_blackout": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.blackout"
+   ]
+  },
+  "lamp_g_high": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.g_high"
+   ]
+  },
+  "lamp_hull_hot": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.hull_hot"
+   ]
+  },
+  "lamp_drogue": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.drogue"
+   ]
+  },
+  "lamp_main_chute": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.main_chute"
+   ]
+  },
+  "lamp_alt_low": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.alt_low"
+   ]
+  },
+  "lamp_jets": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.jets"
+   ]
+  },
+  "lamp_splash": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.splash"
+   ]
+  },
+  "lamp_beacon": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.beacon"
+   ]
+  },
+  "lamp_o2_low": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.o2_low"
+   ]
+  },
+  "lamp_co2_high": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.co2_high"
+   ]
+  },
+  "lamp_batt_low": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.batt_low"
+   ]
+  },
+  "lamp_master_caution": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.master_caution"
+   ]
+  },
+  "lamp_record": {
+   "class": "lamp",
+   "keys": [
+    "flight.lamp.record"
+   ]
+  },
+  "inst_globe": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.globe"
+   ]
+  },
+  "inst_clock": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.clock"
+   ]
+  },
+  "inst_range": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.range"
+   ]
+  },
+  "inst_speed": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.speed"
+   ]
+  },
+  "inst_alt": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.alt"
+   ]
+  },
+  "inst_gmeter": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.gmeter"
+   ]
+  },
+  "inst_horizon": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.horizon"
+   ]
+  },
+  "inst_press": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.press"
+   ]
+  },
+  "inst_o2": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.o2"
+   ]
+  },
+  "inst_co2": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.co2"
+   ]
+  },
+  "inst_temp": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.temp"
+   ]
+  },
+  "inst_volts": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.volts"
+   ]
+  },
+  "inst_fuel": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.fuel"
+   ]
+  },
+  "inst_hull": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.hull"
+   ]
+  },
+  "inst_crt": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.crt"
+   ]
+  },
+  "inst_lamps": {
+   "class": "inst",
+   "keys": [
+    "flight.inst.lamps"
+   ]
+  },
+  "sw_power": {
+   "class": "sw",
+   "keys": [
+    "flight.sw.power"
+   ]
+  },
+  "sw_air": {
+   "class": "sw",
+   "keys": [
+    "flight.sw.air"
+   ]
+  },
+  "sw_gyro": {
+   "class": "sw",
+   "keys": [
+    "flight.sw.gyro"
+   ]
+  },
+  "sw_seal": {
+   "class": "sw",
+   "keys": [
+    "flight.sw.seal"
+   ]
+  },
+  "sw_arm": {
+   "class": "sw",
+   "keys": [
+    "flight.sw.arm"
+   ]
+  },
+  "sw_launch": {
+   "class": "sw",
+   "keys": [
+    "flight.sw.launch"
+   ]
+  },
+  "sw_light": {
+   "class": "sw",
+   "keys": [
+    "flight.sw.light"
+   ]
+  },
+  "sw_crt": {
+   "class": "sw",
+   "keys": [
+    "flight.sw.crt"
+   ]
+  },
+  "sw_radio": {
+   "class": "sw",
+   "keys": [
+    "flight.sw.radio"
+   ]
+  },
+  "mark_on": {
+   "class": "mark",
+   "keys": [
+    "flight.mark.on"
+   ]
+  },
+  "mark_off": {
+   "class": "mark",
+   "keys": [
+    "flight.mark.off"
+   ]
+  },
+  "mark_open": {
+   "class": "mark",
+   "keys": [
+    "flight.mark.open"
+   ]
+  },
+  "mark_shut": {
+   "class": "mark",
+   "keys": [
+    "flight.mark.shut"
+   ]
+  },
+  "mark_chute": {
+   "class": "wide",
+   "keys": [
+    "flight.mark.chute"
+   ]
+  },
+  "mark_manual": {
+   "class": "wide",
+   "keys": [
+    "flight.mark.manual"
+   ]
+  },
+  "unit_km": {
+   "class": "mark",
+   "keys": [
+    "flight.unit.km"
+   ],
+   "case": "keep"
+  },
+  "unit_kms": {
+   "class": "mark",
+   "keys": [
+    "flight.unit.kms"
+   ],
+   "case": "keep"
+  },
+  "unit_ms": {
+   "class": "mark",
+   "keys": [
+    "flight.unit.ms"
+   ],
+   "case": "keep"
+  },
+  "unit_g": {
+   "class": "mark",
+   "keys": [
+    "flight.unit.g"
+   ],
+   "case": "keep"
+  },
+  "unit_degc": {
+   "class": "mark",
+   "keys": [
+    "flight.unit.degc"
+   ],
+   "case": "keep"
+  },
+  "unit_volt": {
+   "class": "mark",
+   "keys": [
+    "flight.unit.volt"
+   ],
+   "case": "keep"
+  },
+  "unit_pct": {
+   "class": "mark",
+   "keys": [
+    "flight.unit.pct"
+   ],
+   "case": "keep"
+  },
+  "unit_mmhg": {
+   "class": "mark",
+   "keys": [
+    "flight.unit.mmhg"
+   ],
+   "case": "keep"
+  },
+  "nameplate": {
+   "class": "name",
+   "keys": [
+    "flight.plate.name"
+   ]
+  },
+  "dataplate": {
+   "class": "data",
+   "keys": [
+    "flight.plate.maker",
+    "flight.plate.type",
+    "flight.plate.serial",
+    "flight.plate.year"
+   ]
+  }
+ },
+ "layout": {
+  "source": "auto",
+  "note": "kit.json has no label plate list (labels | label_plates | label_rects | plates)",
+  "rects": {
+   "dataplate": [
+    6,
+    6,
+    500,
+    170
+   ],
+   "nameplate": [
+    512,
+    6,
+    500,
+    110
+   ],
+   "lamp_power": [
+    6,
+    182,
+    164,
+    52
+   ],
+   "lamp_air": [
+    176,
+    182,
+    164,
+    52
+   ],
+   "lamp_gyro": [
+    346,
+    182,
+    164,
+    52
+   ],
+   "lamp_hatch": [
+    516,
+    182,
+    164,
+    52
+   ],
+   "lamp_armed": [
+    686,
+    182,
+    164,
+    52
+   ],
+   "lamp_engine": [
+    6,
+    240,
+    164,
+    52
+   ],
+   "lamp_sep": [
+    176,
+    240,
+    164,
+    52
+   ],
+   "lamp_zero_g": [
+    346,
+    240,
+    164,
+    52
+   ],
+   "lamp_burn": [
+    516,
+    240,
+    164,
+    52
+   ],
+   "lamp_comm": [
+    686,
+    240,
+    164,
+    52
+   ],
+   "lamp_blackout": [
+    6,
+    298,
+    164,
+    52
+   ],
+   "lamp_g_high": [
+    176,
+    298,
+    164,
+    52
+   ],
+   "lamp_hull_hot": [
+    346,
+    298,
+    164,
+    52
+   ],
+   "lamp_drogue": [
+    516,
+    298,
+    164,
+    52
+   ],
+   "lamp_main_chute": [
+    686,
+    298,
+    164,
+    52
+   ],
+   "lamp_alt_low": [
+    6,
+    356,
+    164,
+    52
+   ],
+   "lamp_jets": [
+    176,
+    356,
+    164,
+    52
+   ],
+   "lamp_splash": [
+    346,
+    356,
+    164,
+    52
+   ],
+   "lamp_beacon": [
+    516,
+    356,
+    164,
+    52
+   ],
+   "lamp_o2_low": [
+    686,
+    356,
+    164,
+    52
+   ],
+   "lamp_co2_high": [
+    6,
+    414,
+    164,
+    52
+   ],
+   "lamp_batt_low": [
+    176,
+    414,
+    164,
+    52
+   ],
+   "lamp_master_caution": [
+    346,
+    414,
+    164,
+    52
+   ],
+   "lamp_record": [
+    516,
+    414,
+    164,
+    52
+   ],
+   "inst_globe": [
+    686,
+    414,
+    228,
+    44
+   ],
+   "inst_clock": [
+    6,
+    472,
+    228,
+    44
+   ],
+   "inst_range": [
+    240,
+    472,
+    228,
+    44
+   ],
+   "inst_speed": [
+    474,
+    472,
+    228,
+    44
+   ],
+   "inst_alt": [
+    708,
+    472,
+    228,
+    44
+   ],
+   "inst_gmeter": [
+    6,
+    522,
+    228,
+    44
+   ],
+   "inst_horizon": [
+    240,
+    522,
+    228,
+    44
+   ],
+   "inst_press": [
+    474,
+    522,
+    228,
+    44
+   ],
+   "inst_o2": [
+    708,
+    522,
+    228,
+    44
+   ],
+   "inst_co2": [
+    6,
+    572,
+    228,
+    44
+   ],
+   "inst_temp": [
+    240,
+    572,
+    228,
+    44
+   ],
+   "inst_volts": [
+    474,
+    572,
+    228,
+    44
+   ],
+   "inst_fuel": [
+    708,
+    572,
+    228,
+    44
+   ],
+   "inst_hull": [
+    6,
+    622,
+    228,
+    44
+   ],
+   "inst_crt": [
+    240,
+    622,
+    228,
+    44
+   ],
+   "inst_lamps": [
+    474,
+    622,
+    228,
+    44
+   ],
+   "sw_power": [
+    708,
+    622,
+    164,
+    44
+   ],
+   "sw_air": [
+    6,
+    672,
+    164,
+    44
+   ],
+   "sw_gyro": [
+    176,
+    672,
+    164,
+    44
+   ],
+   "sw_seal": [
+    346,
+    672,
+    164,
+    44
+   ],
+   "sw_arm": [
+    516,
+    672,
+    164,
+    44
+   ],
+   "sw_launch": [
+    686,
+    672,
+    164,
+    44
+   ],
+   "sw_light": [
+    6,
+    722,
+    164,
+    44
+   ],
+   "sw_crt": [
+    176,
+    722,
+    164,
+    44
+   ],
+   "sw_radio": [
+    346,
+    722,
+    164,
+    44
+   ],
+   "mark_chute": [
+    516,
+    722,
+    228,
+    44
+   ],
+   "mark_manual": [
+    750,
+    722,
+    228,
+    44
+   ],
+   "mark_on": [
+    6,
+    772,
+    100,
+    40
+   ],
+   "mark_off": [
+    112,
+    772,
+    100,
+    40
+   ],
+   "mark_open": [
+    218,
+    772,
+    100,
+    40
+   ],
+   "mark_shut": [
+    324,
+    772,
+    100,
+    40
+   ],
+   "unit_km": [
+    430,
+    772,
+    100,
+    40
+   ],
+   "unit_kms": [
+    536,
+    772,
+    100,
+    40
+   ],
+   "unit_ms": [
+    642,
+    772,
+    100,
+    40
+   ],
+   "unit_g": [
+    748,
+    772,
+    100,
+    40
+   ],
+   "unit_degc": [
+    854,
+    772,
+    100,
+    40
+   ],
+   "unit_volt": [
+    6,
+    818,
+    100,
+    40
+   ],
+   "unit_pct": [
+    112,
+    818,
+    100,
+    40
+   ],
+   "unit_mmhg": [
+    218,
+    818,
+    100,
+    40
+   ]
+  }
+ }
+}

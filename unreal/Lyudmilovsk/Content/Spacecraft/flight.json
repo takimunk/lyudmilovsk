@@ -1,0 +1,679 @@
+{
+ "_doc": "The flight home from Europa in the craft Lastochka (docs/spacecraft.md): every number of the flight model (Private/Spacecraft/FlightModel.h, namespace LyudFlight; guide: tools/spacecraft/MODEL_NOTES.md). The same numbers are built into the model as defaults and tools/spacecraftsim/run.sh fails when the two differ: change a number HERE AND in FConfig, then run python3 tools/spacecraft/flight.py (writes Content/Spacecraft/flight.json) and tools/spacecraftsim/run.sh. Times are flight seconds from the launch button; a cue with \"t\": \"computed\" is found by the model (the blackout from the plasma, the peak load, the island coming over the horizon). The lamps' and the switches' rules are code: the lists here must match the model's.",
+ "version": 1,
+ "phases": [
+  "parked",
+  "prelaunch",
+  "ascent",
+  "coast",
+  "approach",
+  "entry",
+  "chute",
+  "splash",
+  "afloat"
+ ],
+ "times": {
+  "ascent_end": 75,
+  "approach": 600,
+  "entry": 720,
+  "chute": 810,
+  "splash_phase": 885,
+  "end": 900,
+  "stage_left": 1.5,
+  "look_back_start": 78,
+  "look_back_end": 96,
+  "turn_start": 195,
+  "turn_end": 225,
+  "burn": 300,
+  "burn_seconds": 6,
+  "module_sep": 700,
+  "main_chute": 825,
+  "touchdown": 888,
+  "whiteout_in": 840,
+  "whiteout_peak": 850,
+  "whiteout_out": 860
+ },
+ "nap": {
+  "scale": 8,
+  "ends_before_approach": 20,
+  "latest_start_before_approach": 40,
+  "burn_guard": 12
+ },
+ "planet": {
+  "radius_km": 2000,
+  "diameter_start_deg": 26,
+  "diameter_entry_deg": 150,
+  "elevation_deg": 35,
+  "growth_ramp_end": 200,
+  "island_lat_deg": 18,
+  "arrival_heading_deg": 70
+ },
+ "europa": {
+  "flight_radius_km": 200,
+  "gravity_g": 0.13
+ },
+ "g": {
+  "ascent_start": 1.5,
+  "ascent_end": 1.7,
+  "burn": 0.3,
+  "entry_peak": 4.2,
+  "entry_peak_t": 768,
+  "entry_sigma_rise": 17,
+  "entry_sigma_fall": 14,
+  "sep_jolt": 0.8,
+  "drogue_snatch": 1,
+  "main_snatch": 1.5,
+  "splash_spike": 2.4,
+  "entry_tilt": 0.27
+ },
+ "heat": {
+  "plasma_peak_t": 755,
+  "plasma_sigma_rise": 14,
+  "plasma_sigma_fall": 17,
+  "blackout_plasma": 0.25,
+  "scorch_max": 0.8,
+  "hull_peak_c": 1650,
+  "hull_space_c": -120,
+  "hull_lag": 8,
+  "hull_cool_lag": 30,
+  "plasma_k_low": 1800,
+  "plasma_k_high": 7000
+ },
+ "chute": {
+  "v_entry_end": 120,
+  "v_drogue": 50,
+  "tau_drogue": 6,
+  "v_main": 7,
+  "tau_main": 14,
+  "v_touch": 2,
+  "swing_drogue_deg": 12,
+  "swing_main_deg": 7,
+  "swing_rest_deg": 1.5,
+  "twist_deg": 35
+ },
+ "attitude": {
+  "ascent_pitch_deg": -20,
+  "approach_limb_deg": 102,
+  "entry_limb_deg": 115,
+  "coast_roll_turns": 1
+ },
+ "panel": {
+  "lamp_g_high": 3,
+  "lamp_hull_hot_c": 900,
+  "lamp_hull_blink_c": 1400,
+  "lamp_alt_low_m": 150,
+  "lamp_o2_low_pct": 18,
+  "lamp_co2_high_pct": 0.8,
+  "lamp_batt_low_v": 24.5,
+  "press_nominal_mmhg": 760,
+  "press_ok_mmhg": 700,
+  "gyro_spin_up": 4,
+  "lamp_test": 1.2,
+  "caution_seconds": 3,
+  "blink_period": 0.6
+ },
+ "record": {
+  "skip_shake": 0.6,
+  "skip_slot": 2.3
+ },
+ "afloat": {
+  "gone_dist_m": 300,
+  "gone_seconds": 60
+ },
+ "track_deg": [
+  [
+   0,
+   95
+  ],
+  [
+   75,
+   95
+  ],
+  [
+   250,
+   91
+  ],
+  [
+   400,
+   80
+  ],
+  [
+   500,
+   66
+  ],
+  [
+   600,
+   46
+  ],
+  [
+   660,
+   29
+  ],
+  [
+   690,
+   18
+  ],
+  [
+   720,
+   8
+  ],
+  [
+   765,
+   1.4
+  ],
+  [
+   810,
+   0.05
+  ],
+  [
+   825,
+   0.02
+  ],
+  [
+   850,
+   0.006
+  ],
+  [
+   888,
+   0
+  ]
+ ],
+ "cabin_temp_c": [
+  [
+   0,
+   19
+  ],
+  [
+   75,
+   20
+  ],
+  [
+   300,
+   19.5
+  ],
+  [
+   700,
+   19.5
+  ],
+  [
+   740,
+   21
+  ],
+  [
+   790,
+   29
+  ],
+  [
+   815,
+   31.5
+  ],
+  [
+   885,
+   27
+  ],
+  [
+   900,
+   26
+  ]
+ ],
+ "fuel_pct": [
+  [
+   0,
+   100
+  ],
+  [
+   2,
+   99
+  ],
+  [
+   75,
+   40
+  ],
+  [
+   195,
+   40
+  ],
+  [
+   225,
+   38.5
+  ],
+  [
+   300,
+   38.5
+  ],
+  [
+   306,
+   31
+  ],
+  [
+   590,
+   31
+  ],
+  [
+   625,
+   29.5
+  ],
+  [
+   700,
+   29.5
+  ],
+  [
+   720,
+   27.5
+  ],
+  [
+   810,
+   22
+  ],
+  [
+   885,
+   22
+  ],
+  [
+   888,
+   6
+  ],
+  [
+   900,
+   6
+  ]
+ ],
+ "switches": [
+  "power",
+  "air",
+  "gyro",
+  "seal",
+  "arm"
+ ],
+ "lamps": [
+  {
+   "id": "power",
+   "row": 0,
+   "col": 0,
+   "colour": "green",
+   "fault": false,
+   "rule": "the power switch is on"
+  },
+  {
+   "id": "air",
+   "row": 0,
+   "col": 1,
+   "colour": "green",
+   "fault": false,
+   "rule": "the air switch is on; blinks while the cabin pressure is under 700 mmHg"
+  },
+  {
+   "id": "gyro",
+   "row": 0,
+   "col": 2,
+   "colour": "green",
+   "fault": false,
+   "rule": "the gyros switch is on; blinks for the 4 s of spin-up"
+  },
+  {
+   "id": "hatch",
+   "row": 0,
+   "col": 3,
+   "colour": "green",
+   "fault": false,
+   "rule": "the hatch seal switch is on"
+  },
+  {
+   "id": "armed",
+   "row": 0,
+   "col": 4,
+   "colour": "amber",
+   "fault": false,
+   "rule": "armed and not launched yet; blinks"
+  },
+  {
+   "id": "engine",
+   "row": 0,
+   "col": 5,
+   "colour": "white",
+   "fault": false,
+   "rule": "the ascent engine burns (0..75 s)"
+  },
+  {
+   "id": "sep",
+   "row": 1,
+   "col": 0,
+   "colour": "white",
+   "fault": false,
+   "rule": "a separation: 4 s after the stage is left, 8 s after the instrument section goes"
+  },
+  {
+   "id": "zero_g",
+   "row": 1,
+   "col": 1,
+   "colour": "white",
+   "fault": false,
+   "rule": "in flight before the entry, the load under 0.02 g"
+  },
+  {
+   "id": "burn",
+   "row": 1,
+   "col": 2,
+   "colour": "amber",
+   "fault": false,
+   "rule": "blinks for 10 s before the correction burn, steady during it"
+  },
+  {
+   "id": "comm",
+   "row": 1,
+   "col": 3,
+   "colour": "green",
+   "fault": false,
+   "rule": "the radio link: on with the power, off in the blackout, blinks for 5 s after it"
+  },
+  {
+   "id": "blackout",
+   "row": 1,
+   "col": 4,
+   "colour": "amber",
+   "fault": false,
+   "rule": "the radio blackout of the entry"
+  },
+  {
+   "id": "g_high",
+   "row": 1,
+   "col": 5,
+   "colour": "red",
+   "fault": false,
+   "rule": "the load is over 3 g"
+  },
+  {
+   "id": "hull_hot",
+   "row": 2,
+   "col": 0,
+   "colour": "red",
+   "fault": false,
+   "rule": "the heat shield is over 900 C; blinks over 1400 C"
+  },
+  {
+   "id": "drogue",
+   "row": 2,
+   "col": 1,
+   "colour": "green",
+   "fault": false,
+   "rule": "the drogue is out (810..825 s)"
+  },
+  {
+   "id": "main_chute",
+   "row": 2,
+   "col": 2,
+   "colour": "green",
+   "fault": false,
+   "rule": "the main canopy is out, till 5 s after the splash"
+  },
+  {
+   "id": "alt_low",
+   "row": 2,
+   "col": 3,
+   "colour": "amber",
+   "fault": false,
+   "rule": "under the canopy and less than 150 m over the sea; blinks"
+  },
+  {
+   "id": "jets",
+   "row": 2,
+   "col": 4,
+   "colour": "white",
+   "fault": false,
+   "rule": "the soft-landing jets (885 s to the splash)"
+  },
+  {
+   "id": "splash",
+   "row": 2,
+   "col": 5,
+   "colour": "white",
+   "fault": false,
+   "rule": "down on the sea"
+  },
+  {
+   "id": "beacon",
+   "row": 3,
+   "col": 0,
+   "colour": "white",
+   "fault": false,
+   "rule": "the recovery beacon, from 2 s after the splash; blinks"
+  },
+  {
+   "id": "o2_low",
+   "row": 3,
+   "col": 1,
+   "colour": "red",
+   "fault": true,
+   "rule": "oxygen under 18 %"
+  },
+  {
+   "id": "co2_high",
+   "row": 3,
+   "col": 2,
+   "colour": "amber",
+   "fault": false,
+   "rule": "carbon dioxide over 0.8 % (it goes out when the scrubber has run)"
+  },
+  {
+   "id": "batt_low",
+   "row": 3,
+   "col": 3,
+   "colour": "red",
+   "fault": true,
+   "rule": "the battery under 24.5 V"
+  },
+  {
+   "id": "master_caution",
+   "row": 3,
+   "col": 4,
+   "colour": "red",
+   "fault": false,
+   "rule": "any red lamp (steady); blinks for 3 s after a refused switch"
+  },
+  {
+   "id": "record",
+   "row": 3,
+   "col": 5,
+   "colour": "white",
+   "fault": false,
+   "rule": "the flight recorder's tape runs: from the launch to the end of the flight"
+  }
+ ],
+ "cues": [
+  {
+   "kind": "sound",
+   "id": "liftoff",
+   "t": 0
+  },
+  {
+   "kind": "auto",
+   "id": "auto.launch",
+   "t": 0
+  },
+  {
+   "kind": "sound",
+   "id": "stage_left",
+   "t": 1.5
+  },
+  {
+   "kind": "say",
+   "id": "line.hero.flight_liftoff.1",
+   "t": 8
+  },
+  {
+   "kind": "sound",
+   "id": "engine_cutoff",
+   "t": 75
+  },
+  {
+   "kind": "auto",
+   "id": "auto.cutoff",
+   "t": 76
+  },
+  {
+   "kind": "auto",
+   "id": "auto.weightless",
+   "t": 80
+  },
+  {
+   "kind": "say",
+   "id": "line.hero.flight_weightless.1",
+   "t": 86
+  },
+  {
+   "kind": "say",
+   "id": "line.hero.flight_europa_behind.1",
+   "t": 185
+  },
+  {
+   "kind": "sound",
+   "id": "turn_start",
+   "t": 195
+  },
+  {
+   "kind": "auto",
+   "id": "auto.burn",
+   "t": 292
+  },
+  {
+   "kind": "sound",
+   "id": "correction_burn_on",
+   "t": 300
+  },
+  {
+   "kind": "sound",
+   "id": "correction_burn_off",
+   "t": 306
+  },
+  {
+   "kind": "say",
+   "id": "line.hero.flight_planet_grows.1",
+   "t": 325
+  },
+  {
+   "kind": "auto",
+   "id": "auto.half",
+   "t": 450
+  },
+  {
+   "kind": "say",
+   "id": "line.hero.flight_ocean.1",
+   "t": 520
+  },
+  {
+   "kind": "auto",
+   "id": "auto.approach",
+   "t": 596
+  },
+  {
+   "kind": "sound",
+   "id": "approach_start",
+   "t": 600
+  },
+  {
+   "kind": "say",
+   "id": "line.hero.flight_island.1",
+   "t": "computed"
+  },
+  {
+   "kind": "auto",
+   "id": "auto.sep",
+   "t": 694
+  },
+  {
+   "kind": "sound",
+   "id": "module_sep",
+   "t": 700
+  },
+  {
+   "kind": "sound",
+   "id": "entry_interface",
+   "t": 720
+  },
+  {
+   "kind": "auto",
+   "id": "auto.entry",
+   "t": 721.5
+  },
+  {
+   "kind": "auto",
+   "id": "auto.blackout",
+   "t": 727
+  },
+  {
+   "kind": "sound",
+   "id": "blackout_start",
+   "t": "computed"
+  },
+  {
+   "kind": "say",
+   "id": "line.hero.flight_fire.1",
+   "t": 745
+  },
+  {
+   "kind": "sound",
+   "id": "peak_g",
+   "t": "computed"
+  },
+  {
+   "kind": "sound",
+   "id": "blackout_end",
+   "t": "computed"
+  },
+  {
+   "kind": "sound",
+   "id": "drogue",
+   "t": 810
+  },
+  {
+   "kind": "sound",
+   "id": "main_chute",
+   "t": 825
+  },
+  {
+   "kind": "auto",
+   "id": "auto.chute",
+   "t": 827.5
+  },
+  {
+   "kind": "say",
+   "id": "line.hero.flight_chute.1",
+   "t": 833
+  },
+  {
+   "kind": "sound",
+   "id": "whiteout",
+   "t": 840
+  },
+  {
+   "kind": "sound",
+   "id": "real_world",
+   "t": 850
+  },
+  {
+   "kind": "auto",
+   "id": "auto.splash",
+   "t": 868
+  },
+  {
+   "kind": "sound",
+   "id": "jets",
+   "t": 885
+  },
+  {
+   "kind": "sound",
+   "id": "splash",
+   "t": 888
+  },
+  {
+   "kind": "say",
+   "id": "line.hero.flight_home.1",
+   "t": 890
+  },
+  {
+   "kind": "auto",
+   "id": "auto.home",
+   "t": 896
+  }
+ ]
+}

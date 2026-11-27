@@ -1,0 +1,49 @@
+{
+ "name": "sc_engine_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_engine_01",
+ "pool": "sc_engine",
+ "file": "audio/sfx/spacecraft/sc_engine_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7411,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 24000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -18.24,
+ "params": {
+  "hull_modes_hz": [
+   38,
+   61,
+   87,
+   124,
+   171,
+   240,
+   333
+  ],
+  "throb_hz": 72,
+  "sub_hz": 25,
+  "stored_rate": 24000,
+  "energy_above_new_nyquist_db": -83.5
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 24000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -18.24,
+  "crest_db": 12.2,
+  "centroid_hz": 165,
+  "rolloff85_hz": 299,
+  "dc": -0.0,
+  "clipped": 0,
+  "seam_jump": 2.45,
+  "seam_jump_pct": 98.2,
+  "seam_energy": 0.96,
+  "seam_pct": 48.2,
+  "seam_level_db": -2.4
+ },
+ "sha256": "123002e7cedc3996567718a1a9ed6c46e627596dc70fe28f9733b0f14b015ecf",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

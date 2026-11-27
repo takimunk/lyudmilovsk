@@ -1,0 +1,39 @@
+{
+ "name": "sc_fan_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_fan_01",
+ "pool": "sc_fan",
+ "file": "audio/sfx/spacecraft/sc_fan_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7111,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -18.75,
+ "params": {
+  "rps": 26.5,
+  "blades": 7,
+  "bpf_hz": 185.5
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -18.75,
+  "crest_db": 12.7,
+  "centroid_hz": 1186,
+  "rolloff85_hz": 1827,
+  "dc": 0.0,
+  "clipped": 0,
+  "seam_jump": 1.29,
+  "seam_jump_pct": 80.6,
+  "seam_energy": 1.82,
+  "seam_pct": 99.0,
+  "seam_level_db": -0.4
+ },
+ "sha256": "fd8fdba82de371096131bf43c8881bcb18a2184c0a690f9d98fe460dde2dc622",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

@@ -1,0 +1,32 @@
+{
+ "name": "sc_lamp_tick_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_lamp_tick_01",
+ "pool": "sc_lamp_tick",
+ "file": "audio/sfx/spacecraft/sc_lamp_tick_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7261,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.097,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -29.03,
+ "params": {
+  "scale": 1.058
+ },
+ "checks": {
+  "seconds": 0.097,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -29.03,
+  "crest_db": 23.0,
+  "centroid_hz": 5840,
+  "rolloff85_hz": 8524,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "68c41c529e673fccd9f90bd581ba60e9caa1b6f5172870dcef1409525c9c787f",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}
