@@ -128,6 +128,7 @@ the add-on is what brings these back).
 | `beach_castle` (hand-written in activities.json, docs/beach.md) | children 4 to 11, 10:00 to 19:00, by day, 17 °C and warmer; they also help the hero with his castle when he builds near them | the `beach` places, wandering a few metres while they dig |
 | `tend_allotment`, `water_allotment` | the four keepers of the allotment's beds, morning and evening, not in frost | `P-T2H2-ALLOTMENT`: two slots a bed at its lane side (reached along the lane: the slot's `path`), each with its `owner` |
 | `play_piano` | one in three of the musicians and teachers, one in thirty of the rest; 18:00 to 20:30, seldom | `P-HALL-STAGE`: the stool at the club hall's piano |
+| `soda_drink` | anybody 6 and over, 9:00 to 21:00 by day, 22 to 40 °C | `S-SODA` (kind `soda_machine`): one standing place at each soda-water automat, facing it; the drink manner with a cup (`docs/soda_machines.md`) |
 | `post_round` | the postwoman (`t_hernandez_lyudmila`), a duty 8:30 to 12:00 but Sunday, rain or not | `S-POST-ROUND`: 37 house doors, one after another |
 
 What the sim learnt for them (`PeopleSim`):

@@ -142,6 +142,13 @@ The club (the hero's computer club on the spur) is reached by the cable car from
 old stair up the spur's north slope from the town's south end (`L-CLUB-STAIR`, 36 m), and along the beach. Cable car
 stations in town: «academ» (T1), «amber» (T0), «zenit» (T3). See `links` in the JSON.
 
+## Street machines
+
+`"street_machines"`: small things that stand on the paving with no plot of their own (`STREET_MACHINES` in
+`tools/city_plan.py`). So far the six soda-water automats (`docs/soda_machines.md`). A row has `id`, `kind`, `building`
+(a type of `blender/city/buildings/`), `terrace`, `map` (the thing's middle), `front` (its origin, the paving in front),
+`yaw`, the names, and `ue`, `front_ue`. `tools/city/interiors.py` treats each as a place; `import_city.py` places them.
+
 ## Who builds what
 
 | Part | Thread |

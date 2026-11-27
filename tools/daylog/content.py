@@ -78,6 +78,7 @@ RULES = [
     # coins, scales and strips (docs/city_interiors.md): the payphones, the weighing machine and the fair's globe
     ("do", "tch_call", "phone_call"), ("do", "xk1_phone", "phone_call"),
     ("do", "xk3_weigh", "fortune"), ("do", "tch_globe", "fortune"),
+    ("do", "soda_plain", "soda"), ("do", "soda_syrup", "soda"),
 ]
 
 # --- topics: id, rank, slot, doodle, flags. Lines: one ({0} a name), many ({0} a name, {1} how many), plain.
@@ -327,6 +328,11 @@ TOPICS = [
          plain=[("Автомат выдал билетик с предсказанием. Положил в карман, на всякий случай.", "A machine gave me a fortune card. Put it in my pocket, just in case.", "機械から占いのカードが出てきた。念のため、ポケットに入れた。"),
                 ("Взвесился на остановке. Весы ещё и судьбу предсказали.", "Weighed myself at the bus stop. The scales told my fortune too.", "バス停で体重をはかった。体重計が運勢まで占ってくれた。"),
                 ("Билетик судьбы обещал что-то хорошее. Посмотрим.", "The fortune card promised something good. We'll see.", "運命のカードはいいことがあると言ってる。どうかな。")]),
+    dict(id="soda", rank=34,
+         plain=[("Пил газировку из автомата. Стакан один на всех, сполоснул как следует.", "Had soda water from the machine. One glass for everybody, so I rinsed it well.", "自動販売機で炭酸水を飲んだ。コップはみんなで一つ、よくすすいだ。"),
+                ("Взял с сиропом. Сироп дня угадать нельзя, только попробовать.", "Took it with syrup. You can't guess the syrup of the day, only taste it.", "シロップ入りにした。今日のシロップは当てられない、飲んでみるしかない。"),
+                ("Газировка колется в носу. В жару лучше ничего нет.", "Soda water prickles your nose. Nothing better in the heat.", "炭酸水は鼻がつんとする。暑い日にはこれが一番。"),
+                ("Автомат съел монетку. Стукнул сбоку, и он передумал.", "The machine ate my coin. I knocked it on the side and it changed its mind.", "自販機に小銭をのまれた。横をたたいたら、思い直してくれた。")]),
     dict(id="eat", rank=15, slot="item", doodle="item", filler=True,
          one=[("Ел — {0}. Вкусно.", "Ate: {0}. Tasty.", "食べたもの：{0}。おいしかった。"),
               ("На обед было: {0}.", "Lunch was: {0}.", "お昼は{0}。"),

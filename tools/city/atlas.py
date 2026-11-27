@@ -1664,6 +1664,57 @@ for _i in range(len(SIGNS_LATE)):
     CELLS.append((LATE[_i], 384, 96, (lambda i: lambda img, d, rnd, W, H: draw_sign_late(img, d, rnd, W, H, i))(_i)))
 
 
+# the street soda-water machines (blender/city/buildings/soda_machine.py, docs/soda_machines.md): packed last after the late
+# signs, in this order, so no older cell moves. Only their strip (x 1584.., y 3988..4096) is pasted into the committed jpg.
+SODA_CELLS = ["soda_sign", "soda_plates", "soda_broken", "soda_rinse"]
+LATE += SODA_CELLS
+
+
+def soda_sign(img, d, rnd, W, H):
+    """The lit head panel: white on red, «ГАЗИРОВАННАЯ ВОДА» in two words."""
+    d.rectangle((0, 0, W, H), fill=hx("B8282A"))
+    d.rectangle((W * 0.012, H * 0.07, W * 0.988, H * 0.93), outline=hx("F5EFE2"), width=max(2, int(H * 0.035)))
+    text_c(d, "ГАЗИРОВАННАЯ ВОДА", "dela", W / 2, H * 0.5, W * 0.9, H * 0.52, hx("F7F2E6"))
+    return grain(img, 3, 1201)
+
+
+def soda_plates(img, d, rnd, W, H):
+    """Two enamel plates over the coin slots: left «без сиропа 1 коп.», right «с сиропом 3 коп.»."""
+    d.rectangle((0, 0, W, H), fill=hx("2B2A28"))
+    for k, (top, price, bg) in enumerate((("БЕЗ СИРОПА", "1 коп.", hx("E9E4D6")), ("С СИРОПОМ", "3 коп.", hx("F0C94A")))):
+        x0 = W * (0.02 + 0.5 * k)
+        x1 = x0 + W * 0.46
+        d.rounded_rectangle((x0, H * 0.08, x1, H * 0.92), radius=int(H * 0.12), fill=bg, outline=hx("1E1B18"), width=max(2, int(H * 0.03)))
+        cx = (x0 + x1) / 2
+        text_c(d, top, "mpb", cx, H * 0.33, (x1 - x0) * 0.86, H * 0.28, hx("1E1B18"))
+        text_c(d, price, "dela", cx, H * 0.66, (x1 - x0) * 0.7, H * 0.34, hx("8C1E1E"))
+    return grain(img, 3, 1202)
+
+
+def soda_broken(img, d, rnd, W, H):
+    """A cardboard sign tucked in on bad days, in a hurried hand: «АВТОМАТ НЕ РАБОТАЕТ»."""
+    d.rectangle((0, 0, W, H), fill=hx("C9A979"))
+    for k in range(0, W, 9):
+        d.line([(k, 0), (k + rnd.uniform(-3, 3), H)], fill=hx("BE9D6C"), width=2)
+    text_c(d, "АВТОМАТ НЕ РАБОТАЕТ", "cavb", W / 2, H * 0.5, W * 0.9, H * 0.62, hx("2A2622"))
+    return grain(img, 4, 1203)
+
+
+def soda_rinse(img, d, rnd, W, H):
+    """The small plate by the glass washer: «Сполосни стакан» with an arrow down to it."""
+    d.rectangle((0, 0, W, H), fill=hx("E9E4D6"))
+    d.rectangle((W * 0.02, H * 0.08, W * 0.98, H * 0.92), outline=hx("1F3A5F"), width=max(2, int(H * 0.04)))
+    text_c(d, "СПОЛОСНИ СТАКАН", "mpb", W * 0.44, H * 0.5, W * 0.72, H * 0.42, hx("1F3A5F"))
+    ax = W * 0.88
+    d.polygon([(ax - H * 0.16, H * 0.38), (ax + H * 0.16, H * 0.38), (ax, H * 0.74)], fill=hx("C8452D"))
+    d.rectangle((ax - H * 0.05, H * 0.2, ax + H * 0.05, H * 0.4), fill=hx("C8452D"))
+    return grain(img, 3, 1204)
+
+
+for _n, _f in zip(SODA_CELLS, (soda_sign, soda_plates, soda_broken, soda_rinse)):
+    CELLS.append((_n, 384, 96, _f))
+
+
 @cell("exit_sign", 192, 96)
 def exit_sign(img, d, rnd, W, H):
     d.rectangle((0, 0, W, H), fill=hx("2E8B57"))

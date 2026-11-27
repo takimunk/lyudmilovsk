@@ -495,7 +495,7 @@ def resolve(thing, rules, defaults, by_plot_kind, plot, acts):
         props.update(r.get("props") or {})
         act = r.get("act", act)
         hours, days = r.get("hours", hours), r.get("days", days)
-        for k in ("collect", "closed"):
+        for k in ("collect", "closed", "months", "broken"):
             if r.get(k):
                 extra[k] = r[k]
         if r.get("topics"):
@@ -780,9 +780,12 @@ def opponents_at(regs, vs, plot):
 # procedures (docs/sanatorium_procedures.md): an act's "proc" is played as a short hands-on scene before the act runs
 PROC_STEPS = ("say", "pick", "pour", "sip", "breathe", "tap", "cut", "measure", "guest", "news")
 PROC_FIELDS = ("id", "title", "keys", "when", "steps", "good", "fair", "poor", "good_share", "fair_share", "collect", "vitals", "scene")
-PROC_STEP_FIELDS = ("do", "lines", "guests", "by_pick", "secs", "count", "every", "window", "in", "out", "mark", "minutes")
+PROC_STEP_FIELDS = ("do", "lines", "guests", "by_pick", "secs", "count", "every", "window", "in", "out", "mark", "minutes",
+                    "chance", "stop_below")
+# chance: the step is played by the scene's die, at most once a game day at a thing (FProcStep::Chance); stop_below: a
+# hands-on step scoring under it ends the scene (FProcStep::StopBelow)
 PROC_RANGES = {"secs": (0.5, 60), "count": (1, 24), "every": (0.4, 4.0), "window": (0.05, 1.8), "in": (1.0, 10.0), "out": (1.0, 12.0),
-               "minutes": (0, 120)}
+               "minutes": (0, 120), "chance": (0.01, 1.0), "stop_below": (0.05, 1.0)}
 # hands-on steps (the scene's result is the share of them done well)
 PROC_SCORED = ("pour", "sip", "breathe", "tap")
 
@@ -863,6 +866,8 @@ def build_proc(where, pr, strings):
                 err("%s: mark must be [low, high] of the cup, 0.2..0.98" % w)
             else:
                 o["mark"] = [float(m[0]), float(m[1])]
+        if "stop_below" in st and st["do"] not in PROC_SCORED:
+            err("%s: stop_below is for a hands-on step (%s)" % (w, ", ".join(PROC_SCORED)))
         if st["do"] == "sip" and o.get("window", 0.3) > o.get("every", 1.0) * 0.45:
             err("%s: the sip window must be under half the tick" % w)
         scored += st["do"] in PROC_SCORED
@@ -1394,8 +1399,8 @@ def build_tones(plan_places, reg):
 # ------------------------------------------------------------------ the plots
 
 def places(plan):
-    """Every plot with a building, and the promenade units (a room behind the sea wall's face, dressed as its variant; a unit
-    whose variant is not built yet: one counter at its door)."""
+    """Every plot with a building, the promenade units (a room behind the sea wall's face, dressed as its variant; a unit
+    whose variant is not built yet: one counter at its door) and the plan's street machines (a building on no plot)."""
     out = []
     for p in plan["plots"]:
         if not p.get("building"):
@@ -1420,6 +1425,12 @@ def places(plan):
         out.append({"id": u["id"], "kind": u["kind"], "building": "unit_" + u["kind"], "front": ue_m(plan, u["door"]), "yaw": u["yaw"],
                     "staff": u.get("staff") or [], "name_ru": u.get("name_ru", ""), "name_en": u.get("name_en", ""),
                     "export": export, "w": w, "d": 6.0, "unit": 1})
+    for m in plan.get("street_machines", []):
+        # a street machine (the soda-water automats, docs/soda_machines.md): a building type of its own on no plot, its
+        # origin at the plan's "front" (the paving in front of it); rules name its things <type>/<thing id>
+        out.append({"id": m["id"], "kind": m["kind"], "building": m["building"], "front": ue_m(plan, m["front"]), "yaw": m["yaw"],
+                    "staff": [], "name_ru": m.get("name_ru", ""), "name_en": m.get("name_en", ""),
+                    "export": building_export(m["building"], m["id"]), "w": 1.0, "d": 1.0, "street": 1})
     for e in extra_places():
         # an entry may bring its own staff (the street's vendors, docs/street_life.md) and its export inline (a stall with
         # one thing: no building module behind it)
@@ -1434,7 +1445,8 @@ def extra_places():
 
 
 def all_plot_ids(plan):
-    return {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])} | {e["id"] for e in extra_places()}
+    return {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])} | {e["id"] for e in extra_places()} | \
+        {m["id"] for m in plan.get("street_machines", [])}
 
 
 def staff_variant(pl, props, kind, act, acts, tid):
@@ -1764,12 +1776,15 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
                     rec["topics"] = ids
                 if len(set(ids) | set(a.get("topics", []))) > MAX_TOPICS:
                     err("%s: more than %d topics (the act's and the rule's)" % (tid, MAX_TOPICS))
+            season_shut = season_rules(tid, extra, ex, rec)
             # what it says while its plot is shut: the thing's rule, its act's "closed", the closed_by of its plot, type or plot kind
             closed = extra.get("closed") or a.get("closed")
             for scope in (pl["id"], pl["building"], pl["kind"]):
                 cb = closed_by.get(scope) or {}
                 closed = closed or cb.get(kind) or cb.get("*")
-            if closed and list(hours) != [0, 24]:
+            if season_shut and not closed:
+                err("%s: shut by months / broken days but says nothing then (give it a \"closed\")" % tid)
+            if closed and (list(hours) != [0, 24] or season_shut):
                 rec["closed"] = closed_act(closed, acts, strings, tid)
                 if not rec["closed"]:
                     del rec["closed"]
@@ -1795,6 +1810,38 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
             else:
                 skipped["sits standing"] += 1
     return things, summary, skipped
+
+
+def season_rules(tid, extra, export, rec):
+    """A rule's "months" ([1..12]: it works only then) and "broken" (0..0.5: the share of days it stands broken, by the die of
+    its building's dressing set "broken", which must show on the same days: the same chance and months). Written into the
+    thing's record; True when the thing may be shut by them (its closed act is needed then)."""
+    shut = False
+    if "months" in extra:
+        m = extra["months"]
+        if not (isinstance(m, list) and m and all(isinstance(v, int) and not isinstance(v, bool) and 1 <= v <= 12 for v in m)
+                and len(set(m)) == len(m) < 12):
+            err("%s: months must be a list of month numbers 1..12 (not all twelve)" % tid)
+        else:
+            rec["months"] = sorted(m)
+            shut = True
+    if "broken" in extra:
+        b = extra["broken"]
+        if isinstance(b, bool) or not isinstance(b, (int, float)) or not 0 < b <= 0.5:
+            err("%s: broken must be a share of days 0..0.5" % tid)
+        else:
+            rec["broken"] = float(b)
+            shut = True
+            sign = next((d for d in (export or {}).get("dress", []) if d.get("id") == "broken"), None)
+            if not sign:
+                err("%s: broken days but its building has no dressing set \"broken\" (the sign the game shows those days)" % tid)
+            else:
+                when = sign.get("when") or {}
+                if abs(float(when.get("chance", 1.0)) - float(b)) > 1e-6:
+                    err("%s: broken %.3f but the building's \"broken\" set shows on %.3f of the days" % (tid, b, when.get("chance", 1.0)))
+                if rec.get("months") and sorted(when.get("months") or []) != rec["months"]:
+                    err("%s: months %s but the building's \"broken\" set is for months %s" % (tid, rec["months"], when.get("months")))
+    return shut
 
 
 def seat_spot(pl, spots, seat_local, pos):

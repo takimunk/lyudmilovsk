@@ -564,6 +564,16 @@
    "event": "do",
    "target": "tch_globe",
    "topic": "fortune"
+  },
+  {
+   "event": "do",
+   "target": "soda_plain",
+   "topic": "soda"
+  },
+  {
+   "event": "do",
+   "target": "soda_syrup",
+   "topic": "soda"
   }
  ],
  "topics": [
@@ -1149,6 +1159,17 @@
    "one": 0,
    "many": 0,
    "plain": 3
+  },
+  {
+   "id": "soda",
+   "rank": 34,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 4
   },
   {
    "id": "eat",
