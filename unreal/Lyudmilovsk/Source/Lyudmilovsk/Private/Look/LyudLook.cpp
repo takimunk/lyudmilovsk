@@ -230,7 +230,7 @@ void ULyudLook::Tick(float DeltaTime)
 			SayPerson = -1;
 			UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(World);
 			ULyudTownTalkSubsystem* Talk = ULyudTownTalkSubsystem::Get(World);
-			AActor* Body = Life ? Life->BodyFor(Person) : nullptr;
+			AActor* Body = Life ? Life->GetShownBody(Person) : nullptr;
 			if (Body && Talk && FVector::Dist(Body->GetActorLocation(), Hero->GetActorLocation()) < SayWithin && Talk->SayLine(Body, SayKey, Person))
 			{
 				const double Now = Day();
