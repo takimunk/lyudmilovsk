@@ -263,10 +263,27 @@ namespace WeatherTest
 				}
 			}
 		});
-		const FRainCount C = CountRain(Calm, Minds), G = CountRain(Blown, Minds);
-		std::printf("  %d species find 11 m/s too much; calm: %d of %d of them in the open; half an hour into the gale: %d of %d (crouched %.1f%% of their sitting time)\n",
-			Kinds, C.Open, C.Land, G.Open, G.Land, 100.f * Crouched / std::max(1L, Seen));
-		Check(C.Land > 100 && G.Land > 100 && G.Open * C.Land * 3 < C.Open * G.Land * 2, "a steady gale moves the small birds out of the open within half an hour (a third or more of them)");
+		// out in the wind as the bird life has it (BirdSim.cpp IsExposed): a street is in the lee of its houses
+		auto Count = [&](const FWorld& W, int& Exposed, int& Land)
+		{
+			Exposed = Land = 0;
+			for (const FBird& B : W.Birds)
+			{
+				if (B.bGone || B.Site < 0 || !Minds[B.Species] || IsAirborne(B.Act))
+				{
+					continue;
+				}
+				const EHabitat K = W.Sites[B.Site].Kind;
+				Land++;
+				Exposed += IsOpen(K) && K != EHabitat::Street;
+			}
+		};
+		int CE, CL, GE, GL;
+		Count(Calm, CE, CL);
+		Count(Blown, GE, GL);
+		std::printf("  %d species find 11 m/s too much; calm: %d of %d of them out in the wind; half an hour into the gale: %d of %d (crouched %.1f%% of their sitting time)\n",
+			Kinds, CE, CL, GE, GL, 100.f * Crouched / std::max(1L, Seen));
+		Check(CL > 100 && GL > 100 && GE * CL * 4 < CE * GL * 3, "a steady gale moves the small birds out of the wind within half an hour (a quarter or more of them)");
 	}
 
 	// --- heads to the wind -----------------------------------------------------------------------------
