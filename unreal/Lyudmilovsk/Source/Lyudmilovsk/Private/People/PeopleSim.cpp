@@ -2636,6 +2636,16 @@ namespace LyudPeople
 		{
 			return -1e9f;
 		}
+		if (A.OnceBit >= 0 && !Meet)
+		{
+			// a once-a-day errand (the pension, the market, the books back) waits while their date, the household's outing
+			// or today's plan is due: done later in the day
+			const auto Due = [this](int MeetAct, int OnDay, float AtH) { return MeetAct >= 0 && (OnDay < 0 || OnDay == Weekday) && Hour > AtH - 0.5f && Hour < AtH + 1.25f; };
+			if (Due(P.DateAct, P.DateDay, P.DateHour) || Due(P.OutingAct, P.OutingDay, P.OutingHour) || Due(P.PlanAct, -1, P.PlanHour))
+			{
+				return -1e9f;
+			}
+		}
 		if (A.bSunset && !(Hour > Sunset - 0.45f && Hour < Sunset + 0.2f))
 		{
 			return -1e9f;

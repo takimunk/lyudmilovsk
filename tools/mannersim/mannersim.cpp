@@ -102,7 +102,7 @@ struct FDay
 	bool bDates = false;
 	std::map<std::string, int> DateHalf;
 	int DatesClose = 0;         // of the kept: side by side (within 3 m) at some minute
-	int AllDates = 0, Dates = 0, DatesKept = 0;      // pairs of friends with a weekly date; those whose day is this Wednesday; kept
+	int AllDates = 0, Dates = 0, DatesKept = 0, DatesIll = 0;      // pairs of friends with a weekly date; those whose day is this Wednesday; kept
 	// ten minutes of something in the sky at 21:00: people out of doors, and those of them looking up, pointing or photographing,
 	// during it and in the ten minutes before; and an arm pointed at the sky at any other time
 	int SkyOut = 0, SkyUp = 0, BeforeOut = 0, BeforeUp = 0, PointNoShow = 0;
@@ -130,6 +130,7 @@ static void RunDay(FDay& D)
 	int LastHour = -1;
 	std::vector<char> RitualKept;
 	std::vector<char> DateKept;
+	std::vector<char> DateIll;      // (a date with one of the two down with a cold today is off: docs/town_life.md "The days")
 	for (double T = 0.0; T < 19.0 * 3600.0; T += Dt)        // till midnight
 	{
 		C.Seconds += Dt;
@@ -143,8 +144,13 @@ static void RunDay(FDay& D)
 		{
 			// friends whose weekly date is today: the two of them at it together
 			DateKept.resize(W.People.size(), 0);
+			DateIll.resize(W.People.size(), 0);
 			for (const FPerson& P : W.People)
 			{
+				if (P.DateWith > P.Id && P.DateDay == W.Weekday && ((P.Today | W.People[(size_t)P.DateWith].Today) & TodayCold))
+				{
+					DateIll[(size_t)P.Id] = 1;
+				}
 				if (P.DateWith > P.Id && P.DateDay == W.Weekday && P.State == EState::Doing && P.Activity == P.DateAct)
 				{
 					const FPerson& F = W.People[(size_t)P.DateWith];
@@ -343,7 +349,9 @@ static void RunDay(FDay& D)
 	for (const FPerson& P : W.People)
 	{
 		D.AllDates += P.DateWith > P.Id ? 1 : 0;
-		D.Dates += P.DateWith > P.Id && P.DateDay == 2 ? 1 : 0;
+		const bool bIll = (size_t)P.Id < DateIll.size() && DateIll[(size_t)P.Id];
+		D.Dates += P.DateWith > P.Id && P.DateDay == 2 && !bIll ? 1 : 0;
+		D.DatesIll += P.DateWith > P.Id && P.DateDay == 2 && bIll ? 1 : 0;
 		D.DatesKept += P.DateWith > P.Id && (size_t)P.Id < DateKept.size() && DateKept[(size_t)P.Id] ? 1 : 0;
 		D.DatesClose += P.DateWith > P.Id && (size_t)P.Id < DateKept.size() && DateKept[(size_t)P.Id] == 2 ? 1 : 0;
 	}
@@ -1282,7 +1290,7 @@ int main(int Argc, char** Argv)
 		Mild.SkyUp, Mild.SkyOut, Mild.BeforeUp, Mild.BeforeOut);
 	CHECK(Mild.PointNoShow == 0, "nobody points at an empty sky (%d)", Mild.PointNoShow);
 	CHECK(Mild.AllDates > 250 && Mild.Dates > 30 && Mild.DatesKept * 5 > Mild.Dates * 2,
-		"friends keep their weekly date (%d of the %d pairs whose day it is met; %d pairs in the town)", Mild.DatesKept, Mild.Dates, Mild.AllDates);
+		"friends keep their weekly date (%d of the %d pairs whose day it is met, %d more off with a cold; %d pairs in the town)", Mild.DatesKept, Mild.Dates, Mild.DatesIll, Mild.AllDates);
 	CHECK(Warm.FrontEvening > Mild.FrontEvening && Warm.FrontEvening * 2 > Frost.FrontEvening * 3,
 		"a warm evening brings the town out to the sea front (%d person-samples warm, %d mild, %d in the frost)", Warm.FrontEvening, Mild.FrontEvening,
 		Frost.FrontEvening);
