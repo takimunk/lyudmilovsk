@@ -331,6 +331,17 @@
   {"id": "city.q.unit_picnic.4", "group": "interiors", "name": "dev.tp.city.q.unit_picnic.4", "x": 76.35, "y": 634.39, "z": -3950.0, "yaw": -2.7},
   {"id": "city.q.unit_cats.1", "group": "interiors", "name": "dev.tp.city.q.unit_cats.1", "x": 70.57, "y": 395.8, "z": -3950.0, "yaw": 177.1},
   {"id": "city.q.unit_cats.2", "group": "interiors", "name": "dev.tp.city.q.unit_cats.2", "x": 73.02, "y": 604.1, "z": -3950.0, "yaw": 177.4},
-  {"id": "city.q.unit_cats.3", "group": "interiors", "name": "dev.tp.city.q.unit_cats.3", "x": 80.12, "y": 749.01, "z": -3950.0, "yaw": 176.5}
+  {"id": "city.q.unit_cats.3", "group": "interiors", "name": "dev.tp.city.q.unit_cats.3", "x": 80.12, "y": 749.01, "z": -3950.0, "yaw": 176.5},
+  {"id": "city.pt.tch_cooler", "group": "interiors", "name": "dev.tp.city.pt.tch_cooler", "x": -213.97, "y": 857.9, "z": -2900.0, "yaw": -94.3, "time": "09:00"},
+  {"id": "city.pt.tch_fountain", "group": "interiors", "name": "dev.tp.city.pt.tch_fountain", "x": 99.41, "y": 641.52, "z": -3950.0, "yaw": 87.3, "time": "09:00"},
+  {"id": "city.pt.tch_fscale", "group": "interiors", "name": "dev.tp.city.pt.tch_fscale", "x": 109.89, "y": 801.81, "z": -3950.0, "yaw": 176.2, "time": "09:00"},
+  {"id": "city.pt.tch_globe", "group": "interiors", "name": "dev.tp.city.pt.tch_globe", "x": 48.32, "y": 1182.76, "z": -3615.0, "yaw": 33.0, "time": "12:00"},
+  {"id": "city.pt.tch_lib_door", "group": "interiors", "name": "dev.tp.city.pt.tch_lib_door", "x": -434.19, "y": 980.16, "z": -2200.0, "yaw": -5.6, "time": "11:00"},
+  {"id": "city.pt.tch_magazine", "group": "interiors", "name": "dev.tp.city.pt.tch_magazine", "x": -540.01, "y": 1182.76, "z": -1500.0, "yaw": 174.2},
+  {"id": "city.pt.tch_payphone", "group": "interiors", "name": "dev.tp.city.pt.tch_payphone", "x": 80.68, "y": 748.92, "z": -3915.0, "yaw": -93.5, "time": "11:00"},
+  {"id": "city.pt.tch_scales", "group": "interiors", "name": "dev.tp.city.pt.tch_scales", "x": -211.82, "y": 853.13, "z": -2900.0, "yaw": 175.7, "time": "09:00"},
+  {"id": "city.pt.tch_seabattle", "group": "interiors", "name": "dev.tp.city.pt.tch_seabattle", "x": -186.77, "y": 1231.96, "z": -2460.0, "yaw": 92.9, "time": "13:00"},
+  {"id": "city.pt.tch_store_door", "group": "interiors", "name": "dev.tp.city.pt.tch_store_door", "x": -91.4, "y": 968.69, "z": -3617.0, "yaw": 174.7, "time": "10:00"},
+  {"id": "city.pt.tch_strips", "group": "interiors", "name": "dev.tp.city.pt.tch_strips", "x": 99.12, "y": 642.62, "z": -3950.0, "yaw": 177.3, "time": "09:00"}
  ]
 }
