@@ -87,7 +87,10 @@ private:
 	bool LoadData();
 	int32 Today() const;
 	double HourNow() const;
+	/** HourNow on the clock of the day the round began (over 24 after midnight). */
+	double RoundHour() const;
 	int32 RoundTerrace = 0;
+	int32 RoundDay = 0;
 
 	// the papers in flight and on the steps: a few meshes on one actor, reused
 	struct FFlight
