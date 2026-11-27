@@ -691,7 +691,9 @@ void ULyudMusic::TickRadio(const FVector& Hero, float DeltaTime)
 	// a record heard nearby wins over the radio
 	if (!R || bDiscHeard)
 	{
-		if (Radio && (Radio->IsPlaying() || !RadioThing.IsEmpty()))
+		// once, as it goes quiet: asked again four times a second while the fade runs (it still IsPlaying), each FadeOut
+		// started the fade and its stop timer over, so the radio never stopped and kept its voice, nearly silent
+		if (Radio && !RadioThing.IsEmpty())
 		{
 			Radio->FadeOut(0.6f, 0.f);
 		}
