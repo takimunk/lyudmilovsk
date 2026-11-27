@@ -16,7 +16,9 @@
 #   git lfs pull --include=unreal/Lyudmilovsk/Content/AnimalsData/animal_world.bin,unreal/Lyudmilovsk/Content/BirdsData/bird_world.bin
 # Without them (a checkout without LFS has only pointer files) the rows that need the animals' grid (animalsim, barksim,
 # mannersim) are SKIP "needs LFS", not run: some of them would exit 0 having checked nothing.
-# Known on main: birdsim test ~6 failures; instrumentsim's cost check (< 60 ms) can fail on a loaded machine.
+# Known on main: birdsim test ~6 failures; instrumentsim's cost check (< 60 ms) can fail on a loaded machine;
+# gen.town_life does not give the committed town back here (not even at the commit that wrote it: another shuffle of
+# jobs and friends), so do not commit its output from this row; check_data and check_localization list data problems.
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT" || exit 1
@@ -33,7 +35,7 @@ while [ $# -gt 0 ]; do
 	--keep) KEEP=1 ;;
 	--no-werror) WERROR=0 ;;
 	--only) shift; ONLY="${1:-}" ;;
-	-h|--help) sed -n '2,19p' "$0"; exit 0 ;;
+	-h|--help) sed -n '2,21p' "$0"; exit 0 ;;
 	*) echo "unknown option $1 (see --help)"; exit 2 ;;
 	esac
 	shift
@@ -236,12 +238,13 @@ generator gen.city_plan       "$CONTENT/City/city_plan.json"                    
 generator gen.academ_fountain "$CONTENT/Academgorodok/fountain.json"             python3 tools/academ_fountain.py
 generator gen.academ_wires    "$CONTENT/BirdsData/wires.json"                    python3 tools/academ_wires.py
 generator gen.restaurant_seats "$CONTENT/Restaurant/seats.json"                  python3 tools/restaurant/seats.py
-generator gen.town_life       "$CONTENT/PeopleData $CONTENT/Localization/town"   python3 tools/town/town_life.py
+# (town_life.py also runs its add-ons and build_reading.py: the pets' and the book club's files are its output too)
+generator gen.town_life       "$CONTENT/PeopleData $CONTENT/Localization/town $CONTENT/AnimalsData/pets.json $CONTENT/Localization/pets $CONTENT/Reading/reading.json" python3 tools/town/town_life.py
 generator gen.barks           "$CONTENT/Dialogue/town_barks.txt $CONTENT/Localization/barks" python3 tools/barks/build_barks.py
 generator gen.letters         "$CONTENT/Letters/letters.json $CONTENT/Localization/letters" python3 tools/letters/build_letters.py
 generator gen.friends         "$CONTENT/PeopleData/friends.json $CONTENT/Localization/friends" python3 tools/friends/build_friends.py
 generator gen.weather_pull    "$CONTENT/PeopleData/weather_pull.json" python3 tools/town/weather_pull.py
-generator gen.reading         "$CONTENT/Reading/reading.json $CONTENT/Localization/reading" python3 tools/reading/build_reading.py
+generator gen.reading         "$CONTENT/Reading/reading.json $CONTENT/Localization/reading $CONTENT/PeopleData" python3 tools/reading/build_reading.py
 generator gen.garden          "$CONTENT/Garden/garden.json $CONTENT/Localization/garden" python3 tools/garden/build_garden.py
 generator gen.strings         "$CONTENT/Localization/strings_ru.json $CONTENT/Localization/strings_en.json $CONTENT/Localization/strings_ja.json" \
 	bash -c 'python3 tools/restaurant/strings.py && python3 tools/lobby_strings.py && python3 tools/smoking_strings.py && python3 tools/characters/nao_strings.py'
