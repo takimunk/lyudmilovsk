@@ -123,7 +123,7 @@
  "city.myroom.ui.nothing.frame": {
   "ru": "На гвоздь пока нечего повесить. Подойдёт диплом, пластинка, газета или свой снимок.",
   "en": "Nothing to hang on the nail yet. A diploma, a record, a newspaper or a print of my own will do.",
-  "ja": "まだ釘に掛けるものがない。賞状やレコード、新聞、自分の写真が合う。"
+  "ja": "まだ釘に掛けるものがない。賞状やレコード、新聞、自分で撮った写真が合う。"
  },
  "city.myroom.ui.nothing.shelf": {
   "ru": "На полку пока нечего поставить.",
@@ -318,7 +318,7 @@
  "city.myroom.bed.cold.1": {
   "ru": "Батарея у кровати еле тёплая. Положил поверх одеяла куртку и свернулся, как Мару.",
   "en": "The radiator by the bed was barely warm. I put my jacket over the blanket and curled up like Maru.",
-  "ja": "ベッドのそばの暖房はほとんどぬるい。毛布の上に上着を掛けて、マルのように丸くなった。"
+  "ja": "ベッドのそばの暖房は、かろうじてぬくもりがある程度だ。毛布の上に上着を掛けて、マルのように丸くなった。"
  },
  "city.myroom.bed.summer.1": {
   "ru": "Жарко. Спал поверх одеяла, а дверь в холл оставил открытой, чтобы тянуло прохладой.",
@@ -387,17 +387,17 @@
  },
  "city.myroom.pot.droops": {
   "ru": "{0}: листья повисли. Не поливал уже {1} дн. Надо полить.",
-  "en": "{0}: its leaves hang. No water for {1} days now. It needs watering.",
+  "en": "{0}: the leaves are drooping. No water for {1} days now. It needs watering.",
   "ja": "{0}：葉がしおれている。もう{1}日水をやっていない。水をやらないと。"
  },
  "city.myroom.pot.revived": {
-  "ru": "Полил. {0} пил долго, земля шипела. К утру листья поднимутся.",
+  "ru": "Полил. {0} пьёт и пьёт, земля шипит. К утру листья поднимутся.",
   "en": "Watered. {0} drank for a long time, the soil hissed. The leaves will be up by morning.",
   "ja": "水をやった。{0}は長いこと水を吸い、土がしゅうっと鳴った。朝には葉が起き上がるだろう。"
  },
  "city.myroom.pot.minded.1": {
-  "ru": "Под горшком записка от хозяина: «Полил твой {0}. Цветы не виноваты, что ты гуляешь».",
-  "en": "A note from the owner under the pot: \"Watered your {0}. It is not the plant's fault you are out and about.\"",
+  "ru": "Под горшком записка от хозяина: «{0}: полито. Цветы не виноваты, что ты гуляешь».",
+  "en": "A note from the owner under the pot: \"Watered your {0}. It's not the plant's fault you're always out.\"",
   "ja": "鉢の下にオーナーのメモ。「君の{0}に水をやった。君が出歩いているのは花のせいじゃない」"
  },
  "city.myroom.pot.minded.2": {
@@ -406,8 +406,8 @@
   "ja": "鉢の土が濡れていて、そばにオーナーのマグが置いてある。{0}は僕のいない間に水をもらった。"
  },
  "city.myroom.pot.minded.3": {
-  "ru": "На блюдце записка: «{0} опять сох. Поливаю в последний раз. Шучу, не в последний».",
-  "en": "A note on the saucer: \"{0} was dry again. This is the last time I water it. Joking, it is not.\"",
+  "ru": "На блюдце записка: «{0} опять пересыхает. Поливаю в последний раз. Шучу, не в последний».",
+  "en": "A note on the saucer: \"{0} was dry again. Last time I'm watering it. Joking, it isn't.\"",
   "ja": "受け皿にメモ。「{0}がまた乾いていた。水をやるのはこれが最後だ。冗談、最後じゃない」"
  },
  "dev.action.home.plant_dry": {
