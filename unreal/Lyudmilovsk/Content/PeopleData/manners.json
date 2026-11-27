@@ -58,6 +58,9 @@
     {"id": "water", "poses": ["stand"], "doing": ["water_allotment"], "seconds": [25, 60], "weight": 9.0, "cooldown": 5, "prop": "watering_can"},
     {"id": "weed", "poses": ["stand"], "doing": ["tend_allotment", "water_allotment"], "seconds": [10, 25], "weight": 6.0, "cooldown": 8},
 
+    {"id": "sway", "poses": ["stand"], "doing": ["dance_evening"], "at": ["dance_floor"], "seconds": [20, 60], "weight": 12.0, "cooldown": 3},
+    {"id": "knit", "poses": ["sit"], "habit": "knitter", "doing": ["dance_watch"], "seconds": [180, 600], "weight": 2.0, "cooldown": 600, "prop": "knitting"},
+    {"id": "drink", "poses": ["sit"], "doing": ["dance_watch"], "seconds": [40, 100], "weight": 1.0, "cooldown": 400, "prop": "cup"},
     {"id": "wave", "react": 1, "cooldown": 90},
     {"id": "nod", "react": 1, "cooldown": 90}
   ]

@@ -1,240 +1,240 @@
 {
- "city.dnc.p.ingrid": {
-  "ru": "Ингрид Корхонен",
-  "en": "Ingrid Korhonen",
-  "ja": "イングリッド・コルホネン"
+ "city.dnc.p.lan": {
+  "ru": "Лан Дюбуа",
+  "en": "Lan Dubois",
+  "ja": "ラン・デュボワ"
  },
- "city.dnc.p.ruta": {
-  "ru": "Рута Шарма",
-  "en": "Rūta Sharma",
-  "ja": "ルータ・シャルマ"
+ "city.dnc.p.siobhan": {
+  "ru": "Шивон Мамедова",
+  "en": "Siobhán Mamedova",
+  "ja": "シボーン・マメドワ"
  },
- "city.dnc.p.zuzana": {
-  "ru": "Зузана Беридзе",
-  "en": "Zuzana Beridze",
-  "ja": "ズザナ・ベリゼ"
+ "city.dnc.p.lucia": {
+  "ru": "Лусия Коваленко",
+  "en": "Lucía Kovalenko",
+  "ja": "ルシア・コヴァレンコ"
+ },
+ "city.dnc.p.malgorzata": {
+  "ru": "Малгожата Свободова",
+  "en": "Małgorzata Svobodová",
+  "ja": "マウゴジャタ・スヴォボドヴァー"
+ },
+ "city.dnc.p.aigerim": {
+  "ru": "Айгерим Чжан",
+  "en": "Aigerim Zhang",
+  "ja": "アイゲリム・チャン"
+ },
+ "city.dnc.p.akosua": {
+  "ru": "Акосуа Романо",
+  "en": "Akosua Romano",
+  "ja": "アコスア・ロマーノ"
  },
  "city.dnc.p.marketa": {
-  "ru": "Маркета Юханссон",
-  "en": "Markéta Johansson",
-  "ja": "マルケタ・ヨハンソン"
+  "ru": "Маркета Чжоу",
+  "en": "Markéta Zhou",
+  "ja": "マルケタ・チョウ"
  },
- "city.dnc.p.oksana": {
-  "ru": "Оксана Чжан",
-  "en": "Oksana Zhang",
-  "ja": "オクサナ・チャン"
+ "city.dnc.p.ursula": {
+  "ru": "Урсула Виртанен",
+  "en": "Ursula Virtanen",
+  "ja": "ウルズラ・ヴィルタネン"
  },
- "city.dnc.p.reka": {
-  "ru": "Река Такахаси",
-  "en": "Réka Takahashi",
-  "ja": "レーカ・高橋"
+ "city.dnc.p.yumiko": {
+  "ru": "Юмико Янушкевич",
+  "en": "Yumiko Yanushkevich",
+  "ja": "ヤヌシケヴィチ由美子"
  },
- "city.dnc.p.colette": {
-  "ru": "Колетт Маклауд",
-  "en": "Colette MacLeod",
-  "ja": "コレット・マクラウド"
+ "city.dnc.p.aigerim_h": {
+  "ru": "Айгерим Эрнандес",
+  "en": "Aigerim Hernández",
+  "ja": "アイゲリム・エルナンデス"
  },
- "city.dnc.p.selam": {
-  "ru": "Селам Лунд",
-  "en": "Selam Lund",
-  "ja": "セラム・ルンド"
+ "city.dnc.p.ama": {
+  "ru": "Ама Хуан",
+  "en": "Ama Huang",
+  "ja": "アマ・ホアン"
  },
- "city.dnc.p.maarja": {
-  "ru": "Маарья Хайле",
-  "en": "Maarja Haile",
-  "ja": "マーリャ・ハイレ"
+ "city.dnc.p.femke": {
+  "ru": "Фемке Бекеле",
+  "en": "Femke Bekele",
+  "ja": "フェムケ・ベケレ"
  },
- "city.dnc.p.madison": {
-  "ru": "Мэдисон Исикава",
-  "en": "Madison Ishikawa",
-  "ja": "マディソン・石川"
- },
- "city.dnc.p.zsofia": {
-  "ru": "Жофия Феррари",
-  "en": "Zsófia Ferrari",
-  "ja": "ジョーフィア・フェラーリ"
- },
- "city.dnc.p.aiko": {
-  "ru": "Айко Богданович",
-  "en": "Aiko Bogdanovich",
-  "ja": "ボグダノヴィチ愛子"
- },
- "city.dnc.pl.ingrid.hello": {
+ "city.dnc.pl.lan.hello": {
   "ru": "Я? Ой. Я вообще-то пришла с подругой посмотреть…",
   "en": "Me? Oh. I actually came with a friend, just to watch…",
   "ja": "わたし？　あ…友だちと見に来ただけなんだけど…"
  },
- "city.dnc.pl.ingrid.win": {
+ "city.dnc.pl.lan.win": {
   "ru": "Спасибо. Я думала, меня сегодня никто не пригласит. А оказалось — не страшно.",
   "en": "Thank you. I thought nobody would ask me tonight. It turned out not to be scary at all.",
   "ja": "ありがとう。今夜は誰にも誘われないと思ってた。こわくなかった。"
  },
- "city.dnc.pl.ingrid.lose": {
+ "city.dnc.pl.lan.lose": {
   "ru": "Простите, я… лучше постою. Может быть, в следующий раз.",
   "en": "Sorry, I'd… rather stand. Maybe next time.",
   "ja": "ごめんなさい…今日は立ってる。また今度ね。"
  },
- "city.dnc.pl.ruta.hello": {
+ "city.dnc.pl.siobhan.hello": {
   "ru": "Ну наконец-то! Я уже думала сама тебя пригласить.",
   "en": "At last! I was about to ask you myself.",
   "ja": "やっと来た！　こっちから誘おうかと思ってた。"
  },
- "city.dnc.pl.ruta.win": {
+ "city.dnc.pl.siobhan.win": {
   "ru": "Вот это я понимаю — вальс! Ещё один, пока пластинку не сменили?",
   "en": "Now that's what I call a waltz! One more before they change the record?",
   "ja": "これぞワルツ！　レコードが替わる前にもう一曲どう？"
  },
- "city.dnc.pl.ruta.lose": {
+ "city.dnc.pl.siobhan.lose": {
   "ru": "Скучно приглашаешь. Придумай что-нибудь — и приходи.",
   "en": "That's a boring way to ask. Think of something and come back.",
   "ja": "誘い方が退屈。何か考えてからまた来て。"
  },
- "city.dnc.pl.zuzana.hello": {
+ "city.dnc.pl.lucia.hello": {
   "ru": "Угадай, о чём мы с подругой сейчас смеялись. Не угадаешь — не пойду.",
   "en": "Guess what my friend and I were laughing about. Wrong guess, no dance.",
   "ja": "友だちと何で笑ってたか当ててみて。外れたら踊らない。"
  },
- "city.dnc.pl.zuzana.win": {
+ "city.dnc.pl.lucia.win": {
   "ru": "Ты не наступил мне ни разу. Подруга мне проспорила пирог.",
   "en": "You didn't tread on me once. My friend owes me a pie on that bet.",
   "ja": "一度も足を踏まなかった。友だちとの賭けはわたしの勝ち、パイ一個。"
  },
- "city.dnc.pl.zuzana.lose": {
+ "city.dnc.pl.lucia.lose": {
   "ru": "Мимо! Спроси ещё раз после полечки.",
   "en": "Missed! Ask again after the polka.",
   "ja": "はずれ！　ポルカのあとでもう一回どうぞ。"
  },
- "city.dnc.pl.marketa.hello": {
+ "city.dnc.pl.malgorzata.hello": {
   "ru": "Я плохо танцую. Честно. Ты точно хочешь?",
   "en": "I'm a bad dancer. Honestly. Are you sure?",
   "ja": "わたし、踊るの下手なの。本当に。それでもいい？"
  },
- "city.dnc.pl.marketa.win": {
+ "city.dnc.pl.malgorzata.win": {
   "ru": "Я считала про себя: раз-два-три. Ты, кажется, тоже. Получилось!",
   "en": "I was counting to myself: one-two-three. I think you were too. It worked!",
   "ja": "心の中でワン・ツー・スリーって数えてた。あなたもでしょ。うまくいった！"
  },
- "city.dnc.pl.marketa.lose": {
+ "city.dnc.pl.malgorzata.lose": {
   "ru": "Нет-нет, я не умею, я только посмотреть. Извини.",
   "en": "No, no, I can't, I'm only watching. Sorry.",
   "ja": "ううん、踊れないの、見てるだけ。ごめんね。"
  },
- "city.dnc.pl.oksana.hello": {
-  "ru": "Давай. Только я после смены, ноги гудят.",
-  "en": "All right. Only I've just finished my shift, my feet are humming.",
-  "ja": "いいよ。ただ仕事あがりで、足がじんじんしてる。"
+ "city.dnc.pl.aigerim.hello": {
+  "ru": "Давай. Только я после волейбола, ноги гудят.",
+  "en": "All right. Only I've just come from volleyball, my feet are humming.",
+  "ja": "いいよ。ただバレーの練習帰りで、足がじんじんしてる。"
  },
- "city.dnc.pl.oksana.win": {
-  "ru": "Хорошо прошлись. Как по чеку — всё сошлось до копейки.",
-  "en": "That went well. Like a till receipt: it all added up to the kopeck.",
-  "ja": "いい踊りだった。レシートみたいに一円の狂いもなし。"
+ "city.dnc.pl.aigerim.win": {
+  "ru": "Хорошо прошлись. Как задачка по алгебре — всё сошлось с ответом.",
+  "en": "That went well. Like an algebra problem: it all came out to the answer.",
+  "ja": "いい踊りだった。代数の問題みたいに、答えがぴったり合った。"
  },
- "city.dnc.pl.oksana.lose": {
+ "city.dnc.pl.aigerim.lose": {
   "ru": "Не сейчас. Дай дух перевести, следующий танец твой.",
   "en": "Not now. Let me get my breath; the next one's yours.",
   "ja": "今はだめ。ひと息つかせて。次の曲はあなたの番。"
  },
- "city.dnc.pl.reka.hello": {
+ "city.dnc.pl.akosua.hello": {
   "ru": "Ты смотришь так, будто собираешься что-то сказать. Говори.",
   "en": "You look as if you're about to say something. Go on.",
   "ja": "何か言いたそうな顔してる。言ってごらん。"
  },
- "city.dnc.pl.reka.win": {
-  "ru": "С тобой легко. Как на перроне: все спешат, а мы в такт.",
-  "en": "You're easy to dance with. Like the platform: everyone rushing, and we're in step.",
-  "ja": "あなたとは踊りやすい。ホームみたい。みんな急いでるのに、わたしたちは拍子どおり。"
+ "city.dnc.pl.akosua.win": {
+  "ru": "С тобой легко. Как в школьном коридоре на перемене: все бегут, а мы в такт.",
+  "en": "You're easy to dance with. Like the school corridor at break: everyone running, and we're in step.",
+  "ja": "あなたとは踊りやすい。休み時間の廊下みたい。みんな走ってるのに、わたしたちは拍子どおり。"
  },
- "city.dnc.pl.reka.lose": {
+ "city.dnc.pl.akosua.lose": {
   "ru": "Не так. Смелее надо, смелее. Попробуй потом.",
   "en": "Not like that. Bolder, bolder. Try later.",
   "ja": "そうじゃない。もっと大胆に。またあとでね。"
  },
- "city.dnc.pl.colette.hello": {
+ "city.dnc.pl.marketa.hello": {
   "ru": "Сначала скажи, какая сейчас играет пластинка. Тогда подумаю.",
   "en": "First tell me which record is playing. Then I'll think about it.",
   "ja": "まず、今かかってるレコードを当てて。それから考える。"
  },
- "city.dnc.pl.colette.win": {
+ "city.dnc.pl.marketa.win": {
   "ru": "Неплохо для человека, который не знает названия пластинки.",
   "en": "Not bad for someone who doesn't know the record's name.",
   "ja": "レコードの名前も知らない人にしては悪くない。"
  },
- "city.dnc.pl.colette.lose": {
+ "city.dnc.pl.marketa.lose": {
   "ru": "Нет уж. Хитрее надо быть, хитрее.",
   "en": "No, thanks. You'll have to be craftier than that.",
   "ja": "やめとく。もっとうまくやらなきゃ。"
  },
- "city.dnc.pl.selam.hello": {
+ "city.dnc.pl.ursula.hello": {
   "ru": "Я… я тут в первый раз. Мама сказала, надо выходить в люди.",
   "en": "I'm… I'm here for the first time. Mum said I ought to get out more.",
   "ja": "わ、わたし、初めて来たの。母が、たまには人前に出なさいって。"
  },
- "city.dnc.pl.selam.win": {
+ "city.dnc.pl.ursula.win": {
   "ru": "Я ни разу не сбилась! Расскажу маме — не поверит.",
   "en": "I didn't lose the step once! I'll tell Mum; she won't believe it.",
   "ja": "一度もずれなかった！　母に話しても信じないだろうな。"
  },
- "city.dnc.pl.selam.lose": {
+ "city.dnc.pl.ursula.lose": {
   "ru": "Ой, нет, я… я лучше у стенки. Не обижайся.",
   "en": "Oh, no, I'd… better stay by the wall. Don't be offended.",
   "ja": "あ、ううん、わたしは壁ぎわでいい。気を悪くしないで。"
  },
- "city.dnc.pl.maarja.hello": {
+ "city.dnc.pl.yumiko.hello": {
   "ru": "Белый танец! Не отказывайся, у меня рука лёгкая.",
   "en": "Ladies' choice! Don't say no, I have a light hand.",
   "ja": "白いダンス！　断らないで、リードは軽いから。"
  },
- "city.dnc.pl.maarja.win": {
-  "ru": "Я играю в оркестре, но танцевать люблю больше. Спасибо, кавалер.",
-  "en": "I play in the band, but I like dancing better. Thank you, sir.",
-  "ja": "楽団で弾いてるけど、踊るほうが好き。ありがとう、騎士さん。"
+ "city.dnc.pl.yumiko.win": {
+  "ru": "Я играю в школьном оркестре, но танцевать люблю больше. Спасибо, кавалер.",
+  "en": "I play in the school band, but I like dancing better. Thank you, sir.",
+  "ja": "学校の楽団で弾いてるけど、踊るほうが好き。ありがとう、騎士さん。"
  },
- "city.dnc.pl.maarja.lose": {
+ "city.dnc.pl.yumiko.lose": {
   "ru": "Ничего, я поведу ещё раз. В следующую субботу.",
   "en": "Never mind, I'll lead again. Next Saturday.",
   "ja": "大丈夫、またリードしてあげる。来週の土曜にね。"
  },
- "city.dnc.pl.madison.hello": {
+ "city.dnc.pl.aigerim_h.hello": {
   "ru": "Белый танец, а ты стоишь, как швабра в углу. Пойдём.",
   "en": "Ladies' choice, and you're standing there like a mop in the corner. Come on.",
   "ja": "白いダンスなのに、隅のモップみたいに立ってる。行こう。"
  },
- "city.dnc.pl.madison.win": {
+ "city.dnc.pl.aigerim_h.win": {
   "ru": "Видел, как подружки смотрели? Завтра весь подъезд будет знать.",
   "en": "Did you see my friends watching? Tomorrow the whole staircase will know.",
   "ja": "友だちが見てたの気づいた？　明日には階段じゅうに知れわたるよ。"
  },
- "city.dnc.pl.madison.lose": {
+ "city.dnc.pl.aigerim_h.lose": {
   "ru": "Ай! Мой мизинец! Ладно, живи.",
   "en": "Ow! My little toe! All right, you're forgiven.",
   "ja": "いたっ！　小指！　まあ、許してあげる。"
  },
- "city.dnc.pl.zsofia.hello": {
+ "city.dnc.pl.ama.hello": {
   "ru": "Объявили белый танец. Я приглашаю тебя — вот, сказала.",
   "en": "They've called the ladies' choice. I'm asking you; there, I've said it.",
   "ja": "白いダンスだって。あなたを誘うわ。ほら、言えた。"
  },
- "city.dnc.pl.zsofia.win": {
+ "city.dnc.pl.ama.win": {
   "ru": "Хорошо. Ровно, спокойно, как море в штиль.",
   "en": "Good. Even and calm, like the sea in a flat calm.",
   "ja": "よかった。凪の海みたいに、穏やかで静か。"
  },
- "city.dnc.pl.zsofia.lose": {
+ "city.dnc.pl.ama.lose": {
   "ru": "Сбились — бывает. Море тоже иногда сбивается.",
   "en": "We lost the step; it happens. The sea loses it too sometimes.",
   "ja": "ずれちゃったね。よくあること。海だってときどきずれる。"
  },
- "city.dnc.pl.aiko.hello": {
+ "city.dnc.pl.femke.hello": {
   "ru": "Можно… можно тебя? Сейчас ведь белый танец.",
   "en": "May I… may I have you? It's the ladies' choice now.",
   "ja": "あの…いいかな？　今、白いダンスだから。"
  },
- "city.dnc.pl.aiko.win": {
+ "city.dnc.pl.femke.win": {
   "ru": "Я весь вечер собиралась с духом. Хорошо, что собралась.",
   "en": "I spent all evening working up the courage. I'm glad I did.",
   "ja": "ひと晩じゅう勇気をためてたの。言えてよかった。"
  },
- "city.dnc.pl.aiko.lose": {
+ "city.dnc.pl.femke.lose": {
   "ru": "Ой, это я сбилась, не ты. Прости.",
   "en": "Oh, that was me who lost the step, not you. Sorry.",
   "ja": "あ、ずれたのはわたし。ごめんね。"

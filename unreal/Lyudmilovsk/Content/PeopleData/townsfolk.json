@@ -1174,6 +1174,7 @@
    "walk_speed": 1.29,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "play_club": 0.46,
     "play_town_club": 0.33,
     "swim_look": 0.67,
@@ -1467,6 +1468,7 @@
    "walk_speed": 1.31,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "sea_air": 0.76,
     "eat_out": 0.64
    },
@@ -5891,6 +5893,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "swim_look": 0.44,
     "eat_out": 0.44
    },
@@ -8340,6 +8343,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "fair_visit": 0.47,
     "eat_out": 0.53
    },
@@ -9600,6 +9604,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "play_club": 0.45,
     "play_town_club": 0.24,
     "eat_out": 0.35,
@@ -15923,6 +15928,7 @@
    "walk_speed": 1.22,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "shop_town": 0.47,
     "swim_look": 0.37
    },
@@ -16958,6 +16964,7 @@
    "walk_speed": 1.29,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "shop_town": 0.23,
     "stroll": 0.26
    },
@@ -17194,6 +17201,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "fair_visit": 0.47,
     "eat_out": 0.49
    },
@@ -22297,6 +22305,7 @@
    "walk_speed": 1.23,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "eat_out": 0.52,
     "stroll": 0.52
    },
@@ -24330,6 +24339,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "shop_town": 0.22,
     "fair_visit": 0.62
    },
@@ -26818,6 +26828,7 @@
    "walk_speed": 1.26,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "play_club": 0.53,
     "play_town_club": 0.85,
     "coffee": 0.71,
@@ -34318,6 +34329,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "play_club": 0.69,
     "play_town_club": 0.85,
     "stroll": 0.59,
