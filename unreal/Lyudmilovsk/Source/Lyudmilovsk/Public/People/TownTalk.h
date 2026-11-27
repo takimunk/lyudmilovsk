@@ -135,6 +135,7 @@ private:
 	FString PendingDetail;
 	/** No word about the player running past, standing too close or the lamp before this (the manners' notice events). */
 	float NextNoticeAt = 0.f;
+	float NextStreetAt = 0.f;       // a greeting in passing, a door held (the life's StreetNod, DoorHold): not before this
 	/** The life's events: somebody noticed the player (hero_runs, hero_close, hero_lamp: docs/town_manners.md). */
 	UFUNCTION()
 	void OnLifeEvent(int32 PersonId, FName Event, int32 Other);

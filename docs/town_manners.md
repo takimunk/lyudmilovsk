@@ -67,6 +67,8 @@ Only people who have a body now are updated (a few dozen); between picks an upda
   people who know each other (friends, a household). And a goodbye: whoever has just got up (within 6 s of leaving
   what they did) from where a friend or one of their household stays on turns the head back to them and waves or nods
   over the shoulder; the one who stays answers.
+  Neighbours of one house nod (never a wave). On the way people who know each other also stop for a word, and doors
+  are held: docs/town_life.md "The days". A row of `manners.json` may ask for a day: `"today": "sleepy"`.
 - **greetings** (town talk): the warm greet the player nearly always, the reserved hardly ever; a greeting comes with a
   wave or a nod, and some who say nothing still nod.
 

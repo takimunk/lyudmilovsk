@@ -337,6 +337,11 @@ namespace LyudPeople
 				}
 			}
 			D.bWaiting = J["waiting"].I() != 0;
+			D.Today = TodayFromName(J["today"].S());
+			if (!J["today"].IsNull() && D.Today == 0)
+			{
+				Warnings.push_back(Id + ": unknown today " + J["today"].S());
+			}
 			D.Trait = J["trait"].S();
 			D.Weight = J["weight"].F(1.f);
 			if (J["seconds"].Size() == 2)
@@ -847,6 +852,10 @@ namespace LyudPeople
 		{
 			return 0.f;
 		}
+		if (D.Today && !(P.Today & D.Today))
+		{
+			return 0.f;
+		}
 		if (D.bWaiting && P.State != EState::Waiting)
 		{
 			return 0.f;
@@ -1260,13 +1269,17 @@ namespace LyudPeople
 					SA.LookCool = SA.LookUntil + 4.f;
 				}
 				// people who know each other: a wave or a nod, answered
-				const bool bKnow = PA.Household == PB.Household || Among(PA.Friends, PB.Key) || Among(PB.Friends, PA.Key);
+				bool bKnow = PA.Household == PB.Household || Among(PA.Friends, PB.Key) || Among(PB.Friends, PA.Key);
+				// neighbours of one house: a nod (never a wave)
+				const bool bNeighbour = !bKnow && PA.Home >= 0 && PB.Home >= 0 && !W.Places[(size_t)PA.Home].Building.empty()
+					&& W.Places[(size_t)PA.Home].Building == W.Places[(size_t)PB.Home].Building;
+				bKnow |= bNeighbour;
 				if (!bKnow || Now.Clock - SA.Last[(int)EManner::Wave] < 90.f || Now.Clock - SA.Last[(int)EManner::Nod] < 90.f
 					|| SA.Cur == EManner::Wave || SA.Cur == EManner::Nod)
 				{
 					continue;
 				}
-				const EManner Mine = Personas[A].Warmth > 0.5f ? EManner::Wave : EManner::Nod;
+				const EManner Mine = Personas[A].Warmth > 0.5f && !bNeighbour ? EManner::Wave : EManner::Nod;
 				if (React(A, Mine, Now.Clock, Mine == EManner::Wave ? 2.4f : 1.6f))
 				{
 					if (!bFacing)
@@ -1285,7 +1298,7 @@ namespace LyudPeople
 					}
 					if (PB.Pose != EPose::Read && PB.Pose != EPose::Eat && PB.Pose != EPose::Computer && PB.Pose != EPose::Work)
 					{
-						const EManner Theirs = Personas[B].Warmth > 0.5f ? EManner::Wave : EManner::Nod;
+						const EManner Theirs = Personas[B].Warmth > 0.5f && !bNeighbour ? EManner::Wave : EManner::Nod;
 						React(B, Theirs, Now.Clock, Theirs == EManner::Wave ? 2.6f : 1.8f);
 					}
 				}

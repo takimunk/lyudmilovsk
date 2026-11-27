@@ -26,7 +26,7 @@
     {"id": "stretch", "poses": ["stand"], "doing": ["open_shutters"], "force": 1},
     {"id": "drink", "poses": ["stand", "look", "walk", "sit"], "outdoors": 1, "after": ["buy_kvass"], "after_s": 600, "force": 1, "prop": "cup"},
     {"id": "ice_cream", "poses": ["stand", "look", "walk", "sit"], "outdoors": 1, "after": ["buy_icecream"], "after_s": 600, "force": 1, "prop": "ice_cream"},
-    {"id": "carry_bag", "poses": ["walk", "stand", "look"], "after": ["shop_town", "shop"], "after_s": 2400, "doing": ["!fish_shore", "!paint_island", "!birdwatch", "!jog", "!play_run"], "force": 1, "prop": "bag"},
+    {"id": "carry_bag", "poses": ["walk", "stand", "look"], "after": ["shop_town", "shop", "market_day"], "after_s": 2400, "doing": ["!fish_shore", "!paint_island", "!birdwatch", "!jog", "!play_run"], "force": 1, "prop": "bag"},
 
     {"id": "binoculars", "poses": ["look"], "doing": ["birdwatch"], "seconds": [10, 30], "weight": 8.0, "cooldown": 12, "prop": "binoculars"},
     {"id": "fold_arms", "poses": ["stand", "look", "talk"], "seconds": [8, 25], "weight": 1.0, "cooldown": 40, "ages": [10, 200]},
@@ -71,6 +71,9 @@
     {"id": "weed", "poses": ["stand"], "doing": ["tend_allotment", "water_allotment"], "seconds": [10, 25], "weight": 6.0, "cooldown": 8},
     {"id": "drink", "poses": ["stand"], "doing": ["soda_drink"], "at": ["soda_machine"], "seconds": [25, 60], "weight": 6.0, "cooldown": 20, "prop": "cup"},
 
+    {"id": "carry_bag", "poses": ["walk", "stand", "look"], "doing": ["visit_home"], "today": "guest", "force": 1, "prop": "bag"},
+    {"id": "yawn", "poses": ["stand", "look", "sit", "walk"], "today": "sleepy", "hours": [5, 13], "seconds": [3, 4], "weight": 2.5, "cooldown": 70},
+    {"id": "dominoes", "poses": ["sit"], "doing": ["chess_bench"], "seconds": [2.2, 3.0], "weight": 3.0, "cooldown": 16},
     {"id": "wave", "react": 1, "cooldown": 90},
     {"id": "nod", "react": 1, "cooldown": 90}
   ]

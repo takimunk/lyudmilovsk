@@ -190,6 +190,7 @@ namespace LyudBarks
 		Pose.clear();
 		Gather.clear();
 		Chrono.clear();
+		Today.clear();
 		Manner.clear();
 		Met.clear();
 		Bond.clear();
@@ -379,6 +380,7 @@ namespace LyudBarks
 		else if (!bSecond && Key == "pose") { SplitValues(Value, S.A.Pose); }
 		else if (!bSecond && Key == "gather") { SplitValues(Value, S.A.Gather); }
 		else if (!bSecond && Key == "chrono") { SplitValues(Value, S.A.Chrono); }
+		else if (!bSecond && Key == "today") { SplitValues(Value, S.A.Today); }
 		else if (!bSecond && Key == "manner") { SplitValues(Value, S.A.Manner); }
 		else if (!bSecond && Key == "met") { SplitValues(Value, S.A.Met); }
 		else if (!bSecond && Key == "bond") { SplitValues(Value, S.A.Bond); }
@@ -548,6 +550,7 @@ namespace LyudBarks
 			&& C.Pose.Match(W.Pose)
 			&& C.Gather.Match(W.Gather)
 			&& C.Chrono.Match(W.Chrono)
+			&& C.Today.Match(W.Today)
 			&& C.Manner.Match(W.Manner)
 			&& C.Met.Match(W.Met)
 			&& C.Bond.Match(W.Bond)
@@ -811,7 +814,8 @@ namespace LyudBarks
 		if (A.Activity == B.Activity)
 		{
 			const int Meet = W.MeetNow(A, W.Activities[(size_t)A.Activity]);
-			return (bHouse && Meet == 1) || (A.DateWith == B.Id && Meet == 2);
+			// (today's plan out of doors: a couple's stroll, chess on a bench)
+			return (bHouse && Meet == 1) || (A.DateWith == B.Id && Meet == 2) || (A.PlanWith == B.Id && Meet == 3);
 		}
 		// a grown-up standing by and the child at play
 		const FPerson& Minder = A.Activity == W.MindAct ? A : B;
@@ -849,7 +853,7 @@ namespace LyudBarks
 			if (const int Meet = bThere ? W.MeetNow(P, A) : 0)
 			{
 				// the household's weekend outing, the weekly date with a friend (docs/town_manners.md)
-				Who.Doing.push_back(Meet == 1 ? "outing" : "date");
+				Who.Doing.push_back(Meet == 1 ? "outing" : (Meet == 2 ? "date" : "plan"));
 			}
 			for (const FDuty& D : P.Duties)
 			{
@@ -880,6 +884,26 @@ namespace LyudBarks
 		}
 		Who.Pose = PoseName(P.Pose);
 		Who.Chrono = P.Chronotype;
+		// the day (PeopleDays.cpp)
+		for (int Bit = 0; Bit < NumTodayBits; Bit++)
+		{
+			if (P.Today & (1 << Bit))
+			{
+				Who.Today.push_back(TodayName(Bit));
+			}
+		}
+		if (P.PlanAct >= 0 && P.Activity == P.PlanAct && P.PlanKind != EPlan::None)
+		{
+			Who.Today.push_back(PlanName(P.PlanKind));
+			if (P.bPlanHost)
+			{
+				Who.Today.push_back("host");
+			}
+		}
+		if (P.MeetFor > 0.f)
+		{
+			Who.Today.push_back("street_meet");
+		}
 		for (int N = 0; N < NumNeeds; N++)
 		{
 			if (P.N[N] > 0.75f)

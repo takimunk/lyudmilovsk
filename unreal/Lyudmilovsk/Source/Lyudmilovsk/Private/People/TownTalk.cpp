@@ -404,6 +404,20 @@ void ULyudTownTalkSubsystem::Start(UWorld& InWorld)
 
 void ULyudTownTalkSubsystem::OnLifeEvent(int32 PersonId, FName Event, int32 Other)
 {
+	// two of them greet in passing, a door is held (docs/town_life.md "The days"): a word from the one who greets now and
+	// then, when they are drawn near the player
+	if (bStarted && (Event == TEXT("StreetNod") || Event == TEXT("DoorHold")))
+	{
+		if (Clock >= NextStreetAt && !Busy(PersonId))
+		{
+			AActor* Greeter = ActorOf(PersonId);
+			if (Greeter && SayMoment(Greeter, Event == TEXT("DoorHold") ? FName(TEXT("door_hold")) : FName(TEXT("street_nod")), PersonId, NAME_None))
+			{
+				NextStreetAt = Clock + 20.f;
+			}
+		}
+		return;
+	}
 	// somebody noticed the player: a word about it now and then (never a chorus)
 	if (!bStarted || Clock < NextNoticeAt || !(Event.ToString().StartsWith(TEXT("hero_")) || Event == TEXT("thunder")) || Busy(PersonId))
 	{

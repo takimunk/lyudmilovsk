@@ -148,7 +148,9 @@ namespace PeopleLifeLocal
 		return !Folder.IsEmpty() && M->GetName() == TEXT("SK_") + FPaths::GetCleanFilename(Folder) ? Folder : FString();
 	}
 
-	const TCHAR* PeopleEventNames[] = { TEXT("Start"), TEXT("Arrive"), TEXT("Leave"), TEXT("TalkStart"), TEXT("TalkEnd"), TEXT("Ride"), TEXT("Away"), TEXT("Back") };
+	const TCHAR* PeopleEventNames[] = { TEXT("Start"), TEXT("Arrive"), TEXT("Leave"), TEXT("TalkStart"), TEXT("TalkEnd"), TEXT("Ride"), TEXT("Away"), TEXT("Back"),
+		TEXT("StreetMeet"), TEXT("StreetNod"), TEXT("DoorHold") };
+	static_assert(UE_ARRAY_COUNT(PeopleEventNames) == (int32)LP::EEvent::Num, "a name for every event of the life (LyudPeople::EEvent)");
 }
 
 using namespace PeopleLifeLocal;
@@ -1331,6 +1333,17 @@ void UPeopleLifeSubsystem::DispatchEvents()
 			const LP::FPerson& P = S.People[E.Person];
 			UE_LOG(LogTemp, Log, TEXT("PeopleLife: %hs boards the train at %.0f (doors %.0f, off at %.0f, rail offset %.0f)"), P.Key.c_str(), S.Time,
 				P.DoorsAt, P.RideUntil, RailOffset);
+		}
+		// on the way (docs/town_life.md "The days"): a greeting in passing between people who know each other, a nod of
+		// thanks to whoever holds a door (only those drawn: ReactManner)
+		if (E.Kind == LP::EEvent::StreetNod)
+		{
+			ReactManner(E.Person, GetTrait(E.Person, TEXT("warmth")) > 0.6f ? FName(TEXT("wave")) : FName(TEXT("nod")), 2.2f);
+			ReactManner(E.Other, TEXT("nod"), 1.8f);
+		}
+		else if (E.Kind == LP::EEvent::DoorHold)
+		{
+			ReactManner(E.Other, TEXT("nod"), 1.8f);
 		}
 		OnPersonEvent.Broadcast(E.Person, FName(PeopleEventNames[(int)E.Kind]), E.Other);
 	}

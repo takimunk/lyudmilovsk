@@ -7,6 +7,7 @@
 //   tools/peoplesim/run.sh summary [start_hour hours [weekday]]
 #include "WindModel.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleSim.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleManners.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Railway/RailRun.h"
 
 #include <chrono>
@@ -1894,6 +1895,7 @@ static int Day(int Argc, char** Argv, const char* TraceKey, bool bSummary = fals
 #include "indoor_weather.h"
 #include "book_club_people.h"
 #include "street_people.h"
+#include "town_days.h"
 
 int main(int Argc, char** Argv)
 {
@@ -1909,6 +1911,10 @@ int main(int Argc, char** Argv)
 	if (Mode == "week")
 	{
 		return Week();
+	}
+	if (Mode == "days")
+	{
+		return TownDays(Argc - 2, Argv + 2);
 	}
 	if (Mode == "bookclub")
 	{

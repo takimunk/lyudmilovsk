@@ -21,7 +21,7 @@ if [ "$1" != "rules" ] && [ -z "$LYUD_ANIMALS_DIR" ] && [ "$(head -c 7 "$GRID" 2
 	export LYUD_ANIMALS_DIR
 fi
 clang++ -std=c++17 -O2 $EXTRA_CXXFLAGS -Wall -Wshadow -Wno-unused-function -include algorithm -o "$ROOT/Saved/YardSim/yardsim" \
-	"$ROOT/tools/yardsim/yardsim.cpp" "$SRC/People/YardGames.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/Animals/AnimalSim.cpp" \
+	"$ROOT/tools/yardsim/yardsim.cpp" "$SRC/People/YardGames.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/People/PeopleDays.cpp" "$SRC/Animals/AnimalSim.cpp" \
 	"$SRC/Animals/AnimalFriendSim.cpp" "$SRC/Animals/AnimalPetsSim.cpp" "$SRC/Railway/RailRun.cpp" "$SRC/Weather/WindModel.cpp" "$SRC/Weather/WeatherModel.cpp" \
 	"$SRC/Weather/RainModel.cpp" -I"$SRC/Weather"
 set +e

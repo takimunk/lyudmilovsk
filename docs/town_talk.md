@@ -104,7 +104,8 @@ Keys are `line.town.<scene>.<n>` (in the sources without `line.`). A Russian lin
 
 - **who:** `job` (occupation or a duty's role), `age` (kid, teen, adult, elder, or years `50-120`), `sex`, `doing`
   (activities.json ids; `work` on a duty at its place, `free` off duty), `at` (place kinds or ids; `outdoors`,
-  `indoors`), `pose`, `gather` (a holiday gathering's mode), `chrono`, `need` (over 0.75), `near = hero` (within 10 m);
+  `indoors`), `pose`, `gather` (a holiday gathering's mode), `chrono`, `today` (what today is for them and their plan:
+  cold, sleepy, birthday, payday, pension, guest, tea, stroll, chess, family, host, street_meet; docs/town_life.md "The days"), `need` (over 0.75), `near = hero` (within 10 m);
 - **when:** `hours` (`17-22`, over midnight `22-4`), `months` (`10-4`), `weekday`, `sun` (day, low, night, cloudy),
   `weather` (rain, snow, fog, cold, warm, clear, wet), `festival` (festivals.json ids, or `any`), `phase`;
 - **how:** `say` (alone), `to = hero` (a greeting), `talk = a | b | a` (an exchange; `job2`, `age2`, `sex2`, `doing2`
