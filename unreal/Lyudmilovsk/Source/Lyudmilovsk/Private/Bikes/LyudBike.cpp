@@ -14,6 +14,7 @@
 #include "Serialization/JsonSerializer.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
+#include "World/LyudPrefetch.h"
 
 namespace
 {
@@ -334,8 +335,10 @@ void ALyudBike::Roll(float DeltaSeconds, float InSpeed, float SteerDeg, bool bPe
 	PoseParts();
 
 	// sounds: the tyres on the ground, the freewheel's pawls ticking when the cranks stand, the chain when they turn
-	if (!TyreSound)
+	// once, with the folder loaded in the background first (the first ride stalled on six synchronous loads)
+	if (!bSoundsMade && ULyudPrefetch::FolderReady(this, TEXT("/Game/Audio/Bikes")))
 	{
+		bSoundsMade = true;
 		MakeSounds();
 	}
 	const float Mps = FMath::Abs(Speed) / 100.f;

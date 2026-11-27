@@ -975,7 +975,8 @@ void ULyudFriends::DriveHostBody(float DeltaTime)
 	if (!HostBody)
 	{
 		const FString ModelName = Life->ShownModel(TeaPerson);
-		if (ModelName.IsEmpty())
+		// the model loaded in the background first (asked again next frame): Setup's load would stall the frame
+		if (ModelName.IsEmpty() || !ANpcBody::IsModelReady(this, ModelName))
 		{
 			return;
 		}
@@ -993,6 +994,7 @@ void ULyudFriends::DriveHostBody(float DeltaTime)
 			TeaPerson = -1;     // no model: the tea is told in words
 			return;
 		}
+		ANpcBody::ReleaseModel(this, ModelName);      // the body holds it now
 		Life->SetPresentedExternally(TeaPerson, true);
 		HostBody->Drive(At, Yaw, EPersonPose::Sit, 1, 0.f, H->HostChairHeight * 100.f, DeltaTime, true);
 		return;

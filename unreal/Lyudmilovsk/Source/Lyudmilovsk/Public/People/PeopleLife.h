@@ -434,6 +434,12 @@ public:
 
 	/** Loads the model and remembers whose clips to use. False if the model is missing. */
 	bool Setup(const FString& MeshName, const FString& ComputerClip);
+	/** Whether Setup(Model) would find the model and the shared clips in memory; else starts loading them in the
+	 *  background (ULyudPrefetch) and says no: ask again next frame instead of making the body now (a synchronous load
+	 *  of the model stalls the frame). True as well for a model that doesn't exist (Setup then fails). */
+	static bool IsModelReady(const UObject* WorldContext, const FString& Model);
+	/** Lets the prefetch let go of Model once a body holds it (Setup done): freed after the last body with it goes. */
+	static void ReleaseModel(const UObject* WorldContext, const FString& Model);
 	/** Pose this frame: where (cm; seated: the floor under the seat, lying: under the mattress's middle), facing (deg; lying:
 	 *  the bed's head to foot), the pose, the transition (1 sit down, 2 stand up, 3 lie down, 4 get up), the walking speed
 	 *  (cm/s) and the seat's or mattress's height (cm, 0 = the clips' own). Skate: on the ice, gliding at Speed; Walrus:

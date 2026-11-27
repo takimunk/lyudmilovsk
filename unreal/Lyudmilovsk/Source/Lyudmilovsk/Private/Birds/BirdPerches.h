@@ -67,5 +67,9 @@ private:
 	TMap<FIntPoint, TArray<int32>> Grid;   // 20 m cells -> Trees
 	TMap<uint64, TArray<FSeg>> BranchCache;
 	bool bBuilt = false;
+	/** The world the trees were taken from: a static instance (the kites' Crowns) outlives a level (a load opens it again,
+	 *  PIE starts over), and kept answering from the first world's trees otherwise. */
+	TWeakObjectPtr<UWorld> BuiltFor;
+	bool NeedsBuild(const UWorld* World) const;
 	float MinRadius = 0.4f, MaxRadius = 3.f, BodyRadius = 5.f, StandHeight = 8.f;
 };

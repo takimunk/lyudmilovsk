@@ -27,9 +27,19 @@ namespace
 	}
 }
 
+bool FBirdPerches::NeedsBuild(const UWorld* World) const
+{
+	return !bBuilt || BuiltFor.Get() != World;
+}
+
 void FBirdPerches::BuildCrowns(UWorld* World)
 {
+	if (BuiltFor.Get() != World)
+	{
+		BranchCache.Reset();      // another world's trees
+	}
 	bBuilt = true;
+	BuiltFor = World;
 	Trees.Reset();
 	Grid.Reset();
 	const float Day = UGameCalendar::NowIn(World).GetDayOfYear();
@@ -124,7 +134,7 @@ const TArray<FBirdPerches::FSeg>& FBirdPerches::Branches(UWorld* World, const FT
 
 void FBirdPerches::ForEachBranch(UWorld* World, const FVector& At, float Radius, TFunctionRef<void(const FVector&, const FVector&, float, float)> Fn)
 {
-	if (!bBuilt)
+	if (NeedsBuild(World))
 	{
 		BuildCrowns(World);
 	}
@@ -146,7 +156,7 @@ bool FBirdPerches::InCrown(UWorld* World, const FVector& P, float Fill)
 	{
 		return false;
 	}
-	if (!bBuilt)
+	if (NeedsBuild(World))
 	{
 		BuildCrowns(World);
 	}
@@ -185,7 +195,7 @@ bool FBirdPerches::Find(UWorld* World, const FVector& From, const FVector& Dir, 
 	{
 		return false;
 	}
-	if (!bBuilt)
+	if (NeedsBuild(World))
 	{
 		BuildCrowns(World);
 	}
