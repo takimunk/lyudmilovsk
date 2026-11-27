@@ -208,18 +208,6 @@
    "spread": 0.48,
    "duties": [
     {
-     "activity": "open_shutters",
-     "place": "S-FRONT-P-KIOSK4",
-     "hours": [
-      14.75,
-      15.0
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
-    {
      "activity": "work_town",
      "place": "P-KIOSK4",
      "role": "seller",
@@ -3688,18 +3676,6 @@
    "spread": 0.87,
    "duties": [
     {
-     "activity": "open_shutters",
-     "place": "S-FRONT-W1-U24",
-     "hours": [
-      15.25,
-      15.5
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
-    {
      "activity": "work_town",
      "place": "W1-U24",
      "role": "cook",
@@ -4048,18 +4024,6 @@
    "spread": 0.65,
    "duties": [
     {
-     "activity": "open_shutters",
-     "place": "S-FRONT-P-KIOSK6",
-     "hours": [
-      14.75,
-      15.0
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
-    {
      "activity": "work_town",
      "place": "P-KIOSK6",
      "role": "seller",
@@ -4179,18 +4143,6 @@
    "bed": 23.17,
    "spread": 1.0,
    "duties": [
-    {
-     "activity": "open_shutters",
-     "place": "S-FRONT-P-KIOSK1",
-     "hours": [
-      14.75,
-      15.0
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
     {
      "activity": "work_town",
      "place": "P-KIOSK1",
@@ -7112,17 +7064,6 @@
    "bed": 23.28,
    "spread": 0.51,
    "duties": [
-    {
-     "activity": "open_shutters",
-     "place": "S-FRONT-W1-U09",
-     "hours": [
-      14.25,
-      14.5
-     ],
-     "days": [
-      1
-     ]
-    },
     {
      "activity": "work_town",
      "place": "W1-U09",
@@ -11883,18 +11824,6 @@
    "spread": 0.62,
    "duties": [
     {
-     "activity": "open_shutters",
-     "place": "S-FRONT-W1-U03",
-     "hours": [
-      14.25,
-      14.5
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
-    {
      "activity": "work_town",
      "place": "W1-U03",
      "role": "renter",
@@ -13481,18 +13410,6 @@
    "spread": 0.77,
    "duties": [
     {
-     "activity": "open_shutters",
-     "place": "S-FRONT-W1-U27",
-     "hours": [
-      14.25,
-      14.5
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
-    {
      "activity": "work_town",
      "place": "W1-U27",
      "role": "renter",
@@ -13680,18 +13597,6 @@
    "bed": 22.96,
    "spread": 0.52,
    "duties": [
-    {
-     "activity": "open_shutters",
-     "place": "S-FRONT-P-KIOSK2",
-     "hours": [
-      14.75,
-      15.0
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
     {
      "activity": "work_town",
      "place": "P-KIOSK2",
@@ -18612,17 +18517,6 @@
    "spread": 0.65,
    "duties": [
     {
-     "activity": "open_shutters",
-     "place": "S-FRONT-W1-U21",
-     "hours": [
-      14.25,
-      14.5
-     ],
-     "days": [
-      1
-     ]
-    },
-    {
      "activity": "work_town",
      "place": "W1-U21",
      "role": "barber",
@@ -22524,18 +22418,6 @@
    "spread": 0.8,
    "duties": [
     {
-     "activity": "open_shutters",
-     "place": "S-FRONT-W1-U15",
-     "hours": [
-      14.25,
-      14.5
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
-    {
      "activity": "work_town",
      "place": "W1-U15",
      "role": "renter",
@@ -22913,18 +22795,6 @@
    "bed": 23.08,
    "spread": 0.62,
    "duties": [
-    {
-     "activity": "open_shutters",
-     "place": "S-FRONT-W1-U12",
-     "hours": [
-      15.25,
-      15.5
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
     {
      "activity": "work_town",
      "place": "W1-U12",
@@ -27315,18 +27185,6 @@
    "bed": 4.45,
    "spread": 0.52,
    "duties": [
-    {
-     "activity": "open_shutters",
-     "place": "S-FRONT-P-KIOSK5",
-     "hours": [
-      14.75,
-      15.0
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
     {
      "activity": "work_town",
      "place": "P-KIOSK5",
@@ -41462,18 +41320,6 @@
    "bed": 0.97,
    "spread": 0.59,
    "duties": [
-    {
-     "activity": "open_shutters",
-     "place": "S-FRONT-P-KIOSK3",
-     "hours": [
-      14.75,
-      15.0
-     ],
-     "days": [
-      0,
-      1
-     ]
-    },
     {
      "activity": "work_town",
      "place": "P-KIOSK3",

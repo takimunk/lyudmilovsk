@@ -544,6 +544,10 @@ int32 ULyudCityThings::PickInView(const AHeroCharacter* Hero, const APlayerContr
 	FCollisionQueryParams Q(SCENE_QUERY_STAT(CityThingSight), false, Hero);
 	for (int32 I = 0; I < Num; ++I)
 	{
+		if (HiddenPlots.Num() > 0 && HiddenPlots.Contains(FString(UTF8_TO_TCHAR(Model->Things[(size_t)Out[I]].Plot.c_str()))))
+		{
+			continue;       // away now (SetPlotHidden: the street's barrel on a cool day)
+		}
 		const FVector At = ThingLocation(Out[I]);
 		FHitResult Hit;
 		if (!World->LineTraceSingleByChannel(Hit, Eye, At, ECC_Visibility, Q) || Hit.Distance >= FVector::Dist(Eye, At) - 90.f)
@@ -552,6 +556,18 @@ int32 ULyudCityThings::PickInView(const AHeroCharacter* Hero, const APlayerContr
 		}
 	}
 	return -1;
+}
+
+void ULyudCityThings::SetPlotHidden(const FString& Plot, bool bHidden)
+{
+	if (bHidden)
+	{
+		HiddenPlots.Add(Plot);
+	}
+	else
+	{
+		HiddenPlots.Remove(Plot);
+	}
 }
 
 void ULyudCityThings::TrackPlot(const AHeroCharacter* Hero)

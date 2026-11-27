@@ -14,7 +14,7 @@ ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 SRC = os.path.join(ROOT, "Saved", "ClipSources", "props")
 DEST = "/Game/Characters/Humans/Props"
 NAMES = ["phone", "cigarette", "camera", "umbrella", "rod", "brush", "binoculars", "newspaper", "book", "knitting",
-         "ice_cream", "cup", "bag", "easel", "spade", "watering_can", "suitcase",
+         "ice_cream", "cup", "bag", "easel", "spade", "watering_can", "suitcase", "broom", "rake",
          # the hedgehog, walking and curled up (blender/animals/hedgehog.py writes them into the same folder; ULyudPets draws them)
          "hedgehog", "hedgehog_ball"]
 if os.environ.get("PROPS"):
