@@ -524,7 +524,8 @@ void ALyudTrain::CarryPlayer(const TArray<FTransform>& Old)
 	{
 		return;
 	}
-	const UPrimitiveComponent* Base = Char->GetMovementBase();
+	// (GetMovementBase is deprecated; the base object is a component when it is one of ours)
+	const UActorComponent* Base = Cast<UActorComponent>(Char->GetMovementBaseObject());
 	if (!bAway && Base && Base->GetOwner() == this)
 	{
 		return;

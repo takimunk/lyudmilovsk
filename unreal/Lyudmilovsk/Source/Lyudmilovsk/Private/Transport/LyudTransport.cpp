@@ -1169,7 +1169,8 @@ void ULyudTransportSubsystem::Carry(const FTransform& Before, const FTransform& 
 	{
 		return;
 	}
-	const UPrimitiveComponent* Base = Char->GetMovementBase();
+	// (GetMovementBase is deprecated; the base object is a component when it is one of ours)
+	const UActorComponent* Base = Cast<UActorComponent>(Char->GetMovementBaseObject());
 	const AHeroCharacter* Hero = Cast<AHeroCharacter>(Char);
 	// a body nobody plays (the player flies as a bird) has no movement of its own, so no base carries it: by hand
 	if ((!bAway && Base && Base->GetOwner() == Cabin) || (Hero && Hero->IsSeated()))
