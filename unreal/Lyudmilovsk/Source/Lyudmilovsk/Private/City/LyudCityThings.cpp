@@ -544,9 +544,23 @@ int32 ULyudCityThings::PickInView(const AHeroCharacter* Hero, const APlayerContr
 	FCollisionQueryParams Q(SCENE_QUERY_STAT(CityThingSight), false, Hero);
 	for (int32 I = 0; I < Num; ++I)
 	{
-		if (HiddenPlots.Num() > 0 && HiddenPlots.Contains(FString(UTF8_TO_TCHAR(Model->Things[(size_t)Out[I]].Plot.c_str()))))
+		if (HiddenPlots.Num() > 0)
 		{
-			continue;       // away now (SetPlotHidden: the street's barrel on a cool day)
+			// away now (SetPlotHidden: the street's barrel on a cool day); compared in place, no string built per pick
+			const FUTF8ToTCHAR ThingPlot(Model->Things[(size_t)Out[I]].Plot.c_str());
+			bool bAway = false;
+			for (const FString& Away : HiddenPlots)
+			{
+				if (FCString::Strcmp(*Away, ThingPlot.Get()) == 0)
+				{
+					bAway = true;
+					break;
+				}
+			}
+			if (bAway)
+			{
+				continue;
+			}
 		}
 		const FVector At = ThingLocation(Out[I]);
 		FHitResult Hit;
