@@ -222,6 +222,9 @@ namespace
 		Good(TEXT("eskimo"), K::Food, L::Pack, FVector(2.5f, 5.f, 14.f), FLinearColor(0.75f, 0.75f, 0.8f), 22, 2.5f);
 		Good(TEXT("milkshake"), K::Drink, L::Glass, FVector(7.f, 7.f, 14.f), FLinearColor(0.98f, 0.94f, 0.88f), 20, 3.6f);
 		Good(TEXT("kvass"), K::Drink, L::Glass, FVector(8.f, 8.f, 12.f), FLinearColor(0.45f, 0.25f, 0.08f), 6, 4.f);
+		// the street in summer (docs/street_life.md): the barrel's three-litre can, the cart's fruit ice on a stick
+		Good(TEXT("kvass_can"), K::Drink, L::Pack, FVector(14.f, 14.f, 22.f), FLinearColor(0.74f, 0.76f, 0.8f), 15, 6.f);
+		Good(TEXT("fruit_ice"), K::Food, L::Pack, FVector(2.5f, 5.f, 13.f), FLinearColor(0.9f, 0.28f, 0.32f), 12, 2.5f);
 		Good(TEXT("tomato_juice"), K::Drink, L::Glass, FVector(6.f, 6.f, 9.f), FLinearColor(0.75f, 0.15f, 0.08f), 10, 3.f);
 		Good(TEXT("milk_pyramid"), K::Drink, L::Pack, FVector(9.f, 9.f, 11.f), FLinearColor(0.95f, 0.95f, 0.97f), 16, 4.5f);
 		Good(TEXT("condensed_milk"), K::Food, L::Pack, FVector(7.5f, 7.5f, 8.f), FLinearColor(0.85f, 0.9f, 0.95f), 35, 4.f);

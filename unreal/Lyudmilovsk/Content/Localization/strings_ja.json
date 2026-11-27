@@ -2358,5 +2358,9 @@
  "line.transport.ride.reply.1": "うん。",
  "line.transport.ride.reply.2": "そうだね。",
  "line.transport.ride.reply.3": "本当にね。",
- "line.transport.ride.reply.4": "私もそう思う。"
+ "line.transport.ride.reply.4": "私もそう思う。",
+ "item.kvass_can.name": "クワスの缶",
+ "item.kvass_can.desc": "樽から注いだ冷たいクワスでいっぱいの、三リットルのアルミ缶。歩くたびにふたがかちゃかちゃ鳴る。",
+ "item.fruit_ice.name": "フルーツアイス",
+ "item.fruit_ice.desc": "棒つきの赤い氷。さくらんぼのコンポートみたいに甘酸っぱい。食べるより早く溶ける。"
 }

@@ -2358,5 +2358,9 @@
  "line.transport.ride.reply.1": "Ага.",
  "line.transport.ride.reply.2": "Точно.",
  "line.transport.ride.reply.3": "И не говорите.",
- "line.transport.ride.reply.4": "Я тоже так думаю."
+ "line.transport.ride.reply.4": "Я тоже так думаю.",
+ "item.kvass_can.name": "Бидончик кваса",
+ "item.kvass_can.desc": "Алюминиевый бидон на три литра, полный холодного кваса из бочки. Крышка звякает на каждом шагу.",
+ "item.fruit_ice.name": "Фруктовый лёд",
+ "item.fruit_ice.desc": "Красный лёд на палочке, кисло-сладкий, как вишнёвый компот. Тает быстрее, чем его успеваешь съесть."
 }

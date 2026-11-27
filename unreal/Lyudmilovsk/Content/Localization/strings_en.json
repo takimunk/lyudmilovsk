@@ -2358,5 +2358,9 @@
  "line.transport.ride.reply.1": "Mm-hm.",
  "line.transport.ride.reply.2": "That's right.",
  "line.transport.ride.reply.3": "Tell me about it.",
- "line.transport.ride.reply.4": "I think so too."
+ "line.transport.ride.reply.4": "I think so too.",
+ "item.kvass_can.name": "A can of kvass",
+ "item.kvass_can.desc": "A three-litre aluminium can full of cold kvass from the barrel. The lid clinks with every step.",
+ "item.fruit_ice.name": "Fruit ice",
+ "item.fruit_ice.desc": "Red ice on a stick, sweet and sour like cherry compote. It melts faster than you can eat it."
 }
