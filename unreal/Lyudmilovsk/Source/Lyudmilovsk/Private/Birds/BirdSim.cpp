@@ -153,7 +153,9 @@ namespace LyudBirds
 			return false;
 		}
 		const FSpecies& S = SpeciesTable()[B.Species];
-		return !Soars(S) && S.Flight != EFlight::Soar && GustAt(B) > 0.7f * S.WindLimit;
+		// a gust in a wind it can otherwise take: a gale that is too much even in its lulls is no gust to sit out (it goes
+		// to the lee instead, as the site choice has it)
+		return !Soars(S) && S.Flight != EFlight::Soar && Wind.Len2D() < 0.7f * S.WindLimit && GustAt(B) > 0.7f * S.WindLimit;
 	}
 
 	bool FWorld::FacesWind(const FBird& B) const
@@ -2648,13 +2650,20 @@ namespace LyudBirds
 				const float R = Rand(B.Rng);
 				const int Feeder = FeederAt(B.Site);
 				const float Wetting = B.Site >= 0 && IsCover(Sites[B.Site].Kind) ? RainStress(S) : 0.f;
+				// (not on the way to the roost, and for 20 s at the most at a time: then it gets on with its day)
+				const bool bGust = Feeder < 0 && G.Plan != 2 && GustHolds(B);
+				if (!bGust)
+				{
+					B.GustHeld = 0.f;
+				}
 				if (Feeder >= 0)
 				{
 					AtFeeder(B, Feeders[Feeder], Dt);
 				}
-				else if (GustHolds(B))
+				else if (bGust && B.GustHeld < 20.f)
 				{
 					// a gust over its perch: it crouches and holds on, and goes when the lull comes
+					B.GustHeld += B.Weather == (uint8_t)EWeathering::Crouched ? B.ActTime : 0.f;
 					SetAct(B, EAct::Perch, 1.f + Rand(B.Rng) * 1.5f);
 					B.Weather = (uint8_t)EWeathering::Crouched;
 				}
