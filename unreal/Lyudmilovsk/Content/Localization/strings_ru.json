@@ -2358,5 +2358,9 @@
  "line.transport.ride.reply.1": "Ага.",
  "line.transport.ride.reply.2": "Точно.",
  "line.transport.ride.reply.3": "И не говорите.",
- "line.transport.ride.reply.4": "Я тоже так думаю."
+ "line.transport.ride.reply.4": "Я тоже так думаю.",
+ "item.amber_fly.name": "Янтарь с мушкой",
+ "item.amber_fly.desc": "Кусочек янтаря, а внутри мушка. Сидит там с тех пор, когда здесь ещё не было ни моря, ни города.",
+ "item.sand_flag.name": "Бумажный флажок",
+ "item.sand_flag.desc": "Флажок на палочке, для башни из песка. В киоске говорят: без флажка замок не считается."
 }

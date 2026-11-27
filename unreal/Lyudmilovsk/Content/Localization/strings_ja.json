@@ -2358,5 +2358,9 @@
  "line.transport.ride.reply.1": "うん。",
  "line.transport.ride.reply.2": "そうだね。",
  "line.transport.ride.reply.3": "本当にね。",
- "line.transport.ride.reply.4": "私もそう思う。"
+ "line.transport.ride.reply.4": "私もそう思う。",
+ "item.amber_fly.name": "虫入り琥珀",
+ "item.amber_fly.desc": "中に小さな虫が入った琥珀のかけら。ここに海も町もなかった頃から、ずっとそこにいる。",
+ "item.sand_flag.name": "紙の旗",
+ "item.sand_flag.desc": "砂の城のてっぺんに立てる、棒つきの小さな旗。売店の人いわく、旗のない城は城じゃない。"
 }

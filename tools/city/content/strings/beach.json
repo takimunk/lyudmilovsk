@@ -409,5 +409,95 @@
   "ru": "Теперь у меня три своих куска янтаря и подвеска. Продавщица сказала: в следующий шторм приходи раньше чаек. Я не понял, шутит она или нет.",
   "en": "Now I have three pieces of amber of my own and a pendant. The seller said: next storm, come before the gulls do. I could not tell whether she was joking.",
   "ja": "自分の琥珀が三つと、ペンダントがひとつ。おばさんは言った。次の嵐のあとはカモメより早くおいで、と。冗談かどうか、わからなかった。"
+ },
+ "beach.castle.helped": {
+  "ru": "Подбежали дети с совочками. Без лишних слов взялись за ров.",
+  "en": "Children ran up with little spades. Without a word they started on the moat.",
+  "ja": "子どもたちがスコップを持って走ってきた。何も言わずにお堀を掘りはじめた。"
+ },
+ "beach.castle.paper_flag": {
+  "ru": "Вместо фантика — настоящий бумажный флажок из киоска. Теперь замок считается.",
+  "en": "Instead of a sweet wrapper, a real paper flag from the kiosk. Now the castle counts.",
+  "ja": "あめの包み紙のかわりに、売店の本物の紙の旗。これでお城として認められる。"
+ },
+ "beach.rival.zoya": {
+  "ru": "Зоя Петровна в белой шапочке",
+  "en": "Zoya Petrovna in the white cap",
+  "ja": "白い帽子のゾーヤ・ペトローヴナ"
+ },
+ "beach.rival.gena": {
+  "ru": "Гена-студент",
+  "en": "Gena the student",
+  "ja": "学生のゲーナ"
+ },
+ "beach.rival.lida": {
+  "ru": "Лида с дачи у маяка",
+  "en": "Lida from the dacha by the lighthouse",
+  "ja": "灯台そばの別荘のリーダ"
+ },
+ "beach.rival.arkady": {
+  "ru": "Аркадий Семёнович, который плавает брассом",
+  "en": "Arkady Semyonovich, who swims breaststroke",
+  "ja": "平泳ぎのアルカージー・セミョーノヴィチ"
+ },
+ "beach.rival.tomas": {
+  "ru": "Томас из Таллина",
+  "en": "Tomas from Tallinn",
+  "ja": "タリンから来たトーマス"
+ },
+ "beach.rival.nina": {
+  "ru": "Нина, учительница физкультуры",
+  "en": "Nina, the PE teacher",
+  "ja": "体育の先生のニーナ"
+ },
+ "beach.race.rivals": {
+  "ru": "{0} Рядом встают дачники: {1}. Спасатель засекает всех.",
+  "en": "{0} The summer folk line up beside me: {1}. The lifeguard times us all.",
+  "ja": "{0} 別荘の人たちが横に並ぶ：{1}。監視員が全員の時間を計る。"
+ },
+ "beach.race.first": {
+  "ru": "{0} Первым из {2}! Спасатель записывает моё имя мелом на табличку.",
+  "en": "{0} First of {2}! The lifeguard chalks my name on the sign.",
+  "ja": "{0} {2}人中一番！監視員が札にチョークで僕の名前を書く。"
+ },
+ "beach.race.place": {
+  "ru": "{0} Место {1} из {2}. Дачники уже обсыхают на полотенцах.",
+  "en": "{0} Place {1} of {2}. The summer folk are already drying on their towels.",
+  "ja": "{0} {2}人中{1}位。別荘の人たちはもうタオルの上で乾かしている。"
+ },
+ "beach.prompt.post_mine": {
+  "ru": "{0}\nНиже мелом, моё: блинчики {1}, заплыв {2}, побед {3}",
+  "en": "{0}\nUnderneath, in chalk, mine: skips {1}, swim {2}, wins {3}",
+  "ja": "{0}\nその下にチョークで僕の記録：水切り{1}回、競泳{2}、勝ち{3}回"
+ },
+ "beach.board.seconds": {
+  "ru": "{0} с",
+  "en": "{0} s",
+  "ja": "{0}秒"
+ },
+ "beach.board.none": {
+  "ru": "ещё нет",
+  "en": "not yet",
+  "ja": "まだ"
+ },
+ "beach.prompt.sell": {
+  "ru": "Y — предложить продавщице находки с пляжа ({0} ₽)",
+  "en": "Y: offer the seller your finds from the beach ({0} ₽)",
+  "ja": "Y：浜で拾ったものをおばさんに売る（{0}₽）"
+ },
+ "beach.sell.amber": {
+  "ru": "Продавщица смотрит янтарь на свет. «Беру. {0} рублей, и не торгуйся».",
+  "en": "The seller holds the amber to the light. \"I'll take it. {0} roubles, and don't haggle.\"",
+  "ja": "おばさんは琥珀を光にかざす。「買うよ。{0}ルーブル、値切りはなし」"
+ },
+ "beach.sell.shells": {
+  "ru": "«Ракушки возьму, на шкатулки пойдут». {0} рублей.",
+  "en": "\"I'll take the shells, they'll go on the boxes.\" {0} roubles.",
+  "ja": "「貝殻はもらうよ、小箱に貼るからね」{0}ルーブル。"
+ },
+ "dev.action.beach.finds": {
+  "ru": "Пляж: ракушки, янтарь, янтарь с мушкой и флажок в карман",
+  "en": "Beach: shells, amber, amber with a fly and a paper flag into the pocket",
+  "ja": "浜：貝殻、琥珀、虫入り琥珀、紙の旗をポケットへ"
  }
 }
