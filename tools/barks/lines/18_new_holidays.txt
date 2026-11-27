@@ -103,7 +103,7 @@ talk
 festival = old_new_year
 age = adult
 weight = 5
-say town.fv_old_new_year_bring.1 | Несу детям пряники и мелочь. Придут петь, а в доме должно быть чем ответить. | Gingerbread and small change for the children. They'll come singing, and a house should have something to give back. | 子どもたちにジンジャーブレッドと小銭を用意する。歌いに来たら、お返しをしなくちゃ。
+say town.fv_old_new_year_bring.1 | Несу детям пряники и мелочь. Придут петь, а в доме должно быть чем ответить. | Gingerbread and coins for the children: they'll come singing, and a house should give back. | 子どもたちにジンジャーブレッドと小銭を用意する。歌いに来たら、お返しをしなくちゃ。
 
 [fv_old_new_year_grump]
 festival = old_new_year
