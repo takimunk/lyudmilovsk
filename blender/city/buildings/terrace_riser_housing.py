@@ -653,6 +653,10 @@ def _maisonette(B):
                 drs.vase_wilted(B, 7.4, yi1 - 0.45, z + 0.75, 0.0, seed=9)
             else:
                 kit.vase(B, 7.4, yi1 - 0.45, z + 0.75, 0.0, flowers=(nm == "fresh"), seed=9)
+    # a trace of a visit (docs/city_dress.md "Traces of a visit"): a child of the flat (4-01) did homework: the exercise books
+    # stay on the coffee table (11.3, 15.6, top z + 0.42) beside the paper for a few hours
+    with B.dress(who + "_homework", visit="homework", at="/4-01", keep=4.0):
+        drs.exercise_books(B, 11.44, 15.55, z + 0.42, 0.0, seed=6)
     with B.dress(who + "_book", chance=0.5):
         drs.book_face_down(B, 10.65, yi1 - 0.65, z + 0.45, 10.0, seed=4)
     for nm, months, sea in (("winter", (12, 1, 2), "winter"), ("mild", (3, 4, 5, 9, 10, 11), "autumn"),

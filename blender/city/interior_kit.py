@@ -1160,7 +1160,9 @@ def restaurant_table(B, x, y, z=0.0, yaw=0.0, w=0.9, d=0.9, places=4, cloth="CT_
     return p.done(solid=solid, top=h, chairs=seats)
 
 
-def chess_table(B, x, y, z=0.0, yaw=0.0, mat=WOOD, solid=True, seed=0):
+def chess_table(B, x, y, z=0.0, yaw=0.0, mat=WOOD, solid=True, seed=0, pieces=True):
+    """A chess table with a board inlaid (the card) and, pieces=True, a game on it; pieces=False: an empty board (a game
+    comes as dressing: dress_kit.chess_left with board=False at z + 0.72)."""
     p = _P(B, x, y, z, yaw, "chess_table")
     h = 0.72
     p.bev(mat, -0.35, 0.35, -0.35, 0.35, h - 0.04, h, 0.01, 0.02, bottom=True)
@@ -1170,7 +1172,8 @@ def chess_table(B, x, y, z=0.0, yaw=0.0, mat=WOOD, solid=True, seed=0):
     p.box(mat, -0.04, 0.04, -0.25, 0.25, 0.0, 0.035)
     p.core(-0.33, 0.33, -0.33, 0.33, h - 0.035, h - 0.008)
     r = p.done(solid=solid, top=h)
-    chess_set(B, x, y, z + h, yaw, seed=seed, board=0.5)
+    if pieces:
+        chess_set(B, x, y, z + h, yaw, seed=seed, board=0.5)
     return r
 
 

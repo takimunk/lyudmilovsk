@@ -34,6 +34,9 @@ namespace LyudCity
 		int PhaseTo = 0;
 		/** -1 no condition, 1 in the building's open hours, 0 out of them. */
 		int Open = -1;
+		/** A trace of a visit (citykit visit=): shown for VisitKeep hours after the last matching visit ended (0: no condition).
+		 *  Which visits match (the activities, the place, who) is the caller's: ULyudCityDress keeps the time of the last one. */
+		float VisitKeep = 0.f;
 	};
 
 	/** The stable die of a set on a day: FNV-1a over "<plot>/<id>@<day>" and a mix; mirrors citykit.dress_hash01. */
@@ -52,8 +55,10 @@ namespace LyudCity
 		return (float)(H & 0xFFFFFFu) / (float)(1u << 24);
 	}
 
-	/** Is a set with condition C shown at the moment W? bOpen: the building is in its open hours now. */
-	inline bool DressVisible(const FDressWhen& C, const FWhen& W, const std::string& Plot, const std::string& Id, bool bOpen)
+	/** Is a set with condition C shown at the moment W? bOpen: the building is in its open hours now. VisitAgo: hours since
+	 *  the last visit that matches the set's visit= ended (< 0: none known since the game was loaded). */
+	inline bool DressVisible(const FDressWhen& C, const FWhen& W, const std::string& Plot, const std::string& Id, bool bOpen,
+		float VisitAgo = -1.f)
 	{
 		if (C.WeatherAny && !(W.Weather & C.WeatherAny))
 		{
@@ -113,6 +118,10 @@ namespace LyudCity
 			return false;
 		}
 		if (C.Chance < 1.f && DressHash01(Plot, Id, W.Day) >= C.Chance)
+		{
+			return false;
+		}
+		if (C.VisitKeep > 0.f && !(VisitAgo >= 0.f && VisitAgo < C.VisitKeep))
 		{
 			return false;
 		}

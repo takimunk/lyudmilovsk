@@ -37,6 +37,9 @@ def rand_when(r):
         w["phase"] = (per, a, r.randint(a + 1, per))
     if r.random() < 0.2:
         w["open"] = r.random() < 0.5
+    if r.random() < 0.25:
+        w["visit"] = r.sample(["eat_home", "coffee", "read_library", "dominoes", "book_club"], r.randint(1, 2))
+        w["keep"] = round(r.uniform(0.25, 12.0) * 4) / 4
     return citykit.dress_when(w)
 
 
@@ -53,15 +56,18 @@ def main():
                    "festivals": fests, "festival_today": bool(fests) and r.random() < 0.8, "open": r.random() < 0.5}
             now["day"] = 20380 + now["since"]
             plot, did = r.choice(["P-CAFE", "P-SANATORIUM", "W1-U07"]), "set_%d" % r.randint(0, 40)
+            ago = -1.0 if r.random() < 0.3 else round(r.uniform(0.0, 14.0), 2) + 0.003    # hours since the visit, -1 none
+            if ago >= 0:
+                now["visit_ago"] = {did: ago}
             exp = citykit.dress_visible(w, plot, did, now)
             h = w.get("hours", [0.0, 24.0])
             ph = w.get("phase", [0, 0, 0])
             when = [sum(BITS[x] for x in w.get("weather", [])), sum(BITS[x] for x in w.get("weather_not", [])),
                     sum(1 << (m - 1) for m in w.get("months", [])), sum(1 << d for d in w.get("weekdays", [])),
                     h[0], h[1], w.get("festival", "-") or "-", w.get("chance", 1.0), ph[0], ph[1], ph[2],
-                    -1 if "open" not in w else int(w["open"])]
+                    -1 if "open" not in w else int(w["open"]), w.get("keep", 0.0) if "visit" in w else 0.0]
             mom = [now["day"], now["hour"], now["weekday"], now["month"] * 100 + 15, now["since"], int(now["festival_today"]),
-                   sum(BITS[x] for x in now["weather"]), int(now["open"]), len(fests)] + sorted(fests)
+                   sum(BITS[x] for x in now["weather"]), int(now["open"]), ago, len(fests)] + sorted(fests)
             f.write(" ".join(str(v) for v in when) + " | " + " ".join(str(v) for v in mom) + " | %s %s %d\n" % (plot, did, exp))
     print("CITYDRESS %d cases -> %s" % (n, out))
 

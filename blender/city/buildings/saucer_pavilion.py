@@ -187,6 +187,16 @@ def _dress(B, zf):
     with B.dress("book_left", hours=(10, 20), chance=0.5):
         x, y, z, a = _tp(7, 0, 0.22)
         dk.book_face_down(B, x, y, z, a + 20.0, seed=3)
+    # a trace of a visit (docs/city_dress.md "Traces of a visit"): somebody's coffee hour left on table 2 for a while after
+    # they went, their glass of tea, the paper they read, their reading glasses forgotten
+    jg = 2 if _TBL[2]["ns"] > 2 else 1
+    with B.dress("coffee_left", visit=("coffee", "eat_out"), keep=1.5, open=True):
+        x, y, z, a = _tp(2, jg, 0.36, 35.0)
+        dk.tea_in_holder(B, x, y, z, a)
+        x, y, z, a = _tp(2, jg, 0.1)
+        kit.newspaper(B, x, y, z, a + 70.0, seed=61)
+        x, y, z, a = _tp(2, jg, 0.34, -30.0)
+        dk.spectacles(B, x, y, z, a + 20.0)
     with B.dress("holiday_flowers", festival="any", open=True):     # off the tables when the chairs go up (city_night)
         for ti in (0, 3, 6, 9):
             kit.vase(B, _TBL[ti]["c"][0], _TBL[ti]["c"][1], _TBL[ti]["top"], 0.0, seed=ti + 50)

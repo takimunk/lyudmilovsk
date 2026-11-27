@@ -2,6 +2,9 @@
 (day, hour) samples it shows. A set that never shows is an error; one that always shows is a warning (a set should change
 something). Also: exclusive groups named <base>_<k> / <base>_<word> that are meant to take turns are listed with how often
 two of them show at once (informational).
+Sets with a visit condition (visit=: a trace a townsperson leaves) are scanned with a stand-in for the people's life: the
+listed activities end at their usual hours (VISIT_ENDS) on most days (a stable die), so a set that could never show
+(a keep shorter than the gap to its hours, a closed-hours clash) is still caught.
 
     python3 tools/citydress/year_scan.py [types...]
 """
@@ -19,6 +22,28 @@ import citykit  # noqa: E402
 START = datetime.date(2026, 10, 20)
 WEATHERS = [{"dry", "clear"}, {"dry"}, {"rain", "wet"}, {"wet", "dry"}, {"snow", "cold"}, {"fog", "dry"},
             {"warm", "clear", "dry"}, {"cold", "dry", "clear"}]
+# when the visits of an activity usually end (h), a stand-in for the people's life (tools/peoplesim has the real one)
+VISIT_ENDS = {"eat_home": (8.0, 13.5, 19.5), "coffee": (9.5, 11.0, 15.5, 18.0), "eat_out": (13.5, 19.5),
+              "read_library": (11.5, 16.0, 19.0), "book_club": (20.5,), "dominoes": (12.0, 17.5), "san_cure": (10.0, 16.0),
+              "culture_evening": (21.5,), "cinema_evening": (21.0,), "cinema_day": (15.0,), "work_office": (13.5, 16.0),
+              "school_town": (13.5,), "homework": (17.0, 19.5), "stove_tea": (9.5, 16.5), "radio_hour": (19.0,),
+              "read_home": (14.0, 21.0), "play_piano": (19.5,), "eat_club": (13.0, 19.0)}
+
+
+def visit_ago(when, plot, did, day, hour):
+    """Hours since the stand-in's last visit for a set, None if none in the last two days."""
+    best = None
+    for back in (0, 1, 2):
+        if citykit.dress_hash01(plot, did + "#visit", day - back) >= 0.85:
+            continue
+        for a in when["visit"]:
+            for e in VISIT_ENDS.get(a, (10.0, 14.0, 18.0)):
+                ago = hour + 24.0 * back - e
+                if ago >= 0 and (best is None or ago < best):
+                    best = ago
+    return best
+
+
 HOURS = {"saucer_pavilion": (8, 22), "round_sanatorium": (0, 24), "school": (7.5, 17), "clinic": (8, 20),
          "workers_club": (10, 23), "cog_club": (10, 23), "capsule_library": (7, 21), "department_store": (9, 20)}
 
@@ -42,6 +67,13 @@ def scan(path):
                    "weather": wx, "festivals": fests, "festival_today": bool(fests),
                    "open": citykit.dress_in_hours(hour, oh[0], oh[1])}
             total += 1
+            vis = {}
+            for d in sets:
+                if "visit" in d["when"]:
+                    ago = visit_ago(d["when"], data.get("plot", t), d["id"], now["day"], hour)
+                    if ago is not None:
+                        vis[d["id"]] = ago
+            now["visit_ago"] = vis
             for d in sets:
                 if citykit.dress_visible(d["when"], data.get("plot", t), d["id"], now):
                     counts[d["id"]] += 1

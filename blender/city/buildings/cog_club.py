@@ -878,7 +878,7 @@ def _reading(B):
     # chess tables
     for ci, p in enumerate((-1.3, 1.3)):
         x, y = c.W(15.3, p)
-        kit.chess_table(B, x, y, 0.0, c.ang, seed=ci)
+        kit.chess_table(B, x, y, 0.0, c.ang, seed=ci, pieces=ci != 0)     # the first table's game is dressing (_dress)
         for sgn in (-1, 1):
             cx, cy = c.W(15.3 + sgn * 0.78, p)
             yw = c.fy(-sgn, 0)
@@ -1313,6 +1313,12 @@ def _dress(B):
     with B.dress("chess_evening", hours=(17, 23)):
         c.put(kit.cup, 15.7, 0.55, z=1.0)
         c.put(kit.glass, 15.9, -0.2, z=1.0)
+    # a trace of a visit (docs/city_dress.md "Traces of a visit"): the evening's game left on the first chess table till the
+    # next evening's players (a new game, another position, every week: dress_kit.CHESS_MIDGAMES); an empty board otherwise
+    x, y = c.W(15.3, -1.3)
+    for k, seed in enumerate((1, 4)):
+        with B.dress("chess_left_%d" % k, visit="culture_evening", keep=20.0, phase=(14, 7 * k, 7 * k + 7)):
+            dk.chess_left(B, x, y, 0.722, c.ang, board=False, size=0.5, seed=seed)
     c = Ctx(B, "buffet")
     with B.dress("buffet_after", hours=(13, 16), chance=0.7):
         for (a, p_) in ((8.8, -1.4), (11.4, 1.4)):
