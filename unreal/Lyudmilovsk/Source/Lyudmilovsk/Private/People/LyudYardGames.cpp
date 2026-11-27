@@ -900,7 +900,9 @@ void ULyudYardGames::Present(float DeltaTime)
 					continue;
 				}
 				const FString ModelName = Life->ShownModel(K.Id);
-				if (ModelName.IsEmpty())
+				// the model loaded in the background first (asked again next frame): Setup's load would stall the frame,
+				// once for every kid of a game coming into view
+				if (ModelName.IsEmpty() || !ANpcBody::IsModelReady(this, ModelName))
 				{
 					continue;
 				}
@@ -915,6 +917,7 @@ void ULyudYardGames::Present(float DeltaTime)
 					NoBody.Add(K.Id);
 					continue;
 				}
+				ANpcBody::ReleaseModel(this, ModelName);      // the body holds it now
 				Life->SetPresentedExternally(K.Id, true);
 				FShown New;
 				New.Body = Body;

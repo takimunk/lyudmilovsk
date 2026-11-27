@@ -2582,6 +2582,18 @@ void ANpcBody::PlacePusher(bool bShow)
 	PusherBlade->SetVisibility(true);
 }
 
+bool ANpcBody::IsModelReady(const UObject* WorldContext, const FString& Model)
+{
+	const bool bModel = ULyudPrefetch::Ready(WorldContext, PeopleLifeLocal::PeopleModelPath(Model));
+	const bool bClips = ULyudPrefetch::FolderReady(WorldContext, TEXT("/Game/Characters/Humans/Anims"));
+	return bModel && bClips;
+}
+
+void ANpcBody::ReleaseModel(const UObject* WorldContext, const FString& Model)
+{
+	ULyudPrefetch::Release(WorldContext, PeopleLifeLocal::PeopleModelPath(Model));
+}
+
 bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)
 {
 	MeshName = InMesh;
