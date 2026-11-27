@@ -74,6 +74,9 @@ RULES = [
     ("do", "~paper", "paper"),
     ("do", "~tea", "tea"),
     ("do", "~bike", "bike"),
+    # coins, scales and strips (docs/city_interiors.md): the payphones, the weighing machine and the fair's globe
+    ("do", "tch_call", "phone_call"), ("do", "xk1_phone", "phone_call"),
+    ("do", "xk3_weigh", "fortune"), ("do", "tch_globe", "fortune"),
 ]
 
 # --- topics: id, rank, slot, doodle, flags. Lines: one ({0} a name), many ({0} a name, {1} how many), plain.
@@ -309,6 +312,14 @@ TOPICS = [
          plain=[("Собрал целый набор штампов! Есть чем гордиться.", "Completed a whole set of stamps! Something to be proud of.", "スタンプを一そろい集めた！ちょっと自慢。"),
                 ("Коллекция закрыта. Можно начинать следующую.", "A collection done. Time to start the next.", "コレクション完成。次を始めよう。"),
                 ("Последний штамп в наборе. Даже не верится.", "The last stamp of the set. Hard to believe.", "そろいの最後のスタンプ。信じられない。")]),
+    dict(id="phone_call", rank=32,
+         plain=[("Звонил из автомата. Монета звякнула, и город ответил чужим голосом.", "Called from a payphone. The coin clinked and the town answered in a stranger's voice.", "公衆電話からかけた。コインがチャリンと鳴って、町が知らない声で答えた。"),
+                ("Набирал номер в будке. Диск ходит туго, зато каждая цифра слышна.", "Dialled a number in the booth. The dial is stiff, but you hear every digit.", "ボックスで番号を回した。ダイヤルは重いけど、数字ひとつひとつが聞こえる。"),
+                ("Позвонил по номеру с объявления. Люди по телефону добрее, чем кажется.", "Rang a number off a notice. People are kinder on the phone than you'd think.", "貼り紙の番号に電話した。電話の人は思ったよりやさしい。")]),
+    dict(id="fortune", rank=28,
+         plain=[("Автомат выдал билетик с предсказанием. Положил в карман, на всякий случай.", "A machine gave me a fortune card. Put it in my pocket, just in case.", "機械から占いのカードが出てきた。念のため、ポケットに入れた。"),
+                ("Взвесился на остановке. Весы ещё и судьбу предсказали.", "Weighed myself at the bus stop. The scales told my fortune too.", "バス停で体重をはかった。体重計が運勢まで占ってくれた。"),
+                ("Билетик судьбы обещал что-то хорошее. Посмотрим.", "The fortune card promised something good. We'll see.", "運命のカードはいいことがあると言ってる。どうかな。")]),
     dict(id="eat", rank=15, slot="item", doodle="item", filler=True,
          one=[("Ел — {0}. Вкусно.", "Ate: {0}. Tasty.", "食べたもの：{0}。おいしかった。"),
               ("На обед было: {0}.", "Lunch was: {0}.", "お昼は{0}。"),
