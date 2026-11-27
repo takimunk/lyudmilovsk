@@ -123,7 +123,7 @@ class Tree:
         # shows that are actors (SpawnShow's Show == TEXT("...")): only those can be watched (TickHero, Shows map)
         self.actor_shows = set(re.findall(r'Show == TEXT\("(\w+)"\)', fest_cpp)) - {'stage_lights'}
         self.people = set()
-        for f in ('people.json', 'townsfolk.json'):
+        for f in ('people.json', 'townsfolk.json', 'ship_people.json'):   # the motor ship's people when she is in the tree
             d = self.opt_json('PeopleData', f) or {}
             self.people |= {p['key'] for p in d.get('people', []) if 'key' in p}
         # what a photo may be of besides a map place: the dog Maru, a resident's key

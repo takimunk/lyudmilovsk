@@ -81,6 +81,10 @@ public:
 	 *  go quiet; what is heard there its own system plays. */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void SetVacuum(bool bOn) { bVacuum = bOn; }
 	UFUNCTION(BlueprintPure, Category = "Sound") bool IsVacuum() const { return bVacuum; }
+	/** Far out at sea aboard the motor ship (ULyudCruiseScenery, docs/ship.md): the water round the listener is the open
+	 *  sea, not a beach, so no breakers are played (the ship has her own wash); the rest of the bed is as it is. */
+	UFUNCTION(BlueprintCallable, Category = "Sound") void SetOpenSea(bool bOn) { bOpenSea = bOn; }
+	UFUNCTION(BlueprintPure, Category = "Sound") bool IsOpenSea() const { return bOpenSea; }
 	/** Holds the ambient music off (fading the playing cue) while any Owner holds it, the bed and sounds untouched: a
 	 *  place playing its own music (ULyudTopiMind in the dunes) calls this. A destroyed Owner lets go by itself. */
 	void SetMusicHold(const UObject* Owner, bool bHold);
@@ -136,6 +140,7 @@ private:
 	bool bLeftFoot = false;
 	bool bBirdFlying = false;
 	bool bVacuum = false;
+	bool bOpenSea = false;
 	/** SetMusicHold's holders. */
 	TArray<TWeakObjectPtr<const UObject>> MusicHolds;
 	TMap<FIntPoint, FTreeCell> TreeGrid;

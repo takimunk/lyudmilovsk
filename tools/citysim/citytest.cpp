@@ -958,8 +958,14 @@ static void RealChecks(const std::string& Path)
 		{
 			Conditional += (L.HourFrom >= 0.f || L.Days != 0x7F || L.DateFrom > 0 || L.After > 0 || L.Every > 1) ? 1 : 0;
 		}
-		// an act with lines must have one to show at any hour of any day it may run (else the page would be empty)
-		if (!A.Lines.empty())
+		// an act with lines must have one to show at any hour of any day it may run (else the page would be empty); lines by
+		// the game's flags (the cruise: FLine::Flags) are not counted here, the flags are not known
+		bool bByFlags = false;
+		for (const FLine& L : A.Lines)
+		{
+			bByFlags = bByFlags || !L.Flags.empty();
+		}
+		if (!A.Lines.empty() && !bByFlags)
 		{
 			for (int H = 0; H < 24; ++H)
 			{
@@ -1990,6 +1996,7 @@ static void JobChecks(const std::string& Path)
 #include "homechecks.h"
 #include "rewardchecks.h"
 #include "rentalchecks.h"
+#include "flagchecks.h"
 
 // The photo club's contest and the photo quests on the real data (docs/photo.md, tools/city/content/photo.json): the table
 // with the box of prints and the wall of winners hand over to the camera's code ("open"), the lab's board reads the guide and
@@ -2200,6 +2207,7 @@ int main(int Argc, char** Argv)
 	TalkChecks();
 	LiftChecks();
 	StayChecks();
+	FlagChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	CourseChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	ProcChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");

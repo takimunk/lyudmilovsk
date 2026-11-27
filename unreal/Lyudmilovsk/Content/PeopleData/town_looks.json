@@ -1,5 +1,5 @@
 {
- "_doc": "Each townsperson's own model, made by blender/residents (docs/residents.md). tools/town/town_life.py copies it into townsfolk.json 'body'; the pool model stays as 'mesh' until the model is imported. Keys without t_ are named people of people.json (looks.py CAST): their model is their 'body'.",
+ "_doc": "Each townsperson's own model, made by blender/residents (docs/residents.md). tools/town/town_life.py copies it into townsfolk.json 'body'; the pool model stays as 'mesh' until the model is imported. Keys without t_ are named people of people.json (looks.py CAST): their model is their 'body'. Keys ship_* are the motor ship's people (ship_people.json): their model is their 'mesh'.",
  "people": {
   "ito_ren": {
    "hash": "4092176824bc",
@@ -24,6 +24,98 @@
   "savin_gleb": {
    "hash": "e74d93e898ef",
    "model": "Town/R_savin_gleb"
+  },
+  "ship_albert": {
+   "hash": "11f3d3b33ade",
+   "model": "Town/R_ship_albert"
+  },
+  "ship_asta": {
+   "hash": "2aec319c137d",
+   "model": "Town/R_ship_asta"
+  },
+  "ship_blum": {
+   "hash": "dec4281519eb",
+   "model": "Town/R_ship_blum"
+  },
+  "ship_einar": {
+   "hash": "605b7cc01e17",
+   "model": "Town/R_ship_einar"
+  },
+  "ship_faina": {
+   "hash": "c7d8056540d6",
+   "model": "Town/R_ship_faina"
+  },
+  "ship_givi": {
+   "hash": "8bf9b2300aad",
+   "model": "Town/R_ship_givi"
+  },
+  "ship_gromov": {
+   "hash": "93b8f7204a35",
+   "model": "Town/R_ship_gromov"
+  },
+  "ship_haruto": {
+   "hash": "a4b8a3ee1c35",
+   "model": "Town/R_ship_haruto"
+  },
+  "ship_inga": {
+   "hash": "df567556f1c2",
+   "model": "Town/R_ship_inga"
+  },
+  "ship_kostya": {
+   "hash": "8ded4e78fd8a",
+   "model": "Town/R_ship_kostya"
+  },
+  "ship_lev": {
+   "hash": "3190a689e727",
+   "model": "Town/R_ship_lev"
+  },
+  "ship_misha": {
+   "hash": "0bafeef7d62e",
+   "model": "Town/R_ship_misha"
+  },
+  "ship_nonna": {
+   "hash": "4df206d1349a",
+   "model": "Town/R_ship_nonna"
+  },
+  "ship_olya": {
+   "hash": "0cdafcc69bc4",
+   "model": "Town/R_ship_olya"
+  },
+  "ship_otar": {
+   "hash": "5465c2851eca",
+   "model": "Town/R_ship_otar"
+  },
+  "ship_pasha": {
+   "hash": "cf39a11dc38e",
+   "model": "Town/R_ship_pasha"
+  },
+  "ship_rimma": {
+   "hash": "ac205bb04c6e",
+   "model": "Town/R_ship_rimma"
+  },
+  "ship_senya": {
+   "hash": "1ba48d40c23d",
+   "model": "Town/R_ship_senya"
+  },
+  "ship_taras": {
+   "hash": "bb98c3ec10d5",
+   "model": "Town/R_ship_taras"
+  },
+  "ship_vais": {
+   "hash": "1c42cb8917ca",
+   "model": "Town/R_ship_vais"
+  },
+  "ship_vera": {
+   "hash": "92890104a3e3",
+   "model": "Town/R_ship_vera"
+  },
+  "ship_vitya": {
+   "hash": "4912dc1c6462",
+   "model": "Town/R_ship_vitya"
+  },
+  "ship_zoya": {
+   "hash": "5af67ecc8ce8",
+   "model": "Town/R_ship_zoya"
   },
   "t_abenov_caio": {
    "hash": "9e5492e8ad0c",

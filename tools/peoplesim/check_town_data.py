@@ -286,5 +286,44 @@ for p in places:
         moved.append(p["id"])
 check(not moved, "the town's places keep their public spots' seat slots (%d differ)" % len(moved), *moved)
 
+# --- the motor ship's people (tools/ship/cruise_people.py), when she is in the tree: they live aboard (island 4, places
+# of ship_places.json, far off the map by design) and never take a home, a job or a chair of the town's; the townsfolk who
+# cruise are residents (never the sanatorium's guests in turn), each with one twin aboard in one cabin
+SHIP_PEOPLE = os.path.join(DATA, "ship_people.json")
+if os.path.exists(SHIP_PEOPLE):
+    ship_all = load(SHIP_PEOPLE)["people"]
+    ship_pl = {p["id"]: p for p in load(os.path.join(DATA, "ship_places.json"))["places"]}
+    aboard = [p for p in ship_all if not p.get("patch")]
+    patches = {p["key"]: p for p in ship_all if p.get("patch")}
+    folk_by = {p["key"]: p for p in folk}
+    clash = sorted((set(ship_pl) & (set(by_id) | academ_ids)) | ({p["key"] for p in aboard} & all_keys))
+    check(not clash, "no ship place id or ship person key is also the town's (%d)" % len(clash), *clash)
+    town_side = {i for i, p in ship_pl.items() if p.get("island", 0) < 4}
+    off = [p["key"] for p in aboard if p.get("home") not in ship_pl or p["home"] in town_side or not p.get("stay")]
+    off += ["%s duty at %s" % (p["key"], du["place"]) for p in aboard for du in p.get("duties", []) if du.get("place") and du["place"] not in ship_pl]
+    check(not off, "everybody of the ship lives aboard on a stay and has every duty at her places (%d people; %d don't)" % (len(aboard), len(off)), *off)
+    twins = [p for p in aboard if p.get("twin_of")]
+    wrong = []
+    for t in twins:
+        o = folk_by.get(t["twin_of"])
+        if not o:
+            wrong.append("%s: twin of nobody (%s)" % (t["key"], t["twin_of"]))
+        elif o.get("stay"):
+            wrong.append("%s: %s is a guest in turn, not a resident" % (t["key"], o["key"]))
+        elif t["twin_of"] not in patches or not patches[t["twin_of"]].get("stay"):
+            wrong.append("%s: no patch sends %s away for the voyage" % (t["key"], o["key"]))
+        elif patches[t["twin_of"]]["stay"].get("cycle") != t["stay"].get("cycle"):
+            wrong.append("%s: the twin's and the town record's stays have different cycles" % t["key"])
+    wrong += ["%s: a twin of two people" % k for k, n in collections.Counter(t["twin_of"] for t in twins).items() if n > 1]
+    wrong += ["%s: patches nobody who cruises" % k for k in patches if k not in {t["twin_of"] for t in twins}]
+    for k, pt in patches.items():
+        wrong += ["%s: patch duty at %s, no place of the ship's on the pier" % (k, du.get("place")) for du in pt.get("duties", [])
+                  if du.get("place") not in town_side]
+    check(not wrong, "the cruising townsfolk are residents, one twin and one patch each (%d twins; %d wrong)" % (len(twins), len(wrong)), *wrong)
+    beds = collections.Counter(p["home"] for p in aboard if p.get("home") in ship_pl)
+    over = ["%s: %d people, %d beds" % (h, n, sum(1 for sl in ship_pl[h].get("slots", []) if sl.get("kind") == "bed")) for h, n in beds.items()
+            if n > sum(1 for sl in ship_pl[h].get("slots", []) if sl.get("kind") == "bed")]
+    check(not over, "no cabin aboard holds more people than its berths (%d cabins; %d over)" % (len(beds), len(over)), *over)
+
 print("all ok" if not fails else "%d FAILED" % fails)
 sys.exit(1 if fails else 0)

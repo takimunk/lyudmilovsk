@@ -1,0 +1,633 @@
+# The cruise's quests, part A: the voyage itself, the cat, the telegram, the card sharp, the pilot book.
+# Format (tools/ship/cruise_talk.py): "@key" + three lines (ru, en, ja) is a string; "[person]" opens a person's block;
+# "> kind : scene" an exchange (kind as in npc_dialogue.txt); "- speaker" + three lines a spoken line ("me" = the
+# block's person, "hero" = the player); "= key | key" reuses lines written elsewhere.
+
+# ------------------------------------------------------------------ the voyage (the frame of the people's days)
+@quest.ship_voyage.title
+Рейс на «Полдне»
+A Voyage on the Polden
+ポルデニ号の航海
+@quest.ship_voyage.desc
+Двое суток в море: шесть островов, два ужина, один капитанский вальс. Берег вернётся в воскресенье вечером.
+Two days at sea: six islands, two dinners, one captain's waltz. The shore comes back on Sunday evening.
+海の上の二日間。六つの島、二度の夕食、船長の夜会のワルツ。岸は日曜の夕方に戻ってくる。
+@quest.ship_voyage.fri.log
+Я на борту. Теплоход «Полдень», на трубе жёлтый круг. В шесть отошли: три гудка, марш из репродуктора, город стал плоским, как открытка. На закате будут Каменные Братья, потом ужин и концерт. Программа висит у стойки пассажирского помощника. Никого здесь не знаю.
+I'm aboard. The motor ship Polden, a yellow disc on her funnel. We sailed at six: three blasts, a march from the loudspeaker, and the town went flat as a postcard. The Stone Brothers at sunset, then dinner and a concert. The programme hangs by the purser's desk. I don't know anyone here.
+乗船した。汽船ポルデニ号、煙突には黄色い円。六時に出航。汽笛が三度、拡声器から行進曲、町は絵はがきみたいに平たくなった。日没に「石の兄弟」、それから夕食と演奏会。予定表は事務長の机のそばにある。知っている人は誰もいない。
+@quest.ship_voyage.first_night.obj
+Прожить на борту первый вечер и первую ночь
+Live through the first evening and night aboard
+船での最初の夕べと夜を過ごす
+@quest.ship_voyage.sat.log
+Суббота. Проснулся от того, что пол гудит: это дизель, к нему привыкаешь, как к собственному пульсу. В десять остров Птичий, после обеда маяк Дальний, вечером капитанский ужин и танцы. Вчерашние незнакомые за завтраком кивают мне, как своему.
+Saturday. I woke because the floor was humming: the diesel, you get used to it like your own pulse. Bird Island at ten, the Far Light after lunch, the captain's dinner and dancing tonight. Yesterday's strangers nod to me at breakfast as if I were one of them.
+土曜日。床のうなりで目が覚めた。ディーゼルだ。自分の脈みたいに、すぐ慣れる。十時に鳥島、昼すぎに遠灯台、夜は船長の晩餐とダンス。昨日は他人だった人たちが、朝食の席で仲間みたいにうなずいてくる。
+@quest.ship_voyage.saturday.obj
+Прожить субботний день: остров Птичий, палубные игры, маяк Дальний
+Live through Saturday: Bird Island, the deck games, the Far Light
+土曜の昼を過ごす(鳥島、甲板の競技、遠灯台)
+@quest.ship_voyage.eve.log
+Суббота, вечер. Капитанский ужин: белые скатерти, Громов в парадном кителе говорит тост из одиннадцати слов. Потом квартет, вальс, окна салона отражаются в чёрной воде. В полночь встанем на якорь у острова Долгого, и дизель замолчит в первый раз с пятницы.
+Saturday evening. The captain's dinner: white tablecloths, Gromov in his dress tunic gives a toast of eleven words. Then the quartet, a waltz, the saloon windows reflected in black water. At midnight we anchor off Long Island, and the diesel falls silent for the first time since Friday.
+土曜の夜。船長の晩餐。白いテーブルクロス、礼装のグロモフ船長が十一語の乾杯の言葉を述べる。それから四重奏、ワルツ、黒い水に映るサロンの窓。真夜中には長島の沖に錨を下ろし、ディーゼルは金曜以来はじめて黙る。
+@quest.ship_voyage.second_night.obj
+Прожить капитанский вечер и ночь на якоре
+Live through the captain's evening and the night at anchor
+船長の夜会と錨泊の夜を過ごす
+@quest.ship_voyage.sun.log
+Воскресенье. Ночь стояли на якоре у острова Долгого, и было так тихо, что слышно, как на камбузе тётя Паша ставит чайник. Сегодня викторина, Тюленьи камни, в три грамоты, а в шесть наш рейд. Все уже говорят «у нас на „Полдне“». Я тоже.
+Sunday. We lay at anchor off Long Island all night, so quiet you could hear Aunt Pasha put the kettle on in the galley. Today the quiz, the Seal Rocks, diplomas at three, and at six our own roads. Everyone already says "here on the Polden". So do I.
+日曜日。一晩じゅう長島の沖に錨を下ろしていた。厨房でパーシャおばさんがやかんをかける音が聞こえるほど静かだった。今日はクイズ、あざらし岩、三時に表彰、六時には町の沖に戻る。みんなもう「うちのポルデニ号では」と言う。ぼくも言う。
+@quest.ship_voyage.sunday.obj
+Прожить воскресенье: викторина, Тюленьи камни, грамоты в три часа
+Live through Sunday: the quiz, the Seal Rocks, the diplomas at three
+日曜日を過ごす(クイズ、アザラシ岩、三時の表彰)
+@quest.ship_voyage.home.log
+Грамоты розданы. Чемоданы уже стоят в коридорах, а люди всё не уходят с палубы. В половине пятого впереди покажется наш маяк, в шесть рейд. Все записывают друг другу адреса на салфетках из буфета.
+The diplomas have been given out. The suitcases already stand in the corridors, and still nobody leaves the deck. At half past four our lighthouse will show ahead, at six the roads. Everyone is writing addresses for everyone else on napkins from the buffet.
+表彰が終わった。スーツケースはもう廊下に並んでいるのに、誰も甲板を離れない。四時半には行く手に町の灯台が見え、六時には沖に着く。みんな売店の紙ナプキンに住所を書いて交換している。
+@quest.ship_voyage.come_home.obj
+Дойти до рейда Людмиловска и сойти на берег
+Reach the roads of Lyudmilovsk and go ashore
+リュドミーロフスクの沖に戻り、上陸する
+@quest.ship_voyage.done
+Сошёл на берег. Пирс качается, хотя это я. Двое суток, шесть островов и два десятка людей, которых в пятницу не было в моей жизни. Теплоход уходит на рейд и зажигает огни. В пятницу он снова возьмёт пассажиров.
+I'm ashore. The pier is swaying, though it's me. Two days, six islands and a couple of dozen people who weren't in my life on Friday. The ship moves out to the roads and puts her lights on. On Friday she takes passengers again.
+上陸した。桟橋が揺れている。揺れているのはぼくのほうだけど。二日間、六つの島、金曜日にはぼくの人生にいなかった二十人ほどの人たち。船は沖へ出て灯りをともす。金曜日にはまた客を乗せる。
+
+# ------------------------------------------------------------------ 1. the stowaway in the hold
+@quest.ship_cat.title
+Заяц в трюме
+The Stowaway in the Hold
+船倉の密航者
+@quest.ship_cat.desc
+Стюардесса Зоя слышит по ночам, как кто-то плачет под грузовым люком. Боцман ничего знать не должен.
+Zoya the stewardess hears someone crying under the cargo hatch at night. The bosun must not find out.
+客室係のゾーヤは、夜になると貨物ハッチの下で誰かが泣くのを聞く。水夫長に知られてはいけない。
+@quest.ship_cat.hear.log
+Зоя, стюардесса, разносит чай и заочно учит экономику морского транспорта. Она говорит, что по ночам на носу кто-то плачет под люком. Она у раздаточного окна в столовой во время еды, а между завтраком и ужином то там, то в каютах.
+Zoya the stewardess carries the tea and studies the economics of sea transport by correspondence. She says someone cries under the hatch on the foredeck at night. She is at the dining room's serving hatch at meals, and between breakfast and dinner there or in the cabins.
+客室係のゾーヤはお茶を運び、通信教育で海運経済を勉強している。夜になると船首のハッチの下で誰かが泣くのだという。食事どきは食堂の配膳口に、そのほかは配膳口か客室にいる。
+@quest.ship_cat.talk_zoya.obj
+Поговорить со стюардессой Зоей
+Talk to Zoya the stewardess
+客室係のゾーヤと話す
+@quest.ship_cat.listen.log
+Грузовой люк на носу, у брашпиля. Зоя одна туда не пойдёт. Боцману Тарасу ни слова: зверьё на борту у него запрещено, был какой-то случай с козой. Послушать у люка. Ночью слышнее.
+The cargo hatch is on the foredeck, by the windlass. Zoya won't go there alone. Not a word to Taras the bosun: he allows no animals aboard, there was some business with a goat. Listen at the hatch. It carries better at night.
+貨物ハッチは船首、揚錨機のそば。ゾーヤは一人では行かない。水夫長のタラスには一言も言わないこと。船に動物は禁止で、昔ヤギの件があったらしい。ハッチで耳をすます。夜のほうがよく聞こえる。
+@quest.ship_cat.hear_hatch.obj
+Послушать у грузового люка на носу
+Listen at the cargo hatch on the foredeck
+船首の貨物ハッチで耳をすます
+@quest.ship_cat.milk.log
+Под люком кто-то живёт. Днём там глухо, как в бочке, а ночью мяукают, и не в один голос. У комингса лежит рыбий хвост, обглоданный начисто: чайки так не едят. Никто там не плачет. Там кошка, а кошке нужно молоко. Молоко в треугольных пакетах продают в буфетном окне столовой, с семи утра до девяти вечера.
+Something lives under the hatch. By day it is dull as a barrel down there, but at night there is meowing, and in more than one voice. By the coaming lies a fish tail picked clean: gulls don't eat like that. Nobody is crying. It's a cat, and a cat needs milk. The dining room's buffet hatch sells milk in three-cornered cartons, from seven in the morning till nine at night.
+ハッチの下に何かが住んでいる。昼は樽の中みたいに静かだが、夜にはニャアと鳴く。それも一匹じゃない。縁材のそばには、きれいにしゃぶられた魚の尾。カモメはこんな食べ方をしない。誰も泣いてなんかいない。猫だ。猫にはミルクだ。三角パックの牛乳は食堂の売店口で売っている。朝七時から夜九時まで。
+@quest.ship_cat.get_milk.obj
+Купить молоко в буфетном окне столовой
+Buy milk at the dining room's buffet hatch
+食堂の売店口で牛乳を買う
+@quest.ship_cat.bosun.log
+Молоко есть. Теперь на нос, к люку. Там с восьми до полудня хозяйничает боцман. Мимо него с молоком в кармане… Ладно. Попробую.
+I have the milk. Now to the bow, to the hatch. The bosun rules there from eight till noon. Past him with milk in my pocket... All right. I'll try.
+牛乳は手に入れた。さあ船首のハッチへ。八時から正午まではあそこは水夫長の縄張りだ。ポケットに牛乳を入れてその横を……まあ、やってみる。
+@quest.ship_cat.bring_milk.obj
+Пронести молоко на нос мимо боцмана Тараса
+Carry the milk to the bow past Taras the bosun
+水夫長タラスの前を通って船首へミルクを運ぶ
+@quest.ship_cat.tell.log
+Боцман всё знает. Кошку зовут Боцман, она третий год ходит зайцем, в трюме у неё трое котят. Он велел никому не говорить, особенно Зое. А Зоя ждёт, что я расскажу.
+The bosun knows everything. The cat is called Bosun, she has sailed as a stowaway for three years, and she has three kittens in the hold. He told me to tell no one, Zoya least of all. And Zoya is waiting for me to tell.
+水夫長は全部知っていた。猫の名はボツマン(水夫長)。三年も無賃で乗っていて、船倉に子猫が三匹いる。誰にも言うな、特にゾーヤには、と言われた。でもゾーヤはぼくの報告を待っている。
+@quest.ship_cat.tell_zoya.obj
+Вернуться к Зое
+Go back to Zoya
+ゾーヤのところへ戻る
+@quest.ship_cat.done
+На «Полдне» есть тайна, которую все хранят друг от друга: кошка Боцман и трое котят в трюме. Боцман носит ей сметану, Зоя сосиски, тётя Паша считает рыбу. Теперь я тоже храню эту тайну. Хорошая тайна.
+The Polden has a secret that everyone keeps from everyone else: Bosun the cat and three kittens in the hold. The bosun brings her sour cream, Zoya brings sausages, Aunt Pasha counts her fish. Now I keep the secret too. It's a good one.
+ポルデニ号には、みんなが互いに隠している秘密がある。船倉の猫ボツマンと三匹の子猫。水夫長はサワークリームを、ゾーヤはソーセージを運び、パーシャおばさんは魚を数える。ぼくもその秘密を守る。いい秘密だ。
+
+[ship_zoya]
+> quest.ship_cat.hear : cat_hear
+- me
+Тише. Ты ночью ничего не слышал? С носа, из-под грузового люка.
+Shh. Did you hear anything last night? From the bow, under the cargo hatch.
+しっ。夜中に何か聞こえなかった？船首の、貨物ハッチの下から。
+- hero
+Нет. А что там?
+No. What's there?
+いいえ。何があるんですか。
+- me
+Плачет кто-то. Тоненько. Третий рейс подряд. Я одна не пойду, я и учебник по экономике флота одна открывать боюсь.
+Someone's crying. Thin, like that. Third voyage running. I won't go alone, I'm scared to open my shipping economics textbook alone.
+誰かが泣いてるの。細い声で。もう三航海つづけて。一人じゃ行けない。海運経済の教科書だって一人で開くのが怖いのに。
+- me
+Сходи послушай, а? Люк на носу, у брашпиля. Только боцману ни слова: у него зверьё на борту запрещено. Был случай с козой.
+Go and listen, will you? The hatch on the bow, by the windlass. Not a word to the bosun: no animals aboard. There was an incident with a goat.
+聞いてきてくれない？船首の揚錨機のそばのハッチ。水夫長には内緒よ。船に動物は禁止なの。ヤギの事件があってね。
+> quest.ship_cat.listen : cat_wait
+- me
+Ну что, слушал? Люк на самом носу. Ночью слышнее, днём там лебёдка скрипит.
+Well, did you listen? The hatch right at the bow. It's clearer at night, by day the winch creaks.
+どう、聞いてきた？いちばん船首のハッチよ。夜のほうがよく聞こえる。昼は巻き上げ機がきしむから。
+> quest.ship_cat.milk,bosun : cat_milk
+- hero
+Там кошка. Мяукает.
+It's a cat. Meowing.
+猫でした。鳴いてます。
+- me
+Кошка! Живая! Ей же молока надо. В буфетном окне есть, в пакетах. Я бы так дала, но у меня ревизия: бери за деньги и считай, что это для науки.
+A cat! Alive! She needs milk. There's some at the buffet hatch, in cartons. I'd give it you free, but I've a stock-take: pay for it and call it science.
+猫！生きてるのね！ミルクがいるわ。売店口にパックのがある。ただであげたいけど、棚卸しがあるの。お金を払って、科学のためだと思って。
+> quest.ship_cat.milk,bosun.again : cat_milk_again
+- me
+Отнёс? Только мимо Тараса осторожно. Он с восьми до двенадцати на баке, как памятник.
+Did you take it? Careful past Taras. He stands on the foredeck from eight till twelve like a monument.
+持っていった？タラスさんには気をつけて。八時から十二時まで、銅像みたいに船首に立ってるから。
+> quest.ship_cat.tell : cat_tell
+- me
+Ну? Нашёл? Кто там?
+Well? Did you find it? Who's there?
+で？見つけた？誰がいたの？
+- hero
+Кошка. С котятами. Только это тайна. От вас. Боцман просил.
+A cat. With kittens. But it's a secret. From you. The bosun asked.
+猫です。子猫もいます。でも秘密です。あなたには。水夫長に頼まれました。
+- me
+От меня?! Так это я от него скрываю! Я ей с мая сосиски ношу!
+From me?! I'm the one hiding it from him! I've been bringing her sausages since May!
+私に？！隠してるのは私のほうよ！五月からソーセージを運んでるんだから！
+- me
+Ладно. Пусть думает, что я не знаю. На, леденцы: это тебе за молчание. Мы тут все молчим.
+All right. Let him think I don't know. Here, sweets: for keeping quiet. We all keep quiet here.
+いいわ。私は知らないってことにしておく。はい、あめ。口止め料よ。ここではみんな黙ってるの。
+> quest.ship_cat.done : cat_done
+- me
+Серенький вчера вылез в коридор. Я накрыла его подносом и сказала пассажирам, что это суп остывает.
+The little grey one got into the corridor yesterday. I put a tray over him and told the passengers it was soup cooling.
+きのう灰色の子が廊下に出てきたの。お盆をかぶせて、お客さんには「スープを冷ましてます」って言ったわ。
+
+[ship_pasha]
+> aside.ship_cat.milk,bosun : cat_milk
+- me
+Молоко в буфете берёшь? Для науки? Знаю я эту науку: серая, ухо рваное.
+Buying milk at the buffet? For science? I know that science: grey, with a torn ear.
+売店で牛乳を買うのかい。科学のため？その科学なら知ってるよ。灰色で、耳が欠けてる。
+- me
+Передай ей, чтоб на камбуз не ходила. У меня рыба считанная, а она считать не умеет.
+Tell her to keep out of my galley. My fish are counted, and she can't count.
+厨房には来るなって伝えとくれ。うちの魚は数えてあるんだ。あの子は数が数えられないからね。
+> quest.ship_cat.done : cat_done
+- me
+Рыбы опять на одну меньше. Я в ведомость пишу: «утруска». Утруска у меня серая и мурлычет.
+One fish short again. I put it down as "loss in handling". My loss in handling is grey and purrs.
+また魚が一匹足りない。帳簿には「目減り」って書いとくよ。うちの目減りは灰色で、ごろごろ言うんだ。
+
+[ship_taras]
+> quest.ship_cat.bosun : cat_caught
+- me
+Стоять. Что в кармане? Молоко. И курс держишь на люк.
+Halt. What's in your pocket? Milk. And you're steering for the hatch.
+止まれ。ポケットの中身は？牛乳か。で、針路はハッチだな。
+- me
+Давай сюда. Ей не так наливают: в крышку от бидона надо. Из блюдца не пьёт, гордая.
+Give it here. That's not how you pour for her: it goes in the lid of the can. She won't drink from a saucer, too proud.
+よこせ。あいつにはそうやって注ぐんじゃない。缶のふたに入れるんだ。皿からは飲まん。誇り高いからな。
+- hero
+Так вы знаете?
+So you know?
+知ってたんですか。
+- me
+Я на этом судне каждую заклёпку знаю, а тут целая кошка. Боцманом звать. Третий год зайцем ходит, билета не берёт.
+I know every rivet of this ship, and this is a whole cat. Bosun's her name. Three years a stowaway, never buys a ticket.
+この船の鋲は一本残らず知ってる。まして猫まるごと一匹だ。名前はボツマン。三年も無賃乗船で、切符を買ったことがない。
+- me
+Котята у неё там, трое. Никому. Особенно Зое: разболтает, и придётся мне кошку списать на берег. По уставу.
+She's got kittens down there, three. Tell nobody. Zoya least of all: she'll blab, and I'll have to put the cat ashore. Regulations.
+下に子猫が三匹いる。誰にも言うな。特にゾーヤには。しゃべられたら、規則どおり猫を陸に降ろさにゃならん。
+> quest.ship_cat.bosun_empty : cat_hint
+- me
+Чего крадёшься? На баке без дела не ходят. Вот с делом — другой разговор. С молоком из буфета, например.
+What are you creeping about for? Nobody walks the foredeck without business. With business, that's different. With milk from the buffet, say.
+何をこそこそしてる。船首は用のない者の来る所じゃない。用があるなら別だ。たとえば売店の牛乳とかな。
+> quest.ship_cat.tell : cat_after
+- me
+Пьёт. Слышишь, как лакает? Иди. И помни: ты ничего не видел, я ничего не наливал.
+She's drinking. Hear her lapping? Off you go. And remember: you saw nothing, I poured nothing.
+飲んでる。ぴちゃぴちゃ聞こえるだろ。行け。いいか、お前は何も見てない、俺は何も注いでない。
+> quest.ship_cat.done : cat_done
+- me
+Серый, который с пятном, вчера на палубу вылез. Нонна Аркадьевна сделала вид, что это чайка. Хорошая женщина.
+The grey one with the patch got out on deck yesterday. Nonna Arkadyevna pretended it was a gull. A good woman.
+きのう、ぶちのある灰色のが甲板に出てきた。ノンナ・アルカージエヴナはカモメだということにしてくれた。いい人だ。
+
+# ------------------------------------------------------------------ 2. the telegram
+@quest.ship_telegram.title
+Телеграмма для Ласточки
+A Telegram for Swallow
+「つばめ」あての電報
+@quest.ship_telegram.desc
+У радиста лежит телеграмма без фамилии и без каюты. На том конце кто-то ждёт ответа.
+The radio operator has a telegram with no surname and no cabin on it. Someone at the other end is waiting for an answer.
+通信士の手もとに、名字も船室番号もない電報がある。向こうでは誰かが返事を待っている。
+@quest.ship_telegram.take.log
+Радиорубка на шлюпочной палубе, за трубой. Радист Лев Маркович сидит там с восьми до восьми, в наушниках, и разговаривает с берегом точками и тире.
+The radio room is on the boat deck, behind the funnel. Lev Markovich, the operator, sits there from eight to eight in his headphones, talking to the shore in dots and dashes.
+無線室はボート甲板、煙突の後ろ。通信士のレフ・マルコヴィチは朝八時から夜八時までヘッドホンをつけて、点と線で陸と話している。
+@quest.ship_telegram.talk_lev.obj
+Поговорить с радистом Львом Марковичем
+Talk to Lev Markovich, the radio operator
+通信士のレフ・マルコヴィチと話す
+@quest.ship_telegram.ask.log
+Телеграмма: «Теплоход Полдень. Ласточке. Сердиться перестал. Жду обоих. Папа». Ни фамилии, ни каюты. Лев Маркович советует спросить Нонну Аркадьевну, пассажирского помощника: у неё судовая роль и память как у локатора. Её стойка на главной палубе, у трапа.
+The telegram: "Motor ship Polden. To Swallow. No longer angry. Expecting you both. Papa." No surname, no cabin. Lev Markovich says to ask Nonna Arkadyevna, the purser: she has the passenger list and a memory like a radar. Her desk is on the main deck, by the gangway.
+電報は「汽船ポルデニ号 つばめへ もう怒っていない 二人とも待つ 父」。名字も船室もない。レフ・マルコヴィチは事務長のノンナ・アルカージエヴナに聞けと言う。乗客名簿とレーダー並みの記憶の持ち主だ。机は主甲板、舷門のそば。
+@quest.ship_telegram.ask_nonna.obj
+Спросить Нонну Аркадьевну, кто такая Ласточка
+Ask Nonna Arkadyevna who Swallow is
+ノンナ・アルカージエヴナに「つばめ」が誰かたずねる
+@quest.ship_telegram.find.log
+Нонна Аркадьевна рассудила: «жду обоих», значит, Ласточка едет не одна. Молодожёны, двенадцатая каюта на прогулочной палубе. Оля расписалась в роли девичьей фамилией, зачеркнула и написала новую. Идти велено мне: «ты просто мальчик с телеграммой».
+Nonna Arkadyevna worked it out: "you both" means Swallow isn't travelling alone. The honeymooners, cabin twelve on the promenade deck. Olya signed the list with her maiden name, crossed it out and wrote the new one. I'm to go myself: "you're just a boy with a telegram".
+ノンナ・アルカージエヴナの推理。「二人とも」なら、つばめは一人旅じゃない。遊歩甲板十二号室の新婚さんだ。オーリャは名簿に旧姓を書いて、線で消して、新しい姓を書いた。行くのはぼく。「あなたはただの電報を持った男の子だから」。
+@quest.ship_telegram.find_olya.obj
+Найти Ласточку и прочитать ей телеграмму
+Find Swallow and read her the telegram
+「つばめ」を見つけて電報を読み上げる
+@quest.ship_telegram.reply.log
+Ласточка — это Оля. Они расписались без отца. Ответ я выучил наизусть: «Папа. Вернёмся в воскресенье. Пеки пирог. Обе твои ласточки». Отнести Льву Марковичу.
+Swallow is Olya. They married without her father. I've learnt the answer by heart: "Papa. Back on Sunday. Bake the pie. Both your swallows." Take it to Lev Markovich.
+つばめはオーリャだった。二人は父親抜きで籍を入れたのだ。返事は暗記した。「パパ 日曜に帰る パイを焼いて あなたのつばめ二羽」。レフ・マルコヴィチに届ける。
+@quest.ship_telegram.reply_lev.obj
+Передать радисту ответ
+Give the radio operator the answer
+通信士に返事を伝える
+@quest.ship_telegram.done
+Телеграмма ушла. Лев Маркович говорит, что «папа» на морзянке звучит как шаги по лестнице. Теперь я это тоже слышу.
+The telegram has gone. Lev Markovich says "papa" in Morse sounds like footsteps on a staircase. Now I hear it too.
+電報は飛んでいった。レフ・マルコヴィチによれば、モールス信号の「パパ」は階段をのぼる足音に聞こえるそうだ。今はぼくにもそう聞こえる。
+
+[ship_lev]
+> quest.ship_telegram.take : tg_take
+- me
+Молодой человек, вы-то мне и нужны. Ноги у вас молодые, а у меня телеграмма без адресата.
+Young man, you're just who I need. You have young legs, and I have a telegram with no addressee.
+お若い方、ちょうどいいところへ。あなたには若い足がある。私には宛先のない電報がある。
+- me
+Слушайте: «Теплоход Полдень. Ласточке. Сердиться перестал. Жду обоих. Папа». Всё. Ни фамилии, ни каюты.
+Listen: "Motor ship Polden. To Swallow. No longer angry. Expecting you both. Papa." That's all. No surname, no cabin.
+聞いてください。「汽船ポルデニ号 つばめへ もう怒っていない 二人とも待つ 父」。これだけ。名字も船室もなし。
+- hero
+А кто это, Ласточка?
+Who's Swallow?
+つばめって誰ですか。
+- me
+Я сорок лет в эфире, а ласточек принимал только с берега. Спросите Нонну Аркадьевну: у неё судовая роль и память как у локатора.
+Forty years on the air, and I've only ever received swallows from the shore. Ask Nonna Arkadyevna: she has the list and a memory like a radar.
+四十年電波を聞いてきましたが、つばめを受信したのは陸からだけです。ノンナ・アルカージエヴナに聞きなさい。名簿とレーダーの記憶をお持ちだ。
+> quest.ship_telegram.ask,find : tg_wait
+- me
+Не нашлась Ласточка? Телеграмма лежит, есть не просит. Но на том конце человек не спит. Я такое слышу без наушников.
+No Swallow yet? The telegram can wait, it doesn't eat. But there's a man at the other end not sleeping. I can hear that without headphones.
+つばめはまだですか。電報は腹を空かせませんから待てます。でも向こうでは一人、眠れずにいる。ヘッドホンなしでも聞こえますよ。
+> quest.ship_telegram.reply : tg_reply
+- hero
+Нашёл. Ответ такой: «Папа. Вернёмся в воскресенье. Пеки пирог. Обе твои ласточки».
+Found her. The answer is: "Papa. Back on Sunday. Bake the pie. Both your swallows."
+見つけました。返事はこうです。「パパ 日曜に帰る パイを焼いて あなたのつばめ二羽」。
+- me
+«Обе». Грамматика хромает, смысл безупречен. Садитесь, слушайте, как оно уходит.
+"Both swallows." The grammar limps, the meaning is flawless. Sit down and listen to it go.
+「二羽」ね。文法は怪しいが、意味は完璧だ。お座りなさい。出ていく音を聞きましょう。
+- me
+Точка, тире, тире, точка — это «П». Точка, тире — «А». Слышите? «Папа» на морзянке звучит как шаги по лестнице.
+Dot, dash, dash, dot: that's P. Dot, dash: A. Hear it? "Papa" in Morse sounds like footsteps on a staircase.
+トン・ツー・ツー・トン、これが「П」。トン・ツーが「А」。聞こえますか。モールスの「パパ」は、階段をのぼる足音みたいでしょう。
+- me
+Ушла. Через двадцать минут один сердитый человек пойдёт ставить тесто. Держите открытку: это вам от радиослужбы.
+Gone. In twenty minutes one angry man will go and start the dough. Have a postcard: with the compliments of the radio service.
+行きました。二十分後には、怒りんぼうが一人、生地をこねはじめる。絵はがきをどうぞ。無線室からのお礼です。
+> quest.ship_telegram.done : tg_done
+- me
+С берега пришло ещё одно слово для двенадцатой каюты: «Капустой». Я не расшифровываю чужое счастье. Я его только принимаю.
+One more word came from the shore for cabin twelve: "Cabbage". I don't decode other people's happiness. I only receive it.
+陸から十二号室へ、もう一語届きましたよ。「キャベツ」。他人の幸せは解読しません。受信するだけです。
+
+[ship_nonna]
+> quest.ship_telegram.ask : tg_ask
+- me
+Ласточке? От папы? «Жду обоих»... Так. Обоих — значит, она не одна. Значит, не Вера Игнатьевна и не Инга.
+To Swallow? From Papa? "You both"... So. Both means she isn't alone. So not Vera Ignatyevna and not Inga.
+つばめへ？お父さんから？「二人とも」……なるほど。二人なら一人旅じゃない。ヴェーラ・イグナーチエヴナでもインガでもないわね。
+- me
+Молодожёны, двенадцатая каюта. Оля расписалась в роли девичьей фамилией, зачеркнула и написала новую. Рука дрожала. Я такое замечаю.
+The honeymooners, cabin twelve. Olya signed the list with her maiden name, crossed it out and wrote the new one. Her hand shook. I notice such things.
+新婚さん、十二号室。オーリャは名簿に旧姓を書いて、消して、新しい姓を書いたの。手が震えていた。私はそういうのを見逃さない。
+- me
+Иди к ней сам. Если приду я, это будет учреждение. А ты просто мальчик с телеграммой.
+Go to her yourself. If I come, it's an institution. You're just a boy with a telegram.
+あなたが行きなさい。私が行けばお役所になる。あなたなら、ただの電報を持った男の子。
+> quest.ship_telegram.find,reply : tg_hint
+- me
+Двенадцатая каюта, прогулочная палуба. За едой она в столовой, у островов стоит у борта, вечером в салоне. Не тяни: телеграммы киснут быстрее молока.
+Cabin twelve, promenade deck. At meals she's in the dining saloon, by the rail when there's an island, in the evening in the saloon. Don't dawdle: telegrams go sour faster than milk.
+十二号室、遊歩甲板。食事どきは食堂、島が見えるときは舷側、夜はサロンにいるわ。ぐずぐずしないで。電報は牛乳より早くすっぱくなるのよ。
+
+[ship_inga]
+> aside.ship_telegram.find : tg_notme
+- me
+Ласточка? Меня отец звал «выдержка»: в детстве минуты не могла усидеть. Не мне. Но я бы сняла лицо той, кому это несут.
+Swallow? My father called me "Exposure": I couldn't sit still a minute as a child. Not for me. But I'd photograph the face of whoever it is for.
+つばめ？父は私を「露出」と呼んでたわ。子どものころ一分もじっとしていられなくて。私じゃない。でも、それを受け取る人の顔は撮りたいな。
+
+[ship_vera]
+> aside.ship_telegram.find : tg_notme
+- me
+Ласточкой меня звал один штурман в сорок девятом году. Телеграмм он уже не шлёт. Ищите помоложе, голубчик.
+A certain navigator called me Swallow in forty-nine. He sends no telegrams now. Look for someone younger, my dear.
+四九年に、ある航海士が私をつばめと呼びました。あの人はもう電報をよこしません。もっと若い方をお探しなさい。
+
+[ship_olya]
+> quest.ship_telegram.find : tg_found
+- hero
+Вам телеграмма. Кажется. «Ласточке. Сердиться перестал. Жду обоих. Папа».
+A telegram for you. I think. "To Swallow. No longer angry. Expecting you both. Papa."
+電報です。たぶんあなたに。「つばめへ もう怒っていない 二人とも待つ 父」。
+- me
+...Обоих. Он написал «обоих».
+...Both. He wrote "both".
+……二人とも。「二人とも」って書いてある。
+- me
+Мы расписались без него. Он кричал: за моряка — только через его труп. А Миша даже не моряк, он технолог на рыбзаводе.
+We married without him. He shouted: a sailor, over his dead body. And Misha isn't even a sailor, he's a technologist at the fish cannery.
+父抜きで籍を入れたの。船乗りなんぞに嫁にやるものか、って怒鳴って。ミーシャは船乗りですらないのに。缶詰工場の技術者よ。
+- me
+Передай радисту ответ. Запомнишь? «Папа. Вернёмся в воскресенье. Пеки пирог. Обе твои ласточки». Да, «обе». Он поймёт.
+Take the operator an answer. Can you remember it? "Papa. Back on Sunday. Bake the pie. Both your swallows." Yes, "both". He'll understand.
+通信士さんに返事を伝えて。覚えられる？「パパ 日曜に帰る パイを焼いて あなたのつばめ二羽」。そう、「二羽」。父にはわかるわ。
+> quest.ship_telegram.reply : tg_hurry
+- me
+Ты ещё здесь? Беги в радиорубку, пока я не передумала и не дописала туда ещё три страницы.
+Still here? Run to the radio room before I change my mind and add three more pages.
+まだいたの？無線室へ走って。気が変わって三ページ書き足す前に。
+> quest.ship_telegram.done : tg_done
+- me
+Папа ответил. Одно слово: «Капустой». Это он про пирог. У нас в семье это значит «люблю».
+Papa answered. One word: "Cabbage". He means the pie. In our family that's how you say "I love you".
+父から返事が来たの。一語だけ。「キャベツ」。パイの中身のこと。うちではそれが「愛してる」って意味なの。
+
+# ------------------------------------------------------------------ 3. the card sharp from Riga
+@quest.ship_sharp.title
+Шулер из Риги
+The Card Sharp from Riga
+リガから来たいかさま師
+@quest.ship_sharp.desc
+«Инженеру из Риги» за карточным столом везёт третий рейс подряд. Бармен Гиви в такое везение не верит.
+The "engineer from Riga" has been lucky at the card table three voyages running. Givi the barman doesn't believe in luck like that.
+「リガの技師」は三航海つづけてカードで勝っている。バーテンのギヴィは、そんな運を信じない。
+@quest.ship_sharp.hint.log
+Бар на прогулочной палубе, рядом с музыкальным салоном. Гиви стоит за стойкой с десяти утра до часу ночи и рассказывает истории. Мне наливает только лимонад.
+The bar is on the promenade deck, next to the music saloon. Givi stands behind it from ten in the morning till one at night, telling stories. He pours me nothing but lemonade.
+バーは遊歩甲板、音楽サロンのとなり。ギヴィは朝十時から夜中の一時までカウンターに立って、話を聞かせる。ぼくにはレモネードしか注いでくれない。
+@quest.ship_sharp.talk_givi.obj
+Поговорить с барменом Гиви
+Talk to Givi the barman
+バーテンのギヴィと話す
+@quest.ship_sharp.watch_hands.log
+Гиви просит сесть за карточный стол. Стол собирается в салоне после десяти вечера, играть можно на спички. Когда сдаёт Альберт, смотреть не в карты, а на его руки. Увижу — не кричать.
+Givi asks me to sit in at the card table. It gathers in the saloon after ten at night, and you can play for matches. When Albert deals, watch his hands, not the cards. If I see something, no shouting.
+ギヴィに、カードの卓に加わるよう頼まれた。夜十時すぎにサロンで始まる。マッチ棒を賭けて遊べる。アルベルトが配るときは、カードではなく手を見ること。見えても、大声を出さないこと。
+@quest.ship_sharp.catch_albert.obj
+Сесть за карточный стол и поймать Альберта за руку, когда он сдаёт
+Sit in at the card table and catch Albert's hands when he deals
+カードの卓につき、アルベルトが配る手もとを押さえる
+@quest.ship_sharp.done
+Я видел. Нижняя карта ушла из-под колоды так гладко, что почти красиво. Теперь решать: рассказать Гиви, и тогда всё пойдёт по правилам, или поговорить с Альбертом самому.
+I saw it. The bottom card left the pack so smoothly it was almost beautiful. Now to decide: tell Givi, and then it all goes by the rules, or speak to Albert myself.
+見た。いちばん下の札が、ほとんど美しいくらいなめらかに抜けていった。さて決めなくては。ギヴィに話して規則どおりに進めるか、自分でアルベルトと話すか。
+@quest.ship_sharp_word.title
+Шулер: с глазу на глаз
+The Card Sharp: A Quiet Word
+いかさま師:二人きりで
+@quest.ship_sharp_word.desc
+Можно никому не говорить и подойти к Альберту самому.
+I could tell no one and go to Albert myself.
+誰にも言わず、自分でアルベルトのところへ行くこともできる。
+@quest.ship_sharp_word.talk.log
+Альберт днём курит на корме, на курительной палубе, вечером с десяти за картами. Подойти и сказать, что я видел. Страшновато.
+By day Albert smokes aft, on the smoking deck; from ten at night he is at cards. Walk up and say what I saw. A bit scary.
+アルベルトは昼は船尾の喫煙甲板でたばこを吸い、夜十時からはカードの卓にいる。近づいて、見たことを言う。少しこわい。
+@quest.ship_sharp_word.talk_albert.obj
+Поговорить с Альбертом
+Talk to Albert
+アルベルトと話す
+@quest.ship_sharp_word.done
+Альберт когда-то чинил часы. Мастерскую закрыли, а руки остались. Он сказал, что вернёт деньги, и я ему почему-то верю.
+Albert used to mend watches. The workshop closed and the hands stayed. He said he would give the money back, and for some reason I believe him.
+アルベルトは昔、時計を直していた。工房は閉まり、手だけが残った。金は返すと言った。なぜだか、ぼくは信じている。
+@quest.ship_sharp_report.title
+Шулер: по правилам
+The Card Sharp: By the Rules
+いかさま師:規則どおりに
+@quest.ship_sharp_report.desc
+Можно рассказать всё Гиви, а он доложит пассажирскому помощнику. Так положено.
+I could tell Givi everything, and he'll report to the purser. That's the proper way.
+ギヴィにすべて話せば、彼が事務長に報告する。それが決まりだ。
+@quest.ship_sharp_report.tell.log
+Гиви за стойкой бара с десяти утра до часу ночи. Рассказать ему про нижнюю карту.
+Givi is behind the bar from ten in the morning till one at night. Tell him about the bottom card.
+ギヴィは朝十時から夜中の一時までバーのカウンターにいる。いちばん下の札のことを話す。
+@quest.ship_sharp_report.tell_givi.obj
+Рассказать Гиви
+Tell Givi
+ギヴィに話す
+@quest.ship_sharp_report.done
+Гиви сказал, что сцены не будет: будет разговор у Нонны Аркадьевны и список, кому что вернуть. По правилам получается тихо. Я думал, будет громче.
+Givi said there would be no scene: a talk with Nonna Arkadyevna and a list of what goes back to whom. By the rules it turns out quiet. I thought it would be louder.
+ギヴィは言った。騒ぎにはならない、ノンナ・アルカージエヴナと話して、誰に何を返すかの一覧を作るだけだ、と。規則どおりにやると静かなものだ。もっと大ごとになると思っていた。
+
+[ship_givi]
+> quest.ship_sharp.hint : sharp_hint
+- me
+Генацвале, сядь. Лимонад за счёт заведения, а разговор за твой.
+Genatsvale, sit. The lemonade's on the house, the talk's on you.
+ゲナツヴァレ、座りな。レモネードは店のおごり、話はお前さん持ちだ。
+- me
+Видишь инженера из Риги? Альберт. Третий рейс выигрывает. У Тараса выиграл получку, у Льва Марковича часы. Часы потом вернул, красиво вернул.
+See the engineer from Riga? Albert. Winning three voyages now. He won Taras's pay and Lev Markovich's watch. Gave the watch back, handsomely.
+あのリガの技師が見えるか。アルベルトだ。三航海勝ちっぱなし。タラスからは給料を、レフ・マルコヴィチからは時計を巻き上げた。時計はあとで返した。粋にな。
+- me
+Мой дед говорил: кому везёт три раза — тому везёт. Кому четыре — тот сдаёт сам. Мне из-за стойки не видно. А ты сядь за стол, после десяти.
+My grandfather said: lucky three times, a lucky man. Lucky four times, he's the one dealing. I can't see from behind the bar. You sit in, after ten.
+じいさんが言ってた。三度つく奴は運がいい。四度つく奴は自分で配ってる。カウンターからじゃ見えん。お前さんが卓につけ。十時すぎだ。
+- me
+Когда сдаёт он, смотри не в карты. На руки смотри. Увидишь — не кричи. Приди ко мне. Или не ко мне. Сам решишь.
+When he deals, don't look at your cards. Watch his hands. If you see it, don't shout. Come to me. Or not to me. You'll decide.
+あいつが配るときは札を見るな。手を見ろ。見えても叫ぶな。俺のところへ来い。いや、俺じゃなくてもいい。自分で決めな。
+> quest.ship_sharp.watch_hands : sharp_wait
+- me
+Стол собирается после десяти. Играй на спички, на интерес. И когда сдаёт Альберт — на руки, на руки смотри.
+The table gathers after ten. Play for matches, for the fun of it. And when Albert deals: his hands, watch his hands.
+卓は十時すぎに集まる。マッチ棒で、遊びでやりな。アルベルトが配るときは、手だ、手を見るんだ。
+> quest.ship_sharp_report.tell : sharp_report
+- hero
+Гиви, он сдаёт с нижней карты. Я видел.
+Givi, he deals from the bottom. I saw it.
+ギヴィ、あの人は下から配っています。見ました。
+- me
+Видел. Значит, не показалось старому Гиви. Спасибо, что пришёл сюда, а не крикнул на весь салон.
+You saw. So old Givi wasn't imagining it. Thank you for coming here and not shouting it across the saloon.
+見たか。じゃあ、このギヴィの気のせいじゃなかった。サロンじゅうに叫ばずに、ここへ来てくれてありがとうよ。
+- me
+Я скажу Нонне Аркадьевне. Сцены не будет: будет разговор на полчаса и список, кому что вернуть. А в следующем рейсе одной фамилией меньше.
+I'll tell Nonna Arkadyevna. No scene: half an hour's talk and a list of what goes back to whom. And one name fewer next voyage.
+ノンナ・アルカージエヴナには俺から言う。騒ぎにはならん。三十分話して、誰に何を返すか一覧を作るだけだ。次の航海は名前が一つ減る。
+- me
+Знаешь, что обидно, генацвале? Он лучший собеседник у этой стойки. Человека за руку поймать легко. Трудно потом не жалеть.
+You know what's a pity, genatsvale? He's the best talker at this bar. Catching a man's hand is easy. Not being sorry afterwards is the hard part.
+残念なのはな、ゲナツヴァレ、このカウンターでいちばん話がうまいのがあいつだってことだ。人の手を押さえるのは簡単さ。難しいのは、あとで悔やまないことだ。
+> quest.ship_sharp_report.tell.if.done:ship_sharp_word : sharp_report_late
+- me
+Сам с ним говорил? И он обещал вернуть? Тогда старый Гиви ничего не слышал. Но Нонне Аркадьевне шепну: пусть посидит у стола с вязаньем. Вязанье очень дисциплинирует игроков.
+You spoke to him yourself? And he promised to pay it back? Then old Givi heard nothing. But I'll whisper to Nonna Arkadyevna to sit by the table with her knitting. Knitting disciplines card players wonderfully.
+自分で話したのか。返すと約束した？なら、このギヴィは何も聞いちゃいない。ただノンナ・アルカージエヴナには耳打ちしとく。卓のそばで編み物をしてもらおう。編み物は博打打ちをおとなしくさせるからな。
+> quest.ship_sharp_word.done : sharp_word_done
+- me
+Тарасу сегодня передали конверт через меня. Спросил, от кого. Я сказал: от моря. Поверил, генацвале. Он же боцман.
+An envelope came for Taras today, through me. He asked who from. I said: from the sea. He believed it, genatsvale. He's a bosun, after all.
+今日、俺あずかりでタラスに封筒が届いた。誰からだと聞くから「海からだ」と言った。信じたよ、ゲナツヴァレ。なにしろ水夫長だからな。
+> quest.ship_sharp_report.done : sharp_report_done
+- me
+За столом стало честно. Честность, генацвале, как боржоми: полезно, а тост под неё не скажешь.
+The table's honest now. Honesty, genatsvale, is like mineral water: good for you, but you can't make a toast with it.
+卓は正直になった。正直ってのはな、ゲナツヴァレ、鉱泉水みたいなもんだ。体にはいいが、乾杯の音頭にはならん。
+
+[ship_albert]
+> quest.ship_sharp_word.talk : sharp_word
+- hero
+Я видел, как вы сдаёте.
+I saw how you deal.
+配るところ、見ました。
+- me
+Сядьте. Не стойте надо мной, как совесть. Что именно вы видели?
+Sit down. Don't stand over me like a conscience. What exactly did you see?
+お座りなさい。良心みたいに私を見下ろさないで。何を見たのです。
+- hero
+Нижнюю карту.
+The bottom card.
+いちばん下の札です。
+- me
+Хороший глаз. В Риге я чинил часы. Мастерскую закрыли, а руки остались. Рукам надо что-то делать.
+A good eye. In Riga I mended watches. The workshop closed and the hands stayed. Hands need something to do.
+いい目だ。リガでは時計を直していました。工房は閉まり、手だけが残った。手というものは、何かしていないといられない。
+- me
+Деньги верну. Тарасу через бармена: он гордый, так не возьмёт. А вам совет: кто смотрит на чужие руки, а не в свои карты, тот уже не проиграет. У меня был такой взгляд. Давно.
+I'll return the money. To Taras through the barman: he's proud, he won't take it otherwise. And a word for you: whoever watches other people's hands instead of his own cards can't lose any more. I had that look once. Long ago.
+金は返します。タラスにはバーテンを通して。誇り高い人だから、じかには受け取らない。あなたには助言を。自分の札でなく人の手を見る者は、もう負けません。私にもその目があった。昔はね。
+> quest.ship_sharp_word.talk.if.done:ship_sharp_report : sharp_word_late
+- me
+А, это вы. Нонна Аркадьевна уже была. Очень вежливо, очень тихо. Всё верну. В воскресенье сойду и больше билета не возьму.
+Ah, it's you. Nonna Arkadyevna has been already. Very polite, very quiet. I shall return it all. I go ashore on Sunday and won't buy another ticket.
+ああ、あなたか。ノンナ・アルカージエヴナはもう来ました。とても丁寧に、とても静かに。全部返します。日曜に降りて、もう切符は買いません。
+- me
+Не извиняйтесь. Вы поступили по правилам. Я всю жизнь завидую людям, которые умеют по правилам.
+Don't apologise. You did it by the rules. All my life I've envied people who can do things by the rules.
+謝らないで。あなたは規則どおりにやった。規則どおりにできる人が、私は一生うらやましい。
+> quest.ship_sharp_word.done : sharp_done
+- me
+Сегодня я играл честно и проиграл три рубля. Странное чувство. Как будто снял тесные ботинки.
+Today I played honestly and lost three roubles. A strange feeling. Like taking off tight shoes.
+今日は正直にやって三ルーブル負けました。妙な気分だ。きつい靴を脱いだみたいな。
+
+[ship_nonna]
+> aside.ship_sharp_report.done : sharp_heard
+- me
+Про инженера из Риги мне доложили. Сцены не было. Был список. Обидно одно: он лучший собеседник за капитанским столом.
+I have been told about the engineer from Riga. There was no scene. There was a list. One pity: he's the best talker at the captain's table.
+リガの技師の件は報告を受けました。騒ぎはなし。一覧を作っただけ。残念なのは一つ、船長の食卓でいちばん話が面白い人だってことね。
+> aside.ship_sharp_word.done : sharp_knit
+- me
+Гиви шепнул, чтобы я посидела у карточного стола с вязаньем. Не знаю зачем. Но за вечер никто не выиграл больше рубля.
+Givi whispered that I should sit by the card table with my knitting. I don't know why. But nobody won more than a rouble all evening.
+ギヴィに、カードの卓のそばで編み物をしてくれと耳打ちされたの。理由は知らないわ。でもその晩、一ルーブル以上勝った人はいなかった。
+
+# ------------------------------------------------------------------ 4. the pilot book
+@quest.ship_pilot.title
+Лоция Веры Игнатьевны
+Vera Ignatyevna's Pilot Book
+ヴェーラ・イグナーチエヴナの水路誌
+@quest.ship_pilot.desc
+Учительница географии тридцать лет показывала эти острова указкой и ни одного не видела. У неё список и ученический карандаш.
+A geography teacher pointed at these islands with a stick for thirty years and never saw one. She has a list and a schoolboy's pencil.
+地理の先生は三十年、この島々を指示棒でさしてきたのに、一つも見たことがなかった。手には一覧表と、生徒の鉛筆。
+@quest.ship_pilot.islands.log
+Остров. Настоящий, не на карте. Рядом у борта стояла старая учительница со списком и шептала названия: Каменные Братья, Игольное Ушко, Птичий, маяк Дальний, Долгий, Тюленьи камни. За каждый увиденный она ставит птичку, но сама у борта долго стоять не может: ветер. Посмотрю за неё. Смотреть лучше с носа или с крыла мостика, а что когда будет, сказано в «Лоции островов» в судовой библиотеке.
+An island. A real one, not on a map. An old teacher stood beside me at the rail with a list, whispering the names: the Stone Brothers, the Needle's Eye, Bird Island, the Far Light, Long Island, the Seal Rocks. She ticks each one she sees, but she can't stand at the rail for long: the wind. I'll look for her. The bow or a bridge wing is best, and what comes when is in the "Pilot of the Islands" in the ship's library.
+島だ。地図ではなく本物の。となりの手すりに年とった先生が一覧表を持って立ち、名前をつぶやいていた。石の兄弟、針の目、鳥島、遠灯台、長島、あざらし岩。見えた島にはしるしをつけるが、風があって長くは立っていられない。ぼくが代わりに見よう。船首か船橋の張り出しがいい。いつ何が見えるかは、船の図書室の『島々の水路誌』に書いてある。
+@quest.ship_pilot.see_three.obj
+Увидеть с палубы три острова
+See three islands from the deck
+甲板から島を三つ見る
+@quest.ship_pilot.read_pilot.obj
+Прочитать «Лоцию островов» в судовой библиотеке
+Read the "Pilot of the Islands" in the ship's library
+船の図書室で『島々の水路誌』を読む
+@quest.ship_pilot.tell.log
+Три острова есть. Про каждый я запомнил одну вещь, но настоящую. Вера Игнатьевна по утрам читает в библиотеке на прогулочной палубе, а когда остров на виду, выходит к борту.
+Three islands done. I've kept one thing about each, but a real one. Vera Ignatyevna reads in the library on the promenade deck in the mornings and comes out to the rail when an island is in sight.
+島を三つ見た。それぞれについて一つずつ、本当のことを覚えた。ヴェーラ・イグナーチエヴナは午前中、遊歩甲板の図書室で本を読み、島が見えると手すりに出てくる。
+@quest.ship_pilot.tell_vera.obj
+Рассказать Вере Игнатьевне, что видел
+Tell Vera Ignatyevna what I saw
+見たものをヴェーラ・イグナーチエヴナに話す
+@quest.ship_pilot.done
+Три острова отмечены карандашом Коли Лапшина. Вера Игнатьевна тридцать лет показывала их указкой, я смотрел на них полчаса. Кажется, мы с географией квиты.
+Three islands ticked with Kolya Lapshin's pencil. Vera Ignatyevna pointed at them for thirty years; I looked at them for half an hour. I think geography and I are even.
+三つの島に、コーリャ・ラプシンの鉛筆でしるしがついた。ヴェーラ・イグナーチエヴナは三十年それを棒でさし、ぼくは三十分ながめた。地理とは、これで貸し借りなしだと思う。
+
+[ship_vera]
+> quest.ship_pilot.islands : pilot_ask
+- me
+Юноша, у вас глаза хорошие? У меня были хорошие, до сорока контурных карт в неделю.
+Young man, are your eyes good? Mine were, before forty outline maps a week.
+あなた、目はいいかしら。私もよかったのよ、白地図を週に四十枚採点するまでは。
+- me
+Вот список. Шесть островов. Я тридцать лет показывала их указкой на стене и ни одного не видела. У борта долго не выстою: ветер.
+Here's the list. Six islands. For thirty years I pointed at them on the wall and never saw one. I can't stand long at the rail: the wind.
+これが一覧。島が六つ。三十年、壁の地図を棒でさしてきて、一つも見たことがないの。手すりには長く立てません。風がね。
+- me
+Постойте за меня. Про каждый остров запомните одну вещь, одну, но настоящую. Расскажете — поставлю птичку. Хватит трёх: три — уже архипелаг.
+Stand there for me. Remember one thing about each island, one, but a real one. Tell me and I'll tick it. Three will do: three is already an archipelago.
+私の代わりに立ってちょうだい。島ごとに一つだけ、本当のことを覚えてきて。話してくれたらしるしをつけます。三つでいいわ。三つあれば、もう群島です。
+> quest.ship_pilot.islands.again : pilot_hint
+- me
+Смотреть лучше с носа или с крыла мостика. И загляните в «Лоцию» в библиотеке: там сказано, когда какой остров и с какого борта.
+The bow or a bridge wing is the best place to look. And see the "Pilot" in the library: it says which island comes when, and on which side.
+見るなら船首か船橋の張り出しがいいわ。図書室の『水路誌』もごらんなさい。どの島がいつ、どちらの舷に見えるか書いてあります。
+> quest.ship_pilot.islands.again : pilot_pencil
+- me
+Карандаш у меня ученический, Коли Лапшина. Он им двойку в дневнике на тройку исправлял. Теперь карандаш служит науке.
+My pencil is a pupil's, Kolya Lapshin's. He used it to turn a two into a three in his report book. Now the pencil serves science.
+この鉛筆は生徒のもの、コーリャ・ラプシンのよ。あの子はこれで通信簿の二を三に書きかえたの。今は鉛筆も学問に仕えています。
+> quest.ship_pilot.tell : pilot_tell
+- hero
+Три видел. Про каждый запомнил по одной вещи. Главная: они гораздо меньше, чем я думал. И гораздо дальше.
+I saw three. One thing about each. The main one: they're much smaller than I thought. And much farther away.
+三つ見ました。一つずつ覚えてきました。いちばんは、思っていたよりずっと小さいこと。それに、ずっと遠いこと。
+- me
+Вот. Этого нет ни в одном атласе: что они меньше и дальше. Я детям говорила «масштаб», а надо было говорить «постой у борта».
+There. That's in no atlas: that they are smaller and farther. I used to say "scale" to the children, when I should have said "go and stand at the rail".
+それよ。小さくて遠い、それはどの地図帳にも載っていない。子どもたちには「縮尺」と教えたけれど、「手すりに立ってごらん」と言うべきだったわ。
+- me
+Ставлю три птички. Остальные в следующий рейс: я упрямая. А вам открытки. Они лежали в моём школьном атласе вместо закладки с пятьдесят восьмого года.
+Three ticks. The rest next voyage: I'm stubborn. And postcards for you. They've lain in my school atlas for a bookmark since fifty-eight.
+しるしを三つ。残りは次の航海で。私は頑固なの。あなたには絵はがきを。五八年から、学校の地図帳にしおり代わりに挟んであったものよ。
+> quest.ship_pilot.done : pilot_done
+- me
+Я показала список капитану. Он сказал: «У вас тут ошибка: Братьев три, а не два». Тридцать лет я учила детей, что их два.
+I showed the captain my list. He said: "There's a mistake here: there are three Brothers, not two." For thirty years I taught children there were two.
+一覧を船長に見せたら、「ここが違います。兄弟は二つでなく三つです」ですって。三十年、子どもたちには二つと教えてきたのに。

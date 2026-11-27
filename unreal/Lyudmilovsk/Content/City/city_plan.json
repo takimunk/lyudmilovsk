@@ -2571,6 +2571,11 @@
    "name_en": "Shell vault hall",
    "after": "Brazilian modernism: a community hall under a row of thin concrete vaults (after Niemeyer's São Francisco de Assis, Pampulha, 1943)"
   },
+  "motor_ship": {
+   "name_ru": "Теплоход",
+   "name_en": "Motor ship",
+   "after": "A 62 m coastal passenger motor ship of the 1960s (after the Soviet project 543 «Алупка» type): the cruise ship «Полдень», built as a furnished building standing at the cruise stage far out at sea"
+  },
   "plain_block": {
    "name_ru": "Дом",
    "name_en": "Plain block",
@@ -2617,6 +2622,37 @@
     31734.0,
     91290.0,
     -3950.0
+   ]
+  },
+  {
+   "id": "P-SHIP",
+   "kind": "ship",
+   "staff": null,
+   "front": [
+    26000.0,
+    4005.0,
+    -41.5
+   ],
+   "building": "motor_ship",
+   "terrace": "B",
+   "s": -25134.466207561167,
+   "y_along": 4000.0,
+   "map": [
+    26000.0,
+    4000.0,
+    -41.5
+   ],
+   "w": 62,
+   "d": 10,
+   "yaw": 90.0,
+   "height_max": 21,
+   "name_ru": "Теплоход «Полдень»",
+   "name_en": "Motor ship Polden",
+   "notes": "the cruise stage far out at sea (sea datum); no street: boarded by the launch from the pier head",
+   "ue": [
+    2600000.0,
+    400790.0,
+    -4150.0
    ]
   },
   {

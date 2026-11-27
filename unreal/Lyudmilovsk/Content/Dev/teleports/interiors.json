@@ -3,6 +3,8 @@
  "teleports": [
   {"id": "city.p_pier", "group": "interiors", "name": "dev.tp.city.p_pier", "x": 321.12, "y": 904.69, "z": -3950.0, "yaw": 175.3},
   {"id": "city.p_pier.2", "group": "interiors", "name": "dev.tp.city.p_pier.2", "x": 322.01, "y": 905.85, "z": -1950.0, "yaw": -169.7},
+  {"id": "city.p_ship", "group": "interiors", "name": "dev.tp.city.p_ship", "x": 26000.0, "y": 4007.0, "z": -4150.0, "yaw": -90.0},
+  {"id": "city.p_ship.2", "group": "interiors", "name": "dev.tp.city.p_ship.2", "x": 26008.05, "y": 4000.0, "z": -3760.0, "yaw": 0.0},
   {"id": "city.p_kiosk1", "group": "interiors", "name": "dev.tp.city.p_kiosk1", "x": 96.92, "y": 469.84, "z": -3950.0, "yaw": 177.9},
   {"id": "city.p_kiosk2", "group": "interiors", "name": "dev.tp.city.p_kiosk2", "x": 103.94, "y": 639.79, "z": -3950.0, "yaw": 177.3},
   {"id": "city.p_kiosk3", "group": "interiors", "name": "dev.tp.city.p_kiosk3", "x": 113.01, "y": 799.7, "z": -3950.0, "yaw": 176.2},

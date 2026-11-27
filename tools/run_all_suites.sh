@@ -151,6 +151,11 @@ suite fishing.test                - bash tools/fishing/run.sh -v
 suite booksim.reading             - bash tools/booksim/run.sh reading
 suite railsim.test                - bash tools/railsim/run.sh test
 suite railsim.table               - bash tools/railsim/run.sh table
+suite cruisesim.test              - bash tools/cruisesim/run.sh test
+suite cruisesim.table             - bash tools/cruisesim/run.sh table
+suite pokersim.test               - bash tools/pokersim/run.sh test
+suite pokersim.play               - bash tools/pokersim/run.sh play 7 3 ru
+suite seascapesim.test            - bash tools/seascapesim/run.sh test
 # peoplesim reads the gitignored railway timetable when it is there: once with it, once without
 if wanted peoplesim; then
 	[ -f "$RAIL" ] || python3 tools/railway.py > /dev/null 2>&1
@@ -163,6 +168,7 @@ suite peoplesim.test              - bash tools/peoplesim/run.sh test
 suite peoplesim.town              - bash tools/peoplesim/run.sh town
 suite peoplesim.weather           - bash tools/peoplesim/run.sh weather
 suite peoplesim.bookclub          - bash tools/peoplesim/run.sh bookclub
+suite peoplesim.cruise            - bash tools/peoplesim/run.sh cruise
 suite peoplesim.day               - bash tools/peoplesim/run.sh day 6 2
 suite peoplesim.summary           slow bash tools/peoplesim/run.sh summary
 if wanted peoplesim.test.norail && [ -f "$RAIL" ]; then

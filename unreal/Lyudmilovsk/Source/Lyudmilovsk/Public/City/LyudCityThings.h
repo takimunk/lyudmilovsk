@@ -338,6 +338,14 @@ public:
 	/** Gives a stamp of a collection ("records/day_1") as an act's line would (the HUD note when it is new); false when it is
 	 *  not a piece of the data's collections or the hero has it. */
 	bool GiveStamp(const FString& Stamp);
+	/** Sets or clears a flag the data's "flag" conditions ask about (lines, topics, acts: docs/city_interiors.md "Flags"; the
+	 *  cruise's "cruise_boarding", "cruise_ev_dinner1"...). Not saved: whoever owns a flag sets it again after a load. False
+	 *  while the data is not read yet (set it again later). */
+	bool SetFlag(FName Flag, bool bOn);
+	bool HasFlag(FName Flag) const;
+	/** The minutes an act with "until": "<Name>" lasts from now (the cruise's "cruise_event": to the next event of the
+	 *  programme); 0: no such wait now, the act's own minutes pass. False while the data is not read yet. */
+	bool SetWaitMinutes(FName Name, int32 Minutes);
 
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override

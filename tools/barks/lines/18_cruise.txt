@@ -1,0 +1,266 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The weekend cruise of the motor ship «Полдень» (docs/ship.md; tools/ship/cruise_people.py): the townsfolk who
+## sail this weekend (job = cruise_passenger: their twins aboard, and their town records waiting for the launch at
+## the pier head). The crew and the tourists are talked to with E and say no lines of these. The islands by the
+## programme: the Stone Brothers on Friday evening, Bird Island and the Far Light on Saturday, the Seal Rocks on Sunday.
+## Russian: the speaker's own words never agree in gender. Nobody offers the hero a drink: he is a teenager.
+## ---------------------------------------------------------------------------------------------------------------
+
+[cruise_board]
+doing = cruise_board
+say town.cruise_board.1 | Катер с «Полдня» ходит от самого конца пирса. Билет в кармане, чемодан у ноги. | The Polden's launch leaves from the end of the pier. Ticket in my pocket, suitcase at my foot. | 「ポルデニ」のはしけは桟橋の先から出る。切符はポケット、鞄は足もとに。
+say town.cruise_board.2 | Два дня без огорода. Даже не верится. | Two days without the vegetable patch. Hard to believe. | 二日間、畑なしの暮らし。信じられない。
+say town.cruise_board.3 | Вон он стоит на рейде, белый. Труба с солнцем. | There she lies in the roads, all white. The funnel with the sun on it. | ほら、沖に白い船がいる。煙突に太陽の印。
+say town.cruise_board.4 | Соседка просила привезти открытку с маяком Дальним. Не забыть бы. | My neighbour asked for a postcard of the Far Light. I mustn't forget. | お隣に遠灯台の絵はがきを頼まれた。忘れないようにしないと。
+
+[cruise_board_hero]
+doing = cruise_board
+to = hero
+say town.cruise_board_hero.1 | Тоже на «Полдень»? Тогда увидимся за ужином. | For the Polden too? Then we'll meet at dinner. | 君も「ポルデニ」に？じゃあ夕食で会おう。
+say town.cruise_board_hero.2 | Не опоздай: в шесть три гудка, и трап убирают. | Don't be late: three blasts at six and the gangway comes up. | 遅れないで。六時に汽笛が三回、それで舷梯が上がるよ。
+
+[cruise_settle]
+doing = cruise_settle
+say town.cruise_settle.1 | Каюта маленькая, а окно круглое. Всё как положено. | The cabin is small and the window is round. Just as it should be. | 船室は小さくて、窓は丸い。これでこそ船だ。
+say town.cruise_settle.2 | Верхняя койка или нижняя? Вечный вопрос. | The upper berth or the lower? The eternal question. | 上の寝台か、下の寝台か。永遠の問題だ。
+say town.cruise_settle.3 | Чемодан под койку, шляпу на крючок. Вот и дома. | Suitcase under the berth, hat on the hook. Home already. | 鞄は寝台の下、帽子は鉤に。もうわが家だ。
+say town.cruise_settle.4 | Спасательный жилет лежит в шкафчике. Надеюсь, там и пролежит. | The life jacket is in the locker. I hope it stays there. | 救命胴衣は戸棚の中。ずっとそこにいてほしい。
+
+[cruise_departure]
+doing = cruise_departure
+say town.cruise_departure.1 | Три гудка. Теперь уже точно плывём. | Three blasts. Now we really are sailing. | 汽笛が三回。いよいよ出航だ。
+say town.cruise_departure.2 | Смотри, набережная уже как игрушечная. | Look, the promenade is like a toy already. | 見て、遊歩道がもうおもちゃみたい。
+say town.cruise_departure.3 | Помашу своему балкону. Вдруг кот смотрит. | I'll wave to my balcony. The cat may be watching. | うちのバルコニーに手を振ろう。猫が見ているかも。
+say town.cruise_departure.4 | Под марш отходить веселее. Хоть и хрипит репродуктор. | Leaving is jollier to a march. Even from a wheezy loudspeaker. | 行進曲つきの出航は楽しい。スピーカーはかすれているけど。
+
+[cruise_drill]
+doing = cruise_drill
+say town.cruise_drill.1 | Шлюпка номер два, левый борт. Запомнить, как свой адрес. | Boat number two, port side. To be remembered like my own address. | 二号ボート、左舷。自分の住所みたいに覚えておく。
+say town.cruise_drill.2 | Боцман говорит так, что слышно на берегу. | The bosun talks so they can hear him on shore. | 甲板長の声は岸まで聞こえそうだ。
+say town.cruise_drill.3 | Жилет завязывается спереди. А у меня вышел бантик. | The jacket ties at the front. Mine came out as a bow. | 胴衣は前で結ぶ。ちょうちょ結びになってしまった。
+say town.cruise_drill.4 | Учебная тревога, а сердце стучит по-настоящему. | A practice alarm, and the heart beats for real. | 訓練なのに、胸は本気でどきどきする。
+
+[cruise_dinner]
+doing = cruise_dinner
+say town.cruise_dinner.1 | Суп в тарелке качается вместе с кораблём. Надо есть быстрее. | The soup rocks in the bowl along with the ship. One has to eat faster. | スープが船といっしょに揺れる。急いで食べないと。
+say town.cruise_dinner.2 | За нашим столом все из одного города, а знакомимся только здесь. | Everyone at our table is from the same town, and we only meet here. | 同じ町の者ばかりの食卓なのに、知り合うのはここでだ。
+say town.cruise_dinner.3 | Скатерть крахмальная, салфетка лебедем. Жалко разворачивать. | A starched cloth, a napkin folded like a swan. A pity to unfold it. | のりのきいたクロス、白鳥の形のナプキン。広げるのが惜しい。
+say town.cruise_dinner.4 | Капитан сидит вон за тем столом. Ест, как все люди. | The captain sits at that table over there. He eats like anybody else. | 船長はあそこの席。ふつうの人と同じに食べている。
+
+[cruise_breakfast]
+doing = cruise_breakfast
+say town.cruise_breakfast.1 | Каша на корабле вкуснее, чем дома. Наверное, от воздуха. | Porridge on a ship tastes better than at home. The air, I suppose. | 船のおかゆは家よりおいしい。きっと空気のせい。
+say town.cruise_breakfast.2 | Ночью что-то тихо стучало под полом. Говорят, машина. | Something knocked softly under the floor at night. The engine, they say. | 夜中に床下でとんとん音がした。機関だそうだ。
+say town.cruise_breakfast.3 | Чай в подстаканнике, и не проливается. Вот что значит опыт. | Tea in a glass holder, and not a drop spilt. That is experience for you. | 金具つきのグラスの紅茶は一滴もこぼれない。年季だね。
+
+[cruise_lunch]
+doing = cruise_lunch
+say town.cruise_lunch.1 | Борщ, котлета, компот. В море всё это называется иначе, но вкус тот же. | Borscht, a cutlet, compote. At sea they have other names, but the taste is the same. | ボルシチ、カツレツ、コンポート。海では呼び名が違っても味は同じ。
+say town.cruise_lunch.2 | На свежем воздухе аппетит как у матроса. | In the fresh air one has a sailor's appetite. | 潮風にあたると、水夫なみの食欲が出る。
+say town.cruise_lunch.3 | Кок выглядывал в окошко: проверял, всё ли доели. | The cook looked out of the hatch: checking that the plates were clean. | コックが小窓からのぞいていた。残さず食べたか見ていたんだ。
+
+[cruise_tea]
+doing = cruise_tea
+say town.cruise_tea.1 | К чаю дают сушки. Морские, наверное. | They serve little ring biscuits with the tea. Sea ones, I suppose. | お茶には輪っかの乾パンが出る。海のやつかな。
+say town.cruise_tea.2 | Чай в четыре, а в полпятого уже маяк. Расписание как на вокзале. | Tea at four, the lighthouse at half past. A timetable like at a station. | 四時にお茶、四時半には灯台。駅みたいな時刻表だ。
+say town.cruise_tea.3 | Третий стакан. В море пить чай положено долго. | My third glass. At sea, tea is meant to take a long time. | これで三杯目。海ではお茶はゆっくり飲むものだ。
+
+[cruise_gala]
+doing = cruise_gala_dinner
+weight = 3
+say town.cruise_gala.1 | Капитанский ужин. Хорошо, что в чемодане нашлась глаженая рубашка. | The captain's dinner. A good thing there was an ironed shirt in the suitcase. | 船長主催の晩餐。鞄にアイロンをかけたシャツがあってよかった。
+say town.cruise_gala.2 | Оркестр играет тихо, чтобы слышно было, как звенят вилки. | The band plays softly, so you can hear the forks ring. | 楽団は静かに弾く。フォークの音が聞こえるように。
+say town.cruise_gala.3 | Капитан сказал три слова, и все встали. Вот это тост. | The captain said three words and everybody stood up. Now that is a toast. | 船長がひとこと言うと、みんな立ち上がった。あれぞ乾杯。
+
+[cruise_isl_brothers]
+doing = cruise_isl_brothers
+weight = 3
+say town.cruise_isl_brothers.1 | Каменные Братья. Три скалы, и солнце садится ровно между ними. | The Stone Brothers. Three stacks, and the sun sets exactly between them. | 石の兄弟だ。三つの岩のちょうど間に日が沈む。
+say town.cruise_isl_brothers.2 | Младший брат совсем наклонился. Устал стоять. | The youngest brother leans right over. Tired of standing. | 末の弟はすっかり傾いている。立ちくたびれたんだね。
+say town.cruise_isl_brothers.3 | С берега их не видно. Стоило плыть уже ради этого. | You can't see them from the shore. Worth sailing for this alone. | 岸からは見えない。これだけでも来たかいがあった。
+
+[cruise_isl_arch]
+doing = cruise_isl_arch
+weight = 3
+say town.cruise_isl_arch.1 | Игольное Ушко на рассвете. Ради такого и в пять утра встанешь. | The Needle's Eye at sunrise. For this one gets up even at five. | 夜明けの針の穴岩。これなら朝五時にも起きられる。
+say town.cruise_isl_arch.2 | Солнце прошло сквозь арку, как нитка в иголку. | The sun went through the arch like a thread through a needle. | お日さまが岩の穴を、針に糸を通すように抜けていった。
+
+[cruise_isl_birds]
+doing = cruise_isl_birds
+weight = 3
+say town.cruise_isl_birds.1 | Остров Птичий. Скалы белые, и это не снег. | Bird Island. The cliffs are white, and that is not snow. | 鳥の島だ。崖が白いけれど、あれは雪じゃない。
+say town.cruise_isl_birds.2 | Кричат так, что гудка не слышно. | They scream so loud you can't hear the ship's horn. | 鳴き声がすごくて、汽笛も聞こえない。
+say town.cruise_isl_birds.3 | Японский гость смотрит в трубу и что-то записывает. Каждую птицу, наверное. | The Japanese guest looks through his telescope and writes. Every single bird, I suppose. | 日本のお客さんが望遠鏡をのぞいて何か書いている。一羽ずつかな。
+say town.cruise_isl_birds.4 | Шляпу лучше придержать. И не только от ветра. | Better hold on to your hat. And not only against the wind. | 帽子は押さえておこう。風のせいだけじゃなくてね。
+
+[cruise_isl_lighthouse]
+doing = cruise_isl_lighthouse
+weight = 3
+say town.cruise_isl_lighthouse.1 | Маяк Дальний. Голая скала, башня и один огород в три грядки. | The Far Light. A bare rock, a tower and one garden of three beds. | 遠灯台だ。はだかの岩に塔がひとつ、畑はうねが三つ。
+say town.cruise_isl_lighthouse.2 | Кто-то машет с галереи. Помашем в ответ, ему приятно. | Somebody is waving from the gallery. Let's wave back, he'll be glad. | 回廊でだれか手を振っている。振り返そう、喜ぶから。
+say town.cruise_isl_lighthouse.3 | Ночью его огонь видно из каюты. Считай вспышки и засыпай. | At night you can see its light from the cabin. Count the flashes and fall asleep. | 夜は船室から灯が見える。光を数えながら眠るんだ。
+
+[cruise_isl_seals]
+doing = cruise_isl_seals
+weight = 3
+say town.cruise_isl_seals.1 | Тюленьи камни. Вон тот камень зевнул. | The Seal Rocks. That rock over there just yawned. | アザラシ岩だ。あそこの岩、いまあくびをした。
+say town.cruise_isl_seals.2 | Лежат и смотрят на нас. Им тоже экскурсия. | They lie and look at us. It's an outing for them too. | 寝ころんでこっちを見ている。あちらにとっても見物だ。
+say town.cruise_isl_seals.3 | Тише, не спугните. Хотя им, по-моему, всё равно. | Hush, don't scare them. Though I don't think they care. | 静かに、おどかさないで。もっとも向こうは平気みたい。
+
+[cruise_isl_home]
+doing = cruise_isl_home
+weight = 3
+say town.cruise_isl_home.1 | Вон наша канатка. Отсюда кабинки как бусины. | There's our cable car. From here the cabins are like beads. | ほら、うちのロープウェイ。ここからだとゴンドラがビーズみたい。
+say town.cruise_isl_home.2 | Свой город с моря не узнать. Красивый, оказывается. | You wouldn't know your own town from the sea. A handsome one, it turns out. | 海から見ると自分の町とは思えない。きれいな町だったんだ。
+say town.cruise_isl_home.3 | Два дня, а кажется, что месяц. | Two days, and it feels like a month. | 二日なのに、ひと月たった気がする。
+
+[cruise_rail]
+doing = ship_rail_look
+say town.cruise_rail.1 | Вода за кормой как кружево. Можно смотреть час. | The water astern is like lace. One could watch it for an hour. | 船尾の波はレースみたい。一時間でも見ていられる。
+say town.cruise_rail.2 | Чайка летит за нами от самого рейда. Ждёт обеда. | A gull has been following us from the roads. Waiting for lunch. | カモメが港からずっとついてくる。お昼を待っているんだ。
+say town.cruise_rail.3 | Берега не видно ни с какой стороны. Вот теперь это море. | No shore on either side. Now this is the sea. | どちらを見ても岸がない。これでこそ海だ。
+say town.cruise_rail.4 | Перила тёплые от солнца. | The rail is warm from the sun. | 手すりが日にあたって温かい。
+
+[cruise_rail_night]
+doing = ship_rail_look
+sun = night
+weight = 3
+say town.cruise_rail_night.1 | Звёзд столько, что штурману, наверное, трудно выбрать. | So many stars that the navigator must find it hard to choose. | 星が多すぎて、航海士も選ぶのに困るだろう。
+say town.cruise_rail_night.2 | Вода ночью чёрная, а след за кормой светится. | The water is black at night, and the wake behind us glows. | 夜の海は黒いのに、船のあとだけ光っている。
+
+[cruise_deck_walk]
+doing = ship_deck_walk
+say town.cruise_deck_walk.1 | Семь кругов по палубе — километр. Так сказала массовик. | Seven turns round the deck make a kilometre. The entertainer said so. | 甲板を七周で一キロ。催し係がそう言っていた。
+say town.cruise_deck_walk.2 | Иду ровно, а палуба идёт чуть вбок. | I walk straight, and the deck walks a little sideways. | まっすぐ歩いているのに、甲板が少し横へ行く。
+say town.cruise_deck_walk.3 | Матросы красят что-то белое в белый цвет. | The sailors are painting something white white. | 水夫たちが白いものを白く塗っている。
+
+[cruise_deckchair]
+doing = ship_deckchair ship_bench ship_deck_read
+say town.cruise_deckchair.1 | Шезлонг, плед и горизонт. Больше ничего не надо. | A deck chair, a rug and the horizon. Nothing else is needed. | デッキチェアと毛布と水平線。ほかには何もいらない。
+say town.cruise_deckchair.2 | Книга открыта на той же странице, что и вчера. | The book is open at the same page as yesterday. | 本はきのうと同じページを開いたまま。
+say town.cruise_deckchair.3 | Глаза закрываются сами. Это всё морской воздух. | My eyes close by themselves. It's all the sea air. | まぶたがひとりでに閉じる。みんな潮風のせいだ。
+say town.cruise_deckchair.4 | Труба над головой гудит тихонько, как большой чайник. | The funnel overhead hums softly, like a big kettle. | 頭の上の煙突が、大きなやかんみたいに小さくうなっている。
+
+[cruise_exercise]
+doing = cruise_exercise
+say town.cruise_exercise.1 | Зарядка в семь пятнадцать. На палубе, на ветру. Бодрит. | Exercises at a quarter past seven. On deck, in the wind. It wakes you up. | 七時十五分に体操。甲板で、風の中で。目が覚める。
+say town.cruise_exercise.2 | Наклоны на качке получаются сами собой. | With the ship rolling, the bends do themselves. | 船が揺れるから、前屈はひとりでにできる。
+say town.cruise_exercise.3 | Раз-два, три-четыре. Дома так рано и не встать. | One-two, three-four. At home one would never be up so early. | いち、に、さん、し。家ではこんなに早く起きられない。
+
+[cruise_deckgames]
+doing = cruise_deckgames
+say town.cruise_deckgames.1 | Кольца надо набрасывать на колышек. Пока все улетают к шлюпке. | You throw the rings over a peg. So far they all fly off to the lifeboat. | 輪を棒に投げ入れる遊び。今のところ全部ボートのほうへ飛ぶ。
+say town.cruise_deckgames.2 | Палубный шаффлборд. Проще, чем слово, которым он называется. | Deck shuffleboard. Easier than the word for it. | 甲板のシャッフルボード。名前よりはやさしい。
+say town.cruise_deckgames.3 | Наша команда называется «Якорь». Потому что тянет на дно. | Our team is called the Anchor. Because it drags us to the bottom. | うちの組の名は「いかり」。底へ引っぱるからね。
+
+[cruise_concert]
+doing = cruise_concert cruise_concert2
+say town.cruise_concert.1 | Квартет играет то же, что на танцплощадке в молодости. | The quartet plays what they played at the dance floor when we were young. | 四重奏は、若いころダンス場で流れていた曲をやっている。
+say town.cruise_concert.2 | Контрабас больше самого музыканта. Как он его носит по трапам? | The double bass is bigger than its player. How does he carry it up the ladders? | コントラバスは弾き手より大きい。どうやって階段を運ぶんだろう。
+say town.cruise_concert.3 | Хорошо играют. И пол покачивается в такт. | They play well. And the floor sways in time. | いい演奏だ。床まで拍子に合わせて揺れる。
+say town.cruise_concert.4 | Молодожёны танцуют так, будто больше никого нет. | The newlyweds dance as if there were nobody else here. | 新婚さんは、ほかにだれもいないみたいに踊っている。
+
+[cruise_dance]
+doing = cruise_dance
+say town.cruise_dance.1 | Вальс на корабле: шаг твой, поворот делает море. | A waltz on a ship: the step is yours, the sea does the turn. | 船の上のワルツ。足は自分で、回るのは海まかせ。
+say town.cruise_dance.2 | Ноги помнят. Голова уже нет, а ноги помнят. | The feet remember. The head no longer does, but the feet remember. | 足が覚えている。頭は忘れても、足は覚えている。
+say town.cruise_dance.3 | Ещё один танец, и спать. Это уже третий раз так. | One more dance and then bed. That's the third time now. | あと一曲で寝る。そう言うのはもう三度目。
+
+[cruise_quiz]
+doing = cruise_quiz
+say town.cruise_quiz.1 | Сколько узлов в миле? Нисколько, это разные вещи. Но спросили хитро. | How many knots in a mile? None, they're different things. But a sly question. | 一マイルは何ノット？比べられないものさ。うまい問題だ。
+say town.cruise_quiz.2 | Про острова отвечу. Про морские узлы — нет. | I can answer about the islands. About sailor's knots, no. | 島のことなら答えられる。ロープの結び方はだめだ。
+say town.cruise_quiz.3 | Приз — бумажный кораблик с печатью. Хочу такой. | The prize is a paper boat with a stamp on it. I want one. | 賞品ははんこつきの紙の船。あれが欲しい。
+
+[cruise_diplomas]
+doing = cruise_diplomas
+say town.cruise_diplomas.1 | Диплом морехода. Повешу над столом, рядом с грамотой за огурцы. | A seafarer's diploma. It will hang over my desk, next to the one for cucumbers. | 航海者の証書だ。きゅうりの賞状の隣に飾ろう。
+say town.cruise_diplomas.2 | Подпись капитана настоящая, чернилами. | The captain's signature is real, in ink. | 船長の署名は本物、インクで書いてある。
+say town.cruise_diplomas.3 | Вызывают по фамилии, как в школе. И так же страшно. | They call you by your surname, as at school. And it's just as frightening. | 学校みたいに名字で呼ばれる。同じくらい緊張する。
+
+[cruise_saloon]
+doing = ship_saloon_sit ship_bar
+say town.cruise_saloon.1 | В салоне кресла такие, что вставать не хочется до самого берега. | The saloon armchairs are such that you don't want to get up before we land. | サロンの椅子は、岸に着くまで立ちたくなくなる座り心地。
+say town.cruise_saloon.2 | Буфетчик помнит, кто что заказывал вчера. Вот это память. | The barman remembers what everybody ordered yesterday. What a memory. | バーの人は、きのうのみんなの注文を覚えている。たいした記憶だ。
+say town.cruise_saloon.3 | Лимонад здесь с пузырьками покрупнее, чем на берегу. | The lemonade here has bigger bubbles than ashore. | ここのレモネードは、陸のより泡が大きい。
+
+[cruise_library]
+doing = ship_library_read cruise_library
+say town.cruise_library.1 | В судовой библиотеке всё про море. И один справочник по пчеловодству. | The ship's library is all about the sea. And one handbook on beekeeping. | 船の図書室は海の本ばかり。養蜂の手引きが一冊だけある。
+say town.cruise_library.2 | Тихо, только часы и машина. | Quiet, only the clock and the engine. | 静かだ。時計と機関の音だけ。
+
+[cruise_cards]
+doing = cruise_cards
+say town.cruise_cards.1 | Инженеру из Риги сегодня опять везёт. Третий вечер подряд. | The engineer from Riga is lucky again tonight. The third evening running. | リガの技師さんは今夜もついている。三晩つづけてだ。
+say town.cruise_cards.2 | Играем на спички. Спичек уже не осталось. | We play for matches. There are no matches left. | マッチ棒を賭けている。もう一本も残っていない。
+
+[cruise_smoke]
+doing = ship_smoke
+say town.cruise_smoke.1 | На корме ветер уносит дым раньше, чем успеешь затянуться. | At the stern the wind takes the smoke before you can draw on it. | 船尾では、吸う前に風が煙を持っていく。
+say town.cruise_smoke.2 | Курить только здесь. Боцман видит всё. | Smoking only here. The bosun sees everything. | 吸っていいのはここだけ。甲板長は何でも見ている。
+
+[cruise_pack]
+doing = cruise_pack
+say town.cruise_pack.1 | Чемодан почему-то не закрывается. А ведь ничего не покупали. | The suitcase won't shut for some reason. And nothing was bought. | なぜか鞄が閉まらない。何も買っていないのに。
+say town.cruise_pack.2 | Диплом сверху, чтобы не помялся. | The diploma on top, so it doesn't crease. | 証書はいちばん上に。しわにならないように。
+say town.cruise_pack.3 | Жалко уходить из каюты. Привыкаешь за две ночи. | A pity to leave the cabin. One gets used to it in two nights. | 船室を出るのがさびしい。二晩で慣れてしまう。
+
+[cruise_hello]
+job = cruise_passenger
+to = hero
+at = ship_deck ship_saloon ship_dining ship_library
+say town.cruise_hello.1 | О, и ты здесь! Земляк в море — уже почти родня. | Oh, you're here too! A fellow townsman at sea is nearly family. | おや、君もいたのか。海で会う同郷人は、もう親戚みたいなものだ。
+say town.cruise_hello.2 | Ну как тебе каюта? У нас окно прямо над водой. | Well, how is your cabin? Our window is right over the water. | 船室はどう？うちの窓は水のすぐ上だよ。
+say town.cruise_hello.3 | Не проспи завтра Птичий. Говорят, главное в этом рейсе. | Don't sleep through Bird Island tomorrow. They say it's the best of the trip. | あしたの鳥の島を寝過ごさないで。この航海の目玉だそうだ。
+say town.cruise_hello.4 | В городе здороваемся через раз, а тут как старые знакомые. | In town we greet each other every other time, and here we're like old friends. | 町ではたまに会釈するだけなのに、ここでは昔なじみみたいだ。
+
+[cruise_hello_known]
+job = cruise_passenger
+to = hero
+met = known
+at = ship_deck ship_saloon ship_dining ship_library
+weight = 3
+say town.cruise_hello_known.1 | Сосед! Садись потом к нам, расскажешь, что видел с мостика. | Neighbour! Sit with us later and tell what you saw from the bridge. | お隣さん！あとでこっちに来て、船橋から何が見えたか話してよ。
+say town.cruise_hello_known.2 | Дома расскажу, что плыли вместе. Не поверят. | I'll tell them at home that we sailed together. They won't believe it. | 帰ったら、いっしょに船に乗ったと話そう。信じてもらえないな。
+
+[cruise_chat_deck]
+job = cruise_passenger
+job2 = cruise_passenger
+at = ship_deck
+talk
+- town.cruise_chat_deck.1 | Вы на какой палубе живёте? | Which deck are you on? | どの甲板にお住まいですか。
+- town.cruise_chat_deck.2 | На главной. Окно у самой воды, рыбам всё видно. | The main one. The window is at the water, the fish can see everything. | 主甲板です。窓が水ぎわで、魚に丸見えなんです。
+- town.cruise_chat_deck.3 | А у нас внизу. Зато машину слышно, как сердце. | We're below. But you hear the engine like a heart. | うちは下です。そのかわり機関の音が心臓みたいに聞こえます。
+talk
+- town.cruise_chat_deck.4 | Вы заметили? Здесь никто не смотрит на часы. | Have you noticed? Nobody here looks at a clock. | 気づきました？ここではだれも時計を見ない。
+- town.cruise_chat_deck.5 | Зачем? Позовут на обед по радио. | Why would they? The loudspeaker calls you to lunch. | 見なくていいんです。お昼は放送で呼ばれますから。
+
+[cruise_chat_table]
+job = cruise_passenger
+job2 = cruise_passenger
+doing = cruise_dinner cruise_lunch cruise_breakfast cruise_tea cruise_gala_dinner
+talk
+- town.cruise_chat_table.1 | Передайте, пожалуйста, хлеб. Пока он не уехал сам. | Pass the bread, please. Before it travels off by itself. | パンを取ってください。ひとりで滑っていく前に。
+- town.cruise_chat_table.2 | Держите. На качке тарелки ходят в гости. | Here. When she rolls, the plates go visiting. | どうぞ。揺れるとお皿がよそへ遊びに行くんです。
+talk
+- town.cruise_chat_table.3 | Мы ведь живём через двор. А разговорились только тут. | We live across the yard from each other. And only got talking here. | うちは中庭をはさんだお向かいでしょう。話すのはここが初めてだ。
+- town.cruise_chat_table.4 | Значит, надо было сначала уплыть. | So we had to sail away first. | まず船出しなきゃいけなかったんですね。
+
+## --- the moments the ship's programme may call out (ULyudTownTalkSubsystem::SayEvent; nobody calls them yet)
+[cruise_ev_cast_off]
+on = cruise_cast_off
+job = cruise_passenger
+say town.cruise_ev_cast_off.1 | Отдали концы! Слово-то какое. | Cast off! What a phrase. | もやいを解いた！いい言葉だなあ。
+say town.cruise_ev_cast_off.2 | Поплыли. До свидания, берег. | We're off. Goodbye, shore. | 出たぞ。さよなら、岸よ。
+
+[cruise_ev_island]
+on = cruise_island
+job = cruise_passenger
+say town.cruise_ev_island.1 | Остров по правому борту! Все к перилам! | An island to starboard! Everybody to the rail! | 右舷に島！みんな手すりへ！
+say town.cruise_ev_island.2 | Вон он, показался. Сперва как облако, потом как камень. | There it is, coming up. First like a cloud, then like a stone. | ほら見えてきた。はじめは雲、それから岩みたいに。
+
+[cruise_ev_home]
+on = cruise_home
+job = cruise_passenger
+say town.cruise_ev_home.1 | Якорь загремел. Вот и приплыли. | The anchor rattled down. So here we are. | いかりの音がした。さあ、着いた。
+say town.cruise_ev_home.2 | Катер уже идёт за нами. Жалко, что так быстро. | The launch is already coming for us. A pity it's so soon. | もうはしけが迎えに来る。早すぎて残念だ。

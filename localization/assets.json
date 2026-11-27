@@ -245,6 +245,48 @@
    "aspect": "1:1",
    "prompt": "A small pale green Edmondson card railway ticket with a neat punched hole in its middle and a clipped corner, slightly worn, no lettering."
   },
+  "icon_cruise_ticket_hold": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A long pale buff paper steamship ticket with a perforated counterfoil, a small printed sun disc emblem and a plain brown stripe along the edge, slightly creased, no lettering."
+  },
+  "icon_cruise_ticket": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A long pale blue paper steamship ticket with a perforated counterfoil, a small printed sun disc emblem and a blue wave stripe along the edge, no lettering."
+  },
+  "icon_cruise_ticket_lux": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A long cream card steamship ticket with a perforated counterfoil, a gold sun disc emblem and a thin gold border, crisp and new, no lettering."
+  },
+  "icon_cabin_key": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "An old brass cabin key on a short chain with a heavy pear-shaped varnished wooden fob, a small round brass number plate on the fob, no lettering."
+  },
+  "icon_milk_cocktail": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A tall ribbed glass of pale apricot milk cocktail with thick foam to the brim, a striped paper straw and a small nickel-plated shaker beside it."
+  },
+  "icon_ship_postcard": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A vintage postcard of a small white two-deck passenger motor ship with a yellow sun disc on its funnel band, at anchor on a calm sea, a postage stamp corner showing, no lettering."
+  },
+  "icon_cruise_diploma": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A cream paper diploma sheet with an ornamental blue border of ropes and anchors, a round seal with a sun disc and a small drawing of a white motor ship at the top, a curling ink signature at the bottom, no lettering."
+  },
   "icon_ticket_stub": {
    "kind": "icon",
    "style": "icon",

@@ -1,0 +1,649 @@
+# Everyday talk of the crew of the Polden (no quest). Format: see 10_quests_a.txt.
+# first = Friday's stranger; again = round and round; sun.* = now and then, by the sky; aside.ship_voyage.sat / .sun =
+# said once on Saturday / on Sunday (the voyage quest's stages); quest.ship_voyage.done = once, on a later voyage.
+
+# ------------------------------------------------------------------ captain Gromov
+[ship_gromov]
+> first : first
+- me
+Пассажир? Добро пожаловать на «Полдень». Правил у нас три: за борт не падать, к ужину не опаздывать, на закат смотреть.
+A passenger? Welcome aboard the Polden. We have three rules: don't fall overboard, don't be late for dinner, do look at the sunset.
+乗客かな。ポルデニ号へようこそ。規則は三つ。海に落ちない、夕食に遅れない、夕日を見る。
+- hero
+А третье обязательно?
+Is the third one compulsory?
+三つめも必須ですか。
+- me
+Третье главное. Первые два придумала Нонна Аркадьевна.
+The third is the main one. Nonna Arkadyevna thought up the first two.
+三つめがいちばん大事だ。最初の二つはノンナ・アルカージエヴナが考えた。
+> again : speed
+- me
+Идём девять узлов. Быстрее не нужно: острова никуда не денутся, а ужин остынет.
+We're making nine knots. No need for more: the islands aren't going anywhere, and dinner would get cold.
+九ノットで走っている。これ以上は要らない。島は逃げないし、夕食が冷める。
+> again : ice
+- me
+Во льдах я двадцать лет считал градусы ниже нуля. Здесь считаю чаек. Чайки сходятся хуже.
+In the ice I spent twenty years counting degrees below zero. Here I count gulls. The gulls are harder to make add up.
+氷の海では二十年、零下の度数を数えた。ここではカモメを数えている。カモメのほうが勘定が合わない。
+> again : chair
+- me
+За капитанским столом одно место всегда свободно. Это не для начальства. Это для того, кто придёт с хорошей историей.
+One place at the captain's table is always free. It isn't for the authorities. It's for whoever comes with a good story.
+船長の食卓は、いつも一席あけてある。お偉方のためではない。いい話を持ってくる人のためだ。
+> again : crew
+- me
+Экипаж у меня хороший. Каждый что-нибудь слышит: радист эфир, стармех дизель, пассажирский помощник всё остальное.
+I have a good crew. Each of them hears something: the operator the air, the chief his diesel, the purser everything else.
+いい乗組員だ。それぞれ何かを聞いている。通信士は電波を、機関長はディーゼルを、事務長はそれ以外の全部を。
+> sun.day : sun_day
+- me
+В полдень я выхожу на крыло мостика. Привычка. У судна имя такое, что нельзя не выйти.
+At noon I step out onto the bridge wing. A habit. With a name like this ship's you can't not.
+正午には船橋の張り出しに出る。習慣だ。こういう名前の船では、出ないわけにいかない。
+> sun.low : sun_low
+- me
+Смотрите на закат. Это входит в стоимость билета, но берут не все.
+Look at the sunset. It's included in the price of the ticket, but not everyone collects.
+夕日を見なさい。切符の代金に含まれているのに、受け取らない人が多い。
+> sun.night : sun_night
+- me
+Ночью море честнее. Видно только огни, и каждый огонь что-то значит.
+At night the sea is more honest. You see only lights, and every light means something.
+夜の海のほうが正直だ。見えるのは灯りだけで、どの灯りにも意味がある。
+> sun.cloudy : sun_cloudy
+- me
+Пасмурно. Солнце на месте, просто без свидетелей. Во льдах я научился верить ему на слово.
+Overcast. The sun's in its place, only without witnesses. In the ice I learned to take its word for it.
+曇りだ。太陽はちゃんとある。ただ証人がいないだけだ。氷の海で、太陽の言葉を信じることを覚えた。
+> aside.ship_voyage.sat : sat
+- me
+Вторые сутки. С этого дня пассажир перестаёт спрашивать, где столовая, и начинает спрашивать, где мы. Это уже моряк.
+The second day. From today a passenger stops asking where the dining room is and starts asking where we are. That's a sailor already.
+二日目だ。今日から乗客は「食堂はどこ」と聞くのをやめ、「いまどこ」と聞きはじめる。それはもう船乗りだ。
+> aside.ship_voyage.sun : sun
+- me
+К шести будем на рейде. Сходить всегда немного жаль. Я сорок лет схожу и всё ещё не привык.
+We'll be on the roads by six. Going ashore is always a little sad. I've been going ashore for forty years and still haven't got used to it.
+六時には沖に戻る。上陸はいつも少しさびしい。四十年上陸してきて、まだ慣れない。
+> quest.ship_voyage.done : back
+- me
+Опять с нами? Значит, море вас записало. У него своя судовая роль, туда не просятся.
+With us again? Then the sea has entered you in its list. It keeps a list of its own, and you can't apply.
+またご一緒ですか。なら海が君を名簿に載せたのだ。海には海の名簿があって、志願はできない。
+
+# ------------------------------------------------------------------ chief mate Vais
+[ship_vais]
+> first : first
+- me
+Старший помощник Вайс. Спасательный жилет у вас в каюте под койкой. Проверьте, что он там, а не «наверное, там».
+Chief Mate Vais. Your life jacket is in your cabin, under the berth. Check that it is there, not "probably there".
+一等航海士ヴァイスです。救命胴衣は船室の寝台の下。「たぶんある」ではなく、あることを確かめなさい。
+> again : stars
+- me
+Я определяю место по звёздам. Приборы тоже есть, но звезда ни разу не просила заменить ей батарейку.
+I fix our position by the stars. We have instruments too, but no star has ever asked me to change its battery.
+私は星で位置を出します。計器もありますが、電池を替えてくれと言ってきた星は一つもありません。
+> again : exact
+- me
+Сейчас мы в двух кабельтовых от того места, где должны быть. Я знаю, в какую сторону. Этого достаточно.
+Just now we are two cables from where we should be. I know in which direction. That is enough.
+現在、あるべき位置から二ケーブルずれています。どちらへずれたかは分かっている。それで十分です。
+> again : captain
+- me
+Капитан говорит «примерно девять узлов». Я говорю «восемь и семь». Вместе мы ходим точно по расписанию.
+The captain says "about nine knots". I say "eight point seven". Between us we run exactly to the timetable.
+船長は「だいたい九ノット」と言い、私は「八・七」と言う。二人合わせて、ぴったり時刻表どおりです。
+> again : sleep
+- me
+Я сплю днём, с половины пятого. Ночная вахта моя. Кто-то должен смотреть на море, когда на него никто не смотрит.
+I sleep by day, from half past four. The night watch is mine. Someone has to look at the sea when nobody is looking at it.
+私は昼、四時半から眠ります。夜の当直は私の番。誰も海を見ていないとき、誰かが見ていなければ。
+> sun.day : sun_day
+- me
+В полдень берём высоту солнца. Секстан, секундомер, четыре минуты. Самые честные четыре минуты за сутки.
+At noon we take the sun's altitude. Sextant, stopwatch, four minutes. The most honest four minutes of the day.
+正午には太陽の高度を測ります。六分儀、秒時計、四分間。一日でいちばん正直な四分間です。
+> sun.night : sun_night
+- me
+Видите три яркие, высоко? Вега, Денеб, Альтаир. Пока вы их находите, вы не заблудились.
+See the three bright ones, high up? Vega, Deneb, Altair. As long as you can find them, you aren't lost.
+高いところの明るい三つが見えますか。ベガ、デネブ、アルタイル。あれが見つかるうちは、迷っていません。
+> sun.cloudy : sun_cloudy
+- me
+Облачность десять баллов. Звёзд не будет. Идём по счислению: это когда веришь собственной арифметике.
+Ten tenths cloud. No stars tonight. We go by dead reckoning: that is when you trust your own arithmetic.
+雲量十。星は出ません。推測航法で行きます。自分の算術を信じる、ということです。
+> aside.ship_voyage.sat : sat
+- me
+Вы вчера трижды проверили жилет. Мне доложили. Из вас выйдет толк, если не выйдет паникёр.
+You checked your life jacket three times yesterday. It was reported to me. You'll amount to something, unless you amount to an alarmist.
+昨日、救命胴衣を三度確かめたそうですね。報告を受けました。ものになりますよ。心配性にならなければ。
+> aside.ship_voyage.sun : sun
+- me
+Последние сутки. Прошли сто девяносто миль, отклонение от графика четыре минуты. Эти четыре минуты я себе не прощаю.
+The last day. A hundred and ninety miles run, four minutes off the schedule. I do not forgive myself those four minutes.
+最終日です。航程百九十海里、予定からのずれは四分。その四分を、私は自分に許していません。
+> quest.ship_voyage.done : back
+- me
+Снова вы. Жилет под койкой. Да, я знаю, что вы знаете.
+You again. The life jacket is under the berth. Yes, I know you know.
+またあなたですね。救命胴衣は寝台の下。ええ、ご存じなのは存じています。
+
+# ------------------------------------------------------------------ bosun Taras
+[ship_taras]
+> first : first
+- me
+О! Новенький! Руки покажи. Мягкие. Ничего, море и не такие перевоспитывало.
+Oho! A new one! Show me your hands. Soft. Never mind, the sea has re-educated worse.
+おっ、新入りか！手を見せろ。やわらかいな。なに、海はもっとひどいのだって鍛え直してきた。
+- me
+Я Тарас, боцман. Если что-то на палубе привязано, это привязал я. Если отвязалось, это не я.
+I'm Taras, the bosun. If something on deck is tied down, I tied it. If it's come loose, that wasn't me.
+俺はタラス、水夫長だ。甲板で何かが縛ってあったら、縛ったのは俺。ほどけてたら、それは俺じゃない。
+> again : knot
+- me
+Хочешь, узел покажу? Беседочный. Король узлов: держит насмерть, а развязывается одним пальцем. Как хороший характер.
+Want to see a knot? The bowline. King of knots: holds like death and comes undone with one finger. Like a good temper.
+結び方を見せてやろうか。もやい結びだ。結びの王様さ。死んでも解けないのに、指一本でほどける。いい性格みたいなもんだ。
+> again : paint
+- me
+Судно стоит на краске. Не будет краски, будет ржавчина, а ржавчина — это море, которое уже зашло в гости.
+A ship stands on her paint. No paint, and you get rust, and rust is the sea already come to call.
+船はペンキで立ってる。ペンキがなきゃ錆だ。錆ってのは、もう上がりこんできた海のことだ。
+> again : goat
+- me
+Про козу слышал? Не слышал? И не услышишь. Было. Съела вахтенный журнал. Всё, больше ни слова.
+Heard about the goat? No? And you won't. It happened. She ate the deck log. That's all, not another word.
+ヤギの話は聞いたか。聞いてない？これからも聞けん。あったことはあった。当直日誌を食ったんだ。以上、もう一言も言わん。
+> again : loud
+- me
+Я не кричу. Это у меня голос такой, палубный. В каюте я шёпотом говорю. Правда, тоже слышно на корме.
+I'm not shouting. That's just my voice, a deck voice. In the cabin I whisper. Mind, they hear that aft as well.
+怒鳴っちゃいない。こういう声なんだ、甲板声さ。船室じゃささやく。それでも船尾まで聞こえるがな。
+> sun.day : sun_day
+- me
+Солнце высоко — краска сохнет. Мне от него больше ничего не надо. Ну, ещё чтоб грело. Ну, и чтоб красиво.
+Sun's high, the paint's drying. That's all I ask of it. Well, and that it's warm. Well, and that it looks nice.
+日が高けりゃペンキが乾く。お天道様に頼むのはそれだけだ。まあ、あったかいのも。まあ、きれいなのもな。
+> sun.low : sun_low
+- me
+Гляди, солнце садится прямо в клюз. Я каждый вечер проверяю: помещается.
+Look, the sun's going down right into the hawsepipe. I check every evening: it fits.
+見ろ、お天道様が錨鎖孔にすっぽり沈んでく。毎晩確かめてるが、ちゃんと入る。
+> sun.cloudy : sun_cloudy
+- me
+Хмарь. К дождю концы тяжелеют, я по ним погоду знаю раньше радиста. Только ему не говори.
+Murk. Ropes get heavy before rain, I know the weather by them before the operator does. Only don't tell him.
+どんよりだ。雨の前は綱が重くなる。それで通信士より先に天気が分かる。あいつには言うなよ。
+> aside.ship_voyage.sat : sat
+- me
+Второй день, а ходишь уже вразвалочку. Ноги сами поняли. Голова потом догонит.
+Second day and you're rolling as you walk already. Your legs have worked it out. Your head will catch up.
+二日目で、もう船乗り歩きになってるじゃねえか。足が先に覚えたんだ。頭はあとからついてくる。
+> aside.ship_voyage.sun : sun
+- me
+Сегодня на берег. Ты там не кисни. Берег — он тоже ничего, если знать, что в пятницу отход.
+Ashore today. Don't you go moping there. The shore's all right too, if you know there's a sailing on Friday.
+今日は陸だ。向こうでしょげるなよ。陸も悪かないさ。金曜に出航があると分かってりゃな。
+> quest.ship_voyage.done : back
+- me
+О! Старый знакомый! Руки покажи. Уже лучше. Ещё рейсов десять, и можно будет швартов доверить.
+Oho! An old acquaintance! Show me your hands. Better. Another ten voyages and I might trust you with a mooring line.
+おっ、なじみの顔だ！手を見せろ。ましになった。あと十航海もすりゃ、もやい綱を任せられる。
+
+# ------------------------------------------------------------------ purser Nonna Arkadyevna
+[ship_nonna]
+> first : first
+- me
+Здравствуй. Каюта твоя в билете, ключ у тебя, ужин в половине восьмого. Остальное спрашивай, я знаю.
+Good day. Your cabin is on your ticket, the key is in your hand, dinner is at half past seven. Ask me the rest, I know it.
+こんにちは。船室は切符のとおり、鍵はあなたの手に、夕食は七時半。あとは聞いて。私が知ってるから。
+- hero
+Всё-всё?
+Everything?
+何でもですか。
+- me
+Всё, что есть в судовой роли, и кое-что сверх. Например, что ты не обедал.
+Everything in the passenger list, and a little beyond. For instance, that you haven't had lunch.
+名簿に書いてあることは全部、それと少し余分に。たとえば、あなたがお昼を食べていないこと。
+> again : list
+- me
+Сорок два пассажира. Я помню, кто с кем не разговаривает и кого с кем посадить, чтобы заговорили.
+Forty-two passengers. I remember who isn't speaking to whom, and whom to seat with whom so that they do.
+乗客は四十二人。誰と誰が口をきかないか、誰と誰を並べれば口をきくか、全部覚えているわ。
+> again : lost
+- me
+За рейс теряют шесть зонтов, две вставные челюсти и одно обручальное кольцо. Кольцо всегда находится. Челюсти нет.
+Each voyage they lose six umbrellas, two sets of false teeth and one wedding ring. The ring always turns up. The teeth don't.
+一航海でなくなるのは傘が六本、入れ歯が二つ、結婚指輪が一つ。指輪は必ず見つかるの。入れ歯は見つからない。
+> again : captain
+- me
+Арсений Павлович думает, что судном командует он. Пусть думает. Мне так удобнее.
+Arseny Pavlovich thinks he commands this ship. Let him. It's more convenient for me.
+アルセーニー・パーヴロヴィチは、船を指揮しているのは自分だと思っているの。そう思わせておくわ。私にはそのほうが都合がいい。
+> again : programme
+- me
+Программа на доске. Но если хочешь знать, что будет на самом деле, спроси меня.
+The programme's on the board. But if you want to know what will actually happen, ask me.
+予定は掲示板に。でも実際に何が起きるか知りたければ、私に聞きなさい。
+> sun.low : sun_low
+- me
+На закате все выходят на правый борт, и судно кренится на полградуса. Капитан делает вид, что так и задумано.
+At sunset everyone goes to the starboard side and the ship lists half a degree. The captain pretends it was planned.
+日没にはみんな右舷に出るから、船が半度かたむくの。船長は予定どおりという顔をするけれど。
+> sun.night : sun_night
+- me
+После одиннадцати отбой. Я не сторож, но знаю, кто не спит. Сейчас, например, ты.
+Lights out after eleven. I'm no watchman, but I know who isn't asleep. At this moment, for instance, you.
+十一時すぎは消灯。番人じゃないけれど、誰が起きているかは知っているわ。今なら、たとえばあなた。
+> sun.cloudy : sun_cloudy
+- me
+В пасмурную погоду у стойки очередь: все вдруг вспоминают, что хотели спросить. Солнце мне экономит полдня.
+In dull weather there's a queue at my desk: everyone suddenly remembers what they meant to ask. The sun saves me half a day.
+曇りの日は机の前に行列。みんな急に聞きたかったことを思い出すの。お日さまは私の半日を節約してくれるのよ。
+> aside.ship_voyage.sat : sat
+- me
+Ты вчера сидел один. Сегодня тебе кивают трое. К воскресенью будешь знать всех по имени. Я это вижу каждый рейс и каждый рейс радуюсь.
+Yesterday you sat alone. Today three people nod to you. By Sunday you'll know everyone by name. I see it every voyage and it pleases me every voyage.
+昨日は一人で座っていたわね。今日は三人がうなずいてくれる。日曜には全員の名前を覚えているわ。毎航海それを見て、毎航海うれしいの。
+> aside.ship_voyage.sun : sun
+- me
+Ключ сдашь мне у трапа. И не делай такое лицо: я его повешу на тот же гвоздик. Гвоздик будет ждать.
+You hand your key in to me at the gangway. And don't pull that face: I'll hang it on the same nail. The nail will wait.
+鍵は舷門で私に返してね。そんな顔しないの。同じ釘にかけておくから。釘は待っていてくれるわ。
+> quest.ship_voyage.done : back
+- me
+Опять с нами? Я так и знала. Я на твой гвоздик никого не записывала.
+With us again? I knew it. I didn't put anyone else down for your nail.
+またご一緒？やっぱりね。あなたの釘には誰も入れなかったのよ。
+
+# ------------------------------------------------------------------ barman Givi
+[ship_givi]
+> first : first
+- me
+Гамарджоба, генацвале! Садись. Что будешь? Лимонад, квас, кофе, молочный коктейль. Вина не проси: тебе нет, мне нельзя.
+Gamarjoba, genatsvale! Sit down. What'll it be? Lemonade, kvass, coffee, a milk cocktail. Don't ask for wine: none for you, and I mustn't.
+ガマルジョバ、ゲナツヴァレ！座りな。何にする？レモネード、クワス、コーヒー、ミルクセーキ。ワインは頼むなよ。お前さんには出さんし、俺は飲めん。
+- hero
+Лимонад.
+Lemonade.
+レモネードで。
+- me
+Правильный выбор. Мой дед говорил: кто начинает с лимонада, тот дольше помнит, о чём был разговор.
+The right choice. My grandfather said: he who starts with lemonade remembers longer what the talk was about.
+正しい選択だ。じいさんが言ってた。レモネードから始める者は、何の話だったか長く覚えてる。
+> again : grandfather
+- me
+Мой дед сто четыре года прожил в горах и моря не видел. Говорил: зачем мне море, у меня небо есть. Я ему в бутылке привёз. Он попробовал: «Пересолил».
+My grandfather lived a hundred and four years in the mountains and never saw the sea. He'd say: what do I want the sea for, I've the sky. I brought him some in a bottle. He tasted it: "Oversalted."
+じいさんは山で百四年生きて、海を見たことがなかった。「海なんぞ要るか、空がある」とな。瓶に詰めて持ってってやったら、なめて言ったよ。「塩がきつい」。
+> again : bar
+- me
+За стойкой я четырнадцать лет. Знаешь, что я понял? Люди приходят не пить. Люди приходят, чтобы кто-то стоял напротив.
+Fourteen years behind a bar. Know what I've learned? People don't come to drink. People come so that someone is standing opposite.
+カウンターに立って十四年。分かったことがある。人は飲みに来るんじゃない。向かいに誰か立っててほしくて来るんだ。
+> again : toast
+- me
+Хочешь тост под лимонад? За тех, кто в море. И за тех, кто на берегу думает, что мы тут отдыхаем.
+Want a toast with your lemonade? To those at sea. And to those ashore who think we're out here on holiday.
+レモネードで乾杯の音頭をやろうか。海にいる者に。それから、俺たちがここで遊んでると思ってる陸の連中に。
+> again : cocktail
+- me
+Молочный коктейль у меня лучший на этом море. Секрет простой: взбивать, пока рука не устанет, и ещё минуту.
+My milk cocktail is the best on this sea. The secret's simple: shake till your arm's tired, and then one minute more.
+俺のミルクセーキはこの海でいちばんだ。秘訣は簡単。腕が疲れるまで振って、そこからもう一分。
+> sun.low : sun_low
+- me
+Закат видишь в иллюминаторе? Цвет как у хорошего чая. Я его каждый вечер сравниваю. Чай пока выигрывает через раз.
+See the sunset in the porthole? The colour of good tea. I compare them every evening. Tea still wins every other time.
+舷窓の夕日が見えるか。上等な紅茶の色だ。毎晩くらべてるんだが、まだ二回に一回は紅茶の勝ちだな。
+> sun.night : sun_night
+- me
+Ночью бар как маяк: свет горит, человек стоит. Заходят не за лимонадом. Заходят убедиться, что горит.
+At night a bar is like a lighthouse: a light on, a man standing. They don't come in for lemonade. They come to make sure it's lit.
+夜のバーは灯台みたいなもんだ。明かりがついてて、人が立ってる。レモネードが目当てじゃない。ついてるのを確かめに来るのさ。
+> sun.cloudy : sun_cloudy
+- me
+Хмуро сегодня. В такую погоду кофе идёт вдвое. Я сварю тебе слабый, чтобы ты потом уснул.
+Gloomy today. In weather like this I sell twice the coffee. I'll make yours weak, so you'll sleep afterwards.
+今日はどんよりだな。こういう日はコーヒーが倍出る。お前さんには薄いのをいれてやる。あとで眠れるようにな。
+> aside.ship_voyage.sat : sat
+- me
+Вчера ты сел с краю. Сегодня сел посередине. Завтра будешь стаканы помогать вытирать, я знаю, как это бывает.
+Yesterday you sat at the end. Today you sat in the middle. Tomorrow you'll be helping me dry glasses, I know how it goes.
+昨日は端に座った。今日は真ん中に座った。明日はグラス拭きを手伝ってるさ。そういうもんだ。
+> aside.ship_voyage.sun : sun
+- me
+Последний лимонад, генацвале. Этот за счёт заведения. На прощание всегда за счёт заведения, иначе не вернутся.
+The last lemonade, genatsvale. This one's on the house. Farewells are always on the house, or people don't come back.
+最後のレモネードだ、ゲナツヴァレ。これは店のおごり。別れの一杯はいつもおごりさ。でなきゃ戻ってこないからな。
+> quest.ship_voyage.done : back
+- me
+Вай! Кого я вижу! Лимонад? Я помню. Гиви всех помнит, у Гиви работа такая.
+Vai! Look who it is! Lemonade? I remember. Givi remembers everyone, that's Givi's job.
+ヴァイ！誰かと思えば！レモネードだな？覚えてるとも。ギヴィは全員覚えてる。それがギヴィの仕事だ。
+
+# ------------------------------------------------------------------ stewardess Zoya
+[ship_zoya]
+> first : first
+- me
+Ой, здравствуйте! То есть здравствуй. Чай с лимоном или без? Я Зоя. Если что-то нужно в каюту, это ко мне.
+Oh, good day, sir! I mean, hello. Tea with lemon or without? I'm Zoya. If you need anything in your cabin, that's me.
+あ、いらっしゃいませ！じゃなくて、こんにちは。お茶はレモン入り？なし？私はゾーヤ。船室で何か要るときは私にね。
+> again : study
+- me
+У меня в понедельник контрольная по экономике флота. Фрахт, тоннаж, демередж. Демередж — это плата за простой. Я сама сплошной демередж: работа и институт.
+I've a shipping economics test on Monday. Freight, tonnage, demurrage. Demurrage is what you pay for standing idle. I'm all demurrage myself: work and college.
+月曜に海運経済の試験なの。運賃、トン数、滞船料。滞船料って、船を待たせた分の料金のこと。私自身が滞船料のかたまりよ。仕事と大学と。
+> again : tray
+- me
+Знаешь, как нести шесть стаканов в качку? Не смотреть на них. Смотришь на стаканы — проливаешь. Смотришь вперёд — доносишь.
+Know how to carry six glasses when she rolls? Don't look at them. Look at the glasses and you spill. Look ahead and you get there.
+揺れる船でグラス六つを運ぶこつ、知ってる？見ないこと。グラスを見るとこぼす。前を見ていれば届くの。
+> again : future
+- me
+Выучусь на инженера, буду строить теплоходы. С широкими коридорами. Чтобы стюардесса с подносом и пассажир расходились без балета.
+When I qualify as an engineer I'll build ships. With wide corridors. So a stewardess with a tray and a passenger can pass without ballet.
+技師の資格を取ったら船を造るの。廊下の広いやつ。お盆を持った客室係とお客さんが、バレエを踊らずにすれ違えるように。
+> again : cabins
+- me
+По каютам про людей всё видно. Кто книжку на подушке оставил, кто носки на иллюминаторе. Я никому не рассказываю. Только Нонне Аркадьевне, но она и так знает.
+You can tell everything about people from their cabins. Who left a book on the pillow, who hung socks on the porthole. I tell no one. Only Nonna Arkadyevna, and she knows anyway.
+船室を見れば人のことは全部わかるの。枕に本を置いた人、舷窓に靴下を干した人。誰にも言わないわ。ノンナ・アルカージエヴナにだけ。でもあの人はもう知ってるけど。
+> sun.day : sun_day
+- me
+Днём в коридоре солнечные круги от иллюминаторов, по одному на каюту. Я по ним время узнаю: дошёл до седьмой двери — пора накрывать.
+By day there are sun discs in the corridor from the portholes, one for each cabin. I tell the time by them: when it reaches the seventh door, it's time to lay the tables.
+昼間は舷窓の光が廊下に丸く落ちるの。船室ごとに一つ。それで時間がわかる。七番目のドアまで来たら、食卓の支度。
+> sun.night : sun_night
+- me
+Ночью по коридору идёшь, и за каждой дверью кто-то дышит. Сорок два человека. Мне не страшно, мне как-то ответственно.
+You walk the corridor at night and behind every door someone's breathing. Forty-two people. I'm not scared, I just feel sort of responsible.
+夜の廊下を歩くと、どのドアの向こうでも誰かが息をしてる。四十二人。こわくはないの。なんだか責任を感じるの。
+> aside.ship_voyage.sat : sat
+- me
+Я тебе в чай два куска положила, как ты вчера просил. Видишь, запомнила. Сопромат не помню, а это помню.
+I put two lumps in your tea, the way you asked yesterday. See, I remembered. I can't remember my mechanics, but that I remember.
+お茶にお砂糖二つ入れといたわ。昨日のとおり。ほら、覚えてた。材料力学は覚えられないのに、こういうのは覚えてるの。
+> aside.ship_voyage.sun : sun
+- me
+В воскресенье я всегда немножко реву, когда бельё снимаю. Глупо, да? Каюты пустые, а подушки ещё тёплые.
+On Sundays I always have a little cry when I strip the beds. Silly, isn't it? The cabins are empty and the pillows still warm.
+日曜にシーツをはがすとき、いつも少し泣いちゃうの。ばかみたいでしょ。船室は空っぽなのに、枕はまだ温かいんだもの。
+> quest.ship_voyage.done : back
+- me
+Ой, это опять ты! Два куска, без лимона? Я контрольную сдала, между прочим. На четыре. Балка выдержала.
+Oh, it's you again! Two lumps, no lemon? I passed my test, by the way. A four. The beam held.
+あ、またあなた！お砂糖二つ、レモンなしよね？そうそう、試験受かったの。「四」で。梁はもちこたえたわ。
+
+# ------------------------------------------------------------------ the cook, Aunt Pasha
+[ship_pasha]
+> first : first
+- me
+Чего стоишь в дверях? Голодный? По глазам вижу, голодный. Ужин по расписанию, а пирожок вне расписания. На.
+What are you standing in the door for? Hungry? I can see by your eyes you are. Dinner's by the timetable, but a pie's outside the timetable. Here.
+何を戸口に突っ立ってるの。お腹すいた？目を見りゃわかる、すいてるね。夕食は時間どおり、でもピロシキは時間外。ほら。
+> again : borscht
+- me
+Борщ на сорок два человека — это не борщ, это гидротехническое сооружение. Одной свёклы ведро.
+Borscht for forty-two isn't borscht, it's a hydraulic engineering work. A bucket of beetroot alone.
+四十二人分のボルシチはね、ボルシチじゃなくて治水工事だよ。ビーツだけでバケツ一杯。
+> again : rolling
+- me
+В качку кастрюли ездят. Я их привязываю, как боцман шлюпки. Он у меня узлы и подсмотрел, только не сознаётся.
+When she rolls the pans go sliding. I lash them down like the bosun lashes his boats. He got his knots from watching me, only he won't own up.
+揺れると鍋が走るんだ。水夫長が艇を縛るみたいに縛っとく。あの人の結び方は私のを見て覚えたのさ。白状しないけどね。
+> again : thin
+- me
+Ты худой. Все пассажиры худые. Сядут на берегу на свои бутерброды, а потом ко мне на откорм. Ничего, за два дня поправим.
+You're thin. All passengers are thin. They live on sandwiches ashore, then come to me for fattening. Never mind, two days will put it right.
+あんた痩せてるね。お客はみんな痩せてる。陸じゃサンドイッチばっかり食べて、ここへ太りに来るんだ。大丈夫、二日で直してやる。
+> again : potatoes
+- me
+Хочешь помочь? Картошку чистить. Пятнадцать минут, а потом пирожок и всё, что я знаю про этот теплоход. А знаю я с пятьдесят девятого года.
+Want to help? Peeling potatoes. Fifteen minutes, then a pie and everything I know about this ship. And I've known her since fifty-nine.
+手伝うかい。じゃがいもの皮むき。十五分、そのあとピロシキと、この船について私が知ってること全部。五九年からの分だよ。
+> sun.day : sun_day
+- me
+В камбузе иллюминатор один, и тот на плиту светит. Я по нему знаю: солнце на кастрюле — пора солить.
+The galley has one porthole, and that shines on the stove. I go by it: sun on the saucepan, time to salt.
+厨房の舷窓は一つだけ、それもコンロを照らすやつ。それで分かるんだ。鍋に日が当たったら塩の時間。
+> sun.low : sun_low
+- me
+Закат я сорок лет вижу в виде компота: розовый, с красным, и ложкой не размешать.
+For forty years I've seen the sunset as stewed fruit: pink, with red in it, and no stirring it with a spoon.
+夕焼けは四十年、コンポートの色で見てきたよ。桃色に赤が混じって、さじじゃかき混ぜられない。
+> aside.ship_voyage.sat : sat
+- me
+Вчера ты кашу не доел. Сегодня доел. Значит, привык. К моей каше привыкают на второй день, я засекала.
+Yesterday you left your porridge. Today you finished it. So you've settled in. People take to my porridge on the second day, I've timed it.
+昨日はおかゆを残したね。今日は平らげた。慣れたってことだ。私のおかゆには二日目で慣れる。計ったことがあるんだ。
+> aside.ship_voyage.sun : sun
+- me
+На дорогу пирожков возьмёшь. Не спорь. С берега до дома далеко, а на берегу тебя кто покормит?
+You'll take pies for the road. Don't argue. It's a long way home from the pier, and who's going to feed you ashore?
+帰りにピロシキを持ってきな。口答えしない。桟橋から家までは遠いんだ。陸で誰があんたに食べさせるの。
+> quest.ship_voyage.done : back
+- me
+Вернулся! И опять худой. Чем вас там на берегу кормят, воздухом? Садись, я сейчас.
+You're back! And thin again. What do they feed you ashore, air? Sit down, I'll be right with you.
+戻ってきた！また痩せて。陸じゃ何を食べさせてるんだい、空気かい。お座り、すぐ持ってくるから。
+
+# ------------------------------------------------------------------ radio operator Lev Markovich
+[ship_lev]
+> first : first
+- me
+Проходите, только тихо: я слушаю. Нет, ничего не передают. Я слушаю, как ничего не передают. Это тоже информация.
+Come in, but quietly: I'm listening. No, nothing is being sent. I'm listening to nothing being sent. That too is information.
+お入りなさい、ただし静かに。聞いているところです。いえ、何も送られていません。何も送られていないのを聞いている。それも情報です。
+> again : morse
+- me
+Морзянку я слышу как речь. У каждого радиста почерк: один частит, другой тянет тире, как гласные. Берегового я узнаю по первой букве.
+I hear Morse as speech. Every operator has a hand: one rattles, another draws out his dashes like vowels. I know the shore man by his first letter.
+モールスは話し声として聞こえます。通信士にはそれぞれ筆跡がある。早口の者、母音のように線を伸ばす者。陸の相手は最初の一字で分かります。
+> again : telegrams
+- me
+Хотите отправить телеграмму? Пять рублей. Совет бесплатно: пишите короче. В эфире лишнее слово весит как якорь.
+Would you like to send a telegram? Five roubles. Advice is free: write shorter. On the air a spare word weighs like an anchor.
+電報を打ちますか。五ルーブルです。助言は無料。短く書きなさい。電波の上では、余分な一語が錨ほど重い。
+> again : years
+- me
+Сорок лет в эфире. За это время я передал три тысячи «люблю», двести «прости» и одно «вышли денег, тону». Последнее оказалось шуткой.
+Forty years on the air. In that time I've sent three thousand "I love you"s, two hundred "forgive me"s and one "send money, sinking". The last turned out to be a joke.
+電波の仕事を四十年。そのあいだに「愛してる」を三千通、「許して」を二百通、「金送れ 沈む」を一通打ちました。最後のは冗談でした。
+> again : watch
+- me
+У Альберта, инженера, я проиграл часы. Он вернул. Сказал: «Хорошие часы должны идти у хозяина». Красивый жест. Слишком красивый.
+I lost my watch to Albert, the engineer. He gave it back. He said: "A good watch ought to run with its owner." A handsome gesture. Too handsome.
+技師のアルベルトに時計を取られました。彼は返してくれた。「良い時計は持ち主のもとで動くべきです」と。粋な振る舞いです。粋すぎる。
+> sun.day : sun_day
+- me
+Днём эфир шумный: солнце мешает коротким волнам. Оно, знаете, тоже передатчик. Только никто не понимает, что оно передаёт.
+By day the air is noisy: the sun interferes with the short waves. It's a transmitter too, you know. Only nobody understands what it sends.
+昼の電波は騒がしい。太陽が短波の邪魔をするのです。あれも送信機なのですよ。ただ、何を送っているのか誰にも分からない。
+> sun.night : sun_night
+- me
+Ночью слышно дальше. Вчера поймал судно у Шпицбергена. Радист пожелал мне спокойной ночи. Мы не знакомы. Это у нас принято.
+At night you hear farther. Yesterday I picked up a ship off Spitsbergen. Her operator wished me good night. We've never met. It's the custom among us.
+夜は遠くまで聞こえます。昨日はスピッツベルゲン沖の船を拾いました。向こうの通信士が「おやすみ」と打ってきた。面識はありません。それが私たちの習わしです。
+> aside.ship_voyage.sat : sat
+- me
+А, вчерашний молодой человек. Садитесь. Хотите, покажу, как звучит ваше имя? Вот. Слышите? Теперь вы существуете в эфире.
+Ah, yesterday's young man. Sit down. Shall I show you how your name sounds? There. Hear it? Now you exist on the air.
+ああ、昨日の若者。お座りなさい。あなたの名前がどう聞こえるか、お見せしましょうか。ほら。聞こえましたか。これであなたは電波の上に存在します。
+> aside.ship_voyage.sun : sun
+- me
+Я сейчас передам на берег: «Идём по расписанию, все здоровы». Каждое воскресенье одно и то же. Лучшая телеграмма на свете.
+I'm about to send to the shore: "On schedule, all well." The same every Sunday. The best telegram in the world.
+これから陸へ打ちます。「予定どおり 全員無事」。毎週日曜、同じ文面。世界でいちばんいい電報です。
+> quest.ship_voyage.done : back
+- me
+Вы снова на борту. Я знал: в пятницу в эфире было как-то веселее.
+You're aboard again. I knew: the air felt somehow more cheerful on Friday.
+また乗船なさいましたね。分かっていましたよ。金曜の電波が、どことなく陽気でしたから。
+
+# ------------------------------------------------------------------ chief engineer Einar
+[ship_einar]
+> first : first
+- me
+Тере. Руками ничего не трогать. Смотреть можно. Слушать нужно.
+Tere. Touch nothing with your hands. You may look. You should listen.
+テレ。手で触るな。見るのはいい。聞くのは、聞け。
+> again : revs
+- me
+Восемьсот оборотов. Шесть цилиндров. Двадцать два года. Ни одного капитального ремонта.
+Eight hundred revolutions. Six cylinders. Twenty-two years. Not one major overhaul.
+八百回転。六気筒。二十二年。大修理は一度もない。
+> again : name
+- me
+Меня зовут «дед». На флоте так зовут стармеха. Мне было тридцать, когда я стал дедом. Привык.
+They call me "Grandad". In the fleet that's what they call the chief. I was thirty when I became Grandad. I'm used to it.
+私は「じいさん」と呼ばれる。船では機関長をそう呼ぶ。じいさんになったのは三十のときだ。慣れた。
+> again : talk
+- me
+Говорят, я мало говорю. Дизель тоже мало говорит. Мы понимаем.
+They say I talk little. The diesel talks little too. We understand each other.
+私は口数が少ないと言われる。ディーゼルも口数が少ない。互いに分かっている。
+> again : oil
+- me
+Масло тёплое. Потрогай трубу. Вот тут можно. Тёплое — значит, живой.
+The oil is warm. Feel the pipe. Here you may. Warm means alive.
+油は温かい。管に触ってみろ。ここならいい。温かいのは、生きているということだ。
+> sun.day : sun_day
+- me
+Солнце. Я его вижу в обед. Десять минут. Хватает.
+The sun. I see it at dinner time. Ten minutes. It's enough.
+太陽。昼飯のときに見る。十分間。足りる。
+> sun.night : sun_night
+- me
+Ночью он звучит ниже. Вода холоднее. Я сплю, когда слышу, что ниже.
+At night she sounds lower. The water's colder. I sleep when I hear her go lower.
+夜は音が低くなる。水が冷えるからだ。低くなったのを聞いてから、私は眠る。
+> aside.ship_voyage.sat : sat
+- me
+Опять пришёл. Хорошо. Вчера ты смотрел. Сегодня слушаешь. Это правильный порядок.
+You've come again. Good. Yesterday you looked. Today you listen. That is the right order.
+また来たか。よろしい。昨日は見ていた。今日は聞いている。それが正しい順序だ。
+> aside.ship_voyage.sun : sun
+- me
+В шесть я его остановлю. Он не любит. Я тоже. До пятницы.
+At six I shall stop her. She doesn't like it. Nor do I. Till Friday.
+六時に止める。あいつは嫌がる。私も嫌だ。金曜まで。
+> quest.ship_voyage.done : back
+- me
+Тере. Ты. Он тебя помнит. Я тоже.
+Tere. You. She remembers you. So do I.
+テレ。お前か。あいつはお前を覚えている。私もだ。
+
+# ------------------------------------------------------------------ helmsman Vitya
+[ship_vitya]
+> first : first
+- me
+Привет. Ты осторожно, тут мостик. Вообще пассажирам нельзя, но ты стой, я скажу, что не заметил. Я Витя. Рулевой. Первый сезон.
+Hi. Careful, this is the bridge. Passengers aren't really allowed, but stay, I'll say I didn't notice. I'm Vitya. Helmsman. First season.
+やあ。気をつけて、ここは船橋だ。ほんとは乗客は入れないんだけど、いていいよ、気づかなかったって言うから。おれはヴィーチャ。操舵手。一年目。
+> again : wheel
+- me
+Штурвал не крутят. Его держат. Крутишь — судно рыскает, и старпом смотрит. Она ничего не говорит. Она смотрит.
+You don't turn the wheel. You hold it. Turn it and the ship yaws, and the mate looks at you. She says nothing. She looks.
+舵輪は回すんじゃない。保つんだ。回すと船が首を振って、航海士がこっちを見る。何も言わない。ただ見るんだ。
+> again : home
+- me
+Я из Людмиловска, с Третьей террасы. Мать до сих пор не верит, что меня взяли. Выходит на набережную смотреть, как мы уходим.
+I'm from Lyudmilovsk, the Third Terrace. My mother still can't believe they took me on. She comes down to the promenade to watch us sail.
+おれはリュドミーロフスクの出、第三テラスだ。母さんはいまだに、おれが雇われたのを信じてない。出航のたびに海岸通りへ見に来るんだ。
+> again : captain
+- me
+Капитан со мной на «вы». Со мной никто в жизни не был на «вы». Я от этого ровнее стою.
+The captain calls me "sir", in a manner of speaking. Nobody in my life has spoken to me like that. It makes me stand straighter.
+船長はおれに敬語で話すんだ。そんなふうに話しかけられたのは生まれてはじめてだ。おかげで背筋が伸びる。
+> again : compass
+- me
+Гляди, картушка компаса плавает в спирте. Боцман говорит, раньше её пили. Врёт. Наверное.
+Look, the compass card floats in spirit. The bosun says they used to drink it. He's lying. Probably.
+見ろよ、羅針盤の盤はアルコールに浮いてるんだ。水夫長は、昔はそれを飲んだって言う。嘘さ。たぶん。
+> sun.low : sun_low
+- me
+На закат рулить труднее всего: солнце прямо в стекло. Капитан говорит: «Не щурьтесь, Чиж, привыкайте. Это оно с вами здоровается».
+Steering into the sunset is the hardest: the sun's right in the glass. The captain says: "Don't squint, Chizh, get used to it. That's it saying hello to you."
+夕日に向かって舵を取るのがいちばん難しい。太陽が真正面のガラスに入るから。船長は言うんだ。「目を細めない、チーシ君、慣れなさい。あれは君へのあいさつだ」。
+> sun.night : sun_night
+- me
+Ночью в рубке темно нарочно. Чтоб глаза видели море. Сначала страшно, потом понимаешь, что так честнее.
+The wheelhouse is dark at night on purpose. So your eyes can see the sea. Scary at first, then you see it's more honest that way.
+夜の操舵室はわざと暗くしてある。目が海を見られるように。最初はこわい。でもそのほうが正直だって、そのうち分かる。
+> aside.ship_voyage.sat : sat
+- me
+О, привет! Слушай, я тебя вчера с мостика видел, ты на корме стоял. Я всех теперь вижу. Сверху люди такие маленькие и все свои.
+Oh, hi! Listen, I saw you from the bridge yesterday, standing aft. I see everyone now. From up here people are so small, and all ours.
+お、やあ！昨日、船橋から見えたよ、船尾に立ってただろ。今はみんな見えるんだ。上から見ると人は小さくて、みんな身内みたいでさ。
+> aside.ship_voyage.sun : sun
+- me
+К шести придём. Мать будет на набережной, вон там, у третьего фонаря. Я ей гудком не могу, но капитан всегда даёт один короткий. Говорит, для чаек.
+We'll be in by six. Mum will be on the promenade, over there, by the third lamp. I can't sound the horn for her, but the captain always gives one short blast. For the gulls, he says.
+六時には着く。母さんは海岸通りの、あそこ、三本目の街灯のところにいる。おれは汽笛を鳴らせないけど、船長がいつも短く一つ鳴らしてくれる。カモメのためだ、って言ってさ。
+> quest.ship_voyage.done : back
+- me
+Опять ты! Здорово. Я теперь не первый сезон, я уже первый сезон и ещё неделя. Чувствуешь разницу?
+You again! Great. I'm not in my first season now, I'm in my first season and a week. Feel the difference?
+またきみか！いいね。おれはもう一年目じゃない。一年目と一週間だ。違いがわかるだろ？
+
+# ------------------------------------------------------------------ entertainer Rimma
+[ship_rimma]
+> first : first
+- me
+Внимание! Новый пассажир обнаружен! Зарядка в семь пятнадцать, игры в половине двенадцатого, танцы в субботу. Отказы не принимаются, принимаются опоздания.
+Attention! New passenger sighted! Exercises at seven fifteen, games at half past eleven, dancing on Saturday. Refusals are not accepted; lateness is.
+注目！新しい乗客を発見！体操は七時十五分、競技は十一時半、ダンスは土曜。お断りは受けつけません。遅刻は受けつけます。
+> again : whistle
+- me
+Свисток у меня судейский, настоящий. Я им чаек разгоняю, пассажиров собираю и один раз остановила драку из-за шезлонга.
+My whistle is a real referee's. I scatter gulls with it, gather passengers, and once stopped a fight over a deck chair.
+この笛は本物の審判用。カモメを追い払って、乗客を集めて、一度はデッキチェアの取り合いを止めたわ。
+> again : plan
+- me
+Думаешь, людей легко развеселить? Они сопротивляются! Приходится догонять. Я в день по палубам километров восемь делаю.
+You think it's easy to cheer people up? They resist! I have to chase them. I do about eight kilometres of deck a day.
+人を楽しませるのが簡単だと思う？抵抗するのよ！追いかけなきゃならないの。甲板を一日八キロは歩くわ。
+> again : quiz
+- me
+В воскресенье викторина. Вопрос на засыпку: сколько островов мы проходим? Шесть! А все отвечают пять, потому что Тюленьи камни проспали.
+The quiz is on Sunday. A trick question: how many islands do we pass? Six! And everyone says five, because they slept through the Seal Rocks.
+日曜はクイズよ。引っかけ問題。通る島はいくつ？六つ！なのにみんな五つって答えるの。あざらし岩を寝過ごすから。
+> again : before
+- me
+Я раньше в доме культуры работала, в хоре. Тридцать человек, и все поют мимо. А здесь сорок два, и поёт только Гиви. Отдыхаю.
+I used to work at a house of culture, with the choir. Thirty people, all singing flat. Here there are forty-two and only Givi sings. A rest cure.
+前は文化会館で合唱団の係だったの。三十人、全員音を外すのよ。ここは四十二人いて、歌うのはギヴィだけ。骨休めね。
+> sun.day : sun_day
+- me
+Солнце! Все на палубу! Нет, я серьёзно. По моей статистике, человек на солнце улыбается на четыре минуты в час больше.
+Sun! Everybody on deck! No, I mean it. By my figures a person in the sun smiles four minutes more per hour.
+太陽！全員甲板へ！いえ、本気よ。私の統計では、日なたにいる人は一時間あたり四分多く笑うの。
+> sun.cloudy : sun_cloudy
+- me
+Пасмурно. Ничего! На этот случай у меня лото, шарады и Гиви с историей про деда. План по радости погоды не признаёт.
+Overcast. Never mind! For that I have lotto, charades and Givi with the story about his grandfather. The plan for joy does not recognise weather.
+曇りね。平気！こんなときのためにロトと、ジェスチャーゲームと、ギヴィのじいさんの話があるの。喜びのノルマに天気は関係なし。
+> sun.night : sun_night
+- me
+Ночью я тоже на посту. Вдруг кому-то не спится и грустно. Тогда я сажусь рядом и молчу. Это тоже культработа, только её в отчёт не впишешь.
+I'm on duty at night too. In case someone can't sleep and feels sad. Then I sit beside them and keep quiet. That's entertainment work as well, only you can't put it in the report.
+夜も持ち場にいるわ。眠れなくて、さびしい人がいるかもしれないから。そのときは隣に座って黙ってるの。これも娯楽係の仕事。報告書には書けないけどね。
+> aside.ship_voyage.sat : sat
+- me
+А, вчерашний молчун! Сегодня у тебя лицо совсем другое. Отмечаю в блокноте: «Оттаял». У меня есть такая графа.
+Ah, yesterday's silent one! You've quite a different face today. I'm noting it down: "Thawed." I have a column for that.
+あら、昨日のだんまりさん！今日は顔つきがまるで違うわ。メモしておくわね。「解けた」。そういう欄があるの。
+> aside.ship_voyage.sun : sun
+- me
+Последний день. Самое трудное в моей работе — воскресенье после шести. Все ушли, а я хожу по палубе и свищу просто так.
+The last day. The hardest part of my job is Sunday after six. Everyone's gone, and I walk the deck blowing my whistle for nothing.
+最終日。この仕事でいちばんつらいのは日曜の六時すぎ。みんな降りたあと、甲板を歩いて、ただなんとなく笛を吹くの。
+> quest.ship_voyage.done : back
+- me
+Кого я вижу! Мой сорок первый! Нет, в этот раз будешь первым. Первым записываю, первым спрашиваю.
+Look who it is! My forty-first! No, this time you'll be the first. First down on the list, first to be called on.
+あら、だれかと思えば！私の四十一人目！いいえ、今回は一番よ。一番に登録して、一番に当てるからね。

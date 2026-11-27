@@ -523,6 +523,11 @@ def main():
     with open(os.path.join(content, "PeopleData", "people.json"), encoding="utf-8") as f:
         pdata = json.load(f)
     people_keys = {lc(x.get("key") or x.get("id")) for x in pdata.get("people", [])}
+    # the motor ship's crew, band and tourists (tools/ship/cruise_people.py), when she is in the tree
+    ship_path = os.path.join(content, "PeopleData", "ship_people.json")
+    if os.path.exists(ship_path):
+        with open(ship_path, encoding="utf-8") as f:
+            people_keys |= {lc(x["key"]) for x in json.load(f).get("people", []) if not x.get("patch") and not x.get("town")}
     people = parse_dialogue(os.path.join(content, "Dialogue", "npc_dialogue.txt"))
 
     remarks = scenes.get("remarks", [])

@@ -7,6 +7,7 @@
 #   tools/peoplesim/run.sh guests                the sanatorium's guests over three weeks: the Saturday trains, rooms, chairs
 #   tools/peoplesim/run.sh winter                winter play on the town (also part of test): the rink, the ice hole, the banya
 #   tools/peoplesim/run.sh bookclub              the library's book club on Thursday evenings (book_club_people.h)
+#   tools/peoplesim/run.sh cruise                the motor ship's people over a voyage: watches, meals, berths, the twins (cruise_people.h)
 #   tools/peoplesim/run.sh day [start_hour hours] -> Saved/PeopleSim/day.csv + acts.txt (python3 tools/peoplesim/render_people.py)
 #   tools/peoplesim/run.sh trace <key> [start_hour hours]
 #   tools/peoplesim/run.sh summary [start_hour hours [weekday]]   a day of the Academgorodok's residents, one line each

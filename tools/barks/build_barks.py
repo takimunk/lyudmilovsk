@@ -40,7 +40,9 @@ EVENTS = {"rest_sit", "rest_carry", "rest_serve", "rest_bill", "rest_bye",
           # the hero walks with a dog that is his friend (docs/animals.md "Friends")
           "dog_walk",
           # animals that live with people (docs/animals.md "With people", ULyudPets)
-          "pet_talk", "pet_stroke_yes", "pet_stroke_no", "cat_call", "cat_sill", "hedgehog", "cat_friend", "cat_scrap", "cat_shoo"}
+          "pet_talk", "pet_stroke_yes", "pet_stroke_no", "cat_call", "cat_sill", "hedgehog", "cat_friend", "cat_scrap", "cat_shoo",
+          # the motor ship's weekend cruise (docs/ship.md): she casts off, an island comes up, she anchors back on the roads
+          "cruise_cast_off", "cruise_island", "cruise_home"}
 
 sets = []          # [{name, conds: [(k, v)], say: [keys], talk: [[keys]], file}]
 strings = collections.OrderedDict()   # key -> (ru, en, ja)
@@ -106,8 +108,12 @@ for fn in sorted(os.listdir(SRC)):
 # ---- what the game knows (for checking the condition values)
 D = os.path.join(REPO, "unreal", "Lyudmilovsk", "Content")
 acts = {a["id"] for a in json.load(open(os.path.join(D, "PeopleData", "activities.json"), encoding="utf-8"))["activities"]}
+# the motor ship's own activities, places and people (tools/ship/cruise_people.py), when she is in the tree
+SHIP_ACTS = os.path.join(D, "PeopleData", "ship_activities.json")
+if os.path.exists(SHIP_ACTS):
+    acts |= {a["id"] for a in json.load(open(SHIP_ACTS, encoding="utf-8"))["activities"]}
 kinds, ids = set(), set()
-for fn in ["town_places.json", "people_places.json"]:
+for fn in ["town_places.json", "people_places.json", "ship_places.json"]:
     p = os.path.join(D, "PeopleData", fn)
     if os.path.exists(p):
         for pl in json.load(open(p, encoding="utf-8")).get("places", []):
@@ -115,8 +121,10 @@ for fn in ["town_places.json", "people_places.json"]:
             ids.add(pl.get("id", ""))
 kinds |= {"fair_stall", "club", "restaurant", "cafe"}
 jobs = set()
-for fn in ["townsfolk.json", "people.json"]:
+for fn in ["townsfolk.json", "people.json", "ship_people.json"]:
     p = os.path.join(D, "PeopleData", fn)
+    if not os.path.exists(p):
+        continue
     for per in json.load(open(p, encoding="utf-8")).get("people", []):
         if per.get("occupation"):
             jobs.add(per["occupation"])

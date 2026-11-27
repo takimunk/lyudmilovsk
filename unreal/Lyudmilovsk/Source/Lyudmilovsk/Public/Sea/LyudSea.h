@@ -174,6 +174,18 @@ public:
 	float GroundZ(double X, double Y, bool& bOk) const;
 	/** The wave clock (s, wrapped to the loop) the surface shows now. */
 	double WaveClock() const;
+	/**
+	 * Carries the whole wave pattern over the sea at a velocity (m/s, world axes), as the water streams past a ship that
+	 * stands still at the cruise stage (docs/ship.md): every train's phase is shifted on the CPU by -k (dir . drift) and
+	 * sent in the same wave table, so the surface on screen and SampleSurface stay the same surface. Zero (the default)
+	 * stops the carrying and keeps the pattern where it is; FLyudSeaSample::Velocity stays the waves' own (orbital).
+	 * Nothing changes at all until this is first called with a non-zero velocity.
+	 */
+	void SetSurfaceDrift(const FVector2D& WaterVelocityMS) { DriftVel = WaterVelocityMS; }
+	FVector2D GetSurfaceDrift() const { return DriftVel; }
+	/** Stops the carrying and puts every phase back exactly as the wave field made it (the pattern jumps: call it
+	 *  unseen, behind a fade). */
+	void ResetSurfaceDrift();
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void BeginPlay() override;
@@ -200,6 +212,13 @@ private:
 	bool ViewLocation(FVector& Out) const;
 
 	TPimplPtr<LyudWeather::FWaveField> Field;
+	/** SetSurfaceDrift: the velocity, the metres the pattern has been carried, the phases as the field made them. */
+	FVector2D DriftVel = FVector2D::ZeroVector;
+	double DriftX = 0.0, DriftY = 0.0;
+	bool bDrifted = false;
+	TArray<float> BasePhaseGeo, BasePhaseDetail;
+	void KeepBasePhases();
+	void WriteDriftPhases();
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> SeaMID;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> UnderMID;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> WaveTable;

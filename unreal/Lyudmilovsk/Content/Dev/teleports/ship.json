@@ -1,0 +1,94 @@
+{
+ "teleports": [
+  {
+   "id": "ship_gangway",
+   "group": "cruise",
+   "name": "dev.tp.ship_gangway",
+   "x": 26000.4,
+   "y": 4002.4,
+   "z": -3920.0,
+   "yaw": 180.0
+  },
+  {
+   "id": "ship_saloon",
+   "group": "cruise",
+   "name": "dev.tp.ship_saloon",
+   "x": 26008.5,
+   "y": 4000.0,
+   "z": -3660.0,
+   "yaw": 0.0
+  },
+  {
+   "id": "ship_dining",
+   "group": "cruise",
+   "name": "dev.tp.ship_dining",
+   "x": 25982.0,
+   "y": 4000.0,
+   "z": -3920.0,
+   "yaw": 180.0
+  },
+  {
+   "id": "ship_bridge",
+   "group": "cruise",
+   "name": "dev.tp.ship_bridge",
+   "x": 26009.3,
+   "y": 4000.0,
+   "z": -3140.0,
+   "yaw": 0.0
+  },
+  {
+   "id": "ship_boat_deck",
+   "group": "cruise",
+   "name": "dev.tp.ship_boat_deck",
+   "x": 25981.0,
+   "y": 4000.0,
+   "z": -3400.0,
+   "yaw": 180.0
+  },
+  {
+   "id": "ship_smoking_deck",
+   "group": "cruise",
+   "name": "dev.tp.ship_smoking_deck",
+   "x": 25977.0,
+   "y": 4000.0,
+   "z": -3660.0,
+   "yaw": 180.0
+  },
+  {
+   "id": "ship_foredeck",
+   "group": "cruise",
+   "name": "dev.tp.ship_foredeck",
+   "x": 26021.5,
+   "y": 4002.2,
+   "z": -3880.0,
+   "yaw": 0.0
+  },
+  {
+   "id": "ship_cabin_hold",
+   "group": "cruise",
+   "name": "dev.tp.ship_cabin_hold",
+   "x": 26003.7,
+   "y": 4001.4,
+   "z": -4170.0,
+   "yaw": 90.0
+  },
+  {
+   "id": "ship_cabin_std",
+   "group": "cruise",
+   "name": "dev.tp.ship_cabin_std",
+   "x": 26005.2,
+   "y": 4001.5,
+   "z": -3920.0,
+   "yaw": 90.0
+  },
+  {
+   "id": "ship_cabin_lux",
+   "group": "cruise",
+   "name": "dev.tp.ship_cabin_lux",
+   "x": 25982.6,
+   "y": 4001.4,
+   "z": -3660.0,
+   "yaw": 90.0
+  }
+ ]
+}

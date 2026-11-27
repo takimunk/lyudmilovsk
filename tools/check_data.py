@@ -155,7 +155,14 @@ X0, X1, Y0, Y1 = fr["x_min"] - MARGIN, fr["x_max"] + MARGIN, fr["y_min"] - MARGI
 Z0, Z1 = -80.0, 250.0                             # deepest sea bed .. highest hill, metres
 
 
+# the motor ship's cruise stage far out at sea (tools/city_plan.py SHIP_STAGE_X/Y, plot P-SHIP): off the map's sheet by
+# design, a place of its own (60 m round the stage)
+SHIP_STAGE = (26000.0, 4000.0, 60.0)
+
+
 def in_map(where, x, y, z=None):
+    if abs(x - SHIP_STAGE[0]) <= SHIP_STAGE[2] and abs(y - SHIP_STAGE[1]) <= SHIP_STAGE[2]:
+        return
     if not (X0 <= x <= X1 and Y0 <= y <= Y1):
         bad(where, "(%.1f, %.1f) is off the map" % (x, y))
     elif z is not None and not (Z0 <= z <= Z1):
@@ -239,10 +246,38 @@ yard_spots = load("PeopleData/yard_spots.json")["spots"] if os.path.exists(os.pa
 all_place_ids |= {s["id"] for s in yard_spots}
 # "snow": the winter's path patches, made at run time (PeopleLife.cpp, PeopleSim.cpp KindNames)
 all_kinds = town_kinds | pp_kinds | plan_kinds | {"home", "club", "flat", "snow"} | {s["kind"] for s in yard_spots}
+# the motor ship's places (tools/ship/cruise_people.py -> ship_places.json): aboard, on island 4, in the plot's frame at
+# the cruise stage far off the map (in_map lets that stage through); two more at the town's pier head. Only when she is
+# in the tree; the town's own rules above are as they were.
+ship_places = load("PeopleData/ship_places.json")["places"] if os.path.exists(os.path.join(CONTENT, "PeopleData", "ship_places.json")) else []
+ship_place_ids = set(dups("PeopleData/ship_places.json places", [p["id"] for p in ship_places]))
+for p in ship_places:
+    w = "ship place %s" % p["id"]
+    if p["id"] in town_place_ids | pp_ids | flat_ids:
+        bad(w, "the id is a place of the town already")
+    if "door" in p:
+        in_map_ue_m(w, p["door"])
+    for s in p.get("slots", []):
+        if "pos" in s:
+            in_map_ue_m(w + " slot", s["pos"])
+        # a place to stand has height 0; an upper berth's mattress is 1.4-1.6 m over the cabin's floor
+        if s.get("kind") == "bed" and 1.3 < s.get("height", 0) <= 1.7:
+            continue
+        if s.get("height"):
+            seat_height(w + " slot " + s.get("kind", "?"), s["height"], s.get("kind"))
+all_place_ids |= ship_place_ids
+all_kinds |= {p["kind"] for p in ship_places}
 
 acts = load("PeopleData/activities.json")
-act_ids = dups("PeopleData/activities.json", [a["id"] for a in acts["activities"]])
-for a in acts["activities"]:
+# the ship's own activities (ship_activities.json), appended to the town's as the life does (PeopleSim.cpp Load)
+ship_acts = load("PeopleData/ship_activities.json")["activities"] if os.path.exists(os.path.join(CONTENT, "PeopleData", "ship_activities.json")) else []
+act_ids = dups("PeopleData/activities.json + ship_activities.json", [a["id"] for a in acts["activities"] + ship_acts])
+for a in ship_acts:
+    for k in a.get("places", []):
+        # a ship activity is done aboard (in one's cabin: home) or at her two places on the pier: never at a kind of the town's
+        if k != "home" and not any(sp["kind"] == k or sp["id"] == k for sp in ship_places):
+            bad("activity %s" % a["id"], "a ship activity at %r, which is no place of ship_places.json" % k)
+for a in acts["activities"] + ship_acts:
     for k in a.get("places", []):
         if k not in all_kinds and k not in all_place_ids:
             bad("activity %s" % a["id"], "place %r is no place kind or id of town_places/people_places/the plan" % k)
@@ -254,8 +289,33 @@ for a in acts["activities"]:
 # --- people -------------------------------------------------------------------------------------------------------
 story = load("PeopleData/people.json")["people"]
 town = load("PeopleData/townsfolk.json")["people"]
-people = story + town
-person_ids = dups("people.json + townsfolk.json", [p["key"] for p in people])
+# the motor ship's people (ship_people.json): the crew, the band and the tourists (talked to: story people in manner),
+# the cruising townsfolk's twins ("twin_of": the townsperson whose body they wear) and "patch" entries that only add a
+# stay and a duty to a townsperson's record (no person of their own)
+ship_all = load("PeopleData/ship_people.json")["people"] if os.path.exists(os.path.join(CONTENT, "PeopleData", "ship_people.json")) else []
+ship_people = [p for p in ship_all if not p.get("patch")]
+ship_keys = {p["key"] for p in ship_people}
+# talk reports the dialogue's section name, which is a ship person's body (Ship_<id>)
+ship_bodies = {p["body"] for p in ship_people if p.get("body") and not p.get("twin_of")}
+people = story + town + ship_people
+person_ids = dups("people.json + townsfolk.json + ship_people.json", [p["key"] for p in people])
+town_by_key = {p["key"]: p for p in town}
+for p in ship_all:
+    if not p.get("patch"):
+        continue
+    w = "ship_people.json patch %s" % p.get("key")
+    if p.get("key") not in town_by_key:
+        bad(w, "patches nobody of townsfolk.json")
+        continue
+    if town_by_key[p["key"]].get("stay") or not p.get("stay"):
+        bad(w, "a patch gives a stay to a townsperson who has none (a guest of the sanatorium never cruises)")
+    if not any(t.get("twin_of") == p["key"] for t in ship_people):
+        bad(w, "no twin aboard wears this townsperson's body")
+    for du in p.get("duties", []):
+        if du.get("activity") not in act_ids:
+            bad(w, "duty activity %r unknown" % du.get("activity"))
+        if du.get("place") and du["place"] not in all_place_ids:
+            bad(w, "duty place %r is no place" % du["place"])
 humans = git_files("unreal/Lyudmilovsk/Content/Characters/Humans")
 looks = load("PeopleData/town_looks.json")["people"]
 
@@ -309,7 +369,33 @@ for p in people:
         if overlaps(spans):
             bad(w, "two duties overlap on day %d: %s" % (d, sorted(spans)))
             break
-    if p.get("town"):
+    if k in ship_keys and p.get("home") not in ship_place_ids:
+        bad(w, "home %r is no place of ship_places.json" % p.get("home"))
+    if k in ship_keys and not p.get("stay"):
+        bad(w, "lives aboard without a stay (would never go ashore)")
+    if p.get("twin_of"):
+        # a cruising townsperson's twin: the same body and model as the town record, which a patch sends away
+        o = town_by_key.get(p["twin_of"])
+        if not o:
+            bad(w, "twin of %r, who is nobody of townsfolk.json" % p["twin_of"])
+        else:
+            for f in ("mesh", "body", "age", "female"):
+                if p.get(f) != o.get(f):
+                    bad(w, "%s %r differs from the town record's %r" % (f, p.get(f), o.get(f)))
+            if p["twin_of"] not in looks:
+                bad(w, "the town record %s has no entry in town_looks.json" % p["twin_of"])
+            if not any(x.get("patch") and x.get("key") == p["twin_of"] for x in ship_all):
+                bad(w, "no patch sends the town record %s away for the voyage" % p["twin_of"])
+    elif k in ship_keys:
+        # crew, band, tourists: generated residents' bodies (Town/R_<key>, blender/residents); not built until the Mac
+        # builds and imports them, so a missing model is a note here
+        if p.get("mesh") != "Town/R_" + k:
+            bad(w, "mesh %r, the residents generator names it %r" % (p.get("mesh"), "Town/R_" + k))
+        elif humans and "unreal/Lyudmilovsk/Content/Characters/Humans/Town/SK_R_%s.uasset" % k not in humans:
+            note(w, "no /Game/Characters/Humans/Town/R_%s yet (blender/residents build and import on the Mac): lives unseen" % k)
+        if k not in looks:
+            note(w, "no entry in town_looks.json (blender/residents/looks.py)")
+    elif p.get("town"):
         if p.get("home") and p["home"] not in town_place_ids:
             bad(w, "home %r is no place of town_places.json" % p["home"])
         want = "Town/R_" + k[2:] if k.startswith("t_") else None
@@ -462,7 +548,7 @@ for q in quests:
             ev, t = o["event"], o.get("target")
             if ev == "reach" and t not in map_ids:
                 bad(w, "reach target %r is no map.json place" % t)
-            elif ev == "talk" and t not in person_ids:
+            elif ev == "talk" and t not in person_ids and t not in ship_bodies:
                 bad(w, "talk target %r is nobody" % t)
             elif ev in ("get", "have", "use", "wear") and t:
                 if t.endswith("*"):

@@ -2295,6 +2295,84 @@
    ],
    "note": "the hero comes back to the club after his first walk to the town and passes Aslan's cheese tent by the club door (Tue-Sun till 20:00); said once, the braid's offer leads into the owner's supper if it is still open",
    "diary": "journal.heard.khuazhev_aslan.town_road"
+  },
+  {
+   "id": "ship_taras_bell_leave",
+   "person": "ship_taras",
+   "quest": "ship_watch",
+   "stages": [
+    "bell"
+   ],
+   "within_m": 6,
+   "lines": [
+    "ship_taras.bell_leave.1"
+   ],
+   "diary": "journal.heard.ship_taras_bell_leave"
+  },
+  {
+   "id": "ship_zoya_milk_window",
+   "person": "ship_zoya",
+   "quest": "ship_cat",
+   "stages": [
+    "milk"
+   ],
+   "within_m": 6,
+   "lines": [
+    "ship_zoya.milk_window.1"
+   ],
+   "diary": "journal.heard.ship_zoya_milk_window"
+  },
+  {
+   "id": "ship_vitya_cap_waits",
+   "person": "ship_vitya",
+   "quest": "ship_captain",
+   "stages": [
+    "bridge"
+   ],
+   "within_m": 6,
+   "lines": [
+    "ship_vitya.cap_waits.1"
+   ],
+   "diary": "journal.heard.ship_vitya_cap_waits"
+  },
+  {
+   "id": "ship_rimma_waltz_call",
+   "person": "ship_rimma",
+   "quest": "ship_waltz",
+   "stages": [
+    "ball"
+   ],
+   "within_m": 6,
+   "lines": [
+    "ship_rimma.waltz_call.1"
+   ],
+   "diary": "journal.heard.ship_rimma_waltz_call"
+  },
+  {
+   "id": "ship_otar_spanner_drum",
+   "person": "ship_otar",
+   "quest": "ship_diesel",
+   "stages": [
+    "key"
+   ],
+   "within_m": 6,
+   "lines": [
+    "ship_otar.spanner_drum.1"
+   ],
+   "diary": "journal.heard.ship_otar_spanner_drum"
+  },
+  {
+   "id": "ship_senya_gull_thief",
+   "person": "ship_senya",
+   "quest": "ship_birds",
+   "stages": [
+    "gull"
+   ],
+   "within_m": 6,
+   "lines": [
+    "ship_senya.gull_thief.1"
+   ],
+   "diary": "journal.heard.ship_senya_gull_thief"
   }
  ]
 }

@@ -275,6 +275,144 @@
   },
   "okada_kiyo": {
    "skip": "proposal (docs/north.md People): a camper of the North, not voiced until the campers are accepted; then a premade voice"
+  },
+  "ship_gromov": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "George",
+   "direction": "[a ship's captain of sixty, calm, dry, few words, an old Arctic hand]",
+   "voice_id": "JBFqnCBsd6RMkjVDRZzb"
+  },
+  "ship_vais": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Alice",
+   "direction": "[chief mate, exact, cool, economical, a hidden warmth]",
+   "voice_id": "Xb7hH8MSUJpSbSDYk0k2"
+  },
+  "ship_taras": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Brian",
+   "direction": "[a loud, kind bosun of fifty, a rolling southern voice, mock-stern]",
+   "voice_id": "nPczCjzI2devNBz1zQrb"
+  },
+  "ship_nonna": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Matilda",
+   "direction": "[the purser, brisk, all-knowing, motherly irony]",
+   "voice_id": "XrExE9yKIg1WjnnlVkGX"
+  },
+  "ship_givi": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Eric",
+   "direction": "[a Georgian barman, a storyteller, slow, warm, confiding]",
+   "voice_id": "cjVigY5qzO86Huf0OWal"
+  },
+  "ship_zoya": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Jessica",
+   "direction": "[a young stewardess, quick, whispering, easily delighted]",
+   "voice_id": "cgSgspJ2msm6clMCkdW9"
+  },
+  "ship_pasha": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Matilda",
+   "direction": "[an old ship's cook, grumbling, generous]",
+   "voice_id": "XrExE9yKIg1WjnnlVkGX"
+  },
+  "ship_lev": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Bill",
+   "direction": "[an old radio operator, courteous, precise, wry, a listener]",
+   "voice_id": "pqHfZKP75CvOlQylNhV4"
+  },
+  "ship_einar": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Daniel",
+   "direction": "[an Estonian chief engineer, very few words, slow, low]",
+   "voice_id": "onwK4e9ZLuTAKqWW03F9"
+  },
+  "ship_vitya": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Liam",
+   "direction": "[a helmsman of nineteen, eager, nervous, honest]",
+   "voice_id": "TX3LPaxmHKxFdv7VOQHJ"
+  },
+  "ship_rimma": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Sarah",
+   "direction": "[an entertainer, loud, bright, tireless, a little lonely underneath]",
+   "voice_id": "EXAVITQu4vr4xnSDxMaL"
+  },
+  "ship_blum": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Bill",
+   "direction": "[an old pianist, gentle, amused, a wedding band leader]",
+   "voice_id": "pqHfZKP75CvOlQylNhV4"
+  },
+  "ship_otar": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Eric",
+   "direction": "[a double bass player, low, unhurried, laconic]",
+   "voice_id": "cjVigY5qzO86Huf0OWal"
+  },
+  "ship_kostya": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Will",
+   "direction": "[a young drummer, fast, cheerful, careless]",
+   "voice_id": "bIHbv24MWmeRgasZH58o"
+  },
+  "ship_asta": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Lily",
+   "direction": "[a clarinettist, cool, dreamy, northern]",
+   "voice_id": "pFZP5JQG7iQjIQuC4Bku"
+  },
+  "ship_vera": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Lily",
+   "direction": "[a retired geography teacher, clear, kind, used to being listened to]",
+   "voice_id": "pFZP5JQG7iQjIQuC4Bku"
+  },
+  "ship_misha": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Chris",
+   "direction": "[a shy bridegroom, clumsy, earnest]",
+   "voice_id": "iP95p4xoKVk53GoZ742B"
+  },
+  "ship_olya": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Laura",
+   "direction": "[a young bride, lively, proud, quick to laugh and to cry]",
+   "voice_id": "FGY2WhTYpPnrIDTdsKH5"
+  },
+  "ship_albert": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Callum",
+   "direction": "[a card sharp with a watchmaker's manners, soft, ironic, tired]",
+   "voice_id": "N2lVS1w4EtoT3dr4eOWO"
+  },
+  "ship_haruto": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Roger",
+   "direction": "[a Japanese birdwatcher speaking careful, formal Russian, exact, polite]",
+   "voice_id": "CwhRBWXzGAHq8TQ4Fs17"
+  },
+  "ship_senya": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "kid_boy",
+   "direction": "[a boy of ten, breathless, conspiratorial]",
+   "like": "kid_boy"
+  },
+  "ship_faina": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Matilda",
+   "direction": "[a grandmother, knitting, sly, tender]",
+   "voice_id": "XrExE9yKIg1WjnnlVkGX"
+  },
+  "ship_inga": {
+   "skip": "the motor ship's people (docs/ship.md): written, not voiced yet; proposed voice below",
+   "voice": "Charlotte",
+   "direction": "[a photographer, low, observant, speaks in pictures]",
+   "voice_id": "XB0fDUnXU5powFXDhCwa"
   }
  },
  "lines": {

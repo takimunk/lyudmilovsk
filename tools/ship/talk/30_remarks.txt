@@ -1,0 +1,68 @@
+# Remarks: said unasked when the hero walks past (quest_scenes.json, within 6 m), each with a line of the diary.
+# Format: see 10_quests_a.txt. "> remark.<quest>.<stages> : scene"; the diary line is "@journal.heard.<person>_<scene>".
+
+[ship_zoya]
+> remark.ship_cat.milk : milk_window
+- me
+Молоко? Пирамидками, у меня в окне. Только не говори, для кого: я сама догадаюсь и буду всю ночь не спать.
+Milk? In pyramids, at my hatch. Only don't say who it's for: I'll guess by myself and not sleep all night.
+牛乳? 三角パックで、私の窓口にあるわ。誰のためかは言わないで。自分で当てちゃって、一晩じゅう眠れなくなるから。
+@journal.heard.ship_zoya_milk_window
+Зоя сама сказала, где молоко: в её буфетном окне, пирамидками. И просила не говорить, для кого. Я и не сказал.
+Zoya told me herself where the milk is: at her buffet hatch, in pyramids. And asked me not to say who it's for. I didn't.
+牛乳のありかはゾーヤが自分から教えてくれた。彼女の売店口に、三角パックで。誰のためかは言わないでと頼まれた。言わなかった。
+
+[ship_taras]
+> remark.ship_watch.bell : bell_leave
+- me
+Чиж просил за тебя. После десяти вечера рында твоя: один удар, тихо. Днём не трогай, днём она время говорит. Два ударишь — будешь её чистить до самого порта.
+Chizh put in a word for you. After ten at night the bell is yours: one stroke, softly. Leave her alone by day, by day she tells the time. Strike two and you'll polish her all the way to port.
+チーシから頼まれた。夜十時を過ぎたら号鐘はお前さんのもんだ。一打だけ、そっとな。昼はさわるな、昼は時を告げとる。二打やったら、港に着くまで磨いてもらうぞ。
+@journal.heard.ship_taras_bell_leave
+Боцман Тарас разрешил мне рынду: один удар, после десяти вечера. За второй обещал выдать суконку и пасту.
+Taras the bosun has allowed me the bell: one stroke, after ten at night. For a second he promises a rag and polish.
+甲板長タラスが号鐘を許してくれた。夜十時を過ぎてから一打。二打目には布と磨き粉をくれるそうだ。
+
+[ship_rimma]
+> remark.ship_waltz.ball : waltz_call
+- me
+Сегодня после капитанского ужина — вальс! Кто не умеет, тот стоит у стены и завидует. Кто умеет на три счёта, тот уже умеет.
+Tonight after the captain's dinner: the waltz! Those who can't will stand by the wall and envy. Those who can count to three already can.
+今夜は船長の晩餐のあとにワルツです! 踊れない方は壁ぎわでうらやましがってください。三つ数えられる方は、もう踊れます。
+@journal.heard.ship_rimma_waltz_call
+Римма объявила вальс после капитанского ужина. Сказала: кто умеет считать до трёх, тот умеет. Миша считает до трёх уже полдня.
+Rimma has announced a waltz after the captain's dinner. Whoever can count to three can dance, she says. Misha has been counting to three for half a day.
+リンマが船長の晩餐のあとのワルツを告げた。三つ数えられれば踊れるそうだ。ミーシャはもう半日、三つ数えつづけている。
+
+[ship_senya]
+> remark.ship_birds.gull : gull_thief
+- me
+А у меня чайка бублик украла! С пятном на клюве! На корме, прямо из руки. Бабушка сказала: «Сам виноват, не махай едой».
+A gull stole my bublik! One with a spot on its beak! At the stern, right out of my hand. Granny said: "Your own fault, don't wave food about."
+カモメにブーブリク取られた! くちばしに斑点のあるやつ! 船尾で、手からじかに。おばあちゃんは「自分が悪いの、食べ物を振り回すから」だって。
+@journal.heard.ship_senya_gull_thief
+Сеня кричал на всю палубу, что чайка с пятном на клюве украла у него бублик на корме. Мори-сану нужна как раз эта.
+Senya shouted across the whole deck that a gull with a spot on its beak stole his bublik at the stern. That is the very one Mori-san needs.
+セーニャが甲板じゅうに響く声で叫んでいた。くちばしに斑点のあるカモメに、船尾でブーブリクを取られたと。森さんが探しているのは、まさにそいつだ。
+
+[ship_otar]
+> remark.ship_diesel.key : spanner_drum
+- me
+Ключ на двадцать семь ищешь? У Кости. Он им барабан подтягивает и говорит, что так звук круглее. Звук тот же.
+Looking for the twenty-seven spanner? Kostya has it. He tightens his drum with it and says the sound gets rounder. The sound is the same.
+二十七ミリのスパナ? コースチャが持ってる。あれで太鼓を締めて、音が丸くなると言うんだ。音は同じだよ。
+@journal.heard.ship_otar_spanner_drum
+Контрабасист Отар подтвердил: ключ на двадцать семь у барабанщика. Костя подтягивает им барабан «для круглого звука».
+Otar the bass player confirms it: the drummer has the twenty-seven spanner. Kostya tightens his drum with it "for a rounder sound".
+コントラバスのオタルが請け合った。二十七ミリのスパナは太鼓のコースチャのところだ。「音を丸くするため」に太鼓を締めているらしい。
+
+[ship_vitya]
+> remark.ship_captain.bridge : cap_waits
+- me
+Тебя капитан спрашивал. Он на мостике с восьми до полудня и с четырёх до семи. Не бойся, он только с виду айсберг.
+The captain was asking for you. He's on the bridge from eight till noon and from four till seven. Don't be scared, he only looks like an iceberg.
+船長が君のこと聞いてたよ。船橋にいるのは八時から正午までと、四時から七時まで。怖がらなくていい。氷山みたいなのは見た目だけだから。
+@journal.heard.ship_vitya_cap_waits
+Витя сказал, что капитан про меня спрашивал. На мостике он с восьми до полудня и с четырёх до семи. И он только с виду айсберг.
+Vitya says the captain has been asking for me. He is on the bridge from eight till noon and from four till seven. And he only looks like an iceberg.
+ヴィーチャによると、船長が僕のことを尋ねていたそうだ。船橋にいるのは八時から正午までと四時から七時まで。氷山みたいなのは見た目だけらしい。

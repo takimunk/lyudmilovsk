@@ -72,14 +72,21 @@ QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "ta
 # (photo <map place | maru | resident key>: a sharp developed frame taken there, or of the dog, or of that resident)
 # the telescopes' own quest event (ULyudTelescope, docs/telescopes.md): observe <sight> | jupiter_night
 QUEST_EVENTS += ("observe",)
+# the motor ship's cruise (ULyudCruise, docs/ship.md): cruise_event aboard | ashore | overboard | <programme event id> (it began
+# while the hero is aboard: cruise_event concert1, cruise_event isl_birds...)
+QUEST_EVENTS += ("cruise_event",)
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
               "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open",
-              "window", "proc")
+              "window", "proc", "flag", "no_flag")
+# named waits an act's "until" may give instead of an hour: the act lasts to what the game says (docs/ship.md: the cruise's
+# next programme event, ULyudCruise -> ULyudCityThings::SetWaitMinutes); with none set the act's own minutes pass
+UNTIL_NAMES = ("cruise_event",)
 # screens of other systems an act may open instead of its page ("open"; ULyudCityThings::OnOpen): the library's classics, the
 # photo studio's counter service, the darkroom where the hero develops his own film, the photo club's monthly contest (its
 # table: hand a print in, hear the result) and the wall of its winners (Private/Photo/LyudPhoto.cpp, docs/photo.md)
-OPEN_SCREENS = ("books", "piano", "photo_lab", "photo_darkroom", "photo_contest", "photo_wall")
+OPEN_SCREENS = ("books", "piano", "photo_lab", "photo_darkroom", "photo_contest", "photo_wall",
+                "poker")   # the ship's card table (ULyudShipPoker, docs/ship.md "Poker")
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
@@ -88,7 +95,16 @@ OPEN_SCREENS = ("books", "piano", "photo_lab", "photo_darkroom", "photo_contest"
 # (a staff talk topic asked about), rumour (a kind of the talk of the town about the hero going round now, "any", "!kind":
 # docs/town_rumours.md)
 LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", "weather", "have", "count", "collect", "read", "did",
-              "heard", "pay", "stay", "rumour")
+              "heard", "pay", "stay", "rumour", "flag")
+# "flag": a flag of the game ("name": set, "!name": not set) or a list of them (all must hold): docs/city_interiors.md "Flags".
+# The cruise sets cruise_* (docs/ship.md); a flag nobody sets is off.
+FLAG_RE = r"^!?[a-z][a-z0-9_]*$"
+
+
+def flag_ok(v):
+    """Is v a "flag" value: a name, "!name", or a non-empty list of them?"""
+    names = v if isinstance(v, list) else [v]
+    return bool(names) and all(isinstance(n, str) and re.match(FLAG_RE, n) for n in names)
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
@@ -571,6 +587,8 @@ def check_line_conds(where, cond):
                 STAY_USED.append((where, v.lstrip("!")))
             else:
                 err("%s: stay must be a stay id (or \"!id\": not on it)" % where)
+        elif k == "flag" and not flag_ok(v):
+            err("%s: flag must be a flag name, \"!name\" (not set) or a list of them" % where)
         elif k == "rumour":
             kinds = set(load(RUMOURS).get("kinds", {})) if os.path.exists(RUMOURS) else set()
             if not (isinstance(v, str) and (v.lstrip("!") == "any" or v.lstrip("!") in kinds)):
@@ -907,7 +925,21 @@ def build_acts(acts_src, shops, strings, items):
                "event": a.get("event", "do"), "target": a.get("target", aid), "give": [list(g) for g in a.get("give", [])],
                "daily": int(a.get("daily", 0)), "needs_staff": a.get("needs_staff", ""), "needs_item": a.get("needs_item", ""),
                "fade": bool(a.get("fade", False)), "shop": a.get("shop", ""), "screen": a.get("screen", ""),
-               "until": int(a.get("until", -1))}
+               "until": a["until"] if a.get("until") in UNTIL_NAMES else -1}
+        if act["until"] == -1 and a.get("until", -1) != -1:
+            if isinstance(a["until"], bool) or not isinstance(a["until"], int) or not 0 <= a["until"] <= 23:
+                err("act %s: until must be an hour 0..23 or one of %s" % (aid, ", ".join(UNTIL_NAMES)))
+            else:
+                act["until"] = a["until"]
+        if "flag" in a:
+            if not flag_ok(a["flag"]):
+                err("act %s: flag must be a flag name, \"!name\" (not set) or a list of them" % aid)
+            else:
+                act["flag"] = a["flag"]
+                if a.get("no_flag"):
+                    act["no_flag"] = a["no_flag"]  # resolved by build_stays (an act id or a line key, like closed)
+        elif a.get("no_flag"):
+            err("act %s: no_flag without flag" % aid)
         if a.get("title"):
             act["title"] = a["title"]
         if a.get("open"):
@@ -1542,6 +1574,12 @@ def build_stays(src, acts, strings, plot_ids):
                 a["no_stay"] = r
             else:
                 del a["no_stay"]
+        if a.get("no_flag"):
+            r = closed_act(a["no_flag"], acts, strings, "act " + aid + " no_flag")
+            if r and r != aid:
+                a["no_flag"] = r
+            else:
+                del a["no_flag"]
     for where, v in STAY_USED:
         if v not in out:
             err("%s: stay %s is not in any \"stays\" section" % (where, v))

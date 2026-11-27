@@ -260,6 +260,7 @@ BUILDING_TYPES = {
     "cog_club": ("Клуб-шестерня", "Cog club", "Constructivism: a workers' club with a glazed drum and cantilevered halls in a gear-like plan (after Golosov's Zuev Club, Moscow, 1928, and Melnikov's clubs)"),
     "capsule_library": ("Библиотека-капсула", "Capsule library", "Japanese metabolism: reading-room capsules plugged round a concrete core (after Kurokawa's capsules and Kikutake's Miyakonojo Civic Hall, 1966)"),
     "shell_chapel_hall": ("Дом собраний под сводами", "Shell vault hall", "Brazilian modernism: a community hall under a row of thin concrete vaults (after Niemeyer's São Francisco de Assis, Pampulha, 1943)"),
+    "motor_ship": ("Теплоход", "Motor ship", "A 62 m coastal passenger motor ship of the 1960s (after the Soviet project 543 «Алупка» type): the cruise ship «Полдень», built as a furnished building standing at the cruise stage far out at sea"),
     "plain_block": ("Дом", "Plain block", "An ordinary 4-5 storey house (filler; the buildings thread may swap it for any type)"),
 }
 
@@ -284,6 +285,9 @@ STAFF = {
     "hall": [("caretaker", 1, [9, 22], "mon-sun"), ("choir_leader", 1, [17, 21], "wed-sun")],
     "workshop": [("master", 1, [10, 19], "mon-sat")],
 }
+
+
+SHIP_STAGE_X, SHIP_STAGE_Y = 26000.0, 4000.0      # the cruise stage (map metres): where the motor ship's plot P-SHIP stands
 
 
 def _plot(pid, kind, building, terrace, s, y, w, d, ru, en, yaw=None, height_max=None, notes=""):
@@ -317,6 +321,15 @@ def _plots():
     a(_plot("P-PIER", "pier", "hyperboloid_tower", 0, -151.0, 905.0, 14, 14, "Пирс и маяк", "Pier and lighthouse",
             height_max=36, notes="the pier runs from the promenade (s 25) out to s -140 (12 m wide deck, ~1.5 m over the "
                                  "high water); the tower stands on its head; on the town's main axis Y 905"))
+    # the motor ship «Полдень» at the cruise stage: 26 km out at sea, map (SHIP_STAGE_X, SHIP_STAGE_Y) = the middle of the
+    # ship (ship frame x 31, y 0: blender/city/buildings/_shipframe.py). Terrace "B" (z -41.5): the building's z 0; the
+    # ship's waterline is the building's z -1.5 = the sea's high-water datum -43.0. Yaw 90: the front (the starboard
+    # side) faces map +Y, the bow points along map +X, so ship (x, y, z) -> map (SHIP_STAGE_X - 31 + x, SHIP_STAGE_Y + y,
+    # -43.0 + z) with no rotation. Reached only by the launch link P-PIER/launch_gate <-> P-SHIP/gangway (docs/ship.md).
+    # The shoreline does not exist at that Y (W.shore_x extrapolates): s is simply chosen so that to_map gives the stage.
+    a(_plot("P-SHIP", "ship", "motor_ship", -1, W.shore_x(SHIP_STAGE_Y) - SHIP_STAGE_X, SHIP_STAGE_Y, 62, 10,
+            "Теплоход «Полдень»", "Motor ship Polden", yaw=90.0, height_max=21,
+            notes="the cruise stage far out at sea (sea datum); no street: boarded by the launch from the pier head"))
     for k, y in enumerate((470, 640, 800, 1020, 1180, 1330)):
         a(_plot("P-KIOSK%d" % (k + 1), "kiosk", "bus_stop_kiosk", 0, 50.0, float(y), 6, 5, "Киоск %d" % (k + 1),
                 "Kiosk %d" % (k + 1), height_max=5, notes="ice cream, newspapers, sodas, rent of loungers"))

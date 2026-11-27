@@ -29,6 +29,7 @@
 #include "StaticMeshAttributes.h"
 #include "UObject/ConstructorHelpers.h"
 #include "../Weather/WaveModel.h"
+#include "../Cruise/SeascapeMath.h"
 #include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
 #include "Winter/LyudWinter.h"
@@ -66,6 +67,44 @@ namespace
 	const FQuality Qualities[3] = { { 64, 60.f, 20, 16 }, { 96, 40.f, 40, 32 }, { 128, 25.f, 64, 48 } };
 
 	TWeakObjectPtr<ALyudSea> GSea;
+
+	/** One wave table on its way to the render thread (128 x 2 texels, 4 KB, with its region). The blocks are pooled: the
+	 *  cruise's drift (SetSurfaceDrift) sends the table every frame while the ship is under way, and a frame must not
+	 *  allocate. The render thread hands a block back when it has copied it; the pool grows to the few in flight at once. */
+	struct FLyudWaveUpload
+	{
+		FLinearColor Data[TableHalf * 4];      // first: the cleanup gets this address and it is the block's
+		FUpdateTextureRegion2D Region;
+	};
+	struct FLyudWaveUploadPool
+	{
+		FCriticalSection Lock;
+		TArray<FLyudWaveUpload*> Free;
+		~FLyudWaveUploadPool()
+		{
+			for (FLyudWaveUpload* Block : Free)
+			{
+				delete Block;
+			}
+		}
+		FLyudWaveUpload* Take()
+		{
+			{
+				FScopeLock Guard(&Lock);
+				if (Free.Num() > 0)
+				{
+					return Free.Pop(EAllowShrinking::No);
+				}
+			}
+			return new FLyudWaveUpload;
+		}
+		void Give(FLyudWaveUpload* Block)
+		{
+			FScopeLock Guard(&Lock);
+			Free.Add(Block);
+		}
+	};
+	FLyudWaveUploadPool GLyudWaveUploads;
 }
 
 ALyudSea::ALyudSea()
@@ -154,6 +193,7 @@ void ALyudSea::ApplyQuality(int32 Quality)
 	P.FetchKm = FetchKm;
 	P.Choppiness = Choppiness;
 	Field->Init(P);
+	KeepBasePhases();
 	AppliedFetch = FetchKm;
 	AppliedChop = Choppiness;
 	AppliedWind = -1.f;
@@ -301,6 +341,60 @@ void ALyudSea::UpdateWaves(bool bForce)
 	UploadWaveTable();
 }
 
+void ALyudSea::KeepBasePhases()
+{
+	// the phases as FWaveField::Init made them (SetWind never touches a phase); a pattern already carried stays carried
+	BasePhaseGeo.SetNumUninitialized(int32(Field->Geo.size()));
+	for (int32 I = 0; I < BasePhaseGeo.Num(); I++)
+	{
+		BasePhaseGeo[I] = Field->Geo[I].Phase;
+	}
+	BasePhaseDetail.SetNumUninitialized(int32(Field->Detail.size()));
+	for (int32 I = 0; I < BasePhaseDetail.Num(); I++)
+	{
+		BasePhaseDetail[I] = Field->Detail[I].Phase;
+	}
+	if (bDrifted)
+	{
+		WriteDriftPhases();
+	}
+}
+
+void ALyudSea::WriteDriftPhases()
+{
+	auto Shift = [this](std::vector<LyudWeather::FWaveTrain>& Set, const TArray<float>& Base)
+	{
+		const int32 N = FMath::Min<int32>(int32(Set.size()), Base.Num());
+		for (int32 I = 0; I < N; I++)
+		{
+			LyudWeather::FWaveTrain& T = Set[I];
+			T.Phase = float(LyudSeascape::DriftPhase(Base[I], T.K, T.DirX, T.DirY, DriftX, DriftY));
+		}
+	};
+	Shift(Field->Geo, BasePhaseGeo);
+	Shift(Field->Detail, BasePhaseDetail);
+}
+
+void ALyudSea::ResetSurfaceDrift()
+{
+	DriftVel = FVector2D::ZeroVector;
+	if (!bDrifted)
+	{
+		return;
+	}
+	bDrifted = false;
+	DriftX = DriftY = 0.0;
+	for (int32 I = 0; I < FMath::Min<int32>(int32(Field->Geo.size()), BasePhaseGeo.Num()); I++)
+	{
+		Field->Geo[I].Phase = BasePhaseGeo[I];
+	}
+	for (int32 I = 0; I < FMath::Min<int32>(int32(Field->Detail.size()), BasePhaseDetail.Num()); I++)
+	{
+		Field->Detail[I].Phase = BasePhaseDetail[I];
+	}
+	UploadWaveTable();
+}
+
 void ALyudSea::UploadWaveTable()
 {
 	if (!WaveTable)
@@ -318,7 +412,8 @@ void ALyudSea::UploadWaveTable()
 		}
 	}
 	const int32 W = TableHalf * 2;
-	FLinearColor* Data = new FLinearColor[W * 2];
+	FLyudWaveUpload* Block = GLyudWaveUploads.Take();
+	FLinearColor* Data = Block->Data;
 	FMemory::Memzero(Data, sizeof(FLinearColor) * W * 2);
 	auto Put = [&](const std::vector<LyudWeather::FWaveTrain>& Set, int32 Col0)
 	{
@@ -331,9 +426,9 @@ void ALyudSea::UploadWaveTable()
 	};
 	Put(Field->Geo, 0);
 	Put(Field->Detail, TableHalf);
-	FUpdateTextureRegion2D* Region = new FUpdateTextureRegion2D(0, 0, 0, 0, W, 2);
-	WaveTable->UpdateTextureRegions(0, 1, Region, W * sizeof(FLinearColor), sizeof(FLinearColor), (uint8*)Data,
-		[](uint8* Src, const FUpdateTextureRegion2D* Regions) { delete[] (FLinearColor*)Src; delete Regions; });
+	Block->Region = FUpdateTextureRegion2D(0, 0, 0, 0, W, 2);
+	WaveTable->UpdateTextureRegions(0, 1, &Block->Region, W * sizeof(FLinearColor), sizeof(FLinearColor), (uint8*)Data,
+		[](uint8* Src, const FUpdateTextureRegion2D*) { GLyudWaveUploads.Give(reinterpret_cast<FLyudWaveUpload*>(Src)); });
 
 	if (SeaMID)
 	{
@@ -958,6 +1053,16 @@ void ALyudSea::Tick(float DeltaSeconds)
 	{
 		WaveAge = 0.f;
 		UpdateWaves(false);
+	}
+	if (!DriftVel.IsZero())
+	{
+		// the cruise: the pattern streams past the standing ship (the table is 4 KB, sent every frame while it moves, from
+		// pooled blocks: UploadWaveTable allocates nothing once the pool is warm)
+		DriftX += DriftVel.X * DeltaSeconds;
+		DriftY += DriftVel.Y * DeltaSeconds;
+		bDrifted = true;
+		WriteDriftPhases();
+		UploadWaveTable();
 	}
 	EnsureMaterial();
 

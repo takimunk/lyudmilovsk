@@ -1,0 +1,21 @@
+{
+ "band.name": "The Noon Quartet",
+ "band.tune.saints.title": "When the Saints Go Marching In",
+ "band.tune.entertainer.title": "The Entertainer. A rag by Scott Joplin",
+ "band.tune.old_folks.title": "Swanee River (Old Folks at Home)",
+ "band.tune.oh_susanna.title": "Oh! Susanna",
+ "band.tune.st_james.title": "St. James Infirmary",
+ "band.tune.londonderry.title": "Londonderry Air",
+ "band.tune.korobeiniki.title": "Korobeiniki, as a tango",
+ "band.tune.ochi.title": "Dark Eyes",
+ "band.tune.sakura.title": "Sakura, Sakura",
+ "band.tune.aura_lea.title": "Aura Lea",
+ "band.tune.amazing_grace.title": "Amazing Grace",
+ "band.tune.greensleeves.title": "Greensleeves",
+ "band.tune.brahms_lullaby.title": "Brahms's Lullaby",
+ "band.tune.blue_danube.title": "The Blue Danube",
+ "band.tune.daisy_bell.title": "Daisy Bell. A waltz",
+ "band.tune.choclo.title": "El Choclo. A tango",
+ "band.tune.auld_lang_syne.title": "Auld Lang Syne",
+ "dev.action.band.play_next": "Band: next tune (here, without the ship)"
+}

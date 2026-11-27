@@ -140,6 +140,15 @@ namespace
 		// the sea railway's card ticket (the halts' ticket boxes) and the same punched by the conductor, a keepsake (docs/railway.md)
 		Good(TEXT("rail_ticket"), K::Misc, L::Flat, FVector(0.1f, 3.f, 5.7f), FLinearColor(0.78f, 0.86f, 0.62f), 5, 2.f);
 		Good(TEXT("rail_ticket_punched"), K::Misc, L::Flat, FVector(0.1f, 3.f, 5.7f), FLinearColor(0.72f, 0.8f, 0.58f), 0, 2.f);
+		// the motor ship «Полдень» (docs/ship.md): the cruise's three tickets (taken at the gangway by ULyudCruise), the cabin key
+		// (handed in on going ashore), the bar's milk cocktail, the ship's postcard and the diploma the captain gives on Sunday
+		Good(TEXT("cruise_ticket_hold"), K::Misc, L::Flat, FVector(0.1f, 7.f, 14.f), FLinearColor(0.82f, 0.80f, 0.70f), 90, 3.f);
+		Good(TEXT("cruise_ticket"), K::Misc, L::Flat, FVector(0.1f, 7.f, 14.f), FLinearColor(0.66f, 0.80f, 0.88f), 150, 3.f);
+		Good(TEXT("cruise_ticket_lux"), K::Misc, L::Flat, FVector(0.1f, 7.f, 14.f), FLinearColor(0.95f, 0.88f, 0.62f), 300, 3.f);
+		Good(TEXT("cabin_key"), K::Misc, L::Pack, FVector(1.5f, 3.5f, 11.f), FLinearColor(0.78f, 0.62f, 0.28f), 0, 2.f);
+		Good(TEXT("milk_cocktail"), K::Drink, L::Glass, FVector(7.f, 7.f, 15.f), FLinearColor(0.98f, 0.90f, 0.78f), 22, 3.6f);
+		Good(TEXT("ship_postcard"), K::Misc, L::Flat, FVector(0.2f, 10.f, 15.f), FLinearColor(0.70f, 0.82f, 0.90f), 6, 3.f);
+		Good(TEXT("cruise_diploma"), K::Misc, L::Flat, FVector(0.2f, 21.f, 30.f), FLinearColor(0.96f, 0.93f, 0.84f), 0, 4.f);
 		// the Rassvet's ticket stub: torn at the door of every session, kept (docs/cinema.md)
 		Good(TEXT("ticket_stub"), K::Misc, L::Flat, FVector(0.1f, 3.5f, 6.f), FLinearColor(0.86f, 0.56f, 0.6f), 0, 2.f);
 		// the cable car's travel card, a stamp per station punched on the halls' desks; the lost and found's things, carried to their

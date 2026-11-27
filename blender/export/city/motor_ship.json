@@ -1,0 +1,11078 @@
+{
+ "type": "motor_ship",
+ "info": {
+  "name_ru": "Теплоход «Полдень»",
+  "name_en": "Motor ship Polden",
+  "style": "1960s coastal passenger motor ship",
+  "use": "public",
+  "inspired_by": "Soviet project 543 local-line passenger ships (the «Алупка» type, 1958-66)"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -31.0,
+   0.0
+  ],
+  [
+   31.0,
+   0.0
+  ],
+  [
+   31.0,
+   10.0
+  ],
+  [
+   -31.0,
+   10.0
+  ]
+ ],
+ "height": 21.0,
+ "entrances": [],
+ "spots": [
+  {
+   "id": "funnel_top",
+   "kind": "mark",
+   "pos": [
+    -7.808,
+    5.0,
+    11.795
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_1",
+   "kind": "seat",
+   "pos": [
+    -20.6,
+    1.15,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_2",
+   "kind": "seat",
+   "pos": [
+    -22.0,
+    1.15,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_3",
+   "kind": "seat",
+   "pos": [
+    -20.6,
+    1.75,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_4",
+   "kind": "seat",
+   "pos": [
+    -22.0,
+    1.75,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table_1",
+   "kind": "table",
+   "pos": [
+    -21.3,
+    1.45,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_5",
+   "kind": "seat",
+   "pos": [
+    -20.6,
+    8.25,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_6",
+   "kind": "seat",
+   "pos": [
+    -22.0,
+    8.25,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_7",
+   "kind": "seat",
+   "pos": [
+    -20.6,
+    8.85,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_8",
+   "kind": "seat",
+   "pos": [
+    -22.0,
+    8.85,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table_2",
+   "kind": "table",
+   "pos": [
+    -21.3,
+    8.55,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_9",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    1.15,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_10",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    1.15,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_11",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    1.75,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_12",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    1.75,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table_3",
+   "kind": "table",
+   "pos": [
+    -18.8,
+    1.45,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_13",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    8.25,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_14",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    8.25,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_15",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    8.85,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_16",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    8.85,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table_4",
+   "kind": "table",
+   "pos": [
+    -18.8,
+    8.55,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_17",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    1.15,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_18",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    1.15,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_19",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    1.75,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_20",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    1.75,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table_5",
+   "kind": "table",
+   "pos": [
+    -16.3,
+    1.45,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_21",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    8.25,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_22",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    8.25,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_23",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    8.85,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_24",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    8.85,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table_6",
+   "kind": "table",
+   "pos": [
+    -16.3,
+    8.55,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_25",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    3.08,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_26",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    3.08,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_27",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    3.68,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_28",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    3.68,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table_7",
+   "kind": "table",
+   "pos": [
+    -18.8,
+    3.38,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_29",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    6.32,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_30",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    6.32,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_31",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    6.92,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_32",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    6.92,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table_8",
+   "kind": "table",
+   "pos": [
+    -18.8,
+    6.62,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_33",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    6.32,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_34",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    6.32,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_35",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    6.92,
+    1.3
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dining_chair_36",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    6.92,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "table_9",
+   "kind": "table",
+   "pos": [
+    -16.3,
+    6.62,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dining_chair_37",
+   "kind": "seat",
+   "pos": [
+    -21.375,
+    4.25,
+    1.3
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "dining_chair_38",
+   "kind": "seat",
+   "pos": [
+    -21.375,
+    5.75,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "dining_chair_39",
+   "kind": "seat",
+   "pos": [
+    -20.625,
+    4.25,
+    1.3
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "dining_chair_40",
+   "kind": "seat",
+   "pos": [
+    -20.625,
+    5.75,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "table_captain",
+   "kind": "table",
+   "pos": [
+    -21.0,
+    5.0,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "staff_steward",
+   "kind": "work",
+   "pos": [
+    -12.2,
+    5.0,
+    1.3
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "dining_hatch_queue",
+   "kind": "counter",
+   "pos": [
+    -14.05,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_1",
+   "kind": "path",
+   "pos": [
+    -22.4,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_2",
+   "kind": "path",
+   "pos": [
+    -20.0,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_3",
+   "kind": "path",
+   "pos": [
+    -17.5,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_4",
+   "kind": "path",
+   "pos": [
+    -14.8,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_5",
+   "kind": "path",
+   "pos": [
+    -14.2,
+    2.75,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_6",
+   "kind": "path",
+   "pos": [
+    -14.2,
+    8.05,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_7",
+   "kind": "path",
+   "pos": [
+    -20.0,
+    2.45,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_8",
+   "kind": "path",
+   "pos": [
+    -20.0,
+    7.55,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_9",
+   "kind": "path",
+   "pos": [
+    -17.5,
+    2.4,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_10",
+   "kind": "path",
+   "pos": [
+    -17.5,
+    7.6,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_11",
+   "kind": "path",
+   "pos": [
+    -21.8,
+    3.1,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_saloon_12",
+   "kind": "path",
+   "pos": [
+    -21.8,
+    6.9,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_saloon_1",
+   "kind": "stand",
+   "pos": [
+    -14.1,
+    1.7,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_saloon_2",
+   "kind": "stand",
+   "pos": [
+    -22.1,
+    7.6,
+    1.3
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "staff_cook",
+   "kind": "work",
+   "pos": [
+    -4.8,
+    8.05,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "cook_range",
+   "kind": "work",
+   "pos": [
+    -7.6,
+    7.35,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "galley_queue",
+   "kind": "counter",
+   "pos": [
+    -3.25,
+    8.05,
+    1.3
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "path_c_stbd_1",
+   "kind": "path",
+   "pos": [
+    -12.4,
+    2.75,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_stbd_2",
+   "kind": "path",
+   "pos": [
+    -10.5,
+    2.75,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_stbd_3",
+   "kind": "path",
+   "pos": [
+    -8.4,
+    2.75,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_stbd_4",
+   "kind": "path",
+   "pos": [
+    -6.4,
+    2.75,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_stbd_5",
+   "kind": "path",
+   "pos": [
+    -4.4,
+    2.75,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "staff_engineer",
+   "kind": "work",
+   "pos": [
+    -6.0,
+    4.05,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "stand_engine_gallery",
+   "kind": "stand",
+   "pos": [
+    -7.8,
+    4.05,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "staff_purser",
+   "kind": "work",
+   "pos": [
+    -1.9,
+    9.2,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "purser_queue",
+   "kind": "counter",
+   "pos": [
+    -1.9,
+    7.45,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "kiosk_staff",
+   "kind": "work",
+   "pos": [
+    -2.3,
+    0.8,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "kiosk_queue",
+   "kind": "counter",
+   "pos": [
+    -2.3,
+    2.5,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_c_vest_1",
+   "kind": "path",
+   "pos": [
+    -3.6,
+    2.75,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_vest_2",
+   "kind": "path",
+   "pos": [
+    -3.6,
+    7.3,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_vest_3",
+   "kind": "path",
+   "pos": [
+    -1.5,
+    2.8,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_vest_4",
+   "kind": "path",
+   "pos": [
+    -1.5,
+    7.2,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_vest_5",
+   "kind": "path",
+   "pos": [
+    0.6,
+    2.8,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_vest_6",
+   "kind": "path",
+   "pos": [
+    0.6,
+    7.2,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_vest_7",
+   "kind": "path",
+   "pos": [
+    0.6,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_vest_8",
+   "kind": "path",
+   "pos": [
+    0.1,
+    1.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_vest_9",
+   "kind": "path",
+   "pos": [
+    0.1,
+    9.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_vestibule_1",
+   "kind": "stand",
+   "pos": [
+    0.3,
+    2.7,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_vestibule_2",
+   "kind": "stand",
+   "pos": [
+    0.2,
+    7.6,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_vestibule_3",
+   "kind": "stand",
+   "pos": [
+    -0.4,
+    1.4,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_c_corr_1",
+   "kind": "path",
+   "pos": [
+    1.6,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_corr_2",
+   "kind": "path",
+   "pos": [
+    4.0,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_corr_3",
+   "kind": "path",
+   "pos": [
+    6.5,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_corr_4",
+   "kind": "path",
+   "pos": [
+    9.0,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_corr_5",
+   "kind": "path",
+   "pos": [
+    11.5,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_corr_6",
+   "kind": "path",
+   "pos": [
+    14.2,
+    5.0,
+    1.3
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_cabin1",
+   "kind": "path",
+   "pos": [
+    13.0,
+    4.65,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cabin1_desk",
+   "kind": "seat",
+   "pos": [
+    13.55,
+    1.444,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_1_a",
+   "kind": "bed",
+   "pos": [
+    12.61,
+    1.584,
+    1.77
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_1_b",
+   "kind": "bed",
+   "pos": [
+    14.49,
+    1.851,
+    1.77
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stand_cabin1",
+   "kind": "stand",
+   "pos": [
+    13.55,
+    2.65,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_c_cabin2",
+   "kind": "path",
+   "pos": [
+    13.0,
+    5.35,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "cabin2_desk",
+   "kind": "seat",
+   "pos": [
+    13.55,
+    8.556,
+    1.3
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "berth_2_a",
+   "kind": "bed",
+   "pos": [
+    12.61,
+    8.416,
+    1.77
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_2_b",
+   "kind": "bed",
+   "pos": [
+    14.49,
+    8.149,
+    1.77
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "stand_cabin2",
+   "kind": "stand",
+   "pos": [
+    13.55,
+    7.35,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "path_c_cabin3",
+   "kind": "path",
+   "pos": [
+    10.2,
+    4.65,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_3_a",
+   "kind": "bed",
+   "pos": [
+    9.81,
+    1.252,
+    1.77
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_3_b",
+   "kind": "bed",
+   "pos": [
+    11.79,
+    1.476,
+    1.77
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_c_cabin4",
+   "kind": "path",
+   "pos": [
+    10.2,
+    5.35,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_4_a",
+   "kind": "bed",
+   "pos": [
+    9.81,
+    8.748,
+    1.77
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_4_b",
+   "kind": "bed",
+   "pos": [
+    11.79,
+    8.524,
+    1.77
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "path_c_cabin5",
+   "kind": "path",
+   "pos": [
+    7.4,
+    4.65,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_5_a",
+   "kind": "bed",
+   "pos": [
+    7.01,
+    1.16,
+    1.77
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_5_b",
+   "kind": "bed",
+   "pos": [
+    8.99,
+    1.175,
+    1.77
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_5_c",
+   "kind": "bed",
+   "pos": [
+    7.01,
+    1.16,
+    2.87
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_5_d",
+   "kind": "bed",
+   "pos": [
+    8.99,
+    1.175,
+    2.87
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_c_cabin6",
+   "kind": "path",
+   "pos": [
+    7.4,
+    5.35,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_6_a",
+   "kind": "bed",
+   "pos": [
+    7.01,
+    8.84,
+    1.77
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_6_b",
+   "kind": "bed",
+   "pos": [
+    8.99,
+    8.825,
+    1.77
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_6_c",
+   "kind": "bed",
+   "pos": [
+    7.01,
+    8.84,
+    2.87
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_6_d",
+   "kind": "bed",
+   "pos": [
+    8.99,
+    8.825,
+    2.87
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "path_c_cabin7",
+   "kind": "path",
+   "pos": [
+    4.6,
+    4.65,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cabin7_desk",
+   "kind": "seat",
+   "pos": [
+    5.2,
+    0.95,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_7_a",
+   "kind": "bed",
+   "pos": [
+    4.21,
+    1.16,
+    1.77
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_7_b",
+   "kind": "bed",
+   "pos": [
+    6.19,
+    1.16,
+    1.77
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_7_c",
+   "kind": "bed",
+   "pos": [
+    4.21,
+    1.16,
+    2.87
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_7_d",
+   "kind": "bed",
+   "pos": [
+    6.19,
+    1.16,
+    2.87
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stand_cabin7",
+   "kind": "stand",
+   "pos": [
+    5.2,
+    2.65,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_c_cabin8",
+   "kind": "path",
+   "pos": [
+    4.6,
+    5.35,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_8_a",
+   "kind": "bed",
+   "pos": [
+    4.21,
+    8.84,
+    1.77
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_8_b",
+   "kind": "bed",
+   "pos": [
+    6.19,
+    8.84,
+    1.77
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_8_c",
+   "kind": "bed",
+   "pos": [
+    4.21,
+    8.84,
+    2.87
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_8_d",
+   "kind": "bed",
+   "pos": [
+    6.19,
+    8.84,
+    2.87
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "path_c_cabin9",
+   "kind": "path",
+   "pos": [
+    1.8,
+    4.65,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_9_a",
+   "kind": "bed",
+   "pos": [
+    1.41,
+    1.16,
+    1.77
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_9_b",
+   "kind": "bed",
+   "pos": [
+    3.39,
+    1.16,
+    1.77
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_9_c",
+   "kind": "bed",
+   "pos": [
+    1.41,
+    1.16,
+    2.87
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_9_d",
+   "kind": "bed",
+   "pos": [
+    3.39,
+    1.16,
+    2.87
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_c_cabin10",
+   "kind": "path",
+   "pos": [
+    1.8,
+    5.35,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_10_a",
+   "kind": "bed",
+   "pos": [
+    1.41,
+    8.84,
+    1.77
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_10_b",
+   "kind": "bed",
+   "pos": [
+    3.39,
+    8.84,
+    1.77
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_10_c",
+   "kind": "bed",
+   "pos": [
+    1.41,
+    8.84,
+    2.87
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_10_d",
+   "kind": "bed",
+   "pos": [
+    3.39,
+    8.84,
+    2.87
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "path_d_cabin15",
+   "kind": "path",
+   "pos": [
+    2.8,
+    4.7,
+    -1.2
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_15_a",
+   "kind": "bed",
+   "pos": [
+    2.58,
+    1.37,
+    -0.74
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_15_b",
+   "kind": "bed",
+   "pos": [
+    4.93,
+    1.37,
+    -0.74
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_15_c",
+   "kind": "bed",
+   "pos": [
+    2.58,
+    1.37,
+    0.26
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_15_d",
+   "kind": "bed",
+   "pos": [
+    4.93,
+    1.37,
+    0.26
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "cabin15_desk",
+   "kind": "seat",
+   "pos": [
+    3.65,
+    1.05,
+    -1.2
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stand_cabin15",
+   "kind": "stand",
+   "pos": [
+    3.75,
+    2.9,
+    -1.2
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_d_cabin16",
+   "kind": "path",
+   "pos": [
+    2.8,
+    5.3,
+    -1.2
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_16_a",
+   "kind": "bed",
+   "pos": [
+    2.42,
+    8.74,
+    -0.73
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_16_b",
+   "kind": "bed",
+   "pos": [
+    5.09,
+    8.74,
+    -0.73
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_16_c",
+   "kind": "bed",
+   "pos": [
+    2.42,
+    8.74,
+    0.37
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_16_d",
+   "kind": "bed",
+   "pos": [
+    5.09,
+    8.74,
+    0.37
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "path_d_cabin17",
+   "kind": "path",
+   "pos": [
+    6.3,
+    4.7,
+    -1.2
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_17_a",
+   "kind": "bed",
+   "pos": [
+    5.91,
+    1.26,
+    -0.73
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_17_b",
+   "kind": "bed",
+   "pos": [
+    8.59,
+    1.26,
+    -0.73
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_17_c",
+   "kind": "bed",
+   "pos": [
+    5.91,
+    1.26,
+    0.37
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_17_d",
+   "kind": "bed",
+   "pos": [
+    8.59,
+    1.26,
+    0.37
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_d_cabin18",
+   "kind": "path",
+   "pos": [
+    6.3,
+    5.3,
+    -1.2
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_18_a",
+   "kind": "bed",
+   "pos": [
+    5.91,
+    8.74,
+    -0.73
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_18_b",
+   "kind": "bed",
+   "pos": [
+    8.59,
+    8.74,
+    -0.73
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_18_c",
+   "kind": "bed",
+   "pos": [
+    5.91,
+    8.74,
+    0.37
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_18_d",
+   "kind": "bed",
+   "pos": [
+    8.59,
+    8.74,
+    0.37
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "path_d_cabin19",
+   "kind": "path",
+   "pos": [
+    9.8,
+    4.7,
+    -1.2
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_19_a",
+   "kind": "bed",
+   "pos": [
+    9.41,
+    1.333,
+    -0.73
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_19_b",
+   "kind": "bed",
+   "pos": [
+    12.08,
+    1.908,
+    -0.73
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_19_c",
+   "kind": "bed",
+   "pos": [
+    9.41,
+    1.333,
+    0.37
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "berth_19_d",
+   "kind": "bed",
+   "pos": [
+    12.08,
+    1.908,
+    0.37
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_d_cabin20",
+   "kind": "path",
+   "pos": [
+    9.8,
+    5.3,
+    -1.2
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_20_a",
+   "kind": "bed",
+   "pos": [
+    9.41,
+    8.667,
+    -0.73
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_20_b",
+   "kind": "bed",
+   "pos": [
+    12.08,
+    8.092,
+    -0.73
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_20_c",
+   "kind": "bed",
+   "pos": [
+    9.41,
+    8.667,
+    0.37
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "berth_20_d",
+   "kind": "bed",
+   "pos": [
+    12.08,
+    8.092,
+    0.37
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "staff_bosun",
+   "kind": "work",
+   "pos": [
+    21.6,
+    3.5,
+    1.712
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "stand_bow_1",
+   "kind": "stand",
+   "pos": [
+    17.5,
+    1.867,
+    1.456
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stand_bow_2",
+   "kind": "stand",
+   "pos": [
+    17.5,
+    8.133,
+    1.456
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "stand_bow_3",
+   "kind": "stand",
+   "pos": [
+    21.0,
+    2.57,
+    1.675
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stand_bow_4",
+   "kind": "stand",
+   "pos": [
+    21.0,
+    7.43,
+    1.675
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "stand_bow_5",
+   "kind": "stand",
+   "pos": [
+    24.0,
+    3.32,
+    1.862
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "stand_bow_6",
+   "kind": "stand",
+   "pos": [
+    24.0,
+    6.68,
+    1.862
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "stand_bow_7",
+   "kind": "stand",
+   "pos": [
+    28.6,
+    5.0,
+    2.15
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_bow_1",
+   "kind": "path",
+   "pos": [
+    15.5,
+    5.0,
+    1.331
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_bow_2",
+   "kind": "path",
+   "pos": [
+    15.5,
+    2.6,
+    1.331
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_bow_3",
+   "kind": "path",
+   "pos": [
+    15.5,
+    7.4,
+    1.331
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_bow_4",
+   "kind": "path",
+   "pos": [
+    19.5,
+    2.6,
+    1.581
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_bow_5",
+   "kind": "path",
+   "pos": [
+    19.5,
+    7.4,
+    1.581
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_bow_6",
+   "kind": "path",
+   "pos": [
+    22.8,
+    5.0,
+    1.787
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_c_bow_7",
+   "kind": "path",
+   "pos": [
+    27.2,
+    5.0,
+    2.062
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_aft_1",
+   "kind": "stand",
+   "pos": [
+    -29.6,
+    5.0,
+    1.3
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "stand_aft_2",
+   "kind": "stand",
+   "pos": [
+    -26.5,
+    8.3,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "stand_aft_3",
+   "kind": "stand",
+   "pos": [
+    -25.5,
+    1.4,
+    1.3
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_c_aft_1",
+   "kind": "path",
+   "pos": [
+    -23.8,
+    5.0,
+    1.3
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "path_c_aft_2",
+   "kind": "path",
+   "pos": [
+    -26.0,
+    6.0,
+    1.3
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "path_c_aft_3",
+   "kind": "path",
+   "pos": [
+    -26.4,
+    7.4,
+    1.3
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "path_c_aft_4",
+   "kind": "path",
+   "pos": [
+    -23.2,
+    2.85,
+    1.3
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "showers_bench",
+   "kind": "seat",
+   "pos": [
+    1.68,
+    1.8,
+    -1.2
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "path_d_showers_1",
+   "kind": "path",
+   "pos": [
+    1.05,
+    2.9,
+    -1.2
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "path_d_showers_2",
+   "kind": "path",
+   "pos": [
+    -0.4,
+    2.1,
+    -1.2
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "path_d_showers_3",
+   "kind": "path",
+   "pos": [
+    -2.4,
+    2.1,
+    -1.2
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "path_d_corr_1",
+   "kind": "path",
+   "pos": [
+    1.0,
+    5.0,
+    -1.2
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_d_corr_2",
+   "kind": "path",
+   "pos": [
+    2.6,
+    5.0,
+    -1.2
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_d_corr_3",
+   "kind": "path",
+   "pos": [
+    5.0,
+    5.0,
+    -1.2
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_d_corr_4",
+   "kind": "path",
+   "pos": [
+    7.5,
+    5.0,
+    -1.2
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_d_corr_5",
+   "kind": "path",
+   "pos": [
+    10.0,
+    5.0,
+    -1.2
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_d_corr_6",
+   "kind": "path",
+   "pos": [
+    11.9,
+    5.0,
+    -1.2
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_d_lobby",
+   "kind": "stand",
+   "pos": [
+    1.2,
+    5.7,
+    -1.2
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "crew_berth_1",
+   "kind": "bed",
+   "pos": [
+    -22.2,
+    1.9,
+    -0.74
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_berth_2",
+   "kind": "bed",
+   "pos": [
+    -20.6,
+    1.9,
+    -0.74
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_berth_3",
+   "kind": "bed",
+   "pos": [
+    -22.2,
+    1.9,
+    0.26
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_berth_4",
+   "kind": "bed",
+   "pos": [
+    -20.6,
+    1.9,
+    0.26
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_berth_5",
+   "kind": "bed",
+   "pos": [
+    -22.2,
+    8.1,
+    -0.74
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_berth_6",
+   "kind": "bed",
+   "pos": [
+    -20.6,
+    8.1,
+    -0.74
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_berth_7",
+   "kind": "bed",
+   "pos": [
+    -22.2,
+    8.1,
+    0.26
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_berth_8",
+   "kind": "bed",
+   "pos": [
+    -20.6,
+    8.1,
+    0.26
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_berth_9",
+   "kind": "bed",
+   "pos": [
+    -18.6,
+    1.9,
+    -0.74
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_berth_10",
+   "kind": "bed",
+   "pos": [
+    -17.0,
+    1.9,
+    -0.74
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_berth_11",
+   "kind": "bed",
+   "pos": [
+    -18.6,
+    1.9,
+    0.26
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_berth_12",
+   "kind": "bed",
+   "pos": [
+    -17.0,
+    1.9,
+    0.26
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_berth_13",
+   "kind": "bed",
+   "pos": [
+    -18.6,
+    8.1,
+    -0.74
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_berth_14",
+   "kind": "bed",
+   "pos": [
+    -17.0,
+    8.1,
+    -0.74
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_berth_15",
+   "kind": "bed",
+   "pos": [
+    -18.6,
+    8.1,
+    0.26
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_berth_16",
+   "kind": "bed",
+   "pos": [
+    -17.0,
+    8.1,
+    0.26
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_mess_1",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    4.25,
+    -1.2
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_mess_2",
+   "kind": "seat",
+   "pos": [
+    -15.0,
+    4.25,
+    -1.2
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_mess_3",
+   "kind": "seat",
+   "pos": [
+    -14.4,
+    4.25,
+    -1.2
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_mess_4",
+   "kind": "seat",
+   "pos": [
+    -13.8,
+    4.25,
+    -1.2
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "crew_mess_5",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    5.75,
+    -1.2
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_mess_6",
+   "kind": "seat",
+   "pos": [
+    -15.0,
+    5.75,
+    -1.2
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_mess_7",
+   "kind": "seat",
+   "pos": [
+    -14.4,
+    5.75,
+    -1.2
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "crew_mess_8",
+   "kind": "seat",
+   "pos": [
+    -13.8,
+    5.75,
+    -1.2
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_d_crew_1",
+   "kind": "path",
+   "pos": [
+    -13.9,
+    8.6,
+    -1.2
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "path_d_crew_2",
+   "kind": "path",
+   "pos": [
+    -15.0,
+    7.0,
+    -1.2
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "path_d_crew_3",
+   "kind": "path",
+   "pos": [
+    -19.0,
+    5.0,
+    -1.2
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "path_d_crew_4",
+   "kind": "path",
+   "pos": [
+    -22.0,
+    5.0,
+    -1.2
+   ],
+   "yaw": -90.0
+  },
+  {
+   "id": "gangway",
+   "kind": "mark",
+   "pos": [
+    0.1,
+    1.1,
+    1.3
+   ],
+   "yaw": -180.0
+  },
+  {
+   "id": "bow",
+   "kind": "mark",
+   "pos": [
+    29.6,
+    5.0,
+    2.212
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "staff_barman",
+   "kind": "work",
+   "pos": [
+    4.0,
+    7.68,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "bar_stool_1",
+   "kind": "seat",
+   "pos": [
+    3.05,
+    6.28,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bar_stool_2",
+   "kind": "seat",
+   "pos": [
+    3.65,
+    6.28,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bar_stool_3",
+   "kind": "seat",
+   "pos": [
+    4.25,
+    6.28,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bar_stool_4",
+   "kind": "seat",
+   "pos": [
+    4.85,
+    6.28,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "bar_stool_5",
+   "kind": "seat",
+   "pos": [
+    5.4,
+    6.28,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "stand_bar_1",
+   "kind": "stand",
+   "pos": [
+    2.5,
+    6.25,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "stand_bar_2",
+   "kind": "stand",
+   "pos": [
+    5.75,
+    5.6,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "card_chair_1",
+   "kind": "seat",
+   "pos": [
+    3.9,
+    3.75,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "card_chair_2",
+   "kind": "seat",
+   "pos": [
+    4.804,
+    3.094,
+    3.9
+   ],
+   "yaw": 288.0
+  },
+  {
+   "id": "card_chair_3",
+   "kind": "seat",
+   "pos": [
+    4.458,
+    2.031,
+    3.9
+   ],
+   "yaw": 216.0
+  },
+  {
+   "id": "card_chair_4",
+   "kind": "seat",
+   "pos": [
+    3.342,
+    2.031,
+    3.9
+   ],
+   "yaw": 144.0
+  },
+  {
+   "id": "card_chair_5",
+   "kind": "seat",
+   "pos": [
+    2.996,
+    3.094,
+    3.9
+   ],
+   "yaw": 72.0
+  },
+  {
+   "id": "dance_1",
+   "kind": "stand",
+   "pos": [
+    7.95,
+    5.8,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "dance_2",
+   "kind": "stand",
+   "pos": [
+    7.95,
+    4.2,
+    3.9
+   ],
+   "yaw": 315.0
+  },
+  {
+   "id": "dance_3",
+   "kind": "stand",
+   "pos": [
+    8.8,
+    5.25,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "dance_4",
+   "kind": "stand",
+   "pos": [
+    8.8,
+    3.9,
+    3.9
+   ],
+   "yaw": 45.0
+  },
+  {
+   "id": "dance_5",
+   "kind": "stand",
+   "pos": [
+    9.7,
+    6.1,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "dance_6",
+   "kind": "stand",
+   "pos": [
+    9.7,
+    4.7,
+    3.9
+   ],
+   "yaw": 135.0
+  },
+  {
+   "id": "dance_7",
+   "kind": "stand",
+   "pos": [
+    10.55,
+    5.7,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "dance_8",
+   "kind": "stand",
+   "pos": [
+    10.55,
+    4.1,
+    3.9
+   ],
+   "yaw": 225.0
+  },
+  {
+   "id": "saloon_seat_1",
+   "kind": "seat",
+   "pos": [
+    8.96,
+    2.15,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "saloon_seat_2",
+   "kind": "seat",
+   "pos": [
+    8.34,
+    2.15,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "saloon_seat_3",
+   "kind": "seat",
+   "pos": [
+    7.72,
+    2.15,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "saloon_seat_4",
+   "kind": "seat",
+   "pos": [
+    11.13,
+    2.15,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "saloon_seat_5",
+   "kind": "seat",
+   "pos": [
+    10.51,
+    2.15,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "saloon_seat_6",
+   "kind": "seat",
+   "pos": [
+    9.89,
+    2.15,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "saloon_seat_7",
+   "kind": "seat",
+   "pos": [
+    7.772,
+    2.905,
+    3.9
+   ],
+   "yaw": 108.0
+  },
+  {
+   "id": "saloon_seat_8",
+   "kind": "seat",
+   "pos": [
+    8.502,
+    2.905,
+    3.9
+   ],
+   "yaw": 108.0
+  },
+  {
+   "id": "saloon_seat_9",
+   "kind": "seat",
+   "pos": [
+    9.852,
+    2.905,
+    3.9
+   ],
+   "yaw": 108.0
+  },
+  {
+   "id": "saloon_seat_10",
+   "kind": "seat",
+   "pos": [
+    10.582,
+    2.905,
+    3.9
+   ],
+   "yaw": 108.0
+  },
+  {
+   "id": "saloon_seat_11",
+   "kind": "seat",
+   "pos": [
+    11.292,
+    2.905,
+    3.9
+   ],
+   "yaw": 108.0
+  },
+  {
+   "id": "saloon_seat_12",
+   "kind": "seat",
+   "pos": [
+    6.25,
+    3.55,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "saloon_seat_13",
+   "kind": "seat",
+   "pos": [
+    7.72,
+    7.85,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "saloon_seat_14",
+   "kind": "seat",
+   "pos": [
+    8.34,
+    7.85,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "saloon_seat_15",
+   "kind": "seat",
+   "pos": [
+    8.96,
+    7.85,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "saloon_seat_16",
+   "kind": "seat",
+   "pos": [
+    9.89,
+    7.85,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "saloon_seat_17",
+   "kind": "seat",
+   "pos": [
+    10.51,
+    7.85,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "saloon_seat_18",
+   "kind": "seat",
+   "pos": [
+    11.13,
+    7.85,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "saloon_seat_19",
+   "kind": "seat",
+   "pos": [
+    7.772,
+    7.095,
+    3.9
+   ],
+   "yaw": 72.0
+  },
+  {
+   "id": "saloon_seat_20",
+   "kind": "seat",
+   "pos": [
+    8.502,
+    7.095,
+    3.9
+   ],
+   "yaw": 72.0
+  },
+  {
+   "id": "saloon_seat_21",
+   "kind": "seat",
+   "pos": [
+    9.852,
+    7.095,
+    3.9
+   ],
+   "yaw": 72.0
+  },
+  {
+   "id": "saloon_seat_22",
+   "kind": "seat",
+   "pos": [
+    10.582,
+    7.095,
+    3.9
+   ],
+   "yaw": 72.0
+  },
+  {
+   "id": "saloon_seat_23",
+   "kind": "seat",
+   "pos": [
+    11.292,
+    7.095,
+    3.9
+   ],
+   "yaw": 72.0
+  },
+  {
+   "id": "saloon_seat_24",
+   "kind": "seat",
+   "pos": [
+    6.25,
+    6.45,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "band_piano",
+   "kind": "work",
+   "pos": [
+    12.06,
+    6.91,
+    4.1
+   ],
+   "yaw": 135.0
+  },
+  {
+   "id": "band_drums",
+   "kind": "work",
+   "pos": [
+    13.57,
+    4.85,
+    4.1
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "band_bass",
+   "kind": "work",
+   "pos": [
+    12.4,
+    3.45,
+    4.1
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "band_reed",
+   "kind": "work",
+   "pos": [
+    12.15,
+    4.55,
+    4.1
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "bandstand",
+   "kind": "mark",
+   "pos": [
+    12.5,
+    5.0,
+    4.1
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "card_table",
+   "kind": "mark",
+   "pos": [
+    3.9,
+    2.8,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "staff_rimma",
+   "kind": "work",
+   "pos": [
+    7.05,
+    5.45,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_saloon_1",
+   "kind": "path",
+   "pos": [
+    2.6,
+    5.0,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_saloon_2",
+   "kind": "path",
+   "pos": [
+    5.0,
+    5.0,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_saloon_3",
+   "kind": "path",
+   "pos": [
+    6.9,
+    5.0,
+    3.9
+   ],
+   "yaw": 182.20259816176588
+  },
+  {
+   "id": "path_saloon_4",
+   "kind": "path",
+   "pos": [
+    6.8,
+    7.6,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_saloon_5",
+   "kind": "path",
+   "pos": [
+    6.8,
+    2.4,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "library_chair_1",
+   "kind": "seat",
+   "pos": [
+    -2.75,
+    7.88,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "library_chair_2",
+   "kind": "seat",
+   "pos": [
+    -1.55,
+    7.88,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "chess_seat_1",
+   "kind": "seat",
+   "pos": [
+    -0.85,
+    7.85,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "chess_seat_2",
+   "kind": "seat",
+   "pos": [
+    0.29,
+    7.85,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "path_lobby_1",
+   "kind": "path",
+   "pos": [
+    0.8,
+    5.0,
+    3.9
+   ],
+   "yaw": 8.74616226255526
+  },
+  {
+   "id": "path_lobby_2",
+   "kind": "path",
+   "pos": [
+    1.2,
+    2.4,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "path_lobby_3",
+   "kind": "path",
+   "pos": [
+    1.2,
+    7.6,
+    3.9
+   ],
+   "yaw": 332.10272896905235
+  },
+  {
+   "id": "path_lobby_4",
+   "kind": "path",
+   "pos": [
+    -1.5,
+    2.5,
+    3.9
+   ],
+   "yaw": 268.69804732742114
+  },
+  {
+   "id": "path_lobby_5",
+   "kind": "path",
+   "pos": [
+    -3.7,
+    2.55,
+    3.9
+   ],
+   "yaw": 144.63753811293094
+  },
+  {
+   "id": "path_lobby_6",
+   "kind": "path",
+   "pos": [
+    -0.4,
+    7.2,
+    3.9
+   ],
+   "yaw": 144.63753811293094
+  },
+  {
+   "id": "stand_lobby_1",
+   "kind": "stand",
+   "pos": [
+    -2.1,
+    2.7,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "stand_lobby_2",
+   "kind": "stand",
+   "pos": [
+    0.9,
+    3.25,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_library_1",
+   "kind": "stand",
+   "pos": [
+    -2.05,
+    7.2,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "lux11_bed_a",
+   "kind": "bed",
+   "pos": [
+    -16.26,
+    2.71,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "lux11_bed_b",
+   "kind": "bed",
+   "pos": [
+    -17.36,
+    2.71,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "lux11_desk",
+   "kind": "seat",
+   "pos": [
+    -18.13,
+    2.28,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "cabin12_bed_a",
+   "kind": "bed",
+   "pos": [
+    -16.26,
+    7.29,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cabin12_bed_b",
+   "kind": "bed",
+   "pos": [
+    -17.36,
+    7.29,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cabin13_bed_a",
+   "kind": "bed",
+   "pos": [
+    -13.01,
+    2.71,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "cabin13_bed_b",
+   "kind": "bed",
+   "pos": [
+    -14.11,
+    2.71,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "cabin14_bed_a",
+   "kind": "bed",
+   "pos": [
+    -13.01,
+    7.29,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "cabin14_bed_b",
+   "kind": "bed",
+   "pos": [
+    -14.11,
+    7.29,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_b_aft_1",
+   "kind": "path",
+   "pos": [
+    -18.6,
+    5.0,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_aft_2",
+   "kind": "path",
+   "pos": [
+    -15.6,
+    5.0,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_aft_3",
+   "kind": "path",
+   "pos": [
+    -12.6,
+    5.0,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_aft_4",
+   "kind": "path",
+   "pos": [
+    -11.75,
+    5.0,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_b_aft_5",
+   "kind": "path",
+   "pos": [
+    -11.75,
+    2.4,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "path_b_aft_6",
+   "kind": "path",
+   "pos": [
+    -11.75,
+    7.6,
+    3.9
+   ],
+   "yaw": 40.08343399398998
+  },
+  {
+   "id": "path_b_aft_7",
+   "kind": "path",
+   "pos": [
+    -7.5,
+    2.55,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_aft_8",
+   "kind": "path",
+   "pos": [
+    -4.4,
+    2.55,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "prom_bench_1_a",
+   "kind": "bench",
+   "pos": [
+    -16.8,
+    1.17,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "prom_bench_1_b",
+   "kind": "bench",
+   "pos": [
+    -16.0,
+    1.17,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "prom_bench_2_a",
+   "kind": "bench",
+   "pos": [
+    -7.8,
+    1.17,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "prom_bench_2_b",
+   "kind": "bench",
+   "pos": [
+    -7.0,
+    1.17,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "prom_bench_3_a",
+   "kind": "bench",
+   "pos": [
+    -1.8,
+    1.17,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "prom_bench_3_b",
+   "kind": "bench",
+   "pos": [
+    -1.0,
+    1.17,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "path_b_stbd_1",
+   "kind": "path",
+   "pos": [
+    -18.4,
+    0.8,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_stbd_2",
+   "kind": "path",
+   "pos": [
+    -14.0,
+    0.8,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_stbd_3",
+   "kind": "path",
+   "pos": [
+    -9.5,
+    0.8,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_stbd_4",
+   "kind": "path",
+   "pos": [
+    -5.0,
+    0.8,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_stbd_5",
+   "kind": "path",
+   "pos": [
+    -0.5,
+    0.8,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_stbd_6",
+   "kind": "path",
+   "pos": [
+    4.0,
+    0.8,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_stbd_7",
+   "kind": "path",
+   "pos": [
+    8.5,
+    0.8,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_stbd_8",
+   "kind": "path",
+   "pos": [
+    11.3,
+    0.8,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "rail_b_stbd_1",
+   "kind": "stand",
+   "pos": [
+    -14.4,
+    0.5,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rail_b_stbd_2",
+   "kind": "stand",
+   "pos": [
+    -10.0,
+    0.5,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rail_b_stbd_3",
+   "kind": "stand",
+   "pos": [
+    -5.0,
+    0.5,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rail_b_stbd_4",
+   "kind": "stand",
+   "pos": [
+    2.6,
+    0.5,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rail_b_stbd_5",
+   "kind": "stand",
+   "pos": [
+    8.6,
+    0.5,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "prom_bench_4_a",
+   "kind": "bench",
+   "pos": [
+    -16.0,
+    8.83,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "prom_bench_4_b",
+   "kind": "bench",
+   "pos": [
+    -16.8,
+    8.83,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "prom_bench_5_a",
+   "kind": "bench",
+   "pos": [
+    -7.0,
+    8.83,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "prom_bench_5_b",
+   "kind": "bench",
+   "pos": [
+    -7.8,
+    8.83,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "prom_bench_6_a",
+   "kind": "bench",
+   "pos": [
+    -1.0,
+    8.83,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "prom_bench_6_b",
+   "kind": "bench",
+   "pos": [
+    -1.8,
+    8.83,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "path_b_port_1",
+   "kind": "path",
+   "pos": [
+    -18.4,
+    9.2,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_port_2",
+   "kind": "path",
+   "pos": [
+    -14.0,
+    9.2,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_port_3",
+   "kind": "path",
+   "pos": [
+    -9.5,
+    9.2,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_port_4",
+   "kind": "path",
+   "pos": [
+    -5.0,
+    9.2,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_port_5",
+   "kind": "path",
+   "pos": [
+    -0.5,
+    9.2,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_port_6",
+   "kind": "path",
+   "pos": [
+    4.0,
+    9.2,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_port_7",
+   "kind": "path",
+   "pos": [
+    8.5,
+    9.2,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_b_port_8",
+   "kind": "path",
+   "pos": [
+    11.3,
+    9.2,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "rail_b_port_1",
+   "kind": "stand",
+   "pos": [
+    -14.4,
+    9.5,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "rail_b_port_2",
+   "kind": "stand",
+   "pos": [
+    -10.0,
+    9.5,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "rail_b_port_3",
+   "kind": "stand",
+   "pos": [
+    -5.0,
+    9.5,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "rail_b_port_4",
+   "kind": "stand",
+   "pos": [
+    2.6,
+    9.5,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "rail_b_port_5",
+   "kind": "stand",
+   "pos": [
+    8.6,
+    9.5,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "path_b_bow_1",
+   "kind": "path",
+   "pos": [
+    13.3,
+    1.1,
+    3.9
+   ],
+   "yaw": 130.10090754621217
+  },
+  {
+   "id": "path_b_bow_2",
+   "kind": "path",
+   "pos": [
+    15.2,
+    2.7,
+    3.9
+   ],
+   "yaw": 163.07248693585302
+  },
+  {
+   "id": "path_b_bow_3",
+   "kind": "path",
+   "pos": [
+    15.9,
+    5.0,
+    3.9
+   ],
+   "yaw": 196.92751306414695
+  },
+  {
+   "id": "path_b_bow_4",
+   "kind": "path",
+   "pos": [
+    15.2,
+    7.3,
+    3.9
+   ],
+   "yaw": 229.89909245378786
+  },
+  {
+   "id": "path_b_bow_5",
+   "kind": "path",
+   "pos": [
+    13.3,
+    8.9,
+    3.9
+   ],
+   "yaw": 229.89909245378786
+  },
+  {
+   "id": "rail_b_bow_1",
+   "kind": "stand",
+   "pos": [
+    16.2,
+    5.0,
+    3.9
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "rail_b_bow_2",
+   "kind": "stand",
+   "pos": [
+    15.75,
+    3.4,
+    3.9
+   ],
+   "yaw": 60.0
+  },
+  {
+   "id": "rail_b_bow_3",
+   "kind": "stand",
+   "pos": [
+    15.75,
+    6.6,
+    3.9
+   ],
+   "yaw": 120.0
+  },
+  {
+   "id": "smoking_bench_1_a",
+   "kind": "bench",
+   "pos": [
+    -19.41,
+    3.15,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "smoking_bench_1_b",
+   "kind": "bench",
+   "pos": [
+    -19.41,
+    2.35,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "smoking_bench_2_a",
+   "kind": "bench",
+   "pos": [
+    -19.41,
+    7.65,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "smoking_bench_2_b",
+   "kind": "bench",
+   "pos": [
+    -19.41,
+    6.85,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "smoking_bench_3_a",
+   "kind": "bench",
+   "pos": [
+    -22.8,
+    7.69,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "smoking_bench_3_b",
+   "kind": "bench",
+   "pos": [
+    -22.0,
+    7.69,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "smoking_bench_4_a",
+   "kind": "bench",
+   "pos": [
+    -21.0,
+    0.765,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "smoking_bench_4_b",
+   "kind": "bench",
+   "pos": [
+    -21.8,
+    0.765,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "ring_toss_throw",
+   "kind": "stand",
+   "pos": [
+    -25.2,
+    6.75,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "stern_rail",
+   "kind": "mark",
+   "pos": [
+    -28.25,
+    4.6,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "rail_b_aft_1",
+   "kind": "stand",
+   "pos": [
+    -28.25,
+    5.6,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "rail_b_aft_2",
+   "kind": "stand",
+   "pos": [
+    -28.25,
+    3.9,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "rail_b_aft_3",
+   "kind": "stand",
+   "pos": [
+    -28.05,
+    7.6,
+    3.9
+   ],
+   "yaw": 235.0
+  },
+  {
+   "id": "rail_b_aft_4",
+   "kind": "stand",
+   "pos": [
+    -26.0,
+    8.868,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "rail_b_aft_5",
+   "kind": "stand",
+   "pos": [
+    -22.4,
+    0.757,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rail_b_aft_6",
+   "kind": "stand",
+   "pos": [
+    -20.1,
+    0.604,
+    3.9
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "smoke_1",
+   "kind": "stand",
+   "pos": [
+    -21.7,
+    4.3,
+    3.9
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "smoke_2",
+   "kind": "stand",
+   "pos": [
+    -23.1,
+    6.0,
+    3.9
+   ],
+   "yaw": 250.0
+  },
+  {
+   "id": "path_b_stern_1",
+   "kind": "path",
+   "pos": [
+    -19.7,
+    5.0,
+    3.9
+   ],
+   "yaw": 277.43140797117246
+  },
+  {
+   "id": "path_b_stern_2",
+   "kind": "path",
+   "pos": [
+    -22.0,
+    4.7,
+    3.9
+   ],
+   "yaw": 253.3007557660064
+  },
+  {
+   "id": "path_b_stern_3",
+   "kind": "path",
+   "pos": [
+    -25.0,
+    5.6,
+    3.9
+   ],
+   "yaw": 290.55604521958344
+  },
+  {
+   "id": "path_b_stern_4",
+   "kind": "path",
+   "pos": [
+    -27.4,
+    4.7,
+    3.9
+   ],
+   "yaw": 58.570434385161484
+  },
+  {
+   "id": "path_b_stern_5",
+   "kind": "path",
+   "pos": [
+    -22.0,
+    1.4,
+    3.9
+   ],
+   "yaw": 75.96375653207352
+  },
+  {
+   "id": "path_b_stern_6",
+   "kind": "path",
+   "pos": [
+    -19.6,
+    0.8,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "path_b_stern_7",
+   "kind": "path",
+   "pos": [
+    -19.6,
+    9.45,
+    3.9
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "shuffle_1",
+   "kind": "stand",
+   "pos": [
+    -24.25,
+    5.0,
+    6.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "shuffle_2",
+   "kind": "stand",
+   "pos": [
+    -15.4,
+    5.0,
+    6.5
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "deck_chair_1",
+   "kind": "seat",
+   "pos": [
+    -22.7,
+    2.35,
+    6.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "deck_chair_2",
+   "kind": "seat",
+   "pos": [
+    -20.9,
+    2.35,
+    6.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "deck_chair_3",
+   "kind": "seat",
+   "pos": [
+    -19.1,
+    2.35,
+    6.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "deck_chair_4",
+   "kind": "seat",
+   "pos": [
+    -17.3,
+    2.35,
+    6.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "deck_chair_5",
+   "kind": "seat",
+   "pos": [
+    -19.4,
+    7.65,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "deck_chair_6",
+   "kind": "seat",
+   "pos": [
+    -17.8,
+    7.65,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "deck_chair_7",
+   "kind": "seat",
+   "pos": [
+    -16.2,
+    7.65,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "deck_chair_8",
+   "kind": "seat",
+   "pos": [
+    -14.6,
+    7.65,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "funnel_bench_1_a",
+   "kind": "bench",
+   "pos": [
+    -7.9,
+    3.29,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "funnel_bench_1_b",
+   "kind": "bench",
+   "pos": [
+    -7.1,
+    3.29,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "funnel_bench_2_a",
+   "kind": "bench",
+   "pos": [
+    -7.1,
+    6.71,
+    6.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "funnel_bench_2_b",
+   "kind": "bench",
+   "pos": [
+    -7.9,
+    6.71,
+    6.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "muster_1",
+   "kind": "stand",
+   "pos": [
+    -9.4,
+    2.0,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_2",
+   "kind": "stand",
+   "pos": [
+    -8.3,
+    2.0,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_3",
+   "kind": "stand",
+   "pos": [
+    -7.2,
+    2.0,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_4",
+   "kind": "stand",
+   "pos": [
+    -6.1,
+    2.0,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_5",
+   "kind": "stand",
+   "pos": [
+    -5.0,
+    2.0,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_6",
+   "kind": "stand",
+   "pos": [
+    -3.9,
+    2.0,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_7",
+   "kind": "stand",
+   "pos": [
+    -9.1,
+    2.55,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_8",
+   "kind": "stand",
+   "pos": [
+    -8.3,
+    2.55,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_9",
+   "kind": "stand",
+   "pos": [
+    -7.5,
+    2.55,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_10",
+   "kind": "stand",
+   "pos": [
+    -6.7,
+    2.55,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_11",
+   "kind": "stand",
+   "pos": [
+    -5.9,
+    2.55,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "muster_12",
+   "kind": "stand",
+   "pos": [
+    -5.1,
+    2.55,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rail_a_1",
+   "kind": "stand",
+   "pos": [
+    -23.6,
+    0.851,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rail_a_2",
+   "kind": "stand",
+   "pos": [
+    -21.5,
+    0.693,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rail_a_3",
+   "kind": "stand",
+   "pos": [
+    -11.4,
+    0.5,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rail_a_4",
+   "kind": "stand",
+   "pos": [
+    -11.4,
+    9.5,
+    6.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "rail_a_5",
+   "kind": "stand",
+   "pos": [
+    2.95,
+    0.5,
+    6.5
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "rail_a_6",
+   "kind": "stand",
+   "pos": [
+    2.95,
+    9.5,
+    6.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "exercise_1",
+   "kind": "stand",
+   "pos": [
+    -18.0,
+    5.3,
+    6.5
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "exercise_2",
+   "kind": "stand",
+   "pos": [
+    -16.8,
+    4.0,
+    6.5
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "exercise_3",
+   "kind": "stand",
+   "pos": [
+    -16.8,
+    6.6,
+    6.5
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "exercise_4",
+   "kind": "stand",
+   "pos": [
+    -15.6,
+    4.8,
+    6.5
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "exercise_5",
+   "kind": "stand",
+   "pos": [
+    -15.6,
+    3.5,
+    6.5
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "exercise_6",
+   "kind": "stand",
+   "pos": [
+    -18.6,
+    3.8,
+    6.5
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "staff_rimma_deck",
+   "kind": "work",
+   "pos": [
+    -20.2,
+    4.7,
+    6.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_a_stbd_1",
+   "kind": "path",
+   "pos": [
+    -23.8,
+    1.7,
+    6.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_a_stbd_2",
+   "kind": "path",
+   "pos": [
+    -20.5,
+    1.7,
+    6.5
+   ],
+   "yaw": 91.9091524329964
+  },
+  {
+   "id": "path_a_stbd_3",
+   "kind": "path",
+   "pos": [
+    -11.5,
+    2.0,
+    6.5
+   ],
+   "yaw": 109.98310652189997
+  },
+  {
+   "id": "path_a_stbd_4",
+   "kind": "path",
+   "pos": [
+    -10.4,
+    2.4,
+    6.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_a_stbd_5",
+   "kind": "path",
+   "pos": [
+    -4.5,
+    2.4,
+    6.5
+   ],
+   "yaw": 80.2724214485984
+  },
+  {
+   "id": "path_a_stbd_6",
+   "kind": "path",
+   "pos": [
+    -1.0,
+    1.8,
+    6.5
+   ],
+   "yaw": 82.09283729704154
+  },
+  {
+   "id": "path_a_stbd_7",
+   "kind": "path",
+   "pos": [
+    2.6,
+    1.3,
+    6.5
+   ],
+   "yaw": 82.09283729704154
+  },
+  {
+   "id": "path_a_port_1",
+   "kind": "path",
+   "pos": [
+    -19.7,
+    8.5,
+    6.5
+   ],
+   "yaw": 87.56335175318986
+  },
+  {
+   "id": "path_a_port_2",
+   "kind": "path",
+   "pos": [
+    -15.0,
+    8.3,
+    6.5
+   ],
+   "yaw": 85.10090754621224
+  },
+  {
+   "id": "path_a_port_3",
+   "kind": "path",
+   "pos": [
+    -11.5,
+    8.0,
+    6.5
+   ],
+   "yaw": 70.01689347810004
+  },
+  {
+   "id": "path_a_port_4",
+   "kind": "path",
+   "pos": [
+    -10.4,
+    7.6,
+    6.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_a_port_5",
+   "kind": "path",
+   "pos": [
+    -4.5,
+    7.6,
+    6.5
+   ],
+   "yaw": 99.72757855140162
+  },
+  {
+   "id": "path_a_port_6",
+   "kind": "path",
+   "pos": [
+    -1.0,
+    8.2,
+    6.5
+   ],
+   "yaw": 97.90716270295843
+  },
+  {
+   "id": "path_a_port_7",
+   "kind": "path",
+   "pos": [
+    2.6,
+    8.7,
+    6.5
+   ],
+   "yaw": 97.90716270295843
+  },
+  {
+   "id": "path_a_mid_1",
+   "kind": "path",
+   "pos": [
+    1.6,
+    2.7,
+    6.5
+   ],
+   "yaw": 163.07248693585302
+  },
+  {
+   "id": "path_a_mid_2",
+   "kind": "path",
+   "pos": [
+    2.3,
+    5.0,
+    6.5
+   ],
+   "yaw": 196.92751306414695
+  },
+  {
+   "id": "path_a_mid_3",
+   "kind": "path",
+   "pos": [
+    1.6,
+    7.3,
+    6.5
+   ],
+   "yaw": 277.88834944488787
+  },
+  {
+   "id": "path_a_mid_4",
+   "kind": "path",
+   "pos": [
+    -15.0,
+    5.0,
+    6.5
+   ],
+   "yaw": 39.80557109226519
+  },
+  {
+   "id": "path_a_mid_5",
+   "kind": "path",
+   "pos": [
+    -13.0,
+    2.6,
+    6.5
+   ],
+   "yaw": 39.80557109226519
+  },
+  {
+   "id": "staff_radio",
+   "kind": "work",
+   "pos": [
+    4.7,
+    6.85,
+    6.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "stand_radio",
+   "kind": "stand",
+   "pos": [
+    4.05,
+    5.15,
+    6.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "path_a_house_1",
+   "kind": "path",
+   "pos": [
+    2.7,
+    5.0,
+    6.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_a_house_2",
+   "kind": "path",
+   "pos": [
+    4.05,
+    5.0,
+    6.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "path_a_house_3",
+   "kind": "path",
+   "pos": [
+    7.3,
+    5.0,
+    6.5
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "staff_helmsman",
+   "kind": "work",
+   "pos": [
+    10.02,
+    5.0,
+    9.1
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "staff_captain",
+   "kind": "work",
+   "pos": [
+    9.9,
+    3.25,
+    9.1
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_bridge_1",
+   "kind": "stand",
+   "pos": [
+    9.2,
+    4.1,
+    9.1
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_bridge_2",
+   "kind": "stand",
+   "pos": [
+    9.2,
+    5.7,
+    9.1
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "stand_bridge_3",
+   "kind": "stand",
+   "pos": [
+    8.4,
+    4.7,
+    9.1
+   ],
+   "yaw": 90.0
+  },
+  {
+   "id": "staff_mate",
+   "kind": "work",
+   "pos": [
+    6.45,
+    6.5,
+    9.1
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "wing_stbd_1",
+   "kind": "stand",
+   "pos": [
+    9.25,
+    0.6,
+    9.1
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "wing_stbd_2",
+   "kind": "stand",
+   "pos": [
+    8.6,
+    0.7,
+    9.1
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "wing_port_1",
+   "kind": "stand",
+   "pos": [
+    9.25,
+    9.4,
+    9.1
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "wing_port_2",
+   "kind": "stand",
+   "pos": [
+    8.6,
+    9.3,
+    9.1
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "path_bridge_1",
+   "kind": "path",
+   "pos": [
+    8.2,
+    0.8,
+    9.1
+   ],
+   "yaw": 153.43494882292208
+  },
+  {
+   "id": "path_bridge_2",
+   "kind": "path",
+   "pos": [
+    9.1,
+    2.6,
+    9.1
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "path_bridge_3",
+   "kind": "path",
+   "pos": [
+    9.1,
+    5.0,
+    9.1
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "path_bridge_4",
+   "kind": "path",
+   "pos": [
+    9.1,
+    7.4,
+    9.1
+   ],
+   "yaw": 206.56505117707798
+  },
+  {
+   "id": "path_bridge_5",
+   "kind": "path",
+   "pos": [
+    8.2,
+    9.2,
+    9.1
+   ],
+   "yaw": 338.1985905136481
+  },
+  {
+   "id": "path_bridge_6",
+   "kind": "path",
+   "pos": [
+    7.0,
+    6.2,
+    9.1
+   ],
+   "yaw": 338.1985905136481
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    -1.0,
+    1.8,
+    0.85
+   ],
+   "lumens": 700,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    7.0,
+    5.0,
+    0.85
+   ],
+   "lumens": 600,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    3.8,
+    2.4,
+    0.85
+   ],
+   "lumens": 600,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    -7.5,
+    2.0,
+    0.85
+   ],
+   "lumens": 900,
+   "colour": "#FFE9C8",
+   "kind": "public",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    -20.0,
+    7.2,
+    3.45
+   ],
+   "lumens": 1000,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -16.0,
+    2.8,
+    3.45
+   ],
+   "lumens": 1000,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.5
+  },
+  {
+   "pos": [
+    -8.5,
+    2.75,
+    3.45
+   ],
+   "lumens": 600,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    -1.5,
+    1.8,
+    3.45
+   ],
+   "lumens": 900,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    -1.5,
+    8.2,
+    3.45
+   ],
+   "lumens": 900,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    8.0,
+    5.0,
+    3.45
+   ],
+   "lumens": 700,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8.5
+  },
+  {
+   "pos": [
+    -7.4,
+    8.2,
+    3.45
+   ],
+   "lumens": 700,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    5.2,
+    2.2,
+    3.45
+   ],
+   "lumens": 600,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    13.6,
+    2.6,
+    3.45
+   ],
+   "lumens": 500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    13.6,
+    7.4,
+    3.45
+   ],
+   "lumens": 500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    -17.4,
+    3.0,
+    6.05
+   ],
+   "lumens": 600,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 4.5
+  },
+  {
+   "pos": [
+    -11.8,
+    5.0,
+    6.05
+   ],
+   "lumens": 600,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -1.5,
+    2.4,
+    6.05
+   ],
+   "lumens": 800,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    -1.5,
+    7.6,
+    6.05
+   ],
+   "lumens": 800,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.5
+  },
+  {
+   "pos": [
+    4.5,
+    6.6,
+    6.05
+   ],
+   "lumens": 1000,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 7.0
+  },
+  {
+   "pos": [
+    4.0,
+    2.8,
+    6.05
+   ],
+   "lumens": 800,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.0
+  },
+  {
+   "pos": [
+    10.3,
+    5.0,
+    6.05
+   ],
+   "lumens": 1300,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 8.5
+  },
+  {
+   "pos": [
+    -24.0,
+    5.0,
+    6.05
+   ],
+   "lumens": 700,
+   "colour": "#FFD9A8",
+   "kind": "lobby",
+   "radius": 8.0
+  },
+  {
+   "pos": [
+    5.0,
+    6.9,
+    8.65
+   ],
+   "lumens": 600,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    9.6,
+    5.0,
+    11.05
+   ],
+   "lumens": 500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.0
+  }
+ ],
+ "things": [
+  {
+   "id": "dining_chair_1",
+   "kind": "seat",
+   "pos": [
+    -20.6,
+    1.15,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_2",
+   "kind": "seat",
+   "pos": [
+    -22.0,
+    1.15,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_3",
+   "kind": "seat",
+   "pos": [
+    -20.6,
+    1.75,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_4",
+   "kind": "seat",
+   "pos": [
+    -22.0,
+    1.75,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_5",
+   "kind": "seat",
+   "pos": [
+    -20.6,
+    8.25,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_6",
+   "kind": "seat",
+   "pos": [
+    -22.0,
+    8.25,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_7",
+   "kind": "seat",
+   "pos": [
+    -20.6,
+    8.85,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_8",
+   "kind": "seat",
+   "pos": [
+    -22.0,
+    8.85,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_9",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    1.15,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_10",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    1.15,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_11",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    1.75,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_12",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    1.75,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_13",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    8.25,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_14",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    8.25,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_15",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    8.85,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_16",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    8.85,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_17",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    1.15,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_18",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    1.15,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_19",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    1.75,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_20",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    1.75,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_21",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    8.25,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_22",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    8.25,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_23",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    8.85,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_24",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    8.85,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_25",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    3.08,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_26",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    3.08,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_27",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    3.68,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_28",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    3.68,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_29",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    6.32,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_30",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    6.32,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_31",
+   "kind": "seat",
+   "pos": [
+    -18.1,
+    6.92,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_32",
+   "kind": "seat",
+   "pos": [
+    -19.5,
+    6.92,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_33",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    6.32,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_34",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    6.32,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_35",
+   "kind": "seat",
+   "pos": [
+    -15.6,
+    6.92,
+    1.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_36",
+   "kind": "seat",
+   "pos": [
+    -17.0,
+    6.92,
+    1.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_37",
+   "kind": "seat",
+   "pos": [
+    -21.375,
+    4.25,
+    1.75
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_38",
+   "kind": "seat",
+   "pos": [
+    -21.375,
+    5.75,
+    1.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_39",
+   "kind": "seat",
+   "pos": [
+    -20.625,
+    4.25,
+    1.75
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "dining_chair_40",
+   "kind": "seat",
+   "pos": [
+    -20.625,
+    5.75,
+    1.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "captains_table",
+   "kind": "board",
+   "pos": [
+    -21.0,
+    5.0,
+    2.2
+   ],
+   "yaw": -90.0,
+   "props": {}
+  },
+  {
+   "id": "dining_hatch",
+   "kind": "counter",
+   "pos": [
+    -13.35,
+    5.0,
+    2.45
+   ],
+   "yaw": -90.0,
+   "props": {
+    "role": "steward",
+    "service": "canteen"
+   }
+  },
+  {
+   "id": "kit_clock_1",
+   "kind": "board",
+   "pos": [
+    -13.1,
+    7.0,
+    3.35
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "galley_halfdoor",
+   "kind": "counter",
+   "pos": [
+    -3.85,
+    8.05,
+    2.4
+   ],
+   "yaw": 90.0,
+   "props": {
+    "role": "cook",
+    "service": "galley"
+   }
+  },
+  {
+   "id": "engine_door",
+   "kind": "door",
+   "pos": [
+    -7.45,
+    3.43,
+    2.4
+   ],
+   "yaw": 0.0,
+   "props": {}
+  },
+  {
+   "id": "engine_gallery",
+   "kind": "board",
+   "pos": [
+    -7.25,
+    4.64,
+    2.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "engine"
+   }
+  },
+  {
+   "id": "purser_desk",
+   "kind": "counter",
+   "pos": [
+    -1.9,
+    8.2,
+    2.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "purser",
+    "service": "reception"
+   }
+  },
+  {
+   "id": "key_board",
+   "kind": "board",
+   "pos": [
+    -1.9,
+    9.77,
+    2.9
+   ],
+   "yaw": 0.0,
+   "props": {}
+  },
+  {
+   "id": "ship_kiosk",
+   "kind": "counter",
+   "pos": [
+    -2.3,
+    1.8,
+    2.35
+   ],
+   "yaw": -180.0,
+   "props": {
+    "role": "purser",
+    "service": "shop"
+   }
+  },
+  {
+   "id": "notice_board",
+   "kind": "board",
+   "pos": [
+    0.87,
+    2.8,
+    2.85
+   ],
+   "yaw": -90.0,
+   "props": {
+    "topic": "programme"
+   }
+  },
+  {
+   "id": "post_box",
+   "kind": "machine",
+   "pos": [
+    0.75,
+    1.5,
+    2.65
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "post_box"
+   }
+  },
+  {
+   "id": "kit_clock_2",
+   "kind": "board",
+   "pos": [
+    0.9,
+    8.6,
+    3.25
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "barometer",
+   "kind": "board",
+   "pos": [
+    0.85,
+    8.6,
+    2.85
+   ],
+   "yaw": -90.0,
+   "props": {
+    "topic": "weather"
+   }
+  },
+  {
+   "id": "cabin1_door",
+   "kind": "door",
+   "pos": [
+    12.52,
+    3.6,
+    2.4
+   ],
+   "yaw": 90.0,
+   "props": {
+    "cabin": 1,
+    "open": 1
+   }
+  },
+  {
+   "id": "cabin1_bed_a",
+   "kind": "bed",
+   "pos": [
+    12.61,
+    1.584,
+    1.77
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.47,
+    "rest": "private",
+    "cabin": 1
+   }
+  },
+  {
+   "id": "cabin1_bed_b",
+   "kind": "bed",
+   "pos": [
+    14.49,
+    1.851,
+    1.77
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.47,
+    "rest": "private",
+    "cabin": 1
+   }
+  },
+  {
+   "id": "cabin1_desk",
+   "kind": "seat",
+   "pos": [
+    13.55,
+    1.444,
+    1.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45,
+    "cabin": 1
+   }
+  },
+  {
+   "id": "cabin1_wardrobe",
+   "kind": "board",
+   "pos": [
+    14.13,
+    3.761,
+    2.5
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "wardrobe"
+   }
+  },
+  {
+   "id": "cabin1_washbasin",
+   "kind": "machine",
+   "pos": [
+    14.55,
+    3.121,
+    2.25
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "cabin1_radio",
+   "kind": "machine",
+   "pos": [
+    12.37,
+    2.834,
+    3.4
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "loudspeaker"
+   }
+  },
+  {
+   "id": "cabin1_porthole",
+   "kind": "machine",
+   "pos": [
+    12.85,
+    0.809,
+    2.675
+   ],
+   "yaw": -172.8,
+   "props": {
+    "what": "window"
+   }
+  },
+  {
+   "id": "cabin1_switch",
+   "kind": "machine",
+   "pos": [
+    13.78,
+    4.12,
+    2.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "cabin1_globe",
+   "kind": "board",
+   "pos": [
+    13.4,
+    0.864,
+    2.325
+   ],
+   "yaw": -180.0,
+   "props": {
+    "topic": "geography"
+   }
+  },
+  {
+   "id": "cabin2_door",
+   "kind": "door",
+   "pos": [
+    12.52,
+    6.4,
+    2.4
+   ],
+   "yaw": 90.0,
+   "props": {
+    "cabin": 2,
+    "open": 1
+   }
+  },
+  {
+   "id": "cabin2_bed_a",
+   "kind": "bed",
+   "pos": [
+    12.61,
+    8.416,
+    1.77
+   ],
+   "yaw": -180.0,
+   "props": {
+    "height": 0.47,
+    "rest": "private",
+    "cabin": 2
+   }
+  },
+  {
+   "id": "cabin2_bed_b",
+   "kind": "bed",
+   "pos": [
+    14.49,
+    8.149,
+    1.77
+   ],
+   "yaw": -180.0,
+   "props": {
+    "height": 0.47,
+    "rest": "private",
+    "cabin": 2
+   }
+  },
+  {
+   "id": "cabin2_desk",
+   "kind": "seat",
+   "pos": [
+    13.55,
+    8.556,
+    1.75
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45,
+    "cabin": 2
+   }
+  },
+  {
+   "id": "cabin2_wardrobe",
+   "kind": "board",
+   "pos": [
+    14.13,
+    6.239,
+    2.5
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "wardrobe"
+   }
+  },
+  {
+   "id": "cabin2_washbasin",
+   "kind": "machine",
+   "pos": [
+    14.55,
+    6.879,
+    2.25
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "cabin2_radio",
+   "kind": "machine",
+   "pos": [
+    12.37,
+    7.166,
+    3.4
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "loudspeaker"
+   }
+  },
+  {
+   "id": "cabin2_porthole",
+   "kind": "machine",
+   "pos": [
+    12.85,
+    9.191,
+    2.675
+   ],
+   "yaw": -7.2,
+   "props": {
+    "what": "window"
+   }
+  },
+  {
+   "id": "cabin2_switch",
+   "kind": "machine",
+   "pos": [
+    13.78,
+    5.88,
+    2.6
+   ],
+   "yaw": -180.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "cabin3_door",
+   "kind": "door",
+   "pos": [
+    10.2,
+    4.28,
+    2.4
+   ],
+   "yaw": -180.0,
+   "props": {
+    "cabin": 3
+   }
+  },
+  {
+   "id": "cabin4_door",
+   "kind": "door",
+   "pos": [
+    10.2,
+    5.72,
+    2.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "cabin": 4
+   }
+  },
+  {
+   "id": "cabin5_door",
+   "kind": "door",
+   "pos": [
+    7.4,
+    4.28,
+    2.4
+   ],
+   "yaw": -180.0,
+   "props": {
+    "cabin": 5
+   }
+  },
+  {
+   "id": "cabin6_door",
+   "kind": "door",
+   "pos": [
+    7.4,
+    5.72,
+    2.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "cabin": 6
+   }
+  },
+  {
+   "id": "cabin7_door",
+   "kind": "door",
+   "pos": [
+    4.12,
+    3.6,
+    2.4
+   ],
+   "yaw": 90.0,
+   "props": {
+    "cabin": 7,
+    "open": 1
+   }
+  },
+  {
+   "id": "cabin7_bed_a",
+   "kind": "bed",
+   "pos": [
+    4.21,
+    1.16,
+    1.77
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.47,
+    "rest": "private",
+    "cabin": 7
+   }
+  },
+  {
+   "id": "cabin7_bed_b",
+   "kind": "bed",
+   "pos": [
+    6.19,
+    1.16,
+    1.77
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.47,
+    "rest": "private",
+    "cabin": 7
+   }
+  },
+  {
+   "id": "cabin7_bed_c",
+   "kind": "bed",
+   "pos": [
+    4.21,
+    1.16,
+    2.87
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 1.2,
+    "rest": "private",
+    "cabin": 7
+   }
+  },
+  {
+   "id": "cabin7_bed_d",
+   "kind": "bed",
+   "pos": [
+    6.19,
+    1.16,
+    2.87
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 1.2,
+    "rest": "private",
+    "cabin": 7
+   }
+  },
+  {
+   "id": "cabin7_desk",
+   "kind": "seat",
+   "pos": [
+    5.2,
+    0.95,
+    1.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45,
+    "cabin": 7
+   }
+  },
+  {
+   "id": "cabin7_wardrobe",
+   "kind": "board",
+   "pos": [
+    5.83,
+    3.665,
+    2.5
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "wardrobe"
+   }
+  },
+  {
+   "id": "cabin7_washbasin",
+   "kind": "machine",
+   "pos": [
+    6.25,
+    2.43,
+    2.25
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "cabin7_radio",
+   "kind": "machine",
+   "pos": [
+    3.97,
+    2.55,
+    3.4
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "loudspeaker"
+   }
+  },
+  {
+   "id": "cabin7_porthole",
+   "kind": "machine",
+   "pos": [
+    5.9,
+    0.4,
+    2.675
+   ],
+   "yaw": -180.0,
+   "props": {
+    "what": "window"
+   }
+  },
+  {
+   "id": "cabin7_switch",
+   "kind": "machine",
+   "pos": [
+    5.38,
+    4.12,
+    2.6
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "cabin8_door",
+   "kind": "door",
+   "pos": [
+    4.6,
+    5.72,
+    2.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "cabin": 8
+   }
+  },
+  {
+   "id": "cabin9_door",
+   "kind": "door",
+   "pos": [
+    1.8,
+    4.28,
+    2.4
+   ],
+   "yaw": -180.0,
+   "props": {
+    "cabin": 9
+   }
+  },
+  {
+   "id": "cabin10_door",
+   "kind": "door",
+   "pos": [
+    1.8,
+    5.72,
+    2.4
+   ],
+   "yaw": 0.0,
+   "props": {
+    "cabin": 10
+   }
+  },
+  {
+   "id": "cabin15_door",
+   "kind": "door",
+   "pos": [
+    2.32,
+    3.65,
+    -0.1
+   ],
+   "yaw": 90.0,
+   "props": {
+    "cabin": 15,
+    "open": 1
+   }
+  },
+  {
+   "id": "cabin15_bed_a",
+   "kind": "bed",
+   "pos": [
+    2.58,
+    1.37,
+    -0.74
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.46,
+    "rest": "private",
+    "cabin": 15
+   }
+  },
+  {
+   "id": "cabin15_bed_b",
+   "kind": "bed",
+   "pos": [
+    4.93,
+    1.37,
+    -0.74
+   ],
+   "yaw": -180.0,
+   "props": {
+    "height": 0.46,
+    "rest": "private",
+    "cabin": 15
+   }
+  },
+  {
+   "id": "cabin15_bed_c",
+   "kind": "bed",
+   "pos": [
+    2.58,
+    1.37,
+    0.26
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 1.2,
+    "rest": "private",
+    "cabin": 15
+   }
+  },
+  {
+   "id": "cabin15_bed_d",
+   "kind": "bed",
+   "pos": [
+    4.93,
+    1.37,
+    0.26
+   ],
+   "yaw": -180.0,
+   "props": {
+    "height": 1.2,
+    "rest": "private",
+    "cabin": 15
+   }
+  },
+  {
+   "id": "cabin15_desk",
+   "kind": "seat",
+   "pos": [
+    3.65,
+    1.05,
+    -0.75
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45,
+    "cabin": 15
+   }
+  },
+  {
+   "id": "cabin15_washbasin",
+   "kind": "machine",
+   "pos": [
+    5.15,
+    2.9,
+    -0.25
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "cabin15_radio",
+   "kind": "machine",
+   "pos": [
+    5.33,
+    3.7,
+    0.85
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "loudspeaker"
+   }
+  },
+  {
+   "id": "cabin15_porthole",
+   "kind": "machine",
+   "pos": [
+    3.0,
+    0.38,
+    0.4
+   ],
+   "yaw": -180.0,
+   "props": {
+    "what": "window"
+   }
+  },
+  {
+   "id": "cabin15_switch",
+   "kind": "machine",
+   "pos": [
+    3.58,
+    4.17,
+    0.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "switch",
+    "switch": "room"
+   }
+  },
+  {
+   "id": "cabin16_door",
+   "kind": "door",
+   "pos": [
+    2.8,
+    5.67,
+    -0.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "cabin": 16
+   }
+  },
+  {
+   "id": "cabin17_door",
+   "kind": "door",
+   "pos": [
+    6.3,
+    4.33,
+    -0.1
+   ],
+   "yaw": -180.0,
+   "props": {
+    "cabin": 17
+   }
+  },
+  {
+   "id": "cabin18_door",
+   "kind": "door",
+   "pos": [
+    6.3,
+    5.67,
+    -0.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "cabin": 18
+   }
+  },
+  {
+   "id": "cabin19_door",
+   "kind": "door",
+   "pos": [
+    9.8,
+    4.33,
+    -0.1
+   ],
+   "yaw": -180.0,
+   "props": {
+    "cabin": 19
+   }
+  },
+  {
+   "id": "cabin20_door",
+   "kind": "door",
+   "pos": [
+    9.8,
+    5.67,
+    -0.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "cabin": 20
+   }
+  },
+  {
+   "id": "ship_bell",
+   "kind": "machine",
+   "pos": [
+    19.48,
+    4.36,
+    3.188
+   ],
+   "yaw": -90.0,
+   "props": {
+    "what": "bell"
+   }
+  },
+  {
+   "id": "windlass",
+   "kind": "board",
+   "pos": [
+    24.6,
+    5.0,
+    2.741
+   ],
+   "yaw": -90.0,
+   "props": {
+    "topic": "windlass"
+   }
+  },
+  {
+   "id": "bow_rail",
+   "kind": "board",
+   "pos": [
+    29.6,
+    5.0,
+    3.263
+   ],
+   "yaw": -90.0,
+   "props": {
+    "topic": "bow"
+   }
+  },
+  {
+   "id": "cargo_hatch",
+   "kind": "door",
+   "pos": [
+    17.8,
+    3.56,
+    1.8
+   ],
+   "yaw": 0.0,
+   "props": {}
+  },
+  {
+   "id": "capstan",
+   "kind": "board",
+   "pos": [
+    -28.0,
+    5.0,
+    2.15
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "capstan"
+   }
+  },
+  {
+   "id": "baggage_room",
+   "kind": "door",
+   "pos": [
+    1.05,
+    6.42,
+    -0.1
+   ],
+   "yaw": 0.0,
+   "props": {}
+  },
+  {
+   "id": "showers",
+   "kind": "machine",
+   "pos": [
+    -2.495,
+    1.55,
+    0.1
+   ],
+   "yaw": -180.0,
+   "props": {
+    "what": "shower"
+   }
+  },
+  {
+   "id": "showers_tap",
+   "kind": "machine",
+   "pos": [
+    -2.7,
+    3.15,
+    -0.25
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "showers_bench",
+   "kind": "seat",
+   "pos": [
+    1.68,
+    1.8,
+    -0.75
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "hold_door",
+   "kind": "door",
+   "pos": [
+    12.41,
+    5.0,
+    -0.1
+   ],
+   "yaw": -90.0,
+   "props": {}
+  },
+  {
+   "id": "gangway",
+   "kind": "door",
+   "pos": [
+    0.1,
+    0.6,
+    2.4
+   ],
+   "yaw": -180.0,
+   "props": {
+    "to": "P-PIER/launch_gate"
+   }
+  },
+  {
+   "id": "bar_counter",
+   "kind": "counter",
+   "pos": [
+    4.15,
+    6.975,
+    5.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "barman",
+    "service": "bar"
+   }
+  },
+  {
+   "id": "bar_stool_1",
+   "kind": "seat",
+   "pos": [
+    3.05,
+    6.28,
+    4.65
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.75
+   }
+  },
+  {
+   "id": "bar_stool_2",
+   "kind": "seat",
+   "pos": [
+    3.65,
+    6.28,
+    4.65
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.75
+   }
+  },
+  {
+   "id": "bar_stool_3",
+   "kind": "seat",
+   "pos": [
+    4.25,
+    6.28,
+    4.65
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.75
+   }
+  },
+  {
+   "id": "bar_stool_4",
+   "kind": "seat",
+   "pos": [
+    4.85,
+    6.28,
+    4.65
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.75
+   }
+  },
+  {
+   "id": "bar_stool_5",
+   "kind": "seat",
+   "pos": [
+    5.4,
+    6.28,
+    4.65
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.75
+   }
+  },
+  {
+   "id": "card_table",
+   "kind": "play",
+   "pos": [
+    3.9,
+    2.8,
+    4.7
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "poker"
+   }
+  },
+  {
+   "id": "card_chair_1",
+   "kind": "seat",
+   "pos": [
+    3.9,
+    3.75,
+    4.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "card_chair_2",
+   "kind": "seat",
+   "pos": [
+    4.804,
+    3.094,
+    4.35
+   ],
+   "yaw": 288.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "card_chair_3",
+   "kind": "seat",
+   "pos": [
+    4.458,
+    2.031,
+    4.35
+   ],
+   "yaw": 216.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "card_chair_4",
+   "kind": "seat",
+   "pos": [
+    3.342,
+    2.031,
+    4.35
+   ],
+   "yaw": 144.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "card_chair_5",
+   "kind": "seat",
+   "pos": [
+    2.996,
+    3.094,
+    4.35
+   ],
+   "yaw": 72.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "saloon_radiogram",
+   "kind": "machine",
+   "pos": [
+    5.66,
+    1.875,
+    4.72
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "record_player"
+   }
+  },
+  {
+   "id": "dance_floor",
+   "kind": "play",
+   "pos": [
+    9.25,
+    5.0,
+    4.05
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "dance"
+   }
+  },
+  {
+   "id": "saloon_seat_1",
+   "kind": "seat",
+   "pos": [
+    8.96,
+    2.15,
+    4.33
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_2",
+   "kind": "seat",
+   "pos": [
+    8.34,
+    2.15,
+    4.33
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_3",
+   "kind": "seat",
+   "pos": [
+    7.72,
+    2.15,
+    4.33
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_4",
+   "kind": "seat",
+   "pos": [
+    11.13,
+    2.15,
+    4.33
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_5",
+   "kind": "seat",
+   "pos": [
+    10.51,
+    2.15,
+    4.33
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_6",
+   "kind": "seat",
+   "pos": [
+    9.89,
+    2.15,
+    4.33
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_7",
+   "kind": "seat",
+   "pos": [
+    7.772,
+    2.905,
+    4.33
+   ],
+   "yaw": 108.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_8",
+   "kind": "seat",
+   "pos": [
+    8.502,
+    2.905,
+    4.33
+   ],
+   "yaw": 108.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_9",
+   "kind": "seat",
+   "pos": [
+    9.852,
+    2.905,
+    4.33
+   ],
+   "yaw": 108.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_10",
+   "kind": "seat",
+   "pos": [
+    10.582,
+    2.905,
+    4.33
+   ],
+   "yaw": 108.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_11",
+   "kind": "seat",
+   "pos": [
+    11.292,
+    2.905,
+    4.33
+   ],
+   "yaw": 108.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_12",
+   "kind": "seat",
+   "pos": [
+    6.25,
+    3.55,
+    4.34
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "saloon_seat_13",
+   "kind": "seat",
+   "pos": [
+    7.72,
+    7.85,
+    4.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_14",
+   "kind": "seat",
+   "pos": [
+    8.34,
+    7.85,
+    4.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_15",
+   "kind": "seat",
+   "pos": [
+    8.96,
+    7.85,
+    4.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_16",
+   "kind": "seat",
+   "pos": [
+    9.89,
+    7.85,
+    4.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_17",
+   "kind": "seat",
+   "pos": [
+    10.51,
+    7.85,
+    4.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_18",
+   "kind": "seat",
+   "pos": [
+    11.13,
+    7.85,
+    4.33
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_19",
+   "kind": "seat",
+   "pos": [
+    7.772,
+    7.095,
+    4.33
+   ],
+   "yaw": 72.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_20",
+   "kind": "seat",
+   "pos": [
+    8.502,
+    7.095,
+    4.33
+   ],
+   "yaw": 72.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_21",
+   "kind": "seat",
+   "pos": [
+    9.852,
+    7.095,
+    4.33
+   ],
+   "yaw": 72.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_22",
+   "kind": "seat",
+   "pos": [
+    10.582,
+    7.095,
+    4.33
+   ],
+   "yaw": 72.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_23",
+   "kind": "seat",
+   "pos": [
+    11.292,
+    7.095,
+    4.33
+   ],
+   "yaw": 72.0,
+   "props": {
+    "height": 0.43
+   }
+  },
+  {
+   "id": "saloon_seat_24",
+   "kind": "seat",
+   "pos": [
+    6.25,
+    6.45,
+    4.34
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "bandstand",
+   "kind": "screen",
+   "pos": [
+    11.72,
+    5.0,
+    4.9
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "band"
+   }
+  },
+  {
+   "id": "saloon_piano",
+   "kind": "play",
+   "pos": [
+    12.511,
+    7.361,
+    4.725
+   ],
+   "yaw": 315.0,
+   "props": {
+    "what": "piano"
+   }
+  },
+  {
+   "id": "saloon_clock",
+   "kind": "board",
+   "pos": [
+    2.1,
+    3.45,
+    5.9
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "saloon_barometer",
+   "kind": "board",
+   "pos": [
+    2.087,
+    2.75,
+    5.65
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "barometer"
+   }
+  },
+  {
+   "id": "library_case_1",
+   "kind": "shelf",
+   "pos": [
+    -2.65,
+    6.715,
+    4.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "sea"
+   }
+  },
+  {
+   "id": "library_case_2",
+   "kind": "shelf",
+   "pos": [
+    -1.35,
+    6.715,
+    4.9
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "classics"
+   }
+  },
+  {
+   "id": "library_chair_1",
+   "kind": "seat",
+   "pos": [
+    -2.75,
+    7.88,
+    4.34
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "library_chair_2",
+   "kind": "seat",
+   "pos": [
+    -1.55,
+    7.88,
+    4.34
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.44
+   }
+  },
+  {
+   "id": "chess_table",
+   "kind": "play",
+   "pos": [
+    -0.28,
+    7.85,
+    4.682
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "chess"
+   }
+  },
+  {
+   "id": "chess_seat_1",
+   "kind": "seat",
+   "pos": [
+    -0.85,
+    7.85,
+    4.35
+   ],
+   "yaw": 90.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "chess_seat_2",
+   "kind": "seat",
+   "pos": [
+    0.29,
+    7.85,
+    4.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "library_globe",
+   "kind": "board",
+   "pos": [
+    -0.334,
+    6.82,
+    4.394
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "globe"
+   }
+  },
+  {
+   "id": "programme_board",
+   "kind": "board",
+   "pos": [
+    -2.7,
+    3.43,
+    5.45
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "programme"
+   }
+  },
+  {
+   "id": "honour_board",
+   "kind": "board",
+   "pos": [
+    -1.1,
+    3.427,
+    5.45
+   ],
+   "yaw": 0.0,
+   "props": {}
+  },
+  {
+   "id": "ship_model",
+   "kind": "board",
+   "pos": [
+    1.698,
+    3.25,
+    4.917
+   ],
+   "yaw": 270.0,
+   "props": {}
+  },
+  {
+   "id": "lux11_bed_a",
+   "kind": "bed",
+   "pos": [
+    -16.26,
+    2.71,
+    4.37
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.47
+   }
+  },
+  {
+   "id": "lux11_bed_b",
+   "kind": "bed",
+   "pos": [
+    -17.36,
+    2.71,
+    4.37
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.47
+   }
+  },
+  {
+   "id": "lux11_desk",
+   "kind": "seat",
+   "pos": [
+    -18.13,
+    2.28,
+    4.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lux11_washbasin",
+   "kind": "machine",
+   "pos": [
+    -18.73,
+    3.6,
+    4.82
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "lux11_window",
+   "kind": "machine",
+   "pos": [
+    -18.0,
+    1.71,
+    5.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "window"
+   }
+  },
+  {
+   "id": "cabin11_door",
+   "kind": "door",
+   "pos": [
+    -18.1,
+    4.33,
+    5.0
+   ],
+   "yaw": 180.0,
+   "props": {
+    "caption": "11"
+   }
+  },
+  {
+   "id": "cabin12_door",
+   "kind": "door",
+   "pos": [
+    -18.1,
+    5.67,
+    5.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "caption": "12"
+   }
+  },
+  {
+   "id": "cabin13_door",
+   "kind": "door",
+   "pos": [
+    -15.0,
+    4.33,
+    5.0
+   ],
+   "yaw": 180.0,
+   "props": {
+    "caption": "13"
+   }
+  },
+  {
+   "id": "cabin14_door",
+   "kind": "door",
+   "pos": [
+    -15.0,
+    5.67,
+    5.0
+   ],
+   "yaw": 0.0,
+   "props": {
+    "caption": "14"
+   }
+  },
+  {
+   "id": "prom_bench_1",
+   "kind": "seat",
+   "pos": [
+    -16.4,
+    1.17,
+    4.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "prom_bench_2",
+   "kind": "seat",
+   "pos": [
+    -7.4,
+    1.17,
+    4.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "prom_bench_3",
+   "kind": "seat",
+   "pos": [
+    -1.4,
+    1.17,
+    4.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "life_ring",
+   "kind": "board",
+   "pos": [
+    -3.602,
+    1.433,
+    5.359
+   ],
+   "yaw": 0.0,
+   "props": {}
+  },
+  {
+   "id": "prom_bench_4",
+   "kind": "seat",
+   "pos": [
+    -16.4,
+    8.83,
+    4.35
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "prom_bench_5",
+   "kind": "seat",
+   "pos": [
+    -7.4,
+    8.83,
+    4.35
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "prom_bench_6",
+   "kind": "seat",
+   "pos": [
+    -1.4,
+    8.83,
+    4.35
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "smoking_bench_1",
+   "kind": "seat",
+   "pos": [
+    -19.41,
+    2.75,
+    4.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "smoking_bench_2",
+   "kind": "seat",
+   "pos": [
+    -19.41,
+    7.25,
+    4.35
+   ],
+   "yaw": 270.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "smoking_bench_3",
+   "kind": "seat",
+   "pos": [
+    -22.4,
+    7.69,
+    4.35
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "smoking_bench_4",
+   "kind": "seat",
+   "pos": [
+    -21.4,
+    0.765,
+    4.35
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "ash_urn_1",
+   "kind": "machine",
+   "pos": [
+    -19.28,
+    3.9,
+    4.661
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "ash_urn"
+   }
+  },
+  {
+   "id": "ash_urn_2",
+   "kind": "machine",
+   "pos": [
+    -19.28,
+    6.1,
+    4.661
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "ash_urn"
+   }
+  },
+  {
+   "id": "ring_toss",
+   "kind": "play",
+   "pos": [
+    -27.5,
+    6.75,
+    4.75
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "ring_toss"
+   }
+  },
+  {
+   "id": "stern_rail",
+   "kind": "machine",
+   "pos": [
+    -28.68,
+    4.6,
+    4.9
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "gull_feed"
+   }
+  },
+  {
+   "id": "shuffleboard",
+   "kind": "play",
+   "pos": [
+    -20.0,
+    5.0,
+    6.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "shuffleboard"
+   }
+  },
+  {
+   "id": "deck_chair_1",
+   "kind": "bed",
+   "pos": [
+    -22.7,
+    2.35,
+    6.87
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.35
+   }
+  },
+  {
+   "id": "deck_chair_2",
+   "kind": "bed",
+   "pos": [
+    -20.9,
+    2.35,
+    6.87
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.35
+   }
+  },
+  {
+   "id": "deck_chair_3",
+   "kind": "bed",
+   "pos": [
+    -19.1,
+    2.35,
+    6.87
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.35
+   }
+  },
+  {
+   "id": "deck_chair_4",
+   "kind": "bed",
+   "pos": [
+    -17.3,
+    2.35,
+    6.87
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.35
+   }
+  },
+  {
+   "id": "deck_chair_5",
+   "kind": "bed",
+   "pos": [
+    -19.4,
+    7.65,
+    6.87
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.35
+   }
+  },
+  {
+   "id": "deck_chair_6",
+   "kind": "bed",
+   "pos": [
+    -17.8,
+    7.65,
+    6.87
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.35
+   }
+  },
+  {
+   "id": "deck_chair_7",
+   "kind": "bed",
+   "pos": [
+    -16.2,
+    7.65,
+    6.87
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.35
+   }
+  },
+  {
+   "id": "deck_chair_8",
+   "kind": "bed",
+   "pos": [
+    -14.6,
+    7.65,
+    6.87
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.35
+   }
+  },
+  {
+   "id": "funnel_bench_1",
+   "kind": "seat",
+   "pos": [
+    -7.5,
+    3.29,
+    6.95
+   ],
+   "yaw": 0.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "funnel_bench_2",
+   "kind": "seat",
+   "pos": [
+    -7.5,
+    6.71,
+    6.95
+   ],
+   "yaw": 180.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "lifeboat_1",
+   "kind": "board",
+   "pos": [
+    -6.25,
+    1.25,
+    7.8
+   ],
+   "yaw": 0.0,
+   "props": {}
+  },
+  {
+   "id": "muster_station",
+   "kind": "board",
+   "pos": [
+    -1.685,
+    1.72,
+    7.89
+   ],
+   "yaw": 180.0,
+   "props": {}
+  },
+  {
+   "id": "radio_clock",
+   "kind": "board",
+   "pos": [
+    4.8,
+    7.811,
+    8.58
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "radio_desk",
+   "kind": "counter",
+   "pos": [
+    4.05,
+    5.71,
+    7.62
+   ],
+   "yaw": 0.0,
+   "props": {
+    "role": "radio",
+    "service": "telegram"
+   }
+  },
+  {
+   "id": "captain_door",
+   "kind": "door",
+   "pos": [
+    7.9,
+    5.0,
+    7.6
+   ],
+   "yaw": 270.0,
+   "props": {
+    "caption": "captain"
+   }
+  },
+  {
+   "id": "wheel",
+   "kind": "machine",
+   "pos": [
+    10.5,
+    5.0,
+    10.1
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "helm"
+   }
+  },
+  {
+   "id": "telegraph",
+   "kind": "machine",
+   "pos": [
+    10.6,
+    3.9,
+    10.2
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "telegraph"
+   }
+  },
+  {
+   "id": "binnacle",
+   "kind": "board",
+   "pos": [
+    11.25,
+    5.0,
+    10.25
+   ],
+   "yaw": 270.0,
+   "props": {}
+  },
+  {
+   "id": "radar",
+   "kind": "board",
+   "pos": [
+    10.175,
+    6.65,
+    10.2
+   ],
+   "yaw": 270.0,
+   "props": {}
+  },
+  {
+   "id": "voice_pipes",
+   "kind": "machine",
+   "pos": [
+    11.192,
+    4.25,
+    10.55
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "voice_pipe"
+   }
+  },
+  {
+   "id": "flag_locker",
+   "kind": "board",
+   "pos": [
+    7.753,
+    4.8,
+    10.51
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "flags"
+   }
+  },
+  {
+   "id": "wheelhouse_clock",
+   "kind": "board",
+   "pos": [
+    7.67,
+    2.58,
+    11.05
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "wheelhouse_barometer",
+   "kind": "board",
+   "pos": [
+    7.657,
+    2.58,
+    10.62
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "barometer"
+   }
+  },
+  {
+   "id": "whistle_pull",
+   "kind": "machine",
+   "pos": [
+    10.2,
+    5.75,
+    10.92
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "ship_whistle"
+   }
+  },
+  {
+   "id": "chart_table",
+   "kind": "board",
+   "pos": [
+    5.64,
+    6.277,
+    10.08
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "chart"
+   }
+  },
+  {
+   "id": "chronometer",
+   "kind": "board",
+   "pos": [
+    5.5,
+    7.17,
+    10.18
+   ],
+   "yaw": 90.0,
+   "props": {
+    "what": "clock"
+   }
+  },
+  {
+   "id": "bridge_wing_stbd",
+   "kind": "board",
+   "pos": [
+    9.25,
+    0.14,
+    10.22
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "sea_view"
+   }
+  },
+  {
+   "id": "bridge_wing_port",
+   "kind": "board",
+   "pos": [
+    9.25,
+    9.86,
+    10.22
+   ],
+   "yaw": 180.0,
+   "props": {
+    "topic": "sea_view"
+   }
+  }
+ ],
+ "flats": [],
+ "windows": [
+  {
+   "slot": 0,
+   "id": "pub/w1",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    3.0,
+    -0.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 1,
+   "id": "pub/w2",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    3.0,
+    10.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 2,
+   "id": "pub/w3",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    4.5,
+    -0.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 3,
+   "id": "pub/w4",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    4.5,
+    10.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 4,
+   "id": "pub/w5",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    6.5,
+    -0.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 5,
+   "id": "pub/w6",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    6.5,
+    10.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 6,
+   "id": "pub/w7",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.0,
+    -0.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 7,
+   "id": "pub/w8",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.0,
+    10.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 8,
+   "id": "pub/w9",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.0,
+    0.054,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 9,
+   "id": "pub/w10",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.0,
+    9.946,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 10,
+   "id": "pub/w11",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.5,
+    0.214,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 11,
+   "id": "pub/w12",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.5,
+    9.786,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 12,
+   "id": "pub/w13",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.5,
+    -0.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 13,
+   "id": "pub/w14",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.5,
+    10.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 14,
+   "id": "pub/w15",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -0.5,
+    -0.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 15,
+   "id": "pub/w16",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -0.5,
+    10.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 16,
+   "id": "pub/w17",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -21.0,
+    0.137,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 17,
+   "id": "pub/w18",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -21.0,
+    9.863,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 18,
+   "id": "pub/w19",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -18.5,
+    0.012,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 19,
+   "id": "pub/w20",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -18.5,
+    9.988,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 20,
+   "id": "pub/w21",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -16.0,
+    -0.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 21,
+   "id": "pub/w22",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -16.0,
+    10.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 22,
+   "id": "pub/w23",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -10.5,
+    -0.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 23,
+   "id": "pub/w24",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -10.5,
+    10.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 24,
+   "id": "pub/w25",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -6.5,
+    -0.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 25,
+   "id": "pub/w26",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -6.5,
+    10.02,
+    0.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.36,
+    0.36
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 26,
+   "id": "pub/w27",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -21.8,
+    0.214,
+    2.65
+   ],
+   "normal": [
+    -0.071,
+    -0.997,
+    0.0
+   ],
+   "size": [
+    1.103,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 27,
+   "id": "pub/w28",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -20.2,
+    0.11,
+    2.65
+   ],
+   "normal": [
+    -0.058,
+    -0.998,
+    0.0
+   ],
+   "size": [
+    1.102,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 28,
+   "id": "pub/w29",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -18.6,
+    0.036,
+    2.65
+   ],
+   "normal": [
+    -0.035,
+    -0.999,
+    0.0
+   ],
+   "size": [
+    1.101,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 29,
+   "id": "pub/w30",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -15.4,
+    0.0,
+    2.65
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 30,
+   "id": "pub/w31",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.8,
+    0.0,
+    2.65
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 31,
+   "id": "pub/w32",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    1.7,
+    0.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 32,
+   "id": "pub/w33",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    3.1,
+    0.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 33,
+   "id": "pub/w34",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    4.5,
+    0.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 34,
+   "id": "pub/w35",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.9,
+    0.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 35,
+   "id": "pub/w36",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    7.3,
+    0.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 36,
+   "id": "pub/w37",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.7,
+    0.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 37,
+   "id": "pub/w38",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -11.5,
+    -0.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 38,
+   "id": "pub/w39",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -8.5,
+    -0.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 39,
+   "id": "pub/w40",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.5,
+    -0.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 40,
+   "id": "pub/w41",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -3.0,
+    -0.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 41,
+   "id": "pub/w42",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -1.7,
+    -0.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 42,
+   "id": "pub/w43",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.1,
+    0.083,
+    2.675
+   ],
+   "normal": [
+    0.089,
+    -0.996,
+    0.0
+   ],
+   "size": [
+    0.602,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 43,
+   "id": "pub/w44",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.5,
+    0.234,
+    2.675
+   ],
+   "normal": [
+    0.126,
+    -0.992,
+    0.0
+   ],
+   "size": [
+    0.605,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 44,
+   "id": "pub/w45",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    12.9,
+    0.412,
+    2.675
+   ],
+   "normal": [
+    0.125,
+    -0.992,
+    0.0
+   ],
+   "size": [
+    0.605,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 45,
+   "id": "pub/w46",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    14.3,
+    0.6,
+    2.675
+   ],
+   "normal": [
+    0.141,
+    -0.99,
+    0.0
+   ],
+   "size": [
+    0.606,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 46,
+   "id": "pub/w47",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -21.8,
+    9.786,
+    2.65
+   ],
+   "normal": [
+    -0.071,
+    0.997,
+    0.0
+   ],
+   "size": [
+    1.103,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 47,
+   "id": "pub/w48",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -20.2,
+    9.89,
+    2.65
+   ],
+   "normal": [
+    -0.058,
+    0.998,
+    0.0
+   ],
+   "size": [
+    1.102,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 48,
+   "id": "pub/w49",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -18.6,
+    9.964,
+    2.65
+   ],
+   "normal": [
+    -0.035,
+    0.999,
+    0.0
+   ],
+   "size": [
+    1.101,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 49,
+   "id": "pub/w50",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -15.4,
+    10.0,
+    2.65
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 50,
+   "id": "pub/w51",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.8,
+    10.0,
+    2.65
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 51,
+   "id": "pub/w52",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    1.7,
+    10.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 52,
+   "id": "pub/w53",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    3.1,
+    10.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 53,
+   "id": "pub/w54",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    4.5,
+    10.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 54,
+   "id": "pub/w55",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.9,
+    10.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 55,
+   "id": "pub/w56",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    7.3,
+    10.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 56,
+   "id": "pub/w57",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.7,
+    10.0,
+    2.675
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.6,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 57,
+   "id": "pub/w58",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -10.0,
+    10.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 58,
+   "id": "pub/w59",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -8.5,
+    10.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 59,
+   "id": "pub/w60",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -7.0,
+    10.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 60,
+   "id": "pub/w61",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.5,
+    10.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 61,
+   "id": "pub/w62",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -12.0,
+    10.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 62,
+   "id": "pub/w63",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -3.0,
+    10.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 63,
+   "id": "pub/w64",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -1.7,
+    10.02,
+    2.85
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 64,
+   "id": "pub/w65",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.1,
+    9.917,
+    2.675
+   ],
+   "normal": [
+    0.089,
+    0.996,
+    -0.0
+   ],
+   "size": [
+    0.602,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 65,
+   "id": "pub/w66",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.5,
+    9.766,
+    2.675
+   ],
+   "normal": [
+    0.126,
+    0.992,
+    -0.0
+   ],
+   "size": [
+    0.605,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 66,
+   "id": "pub/w67",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    12.9,
+    9.588,
+    2.675
+   ],
+   "normal": [
+    0.125,
+    0.992,
+    -0.0
+   ],
+   "size": [
+    0.605,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 67,
+   "id": "pub/w68",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    14.3,
+    9.4,
+    2.675
+   ],
+   "normal": [
+    0.141,
+    0.99,
+    -0.0
+   ],
+   "size": [
+    0.606,
+    0.75
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 68,
+   "id": "pub/w69",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -23.0,
+    8.3,
+    2.65
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 69,
+   "id": "pub/w70",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -23.0,
+    6.9,
+    2.65
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 70,
+   "id": "pub/w71",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -23.0,
+    3.1,
+    2.65
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 71,
+   "id": "pub/w72",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -23.0,
+    1.7,
+    2.65
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 72,
+   "id": "pub/w73",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    15.0,
+    7.6,
+    2.8
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 73,
+   "id": "pub/w74",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    15.0,
+    2.4,
+    2.8
+   ],
+   "normal": [
+    1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.4,
+    0.4
+   ],
+   "shape": "round"
+  },
+  {
+   "slot": 74,
+   "id": "pub/w75",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -18.0,
+    1.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.9,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 75,
+   "id": "pub/w76",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -16.6,
+    1.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.9,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 76,
+   "id": "pub/w77",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -14.8,
+    1.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.9,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 77,
+   "id": "pub/w78",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.4,
+    1.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.9,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 78,
+   "id": "pub/w79",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -9.5,
+    1.5,
+    5.275
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 79,
+   "id": "pub/w80",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -7.5,
+    1.5,
+    5.275
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 80,
+   "id": "pub/w81",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -5.5,
+    1.5,
+    5.275
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 81,
+   "id": "pub/w82",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.7,
+    1.5,
+    5.275
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 82,
+   "id": "pub/w83",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -1.1,
+    1.5,
+    5.275
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.0,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 83,
+   "id": "pub/w84",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    3.0,
+    1.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 84,
+   "id": "pub/w85",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    4.5,
+    1.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 85,
+   "id": "pub/w86",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.2,
+    1.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 86,
+   "id": "pub/w87",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    9.6,
+    1.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 87,
+   "id": "pub/w88",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.9,
+    1.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 88,
+   "id": "pub/w89",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -18.0,
+    8.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.9,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 89,
+   "id": "pub/w90",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -16.6,
+    8.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.9,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 90,
+   "id": "pub/w91",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -14.8,
+    8.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.9,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 91,
+   "id": "pub/w92",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -13.4,
+    8.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.9,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 92,
+   "id": "pub/w93",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -9.0,
+    8.5,
+    5.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.6,
+    0.6
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 93,
+   "id": "pub/w94",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -6.0,
+    8.5,
+    5.4
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.6,
+    0.6
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 94,
+   "id": "pub/w95",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.7,
+    8.5,
+    5.275
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.0,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 95,
+   "id": "pub/w96",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -1.1,
+    8.5,
+    5.275
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.0,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 96,
+   "id": "pub/w97",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.2,
+    8.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 97,
+   "id": "pub/w98",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    9.6,
+    8.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 98,
+   "id": "pub/w99",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.9,
+    8.5,
+    5.25
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.1,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 99,
+   "id": "pub/w100",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.886,
+    8.414,
+    5.25
+   ],
+   "normal": [
+    0.216,
+    0.976,
+    -0.0
+   ],
+   "size": [
+    0.8,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 100,
+   "id": "pub/w101",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    12.621,
+    8.08,
+    5.25
+   ],
+   "normal": [
+    0.581,
+    0.814,
+    -0.0
+   ],
+   "size": [
+    0.8,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 101,
+   "id": "pub/w102",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.246,
+    7.444,
+    5.25
+   ],
+   "normal": [
+    0.814,
+    0.581,
+    -0.0
+   ],
+   "size": [
+    0.8,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 102,
+   "id": "pub/w103",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.7,
+    6.569,
+    5.25
+   ],
+   "normal": [
+    0.94,
+    0.342,
+    -0.0
+   ],
+   "size": [
+    0.8,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 103,
+   "id": "pub/w104",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.939,
+    5.541,
+    5.25
+   ],
+   "normal": [
+    0.994,
+    0.112,
+    -0.0
+   ],
+   "size": [
+    0.8,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 104,
+   "id": "pub/w105",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.939,
+    4.459,
+    5.25
+   ],
+   "normal": [
+    0.994,
+    -0.112,
+    0.0
+   ],
+   "size": [
+    0.8,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 105,
+   "id": "pub/w106",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.7,
+    3.431,
+    5.25
+   ],
+   "normal": [
+    0.94,
+    -0.342,
+    0.0
+   ],
+   "size": [
+    0.8,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 106,
+   "id": "pub/w107",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    13.246,
+    2.556,
+    5.25
+   ],
+   "normal": [
+    0.814,
+    -0.581,
+    0.0
+   ],
+   "size": [
+    0.8,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 107,
+   "id": "pub/w108",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    12.621,
+    1.92,
+    5.25
+   ],
+   "normal": [
+    0.581,
+    -0.814,
+    0.0
+   ],
+   "size": [
+    0.8,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 108,
+   "id": "pub/w109",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.886,
+    1.586,
+    5.25
+   ],
+   "normal": [
+    0.216,
+    -0.976,
+    0.0
+   ],
+   "size": [
+    0.8,
+    1.0
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 109,
+   "id": "pub/w110",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -19.0,
+    7.1,
+    5.25
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.9,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 110,
+   "id": "pub/w111",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -19.0,
+    2.9,
+    5.25
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    0.9,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 111,
+   "id": "pub/w112",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.1,
+    3.3,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.4,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 112,
+   "id": "pub/w113",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -2.1,
+    6.7,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.4,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 113,
+   "id": "pub/w114",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    -4.0,
+    5.0,
+    7.95
+   ],
+   "normal": [
+    -1.0,
+    0.0,
+    0.0
+   ],
+   "size": [
+    2.0,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 114,
+   "id": "pub/w115",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    4.2,
+    2.0,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 115,
+   "id": "pub/w116",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.4,
+    2.0,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 116,
+   "id": "pub/w117",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    7.4,
+    2.0,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 117,
+   "id": "pub/w118",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.8,
+    2.0,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 118,
+   "id": "pub/w119",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    9.9,
+    2.0,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 119,
+   "id": "pub/w120",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    4.2,
+    8.0,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 120,
+   "id": "pub/w121",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    5.4,
+    8.0,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 121,
+   "id": "pub/w122",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    7.4,
+    8.0,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 122,
+   "id": "pub/w123",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.8,
+    8.0,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 123,
+   "id": "pub/w124",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    9.9,
+    8.0,
+    7.9
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 124,
+   "id": "pub/w125",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.706,
+    7.886,
+    7.9
+   ],
+   "normal": [
+    0.349,
+    0.937,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 125,
+   "id": "pub/w126",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.272,
+    7.446,
+    7.9
+   ],
+   "normal": [
+    0.782,
+    0.624,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 126,
+   "id": "pub/w127",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.705,
+    6.635,
+    7.9
+   ],
+   "normal": [
+    0.942,
+    0.336,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 127,
+   "id": "pub/w128",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.939,
+    5.574,
+    7.9
+   ],
+   "normal": [
+    0.994,
+    0.105,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 128,
+   "id": "pub/w129",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.939,
+    4.426,
+    7.9
+   ],
+   "normal": [
+    0.994,
+    -0.105,
+    0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 129,
+   "id": "pub/w130",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.705,
+    3.365,
+    7.9
+   ],
+   "normal": [
+    0.942,
+    -0.336,
+    0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 130,
+   "id": "pub/w131",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.272,
+    2.554,
+    7.9
+   ],
+   "normal": [
+    0.782,
+    -0.624,
+    0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 131,
+   "id": "pub/w132",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.706,
+    2.114,
+    7.9
+   ],
+   "normal": [
+    0.349,
+    -0.937,
+    0.0
+   ],
+   "size": [
+    0.7,
+    0.8
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 132,
+   "id": "pub/w133",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.0,
+    2.0,
+    10.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.7,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 133,
+   "id": "pub/w134",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.1,
+    2.0,
+    10.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    0.5,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 134,
+   "id": "pub/w135",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    8.0,
+    8.0,
+    10.55
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.7,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 135,
+   "id": "pub/w136",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.1,
+    8.0,
+    10.55
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    0.5,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 136,
+   "id": "pub/w137",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.706,
+    7.886,
+    10.575
+   ],
+   "normal": [
+    0.349,
+    0.937,
+    -0.0
+   ],
+   "size": [
+    0.453,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 137,
+   "id": "pub/w138",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.272,
+    7.446,
+    10.575
+   ],
+   "normal": [
+    0.782,
+    0.624,
+    -0.0
+   ],
+   "size": [
+    0.632,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 138,
+   "id": "pub/w139",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.705,
+    6.635,
+    10.575
+   ],
+   "normal": [
+    0.942,
+    0.336,
+    -0.0
+   ],
+   "size": [
+    0.833,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 139,
+   "id": "pub/w140",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.939,
+    5.574,
+    10.575
+   ],
+   "normal": [
+    0.994,
+    0.105,
+    -0.0
+   ],
+   "size": [
+    0.954,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 140,
+   "id": "pub/w141",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.939,
+    4.426,
+    10.575
+   ],
+   "normal": [
+    0.994,
+    -0.105,
+    0.0
+   ],
+   "size": [
+    0.954,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 141,
+   "id": "pub/w142",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.705,
+    3.365,
+    10.575
+   ],
+   "normal": [
+    0.942,
+    -0.336,
+    0.0
+   ],
+   "size": [
+    0.833,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 142,
+   "id": "pub/w143",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    11.272,
+    2.554,
+    10.575
+   ],
+   "normal": [
+    0.782,
+    -0.624,
+    0.0
+   ],
+   "size": [
+    0.632,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 143,
+   "id": "pub/w144",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    10.706,
+    2.114,
+    10.575
+   ],
+   "normal": [
+    0.349,
+    -0.937,
+    0.0
+   ],
+   "size": [
+    0.453,
+    0.95
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 144,
+   "id": "pub/w145",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    6.25,
+    8.0,
+    10.55
+   ],
+   "normal": [
+    0.0,
+    1.0,
+    -0.0
+   ],
+   "size": [
+    1.1,
+    0.9
+   ],
+   "shape": "rect"
+  },
+  {
+   "slot": 145,
+   "id": "pub/w146",
+   "flat": null,
+   "kind": "public",
+   "centre": [
+    6.25,
+    5.0,
+    10.55
+   ],
+   "normal": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "size": [
+    1.1,
+    0.9
+   ],
+   "shape": "rect"
+  }
+ ],
+ "light_tex": 64,
+ "notes": [
+  "fittings (ship frame): bow (60.6, 0.0, 3.71); capstan (3.0, 0.0, 3.3); cargo_hatch (48.8, 0.0, 3.45); foremast (50.6, 0.0, 3.04); funnel (23.5, 0.0, 8.0); funnel_top (23.19, 0.0, 13.29); gangway (31.1, 4.4, 2.8); lifeboat_1 (24.75, 4.25, 9.2); lifeboat_2 (24.75, -4.25, 9.2); lifeboat_3 (14.75, 4.25, 9.2); lifeboat_4 (14.75, -4.25, 9.2); mainmast (17.5, 0.0, 8.0); radar_scanner (40.2, 0.0, 15.1); searchlight (42.2, 0.0, 13.5); ship_bell (50.6, 0.64, 4.69); signal_mast (37.5, 0.0, 12.9); stern_rail (2.3, 0.0, 5.4); windlass (55.6, 0.0, 4.04)",
+  "life rings (ship frame): (14.00, 4.83, 6.02); (20.00, 4.83, 6.02); (26.00, 4.83, 6.02); (34.50, 4.83, 6.02); (40.00, 4.83, 6.02); (9.00, 4.60, 8.62); (31.50, 4.83, 8.62); (14.00, -4.83, 6.02); (20.00, -4.83, 6.02); (26.00, -4.83, 6.02); (34.50, -4.83, 6.02); (40.00, -4.83, 6.02); (9.00, -4.60, 8.62); (31.50, -4.83, 8.62)",
+  "decks D and C furnished: 33181 triangles of furniture (dining_saloon 10706, servery_galley 4126, stbd_corridor 428, engine_room 4102, vestibule 2048, corridor_c 466, cabins 9013, <lambda> 0, lower_deck 1704, lamp_mounts 588)",
+  "frame: blender/city/buildings/_shipframe.py; ship (x, y, z) -> building (x - 31, 5 - y, z - 1.5); waterline at building z -1.5",
+  "open doors: D lobby D - cabin corridor @(33.00, 0.00) w1.10; D showers @(32.05, 1.50) w1.10; D cabin 15 @(33.80, 0.75) w1.10; C gangway port starboard (gate 1.1 m, not passable) @(31.10, 5.00) w1.40; C gangway port port (gate 1.1 m, not passable) @(31.10, -5.00) w1.40; C dining saloon - aft deck (double) @(8.00, 0.00) w1.60; C cabin corridor - foredeck (weather door) @(46.00, 0.00) w1.20; C dining saloon - starboard corridor @(18.00, 2.25) w1.30; C serving hatch (hole 0.95..2.0 over the floor, not passable) @(18.00, 0.00) w2.80; C engine_door: corridor - engine gallery @(23.55, 1.50) w1.10; C starboard corridor - vestibule @(27.00, 2.25) w1.30; C galley half-door (hole above 1.0 m, not passable) @(27.00, -3.05) w1.10; C vestibule - cabin corridor (double) @(32.00, 0.00) w1.60; C cabin 7 @(35.60, 0.80) w1.10; C cabin 1 @(44.00, 0.80) w1.10; C cabin 2 @(44.00, -0.80) w1.10; B cross passage - promenade (starboard) @(19.25, 3.50) w1.10; B lobby B - promenade (starboard) @(32.20, 3.50) w1.20; B music saloon - promenade (starboard) @(37.60, 3.50) w1.20; B cross passage - promenade (port) @(19.25, -3.50) w1.10; B lobby B - promenade (port) @(32.20, -3.50) w1.20; B music saloon - promenade (port) @(37.60, -3.50) w1.20; B aft corridor - smoking deck @(12.00, 0.00) w1.20; B lux cabin 11 @(12.90, 0.75) w1.10; B lobby B - music saloon (double) @(33.00, 0.00) w1.60; A stair hood - boat deck (starboard) @(31.65, 1.70) w1.10; A stair hood - boat deck (port) @(31.65, -1.70) w1.10; A officers' corridor - boat deck (aft door) @(34.00, 0.00) w1.20; A radio room @(35.05, -0.75) w1.10; BR wheelhouse - bridge wing (starboard) @(40.10, 3.00) w1.20; BR wheelhouse - bridge wing (port) @(40.10, -3.00) w1.20; BR wheelhouse - chart room (arch 2.0) @(38.50, -1.50) w2.00; BR wheelhouse - open deck aft @(38.50, 1.45) w1.10",
+  "closed doors (leaf on a solid wall): D hold_door @(43.41, 0.00); D baggage_room @(32.05, -1.42); D cabin17_door @(37.30, 0.67); D cabin19_door @(40.80, 0.67); D cabin16_door @(33.80, -0.67); D cabin18_door @(37.30, -0.67); D cabin20_door @(40.80, -0.67); C servery service door @(17.92, -3.05); C galley door @(19.92, -2.85); C WC men @(19.55, 2.92); C WC women @(22.55, 2.92); C linen @(25.55, 2.92); C cabin9_door @(32.80, 0.72); C cabin5_door @(38.40, 0.72); C cabin3_door @(41.20, 0.72); C cabin10_door @(32.80, -0.72); C cabin8_door @(35.60, -0.72); C cabin6_door @(38.40, -0.72); C cabin4_door @(41.20, -0.72); B cabin13_door @(16.00, 0.67); B cabin12_door @(12.90, -0.67); B cabin14_door @(16.00, -0.67); B pantry @(19.92, -2.45); B bar store @(27.08, -2.45); A chief mate @(37.95, -0.67); A captain's bedroom @(35.55, 0.67); A captain_door @(38.92, 0.00)"
+ ],
+ "dress": [],
+ "tris": {
+  "shell": 23195,
+  "detail": 77409,
+  "windows": 584,
+  "dress": 0
+ }
+}
