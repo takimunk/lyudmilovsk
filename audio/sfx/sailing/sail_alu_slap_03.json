@@ -1,0 +1,24 @@
+{
+ "name": "sail_alu_slap_03",
+ "asset": "/Game/Audio/Sailing/S_sail_alu_slap_03",
+ "pool": "sail_alu_slap",
+ "file": "audio/sfx/sailing/sail_alu_slap_03.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 516952,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.2,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -21.71,
+ "sha256": "c2b60b7bbac47ed9f6f70a9d41b3bd6f104b64ea7fb12a9e99e42cdfc5f8b466",
+ "trigger": "one-shot: the launch's aluminium hull banging on a wave at speed (rate ~ speed x chop)",
+ "attenuation_radius_m": 80,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.2
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

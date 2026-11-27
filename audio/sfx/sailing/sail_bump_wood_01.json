@@ -1,0 +1,24 @@
+{
+ "name": "sail_bump_wood_01",
+ "asset": "/Game/Audio/Sailing/S_sail_bump_wood_01",
+ "pool": "sail_bump_wood",
+ "file": "audio/sfx/sailing/sail_bump_wood_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 815320,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.7,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -25.25,
+ "sha256": "3c8c921dc44d45cb90fea17a08ee9404dd3433d6e9c1021f1d192a9167e81e7d",
+ "trigger": "one-shot: hull bumps the pontoon / the slip's boards (plywood thud)",
+ "attenuation_radius_m": 20,
+ "priority": "normal",
+ "params": {
+  "seconds": 0.7
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

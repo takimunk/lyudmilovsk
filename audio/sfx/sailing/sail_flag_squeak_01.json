@@ -1,0 +1,24 @@
+{
+ "name": "sail_flag_squeak_01",
+ "asset": "/Game/Audio/Sailing/S_sail_flag_squeak_01",
+ "pool": "sail_flag_squeak",
+ "file": "audio/sfx/sailing/sail_flag_squeak_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 318050,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.2,
+ "peak_dbfs": -7.0,
+ "rms_dbfs": -22.49,
+ "sha256": "c904d40b8e99ea957172e41d800f026a7ff391029c03928e6417c2e47ad9252c",
+ "trigger": "one-shot: a signal flag hoisted on the signal mast (the pulley squeaking hand over hand)",
+ "attenuation_radius_m": 25,
+ "priority": "normal",
+ "params": {
+  "seconds": 2.2
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

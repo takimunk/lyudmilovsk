@@ -1,0 +1,24 @@
+{
+ "name": "sail_dagger_down_02",
+ "asset": "/Game/Audio/Sailing/S_sail_dagger_down_02",
+ "pool": "sail_dagger_down",
+ "file": "audio/sfx/sailing/sail_dagger_down_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 744141,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.0,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -23.71,
+ "sha256": "ecbb45deece8dd00674280f63291d5c28a844236c2b797db802e9dabfbda0f65",
+ "trigger": "one-shot: the daggerboard slid down in its case until it seats",
+ "attenuation_radius_m": 15,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.0
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

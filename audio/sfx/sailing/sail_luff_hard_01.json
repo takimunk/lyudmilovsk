@@ -1,0 +1,25 @@
+{
+ "name": "sail_luff_hard_01",
+ "asset": "/Game/Audio/Sailing/S_sail_luff_hard_01",
+ "pool": "sail_luff_hard",
+ "file": "audio/sfx/sailing/sail_luff_hard_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 459490,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 8.0,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -28.08,
+ "sha256": "9af781d40e179ff074b83d9b90939d0ce623465c3964aa86c658753a0d9e47bc",
+ "trigger": "loop: hard flogging in a blow (luff > 0.6 and wind > 7 m/s, or a capsized/head-to-wind boat in a gale)",
+ "attenuation_radius_m": 70,
+ "priority": "high",
+ "params": {
+  "seconds": 8.0,
+  "strength": 0.88
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

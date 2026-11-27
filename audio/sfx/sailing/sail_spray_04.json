@@ -1,0 +1,24 @@
+{
+ "name": "sail_spray_04",
+ "asset": "/Game/Audio/Sailing/S_sail_spray_04",
+ "pool": "sail_spray",
+ "file": "audio/sfx/sailing/sail_spray_04.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 182223,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.5,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -26.04,
+ "sha256": "2cb769540a337ec42d5305c6cad330b5007ac39be12a62acf26535f94ab06f44",
+ "trigger": "one-shot: a sheet of spray over the bow (wave slap large at speed > 2.5 m/s, wind > 6)",
+ "attenuation_radius_m": 20,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.5
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

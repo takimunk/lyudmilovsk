@@ -1,0 +1,24 @@
+{
+ "name": "sail_boathouse_close_01",
+ "asset": "/Game/Audio/Sailing/S_sail_boathouse_close_01",
+ "pool": "sail_boathouse_close",
+ "file": "audio/sfx/sailing/sail_boathouse_close_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 743980,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 3.6,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -16.03,
+ "sha256": "af2b6dba60ee75fd63ba359aca2085fe9afac84483723a8aad173d062aa48e05",
+ "trigger": "one-shot: the boathouse door rolled shut with a bang (evening)",
+ "attenuation_radius_m": 60,
+ "priority": "normal",
+ "params": {
+  "seconds": 3.6
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

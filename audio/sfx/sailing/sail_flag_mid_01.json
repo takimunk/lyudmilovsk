@@ -1,0 +1,25 @@
+{
+ "name": "sail_flag_mid_01",
+ "asset": "/Game/Audio/Sailing/S_sail_flag_mid_01",
+ "pool": "sail_flag_mid",
+ "file": "audio/sfx/sailing/sail_flag_mid_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 364480,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -9.0,
+ "rms_dbfs": -32.19,
+ "sha256": "aa0ab38db8b8108635d03db6fb95924a5bd103c8d72452b660dc2d5e11981e37",
+ "trigger": "loop: a small flag in a fresh wind 5-9 m/s",
+ "attenuation_radius_m": 20,
+ "priority": "normal",
+ "params": {
+  "seconds": 6.0,
+  "strength": 0.5
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

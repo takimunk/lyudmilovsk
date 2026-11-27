@@ -1,0 +1,25 @@
+{
+ "name": "sail_block_run_03",
+ "asset": "/Game/Audio/Sailing/S_sail_block_run_03",
+ "pool": "sail_block_run",
+ "file": "audio/sfx/sailing/sail_block_run_03.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 712732,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.6,
+ "peak_dbfs": -5.0,
+ "rms_dbfs": -26.02,
+ "sha256": "d15cf80ec20966f9c4a0b41a8d8a748d1e3e3af0cf0190dc87d7aca299795b6d",
+ "trigger": "one-shot: sheeting in hard hand over hand (a fast ratchet run)",
+ "attenuation_radius_m": 15,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.6,
+  "pulls": 4
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,0 +1,24 @@
+{
+ "name": "sail_rope_creak_04",
+ "asset": "/Game/Audio/Sailing/S_sail_rope_creak_04",
+ "pool": "sail_rope_creak",
+ "file": "audio/sfx/sailing/sail_rope_creak_04.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 479473,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.3,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -30.12,
+ "sha256": "ff056da390cfa1d8af87737e0d3492ffbed44c17e64f56d2eafc07e9e8b8f255",
+ "trigger": "one-shot: a loaded sheet creaking on the block/fairlead (sheet load rising past ~0.7, ~1 per 3 s)",
+ "attenuation_radius_m": 10,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.3
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

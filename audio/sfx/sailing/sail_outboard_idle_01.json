@@ -1,0 +1,27 @@
+{
+ "name": "sail_outboard_idle_01",
+ "asset": "/Game/Audio/Sailing/S_sail_outboard_idle_01",
+ "pool": "sail_outboard_idle",
+ "file": "audio/sfx/sailing/sail_outboard_idle_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 98930,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 3.99,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -22.99,
+ "sha256": "96859b47f9088887af8f93bb0b74b569907f18c12f0e202e787f831fc8f293a8",
+ "trigger": "loop: the coach's launch outboard («Вихрь»-like two-stroke twin) idling, ~1000 rpm",
+ "attenuation_radius_m": 60,
+ "priority": "normal",
+ "params": {
+  "seconds": 3.99,
+  "rpm": 1000,
+  "firing_hz": 33.33,
+  "roughness": 0.35
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

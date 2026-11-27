@@ -1,0 +1,25 @@
+{
+ "name": "sail_batten_pop_02",
+ "asset": "/Game/Audio/Sailing/S_sail_batten_pop_02",
+ "pool": "sail_batten_pop",
+ "file": "audio/sfx/sailing/sail_batten_pop_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 849291,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.6,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -28.06,
+ "sha256": "f0ebb746d2e0285808fce40032c427be519b04da7dfca52af5da2d10e6f6b7fc",
+ "trigger": "one-shot: tacking, the battens pop through to the new side (after the luff peak of a tack)",
+ "attenuation_radius_m": 25,
+ "priority": "normal",
+ "params": {
+  "seconds": 0.6,
+  "battens": 1
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

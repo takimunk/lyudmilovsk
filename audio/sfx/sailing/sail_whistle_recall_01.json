@@ -1,0 +1,25 @@
+{
+ "name": "sail_whistle_recall_01",
+ "asset": "/Game/Audio/Sailing/S_sail_whistle_recall_01",
+ "pool": "sail_whistle_recall",
+ "file": "audio/sfx/sailing/sail_whistle_recall_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 610210,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.72,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -15.43,
+ "sha256": "4ea3468ee23f5719fc91b2fc05a7553000788f3350e4e8e4d059b8031022b38f",
+ "trigger": "one-shot: three blasts (recall / a boat in trouble)",
+ "attenuation_radius_m": 150,
+ "priority": "high",
+ "params": {
+  "blast_s": 0.32,
+  "gap_s": 0.22
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

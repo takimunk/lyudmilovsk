@@ -1,0 +1,25 @@
+{
+ "name": "sail_cockpit_slosh_01",
+ "asset": "/Game/Audio/Sailing/S_sail_cockpit_slosh_01",
+ "pool": "sail_cockpit_slosh",
+ "file": "audio/sfx/sailing/sail_cockpit_slosh_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 226450,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -8.0,
+ "rms_dbfs": -27.58,
+ "sha256": "74133abe29b7c6fcc455982d456b7bd835f41a252a86d9fc94b9045bc6ed7acf",
+ "trigger": "loop: water sloshing in a swamped cockpit (gain ~ water aboard)",
+ "attenuation_radius_m": 12,
+ "priority": "normal",
+ "params": {
+  "seconds": 6.0,
+  "roll_hz": 0.667
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

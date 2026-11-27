@@ -1,0 +1,25 @@
+{
+ "name": "sail_stopwatch_01",
+ "asset": "/Game/Audio/Sailing/S_sail_stopwatch_01",
+ "pool": "sail_stopwatch",
+ "file": "audio/sfx/sailing/sail_stopwatch_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 43050,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.0,
+ "peak_dbfs": -12.0,
+ "rms_dbfs": -40.53,
+ "sha256": "90b9c2f6ef52ba3503176eaa59c1a951a14cd803adff1bcd9a795f2cb326dd8f",
+ "trigger": "loop: the coach's stopwatch ticking (5 beats/s) for the last 10 s of a start sequence (HUD)",
+ "attenuation_radius_m": 3,
+ "priority": "low",
+ "params": {
+  "seconds": 2.0,
+  "beats_per_s": 5
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

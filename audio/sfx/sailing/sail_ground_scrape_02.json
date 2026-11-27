@@ -1,0 +1,24 @@
+{
+ "name": "sail_ground_scrape_02",
+ "asset": "/Game/Audio/Sailing/S_sail_ground_scrape_02",
+ "pool": "sail_ground_scrape",
+ "file": "audio/sfx/sailing/sail_ground_scrape_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 126221,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.8,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -17.27,
+ "sha256": "80a822d65040f2e2807b2a93a736506f1d3313ec97d35e390b19bc89ff71200d",
+ "trigger": "one-shot: the hull grounds on sand / runs up the beach (depth < board or hull draft while moving)",
+ "attenuation_radius_m": 20,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.8
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

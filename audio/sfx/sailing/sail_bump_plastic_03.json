@@ -1,0 +1,24 @@
+{
+ "name": "sail_bump_plastic_03",
+ "asset": "/Game/Audio/Sailing/S_sail_bump_plastic_03",
+ "pool": "sail_bump_plastic",
+ "file": "audio/sfx/sailing/sail_bump_plastic_03.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 396802,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.7,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -23.34,
+ "sha256": "761ed490c82aa68d303842ac8f59bd3bc2eda6d79c5f215114389798898de94d",
+ "trigger": "one-shot: hull bumps another boat or the trolley (GRP/plastic thud)",
+ "attenuation_radius_m": 20,
+ "priority": "normal",
+ "params": {
+  "seconds": 0.7
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

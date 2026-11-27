@@ -1,0 +1,25 @@
+{
+ "name": "sail_outboard_pull_catch_02",
+ "asset": "/Game/Audio/Sailing/S_sail_outboard_pull_catch_02",
+ "pool": "sail_outboard_pull_catch",
+ "file": "audio/sfx/sailing/sail_outboard_pull_catch_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 501541,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 3.5,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -19.93,
+ "sha256": "355ce8ff4ef1d38a8f11225c85677fceeb936f67367b4c020619a044d31696f2",
+ "trigger": "one-shot: a pull that catches: it sputters up to idle; crossfade into sail_outboard_idle at the end",
+ "attenuation_radius_m": 60,
+ "priority": "normal",
+ "params": {
+  "seconds": 3.5,
+  "fires_s": 0.486
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

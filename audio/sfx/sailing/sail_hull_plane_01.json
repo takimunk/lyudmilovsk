@@ -1,0 +1,24 @@
+{
+ "name": "sail_hull_plane_01",
+ "asset": "/Game/Audio/Sailing/S_sail_hull_plane_01",
+ "pool": "sail_hull_plane",
+ "file": "audio/sfx/sailing/sail_hull_plane_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 680240,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -5.0,
+ "rms_dbfs": -21.05,
+ "sha256": "dbefa90b7603a29bd9626535d53318753f79488fc10a1564157864c250c5f0f4",
+ "trigger": "loop: planing (speed > ~3.2 m/s, planing flag): hiss and roar under the hull",
+ "attenuation_radius_m": 40,
+ "priority": "high",
+ "params": {
+  "seconds": 6.0
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

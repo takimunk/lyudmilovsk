@@ -1,0 +1,25 @@
+{
+ "name": "sail_prize_claps_03",
+ "asset": "/Game/Audio/Sailing/S_sail_prize_claps_03",
+ "pool": "sail_prize_claps",
+ "file": "audio/sfx/sailing/sail_prize_claps_03.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 780082,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 5.5,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -27.55,
+ "sha256": "c0623fde43653ce448cc2f0facd425fb7d1267dcf4963bddcefcd04a23ab7c0c",
+ "trigger": "one-shot: polite applause at the prize-giving (a name read out, a cup handed over)",
+ "attenuation_radius_m": 60,
+ "priority": "normal",
+ "params": {
+  "seconds": 5.5,
+  "people": 24
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

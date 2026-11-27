@@ -1,0 +1,24 @@
+{
+ "name": "sail_whistle_short_03",
+ "asset": "/Game/Audio/Sailing/S_sail_whistle_short_03",
+ "pool": "sail_whistle_short",
+ "file": "audio/sfx/sailing/sail_whistle_short_03.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 82292,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.52,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -16.9,
+ "sha256": "d96647e1ef51a8a1d3ff89671050419b23cc73858d5ac4d7252436379ffe2afa",
+ "trigger": "one-shot: the coach's whistle, one short blast (attention, 'go')",
+ "attenuation_radius_m": 150,
+ "priority": "high",
+ "params": {
+  "blast_s": 0.42
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

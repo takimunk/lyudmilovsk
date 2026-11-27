@@ -1,0 +1,25 @@
+{
+ "name": "sail_halyard_chorus_light_01",
+ "asset": "/Game/Audio/Sailing/S_sail_halyard_chorus_light_01",
+ "pool": "sail_halyard_chorus_light",
+ "file": "audio/sfx/sailing/sail_halyard_chorus_light_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 127250,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 20.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -24.97,
+ "sha256": "46cba2851637500d3eda1cf01f09ad2aff5bc51ef82419d0efa9cb8163ca8b58",
+ "trigger": "loop at the boat park in light wind: a dozen boats' halyards (one emitter for the park)",
+ "attenuation_radius_m": 80,
+ "priority": "low",
+ "params": {
+  "seconds": 20.0,
+  "boats": 12
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

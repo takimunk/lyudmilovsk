@@ -1,0 +1,24 @@
+{
+ "name": "sail_horn_short_01",
+ "asset": "/Game/Audio/Sailing/S_sail_horn_short_01",
+ "pool": "sail_horn_short",
+ "file": "audio/sfx/sailing/sail_horn_short_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 715970,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 3.0,
+ "peak_dbfs": -1.0,
+ "rms_dbfs": -20.2,
+ "sha256": "66e0866e8ec20dd7184a52f8e7b4dfe92324bc6fcf431a22bc40ea49459028d4",
+ "trigger": "one-shot: start signal horn, short blast (the start, a minute signal)",
+ "attenuation_radius_m": 400,
+ "priority": "high",
+ "params": {
+  "blast_s": 0.8
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

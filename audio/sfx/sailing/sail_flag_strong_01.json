@@ -1,0 +1,25 @@
+{
+ "name": "sail_flag_strong_01",
+ "asset": "/Game/Audio/Sailing/S_sail_flag_strong_01",
+ "pool": "sail_flag_strong",
+ "file": "audio/sfx/sailing/sail_flag_strong_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 469660,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -29.18,
+ "sha256": "7753bf932d1fa72b9f9d09c1135eb1b555e68561fdd4f40b567f93abdabc4342",
+ "trigger": "loop: a small flag snapping in a strong wind > 9 m/s",
+ "attenuation_radius_m": 30,
+ "priority": "normal",
+ "params": {
+  "seconds": 6.0,
+  "strength": 0.9
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

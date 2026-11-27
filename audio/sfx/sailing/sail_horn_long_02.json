@@ -1,0 +1,24 @@
+{
+ "name": "sail_horn_long_02",
+ "asset": "/Game/Audio/Sailing/S_sail_horn_long_02",
+ "pool": "sail_horn_long",
+ "file": "audio/sfx/sailing/sail_horn_long_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 601601,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 4.8,
+ "peak_dbfs": -1.0,
+ "rms_dbfs": -16.8,
+ "sha256": "cfa914fb8c5383ea546c29b100db0d3fb848acb662cef610aed26cc49eeeea95",
+ "trigger": "one-shot: start signal horn, long blast (the warning signal, finish of the first boat)",
+ "attenuation_radius_m": 400,
+ "priority": "high",
+ "params": {
+  "blast_s": 2.6
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

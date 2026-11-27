@@ -1,0 +1,24 @@
+{
+ "name": "sail_dagger_up_02",
+ "asset": "/Game/Audio/Sailing/S_sail_dagger_up_02",
+ "pool": "sail_dagger_up",
+ "file": "audio/sfx/sailing/sail_dagger_up_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 462091,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.2,
+ "peak_dbfs": -5.0,
+ "rms_dbfs": -26.49,
+ "sha256": "59ff005bf7c908890850d757546fb35da8ab4ff718a12338aa75bb48a315ede8",
+ "trigger": "one-shot: the daggerboard pulled up (shallow water, coming ashore)",
+ "attenuation_radius_m": 15,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.2
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

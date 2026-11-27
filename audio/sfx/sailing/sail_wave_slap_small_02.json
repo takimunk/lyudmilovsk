@@ -1,0 +1,24 @@
+{
+ "name": "sail_wave_slap_small_02",
+ "asset": "/Game/Audio/Sailing/S_sail_wave_slap_small_02",
+ "pool": "sail_wave_slap_small",
+ "file": "audio/sfx/sailing/sail_wave_slap_small_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 170961,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.8,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -26.38,
+ "sha256": "cdc2fde69e4264350f5697a2ca1e087788b23b00b724d006cfa807edfdaa4908",
+ "trigger": "one-shot: a small wave clops on the hull (at anchor, ashore in the shallows, ghosting)",
+ "attenuation_radius_m": 15,
+ "priority": "normal",
+ "params": {
+  "seconds": 0.8
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

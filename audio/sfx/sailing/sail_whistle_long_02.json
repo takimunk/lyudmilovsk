@@ -1,0 +1,24 @@
+{
+ "name": "sail_whistle_long_02",
+ "asset": "/Game/Audio/Sailing/S_sail_whistle_long_02",
+ "pool": "sail_whistle_long",
+ "file": "audio/sfx/sailing/sail_whistle_long_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 585001,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.7,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -12.96,
+ "sha256": "5f9813d1a1a78d0dd5a7294975666c8d20fad1ae5d25de67987ac79a7e1b129f",
+ "trigger": "one-shot: one long blast (everybody, come in to the slip)",
+ "attenuation_radius_m": 150,
+ "priority": "high",
+ "params": {
+  "blast_s": 1.6
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

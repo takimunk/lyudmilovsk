@@ -1,0 +1,25 @@
+{
+ "name": "sail_leech_01",
+ "asset": "/Game/Audio/Sailing/S_sail_leech_01",
+ "pool": "sail_leech",
+ "file": "audio/sfx/sailing/sail_leech_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 885170,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 4.0,
+ "peak_dbfs": -12.0,
+ "rms_dbfs": -32.71,
+ "sha256": "afc21f66ede5782cf6c2a441daf91c1d427fe906f2ca7fea9b29c4c6c2c0e3f1",
+ "trigger": "loop: leech flutter, a fast buzz of the sail's trailing edge, at speed (gain ~ speed, wind)",
+ "attenuation_radius_m": 15,
+ "priority": "normal",
+ "params": {
+  "seconds": 4.0,
+  "rate_hz": 27
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

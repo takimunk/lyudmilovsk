@@ -1,0 +1,25 @@
+{
+ "name": "sail_crowd_cheer_02",
+ "asset": "/Game/Audio/Sailing/S_sail_crowd_cheer_02",
+ "pool": "sail_crowd_cheer",
+ "file": "audio/sfx/sailing/sail_crowd_cheer_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 584281,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 5.0,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -20.4,
+ "sha256": "9eb9f5fb03c178f7210aa302a375c9f00f34fb7e305594c307d3ae0a7012a0fb",
+ "trigger": "one-shot: the pier cheering a finish (claps building, a couple of whistles)",
+ "attenuation_radius_m": 120,
+ "priority": "high",
+ "params": {
+  "seconds": 5.0,
+  "people": 28
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

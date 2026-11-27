@@ -1,0 +1,24 @@
+{
+ "name": "sail_cleat_snap_01",
+ "asset": "/Game/Audio/Sailing/S_sail_cleat_snap_01",
+ "pool": "sail_cleat_snap",
+ "file": "audio/sfx/sailing/sail_cleat_snap_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 157340,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.4,
+ "peak_dbfs": -5.0,
+ "rms_dbfs": -29.71,
+ "sha256": "9ff070abd28355d7bd8c9e917cf5cae4e0b1bb4c68e96083d9dff9855866587a",
+ "trigger": "one-shot: a sheet or the vang snapped into a cam cleat (or flicked out)",
+ "attenuation_radius_m": 12,
+ "priority": "normal",
+ "params": {
+  "seconds": 0.4
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

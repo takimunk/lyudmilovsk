@@ -1,0 +1,25 @@
+{
+ "name": "sail_luff_mid_01",
+ "asset": "/Game/Audio/Sailing/S_sail_luff_mid_01",
+ "pool": "sail_luff_mid",
+ "file": "audio/sfx/sailing/sail_luff_mid_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 252050,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 8.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -30.69,
+ "sha256": "92d8f98c4c0d8932ba2be41af886aea3b05d9e4cf5aadd832dcf5e5f3d4a5c00",
+ "trigger": "loop: sail luffing in a moderate wind (head to wind, eased right out)",
+ "attenuation_radius_m": 40,
+ "priority": "normal",
+ "params": {
+  "seconds": 8.0,
+  "strength": 0.5
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

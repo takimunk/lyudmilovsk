@@ -1,0 +1,24 @@
+{
+ "name": "sail_windsock_01",
+ "asset": "/Game/Audio/Sailing/S_sail_windsock_01",
+ "pool": "sail_windsock",
+ "file": "audio/sfx/sailing/sail_windsock_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 643960,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 8.0,
+ "peak_dbfs": -14.0,
+ "rms_dbfs": -35.23,
+ "sha256": "9bc731c88ccade01faed65d74f9b40c787e9485173b7738a87609feb04a0a8bf",
+ "trigger": "loop: the windsock rustling on its pole (gain ~ wind from 2 m/s)",
+ "attenuation_radius_m": 12,
+ "priority": "low",
+ "params": {
+  "seconds": 8.0
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

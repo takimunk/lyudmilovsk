@@ -1,0 +1,24 @@
+{
+ "name": "sail_megaphone_squeal_01",
+ "asset": "/Game/Audio/Sailing/S_sail_megaphone_squeal_01",
+ "pool": "sail_megaphone_squeal",
+ "file": "audio/sfx/sailing/sail_megaphone_squeal_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 876100,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.3,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -11.42,
+ "sha256": "920f52873ac1ee27f7b7ed228701b954285aae54f449cdd84fe7641b1c86924f",
+ "trigger": "one-shot: megaphone feedback squeal (pointed the wrong way; comic beat)",
+ "attenuation_radius_m": 80,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.3
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

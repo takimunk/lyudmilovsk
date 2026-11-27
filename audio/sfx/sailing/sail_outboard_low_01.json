@@ -1,0 +1,27 @@
+{
+ "name": "sail_outboard_low_01",
+ "asset": "/Game/Audio/Sailing/S_sail_outboard_low_01",
+ "pool": "sail_outboard_low",
+ "file": "audio/sfx/sailing/sail_outboard_low_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 59060,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 4.0,
+ "peak_dbfs": -5.0,
+ "rms_dbfs": -18.12,
+ "sha256": "88d32442ff581af6c859ae33a8b1ad7ace3c8ae21b15a63a9aa39525508698af",
+ "trigger": "loop: 1800 rpm (slow along the course); crossfade by pitch, see LyudSail::Sound::MixOutboard",
+ "attenuation_radius_m": 100,
+ "priority": "normal",
+ "params": {
+  "seconds": 4.0,
+  "rpm": 1800,
+  "firing_hz": 60.0,
+  "roughness": 0.2
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,0 +1,24 @@
+{
+ "name": "sail_megaphone_click_02",
+ "asset": "/Game/Audio/Sailing/S_sail_megaphone_click_02",
+ "pool": "sail_megaphone_click",
+ "file": "audio/sfx/sailing/sail_megaphone_click_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 350871,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.5,
+ "peak_dbfs": -8.0,
+ "rms_dbfs": -36.22,
+ "sha256": "6c870c266e25fb2208cbb5a3a04971299984b7c0fda085fde33b62ad772fe1a3",
+ "trigger": "one-shot: the coach's megaphone keyed (before and after the words; the words are voice lines)",
+ "attenuation_radius_m": 40,
+ "priority": "normal",
+ "params": {
+  "seconds": 0.5
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

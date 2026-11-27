@@ -1,0 +1,25 @@
+{
+ "name": "sail_sheet_run_01",
+ "asset": "/Game/Audio/Sailing/S_sail_sheet_run_01",
+ "pool": "sail_sheet_run",
+ "file": "audio/sfx/sailing/sail_sheet_run_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 695370,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.5,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -27.2,
+ "sha256": "83d2a1d773817fb782fddbaa6a12645c95261837bc7984521ac5cf7042e58c96",
+ "trigger": "one-shot: the sheet runs out through the block (eased fast or let fly)",
+ "attenuation_radius_m": 15,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.5,
+  "stop_s": 0.9
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,0 +1,26 @@
+{
+ "name": "sail_capsize_03",
+ "asset": "/Game/Audio/Sailing/S_sail_capsize_03",
+ "pool": "sail_capsize",
+ "file": "audio/sfx/sailing/sail_capsize_03.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 598732,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 4.5,
+ "peak_dbfs": -1.0,
+ "rms_dbfs": -20.7,
+ "sha256": "fc5f326d375998eb10ba47703887e352dcb0ed57f5b398c0eb8eef4523a451e0",
+ "trigger": "one-shot: the boat capsizes (heel past ~70 deg): sail hits the water, crew falls in, the big splash",
+ "attenuation_radius_m": 80,
+ "priority": "high",
+ "params": {
+  "seconds": 4.5,
+  "sail_s": 0.44999999999999996,
+  "body_s": 0.7999999999999999
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

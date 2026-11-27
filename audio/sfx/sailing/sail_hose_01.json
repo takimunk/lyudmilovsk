@@ -1,0 +1,24 @@
+{
+ "name": "sail_hose_01",
+ "asset": "/Game/Audio/Sailing/S_sail_hose_01",
+ "pool": "sail_hose",
+ "file": "audio/sfx/sailing/sail_hose_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 117210,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -7.0,
+ "rms_dbfs": -23.73,
+ "sha256": "994dea57384380152d012ae2d4d4ad058dfda67aaaaca748d4ba988188f5f5aa",
+ "trigger": "loop: a hose washing the salt off a hull at the boat park (after sailing)",
+ "attenuation_radius_m": 20,
+ "priority": "normal",
+ "params": {
+  "seconds": 6.0
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

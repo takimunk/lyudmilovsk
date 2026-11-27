@@ -1,0 +1,27 @@
+{
+ "name": "sail_outboard_high_01",
+ "asset": "/Game/Audio/Sailing/S_sail_outboard_high_01",
+ "pool": "sail_outboard_high",
+ "file": "audio/sfx/sailing/sail_outboard_high_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 485810,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 4.0,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -11.66,
+ "sha256": "ef8a23d0971ac19c9c96b5642ac7a0f43e3eb2b457d0a15660bb5336a1b04fd8",
+ "trigger": "loop: 4800 rpm (flat out, planing to a capsized boat)",
+ "attenuation_radius_m": 200,
+ "priority": "high",
+ "params": {
+  "seconds": 4.0,
+  "rpm": 4800,
+  "firing_hz": 160.0,
+  "roughness": 0.06
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,0 +1,25 @@
+{
+ "name": "sail_block_click_03",
+ "asset": "/Game/Audio/Sailing/S_sail_block_click_03",
+ "pool": "sail_block_click",
+ "file": "audio/sfx/sailing/sail_block_click_03.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 28502,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.45,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -28.87,
+ "sha256": "a4ed3add6761461d559a119f64fd2b2db2d1e17d780f6762ea29990df163d628",
+ "trigger": "one-shot: a pull on the mainsheet through the ratchet block (sheet shortened by ~0.2 m)",
+ "attenuation_radius_m": 12,
+ "priority": "normal",
+ "params": {
+  "seconds": 0.45,
+  "clicks": 5
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

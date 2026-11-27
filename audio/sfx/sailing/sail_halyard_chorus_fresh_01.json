@@ -1,0 +1,25 @@
+{
+ "name": "sail_halyard_chorus_fresh_01",
+ "asset": "/Game/Audio/Sailing/S_sail_halyard_chorus_fresh_01",
+ "pool": "sail_halyard_chorus_fresh",
+ "file": "audio/sfx/sailing/sail_halyard_chorus_fresh_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 737370,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 20.0,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -19.58,
+ "sha256": "f372b12fe439581799fb011a855817266c7d52a572ea6b83ec162b35bf4fa055",
+ "trigger": "loop at the boat park in a fresh wind: a dozen boats' halyards slapping",
+ "attenuation_radius_m": 100,
+ "priority": "low",
+ "params": {
+  "seconds": 20.0,
+  "boats": 12
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,0 +1,24 @@
+{
+ "name": "sail_mast_creak_01",
+ "asset": "/Game/Audio/Sailing/S_sail_mast_creak_01",
+ "pool": "sail_mast_creak",
+ "file": "audio/sfx/sailing/sail_mast_creak_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 646690,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.2,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -33.01,
+ "sha256": "0dc13818b32a6396baaa3f23573d3029990e24583948b21b9809f3b1b624c3d2",
+ "trigger": "one-shot: the mast groaning in its step under load (heel or gust peak, ~1 per 5 s)",
+ "attenuation_radius_m": 15,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.2
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,0 +1,24 @@
+{
+ "name": "sail_trolley_sand_01",
+ "asset": "/Game/Audio/Sailing/S_sail_trolley_sand_01",
+ "pool": "sail_trolley_sand",
+ "file": "audio/sfx/sailing/sail_trolley_sand_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 785920,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -7.0,
+ "rms_dbfs": -37.86,
+ "sha256": "285891c324ee1b631469facfedb3cbf53245a302d8b3885e95a6ffa22d8c84af",
+ "trigger": "loop: the trolley rolled over wet sand to the water's edge",
+ "attenuation_radius_m": 20,
+ "priority": "normal",
+ "params": {
+  "seconds": 6.0
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

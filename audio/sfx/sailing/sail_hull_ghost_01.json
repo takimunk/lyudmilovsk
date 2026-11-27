@@ -1,0 +1,24 @@
+{
+ "name": "sail_hull_ghost_01",
+ "asset": "/Game/Audio/Sailing/S_sail_hull_ghost_01",
+ "pool": "sail_hull_ghost",
+ "file": "audio/sfx/sailing/sail_hull_ghost_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 613050,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 8.0,
+ "peak_dbfs": -12.0,
+ "rms_dbfs": -35.55,
+ "sha256": "bfa518b850c21b8ea60c87025f5449678c34222e83e411bc843a1d53f7f2007e",
+ "trigger": "loop: ghosting, speed 0.2-1.2 m/s: water trickling and lapping at the bow",
+ "attenuation_radius_m": 12,
+ "priority": "normal",
+ "params": {
+  "seconds": 8.0
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

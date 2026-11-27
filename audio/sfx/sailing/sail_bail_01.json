@@ -1,0 +1,25 @@
+{
+ "name": "sail_bail_01",
+ "asset": "/Game/Audio/Sailing/S_sail_bail_01",
+ "pool": "sail_bail",
+ "file": "audio/sfx/sailing/sail_bail_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 544720,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.7,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -25.43,
+ "sha256": "40b9e83ca34ed5fd2cf8ab1cd79bc6f17e8105d6aa45888fcc4d347bc285746f",
+ "trigger": "one-shot: one scoop of the bailer: dipped, filled, thrown over the side",
+ "attenuation_radius_m": 15,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.7,
+  "throw_s": 0.72
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

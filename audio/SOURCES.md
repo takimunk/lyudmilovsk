@@ -199,3 +199,4 @@ tools/gen_sounds.py.
 - music (fal-ai/stable-audio-25/text-to-audio): Generated with Stability AI Stable Audio 2.5 through fal.ai (outputs owned by the requester under Stability's API terms); released by the project under CC BY 4.0.
 
 - `sfx/restaurant/rest_*`: procedural (numpy/scipy), `tools/restaurant/sounds.py`; every WAV has a sidecar with its seed and parameters (docs/restaurant.md).
+- `sfx/sailing/sail_*`: procedural (numpy/scipy), `tools/sailing/sounds.py`; every WAV has a sidecar with its seed and parameters (docs/yacht_school.md "Sounds").

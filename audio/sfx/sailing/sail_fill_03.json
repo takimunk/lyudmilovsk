@@ -1,0 +1,25 @@
+{
+ "name": "sail_fill_03",
+ "asset": "/Game/Audio/Sailing/S_sail_fill_03",
+ "pool": "sail_fill",
+ "file": "audio/sfx/sailing/sail_fill_03.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 380022,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.3,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -29.1,
+ "sha256": "700e016ccd8fc4483860725f08421c8f4b9432ff0aa47de40668276ed3ed1ff5",
+ "trigger": "one-shot: the sail fills (luff drops from > 0.5 to < 0.2 within ~0.5 s): a whump",
+ "attenuation_radius_m": 35,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.3,
+  "snaps": 2
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,0 +1,24 @@
+{
+ "name": "sail_hull_drag_01",
+ "asset": "/Game/Audio/Sailing/S_sail_hull_drag_01",
+ "pool": "sail_hull_drag",
+ "file": "audio/sfx/sailing/sail_hull_drag_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 391600,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.6,
+ "peak_dbfs": -5.0,
+ "rms_dbfs": -18.87,
+ "sha256": "e2a2701157dd59f4d900ec73c2d19c52d876fb970dc369a40bb85fe4f9f7bd86",
+ "trigger": "one-shot: a hull heaved a metre over the sand (no trolley; kids pulling an optimist up)",
+ "attenuation_radius_m": 20,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.6
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

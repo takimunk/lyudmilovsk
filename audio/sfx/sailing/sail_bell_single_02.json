@@ -1,0 +1,24 @@
+{
+ "name": "sail_bell_single_02",
+ "asset": "/Game/Audio/Sailing/S_sail_bell_single_02",
+ "pool": "sail_bell_single",
+ "file": "audio/sfx/sailing/sail_bell_single_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 831171,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 5.5,
+ "peak_dbfs": -2.0,
+ "rms_dbfs": -21.54,
+ "sha256": "3ff7e8830dfc55ae4c6e76ef74a874bfc521d1d7dc0438acda9d7976455d078b",
+ "trigger": "one-shot: the school's bell by the boathouse, one stroke (half-hours of the timetable)",
+ "attenuation_radius_m": 200,
+ "priority": "high",
+ "params": {
+  "strikes": 1
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

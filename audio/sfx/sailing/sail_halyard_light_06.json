@@ -1,0 +1,25 @@
+{
+ "name": "sail_halyard_light_06",
+ "asset": "/Game/Audio/Sailing/S_sail_halyard_light_06",
+ "pool": "sail_halyard_light",
+ "file": "audio/sfx/sailing/sail_halyard_light_06.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 17665,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 16.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -27.23,
+ "sha256": "d9f59f3c9dc12ef1335f0bb1726bf9abec8d2b25d5fd6584e9cf75e7aae3f813",
+ "trigger": "loop per parked boat in light wind (2-5 m/s): a halyard tinking on its mast; 6 masts = 6 pitches",
+ "attenuation_radius_m": 35,
+ "priority": "normal",
+ "params": {
+  "seconds": 16.0,
+  "mast_f0_hz": 694
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

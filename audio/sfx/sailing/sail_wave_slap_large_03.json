@@ -1,0 +1,24 @@
+{
+ "name": "sail_wave_slap_large_03",
+ "asset": "/Game/Audio/Sailing/S_sail_wave_slap_large_03",
+ "pool": "sail_wave_slap_large",
+ "file": "audio/sfx/sailing/sail_wave_slap_large_03.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 879492,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.6,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -25.7,
+ "sha256": "79e6ed443d2ddde4d9b18ab62027f91178e2f1cf0290f2eb8fa373165ab6f1a3",
+ "trigger": "one-shot: the bow drops into a wave (pitching hard, upwind in a chop)",
+ "attenuation_radius_m": 35,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.6
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,0 +1,25 @@
+{
+ "name": "sail_hull_hum_01",
+ "asset": "/Game/Audio/Sailing/S_sail_hull_hum_01",
+ "pool": "sail_hull_hum",
+ "file": "audio/sfx/sailing/sail_hull_hum_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 587540,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 4.0,
+ "peak_dbfs": -14.0,
+ "rms_dbfs": -22.34,
+ "sha256": "c6e0baff307bad37c04dc0e203bc408ac3bf56ebb54ce71aa2ddcf275ecfee4c",
+ "trigger": "loop: planing fast, the foils humming (gain ~ speed past 3.5 m/s, pitch ~ speed / 4.5)",
+ "attenuation_radius_m": 10,
+ "priority": "normal",
+ "params": {
+  "seconds": 4.0,
+  "f0_hz": 240.0
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

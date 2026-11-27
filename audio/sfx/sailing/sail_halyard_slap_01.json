@@ -1,0 +1,25 @@
+{
+ "name": "sail_halyard_slap_01",
+ "asset": "/Game/Audio/Sailing/S_sail_halyard_slap_01",
+ "pool": "sail_halyard_slap",
+ "file": "audio/sfx/sailing/sail_halyard_slap_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 646470,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.4,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -24.41,
+ "sha256": "5d992afb8e753dd3f327d189b0ebe04aa9e2cd92d66de4a9d000d6c127afebf8",
+ "trigger": "one-shot: one slap on a mast, for rate-driven play (LyudSail::Sound::HalyardRate(wind)); variant = mast pitch",
+ "attenuation_radius_m": 35,
+ "priority": "normal",
+ "params": {
+  "seconds": 2.4,
+  "mast_f0_hz": 372
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

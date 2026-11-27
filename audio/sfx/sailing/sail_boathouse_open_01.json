@@ -1,0 +1,24 @@
+{
+ "name": "sail_boathouse_open_01",
+ "asset": "/Game/Audio/Sailing/S_sail_boathouse_open_01",
+ "pool": "sail_boathouse_open",
+ "file": "audio/sfx/sailing/sail_boathouse_open_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 632230,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 3.6,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -16.34,
+ "sha256": "b5e9d60db171222d95fc01934d0e90eac7017d53ada66d974ed3549ae9f14758",
+ "trigger": "one-shot: the boathouse's big sliding door rolled open (morning, before the first lesson)",
+ "attenuation_radius_m": 50,
+ "priority": "normal",
+ "params": {
+  "seconds": 3.6
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

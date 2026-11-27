@@ -1,0 +1,24 @@
+{
+ "name": "sail_sail_roll_01",
+ "asset": "/Game/Audio/Sailing/S_sail_sail_roll_01",
+ "pool": "sail_sail_roll",
+ "file": "audio/sfx/sailing/sail_sail_roll_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 700950,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.5,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -38.99,
+ "sha256": "997248f573fd2ebe3066ccfe2b694c152c426c6fdca5c66c77159e9216afe5d4",
+ "trigger": "one-shot: a sail being rolled up / unrolled on the grass (dacron crackle)",
+ "attenuation_radius_m": 12,
+ "priority": "normal",
+ "params": {
+  "seconds": 2.5
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

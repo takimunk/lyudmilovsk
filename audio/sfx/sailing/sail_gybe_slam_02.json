@@ -1,0 +1,25 @@
+{
+ "name": "sail_gybe_slam_02",
+ "asset": "/Game/Audio/Sailing/S_sail_gybe_slam_02",
+ "pool": "sail_gybe_slam",
+ "file": "audio/sfx/sailing/sail_gybe_slam_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 840971,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.0,
+ "peak_dbfs": -1.5,
+ "rms_dbfs": -23.35,
+ "sha256": "af7715399f2d249ebdb59fade71e5e7b0ba51ef9f2a3882cc2d5e718736eb489",
+ "trigger": "one-shot: a gybe, the boom slams across (boom angular speed past ~2 rad/s through the centreline)",
+ "attenuation_radius_m": 60,
+ "priority": "high",
+ "params": {
+  "seconds": 2.0,
+  "slam_s": 0.52
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

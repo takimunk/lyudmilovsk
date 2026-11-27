@@ -1,0 +1,24 @@
+{
+ "name": "sail_rudder_knock_02",
+ "asset": "/Game/Audio/Sailing/S_sail_rudder_knock_02",
+ "pool": "sail_rudder_knock",
+ "file": "audio/sfx/sailing/sail_rudder_knock_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 307101,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.5,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -28.08,
+ "sha256": "0756fe28782aef16032b6a2b285de7a35c4be13cb43dc4d5043a2afe3fba517e",
+ "trigger": "one-shot: the rudder's pintles knocking in the gudgeons (a wave under the stern, a sharp helm)",
+ "attenuation_radius_m": 12,
+ "priority": "normal",
+ "params": {
+  "seconds": 0.5
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

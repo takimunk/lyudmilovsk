@@ -1,0 +1,24 @@
+{
+ "name": "sail_hit_water_02",
+ "asset": "/Game/Audio/Sailing/S_sail_hit_water_02",
+ "pool": "sail_hit_water",
+ "file": "audio/sfx/sailing/sail_hit_water_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 803401,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.3,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -21.6,
+ "sha256": "713d78c1f39f16a6ae151a8414cfb092d1976db48c5ddaf49c48e9ed90982529",
+ "trigger": "one-shot: the sail slaps flat onto the water (a capsize to 90 deg, a dunked boom)",
+ "attenuation_radius_m": 40,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.3
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

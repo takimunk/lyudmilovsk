@@ -1,0 +1,25 @@
+{
+ "name": "sail_flag_light_01",
+ "asset": "/Game/Audio/Sailing/S_sail_flag_light_01",
+ "pool": "sail_flag_light",
+ "file": "audio/sfx/sailing/sail_flag_light_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 809490,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -12.0,
+ "rms_dbfs": -38.45,
+ "sha256": "b6420648da1bfd3e829e803175ac28b2fdf9e975636ac77fa86fb27f837a7f39",
+ "trigger": "loop: a small flag (signal mast, the launch's staff) in light wind 2-5 m/s",
+ "attenuation_radius_m": 15,
+ "priority": "normal",
+ "params": {
+  "seconds": 6.0,
+  "strength": 0.15
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

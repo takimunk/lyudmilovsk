@@ -1,0 +1,25 @@
+{
+ "name": "sail_fanfare_01",
+ "asset": "/Game/Audio/Sailing/S_sail_fanfare_01",
+ "pool": "sail_fanfare",
+ "file": "audio/sfx/sailing/sail_fanfare_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 307920,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 3.6,
+ "peak_dbfs": -2.0,
+ "rms_dbfs": -18.69,
+ "sha256": "dfb1c95b7bdc4bf9751c0a6e8d27ce20daffb5da1a116d36f7f47b23ab2f4f02",
+ "trigger": "one-shot: a brass fanfare sting (regatta opening/closing, a cup awarded) — three trumpets",
+ "attenuation_radius_m": 150,
+ "priority": "high",
+ "params": {
+  "seconds": 3.6,
+  "key": "Bb major"
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

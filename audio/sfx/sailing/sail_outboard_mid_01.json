@@ -1,0 +1,27 @@
+{
+ "name": "sail_outboard_mid_01",
+ "asset": "/Game/Audio/Sailing/S_sail_outboard_mid_01",
+ "pool": "sail_outboard_mid",
+ "file": "audio/sfx/sailing/sail_outboard_mid_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 592210,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 4.0,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -13.7,
+ "sha256": "8c0a0d849a4e73a9bd5b21acbb3338618a427e6c6ee9d25fdcd8fbaaebdbc80a",
+ "trigger": "loop: 3000 rpm (cruising to a mark)",
+ "attenuation_radius_m": 150,
+ "priority": "normal",
+ "params": {
+  "seconds": 4.0,
+  "rpm": 3000,
+  "firing_hz": 100.0,
+  "roughness": 0.1
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,0 +1,24 @@
+{
+ "name": "sail_mast_step_02",
+ "asset": "/Game/Audio/Sailing/S_sail_mast_step_02",
+ "pool": "sail_mast_step",
+ "file": "audio/sfx/sailing/sail_mast_step_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 629601,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.6,
+ "peak_dbfs": -3.0,
+ "rms_dbfs": -20.96,
+ "sha256": "22c94caf3fbc73b10249ed08a4ae871bbce8c4f91be2403ab719a9171dbf8694",
+ "trigger": "one-shot: rigging: the mast dropped into its step (clunk, then the shrouds and halyard rattle)",
+ "attenuation_radius_m": 30,
+ "priority": "normal",
+ "params": {
+  "seconds": 1.6
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

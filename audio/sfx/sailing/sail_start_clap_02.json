@@ -1,0 +1,24 @@
+{
+ "name": "sail_start_clap_02",
+ "asset": "/Game/Audio/Sailing/S_sail_start_clap_02",
+ "pool": "sail_start_clap",
+ "file": "audio/sfx/sailing/sail_start_clap_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 803351,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.6,
+ "peak_dbfs": -1.0,
+ "rms_dbfs": -36.27,
+ "sha256": "0c637211a335b338f14cc638178b39064a6b3678dae684b50bb3ed4e5f8d3e02",
+ "trigger": "one-shot: the starter's clap (a starting-pistol-like report) instead of the horn",
+ "attenuation_radius_m": 300,
+ "priority": "high",
+ "params": {
+  "seconds": 2.6
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

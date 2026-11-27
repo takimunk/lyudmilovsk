@@ -1,0 +1,24 @@
+{
+ "name": "sail_outboard_off_01",
+ "asset": "/Game/Audio/Sailing/S_sail_outboard_off_01",
+ "pool": "sail_outboard_off",
+ "file": "audio/sfx/sailing/sail_outboard_off_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 342400,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 2.4,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -26.74,
+ "sha256": "40c3d942b248f731271e36b5bc01983314e0410ad0ff84f71b0006832f8b591a",
+ "trigger": "one-shot: the kill cord pulled at idle: the last coughs, the engine coasting down",
+ "attenuation_radius_m": 60,
+ "priority": "normal",
+ "params": {
+  "seconds": 2.4
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

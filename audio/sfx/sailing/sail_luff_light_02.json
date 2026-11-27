@@ -1,0 +1,25 @@
+{
+ "name": "sail_luff_light_02",
+ "asset": "/Game/Audio/Sailing/S_sail_luff_light_02",
+ "pool": "sail_luff_light",
+ "file": "audio/sfx/sailing/sail_luff_light_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 139071,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 8.0,
+ "peak_dbfs": -9.0,
+ "rms_dbfs": -35.09,
+ "sha256": "30e97bb03e5fb347b9773e6cfb202352b552c73f00c07f2c90135496258a18e4",
+ "trigger": "loop: sail luffing a little (luff 0.15-0.5) or light air; gain/pitch from LyudSail::Sound::MixLoops",
+ "attenuation_radius_m": 25,
+ "priority": "normal",
+ "params": {
+  "seconds": 8.0,
+  "strength": 0.2
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

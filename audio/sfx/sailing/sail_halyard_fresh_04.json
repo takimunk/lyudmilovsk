@@ -1,0 +1,25 @@
+{
+ "name": "sail_halyard_fresh_04",
+ "asset": "/Game/Audio/Sailing/S_sail_halyard_fresh_04",
+ "pool": "sail_halyard_fresh",
+ "file": "audio/sfx/sailing/sail_halyard_fresh_04.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 684583,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 10.0,
+ "peak_dbfs": -4.0,
+ "rms_dbfs": -20.64,
+ "sha256": "8c4fe6966aa812c0b85124dd33dc973fefdaa7837075f943906e06b8f3fefbe7",
+ "trigger": "loop per parked boat in a fresh wind (> 5 m/s): halyards slapping fast; same 6 mast pitches",
+ "attenuation_radius_m": 45,
+ "priority": "normal",
+ "params": {
+  "seconds": 10.0,
+  "mast_f0_hz": 547
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

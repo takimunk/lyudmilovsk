@@ -1,0 +1,24 @@
+{
+ "name": "sail_buckle_01",
+ "asset": "/Game/Audio/Sailing/S_sail_buckle_01",
+ "pool": "sail_buckle",
+ "file": "audio/sfx/sailing/sail_buckle_01.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 78390,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.3,
+ "peak_dbfs": -8.0,
+ "rms_dbfs": -33.51,
+ "sha256": "a0c590073cc31518d767a3fa6b6fad07300c0d251000c31279b93949a9228e7b",
+ "trigger": "one-shot: a life jacket's buckle clicked shut (putting on / taking off)",
+ "attenuation_radius_m": 6,
+ "priority": "low",
+ "params": {
+  "seconds": 0.3
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}

@@ -1,0 +1,25 @@
+{
+ "name": "sail_bell_double_02",
+ "asset": "/Game/Audio/Sailing/S_sail_bell_double_02",
+ "pool": "sail_bell_double",
+ "file": "audio/sfx/sailing/sail_bell_double_02.wav",
+ "generator": "tools/sailing/sounds.py",
+ "seed": 176991,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -2.0,
+ "rms_dbfs": -20.33,
+ "sha256": "cb811af0495a96fefb48ed4d879a80cb1da9b32ad751df784f1ef8b039116cb8",
+ "trigger": "one-shot: the bell, a double stroke ding-ding (lesson start/end, the hours in pairs)",
+ "attenuation_radius_m": 200,
+ "priority": "high",
+ "params": {
+  "strikes": 2,
+  "gap_s": 0.48
+ },
+ "license": "Procedural, made by the project; CC BY 4.0."
+}
