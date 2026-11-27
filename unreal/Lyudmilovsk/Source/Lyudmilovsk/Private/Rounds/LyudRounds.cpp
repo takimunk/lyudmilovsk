@@ -225,6 +225,13 @@ double ULyudRounds::HourNow() const
 	return Now.GetHour() + Now.GetMinute() / 60.0 + Now.GetSecond() / 3600.0;
 }
 
+double ULyudRounds::RoundHour() const
+{
+	// the hour on the round's own day's clock: past midnight (slept through it, a late forced round) it goes on past 24, so
+	// the deadline still comes
+	return HourNow() + 24.0 * (double)(Today() - RoundDay);
+}
+
 bool ULyudRounds::IsActive() const { return Round && !Round->bOver; }
 bool ULyudRounds::IsPaper() const { return IsActive() && Round->Kind == LyudRounds::EKind::Paper; }
 FVector ULyudRounds::BundleAt() const { return bLoaded ? Data->Bundle : FVector::ZeroVector; }
@@ -274,7 +281,7 @@ bool ULyudRounds::StartPaper(bool bForce)
 	const double Deadline = bForce ? H + (Data->PaperDeadline - Data->PaperFrom) : Data->PaperDeadline;
 	Round->Begin(LyudRounds::EKind::Paper, Route, Entries, (int)Entries.size() + Data->Spare, H, Deadline);
 	RoundTerrace = Data->RouteTerrace[(size_t)Route];
-	PaperDay = Day;
+	RoundDay = Day;   // PaperDay is set when it is over: a save made mid-round (the round isn't saved) leaves it to do again
 	Prompted = -1;  // the round's first prompt is always said (its code may equal the one showing)
 	if (GS)
 	{
@@ -303,7 +310,7 @@ bool ULyudRounds::StartPost(bool bForce)
 	const double Deadline = bForce ? H + (Data->PostDeadline - Data->PostFrom) : Data->PostDeadline;
 	Round->Begin(LyudRounds::EKind::Post, -1, Picks, 0, H, Deadline);
 	RoundTerrace = 0;
-	PostDay = Day;
+	RoundDay = Day;   // PostDay is set when it is over (as PaperDay)
 	Prompted = -1;
 	if (ULyudGameScreen* GS = ULyudGameScreen::Get(this))
 	{
@@ -329,11 +336,12 @@ void ULyudRounds::Finish(bool bInTime)
 	{
 		return;
 	}
-	const double H = HourNow();
+	const double H = RoundHour();
 	const int32 Pay = R.Pay(bInTime ? FMath::Min(H, R.Deadline) : R.Deadline + 1.0);
 	const std::string Stamp = R.Stamp(RoundTerrace);
 	const bool bPaper = R.Kind == LyudRounds::EKind::Paper;
 	R.bOver = true;
+	(bPaper ? PaperDay : PostDay) = RoundDay;
 	if (bPaper)
 	{
 		PapersDelivered += R.Count(LyudRounds::EResult::Good) + R.Count(LyudRounds::EResult::Perfect);
@@ -401,7 +409,7 @@ void ULyudRounds::Tick(float DeltaTime)
 		return;
 	}
 	TickFlights(DeltaTime);
-	if (IsActive() && HourNow() > Round->Deadline + 1.0)
+	if (IsActive() && RoundHour() > Round->Deadline + 1.0)
 	{
 		Finish(false);  // an hour past the deadline: the round is over, paid for what was done
 	}
@@ -516,7 +524,7 @@ void ULyudRounds::TickDoors()
 		}
 		if (R.AllDone() && !Flights[0].bFlying && !Flights[1].bFlying && !Flights[2].bFlying && !Flights[3].bFlying && !Flights[4].bFlying && !Flights[5].bFlying)
 		{
-			Finish(H <= R.Deadline);
+			Finish(RoundHour() <= R.Deadline);
 		}
 		return;
 	}
@@ -569,7 +577,7 @@ void ULyudRounds::TickDoors()
 	}
 	if (R.AllDone())
 	{
-		Finish(H <= R.Deadline);
+		Finish(RoundHour() <= R.Deadline);
 	}
 }
 

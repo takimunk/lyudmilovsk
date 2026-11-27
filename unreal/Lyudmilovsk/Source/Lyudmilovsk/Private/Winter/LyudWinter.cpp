@@ -18,6 +18,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Volume.h"
 #include "HAL/IConsoleManager.h"
+#include "HeroCharacter.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "LandscapeProxy.h"
 #include "Materials/MaterialInterface.h"
@@ -1444,6 +1445,12 @@ void ULyudWinterSubsystem::Wade(float DeltaTime)
 	}
 	const float DepthM = IsReady() ? State->Field.DepthAt(Hero->GetActorLocation().X, Hero->GetActorLocation().Y) : 0.f;
 	const float Scale = Move->IsMovingOnGround() ? FMath::Lerp(1.f, 0.42f, FMath::Clamp((DepthM - 0.12f) / 0.8f, 0.f, 1.f)) : 1.f;
+	if (AHeroCharacter* Player = Cast<AHeroCharacter>(Hero))
+	{
+		// the hero sets his speeds afresh every frame (ReadInput): a scale on MaxWalkSpeed here would be overwritten
+		Player->SetWadeScale(Scale);
+		return;
+	}
 	const float Applied = WadeSpeed > 0.f ? WadeSpeed : 1.f;
 	if (FMath::Abs(Scale - Applied) > 0.01f)
 	{

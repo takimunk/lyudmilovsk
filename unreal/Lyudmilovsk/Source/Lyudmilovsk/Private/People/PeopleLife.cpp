@@ -1062,6 +1062,8 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		MNow.SkyShow = SkyShow;
 	}
 	bool bOwnerHere = false;
+	// looked up once a frame, not for every person drawn
+	ULyudBikeSubsystem* BikeSys = ULyudBikeSubsystem::Get(this);
 	for (const LP::FPerson& P : S.People)
 	{
 		const LP::FSlot* Sl = P.Slot >= 0 ? &S.Slots[P.Slot] : nullptr;
@@ -1213,7 +1215,6 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		}
 		const float SeatH = Sl && P.State != LP::EState::Going ? Sl->Height * 100.f : 0.f;
 		// with their bicycle in hand (Bikes/LyudBikeSubsystem): the bike's side places the body on it or beside it
-		ULyudBikeSubsystem* BikeSys = ULyudBikeSubsystem::Get(this);
 		if (BikeSys && P.Bike >= 0 && (P.BikeMode > 0 || P.BikeAct != LP::EBikeAct::None))
 		{
 			BikeSys->PresentPerson(P.Id, Body, DeltaTime);

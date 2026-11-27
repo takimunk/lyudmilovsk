@@ -2167,10 +2167,28 @@ namespace LyudPeople
 			{
 				continue;           // the day they come, the day they leave
 			}
-			// a weekday duty that started yesterday evening (a night shift) counts for yesterday
-			const bool bDay = (D.Days >> Weekday) & 1;
 			// set off a little early: they go there first
-			if (bDay && InHours(D.From - 0.3f, D.To, Hour))
+			const float Early = D.From - 0.3f;
+			if (!InHours(Early, D.To, Hour))
+			{
+				continue;
+			}
+			// a weekday duty that started yesterday evening (a night shift) counts for yesterday; the early setting-off
+			// before midnight for a shift from just after it counts for tomorrow
+			int Day = Weekday;
+			const float EarlyW = std::fmod(Early + 48.f, 24.f), ToW = std::fmod(D.To + 48.f, 24.f);
+			if (D.To - Early < 24.f && EarlyW > ToW)
+			{
+				if (Hour < ToW && Early >= 0.f)
+				{
+					Day = (Weekday + 6) % 7;
+				}
+				else if (Hour >= EarlyW && Early < 0.f)
+				{
+					Day = (Weekday + 1) % 7;
+				}
+			}
+			if ((D.Days >> Day) & 1)
 			{
 				return ActOf(D);
 			}
@@ -3362,7 +3380,11 @@ namespace LyudPeople
 				return;
 			}
 			// nowhere for the duty now (its places full or cut off): free time for a while, not called back every step
-			P.DutyBlockedUntil = Time + 900.0;
+			// (a retry meanwhile that finds it still full, a need looked up from, doesn't put the duty off further)
+			if (Time >= P.DutyBlockedUntil || P.DutyBlockedUntil > Time + 900.0)   // (or the clock was set back)
+			{
+				P.DutyBlockedUntil = Time + 900.0;
+			}
 		}
 		int Best = -1, BestSlot = -1;
 		float BestScore = -1e8f;
@@ -3371,11 +3393,28 @@ namespace LyudPeople
 		{
 			Urgent = P.N[(int)ENeed::Hunger] >= P.N[(int)ENeed::Tired] ? (int)ENeed::Hunger : (int)ENeed::Tired;
 		}
+		else if (P.N[(int)ENeed::Hunger] > 0.85f)
+		{
+			Urgent = (int)ENeed::Hunger;    // past what Interrupt calls them away for: not back to something that doesn't meet it
+		}
+		else if (P.N[(int)ENeed::Tired] > 0.96f)
+		{
+			Urgent = (int)ENeed::Tired;
+		}
 		// a break from work is taken at the work's own place when it has what's needed (the owner eats in the club, not
 		// at home); otherwise anywhere
 		const std::string WorkKind = bBreakNow && P.Slot >= 0 ? Places[Slots[P.Slot].Place].Kind : std::string();
-		for (int Pass = WorkKind.empty() ? 1 : 0; Pass < 2 && Best < 0; Pass++)
+		for (int Pass = WorkKind.empty() ? 1 : 0; Pass < 3 && Best < 0; Pass++)
 		{
+			if (Pass == 2)
+			{
+				// nothing open for the need that can't wait (not on a break): whatever is best then
+				if (bBreakNow || Urgent < 0)
+				{
+					break;
+				}
+				Urgent = -1;
+			}
 			for (int I = 0; I < (int)Activities.size(); I++)
 			{
 				if (Urgent >= 0 && Activities[I].Need[Urgent] <= 0.f)
