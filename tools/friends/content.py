@@ -155,6 +155,11 @@ GIFTS = [
     ("dish_fried_potatoes", ["teen", "adult", "warm"]),
     ("dish_fried_fish", ["elder", "adult", "sea"]),
     ("dish_salad", ["adult", "tidy", "artist"]),
+    ("dish_okroshka", ["adult", "elder", "warm"]),
+    ("dish_fried_smelt", ["sea", "elder", "adult"]),
+    ("dish_herring_potatoes", ["sea", "elder", "adult"]),
+    ("dish_draniki", ["kid", "teen", "elder", "warm"]),
+    ("dish_carrot_salad", ["kid", "tidy", "elder"]),
 ]
 
 # --- tea at home: the ten open-home owners (their homes: tools/city/content/strings/homes.json) ----------------------

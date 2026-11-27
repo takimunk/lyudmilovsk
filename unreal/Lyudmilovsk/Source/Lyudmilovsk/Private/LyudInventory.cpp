@@ -270,6 +270,12 @@ namespace
 		Good(TEXT("dish_fried_potatoes"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.85f, 0.65f, 0.25f), 25, 8.f);
 		Good(TEXT("dish_fried_fish"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.72f, 0.47f, 0.18f), 30, 8.f);
 		Good(TEXT("dish_salad"), K::Food, L::Pack, FVector(6.f, 16.f, 16.f), FLinearColor(0.75f, 0.3f, 0.2f), 20, 8.f);
+		// the dishes the town teaches (docs/kitchen.md "Recipes the town teaches")
+		Good(TEXT("dish_okroshka"), K::Food, L::Pack, FVector(7.f, 14.f, 14.f), FLinearColor(0.9f, 0.86f, 0.78f), 20, 8.f);
+		Good(TEXT("dish_fried_smelt"), K::Food, L::Pack, FVector(4.f, 16.f, 16.f), FLinearColor(0.8f, 0.58f, 0.26f), 30, 8.f);
+		Good(TEXT("dish_herring_potatoes"), K::Food, L::Pack, FVector(5.f, 18.f, 18.f), FLinearColor(0.75f, 0.68f, 0.55f), 30, 8.f);
+		Good(TEXT("dish_draniki"), K::Food, L::Pack, FVector(4.f, 16.f, 16.f), FLinearColor(0.82f, 0.6f, 0.28f), 25, 8.f);
+		Good(TEXT("dish_carrot_salad"), K::Food, L::Pack, FVector(5.f, 14.f, 14.f), FLinearColor(0.95f, 0.55f, 0.15f), 15, 8.f);
 		// the diner by the lower station (docs/diner.md): ordered over its counter and served on a plate or in a cup there (ALyudDiner,
 		// Content/Food/food.json "plated"), eaten with a fork or a spoon or drunk at the counter; the burger in the hand. The looks here are
 		// only fallbacks (a burger left in the pocket)

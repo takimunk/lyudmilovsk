@@ -1,0 +1,64 @@
+{
+ "_doc": "Recipes the town teaches (docs/kitchen.md): staff at five counters (their topics: buy_canteen in x_kitchen.json, the others appended in talk.json, ids <trade>.recipe_<id>) answer how they cook a dish and give the stamp recipes/<id>; ULyudKitchen lists a recipe on its page once the stamp is there (KitchenModel.cpp FRecipe::Learn). The quest kitchen_recipes: ask the fishmonger, cook what was taught (cook learnt), tell the canteen's cook.",
+ "collections": {
+  "recipes": {
+   "title": "city.coll.recipes.title",
+   "pieces": [
+    "draniki",
+    "fried_smelt",
+    "okroshka",
+    "herring_potatoes",
+    "carrot_salad"
+   ]
+  }
+ },
+ "quests": [
+  {
+   "id": "kitchen_recipes",
+   "kind": "side",
+   "start_on": {
+    "event": "ask",
+    "target": "canteen.recipe_draniki"
+   },
+   "stages": [
+    {
+     "id": "learn",
+     "objectives": [
+      {
+       "id": "ask_smelt",
+       "event": "ask",
+       "target": "fish.recipe_fried_smelt"
+      }
+     ]
+    },
+    {
+     "id": "cook",
+     "objectives": [
+      {
+       "id": "cook_learnt",
+       "event": "cook",
+       "target": "learnt",
+       "need": 2
+      }
+     ]
+    },
+    {
+     "id": "tell",
+     "objectives": [
+      {
+       "id": "tell_cook",
+       "event": "ask",
+       "target": "canteen.recipes"
+      }
+     ],
+     "reward": {
+      "rubles": 30,
+      "items": {
+       "bread_loaf": 1
+      }
+     }
+    }
+   ]
+  }
+ ]
+}
