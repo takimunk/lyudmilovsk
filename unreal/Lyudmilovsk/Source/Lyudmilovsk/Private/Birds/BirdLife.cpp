@@ -713,6 +713,15 @@ void UBirdLifeSubsystem::UpdatePlayer(float DeltaTime)
 	}
 }
 
+struct FBirdDispatchBuffers
+{
+	std::vector<LyudBirds::FEvent> Events;
+	std::vector<FNestEvent> NestEvents;
+	std::vector<LyudBirds::FHabitEvent> HabitEvents;
+	/** Habit events a handler made during the last dispatch, kept over FWorld::Step (which starts the list afresh). */
+	std::vector<LyudBirds::FHabitEvent> HabitPending;
+};
+
 void UBirdLifeSubsystem::Tick(float DeltaTime)
 {
 	if (CVarBirds.GetValueOnGameThread() == 0)
@@ -842,15 +851,6 @@ void UBirdLifeSubsystem::SetBeasts(const TArray<FBirdBeast>& Beasts)
 		Sim->Beasts.push_back(FBeast{ FromUE(B.Location), FromUE(B.Velocity), B.bCat, B.bStalking });
 	}
 }
-
-struct FBirdDispatchBuffers
-{
-	std::vector<LyudBirds::FEvent> Events;
-	std::vector<FNestEvent> NestEvents;
-	std::vector<LyudBirds::FHabitEvent> HabitEvents;
-	/** Habit events a handler made during the last dispatch, kept over FWorld::Step (which starts the list afresh). */
-	std::vector<LyudBirds::FHabitEvent> HabitPending;
-};
 
 void UBirdLifeSubsystem::DispatchEvents()
 {
