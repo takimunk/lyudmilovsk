@@ -1,0 +1,110 @@
+{
+ "_doc": "The yacht school's boathouse (docs/yacht_school.md, part G): what its things do (the place S-SAIL-SCHOOL and its things' positions are generated into x_sailing_place.json by tools/sailing/words.py), the texts on its boards, the staff's talk topics, the stamp set 'sailing' (given by the engine, ULyudSailing) and what the full set pays. Words: strings/x_sailing.json. Engine hooks (the doc's list): do sail_knots -> lesson event 'knot', do sail_parts -> 'parts', do sail_rig -> 'rig'; texts with gen sail:timetable / sail:results are set by ULyudSailing (their pages here are the fallback); sail_mast and sail_radio lines may be replaced through ULyudCityThings::AddActHook.",
+ "acts": {
+  "sail_notice": {"prompt": "city.act.look.prompt", "minutes": 1, "any_hour": true, "lines": ["city.sail.notice.line"], "read": {"texts": ["sail_timetable"]}},
+  "sail_results": {"prompt": "city.act.look.prompt", "minutes": 1, "any_hour": true, "lines": ["city.sail.results.line"], "read": {"texts": ["sail_results"]}},
+  "sail_emblem": {"prompt": "city.act.watch.prompt", "minutes": 1, "any_hour": true, "lines": "city.sail.emblem.*"},
+  "sail_bell": {"prompt": "city.sail.bell.prompt", "minutes": 0, "any_hour": true, "sound": "sail_bell_single", "lines": "city.sail.bell.*"},
+  "sail_carry": {"prompt": "city.sail.carry.prompt", "minutes": 20, "fade": true, "needs_staff": "bosun", "closed": "city.sail.carry.closed",
+                 "lines": [{"k": "city.sail.carry.in.1", "date": ["11-01", "11-20"]}, {"k": "city.sail.carry.in.2", "date": ["11-01", "11-20"]},
+                           {"k": "city.sail.carry.out.1", "date": ["04-11", "05-05"]}, {"k": "city.sail.carry.out.2", "date": ["04-11", "05-05"]},
+                           {"k": "city.sail.carry.summer", "date": ["05-06", "10-31"]}, {"k": "city.sail.carry.winter", "date": ["11-21", "04-10"]}]},
+  "sail_wash": {"prompt": "city.sail.wash.prompt", "minutes": 10, "any_hour": true, "sound": "sail_hose", "lines": "city.sail.wash.*"},
+  "sail_knots": {"prompt": "city.sail.knot.prompt", "minutes": 5, "any_hour": true, "sound": "sail_rope_creak", "lines": ["city.sail.knot.after"],
+                 "game": {"type": "aim", "title": "city.sail.knot.title", "keys": "city.sail.knot.keys", "rounds": 3, "need": 3, "speed": 0.5, "zone": 0.3,
+                          "win": ["city.sail.knot.win.1", "city.sail.knot.win.2", "city.sail.knot.win.3", "city.sail.knot.win.4", "city.sail.knot.win.5"],
+                          "draw": ["city.sail.knot.draw.1", "city.sail.knot.draw.2"],
+                          "lose": ["city.sail.knot.lose.1", "city.sail.knot.lose.2"]}},
+  "sail_mast": {"prompt": "city.act.watch.prompt", "minutes": 1, "any_hour": true, "lines": "city.sail.mast.*"},
+  "sail_parts": {"prompt": "city.sail.parts.prompt", "minutes": 3, "any_hour": true, "lines": "city.sail.parts.*"},
+  "sail_rig": {"prompt": "city.sail.rig.prompt", "minutes": 15, "fade": true, "any_hour": true, "sound": "sail_mast_step", "lines": "city.sail.rig.*"},
+  "sail_life_jacket": {"prompt": "city.sail.jacket.prompt", "minutes": 1, "give": [["life_jacket", 1]], "daily": 1, "sound": "sail_buckle", "lines": "city.sail.jacket.*"},
+  "sail_lockers": {"prompt": "city.act.watch.prompt", "minutes": 1, "lines": "city.sail.lockers.*"},
+  "sail_old_hull": {"prompt": "city.sail.hull.prompt", "minutes": 20, "fade": true, "needs_staff": "bosun", "closed": "city.sail.hull.closed", "sound": "plane_wood", "lines": "city.sail.hull.*"},
+  "sail_photos": {"prompt": "city.act.watch.prompt", "minutes": 2, "lines": "city.sail.photos.*"},
+  "sail_blackboard": {"prompt": "city.act.look.prompt", "minutes": 2, "lines": "city.sail.blackboard.*"},
+  "sail_flags": {"prompt": "city.act.look.prompt", "minutes": 1, "lines": ["city.sail.flags.line"], "read": {"texts": ["sail_flag_chart"]}},
+  "sail_trophies": {"prompt": "city.act.watch.prompt", "minutes": 2, "lines": "city.sail.trophies.*"},
+  "sail_bookshelf": {"prompt": "city.act.read.prompt", "minutes": 2, "sound": "page_turn", "lines": ["city.sail.bookshelf.line"], "read": {"texts": ["sail_helm_school"]}},
+  "sail_barometer": {"prompt": "city.sail.barometer.prompt", "minutes": 1,
+                     "lines": [{"k": "city.sail.barometer.fog", "weather": "fog"}, {"k": "city.sail.barometer.rain", "weather": ["rain", "snow"]},
+                               {"k": "city.sail.barometer.clear", "weather": "clear"}, "city.sail.barometer.1", "city.sail.barometer.2"]},
+  "sail_coach_desk": {"prompt": "city.act.ask.prompt", "minutes": 1, "needs_staff": "coach", "closed": "city.sail.desk.closed", "lines": "city.sail.desk.*"},
+  "sail_radio": {"prompt": "city.sail.radio.prompt", "minutes": 2, "sound": "radio_tune",
+                 "lines": [{"k": "city.sail.radio.fog", "weather": "fog"}, {"k": "city.sail.radio.rain", "weather": "rain"},
+                           {"k": "city.sail.radio.cold", "weather": ["cold", "snow"]}, {"k": "city.sail.radio.clear", "weather": ["clear", "warm"]},
+                           "city.sail.radio.1", "city.sail.radio.2"]},
+  "sail_tea": {"prompt": "city.sail.tea.prompt", "minutes": 10, "pose": "stand", "sound": "tea_pour",
+               "lines": [{"k": "city.sail.tea.cold", "weather": ["cold", "rain", "snow"]}, "city.sail.tea.1", "city.sail.tea.2", "city.sail.tea.3", "city.sail.tea.4"]},
+  "sail_logbook": {"prompt": "city.act.read.prompt", "minutes": 1, "sound": "page_turn", "lines": ["city.sail.logbook.line"], "read": {"texts": ["sail_logbook"]}}
+ },
+ "rules": {
+  "S-SAIL-SCHOOL/notice_board": {"act": "sail_notice", "hours": [0, 24], "days": "mon-sun"},
+  "S-SAIL-SCHOOL/results_board": {"act": "sail_results", "hours": [0, 24], "days": "mon-sun"},
+  "S-SAIL-SCHOOL/emblem": {"act": "sail_emblem", "hours": [0, 24], "days": "mon-sun"},
+  "S-SAIL-SCHOOL/bell": {"act": "sail_bell", "hours": [0, 24], "days": "mon-sun"},
+  "S-SAIL-SCHOOL/boat_door": {"act": "sail_carry"},
+  "S-SAIL-SCHOOL/wash_tap": {"act": "sail_wash", "hours": [0, 24], "days": "mon-sun"},
+  "S-SAIL-SCHOOL/knot_board": {"act": "sail_knots", "hours": [0, 24], "days": "mon-sun"},
+  "S-SAIL-SCHOOL/signal_mast": {"act": "sail_mast", "hours": [0, 24], "days": "mon-sun"},
+  "S-SAIL-SCHOOL/parts_boat": {"act": "sail_parts", "hours": [0, 24], "days": "mon-sun"},
+  "S-SAIL-SCHOOL/rig_boat": {"act": "sail_rig", "hours": [0, 24], "days": "mon-sun"},
+  "S-SAIL-SCHOOL/life_jackets": {"act": "sail_life_jacket"},
+  "S-SAIL-SCHOOL/lockers": {"act": "sail_lockers"},
+  "S-SAIL-SCHOOL/old_hull": {"act": "sail_old_hull"},
+  "S-SAIL-SCHOOL/photo_wall": {"act": "sail_photos"},
+  "S-SAIL-SCHOOL/blackboard": {"act": "sail_blackboard"},
+  "S-SAIL-SCHOOL/flag_chart": {"act": "sail_flags"},
+  "S-SAIL-SCHOOL/trophy_shelf": {"act": "sail_trophies"},
+  "S-SAIL-SCHOOL/book_shelf": {"act": "sail_bookshelf"},
+  "S-SAIL-SCHOOL/barometer": {"act": "sail_barometer"},
+  "S-SAIL-SCHOOL/coach_desk": {"act": "sail_coach_desk"},
+  "S-SAIL-SCHOOL/radio": {"act": "sail_radio"},
+  "S-SAIL-SCHOOL/tea_table": {"act": "sail_tea"},
+  "S-SAIL-SCHOOL/log_book": {"act": "sail_logbook"}
+ },
+ "texts": {
+  "sail_timetable": {"title": "city.text.sail.timetable.title", "kind": "notice", "minutes": 1, "gen": "sail:timetable",
+                     "pages": ["city.text.sail.timetable.head",
+                               [{"k": "city.text.sail.timetable.summer", "date": ["06-01", "08-31"]}, {"k": "city.text.sail.timetable.term", "date": ["09-01", "05-31"]}],
+                               "city.text.sail.timetable.races", "city.text.sail.timetable.rules"]},
+  "sail_results": {"title": "city.text.sail.results.title", "kind": "notice", "minutes": 1, "gen": "sail:results",
+                   "pages": ["city.text.sail.results.1", "city.text.sail.results.2"]},
+  "sail_flag_chart": {"title": "city.text.sail.flags.title", "kind": "notice", "minutes": 1,
+                      "pages": ["city.text.sail.flags.1", "city.text.sail.flags.2", "city.text.sail.flags.3", "city.text.sail.flags.4"]},
+  "sail_logbook": {"title": "city.text.sail.logbook.title", "kind": "ledger", "minutes": 1,
+                   "pages": ["city.text.sail.logbook.1", "city.text.sail.logbook.2", "city.text.sail.logbook.3", "city.text.sail.logbook.4",
+                             "city.text.sail.logbook.5", "city.text.sail.logbook.6", "city.text.sail.logbook.7"]},
+  "sail_helm_school": {"title": "city.text.sail.helm.title", "kind": "book", "minutes": 3,
+                       "pages": ["city.text.sail.helm.1", "city.text.sail.helm.2", "city.text.sail.helm.3", "city.text.sail.helm.4",
+                                 "city.text.sail.helm.5", "city.text.sail.helm.6", "city.text.sail.helm.7", "city.text.sail.helm.8"]}
+ },
+ "topics": {
+  "buy_sail_bosun": [
+   {"id": "sail.bosun.boats", "k": "city.ask.sail.bosun.boats", "lines": ["city.ask.sail.bosun.boats.1", "city.ask.sail.bosun.boats.2", "city.ask.sail.bosun.boats.3"]},
+   {"id": "sail.bosun.wind", "k": "city.ask.sail.bosun.wind", "lines": ["city.ask.sail.bosun.wind.1", "city.ask.sail.bosun.wind.2", {"k": "city.ask.sail.bosun.wind.fog", "weather": "fog"}]},
+   {"id": "sail.bosun.hire", "k": "city.ask.sail.bosun.hire", "lines": ["city.ask.sail.bosun.hire.1", {"k": "city.ask.sail.bosun.hire.2", "have": "sailing/certificate"}]},
+   {"id": "sail.bosun.hull", "k": "city.ask.sail.bosun.hull", "lines": ["city.ask.sail.bosun.hull.1", "city.ask.sail.bosun.hull.2"]},
+   {"id": "sail.bosun.sea", "k": "city.ask.sail.bosun.sea", "lines": ["city.ask.sail.bosun.sea.1", "city.ask.sail.bosun.sea.2", "city.ask.sail.bosun.sea.3"]},
+   {"id": "sail.bosun.capsized", "k": "city.ask.sail.bosun.capsized", "have": "sailing/capsize", "lines": ["city.ask.sail.bosun.capsized.1", "city.ask.sail.bosun.capsized.2"]}
+  ],
+  "sail_coach_desk": [
+   {"id": "sail.coach.join", "k": "city.ask.sail.coach.join", "lines": ["city.ask.sail.coach.join.1", "city.ask.sail.coach.join.2", {"k": "city.ask.sail.coach.join.3", "have": "sailing/joined"}]},
+   {"id": "sail.coach.scary", "k": "city.ask.sail.coach.scary", "lines": ["city.ask.sail.coach.scary.1", "city.ask.sail.coach.scary.2"]},
+   {"id": "sail.coach.races", "k": "city.ask.sail.coach.races", "lines": ["city.ask.sail.coach.races.1", "city.ask.sail.coach.races.2", {"k": "city.ask.sail.coach.races.3", "have": "sailing/first_race"}]},
+   {"id": "sail.coach.ranks", "k": "city.ask.sail.coach.ranks", "lines": ["city.ask.sail.coach.ranks.1", "city.ask.sail.coach.ranks.2"]},
+   {"id": "sail.coach.kids", "k": "city.ask.sail.coach.kids", "lines": ["city.ask.sail.coach.kids.1", "city.ask.sail.coach.kids.2"]},
+   {"id": "sail.coach.winter", "k": "city.ask.sail.coach.winter", "lines": ["city.ask.sail.coach.winter.1", "city.ask.sail.coach.winter.2"]}
+  ]
+ },
+ "collections": {
+  "sailing": {
+   "title": "city.coll.sailing",
+   "by": "ULyudSailing (Private/Sailing/LyudSailing.cpp, not written yet: when it is, replace this field with \"code\": [that path] so every piece is checked against the source): the stamps of FSchoolEvents",
+   "pieces": ["joined", "first_sail", "capsize", "certificate", "helm2", "helm1", "first_race", "race_win", "opening", "closing", "cup_lyudmilovsk", "miles_10", "miles_100", "recall"]
+  }
+ },
+ "rewards": {
+  "sailing": {"item": "sail_pennant"}
+ }
+}
