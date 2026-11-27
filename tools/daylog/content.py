@@ -45,7 +45,6 @@ RULES = [
     ("animal_walk", "", "animal_friend"),
     ("animal_lap", "Cat", "cat"), ("animal_stroked", "Cat", "cat"), ("animal_fed", "Cat", "cat"), ("animal_sniffed", "Cat", "cat"),
     ("animal_lap", "Dog", "dog"), ("animal_stroked", "Dog", "dog"), ("animal_fed", "Dog", "dog"), ("animal_sniffed", "Dog", "dog"),
-    ("procedure", "soda_plain", "soda"), ("procedure", "soda_syrup", "soda"),
     ("procedure", "", "cure"),
     ("observe", "jupiter_*", "jupiter"), ("observe", "", "sky"),
     ("bird_habit", "", "bird_habit"),

@@ -46,6 +46,7 @@
    "closed": "soda_closed",
    "proc": {
     "title": "city.soda.p.title",
+    "scene": true,
     "steps": [
      {
       "do": "say",
@@ -188,6 +189,7 @@
    "price": 3,
    "proc": {
     "title": "city.soda.p.title",
+    "scene": true,
     "steps": [
      {
       "do": "say",

@@ -282,16 +282,6 @@
   },
   {
    "event": "procedure",
-   "target": "soda_plain",
-   "topic": "soda"
-  },
-  {
-   "event": "procedure",
-   "target": "soda_syrup",
-   "topic": "soda"
-  },
-  {
-   "event": "procedure",
    "target": "",
    "topic": "cure"
   },

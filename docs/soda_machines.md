@@ -83,7 +83,7 @@ The 22 °C floor keeps them to the season in practice. The walkers do not know a
 
 ## Diary
 
-Topic `soda` in `tools/daylog/content.py`, from the events `do` and `procedure` with target `soda_plain` or `soda_syrup`.
+Topic `soda` in `tools/daylog/content.py`, from the event `do` with target `soda_plain` or `soda_syrup`. Both procs carry `"scene": true` (docs/sanatorium_procedures.md), so a glass is no cure: it sends no `procedure` event and is not in the procedure count.
 
 ## Dev mode (F7)
 
@@ -97,12 +97,6 @@ Topic `soda` in `tools/daylog/content.py`, from the events `do` and `procedure` 
   stamps, the stuck coin at most once a day, the dev action, winter and May, broken words, the broken days match the
   dress die, about 12% broken).
 - `python3 tools/town/town_activities.py --check`, `tools/barksim/run.sh`, `tools/daylog/run.sh`
-
-## Depends on
-
-Branch `interiors-touch-1127` adds the act field `"scene": true`. Until it is merged, the soda scenes run as sanatorium
-procedures: they count in the procedure total and send the `procedure` event. After the merge, add `"scene": true` to
-both soda acts' `proc` and rerun `interiors.py`.
 
 ## Known gaps
 
