@@ -643,9 +643,10 @@ def start_flag():
     white = p.mat("white", (0.95, 0.95, 0.95), 0.8)
     p.rod(wood, (0.0, 0.0, -0.12), (0.0, 0.0, 0.62), 0.009, seg=8)
     p.sheet(blue, [(0.0, 0.0, 0.3), (0.34, 0.0, 0.3), (0.34, 0.0, 0.6), (0.0, 0.0, 0.6)])
-    for y in (0.002, -0.002):
-        q = [(0.1, y, 0.4), (0.24, y, 0.4), (0.24, y, 0.5), (0.1, y, 0.5)]
-        p.sheet(white, q if y > 0 else list(reversed(q)))
+    for y in (0.002, -0.002):                                    # the white square on both faces, each facing out
+        q = [(0.1, y, 0.4), (0.24, y, 0.4), (0.24, y, 0.5), (0.1, y, 0.5)]      # (as listed it faces -Y)
+        vs = [p.bm.verts.new(Vector(c)) for c in (q if y < 0 else list(reversed(q)))]
+        p.bm.faces.new(vs).material_index = white
     return p
 
 

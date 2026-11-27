@@ -28,6 +28,8 @@ namespace LyudGesture
 
 	/** A clip that does the manner better than the goals can, for a body standing still (NAME_None: none). */
 	FName ClipFor(LyudPeople::EManner Manner);
+	/** ClipFor's clip is a seated one (on the house chair): it plays for a seated body, not a standing one. */
+	bool ClipSeated(LyudPeople::EManner Manner);
 
 	/** In the animation worker, after the clip and the feet: the back, the head, the arms, the fingers. */
 	void Apply(FCompactPose& Pose, const FLyudGesturePose& G, FLyudGestureBones& Bones);

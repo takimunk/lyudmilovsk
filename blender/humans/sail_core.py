@@ -71,20 +71,64 @@ BOATS = {
 }
 
 
+ANKLE_Z = 0.08                        # the clips' grown-up's ankle over the floor (a child's: times its scale)
+
+
+def boat_from_sockets(B, d):
+    """BOATS numbers from part C's entry for a boat (its frame: metres, origin at the waterline amidships, +X forward,
+    +Y port, +Z up). The clip's origin is on the centreline abreast the helm's seat (helm_port's x), on the floor under
+    the helm's feet (helm_port's feet z less the ankle's height): origin_in_boat, which the engine attaches the body at."""
+    P, S, dims = d.get("parts", {}), d.get("sockets", {}), d.get("dims", {})
+    helm = S.get("helm_port")
+    if not helm:
+        return False
+    sx = helm["pos"][0]
+    sole = helm["feet"][2] - ANKLE_Z * B["scale"]
+
+    def c(p):                          # boat frame -> the clip's frame (port +X, bow -Y, up +Z)
+        return (round(p[1], 4), round(-(p[0] - sx), 4), round(p[2] - sole, 4))
+    B["origin_in_boat"] = (sx, 0.0, round(sole, 4))
+    if "deck_z_mid" in dims:
+        B["deck_z"] = round(dims["deck_z_mid"] - sole, 4)
+    if "beam" in dims:
+        B["half_beam"] = round(dims["beam"] * 0.5, 4)
+    if "loa" in dims:
+        B["length"] = (round(-(dims["loa"] * 0.5 - sx), 4), round(dims["loa"] * 0.5 + sx, 4))
+    B["sit_x"] = round(abs(helm["pos"][1]), 4)
+    if "strap" in S:
+        B["strap"] = (round(abs(S["strap"]["from"][1]), 4), round(S["strap"]["from"][2] - sole, 4))
+        # the floor reaches at least a foot's length outboard of the strap (part C gives no floor width)
+        B["cockpit_half"] = max(B["cockpit_half"], round(B["strap"][0] + 0.2, 4))
+    if "mainsheet_block" in S:
+        B["sheet_block"] = c(S["mainsheet_block"]["pos"])
+    if "Tiller" in P:
+        B["rudder"] = c(P["Tiller"]["pivot"])
+        if "Ext" in P:
+            B["tiller_len"] = round(P["Ext"]["pivot"][0] - P["Tiller"]["pivot"][0], 4)
+    if "hand_tiller_ext" in S:
+        B["ext_len"] = round(S["hand_tiller_ext"]["pos"][0] + 0.06, 4)
+    if "Boom" in P:
+        B["boom_z"] = round(P["Boom"]["pivot"][2] - sole - 0.03, 4)
+        if "boom_block" in B and "boom_block" in S:
+            bp, bb = P["Boom"]["pivot"], S["boom_block"]["pos"]
+            B["boom_block"] = c((bp[0] + bb[0], bp[1] + bb[1], bp[2] + bb[2]))
+    if "Mast" in P:
+        B["mast_y"] = round(-(P["Mast"]["pivot"][0] - sx), 4)
+    if "crew_dy" in B and "crew_port" in S:
+        B["crew_dy"] = round(-(S["crew_port"]["pos"][0] - sx), 4)
+    return True
+
+
 def load_sockets():
-    """Part C's crew sockets (blender/sailing/sockets.json) over the defaults: any key it has for a boat wins."""
+    """Part C's crew sockets (blender/sailing/sockets.json) over the defaults (boat_from_sockets)."""
     if not os.path.exists(SOCKETS):
         return "defaults (no blender/sailing/sockets.json yet)"
     try:
         data = json.load(open(SOCKETS))
     except Exception as e:  # noqa: BLE001
         return "defaults (sockets.json unreadable: %s)" % e
-    for boat, keys in data.items():
-        if boat in BOATS and isinstance(keys, dict):
-            for k, v in keys.items():
-                if k in BOATS[boat]:
-                    BOATS[boat][k] = tuple(v) if isinstance(v, list) else v
-    return "blender/sailing/sockets.json"
+    got = [b for b, d in data.items() if b in BOATS and isinstance(d, dict) and boat_from_sockets(BOATS[b], d)]
+    return "blender/sailing/sockets.json (%s)" % ", ".join(got)
 
 
 def log(m):

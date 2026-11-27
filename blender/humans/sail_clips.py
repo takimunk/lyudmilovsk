@@ -116,8 +116,8 @@ def main():
                        "boats: the numbers it was posed with.",
                "boats": {k: {kk: (list(vv) if isinstance(vv, tuple) else vv) for kk, vv in b.items()} for k, b in BOATS.items()},
                "boats_from": src, "clips": grips}, open(GRIPS, "w"), indent=1)
-    json.dump(report, open(os.path.join(ROOT, "Saved", "ClipSources", "sail_clips_report.json") if os.path.isdir(
-        os.path.join(ROOT, "Saved", "ClipSources")) else os.path.join(HERE, ".sail_report.json"), "w"), indent=1)
+    os.makedirs(os.path.join(ROOT, "Saved", "ClipSources"), exist_ok=True)
+    json.dump(report, open(os.path.join(ROOT, "Saved", "ClipSources", "sail_clips_report.json"), "w"), indent=1)
     if "--no-export" not in argv and acts:
         p.reset()
         poser.export(arm_obj, acts, os.path.join(ROOT, "Saved", "ClipSources", "sail_clips.glb"))
