@@ -1695,6 +1695,7 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 		D.Xf.SetNum(NumPoses * Sets);
 		D.Shown.Init(0, NumPoses * Sets);
 		D.Sent.SetNum(NumPoses * Sets);
+		D.Idle.Init(0.f, NumPoses * Sets);
 		// a plumage material asked for once per species, not once per pose (most do not exist: each miss is a package
 		// lookup)
 		TMap<FString, UMaterialInterface*> Plumages;
@@ -1773,11 +1774,30 @@ void ABirdLifeRenderer::Setup(const FWorld& World)
 	}
 }
 
-void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown, TArray<FTransform>& Sent)
+void ABirdLifeRenderer::Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown, TArray<FTransform>& Sent, float& Idle, float Dt)
 {
 	static const FTransform Hidden(FQuat::Identity, FVector::ZeroVector, FVector::ZeroVector);
 	const int32 Want = Arr.Num();
-	const int32 Have = ISM->GetInstanceCount();
+	int32 Have = ISM->GetInstanceCount();
+	// the count only grows below (no churn when a lone bird's beat moves it between poses), so after a murmuration a
+	// starling pose kept ~1500 zero-scale instances for the rest of the session. A pose that has wanted far fewer than
+	// it has for 15 s gives them back: one rebuild, after which it holds what it wants plus the usual margin
+	if (Have > 64 && Want * 4 + 16 < Have)
+	{
+		Idle += Dt;
+	}
+	else
+	{
+		Idle = 0.f;
+	}
+	if (Idle > 15.f)
+	{
+		Idle = 0.f;
+		ISM->ClearInstances();
+		Have = 0;
+		Shown = 0;
+		Sent.Reset();
+	}
 	// no bird in this pose now nor at the last sync: its instances are hidden already, and rewriting them
 	// every frame would make the renderer update the component for nothing
 	const bool bNothing = Want == 0 && Shown == 0;
@@ -2047,7 +2067,7 @@ void ABirdLifeRenderer::Draw(const FWorld& World, const FVector& Camera, float P
 		{
 			if (UInstancedStaticMeshComponent* ISM = D.Poses[P].Get())
 			{
-				Sync(ISM, D.Xf[P], D.Shown[P], D.Sent[P]);
+				Sync(ISM, D.Xf[P], D.Shown[P], D.Sent[P], D.Idle[P], Dt);
 			}
 		}
 	}
