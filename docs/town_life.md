@@ -147,6 +147,14 @@ Not done: the pianist is silent (the instruments' synth has no way to be played 
 walk along with the hero, and the cinema's house does not follow the programme (people sit through the two fixed
 sessions whatever is on).
 
+## The street's everyday life
+
+`tools/town/street_life.py` (docs/street_life.md), first in the add-ons' chain that `town_life.py` runs, gives the town
+its warm half of the year: the kvass barrel and the ice-cream cart with their vendors and lines on hot afternoons, the
+yard keeper's dawn sweep, the milk round, the shopkeepers' shutters, a laundress in each yard, the grandmothers' benches,
+the evening's dominoes, the autumn's raking and the spring subbotnik. Its activities carry `"when"` conditions that
+`ULyudStreetLife` switches from the date and the weather. `tools/peoplesim/run.sh street` checks it.
+
 ## The Aton coast
 
 Backlog item 37: the coast between the club and the town (docs/south.md "People") has its people too, added by

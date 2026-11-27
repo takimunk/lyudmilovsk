@@ -6,6 +6,9 @@ on the racks in winter, a jigsaw in the sanatorium lounge that grows a little ev
 school wall that change every week, flowers in a vase that wilt and get replaced. Backlog item 25
 (docs/interactives_backlog.md) and city_backlog P5 "seasonal dressing".
 
+Out of doors the street has a layer like it that follows the weather and the date (the washing on the yards' lines,
+the kvass barrel on a hot day, the leaf piles, the whitewashed trunks): docs/street_life.md.
+
 ## Files
 
 | What | Where |

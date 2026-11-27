@@ -487,6 +487,16 @@
   },
   {
    "event": "do",
+   "target": "buy_street_*",
+   "topic": "street"
+  },
+  {
+   "event": "do",
+   "target": "street_*",
+   "topic": "street"
+  },
+  {
+   "event": "do",
    "target": "~chess",
    "topic": "games"
   },
@@ -921,6 +931,17 @@
    "one": 0,
    "many": 0,
    "plain": 4
+  },
+  {
+   "id": "street",
+   "rank": 40,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 5
   },
   {
    "id": "brook",
