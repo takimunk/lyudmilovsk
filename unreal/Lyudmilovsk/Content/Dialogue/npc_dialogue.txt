@@ -60,6 +60,14 @@ sun.night = clerk.sun_night.1
 aside.awakening.owner = clerk.booth_aisle.1
 aside.awakening.done = clerk.town_in_grey.1 | clerk.town_in_grey.2
 aside.awakening.done.if.night = clerk.night_sheet_lights.1
+quest.tq_square.ask = clerk.tq_square_ask.1 | hero.tq_square_ask.2 | clerk.tq_square_ask.3 | clerk.tq_square_ask.4 | clerk.tq_square_ask.5
+quest.tq_square.camera = clerk.tq_square_price.1
+quest.tq_square.shots = clerk.tq_square_still.1
+quest.tq_square.shots.again = clerk.tq_square_develop.1
+quest.tq_square.shots.if.low = clerk.tq_square_low.1
+quest.tq_square.shots.if.cloudy = clerk.tq_square_grey.1
+quest.tq_square.show = clerk.tq_square_show.1 | clerk.tq_square_show.2 | hero.tq_square_show.3 | clerk.tq_square_show.4 | clerk.tq_square_show.5
+quest.tq_square.done = clerk.tq_square_after.1
 
 [Streamer]
 first = streamer.first.1 | hero.streamer_first.2 | streamer.first.3 | streamer.first.4
@@ -77,6 +85,15 @@ sun.cloudy = streamer.sun_cloudy.1
 aside.awakening.outside = streamer.wave_for_chat.1 | streamer.wave_for_chat.2
 aside.awakening.done = streamer.bet_on_you.1
 aside.awakening.done.if.low = streamer.sunset_just_for_me.1
+quest.tq_request.ask = streamer.tq_request_ask.1 | streamer.tq_request_ask.2 | hero.tq_request_ask.3 | streamer.tq_request_ask.4 | streamer.tq_request_ask.5
+quest.tq_request.card = streamer.tq_request_wait.1
+quest.tq_request.card.again = streamer.tq_request_knows.1
+quest.tq_request.card.if.no:postcard = streamer.tq_request_nocard.1
+quest.tq_request.listen = streamer.tq_request_sent.1
+quest.tq_request.listen.again = streamer.tq_request_inlove.1
+quest.tq_request.listen.if.night = streamer.tq_request_evening.1
+quest.tq_request.tell = streamer.tq_request_tell.1 | hero.tq_request_tell.2 | streamer.tq_request_tell.3 | streamer.tq_request_tell.4
+quest.tq_request.done = streamer.tq_request_after.1
 
 [Kid_boy]
 first = kid_boy.first.1 | hero.kid_boy_first.2 | kid_boy.first.3 | kid_boy.first.4
@@ -93,6 +110,14 @@ sun.night = kid_boy.sun_night.1
 sun.cloudy = kid_boy.sun_cloudy.1
 aside.awakening.outside = kid_boy.went_out_once.1 | kid_boy.went_out_once.2
 aside.awakening.outside.if.night = kid_boy.pines_rustle_night.1
+quest.tq_saturn.ask = kid_boy.tq_saturn_ask.1 | hero.tq_saturn_ask.2 | kid_boy.tq_saturn_ask.3 | kid_boy.tq_saturn_ask.4 | hero.tq_saturn_ask.5
+quest.tq_saturn.look = kid_boy.tq_saturn_wait.1
+quest.tq_saturn.look.again = kid_boy.tq_saturn_patience.1
+quest.tq_saturn.look.again = kid_boy.tq_saturn_sonya.1
+quest.tq_saturn.look.if.night = kid_boy.tq_saturn_dark.1
+quest.tq_saturn.look.if.cloudy = kid_boy.tq_saturn_clouds.1
+quest.tq_saturn.tell = kid_boy.tq_saturn_tell.1 | hero.tq_saturn_tell.2 | kid_boy.tq_saturn_tell.3 | kid_boy.tq_saturn_tell.4
+quest.tq_saturn.done = kid_boy.tq_saturn_after.1
 
 [Kid_girl]
 first = kid_girl.first.1 | hero.kid_girl_first.2 | kid_girl.first.3 | kid_girl.first.4
@@ -118,6 +143,8 @@ quest.sparrow_hello.tame.again = kid_girl.sparrow_count_four.1
 quest.sparrow_hello.call.again = kid_girl.sparrow_count_four.1
 quest.sparrow_hello.done = kid_girl.sparrow_named_kuzya.1 | hero.sparrow_named_kuzya.2 | kid_girl.sparrow_named_kuzya.3
 quest.sparrow_hello.done.if.have:bird_feed = kid_girl.sparrow_crumbs_door.1
+aside.tq_saturn.look = kid_girl.tq_saturn_no_hook.1
+aside.tq_lullaby.play = kid_girl.tq_lullaby_logic.1
 
 [Guy_a]
 first = guy_a.first.1 | hero.guy_a_first.2 | guy_a.first.3 | guy_a.first.4
@@ -133,6 +160,16 @@ sun.low = guy_a.sun_low.1
 sun.night = guy_a.sun_night.1
 sun.cloudy = guy_a.sun_cloudy.1
 aside.awakening.outside = guy_a.better_signal_outside.1
+aside.tq_request.card,listen = guy_a.tq_request_spelling.1
+quest.tq_round.ask = guy_a.tq_round_ask.1 | guy_a.tq_round_ask.2 | hero.tq_round_ask.3 | guy_a.tq_round_ask.4 | guy_a.tq_round_ask.5
+quest.tq_round.ride = guy_a.tq_round_wait.1
+quest.tq_round.ride.again = guy_a.tq_round_alarms.1
+quest.tq_round.ride.again = guy_a.tq_round_throw.1
+quest.tq_round.ride.if.night = guy_a.tq_round_sleep.1
+quest.tq_round.tell = guy_a.tq_round_tell.1 | hero.tq_round_tell.2 | guy_a.tq_round_tell.3 | hero.tq_round_tell.4 | guy_a.tq_round_tell.5
+quest.tq_round.done = guy_a.tq_round_after.1
+aside.tq_square.camera,shots = guy_a.tq_square_avatar.1
+aside.tq_water.done = guy_a.tq_water_count.1
 
 [Guy_b]
 first = guy_b.first.1 | hero.guy_b_first.2 | guy_b.first.3 | guy_b.first.4
@@ -155,6 +192,14 @@ aside.explore.walk.if.low = guy_b.sunset_promenade_now.1 | guy_b.sunset_promenad
 aside.explore.done = guy_b.never_been_beach.1 | guy_b.never_been_beach.2
 aside.town_road.lookout,descent,bridge,stele,terrace,square,bread = guy_b.road_on_foot.1 | hero.road_on_foot.2 | guy_b.road_on_foot.3
 aside.town_road.done = guy_b.road_back.1
+aside.tq_round.ride = guy_b.tq_round_woke.1
+quest.tq_water.ask = guy_b.tq_water_ask.1 | guy_b.tq_water_ask.2 | hero.tq_water_ask.3 | guy_b.tq_water_ask.4
+quest.tq_water.fill = guy_b.tq_water_wait.1
+quest.tq_water.fill.again = guy_b.tq_water_melons.1
+quest.tq_water.fill.if.have:water = guy_b.tq_water_machine.1
+quest.tq_water.bring_empty = guy_b.tq_water_nobottle.1
+quest.tq_water.bring = guy_b.tq_water_thanks.1 | hero.tq_water_thanks.2 | guy_b.tq_water_thanks.3 | guy_b.tq_water_thanks.4
+quest.tq_water.done = guy_b.tq_water_after.1
 
 [Girl_a]
 first = girl_a.first.1 | hero.girl_a_first.2 | girl_a.first.3 | girl_a.first.4
@@ -175,6 +220,12 @@ aside.explore.walk.again = girl_a.promised_sonya_sea.1
 aside.explore.walk.if.night = girl_a.lights_of_academ.1
 aside.explore.walk.if.cloudy = girl_a.grey_sea_still.1 | girl_a.grey_sea_still.2
 aside.explore.done = girl_a.less_new_now.1
+quest.tq_lullaby.ask = girl_a.tq_lullaby_ask.1 | girl_a.tq_lullaby_ask.2 | hero.tq_lullaby_ask.3 | girl_a.tq_lullaby_ask.4
+quest.tq_lullaby.play = girl_a.tq_lullaby_wait.1
+quest.tq_lullaby.play.again = girl_a.tq_lullaby_loop.1
+quest.tq_lullaby.play.if.night = girl_a.tq_lullaby_late.1
+quest.tq_lullaby.tell = girl_a.tq_lullaby_tell.1 | hero.tq_lullaby_tell.2 | girl_a.tq_lullaby_tell.3 | girl_a.tq_lullaby_tell.4
+quest.tq_lullaby.done = girl_a.tq_lullaby_after.1
 
 [Girl_b]
 first = girl_b.first.1 | hero.girl_b_first.2 | girl_b.first.3 | girl_b.first.4
@@ -203,6 +254,8 @@ quest.overdue_journal.visit.again = girl_b.ficus_instead.1
 quest.overdue_journal.done = girl_b.fresh_issue_twice.1 | girl_b.fresh_issue_twice.2
 quest.overdue_journal.visit.if.night = girl_b.overdue_dark_bench.1
 quest.overdue_journal.buy.if.cloudy = girl_b.overdue_cloudy_quiet.1
+aside.tq_quote.book,line = girl_b.tq_quote_card.1
+aside.tq_card.send = girl_b.tq_card_hello.1
 
 [Nao]
 first = nao.first.1 | hero.nao_first.2 | nao.first.3 | nao.first.4
@@ -217,6 +270,13 @@ sun.day = nao.sun_day.1
 sun.low = nao.sun_low.1
 sun.night = nao.sun_night.1
 sun.cloudy = nao.sun_cloudy.1
+quest.tq_card.ask = nao.tq_card_ask.1 | hero.tq_card_ask.2 | nao.tq_card_ask.3 | nao.tq_card_ask.4
+quest.tq_card.send = nao.tq_card_wait.1
+quest.tq_card.send.again = nao.tq_card_address.1
+quest.tq_card.send.if.have:postcard = nao.tq_card_pocket.1
+quest.tq_card.send.if.night+no:postcard = nao.tq_card_night.1
+quest.tq_card.tell = nao.tq_card_tell.1 | hero.tq_card_tell.2 | nao.tq_card_tell.3 | nao.tq_card_tell.4
+quest.tq_card.done = nao.tq_card_after.1
 
 # The Academgorodok's residents (docs/people.md): [Id] is their own body id (people.json body), not the mesh they borrow for now.
 
@@ -231,6 +291,13 @@ sun.night = zotov_lev.sun_night.1
 quest.overdue_journal.visit = zotov_lev.overdue_admit.1 | zotov_lev.overdue_admit.2 | hero.overdue_admit.3 | zotov_lev.overdue_admit.4 | zotov_lev.overdue_admit.5
 quest.overdue_journal.done = zotov_lev.load_bearing_reading.1 | zotov_lev.load_bearing_reading.2
 quest.overdue_journal.done.if.have:magazine_travel = zotov_lev.shores_too_thin.1
+quest.tq_log.ask = zotov_lev.tq_log_ask.1 | zotov_lev.tq_log_ask.2 | hero.tq_log_ask.3 | zotov_lev.tq_log_ask.4 | zotov_lev.tq_log_ask.5
+quest.tq_log.read = zotov_lev.tq_log_wait.1
+quest.tq_log.read.again = zotov_lev.tq_log_offended.1
+quest.tq_log.read.if.cloudy = zotov_lev.tq_log_grey.1
+quest.tq_log.read.if.low = zotov_lev.tq_log_hands.1
+quest.tq_log.tell = zotov_lev.tq_log_tell.1 | hero.tq_log_tell.2 | zotov_lev.tq_log_tell.3 | zotov_lev.tq_log_tell.4
+quest.tq_log.done = zotov_lev.tq_log_after.1
 
 [Zotova_galina]
 first = zotova_galina.first.1
@@ -298,6 +365,19 @@ quest.hot_corn.tell = korneev_ivan.corn_eaten.1
 quest.hot_corn.carry.if.done:evening_paper = korneev_ivan.corn_paper_boy.1 | korneev_ivan.corn_paper_boy.2
 quest.hot_corn.done = korneev_ivan.cart_visit_secret.1 | korneev_ivan.cart_visit_secret.2
 quest.hot_corn.tell.if.done:first_catch = korneev_ivan.corn_angler_news.1 | korneev_ivan.corn_angler_news.2
+quest.tq_reel.ask = korneev_ivan.tq_reel_ask.1 | korneev_ivan.tq_reel_ask.2 | hero.tq_reel_ask.3 | korneev_ivan.tq_reel_ask.4 | korneev_ivan.tq_reel_ask.5
+quest.tq_reel.film = korneev_ivan.tq_reel_wait.1
+quest.tq_reel.film.again = korneev_ivan.tq_reel_last.1
+quest.tq_reel.film.again = korneev_ivan.tq_reel_flounder.1
+quest.tq_reel.film.if.low = korneev_ivan.tq_reel_queue.1
+quest.tq_reel.film.if.have:ticket_stub = korneev_ivan.tq_reel_old_stub.1
+quest.tq_reel.film.if.done:hot_corn = korneev_ivan.tq_reel_cob.1
+quest.tq_reel.film.if.done:hot_corn.again = korneev_ivan.tq_reel_cob_again.1
+quest.tq_reel.film.if.done:hot_corn.again = korneev_ivan.tq_reel_last.1
+quest.tq_reel.bring_empty = korneev_ivan.tq_reel_nostub.1
+quest.tq_reel.bring = korneev_ivan.tq_reel_thanks.1 | hero.tq_reel_thanks.2 | korneev_ivan.tq_reel_thanks.3 | korneev_ivan.tq_reel_thanks.4
+quest.tq_reel.done = korneev_ivan.tq_reel_after.1
+aside.tq_log.ask,read = korneev_ivan.tq_log_bench.1
 
 [Korneeva_nina]
 first = korneeva_nina.first.1
@@ -344,6 +424,16 @@ sun.day = orlova_tanya.sun_day.1
 sun.cloudy = orlova_tanya.sun_cloudy.1
 quest.waxwing.prepare = orlova_tanya.waxwing_rowan.1 | orlova_tanya.waxwing_rowan.2
 quest.waxwing.prepare.if.have:feed_rowan+have:feeder = orlova_tanya.rowan_guide_left.1 | orlova_tanya.rowan_guide_left.2
+quest.tq_quote.ask = orlova_tanya.tq_quote_ask.1 | orlova_tanya.tq_quote_ask.2 | hero.tq_quote_ask.3 | orlova_tanya.tq_quote_ask.4 | orlova_tanya.tq_quote_ask.5
+quest.tq_quote.book = orlova_tanya.tq_quote_library.1
+quest.tq_quote.line = orlova_tanya.tq_quote_read.1
+quest.tq_quote.line.again = orlova_tanya.tq_quote_nina.1
+quest.tq_quote.line.if.cloudy = orlova_tanya.tq_quote_grey.1
+quest.tq_quote.line.if.done:waxwing = orlova_tanya.tq_quote_birds.1
+quest.tq_quote.line.if.done:waxwing.again = orlova_tanya.tq_quote_birds_again.1
+quest.tq_quote.line.if.done:waxwing.again = orlova_tanya.tq_quote_nina.1
+quest.tq_quote.tell = orlova_tanya.tq_quote_tell.1 | hero.tq_quote_tell.2 | orlova_tanya.tq_quote_tell.3 | orlova_tanya.tq_quote_tell.4
+quest.tq_quote.done = orlova_tanya.tq_quote_after.1
 
 [Lange_pyotr]
 first = lange_pyotr.first.1

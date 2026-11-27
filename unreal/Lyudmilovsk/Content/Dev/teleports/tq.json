@@ -1,0 +1,6 @@
+{
+ "comment": "The town quests bundle (tq_*, docs/quests.md). x, y map metres, z world cm (indoors).",
+ "teleports": [
+  {"id": "tq.wave_requests", "group": "tq", "name": "dev.tp.tq.wave_requests", "x": -378.31, "y": 1113.48, "z": -2200.0, "yaw": 84.5}
+ ]
+}

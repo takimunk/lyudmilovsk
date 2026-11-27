@@ -2295,6 +2295,179 @@
    ],
    "note": "the hero comes back to the club after his first walk to the town and passes Aslan's cheese tent by the club door (Tue-Sun till 20:00); said once, the braid's offer leads into the owner's supper if it is still open",
    "diary": "journal.heard.khuazhev_aslan.town_road"
+  },
+  {
+   "id": "tq_saturn_nao_point",
+   "person": "nao",
+   "quest": "tq_saturn",
+   "stages": [
+    "look"
+   ],
+   "within_m": 5,
+   "lines": [
+    "nao.tq_saturn_point.1"
+   ],
+   "note": "Nao at the club's door 10-21 every day: the hero passes her on his way out to the town after Tyoma's request, and again when he comes back. Not at_once: he is inside with Tyoma when the stage begins.",
+   "diary": "journal.heard.tq_saturn_nao"
+  },
+  {
+   "id": "tq_saturn_vera_victory",
+   "person": "girl_a",
+   "quest": "tq_saturn",
+   "stages": [
+    "done"
+   ],
+   "within_m": 4,
+   "lines": [
+    "girl_a.tq_saturn_victory.1"
+   ],
+   "note": "Vera at her Spectrum in the club after work (15:00 on weekdays, all day at weekends), two stations from the children; said the next time the hero passes her after telling Tyoma.",
+   "diary": "journal.heard.tq_saturn_vera"
+  },
+  {
+   "id": "tq_reel_nina_ears",
+   "person": "korneeva_nina",
+   "quest": "tq_reel",
+   "stages": [
+    "film",
+    "bring"
+   ],
+   "within_m": 5,
+   "lines": [
+    "korneeva_nina.tq_reel_ears.1"
+   ],
+   "note": "Nina on bench 0 of the Academgorodok's square 14:00-16:30 (Ivan on bench 3 from 15:00), and at the cats' bowls 7:54-8:21 and 18:24-18:51. Not at_once: the hero is beside Ivan, and may be within 5 m of her, when the stage begins.",
+   "diary": "journal.heard.tq_reel_nina"
+  },
+  {
+   "id": "tq_reel_nina_row",
+   "person": "korneeva_nina",
+   "quest": "tq_reel",
+   "stages": [
+    "done"
+   ],
+   "within_m": 5,
+   "lines": [
+    "korneeva_nina.tq_reel_row.1"
+   ],
+   "note": "Nina again, the next time the hero passes her after the stub is handed over (news takes a moment: he must have left her reach first).",
+   "diary": "journal.heard.tq_reel_nina_row"
+  },
+  {
+   "id": "tq_request_owner_smile",
+   "person": "owner",
+   "quest": "tq_request",
+   "stages": [
+    "done"
+   ],
+   "within_m": 4,
+   "lines": [
+    "owner.tq_request_smile.1"
+   ],
+   "note": "The owner in his booth 12:00-02:00 by the club's entrance; said the next time the hero passes within 4 m after telling Nika.",
+   "diary": "journal.heard.tq_request_owner"
+  },
+  {
+   "id": "tq_round_owner_debt",
+   "person": "owner",
+   "quest": "tq_round",
+   "stages": [
+    "done"
+   ],
+   "within_m": 4,
+   "lines": [
+    "owner.tq_round_debt.1"
+   ],
+   "note": "The owner in his booth 12:00-02:00 by the club's entrance; said the next time the hero passes within 4 m after telling Stas.",
+   "diary": "journal.heard.tq_round_owner"
+  },
+  {
+   "id": "tq_quote_galina_queue",
+   "person": "zotova_galina",
+   "quest": "tq_quote",
+   "stages": [
+    "done"
+   ],
+   "within_m": 5,
+   "lines": [
+    "zotova_galina.tq_quote_queue.1"
+   ],
+   "note": "Galina Zotova on bench 0 of the Academgorodok's square 17:30-19:00 every day, a few steps from the Gastronom kiosk; said the next time the hero passes her after reading the line to Tanya.",
+   "diary": "journal.heard.tq_quote_galina"
+  },
+  {
+   "id": "tq_square_nika_film",
+   "person": "streamer",
+   "quest": "tq_square",
+   "stages": [
+    "shots",
+    "show"
+   ],
+   "within_m": 4,
+   "lines": [
+    "streamer.tq_square_film.1"
+   ],
+   "note": "Nika at her station in the club from about noon till the small hours; the hero passes her with the camera once he has bought it (the camera stage is over) or with the prints.",
+   "diary": "journal.heard.tq_square_nika"
+  },
+  {
+   "id": "tq_card_owner_address",
+   "person": "owner",
+   "quest": "tq_card",
+   "stages": [
+    "send",
+    "tell"
+   ],
+   "within_m": 4,
+   "lines": [
+    "owner.tq_card_address.1"
+   ],
+   "note": "The owner in his booth 12:00-02:00 by the club's entrance: the hero walks in past him after Nao's request at the door, or on his way back from the postbox.",
+   "diary": "journal.heard.tq_card_owner"
+  },
+  {
+   "id": "tq_lullaby_sonya_steps",
+   "person": "kid_girl",
+   "quest": "tq_lullaby",
+   "stages": [
+    "done"
+   ],
+   "within_m": 4,
+   "lines": [
+    "kid_girl.tq_lullaby_steps.1"
+   ],
+   "note": "Sonya at station 7 in the club after school (13:00 on weekdays) till 21:00; said the next time the hero passes her after humming the tune to Vera.",
+   "diary": "journal.heard.tq_lullaby_sonya"
+  },
+  {
+   "id": "tq_water_nika_chat",
+   "person": "streamer",
+   "quest": "tq_water",
+   "stages": [
+    "fill",
+    "bring"
+   ],
+   "within_m": 4,
+   "lines": [
+    "streamer.tq_water_chat.1"
+   ],
+   "note": "Nika at her station in the club from about noon till the small hours; the hero passes her on his way out for the water or back with the bottle.",
+   "diary": "journal.heard.tq_water_nika"
+  },
+  {
+   "id": "tq_log_galina_window",
+   "person": "zotova_galina",
+   "quest": "tq_log",
+   "stages": [
+    "read",
+    "tell"
+   ],
+   "within_m": 5,
+   "lines": [
+    "zotova_galina.tq_log_window.1"
+   ],
+   "note": "Galina Zotova on bench 0 of the Academgorodok's square 17:30-19:00, Lev on bench 1 beside it at the same hours: not at_once, so it is said when the hero has walked away and comes past again (that day or after the lighthouse).",
+   "diary": "journal.heard.tq_log_galina"
   }
  ]
 }
