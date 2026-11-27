@@ -29,7 +29,7 @@ say town.fv_science_day_kid.1 | Мы делаем вулкан из соды. К
 festival = science_day
 age = elder
 weight = 5
-say town.fv_science_day_elder.1 | Первую лекцию на площади читали в мороз. Никто не ушёл, пока не дошло до Солнца. | The first lecture on the square was read in a frost. Nobody left till it got to the Sun. | 広場の最初の講演は凍える日だった。太陽の話まで誰も帰らなかったよ。
+say town.fv_science_day_elder.1 | Первую лекцию на площади читали в мороз. Никто не ушёл, пока не дошло до Солнца. | The first lecture on the square was given in a hard frost. Nobody left till it got to the Sun. | 広場の最初の講演は凍える日だった。太陽の話まで誰も帰らなかったよ。
 
 [nh_sci_greet]
 to = hero
@@ -103,7 +103,7 @@ talk
 festival = old_new_year
 age = adult
 weight = 5
-say town.fv_old_new_year_bring.1 | Несу детям пряники и мелочь. Придут петь, а в доме должно быть чем ответить. | Gingerbread and small change for the children. They'll come singing, and a house must answer. | 子どもたちにジンジャーブレッドと小銭を用意する。歌いに来たら、お返しをしなくちゃ。
+say town.fv_old_new_year_bring.1 | Несу детям пряники и мелочь. Придут петь, а в доме должно быть чем ответить. | Gingerbread and small change for the children. They'll come singing, and a house should have something to give back. | 子どもたちにジンジャーブレッドと小銭を用意する。歌いに来たら、お返しをしなくちゃ。
 
 [fv_old_new_year_grump]
 festival = old_new_year
@@ -129,15 +129,15 @@ to = hero
 festival = old_new_year
 age = teen adult elder
 weight = 6
-say town.nh_ony_greet.1 | Со Старым Новым годом! Вареник с сюрпризом уже ел? | Happy Old New Year! Have you had a dumpling with a surprise yet? | 旧暦の新年おめでとう！おたのしみ入りヴァレーニキ、もう食べた？
-say town.nh_ony_greet.2 | Со старым новым! В полночь у ёлки, не проспи во второй раз. | Happy old new one! Midnight at the tree, don't sleep through it a second time. | 旧い新年おめでとう！真夜中にツリーの下で。二度めは寝すごさないで。
+say town.nh_ony_greet.1 | Со Старым Новым годом! Вареник с сюрпризом уже ел? | Happy Old New Year! Have you had a dumpling with a surprise yet? | 古い新年おめでとう！おたのしみ入りヴァレーニキ、もう食べた？
+say town.nh_ony_greet.2 | Со старым новым! В полночь у ёлки, не проспи во второй раз. | Happy old new one! Midnight at the tree, don't sleep through it a second time. | 古い新年おめでとう！真夜中にツリーの下で。二度めは寝すごさないで。
 
 [nh_ony]
 at = outdoors
 festival = old_new_year
 weight = 3
-say town.nh_ony.1 | Хорошо придумано: не успел загадать в первый раз, загадай во второй. | Well thought of: if you didn't get your wish in the first time, make it the second. | うまくできてる。一度めに願いそびれたら、二度めに願えばいい。
-say town.nh_ony.2 | Ёлка стоит последнюю ночь. Завтра от неё останутся иголки до самого лета. | The tree stands its last night. Tomorrow all that's left is needles, right up to summer. | ツリーは今夜かぎり。明日からは夏まで針の葉だけが残る。
+say town.nh_ony.1 | Хорошо придумано: не успел загадать в первый раз, загадай во второй. | Well thought of: if you missed making a wish the first time, make it the second. | うまくできてる。一度めに願いそびれたら、二度めに願えばいい。
+say town.nh_ony.2 | Ёлка стоит последнюю ночь. Завтра от неё останутся иголки до самого лета. | The tree stands its last night. Tomorrow all that's left is needles, right up to summer. | ツリーは今夜かぎり。明日からは、夏までモミの葉が落ちているだけ。
 say town.nh_ony.3 | В пельменной сегодня льют воск. Интересно, как это оформили по накладной. | They're pouring wax at the dumpling bar tonight. I wonder how that went down in the books. | ペリメニ食堂で今夜はろう占い。帳簿にはどう書いたんだろうね。
 
 [nh_ony_carols]
@@ -174,7 +174,7 @@ festival = old_new_year
 phase = midnight
 weight = 7
 say town.nh_ony_midnight.1 | Второй раз за зиму полночь как полночь, с боем. | The second time this winter that midnight is a real midnight, with the chimes. | この冬二度め、鐘の鳴るほんものの真夜中だ。
-say town.nh_ony_midnight.2 | С новым старым! Теперь уж точно новый. | Happy new old one! Now it's the new year for certain. | 新しい旧年おめでとう！これでほんとに新年だ。
+say town.nh_ony_midnight.2 | С новым старым! Теперь уж точно новый. | Happy new old one! Now it's the new year for certain. | 新しい古い年おめでとう！これでほんとに新年だ。
 
 [nh_ony_cook]
 festival = old_new_year
@@ -198,7 +198,7 @@ talk
 festival = neptune_day
 age = adult
 weight = 5
-say town.fv_neptune_day_bring.1 | Беру на пляж сухое полотенце на каждого и ещё одно, про запас. Знаю я этот день. | I'm taking a dry towel each to the beach and one more to spare. I know this day. | 浜には一人一枚の乾いたタオルと、予備をもう一枚。この日のことは知ってるから。
+say town.fv_neptune_day_bring.1 | Беру на пляж сухое полотенце на каждого и ещё одно, про запас. Знаю я этот день. | I'm taking a dry towel for everyone to the beach, and one more to spare. I know this day. | 浜には一人一枚の乾いたタオルと、予備をもう一枚。この日のことは知ってるから。
 
 [fv_neptune_day_grump]
 festival = neptune_day
@@ -217,7 +217,7 @@ say town.fv_neptune_day_kid.1 | Мы черти! Мажем сажей всех,
 festival = neptune_day
 age = elder
 weight = 5
-say town.fv_neptune_day_elder.1 | Нептуном тогда был боцман с буксира. Борода своя, а трезубец из вил, как и нынче. | Neptune was the tug's bosun then. His own beard, and a trident off a pitchfork, same as now. | あのころのネプチューンは引き船の水夫長。ひげは自前、ほこは今と同じくま手さ。
+say town.fv_neptune_day_elder.1 | Нептуном тогда был боцман с буксира. Борода своя, а трезубец из вил, как и нынче. | Neptune was the tug's bosun then. His own beard, and a trident off a pitchfork, same as now. | あのころのネプチューンは引き船の水夫長。ひげは自前、ほこは今と同じで干し草フォークさ。
 
 [nh_nep_greet]
 to = hero
