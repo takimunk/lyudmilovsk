@@ -37,8 +37,8 @@ namespace LyudWeather
 		float VeerDeg = 0.f;        // added to the regime's FromDeg (+ = veered, clockwise on the compass; - = backed)
 		float Factor = 1.f;         // on the regime's speed: a puff over the whole bay > 1, a lull < 1 (about 0.8 .. 1.25)
 		float PeriodMin = 8.f;      // how long one swing takes now, minutes (shorter in stirred afternoon air)
-		float Phase = 0.f;          // 0..1 through the current swing
-		float NextTurnMin = 0.f;    // minutes until the veer next changes sign (when a tack will pay)
+		float Phase = 0.f;          // 0..1 through the current swing: 0..0.5 the veered half, 0.5..1 the backed one
+		float NextTurnMin = 0.f;    // minutes until the veer next changes sign (when a tack will pay); 30 = none that soon
 		float RangeDeg = 0.f;       // how far it swings either way today (2 a steady gradient wind .. 18 a light shifty day)
 	};
 
@@ -65,7 +65,10 @@ namespace LyudWeather
 		int NX = 0, NY = 0;
 		float SeaZ = -43.f;             // the sea's datum, world metres (the tide's level is passed per query)
 		std::vector<float> Ground;      // NX * NY, world Z of the solid ground (the bed under the sea), metres
-		std::vector<float> Cover;       // NX * NY or empty: height of what stands there (crowns, roofs), metres
+		std::vector<float> Cover;       // NX * NY or empty: height of what stands there (crowns, roofs), metres.
+		                                // It is a windbreak's height: for a thing narrower than it is tall (a tower)
+		                                // put its width; leave lattice and open things out. Its lee is a wood's
+		                                // (porous); a solid wall of houses is better raised into Ground.
 
 		bool Valid() const { return NX > 1 && NY > 1 && int(Ground.size()) == NX * NY; }
 		/** Bilinear; outside the grid the sea bed (SeaZ - 10). */
@@ -89,15 +92,19 @@ namespace LyudWeather
 		float Turbulence = 0.f;             // rms m/s of the tumbling the mean does not carry (rotor, rough land, gusty air)
 		float HeightM = 10.f;               // height over the ground or the water here
 		float SurfaceZ = 0.f;               // world Z of the ground or the water under the point, metres
-		float FetchM = 0.f;                 // open water upwind of the point, metres (0 over land; capped at 3000)
+		float FetchM = 0.f;                 // open water upwind of the point, metres (0 over land; capped at 3000; good to ~45 m within 900 m, a quarter beyond)
 		bool bOverWater = false;
 	};
 
 	/**
-	 * The air at world point (X, Y, Z) metres. S is the area's wind (pass Now(), or Regime() for no shifts),
-	 * Terrain may be null or not Valid (then: open flat land at Z = 0 unless WaterZ > -1e8 and bFlatIsWater...
-	 * see the cpp: without a terrain the result equals GustAt x HeightFactor, Exposure 1, no updraft).
+	 * The air at world point (X, Y, Z) metres. S is the area's wind (pass Now(), or Regime() for no shifts).
+	 * Terrain may be null or not Valid: then the world is open flat land with its ground at Z = 0 (WaterZ is not
+	 * read), and the result is exactly the old GetWindAt over land: Speed = S.Speed x GustAt().Factor x
+	 * HeightFactor(Z, false), the direction turned by the gust's Veer, Exposure 1, no updraft, HeightM = Z.
+	 * With a terrain: Speed = S.Speed x Gust x (the land's or the sea's height profile, blended by what lies within
+	 * a few hundred metres upwind) x Exposure; over open water with a long fetch that is GetWindAt(bOverWater = true).
 	 * WaterZ = the sea's level now (tide), world metres. OffsetX/OffsetY/Seconds as GustAt.
+	 * Costs about two GustAt calls on top of its own one; no allocation. docs/wind.md has the numbers.
 	 */
 	FLocalWind LocalWindAt(const FWindState& S, const FWindTerrain* Terrain, double X, double Y, double Z, float WaterZ,
 		double OffsetX, double OffsetY, double Seconds);

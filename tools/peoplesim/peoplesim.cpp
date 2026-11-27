@@ -1497,7 +1497,7 @@ static int Town()
 				if (P.Activity >= 0 && (P.State == EState::Doing || P.State == EState::Away))
 				{
 					Minutes[W.Activities[P.Activity].Id] += 1.0;
-					if (W.Activities[P.Activity].Id == "fly_kite" && P.State == EState::Doing)
+					if (W.Activities[P.Activity].Id.compare(0, 8, "fly_kite") == 0 && P.State == EState::Doing)
 					{
 						KitesDark += (W.Hour < 7.f || W.Hour > 20.f) ? 1 : 0;
 						KitesOffWind += (W.Wind < 2.f || W.Wind > 15.f) ? 1 : 0;
@@ -1578,6 +1578,9 @@ static int Town()
 	CHECK(AwakeNightType03 > 0, "... but the night owls are up (%d)", AwakeNightType03);
 	CHECK(Minutes["fly_kite"] > 0 && KitesDark == 0 && KitesOffWind == 0, "children fly kites by day in a breeze (%.0f person-minutes in %.1f-%.1f m/s; %d in the dark, %d in a calm or a gale)",
 		Minutes["fly_kite"], KiteWindLo, KiteWindHi, KitesDark, KitesOffWind);
+	CHECK(W.FindActivity("fly_kite_stunt") < 0 || Minutes["fly_kite_stunt"] + Minutes["fly_kite_delta"] + Minutes["fly_kite_dragon"] > 0,
+		"... and not only children (stunt %.0f, delta %.0f, dragon %.0f person-minutes; %.0f watching)",
+		Minutes["fly_kite_stunt"], Minutes["fly_kite_delta"], Minutes["fly_kite_dragon"], Minutes["watch_kites"]);
 	if (W.FindActivity("cinema_day") >= 0)
 	{
 		CHECK(CinemaPeak >= 12 && CinemaPeak <= 150 && CinemaOff == 0, "the Rassvet's sessions have a house (%d at once at the fullest, %zu went in 36 h; %d person-minutes out of a session)",
@@ -1741,6 +1744,84 @@ static int Town()
 		// who love the open air still try a short walk and turn back)
 		CHECK(Wet.Total() < Warm.Total() * 0.06, "a rainy Sunday: the Aton coast all but empties (%.0f person-minutes after the first half hour against %.0f on the warm day)",
 			Wet.Total(), Warm.Total());
+	}
+	if (W.FindActivity("fly_kite_stunt") >= 0)
+	{
+		// kite afternoons (docs/kites.md "Kite afternoons"): a warm Saturday from half past ten in a given wind. Counted each
+		// minute between noon and five (the test's sun sets at 17:15): how many kites are up at once, of which kind, who watches, where they stand.
+		struct FKiteDay
+		{
+			int Peak = 0, PeakWatch = 0, OnPier = 0, Minutes = 0;
+			double Sum = 0.0, Watch = 0.0;
+			std::map<std::string, double> Kind;
+			double Mean() const { return Minutes ? Sum / Minutes : 0.0; }
+		};
+		auto KiteDay = [&W](float WindMs, float TempC, bool bRain, float Till)
+		{
+			FKiteDay D;
+			W.Opt.SettleBatch = 0;
+			W.TempC = TempC;
+			W.bRain = bRain;
+			W.Rain = bRain ? 0.7f : 0.f;
+			W.Wind = WindMs;
+			FClock S = FClock::At(5, 10.5f);
+			S.Set(W);
+			W.Resettle();
+			const double End = S.Seconds + (Till - 10.5) * 3600.0;
+			int Tick = 0;
+			while (S.Seconds < End)
+			{
+				S.Seconds += 1.0;
+				S.Set(W);
+				W.Wind = WindMs;
+				W.Step(1.f);
+				if (++Tick % 60 == 0 && W.Hour >= 12.f && W.Hour < 17.f)
+				{
+					int Up = 0, Watching = 0;
+					for (const FPerson& P : W.People)
+					{
+						if (!P.bTown || P.Activity < 0 || P.State != EState::Doing) continue;
+						const std::string& Id = W.Activities[(size_t)P.Activity].Id;
+						if (Id.compare(0, 8, "fly_kite") == 0)
+						{
+							Up++;
+							D.Kind[Id] += 1.0;
+							D.OnPier += Id == "fly_kite_stunt" && P.Place >= 0 && W.Places[(size_t)P.Place].Kind == "pier" ? 1 : 0;
+						}
+						Watching += Id == "watch_kites" ? 1 : 0;
+					}
+					D.Peak = std::max(D.Peak, Up);
+					D.PeakWatch = std::max(D.PeakWatch, Watching);
+					D.Sum += Up;
+					D.Watch += Watching;
+					D.Minutes++;
+				}
+			}
+			W.TempC = 12.f;
+			W.bRain = false;
+			W.Rain = 0.f;
+			W.Wind = 5.f;
+			return D;
+		};
+		FKiteDay Breeze = KiteDay(7.f, 21.f, false, 17.f);
+		std::printf("  a kite afternoon, 7 m/s:");
+		for (const auto& K : Breeze.Kind) std::printf(" %s %.0f", K.first.c_str(), K.second);
+		std::printf(" (person-minutes 12-17)\n");
+		CHECK(Breeze.Mean() >= 6.0 && Breeze.Mean() <= 16.0 && Breeze.Peak <= 24, "a warm Saturday in 7 m/s: roughly 8-15 kites up over the beach and the lookouts (%.1f on average, %d at most; %.1f watching, %d at most)",
+			Breeze.Mean(), Breeze.Peak, Breeze.Minutes ? Breeze.Watch / Breeze.Minutes : 0.0, Breeze.PeakWatch);
+		CHECK(Breeze.Kind["fly_kite"] > 0 && Breeze.Kind["fly_kite_stunt"] > 0 && Breeze.Kind["fly_kite_dragon"] > 0 && Breeze.Kind["fly_kite_delta"] == 0 && Breeze.OnPier == 0,
+			"... children's kites, stunt kites and a dragon, no delta in that much air, no stunt kite on the pier (%d)", Breeze.OnPier);
+		FKiteDay Light = KiteDay(3.5f, 21.f, false, 15.f);
+		CHECK(Light.Kind["fly_kite_delta"] > 0 && Light.Kind["fly_kite_stunt"] == 0 && Light.Kind["fly_kite_dragon"] == 0 && Light.Mean() >= 2.0,
+			"a light 3.5 m/s: the deltas' day (%.1f deltas on average of %.1f kites, %d at most; no stunt kites, no dragons)",
+			Light.Minutes ? Light.Kind["fly_kite_delta"] / Light.Minutes : 0.0, Light.Mean(), Light.Peak);
+		FKiteDay Calm = KiteDay(1.f, 21.f, false, 13.5f);
+		FKiteDay Gale = KiteDay(16.f, 21.f, false, 13.5f);
+		CHECK(Calm.Peak == 0 && Calm.PeakWatch == 0 && Gale.Peak == 0 && Gale.PeakWatch == 0, "a calm and a gale: no kites and nobody come to watch them (%d, %d)", Calm.Peak, Gale.Peak);
+		FKiteDay Wet = KiteDay(7.f, 14.f, true, 14.5f);
+		CHECK(Wet.Mean() < Breeze.Mean() * 0.25, "the same wind in the rain: few (%.1f on average, %d at most)", Wet.Mean(), Wet.Peak);
+		FKiteDay Frost = KiteDay(7.f, -4.f, false, 14.5f);
+		CHECK(Frost.Mean() < Breeze.Mean() * 0.4 && Frost.Kind["fly_kite_stunt"] == 0, "a frosty day: only a few children (%.1f on average, %d at most)", Frost.Mean(), Frost.Peak);
 	}
 	std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 	return Failures ? 1 : 0;

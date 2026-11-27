@@ -189,6 +189,8 @@ suite weather.test                - bash tools/weather/run.sh test
 suite weather.climate             - bash tools/weather/run.sh climate
 suite weather.days                - bash tools/weather/run.sh days 2026 6 1 3
 suite weather.winters             - bash tools/weather/run.sh winters
+suite windsim.test                - bash tools/windsim/run.sh test
+suite windsim.day                 - bash tools/windsim/run.sh day 2026 7 14
 suite winter.test                 - bash tools/winter/run.sh test
 suite winter.perf                 - bash tools/winter/run.sh perf
 suite winter.images               - bash tools/winter/run.sh images
