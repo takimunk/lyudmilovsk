@@ -10,6 +10,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
+#include "Engine/Texture2D.h"
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "GameFramework/PlayerController.h"
@@ -21,9 +22,11 @@
 #include "LyudGoodsItem.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "Photo/LyudPhoto.h"
 #include "Plants/GameCalendar.h"
 #include "Plants/ProceduralPlant.h"
 #include "UI/LyudQuests.h"
@@ -42,6 +45,11 @@ namespace LyudHomeImpl
 	const TCHAR* PropMatPath = TEXT("/Game/City/M_CityProp.M_CityProp");
 	const TCHAR* PlotPrefix = TEXT("P-HOME/");
 	const FName HomeScreen(TEXT("home"));
+	/** A print: the engine's cube as a thin card, the goods' label material with the photograph on it. */
+	const TCHAR* PrintMeshPath = TEXT("/Engine/BasicShapes/Cube.Cube");
+	const TCHAR* PrintMatPath = TEXT("/Game/Hall/M_BottleLabel.M_BottleLabel");
+	/** The prints the chooser offers at once: the newest of the album. */
+	constexpr int32 PrintsOffered = 8;
 	/** The plant's age and the box test: a few times a second is plenty. */
 	constexpr float Every = 0.5f;
 	constexpr double NoteSeconds = 2.6;
@@ -417,6 +425,10 @@ void ULyudHeroRoom::OnGameLoaded_Implementation()
 		}
 	}
 	Model->Lost.clear();
+	// another game: its own photographs, and no note left from the last one
+	PrintTextures.Reset();
+	bMindNote = false;
+	MindDay = -1;
 	RefreshAll();
 }
 
@@ -431,6 +443,9 @@ void ULyudHeroRoom::StartOver()
 		EndChoice(false);
 	}
 	Model->StartOver();
+	PrintTextures.Reset();
+	bMindNote = false;
+	MindDay = -1;
 	RefreshAll();
 }
 
@@ -448,8 +463,18 @@ FText ULyudHeroRoom::NameOf(const FString& What) const
 	{
 		return ULyudInventory::ItemName(FName(*What.Mid(5)));
 	}
+	int Roll = 0, Frame = 0;
+	if (LyudHome::FModel::ParsePrint(LyudHomeImpl::Std(What), Roll, Frame))
+	{
+		return LyudText::Get(TEXT("city.myroom.print"), { FStringFormatArg(Roll), FStringFormatArg(Frame) });
+	}
 	const LyudHome::FTrophy* T = Model->FindTrophy(LyudHomeImpl::Std(What));
 	return T ? LyudText::Get(LyudHomeImpl::Str(T->Name)) : FText::FromString(What);
+}
+
+bool ULyudHeroRoom::Holds(FName Item) const
+{
+	return bLoaded && Model && !Item.IsNone() && Model->HoldsItem(LyudHomeImpl::Std(Item.ToString()));
 }
 
 UStaticMesh* ULyudHeroRoom::TrophyMesh(const FString& Shape, int32 Tint)
@@ -517,6 +542,68 @@ AActor* ULyudHeroRoom::SpawnTrophy(const FString& What, const FVector& At, float
 	return A;
 }
 
+AActor* ULyudHeroRoom::SpawnPrint(const FString& What, int32 Slot)
+{
+	UWorld* World = GetWorld();
+	int Roll = 0, Frame = 0;
+	if (!World || !LyudHome::FModel::ParsePrint(LyudHomeImpl::Std(What), Roll, Frame))
+	{
+		return nullptr;
+	}
+	if (!PrintMesh)
+	{
+		PrintMesh = LoadObject<UStaticMesh>(nullptr, LyudHomeImpl::PrintMeshPath);
+		PrintMaterial = LoadObject<UMaterialInterface>(nullptr, LyudHomeImpl::PrintMatPath);
+	}
+	if (!PrintMesh)
+	{
+		return nullptr;
+	}
+	// the picture: read from the disk once, then kept (a print whose file is gone stays a white card, and is not asked again)
+	UTexture2D* Picture = nullptr;
+	if (const TObjectPtr<UTexture2D>* Kept = PrintTextures.Find(What))
+	{
+		Picture = *Kept;
+	}
+	else
+	{
+		ULyudPhoto* Photo = ULyudPhoto::Get(this);
+		Picture = Photo ? Photo->LoadPrint(Roll, Frame) : nullptr;
+		PrintTextures.Add(What, Picture);
+	}
+	const LyudHome::FSlot& S = Model->Slots[(size_t)Slot];
+	const bool bCard = S.Type == "card";
+	// a 3:2 frame: 15 x 10 cm pinned to the board, 30 x 20 enlarged on a nail
+	const double Width = bCard ? 15.0 : 30.0, Height = bCard ? 10.0 : 20.0, Thick = bCard ? 0.2 : 0.8;
+	const FVector Out = FRotator(0.f, (float)S.Yaw, 0.f).Vector();
+	const float Askew = bCard ? (float)((Slot * 37) % 7 - 3) * 1.2f : 0.f;
+	FActorSpawnParameters P;
+	P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	P.ObjectFlags |= RF_Transient;
+	AStaticMeshActor* A = World->SpawnActor<AStaticMeshActor>(FVector(S.X, S.Y, S.Z) + Out * (Thick * 0.5 + 0.4), FRotator(0.f, (float)S.Yaw, Askew), P);
+	if (A)
+	{
+		UStaticMeshComponent* C = A->GetStaticMeshComponent();
+		C->SetMobility(EComponentMobility::Movable);
+		C->SetStaticMesh(PrintMesh);
+		C->SetWorldScale3D(FVector(Thick, Width, Height) / 100.0);
+		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		C->SetCastShadow(false);
+		if (PrintMaterial)
+		{
+			// (the component holds the material, the material the picture: nothing is made again until the place changes)
+			UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(PrintMaterial, C);
+			MID->SetVectorParameterValue(TEXT("Color"), FLinearColor::White);
+			if (Picture)
+			{
+				MID->SetTextureParameterValue(TEXT("Label"), Picture);
+			}
+			C->SetMaterial(0, MID);
+		}
+	}
+	return A;
+}
+
 void ULyudHeroRoom::RefreshSlot(int32 Slot)
 {
 	if (!bBuilt || !SlotActors.IsValidIndex(Slot))
@@ -541,7 +628,11 @@ void ULyudHeroRoom::RefreshSlot(int32 Slot)
 	const FVector At(S.X, S.Y, S.Z);
 	const FVector Out = FRotator(0.f, (float)S.Yaw, 0.f).Vector();
 	AActor* Made = nullptr;
-	if (!What.StartsWith(TEXT("item:")))
+	if (What.StartsWith(TEXT("print:")))
+	{
+		Made = SpawnPrint(What, Slot);
+	}
+	else if (!What.StartsWith(TEXT("item:")))
 	{
 		Made = SpawnTrophy(What, At, (float)S.Yaw);
 	}
@@ -621,6 +712,8 @@ void ULyudHeroRoom::RefreshPlant()
 		UGameplayStatics::FinishSpawningActor(PlantActor, Where);
 	}
 	PlantActor->SetDevTime(Age, -1.f);
+	// left dry too long its leaves hang (the plant system's withered look, where the species has one; the words say it anyway)
+	PlantActor->SetWithered(Model->Droops(Day));
 }
 
 void ULyudHeroRoom::RefreshAll()
@@ -714,7 +807,8 @@ void ULyudHeroRoom::BeginChoice(int32 Slot)
 			FOption O;
 			O.Kind = FOption::Take;
 			O.What = Here;
-			O.Label = LyudText::Get(Here.StartsWith(TEXT("item:")) ? TEXT("city.myroom.ui.take") : TEXT("city.myroom.ui.take_trophy"),
+			O.Label = LyudText::Get(Here.StartsWith(TEXT("item:")) ? TEXT("city.myroom.ui.take") : Here.StartsWith(TEXT("print:")) ? TEXT("city.myroom.ui.take_print")
+				: TEXT("city.myroom.ui.take_trophy"),
 				{ FStringFormatArg(NameOf(Here).ToString()) });
 			Options.Add(O);
 		}
@@ -736,6 +830,25 @@ void ULyudHeroRoom::BeginChoice(int32 Slot)
 				if (bHas && Model->WhereIs(T.Id).empty())
 				{
 					Offer(LyudHomeImpl::Str(T.Id));
+				}
+			}
+		}
+		// his own photographs: the newest prints of the album that hang nowhere yet
+		if (LyudHome::FModel::PrintFits(S.Type))
+		{
+			if (ULyudPhoto* Photo = ULyudPhoto::Get(this))
+			{
+				TArray<FIntPoint> Prints;
+				Photo->NewestPrints(LyudHomeImpl::PrintsOffered + (int32)Model->Slots.size(), Prints);
+				int32 Offered = 0;
+				for (const FIntPoint& Print : Prints)
+				{
+					const std::string Id = LyudHome::FModel::PrintId(Print.X, Print.Y);
+					if (Offered < LyudHomeImpl::PrintsOffered && Model->WhereIs(Id).empty())
+					{
+						Offer(LyudHomeImpl::Str(Id));
+						++Offered;
+					}
 				}
 			}
 		}
@@ -848,7 +961,8 @@ void ULyudHeroRoom::Do(int32 Slot, const FOption& Option)
 	{
 		const bool bItem = Option.What.StartsWith(TEXT("item:"));
 		const FText Name = TakeBack(Slot);
-		Note(LyudText::Get(bItem ? TEXT("city.myroom.ui.taken") : TEXT("city.myroom.ui.taken_trophy"), { FStringFormatArg(Name.ToString()) }));
+		Note(LyudText::Get(bItem ? TEXT("city.myroom.ui.taken") : Option.What.StartsWith(TEXT("print:")) ? TEXT("city.myroom.ui.taken_print")
+			: TEXT("city.myroom.ui.taken_trophy"), { FStringFormatArg(Name.ToString()) }));
 		break;
 	}
 	case FOption::Put:
@@ -887,17 +1001,30 @@ void ULyudHeroRoom::Do(int32 Slot, const FOption& Option)
 		}
 		break;
 	case FOption::Water:
+	{
+		const bool bHung = Model->Droops(Day);
 		if (Model->Water(Day))
 		{
 			RefreshPlant();
-			Note(LyudText::Get(TEXT("city.myroom.pot.watered")));
+			if (Sound)
+			{
+				Sound->PlayEffect(TEXT("rest_pour"), At, 0.5f);
+			}
+			ULyudQuests::Notify(this, TEXT("do"), TEXT("myroom_water"));
+			Note(bHung ? LyudText::Get(TEXT("city.myroom.pot.revived"), { FStringFormatArg(PlantName) }) : LyudText::Get(TEXT("city.myroom.pot.watered")));
 		}
 		else
 		{
 			Note(LyudText::Get(TEXT("city.myroom.pot.watered_already")));
 		}
 		break;
+	}
 	case FOption::Look:
+		if (Model->Droops(Day))
+		{
+			Note(LyudText::Get(TEXT("city.myroom.pot.droops"), { FStringFormatArg(PlantName), FStringFormatArg((int32)Model->DryDays(Day)) }));
+			break;
+		}
 		Note(LyudText::Get(FString::Printf(TEXT("city.myroom.pot.stage.%d"), Model->PlantStage(Day)),
 			{ FStringFormatArg(PlantName), FStringFormatArg((int32)(Day - Model->Plant.Day) + 1) }));
 		break;
@@ -1003,10 +1130,50 @@ void ULyudHeroRoom::Tick(float DeltaTime)
 	{
 		BindCity();
 	}
+	TickAway();
 	// the plant grows by the day: its look is set again when the day turns (a sleep, a jump of the clock)
 	if (bBuilt && Model->HasPlant() && Today() != PlantDayShown)
 	{
 		RefreshPlant();
+	}
+}
+
+void ULyudHeroRoom::TickAway()
+{
+	if (!Model->HasPlant() && !bMindNote)
+	{
+		return;
+	}
+	const APlayerController* PC = LyudHomeImpl::Player(GetWorld());
+	const APawn* Pawn = PC ? PC->GetPawn() : nullptr;
+	if (!Pawn)
+	{
+		return;
+	}
+	const FVector Where = Pawn->GetActorLocation();
+	const bool bInRoom = Model->InBox(Where.X, Where.Y, Where.Z, 20.0);
+	const long long Day = Today();
+	// the owner comes only while the hero is out, and once a day at most
+	if (!bInRoom && Day != MindDay)
+	{
+		MindDay = Day;
+		if (Model->Mind(Day))
+		{
+			bMindNote = true;
+			RefreshPlant();
+			UE_LOG(LogLyudHome, Display, TEXT("HeroRoom: the owner watered the plant (dry too long), time %d"), Model->Plant.Minded);
+		}
+	}
+	// the note waits on the pot's saucer until he is back in the room
+	if (bMindNote && bInRoom && NoteUntil <= 0.0)
+	{
+		bMindNote = false;
+		if (Model->HasPlant())
+		{
+			const FString PlantName = LyudText::Get(TEXT("city.myroom.plant.") + LyudHomeImpl::Str(Model->Plant.Species)).ToString();
+			Note(LyudText::Get(FString::Printf(TEXT("city.myroom.pot.minded.%d"), 1 + (Model->Plant.Minded + 2) % 3), { FStringFormatArg(PlantName) }));
+			ULyudQuests::Notify(this, TEXT("do"), TEXT("myroom_minded"));
+		}
 	}
 }
 
@@ -1063,10 +1230,23 @@ void ULyudHeroRoom::DevFill()
 	const TCHAR* Frames[] = { TEXT("record_sea_1"), TEXT("record_night_1"), TEXT("daily_paper") };
 	const TCHAR* Shelves[] = { TEXT("cup:cog_chess"), TEXT("cup:tt_cup"), TEXT("shell_box"), TEXT("record_dawn_1"), TEXT("book:birds"), TEXT("amber_charm"),
 		TEXT("cup:san_dominoes"), TEXT("shell_box") };
-	int32 Card = 0, Frame = 0, Shelf = 0;
+	// and his own photographs, when the album has any: every second card and the last nail
+	TArray<FIntPoint> Prints;
+	if (ULyudPhoto* Photo = ULyudPhoto::Get(this))
+	{
+		Photo->NewestPrints(4, Prints);
+	}
+	int32 Card = 0, Frame = 0, Shelf = 0, Print = 0;
 	for (int32 I = 0; I < (int32)Model->Slots.size(); ++I)
 	{
 		const LyudHome::FSlot& S = Model->Slots[(size_t)I];
+		if (Prints.IsValidIndex(Print) && ((S.Type == "card" && I % 2 == 1) || S.Id == "frame_3")
+			&& Model->Put(S.Id, LyudHome::FModel::PrintId(Prints[Print].X, Prints[Print].Y)))
+		{
+			++Print;
+			RefreshSlot(I);
+			continue;
+		}
 		const TCHAR* Pick = S.Type == "card" ? Cards[Card++ % UE_ARRAY_COUNT(Cards)] : S.Type == "frame" ? Frames[Frame++ % UE_ARRAY_COUNT(Frames)]
 			: S.Type == "shelf" ? Shelves[Shelf++ % UE_ARRAY_COUNT(Shelves)] : nullptr;
 		if (!Pick)
@@ -1105,6 +1285,19 @@ void ULyudHeroRoom::DevGrow(int32 Days)
 	}
 }
 
+void ULyudHeroRoom::DevDry(int32 Days)
+{
+	if (bLoaded && Model->HasPlant() && Days > 0)
+	{
+		// the whole of its life moves back, so the last water is that much older
+		Model->Plant.Day -= Days;
+		Model->Plant.LastWater = Model->Plant.LastWater >= 0 ? Model->Plant.LastWater - Days : -1;
+		MindDay = -1;
+		RefreshPlant();
+		UE_LOG(LogLyudHome, Display, TEXT("HeroRoom: the plant is %d days dry%s"), (int32)Model->DryDays(Today()), Model->Droops(Today()) ? TEXT(", its leaves hang") : TEXT(""));
+	}
+}
+
 FString ULyudHeroRoom::Report() const
 {
 	if (!bLoaded)
@@ -1123,8 +1316,9 @@ FString ULyudHeroRoom::Report() const
 	if (Model->HasPlant())
 	{
 		const long long Day = Today();
-		Out += FString::Printf(TEXT("\n  pot: %s, day %d, watered %d times, age %.2f, stage %d"), *LyudHomeImpl::Str(Model->Plant.Species),
-			(int32)(Day - Model->Plant.Day) + 1, Model->Plant.Watered, Model->PlantAge(Day), Model->PlantStage(Day));
+		Out += FString::Printf(TEXT("\n  pot: %s, day %d, watered %d times, age %.2f, stage %d, dry %d days%s, minded %d times"), *LyudHomeImpl::Str(Model->Plant.Species),
+			(int32)(Day - Model->Plant.Day) + 1, Model->Plant.Watered, Model->PlantAge(Day), Model->PlantStage(Day), (int32)Model->DryDays(Day),
+			Model->Droops(Day) ? TEXT(" (hangs)") : TEXT(""), Model->Plant.Minded);
 	}
 	return Out;
 }
@@ -1168,6 +1362,14 @@ namespace LyudHomeConsole
 				Home->DevGrow(Args.Num() > 0 ? FCString::Atoi(*Args[0]) : 10);
 			}
 		}));
+	FAutoConsoleCommandWithWorldAndArgs GDry(TEXT("lyud.Home.Dry"), TEXT("lyud.Home.Dry <days>: the plant in the hero's pot as if not watered for that long (8 by default)."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			if (ULyudHeroRoom* Home = Of(World))
+			{
+				Home->DevDry(Args.Num() > 0 ? FCString::Atoi(*Args[0]) : 8);
+			}
+		}));
 	FAutoConsoleCommandWithWorldAndArgs GLight(TEXT("lyud.Home.Light"), TEXT("The lamp of the hero's room on or off."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
 		{
@@ -1204,6 +1406,8 @@ namespace LyudHomeConsole
 		[](UWorld* W) { if (ULyudHeroRoom* H = Of(W)) { H->DevClear(); } });
 	LyudDev::FAutoAction GDevGrow(TEXT("home.plant_grow"), TEXT("home"), TEXT("dev.action.home.plant_grow"),
 		[](UWorld* W) { if (ULyudHeroRoom* H = Of(W)) { H->DevGrow(10); } });
+	LyudDev::FAutoAction GDevDry(TEXT("home.plant_dry"), TEXT("home"), TEXT("dev.action.home.plant_dry"),
+		[](UWorld* W) { if (ULyudHeroRoom* H = Of(W)) { H->DevDry(8); } });
 	LyudDev::FAutoAction GDevLight(TEXT("home.light"), TEXT("home"), TEXT("dev.action.home.light"),
 		[](UWorld* W) { if (ULyudHeroRoom* H = Of(W)) { H->ToggleLight(); } },
 		[](UWorld* W) { const ULyudHeroRoom* H = Of(W); return H && H->IsLightOn(); });

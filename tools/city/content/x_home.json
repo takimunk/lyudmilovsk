@@ -4,7 +4,40 @@
   "myroom_sleep": {
    "like": "sleep_night",
    "prompt": "city.myroom.sleep.prompt",
-   "lines": "city.myroom.bed",
+   "lines": [
+    "city.myroom.bed.*",
+    {
+     "k": "city.myroom.bed.rain.*",
+     "weather": "rain"
+    },
+    {
+     "k": "city.myroom.bed.snow.*",
+     "weather": "snow"
+    },
+    {
+     "k": "city.myroom.bed.fog.1",
+     "weather": "fog"
+    },
+    {
+     "k": "city.myroom.bed.cold.1",
+     "weather": "cold"
+    },
+    {
+     "k": "city.myroom.bed.summer.1",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "weather": "warm"
+    },
+    {
+     "k": "city.myroom.bed.newyear.1",
+     "date": [
+      "12-25",
+      "01-07"
+     ]
+    }
+   ],
    "target": "myroom_sleep"
   },
   "myroom_place": {
@@ -40,6 +73,30 @@
       21,
       6
      ]
+    },
+    {
+     "k": "city.myroom.basket.rain.*",
+     "weather": "rain"
+    },
+    {
+     "k": "city.myroom.basket.snow.1",
+     "weather": "snow"
+    },
+    {
+     "k": "city.myroom.basket.cold.1",
+     "weather": "cold",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.myroom.basket.warm.1",
+     "weather": "warm",
+     "h": [
+      6,
+      21
+     ]
     }
    ]
   },
@@ -47,7 +104,24 @@
    "prompt": "city.myroom.map.prompt",
    "minutes": 2,
    "any_hour": true,
-   "lines": "city.myroom.map"
+   "lines": [
+    "city.myroom.map.*",
+    {
+     "k": "city.myroom.map.fog.1",
+     "weather": "fog"
+    },
+    {
+     "k": "city.myroom.map.rain.1",
+     "weather": "rain"
+    },
+    {
+     "k": "city.myroom.map.winter.1",
+     "date": [
+      "12-01",
+      "02-28"
+     ]
+    }
+   ]
   }
  },
  "rules": {

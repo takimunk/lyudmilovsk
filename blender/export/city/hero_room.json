@@ -394,6 +394,19 @@
    }
   },
   {
+   "id": "hot_plate",
+   "kind": "machine",
+   "pos": [
+    0.65,
+    2.22,
+    0.82
+   ],
+   "yaw": 270.0,
+   "props": {
+    "what": "hot_plate"
+   }
+  },
+  {
    "id": "pot",
    "kind": "craft",
    "pos": [
@@ -413,9 +426,11 @@
  "notes": [
   "door hole in the hall's wall: x -0.60..0.60, z 0..2.20"
  ],
+ "dress": [],
  "tris": {
-  "shell": 104,
-  "detail": 2267,
-  "windows": 0
+  "shell": 116,
+  "detail": 2755,
+  "windows": 0,
+  "dress": 0
  }
 }

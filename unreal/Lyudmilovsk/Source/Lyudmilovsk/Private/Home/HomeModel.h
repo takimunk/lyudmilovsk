@@ -45,13 +45,15 @@ namespace LyudHome
 		std::string Colour;
 	};
 
-	/** The plant: its species ("" none), the day it was planted, the days it was watered on. */
+	/** The plant: its species ("" none), the day it was planted, the days it was watered on, the times somebody else watered
+	 *  it while he was away. */
 	struct FPlant
 	{
 		std::string Species;
 		long long Day = 0;
 		long long LastWater = -1;
 		int Watered = 0;
+		int Minded = 0;
 	};
 
 	inline bool StartsWith(const std::string& S, const char* Prefix)
@@ -75,7 +77,7 @@ namespace LyudHome
 		std::string WallMeshPrefix;
 
 		// --- the state (saved)
-		std::map<std::string, std::string> Placed;   // slot id -> "item:<id>" | a trophy id
+		std::map<std::string, std::string> Placed;   // slot id -> "item:<id>" | a trophy id | "print:<roll>:<frame>"
 		FPlant Plant;
 		bool bLight = true;
 
@@ -224,6 +226,64 @@ namespace LyudHome
 			return Type == "shelf";
 		}
 
+		// --- his own photographs (docs/photo.md): a print of the album is "print:<roll>:<frame>". It is no item: the album keeps
+		// the picture, the wall shows it. One print hangs in one place.
+		static bool IsPrint(const std::string& What)
+		{
+			return StartsWith(What, "print:");
+		}
+		static std::string PrintId(int Roll, int Frame)
+		{
+			return "print:" + std::to_string(Roll) + ":" + std::to_string(Frame);
+		}
+		/** The roll and the frame of a print's id; false when it is not one. */
+		static bool ParsePrint(const std::string& What, int& Roll, int& Frame)
+		{
+			if (!IsPrint(What))
+			{
+				return false;
+			}
+			const size_t Colon = What.find(':', 6);
+			if (Colon == std::string::npos || Colon == 6 || Colon + 1 >= What.size())
+			{
+				return false;
+			}
+			for (size_t I = 6; I < What.size(); ++I)
+			{
+				if (I != Colon && (What[I] < '0' || What[I] > '9'))
+				{
+					return false;
+				}
+			}
+			if (Colon - 6 > 6 || What.size() - Colon - 1 > 6)
+			{
+				return false;
+			}
+			Roll = std::atoi(What.substr(6, Colon - 6).c_str());
+			Frame = std::atoi(What.substr(Colon + 1).c_str());
+			return true;
+		}
+		/** A print is pinned to the board or hangs framed on a nail; it does not stand on a shelf. */
+		static bool PrintFits(const std::string& Type)
+		{
+			return Type == "card" || Type == "frame";
+		}
+		/** Is this item standing somewhere in the room (a record on a shelf is still his record)? */
+		bool HoldsItem(const std::string& Id) const
+		{
+			return !WhereIs("item:" + Id).empty();
+		}
+		/** How many places of a kind are taken: for the words about the room. */
+		int NumPlacedOn(const std::string& Type) const
+		{
+			int N = 0;
+			for (const FSlot& S : Slots)
+			{
+				N += S.Type == Type && Placed.count(S.Id) ? 1 : 0;
+			}
+			return N;
+		}
+
 		const std::string& At(const std::string& Slot) const
 		{
 			static const std::string None;
@@ -250,7 +310,15 @@ namespace LyudHome
 			{
 				return false;
 			}
-			if (!StartsWith(What, "item:") && (!FindTrophy(What) || !TrophyFits(Slots[(size_t)I].Type) || !WhereIs(What).empty()))
+			int Roll = 0, Frame = 0;
+			if (IsPrint(What))
+			{
+				if (!ParsePrint(What, Roll, Frame) || !PrintFits(Slots[(size_t)I].Type) || !WhereIs(What).empty())
+				{
+					return false;
+				}
+			}
+			else if (!StartsWith(What, "item:") && (!FindTrophy(What) || !TrophyFits(Slots[(size_t)I].Type) || !WhereIs(What).empty()))
 			{
 				return false;
 			}
@@ -298,6 +366,33 @@ namespace LyudHome
 			++Plant.Watered;
 			return true;
 		}
+		/** How many days a plant stands without water before its leaves hang: a cactus and an aloe keep their own. */
+		static int Thirst(const std::string& Sp)
+		{
+			return Sp == "Cactus" ? 21 : Sp == "Aloe" ? 14 : 5;
+		}
+		/** The days since its last water (since it was planted, when it has had none). */
+		long long DryDays(long long Day) const
+		{
+			return HasPlant() ? std::max(0LL, Day - std::max(Plant.Day, Plant.LastWater)) : 0;
+		}
+		/** Its leaves hang: it has had no water for too long. It does not die: one watering sets it right. */
+		bool Droops(long long Day) const
+		{
+			return HasPlant() && DryDays(Day) >= Thirst(Plant.Species);
+		}
+		/** Somebody looks in while he is away: when the plant has hung for two days and more, the owner waters it once (it
+		 *  does not count as his care: no extra growth). True when it happened today: the engine leaves a note. */
+		bool Mind(long long Day)
+		{
+			if (!HasPlant() || DryDays(Day) < Thirst(Plant.Species) + 2)
+			{
+				return false;
+			}
+			Plant.LastWater = Day;
+			++Plant.Minded;
+			return true;
+		}
 		/** The days of growth it has had: one a day, and one more for every day it was watered (so a looked-after plant grows
 		 *  twice as fast as a forgotten one, and a forgotten one still lives). */
 		double GrowthDays(long long Day) const
@@ -326,7 +421,8 @@ namespace LyudHome
 			}
 			if (HasPlant())
 			{
-				Out["plant"] = Plant.Species + "|" + std::to_string(Plant.Day) + "|" + std::to_string(Plant.LastWater) + "|" + std::to_string(Plant.Watered);
+				Out["plant"] = Plant.Species + "|" + std::to_string(Plant.Day) + "|" + std::to_string(Plant.LastWater) + "|" + std::to_string(Plant.Watered)
+					+ "|" + std::to_string(Plant.Minded);
 			}
 			Out["light"] = bLight ? "1" : "0";
 		}
@@ -342,7 +438,9 @@ namespace LyudHome
 					const std::string Slot = KV.first.substr(2);
 					const int I = FindSlot(Slot);
 					// a place or a trophy the data no longer has is dropped (an item goes back to the pocket: the engine asks Lost)
-					if (I >= 0 && Slots[(size_t)I].Type != "pot" && (StartsWith(KV.second, "item:") || FindTrophy(KV.second)))
+					int Roll = 0, Frame = 0;
+					if (I >= 0 && Slots[(size_t)I].Type != "pot" && (StartsWith(KV.second, "item:") || FindTrophy(KV.second)
+						|| (ParsePrint(KV.second, Roll, Frame) && PrintFits(Slots[(size_t)I].Type))))
 					{
 						Placed[Slot] = KV.second;
 					}
@@ -365,12 +463,14 @@ namespace LyudHome
 						}
 						From = Bar + 1;
 					}
-					if (Parts.size() == 4 && std::find(Species.begin(), Species.end(), Parts[0]) != Species.end())
+					// (a save from before the owner minded the plant has four parts)
+					if ((Parts.size() == 4 || Parts.size() == 5) && std::find(Species.begin(), Species.end(), Parts[0]) != Species.end())
 					{
 						Plant.Species = Parts[0];
 						Plant.Day = std::atoll(Parts[1].c_str());
 						Plant.LastWater = std::atoll(Parts[2].c_str());
 						Plant.Watered = std::atoi(Parts[3].c_str());
+						Plant.Minded = Parts.size() > 4 ? std::atoi(Parts[4].c_str()) : 0;
 					}
 				}
 				else if (KV.first == "light")

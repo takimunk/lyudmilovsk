@@ -100,6 +100,24 @@ int main(int Argc, char** Argv)
 	Check(!M.Put("pin_3", Cup), "a trophy does not hang on the pin board");
 	Check(M.Take("pin_1") == "item:postcard" && M.At("pin_1").empty() && M.Take("pin_1").empty(), "take");
 	Check(M.NumPlaced() == 2, "two things left");
+	Check(M.Put("top_1", "item:record_sea_1") && M.HoldsItem("record_sea_1") && M.Take("top_1") == "item:record_sea_1" && !M.HoldsItem("record_sea_1"),
+		"a record on a shelf is held by the room, and no more once taken");
+
+	// --- his own photographs: a print hangs on the board or a nail, once, and is no item
+	typedef LyudHome::FModel FM;
+	int Roll = -1, Frame = -1;
+	Check(FM::PrintId(3, 12) == "print:3:12" && FM::ParsePrint("print:3:12", Roll, Frame) && Roll == 3 && Frame == 12, "a print's id both ways");
+	Check(!FM::ParsePrint("print:", Roll, Frame) && !FM::ParsePrint("print:3", Roll, Frame) && !FM::ParsePrint("print:3:", Roll, Frame)
+		&& !FM::ParsePrint("print::4", Roll, Frame) && !FM::ParsePrint("print:a:4", Roll, Frame) && !FM::ParsePrint("print:3:4:5", Roll, Frame)
+		&& !FM::ParsePrint("item:print:3:4", Roll, Frame) && !FM::ParsePrint("print:12345678:1", Roll, Frame), "a broken print id is no print");
+	Check(FM::PrintFits("card") && FM::PrintFits("frame") && !FM::PrintFits("shelf") && !FM::PrintFits("pot"), "prints go on the wall");
+	Check(M.Put("pin_3", "print:1:2") && M.At("pin_3") == "print:1:2", "a print on the board");
+	Check(!M.Put("pin_4", "print:1:2") && !M.Put("frame_1", "print:1:2"), "one print hangs in one place");
+	Check(M.Put("frame_1", "print:1:3") && !M.Put("shelf_3", "print:1:4") && !M.Put("pin_4", "print:x"), "a nail takes a print, a shelf does not");
+	Check(M.Take("pin_3") == "print:1:2" && M.Put("pin_4", "print:1:2"), "a print taken down hangs again elsewhere");
+	Check(M.HoldsItem("postcard") && !M.HoldsItem("daily_paper") && !M.HoldsItem("print:1:2") && !M.HoldsItem(""), "HoldsItem");
+	Check(M.NumPlacedOn("card") == 2 && M.NumPlacedOn("frame") == 1 && M.NumPlacedOn("shelf") == 1 && M.NumPlacedOn("pot") == 0, "NumPlacedOn");
+	Check(M.NumPlaced() == 4, "four things now");
 
 	// --- the plant
 	const long long D0 = 20000;
@@ -120,6 +138,39 @@ int main(int Argc, char** Argv)
 	Check(M.PlantAge(D0 + 30) < 6.0, "the plant stays a house plant");
 	Check(M.GrowthDays(D0 - 5) >= 0.0, "a clock moved back does not shrink it below a cutting");
 
+	// thirst: the leaves hang after days without water, a watering sets it right, a cactus keeps its own
+	Check(Lazy.DryDays(D0) == 0 && Lazy.DryDays(D0 + 4) == 4 && !Lazy.Droops(D0 + 4) && Lazy.Droops(D0 + 5), "five dry days and the leaves hang");
+	Check(!M.Droops(D0 + 30) && M.DryDays(D0 + 33) == 3, "a watered plant stands");
+	{
+		LyudHome::FModel Dry = Lazy;
+		Check(Dry.Water(D0 + 9) && !Dry.Droops(D0 + 9) && !Dry.Droops(D0 + 13) && Dry.Droops(D0 + 14), "one watering sets it right");
+		LyudHome::FModel Away = Lazy;
+		const double Before = Away.GrowthDays(D0 + 7);
+		Check(!Away.Mind(D0 + 5) && !Away.Mind(D0 + 6), "the owner does not come the first day it hangs");
+		Check(Away.Mind(D0 + 7) && !Away.Droops(D0 + 7) && Away.Plant.Minded == 1 && Away.WateredToday(D0 + 7), "then he waters it once");
+		Check(Away.GrowthDays(D0 + 7) == Before, "his watering is no care of the hero's: no extra growth");
+		Check(!Away.Mind(D0 + 8) && !Away.Mind(D0 + 13) && Away.Mind(D0 + 14) && Away.Plant.Minded == 2, "and again only after another dry spell");
+		LyudHome::FModel Empty = Lazy;
+		Empty.Uproot();
+		Check(!Empty.Mind(D0 + 99) && !Empty.Droops(D0 + 99) && Empty.DryDays(D0 + 99) == 0, "an empty pot needs nobody");
+		bool bCactus = false;
+		for (const std::string& Sp : M.Species)
+		{
+			Check(FM::Thirst(Sp) >= 5, "every plant stands some days dry");
+			bCactus = bCactus || Sp == "Cactus";
+		}
+		Check(bCactus && FM::Thirst("Cactus") > FM::Thirst("Aloe") && FM::Thirst("Aloe") > FM::Thirst("Begonia"), "a cactus outlasts an aloe, an aloe a begonia");
+		std::map<std::string, std::string> Kept;
+		Away.SaveState(Kept);
+		LyudHome::FModel Back;
+		Check(Back.Load(Buf.str(), Error), "loads for the minded plant");
+		Back.LoadState(Kept);
+		Check(Back.Plant.Minded == 2 && Back.Plant.LastWater == Away.Plant.LastWater, "the owner's waterings are saved");
+		Kept["plant"] = M.Species[0] + "|20000|20003|3";
+		Back.LoadState(Kept);
+		Check(Back.HasPlant() && Back.Plant.Watered == 3 && Back.Plant.Minded == 0, "an older save's plant still loads");
+	}
+
 	// --- the save
 	M.bLight = false;
 	std::map<std::string, std::string> Saved;
@@ -135,11 +186,15 @@ int main(int Argc, char** Argv)
 	Saved["p:gone_1"] = "item:postcard";
 	Saved["p:gone_2"] = Cup;
 	Saved["p:pin_4"] = "item:daily_paper";
+	Saved["p:pin_5"] = "print:2:7";
+	Saved["p:shelf_5"] = "print:2:8";
+	Saved["p:frame_2"] = "print:oops";
 	LyudHome::FModel O;
 	Check(O.Load(Buf.str(), Error), "loads a third time");
 	O.LoadState(Saved);
 	Check(O.Lost.size() == 1 && O.Lost[0] == "postcard", "an item of a lost place is handed back");
 	Check(O.At("pin_4") == "item:daily_paper" && O.At("gone_1").empty(), "the rest stands");
+	Check(O.At("pin_5") == "print:2:7" && O.At("shelf_5").empty() && O.At("frame_2").empty(), "a print comes back to a wall place only, a broken one is dropped");
 	// an empty save: a fresh room
 	LyudHome::FModel P = M;
 	P.LoadState(std::map<std::string, std::string>());

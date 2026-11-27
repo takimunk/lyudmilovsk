@@ -90,6 +90,11 @@ public:
 	/** Developer mode: every film, in the camera or the pocket or at the studio, becomes prints now. */
 	void DevelopAllNow();
 	PhotoModel::FState& State();
+	/** A print of the album as a texture, from this game's folder (null: no such print, or its file is gone). Read from the
+	 *  disk each call: the caller keeps it (the hero's room, for a print on its wall). */
+	UTexture2D* LoadPrint(int32 Roll, int32 Frame);
+	/** The album's prints, the newest first, as (roll, frame): at most Max. */
+	void NewestPrints(int32 Max, TArray<FIntPoint>& Out);
 
 	/** The contest's box at the club: the result of a judged contest and its prize, or the album to pick this month's print from. */
 	void UseContest();
