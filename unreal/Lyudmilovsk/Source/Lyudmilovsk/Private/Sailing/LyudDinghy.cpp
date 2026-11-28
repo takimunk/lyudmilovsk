@@ -188,6 +188,11 @@ void ALyudDinghy::ParkAt(const FTransform& World, bool bInRigged, bool bInCovere
 
 void ALyudDinghy::SetLod(ELyudDinghyLod InLod)
 {
+	if (bHeroAboard)
+	{
+		// the hero's own boat is always the full one
+		InLod = ELyudDinghyLod::Near;
+	}
 	if (InLod == Lod)
 	{
 		return;
@@ -521,7 +526,7 @@ bool ALyudDinghy::FImpl::MayLeave(ALyudDinghy& D)
 bool ALyudDinghy::Board(AHeroCharacter* InHero, bool bCheckReach)
 {
 	FImpl& I = *Impl;
-	if (!InHero || bHeroAboard || !I.Hull || !I.HeroSeat || InHero->IsSeated() || InHero->IsOnBike())
+	if (!InHero || bHeroAboard || bOnTrolley || !I.Hull || !I.HeroSeat || InHero->IsSeated() || InHero->IsOnBike())
 	{
 		return false;
 	}
@@ -541,6 +546,11 @@ bool ALyudDinghy::Board(AHeroCharacter* InHero, bool bCheckReach)
 	I.Hero = InHero;
 	bHeroAboard = true;
 	GDinghyHeroBoat = this;
+	if (Lod != ELyudDinghyLod::Near)
+	{
+		Lod = ELyudDinghyLod::Near;
+		I.ApplyLod(*this);
+	}
 	I.Tiller01 = 0.f;
 	I.SheetWant = float(I.B.Sheet);
 	I.BoardWant = float(I.B.Board);
