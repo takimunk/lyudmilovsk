@@ -9,16 +9,16 @@ age = kid teen
 say town.soda_kid.1 | С сиропом! Ну пожалуйста, с сиропом! | With syrup! Please, with syrup! | シロップ入り！おねがい、シロップ入りで！
 say town.soda_kid.2 | Пузырьки в нос! Ой! | Bubbles up my nose! Ow! | 泡が鼻に！うわっ！
 say town.soda_kid.3 | А если монетку на ниточке, она вернётся? | If you tie the coin to a string, does it come back? | 小銭にひもをつけたら、戻ってくるかな？
-say town.soda_kid.4 | Сегодня вишнёвый. Вчера был тархун, он зелёный. | It's cherry today. Yesterday it was tarragon, the green one. | 今日はさくらんぼ。昨日はタラゴン、緑のやつ。
+say town.soda_kid.4 | Сегодня вишнёвый. Вчера был тархун, он зелёный. | It's cherry today. Yesterday it was tarragon, the green one. | 今日はさくらんぼ。昨日はタルフン、緑のやつ。
 
 [soda_grown]
 doing = soda_drink
 age = adult elder
-say town.soda_grown.1 | Стакан сполосни, не ленись. Он тут один на всех. | Rinse the glass, don't be lazy. There's one for everybody. | コップをすすいで、さぼらずに。みんなで一つなんだから。
+say town.soda_grown.1 | Стакан сполосни, не ленись. Он тут один на всех. | Rinse the glass, don't be lazy. There's only the one for all of us. | コップをすすいで、さぼらずに。みんなで一つなんだから。
 say town.soda_grown.2 | Без сиропа даже лучше. Холодная, колючая. | Plain is even better. Cold and prickly. | シロップなしのほうがいい。冷たくて、ぴりっとする。
 say town.soda_grown.3 | Опять монетку проглотил. Сбоку стукнуть надо, вот тут. | It swallowed the coin again. You knock it on the side, right here. | また小銭をのまれた。横をたたくんだ、ここを。
 say town.soda_grown.4 | В такую жару только газировка и спасает. | In this heat only soda water saves you. | この暑さじゃ、炭酸水だけが頼りだ。
-say town.soda_grown.5 | Сироп сегодня жидковат. Экономят. | The syrup's a bit thin today. Saving it. | 今日のシロップは薄いね。けちってる。
+say town.soda_grown.5 | Сироп сегодня жидковат. Экономят. | The syrup's a bit thin today. They're skimping. | 今日のシロップは薄いね。けちってる。
 
 [soda_elder]
 doing = soda_drink
