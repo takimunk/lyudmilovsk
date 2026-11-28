@@ -3397,9 +3397,9 @@ namespace LyudPeople
 		{
 			Urgent = (int)ENeed::Hunger;    // past what Interrupt calls them away for: not back to something that doesn't meet it
 		}
-		else if (P.N[(int)ENeed::Tired] > 0.96f)
+		else if (P.N[(int)ENeed::Tired] > 0.96f && FreeHoursLeft(P) < 3.f)
 		{
-			Urgent = (int)ENeed::Tired;
+			Urgent = (int)ENeed::Tired;     // the evening's tiredness (bed, or the next duty, near): rest at home (below)
 		}
 		// a break from work is taken at the work's own place when it has what's needed (the owner eats in the club, not
 		// at home); otherwise anywhere
@@ -3427,6 +3427,12 @@ namespace LyudPeople
 				}
 				int S = -1;
 				const float Sc = Score(P, Activities[I], S);
+				// worn out (not on a break): rest at home, not a long way off to something restful (the North's hot spring);
+				// nothing at home: the usual pick (Pass 2)
+				if (Urgent == (int)ENeed::Tired && !bBreakNow && (S < 0 || Slots[(size_t)S].Place != P.Home))
+				{
+					continue;
+				}
 				if (Sc > BestScore)
 				{
 					BestScore = Sc;
@@ -5029,7 +5035,9 @@ namespace LyudPeople
 				const int Duty = DutyNow(P, bSleep);
 				// a duty starts (bed, work, school): drop what they're doing
 				// (a break from work: the way there, 35 min at most, the way back)
-				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil);
+				// (an ordered activity is kept till its time is up, as Interrupt keeps it: only bed calls them off it)
+				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil)
+					&& (bSleep || P.Why != "ordered");
 				// what they do is off now (the rink shut, the walruses' hour over): they finish within a minute and go
 				if (!ConditionOk(Activities[(size_t)P.Activity]) && P.Until > Time + 60.0)
 				{
@@ -5193,6 +5201,13 @@ namespace LyudPeople
 
 	void FWorld::Resettle()
 	{
+		// a festival night already over (SetStayUp(0)) whose end lies ahead of the clock: the clock was set back before it
+		// (an older save loaded), and its "morning after" would make this morning a late one, everybody worn out
+		if (StayUntil <= Time && StayEnd > Time)
+		{
+			StayUntil = 0.0;
+			StayEnd = -1e18;
+		}
 		SyncSunDuties();
 		for (FSlot& S : Slots)
 		{
@@ -5217,6 +5232,11 @@ namespace LyudPeople
 			P.bLoopStop = false;
 			P.SkateWith = -1;
 			P.Speed = 0.f;
+			// times on the old clock: after a jump back (an older save loaded) they would lie in the future, a blocked duty
+			// staying blocked and what they last left staying "just now" for as long as the jump
+			P.DutyBlockedUntil = -1e18;
+			P.PrevActivity = -1;
+			P.PrevActivityEnd = -1e18;
 			// how tired and hungry they'd be at this hour
 			float Awake = Hour - WakeOf(P);
 			if (Awake < 0.f)
