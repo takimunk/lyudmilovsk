@@ -67,6 +67,35 @@ localization skill (ru/en/ja). Items: game-items skill. Dev mode: dev-mode skill
 - Items: `sail_gloves`, `life_jacket` (worn), `sail_card` (the school's membership book), `knot_cord`.
 - Meshes `/Game/Sailing/SM_Sail_<Name>`; sounds group `Sailing`, `audio/sfx/sailing/`.
 
+## On the Mac: the order of things (nothing here has been compiled or seen in the engine yet)
+
+Everything in this branch was written and host-tested in the cloud (2026-11-27/28). The engine code (`Private/Sailing/Lyud*.cpp`,
+about 9,000 lines, plus small edits in People, City, Music, Festival and Inventory code) has never met a compiler; two audit
+passes with stub headers found no compile errors, so expect a handful, not hundreds. Each part's own section has the details;
+this is the order.
+
+1. Build through `tools/wait_ubt_queue.sh`; fix the first-compile errors (the audits' watch lists are in "Engine: the boats"
+   and "Engine: the school"). The game runs without any imported asset: code-built stand-in boats, shed, marks and flags.
+2. `python3 tools/sailing/sailing.py --built` with `Saved/World/terrain_out.bin` (the real sea bed for the launch line and the
+   areas), then `python3 tools/sailing/sailing_people.py`, `python3 tools/city/interiors.py`, `bash tools/sailschoolsim/run.sh`.
+3. Meshes: `unreal/scripts/import_sailing.sh` (builds the GLBs with Blender, makes the materials, imports to `/Game/Sailing`);
+   signs: `python3 tools/make_sailing_signs.py`. Commit the finished assets to LFS.
+4. Clips and props: the six steps of "Clips (part D) / Mac steps" (bake on Guy_a, look at the sheets, retarget, import; props).
+5. Sounds: `python3 tools/sailing/sounds.py && python3 tools/sailing/sounds.py --check`, then `IMPORT_ONLY=sfx/sailing` with
+   `unreal/scripts/import_audio.py`; commit the wavs to LFS.
+6. Icons: `python3 tools/sailing/icons.py` (the Higgsfield grid is pinned in `tools/sailing/icon_grids.json`), look at every
+   cell, then the game-items skill's import.
+7. Look, offscreen first: F7, group `sailing`. `lyud.Sail.Season 1`, `lyud.Sail.Fleet 22`, `lyud.Sail.Board luch`,
+   `lyud.Sail.Lesson first_sail`, `lyud.Sail.Race`, `lyud.Sail.Capsize`; a kids' session in July at 15:00, a Wednesday race,
+   the winter lay-up. Things nobody has seen and that were guessed: prop rotations and door swing in the boathouse, the crew's
+   seat positions, the hero's seat lag, the cadet's board swing, key clashes at the helm (E/Q lean, Z/X board, Left Alt bail).
+8. Bench against main with the fleet afloat (`lyud.Sail.Fleet 22`) and with `lyud.Sail 0`, alone, per docs/benchmark.md.
+
+Known and left: `SailModel.cpp` `Heading()` mode 1 `Side = -Rel * H.Tack` may be sign-inverted (the fleet brain works round it;
+all suites pass); NPCs run dead downwind (no gybing angles); the people's walk grid does not know the boathouse; towel spot
+`S-TOWEL-07` still lies inside the boat park in `public_spaces.json` (fix in `tools/public_spaces.py`, which needs the terrain);
+133 spoken lines are unvoiced; the wind thread's new calls (shifts, gust fronts, batched queries) are not used yet.
+
 ## Sounds
 
 All procedural and seeded (`tools/sailing/sounds.py`, numpy + scipy; nothing generated or paid for): 72 pools, 187
