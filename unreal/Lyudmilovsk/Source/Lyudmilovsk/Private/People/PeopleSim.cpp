@@ -5217,6 +5217,11 @@ namespace LyudPeople
 			P.bLoopStop = false;
 			P.SkateWith = -1;
 			P.Speed = 0.f;
+			// times on the old clock: after a jump back (an older save loaded) they would lie in the future, a blocked duty
+			// staying blocked and what they last left staying "just now" for as long as the jump
+			P.DutyBlockedUntil = -1e18;
+			P.PrevActivity = -1;
+			P.PrevActivityEnd = -1e18;
 			// how tired and hungry they'd be at this hour
 			float Awake = Hour - WakeOf(P);
 			if (Awake < 0.f)
