@@ -122,28 +122,28 @@
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a neatly folded bottle-green zip windbreaker of thin crisp fabric with a stand-up collar and elastic cuffs",
-   "source": "localization/icon_grids_look.json: icons_look, cell 1 (row 1, left), one 2x2 Higgsfield grid (the game-assets rule)"
+   "source": "design/icons_1127/sheet_2.json, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_raincoat": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a neatly folded yellow rubberised raincoat with a hood and big press studs, a matte sheen on the folds",
-   "source": "localization/icon_grids_look.json: icons_look, cell 2 (row 1, right), one 2x2 Higgsfield grid (the game-assets rule)"
+   "source": "design/icons_1127/sheet_2.json, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_winter_coat": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a neatly folded heavy navy blue woollen winter coat with a dark fur collar and large buttons",
-   "source": "localization/icon_grids_look.json: icons_look, cell 3 (row 2, left), one 2x2 Higgsfield grid (the game-assets rule)"
+   "source": "design/icons_1127/sheet_2.json, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_cap": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a grey herringbone tweed flat cap with a short stiff peak, seen from the front at three quarters",
-   "source": "localization/icon_grids_look.json: icons_look, cell 4 (row 2, right), one 2x2 Higgsfield grid (the game-assets rule)"
+   "source": "design/icons_1127/sheet_2.json, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_hoodie": {
    "kind": "icon",
@@ -259,25 +259,28 @@
    "style": "icon",
    "aspect": "1:1",
    "prompt": "A small red tin can of lamp paraffin with a screw cap on a little chain and a wire handle, no readable words.",
-   "source": "tools/gen_localized.py icon_paraffin (fal, on the Mac: the game-assets rule); the Mayak lighthouse keeper's errand"
+   "source": "design/icons_1127/sheet_4.json, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_rail_ticket": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A small pale green Edmondson card railway ticket, thick cardboard with rounded corners and a faint printed wave pattern, no lettering."
+   "prompt": "A small pale green Edmondson card railway ticket, thick cardboard with rounded corners and a faint printed wave pattern, no lettering.",
+   "source": "design/icons_1127/sheet_3.json, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_rail_ticket_punched": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A small pale green Edmondson card railway ticket with a neat punched hole in its middle and a clipped corner, slightly worn, no lettering."
+   "prompt": "A small pale green Edmondson card railway ticket with a neat punched hole in its middle and a clipped corner, slightly worn, no lettering.",
+   "source": "design/icons_1127/sheet_3.json, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_ticket_stub": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A small torn pink paper cinema ticket stub with a perforated torn edge and a faded violet stamp, no lettering."
+   "prompt": "A small torn pink paper cinema ticket stub with a perforated torn edge and a faded violet stamp, no lettering.",
+   "source": "design/icons_1127/sheet_2.json, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_postcard": {
    "kind": "icon",
@@ -1446,28 +1449,28 @@
    "style": "icon",
    "aspect": "1:1",
    "prompt": "A single small Baltic cockle shell, pale cream with fine ribs, a few grains of wet sand on it.",
-   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_seashell (fal, one picture; docs/beach.md)"
+   "source": "design/icons_1127/sheet_4.json, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_amber_piece": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "A small rough piece of raw Baltic amber, cloudy honey-yellow with a matte weathered crust, a strand of dark seaweed beside it.",
-   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_amber_piece (fal, one picture; docs/beach.md)"
+   "source": "design/icons_1127/sheet_4.json, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_amber_fly": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "A small polished drop of clear honey-coloured Baltic amber with a tiny dark fly caught inside it, lit from behind.",
-   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_amber_fly (fal, one picture; docs/beach.md)"
+   "source": "design/icons_1127/sheet_4.json, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_sand_flag": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "A small red paper flag glued to a thin wooden stick, the kind children put on top of a sandcastle.",
-   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_sand_flag (fal, one picture; docs/beach.md)"
+   "source": "design/icons_1127/sheet_4.json, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_keeper_whistle": {
    "kind": "icon",
@@ -1480,120 +1483,281 @@
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A small cream cardboard cable car travel card with a row of seven little printed squares along its edge and a tiny cabin drawn in one corner, no lettering."
+   "prompt": "A small cream cardboard cable car travel card with a row of seven little printed squares along its edge and a tiny cabin drawn in one corner, no lettering.",
+   "source": "design/icons_1127/sheet_3.json, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_lost_umbrella": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A closed dark blue folding umbrella with a curved wooden handle, lying diagonally."
+   "prompt": "A closed dark blue folding umbrella with a curved wooden handle, lying diagonally.",
+   "source": "design/icons_1127/sheet_3.json, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_lost_mitten": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A single red hand-knitted wool mitten with a white snowflake pattern."
+   "prompt": "A single red hand-knitted wool mitten with a white snowflake pattern.",
+   "source": "design/icons_1127/sheet_3.json, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_lost_scarf": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A folded mustard yellow knitted wool scarf with short fringe at the ends."
+   "prompt": "A folded mustard yellow knitted wool scarf with short fringe at the ends.",
+   "source": "design/icons_1127/sheet_3.json, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_lost_glasses": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A pair of folded black-rimmed reading glasses."
+   "prompt": "A pair of folded black-rimmed reading glasses.",
+   "source": "design/icons_1127/sheet_3.json, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_lost_keys": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A small bunch of three old brass keys on a ring with a little anchor key fob."
+   "prompt": "A small bunch of three old brass keys on a ring with a little anchor key fob.",
+   "source": "design/icons_1127/sheet_3.json, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_lost_bear": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
-   "prompt": "A small worn brown plush teddy bear sitting upright, one ear slightly faded."
+   "prompt": "A small worn brown plush teddy bear sitting upright, one ear slightly faded.",
+   "source": "design/icons_1127/sheet_3.json, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_dish_ukha": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a white enamel bowl of clear golden fish soup with a piece of white fish, potato chunks and a sprig of dill, an aluminium spoon beside it",
-   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 1 (row 1, left), one 2x2 Higgsfield grid (the game-assets rule)"
+   "source": "design/icons_1127/sheet_1.json, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_dish_fried_potatoes": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a cast iron frying pan of golden fried potato slices with a crisp crust, chopped fresh dill scattered on top",
-   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 2 (row 1, right), one 2x2 Higgsfield grid (the game-assets rule)"
+   "source": "design/icons_1127/sheet_1.json, cell 4 (row 2, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_dish_fried_fish": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a white plate with one whole small fried fish with a golden crisp crust and a sprig of dill beside it",
-   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 3 (row 2, left), one 2x2 Higgsfield grid (the game-assets rule)"
+   "source": "design/icons_1127/sheet_1.json, cell 3 (row 1, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_dish_salad": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "an enamel bowl of salad of red tomato wedges, sliced pink radishes and green dill, coarse salt",
-   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 4 (row 2, right), one 2x2 Higgsfield grid (the game-assets rule)"
+   "source": "design/icons_1127/sheet_1.json, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_dish_okroshka": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a white enamel bowl of cold kefir soup with diced radish, potato and chopped green dill, an aluminium spoon",
-   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+   "source": "design/icons_1127/sheet_1.json, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_dish_fried_smelt": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a plate of small golden crisp fried smelt fish laid in a row, a lemon wedge",
-   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+   "source": "design/icons_1127/sheet_1.json, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_dish_herring_potatoes": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a plate with two small silver Baltic herring, boiled potatoes in their skins and dill",
-   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+   "source": "design/icons_1127/sheet_1.json, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_dish_draniki": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a stack of three golden lacy potato pancakes on a plate",
-   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+   "source": "design/icons_1127/sheet_1.json, cell 2 (row 1, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_dish_carrot_salad": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "a small glass bowl of finely grated orange carrot mixed with apple",
-   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
-   },
+   "source": "design/icons_1127/sheet_1.json, cell 1 (row 1, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
+  },
   "icon_kvass_can": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "A small dented aluminium milk can with a wire handle and a tight lid, beads of cold condensation on its side, a little dark amber kvass foam at the rim.",
-   "source": "owed: docs/street_life.md (the lead generates the icons of /home/user/wt/_brief/icons_owed.md)"
+   "source": "design/icons_1127/sheet_4.json, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
   },
   "icon_fruit_ice": {
    "kind": "icon",
    "style": "icon",
    "aspect": "1:1",
    "prompt": "A bright red fruit ice lolly on a flat wooden stick, glossy and slightly melting, one drip running down, half unwrapped from a plain paper wrapper.",
-   "source": "owed: docs/street_life.md (the lead generates the icons of /home/user/wt/_brief/icons_owed.md)"
+   "source": "design/icons_1127/sheet_4.json, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
+  },
+  "icon_banya_hat": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A pointed felted wool banya cap of natural off-white felt with a rolled brim and a little loop at the tip.",
+   "source": "design/icons_1127/sheet_2.json, cell 5 (row 2, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
+  },
+  "icon_banya_towel": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A neatly folded thick white terry towel with a thin blue stripe across its end, soft loops visible.",
+   "source": "design/icons_1127/sheet_2.json, cell 6 (row 2, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
+  },
+  "icon_birch_venik": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A bath whisk of fresh birch twigs with glossy green leaves, its handle tied tight with rough twine, the leaves wet and glistening.",
+   "source": "design/icons_1127/sheet_2.json, cell 7 (row 3, left), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
+  },
+  "icon_skates": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A pair of Soviet leisure ice skates on white leather lace-up boots with polished steel blades, the laces tied together.",
+   "source": "design/icons_1127/sheet_2.json, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
+  },
+  "icon_carrot": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "One fresh orange carrot with its feathery green top, a little dark soil still on it, lying diagonally.",
+   "source": "design/icons_1127/sheet_4.json, cell 8 (row 3, middle), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
+  },
+  "icon_coal": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "Two small lumps of glossy black coal with sharp shiny facets, side by side.",
+   "source": "design/icons_1127/sheet_4.json, cell 9 (row 3, right), one 3x3 Higgsfield grid (the game-assets rule), cut by tools/icons_from_sheets.py"
+  },
+  "icon_corn_cob": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "One hot boiled corn cob, bright yellow kernels glistening, sprinkled with coarse salt, its lower end wrapped in a white paper napkin, lying diagonally.",
+   "source": "design/food/icons_grid.json, row 1, left, one 2x2 Higgsfield grid, cut by tools/food_icons.py"
+  },
+  "icon_cheese_braid": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "One smoked Adyghe cheese braid, three strands plaited into a braid, glossy amber-orange smoked skin, lying diagonally.",
+   "source": "design/food/icons_grid.json, row 1, right, one 2x2 Higgsfield grid, cut by tools/food_icons.py"
+  },
+  "icon_cheese_round_small": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "One small round of fresh white Adyghe cheese, about palm size, with a basket-weave pattern pressed into its sides and top.",
+   "source": "design/food/icons_grid.json, row 2, left, one 2x2 Higgsfield grid, cut by tools/food_icons.py"
+  },
+  "icon_cheese_round_big": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "One large round of fresh white Adyghe cheese, a kilogram wheel, basket-weave pattern on its sides and top, glistening with whey.",
+   "source": "design/food/icons_grid.json, row 2, right, one 2x2 Higgsfield grid, cut by tools/food_icons.py"
+  },
+  "icon_find_acorn": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A sound brown oak acorn in its rough cup.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_hazelnut": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A brown hazelnut in its shell.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_walnut": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A wrinkled walnut in its shell.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_pinecone": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A dry open pine cone.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_mussel": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A closed blue-black Baltic mussel shell.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_bottlecap": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A crimped metal bottle cap, a little bent.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_foil": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A crumpled piece of gold sweet-wrapper foil.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_ring": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small thin brass ring.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_button": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A round four-hole coat button.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_coin": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small worn copper coin.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_key": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small old iron key.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
+  },
+  "icon_find_seaglass": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A green shard of sea glass, rolled frosted and smooth.",
+   "source": "rendered, not generated: blender/props/corvid_items.py + blender/props/corvid_items_sheet.py (the corvids' finds, 3D models of our own)"
   }
  }
 }

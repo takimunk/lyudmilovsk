@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_sandgoby",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_2.json (cell 5 (row 2, middle)).",
+ "source": "design/fishing/icons_grid_2.png (sidecar design/fishing/icons_grid_2.json), cell 5 (row 2, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "f452de46385ad0fa4df72bf38ac04576f3f646bdb6f7cb8a43c47e7260cfc175",
+ "strings": {}
+}

@@ -1,0 +1,10 @@
+{
+ "id": "icon_dish_okroshka",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a white enamel bowl of cold kefir soup with diced radish, potato and chopped green dill, an aluminium spoon",
+ "source": "design/icons_1127/sheet_1.png (sidecar design/icons_1127/sheet_1.json), cell 7 (row 3, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "68a0b3c16729b612ded806bd63bc71eea81f8573d7a701a824868ca6b26e9b6f",
+ "strings": {}
+}

@@ -1,0 +1,10 @@
+{
+ "id": "icon_dish_fried_smelt",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a plate of small golden crisp fried smelt fish laid in a row, a lemon wedge",
+ "source": "design/icons_1127/sheet_1.png (sidecar design/icons_1127/sheet_1.json), cell 5 (row 2, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "414420ccea0a75dd5352c71c069a9acdb3acfdaf0e61cb0f94ba61e9b42dc789",
+ "strings": {}
+}

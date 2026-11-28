@@ -1,0 +1,10 @@
+{
+ "id": "icon_skates",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A pair of Soviet leisure ice skates on white leather lace-up boots with polished steel blades, the laces tied together.",
+ "source": "design/icons_1127/sheet_2.png (sidecar design/icons_1127/sheet_2.json), cell 8 (row 3, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "43f9c76561f41afc68e71036251841d35f852ba4785385a1d35eaf544d3a0b90",
+ "strings": {}
+}

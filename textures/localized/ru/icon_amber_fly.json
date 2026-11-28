@@ -1,0 +1,10 @@
+{
+ "id": "icon_amber_fly",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small polished drop of clear honey-coloured Baltic amber with a tiny dark fly caught inside it, lit from behind.",
+ "source": "design/icons_1127/sheet_4.png (sidecar design/icons_1127/sheet_4.json), cell 3 (row 1, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "8ee8031582c36fc96a984f4a967fb4781f11443038322aaa69770df44a06661c",
+ "strings": {}
+}

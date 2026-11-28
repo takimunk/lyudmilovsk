@@ -1,0 +1,10 @@
+{
+ "id": "icon_lost_umbrella",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A closed dark blue folding umbrella with a curved wooden handle, lying diagonally.",
+ "source": "design/icons_1127/sheet_3.png (sidecar design/icons_1127/sheet_3.json), cell 1 (row 1, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "ee19844d9f8978e6dd978e04d19f390560a4fa5129b0020909a4ab9d62e3233b",
+ "strings": {}
+}

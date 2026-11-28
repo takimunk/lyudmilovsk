@@ -1,0 +1,10 @@
+{
+ "id": "icon_dish_herring_potatoes",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a plate with two small silver Baltic herring, boiled potatoes in their skins and dill",
+ "source": "design/icons_1127/sheet_1.png (sidecar design/icons_1127/sheet_1.json), cell 6 (row 2, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "4234470737e8cd28f4f6cbd358f3f68b66ff2d3300e92fba930f9c6689132d05",
+ "strings": {}
+}

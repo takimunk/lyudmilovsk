@@ -1,0 +1,10 @@
+{
+ "id": "icon_winter_coat",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a neatly folded heavy navy blue woollen winter coat with a dark fur collar and large buttons",
+ "source": "design/icons_1127/sheet_2.png (sidecar design/icons_1127/sheet_2.json), cell 4 (row 2, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "8aa8daefa912c738fb1fea94cc8f6a3d09b295010a7aea7e36a02746c516cd22",
+ "strings": {}
+}

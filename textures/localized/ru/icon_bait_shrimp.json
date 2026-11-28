@@ -1,0 +1,10 @@
+{
+ "id": "icon_bait_shrimp",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_6.json (cell 3 (row 1, right)).",
+ "source": "design/fishing/icons_grid_6.png (sidecar design/fishing/icons_grid_6.json), cell 3 (row 1, right), cut into 3x2 equal cells, resized to 512x512",
+ "sha256": "a0eb56ded0eb962af5854ab330932c541fd9f1079233d12692495acaa1188d72",
+ "strings": {}
+}

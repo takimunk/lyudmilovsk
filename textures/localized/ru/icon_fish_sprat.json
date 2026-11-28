@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_sprat",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_1.json (cell 6 (row 2, right)).",
+ "source": "design/fishing/icons_grid_1.png (sidecar design/fishing/icons_grid_1.json), cell 6 (row 2, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "d97401a6f1f738c8576f3413fd8ff29b92be24fd6680ea810c9caea5668c0926",
+ "strings": {}
+}

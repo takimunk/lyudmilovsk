@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_vimba",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_3.json (cell 7 (row 3, left)).",
+ "source": "design/fishing/icons_grid_3.png (sidecar design/fishing/icons_grid_3.json), cell 7 (row 3, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "c4567d3996acb475d1d9362fa160c4979543d6c8c8b0c8a8111223d193e86142",
+ "strings": {}
+}

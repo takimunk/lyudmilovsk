@@ -1,0 +1,10 @@
+{
+ "id": "icon_rail_ticket_punched",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small pale green Edmondson card railway ticket with a neat punched hole in its middle and a clipped corner, slightly worn, no lettering.",
+ "source": "design/icons_1127/sheet_3.png (sidecar design/icons_1127/sheet_3.json), cell 9 (row 3, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "a19e60cb57ce48add653fa2ea38b6226387860633527985aea925f8481a9aa6f",
+ "strings": {}
+}

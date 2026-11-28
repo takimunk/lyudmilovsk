@@ -1,0 +1,10 @@
+{
+ "id": "icon_fishing_rod",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_1.json (cell 1 (row 1, left)).",
+ "source": "design/fishing/icons_grid_1.png (sidecar design/fishing/icons_grid_1.json), cell 1 (row 1, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "f938b1034a9423ae749c6bf8ff276a96e9fa5ac054fdebf1f955d0fc606b2f4a",
+ "strings": {}
+}

@@ -1,0 +1,10 @@
+{
+ "id": "icon_sand_flag",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small red paper flag glued to a thin wooden stick, the kind children put on top of a sandcastle.",
+ "source": "design/icons_1127/sheet_4.png (sidecar design/icons_1127/sheet_4.json), cell 4 (row 2, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "e55d3544e9bac49ec00a41f2838d69dc0a98c290376620238027243bcc649fd9",
+ "strings": {}
+}

@@ -1,0 +1,10 @@
+{
+ "id": "icon_lost_keys",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small bunch of three old brass keys on a ring with a little anchor key fob.",
+ "source": "design/icons_1127/sheet_3.png (sidecar design/icons_1127/sheet_3.json), cell 5 (row 2, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "2cf8b6f67d5d2b4455e883792a72aa9cc8cfae1af3ab4ef33dfa393116073150",
+ "strings": {}
+}

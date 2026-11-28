@@ -1,0 +1,10 @@
+{
+ "id": "icon_rail_ticket",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small pale green Edmondson card railway ticket, thick cardboard with rounded corners and a faint printed wave pattern, no lettering.",
+ "source": "design/icons_1127/sheet_3.png (sidecar design/icons_1127/sheet_3.json), cell 8 (row 3, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "a32b477a2eb9c1e4e278bfe6c85431247c09fe26b43f70004a668c469ec5b41f",
+ "strings": {}
+}

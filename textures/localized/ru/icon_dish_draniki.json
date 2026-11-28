@@ -1,0 +1,10 @@
+{
+ "id": "icon_dish_draniki",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a stack of three golden lacy potato pancakes on a plate",
+ "source": "design/icons_1127/sheet_1.png (sidecar design/icons_1127/sheet_1.json), cell 2 (row 1, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "240c359bbe7ec2c03a98470f664d3629cf44623f78081d4ef99b5525b26486cf",
+ "strings": {}
+}

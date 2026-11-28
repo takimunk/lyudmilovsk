@@ -1,0 +1,10 @@
+{
+ "id": "icon_ticket_stub",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small torn pink paper cinema ticket stub with a perforated torn edge and a faded violet stamp, no lettering.",
+ "source": "design/icons_1127/sheet_2.png (sidecar design/icons_1127/sheet_2.json), cell 9 (row 3, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "4a8802ab4eba02fe7e823c627b99688ad2b209bc3411c9a11d9f1d8fb6a70954",
+ "strings": {}
+}

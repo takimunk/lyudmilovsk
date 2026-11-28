@@ -33,5 +33,6 @@
   "fish_stickleback",
   "fish_perch"
  ],
- "note": "3x3 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language)."
+ "note": "3x3 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language).",
+ "sha256": "234ce7f1d63d63e3f372a28fb18777aeb72d66135319b5cabf7a3e4dfb4e8088"
 }

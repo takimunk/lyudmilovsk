@@ -1,0 +1,10 @@
+{
+ "id": "icon_lost_scarf",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A folded mustard yellow knitted wool scarf with short fringe at the ends.",
+ "source": "design/icons_1127/sheet_3.png (sidecar design/icons_1127/sheet_3.json), cell 3 (row 1, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "0e726303c51f643ccd7f6a8688b35c5a49e7816e3706fa00690bf37d82580ded",
+ "strings": {}
+}

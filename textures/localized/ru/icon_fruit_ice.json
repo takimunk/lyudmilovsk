@@ -1,0 +1,10 @@
+{
+ "id": "icon_fruit_ice",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A bright red fruit ice lolly on a flat wooden stick, glossy and slightly melting, one drip running down, half unwrapped from a plain paper wrapper.",
+ "source": "design/icons_1127/sheet_4.png (sidecar design/icons_1127/sheet_4.json), cell 6 (row 2, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "3ac8064dc91058cdf0ca386c259d0247915f41a7e4b1e0557b2c8e9c3dc0aa16",
+ "strings": {}
+}

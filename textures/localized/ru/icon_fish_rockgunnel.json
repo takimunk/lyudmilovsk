@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_rockgunnel",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_3.json (cell 9 (row 3, right)).",
+ "source": "design/fishing/icons_grid_3.png (sidecar design/fishing/icons_grid_3.json), cell 9 (row 3, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "85cab9b8d7d61eb77b284ac8a23ad8bfde00a83f0969c0eb4a2f38bdd8faef0c",
+ "strings": {}
+}

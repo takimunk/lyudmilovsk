@@ -24,5 +24,6 @@
  ],
  "note": "2x2 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language).",
  "failed_job_id": "be5690bb-e6ca-472c-821b-3e86b92fb67f",
- "job_id": "f25674b8-b575-43f9-9ba7-04c3e497ce57"
+ "job_id": "f25674b8-b575-43f9-9ba7-04c3e497ce57",
+ "sha256": "99f11e6dd71e89b4c6060ef512d97a65849d405b27a11091b9ed02a47fb686c8"
 }
