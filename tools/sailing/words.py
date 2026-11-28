@@ -96,27 +96,22 @@ def build_place(things_src, school):
         u, v = (s - s0) / (s1 - s0), (y - y0) / (y1 - y0)
         return [c[0][0] + u * (c[3][0] - c[0][0]) + v * (c[1][0] - c[0][0]), c[0][1] + u * (c[3][1] - c[0][1]) + v * (c[1][1] - c[0][1])]
 
+    cx, cy = (s0 + s1) / 2.0, (y0 + y1) / 2.0
     things = []
     for t in things_src["things"]:
-        if t.get("point"):
-            pt = school["points"].get(t["point"])
-            if not pt:
-                err("things.json: %s: no point %s in sailing.json" % (t["id"], t["point"]))
-                continue
-            wx, wy = pt["pos"][0], pt["pos"][1]
-        else:
-            wx, wy = world(t["s"], t["y"])
-        if t.get("level") == "floor":
-            wz = bh["floor_z"] + t["h"]
-        else:
-            near = school["points"].get(t.get("near", ""))
-            if not near:
-                err("things.json: %s: level ground needs 'near', a key of school.points" % t["id"])
-                continue
-            wz = near["pos"][2] + t["h"]
         if t["face"] not in faces:
             err("things.json: %s: face %s" % (t["id"], t["face"]))
             continue
+        if t.get("b"):
+            # the meshes' building frame: +X to the sea (s falls), -Y the north wall (map y grows)
+            wx, wy = world(cx - t["b"][0], cy - t["b"][1])
+            wz = bh["floor_z"] + t["b"][2]
+        else:
+            pt = school["points"].get(t.get("point", ""))
+            if not pt:
+                err("things.json: %s: no point %s in sailing.json" % (t["id"], t.get("point")))
+                continue
+            wx, wy, wz = pt["pos"][0], pt["pos"][1], pt["pos"][2] + t["h"]
         dx, dy = wx - front[0], wy - front[1]
         local = [round(dx * math.sin(a) - dy * math.cos(a), 3), round(-dx * math.cos(a) - dy * math.sin(a), 3), round(wz - front[2], 3)]
         rec = collections.OrderedDict([("id", t["id"]), ("kind", t["kind"]), ("pos", local),
@@ -169,7 +164,7 @@ def main():
     city = load(CITY_STRINGS) if os.path.exists(CITY_STRINGS) else {}
     need = load(os.path.join(HERE, "strings_needed.json"))["keys"]
     for k in need:
-        if k not in strings and k not in city:
+        if k not in strings and k not in city and not k.startswith("festival."):  # the festivals' names: the town part, main tables
             err("no words for %s (%s)" % (k, need[k]))
     check_items(strings)
     sailing = load(os.path.join(CONTENT, "City", "sailing.json"))

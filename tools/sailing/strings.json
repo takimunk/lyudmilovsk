@@ -36,7 +36,7 @@
  "sail.lesson.shore.obj1": {"ru": "Завязать узлы на доске: {0} из {1}", "en": "Tie knots at the board: {0} of {1}", "ja": "結び板で結ぶ：{0}／{1}"},
  "sail.lesson.shore.obj2": {"ru": "Осмотреть учебную лодку: {0} из {1}", "en": "Go over the demonstration boat: {0} of {1}", "ja": "見本の艇をひと通り見る：{0}／{1}"},
  "sail.lesson.shore.obj3": {"ru": "Вооружить свою лодку: {0} из {1}", "en": "Rig your boat: {0} of {1}", "ja": "自分の艇を艤装する：{0}／{1}"},
- "sail.lesson.shore.hint1": {"ru": "Узловая доска — на стене эллинга, в проходе. Беседочный, восьмёрка, прямой: с них все начинают.", "en": "The knot board's on the boathouse wall, in the aisle. Bowline, figure-eight, reef knot: everyone starts with those.", "ja": "結び板は艇庫の壁、通路のところ。もやい、8の字、本結び。みんなそこから始める。"},
+ "sail.lesson.shore.hint1": {"ru": "Узловая доска — в классе, на стене у двери. Беседочный, восьмёрка, прямой: с них все начинают.", "en": "The knot board's in the classroom, on the wall by the door. Bowline, figure-eight, reef knot: everyone starts with those.", "ja": "結び板は教室の中、ドアの横の壁。もやい、8の字、本結び。みんなそこから始める。"},
  "sail.lesson.shore.hint2": {"ru": "Учебная лодка стоит на тележке у мачты с флагами. Обойди её от носа до руля.", "en": "The demonstration boat's on its trolley by the flag mast. Walk her from bow to rudder.", "ja": "見本の艇は旗のマストのそば、船台の上。バウからラダーまでぐるっと見て。"},
  "sail.lesson.shore.hint3": {"ru": "Твой «Луч» в парке, девятый номер. Мачта, гик, шкот, руль — в таком порядке, и ничего не перепутаешь.", "en": "Your Luch is in the park, number nine. Mast, boom, sheet, rudder — in that order and nothing goes wrong.", "ja": "きみのルーチは艇置き場の9番。マスト、ブーム、シート、ラダー。この順なら間違えない。"},
  "sail.lesson.shore.done": {"ru": "Узлы держат, лодка собрана, ничего лишнего не осталось. С этой минуты ты юнга. Завтра — на воду.", "en": "The knots hold, the boat's together and there's nothing left over. From this minute you're a deckhand. Tomorrow — afloat.", "ja": "結びは解けない、艇は組めた、余った部品もなし。今から「見習い」だ。次は海に出るよ。"},
@@ -259,11 +259,6 @@
  "sail.sailor.adult_4": {"ru": "Ильдар С.", "en": "Ildar S.", "ja": "イルダール・S"},
  "sail.sailor.adult_5": {"ru": "Оксана Д.", "en": "Oksana D.", "ja": "オクサナ・D"},
 
- "festival.sail_opening.name": {"ru": "Открытие парусного сезона", "en": "Opening of the Sailing Season", "ja": "ヨットシーズン開幕の日"},
- "festival.sail_opening.desc": {"ru": "Парад парусов у пирса, подъём флага школы «Луч» и первая регата года.", "en": "A parade of sail off the pier, the Luch school's flag hoisted, and the first regatta of the year.", "ja": "桟橋沖で帆のパレード、「ルーチ」の校旗掲揚、そして今年最初のレガッタ。"},
- "festival.sail_closing.name": {"ru": "Закрытие парусного сезона", "en": "Closing of the Sailing Season", "ja": "ヨットシーズン閉幕の日"},
- "festival.sail_closing.desc": {"ru": "Последняя регата года. Потом флаг спускают, а лодки на руках несут в эллинг до весны.", "en": "The last regatta of the year. Then the flag comes down and the boats are carried into the boathouse until spring.", "ja": "今年最後のレガッタ。そのあと旗を降ろし、艇をみんなの手で艇庫へ運ぶ。春まで。"},
-
  "ui.sail.obj_done": {"ru": "Выполнено: {0}", "en": "Done: {0}", "ja": "達成：{0}"},
  "ui.sail.lesson_done": {"ru": "Урок пройден: {0}", "en": "Lesson passed: {0}", "ja": "授業修了：{0}"},
  "ui.sail.rank_up": {"ru": "Новый разряд: {0}", "en": "New rank: {0}", "ja": "昇級：{0}"},
@@ -296,7 +291,7 @@
  "ui.sail.flag.flag_s": {"ru": "«С», белый с синим прямоугольником: дистанция сокращена.", "en": "S, white with a blue rectangle: the course is shortened.", "ja": "S旗（白地に青い四角）：コース短縮。"},
  "ui.sail.flag.storm_cone": {"ru": "Чёрный конус: штормовое предупреждение.", "en": "The black cone: gale warning.", "ja": "黒い円すい：暴風警報。"},
 
- "ui.sail.need_jacket": {"ru": "Без спасательного жилета на воду не пускают. Жилеты висят в эллинге, у скамеек.", "en": "Nobody goes afloat without a life jacket. They hang in the boathouse, by the benches.", "ja": "ライフジャケットなしでは海に出られない。艇庫のベンチのそばに掛かっている。"},
+ "ui.sail.need_jacket": {"ru": "Без спасательного жилета на воду не пускают. Жилеты висят в раздевалке эллинга.", "en": "Nobody goes afloat without a life jacket. They hang in the boathouse changing room.", "ja": "ライフジャケットなしでは海に出られない。艇庫の更衣室に掛かっている。"},
  "ui.sail.need_card": {"ru": "Сначала запишись в школу — у старшего тренера.", "en": "Join the school first — see the head coach.", "ja": "まず入会を。ヘッドコーチのところへ。"},
  "ui.sail.board": {"ru": "E — сесть в лодку", "en": "E — board the boat", "ja": "E：艇に乗る"},
  "ui.sail.launch_boat": {"ru": "E — катить тележку к воде", "en": "E — roll the trolley to the water", "ja": "E：船台を水ぎわへ押す"},
@@ -345,6 +340,10 @@
  "item.bottle_letter.desc": {"ru": "Зелёная бутылка, обросшая ракушками, залитая сургучом. Внутри — листок в клетку, свёрнутый трубочкой.", "en": "A green bottle, crusted with barnacles and sealed with wax. Inside, a sheet of squared paper rolled into a tube.", "ja": "フジツボのついた緑の瓶。封ろうで栓がしてある。中には方眼のノートの紙が一枚、くるりと巻いて入っている。"},
  "item.race_mark.name": {"ru": "Гоночный знак (сдутый)", "en": "Race mark (deflated)", "ja": "レースマーク（空気抜け）"},
  "item.race_mark.desc": {"ru": "Оранжевый надувной буй с номером «3», обмякший, в песке и водорослях. Унесло штормом; школе без него треугольник не поставить.", "en": "An orange inflatable buoy with a “3” on it, gone limp, all sand and weed. The storm took it; without it the school can't lay its triangle.", "ja": "「3」と書かれたオレンジの空気式ブイ。しぼんで、砂と海藻まみれ。嵐に流された。これがないと学校は三角コースを打てない。"},
+
+ "sign.sail.school_name": {"ru": "ДЮСШ ПАРУСНОГО СПОРТА «ЛУЧ»", "en": "“LUCH” YOUTH SAILING SCHOOL", "ja": "ヨット学校「ルーチ」"},
+ "sign.sail.door_line1": {"ru": "ДЮСШ «Луч»", "en": "“Luch” School", "ja": "ヨット学校「ルーチ」"},
+ "sign.sail.door_line2": {"ru": "парусная секция", "en": "sailing section", "ja": "セーリング部"},
 
  "dev.group.sailing": {"ru": "Яхтенная школа", "en": "Yacht school", "ja": "ヨット学校"},
  "dev.tp.sailing.school": {"ru": "Яхтенная школа: ворота", "en": "Yacht school: the gate", "ja": "ヨット学校：門"},
