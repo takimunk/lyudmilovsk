@@ -426,6 +426,12 @@ roster, the games room's rules). The bosses' counters (and the flag) have a talk
 has done that job). The quest `job_book` begins at a board and wants each job once (50 roubles). citysim `JobChecks` plays
 every job on the real data: pay by weather and result, once a day, the closed words unpaid, the book filled.
 
+### The dances
+
+The Vaults' dance evenings (Friday and Saturday 19-23: asking a partner as a duel of tells, the ladies' choice at 22 as a
+rally, the poster, the bar's topics, the partners' stamps, the quest `dnc_white_dance`, the town coming): docs/dances.md,
+`x_dances.json`.
+
 ### Tournaments
 
 Three weekly knock-out cups of eight (`tools/city/content/x_tournaments.json`, words `strings/x_tournaments.json`; the rules in
@@ -548,7 +554,8 @@ geometry, no new items.
 * **Diary** (`tools/daylog/content.py`): topics `phone_call` (`do tch_call`, `do xk1_phone`) and `fortune` (`do xk3_weigh`,
   `do tch_globe`).
 * **Developer mode.** A content file's `dev_points` section (`{"<id>": {"thing": "<plot>/<id>", "name": "<key>"}}`) makes a
-  teleport `city.pt.<id>` in front of that thing in the interiors group, the clock an hour after it opens (the weekday is
+  teleport `city.pt.<id>` in front of that thing in the interiors group, the clock an hour after it opens, or at the point's
+  own `"time": "HH:MM"` (a thing open for one hour, the Vaults' ladies' choice, docs/dances.md) (the weekday is
   not set: `lyud.City.Weekday fri` for the fair). Eleven points: the pasty house's payphone, bus stop 2's notices and
   fountain, bus stop 3's weighing machine, the fair's globe, the clinic's scales and cooler, «Морской бой», the
   librarian's and the store's staff doors, the capsule tower's magazines. `lyud.City.Collections grant strips` puts every

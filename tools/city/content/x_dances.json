@@ -568,7 +568,8 @@
   },
   "dnc_white": {
    "thing": "P-HALL/dance_4",
-   "name": "city.dnc.pt.white"
+   "name": "city.dnc.pt.white",
+   "time": "22:05"
   },
   "dnc_notice": {
    "thing": "P-HALL/lobby_stand_2",

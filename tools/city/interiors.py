@@ -2296,7 +2296,8 @@ def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_id
 
 def dev_points(points, things, plan, strings, gen_strings):
     """Developer mode: a teleport in front of a thing a content file names ("dev_points": {"<id>": {"thing": "<plot>/<id>",
-    "name": "<string key>"}}), "city.pt.<id>" in the interiors group, the clock an hour after the thing opens. For a small
+    "name": "<string key>"[, "time": "HH:MM"]}}), "city.pt.<id>" in the interiors group, the clock an hour after the thing
+    opens (or its "time"). For a small
     mechanic on one thing that no quest stage reaches (docs/city_interiors.md "Coins, scales and strips")."""
     pf = plan["portal_face_y"] / 100.0
     by_id = {t["id"]: t for t in things}
@@ -2319,7 +2320,9 @@ def dev_points(points, things, plan, strings, gen_strings):
         tid = "city.pt." + pid
         tp = {"id": tid, "group": "interiors", "name": "dev.tp." + tid, "x": round(p[0], 2), "y": round(p[1] - pf, 2),
               "z": round(floor, 1), "yaw": round(yaw - 360.0 if yaw > 180.0 else yaw, 1)}
-        if t["hours"] != [0, 24]:
+        if pt.get("time"):
+            tp["time"] = pt["time"]     # its own hour ("HH:MM"): a thing open for one hour only (the Vaults' ladies' choice)
+        elif t["hours"] != [0, 24]:
             tp["time"] = "%02d:00" % ((int(t["hours"][0]) + 1) % 24)
         tps.append(tp)
         gen_strings["dev.tp." + tid] = {l: strings[pt["name"]][l] for l in LANGS}

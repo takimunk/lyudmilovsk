@@ -158,6 +158,14 @@ yard keeper's dawn sweep, the milk round, the shopkeepers' shutters, a laundress
 the evening's dominoes, the autumn's raking and the spring subbotnik. Its activities carry `"when"` conditions that
 `ULyudStreetLife` switches from the date and the weather. `tools/peoplesim/run.sh street` checks it.
 
+## The dances
+
+`tools/town/town_dances.py` (an add-on `town_life.py` runs last; idempotent, `--check`) brings the town to the dances at the
+hall «Своды» on Friday and Saturday evenings: `dance_evening` (15 to 45, pairs of standing slots on the dance room's floor)
+and `dance_watch` (55 and over, the little tables and the lobby's benches) at the place `P-HALL-DANCE`, and the hero's twelve
+dance partners like it. Its place and rows go at the very end, after town_activities' own. Test: `tools/peoplesim/run.sh
+dances`. All of it: docs/dances.md.
+
 ## The Aton coast
 
 Backlog item 37: the coast between the club and the town (docs/south.md "People") has its people too, added by
