@@ -34,6 +34,8 @@ MESHES = DEST + "/Meshes"
 MATS = DEST + "/Materials"
 TAG = "Diner"
 NEAR_CM = 6000.0
+SMALL_CM = 2500.0          # the small things (the counter's dispensers, lamps' fittings, the kitchen's pots): drawn to 25 m
+TEX_DIR = os.path.join(REPO, "textures", "diner")
 SIGNS = ("name", "band", "roof", "menu", "coffee")
 
 eal = unreal.EditorAssetLibrary
@@ -45,15 +47,19 @@ def log(msg):
     unreal.log_warning("DINER " + msg)
 
 
-def _spec():
-    """MAT_SPEC of blender/diner/diner_common.py without bpy: the dict literal read from the file."""
+def _literal(name):
+    """A dict literal of blender/diner/diner_common.py (MAT_SPEC, MAT_TEX) without bpy: read from the file."""
     import ast
     src = open(os.path.join(REPO, "blender", "diner", "diner_common.py")).read()
     tree = ast.parse(src)
     for n in tree.body:
-        if isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") == "MAT_SPEC":
+        if isinstance(n, ast.Assign) and getattr(n.targets[0], "id", "") == name:
             return ast.literal_eval(n.value)
-    raise RuntimeError("no MAT_SPEC")
+    raise RuntimeError("no " + name)
+
+
+def _spec():
+    return _literal("MAT_SPEC")
 
 
 def _lin(hx):
@@ -77,9 +83,105 @@ def build_sign_master(path):
     return m
 
 
+def build_tex_master(path, d, n, r):
+    """The textured master: BaseColor x Tint, Normal (NormalStrength from flat), Mask R roughness x RoughnessScale, Mask G ambient
+    occlusion (AOStrength), Metallic, all on UV 0 (metres) x Tiling."""
+    import academ_materials as A
+    m = A.master(path)
+    uv0 = A.node(m, unreal.MaterialExpressionTextureCoordinate, -1900, 0, coordinate_index=0)
+    uv = A.node(m, unreal.MaterialExpressionMultiply, -1700, 40)
+    A.link(uv0, "", uv, "A")
+    A.link(A.scalar(m, "Tiling", -1900, 120, 1.0), "", uv, "B")
+    td = A.node(m, unreal.MaterialExpressionTextureSampleParameter2D, -1450, -350, parameter_name="BaseColor", texture=d,
+                sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_COLOR)
+    tn = A.node(m, unreal.MaterialExpressionTextureSampleParameter2D, -1450, 350, parameter_name="Normal", texture=n,
+                sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+    tr = A.node(m, unreal.MaterialExpressionTextureSampleParameter2D, -1450, 0, parameter_name="Mask", texture=r,
+                sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_MASKS)
+    for t in (td, tn, tr):
+        A.link(uv, "", t, "UVs")
+    col = A.node(m, unreal.MaterialExpressionMultiply, -1100, -400)
+    A.link(td, "RGB", col, "A")
+    A.link(A.vec(m, "Tint", -1450, -550, (1, 1, 1)), "", col, "B")
+    mel.connect_material_property(col, "", MP.MP_BASE_COLOR)
+    rough = A.node(m, unreal.MaterialExpressionMultiply, -1100, 0)
+    A.link(tr, "R", rough, "A")
+    A.link(A.scalar(m, "RoughnessScale", -1300, 120, 1.0), "", rough, "B")
+    rsat = A.node(m, unreal.MaterialExpressionSaturate, -950, 0)
+    A.link(rough, "", rsat, "")
+    mel.connect_material_property(rsat, "", MP.MP_ROUGHNESS)
+    one = A.node(m, unreal.MaterialExpressionConstant, -1100, 180, r=1.0)
+    ao = A.node(m, unreal.MaterialExpressionLinearInterpolate, -950, 200)
+    A.link(one, "", ao, "A")
+    A.link(tr, "G", ao, "B")
+    A.link(A.scalar(m, "AOStrength", -1100, 280, 1.0), "", ao, "Alpha")
+    mel.connect_material_property(ao, "", MP.MP_AMBIENT_OCCLUSION)
+    flatn = A.node(m, unreal.MaterialExpressionConstant3Vector, -1100, 420, constant=unreal.LinearColor(0, 0, 1, 1))
+    nl = A.node(m, unreal.MaterialExpressionLinearInterpolate, -950, 420)
+    A.link(flatn, "", nl, "A")
+    A.link(tn, "RGB", nl, "B")
+    A.link(A.scalar(m, "NormalStrength", -1100, 520, 1.0), "", nl, "Alpha")
+    mel.connect_material_property(nl, "", MP.MP_NORMAL)
+    mel.connect_material_property(A.scalar(m, "Metallic", -700, 100, 0.0), "", MP.MP_METALLIC)
+    mel.connect_material_property(A.scalar(m, "Specular", -700, 200, 0.5), "", MP.MP_SPECULAR)
+    A.finish(m)
+    return m
+
+
+def import_textures(sets):
+    """textures/diner/<set>_D.jpg, _N.png, _R.jpg -> /Game/Diner/Textures/T_DN_<set>_{D,N,R}; {(set, suffix): Texture2D}."""
+    tools = unreal.AssetToolsHelpers.get_asset_tools()
+    files = []
+    for name in sets:
+        for suf in ("D", "N", "R"):
+            f = next((os.path.join(TEX_DIR, "%s_%s.%s" % (name, suf, e)) for e in ("jpg", "png")
+                      if os.path.exists(os.path.join(TEX_DIR, "%s_%s.%s" % (name, suf, e)))), None)
+            if f is None:
+                raise RuntimeError("missing texture %s_%s (run tools/diner_textures.py)" % (name, suf))
+            files.append((name, suf, f, "T_DN_%s_%s" % (name, suf)))
+    out = {}
+    for name, suf, f, asset in files:
+        path = "%s/Textures/%s" % (DEST, asset)
+        tex = None
+        for _ in range(2):           # the first texture of a fresh Interchange process sometimes goes missing: once more
+            t = unreal.AssetImportTask()
+            t.filename = f
+            t.destination_path = DEST + "/Textures"
+            t.destination_name = asset
+            t.automated = True
+            t.replace_existing = True
+            t.save = False
+            tools.import_asset_tasks([t])
+            tex = eal.load_asset(path) if eal.does_asset_exist(path) else None
+            if tex is not None:
+                break
+        if tex is None:
+            raise RuntimeError("import failed: " + f)
+        if suf == "D":
+            tex.set_editor_property("srgb", True)
+            tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_DEFAULT)
+            tex.set_editor_property("lod_group", unreal.TextureGroup.TEXTUREGROUP_WORLD)
+        elif suf == "N":
+            tex.set_editor_property("srgb", False)
+            tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_NORMALMAP)
+            tex.set_editor_property("flip_green_channel", False)       # written DirectX (green down) by diner_textures.py
+            tex.set_editor_property("lod_group", unreal.TextureGroup.TEXTUREGROUP_WORLD_NORMAL_MAP)
+        else:
+            tex.set_editor_property("srgb", False)
+            tex.set_editor_property("compression_settings", unreal.TextureCompressionSettings.TC_MASKS)
+            tex.set_editor_property("lod_group", unreal.TextureGroup.TEXTUREGROUP_WORLD_SPECULAR)
+        eal.save_loaded_asset(tex, False)
+        out[(name, suf)] = tex
+    return out
+
+
 def make_materials():
     import academ_materials as A
     flat = A.build_flat(MATS + "/M_DN_Flat")
+    textured = _literal("MAT_TEX")
+    tex = import_textures(sorted({v[0] for v in textured.values()}))
+    first = sorted(tex)[0][0]
+    m_tex = build_tex_master(MATS + "/M_DN_Tex", tex[(first, "D")], tex[(first, "N")], tex[(first, "R")])
     clear = A.build_glass_clear(MATS + "/M_DN_GlassClear")
     sign = build_sign_master(MATS + "/M_DN_Sign")
     out = {}
@@ -89,6 +191,15 @@ def make_materials():
             A._set(mi, "v", "Color", unreal.LinearColor(0.05, 0.07, 0.07, 1))
             A._set(mi, "s", "Opacity", 0.12)
             A._set(mi, "s", "OpacityGrazing", 0.6)
+        elif slot in textured:
+            set_, tile_m, nstrength = textured[slot]
+            mi = A.instance("%s/MI_%s" % (MATS, slot), m_tex)
+            A._set(mi, "t", "BaseColor", tex[(set_, "D")])
+            A._set(mi, "t", "Normal", tex[(set_, "N")])
+            A._set(mi, "t", "Mask", tex[(set_, "R")])
+            A._set(mi, "s", "Tiling", 1.0 / tile_m)
+            A._set(mi, "s", "NormalStrength", nstrength)
+            A._set(mi, "s", "Metallic", metal)
         else:
             mi = A.instance("%s/MI_%s" % (MATS, slot), flat)
             c = _lin(hx)
@@ -136,7 +247,7 @@ def import_meshes():
         if not name.startswith("SM_"):
             name = "SM_" + name
         glass = name.endswith("_Glass")
-        building = name in ("SM_Diner_Shell", "SM_Diner_Inside", "SM_Diner_Glass", "SM_Diner_Inside_Glass", "SM_Diner_Stools")
+        building = name in BUILDING
         for i, sl in enumerate(sm.get_editor_property("static_materials")):
             key = str(sl.material_slot_name)
             mi = mats.get(key) or next((v for k, v in sorted(mats.items(), key=lambda kv: -len(kv[0])) if key.startswith(k)), None)
@@ -148,12 +259,11 @@ def import_meshes():
         if body:
             body.set_editor_property("collision_trace_flag", unreal.CollisionTraceFlag.CTF_USE_COMPLEX_AS_SIMPLE)
         settings = sm.get_editor_property("nanite_settings")
-        # Nanite for the car's opaque meshes only (fallback kept full: complex collision uses it, the steps and the door
-        # need every triangle); the china, the food and the glass are small classic meshes
-        settings.enabled = building and not glass
-        settings.fallback_target = unreal.NaniteFallbackTarget.PERCENT_TRIANGLES
-        settings.fallback_percent_triangles = 1.0
+        # no Nanite (glTF imports here are classic meshes; the house rule): LODs for the car's furniture and small things
+        settings.enabled = False
         sm.set_editor_property("nanite_settings", settings)
+        if building and not glass and name != "SM_Diner_Shell":
+            _lods(sm, name)
         target = ("/Game/Food/" if name.startswith("SM_Food_") else MESHES + "/") + name
         if eal.does_asset_exist(target):
             eal.delete_asset(target)
@@ -164,6 +274,36 @@ def import_meshes():
     eal.save_directory(DEST)
     eal.save_directory("/Game/Food")
     log("imported %d meshes" % count)
+
+
+BUILDING = ("SM_Diner_Shell", "SM_Diner_Inside", "SM_Diner_Glass", "SM_Diner_Inside_Glass", "SM_Diner_Small", "SM_Diner_Small_Glass",
+            "SM_Diner_Stools")
+# LOD0 full; the car's furniture is seen from across the street (Inside), the small things only from the room (Small, Stools)
+LODS = {"SM_Diner_Inside": ((1.0, 1.0), (0.5, 0.45), (0.2, 0.15)),
+        "SM_Diner_Small": ((1.0, 1.0), (0.4, 0.5), (0.12, 0.2)),
+        "SM_Diner_Stools": ((1.0, 1.0), (0.4, 0.5), (0.15, 0.2))}
+# the commandlet's fallback (no SetLods there): Inside is seen from across the street, the small things from the room
+LOD_GROUPS = {"SM_Diner_Inside": "LargeProp", "SM_Diner_Small": "SmallProp", "SM_Diner_Stools": "SmallProp"}
+
+
+def _lods(sm, name):
+    steps = LODS.get(name)
+    if not steps:
+        return
+    opts = unreal.EditorScriptingMeshReductionOptions()
+    opts.set_editor_property("auto_compute_lod_screen_size", False)
+    opts.set_editor_property("reduction_settings", [unreal.EditorScriptingMeshReductionSettings(percent_triangles=p, screen_size=z)
+                                                    for p, z in steps])
+    sms = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
+    n = sms.set_lods(sm, opts) if sms else -1
+    if n < 0:
+        # a -run=pythonscript commandlet has no editor subsystems, and SetLods refuses outside the editor: the engine's
+        # LOD group gives three steps of its own instead (halving the triangles each time, its own screen sizes)
+        sm.set_editor_property("lod_group", LOD_GROUPS.get(name, "SmallProp"))
+        n = sm.get_num_lods()
+    # collision stays on the full mesh (the benches' and the counter's every triangle)
+    sm.set_editor_property("lod_for_collision", 0)
+    log("%s: %d LODs, triangles %s" % (name, n, [sm.get_num_triangles(i) for i in range(sm.get_num_lods())]))
 
 
 def _ue_yaw():
@@ -208,6 +348,11 @@ def place(face_y, report=False):
             # the hero stands at the counter where a stool is (people keep off them: people_map.build_diner blocks them)
             c.set_collision_profile_name("NoCollision")
             c.set_editor_property("ld_max_draw_distance", NEAR_CM)
+        if name in ("SM_Diner_Small", "SM_Diner_Small_Glass"):
+            # the things on tops, the lamps' fittings, the pots: nothing to walk into, nothing seen from the street
+            c.set_collision_profile_name("NoCollision")
+            c.set_editor_property("ld_max_draw_distance", SMALL_CM)
+            c.set_editor_property("affect_distance_field_lighting", False)
         n += 1
     cls = unreal.load_class(None, "/Script/Lyudmilovsk.LyudDiner")
     d = eas.spawn_actor_from_class(cls, origin, unreal.Rotator(0.0, 0.0, yaw))

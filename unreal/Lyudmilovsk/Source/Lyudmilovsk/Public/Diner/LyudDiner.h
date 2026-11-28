@@ -105,7 +105,13 @@ private:
  * at the counter in front of the hero a few seconds later (ALyudDinerDish). Self service: E at the coffee table pours a mug of
  * coffee from the urn (the hand on the tap's lever), the mug then drunk like any cup.
  *
- * Console: lyud.Diner.State, lyud.Diner.Serve <item>, lyud.Diner.Coffee, lyud.Diner.Open 1|0|-1 (force open/closed/by staff).
+ * Seats: every booth and nose-bench place and every stool (layout.json "hero_seats", blender/diner/seating.py). Looking at a free
+ * one from close by, E sits the hero down on it (AHeroCharacter::SitOn: the body seated, the eyes at a sitter's height, the view
+ * turned to the table); E, a step or Space gets him up again, out to the aisle. A dish bought while he sits at a booth is served
+ * on his table; at a stool on the counter in front of him. Polled, never consumed: E still reaches doors and the coffee urn.
+ *
+ * Console: lyud.Diner.State, lyud.Diner.Serve <item>, lyud.Diner.Coffee, lyud.Diner.Open 1|0|-1 (force open/closed/by staff),
+ * lyud.Diner.Sit <seat>|-1 (sit on a seat / get up), lyud.Diner.Use (what E does at a seat), lyud.Diner.Seats.
  */
 UCLASS()
 class LYUDMILOVSK_API ALyudDiner : public AActor
@@ -132,6 +138,16 @@ public:
 	bool PourCoffee();
 	void DishGone(ALyudDinerDish* Dish);
 
+	/** What E does about seats: gets the hero up if he sits, else sits him on the free seat he looks at. False: nothing to do. */
+	bool UseSeat();
+	/** Sits the hero on seat Index of the layout's hero seats (false: no such seat or it's taken); -1 gets him up. */
+	bool SitHero(int32 Index);
+	int32 NumSeats() const { return Seats.Num(); }
+	/** The seat the hero sits on, -1 none. */
+	int32 HeroSeatIndex() const { return HeroSeat; }
+	/** Seat Index's description for the checks: kind, the cushion's world point, its yaw. */
+	FString DescribeSeat(int32 Index) const;
+
 	/** -1 by the staff, 0 closed, 1 open (checks). */
 	int32 ForceOpen = -1;
 
@@ -144,9 +160,20 @@ public:
 private:
 	struct FServing
 	{
-		FVector Plate;          // local metres, on the counter
+		FVector Plate;          // local metres, on the counter (or a booth's table)
 		FVector Stool;
 		TWeakObjectPtr<ALyudDinerDish> Dish;
+		bool bTable = false;    // a booth's or the nose's table: only for the hero sitting at it
+	};
+	/** A seat the hero can take (layout.json "hero_seats"). */
+	struct FSeat
+	{
+		FName Kind;             // booth, bench, stool
+		FVector At;             // the floor under the cushion's front edge (a stool's: its foot rail), local metres
+		float Yaw = 0.f;        // the way the sitter faces, local degrees
+		float SeatZ = 0.46f;    // the cushion's top over At, metres
+		FVector Exit;           // the floor point getting up leaves him on (local metres), found at load
+		int32 Serving = -1;     // where his plate goes (Serving index), -1 none
 	};
 	struct FPending
 	{
@@ -158,6 +185,14 @@ private:
 
 	TArray<FServing> Serving;
 	TArray<FPending> Pending;
+	TArray<FSeat> Seats;
+	int32 HeroSeat = -1;
+	float SeatPollIn = 0.f;
+	float StandPromptFor = 0.f;
+	int32 SeatLooked = -1;
+	/** The prompt key of the seats (the coffee's is the actor itself). */
+	UPROPERTY(Transient)
+	TObjectPtr<USceneComponent> SeatPromptKey;
 	TArray<FString> Staff;
 	TArray<FVector> InsideBox;          // x0 x1 / y0 y1 / z0 z1 (local metres): the car, then the kitchen
 	FVector CoffeeTap, CoffeeCup, CoffeeMugs, CoffeeStand;
@@ -194,6 +229,14 @@ private:
 	void ApplySigns();
 	void OnBought(FName Item, int32 Count);
 	int32 FreeSpotNear(const FVector& WorldPos) const;
+	/** Where the next dish goes: the hero's own table when he sits at one and it's free, else the counter's nearest free place. */
+	int32 SpotForHero() const;
+	void LoadSeats(const TSharedPtr<FJsonObject>& L);
+	FTransform SeatFrameWorld(const FSeat& S) const;
+	FVector SeatCushionWorld(const FSeat& S) const;
+	int32 SeatInView() const;
+	bool SeatTaken(int32 Index) const;
+	void TickSeats(float DeltaTime);
 	ALyudDinerDish* SpawnDish(FName Item, const FTransform& At, float Left);
 	void TickCoffee(float DeltaTime);
 	void PoseHandAt(const FVector& Palm, const FVector& Finger, const FVector& Normal, float Curl, const struct FReachShape* Shape);

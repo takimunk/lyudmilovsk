@@ -80,7 +80,10 @@ public:
 	/** Where StandUp puts the feet, in the seat's frame (cm; the default a step forward off a bench). A chair at a table stands
 	 *  up beside or behind itself: set after SitOn. */
 	void SetStandUpOffset(const FVector& SeatFrameOffset) { StandOffset = SeatFrameOffset; }
-	/** Gets up and steps off the seat, forward. */
+	/** The same, getting up onto ExitLocal (a floor point in Base's frame, cm) instead of a step forward: a booth's seat
+	 *  has its table in front, the way out is to the aisle. */
+	void SitOn(USceneComponent* Base, const FTransform& SeatLocal, float SeatZ, const FVector& ExitLocal);
+	/** Gets up and steps off the seat, forward (or onto the seat's exit). */
 	void StandUp();
 	bool IsSeated() const { return SeatBase.IsValid(); }
 	/** While seated, the seat's own use of the move keys (a rowing boat's oars: W/S row, A/D turn) instead of a step getting up,
@@ -195,6 +198,7 @@ private:
 	TWeakObjectPtr<USceneComponent> SeatBase;
 	FTransform SeatLocal;
 	float SeatZ = 42.f;
+	TOptional<FVector> SeatExit;
 	float SitAlpha = 0.f;
 	FVector StandOffset = FVector(38.f, 0.f, 0.f);
 	TEnumAsByte<ECollisionEnabled::Type> SeatedCollision = ECollisionEnabled::QueryAndPhysics;
