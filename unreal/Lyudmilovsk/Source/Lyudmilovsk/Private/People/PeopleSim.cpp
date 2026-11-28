@@ -5195,6 +5195,13 @@ namespace LyudPeople
 
 	void FWorld::Resettle()
 	{
+		// a festival night already over (SetStayUp(0)) whose end lies ahead of the clock: the clock was set back before it
+		// (an older save loaded), and its "morning after" would make this morning a late one, everybody worn out
+		if (StayUntil <= Time && StayEnd > Time)
+		{
+			StayUntil = 0.0;
+			StayEnd = -1e18;
+		}
 		SyncSunDuties();
 		for (FSlot& S : Slots)
 		{
