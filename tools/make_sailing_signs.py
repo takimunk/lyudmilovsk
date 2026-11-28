@@ -83,7 +83,7 @@ def sign_name(lang, S):
     TX.emblem_luch(d, w - 130, h * 0.62, h * 0.42)
     text = S.get("sign.sail.school_name")
     if text:
-        f = fit(d, text, lang, 130, w - 420, h - 50)
+        f = fit(d, text, lang, 130, w - 580, h - 50)       # a clear gap to the emblems at both ends
         if f:
             d.text((w / 2, h / 2), text, fill=NAVY, font=f, anchor="mm")
     return img
@@ -94,13 +94,13 @@ def sign_door(lang, S):
     img = Image.new("RGB", (w, h), ENAMEL)
     d = ImageDraw.Draw(img)
     d.rectangle([5, 5, w - 6, h - 6], outline=NAVY, width=6)
-    TX.emblem_luch(d, w / 2, h * 0.30, h * 0.20)
+    TX.emblem_luch(d, w / 2, h * 0.26, h * 0.17)
     for k, key in enumerate(("sign.sail.door_line1", "sign.sail.door_line2")):
         text = S.get(key)
         if text:
-            f = fit(d, text, lang, 64, w - 60, 80)
+            f = fit(d, text, lang, 64, w - 80, 70)
             if f:
-                d.text((w / 2, h * (0.58 + 0.2 * k)), text, fill=NAVY, font=f, anchor="mm")
+                d.text((w / 2, h * (0.61 + 0.19 * k)), text, fill=NAVY, font=f, anchor="mm")
     return img
 
 

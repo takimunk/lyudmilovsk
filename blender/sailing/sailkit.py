@@ -469,7 +469,193 @@ def lint(o, closed=True, picture_overlap=True):
         if neg:
             probs.append("%d inside-out islands" % neg)
     bm.free()
+    for a, c, sa, sb in coplanar(o, min_area=2e-3):      # (under 20 cm2 in all: where two timbers of one frame touch)
+        probs.append("coplanar overlap %.3f m2 at (%.2f, %.2f, %.2f): %s on %s" % (a, c[0], c[1], c[2], sa, sb))
     return probs
+
+
+def _clip_area(P, Q):
+    """Area of the intersection of two convex polygons in 2D (Sutherland-Hodgman; both counter-clockwise)."""
+    out = list(P)
+    n = len(Q)
+    for i in range(n):
+        ax, ay = Q[i]
+        bx, by = Q[(i + 1) % n]
+        inp, out = out, []
+        if not inp:
+            return 0.0
+        for k in range(len(inp)):
+            cx, cy = inp[k]
+            dx, dy = inp[(k + 1) % len(inp)]
+            sc = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
+            sd = (bx - ax) * (dy - ay) - (by - ay) * (dx - ax)
+            if sc >= 0:
+                out.append((cx, cy))
+            if (sc > 0 and sd < 0) or (sc < 0 and sd > 0):
+                t = sc / (sc - sd)
+                out.append((cx + (dx - cx) * t, cy + (dy - cy) * t))
+    a = 0.0
+    for k in range(len(out)):
+        x0, y0 = out[k]
+        x1, y1 = out[(k + 1) % len(out)]
+        a += x0 * y1 - x1 * y0
+    return abs(a) * 0.5
+
+
+def _coplanar_pairs(bm, tol=0.001):
+    """(area, face a, face b) for every two faces of a bmesh that look the same way, lie within `tol` of one plane and
+    overlap (fans of each face clipped against each other). Faces back to back are not counted: they hide each other."""
+    rec = []
+    buckets = {}
+    for f in bm.faces:
+        if f.calc_area() < 1e-7:
+            continue
+        n = f.normal.copy()
+        P = [v.co.copy() for v in f.verts]
+        d = n.dot(P[0])
+        lo = [min(p[k] for p in P) for k in range(3)]
+        hi = [max(p[k] for p in P) for k in range(3)]
+        i = len(rec)
+        rec.append((n, d, P, lo, hi, f))
+        kn = (round(n.x * 50), round(n.y * 50), round(n.z * 50))
+        buckets.setdefault((kn, int(math.floor(d / 0.004))), []).append(i)
+    out = []
+    for (kn, kd), idx in sorted(buckets.items()):
+        cand = set()
+        # the neighbours of the cell too: a pair is never split by a cell's edge
+        for ax in (-1, 0, 1):
+            for ay in (-1, 0, 1):
+                for az in (-1, 0, 1):
+                    for ad in (-1, 0, 1):
+                        cand.update(buckets.get(((kn[0] + ax, kn[1] + ay, kn[2] + az), kd + ad), ()))
+        cand = sorted(cand)
+        for i in idx:
+            n, d, P, lo, hi, f = rec[i]
+            _, ey, ez = frame_from(n, up=(0, 0, 1) if abs(n.z) < 0.9 else (1, 0, 0))
+            P2 = [(p.dot(ey), p.dot(ez)) for p in P]
+            for j in cand:
+                if j <= i:
+                    continue
+                n2, d2, Q, lo2, hi2, g = rec[j]
+                if n.dot(n2) < 0.9999 or abs(d - d2) > tol:
+                    continue
+                if any(lo2[k] > hi[k] + tol or hi2[k] < lo[k] - tol for k in range(3)):
+                    continue
+                Q2 = [(q.dot(ey), q.dot(ez)) for q in Q]
+                a = 0.0
+                for k in range(1, len(P2) - 1):
+                    for m in range(1, len(Q2) - 1):
+                        a += _clip_area((P2[0], P2[k], P2[k + 1]), (Q2[0], Q2[m], Q2[m + 1]))
+                if a > 1e-7:
+                    out.append((a, f, g))
+    return out
+
+
+def _islands(bm):
+    """Face index -> island number (faces joined by edges)."""
+    isl = {}
+    n = 0
+    for f in bm.faces:
+        if f.index in isl:
+            continue
+        stack = [f]
+        isl[f.index] = n
+        while stack:
+            g = stack.pop()
+            for e in g.edges:
+                for h in e.link_faces:
+                    if h.index not in isl:
+                        isl[h.index] = n
+                        stack.append(h)
+        n += 1
+    return isl
+
+
+def coplanar(o, tol=0.001, min_area=1e-4):
+    """Z-fighting of one mesh object: a list of (area m2, centre, slot a, slot b) per pair of materials, largest
+    first. A face laid on a face is counted whatever the materials."""
+    me = o.data
+    bm = bmesh.new()
+    bm.from_mesh(me)
+    names = [m.name if m else "?" for m in me.materials]
+    groups = {}
+    for a, f, g in _coplanar_pairs(bm, tol):
+        key = tuple(sorted((names[f.material_index], names[g.material_index])))
+        c = f.calc_center_median()
+        r = groups.setdefault(key, [0.0, c, 0.0])
+        r[0] += a
+        if a > r[2]:
+            r[1], r[2] = c, a
+    bm.free()
+    return sorted(((r[0], (round(r[1].x, 2), round(r[1].y, 2), round(r[1].z, 2)), k[0], k[1])
+                   for k, r in groups.items() if r[0] >= min_area), reverse=True)
+
+
+SETTLE = 0.006      # m: enough for the depth buffer at the distances the school is seen from
+
+
+def settle(o, step=SETTLE, passes=4):
+    """Takes the z-fighting out of a built mesh: where a face of one part lies on a face of another (two bars of a
+    frame crossing in one plane, a plate flush with a wall, a tube built twice), the smaller part's face steps back
+    into its own body by `step`, so one surface is left on top; a thin or open part (a strip, a picture, a sail) steps
+    forward instead and lies proud. Parts stay watertight (a plane moved along its normal). Returns the moves made."""
+    me = o.data
+    moves = 0
+    for _ in range(passes):
+        bm = bmesh.new()
+        bm.from_mesh(me)
+        bm.faces.ensure_lookup_table()
+        pairs = _coplanar_pairs(bm)
+        isl = _islands(bm)
+        pairs = [p for p in pairs if isl[p[1].index] != isl[p[2].index] and p[0] > 2e-5]
+        if not pairs:
+            bm.free()
+            break
+        box = {}
+        open_ = set()
+        for f in bm.faces:
+            b = box.setdefault(isl[f.index], [[1e9] * 3, [-1e9] * 3])
+            for v in f.verts:
+                for k in range(3):
+                    b[0][k] = min(b[0][k], v.co[k])
+                    b[1][k] = max(b[1][k], v.co[k])
+            if any(not e.is_manifold for e in f.edges):
+                open_.add(isl[f.index])
+        size = {i: max(b[1][0] - b[0][0], 1e-4) * max(b[1][1] - b[0][1], 1e-4) * max(b[1][2] - b[0][2], 1e-4)
+                for i, b in box.items()}
+        byisl = {}
+        for f in bm.faces:
+            byisl.setdefault(isl[f.index], []).append(f)
+        shift = {}                                  # vert -> offset; one move per (island, plane)
+        done = set()
+        for a, f, g in sorted(pairs, key=lambda p: (-p[0], p[1].index, p[2].index)):
+            fi, gi = isl[f.index], isl[g.index]
+            # the smaller part gives way; of two equal ones the later-built
+            small = f if (size[fi], -fi) < (size[gi], -gi) else g
+            si = isl[small.index]
+            n = small.normal.copy()
+            d = n.dot(small.verts[0].co)
+            key = (si, round(n.x, 3), round(n.y, 3), round(n.z, 3), round(d, 3))
+            if key in done:
+                continue
+            done.add(key)
+            ext = [n.dot(v.co) for h in byisl[si] for v in h.verts]
+            thin = si in open_ or (max(ext) - min(ext)) < 4 * step
+            off = n * (step if thin else -step)
+            for h in byisl[si]:
+                if h.normal.dot(n) > 0.9999 and abs(n.dot(h.verts[0].co) - d) < 0.001:
+                    for v in h.verts:
+                        shift.setdefault(v.index, {})[key] = off
+            moves += 1
+        bm.verts.ensure_lookup_table()
+        for vi, offs in shift.items():
+            for off in offs.values():
+                bm.verts[vi].co += off
+        bm.normal_update()
+        bm.to_mesh(me)
+        bm.free()
+    me.update()
+    return moves
 
 
 def tris(o):
@@ -503,6 +689,7 @@ class Registry:
                     p.use_smooth = True
             if mesh.sharp_angle:
                 o.data.set_sharp_from_angle(angle=math.radians(mesh.sharp_angle))
+        settle(o)
         probs = lint(o, closed=closed)
         if probs:
             self.problems[o.name] = probs

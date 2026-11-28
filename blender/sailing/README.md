@@ -149,3 +149,12 @@ The Japanese sign needs a CJK font: built on the Mac (Hiragino); the cloud box h
 * The hull has no baked normal map (smooth shading only); the launch has no rivet lines.
 * The engine places props from `boathouse_layout.json` (part E / interiors pipeline): not done here.
 * The cadet's mast is fixed with its rigging; the luch's mast rotation is left to the engine (sleeve sail).
+
+## Faces in one plane
+
+`sailkit.settle()` runs on every mesh before the lint: where a face of one part lies on a face of another (two bars of a
+frame crossing in one plane, a plate flush with a wall, a tube built twice), the smaller part's face steps 6 mm back into
+its own body; a thin or open part steps forward and lies proud. The lint then reports any `coplanar overlap` left (faces
+looking the same way within 1 mm of one plane, over 20 cm2 in all); what is left is inside one welded part and is mended
+in the builder (the door leaf's rails run between its stiles, the roof's upstand between the parapets, the rope coil's
+turns each off the last one's plane).

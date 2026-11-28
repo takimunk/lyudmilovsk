@@ -362,7 +362,8 @@ def shell():
     for y0_, y1_ in ((ya_, ya_ + 0.15), (ye - 0.15, ye)):
         slab_xz(m, [(xa_, zu(xa_) + ROOF_T), (xe, zu(xe) + ROOF_T), (xe, zu(xe) + ROOF_T + 0.30), (xa_, zu(xa_) + ROOF_T + 0.30)],
                 y0_, y1_, "CT_Concrete", "CT_Concrete")
-    m.bx("CT_Concrete", xa_, xa_ + 0.15, ya_, ye, zu(xa_) + ROOF_T, zu(xa_) + ROOF_T + 0.20)
+    # between the side parapets (through them its faces would lie in theirs)
+    m.bx("CT_Concrete", xa_, xa_ + 0.15, ya_ + 0.15, ye - 0.15, zu(xa_) + ROOF_T, zu(xa_) + ROOF_T + 0.20)
     fz0, fz1 = zu(xe) - 0.50, zu(xe) + ROOF_T + 0.42
     m.bx("CT_Concrete", xe, xe + 0.14, ya_ - 0.02, ye + 0.02, fz0, fz1)
     m.bx("CT_SteelWhite", xe + 0.14, xe + 0.18, -3.05, 3.05, fz0 + 0.12, fz0 + 0.78)
@@ -458,8 +459,8 @@ def door_leaf():
     w, h, t = BOAT_DOOR[1] / 2 + 0.05, BOAT_DOOR[2] + 0.02, 0.06
     m.bx("SL_PaintSteel", -w / 2, w / 2, -t / 2, t / 2, 0.0, h)
     fr = 0.08
-    for (xa, xb, za, zb) in ((-w / 2, w / 2, 0.0, fr), (-w / 2, w / 2, h - fr, h), (-w / 2, -w / 2 + fr, 0.0, h), (w / 2 - fr, w / 2, 0.0, h),
-                             (-w / 2, w / 2, h * 0.55 - fr / 2, h * 0.55 + fr / 2)):
+    for (xa, xb, za, zb) in ((-w / 2 + fr, w / 2 - fr, 0.0, fr), (-w / 2 + fr, w / 2 - fr, h - fr, h), (-w / 2, -w / 2 + fr, 0.0, h), (w / 2 - fr, w / 2, 0.0, h),
+                             (-w / 2 + fr, w / 2 - fr, h * 0.55 - fr / 2, h * 0.55 + fr / 2)):
         m.bx("SL_PaintSteel", xa, xb, -t / 2 - 0.03, -t / 2, za, zb)
     for k in range(13):
         z = fr + 0.06 + k * (h * 0.55 - fr - 0.12) / 12
@@ -1143,7 +1144,8 @@ def prop_rope_coil():
     Mv = Matrix(((1, 0, 0), (0, 0, 1), (0, -1, 0))).transposed()
     for k, (slot, R, dx) in enumerate((("SL_Rope", 0.20, -0.03), ("SL_RopeBlue", 0.17, 0.0), ("SL_RopeRed", 0.15, 0.03))):
         for j in range(4):
-            BT.torus(m, (dx + j * 0.006, -0.06 - k * 0.025, -R + 0.02), R - j * 0.006, 0.009, slot, seg=18, rs=5, M=Mv)
+            # each turn a little off the last one's plane: turns in one plane fight for the depth buffer
+            BT.torus(m, (dx + j * 0.006, -0.06 - k * 0.025 - j * 0.005, -R + 0.02), R - j * 0.006, 0.009, slot, seg=18, rs=5, M=Mv)
     m.pipe([(0.0, -0.08, -0.36), (0.02, -0.09, -0.6), (-0.03, -0.1, -0.8)], 0.009, "SL_Rope", seg=5)
     return m
 
