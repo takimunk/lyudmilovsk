@@ -105,15 +105,15 @@ TOPICS = {
 
 # the page's words
 UI = {
-    "townchat.prompt": ("E — поговорить: {0}", "E — talk to {0}", "E — {0}と話す"),
+    "townchat.prompt": ("E — поговорить: {0}", "E — talk to {0}", "E：{0}と話す"),
     "townchat.said": ("— {0}", "“{0}”", "「{0}」"),
     "townchat.entry": ("{0}. {1}", "{0}. {1}", "{0}. {1}"),
     "townchat.gift": ("Подарить что-нибудь…", "Give something…", "何か贈る…"),
     "townchat.keys": ("1–5, A / D — выбрать   E — спросить   Esc — попрощаться", "1–5, A / D — choose   E — ask   Esc — say goodbye",
-                      "1–5・A / D — 選ぶ   E — たずねる   Esc — さようなら"),
-    "townchat.keys_next": ("E — дальше", "E — go on", "E — つづき"),
-    "townchat.keys_ask": ("1–2 — ответить", "1–2 — answer", "1–2 — 答える"),
-    "townchat.keys_bye": ("E / Esc — идти дальше", "E / Esc — walk on", "E / Esc — 立ち去る"),
+                      "1–5・A / D：選ぶ　E：たずねる　Esc：さようなら"),
+    "townchat.keys_next": ("E — дальше", "E — go on", "E：つづき"),
+    "townchat.keys_ask": ("1–2 — ответить", "1–2 — answer", "1–2：答える"),
+    "townchat.keys_bye": ("E / Esc — идти дальше", "E / Esc — walk on", "E / Esc：立ち去る"),
     "townchat.diary": ("Поговорил с жителем города: {0}.", "Had a talk with one of the townsfolk: {0}.", "町の人と話した：{0}。"),
     "dev.action.friends.talk_nearest": ("Поговорить с ближайшим жителем", "Talk to the nearest resident", "いちばん近い住民と話す"),
     "dev.action.friends.talk_report": ("Разговор: что скажет ближайший житель (в лог)", "Talk: what the nearest resident has to say (log)",

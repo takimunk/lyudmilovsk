@@ -17,7 +17,7 @@
 on = tc_hello
 weight = 0.5
 say town.tc_hello.1 | Здравствуй. Что-то хотел спросить? | Hello. Was there something you wanted to ask? | こんにちは。何か聞きたいことでも？
-say town.tc_hello.2 | А, здравствуй! Ну, рассказывай. | Ah, hello! Well, go on. | あら、こんにちは！どうしたの？
+say town.tc_hello.2 | А, здравствуй! Ну, рассказывай. | Ah, hello! Well, go on. | ああ、こんにちは！どうしたの？
 say town.tc_hello.3 | Добрый день. Слушаю тебя. | Good day. I'm listening. | こんにちは。どうぞ、聞くよ。
 
 [tc_hello_morning]
@@ -122,7 +122,7 @@ say town.tc_hello_sit.1 | Здравствуй. Присаживайся, в н�
 [tc_hello_festival]
 on = tc_hello
 festival = any
-say town.tc_hello_festival.1 | С праздником! Ты тоже гуляешь? | Happy holiday! Out celebrating too? | お祭りおめでとう！君も遊びに来たの？
+say town.tc_hello_festival.1 | С праздником! Ты тоже гуляешь? | Happy holiday! Out celebrating too? | 今日はお祭りだね！君も遊びに来たの？
 
 ## --- the goodbye
 
@@ -236,8 +236,8 @@ say town.tc_work_pensioner.4 | Сорок лет отработано. Тепе�
 [tc_work_pupil]
 on = tc_work
 job = pupil
-say town.tc_work_pupil.1 | Нормально. По математике пятёрка, по пению — лучше не спрашивай. | Fine. Top marks in maths; don't ask about singing. | ふつう。算数は満点、音楽は聞かないで。
-say town.tc_work_pupil.2 | Задали стих учить. Длинный, как набережная. | We've a poem to learn. It's as long as the promenade. | 詩の暗記の宿題。海岸通りくらい長いんだ。
+say town.tc_work_pupil.1 | Нормально. По математике пятёрка, по пению — лучше не спрашивай. | Fine. Top marks in maths; don't ask about singing. | ふつう。数学は満点、音楽は聞かないで。
+say town.tc_work_pupil.2 | Задали стих учить. Длинный, как набережная. | We've a poem to learn. It's as long as the promenade. | 詩の暗記の宿題。遊歩道くらい長いんだ。
 say town.tc_work_pupil.3 | Скорей бы каникулы. Всё лето буду на пляже жить. | Roll on the holidays. I'll live on the beach all summer. | 早く休みにならないかな。夏はずっと浜にいる。
 say town.tc_work_pupil.4 | У нас новая учительница. Строгая, но рисовать разрешает. | We've a new teacher. Strict, but she lets us draw. | 新しい先生が来たよ。きびしいけど絵はかかせてくれる。
 
@@ -245,7 +245,7 @@ say town.tc_work_pupil.4 | У нас новая учительница. Стро
 on = tc_work
 job = student
 say town.tc_work_student.1 | Сессия на носу, а я тут с тобой болтаю. Красота. | Exams any day now and here I am chatting. Bliss. | 試験直前なのにおしゃべりしてる。最高だね。
-say town.tc_work_student.2 | Курсовая сама себя не напишет. Я проверяю уже неделю. | The term paper won't write itself. I've been checking for a week. | レポートは勝手に書けないね。一週間たしかめてるけど。
+say town.tc_work_student.2 | Курсовая сама себя не напишет. Проверено за неделю: не пишет. | The term paper won't write itself. A week of testing proves it. | レポートは勝手に書けない。一週間ためして確かめたよ。
 
 [tc_work_away]
 on = tc_work
@@ -258,7 +258,7 @@ on = tc_work
 job = researcher
 say town.tc_work_researcher.1 | Считаем, меряем, спорим. Наука — это в основном спорить. | We count, we measure, we argue. Science is mostly arguing. | 数えて、測って、議論する。科学はほとんど議論だよ。
 say town.tc_work_researcher.2 | Опыт опять не сошёлся. Значит, будет что рассказать. | The experiment disagreed again. So there'll be something to tell. | 実験がまた合わなくてね。話の種にはなるよ。
-say town.tc_work_researcher.3 | В Академгородке говорят: если всё понятно, значит, плохо смотрели. | In Academgorodok we say: if it all makes sense, you didn't look hard enough. | 学術村では「全部わかったら見方が甘い」って言うんだ。
+say town.tc_work_researcher.3 | В Академгородке говорят: если всё понятно, значит, плохо смотрели. | In Academgorodok we say: if it all makes sense, you didn't look hard enough. | アカデムゴロドクでは「全部わかったら見方が甘い」って言うんだ。
 
 [tc_work_fisherman]
 on = tc_work
@@ -502,7 +502,7 @@ say town.tc_did_sea.2 | С берега иду. В голове до сих по
 
 [tc_did_walk]
 on = tc_did_walk
-say town.tc_did_walk.1 | Круг по набережной уже есть. Можно с чистой совестью сидеть. | One lap of the promenade done. I can sit with a clear conscience. | 海岸通りはもう一周した。心おきなく座れるよ。
+say town.tc_did_walk.1 | Круг по набережной уже есть. Можно с чистой совестью сидеть. | One lap of the promenade done. I can sit with a clear conscience. | 遊歩道はもう一周した。心おきなく座れるよ。
 say town.tc_did_walk.2 | Прогулка была что надо. Ноги спасибо не сказали, а голова — да. | A proper walk, that was. My legs didn't say thanks, my head did. | いい散歩だった。足は文句、頭は大満足。
 
 [tc_did_bench]
@@ -594,7 +594,7 @@ say town.tc_weather_fog.2 | Своего носа не видно. Иди ост
 on = tc_weather
 weather = cold
 say town.tc_weather_cold.1 | Холодно. Нос красный, зато голова ясная. | Cold. Red nose, clear head. | 寒いね。鼻は赤いけど頭はすっきり。
-say town.tc_weather_cold.2 | Мороз щиплется. Ты бы шарф надел. | The frost nips. You should put a scarf on. | 霜がぴりぴりするね。マフラーしたら？
+say town.tc_weather_cold.2 | Мороз щиплется. Ты бы шарф надел. | The frost nips. You should put a scarf on. | 寒さが肌にしみるね。マフラーしたら？
 
 [tc_weather_warm]
 on = tc_weather
@@ -784,7 +784,7 @@ say town.tc_kin_daughter.2 | С {6} не соскучишься. Вчера пр
 [tc_kin_mum]
 on = tc_kin_mum
 say town.tc_kin_mum.1 | Мама — {2}. Она добрая, только заставляет есть суп. | My mum's {2}. She's nice, she just makes me eat soup. | ママは{2}。やさしいけど、スープを食べなさいって言うの。
-say town.tc_kin_mum.2 | Мама велит быть дома к ужину. А {3} лучше слушаться. | Mum says home by supper. And {3} is best obeyed. | 晩ごはんまでに帰りなさいって。ママの{3}には逆らえない。
+say town.tc_kin_mum.2 | Мама велит быть дома к ужину. А {3} лучше слушаться. | Mum says home by supper. And {3} is best obeyed. | 晩ごはんまでに帰りなさいって。{3}の言うことは聞かなきゃ。
 
 [tc_kin_dad]
 on = tc_kin_dad
@@ -840,7 +840,7 @@ say town.tc_hobby_fish_shore.2 | Рыбалка. Клюёт или нет — д
 
 [tc_hobby_stroll]
 on = tc_hobby_stroll
-say town.tc_hobby_stroll.1 | Пройтись по набережной туда и обратно. Каждый день, в любую погоду. | A stroll along the promenade and back. Every day, any weather. | 海岸通りを行って帰る。毎日、どんな天気でも。
+say town.tc_hobby_stroll.1 | Пройтись по набережной туда и обратно. Каждый день, в любую погоду. | A stroll along the promenade and back. Every day, any weather. | 遊歩道を行って帰る。毎日、どんな天気でも。
 say town.tc_hobby_stroll.2 | Гулять люблю. Город небольшой, а каждый раз что-то новое. | I like to walk. A small town, yet something new each time. | 歩くのが好き。小さい町なのに毎回発見がある。
 
 [tc_hobby_coffee]
@@ -888,15 +888,15 @@ say town.tc_hobby_play_piano.2 | Музыка. Пальцы помнят то, �
 [tc_town]
 on = tc_town
 say town.tc_town.1 | Сходи на маяк. Оттуда весь город — как на ладони. | Go up to the lighthouse. The whole town lies in your palm from there. | 灯台へ行ってごらん。町がまるごと見わたせるよ。
-say town.tc_town.2 | На рынке по утрам самые свежие новости. И творог. | The market in the morning has the freshest news. And curd cheese. | 朝の市場には新鮮なうわさがあるよ。チーズもね。
-say town.tc_town.3 | Набережная на закате. Больше ничего советовать не буду. | The promenade at sunset. I'll recommend nothing else. | 夕暮れの海岸通り。ほかにすすめるものはないよ。
+say town.tc_town.2 | На рынке по утрам самые свежие новости. И творог. | The market in the morning has the freshest news. And curd cheese. | 朝の市場には新鮮なうわさがあるよ。カッテージチーズもね。
+say town.tc_town.3 | Набережная на закате. Больше ничего советовать не буду. | The promenade at sunset. I'll recommend nothing else. | 夕暮れの遊歩道。ほかにすすめるものはないよ。
 say town.tc_town.4 | Садись на канатку и смотри вниз. Город сверху совсем другой. | Take the cable car and look down. The town's quite different from above. | ロープウェーに乗って下を見てごらん。町がちがって見える。
 
 [tc_town_young]
 on = tc_town
 age = kid teen
 weight = 2
-say town.tc_town_young.1 | На площадке есть горка и качели! А в клубе — компьютеры. | The playground has a slide and swings! And the club has computers. | 公園にすべり台とブランコがあるよ！クラブにはパソコンも。
+say town.tc_town_young.1 | На площадке есть горка и качели! А в клубе — компьютеры. | The playground has a slide and swings! And the club has computers. | 遊び場にすべり台とブランコがあるよ！クラブにはパソコンも。
 say town.tc_town_young.2 | На пляже после отлива остаются ракушки. Самые красивые — у пирса. | The tide leaves shells on the beach. The prettiest are by the pier. | 潮が引くと浜に貝がらが残るの。桟橋のそばがいちばんきれい。
 
 [tc_town_elder]
