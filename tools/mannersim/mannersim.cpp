@@ -109,6 +109,12 @@ struct FDay
 	// ten minutes of something in the sky at 21:00: people out of doors, and those of them looking up, pointing or photographing,
 	// during it and in the ten minutes before; and an arm pointed at the sky at any other time
 	int SkyOut = 0, SkyUp = 0, BeforeOut = 0, BeforeUp = 0, PointNoShow = 0;
+	// the days' things (docs/town_manners.md): person-seconds with each prop in the hands; bBirthdays gives a dozen grown-ups
+	// their birthday and a guest each at six; chess on a bench sampled each minute (the plan's two players within 1.7 m:
+	// the board goes on the seat between them)
+	bool bBirthdays = false;
+	std::map<std::string, double> PropSeconds;
+	int Birthdays = 0, Guests = 0, ChessSamples = 0, ChessPaired = 0, ChessPlanned = 0;
 };
 
 static void RunDay(FDay& D)
@@ -125,6 +131,29 @@ static void RunDay(FDay& D)
 	C.Set(W);
 	W.TempC = D.TempC;
 	W.Resettle();
+	if (D.bBirthdays)
+	{
+		std::vector<int> Grown;
+		for (const FPerson& P : W.People)
+		{
+			if (P.bTown && P.Age >= 25 && P.Age < 70 && P.Home >= 0)
+			{
+				Grown.push_back(P.Id);
+			}
+		}
+		for (size_t K = 0; K + 1 < Grown.size() && D.Birthdays < 12; K += Grown.size() / 13)
+		{
+			const int Host = Grown[K], Guest = Grown[K + 1];
+			W.SetToday(Host, TodayBirthday);
+			D.Birthdays++;
+			if (W.People[(size_t)Guest].Home != W.People[(size_t)Host].Home)
+			{
+				W.SetToday(Guest, TodayGuest);
+				D.Guests += W.MakePlan(Guest, Host, EPlan::Birthday, 18.f) ? 1 : 0;
+			}
+		}
+	}
+	const int ChessAct = W.FindActivity("chess_bench");
 	std::vector<int> Shown;
 	FMannerNow Now;
 	Now.TempC = D.TempC;
@@ -197,6 +226,20 @@ static void RunDay(FDay& D)
 					}
 				}
 			}
+			// chess on a bench: the plan's partner on the next seat
+			for (const FPerson& P : W.People)
+			{
+				if (ChessAct >= 0 && P.Activity == ChessAct && P.State == EState::Doing)
+				{
+					D.ChessSamples++;
+					const FPerson* O = P.PlanWith >= 0 ? &W.People[(size_t)P.PlanWith] : nullptr;
+					if (O && P.PlanKind == EPlan::Chess)
+					{
+						D.ChessPlanned++;
+						D.ChessPaired += O->Activity == ChessAct && O->State == EState::Doing && O->Place == P.Place && (O->Pos - P.Pos).Len2D() < 1.7f ? 1 : 0;
+					}
+				}
+			}
 			// who is at their ritual within the hour of it
 			RitualKept.resize(W.People.size(), 0);
 			for (const FPerson& P : W.People)
@@ -263,6 +306,10 @@ static void RunDay(FDay& D)
 				D.MannerSeconds += Dt;
 				Distinct.insert(Name);
 				const FMannerDef* Def = M.DefOf(S);
+				if (Def && Def->Prop != EProp::None)
+				{
+					D.PropSeconds[PropName(Def->Prop)] += Dt;
+				}
 				// what must never be seen
 				const bool bBadPose = Def && !S.bReact && !((Def->Poses >> (int)P.Pose) & 1u);
 				const bool bSmokeKid = S.Cur == EManner::Smoke && P.Age < 18;
@@ -1320,6 +1367,21 @@ int main(int Argc, char** Argv)
 		"something in the sky turns the heads up (%d of %d person-samples out of doors during it, %d of %d before)",
 		Mild.SkyUp, Mild.SkyOut, Mild.BeforeUp, Mild.BeforeOut);
 	CHECK(Mild.PointNoShow == 0, "nobody points at an empty sky (%d)", Mild.PointNoShow);
+	{
+		// the days' things: a mild day with a dozen birthdays and their guests (docs/town_manners.md "The days' things")
+		FDay Bd;
+		Bd.Name = "birthdays";
+		Bd.bBirthdays = true;
+		RunDay(Bd);
+		CHECK(Bd.Wrong == 0, "birthdays: nothing that must never be seen (%d%s%s)", Bd.Wrong, Bd.Wrong ? ": " : "", Bd.WrongWhat.c_str());
+		CHECK(Bd.Birthdays > 0 && Bd.PropSeconds["cake_box"] > 60.0, "a birthday's cake is carried home in its box (%d birthdays: %.0f person-minutes)",
+			Bd.Birthdays, Bd.PropSeconds["cake_box"] / 60.0);
+		CHECK(Bd.Guests > 0 && Bd.PropSeconds["flowers"] > 30.0, "birthday guests walk there with carnations (%d guests: %.0f person-minutes; a bag %.0f)",
+			Bd.Guests, Bd.PropSeconds["flowers"] / 60.0, Bd.PropSeconds["bag"] / 60.0);
+		CHECK(Mild.ChessPlanned == 0 || Mild.ChessPaired * 10 >= Mild.ChessPlanned * 6,
+			"the plan's chess players sit on neighbouring seats, the board between them (%d of %d person-minutes within 1.7 m; %d at chess_bench in all)",
+			Mild.ChessPaired, Mild.ChessPlanned, Mild.ChessSamples);
+	}
 	CHECK(Mild.AllDates > 250 && Mild.Dates > 30 && Mild.DatesKept * 5 > Mild.Dates * 2,
 		"friends keep their weekly date (%d of the %d pairs whose day it is met, %d more off with a cold; %d pairs in the town)", Mild.DatesKept, Mild.Dates, Mild.DatesIll, Mild.AllDates);
 	CHECK(Warm.FrontEvening > Mild.FrontEvening && Warm.FrontEvening * 2 > Frost.FrontEvening * 3,

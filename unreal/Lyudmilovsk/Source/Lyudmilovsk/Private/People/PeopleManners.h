@@ -86,7 +86,9 @@ namespace LyudPeople
 		None, Phone, Cigarette, Camera, Umbrella, Rod, Brush, Binoculars, Newspaper, Book, Knitting, IceCream, Cup, Bag,
 		Spade, WateringCan, Mop, Torch, Suitcase,
 		// the street (docs/street_life.md): the yard keeper's and the subbotnik's broom, the autumn's rake (held like the mop)
-		Broom, Rake, Num
+		Broom, Rake,
+		// the days (docs/town_life.md "The days"): the birthday's cake box carried home, a birthday guest's carnations
+		CakeBox, Flowers, Num
 	};
 	const char* PropName(EProp P);
 	EProp PropFromName(const std::string& S);       // Num if unknown
@@ -163,6 +165,8 @@ namespace LyudPeople
 		std::vector<std::string> After; // only for a while after one of these activities (a bag after the shop)
 		std::vector<uint8_t> AfterOk;
 		float AfterSeconds = 900.f;
+		std::vector<std::string> Going; // only on the way to one of these (a guest's flowers on the way to the visit)
+		std::vector<uint8_t> GoingOk;
 		uint32_t Habit = 0;             // only people with this habit
 		int MinAge = 0, MaxAge = 200;
 		float From = 0.f, To = 24.f;    // game hours

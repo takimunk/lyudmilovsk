@@ -210,10 +210,10 @@ keep their days.
 |---|---|---|
 | `cold` | about 3 in 100 at a time, two days | stays at home (nothing chosen out of doors or in town), no school and no train to work (duties of activities with `"sick": "off"`; shop and cafe staff still work), the clinic on a weekday morning (`clinic_cold`), no plans, dates or outings |
 | `sleepy` | 7 in 100 grown-ups a day | up 25 to 65 minutes later (`FPerson::LateH`, never past 40 minutes before the day's first duty, so they run), coffee in the morning, a nap after lunch, yawns (`manners.json` `"today": "sleepy"`) |
-| `birthday` | one day in 365 each | the cake bought by day (`shop_town`), the household at home in the evening, up to four friends as guests |
+| `birthday` | one day in 365 each | the cake bought in the morning (`buy_cake`: a shop or a cafe, 8:00 to 12:30, once) and carried home in its tied box (`SM_Prop_cake_box`), the household at home in the evening, up to four friends as guests |
 | `payday` | whoever works, every second Friday | the cafes and the restaurant in the evening, the shops, the culture club |
 | `pension` | 60 and over without work, every second Wednesday | the pension fetched at the Bridge House office from nine (`pension_office`, once), then the shops and a coffee |
-| `guest` | asked to a birthday | a bag in the hand on the way there |
+| `guest` | asked to a birthday | carnations (`SM_Prop_flowers`, 14 and over) or a bag in the hand on the way there |
 
 The game's first week has both: the pension on Wednesday 21 October, the pay on Friday 23 October (`FWorld::Week` even).
 
@@ -236,7 +236,7 @@ other, and the one left alone gets up too.
 | `birthday` | the household and up to four friends | the birthday's flat, children in the afternoon, grown-ups in the evening |
 | `family` | Sunday dinner: a household goes to the grandparents' (the same family name, 60 and over, 116 such families), about every other Sunday | the elders' flat |
 | `stroll` | a couple (a man and a woman of a household, no small child at home), one evening in three, more on Friday and Saturday | `couple_stroll` on the promenade or the pier nearest home, towards sunset; they leave home together and keep together (`WayTogether`, `Wander`) |
-| `chess` | two friends of 40 and over, by daylight | `chess_bench` on a bench between their doors, side by side (the dominoes gesture moves the pieces; a board on the bench is owed) |
+| `chess` | two friends of 40 and over, by daylight | `chess_bench` on a bench between their doors, side by side, the folding board on the seat between them (`SM_Prop_chess`), each turned a little to it; the dominoes gesture moves the pieces |
 
 The town's flats are shells, so a visit shows as the walk there, the lit window and the walk back.
 
@@ -287,8 +287,8 @@ off by design), and a once-a-day errand (the pension, the market, the books back
 plan is due instead of pulling people away from it (dates kept on its Wednesday: 35 of 69, main 29 of 70). A door held is `FPerson::DoorFor` (main's `HoldFor` is the
 hero's word on the way); neither is picked for a street meeting.
 
-Not done: no post office building; guests in a shell flat are not seen; the chess board is not drawn (a prop on the
-bench is owed); a birthday has no cake or song; the weather does not bring colds; the story's people have no days.
+Not done: no post office building; guests in a shell flat are not seen; the cake on the table is made
+(`SM_Prop_cake`) but has no table to stand on while the flats are shells; a birthday has no song; the weather does not bring colds; the story's people have no days.
 
 ## How it works
 

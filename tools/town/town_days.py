@@ -9,7 +9,7 @@ Like tools/town/town_activities.py this works on Content/PeopleData/activities.j
 
 What it writes (activities.json only: no places, no people):
   - the rows of ROWS, after the last row (before the book club's, which stays the last), one a line: the Saturday market, the library's books taken back on one's own
-    weekday, the pension fetched at the office, the clinic with a cold, and the plans' activities (a visit, the host's
+    weekday, the pension fetched at the office, the birthday's cake bought in the morning, the clinic with a cold, and the plans' activities (a visit, the host's
     side of it, a couple's stroll, chess on a bench);
   - the keys of PATCH on rows written by hand: "today_more" (liked more by whoever has that today: paid, the pension, a
     bad night, a cold, a birthday), "own_day" (liked more on one's own weekday for it), "sick": "off" (a duty skipped
@@ -29,6 +29,8 @@ ROWS = [
     '{"id": "market_day", "places": ["market"], "slots": ["visit"], "pose": "stand", "minutes": [10, 22], "hours": [8, 13], "days": [5], "ages": [16, 200], "meets": {"hunger": 0.8, "social": 0.5, "fun": 0.2}, "base": 0.5, "trait": "social", "once": 1}',
     '{"id": "library_return", "places": ["library"], "slots": ["visit"], "pose": "stand", "minutes": [6, 12], "hours": [10, 19], "days": [0, 1, 2, 3, 4, 5], "ages": [8, 200], "meets": {"mind": 0.5, "social": 0.2}, "base": 0.9, "trait": "studious", "once": 1, "own_day_only": 1, "regulars": 0.45}',
     '{"id": "pension_office", "places": ["office"], "slots": ["visit"], "pose": "stand", "minutes": [8, 18], "hours": [9, 13], "meets": {"social": 0.5}, "base": 1.2, "trait": "", "once": 1, "today": ["pension"]}',
+    # the birthday's cake fetched in the morning from a shop or a cafe (carried home in its box: manners.json cake_box)
+    '{"id": "buy_cake", "places": ["shop", "cafe"], "slots": ["visit"], "pose": "stand", "minutes": [6, 14], "hours": [8, 12.5], "ages": [12, 200], "meets": {"hunger": 0.3, "social": 0.3}, "base": 1.4, "trait": "", "once": 1, "today": ["birthday"]}',
     '{"id": "clinic_cold", "places": ["clinic"], "slots": ["visit"], "pose": "sit", "minutes": [20, 40], "hours": [8, 13], "days": [0, 1, 2, 3, 4], "ages": [14, 200], "meets": {"social": 0.1}, "base": 0.4, "trait": "", "once": 1, "today": ["cold"], "today_more": {"cold": 1.0}}',
     # the day's plans (FPerson::PlanAct): only as today's plan, round its hour
     '{"id": "visit_home", "places": [], "slots": ["kitchen_seat", "dining_seat", "sofa", "armchair", "desk_seat"], "pose": "sit", "minutes": [45, 90], "hours": [10, 21], "meets": {"social": 1.1, "fun": 0.4, "hunger": 0.6}, "base": 0.2, "trait": "social", "plan": 1, "visit": 1, "talk": 1, "rain": "ok"}',

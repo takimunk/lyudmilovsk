@@ -7,7 +7,7 @@
 #include <vector>
 #include "PeopleLife.generated.h"
 
-namespace LyudPeople { class FWorld; class FManners; }
+namespace LyudPeople { class FWorld; class FManners; struct FPerson; }
 class ABoothOwner;
 class ANpcBody;
 class ALyudBike;
@@ -278,6 +278,12 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<class UStaticMesh>> PropMeshes;
 	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> EaselMesh;
 	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> BucketMesh;     // the cleaner's bucket by them while they mop
+	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> ChessMesh;      // the folding board on the bench at chess_bench
+	/** chess_bench's index in the life's activities (LoadManners; -1: none). */
+	int32 ChessAct = -1;
+	/** The board on the bench between two chess players (or beside one alone), each turned a little to the other: the
+	 *  yaw to drive them with, and the board given to their body (or taken away). */
+	float PresentChess(const LyudPeople::FPerson& P, class ANpcBody* Body, const FVector& At, float SeatH, float Yaw);
 	TSharedPtr<struct FStreamableHandle> PropLoad;
 	/** Present's scratch: the people drawn this frame. */
 	TArray<int32> ShownIds;
@@ -457,6 +463,10 @@ public:
 	/** What a manner puts in the hands (SM_Prop_*), and what stands before them. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerProp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerStand;
+	/** A thing they put down by them for the whole activity, not a manner's (the chess board on the bench). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> PutDown;
+	/** Shows Mesh at Where (world, its foot) turned Rot; null hides it. Cheap when nothing changed. */
+	void SetPutDown(class UStaticMesh* Mesh, const FVector& Where, const FRotator& Rot);
 	/** The night watchman's torch beam: made the first time this body holds a torch (one or two in the town), no shadows. */
 	UPROPERTY(Transient) TObjectPtr<class USpotLightComponent> TorchLight;
 
