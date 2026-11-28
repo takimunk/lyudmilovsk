@@ -465,8 +465,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerStand;
 	/** A thing they put down by them for the whole activity, not a manner's (the chess board on the bench). */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> PutDown;
-	/** Shows Mesh at Where (world, its foot) turned Rot; null hides it. Cheap when nothing changed. */
-	void SetPutDown(class UStaticMesh* Mesh, const FVector& Where, const FRotator& Rot);
+	/** Shows InMesh at Where (world, its foot) turned Rot; null hides it. Cheap when nothing changed. */
+	void SetPutDown(class UStaticMesh* InMesh, const FVector& Where, const FRotator& Rot);
 	/** The night watchman's torch beam: made the first time this body holds a torch (one or two in the town), no shadows. */
 	UPROPERTY(Transient) TObjectPtr<class USpotLightComponent> TorchLight;
 
