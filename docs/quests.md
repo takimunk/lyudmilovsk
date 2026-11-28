@@ -241,3 +241,45 @@ What writing them showed:
 - A `[Section]` written twice in `npc_dialogue.txt` starts over: new lines go at the end of the person's own section.
 
 Not checked in the engine: the bundle was written and proven with the offline tools only.
+
+## The second town bundle (`tq2_*`)
+
+Seven stories on what came to the town on 2026-11-27 and had no story yet: the beach's play, the kitchen, the hero's room,
+the payphones and tear-off notices, the fortune cards, the traces a visit leaves, Science Day. Data and words only, like the
+first bundle: no new item, event or code. Each has branching talk (sun, weather, the pocket), a bystander's aside, a remark
+with a diary line, a reward and a `dev` block on every stage. Two first-bundle quests now chain on: `first_catch`'s reward
+starts `tq2_ukha`, `tq_log`'s starts `tq2_chess`; `tq2_whiteear`'s starts `tq2_jam`.
+
+| Quest | Giver, where and when | Begins | Steps (events) | Systems |
+|---|---|---|---|---|
+| `tq2_whiteear` «Белое ухо» | the owner, his booth 12–2 | the puppy notice torn (`stamp strips/puppy`) | `do tch_call`; ask the owner; Maru to the beach (`animal_walk_reach beach`) + `beach skip3`; tell | notices, payphone, Maru, skipping |
+| `tq2_jam` «Банка от простуды» | the owner (he caught cold waiting at the door) | `tq2_whiteear`'s reward | `have jam_strawberry` (cooked on a stove or the allotment neighbour's), `bring jam_strawberry@Owner` | kitchen, allotment |
+| `tq2_plant` «Записка под горшком» | the owner | the owner watered the dry plant (`do myroom_minded`) | thank him; `do myroom_water` ×3 (once a day) + `do myroom_put` | the hero's room |
+| `tq2_ukha` «Уха без лаврушки» | Pyotr Lange, the pier's net bench 12:30–17 | `first_catch`'s reward | `cook ukha`, `bring dish_ukha@Lange_pyotr` | kitchen, fishing |
+| `tq2_fortune` «Дальняя дорога» | Nika (`Streamer`), the club from noon | the fourth fortune card (`stamp fortunes/4`: the bus stop scale's fourth weighing) | show her; `have sandwich` + `reach mayak_lighthouse` (`no_skip`); `eat sandwich`; `bring seashell@Streamer` | fortune cards, scales, beach finds |
+| `tq2_chess` «Ход в неделю» | Lev Zotov, yard bench from 17:30 | `tq_log`'s reward | `do tch_call` (the stamp-swap number); `do chess` at the Cog, where a game is left mid-way (city_dress.md "Traces of a visit"); tell | payphone, notices, traces |
+| `tq2_science` «Лекция о Солнце» | Lev Zotov | `festival science_day` | `festival_visit science_day.lecture`; tell him; `do telescope` in the evening | Science Day |
+
+What writing them showed:
+
+- **A reward-begun quest hears the talk that paid for it**, so `tq2_ukha` and `tq2_jam` begin on a non-talk stage, and
+  `tq2_chess`'s first stage is the call: the giver's lines for that stage carry the request (his first talk after is the
+  ask), and the journal entry tells the whole errand at once. A first stage that is `have` would let an item already in the
+  pocket be handed over by that same talk (chain_met, then `bring`); so the ukha waits for a fresh `cook ukha` (Lange has a
+  line for a bowl already in the pocket). The jam keeps `have` (the neighbour's jar is fair): a jar already carried is taken
+  by the talk that ends `tq2_whiteear`, without the jam's lines.
+- **Three quests share the owner.** If two of his are on a talk stage at once, the first written (`tq2_whiteear`, then
+  `tq2_jam`, then `tq2_plant`; `owner_supper` before them all) is said and the other's talk passes unheard; every journal
+  entry after a talk repeats the whole errand. Nika (`tq_request`, which her first talk begins) and Zotov (`overdue_journal`,
+  `tq_log`) the same.
+- **Keep a person's quests few.** `quest_talk_reach.py` enumerates every combination of the quests a person has talk for
+  (asides count): one more quest on Olya, who already had five, took the run from a minute and a half to over ten. The
+  fortune went to Nika (two quests) and its aside to Yamada instead.
+- **Code-sent `do` targets.** The hero's room sends `do myroom_water|myroom_put|myroom_plant|myroom_minded` from code, not
+  from an act; questsim now reads those from `ULyudQuests::Notify(..., TEXT("do"), TEXT("..."))`.
+- Starts on a stamp (`strips/puppy`, `fortunes/4`) happen once in a save: a save that already has the stamp never begins
+  the quest. Tonight's systems are new, so no save has them; the objectives themselves are all repeatable.
+- The potatoes and the dill of the ukha, and the strawberries, only grow at the allotments: these two wait for a harvest.
+
+Not checked in the engine: written and proven with the offline tools only (`check_quest_talk.py`, `quest_talk_reach.py`,
+questsim, `check_devdata.py`, `quest_audit.py`).

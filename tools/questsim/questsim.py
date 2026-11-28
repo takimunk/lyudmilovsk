@@ -148,6 +148,10 @@ class Tree:
         for aid, a in acts.items():
             if aid in used and a.get('event'):
                 self.act_events.setdefault(low(a['event']), set()).add(low(a.get('target', '')))
+        # some do <target> events are sent by the game's code itself (the hero's room: myroom_water, myroom_put, ...)
+        for text in self.cpp.values():
+            for tgt in re.findall(r'Notify\([^;]*?TEXT\("do"\),\s*TEXT\("([a-z_]+)"\)', text):
+                self.act_events.setdefault('do', set()).add(low(tgt))
         self.scenes = self.opt_json('UI', 'quest_scenes.json')
         cmds = set()
         for text in self.cpp.values():
