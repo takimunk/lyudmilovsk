@@ -86,7 +86,8 @@ namespace LyudPeople
 	static const char* PoseNames[] = { "hidden", "stand", "walk", "talk", "look", "sit", "computer", "eat", "read", "sleep", "work", "shovel", "skate", "walrus" };
 	static_assert(sizeof(PoseNames) / sizeof(PoseNames[0]) == (size_t)EPose::Num, "a name for every pose (EPose)");
 	static const char* StateNames[] = { "idle", "going", "riding", "settling", "doing", "leaving", "away", "waiting" };
-	static const char* EventNames[] = { "Start", "Arrive", "Leave", "TalkStart", "TalkEnd", "Ride", "Away", "Back" };
+	static const char* EventNames[] = { "Start", "Arrive", "Leave", "TalkStart", "TalkEnd", "Ride", "Away", "Back", "StreetMeet", "StreetNod", "DoorHold" };
+	static_assert(sizeof(EventNames) / sizeof(EventNames[0]) == (size_t)EEvent::Num, "a name for every event (EEvent)");
 
 	const char* NeedName(ENeed N) { return N < ENeed::Num ? NeedNames[(int)N] : "?"; }
 	const char* PoseName(EPose P) { return P < EPose::Num ? PoseNames[(int)P] : "?"; }
@@ -382,6 +383,28 @@ namespace LyudPeople
 				A.PauseMax = V["wander_pause"].Items[1].F();
 				A.bPauseSet = true;
 			}
+			// the days (PeopleDays.cpp)
+			A.bPlan = V["plan"].F() > 0.f;
+			A.bVisit = V["visit"].F() > 0.f;
+			A.bOnce = V["once"].F() > 0.f;
+			A.bSickOff = V["sick"].S() == "off";
+			for (const LyudJson::FValue& T : V["today"].Items)
+			{
+				A.TodayMask |= TodayFromName(T.S());
+			}
+			for (const auto& F : V["today_more"].Fields)
+			{
+				const uint8_t Bit = TodayFromName(F.first);
+				for (int B = 0; B < NumTodayBits; B++)
+				{
+					if (Bit == (1 << B))
+					{
+						A.TodayMore[B] = F.second.F();
+					}
+				}
+			}
+			A.OwnDay = V["own_day"].F(0.f);
+			A.bOwnDayOnly = V["own_day_only"].F() > 0.f;
 			A.bAway = V["away"].F() > 0.f;
 			A.bFree = V.Find("free") ? V["free"].F() > 0.f : true;
 			if (V["days"].Size() > 0)
@@ -1666,6 +1689,18 @@ namespace LyudPeople
 		MindAct = FindActivity("mind_child");
 		PlayActs[0] = FindActivity("playground");
 		PlayActs[1] = FindActivity("play_run");
+		// the days: the plans' activities, a bit each for the once-a-day ones
+		static const char* const PlanIds[] = { "visit_home", "host_guests", "couple_stroll", "chess_bench" };
+		for (int I = 0; I < 4; I++)
+		{
+			PlanActs[I] = FindActivity(PlanIds[I]);
+		}
+		int Bit = 0;
+		for (FActivity& A : Activities)
+		{
+			A.OnceBit = A.bOnce && Bit < 32 ? Bit++ : -1;
+		}
+		TodayDay = INT_MIN;     // (worked out again by the next Step or Resettle: the plans name activities and places)
 		FlatLit.assign(Places.size(), -1);
 		Indexed = Places.size();
 	}
@@ -2162,6 +2197,10 @@ namespace LyudPeople
 				{
 					continue;       // a duty at a "when" activity is kept only while the game has its condition on (the book club)
 				}
+				if ((P.Today & TodayCold) && A >= 0 && Activities[(size_t)A].bSickOff)
+				{
+					continue;       // home with a cold: no school, no train to work
+				}
 			}
 			if (D.StayDay >= 0 && D.StayDay != StayDayOf(P))
 			{
@@ -2188,6 +2227,11 @@ namespace LyudPeople
 		for (const FDuty& D : P.Duties)
 		{
 			const float In = D.From - Hour;
+			const int DutyAct = (P.Today & TodayCold) ? ActOf(D) : -1;
+			if (DutyAct >= 0 && Activities[(size_t)DutyAct].bSickOff)
+			{
+				continue;
+			}
 			if (((D.Days >> Weekday) & 1) && (D.StayDay < 0 || D.StayDay == StayDayOf(P)) && In > 0.f && In < Left)
 			{
 				Left = In;
@@ -2229,6 +2273,25 @@ namespace LyudPeople
 			// at work: their own workplace, a slot of their role (or one for anybody of its staff)
 			const FDuty* D = DutyFor(P, A);
 			bPlace = D && D->Place == Sl.Place && (Sl.Tag.empty() || Sl.Tag == D->Role);
+		}
+		else if (A.bVisit)
+		{
+			// a guest: at the flat they are asked to today, at a seat nobody there sleeps on (never a bed)
+			if (Sl.Place != P.PlanPlace || P.PlanPlace == P.Home || bBed)
+			{
+				return false;
+			}
+			if (bSofa && bFlat)
+			{
+				for (const int Id : Pl.Residents)
+				{
+					if (People[(size_t)Id].BedSlot == S)
+					{
+						return false;
+					}
+				}
+			}
+			return Pl.Island >= 0 && Sl.Free(P.Id);
 		}
 		else if (bK)
 		{
@@ -2314,6 +2377,13 @@ namespace LyudPeople
 				Cand.push_back(D->Place);
 			}
 		}
+		else if (A.bVisit)
+		{
+			if (P.PlanPlace >= 0)
+			{
+				Cand.push_back(P.PlanPlace);
+			}
+		}
 		else if (Indexed == Places.size())
 		{
 			Cand = A.PlaceIdx;
@@ -2352,14 +2422,26 @@ namespace LyudPeople
 		}
 		const int Meet = MeetNow(P, A);
 		const bool bOuting = Meet != 0;
-		const int MeetAt = Meet == 1 ? P.OutingPlace : P.DatePlace;
-		const float MeetHour = Meet == 1 ? P.OutingHour : P.DateHour;
+		int MeetAt = Meet == 1 ? P.OutingPlace : (Meet == 3 ? P.PlanPlace : P.DatePlace);
+		const float MeetHour = Meet == 1 ? P.OutingHour : (Meet == 3 ? P.PlanHour : P.DateHour);
 		// whoever of theirs is there already (or on the way): the seat next to them, the spot beside them
 		const FSlot* MeetBy = nullptr;
 		if (Meet == 2 && P.DateWith >= 0)
 		{
 			const FPerson& Q = People[(size_t)P.DateWith];
 			MeetBy = Q.Slot >= 0 && Q.Place == MeetAt && Q.Activity == P.DateAct ? &Slots[(size_t)Q.Slot] : nullptr;
+		}
+		else if (Meet == 3 && P.PlanWith >= 0)
+		{
+			// today's plan: by whoever they meet (the host's side of the table, the friend's end of the bench)
+			const FPerson& Q = People[(size_t)P.PlanWith];
+			MeetBy = Q.Slot >= 0 && Q.Place == MeetAt && Q.Activity == Q.PlanAct ? &Slots[(size_t)Q.Slot] : nullptr;
+			if (!MeetBy && Q.Slot >= 0 && Q.Activity == Q.PlanAct && Q.Activity == P.PlanAct && Q.State != EState::Going)
+			{
+				// (a stroll has gone on along the front, the bench was taken: to wherever they are by now)
+				MeetBy = &Slots[(size_t)Q.Slot];
+				MeetAt = MeetBy->Place;
+			}
 		}
 		else if (Meet == 1 && P.Home >= 0)
 		{
@@ -2375,6 +2457,8 @@ namespace LyudPeople
 		// keeping an eye on their child: where the child plays
 		const int MindKid = MindAct >= 0 && &A == &Activities[(size_t)MindAct] ? ChildToMind(P) : -1;
 		const int MindPlace = MindKid >= 0 ? People[(size_t)MindKid].Place : -1;
+		// (one day in five they feel like somewhere else than their own spots: another bench, another cafe)
+		const bool bElsewhere = bDays && ((uint32_t)(P.Id * 2654435761u) ^ (uint32_t)(TodayDay * 97u + 13u) * 2246822519u) % 5u == 0u;
 		for (const int Pi : Cand)
 		{
 			const FPlace& Pl = Places[Pi];
@@ -2454,7 +2538,7 @@ namespace LyudPeople
 				Score += Rand(H) * 25.f;
 				// and spots of their own: everybody has a few places out of the many (their bench, their cafe, their stretch of
 				// the promenade) they go a little out of their way for, the same ones every day
-				if (Opt.OwnSpots > 0.f && Pi != P.Home && !A.bGather && !A.bStaff && Pl.Kind != "club")
+				if (Opt.OwnSpots > 0.f && Pi != P.Home && !A.bGather && !A.bStaff && Pl.Kind != "club" && !bElsewhere)
 				{
 					uint32_t Own = ((uint32_t)Pi * 2246822519u) ^ ((uint32_t)P.Id * 3266489917u) ^ 0x9e3779b9u;
 					Own |= 1u;
@@ -2541,6 +2625,27 @@ namespace LyudPeople
 		{
 			return -1e9f;
 		}
+		// the days: a plan's activity only as today's plan and in its hour, a day's errand only on its day, once
+		const int Meet = MeetNow(P, A);
+		if (!bDays && (A.bPlan || A.TodayMask || A.bOnce || A.bOwnDayOnly))
+		{
+			return -1e9f;
+		}
+		if ((A.bPlan && Meet != 3) || (A.TodayMask && !(P.Today & A.TodayMask)) || (A.OnceBit >= 0 && ((P.OnceDone >> A.OnceBit) & 1u))
+			|| (A.bOwnDayOnly && OwnDayOf(P, A) != Weekday))
+		{
+			return -1e9f;
+		}
+		if (A.OnceBit >= 0 && !Meet)
+		{
+			// a once-a-day errand (the pension, the market, the books back) waits while their date, the household's outing
+			// or today's plan is due: done later in the day
+			const auto Due = [this](int MeetAct, int OnDay, float AtH) { return MeetAct >= 0 && (OnDay < 0 || OnDay == Weekday) && Hour > AtH - 0.5f && Hour < AtH + 1.25f; };
+			if (Due(P.DateAct, P.DateDay, P.DateHour) || Due(P.OutingAct, P.OutingDay, P.OutingHour) || Due(P.PlanAct, -1, P.PlanHour))
+			{
+				return -1e9f;
+			}
+		}
 		if (A.bSunset && !(Hour > Sunset - 0.45f && Hour < Sunset + 0.2f))
 		{
 			return -1e9f;
@@ -2589,7 +2694,8 @@ namespace LyudPeople
 			}
 		}
 		// their ritual: the same thing at the same hour every day (crumbs for the birds at nine, the paper at four)
-		if (P.RitualAct >= 0 && &A == &Activities[(size_t)P.RitualAct])
+		if (P.RitualAct >= 0 && &A == &Activities[(size_t)P.RitualAct]
+			&& !(bDays && ((uint32_t)(P.Id * 40503u) ^ (uint32_t)(TodayDay * 2654435761u)) % 6u == 0u))
 		{
 			float Off = std::fabs(Hour - P.RitualHour);
 			Off = std::min(Off, 24.f - Off);
@@ -2599,9 +2705,33 @@ namespace LyudPeople
 			}
 		}
 		// the household's weekend outing: everybody of the flat is drawn to it together
-		if (MeetNow(P, A))
+		if (Meet)
 		{
-			Score += 0.9f;
+			Score += Meet == 3 ? 1.1f : 0.9f;
+		}
+		// the days: their own weekday for it (the library on Thursdays), what today is for them (paid: the cafe; a cold:
+		// nowhere but home and the clinic), and what they feel like today
+		if (bDays)
+		{
+			if (A.OwnDay != 0.f && OwnDayOf(P, A) == Weekday)
+			{
+				Score += A.OwnDay;
+			}
+			for (int B = 0; P.Today && B < NumTodayBits; B++)
+			{
+				if (P.Today & (1 << B))
+				{
+					Score += A.TodayMore[B];
+				}
+			}
+			if ((P.Today & TodayCold) && !bHome && A.TodayMore[0] <= 0.f)
+			{
+				return -1e9f;       // a cold: indoors at home (and the clinic on a weekday morning)
+			}
+			if (!Meet && !bMind)
+			{
+				Score += DayMood(P, A) * 0.3f;
+			}
 		}
 		// their child is out at play: one of the grown-ups goes to stand by (the activity's own base keeps it from being
 		// chosen for itself)
@@ -3107,6 +3237,29 @@ namespace LyudPeople
 				Q.Until = std::min(Q.Until, Time + 5.0 + 6.0 * Rand(P.Rng));
 			}
 		}
+		if (FromAct >= 0 && FromAct == P.PlanAct && P.PlanWith >= 0 && P.PlanWith < (int)People.size() && Act != FromAct)
+		{
+			// today's plan is over when one of the two gets up (a guest's host stays at home all the same)
+			FPerson& Q = People[(size_t)P.PlanWith];
+			if (Q.State == EState::Doing && Q.PlanWith == P.Id && Q.Activity == Q.PlanAct && (Q.Pos - P.Pos).Len2D() < 12.f)
+			{
+				Q.Until = std::min(Q.Until, Time + 5.0 + 6.0 * Rand(P.Rng));
+			}
+		}
+		if (Act == P.PlanAct && P.PlanWith >= 0 && P.PlanWith < (int)People.size() && Act != FromAct && MeetNow(P, A) == 3)
+		{
+			// setting out for it: whoever of theirs goes too and is by looks up within a few seconds (a couple leaves home
+			// together), on foot
+			FPerson& Q = People[(size_t)P.PlanWith];
+			if (Q.Household == P.Household && !P.Household.empty())
+			{
+				DropBike(P);
+				if (Q.State == EState::Doing && Q.Activity != Q.PlanAct && (Q.Pos - P.Pos).Len2D() < 25.f)
+				{
+					Q.Recheck = std::min(Q.Recheck, 1.f + 4.f * Rand(P.Rng));
+				}
+			}
+		}
 		if (Act == P.OutingAct && P.Home >= 0 && OutingNow(P, A))
 		{
 			// the household sets out for its outing together, on foot: those of theirs who are by look up from what they
@@ -3257,7 +3410,7 @@ namespace LyudPeople
 		}
 		// the household's outing, a date with a friend: whoever is at it stays with their own; the others leave what they
 		// chose for it
-		for (const int MeetAct : { P.OutingAct, P.DateAct })
+		for (const int MeetAct : { P.OutingAct, P.DateAct, P.PlanAct })
 		{
 			if (MeetAct < 0 || Duty >= 0 || !MeetNow(P, Activities[(size_t)MeetAct]))
 			{
@@ -3517,7 +3670,8 @@ namespace LyudPeople
 	{
 		// on the way to the household's outing, and on the way home, those of a household keep together: whoever is in
 		// front dawdles, whoever fell behind steps out, and side by side they go at the slowest's walk
-		const bool bOuting = P.OutingAct >= 0 && P.Activity == P.OutingAct && Weekday == P.OutingDay;
+		const bool bOuting = (P.OutingAct >= 0 && P.Activity == P.OutingAct && Weekday == P.OutingDay)
+			|| (P.PlanAct >= 0 && P.Activity == P.PlanAct);     // (today's plan with one of theirs: a couple's stroll)
 		const bool bPlay = P.Activity >= 0 && (P.Activity == MindAct || (P.Age < 12 && (P.Activity == PlayActs[0] || P.Activity == PlayActs[1])));
 		if (P.State != EState::Going || P.bIndoors || P.Home < 0 || P.Place < 0 || P.Household.empty() || (!bOuting && !bPlay && P.Place != P.Home))
 		{
@@ -3598,6 +3752,31 @@ namespace LyudPeople
 			P.Speed = 0.f;
 			return;
 		}
+		if (P.MeetFor > 0.f || P.DoorFor > 0.f)
+		{
+			// a word with somebody they know met on the way (StreetMeets), a door held for whoever comes behind (HoldDoor):
+			// they stand so long, turned to them, then go on. Over at once if the other has gone, in the rain a short word
+			float& For = P.MeetFor > 0.f ? P.MeetFor : P.DoorFor;
+			For -= bRain ? Dt * 3.f : Dt;
+			const FPerson* Q = P.MeetWith >= 0 && P.MeetWith < (int)People.size() ? &People[(size_t)P.MeetWith] : nullptr;
+			// (a door is held till they are in at it)
+			const bool bStill = Q && Q->State == EState::Going && (Q->Pos - P.Pos).Len2D() < 9.f
+				&& (P.DoorFor > 0.f ? !Q->bIndoors : Q->MeetWith == P.Id && Q->MeetFor > 0.f);
+			if (For > 0.f && bStill)
+			{
+				P.Speed = 0.f;
+				P.Yaw = YawTo(P.Pos, Q->Pos);
+				P.Pose = P.DoorFor > 0.f ? EPose::Stand : EPose::Talk;
+				return;
+			}
+			if (P.Partner >= 0 && P.Partner == P.MeetWith)
+			{
+				P.Partner = -1;
+			}
+			P.MeetFor = P.DoorFor = 0.f;
+			P.MeetWith = -1;
+			P.Pose = EPose::Walk;
+		}
 		if (P.BreathAt >= 0 && P.PathI > P.BreathAt)
 		{
 			// getting their breath back (Start): they stand a while, then go on (not in the rain)
@@ -3654,6 +3833,15 @@ namespace LyudPeople
 				if (W.Kind == 4 && W.ToIsland >= 0)
 				{
 					P.Island = W.ToIsland;                 // walked a trail to its end (rides set it in FinishRide)
+				}
+				if (bDays && W.Kind == 0 && !P.bHeld && !P.bHurry && P.PathI < (int)P.Path.size() && P.Path[(size_t)P.PathI].Kind == 1)
+				{
+					// at a door they go in by: somebody a few steps behind bound for the same door has it held
+					HoldDoor(P);
+					if (P.DoorFor > 0.f)
+					{
+						return;
+					}
 				}
 				if (W.BikeAct != EBikeAct::None && P.Bike >= 0)
 				{
@@ -3782,6 +3970,13 @@ namespace LyudPeople
 		const FSlot& Sl = Slots[P.Slot];
 		P.bIndoors = Roofed(Sl.Place);
 		P.Until = Time + P.Minutes * 60.0;
+		if (A.OnceBit >= 0)
+		{
+			P.OnceDone |= 1u << A.OnceBit;      // done for today (the pension is not fetched twice)
+		}
+		P.MeetWith = -1;
+		P.MeetFor = P.DoorFor = 0.f;
+		P.bHeld = false;
 		if (A.bOnTime)
 		{
 			// the way there was a part of it: home by the duty's end (a walk begun at seven is over at half past, wherever it led)
@@ -3935,7 +4130,8 @@ namespace LyudPeople
 		float TowardBest = 25.f;
 		const bool bWithHouse = P.OutingAct == P.Activity && Weekday == P.OutingDay && P.Home >= 0;
 		const bool bWithFriend = P.DateAct == P.Activity && Weekday == P.DateDay && P.DateWith >= 0 && P.DateWith < P.Id;
-		if (bWithHouse || bWithFriend)
+		const bool bWithPlan = P.PlanAct == P.Activity && P.PlanWith >= 0 && P.PlanWith < P.Id;     // a couple's stroll
+		if (bWithHouse || bWithFriend || bWithPlan)
 		{
 			const FPerson* Lead = nullptr;
 			auto Leads = [&](int R)
@@ -3956,7 +4152,7 @@ namespace LyudPeople
 			}
 			else
 			{
-				Leads(P.DateWith);      // the friend they walk with
+				Leads(bWithPlan ? P.PlanWith : P.DateWith);      // the friend they walk with
 			}
 			if (Lead)
 			{
@@ -4895,6 +5091,11 @@ namespace LyudPeople
 			RollDays();
 		}
 		PrevHour = Hour;
+		// the calendar's day changed (midnight, a clock jump): what today is for everybody, and the day's plans
+		if (bDays && TodayDay != DayIndex())
+		{
+			RollToday();
+		}
 		for (int N = 0; N < Opt.SettleBatch && SettleI < SettleQueue.size(); N++)
 		{
 			FPerson& P = People[SettleQueue[SettleI++]];
@@ -4908,6 +5109,12 @@ namespace LyudPeople
 		{
 			PairTimer = 3.f;
 			TalkPairs();
+		}
+		MeetTimer -= Dt;
+		if (bDays && MeetTimer <= 0.f)
+		{
+			MeetTimer = 2.f;
+			StreetMeets();
 		}
 		for (FPerson& P : People)
 		{
@@ -5162,6 +5369,10 @@ namespace LyudPeople
 	void FWorld::Resettle()
 	{
 		SyncSunDuties();
+		if (bDays)
+		{
+			RollToday(true);    // (a load, a clock jump: the same day gives the same day)
+		}
 		for (FSlot& S : Slots)
 		{
 			S.Users.clear();
@@ -5172,6 +5383,10 @@ namespace LyudPeople
 			P.Path.clear();
 			P.PathI = 0;
 			P.Partner = -1;
+			P.MeetWith = -1;
+			P.MeetFor = P.DoorFor = 0.f;
+			P.MeetAgainAt = -1e18;
+			P.bHeld = false;
 			P.Activity = -1;
 			P.Slot = -1;
 			P.State = EState::Idle;

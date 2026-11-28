@@ -6,6 +6,7 @@
 #   tools/peoplesim/run.sh week                  the town over a simulated week: invariants (docs/town_life.md, Tests)
 #   tools/peoplesim/run.sh guests                the sanatorium's guests over three weeks: the Saturday trains, rooms, chairs
 #   tools/peoplesim/run.sh winter                winter play on the town (also part of test): the rink, the ice hole, the banya
+#   tools/peoplesim/run.sh days [n] [off]        the town over n days (7): diaries, how alike the days are, colds, plans, errands (town_days.h; off: as before)
 #   tools/peoplesim/run.sh bookclub              the library's book club on Thursday evenings (book_club_people.h)
 #   tools/peoplesim/run.sh street                the street's everyday life: the barrel and the cart, the dawn, the yards, the seasons (street_people.h)
 #   tools/peoplesim/run.sh day [start_hour hours] -> Saved/PeopleSim/day.csv + acts.txt (python3 tools/peoplesim/render_people.py)
@@ -27,7 +28,7 @@ if [ -z "$LYUD_ANIMALS_DIR" ] && [ "$(head -c 7 "$GRID" 2>/dev/null)" = "version
 	fi
 	export LYUD_ANIMALS_DIR
 fi
-clang++ -std=c++17 -O2 $EXTRA_CXXFLAGS -Wall -Wno-unused-function -o "$ROOT/Saved/PeopleSim/peoplesim" "$ROOT/tools/peoplesim/peoplesim.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Animals/AnimalFriendSim.cpp" "$SRC/Animals/AnimalPetsSim.cpp" "$SRC/Railway/RailRun.cpp" "$SRC/Weather/WindModel.cpp" "$SRC/Weather/WeatherModel.cpp" "$SRC/Weather/RainModel.cpp" -I"$SRC/Weather"
+clang++ -std=c++17 -O2 $EXTRA_CXXFLAGS -Wall -Wno-unused-function -o "$ROOT/Saved/PeopleSim/peoplesim" "$ROOT/tools/peoplesim/peoplesim.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/People/PeopleDays.cpp" "$SRC/People/PeopleManners.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Animals/AnimalFriendSim.cpp" "$SRC/Animals/AnimalPetsSim.cpp" "$SRC/Railway/RailRun.cpp" "$SRC/Weather/WindModel.cpp" "$SRC/Weather/WeatherModel.cpp" "$SRC/Weather/RainModel.cpp" -I"$SRC/Weather"
 cd "$ROOT"
 if [ "$1" = "week" ]; then
 	# the generated data first (check_town_data.py), then the week; both run, either failing fails

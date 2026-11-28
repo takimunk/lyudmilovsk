@@ -177,6 +177,7 @@ namespace LyudPeople
 		float NeedOver = 0.f;
 		int Gather = -1;                // EGatherMode: only at a gathering of this mode
 		bool bWaiting = false;          // only waiting for the train
+		uint8_t Today = 0;              // "today": only whoever has this today (ETodayBit: sleepy, cold, guest; PeopleDays.cpp)
 		std::string Trait;              // warmth, nerve, curiosity, tidy: the more of it, the likelier
 		float Weight = 1.f;
 		float SecMin = 6.f, SecMax = 15.f;

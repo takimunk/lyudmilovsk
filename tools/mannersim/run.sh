@@ -11,5 +11,5 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private"
 mkdir -p "$ROOT/Saved/MannerSim"
 clang++ -std=c++17 -O2 -Wall -Wshadow -Wunreachable-code-loop-increment -Wno-unused-function -o "$ROOT/Saved/MannerSim/mannersim" \
-	"$ROOT/tools/mannersim/mannersim.cpp" "$SRC/People/PeopleManners.cpp" "$SRC/People/Friends.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Animals/AnimalFriendSim.cpp" "$SRC/Animals/AnimalPetsSim.cpp" "$SRC/Railway/RailRun.cpp"
+	"$ROOT/tools/mannersim/mannersim.cpp" "$SRC/People/PeopleManners.cpp" "$SRC/People/Friends.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/People/PeopleDays.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Animals/AnimalFriendSim.cpp" "$SRC/Animals/AnimalPetsSim.cpp" "$SRC/Railway/RailRun.cpp"
 cd "$ROOT" && exec "$ROOT/Saved/MannerSim/mannersim" "$@"

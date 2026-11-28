@@ -16,7 +16,8 @@ the café, the market and the square, and switch their flats' window lights on i
 | The townsfolk | `Content/PeopleData/townsfolk.json` (generated) |
 | Their names and jobs in ru/en/ja | `Content/Localization/town/strings_<lang>.json` (generated, merged by `LyudText`) |
 | Activities (shared with the residents) | `Content/PeopleData/activities.json` |
-| Test outside the engine | `tools/peoplesim/run.sh town` |
+| The days: colds, pay, plans, errands | `Private/People/PeopleDays.cpp`, `tools/town/town_days.py` |
+| Test outside the engine | `tools/peoplesim/run.sh town`, `run.sh days` |
 
 Regenerate whenever the city plan, the buildings' flats, the public spaces or the restaurant's seats change:
 
@@ -186,6 +187,100 @@ Item 29 (`docs/city_night.md`): `tools/town/town_night.py`, an add-on like `town
 
 A round in an indoor place now goes from spot to spot by the place's own ways (`Route` within the place) instead of the
 street grid. Who has a job is kept in townsfolk.json (`night_job`), so a rerun keeps the same people.
+
+## The days
+
+What makes one day unlike another (`Private/People/PeopleDays.cpp`, part of `FWorld`; data: `tools/town/town_days.py`,
+an add-on like `town_activities.py` that writes rows and keys into `activities.json` only). Everything is worked out
+from the calendar's day and who somebody is (`FWorld::RollToday`: at midnight, after a load, after a clock jump), so
+nothing of it is saved: the same day gives the same day. Townsfolk only; the story's people and the sanatorium's guests
+keep their days.
+
+**What today is** (`FPerson::Today`, bits of `ETodayBit`):
+
+| today | who, how often | what it does |
+|---|---|---|
+| `cold` | about 3 in 100 at a time, two days | stays at home (nothing chosen out of doors or in town), no school and no train to work (duties of activities with `"sick": "off"`; shop and cafe staff still work), the clinic on a weekday morning (`clinic_cold`), no plans, dates or outings |
+| `sleepy` | 7 in 100 grown-ups a day | up 25 to 65 minutes later (`FPerson::LateH`, never past 40 minutes before the day's first duty, so they run), coffee in the morning, a nap after lunch, yawns (`manners.json` `"today": "sleepy"`) |
+| `birthday` | one day in 365 each | the cake bought by day (`shop_town`), the household at home in the evening, up to four friends as guests |
+| `payday` | whoever works, every second Friday | the cafes and the restaurant in the evening, the shops, the culture club |
+| `pension` | 60 and over without work, every second Wednesday | the pension fetched at the Bridge House office from nine (`pension_office`, once), then the shops and a coffee |
+| `guest` | asked to a birthday | a bag in the hand on the way there |
+
+The game's first week has both: the pension on Wednesday 21 October, the pay on Friday 23 October (`FWorld::Week` even).
+
+**Errands of the week.** `market_day` (Saturday 8 to 13, once), `library_return` (the library's regulars, each on their
+own weekday, once), and their own weekday for the reading room, the sports hall, the culture club and the old people's
+clinic (`"own_day"`: liked more on that day, `FWorld::OwnDayOf`). The banya's day is Saturday already (`day_more`).
+There is no post office in the town yet: the pension is paid at the Bridge House's office, where the mail boxes are.
+
+**Small irregularities.** What they feel like today (`FWorld::DayMood`: every activity a little more or less liked, the
+same all day, another tomorrow); one day in six the ritual is skipped (the bench stays empty); one day in five they go
+somewhere else than their own spots.
+
+**The day's plan with somebody** (`FPerson::PlanAct/PlanPlace/PlanWith/PlanHour/PlanKind`). It works as the weekly date
+does (`FWorld::MeetNow` gives 3): round its hour both leave what they chose, go to the same place, sit or walk by each
+other, and the one left alone gets up too.
+
+| plan | who | where |
+|---|---|---|
+| `tea` | somebody and a friend, the old and the sociable more, more at the weekend (about 25 a day) | the friend's flat: the guest `visit_home` (an activity with `"visit": 1`: a seat of the flat they were asked to, never a bed), the host `host_guests` at home |
+| `birthday` | the household and up to four friends | the birthday's flat, children in the afternoon, grown-ups in the evening |
+| `family` | Sunday dinner: a household goes to the grandparents' (the same family name, 60 and over, 116 such families), about every other Sunday | the elders' flat |
+| `stroll` | a couple (a man and a woman of a household, no small child at home), one evening in three, more on Friday and Saturday | `couple_stroll` on the promenade or the pier nearest home, towards sunset; they leave home together and keep together (`WayTogether`, `Wander`) |
+| `chess` | two friends of 40 and over, by daylight | `chess_bench` on a bench between their doors, side by side (the dominoes gesture moves the pieces; a board on the bench is owed) |
+
+The town's flats are shells, so a visit shows as the walk there, the lit window and the walk back.
+
+**On the way** (`FWorld::StreetMeets`, every two seconds over those out walking only; `FWorld::HoldDoor`, once a way):
+
+- two friends or two of a household who pass within 3.5 m with time on their hands stop for 14 to 50 seconds, turned to
+  each other in the talk pose (`FPerson::MeetFor`); neighbours of one house and people of one workplace do now and then.
+  While they stand they are a pair for town talk's exchanges (`today = street_meet`). Not in the rain, not when late.
+- the others who know each other greet in passing: event `StreetNod` (a wave or a nod from the game's manners, a line
+  `on = street_nod`). Neighbours of one house also nod in `FManners::Passing`.
+- at a door of a walked building, whoever has somebody bound for the same door within 7.5 m behind stands by it turned
+  to them till they are in (8 s at most): event `DoorHold`, a nod of thanks, a line `on = door_hold`.
+
+Keys of `activities.json` read for this: `plan`, `visit`, `once`, `today` (only whoever has it today), `today_more`
+(liked more or less by whoever has it), `own_day`, `own_day_only`, `sick`.
+Lines: `tools/barks/lines/18_town_days.txt` (ru, en, ja; the sets' `today =` condition).
+In the game: `lyud.People.Today [key [cold|sleepy|birthday|payday|pension|guest|clear]]`, `lyud.People.Plan <key> <with>
+<tea|birthday|family|stroll|chess>`; developer mode, group `townlife` (a report, the pension, the pay, tea, chess, a cold).
+
+Test: `tools/peoplesim/run.sh days [n] [off]` runs the town n days from a Monday (7), prints a few residents' diaries and
+checks the above; `off` runs the same town without the days.
+
+Before and after (seven days, the same town and seed, `run.sh days 7 off` against `run.sh days 7`, on main b70f1e7b
+with tonight's street life and holidays in):
+
+| | before | after |
+|---|---|---|
+| what somebody did on one day and on the next too (activity and place) | 41.2% | 37.4% |
+| two days running in the very same order | 0.3% | 0.1% |
+| different things a person did in the week | 17.0 | 18.4 |
+| person-days with a cold, after a bad night, birthdays, paid, pensions due | 0 | 169, 381 (305 up late, 44 min on average), 15, 451, 170 |
+| plans made / kept: tea, birthday guests, family dinners, strolls, chess | 0 | 199 / 195, 15 / 14, 84 / 83, 189 / 182, 75 / 48 |
+| on the way: stops for a word, greetings in passing, doors held | 0 | 436, 2942, 707 |
+| the market on Saturday, books taken back, the pension fetched | 0 | 1792 and 1616 person-minutes, 111 of 170 pensioners |
+| the cafes on payday's evening against another weekday's | the same | 25780 against 23490 person-minutes |
+| a nap (a bad night, a cold), person-minutes | 28207 | 45581 |
+| `run.sh days`: a step of 2 s with the test's own bookkeeping | 1.31 ms | 1.18 ms |
+| `run.sh town`: a step of the whole town (949 people) | 0.61 to 0.63 ms | 0.61 to 0.65 ms (noise of this box) |
+
+Before, a pensioner's week was the bench and the cafe every day. After, the same man (`t_tkachuk_tigran`, 85) has
+his friend `t_benitez_rafael` to tea on Tuesday, is in bed with a cold on Friday and Saturday (the clinic on the Friday
+morning, naps), and hosts the family's Sunday dinner. The strolls planned for Monday and Wednesday evenings were not
+walked (he stayed on his bench): a plan is a pull, not an order.
+
+Checks: `run.sh town` keeps only the tower watch's failing check that main has. `tools/mannersim/run.sh` keeps main's
+failing "binoculars never seen"; its weekly dates' check now leaves out the pairs with a cold that day (their date is
+off by design), and a once-a-day errand (the pension, the market, the books back) waits while a date, an outing or a
+plan is due instead of pulling people away from it (dates kept on its Wednesday: 35 of 69, main 29 of 70). A door held is `FPerson::DoorFor` (main's `HoldFor` is the
+hero's word on the way); neither is picked for a street meeting.
+
+Not done: no post office building; guests in a shell flat are not seen; the chess board is not drawn (a prop on the
+bench is owed); a birthday has no cake or song; the weather does not bring colds; the story's people have no days.
 
 ## How it works
 

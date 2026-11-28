@@ -1,0 +1,199 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The days (docs/town_life.md "The days", Private/People/PeopleDays.cpp): what today is for somebody (today = cold,
+## sleepy, birthday, payday, pension, guest), the errands of the week (the Saturday market, the library's books, the
+## pension at the office), the day's plans (tea at a friend's, Sunday at the grandparents', a couple's stroll, chess on
+## a bench), and two who know each other on the way (today = street_meet, on = street_nod, on = door_hold).
+## No first-person past tense here: the lines are said by men and women alike.
+## ---------------------------------------------------------------------------------------------------------------
+
+[days_cold]
+today = cold
+age = teen adult elder
+say town.days_cold.1 | Горло дерёт. До поликлиники — и сразу домой. | My throat's raw. To the clinic, then straight home. | 喉がひりひりする。診療所に行って、まっすぐ帰る。
+say town.days_cold.2 | Не подходи близко, заражу. Насморк второй день. | Don't come close, you'll catch it. Second day of this cold. | 近寄らないで、うつるから。鼻風邪、二日目なんだ。
+say town.days_cold.3 | Чай с малиной, одеяло — и никаких прогулок. | Raspberry tea, a blanket, and no walks at all. | 木苺のお茶に毛布。散歩は一切なし。
+say town.days_cold.4 | Апчхи! Вот тебе и морской воздух. | Achoo! So much for the sea air. | はくしょん！これが海の空気のおかげか。
+
+[days_cold_kid]
+today = cold
+age = kid
+say town.days_cold_kid.1 | А у меня температура. В школу нельзя! | I've got a temperature. No school for me! | ぼく、熱があるの。学校はお休み！
+say town.days_cold_kid.2 | Мама сказала — горло красное. Буду дома мультики смотреть. | Mum says my throat's red. I'll be at home watching cartoons. | お母さんが、のどが赤いって。おうちでアニメ見るんだ。
+
+[days_sleepy]
+today = sleepy
+hours = 5-13
+age = teen adult elder
+say town.days_sleepy.1 | Всю ночь ворочаюсь, а под утро — будильник. | Tossing and turning all night, and then the alarm at dawn. | 一晩じゅう寝返りばかり。明け方になって目覚ましだよ。
+say town.days_sleepy.2 | Сначала кофе. Потом всё остальное. | Coffee first. Everything else after. | まずコーヒー。話はそれから。
+say town.days_sleepy.3 | Чайки с четырёх утра орали. Какой тут сон. | The gulls were screaming from four in the morning. Some sleep that was. | 朝の四時からカモメが大騒ぎ。眠れるわけがない。
+say town.days_sleepy.4 | Опаздываю. Третий раз за месяц, честное слово. | I'm late. Third time this month, honestly. | 遅刻だ。今月もう三回目、ほんとに。
+say town.days_sleepy.5 | Днём прилягу на полчасика. Иначе до вечера не дотяну. | I'll lie down for half an hour this afternoon. I won't last till evening otherwise. | 昼に三十分だけ横になろう。でないと夜までもたない。
+
+[days_birthday]
+today = birthday
+age = teen adult elder
+say town.days_birthday.1 | У меня сегодня день рождения. Вечером гости, надо успеть за тортом. | It's my birthday today. Guests tonight, I must get the cake in time. | 今日は誕生日なんだ。夜はお客さん。ケーキを買いに行かなきゃ。
+say town.days_birthday.2 | Ещё год. А море всё то же, и слава богу. | Another year. And the sea's still the same, thank goodness. | また一つ年をとった。海は変わらない。ありがたいことだ。
+say town.days_birthday.3 | С утра уже три открытки в ящике. Помнят! | Three cards in the letterbox already this morning. They remember! | 朝からもうカードが三枚も届いてた。覚えていてくれるんだね！
+
+[days_birthday_kid]
+today = birthday
+age = kid
+say town.days_birthday_kid.1 | У меня день рождения! Будет торт со свечками! | It's my birthday! There'll be a cake with candles! | 今日、お誕生日なの！ろうそくのケーキがあるんだよ！
+say town.days_birthday_kid.2 | Ко мне сегодня ребята придут. Угадай, сколько мне лет! | My friends are coming over today. Guess how old I am! | 今日、友だちが来るんだ。何歳になったか当ててみて！
+
+[days_guest]
+today = guest
+doing = visit_home
+age = teen adult elder
+say town.days_guest.1 | На день рождения иду. Подарок вот, а открытку подписать забыли. | Off to a birthday. Here's the present, and nobody signed the card. | 誕生日のお祝いに行くところ。プレゼントはあるのに、カードを書き忘れた。
+say town.days_guest.2 | Только бы не опоздать к торту. | As long as I'm not late for the cake. | ケーキに間に合えばいいけど。
+say town.days_guest.3 | Именинникам цветы или книгу? Несу и то, и другое. | Flowers or a book for a birthday? I'm bringing both. | 誕生日には花か本か。両方持っていくことにした。
+
+[days_payday]
+today = payday
+hours = 15-23
+say town.days_payday.1 | Получка! Сегодня ужинаем не дома. | Payday! We're not eating at home tonight. | 給料日！今夜は外で食べよう。
+say town.days_payday.2 | Раз в две недели можно и пирожное к кофе. | Once a fortnight you can have a pastry with your coffee. | 二週間に一度くらい、コーヒーにケーキをつけてもいいよね。
+say town.days_payday.3 | Деньги дали. К понедельнику их опять не будет, но сегодня — дали. | We've been paid. It'll be gone by Monday, but today we've been paid. | 給料が出た。月曜にはまた消えてるだろうけど、今日は出た。
+say town.days_payday.4 | Сначала долги, потом кафе. Или наоборот? | Debts first, then the cafe. Or the other way round? | まず借りを返して、それからカフェ。いや、逆かな？
+
+[days_pension]
+today = pension
+hours = 7-14
+say town.days_pension.1 | Пенсию дают. С девяти в конторе очередь, надо идти пораньше. | It's pension day. There's a queue at the office from nine, best go early. | 今日は年金の日。九時から事務所に列ができるから、早めに行かないと。
+say town.days_pension.2 | Получу — и на рынок. Внукам конфет, себе селёдки. | I'll collect it and go to the market. Sweets for the grandchildren, herring for me. | 受け取ったら市場へ。孫に飴、自分にはニシン。
+say town.days_pension.3 | В пенсионный день весь наш дом в одной очереди стоит. | On pension day our whole house stands in one queue. | 年金の日は、うちの棟のみんなが同じ列に並ぶんだよ。
+say town.days_pension.4 | Немного, зато вовремя. Каждую вторую среду. | It isn't much, but it's on time. Every second Wednesday. | 多くはないけど、きちんと出る。隔週の水曜日にね。
+
+[days_market]
+doing = market_day
+say town.days_market.1 | Суббота — на рынок. Кто рано встал, тому и творог. | Saturday means the market. The early ones get the curd cheese. | 土曜日は市場。早起きした人がカッテージチーズを買えるんだ。
+say town.days_market.2 | По субботам рыбаки свежее привозят. Беру на всю неделю. | The fishermen bring it fresh on Saturdays. I buy for the whole week. | 土曜は漁師が獲れたてを持ってくる。一週間分まとめて買うよ。
+say town.days_market.3 | Список длинный, а сумка одна. Как всегда. | A long list and one bag. As always. | 買い物メモは長いのに、袋はひとつ。いつものことだ。
+say town.days_market.4 | На рынке все новости узнаешь быстрее, чем из газеты. | You hear all the news at the market sooner than in the paper. | 市場にいれば、新聞より早く町の話が耳に入るよ。
+
+[days_library]
+doing = library_return
+say town.days_library.1 | Книги сдавать. Срок вчера вышел, надеюсь, не заругают. | Taking the books back. They were due yesterday, I hope I won't get told off. | 本を返しに行くところ。期限は昨日まで。怒られないといいな。
+say town.days_library.2 | Прочитано. Теперь возьму что-нибудь потолще. | Read them. Now I'll take something thicker. | 読み終わった。次はもっと分厚いのを借りよう。
+say town.days_library.3 | У меня библиотечный день. Раз в неделю, как часы. | It's my library day. Once a week, like clockwork. | 今日は図書館の日。週に一度、きっちりとね。
+
+[days_tea_way]
+today = tea
+doing = visit_home
+age = teen adult elder
+say town.days_tea.1 | В гости иду, на чай. С пустыми руками нельзя — вот, пряники. | I'm going visiting, for tea. Can't come empty-handed, so here, gingerbread. | お茶に呼ばれて行くところ。手ぶらじゃ行けないから、ほら、プリャーニク。
+say town.days_tea.2 | Звали к пяти. Приду в полшестого, как все приличные люди. | I was asked for five. I'll come at half past, like all decent people. | 五時にと言われた。まともな人らしく、五時半に着くよ。
+say town.days_tea.3 | Посидим на кухне, поговорим. Сто лет не виделись, целую неделю. | We'll sit in the kitchen and talk. Haven't met for ages, a whole week. | 台所で座っておしゃべり。もうずいぶん会ってない。まる一週間も。
+
+[days_family_way]
+today = family
+doing = visit_home
+age = teen adult elder
+say town.days_family.1 | К старикам на воскресный обед. Там пирог, отказаться нельзя. | To the old folks' for Sunday dinner. There's a pie, no refusing. | 日曜の昼は親の家へ。ピローグがあるから、断れないんだ。
+say town.days_family.2 | В воскресенье у нас закон: вся семья за одним столом. | Sunday is the law with us: the whole family at one table. | 日曜はうちの決まり。家族みんなでひとつの食卓を囲むんだ。
+say town.days_family.3 | Опять скажут, что редко заходим. А мы каждую неделю. | They'll say again that we hardly ever come. And we come every week. | また「めったに来ない」って言われるよ。毎週来てるのにね。
+
+[days_family_kid]
+today = family
+doing = visit_home
+age = kid
+say town.days_family_kid.1 | Мы к бабушке! У неё блины и кот. | We're going to Granny's! She's got pancakes and a cat. | おばあちゃんちに行くの！ブリヌイがあって、ねこもいるんだよ。
+say town.days_family_kid.2 | У дедушки есть настоящий компас. Он обещал показать. | Grandpa has a real compass. He promised to show me. | おじいちゃん、本物のコンパスを持ってるんだ。見せてくれるって。
+
+[days_stroll]
+doing = couple_stroll
+say town.days_stroll.1 | Вечером мы всегда доходим до пирса и обратно. | In the evening we always walk to the pier and back. | 夕方はいつも、桟橋まで歩いて戻ってくるんだ。
+say town.days_stroll.2 | Смотри, какое небо. Ради такого и стоило выйти. | Look at that sky. Worth coming out for. | 見て、あの空。出てきたかいがあったね。
+say town.days_stroll.3 | Не спеши. Мы же гуляем, а не опаздываем. | Don't hurry. We're out for a walk, we're not late. | 急がないで。散歩なんだから。遅刻じゃないんだよ。
+say town.days_stroll.4 | Возьми меня под руку. Ветер с моря. | Take my arm. There's a wind off the sea. | 腕を組んで。海から風が来るから。
+
+[days_stroll_talk]
+doing = couple_stroll
+doing2 = couple_stroll
+weight = 6
+talk
+- town.days_stroll_talk1.1 | Помнишь, мы тут первый раз шли? | Remember the first time we walked here? | ここを初めて歩いた日のこと、覚えてる？
+- town.days_stroll_talk1.2 | Помню. Шёл дождь, и зонт был один. | I do. It was raining, and we had one umbrella. | 覚えてる。雨で、傘は一本だけだった。
+- town.days_stroll_talk1.3 | Он и сейчас один. | We still have just the one. | 今でも一本だけだよ。
+talk
+- town.days_stroll_talk2.1 | Дойдём до фонаря и повернём? | Shall we go as far as the lamp and turn back? | あの街灯まで行って、引き返そうか。
+- town.days_stroll_talk2.2 | До пирса. Сегодня до пирса. | To the pier. Tonight, to the pier. | 桟橋まで。今日は桟橋まで行こう。
+talk
+- town.days_stroll_talk3.1 | Что на ужин? | What's for supper? | 夕飯は何？
+- town.days_stroll_talk3.2 | Сначала закат. Потом ужин. | Sunset first. Then supper. | まず夕焼け。夕飯はそのあと。
+- town.days_stroll_talk3.3 | Справедливо. | Fair enough. | もっともだ。
+
+[days_chess]
+doing = chess_bench
+say town.days_chess.1 | Так... Если конём сюда, то слон остаётся без защиты. | So... If the knight goes here, the bishop is left unguarded. | ふむ…ナイトをここに出すと、ビショップが浮いてしまう。
+say town.days_chess.2 | Мы эту партию третью неделю доигрываем. | We've been finishing this game for three weeks now. | この一局、もう三週間も続きを指してるんだ。
+say town.days_chess.3 | Тише. Здесь думают. | Quiet. People are thinking here. | 静かに。いま考えてるところ。
+
+[days_chess_talk]
+doing = chess_bench
+doing2 = chess_bench
+weight = 6
+talk
+- town.days_chess_talk1.1 | Шах. | Check. | チェック。
+- town.days_chess_talk1.2 | Вижу. Не торопи. | I can see. Don't rush me. | 見えてる。急かさないで。
+- town.days_chess_talk1.3 | Я не тороплю. Я сообщаю. | I'm not rushing. I'm informing. | 急かしてない。お知らせしてるだけ。
+talk
+- town.days_chess_talk2.1 | Ходи уже. Солнце сядет. | Move, will you. The sun will go down. | 早く指してよ。日が暮れる。
+- town.days_chess_talk2.2 | Хороший ход требует времени. | A good move takes time. | いい手には時間がかかるんだ。
+- town.days_chess_talk2.3 | Плохой у тебя тоже требует. | So do your bad ones. | 悪い手にもかかってるじゃないか。
+talk
+- town.days_chess_talk3.1 | Ничья? | A draw? | 引き分けにする？
+- town.days_chess_talk3.2 | Ни за что. Завтра на этой же лавке. | Never. Tomorrow, on this same bench. | とんでもない。明日、同じこのベンチで。
+
+[days_street_meet]
+today = street_meet
+weight = 8
+talk
+- town.days_meet1.1 | О, здравствуй! Куда путь держишь? | Oh, hello! Where are you off to? | あら、こんにちは！どちらへ？
+- town.days_meet1.2 | Да так, по делам. А тебя сто лет не видно. | Just errands. And you haven't been seen for ages. | ちょっと用事でね。そっちこそ、ずいぶん見かけなかったよ。
+- town.days_meet1.3 | Заходи как-нибудь на чай. | Drop in for tea some time. | そのうちお茶でも飲みに来て。
+talk
+- town.days_meet2.1 | Постой, постой. Слышно что-нибудь про завтрашнюю погоду? | Wait, wait. Any word on tomorrow's weather? | ちょっと待って。明日の天気、何か聞いてる？
+- town.days_meet2.2 | Говорят, ветер переменится. | They say the wind will change. | 風向きが変わるらしいよ。
+- town.days_meet2.3 | Значит, бельё сегодня не вешаю. | Then I'm not hanging the washing out today. | じゃあ、今日は洗濯物を干さないでおこう。
+talk
+- town.days_meet3.1 | Как здоровье? | How's your health? | 体の調子はどう？
+- town.days_meet3.2 | Не дождутся. А ваши как? | Still going strong. And your people? | まだまだ元気だよ。お宅のみなさんは？
+- town.days_meet3.3 | Все живы, все ворчат. | All alive, all grumbling. | みんな生きてて、みんな文句を言ってる。
+talk
+- town.days_meet4.1 | Я как раз о тебе думаю — и вот. | I was just thinking of you, and here you are. | ちょうどあなたのことを考えてたら、ほら。
+- town.days_meet4.2 | Город маленький. Тут все друг о друге думают. | It's a small town. Everybody here thinks of everybody. | 小さな町だもの。ここじゃ、みんながみんなのことを考えてる。
+talk
+- town.days_meet5.1 | В субботу на рынок идёшь? | Are you going to the market on Saturday? | 土曜日、市場に行く？
+- town.days_meet5.2 | Иду. Займу тебе очередь за творогом. | I am. I'll keep you a place in the queue for curd cheese. | 行くよ。カッテージチーズの列、場所を取っておくね。
+- town.days_meet5.3 | Вот за это и люблю. Ну, бегу. | That's why I love you. Well, I must run. | だから好きなんだ。じゃ、急ぐから。
+
+[days_street_nod]
+on = street_nod
+say town.days_nod.1 | Здравствуйте, здравствуйте! | Hello, hello! | こんにちは、こんにちは！
+say town.days_nod.2 | Привет соседям! | Greetings to the neighbours! | ご近所さん、どうも！
+say town.days_nod.3 | Доброго здоровья! | Good health to you! | お元気で！
+say town.days_nod.4 | О, и вы здесь. Моё почтение. | Oh, you're here too. My respects. | おや、あなたも。ごきげんよう。
+say town.days_nod.5 | Привет! Потом расскажу, бегу. | Hi! I'll tell you later, I'm in a rush. | やあ！あとで話すね、いま急いでて。
+
+[days_street_nod_morning]
+on = street_nod
+hours = 5-11
+say town.days_nod_morning.1 | Доброе утро! Уже на ногах? | Good morning! Up and about already? | おはよう！もう起きて動いてるの？
+say town.days_nod_morning.2 | С добрым утром! Хлеб уже привезли, фургон у булочной. | Good morning! The bread is in, the van is at the bakery. | おはよう！パンはもう届いてるよ。さっき車が来てた。
+
+[days_street_nod_evening]
+on = street_nod
+hours = 18-23
+say town.days_nod_evening.1 | Добрый вечер! Хорошо сегодня, правда? | Good evening! Lovely tonight, isn't it? | こんばんは！今夜は気持ちがいいね。
+say town.days_nod_evening.2 | Вечер добрый. Вашим привет передавайте. | Evening. Give my regards to your family. | こんばんは。ご家族によろしく。
+
+[days_door_hold]
+on = door_hold
+say town.days_door.1 | Проходите, проходите. Я держу. | Go on, go on. I've got the door. | どうぞ、どうぞ。ドアは押さえてますから。
+say town.days_door.2 | Прошу. Я не спешу. | After you. I'm in no hurry. | お先にどうぞ。急いでませんから。
+say town.days_door.3 | Заходите, а то пружина тугая. | Come in, the spring on this one is stiff. | 入って。このドア、ばねが固いんだ。
+say town.days_door.4 | Только после вас. | After you, I insist. | どうぞお先に。

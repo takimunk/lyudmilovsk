@@ -23,6 +23,9 @@
 # heard_of =  a rumour about the player the speaker would bring up now (docs/town_rumours.md: cup, beat, job, tamed, ...);
 #             lines may hold {1}: the rumour's detail (the cup, the regular beaten, the bird, the fish, the tune, the job)
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
+# today =     what today is for them (docs/town_life.md "The days"): cold, sleepy, birthday, payday, pension, guest (asked
+#             to a birthday); today's plan while they go to it or are at it: tea, stroll, chess, family (and host: at
+#             their own flat); street_meet: stopped on the way for a word with somebody they know. doing = plan: at it
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
 # sun =       day, low (sunrise or sunset), night, cloudy (overcast by day)
@@ -4523,6 +4526,131 @@ doing = subbotnik_paint subbotnik_whitewash subbotnik_sweep
 near = hero
 weight = 3
 say = town.street_subbotnik_near.1..2
+
+# The days (docs/town_life.md "The days", Private/People/PeopleDays.cpp): what today is for somebody (today = cold,
+# sleepy, birthday, payday, pension, guest), the errands of the week (the Saturday market, the library's books, the
+# pension at the office), the day's plans (tea at a friend's, Sunday at the grandparents', a couple's stroll, chess on
+# a bench), and two who know each other on the way (today = street_meet, on = street_nod, on = door_hold).
+# No first-person past tense here: the lines are said by men and women alike.
+
+[days_cold]
+today = cold
+age = teen adult elder
+say = town.days_cold.1..4
+
+[days_cold_kid]
+today = cold
+age = kid
+say = town.days_cold_kid.1..2
+
+[days_sleepy]
+today = sleepy
+hours = 5-13
+age = teen adult elder
+say = town.days_sleepy.1..5
+
+[days_birthday]
+today = birthday
+age = teen adult elder
+say = town.days_birthday.1..3
+
+[days_birthday_kid]
+today = birthday
+age = kid
+say = town.days_birthday_kid.1..2
+
+[days_guest]
+today = guest
+doing = visit_home
+age = teen adult elder
+say = town.days_guest.1..3
+
+[days_payday]
+today = payday
+hours = 15-23
+say = town.days_payday.1..4
+
+[days_pension]
+today = pension
+hours = 7-14
+say = town.days_pension.1..4
+
+[days_market]
+doing = market_day
+say = town.days_market.1..4
+
+[days_library]
+doing = library_return
+say = town.days_library.1..3
+
+[days_tea_way]
+today = tea
+doing = visit_home
+age = teen adult elder
+say = town.days_tea.1..3
+
+[days_family_way]
+today = family
+doing = visit_home
+age = teen adult elder
+say = town.days_family.1..3
+
+[days_family_kid]
+today = family
+doing = visit_home
+age = kid
+say = town.days_family_kid.1..2
+
+[days_stroll]
+doing = couple_stroll
+say = town.days_stroll.1..4
+
+[days_stroll_talk]
+doing = couple_stroll
+doing2 = couple_stroll
+weight = 6
+talk = town.days_stroll_talk1.1 | town.days_stroll_talk1.2 | town.days_stroll_talk1.3
+talk = town.days_stroll_talk2.1 | town.days_stroll_talk2.2
+talk = town.days_stroll_talk3.1 | town.days_stroll_talk3.2 | town.days_stroll_talk3.3
+
+[days_chess]
+doing = chess_bench
+say = town.days_chess.1..3
+
+[days_chess_talk]
+doing = chess_bench
+doing2 = chess_bench
+weight = 6
+talk = town.days_chess_talk1.1 | town.days_chess_talk1.2 | town.days_chess_talk1.3
+talk = town.days_chess_talk2.1 | town.days_chess_talk2.2 | town.days_chess_talk2.3
+talk = town.days_chess_talk3.1 | town.days_chess_talk3.2
+
+[days_street_meet]
+today = street_meet
+weight = 8
+talk = town.days_meet1.1 | town.days_meet1.2 | town.days_meet1.3
+talk = town.days_meet2.1 | town.days_meet2.2 | town.days_meet2.3
+talk = town.days_meet3.1 | town.days_meet3.2 | town.days_meet3.3
+talk = town.days_meet4.1 | town.days_meet4.2
+talk = town.days_meet5.1 | town.days_meet5.2 | town.days_meet5.3
+
+[days_street_nod]
+on = street_nod
+say = town.days_nod.1..5
+
+[days_street_nod_morning]
+on = street_nod
+hours = 5-11
+say = town.days_nod_morning.1..2
+
+[days_street_nod_evening]
+on = street_nod
+hours = 18-23
+say = town.days_nod_evening.1..2
+
+[days_door_hold]
+on = door_hold
+say = town.days_door.1..4
 
 # A talk with the hero (docs/town_talk.md "A talk"): E on a townsperson who is free for a word opens a page with their
 # greeting, two to four things to ask about, now and then a question back, and a goodbye. These are their lines:
