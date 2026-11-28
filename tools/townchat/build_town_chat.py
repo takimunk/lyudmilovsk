@@ -154,7 +154,8 @@ for (who, quest, stage), by_lang in sorted(quest_lines.items()):
         problems.append("%s: no resident %s in townsfolk.json" % (where, who))
     if quest not in quests:
         problems.append("%s: no quest %s" % (where, quest))
-    elif stage not in quests[quest] | {s + "_empty" for s in quests[quest]}:
+    # "done": said once after the quest is finished (LyudFriendsTalk.cpp, the after-quest talk)
+    elif stage not in quests[quest] | {s + "_empty" for s in quests[quest]} | {"done"}:
         problems.append("%s: quest %s has no stage %s" % (where, quest, stage))
     for lang in LANGS:
         ns = by_lang.get(lang, set())
