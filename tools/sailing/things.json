@@ -1,28 +1,377 @@
 {
  "_doc": "The boathouse's things (docs/yacht_school.md, part G): where each stands. 'b': [x, y, z] is the building frame of blender/sailing/boathouse_layout.json (metres, origin on the floor in the middle of the 16.5 x 9 m footprint, +X to the sea, -Y the north (door) wall; z = the height of the point the hero looks at): the numbers follow that layout's props (named in 'prop'), so move them with it. 'point': a key of school.points of Content/City/sailing.json (things out on the sand), 'h' metres over the ground there. face: north | south | sea | land = the way the thing looks (the hero stands in front of it). tools/sailing/words.py turns this into the place S-SAIL-SCHOOL of tools/city/content/x_sailing_place.json; what each thing does is in tools/city/content/x_sailing.json (rules S-SAIL-SCHOOL/<id>).",
- "place": {"id": "S-SAIL-SCHOOL", "kind": "sail_school", "building": "sail_boathouse", "name_ru": "Эллинг школы «Луч»", "name_en": "Luch school boathouse", "staff": [ [ "bosun", 1, [ 9, 19 ], "mon-sun" ], [ "coach", 3, [ 10, 20 ], "mon-sun" ] ] }, "things": [ { "id": "notice_board", "kind": "board", "b": [-4.3, -4.6, 1.5], "face": "north", "prop": "(outside, the north wall between the doors; no prop yet)"},
-  {"id": "results_board", "kind": "board", "b": [-3.3, -4.6, 1.5], "face": "north", "prop": "(outside, beside the notice board; no prop yet)"},
-  {"id": "emblem", "kind": "board", "b": [-5.75, -4.6, 2.6], "face": "north", "prop": "(outside, over the people's door: the door sign)"},
-  {"id": "boat_door", "kind": "craft", "b": [-0.85, -4.9, 0.8], "face": "north", "prop": "SM_Sail_Boathouse_DoorLeaf"},
-  {"id": "wash_tap", "kind": "machine", "b": [3.45, -4.6, 0.9], "face": "north", "prop": "(outside, the tap on the north wall: school.points wash)"},
-  {"id": "bell", "kind": "play", "b": [-4.85, -4.1, 1.7], "face": "south", "prop": "SM_Sail_Prop_ShipBell"},
-  {"id": "knot_board", "kind": "craft", "b": [-3.1, -1.5, 1.3], "face": "land", "prop": "SM_Sail_Prop_KnotBoard"},
-  {"id": "barometer", "kind": "machine", "b": [-3.1, 0.2, 1.65], "face": "land", "prop": "SM_Sail_Prop_Barometer"},
-  {"id": "blackboard", "kind": "board", "b": [-7.85, 0.0, 1.5], "face": "sea", "prop": "SM_Sail_Prop_Blackboard"},
-  {"id": "flag_chart", "kind": "board", "b": [-7.85, 2.4, 1.5], "face": "sea", "prop": "SM_Sail_Prop_FlagChart"},
-  {"id": "coach_desk", "kind": "counter", "b": [-6.85, -2.2, 0.8], "face": "sea", "prop": "SM_Sail_Prop_CoachDesk", "props": { "role": "coach" }},
-  {"id": "photo_wall", "kind": "board", "b": [-7.0, 4.1, 1.9], "face": "north", "prop": "SM_Sail_Prop_Photo0..3"},
-  {"id": "trophy_shelf", "kind": "board", "b": [-6.0, 4.1, 1.3], "face": "north", "prop": "SM_Sail_Prop_TrophyShelf"},
-  {"id": "book_shelf", "kind": "shelf", "b": [-5.95, 1.2, 0.8], "face": "sea", "prop": "SM_Sail_Prop_Desk (the pocket book lies on the front desk)"},
-  {"id": "log_book", "kind": "shelf", "b": [-4.05, -1.2, 0.8], "face": "sea", "prop": "SM_Sail_Prop_Desk (the log book lies on the desk by the door)"},
-  {"id": "tea_table", "kind": "machine", "b": [-3.85, 3.75, 0.9], "face": "north", "prop": "SM_Sail_Prop_KettleTable"},
-  {"id": "radio", "kind": "machine", "b": [-3.25, 3.75, 1.05], "face": "north", "prop": "SM_Sail_Prop_Radio"},
-  {"id": "bosun_counter", "kind": "counter", "b": [3.975, -3.6, 1.0], "face": "south", "prop": "SM_Sail_Prop_Workbench", "props": { "shop": "sail_bosun", "role": "bosun" }},
-  {"id": "old_hull", "kind": "craft", "b": [3.35, -0.4, 0.9], "face": "south", "prop": "SM_Sail_Prop_HullFrame"},
-  {"id": "lockers", "kind": "machine", "b": [6.6, -3.85, 1.2], "face": "south", "prop": "SM_Sail_Prop_Lockers"},
-  {"id": "life_jackets", "kind": "take", "b": [6.6, -0.2, 1.3], "face": "north", "prop": "SM_Sail_Prop_JacketRail"},
-  {"id": "signal_mast", "kind": "board", "point": "signal_mast", "h": 1.5, "face": "land"},
-  {"id": "parts_boat", "kind": "craft", "point": "shore_boat", "h": 0.7, "face": "land"},
-  {"id": "rig_boat", "kind": "craft", "point": "rigging", "h": 0.7, "face": "land"}
+ "place": {
+  "id": "S-SAIL-SCHOOL",
+  "kind": "sail_school",
+  "building": "sail_boathouse",
+  "name_ru": "Эллинг школы «Луч»",
+  "name_en": "Luch school boathouse",
+  "staff": [
+   [
+    "bosun",
+    1,
+    [
+     9,
+     19
+    ],
+    "mon-sun"
+   ],
+   [
+    "coach",
+    3,
+    [
+     10,
+     20
+    ],
+    "mon-sun"
+   ]
+  ]
+ },
+ "things": [
+  {
+   "id": "notice_board",
+   "kind": "board",
+   "b": [
+    -4.3,
+    -4.6,
+    1.5
+   ],
+   "face": "north",
+   "prop": "(outside, the north wall between the doors; no prop yet)"
+  },
+  {
+   "id": "results_board",
+   "kind": "board",
+   "b": [
+    -3.3,
+    -4.6,
+    1.5
+   ],
+   "face": "north",
+   "prop": "(outside, beside the notice board; no prop yet)"
+  },
+  {
+   "id": "emblem",
+   "kind": "board",
+   "b": [
+    -5.75,
+    -4.6,
+    2.6
+   ],
+   "face": "north",
+   "prop": "(outside, over the people's door: the door sign)"
+  },
+  {
+   "id": "boat_door",
+   "kind": "craft",
+   "b": [
+    -0.85,
+    -4.9,
+    0.8
+   ],
+   "face": "north",
+   "prop": "SM_Sail_Boathouse_DoorLeaf"
+  },
+  {
+   "id": "wash_tap",
+   "kind": "machine",
+   "b": [
+    3.45,
+    -4.6,
+    0.9
+   ],
+   "face": "north",
+   "prop": "(outside, the tap on the north wall: school.points wash)"
+  },
+  {
+   "id": "bell",
+   "kind": "play",
+   "b": [
+    -4.85,
+    -4.1,
+    1.7
+   ],
+   "face": "south",
+   "prop": "SM_Sail_Prop_ShipBell"
+  },
+  {
+   "id": "knot_board",
+   "kind": "craft",
+   "b": [
+    -3.1,
+    -1.5,
+    1.3
+   ],
+   "face": "land",
+   "prop": "SM_Sail_Prop_KnotBoard"
+  },
+  {
+   "id": "barometer",
+   "kind": "machine",
+   "b": [
+    -3.1,
+    0.2,
+    1.65
+   ],
+   "face": "land",
+   "prop": "SM_Sail_Prop_Barometer"
+  },
+  {
+   "id": "blackboard",
+   "kind": "board",
+   "b": [
+    -7.85,
+    0.0,
+    1.5
+   ],
+   "face": "sea",
+   "prop": "SM_Sail_Prop_Blackboard"
+  },
+  {
+   "id": "flag_chart",
+   "kind": "board",
+   "b": [
+    -7.85,
+    2.4,
+    1.5
+   ],
+   "face": "sea",
+   "prop": "SM_Sail_Prop_FlagChart"
+  },
+  {
+   "id": "coach_desk",
+   "kind": "counter",
+   "b": [
+    -6.85,
+    -2.2,
+    0.8
+   ],
+   "face": "sea",
+   "prop": "SM_Sail_Prop_CoachDesk",
+   "props": {
+    "role": "coach"
+   }
+  },
+  {
+   "id": "photo_wall",
+   "kind": "board",
+   "b": [
+    -7.0,
+    4.1,
+    1.9
+   ],
+   "face": "north",
+   "prop": "SM_Sail_Prop_Photo0..3"
+  },
+  {
+   "id": "trophy_shelf",
+   "kind": "board",
+   "b": [
+    -6.0,
+    4.1,
+    1.3
+   ],
+   "face": "north",
+   "prop": "SM_Sail_Prop_TrophyShelf"
+  },
+  {
+   "id": "book_shelf",
+   "kind": "shelf",
+   "b": [
+    -5.95,
+    1.2,
+    0.8
+   ],
+   "face": "sea",
+   "prop": "SM_Sail_Prop_Desk (the pocket book lies on the front desk)"
+  },
+  {
+   "id": "log_book",
+   "kind": "shelf",
+   "b": [
+    -4.05,
+    -1.2,
+    0.8
+   ],
+   "face": "sea",
+   "prop": "SM_Sail_Prop_Desk (the log book lies on the desk by the door)"
+  },
+  {
+   "id": "tea_table",
+   "kind": "machine",
+   "b": [
+    -3.85,
+    3.75,
+    0.9
+   ],
+   "face": "north",
+   "prop": "SM_Sail_Prop_KettleTable"
+  },
+  {
+   "id": "radio",
+   "kind": "machine",
+   "b": [
+    -3.25,
+    3.75,
+    1.05
+   ],
+   "face": "north",
+   "prop": "SM_Sail_Prop_Radio"
+  },
+  {
+   "id": "bosun_counter",
+   "kind": "counter",
+   "b": [
+    3.975,
+    -3.6,
+    1.0
+   ],
+   "face": "south",
+   "prop": "SM_Sail_Prop_Workbench",
+   "props": {
+    "shop": "sail_bosun",
+    "role": "bosun"
+   }
+  },
+  {
+   "id": "old_hull",
+   "kind": "craft",
+   "b": [
+    3.35,
+    -0.4,
+    0.9
+   ],
+   "face": "south",
+   "prop": "SM_Sail_Prop_HullFrame"
+  },
+  {
+   "id": "lockers",
+   "kind": "machine",
+   "b": [
+    6.6,
+    -3.85,
+    1.2
+   ],
+   "face": "south",
+   "prop": "SM_Sail_Prop_Lockers"
+  },
+  {
+   "id": "life_jackets",
+   "kind": "take",
+   "b": [
+    6.6,
+    -0.2,
+    1.3
+   ],
+   "face": "north",
+   "prop": "SM_Sail_Prop_JacketRail"
+  },
+  {
+   "id": "signal_mast",
+   "kind": "board",
+   "point": "signal_mast",
+   "h": 1.5,
+   "face": "land"
+  },
+  {
+   "id": "parts_boat",
+   "kind": "craft",
+   "point": "shore_boat",
+   "h": 0.7,
+   "face": "land"
+  },
+  {
+   "id": "rig_boat",
+   "kind": "craft",
+   "point": "rigging",
+   "h": 0.7,
+   "face": "land"
+  },
+  {
+   "id": "join_book",
+   "kind": "shelf",
+   "b": [
+    -6.85,
+    -2.6,
+    0.85
+   ],
+   "face": "sea",
+   "prop": "SM_Sail_Prop_CoachDesk (the school's roll lies on its far end)",
+   "props": {
+    "role": "coach"
+   }
+  },
+  {
+   "id": "lesson_plan",
+   "kind": "board",
+   "b": [
+    -7.85,
+    -1.2,
+    1.5
+   ],
+   "face": "sea",
+   "prop": "(the lesson plan pinned to the wall between the blackboard and the sea chart; no prop yet)",
+   "props": {
+    "role": "coach"
+   }
+  },
+  {
+   "id": "entry_list",
+   "kind": "board",
+   "b": [
+    -3.1,
+    -2.7,
+    1.4
+   ],
+   "face": "land",
+   "prop": "(the race entry list on the classroom's hall wall, door side of the knot board; no prop yet)"
+  },
+  {
+   "id": "hire_sheet",
+   "kind": "board",
+   "b": [
+    5.1,
+    -0.3,
+    1.4
+   ],
+   "face": "land",
+   "prop": "(the hire sheet on a nail on the hall's sea wall, between the rope coil and the chart; no prop yet)",
+   "props": {
+    "role": "bosun"
+   }
+  },
+  {
+   "id": "deck_view",
+   "kind": "play",
+   "b": [
+    9.6,
+    -1.6,
+    3.9
+   ],
+   "face": "land",
+   "prop": "spots.deck_view (the starter's balcony rail)"
+  },
+  {
+   "id": "stove",
+   "kind": "machine",
+   "b": [
+    2.55,
+    3.5,
+    0.6
+   ],
+   "face": "north",
+   "prop": "SM_Sail_Prop_Stove"
+  },
+  {
+   "id": "wind_display",
+   "kind": "machine",
+   "b": [
+    -3.1,
+    0.75,
+    1.65
+   ],
+   "face": "land",
+   "prop": "SM_Sail_Prop_AnemometerDisplay"
+  }
  ]
 }

@@ -1291,3 +1291,160 @@ Who calls the functions:
   not counted twice.
 - The pier sets `sail_watch_pier` and `sail_pier_talk1` fit nobody on barksim's sample day: the people sim seldom puts
   adults on the pier. They will fit once part F's spectator activities send people there.
+
+## Words, quests, items (part G)
+
+Everything the school says and everything in the boathouse the hero can touch. Sources and what they make:
+
+| Source | Makes | Tool |
+|---|---|---|
+| `tools/sailing/strings.json` (rules, lessons, HUD, items, signs, dev), `strings_talk.json` (staff lines), `strings_quests.json` (quests) | `Content/Localization/sailing/strings_{ru,en,ja}.json` | `python3 tools/sailing/words.py` (`--check`) |
+| `tools/sailing/things.json` (the boathouse's things, building frame of `blender/sailing/boathouse_layout.json`) | `tools/city/content/x_sailing_place.json` (section `places`: the place `S-SAIL-SCHOOL`) | `words.py`, then `python3 tools/city/interiors.py` |
+| `tools/city/content/x_sailing.json` (acts, rules, texts, talk topics, the stamp set, its keepsake) + `strings/x_sailing.json` (their `city.*` words) | `Content/City/interiors.json`, the city string tables | `python3 tools/city/interiors.py` (`--check`) |
+| `tools/sailing/icon_grids.json` | the pinned icon grid of the twelve items | `python3 tools/sailing/icons.py` (Mac / a machine that can reach the CDN) |
+
+Order after any change: `words.py` -> `interiors.py` -> `sailing.py --check`, `check_localization.py`, `check_data.py`.
+
+`interiors.py` got one new content section for this: **`places`** — a place that is not a plot of `city_plan.json`
+(here the boathouse on the beach) with its own front point (UE metres), yaw, staff rows and things; everything else
+(acts, rules, staff on shift, dev teleports) then treats it like any plot. `festival.sail_*` words are NOT here: the
+town part keeps them in the main tables.
+
+### Glossary (use these words everywhere)
+
+| Thing | ru | en | ja |
+|---|---|---|---|
+| the school | ДЮСШ парусного спорта «Луч», школа «Луч» | the Luch sailing school | ヨット学校「ルーチ」 |
+| the boathouse | эллинг | boathouse | 艇庫 |
+| slip | слип | slip | スリップ |
+| head coach / kids' / juniors' coach | старший тренер / тренер младшей группы / тренер юношеской группы | head coach / kids' coach / juniors' coach | ヘッドコーチ / ジュニア下級コーチ / ユースコーチ |
+| bosun | боцман | bosun | ボースン |
+| coach launch | тренерский катер | coach launch | コーチボート |
+| boats | «Оптимист», «Кадет», «Луч» | Optimist, Cadet, Luch | オプティミスト、カデット、ルーチ |
+| ranks | юнга, рулевой 3-го / 2-го / 1-го класса | ship's boy, helmsman 3rd / 2nd / 1st class | 見習い、三級 / 二級 / 一級舵手 |
+| certificate | свидетельство рулевого | helmsman's certificate | 舵手修了証 |
+| member's card | членская книжка (синяя книжка) | sailor's card | セーラー手帳 |
+| sheet / tiller / centreboard / boom | шкот / румпель / шверт / гик | sheet / tiller / centreboard / boom | シート / ティラー / センターボード / ブーム |
+| tack / gybe | поворот оверштаг / фордевинд | tack / gybe | タック / ジャイブ |
+| capsize | оверкиль | capsize | 沈 |
+| close-hauled / reach / run / in irons | бейдевинд / галфвинд, бакштаг / фордевинд / левентик | close-hauled / reach / run / in irons | クローズホールド / リーチ / ランニング / 風位に立つ |
+| mark, start line | знак, стартовая линия | mark, start line | マーク、スタートライン |
+| false start, general recall | фальстарт, общий отзыв | over early (OCS), general recall | リコール、ゼネラルリコール |
+| life jacket | спасательный жилет | life jacket | ライフジャケット |
+
+Staff are written by ROLE only: no personal name is in any line. The role words are `sail.staff.<slot>` and
+`npc.sail_<slot>.name / .role` (slots `coach_head`, `coach_kids`, `coach_juniors`, `bosun`). The three coaches are
+women and the bosun is a man (part F), so Russian lines of a coach use feminine forms and the bosun's masculine ones;
+the hero is spoken to as a boy/man, as everywhere in the game.
+
+### The boathouse's things (place `S-SAIL-SCHOOL`)
+
+Thing ids are `S-SAIL-SCHOOL/<id>`; the act of each is the rule of the same name in `x_sailing.json`. "Engine" is
+what `ULyudSailing` does in its act hook (`ULyudCityThings::AddActHook`, the hook runs after the act and may replace
+the page's line); the data act already shows a sensible line by itself, so a thing works before the hook exists.
+
+| Thing | Where | Act | What the data act does | Engine (hook) |
+|---|---|---|---|---|
+| `join_book` | classroom, on the coach's desk | **`sail_join`** | needs a coach on shift; shows the roll's line | `Act("join")`: fee, card, stamp `joined`, `Notify("sail","join")` |
+| `lesson_plan` | classroom wall by the blackboard | **`sail_lesson`** | needs a coach; shows the plan | `Act("lesson")`: the next lesson or a `sail.lesson.gate.*` line |
+| `hire_sheet` | boat hall, the sea wall | **`sail_hire`** | needs the bosun; shows the sheet | `Act("hire")` |
+| `entry_list` | classroom, hall wall by the door | **`sail_enter`** | any hour; shows the list | `Act("enter")`: enters today's race |
+| `life_jackets` | changing room, the rail | **`sail_jacket`** | any hour; a line (gives nothing itself) | `Act("jacket")`: takes / returns the jacket (item `life_jacket`, worn in the outer slot) |
+| `knot_board` | classroom, hall wall | **`sail_knot`** | the aim game (3 rounds); a win names one of five knots | `Act("knot")` -> shore lesson step 1 (count wins or just visits, the engine's choice) |
+| `parts_boat` | the boat park (point `park_luch`) | **`sail_parts`** | 3 min, a line naming a part of the boat | `Act("parts")` -> shore lesson step 2 |
+| `rig_boat` | the rigging lawn (point `rigging`) | **`sail_rig`** | 15 min with a fade, a line about rigging | `Act("rig")` -> shore lesson step 3 |
+| `notice_board` | outside, north wall | **`sail_notice`** | reads text `sail_notice` (gen **`sail:notice`**) | `BoardText("notice")` |
+| `results_board` | outside, beside it | **`sail_results`** | reads text `sail_results` (gen **`sail:results`**) | `BoardText("results")` |
+| `bell` | classroom, by the door | **`sail_bell`** | rings (sound `sail_bell_single`), a line | `Act("bell")` |
+| `emblem` | outside, over the door | `sail_emblem` | lines about the golden ray (quest `sail_emblem`) | - |
+| `boat_door` | the sliding boat door | `sail_carry` | needs the bosun; 20 min: help carry boats in or out (lines by date) | - |
+| `wash_tap` | outside, north wall | `sail_wash` | 10 min: hose a boat down | - |
+| `signal_mast` | the mast (point `mast`) | `sail_mast` | lines: how to read the flags | (the engine shows today's signal on the mast itself) |
+| `blackboard` | classroom | `sail_blackboard` | what is chalked on it | - |
+| `flag_chart` | classroom | `sail_flags` | reads text `sail_flag_chart` (4 pages) | - |
+| `coach_desk` | classroom | `sail_coach_desk` | needs a coach; talk topics (6) | - |
+| `photo_wall` | classroom, south wall | `sail_photos` | ten captions, 1958 to last season | - |
+| `trophy_shelf` | classroom | `sail_trophies` | the cups and whose they are | - |
+| `book_shelf` | classroom, front desk | `sail_bookshelf` | reads «Школа яхтенного рулевого» (`sail_helm_school`, 8 chapters) | - |
+| `log_book` | classroom, desk by the door | `sail_logbook` | reads the boathouse log (`sail_logbook`) | - |
+| `barometer` | classroom, hall wall | `sail_barometer` | a line by the weather | - |
+| `wind_display` | beside the barometer | `sail_wind` | lines about the anemometer | - |
+| `tea_table`, `radio` | classroom | `sail_tea`, `sail_radio` | tea (10 min), the marine forecast by weather | - |
+| `bosun_counter` | boat hall, the workbench | shop `sail_bosun` (`buy_sail_bosun`) | the bosun sells gloves, knot cord, the pocket book, a bailer; talk topics (6) | - |
+| `old_hull` | boat hall, on trestles | `sail_old_hull` | needs the bosun; 20 min helping build the cadet (quest `sail_bosun_boat`) | - |
+| `stove` | boat hall | `sail_stove` | warm up | - |
+| `lockers` | changing room | `sail_lockers` | lines | - |
+| `deck_view` | the starter's balcony (`spots.deck_view`) | `sail_deck` | 5 min watching the water (fog / night lines) | - |
+
+The acts in bold are the ones the engine listens for. A `gen` hook is asked through the texts' gen call of
+`ULyudCityThings` with the id after the colon (`notice`, `results`); when the engine answers nothing, the text shows
+its written pages (the season's standing timetable; "no results yet").
+
+### Words the engine shows
+
+All in `tools/sailing/strings.json` (ru, en, ja; `{0}` in the same places): every key of
+`tools/sailing/strings_needed.json` plus `sail.join.ok`, `sail.lesson.gate.<not_member|done_before|order|rank|hours|
+race|weather|cold_water>`, `sail.hire.<ok|no_money {0}|closed|no_certificate|left_elsewhere|towed>`,
+`sail.jacket.<need|taken|returned>`, `sail.race.<entered|no_money {0}|not_today|ocs|started|finish {0}|general_recall|
+abandoned|prizes {0}>`, `sail.recall.<call|tow>`, `sail.area.<warn|launch>`, `sail.rank.new {0}`,
+`sail.board.<notice|results>.<title|none|line {0}{1}{2}>`, `ui.sail.board`, `ui.sail.task.<race|pos {0}{1}|mark {0}|
+start>`.
+
+Sign words (`sign.sail.school_name`, `sign.sail.door_line1`, `sign.sail.door_line2`) are in the same file; the mesh
+part's `blender/sailing/sign_strings.json` holds the proposal they were taken from and `tools/make_sailing_signs.py`
+draws the textures.
+
+### Items
+
+Twelve, all in `LyudInventory.cpp` (block "the yacht school"), words `item.<id>.name / .desc`, icons from one pinned
+4 x 3 grid (`tools/sailing/icon_grids.json`):
+
+| Id | What | Kind | Comes from |
+|---|---|---|---|
+| `sail_card` | the member's card | keepsake | given by the engine on joining |
+| `life_jacket` | life jacket | wear, outer slot | the rail (`Act("jacket")`), returned there |
+| `sail_gloves` | sailing gloves | misc | the bosun's bench, the sports shop |
+| `knot_cord` | a metre of cord | misc | the bosun's bench (quest `sail_knots_town`) |
+| `bailer` | bailer | misc | the bosun's bench |
+| `sail_book` | «Школа яхтенного рулевого» | misc | the bosun's bench (the same text lies on the classroom desk) |
+| `sail_pennant` | the school pennant | keepsake | the reward of the full stamp set |
+| `brass_screws`, `yacht_varnish` | for the bosun's boat | misc | the hardware shop (quest `sail_bosun_boat`) |
+| `lucky_whistle` | a child's whistle | quest | found on the slip (quest `sail_brave`) |
+| `bottle_letter` | a bottle with a letter | quest | found on the shore (quest `sail_bottle`) |
+| `race_mark` | a blown-away race mark | quest | found on the far shore (quest `sail_lost_mark`) |
+
+Gloves change nothing in the physics (there is no grip number to turn): they are a thing to own.
+
+### Stamps (collection `sailing`)
+
+Fourteen pieces, given by the engine only (`ULyudCityThings::GiveStamp("sailing/<piece>")`): `joined`, `first_sail`,
+`capsize`, `certificate`, `helm2`, `helm1`, `first_race`, `race_win`, `opening`, `closing`, `cup_lyudmilovsk`,
+`miles_10`, `miles_100`, `recall`. Words `city.coll.sailing` and `city.coll.sailing.<piece>`; the full set gives the
+item `sail_pennant` (reward `sailing`).
+
+**When `Private/Sailing/LyudSailing.cpp` exists**: in `tools/city/content/x_sailing.json`, collection `sailing`,
+replace the `"by"` field with `"code": ["unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Sailing/LyudSailing.cpp"]`.
+`interiors.py` then checks that each piece is named in that file as the literal `"<piece>"` or `"sailing/<piece>"` (write
+each out; do not build the id from a variable) and fails on a piece nobody gives.
+
+### Dev mode
+
+Group `sailing` (`dev.group.sailing`). Teleports `dev.tp.sailing.<school|park|slip|mast|pier_view>` plus the
+boathouse's own (made by `interiors.py` for the place). Actions (`dev.action.sailing.<id>`, each runs a console
+command of the engine):
+
+| Action | Command |
+|---|---|
+| `report` | `lyud.Sail.Report` |
+| `season` | `lyud.Sail.Season 1` (`0` shut, `-1` back to the calendar) |
+| `board` | `lyud.Sail.Board luch` |
+| `lesson` | `lyud.Sail.Lesson next` (or a lesson id) |
+| `race` | `lyud.Sail.Race` (`[kind]`) |
+| `fleet` | `lyud.Sail.Fleet 12` |
+| `capsize` | `lyud.Sail.Capsize` |
+| `rank` | `lyud.Sail.Rank helm3` |
+| `kit` | `lyud.Sail.Kit` (card, jacket, gloves, bailer) |
+| `wind` | `lyud.Wind.Speed 6` + `lyud.Wind.From 90` |
+| `easy` | `lyud.Sail.Easy 1` |
+| `night` | `lyud.Sail.Night 1` (the head coach's leave for a night sail; quest event `sail night`) |
+| `off` | `lyud.Sail.Off` |
