@@ -844,7 +844,13 @@ namespace LyudPeople
 		}
 		// ground off the walk grid (the sea island's own height field)
 		Patches.clear();
-		for (const LyudJson::FValue& G : J["ground_patches"].Items)
+		AddPatches(J["ground_patches"]);
+		return true;
+	}
+
+	void FWorld::AddPatches(const LyudJson::FValue& List)
+	{
+		for (const LyudJson::FValue& G : List.Items)
 		{
 			FPatch Pa;
 			Pa.X0 = G["x0"].F();
@@ -861,7 +867,6 @@ namespace LyudPeople
 				Patches.push_back(Pa);
 			}
 		}
-		return true;
 	}
 
 	bool FWorld::FPatch::Has(float X, float Y) const
@@ -1308,6 +1313,8 @@ namespace LyudPeople
 			LastError = "town_places.json: " + LastError;
 			return false;
 		}
+		// ground off the walk grid the town's add-ons place on (the lighthouse's cape, south of the grid)
+		AddPatches(J["ground_patches"]);
 		const LyudJson::FValue& T = J["town"];
 		if (!T.IsNull() && T["box"].Size() == 4)
 		{
@@ -2680,6 +2687,12 @@ namespace LyudPeople
 		}
 		// a shelter (waiting out the weather under a roof) only where the weather pulls now
 		if (A.bShelter && WeatherPull(Slots[(size_t)S].Place) < 0.3f)
+		{
+			return -1e9f;
+		}
+		// served at a counter (a queue's spot) and gone: not straight back into the line for the same errand within half an
+		// hour (each turn at the front is a minute or two: in again and again, a dozen starts an hour; peoplesim week)
+		if (Slots[(size_t)S].Queue >= 0 && P.PrevActivity >= 0 && &Activities[(size_t)P.PrevActivity] == &A && Time - P.PrevActivityEnd < 0.5 * HourS)
 		{
 			return -1e9f;
 		}

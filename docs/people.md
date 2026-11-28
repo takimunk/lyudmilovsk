@@ -173,7 +173,7 @@ and up onto the platform's deck, and eight `board` slots along the deck facing t
 walk grid, so its way runs from the beach path's south end on the grid along the sand over the level crossing to the stair
 at the platform's east end. The sea island is island 2 (`sea_island: 1`), off the walk grid: its spots (`island_spot`:
 a ring inland, a ring on its beach, the knoll at its west end, all south of the track) and its own ground
-(`ground_patches`, a 4 m height field from `tools/railway.py` `island_height`); people walk straight between its spots.
+(`ground_patches`, a 4 m height field from `tools/railway.py` `island_height`); people walk straight between its spots. `town_places.json` may carry `ground_patches` of its own (the lighthouse's cape, `tools/town/lighthouse_keeper.py`).
 A way to the island (or back, or on from the spur by the cable car first) walks to the halt, climbs onto the platform to a
 boarding point (spread by person) and **waits** (`waiting`, standing, facing the track) until the next train towards the
 other halt opens its doors (`FWorld::TrainNext`, the timetable on the sim's clock); in they get a few seconds apart,
