@@ -2853,6 +2853,29 @@ namespace LyudPeople
 			const size_t I = It == Sl.Users.end() ? 0 : (size_t)(It - Sl.Users.begin());
 			return Sl.Spots[std::min(I, Sl.Spots.size() - 1)];
 		}
+		// a bench for two given as one point (town_places.json "capacity": 2): each sits to one side of it, 0.36 m along
+		// the bench (they were both drawn on the very spot; the chess board goes between them). The side not taken by
+		// whoever sits there already, otherwise by the order they came.
+		if (Sl.Capacity == 2 && Sl.Kind == "bench" && Sl.Height > 0.f)
+		{
+			const float A = Sl.Yaw / 57.29578f;
+			const V3 Along(-std::sin(A) * 0.36f, std::cos(A) * 0.36f, 0.f);
+			float Side = 0.f;
+			for (const int U : Sl.Users)
+			{
+				if (U != P.Id && U >= 0 && U < (int)People.size() && People[(size_t)U].Slot == Slot
+					&& (People[(size_t)U].State == EState::Doing || People[(size_t)U].State == EState::Settling))
+				{
+					Side = (People[(size_t)U].Pos - Sl.Pos).Dot(Along) > 0.f ? -1.f : 1.f;
+				}
+			}
+			if (Side == 0.f)
+			{
+				const auto It = std::find(Sl.Users.begin(), Sl.Users.end(), P.Id);
+				Side = It == Sl.Users.begin() ? -1.f : 1.f;
+			}
+			return Sl.Pos + Along * Side;
+		}
 		return Sl.Pos;
 	}
 

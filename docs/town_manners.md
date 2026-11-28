@@ -200,10 +200,16 @@ a few.
 
 | prop | who, when | how |
 | --- | --- | --- |
-| `chess` (1496 tris) | the plan's two chess friends on a bench (`chess_bench`), and anyone playing alone there | not a manner's: `UPeopleLifeSubsystem::PresentChess` puts it on the seat between the two (`ANpcBody::PutDown` of the one with the lower id, or of the other when that one is not drawn), White toward the holder; both turn 20 degrees to it; alone, it lies on the seat at their right. The dominoes gesture moves the pieces |
+| `chess` (1496 tris) | the plan's two chess friends on a bench (`chess_bench`), and anyone playing alone there | not a manner's: `UPeopleLifeSubsystem::PresentChess` puts it on the seat between the two (`ANpcBody::PutDown` of the one with the lower id, or of the other when that one is not drawn), White toward the holder; both turn 20 degrees to it; alone (or when their bench was taken and the friend sits at the next one), it lies on the seat at their right. The dominoes gesture moves the pieces |
 | `cake_box` (252) | a birthday, walking for 40 minutes after `buy_cake` (a shop or a cafe, 8:00 to 12:30, once) | manner `carry_bag`, `"after": ["buy_cake"]`, `"today": "birthday"` |
 | `flowers` (381) | a birthday guest of 14 and over on the way to the visit | manner `carry_bag`, `"going": ["visit_home"]`, `"today": "guest"`; younger guests carry the bag (a present) |
 | `cake` (940) | for a table at a birthday | made and imported, not shown yet: every town flat is a shell, so there is no table to put it on. A walkable flat's host would show it at `host_guests` |
+
+A two-seat town bench given as one point (`town_places.json` `"capacity": 2`) used to seat both sitters on the very
+spot. `FWorld::SpotOf` now puts each 0.36 m to one side along the bench (the side the other has not taken), so two on a
+bench sit side by side and the chess board fits between them. `tools/mannersim/run.sh` checks the chess pairs (two in five of
+the plan's person-minutes side by side on one bench, none on one spot; the rest at the next bench) and a day with a
+dozen birthdays (the cake box and the carnations carried).
 
 `"going"` (manners.json) is new: only while walking to one of these activities. The guest's bag row had `"doing":
 ["visit_home"]` with walking poses, so it was never seen. A `"doing"` row can't fit on the way, because the activity

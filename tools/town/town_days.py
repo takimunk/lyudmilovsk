@@ -29,14 +29,14 @@ ROWS = [
     '{"id": "market_day", "places": ["market"], "slots": ["visit"], "pose": "stand", "minutes": [10, 22], "hours": [8, 13], "days": [5], "ages": [16, 200], "meets": {"hunger": 0.8, "social": 0.5, "fun": 0.2}, "base": 0.5, "trait": "social", "once": 1}',
     '{"id": "library_return", "places": ["library"], "slots": ["visit"], "pose": "stand", "minutes": [6, 12], "hours": [10, 19], "days": [0, 1, 2, 3, 4, 5], "ages": [8, 200], "meets": {"mind": 0.5, "social": 0.2}, "base": 0.9, "trait": "studious", "once": 1, "own_day_only": 1, "regulars": 0.45}',
     '{"id": "pension_office", "places": ["office"], "slots": ["visit"], "pose": "stand", "minutes": [8, 18], "hours": [9, 13], "meets": {"social": 0.5}, "base": 1.2, "trait": "", "once": 1, "today": ["pension"]}',
-    # the birthday's cake fetched in the morning from a shop or a cafe (carried home in its box: manners.json cake_box)
-    '{"id": "buy_cake", "places": ["shop", "cafe"], "slots": ["visit"], "pose": "stand", "minutes": [6, 14], "hours": [8, 12.5], "ages": [12, 200], "meets": {"hunger": 0.3, "social": 0.3}, "base": 1.4, "trait": "", "once": 1, "today": ["birthday"]}',
     '{"id": "clinic_cold", "places": ["clinic"], "slots": ["visit"], "pose": "sit", "minutes": [20, 40], "hours": [8, 13], "days": [0, 1, 2, 3, 4], "ages": [14, 200], "meets": {"social": 0.1}, "base": 0.4, "trait": "", "once": 1, "today": ["cold"], "today_more": {"cold": 1.0}}',
     # the day's plans (FPerson::PlanAct): only as today's plan, round its hour
     '{"id": "visit_home", "places": [], "slots": ["kitchen_seat", "dining_seat", "sofa", "armchair", "desk_seat"], "pose": "sit", "minutes": [45, 90], "hours": [10, 21], "meets": {"social": 1.1, "fun": 0.4, "hunger": 0.6}, "base": 0.2, "trait": "social", "plan": 1, "visit": 1, "talk": 1, "rain": "ok"}',
     '{"id": "host_guests", "places": ["home"], "slots": ["kitchen_seat", "dining_seat", "sofa", "armchair"], "pose": "sit", "minutes": [45, 90], "hours": [10, 21.5], "meets": {"social": 1.1, "fun": 0.4, "hunger": 0.6}, "base": 0.2, "trait": "social", "plan": 1, "talk": 1}',
     '{"id": "couple_stroll", "places": ["promenade", "pier"], "pose": "walk", "minutes": [30, 55], "hours": [16.5, 21.5], "ages": [18, 200], "meets": {"nature": 0.7, "social": 0.7, "sun": 0.25}, "costs": {"hunger": 0.04, "tired": 0.02}, "base": 0.1, "trait": "nature", "plan": 1, "wander": 1, "wander_m": [10, 140], "wander_pause": [25, 90]}',
     '{"id": "chess_bench", "places": ["bench", "town_bench", "park", "pond", "fountain"], "slots": ["bench"], "pose": "sit", "minutes": [40, 80], "hours": [9.5, 18.5], "daylight": 1, "temp": [7, 40], "ages": [14, 200], "meets": {"mind": 0.8, "social": 0.8, "fun": 0.5}, "base": 0.15, "trait": "studious", "plan": 1}',
+    # the birthday's cake fetched in the morning from a shop or a cafe (carried home in its box: manners.json cake_box)
+    '{"id": "buy_cake", "places": ["shop", "cafe"], "slots": ["visit"], "pose": "stand", "minutes": [6, 14], "hours": [8, 12.5], "ages": [12, 200], "meets": {"hunger": 0.3, "social": 0.3}, "base": 1.4, "trait": "", "once": 1, "today": ["birthday"]}',
 ]
 IDS = [json.loads(r)["id"] for r in ROWS]
 
