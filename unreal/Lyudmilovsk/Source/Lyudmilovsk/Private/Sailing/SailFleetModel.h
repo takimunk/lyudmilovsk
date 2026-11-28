@@ -292,6 +292,11 @@ namespace LyudSail
 		bool bInArea = false;
 		bool bStation = false;          // her order is to keep station (StationAt)
 		double StationR = 10.0;
+		double AgroundS = 0.0;          // seconds she has sat on the bottom
+		FSchoolV2 Goal;                 // where her stage's order takes her (the way round the pier is found from it)
+		bool bVia = false;              // sailing to the pier's seaward end first
+		bool bLineUp = false;           // going for the line: first to a point below it, between its ends
+		double ViaT = 0.0;
 		double TouchT = 100.0;          // seconds since her hull last touched anything
 		double OutsideM = 0.0;          // the farthest she has been outside her area while at work (after entering it)
 
@@ -350,7 +355,12 @@ namespace LyudSail
 		double LaunchCruise = 0.0, LaunchRadius = 8.0;
 		FSchoolLaunchTask Task;
 		int Towing = -1;
+		int ForceTow = -1;                      // a unit the launch must fetch and tow home whatever she is doing (the hero who ignored the recall)
 		double TaskIn = 0.0, HelpT = 0.0;
+		double RecallT = 0.0;                   // seconds since the recall
+		double StragglerS = 600.0;              // this long after the recall the launch tows in whoever is still out, the farthest first
+		FSchoolV2 PierVia;                      // open water off the pier's seaward end
+		bool bPier = false;
 
 		// out
 		FFleetEvent Events[48];
@@ -376,7 +386,14 @@ namespace LyudSail
 			Obstacles.clear();
 			FFleetObstacle Pier;
 			Pier.A = InP.PierA; Pier.B = InP.PierB; Pier.R = InP.PierHalfW;
-			if ((Pier.A - Pier.B).Len() > 1.0) Obstacles.push_back(Pier);
+			bPier = (Pier.A - Pier.B).Len() > 1.0;
+			if (bPier)
+			{
+				Obstacles.push_back(Pier);
+				const bool bSeaB = (Pier.B - Pier.A).Dot(InP.LaunchDir) >= 0.0;
+				const FSchoolV2 End = bSeaB ? Pier.B : Pier.A, Root = bSeaB ? Pier.A : Pier.B;
+				PierVia = End + (End - Root).Norm() * (Pier.R + 32.0);
+			}
 			States.reserve(32);
 			Results.reserve(32);
 		}
@@ -557,6 +574,7 @@ namespace LyudSail
 			bHeld = false;
 			Mode = EFleetMode::Recall;
 			bRecall = true;
+			RecallT = 0.0;
 			if (bWhistle) Emit(EFleetSignal::WhistleRecall, -1);
 			for (size_t I = 0; I < Units.size(); I++)
 			{
@@ -703,7 +721,11 @@ namespace LyudSail
 					}
 				}
 				// landed
-				if (U.Stage == EFleetStage::Home2 && !U.bHero && (U.Helm.bArrived || B.State == EState::Aground) && (FSchoolV2(B.X, B.Y) - U.Beach).Len() < 60.0)
+				// (aground along the beach on the way in: the crew is over the side and walks her home through the shallows)
+				U.AgroundS = B.State == EState::Aground || (U.Env.Depth < 0.7 && std::hypot(B.VX, B.VY) < 0.25) ? U.AgroundS + Dt : 0.0;
+				const double FromBeach = (FSchoolV2(B.X, B.Y) - U.Beach).Len();
+				const bool bWalk = (U.Stage == EFleetStage::Home1 || U.Stage == EFleetStage::Home2) && U.AgroundS > 12.0 && FromBeach < 130.0;
+				if (!U.bHero && ((U.Stage == EFleetStage::Home2 && (U.Helm.bArrived || B.State == EState::Aground) && FromBeach < 60.0) || bWalk))
 				{
 					Place(B, B.X, B.Y, B.Yaw, EState::Ashore);
 					U.Stage = EFleetStage::Landed;
@@ -875,6 +897,11 @@ namespace LyudSail
 			In.MinDepth = 0.6;
 			// her water's polygon only while she works in it (the ways out and home cross open water)
 			int Ai = U.Stage == EFleetStage::Work && U.bInArea && !(Mode == EFleetMode::Drill && Drill == "follow") ? AreaIndexOf(U) : -1;
+			// a mark laid near the area's edge is still to be rounded: close to her point she looks at the boats, not the edge
+			if (Ai >= 0 && U.Boat && U.Helm.Order.Kind == EOrder::SailTo && std::hypot(U.Helm.Order.X - U.Boat->X, U.Helm.Order.Y - U.Boat->Y) < 45.0)
+			{
+				Ai = -1;
+			}
 			if (U.Stage == EFleetStage::Out1 && Corridor >= 0 && U.Boat && SchoolInside(P->Areas[(size_t)Corridor], FSchoolV2(U.Boat->X, U.Boat->Y)))
 			{
 				Ai = Corridor;      // out between the bathers and the pier
@@ -934,11 +961,14 @@ namespace LyudSail
 			In.NeighbourCount = C;
 		}
 
+		/** (FOrder::Lane is left wide open: as SailModel.cpp's Heading() reads it, a narrow lane makes a boat tack away from the
+		 *  mark's side of the wind every few seconds, which in light air stops her. Her water's polygon keeps her in.) */
 		static void SailTo(FFleetUnit& U, const FSchoolV2& To, double Radius, double Lane = 80.0)
 		{
+			(void)Lane;
 			FOrder O;
 			O.Kind = EOrder::SailTo;
-			O.X = To.X; O.Y = To.Y; O.Radius = Radius; O.Lane = Lane;
+			O.X = To.X; O.Y = To.Y; O.Radius = Radius; O.Lane = 1.0e5;
 			HelmOrder(U.Helm, O);
 			U.bStation = false;
 		}
@@ -1003,19 +1033,24 @@ namespace LyudSail
 		{
 			U.Helm.bArrived = false;
 			U.Timer = 0.0;
+			U.bVia = false;
 			switch (U.Stage)
 			{
 			case EFleetStage::Out1:
-				SailTo(U, CorridorEnd + P->LaunchDir.Left() * (((I % 5) - 2) * 2.0), 14.0, 40.0);
+				U.Goal = CorridorEnd + P->LaunchDir.Left() * (((I % 5) - 2) * 2.0);
+				SailTo(U, U.Goal, 14.0, 40.0);
 				break;
 			case EFleetStage::Out2:
-				SailTo(U, EntryPoint(U), 22.0);
+				U.Goal = EntryPoint(U);
+				SailTo(U, U.Goal, 22.0);
 				break;
 			case EFleetStage::Home1:
-				SailTo(U, CorridorEnd + P->LaunchDir.Left() * (((I % 5) - 2) * 2.5), 16.0, 60.0);
+				U.Goal = CorridorEnd + P->LaunchDir.Left() * (((I % 5) - 2) * 2.5);
+				SailTo(U, U.Goal, 16.0, 60.0);
 				break;
 			case EFleetStage::Home2:
 			{
+				U.Goal = U.Beach;
 				FOrder O;
 				O.Kind = EOrder::Ashore;
 				O.X = U.Beach.X; O.Y = U.Beach.Y; O.Radius = 3.5; O.Lane = 10.0;
@@ -1119,6 +1154,32 @@ namespace LyudSail
 			FBoat& B = *U.Boat;
 			const FSchoolV2 At(B.X, B.Y);
 			U.Timer += Dt;
+			// the pier between her and where she is going (out, across or home): round its seaward end first
+			if (bPier && U.Stage != EFleetStage::Work)
+			{
+				U.ViaT += Dt;
+				FSchoolV2 Pa, Pb;
+				const bool bCross = FleetSegSeg(At, U.Goal, Obstacles[0].A, Obstacles[0].B, Pa, Pb) < Obstacles[0].R * (U.bVia ? 1.3 : 0.5)
+					&& (At - PierVia).Len() > 12.0;
+				if (bCross != U.bVia && U.ViaT > 4.0)
+				{
+					U.ViaT = 0.0;
+					if (bCross)
+					{
+						SailTo(U, PierVia, 10.0);
+						U.Helm.bArrived = false;
+						U.bVia = true;
+					}
+					else
+					{
+						Enter(U, I);
+					}
+				}
+				if (U.bVia)
+				{
+					return;
+				}
+			}
 			switch (U.Stage)
 			{
 			case EFleetStage::Out1:
@@ -1140,7 +1201,8 @@ namespace LyudSail
 				break;
 			}
 			case EFleetStage::Home1:
-				if (U.Helm.bArrived || (At - CorridorEnd).Len() < 30.0 || (At - P->LaunchOrigin).Dot(P->LaunchDir) < 110.0)
+				if (U.Helm.bArrived || (At - CorridorEnd).Len() < 30.0
+					|| ((At - P->LaunchOrigin).Dot(P->LaunchDir) < 110.0 && std::fabs((At - P->LaunchOrigin).Dot(P->LaunchDir.Left())) < 16.0))
 				{
 					U.Stage = EFleetStage::Home2;
 					Enter(U, I);
@@ -1371,7 +1433,7 @@ namespace LyudSail
 				{
 					U.Timer = 0.0;
 					U.Pen++;
-					if (U.Pen >= 5 || U.Tracker.PenaltiesOwed == 0)
+					if (U.Pen >= 13 || U.Tracker.PenaltiesOwed == 0)
 					{
 						U.Pen = -1;
 						if (U.Sub == 3) RouteOrder(U, G.Route); else EnterSub(U, I);
@@ -1379,7 +1441,7 @@ namespace LyudSail
 					else
 					{
 						const double Ang = SchoolPi * 0.5 * U.Pen;
-						SailTo(U, U.PenAt + FSchoolV2(std::cos(Ang), std::sin(Ang)) * 9.0, 4.0, 15.0);
+						SailTo(U, U.PenAt + FSchoolV2(std::cos(Ang), std::sin(Ang)) * 7.0, 3.5, 15.0);
 					}
 				}
 				return;
@@ -1394,6 +1456,16 @@ namespace LyudSail
 				}
 				break;
 			case 1:     // going for the line
+				if (U.bLineUp && !U.Tracker.bStarted && !U.Tracker.bOcs)
+				{
+					if (U.Helm.bArrived || BelowLine(U, At))
+					{
+						U.bLineUp = false;
+						SailTo(U, LinePoint(U) + C.Up * 45.0, 10.0, 25.0);
+						U.Helm.bArrived = false;
+					}
+					break;
+				}
 				if (U.Tracker.bStarted)
 				{
 					U.Sub = 3;
@@ -1470,6 +1542,16 @@ namespace LyudSail
 			}
 		}
 
+		/** Under the line and between its ends (a little inside them). */
+		bool BelowLine(const FFleetUnit& U, const FSchoolV2& At) const
+		{
+			const FRaceCourse& C = Groups[U.Group].Course;
+			const FSchoolV2 Along = C.LinePin - C.LineBoat;
+			const double L2 = std::max(1.0, Along.Dot(Along));
+			const double S = (At - C.LineBoat).Dot(Along) / L2;
+			return S > 0.1 && S < 0.9 && (At - C.LineBoat).Dot(C.Up) < -2.0;
+		}
+
 		void EnterSub(FFleetUnit& U, int I)
 		{
 			(void)I;
@@ -1479,7 +1561,11 @@ namespace LyudSail
 			switch (U.Sub)
 			{
 			case 0: StationAt(U, PreStart(U), 11.0); break;
-			case 1: SailTo(U, LinePoint(U) + C.Up * 45.0, 10.0, 25.0); break;
+			case 1:
+				// from beside the line's end she would sail round it: first under the line, then across
+				U.bLineUp = !U.Boat || !BelowLine(U, FSchoolV2(U.Boat->X, U.Boat->Y));
+				if (U.bLineUp) SailTo(U, LinePoint(U) - C.Up * 14.0, 6.0, 25.0); else SailTo(U, LinePoint(U) + C.Up * 45.0, 10.0, 25.0);
+				break;
 			case 2: SailTo(U, LinePoint(U) - C.Up * 16.0, 7.0, 25.0); break;
 			case 3: RouteOrder(U, G.Route); break;
 			case 4: SailTo(U, C.LineMid() + (LinePoint(U) - C.LineMid()) * 0.6 - C.Up * 24.0, 8.0, 30.0); break;
@@ -1516,7 +1602,7 @@ namespace LyudSail
 							U.Pen = 0;
 							U.Timer = 0.0;
 							U.PenAt = At + (At - G.Course.Waypoint(U.Tracker.Next)).Norm() * 16.0;
-							SailTo(U, U.PenAt + FSchoolV2(9.0, 0.0), 4.0, 15.0);
+							SailTo(U, U.PenAt + FSchoolV2(7.0, 0.0), 3.5, 15.0);
 						}
 						break;
 					case ERaceEvent::Finished:
@@ -1632,6 +1718,7 @@ namespace LyudSail
 				}
 				return;
 			}
+			if (bRecall) RecallT += Dt;
 			TaskIn -= Dt;
 			if (TaskIn <= 0.0)
 			{
@@ -1654,6 +1741,24 @@ namespace LyudSail
 				}
 				Task = SchoolLaunchTask(*P, States, At, LaunchStation(), bRecall, Home);
 				if (Task.Kind == FSchoolLaunchTask::Shepherd && Task.Boat >= 0 && Units[(size_t)Task.Boat].Stage != EFleetStage::Work) Task = FSchoolLaunchTask();
+				// the one who must be fetched; then, long after the recall, whoever is still out (the farthest first)
+				int Fetch = ForceTow >= 0 && ForceTow < (int)Units.size() && Units[(size_t)ForceTow].Boat && Units[(size_t)ForceTow].Afloat() ? ForceTow : -1;
+				if (Fetch < 0 && bRecall && RecallT > StragglerS && (Task.Boat < 0 || Task.Kind == FSchoolLaunchTask::Station))
+				{
+					double Far = 45.0;
+					for (size_t I = 0; I < Units.size(); I++)
+					{
+						const FFleetUnit& U = Units[I];
+						if (!U.Boat || !U.Afloat() || U.bHero || U.Stage == EFleetStage::Towed) continue;
+						const double D = (FSchoolV2(U.Boat->X, U.Boat->Y) - Home).Len();
+						if (D > Far) { Far = D; Fetch = (int)I; }
+					}
+				}
+				if (Fetch >= 0 && (Task.Boat < 0 || Task.Kind != FSchoolLaunchTask::Right))
+				{
+					Task.Kind = FSchoolLaunchTask::Tow;
+					Task.Boat = Fetch;
+				}
 			}
 			LaunchRadius = 8.0;
 			if (Task.Kind == FSchoolLaunchTask::Station || Task.Boat < 0)
@@ -1677,6 +1782,9 @@ namespace LyudSail
 				{
 					U.Stage = EFleetStage::Towed;
 					Towing = Task.Boat;
+					if (ForceTow == Towing) ForceTow = -1;
+					Task = FSchoolLaunchTask();
+					TaskIn = 0.0;
 					HelpT = 0.0;
 					Emit(EFleetSignal::TowStart, Task.Boat);
 				}
