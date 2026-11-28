@@ -2,7 +2,7 @@
 # Builds and runs the townsfolk's characters and manners outside the engine (tools/mannersim/mannersim.cpp,
 # docs/town_manners.md). From the repo root.
 #   tools/mannersim/run.sh            checks: manners.json reads clean, the personas' spread, a day of the town in four
-#                                     weathers (mild, a shower, frost, a warm day), what people notice, the cost
+#                                     weathers (mild, a shower, frost, a warm day) and at the sea festival (a Friday), what people notice, the cost
 #   tools/mannersim/run.sh day        the mild day hour by hour: how many do what
 #   tools/mannersim/run.sh who [key]  personas: everybody's (a summary) or one person's
 #   tools/mannersim/run.sh friends    the friends among the residents (docs/friends.md)
