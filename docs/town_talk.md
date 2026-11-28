@@ -167,8 +167,16 @@ en 22.4k, ja 9.5k). That is paid generation: ask Dima first.
 words in ru, en and ja, and no table holds words for unused keys or keys the hand-written tables already have; lines fit
 a bubble (ru/en 100 characters, ja 48). Then it runs the town's day from Wednesday 04:00 with gatherings on the square,
 the promenade and the fair, a different sky every couple of hours and a festival evening, sampling everyone up and
-about every 120 s: at least 75% have a line (95% now), at least 90% greet (100%), at least 30% of the pairs side by side
-find an exchange (40%), the restaurant's staff have a line at every moment, and at most 10% of the sets fit nobody.
+about every 120 s: at least 75% have a line (95% now), at least 90% greet (100%), more than 28% of the pairs side by side
+find an exchange (about 30%), the restaurant's staff have a line at every moment, and at most 11% of the sets fit nobody.
+
+The last two bars come from the spread over seeds. The people's picks are seeded, and some hashes mix in an activity's
+row number, so any change to the order of activities.json reshuffles the day. `SIM_SEED=<n> tools/barksim/run.sh` runs
+the day with another seed (0 is the house seed). Measured on 2026-11-28 over seeds 0-11: the pairs with an exchange were
+29.2-30.5% (mean 29.7%, sd 0.4), and 67-71 of the 694 sets fit nobody (mean 68.6, sd 1.6). The old bars (30%, 10% = 69)
+sat inside that spread, so a merge flipped them at random. The new bars sit about four sd outside it: 28% is 1.2 points
+under the lowest seed, and 11% (76 sets) is 5 over the highest. A real break (talk sets that no longer match, a
+condition lost) moves these numbers by much more. When content moves the mean, measure the seeds again and move the bar.
 
 `tools/townchatsim/run.sh` runs the talk on the town: every key has words in three languages, every placeholder is
 filled, every resident with a household or a friend can name them, a day sampled every 20 minutes (at least 90% of

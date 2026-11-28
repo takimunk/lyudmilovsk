@@ -11,6 +11,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <map>
@@ -56,8 +57,17 @@ struct FClock
 	}
 };
 
+/** SIM_SEED=<n> in the environment: another seed for the people's life (0, the default, keeps the house seed), to
+ *  measure how much a check's number moves with the seeded picks (any change to activities.json's order reshuffles them). */
+static uint32_t SimSeed()
+{
+	const char* E = std::getenv("SIM_SEED");
+	return E ? (uint32_t)std::strtoul(E, nullptr, 10) * 2654435761u : 0u;
+}
+
 static bool LoadAll(FWorld& W, FManners& M)
 {
+	W.Opt.Seed ^= SimSeed();
 	if (!W.Load(DataDir, AnimalsDir))
 	{
 		std::printf("load failed: %s\n", W.LastError.c_str());
@@ -1393,7 +1403,9 @@ int main(int Argc, char** Argv)
 		}
 		std::printf("\n");
 	}
-	CHECK(Mild.AllDates > 250 && Mild.Dates > 30 && Mild.DatesKept * 5 > Mild.Dates * 2,
+	// (the bar is set from the spread over seeds, docs/town_manners.md "Testing": SIM_SEED 0-11 kept 38-50% of the dates,
+	// mean 43%, sd 3.7; 30% is three and a half sd under the mean, eight points under the lowest seed)
+	CHECK(Mild.AllDates > 250 && Mild.Dates > 30 && Mild.DatesKept * 10 > Mild.Dates * 3,
 		"friends keep their weekly date (%d of the %d pairs whose day it is met, %d more off with a cold; %d pairs in the town)", Mild.DatesKept, Mild.Dates, Mild.DatesIll, Mild.AllDates);
 	CHECK(Warm.FrontEvening > Mild.FrontEvening && Warm.FrontEvening * 2 > Frost.FrontEvening * 3,
 		"a warm evening brings the town out to the sea front (%d person-samples warm, %d mild, %d in the frost)", Warm.FrontEvening, Mild.FrontEvening,
