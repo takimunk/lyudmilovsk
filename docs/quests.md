@@ -283,3 +283,74 @@ What writing them showed:
 
 Not checked in the engine: written and proven with the offline tools only (`check_quest_talk.py`, `quest_talk_reach.py`,
 questsim, `check_devdata.py`, `quest_audit.py`).
+
+## Townsfolk as quest people
+
+Since the town's talk (docs/town_talk.md "A talk"), any of the ~900 townsfolk can give a quest or take part in one: E on a
+resident reports `talk <resident key>` (`t_kovalenko_tyler`), and `bring <item>@<resident key>` works with it. Their words
+are not in npc_dialogue.txt. They are strings in `Content/Localization/quests/`, said on the talk's page before the
+greeting (`ULyudFriends::OpenTalk`), at most eight lines in all:
+
+| Key | Said |
+|---|---|
+| `line.<resident>.<quest>.<stage>.<n>` | while the quest is on that stage (any quest: a bystander's aside is just lines for another quest's stage). A quest that begins by a talk with them counts as on its first stage; a stage that waits for `bring ...@<resident>` without the thing in the pocket is `<stage>_empty` |
+| `...<stage>.again.<n>` | on later talks on that stage, instead of the plain lines (write them for every stage where they wait: the plain lines carry the errand, the `.again` lines are a hint or a word of theirs) |
+| `...<stage>.if.<word>.<n>` | once, instead of the plain lines, while the word holds: `rain` `snow` `fog` `cold` `warm` `wet` `night` `low` `cloudy` `clear` `day` `morning` (5-12) `afternoon` (12-17) `evening` (17-23) (`ULyudTownTalkSubsystem::NowHolds`, the first in that order wins). It counts as the first talk too, so it must carry the errand |
+| `line.<resident>.<quest>.done.<n>` | once, after the quest is done |
+
+What was said is kept as quest flags `tcq.<resident>.<quest>.<stage>[.if.<word>]`. Remarks (`quest_scenes.json`) take a
+resident's key as `person` like a story person's. A dev block reaches a resident with `"exec": ["Quest.GoToPerson <key>"]`.
+
+**Findable.** A resident is a good quest person only if their day brings them to one place at known hours on most days,
+outdoors (nobody indoors, asleep or riding can be talked to) and not behind a counter (the counter's E comes first). Most
+are not: shifts rotate, likes pick a different bench every day. `tools/townchatsim/run.sh where` runs the town over seven
+autumn days from Tuesday 20 October (the street's conditions from `StreetLifeModel.h`, a rainy morning, a showery
+afternoon) and lists who is free for a word at one point at the same hour on three days in four; `where <key,key> [days]`
+prints each one's day by day: when they are free for a word, doing what, where. The journal entry of every stage says
+where and when the person is.
+
+`tools/check_quest_talk.py` checks these keys: the resident, the quest, the stage and the word exist; lines are numbered
+from 1; a variant or `.again` has plain lines; every stage that waits for a talk with a resident has their lines, and a
+`bring` to one has `<stage>_empty` lines too. `quest_talk_reach.py` does not count them as orphans, questsim accepts a
+resident as a `talk` or `bring` target.
+
+## The third town bundle (`tq3_*`)
+
+Seven small stories given by ordinary townsfolk, so the town reads as a community: the yard keeper, the milkwoman, the
+postwoman and her boy, two neighbours of fifty years, a dog walker, two chess rivals on a bench, a schoolgirl with a kite.
+They know each other: the helpers of one quest are the givers of the next, and their remarks and after-talks name each
+other. The first three chain on (`tq3_whistle` starts `tq3_milk`, which starts `tq3_pension`, which starts `tq3_flag`);
+each but the flag also begins by a talk with its giver. One new item, the whistle (a pickup); everything else is data and
+words.
+
+| Quest | Giver, where and when (simulated, `run.sh where`) | Steps (events) | Systems |
+|---|---|---|---|
+| `tq3_whistle` «Свисток в листьях» | Tyler Kovalenko, the yard keeper: sweeps the promenade 5:20-7:30 every day, rakes the yards' leaves 8:10-11:00 Mon-Sat (20 Sep-15 Nov) | ask; the whistle in yard 1's leaves by the dominoes table (pickup, `have keeper_whistle`); `bring keeper_whistle@t_kovalenko_tyler` | street life (sweep, leaf raking) |
+| `tq3_milk` «Два пакета молока» | Nour Hoffmann, the milkwoman: the milk round 5:50-7:30 Mon-Sat, the benches by the square in the afternoons | ask (two `milk_pyramid` given); `bring` to Đức Lê (fishing on the beach 5:30-6:50 every day) and to Maarja Berntsen (the promenade's south end 8:10-10, the square's bench SQ04 in the afternoons); tell | street life (milk round), beach |
+| `tq3_pension` «Пенсионный день» | Sachiko Patel (83): the benches by her house T2H2 from about 10:30 till evening, her allotment bed 15-17 | ask; `bring daily_paper@` her (the kiosk); talk to the postwoman Lyudmila Hernández (her round 8:20-12:10 Mon-Sat); tell | kiosk, the post round, allotment |
+| `tq3_flag` «Флажок для Кайо» | Lyudmila Hernández, the postwoman (as above; minds her son at the playground or yard 5 about 14-16); begun by `tq3_pension` | ask; `beach castle_paper_flag` (the kiosk's `sand_flag` on a finished sandcastle); tell | beach, kiosk |
+| `tq3_clock` «Сто: точное время» | Ingvild Solberg (76): walks her dog in the park 6:50-7:20 and 18:50-19:30 every day | ask; `do tch_call` (the speaking clock, 100); tell | payphones |
+| `tq3_referee` «Судья для двоих» | Haoran Choi (82): the benches by his house T2H1 8:00-12:30 most days; his rival Xiaoming Virtanen there 8-11 | ask; `have daily_paper` + `do chess` (a board at the Cog); tell | kiosk, chess |
+| `tq3_number` «Оторванный телефончик» | Isla Bondarenko (12): after school on weekdays her kite on the beach 14:40-15:20, then the playground till about 16:40 | ask; `do xk_notices` (the bus-stop boards) + `do tch_call`; tell | notices, payphones, kites |
+
+Every stage has a dev block (`Quest.GoToPerson <key>` at an hour they are out, `tq3.yard_leaves` and `tq3.beach_castle`
+in `Content/Dev/teleports/tq3.json`). Bystanders: Nour and Tyler on each other's errands, Maarja on her friend's pension,
+Le on the castle, Alejandro Gelashvili (a dog walker too) on the clock, Aino MacLeod (Choi's wife) on the referee, Lyudmila
+on Isla's guitar: each a remark with a diary line; Caio (shy till he knows the hero) and Virtanen have lines of their own.
+
+What writing them showed:
+
+- **Pick the giver from the simulation, not the job.** Of 900 townsfolk only a few dozen are at one point at the same hour
+  on three days in four; the lighthouse keepers work inside the pier's shell and can never be talked to at work; kiosk
+  and promenade sellers stand behind a counter. People on a round (the sweep, the milk, the post) are reliable by the
+  hour, not the spot: the journal says the hours and the route. The old on their own yard's benches, the fishermen at
+  dawn and the dog walkers at seven are the town's fixed points.
+- **Autumn.** The game begins on 20 October and the calendar runs at real time: soda machines are hooded from November,
+  the kvass barrel and the grandmothers' yard benches are summer things, the leaf raking ends on 15 November. So the
+  objectives here are things that work all year (the payphone, the kiosk, the sandcastle, the chess board), and the
+  whistle lies beside the leaf pile, not under it, so it is still there when the piles are gone.
+- A resident's lines from several quests all show on one page (up to eight), unlike a story person's first-fit talk:
+  keep each group to two or three lines.
+
+Not checked in the engine: the resident lines' code (`LyudFriendsTalk.cpp`, `TownTalk.cpp` `NowHolds`) and the whistle
+(`LyudInventory.cpp`) were written without Unreal; the icon `icon_keeper_whistle` is owed.

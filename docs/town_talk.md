@@ -52,7 +52,9 @@ E on a townsperson who is free for a word opens a short talk on the page the cit
 
 For quests: a talk reports `talk <resident key>` (`t_sokolov_ilya`), and `bring <item>@<resident key>` works with
 it (docs/quests.md). A quest may give a resident lines of its own: strings `line.<resident key>.<quest>.<stage>.<n>`
-in `Content/Localization/quests`, numbered from 1, shown before the greeting while the quest is on that stage.
+in `Content/Localization/quests`, numbered from 1, shown before the greeting while the quest is on that stage, with
+`.again` lines for later talks, variants by the sun, the weather and the part of the day, and `done` lines said once
+(docs/quests.md "Townsfolk as quest people"; the first quests written so: `tq3_*`).
 
 Nothing runs on a clock: the talk is built when E is pressed (about 20 µs in the test). While the page is up the
 game looks four times a second at whether they are still there.
@@ -65,7 +67,7 @@ game looks four times a second at whether they are still there.
 | The page, the prompt, the bond | `ULyudFriends` (`Private/People/LyudFriendsTalk.cpp`, `TickOffer` in `LyudFriends.cpp`) |
 | Picking a line for the page | `ULyudTownTalkSubsystem::ChatBuild`, `ChatLine` |
 | Standing still | `LyudPeople::FWorld::HoldWalk` |
-| Test | `tools/townchatsim/run.sh` (`talks [lang] [n]` prints talks, `who <key> [lang]` one person's) |
+| Test | `tools/townchatsim/run.sh` (`talks [lang] [n]` prints talks, `who <key> [lang]` one person's, `where [keys] [days]` when and where residents are free for a word over autumn days: quest givers) |
 
 Console: `lyud.Friends.Talk [key]` opens a talk with the nearest townsperson (or the key) whatever they are doing,
 `lyud.Friends.TalkReport` logs what the nearest one would say. Developer mode: "friends" → talk to the nearest,
@@ -179,7 +181,7 @@ the bond's cap, old saves, and that a held walker stands and then walks on.
   `TownTalk.cpp`, `PeopleSim.cpp`): written on a machine without Unreal. Build it and try it with the developer
   action before merging.
 - In a talk they turn their head to him, not their body. The talk's lines aren't voiced.
-- A talk has no line about a quest unless the quest brings its own (see above).
+- A talk has no line about a quest unless the quest brings its own (see above; `tq3_*` do).
 
 - **Not compiled in Unreal yet:** written while the Mac's builds were blocked. `TownBarks.cpp` builds with clang and
   `-Wall -Wextra -Wshadow`; `TownTalk.cpp` passes a syntax check against stand-in engine headers. Build it before merging.
