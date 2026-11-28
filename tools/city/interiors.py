@@ -72,6 +72,8 @@ QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "ta
 # (photo <map place | maru | resident key>: a sharp developed frame taken there, or of the dog, or of that resident)
 # the telescopes' own quest event (ULyudTelescope, docs/telescopes.md): observe <sight> | jupiter_night
 QUEST_EVENTS += ("observe",)
+# the kites' (ULyudKiteFlying, docs/kites.md): kite flown | high | loop | eight | low_pass | landed | helper_launch | rescue
+QUEST_EVENTS += ("kite",)
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
               "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open",

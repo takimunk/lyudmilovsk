@@ -344,7 +344,40 @@
     6
    ]
   },
-  "paper.town.40"
+  "paper.town.40",
+  {
+   "k": "paper.town.41",
+   "months": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ]
+  },
+  {
+   "k": "paper.town.42",
+   "months": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  },
+  {
+   "k": "paper.town.43",
+   "months": [
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  }
  ],
  "ads": [
   "paper.ad.1",

@@ -676,6 +676,16 @@ TOWN = [
     ("Опрос газеты: где в городе лучший чай? Победил не буфет и не «Янтарь», а «у соседки, если позовёт».",
      "The paper's poll: where is the best tea in town? Not the buffet, not the Yantar, but “at the neighbour's, if she asks you in.”",
      "本紙アンケート：町でいちばんのお茶はどこ？売店でも「ヤンタル」でもなく、「お隣さんの家。招いてくれたらね」。", None),
+    # kite afternoons (docs/kites.md): the stunt kites, the deltas of quiet days, the dragon
+    ("На пляже завелись пилотажные змеи на двух стропах. Молодёжь пишет ими в небе петли и восьмёрки; чайки читают и не одобряют.",
+     "Two-line stunt kites have appeared on the beach. The young write loops and figure eights in the sky with them; the gulls read it and disapprove.",
+     "浜に二本糸のスポーツカイトが現れた。若者が空に宙返りと8の字を書き、カモメがそれを読んで、気に入らない顔をしている。", [4, 5, 6, 7, 8, 9, 10]),
+    ("В тихие дни над пляжем стоят одни дельты. Пенсионеры держат лески и уверяют, что вышли просто подышать.",
+     "On quiet days only the deltas stand over the beach. The pensioners hold the lines and insist they only came out for some air.",
+     "風の静かな日、浜の上にいるのはデルタ凧だけ。糸を持つ年金生活者たちは、ただ空気を吸いに来たのだと言い張る。", [4, 5, 6, 7, 8, 9]),
+    ("Над пляжем видели змея-дракона с хвостом в двенадцать метров. Хозяин сматывал его до темноты и от помощи не отказывался.",
+     "A dragon kite with a twelve-metre tail was seen over the beach. Its owner was rolling it up till dark, and did not refuse help.",
+     "浜の上に、しっぽが十二メートルもある龍凧が現れた。持ち主は暗くなるまで巻き取っていて、手伝いは断らなかった。", [5, 6, 7, 8, 9]),
 ]
 
 ADS = [

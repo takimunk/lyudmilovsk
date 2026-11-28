@@ -49,7 +49,7 @@ the data.
 | christmas | Рождество (Western Europe) | 24–25 December | carols and bells by the tree, the fair |
 | sun_day | День большого солнца (the town's own, see below) | 2nd Saturday of June (2027-06-12); a day off | the eve on the promenade 18:30–21:50 the day before, fair 9:30, zenith on the square 12–14:30, everybody at the sea with kites 14:30–20, sunset from the promenade 20–21:50, dancing till 0:30 |
 | city_day | День города | 1st Saturday of August; a day off | fair, games in the park, a parade along the promenade 16, concert, fireworks 21:36, dancing |
-| kite_day | День воздушных змеев | 3rd Sunday of September | kites over the beach 11–17 |
+| kite_day | День воздушных змеев | 3rd Sunday of September | kites over the beach 11–17, flags, bunting and stalls on the sand (docs/kites.md "Kite afternoons") |
 | cat_day | День кошек | 1 March | treats in the park 11–15, the cats' walk to the pier 15–17 |
 | book_day | День книги | 23 April | reading on the grass in the park 12–18, reading aloud on the square 18 |
 | amber_morning | Янтарное утро | the morning after a gale (trigger `after_storm`, at most once in ten days) | the whole town on the beach 6:30–12 looking for amber |

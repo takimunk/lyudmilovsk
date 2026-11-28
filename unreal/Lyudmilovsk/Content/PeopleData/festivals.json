@@ -342,7 +342,7 @@
       "when": {"rule": "nth_weekday", "month": 9, "nth": 3, "weekday": 6},
       "origin": "town",
       "menu": ["rs_syrniki", "rs_tea"],
-      "decor": {"from": 9, "to": 19, "kinds": ["flags", "bunting"], "venues": ["beach"]},
+      "decor": {"from": 9, "to": 19, "kinds": ["flags", "bunting", "stalls"], "venues": ["beach"]},
       "program": [
         {"id": "kites", "hours": [11, 17], "venue": "beach", "mode": "watch", "face": "sky", "pull": 1.1, "show": ["kites"]}
       ],

@@ -81,7 +81,7 @@ say town.kite_delta_elder.3 | Стоишь, держишь нитку. Врод�
 
 [kite_dragon]
 doing = fly_kite_dragon
-say town.kite_dragon.1 | Хвост у него длиннее причала. Ну, почти. | Its tail is longer than the pier. Well, nearly. | しっぽは桟橋より長い。まあ、だいたい。
+say town.kite_dragon.1 | Хвост у него двенадцать метров. Разматывать дольше, чем летать. | Its tail is twelve metres. Longer to unroll than to fly. | しっぽは十二メートル。広げるほうが飛ばすより長い。
 say town.kite_dragon.2 | Голова расписана вручную. Три вечера на одни глаза. | The head's hand-painted. Three evenings on the eyes alone. | 頭は手描き。目だけで三晩かかった。
 say town.kite_dragon.3 | Ему нужен ровный ветер. В порывах хвост завязывается узлом. | It wants a steady wind. In gusts the tail ties itself in a knot. | 安定した風がいる。突風だとしっぽが結び目になる。
 say town.kite_dragon.4 | Смотрите, как волна идёт по хвосту. От головы до самого кончика. | Watch the wave run down the tail. From the head to the very tip. | しっぽを波が走るよ。頭から先っぽまで。

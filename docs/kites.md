@@ -269,7 +269,7 @@ component).
 Everything is out of Lumen and distance fields. Nothing is rebuilt: the parts are moved, and the line's 16 pieces (32)
 and the tail's 9 (40) are re-placed in one batch each per frame. The colourways are our own (eight of them).
 
-**The town's kites in the engine** (who flies what and when is "The children's kites" below):
+**The town's kites in the engine** (who flies what and when is "The townsfolk's kites" below):
 - The kind comes from the activity: `fly_kite` a diamond (a box kite for one in three), `fly_kite_delta`,
   `fly_kite_stunt`, `fly_kite_dragon`. An activity missing from `activities.json` is simply never seen.
 - Single-line kites are worked by `AutoReel`. A stunt kite is steered by `AutoSteer` from both hands, and a stunt kite
@@ -278,24 +278,70 @@ and the tail's 9 (40) are re-placed in one batch each per frame. The colourways 
 - A kite caught in a tree joins the caught kites (above) and can be got down for its owner.
 - `lyud.Kite.Town` (12) still caps them all.
 
-## The children's kites
+## The townsfolk's kites
 
-- **The activity:** town life's `fly_kite` (`Content/PeopleData/activities.json`): ages 6–15, 11:00–18:30, by daylight,
-  on the beach, the sunrise and sunset lookouts and the pier.
-- **The wind:** `"wind": [3, 13]` is a new activity field (`FActivity::WindMin/WindMax`, `FWorld::Wind`). Out of that
-  range nobody chooses the activity; in the middle of it, it calls a little more.
-- **Where the wind comes from:** the game sets `FWorld::Wind` from `ULyudWindSubsystem::GetMeanSpeed`. `tools/peoplesim`
-  sets it from the same calendar (`LyudWeather::Regime`, seed 921). In the town test, about 4,000 person-minutes of kites
-  fall over 36 hours (about five kites at once on a breezy afternoon), and none in the dark, a calm or a gale.
-- **Drawing them:** whoever is flying a kite and is drawn within 300 m of the camera gets one, up to `lyud.Kite.Town`
-  (12). It is on a line from their right hand, worked by `AutoReel`. One child in three has a box kite, and the colours
-  come from who they are.
-- **Losing one:** a child's kite caught in a tree stays there for the rest of their outing.
-- **Town talk** (`tools/barks/lines/13_kites.txt`):
-  - the children while they fly;
-  - a teen on box kites;
-  - grown-ups on the beach watching;
-  - a flier who sees the hero near.
+Four activities of town life (`Content/PeopleData/activities.json`) put a kite in somebody's hands, and a fifth brings
+people to look:
+
+| Activity | Who | Wind, m/s | When | Where | How many |
+|---|---|---|---|---|---|
+| `fly_kite` | children 6–15 (a diamond; one in three a box kite) | 3–13 | 11:00–18:30 | the beach, the sunrise and sunset lookouts, the pier | anybody of that age |
+| `fly_kite_stunt` | teens and the young, 12–40 | 4.5–12 | 12:00–19:00 | the beach and the lookouts (open ground: not the pier) | `regulars` 0.14: about one in seven of the active ones |
+| `fly_kite_delta` | grown-ups and pensioners, 30 and over | 2–6 | 10:30–19:00 | the beach, the lookouts, the pier | `regulars` 0.08, more of those who love the open air |
+| `fly_kite_dragon` | the few who own one, 16–70 | 4–10 | 12:00–18:30 | the beach only (the tail wants room) | `regulars` 0.012: half a dozen people in the town |
+| `watch_kites` | anybody of 16 and over | 3.5–11 | 11:30–19:00 | the same places | anybody |
+
+- **The wind:** `"wind": [min, max]` (`FActivity::WindMin/WindMax`, `FWorld::Wind`). Out of that range nobody chooses the
+  activity; in the middle of it, it calls a little more. The game sets `FWorld::Wind` from
+  `ULyudWindSubsystem::GetMeanSpeed`; `tools/peoplesim` sets it from the same calendar (`LyudWeather::Regime`, seed 921).
+- **The rest is the life's own fields:** `daylight` (none in the dark), `temp` [5, 40] on the four new ones (in the frost
+  only a few children are left), the rain rule (nobody chooses the open air in the rain), `day_more` on Saturday and
+  Sunday (the weekend is the kite club's), `regulars` (the same handful every game: the stunt fliers, the delta
+  pensioners, the dragons' owners are particular people, picked by their key and temper).
+- **Parents and onlookers.** The life has no way to tie one activity to another's being on, so the onlookers are an
+  activity of the same wind window at the same places: when the kites can fly, people come to look. A parent stands by
+  a small child only for `playground` and `play_run` (`FWorld::ChildToMind`, in code); a kite is not one of those, so
+  "parents" on a kite afternoon are onlookers of the right age (the lines `kite_parent`).
+- **Losing one:** a child's kite caught in a tree stays there for the rest of their outing, unless the hero gets it
+  down (the child thanks him: `kite_rescue_thanks`).
+
+### Kite afternoons
+
+What `tools/peoplesim/run.sh town` counts (the town's 949 people; a warm Saturday from 10:30, minute by minute between
+noon and five, the wind held at a value):
+
+| The day | Kites up at once | Of them | Watching |
+|---|---|---|---|
+| 7 m/s, 21 °C | 9.0 on average, 17 at most | children 3.4, stunt 4.8, dragon 0.8, no delta, no stunt kite on the pier | 8.6 on average, 14 at most |
+| 3.5 m/s, 21 °C | 5.7 on average, 10 at most | deltas 5.6; no stunt kites, no dragons | |
+| 1 m/s; 16 m/s | none | | none |
+| 7 m/s in the rain | 0.0 on average, 1 at most | | |
+| 7 m/s at −4 °C | 0.4 on average, 2 at most | children only | |
+
+On the test's own Monday and Tuesday (19–20 October, 4.7–7.3 m/s, 12 °C) 36 hours hold 3,428 person-minutes of
+children's kites, 1,612 of stunt kites, 314 of dragons, 108 of deltas and 1,052 of watching: about 14 kites at once on
+the Monday afternoon after school, none in the dark, a calm or a gale. The town's other life gave up one to three per
+cent of its outdoor time for it (`sit_bench` 94,825 → 94,368 minutes, `stroll` 75,761 → 74,826, `chat` 25,214 → 24,484,
+`swim_look` 27,630 → 27,754, `sea_air` 22,505 → 22,474; `fly_kite` itself 3,871 → 3,428). The counts move by a kite or
+two with any change to the life (it is a chaotic system), so the test asks for 6 to 16 on the breezy Saturday.
+
+Kite Day (`kite_day`, the third Sunday of September, docs/festivals.md) is the yearly day: the show `kites` over the
+beach, flags, bunting and the fair's stalls on the sand (decor only: a festival's stalls sell the day's dishes, not
+items, so a kite stall on the beach needs code). The paper has three town stories of the season about the stunt kites,
+the deltas and the dragon (`tools/paper/strings_src.py` `TOWN`).
+
+**Town talk** (`tools/barks/lines/13_kites.txt`, built by `tools/barks/build_barks.py`):
+- the children while they fly (`kite_kid`, `kite_kid_more`), a teen on box kites, a flier who sees the hero near;
+- the stunt fliers (`kite_stunt`, `kite_stunt_hero`), the deltas of quiet days (`kite_delta`, `kite_delta_elder`), the
+  dragons' owners (`kite_dragon`), all of them on the wind (`kite_wind_lore`: a gust seen on the water, a lull, the
+  wind shadow under the cliff when it blows off the land) and in the cold months (`kite_cold`);
+- whoever came to look (`kite_onlooker`, `kite_parent`, `kite_onlooker_elder`), and the grown-ups on the beach;
+- at a moment the engine raises (`on = ...`, `ULyudKiteFlying::Bark`): `kite_hold_yes` and `kite_hold_go` (somebody
+  holds the hero's kite for a long launch and lets it go), `kite_lesson` (a stunt flier has shown him a loop and its
+  undoing), `kite_rescue_thanks` (a child whose kite he got down), `kite_loop_cheer`, `kite_low_pass`.
+
+The barks know no wind, so what is said about it is said as a rule ("with the wind off the land it won't fly under the
+cliff"), never as what the air does this minute.
 
 ## Shops
 
@@ -306,11 +352,49 @@ and the tail's 9 (40) are re-placed in one batch each per frame. The colourways 
 | `kite_diamond` | the department store's sports counter | 150 ₽ |
 | `kite_box` | toy shop (P-WAVE, P-UNITE) | 280 ₽ |
 | `kite_box` | the department store's sports counter | 270 ₽ |
+| `kite_delta` | toy shop (P-WAVE, P-UNITE) | 220 ₽ |
+| `kite_delta` | the department store's sports counter | 220 ₽ |
+| `kite_delta` | the fair's toy kiosk | 235 ₽ |
+| `kite_stunt` | the department store's sports counter | 520 ₽ |
+| `kite_stunt` | toy shop (P-WAVE, P-UNITE) | 540 ₽ |
+| `kite_dragon` | toy shop (P-WAVE, P-UNITE), one in stock | 640 ₽ |
 
-The department store's toy house is a board only, so its kites are at the sports counter.
+The department store's toy house is a board only, so its kites are at the sports counter. The fair's toy kiosk is the
+only seasonal stall that sells them; a shop's stock cannot depend on the weather, so there is no kite stall on the
+beach on kite afternoons. The items are in `LyudInventory.cpp` `MakeDefs` (the same rolled pack, a size and a colour
+each); their words are written by `tools/kites/town.py`.
 
-Icons: one 2×2 Higgsfield grid (`design/kites/icon_kites_grid.json`). It still has to be downloaded and cut on the Mac,
-because the cloud's egress refuses the CDN.
+Icons: the diamond and the box kite are one 2×2 Higgsfield grid (`design/kites/icon_kites_grid.json`, done). The delta,
+the stunt kite and the dragon are a second grid, **pinned and not generated** (`design/kites/icon_kites_grid_2.json`,
+prompts in `localization/assets.json`): until it is run on the Mac `tools/check_localization.py` lists their three
+pictures as missing and the pocket shows a grey square.
+
+## Quests
+
+Three side quests, one after another (`Content/UI/quests.json`; lines in `Content/Dialogue/npc_dialogue.txt`; words in
+`Localization/quests/`, written by `tools/kites/town.py`; not voiced yet):
+
+| Quest | Giver | Begins | Stages | Reward |
+|---|---|---|---|---|
+| `kite_lesson` "Первый урок" | Ivan Korneev (`Korneev_ivan`: 74, once the Laboratory's mechanic, has glued kites since he was a boy) | the hero gets any kite (`get kite_*`); Korneev's everyday talk also invites him | `meet` talk · `launch` `kite flown` · `climb` `kite high` · `land` `kite landed` · `tell` talk | a delta he sewed from an old raincoat (`kite_delta`); begins `kite_poplar` |
+| `kite_poplar` "Змей на тополе" | Tyoma (`Kid_boy`, 11): the diamond Korneev glued for him has hung in a poplar behind Sun Square since spring | the lesson's last talk | `rescue` `kite rescue` · `return` talk | his toy car (`toy_car`), the one he never lends; begins `kite_eight` |
+| `kite_eight` "Восьмёрка" | Stas (`Guy_a`, 19): one line is a stroll, flying takes two | Tyoma's last talk | `dare` talk (he gives his old `kite_stunt`) · `fly` `kite helper_launch`, `kite loop`, `kite eight`, `kite low_pass` in any order · `tell` talk | the Baikal he lost the bet for (`drink_baikal`); the kite stays |
+
+- The lesson is what the flight asks for: read the wind off the sock by the lifeguard tower, back to the wind, toss and
+  hold, line out a little at a time, wind in evenly. Korneev has a word for a slack sock, for a gale and for the dark.
+- Stas has a line for a lost stunt kite (`if.no:kite_stunt`: the sports counter, 520 ₽).
+- Two remarks (`Content/UI/quest_scenes.json`, each with its diary line): Nina Korneeva on her husband's spars while
+  the lesson is on, Sonya on Tyoma's missing toy car afterwards.
+- Developer mode: every stage has a `dev` block (the kite beach at 15:00 with the right kite in the pocket; the givers
+  through `Quest.GoToPerson`); `kite_poplar` `rescue` lands at the teleport `kite_poplar`
+  (`Content/Dev/teleports/kite_quests.json`: 12 m north of the third poplar of Sun Square's south row, facing it) and
+  runs `lyud.Kite.Snag`, which hangs a caught kite 10 m ahead.
+- **What the quests need of the engine** (`ULyudKiteFlying`): `kite landed` for a kite of any kind wound in whole after
+  a flight (the lesson is flown on a diamond; a stunt kite's `landing` trick alone would leave it stuck), and, for the
+  story, a caught kite hung in that poplar while `kite_poplar` is on `rescue` (without it any kite got down ends the
+  stage).
+- Checks: `tools/questsim/run.sh`, `python3 tools/check_quest_talk.py`, `python3 tools/quest_talk_reach.py --strict`,
+  `python3 tools/check_devdata.py`.
 
 ## Console and developer mode
 

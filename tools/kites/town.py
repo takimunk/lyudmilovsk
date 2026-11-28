@@ -134,9 +134,9 @@ QUESTS = collections.OrderedDict([
         "Here. A delta; I sewed it myself from an old raincoat. It flies when there is hardly any wind. One has to learn to love the quiet days too.",
         "ほら、持っていきなさい。デルタだ。古いレインコートで自分で縫った。風がほとんどない日でも飛ぶ。静かな日も、好きになれなきゃいかん。")),
     ("line.korneev_ivan.kite_tell.5", (
-        "И вот ещё что. Тёмке из клуба я весной ромб склеил, а он посадил его на тополь у Солнечной площади и молчит. Сними, если руки дойдут.",
-        "And one more thing. In spring I glued a diamond for Tyoma from the club; he put it in a poplar by Sun Square and keeps quiet about it. Get it down, if you find the time.",
-        "それと、もうひとつ。クラブのチョーマに、春にひし形を作ってやったんだが、太陽広場のポプラに引っかけたまま黙っとる。手があいたら、下ろしてやってくれ。")),
+        "И вот ещё что. Тёмке из клуба я весной ромб склеил, а он посадил его на тополь у Солнечной площади и молчит. Сними, если руки дойдут. Тяни по ветру, в порыв. Против ветра загонишь глубже.",
+        "And one more thing. In spring I glued a diamond for Tyoma from the club; he put it in a poplar by Sun Square and keeps quiet about it. Get it down, if you find the time. Pull with the wind, in a gust. Against it you will only drive it deeper.",
+        "それと、もうひとつ。クラブのチョーマに、春にひし形を作ってやったんだが、太陽広場のポプラに引っかけたまま黙っとる。手があいたら、下ろしてやってくれ。引くなら風下から、風が強まった時にな。風上から引くと奥へ押しこむぞ。")),
     ("line.korneev_ivan.kite_after.1", (
         "В слабый ветер бери дельту, в свежий коробку. А в шторм сиди дома и клей нового.",
         "In light air take the delta, in a fresh wind the box. And in a storm stay at home and glue a new one.",
@@ -157,9 +157,9 @@ QUESTS = collections.OrderedDict([
         "Korneev glued a kite for Tyoma from the club. Since spring it has hung in a poplar, and Tyoma pretends that is how it should be.",
         "コルネーエフさんはクラブのチョーマに凧を作ってやった。凧は春からポプラにぶら下がったままで、チョーマはそれでいいという顔をしている。")),
     ("quest.kite_poplar.rescue.log", (
-        "Тёмин змей застрял на тополе за Солнечной площадью, в ряду с южной стороны. Леска, говорят, свисает почти до земли. Взяться за неё и тянуть понемногу, с ветром, а не рывком: рванёшь, и змей уйдёт в ветки глубже.",
-        "Tyoma's kite is stuck in a poplar behind Sun Square, in the row on the south side. The line, they say, hangs almost to the ground. Take hold of it and pull a little at a time, with the wind, not with a jerk: yank it and the kite goes deeper into the branches.",
-        "チョーマの凧は、太陽広場の裏、南側の並木のポプラに引っかかっている。糸は地面近くまで垂れているそうだ。それをつかんで、風に合わせて少しずつ引く。ぐいと引いたら、凧は枝の奥へもぐってしまう。")),
+        "Тёмин змей застрял на тополе за Солнечной площадью, в ряду с южной стороны. Леска свисает почти до земли. Корнеев учил: встать так, чтобы ветер дул от дерева на тебя, и подёргивать леску в порыв. Тогда ветер сам снимет змея с ветки. Потянешь с наветренной стороны, и он уйдёт в ветки глубже.",
+        "Tyoma's kite is stuck in a poplar behind Sun Square, in the row on the south side. The line hangs almost to the ground. Korneev's teaching: stand so that the wind blows from the tree towards you, and tug the line in a gust. Then the wind itself lifts the kite off the branch. Pull from the windward side and it goes deeper into the branches.",
+        "チョーマの凧は、太陽広場の裏、南側の並木のポプラに引っかかっている。糸は地面近くまで垂れている。コルネーエフさんの教えはこうだ。風が木から自分のほうへ吹く位置に立ち、風が強まった瞬間に糸を軽く引く。そうすれば風が凧を枝から外してくれる。風上側から引くと、凧は枝の奥へもぐってしまう。")),
     ("quest.kite_poplar.free.obj", ("Снять змея с дерева", "Get the kite down from the tree", "木から凧を下ろす")),
     ("quest.kite_poplar.return.log", (
         "Снял. Хвост помят, одна рейка треснула, но это чинится. Тёма в клубе: после школы он сидит за Сегой до самого вечера.",

@@ -208,7 +208,7 @@ int main(int Argc, char** Argv)
 	for (int L = 0; L < 3; ++L)
 	{
 		const std::string Lang = Langs[L];
-		for (const char* Sub : { "", "city/", "town/", "quests/", "paper/", "films/", "rumours/", "instruments/" })
+		for (const char* Sub : { "", "city/", "town/", "quests/", "paper/", "films/", "rumours/", "instruments/", "lighthouse/" })
 		{
 			LoadTable(Content + "Localization/" + Sub + "strings_" + Lang + ".json", L);
 		}
