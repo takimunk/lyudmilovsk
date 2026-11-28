@@ -5029,7 +5029,9 @@ namespace LyudPeople
 				const int Duty = DutyNow(P, bSleep);
 				// a duty starts (bed, work, school): drop what they're doing
 				// (a break from work: the way there, 35 min at most, the way back)
-				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil);
+				// (an ordered activity is kept till its time is up, as Interrupt keeps it: only bed calls them off it)
+				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil)
+					&& (bSleep || P.Why != "ordered");
 				// what they do is off now (the rink shut, the walruses' hour over): they finish within a minute and go
 				if (!ConditionOk(Activities[(size_t)P.Activity]) && P.Until > Time + 60.0)
 				{
