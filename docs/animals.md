@@ -239,7 +239,7 @@ station, send her home. A resident near the hero and the dog says something abou
 and take a clip of their own name as soon as one exists (`AAnimalActor::ClipFor` looks for SniffHand, Petted, RollOver).
 
 **Console and developer mode.** `lyud.Pets.Do hand|stroke|feed|walk|home [id]`, `lyud.Pets.Befriend [id|maru]`,
-`lyud.Pets.Name <id> [name]`, `lyud.Pets.Report`, `lyud.Pets 0` (the player's side off). F7, group "Friends":
+`lyud.Pets.Name <id> [name]`, `lyud.Pets.Friends`, `lyud.Pets 0` (the player's side off). F7, group "Friends":
 Maru a friend at once, the nearest animal a friend at once, treats in the pocket, Maru's walk on and off; teleports to
 Maru and to the club's door.
 

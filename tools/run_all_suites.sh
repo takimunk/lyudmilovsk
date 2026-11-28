@@ -272,6 +272,7 @@ suite transport.check         - python3 tools/transport.py --check
 # --- 3. the data's cross-checks and the string tables -----------------------------------------------------------------
 suite check_data              - python3 tools/check_data.py
 suite check_localization      - python3 tools/check_localization.py
+suite check_console_names     - python3 tools/check_console_names.py
 
 # --- the table ----------------------------------------------------------------------------------------------------------
 echo
