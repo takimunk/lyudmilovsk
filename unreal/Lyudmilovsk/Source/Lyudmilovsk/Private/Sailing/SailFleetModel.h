@@ -294,6 +294,7 @@ namespace LyudSail
 		bool bStation = false;          // her order is to keep station (StationAt)
 		double StationR = 10.0;
 		double AgroundS = 0.0;          // seconds she has sat on the bottom
+		double FendS = 0.0;             // seconds she has lain without way beside the pier
 		FSchoolV2 Goal;                 // where her stage's order takes her (the way round the pier is found from it)
 		bool bVia = false;              // sailing to the pier's seaward end first
 		bool bLineUp = false;           // going for the line: first to a point below it, between its ends
@@ -767,6 +768,18 @@ namespace LyudSail
 					{
 						if (U.TouchT > 4.0) Emit(EFleetSignal::Bump, (int)I, -1, Hit);
 						U.TouchT = 0.0;
+					}
+					// blown onto the pier without way: the crew fend off and paddle her clear of it
+					FSchoolV2 Near;
+					const FSchoolV2 At(U.Boat->X, U.Boat->Y);
+					const double Off = SchoolSegDist(At, O.A, O.B, &Near) - O.R;
+					if (U.Boat->State == EState::Sailing && U.Stage != EFleetStage::Towed && Off < 5.0 && std::hypot(U.Boat->VX, U.Boat->VY) < 0.4) U.FendS += Dt;
+					else if (Off > 11.0 || U.Boat->State != EState::Sailing) U.FendS = 0.0;
+					if (U.FendS > 15.0 && Off < 11.0 && U.Boat->State == EState::Sailing)
+					{
+						const FSchoolV2 Away = (At - Near).Norm();
+						U.Boat->X += Away.X * 0.6 * Dt;
+						U.Boat->Y += Away.Y * 0.6 * Dt;
 					}
 				}
 				if (Launch)
@@ -1394,7 +1407,7 @@ namespace LyudSail
 		{
 			if (bHeld)
 			{
-				// the warning signal waits for the whole fleet to come to the line; after a quarter of an hour for four boats in five; 25 minutes at most
+				// the warning signal waits for the whole fleet to come to the line; after twenty minutes for four boats in five; half an hour at most
 				HoldT += Dt;
 				int Want = 0, Ready = 0;
 				for (const FFleetUnit& U : Units)
@@ -1403,7 +1416,7 @@ namespace LyudSail
 					Want++;
 					if (U.Stage == EFleetStage::Work && U.Boat && (FSchoolV2(U.Boat->X, U.Boat->Y) - PreStart(U)).Len() < 75.0) Ready++;
 				}
-				if ((Want > 0 && Ready == Want && HoldT > 20.0) || (Want > 0 && Ready * 5 >= Want * 4 && HoldT > 900.0) || HoldT > 1500.0)
+				if ((Want > 0 && Ready == Want && HoldT > 20.0) || (Want > 0 && Ready * 5 >= Want * 4 && HoldT > 1200.0) || HoldT > 1800.0)
 				{
 					bHeld = false;
 					BeginSequence();
