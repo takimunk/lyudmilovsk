@@ -875,7 +875,10 @@ int32 ULyudKiteFlying::Fly(FFlight& F, float Reel, float DeltaTime, const AActor
 		F.WindIn = &F == &Hero ? 0.f : 0.1f;
 		if (const ULyudWindSubsystem* WindSys = ULyudWindSubsystem::Get(this))
 		{
-			const FLyudLocalWind Air = WindSys->GetLocalWind(Before);
+			// no lower than 2 m over its ground: a kite on the sand stands about a metre tall and open sand is smooth, while
+			// the land's profile at the kite's own 0.3 m leaves a third of the 10 m wind (a laid stunt kite never rose)
+			const float OverM = FMath::Max(float(Before.Z - F.GroundZ) * 0.01f, 2.f);
+			const FLyudLocalWind Air = WindSys->GetLocalWindAbove(FVector(Before.X, Before.Y, F.GroundZ), OverM);
 			F.Wind = Air.Velocity;
 			F.Turbulence = Air.Turbulence;
 		}
@@ -1362,6 +1365,19 @@ void ULyudKiteFlying::TickHero(float DeltaTime)
 			K->SetActorHiddenInGame(false);
 			bAttached = true;
 		}
+	}
+	// the hand never took the reel (another hold or a busy hand kept the arm down): the kite must not fly unseen, so it is
+	// shown anyway, the reel in front of the chest where the line starts (seen on the Mac: a dragon taken out after a
+	// snagged kite flew invisible)
+	if (!bAttached && (HoldTime > 1.5f || Sim.State != LyudKite::EState::Wound))
+	{
+		if (HoldTime - DeltaTime <= 1.5f && HoldTime > 1.5f)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("KITE the hand has not taken the reel after 1.5 s (hold %.2f, override %d): shown from the chest"),
+				Reach ? Reach->HoldWeight() : -1.f, Reach && Reach->HasOverrideHold() ? 1 : 0);
+		}
+		K->SetActorLocationAndRotation(H->EyeLocation() + H->GetActorForwardVector() * 40.f - FVector(0, 0, 40.f), H->GetActorRotation());
+		K->SetActorHiddenInGame(false);
 	}
 	// the line leaves the reel at its drum (before the hand is up: from in front of the chest)
 	const FVector NewHand = bAttached && K->GetReel() ? K->GetReel()->GetComponentTransform().TransformPosition(FVector(0.f, 0.f, 2.f))
@@ -2097,8 +2113,9 @@ void ULyudKiteFlying::SpawnTestKites(int32 N, int32 Shape)
 	const FVector Across = FVector::CrossProduct(FVector::UpVector, Down);
 	for (int32 I = 0; I < N; ++I)
 	{
-		// a row of flyers across the wind, 6 m apart, 25 m downwind of the camera
-		FVector At = Cam + Down * 2500.f + Across * (float(I) - 0.5f * float(N - 1)) * 600.f;
+		// a row of flyers across the wind, 6 m apart, a step downwind of the camera: their kites fly some 25 m on, not 50 m
+		// (from the beach that put the row into the promenade's trees and the cable car's wires)
+		FVector At = Cam + Down * 300.f + Across * (float(I) - 0.5f * float(N - 1)) * 600.f;
 		FHitResult Hit;
 		FCollisionQueryParams Q(SCENE_QUERY_STAT(KiteTest), false);
 		if (World->LineTraceSingleByChannel(Hit, At + FVector(0, 0, 5000), At - FVector(0, 0, 20000), ECC_Visibility, Q))

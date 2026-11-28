@@ -728,10 +728,12 @@ void UBirdTameSubsystem::UpdateHand(AHeroCharacter* Hero, float DeltaTime)
 	{
 		Reach->SetHold(CarryPose());
 	}
-	else
+	else if (bOwnHold)
 	{
+		// only its own hold: the kite's reel is held through the same component and was let go here every frame
 		Reach->ClearHold();
 	}
+	bOwnHold = bOffer || bCarry;
 
 	// what the hand shows: the bag while carried, the handful while held out
 	// (they are fixed on the hand where its palm is when they appear)
@@ -1123,6 +1125,7 @@ void UBirdTameSubsystem::UpdateCall(AHeroCharacter* Hero, float DeltaTime)
 		return;
 	}
 	Reach->SetHold(OfferPose());
+	bOwnHold = true;
 	FTransform PalmNow;
 	if (Reach->IsHolding() && Reach->HoldWeight() > 0.5f && HandPalm(Hero->GetMesh(), Reach->HoldNormal(), Reach->HoldFinger(), PalmNow))
 	{
