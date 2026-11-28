@@ -981,6 +981,16 @@ void ALyudDinghy::FImpl::Sounds(ALyudDinghy& D, float DeltaTime)
 	const bool bQuiet = !DinghyAfloat(B.State) && B.State != LyudSail::EState::Moored;
 	const LyudSail::Sound::FLoopMix Mix = LyudSail::Sound::MixLoops(T);
 	const float Vol = Scape->MasterVolume * Scape->EffectsVolume * (D.bHeroAboard ? 1.f : 0.7f);
+	// the pools' names made once (a loop whose pool is not imported yet is asked for again every frame: a map lookup)
+	static const TArray<FName> LoopNames = []()
+	{
+		TArray<FName> Names;
+		for (int32 L = 0; L < LyudSail::Sound::NumLoops; ++L)
+		{
+			Names.Add(FName(LyudSail::Sound::LoopPool(L)));
+		}
+		return Names;
+	}();
 	for (int32 I = 0; I < LyudSail::Sound::NumLoops && I < D.Loops.Num(); ++I)
 	{
 		// ashore or on her side only the cloth is heard
@@ -989,7 +999,7 @@ void ALyudDinghy::FImpl::Sounds(ALyudDinghy& D, float DeltaTime)
 		UAudioComponent* Loop = D.Loops[I];
 		if (!Loop && Want > 0.03f)
 		{
-			Loop = Scape->AttachLoop(FName(LyudSail::Sound::LoopPool(I)), Hull, 0.01f);
+			Loop = Scape->AttachLoop(LoopNames[I], Hull, 0.01f);
 			D.Loops[I] = Loop;
 			LoopQuiet[I] = 0.f;
 		}

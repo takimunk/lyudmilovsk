@@ -156,6 +156,8 @@ namespace LyudSailKit
 		Body->Mesh->bEnableUpdateRateOptimizations = true;
 		Body->Mesh->bAffectDistanceFieldLighting = false;
 		Body->Mesh->bAffectDynamicIndirectLighting = false;
+		// the mesh was registered by the spawn: its scene proxy is made again once so that the two flags count
+		Body->Mesh->MarkRenderStateDirty();
 		if (ULyudBodyAnimInstance* Anim = Cast<ULyudBodyAnimInstance>(Body->Mesh->GetAnimInstance()))
 		{
 			Anim->SetOnFeet(false);
