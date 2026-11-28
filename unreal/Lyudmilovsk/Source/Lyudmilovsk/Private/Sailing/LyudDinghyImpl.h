@@ -196,8 +196,7 @@ struct ALyudDinghy::FImpl
 	float MidClock = 0.f;              // the Mid step's accumulator
 	float FarEnvClock = 1e9f;
 	uint32 StepEvents = 0;
-	bool bAssistSheet = false, bAssistHike = true, bAssistNoCapsize = false;
-	int32 EasySeen = -1;
+	bool bAssistSheet = false, bAssistHike = false, bAssistNoCapsize = false;   // the school's (SetAssist)
 
 	// ---- the crew ----
 	FLyudSailCrew Crew[2];
@@ -234,7 +233,8 @@ struct ALyudDinghy::FImpl
 	void MoveParts(ALyudDinghy& D, float DeltaTime);
 	void MoveWake(ALyudDinghy& D, float DeltaTime);
 	// LyudDinghy.cpp
-	void Sample(ALyudDinghy& D, bool bFull);
+	/** Detail: 0 the still level and the depth, 1 the surface under the middle, 2 under bow, stern and both sides. */
+	void Sample(ALyudDinghy& D, int32 Detail);
 	void Place(ALyudDinghy& D);
 	void AfterStep(ALyudDinghy& D, float DeltaTime, bool bStepped);
 	LyudSail::FControls HeroControls(ALyudDinghy& D, float DeltaTime);
@@ -242,7 +242,9 @@ struct ALyudDinghy::FImpl
 	void FillHud(ALyudDinghy& D, float DeltaTime);
 	void Sounds(ALyudDinghy& D, float DeltaTime);
 	void StopLoops(ALyudDinghy& D, float Fade);
-	void ApplyAssists();
+	void ApplyAssists(ALyudDinghy& D);
+	bool MayLeave(ALyudDinghy& D);
+	void Say(const FString& Key, const TCHAR* Fallback, float Seconds);
 	// LyudDinghyCrew.cpp
 	void CrewSet(ALyudDinghy& D, int32 Slot, FName PersonKey, float AgeYears, bool bLifeJacket);
 	void CrewDrop(ALyudDinghy& D, int32 Slot, bool bForget);

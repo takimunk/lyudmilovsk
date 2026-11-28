@@ -563,7 +563,7 @@ namespace LyudSailKit
 
 namespace
 {
-	void SailShow(USceneComponent* C, bool bShow)
+	void DinghyShow(USceneComponent* C, bool bShow)
 	{
 		if (C && C->IsVisible() != bShow)
 		{
@@ -572,7 +572,7 @@ namespace
 	}
 
 	/** The imported mesh of a part, else the code-built one painted; false when it took the stand-in. */
-	bool SailDress(UStaticMeshComponent* C, const FString& AssetName, int32 BoatClass, LyudSailKit::EBuilt What, const FLinearColor& Main)
+	bool DinghyDress(UStaticMeshComponent* C, const FString& AssetName, int32 BoatClass, LyudSailKit::EBuilt What, const FLinearColor& Main)
 	{
 		C->EmptyOverrideMaterials();
 		if (UStaticMesh* M = LyudSailKit::Asset(AssetName))
@@ -638,18 +638,18 @@ void ALyudDinghy::FImpl::Build(ALyudDinghy& D, int32 InClass, int32 InNumber, in
 	}
 	const FLinearColor Tint = HullTint(Colours);
 	const FString N(Def.Name);
-	bAssets = SailDress(HullMesh, N + TEXT("_Hull"), Class, EBuilt::Hull, Tint);
-	SailDress(Mast, N + TEXT("_Mast"), Class, EBuilt::Mast, Tint);
-	SailDress(Boom, N + TEXT("_Boom"), Class, EBuilt::Boom, Tint);
-	const bool bMainAsset = SailDress(Main, N + TEXT("_Main"), Class, EBuilt::Main, Tint);
-	SailDress(Rudder, N + TEXT("_Rudder"), Class, EBuilt::Rudder, Tint);
-	SailDress(Tiller, N + TEXT("_Tiller"), Class, EBuilt::Tiller, Tint);
-	SailDress(Ext, N + TEXT("_Ext"), Class, EBuilt::Ext, Tint);
-	SailDress(Board, N + TEXT("_Board"), Class, EBuilt::Board, Tint);
+	bAssets = DinghyDress(HullMesh, N + TEXT("_Hull"), Class, EBuilt::Hull, Tint);
+	DinghyDress(Mast, N + TEXT("_Mast"), Class, EBuilt::Mast, Tint);
+	DinghyDress(Boom, N + TEXT("_Boom"), Class, EBuilt::Boom, Tint);
+	const bool bMainAsset = DinghyDress(Main, N + TEXT("_Main"), Class, EBuilt::Main, Tint);
+	DinghyDress(Rudder, N + TEXT("_Rudder"), Class, EBuilt::Rudder, Tint);
+	DinghyDress(Tiller, N + TEXT("_Tiller"), Class, EBuilt::Tiller, Tint);
+	DinghyDress(Ext, N + TEXT("_Ext"), Class, EBuilt::Ext, Tint);
+	DinghyDress(Board, N + TEXT("_Board"), Class, EBuilt::Board, Tint);
 	bool bJibAsset = false;
 	if (Class == 0)
 	{
-		SailDress(Sprit, N + TEXT("_Sprit"), Class, EBuilt::Sprit, Tint);
+		DinghyDress(Sprit, N + TEXT("_Sprit"), Class, EBuilt::Sprit, Tint);
 	}
 	else
 	{
@@ -657,7 +657,7 @@ void ALyudDinghy::FImpl::Build(ALyudDinghy& D, int32 InClass, int32 InNumber, in
 	}
 	if (Class == 1)
 	{
-		bJibAsset = SailDress(Jib, N + TEXT("_Jib"), Class, EBuilt::Jib, Tint);
+		bJibAsset = DinghyDress(Jib, N + TEXT("_Jib"), Class, EBuilt::Jib, Tint);
 	}
 	else
 	{
@@ -764,31 +764,31 @@ void ALyudDinghy::FImpl::ApplyLod(ALyudDinghy& D)
 	// far: the one merged mesh when it is imported, else the hull and the mainsail alone
 	const bool bMerged = bFar && Far->GetStaticMesh() != nullptr;
 	const bool bParts = !bFar;
-	SailShow(Far, bMerged);
-	SailShow(HullMesh, !bMerged);
-	SailShow(Main, !bMerged);
-	SailShow(Mast, !bMerged);
-	SailShow(Boom, bParts);
-	SailShow(Sprit, bParts && BuiltClass == 0);
-	SailShow(Jib, bParts && BuiltClass == 1);
-	SailShow(Rudder, bParts);
-	SailShow(Tiller, bParts);
-	SailShow(Board, bParts);
-	SailShow(Ext, bNear);
-	SailShow(Vane, bNear);
+	DinghyShow(Far, bMerged);
+	DinghyShow(HullMesh, !bMerged);
+	DinghyShow(Main, !bMerged);
+	DinghyShow(Mast, !bMerged);
+	DinghyShow(Boom, bParts);
+	DinghyShow(Sprit, bParts && BuiltClass == 0);
+	DinghyShow(Jib, bParts && BuiltClass == 1);
+	DinghyShow(Rudder, bParts);
+	DinghyShow(Tiller, bParts);
+	DinghyShow(Board, bParts);
+	DinghyShow(Ext, bNear);
+	DinghyShow(Vane, bNear);
 	for (UStaticMeshComponent* T : Tell)
 	{
-		SailShow(T, bNear);
+		DinghyShow(T, bNear);
 	}
 	for (UStaticMeshComponent* R : Rope)
 	{
-		SailShow(R, bNear);
+		DinghyShow(R, bNear);
 	}
-	SailShow(Trolley, false);
-	SailShow(Cover, false);
+	DinghyShow(Trolley, false);
+	DinghyShow(Cover, false);
 	if (Wake.Ism)
 	{
-		SailShow(Wake.Ism, !bFar);
+		DinghyShow(Wake.Ism, !bFar);
 	}
 	if (bFar)
 	{
@@ -822,31 +822,31 @@ void ALyudDinghy::FImpl::ShowParked(ALyudDinghy& D)
 {
 	D.SetActorHiddenInGame(false);
 	const bool bSail = bRigged && !bCovered;
-	SailShow(Far, false);
-	SailShow(HullMesh, true);
-	SailShow(Trolley, true);
-	SailShow(Cover, bCovered && Cover->GetStaticMesh() != nullptr);
-	SailShow(Mast, bSail);
-	SailShow(Boom, bSail);
-	SailShow(Main, bSail);
-	SailShow(Sprit, bSail && BuiltClass == 0);
-	SailShow(Jib, bSail && BuiltClass == 1);
-	SailShow(Rudder, !bCovered);
-	SailShow(Tiller, !bCovered);
-	SailShow(Board, false);
-	SailShow(Ext, false);
-	SailShow(Vane, false);
+	DinghyShow(Far, false);
+	DinghyShow(HullMesh, true);
+	DinghyShow(Trolley, true);
+	DinghyShow(Cover, bCovered && Cover->GetStaticMesh() != nullptr);
+	DinghyShow(Mast, bSail);
+	DinghyShow(Boom, bSail);
+	DinghyShow(Main, bSail);
+	DinghyShow(Sprit, bSail && BuiltClass == 0);
+	DinghyShow(Jib, bSail && BuiltClass == 1);
+	DinghyShow(Rudder, !bCovered);
+	DinghyShow(Tiller, !bCovered);
+	DinghyShow(Board, false);
+	DinghyShow(Ext, false);
+	DinghyShow(Vane, false);
 	for (UStaticMeshComponent* T : Tell)
 	{
-		SailShow(T, false);
+		DinghyShow(T, false);
 	}
 	for (UStaticMeshComponent* R : Rope)
 	{
-		SailShow(R, false);
+		DinghyShow(R, false);
 	}
 	if (Wake.Ism)
 	{
-		SailShow(Wake.Ism, false);
+		DinghyShow(Wake.Ism, false);
 	}
 	UStaticMeshComponent* Lods[] = { HullMesh, Mast, Boom, Main, Sprit, Jib, Rudder, Tiller, Board };
 	for (UStaticMeshComponent* C : Lods)
@@ -955,7 +955,7 @@ void ALyudDinghy::FImpl::MoveParts(ALyudDinghy& D, float DeltaTime)
 		Rope[0]->SetRelativeLocationAndRotation(Def.SheetBlock, FRotationMatrix::MakeFromX(Fall.GetSafeNormal(1e-3f, FVector::UpVector)).Rotator());
 		Rope[0]->SetRelativeScale3D(FVector(FMath::Max(Fall.Size(), 1.f) * Unit, 1.f, 1.f));
 		const bool bHeld = Crew[0].Body != nullptr || D.bHeroAboard;
-		SailShow(Rope[1], bHeld);
+		DinghyShow(Rope[1], bHeld);
 		if (bHeld)
 		{
 			// the helm's forward hand, on the side they sit

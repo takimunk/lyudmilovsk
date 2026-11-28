@@ -48,6 +48,7 @@ struct FLyudSailHudData
 	FText Title;
 	TArray<FText> Lines;
 	float Countdown = -1.f;
+	FVector2D MarkM = FVector2D::ZeroVector;   // world metres; zero = none
 	bool bHasMark = false;
 	float MarkBearingRad = 0.f;    // off the bow, + to starboard
 	float MarkDistM = 0.f;

@@ -96,7 +96,7 @@ public:
 	FName GetCrew(int32 Slot) const;
 
 	/** The hero takes the helm (seated through AHeroCharacter::SitOn, input captured by the boat's own handler: tiller
-	 *  A/D, sheet W/S or wheel, hike Q/E or auto, board R/F, right the boat Space when capsized, look around with the
+	 *  A/D, sheet W/S or wheel, hike Q/E or auto, board Z/X, right the boat Space when capsized, look around with the
 	 *  mouse) or gives it up. While he has it, Advance ignores the Controls passed and uses his. bCheckReach: only if he
 	 *  stands within reach of the boat. Leaving is allowed where the school says (CanLeave callback), else a word. */
 	bool Board(AHeroCharacter* Hero, bool bCheckReach = true);
