@@ -14,6 +14,7 @@ class UAudioComponent;
 class ULyudLadderComponent;
 class UMaterialInstanceDynamic;
 class UPointLightComponent;
+class USceneComponent;
 class USoundBase;
 class UStaticMeshComponent;
 
@@ -82,8 +83,10 @@ class LYUDMILOVSK_API ALyudSpacecraft : public AActor
 public:
 	ALyudSpacecraft();
 
-	/** Builds the cabin (kit.json, meshes, MIDs, lamps, collision). Called once by the director right after the spawn;
-	 *  a second call does nothing. Everything starts hidden (SetShownInside/Outside(false)), cold and dark. */
+	/** Builds the cabin (kit.json, meshes, MIDs, lamps, collision). Called by the director right after the spawn; a
+	 *  second call while built does nothing, a call after Unbuild() builds it all again (the logical states the director
+	 *  set through PlayActionAnim / SetRecord are kept). Everything starts hidden (SetShownInside/Outside(false)), cold
+	 *  and dark. */
 	void Build();
 	bool IsBuilt() const { return bBuilt; }
 
@@ -168,14 +171,15 @@ public:
 	bool IsShownInside() const { return bShownInside; }
 	bool IsShownOutside() const { return bShownOutside; }
 
-	/** Frees what Build made that is heavy (MIDs stay; meshes are let go for the GC) once the craft is gone from the
-	 *  sea and the hero is not on Europa. Build() makes it again. Optional: may be a no-op. */
+	/** Frees what Build made (every component and every MID are let go for the GC; the runtime data stays) once the
+	 *  craft is gone from the sea and the hero is not on Europa. Hidden and not ticking afterwards; IsBuilt() is false
+	 *  and Build() makes it all again. */
 	void Unbuild();
 
 	virtual void Tick(float DeltaSeconds) override;
 
 protected:
-	// The cabin programmer's members go here and below (components as UPROPERTY(Transient); MIDs created once in
+	// The cabin programmer's members go here and below (components as UPROPERTY(Transient); MIDs created once per
 	// Build and parented to the base materials; nothing per frame while hidden).
 	bool bBuilt = false;
 	bool bShownInside = false;
@@ -197,12 +201,15 @@ protected:
 	void OnLanguageChanged(class IConsoleVariable* Variable);
 	FDelegateHandle LanguageHandle;
 
-	/** Opaque to the director: the cabin's own runtime data (kit measures, needles' damped values, animation clocks). */
+	/** Opaque to the director: the cabin's own runtime data (kit measures, needles' damped values, animation clocks).
+	 *  Made by Build, freed by EndPlay and, for an actor that never got EndPlay, by BeginDestroy (ReleaseData). */
 	struct FCabinData;
 	FCabinData* Data = nullptr;
+	void ReleaseData();
 
 public:
 	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
+	virtual void BeginDestroy() override;
 };
 
 /**

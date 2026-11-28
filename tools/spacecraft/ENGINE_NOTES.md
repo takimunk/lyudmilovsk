@@ -111,6 +111,20 @@ actually does (2026-11-28, when `LyudSpaceflight.cpp` was finished):
 - `SetCabinLight(false)` is sent while the hero naps, `true` otherwise (on change).
 - The two fans as positional loops are not used: `sc_air_hiss` sits at `fan_0`, the hum at `panel`.
 
+From the cabin (2026-11-28, `LyudSpacecraftCabin.cpp` finished; no public signature changed, details in
+`CABIN_NOTES.md`):
+
+- Protected members added to `ALyudSpacecraft`: `SharedMeshes`, `Parts`, `JetLight`, `OnLanguageChanged`,
+  `LanguageHandle`.
+- Collision is hand-made boxes (the kit exports none), so `SetActorEnableCollision` covers all of it.
+- The cabin makes no fire light of its own; `SetJets` drives one point light at `cabin.jets`.
+- `PlayActionAnim("sw_light" / "sw_radio")` does nothing: those levers follow `FState::bCabinLight` / `bRadio`.
+  `sw_crt` flicks the momentary lever and the picture. `buckle` only keeps a flag (the belts are in the couch's mesh).
+- `IsAnimating` is false while both sets are hidden (nothing ticks then: a move started while hidden plays on when the cabin is shown again, unless sent with `bSnap`).
+- `ActionAt` reaches are per target (panel 150 cm, near things 120, portholes 175, net 190, hatch 165), not 95 / 120:
+  the switches are 110..142 cm from the seat's eye in this kit.
+- `ActionPoint` also knows `speaker`, `panel`, `couch`, `jets`, `fan_0`, `fan_1`, `hull_0` .. `hull_3`.
+
 ## Architecture (the director, `Private/Spacecraft/LyudSpaceflight.cpp`)
 
 `ULyudSpaceflightSubsystem` (a tickable world subsystem, saved under the key `Spaceflight`) owns one
