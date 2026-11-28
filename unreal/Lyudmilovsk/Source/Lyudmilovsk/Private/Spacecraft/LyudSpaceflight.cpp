@@ -115,13 +115,13 @@ namespace LyudFlightImpl
 		{ TEXT("sc_runout"), TEXT("player"), 2.f, 4.f },
 	};
 
-	FString Str(const std::string& In) { return FString(UTF8_TO_TCHAR(In.c_str())); }
-	std::string Std(const FString& In) { return std::string(TCHAR_TO_UTF8(*In)); }
+	FString ScStr(const std::string& In) { return FString(UTF8_TO_TCHAR(In.c_str())); }
+	std::string ScStd(const FString& In) { return std::string(TCHAR_TO_UTF8(*In)); }
 	/** A vector of the model (right-handed: X forward, Y left, Z up) in Unreal's axes. */
-	FVector Ue(const LyudFlight::FVec& V) { return FVector(V.X, -V.Y, V.Z); }
-	LyudFlight::FVec Model(const FVector& V) { return LyudFlight::V3(V.X, -V.Y, V.Z); }
+	FVector ScUe(const LyudFlight::FVec& V) { return FVector(V.X, -V.Y, V.Z); }
+	LyudFlight::FVec ScModel(const FVector& V) { return LyudFlight::V3(V.X, -V.Y, V.Z); }
 
-	TSharedPtr<FJsonObject> ReadJson(const FString& Rel)
+	TSharedPtr<FJsonObject> ScReadJson(const FString& Rel)
 	{
 		FString Text;
 		TSharedPtr<FJsonObject> Root;
@@ -132,7 +132,7 @@ namespace LyudFlightImpl
 		return Root;
 	}
 
-	FVector Vec(const TSharedPtr<FJsonObject>& O, const FString& Field, const FVector& Default)
+	FVector ScVec(const TSharedPtr<FJsonObject>& O, const FString& Field, const FVector& Default)
 	{
 		const TArray<TSharedPtr<FJsonValue>>* A = nullptr;
 		if (O && O->TryGetArrayField(Field, A) && A->Num() >= 3)
@@ -142,7 +142,7 @@ namespace LyudFlightImpl
 		return Default;
 	}
 
-	double Num(const TSharedPtr<FJsonObject>& O, const FString& Field, double Default)
+	double ScNum(const TSharedPtr<FJsonObject>& O, const FString& Field, double Default)
 	{
 		double V = Default;
 		if (O)
@@ -152,7 +152,7 @@ namespace LyudFlightImpl
 		return V;
 	}
 
-	TSharedPtr<FJsonObject> Obj(const TSharedPtr<FJsonObject>& O, const FString& Field)
+	TSharedPtr<FJsonObject> ScObj(const TSharedPtr<FJsonObject>& O, const FString& Field)
 	{
 		const TSharedPtr<FJsonObject>* Out = nullptr;
 		if (O && O->TryGetObjectField(Field, Out))
@@ -162,7 +162,7 @@ namespace LyudFlightImpl
 		return nullptr;
 	}
 
-	UStaticMesh* Mesh(const TCHAR* Folder, const TCHAR* Name)
+	UStaticMesh* ScMesh(const TCHAR* Folder, const TCHAR* Name)
 	{
 		const FString Path = FString(Folder) + Name + TEXT(".") + Name;
 		UStaticMesh* M = LoadObject<UStaticMesh>(nullptr, *Path);
@@ -173,7 +173,7 @@ namespace LyudFlightImpl
 		return M;
 	}
 
-	UStaticMeshComponent* MakeMesh(AActor* Owner, const TCHAR* Name, USceneComponent* Parent)
+	UStaticMeshComponent* ScMakeMesh(AActor* Owner, const TCHAR* Name, USceneComponent* Parent)
 	{
 		UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(Owner, Name);
 		C->SetupAttachment(Parent);
@@ -183,25 +183,25 @@ namespace LyudFlightImpl
 	}
 
 	/** Moves every frame: out of the distance field and the dynamic GI, no shadow. */
-	void Quiet(UPrimitiveComponent* C)
+	void ScQuiet(UPrimitiveComponent* C)
 	{
 		C->bAffectDistanceFieldLighting = false;
 		C->bAffectDynamicIndirectLighting = false;
 		C->SetCastShadow(false);
 	}
 
-	float Smooth01(float T)
+	float ScSmooth01(float T)
 	{
 		T = FMath::Clamp(T, 0.f, 1.f);
 		return T * T * (3.f - 2.f * T);
 	}
 
-	float SmoothStep(float A, float B, float X)
+	float ScSmoothStep(float A, float B, float X)
 	{
-		return Smooth01((X - A) / FMath::Max(B - A, 1e-6f));
+		return ScSmooth01((X - A) / FMath::Max(B - A, 1e-6f));
 	}
 
-	ACharacter* PlayerHero(const UWorld* World, APlayerController** OutPC = nullptr)
+	ACharacter* ScPlayerHero(const UWorld* World, APlayerController** OutPC = nullptr)
 	{
 		APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
 		if (OutPC)
@@ -211,7 +211,7 @@ namespace LyudFlightImpl
 		return PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
 	}
 
-	void Toast(const UObject* Ctx, const FString& Key)
+	void ScToast(const UObject* Ctx, const FString& Key)
 	{
 		if (Key.IsEmpty())
 		{
@@ -223,13 +223,13 @@ namespace LyudFlightImpl
 		}
 	}
 
-	ALyudSky* FindSky(UWorld* World)
+	ALyudSky* ScFindSky(UWorld* World)
 	{
 		TActorIterator<ALyudSky> It(World);
 		return It ? *It : nullptr;
 	}
 
-	ULyudSpaceflightSubsystem* FlightOf(UWorld* World)
+	ULyudSpaceflightSubsystem* ScFlightOf(UWorld* World)
 	{
 		return World ? World->GetSubsystem<ULyudSpaceflightSubsystem>() : nullptr;
 	}
@@ -510,31 +510,31 @@ void ALyudSpacecraftStage::Build()
 		return;
 	}
 	bBuilt = true;
-	const TSharedPtr<FJsonObject> Kit = ReadJson(TEXT("Spacecraft/kit.json"));
-	const TSharedPtr<FJsonObject> J = Obj(Kit, TEXT("stage"));
+	const TSharedPtr<FJsonObject> Kit = ScReadJson(TEXT("Spacecraft/kit.json"));
+	const TSharedPtr<FJsonObject> J = ScObj(Kit, TEXT("stage"));
 	if (!J)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Spacecraft: no stage in Content/Spacecraft/kit.json, using built-in measures"));
 	}
-	CabinSeatLocal = Vec(J, TEXT("cabin_seat"), CabinSeatLocal);
-	Mesh = MakeMesh(this, TEXT("Stage"), GetRootComponent());
-	Mesh->SetStaticMesh(LyudFlightImpl::Mesh(CraftMeshes, TEXT("SM_SC_Stage")));
+	CabinSeatLocal = ScVec(J, TEXT("cabin_seat"), CabinSeatLocal);
+	Mesh = ScMakeMesh(this, TEXT("Stage"), GetRootComponent());
+	Mesh->SetStaticMesh(ScMesh(CraftMeshes, TEXT("SM_SC_Stage")));
 	// stands still on the ice in the star's light (channel 1) and the planet's (channel 2), as Europa's own things
 	Mesh->SetLightingChannels(false, true, true);
 	// the ladder up to the hatch's platform: the player's own to climb (ULyudLadderSubsystem: E takes hold, W/S, Space)
-	const TSharedPtr<FJsonObject> L = Obj(J, TEXT("ladder"));
-	const FVector At = Vec(L, TEXT("at"), FVector(-205.f, 68.f, 0.f));
-	Ladder->SetRelativeLocationAndRotation(At, FRotator(0.f, float(Num(L, TEXT("yaw"), 90.0)), 0.f));
-	Ladder->RungSpacing = float(Num(L, TEXT("rung_spacing"), 30.0));
-	Ladder->FirstRungZ = float(Num(L, TEXT("first_rung_z"), 25.0));
-	Ladder->RungCount = FMath::Max(1, int32(Num(L, TEXT("rung_count"), 9.0)));
-	Ladder->HalfWidth = float(Num(L, TEXT("half_width"), 22.5));
-	Ladder->RungRadius = float(Num(L, TEXT("rung_radius"), 1.6));
-	Ladder->TopExit = Vec(L, TEXT("top_exit"), FVector(-45.f, 0.f, 295.f));
+	const TSharedPtr<FJsonObject> L = ScObj(J, TEXT("ladder"));
+	const FVector At = ScVec(L, TEXT("at"), FVector(-205.f, 68.f, 0.f));
+	Ladder->SetRelativeLocationAndRotation(At, FRotator(0.f, float(ScNum(L, TEXT("yaw"), 90.0)), 0.f));
+	Ladder->RungSpacing = float(ScNum(L, TEXT("rung_spacing"), 30.0));
+	Ladder->FirstRungZ = float(ScNum(L, TEXT("first_rung_z"), 25.0));
+	Ladder->RungCount = FMath::Max(1, int32(ScNum(L, TEXT("rung_count"), 9.0)));
+	Ladder->HalfWidth = float(ScNum(L, TEXT("half_width"), 22.5));
+	Ladder->RungRadius = float(ScNum(L, TEXT("rung_radius"), 1.6));
+	Ladder->TopExit = ScVec(L, TEXT("top_exit"), FVector(-45.f, 0.f, 295.f));
 	Ladder->GripVolume = 0.3f;
 	Ladder->bInteractive = true;
-	FootLocal = At + FRotator(0.f, float(Num(L, TEXT("yaw"), 90.0)), 0.f).RotateVector(FVector(60.f, 0.f, 0.f));
-	TopLocal = Vec(L, TEXT("top_exit_stage"), TopLocal);
+	FootLocal = At + FRotator(0.f, float(ScNum(L, TEXT("yaw"), 90.0)), 0.f).RotateVector(FVector(60.f, 0.f, 0.f));
+	TopLocal = ScVec(L, TEXT("top_exit_stage"), TopLocal);
 }
 
 void ALyudSpacecraftStage::SetShown(bool bInShown)
@@ -587,40 +587,40 @@ namespace
 
 void ULyudSpaceflightSubsystem::FImpl::LoadData(ULyudSpaceflightSubsystem& O)
 {
-	const TSharedPtr<FJsonObject> J = ReadJson(TEXT("Spacecraft/spacecraft.json"));
+	const TSharedPtr<FJsonObject> J = ScReadJson(TEXT("Spacecraft/spacecraft.json"));
 	if (!J)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Spaceflight: no Content/Spacecraft/spacecraft.json (tools/spacecraft/site.py), using built-in numbers"));
 	}
-	O.SplashAt = Vec(J, TEXT("splash_cm"), FVector(64000.0, 10790.0, -4300.0));
-	O.SplashHeadingDeg = float(Num(J, TEXT("splash_yaw_deg"), 125.0));
+	O.SplashAt = ScVec(J, TEXT("splash_cm"), FVector(64000.0, 10790.0, -4300.0));
+	O.SplashHeadingDeg = float(ScNum(J, TEXT("splash_yaw_deg"), 125.0));
 	// out to sea: straight away from the town (compass bearings: yaw = bearing + 90 in this world, as splash_yaw_deg)
-	SeawardYaw = float(Num(J, TEXT("town_bearing_deg"), 33.6)) + 90.f + 180.f;
-	MinDepthCm = float(Num(J, TEXT("min_depth_play_m"), 3.0)) * 100.f;
-	NudgeCm = float(Num(J, TEXT("nudge_step_m"), 20.0)) * 100.f;
-	const TSharedPtr<FJsonObject> StageJ = Obj(J, TEXT("stage"));
-	StageOffsetCm = float(Num(StageJ, TEXT("offset_m"), 60.0)) * 100.f;
-	const TSharedPtr<FJsonObject> SpotJ = Obj(J, TEXT("flight_spot"));
-	RealAscentAltCm = float(Num(SpotJ, TEXT("real_ascent_alt_cm"), 3.0e5));
-	BlendSeconds = FMath::Max(1.f, float(Num(SpotJ, TEXT("blend_seconds"), 12.0)));
-	const TSharedPtr<FJsonObject> DrawJ = Obj(J, TEXT("draw"));
-	PlanetDrawCm = float(Num(DrawJ, TEXT("planet_cm"), 4.5e6));
-	EuropaDrawCm = float(Num(DrawJ, TEXT("europa_cm"), 4.0e6));
-	StarsRadiusCm = float(Num(DrawJ, TEXT("stars_radius_cm"), 1.0e7));
-	PlanetRadiusKm = float(Num(DrawJ, TEXT("planet_radius_km"), 2000.0));
-	AirRadius = float(Num(DrawJ, TEXT("air_radius"), 1.045));
-	const TSharedPtr<FJsonObject> IslandJ = Obj(J, TEXT("island"));
-	IslandLatDeg = Num(IslandJ, TEXT("centre_lat_deg"), IslandLatDeg);
-	IslandLonDeg = Num(IslandJ, TEXT("centre_lon_deg"), IslandLonDeg);
-	IslandExtentKm = Num(IslandJ, TEXT("extent_km"), IslandExtentKm);
-	SplashEastKm = Num(IslandJ, TEXT("splash_east_km"), 0.0);
-	SplashNorthKm = Num(IslandJ, TEXT("splash_north_km"), 0.0);
-	const TSharedPtr<FJsonObject> AfloatJ = Obj(J, TEXT("afloat"));
-	BobCm = float(Num(AfloatJ, TEXT("bob_cm"), 6.0));
-	RollDeg = float(Num(AfloatJ, TEXT("roll_deg"), 3.5));
-	RollPeriod = FMath::Max(1.f, float(Num(AfloatJ, TEXT("roll_period_s"), 5.5)));
-	DriftCmS = float(Num(AfloatJ, TEXT("drift_cm_s"), 4.0));
-	HeroFarCm = float(Num(AfloatJ, TEXT("hero_far_cm"), 4000.0));
+	SeawardYaw = float(ScNum(J, TEXT("town_bearing_deg"), 33.6)) + 90.f + 180.f;
+	MinDepthCm = float(ScNum(J, TEXT("min_depth_play_m"), 3.0)) * 100.f;
+	NudgeCm = float(ScNum(J, TEXT("nudge_step_m"), 20.0)) * 100.f;
+	const TSharedPtr<FJsonObject> StageJ = ScObj(J, TEXT("stage"));
+	StageOffsetCm = float(ScNum(StageJ, TEXT("offset_m"), 60.0)) * 100.f;
+	const TSharedPtr<FJsonObject> SpotJ = ScObj(J, TEXT("flight_spot"));
+	RealAscentAltCm = float(ScNum(SpotJ, TEXT("real_ascent_alt_cm"), 3.0e5));
+	BlendSeconds = FMath::Max(1.f, float(ScNum(SpotJ, TEXT("blend_seconds"), 12.0)));
+	const TSharedPtr<FJsonObject> DrawJ = ScObj(J, TEXT("draw"));
+	PlanetDrawCm = float(ScNum(DrawJ, TEXT("planet_cm"), 4.5e6));
+	EuropaDrawCm = float(ScNum(DrawJ, TEXT("europa_cm"), 4.0e6));
+	StarsRadiusCm = float(ScNum(DrawJ, TEXT("stars_radius_cm"), 1.0e7));
+	PlanetRadiusKm = float(ScNum(DrawJ, TEXT("planet_radius_km"), 2000.0));
+	AirRadius = float(ScNum(DrawJ, TEXT("air_radius"), 1.045));
+	const TSharedPtr<FJsonObject> IslandJ = ScObj(J, TEXT("island"));
+	IslandLatDeg = ScNum(IslandJ, TEXT("centre_lat_deg"), IslandLatDeg);
+	IslandLonDeg = ScNum(IslandJ, TEXT("centre_lon_deg"), IslandLonDeg);
+	IslandExtentKm = ScNum(IslandJ, TEXT("extent_km"), IslandExtentKm);
+	SplashEastKm = ScNum(IslandJ, TEXT("splash_east_km"), 0.0);
+	SplashNorthKm = ScNum(IslandJ, TEXT("splash_north_km"), 0.0);
+	const TSharedPtr<FJsonObject> AfloatJ = ScObj(J, TEXT("afloat"));
+	BobCm = float(ScNum(AfloatJ, TEXT("bob_cm"), 6.0));
+	RollDeg = float(ScNum(AfloatJ, TEXT("roll_deg"), 3.5));
+	RollPeriod = FMath::Max(1.f, float(ScNum(AfloatJ, TEXT("roll_period_s"), 5.5)));
+	DriftCmS = float(ScNum(AfloatJ, TEXT("drift_cm_s"), 4.0));
+	HeroFarCm = float(ScNum(AfloatJ, TEXT("hero_far_cm"), 4000.0));
 	GiveRecords();
 	// the second of the climb at which the real ice is left behind for the impostors (the model's own height)
 	SwapT = 20.0;
@@ -639,7 +639,7 @@ void ULyudSpaceflightSubsystem::FImpl::LoadData(ULyudSpaceflightSubsystem& O)
 void ULyudSpaceflightSubsystem::FImpl::GiveRecords()
 {
 	Recs.Reset();
-	const TSharedPtr<FJsonObject> J = ReadJson(TEXT("Spacecraft/records.json"));
+	const TSharedPtr<FJsonObject> J = ScReadJson(TEXT("Spacecraft/records.json"));
 	const TArray<TSharedPtr<FJsonValue>>* List = nullptr;
 	if (J)
 	{
@@ -657,8 +657,8 @@ void ULyudSpaceflightSubsystem::FImpl::GiveRecords()
 			FRec Rec;
 			R->TryGetStringField(TEXT("id"), Rec.Id);
 			R->TryGetStringField(TEXT("short"), Rec.Short);
-			Rec.Cell = int32(Num(R, TEXT("cell"), double(Recs.Num())));
-			Rec.Seconds = Num(R, TEXT("seconds"), 240.0);
+			Rec.Cell = int32(ScNum(R, TEXT("cell"), double(Recs.Num())));
+			Rec.Seconds = ScNum(R, TEXT("seconds"), 240.0);
 			const TArray<TSharedPtr<FJsonValue>>* Cues = nullptr;
 			if (R->TryGetArrayField(TEXT("fallback"), Cues))
 			{
@@ -688,7 +688,7 @@ void ULyudSpaceflightSubsystem::FImpl::GiveRecords()
 	for (const FRec& R : Recs)
 	{
 		LyudFlight::FRecord M;
-		M.Id = Std(R.Id);
+		M.Id = ScStd(R.Id);
 		M.LengthSec = R.Seconds;
 		Rack.push_back(M);
 	}
@@ -746,13 +746,13 @@ bool ULyudSpaceflightSubsystem::FImpl::EnsureBuilt(ULyudSpaceflightSubsystem& O,
 	if (!O.PlanetMesh)
 	{
 		USceneComponent* Root = O.SkyRig->GetRootComponent();
-		UStaticMesh* Ball = Mesh(EuropaMeshes, TEXT("SM_EU_Planet"));
+		UStaticMesh* Ball = ScMesh(EuropaMeshes, TEXT("SM_EU_Planet"));
 		auto Sphere = [&O, Root, Ball](const TCHAR* Name)
 		{
-			UStaticMeshComponent* C = MakeMesh(O.SkyRig.Get(), Name, Root);
+			UStaticMeshComponent* C = ScMakeMesh(O.SkyRig.Get(), Name, Root);
 			C->SetStaticMesh(Ball);
 			C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			Quiet(C);
+			ScQuiet(C);
 			C->bNeverDistanceCull = true;
 			C->SetVisibility(false);
 			return C;
@@ -831,7 +831,7 @@ void ULyudSpaceflightSubsystem::FImpl::LevelPad(ULyudSpaceflightSubsystem& O)
 		return;
 	}
 	// the four foot pads on the ice as the game has it: the stage stands level on their mean (its legs take up the rest)
-	const TSharedPtr<FJsonObject> StageJ = Obj(ReadJson(TEXT("Spacecraft/kit.json")), TEXT("stage"));
+	const TSharedPtr<FJsonObject> StageJ = ScObj(ScReadJson(TEXT("Spacecraft/kit.json")), TEXT("stage"));
 	const TArray<TSharedPtr<FJsonValue>>* Pads = nullptr;
 	TArray<FVector, TInlineAllocator<4>> Feet;
 	if (StageJ && StageJ->TryGetArrayField(TEXT("pads"), Pads))
@@ -1018,7 +1018,7 @@ void ULyudSpaceflightSubsystem::FImpl::SetAboard(ULyudSpaceflightSubsystem& O, b
 void ULyudSpaceflightSubsystem::FImpl::Sit(ULyudSpaceflightSubsystem& O, bool bSnap)
 {
 	APlayerController* PC = nullptr;
-	AHeroCharacter* H = Cast<AHeroCharacter>(PlayerHero(O.GetWorld(), &PC));
+	AHeroCharacter* H = Cast<AHeroCharacter>(ScPlayerHero(O.GetWorld(), &PC));
 	if (!H || !O.Cabin || !bBuilt)
 	{
 		return;
@@ -1066,7 +1066,7 @@ void ULyudSpaceflightSubsystem::FImpl::Sit(ULyudSpaceflightSubsystem& O, bool bS
 
 void ULyudSpaceflightSubsystem::FImpl::Stand(ULyudSpaceflightSubsystem& O)
 {
-	AHeroCharacter* H = Cast<AHeroCharacter>(PlayerHero(O.GetWorld()));
+	AHeroCharacter* H = Cast<AHeroCharacter>(ScPlayerHero(O.GetWorld()));
 	if (!H || !O.bSeated)
 	{
 		return;
@@ -1085,7 +1085,7 @@ void ULyudSpaceflightSubsystem::FImpl::Stand(ULyudSpaceflightSubsystem& O)
 void ULyudSpaceflightSubsystem::FImpl::StartMove(ULyudSpaceflightSubsystem& O, const FVector& ToWorld, float Seconds, int32 Then)
 {
 	APlayerController* PC = nullptr;
-	ACharacter* Hero = PlayerHero(O.GetWorld(), &PC);
+	ACharacter* Hero = ScPlayerHero(O.GetWorld(), &PC);
 	if (!Hero || !PC || !O.Cabin || Move.bOn)
 	{
 		return;
@@ -1111,7 +1111,7 @@ void ULyudSpaceflightSubsystem::FImpl::StartMove(ULyudSpaceflightSubsystem& O, c
 void ULyudSpaceflightSubsystem::FImpl::TickMove(ULyudSpaceflightSubsystem& O, ACharacter& Hero, float Dt)
 {
 	Move.T += Dt;
-	const float A = Smooth01(Move.T / Move.Seconds);
+	const float A = ScSmooth01(Move.T / Move.Seconds);
 	// over the hatch's sill: the feet lift as he goes through, in the cabin's own frame (it may be rocking on the sea)
 	FVector L = FMath::Lerp(Move.FromLocal, Move.ToLocal, A);
 	L.Z += 42.f * FMath::Sin(PI * A);
@@ -1299,7 +1299,7 @@ void ULyudSpaceflightSubsystem::FImpl::TickCamera(ULyudSpaceflightSubsystem& O, 
 		K * 0.5f * FMath::Sin(A * 23.f + 2.1f * FMath::Sin(A * 5.1f)));
 	const FVector Jitter(K * 0.5f * FMath::Sin(A * 37.f), K * 0.5f * FMath::Sin(A * 41.f + 1.f), K * 0.7f * FMath::Sin(A * 29.f + 2.f));
 	const float Over = FMath::Clamp(float(St.GLoad) - 1.f, 0.f, 3.5f);
-	const FVector Down = CabinT.TransformVectorNoScale(Ue(St.G)).GetSafeNormal();
+	const FVector Down = CabinT.TransformVectorNoScale(ScUe(St.G)).GetSafeNormal();
 	Cam->Offset = Jitter + Down * (O.bSeated ? Over * 1.6f : 0.f);
 	Cam->FovAdd = -Over * 1.4f;
 }
@@ -1326,7 +1326,7 @@ void ULyudSpaceflightSubsystem::FImpl::SetWheel(ULyudSpaceflightSubsystem& O, bo
 		if (!bSnap)
 		{
 			Snd(O, TEXT("sc_wheel"), TEXT("hatch"));
-			Toast(&O, bSealed ? TEXT("ui.flight.toast.sealed") : TEXT("ui.flight.toast.unsealed"));
+			ScToast(&O, bSealed ? TEXT("ui.flight.toast.sealed") : TEXT("ui.flight.toast.unsealed"));
 		}
 	}
 }
@@ -1532,7 +1532,7 @@ void ULyudSpaceflightSubsystem::FImpl::DoAction(ULyudSpaceflightSubsystem& O, co
 		{
 			return false;
 		}
-		Toast(&O, Str(Why));
+		ScToast(&O, ScStr(Why));
 		return true;
 	};
 	const bool bAfloat = Flight.CapsuleAfloat();
@@ -1623,7 +1623,7 @@ void ULyudSpaceflightSubsystem::FImpl::DoAction(ULyudSpaceflightSubsystem& O, co
 			if (Id.Mid(3) == UTF8_TO_TCHAR(LyudFlight::SwitchName(i)))
 			{
 				// the click, the relay and the buzzer come back as the model's events
-				Feed(O, PlayerHero(O.GetWorld()));
+				Feed(O, ScPlayerHero(O.GetWorld()));
 				Refused(Flight.Toggle(i));
 				break;
 			}
@@ -1644,7 +1644,7 @@ void ULyudSpaceflightSubsystem::FImpl::DoAction(ULyudSpaceflightSubsystem& O, co
 		}
 		O.Cabin->PlayActionAnim(TEXT("launch"), true, false);
 		Snd(O, TEXT("sc_button"), TEXT("launch"));
-		Feed(O, PlayerHero(O.GetWorld()));
+		Feed(O, ScPlayerHero(O.GetWorld()));
 		if (!Refused(Flight.Launch()))
 		{
 			OnLaunch(O);
@@ -1684,7 +1684,7 @@ void ULyudSpaceflightSubsystem::FImpl::DoAction(ULyudSpaceflightSubsystem& O, co
 		O.Cabin->PlayActionAnim(TEXT("thermos"), true, false);
 		Snd(O, TEXT("sc_thermos_open"), TEXT("thermos"));
 		Snd(O, TEXT("sc_sip"), TEXT("thermos"), 1.f, 1.4f);
-		Toast(&O, TEXT("ui.flight.toast.tea"));
+		ScToast(&O, TEXT("ui.flight.toast.tea"));
 	}
 	else if (Id == TEXT("book"))
 	{
@@ -1718,11 +1718,11 @@ void ULyudSpaceflightSubsystem::FImpl::DoAction(ULyudSpaceflightSubsystem& O, co
 	{
 		if (!O.bSeated)
 		{
-			Toast(&O, TEXT("ui.flight.no.not_seated"));
+			ScToast(&O, TEXT("ui.flight.no.not_seated"));
 		}
 		else
 		{
-			Feed(O, PlayerHero(O.GetWorld()));
+			Feed(O, ScPlayerHero(O.GetWorld()));
 			Refused(Flight.StartNap());
 		}
 	}
@@ -1779,7 +1779,7 @@ void ULyudSpaceflightSubsystem::FImpl::Feed(ULyudSpaceflightSubsystem& O, const 
 		if (const ALyudEuropaSite* Site = Europa ? Europa->GetSite() : nullptr)
 		{
 			const FVector S = O.PadRotation.Quaternion().UnrotateVector(Site->GetSky().Sun).GetSafeNormal(UE_SMALL_NUMBER, FVector::UpVector);
-			Flight.SunF = Model(S);
+			Flight.SunF = ScModel(S);
 		}
 	}
 }
@@ -1819,7 +1819,7 @@ void ULyudSpaceflightSubsystem::FImpl::PlaceCabin(ULyudSpaceflightSubsystem& O, 
 	const ALyudSea* Sea = ALyudSea::Get(&O);
 	const float SeaZ = Sea ? Sea->SeaLevel() : float(O.SplashAt.Z);
 	const float Touch = float(Flight.P.C.TTouch);
-	const float Wave = bFlying ? SmoothStep(Touch, Touch + 2.5f, float(St.T)) : 1.f;
+	const float Wave = bFlying ? ScSmoothStep(Touch, Touch + 2.5f, float(St.T)) : 1.f;
 	AfloatClock += Dt;
 	const float Clock = float(FMath::Fmod(AfloatClock, 3600.0));
 	const float Yaw = AfloatYaw + float(St.ChuteYawDeg);
@@ -1910,7 +1910,7 @@ void ULyudSpaceflightSubsystem::FImpl::CraftBack(ULyudSpaceflightSubsystem& O)
 void ULyudSpaceflightSubsystem::FImpl::Restore(ULyudSpaceflightSubsystem& O)
 {
 	// a loaded game: the model's own string, then where the hero was
-	const bool bSave = !O.SavedFlight.IsEmpty() && Flight.Load(Std(O.SavedFlight));
+	const bool bSave = !O.SavedFlight.IsEmpty() && Flight.Load(ScStd(O.SavedFlight));
 	if (!bSave)
 	{
 		Flight.DevReset();
@@ -1927,7 +1927,7 @@ void ULyudSpaceflightSubsystem::FImpl::Restore(ULyudSpaceflightSubsystem& O)
 	if (O.bSeated)
 	{
 		// still held by the couch from before the load: let go first
-		if (AHeroCharacter* Seated = Cast<AHeroCharacter>(PlayerHero(O.GetWorld())); Seated && Seated->IsSeated())
+		if (AHeroCharacter* Seated = Cast<AHeroCharacter>(ScPlayerHero(O.GetWorld())); Seated && Seated->IsSeated())
 		{
 			Seated->StandUp();
 		}
@@ -1949,7 +1949,7 @@ void ULyudSpaceflightSubsystem::FImpl::Restore(ULyudSpaceflightSubsystem& O)
 	const ULyudEuropaSubsystem* Europa = ULyudEuropaSubsystem::Get(&O);
 	if (const ALyudEuropaSite* Site = Europa ? Europa->GetSite() : nullptr)
 	{
-		if (const ALyudSky* SkyNow = FindSky(O.GetWorld()))
+		if (const ALyudSky* SkyNow = ScFindSky(O.GetWorld()))
 		{
 			StarBase = Site->SkyAt(SkyNow->ShownUtc()).StarTurn;
 		}
@@ -2072,8 +2072,8 @@ void ULyudSpaceflightSubsystem::FImpl::TickSky(ULyudSpaceflightSubsystem& O, flo
 	// the model's flight frame as the cabin sees it (identity on the pad). While the real ice is under the cabin the
 	// universe stays the site's own and the cabin is drawn upright (the model's small tilt in the climb is not shown);
 	// after the swap the universe is eased onto the model's and from then on turns round the upright cabin exactly
-	const FQuat Qm = FRotationMatrix::MakeFromXZ(Ue(St.FrameX), Ue(St.FrameZ)).ToQuat();
-	const float W = bFlying ? Smooth01(float((St.T - SwapT) / double(BlendSeconds))) : 0.f;
+	const FQuat Qm = FRotationMatrix::MakeFromXZ(ScUe(St.FrameX), ScUe(St.FrameZ)).ToQuat();
+	const float W = bFlying ? ScSmooth01(float((St.T - SwapT) / double(BlendSeconds))) : 0.f;
 	const FQuat Turn = FQuat::Slerp(FQuat::Identity, Qm, W);
 	Fix = Turn * Qm.Inverse();
 	const FVector Cab = O.Cabin->GetActorLocation();
@@ -2086,7 +2086,7 @@ void ULyudSpaceflightSubsystem::FImpl::TickSky(ULyudSpaceflightSubsystem& O, flo
 		}
 		PlanetOff = FQuat::FindBetweenNormals(DirWorld(O, Rh(St.PlanetDir)).GetSafeNormal(), Site->PlanetDir.GetSafeNormal());
 	}
-	const FQuat Off = FQuat::Slerp(PlanetOff, FQuat::Identity, bFlying ? Smooth01(float(St.T / (SwapT + double(BlendSeconds)))) : 0.f);
+	const FQuat Off = FQuat::Slerp(PlanetOff, FQuat::Identity, bFlying ? ScSmooth01(float(St.T / (SwapT + double(BlendSeconds)))) : 0.f);
 	SunWorld = DirWorld(O, Rh(St.SunDir)).GetSafeNormal(UE_SMALL_NUMBER, FVector::UpVector);
 	PlanetWorld = Off.RotateVector(DirWorld(O, Rh(St.PlanetDir))).GetSafeNormal(UE_SMALL_NUMBER, FVector::UpVector);
 
@@ -2098,7 +2098,7 @@ void ULyudSpaceflightSubsystem::FImpl::TickSky(ULyudSpaceflightSubsystem& O, flo
 		SkyTimer = 0.5f;
 		if (!Sky.IsValid())
 		{
-			Sky = FindSky(O.GetWorld());
+			Sky = ScFindSky(O.GetWorld());
 		}
 		if (const ALyudSky* S = Sky.Get())
 		{
@@ -2115,7 +2115,7 @@ void ULyudSpaceflightSubsystem::FImpl::TickSky(ULyudSpaceflightSubsystem& O, flo
 	}
 
 	// the planet: the splash point's texel along the model's island axis, the pole toward its north axis
-	const float SizeEase = SmoothStep(26.f, 70.f, float(St.PlanetDiaDeg));
+	const float SizeEase = ScSmoothStep(26.f, 70.f, float(St.PlanetDiaDeg));
 	const float IslandSize = float(IslandExtentKm) * FMath::Pow(1000.f / float(IslandExtentKm), 1.f - SizeEase);
 	const double Stretch = double(IslandSize) / IslandExtentKm / double(PlanetRadiusKm);
 	const double LatS = FMath::DegreesToRadians(IslandLatDeg) + SplashNorthKm * Stretch;
@@ -2147,7 +2147,7 @@ void ULyudSpaceflightSubsystem::FImpl::TickSky(ULyudSpaceflightSubsystem& O, flo
 	const FVector PlanetSun = (FVector::CrossProduct(Iw, Tw) * PlanetSunRH.X + Tw * PlanetSunRH.Y + Iw * PlanetSunRH.Z).GetSafeNormal(UE_SMALL_NUMBER, Iw);
 	const bool bSunMoved = !PlanetSun.Equals(LastPlanetSun, 2.0e-4);
 	const float Gain = 2.2f * SkyDim;
-	const float Haze = FMath::Lerp(0.3f, 1.f, SmoothStep(2.f, 30.f, float(St.RangeKm)));
+	const float Haze = FMath::Lerp(0.3f, 1.f, ScSmoothStep(2.f, 30.f, float(St.RangeKm)));
 	if (O.PlanetMID)
 	{
 		if (bSunMoved)
@@ -2248,7 +2248,7 @@ void ULyudSpaceflightSubsystem::FImpl::TickExterior(ULyudSpaceflightSubsystem& O
 	E.Heat = float(St.I.Hull01);
 	E.Scorch = float(St.Scorch);
 	// the hoar of Europa on the shell: gone in the first minute of the climb
-	E.Frost = bFlying ? 0.3f * (1.f - SmoothStep(5.f, 60.f, float(St.T))) : (bAfloat ? 0.f : 0.3f);
+	E.Frost = bFlying ? 0.3f * (1.f - ScSmoothStep(5.f, 60.f, float(St.T))) : (bAfloat ? 0.f : 0.3f);
 	E.Wet = Wet;
 	E.Fog = float(St.Whiteout);
 	FVector Sun = SunWorld;
@@ -2343,14 +2343,14 @@ void ULyudSpaceflightSubsystem::FImpl::Snd(ULyudSpaceflightSubsystem& O, const T
 
 void ULyudSpaceflightSubsystem::FImpl::HandleEvent(ULyudSpaceflightSubsystem& O, const LyudFlight::FEvent& E)
 {
-	const FString Id = Str(E.Id);
-	const FString Arg = Str(E.Arg);
+	const FString Id = ScStr(E.Id);
+	const FString Arg = ScStr(E.Arg);
 	const float Soft = E.bAsleep ? 0.35f : 1.f;
 	UE_LOG(LogTemp, Display, TEXT("FLIGHT event %d %s %s at %.1f s"), E.Kind, *Id, *Arg, E.T);
 	if (E.Kind == LyudFlight::CueSay)
 	{
 		// the hero's own line: his voice inside his head, and its subtitle
-		const ACharacter* Hero = PlayerHero(O.GetWorld());
+		const ACharacter* Hero = ScPlayerHero(O.GetWorld());
 		Say(O, Id, Id, Hero ? Hero->GetPawnViewLocation() : O.Cabin->GetActorLocation(), 1.f, true);
 		return;
 	}
@@ -2455,7 +2455,7 @@ void ULyudSpaceflightSubsystem::FImpl::HandleEvent(ULyudSpaceflightSubsystem& O,
 		if (!O.bLandedToastShown)
 		{
 			O.bLandedToastShown = true;
-			Toast(&O, TEXT("ui.flight.toast.landed"));
+			ScToast(&O, TEXT("ui.flight.toast.landed"));
 		}
 		UE_LOG(LogTemp, Display, TEXT("FLIGHT landed (flight %d) at %s"), Flight.FlightsFlown(), *O.Cabin->GetActorLocation().ToString());
 	}
@@ -2559,8 +2559,8 @@ void ULyudSpaceflightSubsystem::FImpl::TickSounds(ULyudSpaceflightSubsystem& O, 
 		Pitch[LoopEngine] = FMath::Clamp(1.f + 0.03f * (G - 1.6f), 0.95f, 1.08f);
 	}
 	Want[LoopRattle] = !bFlying ? 0.f : (St.bEngine ? 0.25f * G / 1.6f : (bEntry ? 0.2f + 0.6f * FMath::Clamp(G / 4.2f, 0.f, 1.f) : 0.3f * float(St.Shake)));
-	Want[LoopRoar] = 0.9f * SmoothStep(0.f, 0.35f, P) * (1.f - 0.5f * SmoothStep(0.55f, 0.9f, P));
-	Want[LoopRoarHi] = SmoothStep(0.45f, 0.9f, P);
+	Want[LoopRoar] = 0.9f * ScSmoothStep(0.f, 0.35f, P) * (1.f - 0.5f * ScSmoothStep(0.55f, 0.9f, P));
+	Want[LoopRoarHi] = ScSmoothStep(0.45f, 0.9f, P);
 	Pitch[LoopRoar] = Pitch[LoopRoarHi] = 0.9f + 0.15f * P;
 	if (bFlying && !bWet && St.Chute == LyudFlight::EChute::Drogue)
 	{
@@ -2829,7 +2829,7 @@ void ULyudSpaceflightSubsystem::FImpl::TickRecord(ULyudSpaceflightSubsystem& O, 
 	if (!O.bAboard)
 	{
 		// from outside: through the open hatch, a few metres
-		const ACharacter* Hero = PlayerHero(O.GetWorld());
+		const ACharacter* Hero = ScPlayerHero(O.GetWorld());
 		const float Far = Hero ? float(FVector::Dist(Hero->GetActorLocation(), O.Cabin->GetActorLocation())) : 1.0e6f;
 		Near = (O.bHatchOpen ? 0.5f : 0.12f) * FMath::Clamp(1.f - Far / 1500.f, 0.f, 1.f);
 	}
@@ -2959,7 +2959,7 @@ bool ULyudSpaceflightSubsystem::TrySpawn()
 	}
 	bSpawned = true;
 	Impl->LoadData(*this);
-	Impl->Sky = FindSky(World);
+	Impl->Sky = ScFindSky(World);
 	// some 60 m from Europa's hatch toward the planet's azimuth, the big porthole that way (the model's flight frame)
 	const FVector Planet = Impl->Sky.IsValid() ? Site->SkyAt(Impl->Sky->ShownUtc()).Planet : Site->PlanetDir;
 	const FVector Azimuth = FVector(Planet.X, Planet.Y, 0.0).GetSafeNormal(UE_SMALL_NUMBER, FVector::ForwardVector);
@@ -3015,7 +3015,7 @@ void ULyudSpaceflightSubsystem::Tick(float DeltaTime)
 	}
 	FImpl& M = *Impl;
 	APlayerController* PC = nullptr;
-	ACharacter* Hero = PlayerHero(GetWorld(), &PC);
+	ACharacter* Hero = ScPlayerHero(GetWorld(), &PC);
 	ULyudEuropaSubsystem* Europa = ULyudEuropaSubsystem::Get(this);
 	ALyudEuropaSite* Site = Europa ? Europa->GetSite() : nullptr;
 	if (!Hero || !PC || !Site || !Cabin || !Stage || !SkyRig)
@@ -3224,7 +3224,7 @@ void ULyudSpaceflightSubsystem::LookThrough(const FString& Which)
 void ULyudSpaceflightSubsystem::GoCraft()
 {
 	ULyudEuropaSubsystem* Europa = ULyudEuropaSubsystem::Get(this);
-	ACharacter* Hero = PlayerHero(GetWorld());
+	ACharacter* Hero = ScPlayerHero(GetWorld());
 	if (!Impl || !bSpawned || !Europa || !Hero || !Stage || !Cabin)
 	{
 		return;
@@ -3284,7 +3284,7 @@ void ULyudSpaceflightSubsystem::GoCabin()
 		bBuckled = true;
 		Cabin->PlayActionAnim(TEXT("buckle"), true, true);
 	}
-	M.Feed(*this, PlayerHero(GetWorld()));
+	M.Feed(*this, ScPlayerHero(GetWorld()));
 	UE_LOG(LogTemp, Display, TEXT("FLIGHT go cabin: seated %d"), bSeated ? 1 : 0);
 }
 
@@ -3431,7 +3431,7 @@ FString ULyudSpaceflightSubsystem::Report() const
 	}
 	const FImpl& M = *Impl;
 	const LyudFlight::FState& S = M.St;
-	const ACharacter* Hero = PlayerHero(GetWorld());
+	const ACharacter* Hero = ScPlayerHero(GetWorld());
 	int32 LoopsOn = 0;
 	for (const TObjectPtr<UAudioComponent>& A : Loops)
 	{
@@ -3462,7 +3462,7 @@ void ULyudSpaceflightSubsystem::OnGameSaving_Implementation()
 		// a world without the craft keeps what was saved before
 		return;
 	}
-	SavedFlight = Str(Impl->Flight.Save());
+	SavedFlight = ScStr(Impl->Flight.Save());
 	SavedAboard = bAboard ? (bSeated ? (bBuckled ? 3 : 2) : 1) : 0;
 	bSavedHatchOpen = bHatchOpen;
 	bSavedWheelSealed = bWheelSealed;
@@ -3482,24 +3482,24 @@ void ULyudSpaceflightSubsystem::OnGameLoaded_Implementation()
 namespace
 {
 	FAutoConsoleCommandWithWorld FlightUseCmd(TEXT("lyud.Flight.Use"), TEXT("What E does at the craft now."),
-		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = FlightOf(W)) { F->Use(); } }));
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = ScFlightOf(W)) { F->Use(); } }));
 	FAutoConsoleCommandWithWorld FlightReportCmd(TEXT("lyud.Flight.Report"), TEXT("Logs the flight's state (FLIGHT report ...)."),
-		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = FlightOf(W)) { UE_LOG(LogTemp, Display, TEXT("%s"), *F->Report()); } }));
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = ScFlightOf(W)) { UE_LOG(LogTemp, Display, TEXT("%s"), *F->Report()); } }));
 	FAutoConsoleCommandWithWorld FlightGoCraftCmd(TEXT("lyud.Flight.GoCraft"), TEXT("Onto Europa's ice by the craft's ladder."),
-		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = FlightOf(W)) { F->GoCraft(); } }));
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = ScFlightOf(W)) { F->GoCraft(); } }));
 	FAutoConsoleCommandWithWorld FlightGoCabinCmd(TEXT("lyud.Flight.GoCabin"), TEXT("Onto the couch in the cabin on Europa (hatch shut and sealed, buckled)."),
-		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = FlightOf(W)) { F->GoCabin(); } }));
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = ScFlightOf(W)) { F->GoCabin(); } }));
 	FAutoConsoleCommandWithWorld FlightLaunchCmd(TEXT("lyud.Flight.Launch"), TEXT("Seats the hero, runs the checklist and presses the button."),
-		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = FlightOf(W)) { F->LaunchNow(); } }));
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = ScFlightOf(W)) { F->LaunchNow(); } }));
 	FAutoConsoleCommandWithWorld FlightResetCmd(TEXT("lyud.Flight.Reset"), TEXT("The craft back on Europa, cold."),
-		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = FlightOf(W)) { F->ResetFlight(); } }));
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = ScFlightOf(W)) { F->ResetFlight(); } }));
 	FAutoConsoleCommandWithWorld FlightSwimOutCmd(TEXT("lyud.Flight.SwimOut"), TEXT("Afloat: off the couch, the hatch open, out into the sea."),
-		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = FlightOf(W)) { F->Do(TEXT("dev_swim_out")); } }));
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = ScFlightOf(W)) { F->Do(TEXT("dev_swim_out")); } }));
 	FAutoConsoleCommandWithWorldAndArgs FlightPhaseCmd(TEXT("lyud.Flight.Phase"),
 		TEXT("lyud.Flight.Phase <parked|prelaunch|ascent|coast|approach|entry|chute|splash|afloat|seconds>: jumps the flight there."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* W)
 		{
-			if (ULyudSpaceflightSubsystem* F = FlightOf(W); F && Args.Num() > 0)
+			if (ULyudSpaceflightSubsystem* F = ScFlightOf(W); F && Args.Num() > 0)
 			{
 				F->JumpToPhase(Args[0]);
 			}
@@ -3507,7 +3507,7 @@ namespace
 	FAutoConsoleCommandWithWorldAndArgs FlightDoCmd(TEXT("lyud.Flight.Do"), TEXT("lyud.Flight.Do <action id>: one action whatever the hero looks at (hatch, wheel, sit, sw_power, launch ...)."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* W)
 		{
-			if (ULyudSpaceflightSubsystem* F = FlightOf(W); F && Args.Num() > 0)
+			if (ULyudSpaceflightSubsystem* F = ScFlightOf(W); F && Args.Num() > 0)
 			{
 				F->Do(Args[0]);
 			}
@@ -3515,18 +3515,18 @@ namespace
 	FAutoConsoleCommandWithWorldAndArgs FlightLookCmd(TEXT("lyud.Flight.Look"), TEXT("lyud.Flight.Look <big|left|right|back>: leans to a porthole."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* W)
 		{
-			if (ULyudSpaceflightSubsystem* F = FlightOf(W))
+			if (ULyudSpaceflightSubsystem* F = ScFlightOf(W))
 			{
 				F->LookThrough(Args.Num() > 0 ? Args[0] : FString());
 			}
 		}));
 	FAutoConsoleCommandWithWorld FlightRecordCmd(TEXT("lyud.Flight.Record"), TEXT("The next record onto the platter."),
-		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = FlightOf(W)) { F->Do(TEXT("player")); } }));
+		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudSpaceflightSubsystem* F = ScFlightOf(W)) { F->Do(TEXT("player")); } }));
 
 	// developer mode (F7): the group "flight"
 	bool StandInCabin(UWorld* W, FTransform& Out)
 	{
-		ULyudSpaceflightSubsystem* F = FlightOf(W);
+		ULyudSpaceflightSubsystem* F = ScFlightOf(W);
 		if (!F)
 		{
 			return false;
@@ -3543,7 +3543,7 @@ namespace
 
 	LyudDev::FAutoTeleport GFlightCraftTp(TEXT("flight_craft"), TEXT("flight"), TEXT("dev.tp.flight_craft"), [](UWorld* W, FTransform& Out)
 	{
-		ULyudSpaceflightSubsystem* F = FlightOf(W);
+		ULyudSpaceflightSubsystem* F = ScFlightOf(W);
 		if (!F || !F->GetStage())
 		{
 			return false;
@@ -3558,14 +3558,14 @@ namespace
 	});
 	LyudDev::FAutoAction GFlightStart(TEXT("flight.start"), TEXT("flight"), TEXT("dev.action.flight.start"), [](UWorld* W)
 	{
-		if (ULyudSpaceflightSubsystem* F = FlightOf(W))
+		if (ULyudSpaceflightSubsystem* F = ScFlightOf(W))
 		{
 			F->LaunchNow();
 		}
 	});
 	void DevPhase(UWorld* W, const TCHAR* Phase)
 	{
-		if (ULyudSpaceflightSubsystem* F = FlightOf(W))
+		if (ULyudSpaceflightSubsystem* F = ScFlightOf(W))
 		{
 			F->JumpToPhase(Phase);
 		}
@@ -3589,14 +3589,14 @@ namespace
 	LyudDev::FAutoAction GFlightRecords(TEXT("flight.records"), TEXT("flight"), TEXT("dev.action.flight.records"), [](UWorld* W)
 	{
 		// the rack is the craft's own (eight sleeves, no pocket items): the next one goes onto the platter
-		if (ULyudSpaceflightSubsystem* F = FlightOf(W))
+		if (ULyudSpaceflightSubsystem* F = ScFlightOf(W))
 		{
 			F->Do(TEXT("player"));
 		}
 	});
 	LyudDev::FAutoAction GFlightReset(TEXT("flight.reset"), TEXT("flight"), TEXT("dev.action.flight.reset"), [](UWorld* W)
 	{
-		if (ULyudSpaceflightSubsystem* F = FlightOf(W))
+		if (ULyudSpaceflightSubsystem* F = ScFlightOf(W))
 		{
 			F->ResetFlight();
 		}

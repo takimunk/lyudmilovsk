@@ -185,6 +185,17 @@ protected:
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> OutsideMeshes;
 	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> Mids;
 	UPROPERTY(Transient) TArray<TObjectPtr<UPointLightComponent>> CabinLamps;
+	/** Seen from both sides (the hatch with its wheel, the three panes): shown while either set is. */
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> SharedMeshes;
+	/** Every moving or separately shown part by the .cpp's part index (null where a piece is missing), then the simple
+	 *  collision boxes. */
+	UPROPERTY(Transient) TArray<TObjectPtr<USceneComponent>> Parts;
+	/** The soft-landing jets' glow under the shield (SetJets). */
+	UPROPERTY(Transient) TObjectPtr<UPointLightComponent> JetLight;
+
+	/** The printed plates, the lamp captions and the sleeves follow lyud.Language. */
+	void OnLanguageChanged(class IConsoleVariable* Variable);
+	FDelegateHandle LanguageHandle;
 
 	/** Opaque to the director: the cabin's own runtime data (kit measures, needles' damped values, animation clocks). */
 	struct FCabinData;
