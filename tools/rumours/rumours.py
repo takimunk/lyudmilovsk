@@ -44,6 +44,12 @@ KINDS = collections.OrderedDict([
     ("tune",   {"hops": 2, "life": 3, "pass": 0.5, "rank": 3}),
     ("sing",   {"hops": 2, "life": 2, "pass": 0.5, "rank": 2}),
     ("film",   {"hops": 1, "life": 2, "pass": 0.5, "rank": 1}),
+    # the yacht school (docs/yacht_school.md "Town"): joined, capsized in front of the pier, won a race, towed home, the certificate
+    ("sail",    {"hops": 2, "life": 4, "pass": 0.55, "once": 1, "rank": 4}),
+    ("capsize", {"hops": 2, "life": 2, "pass": 0.6, "rank": 2}),
+    ("regatta", {"hops": 3, "life": 5, "pass": 0.65, "news": 0.3, "rank": 8}),
+    ("tow",     {"hops": 2, "life": 3, "pass": 0.6, "rank": 3}),
+    ("skipper", {"hops": 3, "life": 5, "pass": 0.6, "once": 1, "rank": 6}),
 ])
 
 # Game events (ULyudQuests::Notify) -> a kind; the first rule that matches wins. target: "*", "prefix*" or the target itself;
@@ -63,6 +69,13 @@ RULES = [
     {"event": "play_tune", "target": "bonfire", "kind": "sing", "detail": ""},
     {"event": "play_tune", "target": "*", "kind": "tune", "detail": "music.tune.{t}"},
     {"event": "stamp", "target": "films/*", "kind": "film", "detail": ""},
+    # the yacht school's quest events (ULyudQuests::Notify("sail", ...), docs/yacht_school.md "Quest events"; "towed" is fired
+    # by the school's engine when the coach's launch tows the hero's boat home)
+    {"event": "sail", "target": "join", "kind": "sail", "detail": ""},
+    {"event": "sail", "target": "capsize", "kind": "capsize", "detail": ""},
+    {"event": "sail", "target": "race_win", "kind": "regatta", "detail": ""},
+    {"event": "sail", "target": "towed", "kind": "tow", "detail": ""},
+    {"event": "sail", "target": "certificate", "kind": "skipper", "detail": ""},
 ]
 
 SETTINGS = {
@@ -142,6 +155,31 @@ PAPER = {
          "They sang to a guitar by the bonfire on the beach. A boy from the club played, they say.",
          "浜のたき火でギターに合わせて歌った。弾いていたのはクラブの少年だそうだ。"),
     ],
+    "sail": [
+        ("В яхт-школе «Луч» новый ученик: школьник, говорят, сразу спросил, где у лодки руль, а где тормоз. Тормоза у лодки нет.",
+         "The Luch sailing school has a new pupil: a schoolboy who, they say, asked straight away where the boat's rudder was and where its brakes were. A boat has no brakes.",
+         "ヨット学校「ルーチ」に新入生。少年はさっそく「舵はどこ、ブレーキは？」と聞いたそうだ。船にブレーキはない。"),
+    ],
+    "capsize": [
+        ("Пирс вчера аплодировал: новичок яхт-школы перевернулся у самых перил, поднял лодку и пошёл дальше. Чайки остались недовольны.",
+         "The pier applauded yesterday: a sailing school newcomer capsized right by the railing, righted the boat and sailed on. The gulls were not amused.",
+         "昨日、桟橋から拍手が起きた。ヨット学校の新人が手すりのすぐそばで転覆し、艇を起こしてまた走り出した。カモメは不満げだった。"),
+    ],
+    "regatta": [
+        ("На пирсе только и разговоров что о вчерашней гонке: первым финишировал школьник, который весной не знал, где у паруса шкот.",
+         "The pier talks of nothing but yesterday's race: first across the line was a schoolboy who in spring didn't know which rope was the sheet.",
+         "桟橋は昨日のレースの話でもちきり。一着は、春にはシートがどの綱かも知らなかった少年。"),
+    ],
+    "tow": [
+        ("Вчера тренерский катер привёл на буксире «Луч» с юным рулевым. Рулевой махал зрителям, как с парада.",
+         "Yesterday the coach's launch towed in a Luch with a young helmsman, who waved to the spectators as if on parade.",
+         "昨日、コーチのボートが若い舵手のルーチを引いて帰ってきた。舵手はパレードのように見物人に手を振っていた。"),
+    ],
+    "skipper": [
+        ("У яхт-школы новый рулевой со свидетельством: школьник сдал все девять занятий. Теперь берёт лодку сам, по пятьдесят рублей.",
+         "The sailing school has a new certified helmsman: a schoolboy passed all nine lessons. Now he takes a boat out alone, fifty roubles a go.",
+         "ヨット学校に証明書持ちの新しい舵手。少年が九つの授業をすべて修了した。これからは一人で艇を借りられる。一回五十ルーブル。"),
+    ],
     "film": [
         ("В «Рассвете» на старой хронике смеялся весь зал, громче всех — школьник в третьем ряду.",
          "At the old newsreel in the Rassvet the whole hall laughed, loudest of all a schoolboy in the third row.",
@@ -190,6 +228,16 @@ PS = {
              "たき火のそばで歌ったんだって？行けなくて残念。"),
     "film": ("Видели тебя в «Рассвете». Как тебе старое кино?", "We saw you at the Rassvet. How did you like the old films?",
              "『ラスヴェート』で君を見かけたよ。古い映画はどうだった？"),
+    "sail": ("Говорят, ты записался в яхт-школу. Попутного ветра! И жилет застёгивай.", "They say you've joined the sailing school. Fair winds! And do your life jacket up.",
+             "ヨット学校に入ったって？順風を！ライフジャケットはしっかり留めてね。"),
+    "capsize": ("Слышали, ты перевернулся прямо у пирса. Главное — вынырнул с улыбкой.", "We heard you capsized right by the pier. The main thing is you came up smiling.",
+                "桟橋のすぐそばでひっくり返ったって？笑顔で浮かんできたなら上出来。"),
+    "regatta": ("Говорят, ты выиграл гонку! Пришли вырезку из газеты.", "They say you won a race! Send us the cutting from the paper.",
+                "レースに勝ったって？新聞の切り抜きを送ってね。"),
+    "tow": ("Говорят, тебя катер на буксире домой привёл. Бывает, ветер переменчив.", "They say the launch towed you home. It happens; the wind's fickle.",
+            "ボートに引かれて帰ってきたって？よくあることさ、風は気まぐれだから。"),
+    "skipper": ("Слышали, у тебя теперь свидетельство рулевого. Покатаешь летом?", "We heard you've got your helmsman's certificate now. Will you take us out in summer?",
+                "舵手の証明書をもらったって？夏に乗せてくれる？"),
 }
 
 # The staff talk: a topic every counter offers while the town talks about the hero (tools/city/content/talk.json topic_sets
@@ -239,6 +287,21 @@ STAFF = {
     "film": ("Говорят, ты ходил в «Рассвет» на старую хронику. Ну и как поезд, не страшно?",
              "They say you went to the old newsreel at the Rassvet. Well, the train: was it scary?",
              "『ラスヴェート』の古いニュース映画を見たんだって？で、列車は怖かった？"),
+    "sail": ("Говорят, ты в яхт-школу записался. У нас тут один покупатель тоже ходил, сорок лет назад, до сих пор узлы вяжет.",
+             "They say you've joined the sailing school. One of our customers went too, forty years ago; still ties knots.",
+             "ヨット学校に入ったって？うちのお客さんにも四十年前に通った人がいてね、いまだにロープを結んでるよ。"),
+    "capsize": ("Говорят, ты у пирса перевернулся, весь пирс видел. Ничего, сухая одежда — дело наживное.",
+                "They say you capsized by the pier and the whole pier saw. Never mind, dry clothes come and go.",
+                "桟橋のそばで転覆して、みんな見てたって？気にしない、乾いた服なんてまた着ればいい。"),
+    "regatta": ("Говорят, ты гонку выиграл! Тут с утра все про синий парус спрашивают, а это, выходит, ты.",
+                "They say you won a race! People have been asking about the blue sail all morning, and it turns out it was you.",
+                "レースに勝ったって？朝からみんな青い帆の話をしてたけど、君だったんだね。"),
+    "tow": ("Говорят, тебя катер на буксире вёл. Ничего, тренер говорит, это лучше, чем грести.",
+            "They say the launch had you on a tow. Never mind, the coach says it beats rowing.",
+            "ボートに引かれてたって？気にしない、コーチいわく、こぐよりましだって。"),
+    "skipper": ("Говорят, ты теперь рулевой со свидетельством. Если в лодке место будет, меня возьми.",
+                "They say you're a certified helmsman now. If there's room in the boat, take me along.",
+                "証明書持ちの舵手になったって？艇に空きがあったら乗せてよ。"),
 }
 
 # The kinds' short names (the dev panel and lyud.Rumours.Status).
@@ -250,6 +313,9 @@ NAMES = {
     "crows": ("подарки ворон", "the crows' presents", "カラスの贈り物"), "catch": ("улов", "a catch", "釣果"),
     "kite": ("змей", "a kite", "凧"), "tune": ("мелодия", "a tune", "曲"), "sing": ("песни у костра", "songs by the fire", "たき火の歌"),
     "film": ("старое кино", "the old films", "古い映画"),
+    "sail": ("записался в яхт-школу", "joined the sailing school", "ヨット学校に入会"), "capsize": ("оверкиль у пирса", "a capsize by the pier", "桟橋のそばで転覆"),
+    "regatta": ("победа в гонке", "a race won", "レースで優勝"), "tow": ("на буксире домой", "towed home", "引かれて帰港"),
+    "skipper": ("свидетельство рулевого", "the helmsman's certificate", "舵手の証明書"),
 }
 
 DEV = {

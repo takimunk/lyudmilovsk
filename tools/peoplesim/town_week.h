@@ -659,6 +659,9 @@ static int Week()
 			bool bOpen = false;
 			for (const auto& PD : Pl.second)
 			{
+				// a duty whose activity waits for a condition the game sets (the sailing school's office in season) opens nothing while it is off
+				const int DA = S.ActOf(S.People[PD.first].Duties[PD.second]);
+				if (DA >= 0 && !S.ConditionOk(S.Activities[(size_t)DA])) continue;
 				bOpen |= InShift(S, S.People[PD.first].Duties[PD.second], Wd, Hr, -0.75f, -0.25f, S.bDayOff);
 			}
 			if (!bOpen) continue;

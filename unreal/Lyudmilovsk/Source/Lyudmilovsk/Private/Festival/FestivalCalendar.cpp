@@ -142,6 +142,12 @@ namespace LyudFest
 		return Out.D >= 1;
 	}
 
+	FDate WeekdayOnOrAfter(int Y, int M, int D, int Wd)
+	{
+		const FDate From{ Y, M, D };
+		return AddDays(From, ((Wd - Weekday(From)) % 7 + 7) % 7);
+	}
+
 	namespace
 	{
 		std::vector<std::string> Strings(const LyudJson::FValue& V)
@@ -266,6 +272,10 @@ namespace LyudFest
 		{
 			FDate N;
 			return D.M == F.Month && NthWeekday(D.Y, F.Month, F.Nth, F.Wd, N) && N == D;
+		}
+		if (F.Rule == "weekday_on_after")
+		{
+			return WeekdayOnOrAfter(D.Y, F.Month, F.DayOfMonth, F.Wd) == D;
 		}
 		if (F.Rule == "easter_orthodox" || F.Rule == "easter_western")
 		{

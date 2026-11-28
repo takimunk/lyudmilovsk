@@ -162,9 +162,17 @@ namespace LyudPeople
 		const std::string Spots = bTownOk ? ReadFile(Dir + "/winter_spots.json") : std::string();
 		// and the yards the children play in (tools/yard/yard_areas.py, docs/yard_games.md), in the same format
 		const std::string Yards = bTownOk ? ReadFile(Dir + "/yard_spots.json") : std::string();
-		const bool bSpotsOk = (Spots.empty() || LoadSpots(Spots)) && (Yards.empty() || LoadSpots(Yards));
+		// and the sailing school's (tools/sailing/sailing_people.py, docs/yacht_school.md "People (part F)"): the boathouse, the
+		// boat park, the slip, the spectators' places; then who belongs to it (the members and their groups)
+		const std::string Sail = bTownOk ? ReadFile(Dir + "/sailing_spots.json") : std::string();
+		const bool bSpotsOk = (Spots.empty() || LoadSpots(Spots)) && (Yards.empty() || LoadSpots(Yards)) && (Sail.empty() || LoadSpots(Sail));
 		bLoading = false;
 		if (!bSpotsOk)
+		{
+			return false;
+		}
+		const std::string Members = bTownOk ? ReadFile(Dir + "/sailing_members.json") : std::string();
+		if (!Members.empty() && !LoadMembers(Members))
 		{
 			return false;
 		}
@@ -361,6 +369,9 @@ namespace LyudPeople
 				A.DipMax = std::max(A.DipMin, V["dip"][1].F());
 			}
 			A.Regulars = V["regulars"].F(0.f);
+			A.Members = V["members"].S();
+			A.MembersG = A.Members.empty() ? -1 : GroupId(A.Members);
+			A.bAfloat = V["afloat"].F() > 0.f;
 			if (V["temp"].Size() == 2)
 			{
 				A.TempMin = V["temp"][size_t(0)].F();
@@ -1490,6 +1501,8 @@ namespace LyudPeople
 				const int Cap = Sl.Kind == "stand" || Sl.Kind == "banya_shelf" ? 3 : (Sl.Kind == "skate" ? 2 : 1);
 				Sl.Capacity = std::max(1, S["capacity"].I(Cap));
 				Sl.Tag = S["tag"].S();
+				// its own way on (a door, then the room; the slip down to the water): walked as a line from its first point
+				Sl.Reach = Line(S["reach"]);
 				Pl.Slots.push_back((int)Slots.size());
 				Slots.push_back(Sl);
 			}
@@ -1517,6 +1530,10 @@ namespace LyudPeople
 				for (const int SI : Pl.Slots)
 				{
 					FSlot& Sl = Slots[(size_t)SI];
+					if (!Sl.Reach.empty())
+					{
+						continue;       // given by the data
+					}
 					if (!Pl.Loop.empty())
 					{
 						V3 Out = (Sl.Pos - Mid).Flat();
@@ -1595,6 +1612,146 @@ namespace LyudPeople
 		return false;
 	}
 
+	// --- groups with a programme (the sailing school's members) ------------------------------------------------
+
+	int FWorld::GroupId(const std::string& Name)
+	{
+		const int G = FindGroup(Name);
+		if (G >= 0)
+		{
+			return G;
+		}
+		GroupNames.push_back(Name);
+		GroupAct.push_back(-1);
+		return (int)GroupNames.size() - 1;
+	}
+
+	int FWorld::FindGroup(const std::string& Name) const
+	{
+		for (int I = 0; I < (int)GroupNames.size(); I++)
+		{
+			if (GroupNames[(size_t)I] == Name)
+			{
+				return I;
+			}
+		}
+		return -1;
+	}
+
+	void FWorld::SetGroupActivity(const std::string& Group, const std::string& Activity)
+	{
+		const int G = FindGroup(Group);
+		if (G >= 0)
+		{
+			GroupAct[(size_t)G] = Activity.empty() ? -1 : FindActivity(Activity);
+		}
+	}
+
+	bool FWorld::IsMember(const FPerson& P, int Group) const
+	{
+		for (const FMembership& M : P.Member)
+		{
+			if (M.Group == Group)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	int FWorld::ProgramNow(const FPerson& P, int* OutGroup) const
+	{
+		for (const FMembership& M : P.Member)
+		{
+			const int A = M.Group >= 0 && M.Group < (int)GroupAct.size() ? GroupAct[(size_t)M.Group] : -1;
+			if (A < 0)
+			{
+				continue;
+			}
+			int Out = A;
+			if (M.Role >= 0 && M.Role < (int)RoleMap.size())
+			{
+				for (const std::pair<int, int>& R : RoleMap[(size_t)M.Role])
+				{
+					if (R.first == A)
+					{
+						Out = R.second;
+					}
+				}
+			}
+			if (Out < 0)
+			{
+				continue;       // the role has nothing to do in this part (mapped to "")
+			}
+			if (OutGroup)
+			{
+				*OutGroup = M.Group;
+			}
+			return Out;
+		}
+		return -1;
+	}
+
+	bool FWorld::LoadMembers(const std::string& Text)
+	{
+		LyudJson::FValue J;
+		if (!LyudJson::Parse(Text, J, LastError))
+		{
+			LastError = "sailing_members.json: " + LastError;
+			return false;
+		}
+		auto RoleId = [this](const std::string& Name)
+		{
+			for (int I = 0; I < (int)RoleNames.size(); I++)
+			{
+				if (RoleNames[(size_t)I] == Name)
+				{
+					return I;
+				}
+			}
+			RoleNames.push_back(Name);
+			RoleMapNames.emplace_back();
+			return (int)RoleNames.size() - 1;
+		};
+		for (const auto& R : J["roles"].Fields)
+		{
+			const int Ri = RoleId(R.first);
+			for (const auto& F : R.second.Fields)
+			{
+				RoleMapNames[(size_t)Ri].emplace_back(F.first, F.second.S());
+			}
+		}
+		for (const LyudJson::FValue& V : J["members"].Items)
+		{
+			const int Who = FindPerson(V["person"].S());
+			if (Who < 0)
+			{
+				continue;       // somebody not in this town (a reroll): their slot stays empty
+			}
+			FPerson& P = People[(size_t)Who];
+			P.Member.clear();
+			for (const LyudJson::FValue& G : V["groups"].Items)
+			{
+				FMembership M;
+				M.Group = GroupId(G[0].S());
+				M.Role = G[1].S().empty() ? -1 : RoleId(G[1].S());
+				P.Member.push_back(M);
+			}
+			P.MemberSlot = V["slot"].S();
+			P.TalkAs = V["dialogue"].S();
+			P.StaffRole = V["staff_role"].S();
+			if (std::find(MemberIds.begin(), MemberIds.end(), Who) == MemberIds.end())
+			{
+				MemberIds.push_back(Who);
+			}
+		}
+		if (!bLoading)
+		{
+			Index();
+		}
+		return true;
+	}
+
 	int FWorld::KindId(const std::string& Kind)
 	{
 		if (KindNames.empty())
@@ -1660,6 +1817,18 @@ namespace LyudPeople
 				D.Act = FindActivity(D.Activity);
 			}
 		}
+		RoleMap.assign(RoleMapNames.size(), {});
+		for (size_t R = 0; R < RoleMapNames.size(); R++)
+		{
+			for (const std::pair<std::string, std::string>& M : RoleMapNames[R])
+			{
+				const int From = FindActivity(M.first);
+				if (From >= 0)
+				{
+					RoleMap[R].emplace_back(From, M.second.empty() ? -1 : FindActivity(M.second));
+				}
+			}
+		}
 		SleepAct = FindActivity("sleep");
 		RestHomeAct = FindActivity("rest_home");
 		GoneAct = FindActivity("stay_gone");
@@ -1699,8 +1868,28 @@ namespace LyudPeople
 		}
 		for (const FPerson& P : People)
 		{
-			if (P.Place != Pl || P.Activity < 0 || (P.State != EState::Doing && P.State != EState::Settling) || !Activities[P.Activity].bStaff)
+			if (P.Place != Pl || P.Activity < 0 || (P.State != EState::Doing && P.State != EState::Settling))
 			{
+				continue;
+			}
+			// the sailing school's staff at a part of a session: by their staff role (coach, bosun: the talk, the shop) while
+			// ashore, or by their slot (coach_head, coach_kids, coach_juniors, bosun: the engine's launch driver) afloat too
+			if (P.Program >= 0 && !P.StaffRole.empty())
+			{
+				const bool bBySlot = !Role.empty() && Role == P.MemberSlot;
+				if (bBySlot || ((Role.empty() || P.StaffRole == Role) && !Activities[P.Activity].bAfloat))
+				{
+					Out.push_back(P.Id);
+				}
+				continue;
+			}
+			if (!Activities[P.Activity].bStaff)
+			{
+				continue;
+			}
+			if (!Role.empty() && !P.MemberSlot.empty() && Role == P.MemberSlot)
+			{
+				Out.push_back(P.Id);        // (the staff's own duties asked for by their slot)
 				continue;
 			}
 			const FDuty* D = DutyFor(P, Activities[P.Activity]);
@@ -2149,6 +2338,16 @@ namespace LyudPeople
 		{
 			bSleep = true;
 			return SleepAct >= 0 ? SleepAct : FindActivity("sleep");
+		}
+		// a group of theirs keeps its programme now (the sailing school's session): that first, like a duty that wins over
+		// work and school (the school's members are picked so it doesn't clash; in summer it is the holidays)
+		if (!P.Member.empty())
+		{
+			const int Prog = ProgramNow(P);
+			if (Prog >= 0)
+			{
+				return Prog;
+			}
 		}
 		for (const FDuty& D : P.Duties)
 		{
@@ -3029,6 +3228,7 @@ namespace LyudPeople
 		P.Activity = Act;
 		P.Place = Sl.Place;
 		P.Slot = Slot;
+		P.Program = -1;     // (Think sets it again for a programme's part)
 		P.Minutes = (float)Minutes;
 		P.Why = Why;
 		P.Choices++;
@@ -3356,7 +3556,17 @@ namespace LyudPeople
 				float Days = P.StayArrive / 24.f - StayAt(P);
 				Left = (Days <= 0.f ? Days + (float)P.StayCycle : Days) * 24.f;
 			}
-			if (S >= 0)
+			int ProgG = -1;
+			if (!bSleep && !P.Member.empty() && ProgramNow(P, &ProgG) == Duty && ProgG >= 0)
+			{
+				// a programme's part: till it changes (the Doing step calls them on), never past three hours
+				if (S >= 0 && Start(P, Duty, S, 180.f, bSnap, "programme"))
+				{
+					P.Program = ProgG;
+					return;
+				}
+			}
+			else if (S >= 0)
 			{
 				Start(P, Duty, S, Left * 60.f + 1.f, bSnap, bSleep ? "bedtime" : "duty");
 				return;
@@ -4120,6 +4330,10 @@ namespace LyudPeople
 
 	bool FWorld::IsRegular(const FPerson& P, const FActivity& A) const
 	{
+		if (A.MembersG >= 0 && !IsMember(P, A.MembersG))
+		{
+			return false;       // a group's own (the parents of the school's children)
+		}
 		if (A.Regulars <= 0.f)
 		{
 			return true;
@@ -4991,6 +5205,11 @@ namespace LyudPeople
 				// a duty starts (bed, work, school): drop what they're doing
 				// (a break from work: the way there, 35 min at most, the way back)
 				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil);
+				// their group's programme is over (the session ended, the coach on to the next part): they go
+				if (P.Program >= 0 && Duty != P.Activity && P.Until > Time + 20.0)
+				{
+					P.Until = Time + 3.0 + 15.0 * Rand(P.Rng);
+				}
 				// what they do is off now (the rink shut, the walruses' hour over): they finish within a minute and go
 				if (!ConditionOk(Activities[(size_t)P.Activity]) && P.Until > Time + 60.0)
 				{

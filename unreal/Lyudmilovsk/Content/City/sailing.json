@@ -2056,56 +2056,64 @@
     "group": "kids",
     "boat": "optimist",
     "skill": 0.78,
-    "heavy": 0.2
+    "heavy": 0.2,
+    "person": "t_belousov_ananya"
    },
    {
     "slot": "kids_2",
     "group": "kids",
     "boat": "optimist",
     "skill": 0.7,
-    "heavy": -0.4
+    "heavy": -0.4,
+    "person": "t_nguyen_wei"
    },
    {
     "slot": "kids_3",
     "group": "kids",
     "boat": "optimist",
     "skill": 0.62,
-    "heavy": 0.5
+    "heavy": 0.5,
+    "person": "t_zhang_santiago"
    },
    {
     "slot": "kids_4",
     "group": "kids",
     "boat": "optimist",
     "skill": 0.55,
-    "heavy": 0.0
+    "heavy": 0.0,
+    "person": "t_romano_tiago"
    },
    {
     "slot": "kids_5",
     "group": "kids",
     "boat": "optimist",
     "skill": 0.48,
-    "heavy": -0.2
+    "heavy": -0.2,
+    "person": "t_yavorsky_ama"
    },
    {
     "slot": "kids_6",
     "group": "kids",
     "boat": "optimist",
     "skill": 0.4,
-    "heavy": 0.3
+    "heavy": 0.3,
+    "person": "t_dubois_sachiko"
    },
    {
     "slot": "kids_7",
     "group": "kids",
     "boat": "optimist",
     "skill": 0.32,
-    "heavy": -0.6
+    "heavy": -0.6,
+    "person": "t_bauer_haruki"
    },
    {
     "slot": "kids_8",
     "group": "kids",
     "boat": "optimist",
     "skill": 0.22,
-    "heavy": 0.0
+    "heavy": 0.0,
+    "person": "t_papadopoulos_hiroshi"
    },
    {
     "slot": "jun_c1",
@@ -2113,7 +2121,9 @@
     "boat": "cadet",
     "skill": 0.8,
     "heavy": 0.3,
-    "crew": "jun_x1"
+    "crew": "jun_x1",
+    "person": "t_yavorsky_rashid",
+    "crew_person": "t_nguyen_yanka"
    },
    {
     "slot": "jun_c2",
@@ -2121,7 +2131,9 @@
     "boat": "cadet",
     "skill": 0.66,
     "heavy": -0.3,
-    "crew": "jun_x2"
+    "crew": "jun_x2",
+    "person": "t_mortensen_hakon",
+    "crew_person": "t_zhang_nour"
    },
    {
     "slot": "jun_c3",
@@ -2129,7 +2141,9 @@
     "boat": "cadet",
     "skill": 0.54,
     "heavy": 0.1,
-    "crew": "jun_x3"
+    "crew": "jun_x3",
+    "person": "t_okafor_nurlan",
+    "crew_person": "t_chen_arjun"
    },
    {
     "slot": "jun_c4",
@@ -2137,63 +2151,73 @@
     "boat": "cadet",
     "skill": 0.4,
     "heavy": -0.1,
-    "crew": "jun_x4"
+    "crew": "jun_x4",
+    "person": "t_bautista_freja",
+    "crew_person": "t_korhonen_oksana"
    },
    {
     "slot": "jun_l1",
     "group": "juniors",
     "boat": "luch",
     "skill": 0.74,
-    "heavy": 0.4
+    "heavy": 0.4,
+    "person": "t_bekele_femke"
    },
    {
     "slot": "jun_l2",
     "group": "juniors",
     "boat": "luch",
     "skill": 0.6,
-    "heavy": -0.5
+    "heavy": -0.5,
+    "person": "t_virtanen_ursula"
    },
    {
     "slot": "jun_l3",
     "group": "juniors",
     "boat": "luch",
     "skill": 0.46,
-    "heavy": 0.0
+    "heavy": 0.0,
+    "person": "t_svoboda_malgorzata"
    },
    {
     "slot": "adult_1",
     "group": "adults",
     "boat": "luch",
     "skill": 0.84,
-    "heavy": 0.6
+    "heavy": 0.6,
+    "person": "t_vinogradov_aiko"
    },
    {
     "slot": "adult_2",
     "group": "adults",
     "boat": "luch",
     "skill": 0.72,
-    "heavy": -0.2
+    "heavy": -0.2,
+    "person": "t_lefebvre_gennady"
    },
    {
     "slot": "adult_3",
     "group": "adults",
     "boat": "luch",
     "skill": 0.58,
-    "heavy": 0.2
+    "heavy": 0.2,
+    "person": "t_girma_nino"
    },
    {
     "slot": "adult_4",
     "group": "adults",
     "boat": "luch",
     "skill": 0.44,
-    "heavy": -0.6
+    "heavy": -0.6,
+    "person": "t_sargsyan_tiago"
    },
    {
     "slot": "adult_5",
     "group": "adults",
     "boat": "luch",
     "skill": 0.3,
-    "heavy": 0.1
+    "heavy": 0.1,
+    "person": "t_ozols_yerlan"
    }
   ],
   "hero_skill": 0.5
@@ -2275,19 +2299,23 @@
  "coaches": {
   "coach_head": {
    "role": "head coach, race officer",
-   "name": "sail.staff.coach_head"
+   "name": "sail.staff.coach_head",
+   "person": "t_kask_ruta"
   },
   "coach_kids": {
    "role": "the children's coach",
-   "name": "sail.staff.coach_kids"
+   "name": "sail.staff.coach_kids",
+   "person": "t_chen_meiling"
   },
   "coach_juniors": {
    "role": "the juniors' coach",
-   "name": "sail.staff.coach_juniors"
+   "name": "sail.staff.coach_juniors",
+   "person": "t_ferreira_carmen"
   },
   "bosun": {
    "role": "the boathouse, hire, repairs; the mast when the coaches are afloat",
-   "name": "sail.staff.bosun"
+   "name": "sail.staff.bosun",
+   "person": "t_mansour_hamish"
   }
  },
  "season": {

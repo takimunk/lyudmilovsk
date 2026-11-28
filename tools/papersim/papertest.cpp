@@ -114,6 +114,75 @@ static std::string TalkDetail(const std::string& Kind)
 	return std::string();
 }
 
+/** The yacht school's season by the date (docs/yacht_school.md: opening the first Saturday on or after 25 April, closing the
+ *  first Sunday of November, 14 days of fitting out before, 7 of laying up after): 0 laid up, 1 fitting out, 2 open, 3 laying up. */
+static int SailSeasonOn(const LyudFest::FDate& D)
+{
+	const int N = LyudFest::DaysFromCivil(D);
+	const int O = LyudFest::DaysFromCivil(LyudFest::WeekdayOnOrAfter(D.Y, 4, 25, 5));
+	LyudFest::FDate Cl;
+	LyudFest::NthWeekday(D.Y, 11, 1, 6, Cl);
+	const int C = LyudFest::DaysFromCivil(Cl);
+	if (N >= O && N <= C) return 2;
+	if (N < O && N >= O - 14) return 1;
+	if (N > C && N <= C + 7) return 3;
+	return 0;
+}
+
+/** The school's races of a day as the engine's LyudSailNewsOfDay would give them: the regatta of the date (opening, closing,
+ *  June 1, the cup's weekend) or the weekly race, each class with three of the regulars (or the hero) on the podium, the
+ *  wind, now and then capsizes, a recall, an abandoned race. A die of its own, so the other days' facts stay as they were. */
+static std::vector<FSailRace> SailRacesOn(const LyudFest::FDate& D, int Since)
+{
+	std::vector<FSailRace> Out;
+	if (SailSeasonOn(D) != 2)
+	{
+		return Out;
+	}
+	const int Wd = LyudFest::Weekday(D);
+	const LyudFest::FDate Cup = LyudFest::WeekdayOnOrAfter(D.Y, 6, 20, 5);
+	LyudFest::FDate Cl;
+	LyudFest::NthWeekday(D.Y, 11, 1, 6, Cl);
+	std::string Ev;
+	int Day = 0;
+	if (D == LyudFest::WeekdayOnOrAfter(D.Y, 4, 25, 5)) Ev = "sail_opening";
+	else if (D == Cl) Ev = "sail_closing";
+	else if (D.M == 6 && D.D == 1) Ev = "optimist_day";
+	else if (D == Cup || D == LyudFest::AddDays(Cup, 1)) { Ev = "cup_lyudmilovsk"; Day = D == Cup ? 0 : 1; }
+	else if (Wd == 2) Ev = "wednesday";
+	else if (Wd == 6) Ev = "sunday";
+	else return Out;
+	static const char* Names[] = { "t_gonzalez_giuseppe", "t_saar_noam", "t_tran_anahit", "t_okonkwo_ursula", "t_kask_kenji", "hero", "" };
+	FDie Die(4242u + (uint32_t)Since);
+	std::vector<std::string> Classes;
+	if (Ev == "wednesday") Classes = { "luch" };
+	else if (Ev == "optimist_day") Classes = { "optimist" };
+	else Classes = { "optimist", "cadet", "luch" };
+	const int Wind = (int)(Die.U() * Die.U() * 14.f);
+	for (const std::string& C : Classes)
+	{
+		FSailRace R;
+		R.Event = Ev;
+		R.Class = C;
+		R.Day = Day;
+		R.WindMs = Wind;
+		R.Boats = 3 + Die.I(7);
+		R.bAbandoned = Wind < 1 || Die.U() < 0.04f;
+		const int Finished = R.bAbandoned ? 0 : (Die.U() < 0.08f ? 1 + Die.I(2) : 3);
+		for (int I = 0; I < Finished; ++I)
+		{
+			std::string Who;
+			do { Who = Names[Die.I(7)]; } while (Who != "" && std::find(R.Podium.begin(), R.Podium.end(), Who) != R.Podium.end());
+			R.Podium.push_back(Who);
+		}
+		R.Capsizes = Wind >= 7 && Die.U() < 0.6f ? Die.I(4) : 0;
+		R.bRecall = Die.U() < 0.08f;
+		R.HeroPlace = std::find(R.Podium.begin(), R.Podium.end(), "hero") != R.Podium.end() ? 1 : (Die.U() < 0.4f ? 4 + Die.I(5) : 0);
+		Out.push_back(R);
+	}
+	return Out;
+}
+
 static FFacts MakeFacts(int Since, FDie& Die, const std::vector<std::string>& Quests)
 {
 	FFacts F;
@@ -195,6 +264,9 @@ static FFacts MakeFacts(int Since, FDie& Die, const std::vector<std::string>& Qu
 			F.CupsYesterday.push_back(Cup);
 		}
 	}
+	// the yacht school (docs/yacht_school.md "Town"): the season this morning and yesterday's races
+	F.SailSeason = SailSeasonOn(F.Date);
+	F.SailYesterday = SailRacesOn(LyudFest::AddDays(F.Date, -1), Since);
 	return F;
 }
 
@@ -350,6 +422,87 @@ int main(int Argc, char** Argv)
 	}
 	CHECK(FrontKinds["paper.front.cup"] > 0 && CupWon > 100 && CupToday > 300, "tournaments: the hero's cup on %d fronts (+%d inside), %d results, %d of today's",
 		FrontKinds["paper.front.cup"], HeroWins, CupWon, CupToday);
+	// the yacht school (docs/yacht_school.md "Town"): the column the day after every race day, the features after the
+	// opening and the closing, the hero's win on the front, the storm warning only in season, today's club race
+	{
+		int RaceDays = 0, Column = 0, Opening = 0, Closing = 0, SailWins = 0, Storms = 0, StormOut = 0, Today = 0, TodayWrong = 0;
+		int Fitout = 0, Layup = 0, OutOfSeason = 0, WrongNames = 0;
+		for (const FIssue& I : All)
+		{
+			const std::vector<FSailRace> R = SailRacesOn(LyudFest::AddDays(I.Date, -1), I.Since);
+			const int Season = SailSeasonOn(I.Date);
+			int Head = 0, Feat = 0, AllOff = 0;
+			bool bOpen = false, bClose = false;
+			for (const FLine& L : I.Pages[1])
+			{
+				Head += L.Key == "paper.sail.head" ? 1 : 0;
+				Feat += L.Key.rfind("paper.sail.result", 0) == 0 || L.Key == "paper.sail.abandoned" ? 1 : 0;
+				AllOff += L.Key == "paper.sail.abandoned_all" ? 1 : 0;
+				bOpen = bOpen || L.Key.rfind("paper.sail.opening.", 0) == 0;
+				bClose = bClose || L.Key.rfind("paper.sail.closing.", 0) == 0;
+				if (L.Key.rfind("paper.sail.result", 0) == 0)
+				{
+					for (size_t A = 2; A + 1 < L.Args.size(); ++A)
+					{
+						const std::string& N = L.Args[A];
+						WrongNames += N == "@paper.sail.hero" || N == "@paper.sail.someone" || (N.rfind("@npc.", 0) == 0 && N.size() > 10) ? 0 : 1;
+					}
+				}
+			}
+			if (!R.empty())
+			{
+				RaceDays++;
+				bool bNone = true;
+				for (const FSailRace& X : R) bNone = bNone && (X.bAbandoned || X.Podium.empty());
+				Column += Head == 1 && (bNone ? AllOff == 1 && Feat == 0 : AllOff == 0 && Feat == (int)std::min<size_t>(R.size(), 3)) ? 1 : 0;
+				Opening += R[0].Event == "sail_opening" && bOpen ? 1 : 0;
+				Closing += R[0].Event == "sail_closing" && bClose ? 1 : 0;
+				bool bHeroWon = false;
+				for (const FSailRace& X : R) bHeroWon = bHeroWon || (!X.bAbandoned && !X.Podium.empty() && X.Podium[0] == "hero");
+				SailWins += bHeroWon ? 1 : 0;
+			}
+			else
+			{
+				OutOfSeason += Head;
+			}
+			for (const FLine& L : I.Pages[2])
+			{
+				if (L.Key == "paper.sail.storm") (Season == 2 ? Storms : StormOut)++;
+			}
+			for (const FLine& L : I.Pages[3])
+			{
+				if (L.Key.rfind("paper.sail.today.", 0) == 0)
+				{
+					Today++;
+					const int Wd = LyudFest::Weekday(I.Date);
+					TodayWrong += Season == 2 && ((Wd == 2 && L.Key == "paper.sail.today.wednesday") || (Wd == 6 && L.Key == "paper.sail.today.sunday")) ? 0 : 1;
+				}
+				Fitout += L.Key == "paper.sail.fitout" ? (Season == 1 ? 1 : -1000) : 0;
+				Layup += L.Key == "paper.sail.layup" ? (Season == 3 ? 1 : -1000) : 0;
+			}
+		}
+		CHECK(RaceDays > 60 && Column == RaceDays && OutOfSeason == 0, "the sailing column follows every race day of the school, a result line a class, and no other day (%d of %d, %d stray)",
+			Column, RaceDays, OutOfSeason);
+		CHECK(Opening >= 1 && Closing >= 2, "the day after the opening and after the closing has its feature (%d, %d)", Opening, Closing);
+		CHECK(WrongNames == 0, "the podium names are townsfolk's name keys, the hero or a nameless sailor (%d wrong)", WrongNames);
+		CHECK(SailWins > 0 && FrontKinds["paper.front.sail_win"] > 0, "the hero's race win makes the front (%d fronts of %d days he won)", FrontKinds["paper.front.sail_win"], SailWins);
+		CHECK(Storms > 0 && StormOut == 0, "the school's storm warning is printed in season only (%d in season, %d out)", Storms, StormOut);
+		CHECK(Today > 40 && TodayWrong == 0, "today's club race on Wednesdays and Sundays of the season (%d, %d wrong)", Today, TodayWrong);
+		CHECK(Fitout >= 10 && Layup >= 7, "the fitting out and the laying up are announced in their weeks only (%d, %d)", Fitout, Layup);
+		// no school in the game (SailSeason -1, nothing from the engine): not a word of sailing
+		FFacts Q;
+		Q.Date = LyudFest::FDate{ 2027, 6, 21 };
+		Q.Since = LyudFest::DaysFromCivil(Q.Date) - LyudFest::DaysFromCivil(LyudFest::FDate{ 2026, 10, 20 });
+		Q.Tomorrow.bKnown = true;
+		Q.Tomorrow.WindMs = 18;
+		const FIssue Quiet = Paper.Build(Q);
+		int Sail = 0;
+		for (size_t Pg = 1; Pg < Quiet.Pages.size(); ++Pg)
+		{
+			for (const FLine& L : Quiet.Pages[Pg]) Sail += L.Key.rfind("paper.sail.", 0) == 0 ? 1 : 0;
+		}
+		CHECK(Sail == 0, "without the school the paper says nothing of sailing (%d lines)", Sail);
+	}
 	// the photo club's contest (docs/photo.md): the theme is announced on the 1st, the hero's place is told on the 27th
 	{
 		static const char* const Themes[4] = { "sea", "birds", "work", "festival" };

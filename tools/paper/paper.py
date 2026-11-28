@@ -77,6 +77,8 @@ def strings_tables():
 
     for key, ru, en, ja in src.S:
         put(key, ru, en, ja)
+    for key, ru, en, ja in src.SAIL:
+        put(key, ru, en, ja)
     for i, (ru, en, ja) in enumerate(src.MONTHS, 1):
         put("paper.month.gen.%d" % i, ru, en, ja)
     for i, (ru, en, ja) in enumerate(src.DOWS):
@@ -107,7 +109,7 @@ def variants(tables):
     v = collections.OrderedDict()
     for key in tables["ru"]:
         parts = key.split(".")
-        if len(parts) >= 3 and parts[0] == "paper" and parts[1] in ("front", "fest") and parts[-1].isdigit():
+        if len(parts) >= 3 and parts[0] == "paper" and parts[1] in ("front", "fest", "sail") and parts[-1].isdigit():
             kind = ".".join(parts[1:-1])
             v[kind] = max(v.get(kind, 0), int(parts[-1]))
     return v
