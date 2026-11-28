@@ -174,19 +174,56 @@ bool ULyudFriends::OpenTalk(int32 PersonId, bool bForce)
 	TalkHeard = 0;
 	bTalkAsked = false;
 	TalkHold = 0.f;
-	// a quest that waits for a talk with this very resident: its own lines first (line.<key>.<quest>.<stage>.<n>,
-	// docs/quests.md), asked before the talk is reported as a quest that this talk begins counts as on its first stage
+	// a quest on a stage this resident has lines for: those first (line.<key>.<quest>.<stage>.<n>, docs/quests.md
+	// "Townsfolk as quest people"), asked before the talk is reported as a quest that this talk begins counts as on its first
+	// stage. A finished quest's "done" lines are said once. A variant (<stage>.if.<word>: the sun, the weather, the part of
+	// the day; ULyudTownTalkSubsystem::NowHolds) is said once instead while its word holds; later talks on a stage say its
+	// .again lines when it has some. What was said is kept as flags (tcq.<key>.<quest>.<stage>[.if.<word>]).
 	TalkOpeners.Reset();
 	TalkOpener = 0;
-	if (const ULyudQuests* Quests = ULyudQuests::Get(this))
+	if (ULyudQuests* Quests = ULyudQuests::Get(this))
 	{
+		static const TCHAR* const Words[] = { TEXT("rain"), TEXT("snow"), TEXT("fog"), TEXT("cold"), TEXT("warm"), TEXT("wet"), TEXT("night"),
+			TEXT("low"), TEXT("cloudy"), TEXT("clear"), TEXT("day"), TEXT("morning"), TEXT("afternoon"), TEXT("evening") };
+		const auto Has = [](const FString& Key) { return LyudText::Get(Key).ToString() != Key; };
 		for (const FLyudQuestDef& Def : ULyudQuests::Defs())
 		{
-			const FName Stage = Quests->TalkStage(Def.Id, TalkKey);
-			for (int32 N = 1; !Stage.IsNone() && TalkOpeners.Num() < LyudFriendsTalkImpl::MaxOpeners; ++N)
+			FName Stage = Quests->TalkStage(Def.Id, TalkKey);
+			const FString Base = FString::Printf(TEXT("line.%s.%s."), *TalkKey, *Def.Id.ToString());
+			if (Stage.IsNone() && Quests->State(Def.Id) == ELyudQuestState::Done && Has(Base + TEXT("done.1"))
+				&& !Quests->HasFlag(FName(*FString::Printf(TEXT("tcq.%s.%s.done"), *TalkKey, *Def.Id.ToString()))))
 			{
-				const FString Key = FString::Printf(TEXT("line.%s.%s.%s.%d"), *TalkKey, *Def.Id.ToString(), *Stage.ToString(), N);
-				if (LyudText::Get(Key).ToString() == Key)
+				Stage = FName(TEXT("done"));
+			}
+			if (Stage.IsNone() || !Has(Base + Stage.ToString() + TEXT(".1")))
+			{
+				continue;
+			}
+			const FString Said = FString::Printf(TEXT("tcq.%s.%s.%s"), *TalkKey, *Def.Id.ToString(), *Stage.ToString());
+			FString Lines = Base + Stage.ToString();
+			if (Town)
+			{
+				for (const TCHAR* Word : Words)
+				{
+					const FString Variant = Lines + TEXT(".if.") + Word;
+					const FName VariantSaid(*(Said + TEXT(".if.") + Word));
+					if (Has(Variant + TEXT(".1")) && !Quests->HasFlag(VariantSaid) && Town->NowHolds(Word))
+					{
+						Quests->SetFlag(VariantSaid);
+						Lines = Variant;
+						break;
+					}
+				}
+			}
+			if (Lines == Base + Stage.ToString() && Quests->HasFlag(FName(*Said)) && Has(Lines + TEXT(".again.1")))
+			{
+				Lines += TEXT(".again");
+			}
+			Quests->SetFlag(FName(*Said));
+			for (int32 N = 1; TalkOpeners.Num() < LyudFriendsTalkImpl::MaxOpeners; ++N)
+			{
+				const FString Key = FString::Printf(TEXT("%s.%d"), *Lines, N);
+				if (!Has(Key))
 				{
 					break;
 				}

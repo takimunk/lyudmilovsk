@@ -5,6 +5,7 @@
 #                                          talk's topics and lines), the variety, the names, the bond, the walk's hold, the cost
 #   tools/townchatsim/run.sh talks [lang] [n]   n talks of the day written out as the page would show them (ru, en, ja)
 #   tools/townchatsim/run.sh who <key> [lang]   one resident's talk at noon
+#   tools/townchatsim/run.sh where [key,key,...] [days]   when and where residents are free for a word, day by day (quest givers)
 set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private"

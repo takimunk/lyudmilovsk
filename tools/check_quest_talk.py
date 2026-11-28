@@ -7,8 +7,10 @@ Content/UI/quest_scenes.json (docs/quests.md). Offline, no Unreal.
 What it looks at: the quest and its stages exist (`done`, `<stage>_empty` for a stage with a `bring`); the conditions of a
 variant (`.if.<cond>+<cond>`) are known words, items and quests; a variant has a plain line of the same quest to stand in
 for; a variant that holds for ever (`done:`) has its own `.again` when the plain talk has some; a `done` line has no `.again`;
-every line key has words in ru, en and ja; and the people, species, quests, stages and lines of `listeners`, `pickups` and
-`remarks`.
+every line key has words in ru, en and ja; the people, species, quests, stages and lines of `listeners`, `pickups` and
+`remarks`; and the townsfolk's own quest lines (`line.<resident key>.<quest>.<stage>[.if.<word>|.again].<n>`): the resident,
+quest, stage and word exist, numbered from 1, a variant has plain lines, every stage that waits for a talk with a resident
+(or a `bring` to one) has their lines, and `<stage>_empty` lines for a `bring`.
 """
 import glob
 import json
@@ -18,6 +20,8 @@ import sys
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "unreal", "Lyudmilovsk", "Content")
 SUN = {"night", "low", "day", "cloudy"}
+# what a resident's quest line may branch on (ULyudTownTalkSubsystem::NowHolds)
+RESIDENT_WORDS = SUN | {"rain", "snow", "fog", "cold", "warm", "clear", "wet", "morning", "afternoon", "evening"}
 
 
 def load_strings(lang):
@@ -39,6 +43,13 @@ def main():
     people = set()
     for p in people_data.get("people", people_data if isinstance(people_data, list) else []):
         people.add((p.get("key") or p.get("id") or "").lower())
+    # the townsfolk (townsfolk.json): talked to on the town's page, their quest lines are strings, not npc_dialogue.txt
+    residents = set()
+    tf_path = os.path.join(ROOT, "PeopleData", "townsfolk.json")
+    if os.path.exists(tf_path):
+        with open(tf_path, encoding="utf-8") as f:
+            residents = {p.get("key", "") for p in json.load(f).get("people", [])}
+    people |= residents
 
     def stages_of(quest, with_empty):
         out = {"done"}
@@ -201,7 +212,7 @@ def main():
             problems.append("%s: needs an id of its own" % where)
         seen.add(r.get("id"))
         if people and r.get("person") not in people:
-            problems.append("%s: nobody '%s' in people.json" % (where, r.get("person")))
+            problems.append("%s: nobody '%s' in people.json or townsfolk.json" % (where, r.get("person")))
         check_stage(where, r.get("quest"), r.get("stages", []))
         if not r.get("lines"):
             problems.append("%s: no lines" % where)
@@ -210,6 +221,52 @@ def main():
             if speaker != r.get("person"):
                 problems.append("%s: %s is not %s's own line" % (where, key, r.get("person")))
         check_keys(where, r.get("lines", []))
+
+    # ---- the townsfolk's own quest lines: line.<resident key>.<quest>.<stage | stage_empty | done>[.if.<word> | .again].<n>
+    # (docs/quests.md "Townsfolk as quest people"; ULyudFriends::OpenTalk says them before a talk's greeting)
+    groups = {}
+    for key in strings["ru"]:
+        parts = key.split(".")
+        if len(parts) < 5 or parts[0] != "line" or parts[1] not in residents or parts[2] not in quests:
+            continue
+        who, quest, stage, rest = parts[1], parts[2], parts[3], parts[4:]
+        where = "resident line %s" % key
+        if not rest[-1].isdigit():
+            problems.append("%s: does not end in a number" % where)
+            continue
+        kind = rest[:-1]
+        if kind and kind != ["again"] and not (len(kind) == 2 and kind[0] == "if"):
+            problems.append("%s: after the stage only .again or .if.<word> may come" % where)
+            continue
+        if len(kind) == 2 and kind[1] not in RESIDENT_WORDS:
+            problems.append("%s: '%s' is not one of %s" % (where, kind[1], ", ".join(sorted(RESIDENT_WORDS))))
+        if stage not in stages_of(quest, True):
+            problems.append("%s: quest %s has no stage %s" % (where, quest, stage))
+        if stage == "done" and kind == ["again"]:
+            problems.append("%s: done lines are said once, they have no .again" % where)
+        groups.setdefault((who, quest, stage, ".".join(kind)), set()).add(int(rest[-1]))
+        check_keys(where, [key])
+    for (who, quest, stage, kind), ns in sorted(groups.items()):
+        where = "resident lines line.%s.%s.%s%s" % (who, quest, stage, "." + kind if kind else "")
+        if ns != set(range(1, max(ns) + 1)):
+            problems.append("%s: numbered %s, not 1..n" % (where, sorted(ns)))
+        if max(ns) > 8:
+            problems.append("%s: %d lines, the page shows 8 at most" % (where, max(ns)))
+        if kind and (who, quest, stage, "") not in groups:
+            problems.append("%s: a variant or .again without the plain lines of that stage" % where)
+    for qid, q in sorted(quests.items()):
+        starts = (q.get("start_on") or {})
+        for k, st in enumerate(q["stages"]):
+            for o in st["objectives"]:
+                who = o.get("target", "") if o.get("event") == "talk" else (o.get("target", "").partition("@")[2] if o.get("event") == "bring" else "")
+                if who not in residents:
+                    continue
+                if (who, qid, st["id"], "") not in groups:
+                    problems.append("%s.%s: waits for a talk with the resident %s, who has no line.%s.%s.%s.1" % (qid, st["id"], who, who, qid, st["id"]))
+                if o.get("event") == "bring" and (who, qid, st["id"] + "_empty", "") not in groups:
+                    problems.append("%s.%s: brings to the resident %s, who has no line.%s.%s.%s_empty.1 (asked without the thing)" % (qid, st["id"], who, who, qid, st["id"]))
+        if starts.get("event") == "talk" and starts.get("target") in residents and (starts["target"], qid, q["stages"][0]["id"], "") not in groups:
+            problems.append("%s: begins by a talk with the resident %s, who has no lines for its first stage" % (qid, starts["target"]))
 
     for p in problems:
         print(p)

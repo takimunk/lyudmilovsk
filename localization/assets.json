@@ -1448,6 +1448,13 @@
    "prompt": "A small red paper flag glued to a thin wooden stick, the kind children put on top of a sandcastle.",
    "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_sand_flag (fal, one picture; docs/beach.md)"
   },
+  "icon_keeper_whistle": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small nickel-plated pea whistle on a short loop of faded cord, a damp yellow birch leaf stuck to it.",
+   "source": "owed: docs/quests.md tq3_whistle (the lead generates the icons of /home/user/wt/_brief/icons_owed.md)"
+  },
   "icon_travel_card": {
    "kind": "icon",
    "style": "icon",
