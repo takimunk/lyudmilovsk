@@ -74,12 +74,16 @@ Gear: `SM_Sail_Trolley_<C>` (origin on the ground under the boat origin; the boa
 `SM_Sail_Pin`, `SM_Sail_Buoy`, `SM_Sail_MOB`, `SM_Sail_AnchorBlock`, `SM_Sail_Rope` (1 m along +X: stretch for sheets),
 `SM_Sail_Block`.
 
-Boathouse: `SM_Sail_Boathouse` (shell, collision exact), `SM_Sail_Boathouse_Glass`, `SM_Sail_Boathouse_DoorLeaf`
+Boathouse (60s–70s seaside modernism on part B's footprint and doors: concrete portal frame, mono-pitch roof rising to
+the sea and oversailing it, clerestory band, glazed seaward wall over the tessellated mosaic, the starter's balcony at
+the loft's level 2.8 with a south stair; layout `spots` → `deck_view`, `doors` → `balcony`, `footprint.roof` /
+`footprint.balcony`): `SM_Sail_Boathouse` (shell, collision exact), `SM_Sail_Boathouse_Glass`, `SM_Sail_Boathouse_DoorLeaf`
 (×2, slides along x: layout `sliding_doors`), `SM_Sail_Prop_*` (OptiRack, MastBracket, Workbench, ToolBoard, PaintTins,
 Trestle, HullFrame, Blackboard, Desk, CoachDesk, Chair, KnotBoard, FlagChart, SeaChart, Cup, Pennant, TrophyShelf,
 KettleTable (samovar), WallClock, Barometer, AnemometerDisplay, Radio, ShipBell, Photo0..3, Lockers, Bench, LifeJacket,
-JacketRail, Paddle, Bailer, Shelf, Lamp; outdoor: SlipBoard, SignalMast, WindsockPole, HoseStand, OutdoorBench,
-NoticeBoard, Bollard, Winch, Park (slab + fence + gate)), `SM_Sail_LifeJacket_Worn` (origin at the base of the neck,
+JacketRail, Paddle, Bailer, Shelf, Lamp, RopeCoil, BuoyNet, Stove, OarRack, Drawing0..3; outdoor: SlipBoard,
+SignalMast (stays, pin rail), WindsockPole, Flagstaff, HoseStand, OutdoorBench, NoticeBoard, Bollard, Winch, LifeRing,
+BikeRack, Park (slab + fence + gate, numbered bays)), `SM_Sail_LifeJacket_Worn` (origin at the base of the neck,
 +X forward; adult size, scale 0.8 for children), `SM_Sail_Windsock` (origin on the pole axis at the swivel, along +X),
 `SM_Sail_Flag_<id>` (origin at the hoist top, flying along +X; ids: sail_on, shore, races, storm, closed,
 class_optimist, class_luch, class_cadet, prep, recall).
@@ -97,10 +101,16 @@ Blender metres (`pos`) and Unreal cm (`ue_cm`). Regenerate with `python3 blender
 Slots → instances (unreal/scripts/import_sailing.py, masters in make_sailing_materials.py):
 
 * `SL_*` flat slots (`sailkit.MAT_SPEC`) → `MI_SL_<slot>` on `M_Sail_Flat`; UV0 in metres.
-* `SL_Hull`, `SL_HullDeck` → `M_Sail_Hull`: COLOR_0.R = tint mask, COLOR_0.G = cavity. Tinted: luch deck; optimist and
-  cadet hull outside. The tint comes from custom primitive data [3..5].
+* `SL_Hull`, `SL_HullDeck` → `M_Sail_Hull`: COLOR_0.R = tint mask, COLOR_0.G = cavity. Tinted: the hull outside of all
+  three (the luch's deck stays pale, its non-skid areas are `SL_NonSkid`, its boot stripe `SL_Stripe`; the cadet's
+  decks are `SL_WoodDeck`). The tint comes from custom primitive data [3..5]. Hulls are smooth-shaded with sharp edges
+  by angle (exported split normals).
 * `SL_Sail` → `MI_SL_Sail_<Class>_<Main|Jib>` on `M_Sail_Cloth` (picture, number boxes from the manifest
-  `number_boxes_uv`, digits T_Sail_Digits).
+  `number_boxes_uv`, digits T_Sail_Digits). **Cloth looks**: `…_Old` (yellowed Dacron) and `…_Patched` (repairs, a
+  replaced panel) beside the default (new) instance, pictures `sail_<class>[_old|_patched].png`; the engine picks one
+  per boat by setting the SL_Sail slot's material (manifest `cloth_variants`). The picture's **alpha is the light
+  through the cloth** (panels thin, seams / tablings / patches / print thicker, the window clear) → subsurface colour
+  (scalar `Translucency`).
 * `CT_*` (the boathouse, the park, outdoor kit) → the town's `/Game/City/Materials/MI_CT_<slot>`.
 * `SLP_Atlas` (pictures, `atlas_cells.json`), `SLP_Flags` (`M_Sail_Flag`), `SLP_Sign_Name`, `SLP_Sign_Door`
   (localized), `SLP_Notice` (the notice board's panel: UV 0..1 for the engine to write on).

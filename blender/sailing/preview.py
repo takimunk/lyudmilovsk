@@ -10,7 +10,7 @@ from mathutils import Euler, Matrix, Vector
 import boatspec as B
 from sailkit import TEX, MAT_SPEC, _lin, slot_colour, is_picture
 
-TINTS = {"luch": "#E8E4D8", "optimist": "#F2C230", "cadet": "#8BB8D8"}
+TINTS = {"luch": "#3F7FB8", "optimist": "#F2C230", "cadet": "#8BB8D8"}
 
 
 def _img(name):
@@ -62,11 +62,46 @@ def setup_material(mat, tint=None, sail_tex=None):
         mix.inputs[7].default_value = _lin(tint) + (1,)
         nt.links.new(sep.outputs[0], mix.inputs[0])
         nt.links.new(mix.outputs[2], bsdf.inputs["Base Color"])
-    if slot == "SL_Sail":
+    if slot == "SL_Sail" and pic and _img(pic):
+        # the starboard face (COLOR_0.B = 1) has its own demo picture (its number painted mirrored); the picture's
+        # alpha = light through the cloth -> a translucent layer (the engine: subsurface colour of M_Sail_Cloth)
         bsdf.inputs["Subsurface Weight"].default_value = 0.0
-        tr = bsdf.inputs.get("Transmission Weight")
-        if tr is not None:
-            tr.default_value = 0.0
+        tex_p = t
+        stbd = pic.replace("_demo.png", "_demo_stbd.png")
+        col_out = tex_p.outputs[0]
+        a_out = tex_p.outputs[1]
+        if stbd != pic and _img(stbd):
+            tex_s = nt.nodes.new("ShaderNodeTexImage")
+            tex_s.image = _img(stbd)
+            vc = nt.nodes.new("ShaderNodeVertexColor")
+            vc.layer_name = "Col"
+            sep = nt.nodes.new("ShaderNodeSeparateColor")
+            nt.links.new(vc.outputs[0], sep.inputs[0])
+            gt = nt.nodes.new("ShaderNodeMath")
+            gt.operation = "GREATER_THAN"
+            gt.inputs[1].default_value = 0.75
+            nt.links.new(sep.outputs[2], gt.inputs[0])
+            mix = nt.nodes.new("ShaderNodeMix")
+            mix.data_type = "RGBA"
+            nt.links.new(gt.outputs[0], mix.inputs[0])
+            nt.links.new(tex_p.outputs[0], mix.inputs[6])
+            nt.links.new(tex_s.outputs[0], mix.inputs[7])
+            col_out = mix.outputs[2]
+        nt.links.new(col_out, bsdf.inputs["Base Color"])
+        for im in (_img(pic), _img(stbd)):
+            if im is not None:
+                im.alpha_mode = "CHANNEL_PACKED"
+        trl = nt.nodes.new("ShaderNodeBsdfTranslucent")
+        nt.links.new(col_out, trl.inputs[0])
+        fac = nt.nodes.new("ShaderNodeMath")
+        fac.operation = "MULTIPLY"
+        fac.inputs[1].default_value = 0.45
+        nt.links.new(a_out, fac.inputs[0])
+        ms = nt.nodes.new("ShaderNodeMixShader")
+        nt.links.new(fac.outputs[0], ms.inputs[0])
+        nt.links.new(bsdf.outputs[0], ms.inputs[1])
+        nt.links.new(trl.outputs[0], ms.inputs[2])
+        nt.links.new(ms.outputs[0], out.inputs[0])
 
 
 def instance(src, name, M, tint=None, sail_tex=None):
@@ -88,7 +123,7 @@ def instance(src, name, M, tint=None, sail_tex=None):
 
 
 def rigged(reg, b, M=Matrix.Identity(4), sheet_deg=18.0, tint=None, prefix=None, lod="", heel=0.0, sails=True,
-           board_down=True):
+           board_down=True, variant="new"):
     """Places a whole boat (parts at their pivots) at M; sheet_deg = boom / sail yaw to port (+)."""
     sk = B.sockets()[b]["parts"]
     cn = {"luch": "Luch", "optimist": "Optimist", "cadet": "Cadet"}[b]
@@ -110,10 +145,11 @@ def rigged(reg, b, M=Matrix.Identity(4), sheet_deg=18.0, tint=None, prefix=None,
     yaw = Matrix.Rotation(math.radians(sheet_deg), 4, "Z")
     place("Boom", yaw)
     if sails:
-        place("Main", yaw, sail_tex="sail_%s_demo.png" % b)
+        vs = "" if variant == "new" else "_" + variant
+        place("Main", yaw, sail_tex="sail_%s%s_demo.png" % (b, vs))
         if b == "cadet":
             ax = Vector(sk["Jib"]["axis"])
-            place("Jib", Matrix.Rotation(math.radians(sheet_deg * 0.9), 4, ax), sail_tex="sail_cadet_jib.png")
+            place("Jib", Matrix.Rotation(math.radians(sheet_deg * 0.9), 4, ax), sail_tex="sail_cadet_jib%s.png" % vs)
     if b == "optimist":
         place("Sprit", yaw)
     if not board_down:          # on its trolley: the rudder and the board are off (stowed in the boat)

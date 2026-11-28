@@ -17,7 +17,8 @@ UV2 = (chord m at that height, distance from the luff m), COLOR_0.B = 1 starboar
 hull COLOR_0.R = tint mask, COLOR_0.G = cavity (1 open). Flags and the windsock: UV1.x = 0 at the hoist / mouth .. 1 at
 the fly / tail.
 
-  M_Sail_Cloth     sail: picture + numbers, WPO belly + flutter (two-sided faces are real geometry: one-sided material)
+  M_Sail_Cloth     sail: picture + numbers, WPO belly + flutter (two-sided faces are real geometry: one-sided material);
+                   the picture's ALPHA = light through the cloth -> subsurface colour (scalar Translucency)
   M_Sail_Hull      gelcoat + tint mask + cavity, roughness / metallic parameters
   M_Sail_Flag      signal flags and the pin flag: picture (Image), WPO ripple growing with the wind (MPC Wind.z), the
                    engine yaws the flag actor downwind
@@ -80,6 +81,10 @@ if (side < 0.25 || side > 0.75)
 return col;
 """
 
+SAIL_TRANSMIT = r"""
+return Pic * saturate(A) * K;
+"""
+
 HULL_COLOUR = r"""
 float3 tint = (Tint.r + Tint.g + Tint.b) > 0.0 ? Tint : Base;
 return lerp(Base, tint, VC.r) * lerp(0.55, 1.0, VC.g);
@@ -134,10 +139,13 @@ def cloth():
     wpo = g.custom(SAIL_WPO, [("UV1", _uv(g, 1)), ("UV2", _uv(g, 2)), ("Camber", _cpd(g, "Camber", 0)), ("Luff", _cpd(g, "Luff", 1)),
                               ("T", g.node(X.MaterialExpressionTime)), ("Side", _side(g))], out=F3, desc="SailBelly")
     g.out(wpo, MP.MP_WORLD_POSITION_OFFSET)
-    # a little light through the cloth
+    # light through the cloth: the picture's alpha is the transmission (thin panels let light through, seams, tablings,
+    # patches and print less, the window most); Translucency scales it
     try:
         g.m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_TWO_SIDED_FOLIAGE)
-        g.out(g.const((0.25, 0.24, 0.22)), MP.MP_SUBSURFACE_COLOR)
+        sss = g.custom(SAIL_TRANSMIT, [("Pic", (pic, "RGB")), ("A", (pic, "A")), ("K", g.param("Translucency", 0.55))],
+                       out=F3, desc="SailLightThrough")
+        g.out(sss, MP.MP_SUBSURFACE_COLOR)
     except Exception as e:      # noqa: BLE001
         unreal.log_warning("SAILING materials: no two-sided foliage: %s" % e)
     return g.finish()

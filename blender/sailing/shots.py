@@ -9,10 +9,10 @@ import boatspec as B
 import preview as P
 
 
-def _boat_shot(reg, out, b, name, cam, target, heel=-8, sheet=22, lens=40):
+def _boat_shot(reg, out, b, name, cam, target, heel=-8, sheet=22, lens=40, variant="new"):
     P.clear_scene_keep(reg)
     P.scene_setup(sea=True, sand=False)
-    P.rigged(reg, b, Matrix.Identity(4), sheet_deg=sheet, heel=heel)
+    P.rigged(reg, b, Matrix.Identity(4), sheet_deg=sheet, heel=heel, variant=variant)
     P.camera(cam, target, lens)
     P.render(os.path.join(out, name))
 
@@ -23,8 +23,8 @@ def shot_luch(reg, out):
 
 
 def shot_optimist(reg, out):
-    _boat_shot(reg, out, "optimist", "optimist_a.png", (4.2, 4.6, 1.8), (-0.3, 0, 1.0), heel=-5, sheet=25, lens=35)
-    _boat_shot(reg, out, "optimist", "optimist_b.png", (-3.6, -2.6, 2.4), (0.0, 0, 0.6), heel=-5, sheet=25, lens=35)
+    _boat_shot(reg, out, "optimist", "optimist_a.png", (4.2, 4.6, 1.8), (-0.3, 0, 1.0), heel=-5, sheet=25, lens=35, variant="old")
+    _boat_shot(reg, out, "optimist", "optimist_b.png", (-3.6, -2.6, 2.4), (0.0, 0, 0.6), heel=-5, sheet=25, lens=35, variant="old")
 
 
 def shot_cadet(reg, out):
@@ -36,9 +36,9 @@ def shot_lineup(reg, out):
     P.clear_scene_keep(reg)
     P.scene_setup(sea=False, sand=True, sand_z=-0.30)
     # on the sand, side by side (keels at the sand), sails up, a 1.75 m dummy
-    for b, x in (("optimist", -6.2), ("cadet", -1.6), ("luch", 4.4)):
+    for b, x, var in (("optimist", -6.2, "patched"), ("cadet", -1.6, "old"), ("luch", 4.4, "new")):
         kz = min(v for _, v in B.BOATS[b]["keel_z"])
-        P.rigged(reg, b, Matrix.Translation((x, 0, -0.30 - kz)), sheet_deg=0, heel=0)
+        P.rigged(reg, b, Matrix.Translation((x, 0, -0.30 - kz)), sheet_deg=0, heel=0, variant=var)
     P.dummy(Matrix.Translation((-3.9, 0.9, -0.30)))
     P.camera((-0.5, 17.0, 2.2), (-0.5, 0.0, 2.2), 38)
     P.render(os.path.join(out, "lineup.png"))
@@ -120,7 +120,7 @@ def place_house(reg, winter=False, outside=True, rigged_park=True):
         for e in lay["hanging_sails"]:
             src = reg.objects.get(e["mesh"])
             if src:
-                P.instance(src, "P_hang_" + e["mesh"], _yawM(e["pos"], 0, e["rot_deg"]), sail_tex="sail_cadet_jib.png" if "Jib" in e["mesh"] else "sail_cadet_demo.png")
+                P.instance(src, "P_hang_" + e["mesh"], _yawM(e["pos"], 0, e["rot_deg"]), sail_tex="sail_cadet_jib_old.png" if "Jib" in e["mesh"] else "sail_cadet_old_demo.png")
     if not outside:
         return lay
     for e in lay["outside"]:
@@ -145,7 +145,7 @@ def place_house(reg, winter=False, outside=True, rigged_park=True):
         x = slip0["pos"][0] + k * 1.2
         _put(reg, "SM_Sail_Prop_SlipBoard", Matrix.Translation((x, slip0["pos"][1], BH.ground(x))) @ Matrix.Rotation(math.atan(0.0727), 4, "Y"))
     fp = lay["flag_points"]
-    for key, fid in (("yard_port", "sail_on" if not winter else "closed"), ("yard_stbd", "class_luch"), ("top", "shore" if winter else "class_optimist")):
+    for key, fid in (("yard_port", "sail_on" if not winter else "closed"), ("yard_stbd", "class_luch"), ("top", "shore" if winter else "class_optimist"), ("staff_top", "class_luch")):
         if not winter or key != "yard_stbd":
             _put(reg, "SM_Sail_Flag_" + fid, Matrix.Translation(fp[key]) @ Matrix.Rotation(math.radians(20), 4, "Z"))
     ws = [e for e in lay["outside"] if e["mesh"] == "SM_Sail_Prop_WindsockPole"][0]
@@ -197,7 +197,7 @@ def shot_house(reg, out):
     mt.node_tree.nodes["Principled BSDF"].inputs["Roughness"].default_value = 0.1
     sea.data.materials.append(mt)
     place_house(reg)
-    P.camera((30.0, -19.0, 2.2), (2.0, -6.5, 2.4), 30)
+    P.camera((27.0, 13.0, 2.4), (4.0, 0.0, 3.0), 30)
     P.render(os.path.join(out, "boathouse_beach.png"), samples=32)
     P.camera((14.0, -30.0, 9.0), (2.0, -9.0, 1.0), 30)
     P.render(os.path.join(out, "boat_park.png"), samples=32)
@@ -214,7 +214,7 @@ def shot_inside(reg, out, winter=False):
     P.camera((4.9, 3.4, 1.75), (-2.0, -2.2, 1.2), 22)
     P.render(os.path.join(out, "hall_winter.png" if winter else "hall.png"), samples=48)
     if not winter:
-        P.camera((-3.4, 3.6, 1.65), (-8.0, -1.0, 1.1), 20)
+        P.camera((-3.2, 1.3, 1.75), (-8.2, -1.1, 1.3), 17)
         P.render(os.path.join(out, "classroom.png"), samples=48)
 
 
