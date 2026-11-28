@@ -3,7 +3,8 @@
 #   tools/play_offscreen.sh <level> <script.py> [label]
 # Env: DPC (extra dpcvars, comma separated), LOG (default /tmp/offscreen.log), RES (default 1280x720), plus whatever the
 # script reads. The script ends the run with the console command QUIT. Prints the lines of the log containing $GREP
-# (default none). Never opens a window; run one at a time.
+# (default none). Never opens a window; run one at a time. OFFSCREEN_TIMEOUT (s, default 1800) kills a run that takes
+# longer; tools/ue_watchdog.sh also kills it 60 s after "Log file closed" when it hangs on exit.
 LEVEL="${1:?level, e.g. /Game/Dev/L_ForestPreview}"
 SCRIPT="${2:?python script}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -12,9 +13,11 @@ UE="${UE_ROOT:-/Users/Shared/Epic Games/UE_5.8}"
 LOG="${LOG:-/tmp/offscreen.log}"
 RES="${RES:-1280x720}"
 rm -f "$LOG"
-"$UE/Engine/Binaries/Mac/UnrealEditor" "$PROJ" "$LEVEL" -game -RenderOffscreen -ResX="${RES%x*}" -ResY="${RES#*x}" -windowed -unattended -nosplash -nosound \
+"$ROOT/tools/ue_watchdog.sh" "$LOG" "${OFFSCREEN_TIMEOUT:-1800}" \
+    "$UE/Engine/Binaries/Mac/UnrealEditor" "$PROJ" "$LEVEL" -game -RenderOffscreen -ResX="${RES%x*}" -ResY="${RES#*x}" -windowed -unattended -nosplash -nosound \
     -dpcvars=lyud.MainMenuOnStart=0${DPC:+,$DPC} -abslog="$LOG" "-ExecCmds=py $SCRIPT" > "$LOG.stdout" 2>&1 &
 PID=$!
 wait $PID
+grep -a "^ue_watchdog:" "$LOG.stdout"
 [ -n "$GREP" ] && grep -a -E "$GREP" "$LOG" | sed 's/^\[[^]]*\]\[[^]]*\]//'
 grep -a "Critical error" "$LOG" | head -2
