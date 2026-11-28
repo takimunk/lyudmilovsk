@@ -324,9 +324,15 @@ void ULyudSailing::Tick(float DeltaTime)
 	AHeroCharacter* Hero = Cast<AHeroCharacter>(UGameplayStatics::GetPlayerPawn(World, 0));
 	const FVector Eye = Hero ? Hero->GetActorLocation() : FVector(1.0e9, 1.0e9, 0.0);
 	TickSite(Eye, Dt);
-	// the water is the school's while the hero is within a mile of the slip (or out in his boat, wherever that takes him)
+	// the water is the school's while the hero is within a mile of the slip, or aboard his boat (wherever that takes him), or
+	// within a mile of her where he left her; a loaded game's boat is put back wherever he is
 	const FVector Slip = LyudSailingImpl::CmOf(M->P.LaunchOrigin, Eye.Z);
-	const bool bNear = FVector::DistSquared2D(Eye, Slip) < FMath::Square(M->bWaterWatched ? 165000.0 : 150000.0) || M->Hero.bBoatOut;
+	bool bNear = FVector::DistSquared2D(Eye, Slip) < FMath::Square(M->bWaterWatched ? 165000.0 : 150000.0);
+	if (!bNear && (M->Hero.bBoatOut || M->Hero.bRestore))
+	{
+		const ALyudDinghy* Mine = HeroDinghy();
+		bNear = M->Hero.bRestore || M->Hero.bAboard || !Mine || FVector::DistSquared2D(Eye, Mine->GetActorLocation()) < FMath::Square(150000.0);
+	}
 	TickFleet(Eye, Dt, bNear);
 	TickHero(Hero, Dt);
 }
@@ -1031,8 +1037,12 @@ void ULyudSailing::TickHero(AHeroCharacter* Hero, float Dt)
 		ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
 		if (bReach && UI && !UI->IsOpen())
 		{
-			H.bPrompt = true;
-			UI->SetPrompt(this, LyudText::Get(TEXT("ui.sail.board")));
+			// put up once (and again when another thing took the line): not a new text every frame
+			if (!H.bPrompt || UI->GetPromptOwner() != this)
+			{
+				H.bPrompt = true;
+				UI->SetPrompt(this, LyudText::Get(TEXT("ui.sail.board")));
+			}
 			if (ANpcTalkDirector::UsePressed(PC))
 			{
 				if (!HeroHasJacket())

@@ -1910,7 +1910,7 @@ void UPeopleLifeSubsystem::GetSailors(TArray<FLyudSailorNow>& Out) const
 		Row.Slot = FName(UTF8_TO_TCHAR(P.MemberSlot.c_str()));
 		// a regatta's classes are its own groups here (race_optimist, ...): the engine knows them as one, race
 		const std::string& G = S.GroupNames[(size_t)P.Program];
-		Row.Group = FName(UTF8_TO_TCHAR(G.rfind("race", 0) == 0 ? "race" : G.c_str()));
+		Row.Group = FName(UTF8_TO_TCHAR((G.rfind("race", 0) == 0 ? "race" : G.c_str())));
 		Row.Activity = FName(UTF8_TO_TCHAR(S.Activities[(size_t)P.Activity].Id.c_str()));
 		Row.AgeYears = (float)P.Age;
 		Row.bAfloat = S.Activities[(size_t)P.Activity].bAfloat && (P.State == LP::EState::Doing || P.State == LP::EState::Settling);
