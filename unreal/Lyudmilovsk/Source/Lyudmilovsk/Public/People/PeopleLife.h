@@ -8,6 +8,7 @@
 #include "PeopleLife.generated.h"
 
 namespace LyudPeople { class FWorld; class FManners; }
+namespace LyudSail { struct FSchoolParams; }
 class ABoothOwner;
 class ANpcBody;
 class ALyudBike;
@@ -49,6 +50,32 @@ struct LYUDMILOVSK_API FPersonInfo
 	UPROPERTY(BlueprintReadOnly, Category = "People") int32 Partner = -1;
 	/** What shows them now: their body walking about, the placed club actor at their station, the owner's booth actor. */
 	UPROPERTY(BlueprintReadOnly, Category = "People") TObjectPtr<AActor> Actor = nullptr;
+};
+
+/** One of the sailing school's people at a part of a session now (UPeopleLifeSubsystem::GetSailors; docs/yacht_school.md
+ *  "People (part F)"). While bAfloat the life does not draw them (their pose is hidden at the slip's foot): the school's engine
+ *  shows them in their boat (a coach in the launch). */
+USTRUCT(BlueprintType)
+struct LYUDMILOVSK_API FLyudSailorNow
+{
+	GENERATED_BODY()
+
+	/** The people's key (FPersonInfo::Key, townsfolk.json). */
+	UPROPERTY(BlueprintReadOnly, Category = "People|Sailing") FName Person;
+	/** The life's person id (GetPerson, SetPresentedExternally). */
+	UPROPERTY(BlueprintReadOnly, Category = "People|Sailing") int32 Id = -1;
+	/** Their slot in Content/City/sailing.json: kids_1.., jun_c1.., jun_x1.. (a cadet's crew), jun_l1.., adult_1.., or the staff's
+	 *  coach_head, coach_kids, coach_juniors, bosun. */
+	UPROPERTY(BlueprintReadOnly, Category = "People|Sailing") FName Slot;
+	/** The session's group they are at it with: kids, juniors, adults, race (a regatta, any class), all (out of season), staff
+	 *  (the fitting-out, the laying-up), theory, crew (members helping at the fitting-out). */
+	UPROPERTY(BlueprintReadOnly, Category = "People|Sailing") FName Group;
+	/** The activity now (activities.json): sail_change, sail_rig, sail_launch, sail_drill, sail_race, sail_land, ...; the staff's
+	 *  sail_coach_launch (in the launch), sail_coach_mast, sail_bosun_watch, ... */
+	UPROPERTY(BlueprintReadOnly, Category = "People|Sailing") FName Activity;
+	UPROPERTY(BlueprintReadOnly, Category = "People|Sailing") float AgeYears = 0.f;
+	/** Out on the water now (an "afloat" activity, arrived at it): show them in the boat. */
+	UPROPERTY(BlueprintReadOnly, Category = "People|Sailing") bool bAfloat = false;
 };
 
 /** What the save keeps per person (by key). */
@@ -217,6 +244,15 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "People|Town")
 	void SetPresentedExternally(int32 Id, bool bExternal);
 
+	/**
+	 * The sailing school's people (docs/yacht_school.md "People (part F)"): everybody bound to a school slot who is at a part of
+	 * a session now (walking to it, at it), with bAfloat for those out on the water. The life follows the school's timetable
+	 * (Private/People/SailPeople.h, SailSchoolModel.h) while the engine's conditions say so: sail_season, sail_kids,
+	 * sail_juniors, sail_adults, sail_race, sail_shore (a no-go or a recall: the session goes on ashore), sail_fitout.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "People|Sailing")
+	void GetSailors(TArray<FLyudSailorNow>& Out) const;
+
 	/** Whether a flat's windows are lit now (a flat id: W3-D017, P-CAPSULE/5-03), and one window (<flat>/w<n>, W3-D017-w1). */
 	UFUNCTION(BlueprintPure, Category = "People|Town")
 	bool IsFlatLit(FName FlatId) const;
@@ -350,6 +386,12 @@ private:
 	int32 SunDay = -1;
 	float SaveTimer = 0.f;
 	float DialogueTimer = 0.f;
+	/** The sailing school's rules (Content/City/sailing.json, loaded once; null: none) and the programmes they give the school's
+	 *  groups now (UpdateSailing, every few seconds and before a clock jump's resettle). */
+	TPimplPtr<LyudSail::FSchoolParams> SailParams;
+	bool bSailTried = false;
+	float SailTimer = 0.f;
+	void UpdateSailing();
 	/** The slots that hold a city thing (a slot's "thing": a sanatorium guest's chair), listed at Start, and whether this life
 	 *  holds it now: whoever sits there takes the chair from the hero (ULyudCityThings::ClaimThing), checked once a second. */
 	struct FThingHold { int32 Slot = -1; FString Thing; bool bHeld = false; };

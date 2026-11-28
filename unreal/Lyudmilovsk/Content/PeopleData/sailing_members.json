@@ -1,0 +1,841 @@
+{
+ "_doc": "Written by tools/sailing/sailing_people.py (docs/yacht_school.md \"People (part F)\"); do not edit. Who belongs to the sailing school: slot (Content/City/sailing.json's fleet and coaches), person (townsfolk.json key), groups [[group, role]] (PeopleSim FWorld::LoadMembers: while a group has a programme its members do it, the first group of theirs with one wins; a role turns the pupils' part into its own by \"roles\"), dialogue (the staff's talk id, npc_dialogue.txt [Sail_*]), staff_role (StaffOnShift(\"S-SAIL-SCHOOL\", role)).",
+ "roles": {
+  "coach": {
+   "sail_change": "sail_coach_wait",
+   "sail_rig": "sail_coach_rig",
+   "sail_launch": "sail_coach_slip",
+   "sail_drill": "sail_coach_launch",
+   "sail_land": "sail_coach_slip",
+   "sail_derig": "sail_coach_rig",
+   "sail_tea": "sail_coach_tea",
+   "sail_shore_lesson": "sail_coach_shore",
+   "sail_arrive": "sail_coach_wait",
+   "sail_theory": "sail_coach_class",
+   "sail_briefing": "sail_coach_brief",
+   "sail_race": "sail_coach_launch",
+   "sail_prizes": "sail_coach_prizes"
+  },
+  "officer": {
+   "sail_change": "sail_coach_wait",
+   "sail_rig": "sail_coach_rig",
+   "sail_launch": "sail_coach_slip",
+   "sail_drill": "sail_coach_launch",
+   "sail_land": "sail_coach_slip",
+   "sail_derig": "sail_coach_rig",
+   "sail_tea": "sail_coach_tea",
+   "sail_shore_lesson": "sail_coach_shore",
+   "sail_arrive": "sail_coach_wait",
+   "sail_theory": "sail_coach_class",
+   "sail_briefing": "sail_coach_brief",
+   "sail_race": "sail_coach_launch",
+   "sail_prizes": "sail_coach_prizes"
+  },
+  "coach2": {
+   "sail_briefing": "sail_coach_wait",
+   "sail_rig": "sail_coach_rig",
+   "sail_launch": "sail_coach_slip",
+   "sail_race": "sail_coach_mast",
+   "sail_land": "sail_coach_slip",
+   "sail_derig": "sail_coach_rig",
+   "sail_prizes": "sail_coach_prizes"
+  },
+  "bosun": {
+   "sail_change": "sail_bosun_park",
+   "sail_rig": "sail_bosun_park",
+   "sail_launch": "sail_bosun_slip",
+   "sail_drill": "sail_bosun_watch",
+   "sail_race": "sail_bosun_watch",
+   "sail_land": "sail_bosun_slip",
+   "sail_derig": "sail_derig",
+   "sail_tea": "sail_coach_tea",
+   "sail_shore_lesson": "sail_bosun_mend",
+   "sail_arrive": "sail_bosun_mend",
+   "sail_theory": "sail_bosun_mend",
+   "sail_briefing": "sail_bosun_park",
+   "sail_prizes": "sail_coach_prizes"
+  }
+ },
+ "members": [
+  {
+   "slot": "coach_head",
+   "person": "t_kask_ruta",
+   "age": 70,
+   "group": "staff",
+   "groups": [
+    [
+     "adults",
+     "coach"
+    ],
+    [
+     "race",
+     "officer"
+    ],
+    [
+     "all",
+     "coach"
+    ],
+    [
+     "staff",
+     ""
+    ]
+   ],
+   "dialogue": "Sail_coach_head",
+   "staff_role": "coach"
+  },
+  {
+   "slot": "coach_kids",
+   "person": "t_chen_meiling",
+   "age": 35,
+   "group": "staff",
+   "groups": [
+    [
+     "kids",
+     "coach"
+    ],
+    [
+     "race",
+     "coach2"
+    ],
+    [
+     "staff",
+     ""
+    ]
+   ],
+   "dialogue": "Sail_coach_kids",
+   "staff_role": "coach"
+  },
+  {
+   "slot": "coach_juniors",
+   "person": "t_ferreira_carmen",
+   "age": 48,
+   "group": "staff",
+   "groups": [
+    [
+     "juniors",
+     "coach"
+    ],
+    [
+     "race",
+     "coach2"
+    ],
+    [
+     "staff",
+     ""
+    ]
+   ],
+   "dialogue": "Sail_coach_juniors",
+   "staff_role": "coach"
+  },
+  {
+   "slot": "bosun",
+   "person": "t_mansour_hamish",
+   "age": 67,
+   "group": "staff",
+   "groups": [
+    [
+     "kids",
+     "bosun"
+    ],
+    [
+     "juniors",
+     "bosun"
+    ],
+    [
+     "adults",
+     "bosun"
+    ],
+    [
+     "race",
+     "bosun"
+    ],
+    [
+     "all",
+     "bosun"
+    ],
+    [
+     "staff",
+     ""
+    ]
+   ],
+   "dialogue": "Sail_bosun",
+   "staff_role": "bosun"
+  },
+  {
+   "slot": "kids_1",
+   "person": "t_belousov_ananya",
+   "age": 10,
+   "group": "kids",
+   "groups": [
+    [
+     "kids",
+     ""
+    ],
+    [
+     "race_optimist",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "kids_2",
+   "person": "t_nguyen_wei",
+   "age": 10,
+   "group": "kids",
+   "groups": [
+    [
+     "kids",
+     ""
+    ],
+    [
+     "race_optimist",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "kids_3",
+   "person": "t_zhang_santiago",
+   "age": 9,
+   "group": "kids",
+   "groups": [
+    [
+     "kids",
+     ""
+    ],
+    [
+     "race_optimist",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "kids_4",
+   "person": "t_romano_tiago",
+   "age": 8,
+   "group": "kids",
+   "groups": [
+    [
+     "kids",
+     ""
+    ],
+    [
+     "race_optimist",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "kids_5",
+   "person": "t_yavorsky_ama",
+   "age": 7,
+   "group": "kids",
+   "groups": [
+    [
+     "kids",
+     ""
+    ],
+    [
+     "race_optimist",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "kids_6",
+   "person": "t_dubois_sachiko",
+   "age": 7,
+   "group": "kids",
+   "groups": [
+    [
+     "kids",
+     ""
+    ],
+    [
+     "race_optimist",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "kids_7",
+   "person": "t_bauer_haruki",
+   "age": 7,
+   "group": "kids",
+   "groups": [
+    [
+     "kids",
+     ""
+    ],
+    [
+     "race_optimist",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "kids_8",
+   "person": "t_papadopoulos_hiroshi",
+   "age": 7,
+   "group": "kids",
+   "groups": [
+    [
+     "kids",
+     ""
+    ],
+    [
+     "race_optimist",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "jun_l1",
+   "person": "t_bekele_femke",
+   "age": 17,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_luch",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "jun_l2",
+   "person": "t_virtanen_ursula",
+   "age": 15,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_luch",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "jun_l3",
+   "person": "t_svoboda_malgorzata",
+   "age": 15,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_luch",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "jun_c1",
+   "person": "t_yavorsky_rashid",
+   "age": 14,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_cadet",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ],
+   "crew": "jun_x1"
+  },
+  {
+   "slot": "jun_c2",
+   "person": "t_mortensen_hakon",
+   "age": 13,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_cadet",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ],
+   "crew": "jun_x2"
+  },
+  {
+   "slot": "jun_c3",
+   "person": "t_okafor_nurlan",
+   "age": 13,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_cadet",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ],
+   "crew": "jun_x3"
+  },
+  {
+   "slot": "jun_c4",
+   "person": "t_bautista_freja",
+   "age": 13,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_cadet",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ],
+   "crew": "jun_x4"
+  },
+  {
+   "slot": "jun_x1",
+   "person": "t_nguyen_yanka",
+   "age": 12,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_cadet",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ],
+   "helm": "jun_c1"
+  },
+  {
+   "slot": "jun_x2",
+   "person": "t_zhang_nour",
+   "age": 12,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_cadet",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ],
+   "helm": "jun_c2"
+  },
+  {
+   "slot": "jun_x3",
+   "person": "t_chen_arjun",
+   "age": 12,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_cadet",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ],
+   "helm": "jun_c3"
+  },
+  {
+   "slot": "jun_x4",
+   "person": "t_korhonen_oksana",
+   "age": 12,
+   "group": "juniors",
+   "groups": [
+    [
+     "juniors",
+     ""
+    ],
+    [
+     "race_cadet",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ],
+   "helm": "jun_c4"
+  },
+  {
+   "slot": "adult_1",
+   "person": "t_vinogradov_aiko",
+   "age": 28,
+   "group": "adults",
+   "groups": [
+    [
+     "adults",
+     ""
+    ],
+    [
+     "race_luch",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "adult_2",
+   "person": "t_lefebvre_gennady",
+   "age": 26,
+   "group": "adults",
+   "groups": [
+    [
+     "adults",
+     ""
+    ],
+    [
+     "race_luch",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "adult_3",
+   "person": "t_girma_nino",
+   "age": 42,
+   "group": "adults",
+   "groups": [
+    [
+     "adults",
+     ""
+    ],
+    [
+     "race_luch",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "adult_4",
+   "person": "t_sargsyan_tiago",
+   "age": 21,
+   "group": "adults",
+   "groups": [
+    [
+     "adults",
+     ""
+    ],
+    [
+     "race_luch",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "adult_5",
+   "person": "t_ozols_yerlan",
+   "age": 49,
+   "group": "adults",
+   "groups": [
+    [
+     "adults",
+     ""
+    ],
+    [
+     "race_luch",
+     ""
+    ],
+    [
+     "theory",
+     ""
+    ],
+    [
+     "crew",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_bauer_agustina",
+   "age": 36,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_bauer_janis",
+   "age": 40,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_belousov_alejandro",
+   "age": 38,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_dubois_folake",
+   "age": 46,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_dubois_xiaoming",
+   "age": 48,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_nguyen_aram",
+   "age": 30,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_nguyen_zeynep",
+   "age": 33,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_papadopoulos_arturs",
+   "age": 41,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_papadopoulos_zsofia",
+   "age": 43,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_romano_olga",
+   "age": 31,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_yavorsky_elif",
+   "age": 40,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_yavorsky_giorgi",
+   "age": 42,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  },
+  {
+   "slot": "",
+   "person": "t_zhang_madison",
+   "age": 30,
+   "group": "kids_parents",
+   "groups": [
+    [
+     "kids_parents",
+     ""
+    ]
+   ]
+  }
+ ]
+}
