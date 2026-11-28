@@ -28,7 +28,8 @@ namespace
 
 	FVector2D SailHudMeasure(const FText& T, const FSlateFontInfo& Font)
 	{
-		return FVector2D(FSlateApplication::Get().GetRenderer()->GetFontMeasureService()->Measure(T, Font));
+		const FVector2D Measured = FSlateApplication::Get().GetRenderer()->GetFontMeasureService()->Measure(T, Font);
+		return Measured;
 	}
 
 	/** The words with a soft shadow under them. Align: 0 from At, 0.5 centred on it, 1 ending at it. */
@@ -110,7 +111,9 @@ namespace
 
 	FText SailHudNumber(float Value, int32 Decimals, const FText& Unit)
 	{
-		return FText::FromString(FString::Printf(TEXT("%.*f %s"), Decimals, Value, *Unit.ToString()));
+		// no "%.*f": the format checker of FString::Printf does not take a star precision
+		const FString Number = Decimals <= 0 ? FString::Printf(TEXT("%.0f"), Value) : FString::Printf(TEXT("%.1f"), Value);
+		return FText::FromString(Number + TEXT(" ") + Unit.ToString());
 	}
 }
 
@@ -247,7 +250,7 @@ int32 SLyudSailHud::OnPaint(const FPaintArgs&, const FGeometry& Geo, const FSlat
 			// the heel: from the middle to the side she leans, greener the flatter
 			const float Lean = FMath::Clamp(H.HeelDeg / 45.f, -1.f, 1.f);
 			const float Much = FMath::Clamp((FMath::Abs(H.HeelDeg) - 12.f) / 18.f, 0.f, 1.f);
-			SailHudText(Out, Layer + 2, Geo, At + FVector2D(-10.0, -8.0), FText::FromString(WordHeel.ToString() + FString::Printf(TEXT(" %.0f°"), FMath::Abs(H.HeelDeg))), Small,
+			SailHudText(Out, Layer + 2, Geo, At + FVector2D(-10.0, -8.0), FText::FromString(WordHeel.ToString() + FString::Printf(TEXT(" %.0f\u00B0"), FMath::Abs(H.HeelDeg))), Small,
 				LyudUI::Body, 1.f);
 			SailHudBar(Out, Layer, Geo, At, BarSize, 0.5f, 0.5f + 0.5f * Lean, FMath::Lerp(LyudUI::Good, LyudUI::Bad, Much));
 			SailHudBox(Out, Layer + 2, Geo, At + FVector2D(BarSize.X * 0.5 - 1.0, -3.0), FVector2D(2.0, BarSize.Y + 6.0), LyudUI::Bright);

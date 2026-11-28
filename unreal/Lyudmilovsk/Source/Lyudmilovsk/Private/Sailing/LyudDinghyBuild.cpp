@@ -589,54 +589,58 @@ namespace
 
 void ALyudDinghy::FImpl::Build(ALyudDinghy& D, int32 InClass, int32 InNumber, int32 InColours)
 {
-	using namespace LyudSailKit;
+	// every kit call qualified: an unqualified name here is looked up in ALyudDinghy and AActor first
+	using LyudSailKit::FClassDef;
+	using LyudSailKit::EBuilt;
 	const int32 Class = FMath::Clamp(InClass, 0, 2);
-	const FClassDef& Def = ClassDef(Class);
+	const FClassDef& Def = LyudSailKit::ClassDef(Class);
 	Colours = InColours;
 	if (!Hull)
 	{
 		// made once for the actor's life; a pooled boat of another class only changes meshes and pivots
-		Hull = Frame(&D, D.Root, TEXT("Hull"), D.Kept);
-		Rig = Frame(&D, Hull, TEXT("Rig"), D.Kept);
-		CrewFrame = Frame(&D, D.Root, TEXT("CrewFrame"), D.Kept);
-		HeroSeat = Frame(&D, D.Root, TEXT("HeroSeat"), D.Kept);
-		HullMesh = Part(&D, Hull, TEXT("HullMesh"), D.Kept);
-		Mast = Part(&D, Hull, TEXT("Mast"), D.Kept);
-		Boom = Part(&D, Rig, TEXT("Boom"), D.Kept);
-		Main = Part(&D, Rig, TEXT("Main"), D.Kept);
-		Sprit = Part(&D, Rig, TEXT("Sprit"), D.Kept);
-		Jib = Part(&D, Hull, TEXT("Jib"), D.Kept);
-		Rudder = Part(&D, Hull, TEXT("Rudder"), D.Kept);
-		Tiller = Part(&D, Hull, TEXT("Tiller"), D.Kept);
-		Ext = Part(&D, Hull, TEXT("Ext"), D.Kept);
-		Board = Part(&D, Hull, TEXT("Board"), D.Kept);
-		Far = Part(&D, Hull, TEXT("Far"), D.Kept);
-		Trolley = Part(&D, D.Root, TEXT("Trolley"), D.Kept);
-		Cover = Part(&D, Hull, TEXT("Cover"), D.Kept);
+		Hull = LyudSailKit::Frame(&D, D.Root, TEXT("Hull"), D.Kept);
+		Rig = LyudSailKit::Frame(&D, Hull, TEXT("Rig"), D.Kept);
+		CrewFrame = LyudSailKit::Frame(&D, D.Root, TEXT("CrewFrame"), D.Kept);
+		HeroSeat = LyudSailKit::Frame(&D, D.Root, TEXT("HeroSeat"), D.Kept);
+		HullMesh = LyudSailKit::Part(&D, Hull, TEXT("HullMesh"), D.Kept);
+		Mast = LyudSailKit::Part(&D, Hull, TEXT("Mast"), D.Kept);
+		Boom = LyudSailKit::Part(&D, Rig, TEXT("Boom"), D.Kept);
+		Main = LyudSailKit::Part(&D, Rig, TEXT("Main"), D.Kept);
+		Sprit = LyudSailKit::Part(&D, Rig, TEXT("Sprit"), D.Kept);
+		Jib = LyudSailKit::Part(&D, Hull, TEXT("Jib"), D.Kept);
+		Rudder = LyudSailKit::Part(&D, Hull, TEXT("Rudder"), D.Kept);
+		Tiller = LyudSailKit::Part(&D, Hull, TEXT("Tiller"), D.Kept);
+		Ext = LyudSailKit::Part(&D, Hull, TEXT("Ext"), D.Kept);
+		Board = LyudSailKit::Part(&D, Hull, TEXT("Board"), D.Kept);
+		Far = LyudSailKit::Part(&D, Hull, TEXT("Far"), D.Kept);
+		Trolley = LyudSailKit::Part(&D, D.Root, TEXT("Trolley"), D.Kept);
+		Cover = LyudSailKit::Part(&D, Hull, TEXT("Cover"), D.Kept);
 		for (int32 I = 0; I < 2; ++I)
 		{
-			Rope[I] = Part(&D, Hull, I == 0 ? TEXT("Sheet0") : TEXT("Sheet1"), D.Kept);
+			Rope[I] = LyudSailKit::Part(&D, Hull, I == 0 ? TEXT("Sheet0") : TEXT("Sheet1"), D.Kept);
 			Rope[I]->SetCastShadow(false);
 		}
 		static const TCHAR* const TellNames[4] = { TEXT("Tell0"), TEXT("Tell1"), TEXT("Tell2"), TEXT("Tell3") };
 		for (int32 I = 0; I < 4; ++I)
 		{
-			Tell[I] = Part(&D, Rig, TellNames[I], D.Kept);
+			Tell[I] = LyudSailKit::Part(&D, Rig, TellNames[I], D.Kept);
 			Tell[I]->SetCastShadow(false);
-			Tell[I]->SetStaticMesh(Ribbon().Mesh);
+			Tell[I]->SetStaticMesh(LyudSailKit::Ribbon().Mesh);
+			// a ribbon 26 cm long (MoveParts only turns it)
+			Tell[I]->SetRelativeScale3D(FVector(26.f, 1.f, 1.3f));
 			// green to starboard, red to port, as on every sail
-			PaintBuilt(Tell[I], Ribbon(), I < 2 ? FLinearColor(0.05f, 0.75f, 0.15f) : FLinearColor(0.9f, 0.06f, 0.04f), FLinearColor::White);
+			LyudSailKit::PaintBuilt(Tell[I], LyudSailKit::Ribbon(), I < 2 ? FLinearColor(0.05f, 0.75f, 0.15f) : FLinearColor(0.9f, 0.06f, 0.04f), FLinearColor::White);
 		}
-		Vane = Part(&D, Hull, TEXT("Vane"), D.Kept);
+		Vane = LyudSailKit::Part(&D, Hull, TEXT("Vane"), D.Kept);
 		Vane->SetCastShadow(false);
 		Vane->SetStaticMesh(LyudSailKit::Vane().Mesh);
-		PaintBuilt(Vane, LyudSailKit::Vane(), FLinearColor(0.9f, 0.1f, 0.05f), FLinearColor::White);
-		if (UInstancedStaticMeshComponent* Pool = FoamPool(&D, D.Root, 28, D.Kept))
+		LyudSailKit::PaintBuilt(Vane, LyudSailKit::Vane(), FLinearColor(0.9f, 0.1f, 0.05f), FLinearColor::White);
+		if (UInstancedStaticMeshComponent* Pool = LyudSailKit::FoamPool(&D, D.Root, 28, D.Kept))
 		{
 			Wake.Init(Pool, 28, D.GetActorLocation());
 		}
 	}
-	const FLinearColor Tint = HullTint(Colours);
+	const FLinearColor Tint = LyudSailKit::HullTint(Colours);
 	const FString N(Def.Name);
 	bAssets = DinghyDress(HullMesh, N + TEXT("_Hull"), Class, EBuilt::Hull, Tint);
 	DinghyDress(Mast, N + TEXT("_Mast"), Class, EBuilt::Mast, Tint);
@@ -664,30 +668,30 @@ void ALyudDinghy::FImpl::Build(ALyudDinghy& D, int32 InClass, int32 InNumber, in
 		Jib->SetStaticMesh(nullptr);
 	}
 	Far->EmptyOverrideMaterials();
-	Far->SetStaticMesh(Asset(N + TEXT("_Far")));
+	Far->SetStaticMesh(LyudSailKit::Asset(N + TEXT("_Far")));
 	Cover->EmptyOverrideMaterials();
-	Cover->SetStaticMesh(Asset(FString(TEXT("Cover_")) + N));
+	Cover->SetStaticMesh(LyudSailKit::Asset(FString(TEXT("Cover_")) + N));
 	Trolley->EmptyOverrideMaterials();
-	if (UStaticMesh* T = Asset(FString(TEXT("Trolley_")) + N))
+	if (UStaticMesh* T = LyudSailKit::Asset(FString(TEXT("Trolley_")) + N))
 	{
 		Trolley->SetStaticMesh(T);
 		Trolley->SetRelativeScale3D(FVector::OneVector);
 	}
 	else
 	{
-		Trolley->SetStaticMesh(TrolleyFrame().Mesh);
-		PaintBuilt(Trolley, TrolleyFrame(), Tint, Tint);
+		Trolley->SetStaticMesh(LyudSailKit::TrolleyFrame().Mesh);
+		LyudSailKit::PaintBuilt(Trolley, LyudSailKit::TrolleyFrame(), Tint, Tint);
 		Trolley->SetRelativeScale3D(FVector(Def.Loa, Def.Beam, Def.TrolleyZ / 0.55f));
 	}
 	// the sheet's two pieces: the imported metre of rope, else a centimetre built here (MoveParts scales by RopeUnit)
-	UStaticMesh* RopeAsset = Asset(TEXT("Rope"));
+	UStaticMesh* RopeAsset = LyudSailKit::Asset(TEXT("Rope"));
 	for (int32 I = 0; I < 2; ++I)
 	{
 		Rope[I]->EmptyOverrideMaterials();
-		Rope[I]->SetStaticMesh(RopeAsset ? RopeAsset : RopePiece().Mesh);
+		Rope[I]->SetStaticMesh(RopeAsset ? RopeAsset : LyudSailKit::RopePiece().Mesh);
 		if (!RopeAsset)
 		{
-			PaintBuilt(Rope[I], RopePiece(), Tint, Tint);
+			LyudSailKit::PaintBuilt(Rope[I], LyudSailKit::RopePiece(), Tint, Tint);
 		}
 	}
 	// the cloth: mostly new sails, some old, a few patched (the SL_Sail slot's instance, by the boat's seed)
@@ -695,14 +699,14 @@ void ALyudDinghy::FImpl::Build(ALyudDinghy& D, int32 InClass, int32 InNumber, in
 	const TCHAR* Variant = Pick < 10 ? TEXT("") : Pick < 14 ? TEXT("_Old") : TEXT("_Patched");
 	if (bMainAsset)
 	{
-		if (UMaterialInterface* Cloth = MaterialAt(FString::Printf(TEXT("/Game/Sailing/Materials/MI_SL_Sail_%s_Main%s.MI_SL_Sail_%s_Main%s"), Def.Name, Variant, Def.Name, Variant)))
+		if (UMaterialInterface* Cloth = LyudSailKit::MaterialAt(FString::Printf(TEXT("/Game/Sailing/Materials/MI_SL_Sail_%s_Main%s.MI_SL_Sail_%s_Main%s"), Def.Name, Variant, Def.Name, Variant)))
 		{
 			Main->SetMaterialByName(TEXT("SL_Sail"), Cloth);
 		}
 	}
 	if (bJibAsset)
 	{
-		if (UMaterialInterface* Cloth = MaterialAt(FString::Printf(TEXT("/Game/Sailing/Materials/MI_SL_Sail_%s_Jib%s.MI_SL_Sail_%s_Jib%s"), Def.Name, Variant, Def.Name, Variant)))
+		if (UMaterialInterface* Cloth = LyudSailKit::MaterialAt(FString::Printf(TEXT("/Game/Sailing/Materials/MI_SL_Sail_%s_Jib%s.MI_SL_Sail_%s_Jib%s"), Def.Name, Variant, Def.Name, Variant)))
 		{
 			Jib->SetMaterialByName(TEXT("SL_Sail"), Cloth);
 		}
@@ -799,10 +803,8 @@ void ALyudDinghy::FImpl::ApplyLod(ALyudDinghy& D)
 	const int32 Forced = L == ELyudDinghyLod::Mid ? 2 : 0;
 	for (UStaticMeshComponent* C : Lods)
 	{
-		if (C->ForcedLodModel != Forced)
-		{
-			C->SetForcedLodModel(Forced);
-		}
+		// SetForcedLodModel does nothing when the value is the same (the field itself is not read here: it may not stay public)
+		C->SetForcedLodModel(Forced);
 	}
 	// shadows only where they are seen
 	const bool bShadow = !bFar;
@@ -851,10 +853,7 @@ void ALyudDinghy::FImpl::ShowParked(ALyudDinghy& D)
 	UStaticMeshComponent* Lods[] = { HullMesh, Mast, Boom, Main, Sprit, Jib, Rudder, Tiller, Board };
 	for (UStaticMeshComponent* C : Lods)
 	{
-		if (C->ForcedLodModel != 0)
-		{
-			C->SetForcedLodModel(0);
-		}
+		C->SetForcedLodModel(0);
 	}
 	// on the trolley: upright, the boom amidships and a little off, the sail shivering in whatever wind there is
 	const LyudSailKit::FClassDef& Def = LyudSailKit::ClassDef(BuiltClass);
@@ -953,7 +952,7 @@ void ALyudDinghy::FImpl::MoveParts(ALyudDinghy& D, float DeltaTime)
 		const FVector OnBoom = Def.Boom + FRotator(0.f, BoomDeg, 0.f).RotateVector(Def.BoomBlock);
 		const FVector Fall = OnBoom - Def.SheetBlock;
 		Rope[0]->SetRelativeLocationAndRotation(Def.SheetBlock, FRotationMatrix::MakeFromX(Fall.GetSafeNormal(1e-3f, FVector::UpVector)).Rotator());
-		Rope[0]->SetRelativeScale3D(FVector(FMath::Max(Fall.Size(), 1.f) * Unit, 1.f, 1.f));
+		Rope[0]->SetRelativeScale3D(FVector(FMath::Max(float(Fall.Size()), 1.f) * Unit, 1.f, 1.f));
 		const bool bHeld = Crew[0].Body.IsValid() || D.bHeroAboard;
 		DinghyShow(Rope[1], bHeld);
 		if (bHeld)
@@ -964,7 +963,7 @@ void ALyudDinghy::FImpl::MoveParts(ALyudDinghy& D, float DeltaTime)
 			const FVector Hand = Def.BodyOrigin + FVector(G.Y, float(SitSide) * G.X, G.Z);
 			const FVector To = Hand - Def.SheetBlock;
 			Rope[1]->SetRelativeLocationAndRotation(Def.SheetBlock, FRotationMatrix::MakeFromX(To.GetSafeNormal(1e-3f, FVector::UpVector)).Rotator());
-			Rope[1]->SetRelativeScale3D(FVector(FMath::Max(To.Size(), 1.f) * Unit, 1.f, 1.f));
+			Rope[1]->SetRelativeScale3D(FVector(FMath::Max(float(To.Size()), 1.f) * Unit, 1.f, 1.f));
 		}
 	}
 
@@ -1004,7 +1003,6 @@ void ALyudDinghy::FImpl::MoveParts(ALyudDinghy& D, float DeltaTime)
 			}
 			// the ribbon's free end points aft (yaw 180); a positive pitch lifts it, a negative one lets it hang
 			Tell[I]->SetRelativeLocationAndRotation(At, FRotator(Pitch, Yaw, 0.f));
-			Tell[I]->SetRelativeScale3D(FVector(26.f, 1.f, 1.3f));
 		}
 	}
 

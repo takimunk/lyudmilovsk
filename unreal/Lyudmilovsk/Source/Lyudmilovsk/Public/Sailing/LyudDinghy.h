@@ -58,7 +58,7 @@ class LYUDMILOVSK_API ALyudDinghy : public AActor
 
 public:
 	ALyudDinghy();
-	virtual ~ALyudDinghy();
+	virtual ~ALyudDinghy() override;
 
 	/** Makes it a boat of this class (0 optimist, 1 cadet, 2 luch = LyudSail::EBoat), with its sail number and hull colour
 	 *  (an index into the school's colourways). Safe to call again on a pooled actor. */
@@ -156,7 +156,7 @@ class LYUDMILOVSK_API ALyudSailLaunch : public AActor
 
 public:
 	ALyudSailLaunch();
-	virtual ~ALyudSailLaunch();
+	virtual ~ALyudSailLaunch() override;
 
 	LyudSail::FLaunch& Launch();
 	void PlaceAt(const FVector2D& PosM, float YawRad);
