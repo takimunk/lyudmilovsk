@@ -37,6 +37,8 @@ namespace LyudPokerImpl
 	constexpr double ClockMaxPerFrame = 30.0;
 	constexpr int32 LogKept = 24;
 	constexpr int32 HelpLines = 7;
+	/** More than all the chips of a roubles table: a stake read from a save is never believed past it. */
+	constexpr int32 MaxSavedStake = 1000;
 
 	FString Str(const char* S) { return FString(UTF8_TO_TCHAR(S)); }
 
@@ -78,18 +80,22 @@ void ULyudShipPoker::OnWorldBeginPlay(UWorld& InWorld)
 	if (ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(&InWorld))
 	{
 		Saves->RegisterSaveObject(TEXT("ShipPoker"), this);
+		// before the SaveGame fields are written (ULyudSaveSubsystem::SaveToSlot): what lies on the table goes into the save
+		SaveHandle = Saves->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame*) { BeforeSave(); });
 		LoadHandle = Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame* Save)
 		{
 			if (Save && !Save->Records.Contains(TEXT("ShipPoker")))
 			{
 				// a save from before the ship: nothing played yet
 				Saved.Reset();
+				SavedStake = 0;
 			}
 			AfterLoad();
 		});
 		NewGameHandle = Saves->OnNewGame.AddWeakLambda(this, [this]
 		{
 			Saved.Reset();
+			SavedStake = 0;
 			AfterLoad();
 		});
 	}
@@ -97,7 +103,8 @@ void ULyudShipPoker::OnWorldBeginPlay(UWorld& InWorld)
 
 void ULyudShipPoker::Deinitialize()
 {
-	Close();
+	// the level is ending: his stack goes back to his pocket, nothing is told to systems that may be gone already
+	Drop(true);
 	if (UWorld* World = GetWorld())
 	{
 		if (ULyudCityThings* Things = World->GetSubsystem<ULyudCityThings>())
@@ -106,6 +113,7 @@ void ULyudShipPoker::Deinitialize()
 		}
 		if (ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(World))
 		{
+			Saves->OnBeforeSave.Remove(SaveHandle);
 			Saves->OnAfterLoad.Remove(LoadHandle);
 			Saves->OnNewGame.Remove(NewGameHandle);
 			Saves->UnregisterSaveObject(TEXT("ShipPoker"));
@@ -116,11 +124,51 @@ void ULyudShipPoker::Deinitialize()
 
 void ULyudShipPoker::AfterLoad()
 {
-	// a sitting does not outlive a load: whatever was on the table is gone, the record is the saved one
+	// a sitting does not outlive a load: whatever was on the table is gone (the pocket is the saved one), the record is the
+	// saved one
+	Drop(false);
 	if (!Record->FromString(std::string(TCHAR_TO_UTF8(*Saved))))
 	{
 		*Record = LyudPoker::FRecord();
 	}
+	// saved in the middle of a sitting: the buy-in had left the pocket, the stack was on the table. He is standing now
+	const int32 Stake = FMath::Clamp(SavedStake, 0, LyudPokerImpl::MaxSavedStake);
+	SavedStake = 0;
+	if (Stake > 0)
+	{
+		if (ULyudInventory* Inv = ULyudInventory::Get(GetWorld()))
+		{
+			Inv->Earn(Stake);
+			Record->Night.Net -= Stake;
+			Store();
+			UE_LOG(LogLyudPoker, Display, TEXT("Poker: %d roubles left on the table by the save are back in the pocket"), Stake);
+		}
+	}
+}
+
+void ULyudShipPoker::BeforeSave()
+{
+	const bool bOnTable = Stage == EStage::Play && !bSettled && bRoubles && Table->NumSeats() > 0;
+	SavedStake = bOnTable ? FMath::Max(0, Table->Seats[0].Stack) : 0;
+}
+
+void ULyudShipPoker::Drop(bool bPay)
+{
+	if (Stage == EStage::Play)
+	{
+		if (bPay)
+		{
+			if (LyudPokerImpl::HandInPlay(*Table))
+			{
+				Table->HeroLeave();
+			}
+			Settle(true);
+		}
+		bSettled = true;
+		bHandNoted = true;
+		Stage = EStage::Done;
+	}
+	Close();
 }
 
 void ULyudShipPoker::Store()
@@ -592,7 +640,7 @@ void ULyudShipPoker::Sit(bool bInRoubles)
 	int32 Able = 0;
 	for (const int O : Who)
 	{
-		Able += !bInRoubles || Record->Night.Purse[O] > 0 ? 1 : 0;
+		Able += (!bInRoubles || Record->Night.Purse[O] > 0) ? 1 : 0;
 	}
 	if (Able == 0)
 	{
@@ -872,7 +920,7 @@ void ULyudShipPoker::End(EWhy Why)
 	Refresh();
 }
 
-void ULyudShipPoker::Settle()
+void ULyudShipPoker::Settle(bool bQuiet)
 {
 	if (bSettled)
 	{
@@ -894,10 +942,13 @@ void ULyudShipPoker::Settle()
 		Table->Purses(Record->Night.Purse);
 	}
 	Store();
-	ULyudQuests::Notify(this, TEXT("poker_leave"), Net > 0 ? TEXT("up") : (Net < 0 ? TEXT("down") : TEXT("even")));
-	if (Stack <= 0)
+	if (!bQuiet)
 	{
-		ULyudQuests::Notify(this, TEXT("poker_broke"), bRoubles ? TEXT("roubles") : TEXT("matches"));
+		ULyudQuests::Notify(this, TEXT("poker_leave"), Net > 0 ? TEXT("up") : (Net < 0 ? TEXT("down") : TEXT("even")));
+		if (Stack <= 0)
+		{
+			ULyudQuests::Notify(this, TEXT("poker_broke"), bRoubles ? TEXT("roubles") : TEXT("matches"));
+		}
 	}
 	UE_LOG(LogLyudPoker, Display, TEXT("Poker: got up with %d of %d (%s); the evening's count %d"), Stack, Table->HeroBuyIn,
 		bRoubles ? TEXT("roubles") : TEXT("matches"), Record->Night.Net);
@@ -924,6 +975,7 @@ void ULyudShipPoker::AddLog(const FText& Line)
 void ULyudShipPoker::Refresh()
 {
 	FLyudPokerView& V = *Shown;
+	++V.Serial;
 	V.Stage = Stage == EStage::Play ? 1 : (Stage == EStage::Done ? 2 : 0);
 	V.bHelp = bHelp;
 	V.Tell = TellLine;
@@ -1034,7 +1086,12 @@ void ULyudShipPoker::Refresh()
 	{
 		V.Cursor = Cursor;
 		V.Discard = Discard;
-		V.Hero.Note = LyudText::Get(TEXT("poker.log.your_draw")).ToString();
+		// the draw's instruction is a long line: on the banner's row (the whole width) when nothing else is said there
+		if (V.Banner.IsEmpty())
+		{
+			V.Banner = LyudText::Get(TEXT("poker.log.your_draw"));
+			V.bBannerBad = false;
+		}
 		V.Keys = LyudText::Get(TEXT("poker.keys.draw"));
 	}
 	else if (bMine)

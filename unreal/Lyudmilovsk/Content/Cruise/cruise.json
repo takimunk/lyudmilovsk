@@ -67,7 +67,7 @@
    "y": 30000,
    "radius": 70,
    "height": 38,
-   "keep_off": 400,
+   "keep_off": 300,
    "light": true,
    "name": "cruise.island.lighthouse.name"
   },
@@ -181,31 +181,51 @@
   {
    "kind": "via",
    "at": [
-    62000,
-    9000
-   ],
-   "r": 800
-  },
-  {
-   "kind": "via",
-   "at": [
-    66000,
-    24000
-   ],
-   "r": 800
-  },
-  {
-   "kind": "orbit",
-   "island": "lighthouse",
-   "r": 560,
-   "laps": 2,
-   "event": "isl_lighthouse"
-  },
-  {
-   "kind": "via",
-   "at": [
     60000,
-    44000
+    13000
+   ],
+   "r": 800
+  },
+  {
+   "kind": "via",
+   "at": [
+    44500,
+    32500
+   ],
+   "r": 1000
+  },
+  {
+   "kind": "via",
+   "at": [
+    49024.0,
+    30869.0
+   ],
+   "r": 800
+  },
+  {
+   "kind": "anchor",
+   "island": "lighthouse",
+   "at": [
+    52024.0,
+    30269.0
+   ],
+   "r": 600,
+   "event": "isl_lighthouse",
+   "ashore": true
+  },
+  {
+   "kind": "via",
+   "at": [
+    55024.0,
+    30869.0
+   ],
+   "r": 800
+  },
+  {
+   "kind": "via",
+   "at": [
+    58000,
+    43000
    ],
    "r": 800
   },
@@ -213,7 +233,7 @@
    "kind": "via",
    "at": [
     42000,
-    54000
+    52000
    ],
    "r": 800
   },
@@ -267,6 +287,21 @@
    "r": 500
   }
  ],
+ "ashore": {
+  "island": "lighthouse",
+  "plot": "P-FARLIGHT",
+  "offset_m": [
+   -24.0,
+   331.0
+  ],
+  "lead_s": 300,
+  "last_s": 600,
+  "warn_s": [
+   1800,
+   1200,
+   780
+  ]
+ },
  "events": [
   {
    "id": "boarding",
@@ -467,9 +502,9 @@
    "id": "isl_lighthouse",
    "day": 2,
    "from": "16:30",
-   "to": "17:30",
+   "to": "18:30",
    "t0": 81000,
-   "t1": 84600,
+   "t1": 88200,
    "announce": "cruise.announce.isl_lighthouse",
    "name": "cruise.event.isl_lighthouse.name",
    "where": "deck"
@@ -1698,43 +1733,43 @@
    715.0
   ],
   "library_case_1": [
-   2835.0,
-   -171.5,
-   640.0
+   2810.0,
+   -197.0,
+   670.0
   ],
   "library_case_2": [
-   2965.0,
-   -171.5,
-   640.0
+   2940.0,
+   -197.0,
+   670.0
   ],
   "library_chair_1": [
-   2825.0,
-   -288.0,
+   3250.0,
+   -130.0,
    584.0
   ],
   "library_chair_2": [
-   2945.0,
-   -288.0,
+   3250.0,
+   -210.0,
    584.0
   ],
   "chess_table": [
-   3072.0,
-   -285.0,
+   3090.0,
+   -293.0,
    618.2
   ],
   "chess_seat_1": [
-   3015.0,
-   -285.0,
+   3033.0,
+   -293.0,
    585.0
   ],
   "chess_seat_2": [
-   3129.0,
-   -285.0,
+   3147.0,
+   -293.0,
    585.0
   ],
   "library_globe": [
-   3066.6,
-   -182.0,
+   2905.4,
+   -308.0,
    589.4
   ],
   "programme_board": [
@@ -1933,9 +1968,9 @@
    939.0
   ],
   "radio_clock": [
-   3580.0,
-   -281.1,
-   1008.0
+   3650.0,
+   -66.1,
+   985.0
   ],
   "radio_desk": [
    3505.0,

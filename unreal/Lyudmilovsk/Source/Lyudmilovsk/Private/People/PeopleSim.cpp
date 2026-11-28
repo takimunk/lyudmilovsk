@@ -1378,8 +1378,10 @@ namespace LyudPeople
 				Prefix.insert(Prefix.end(), InPath.begin(), InPath.end());
 			}
 			Pl.Building = V["building"].S();
-			Pl.bPrivate = V["private"].F() > 0.f;       // (the ship's cabins: only for whoever is given them, AssignHomes)
 			Pl.Island = V.Find("island") ? V["island"].I() : IslandOf(Pl.Portal);
+			// the motor ship's cabins (island 4 and beyond): only for whoever is given them (AssignHomes). Only there: the
+			// town's one "private" flat (S-MAYAK-HOME) was never read as such here, and reading it now would move the dice
+			Pl.bPrivate = Pl.Island >= 4 && V["private"].F() > 0.f;
 			for (const LyudJson::FValue& W : V["windows"].Items)
 			{
 				Pl.Windows.push_back(W.S());

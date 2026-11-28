@@ -98,7 +98,8 @@ static void TestCalendar(const FModel& M)
 	CHECK(M.At(TOf(2026, 10, 23, 17, 59, 59)).Phase == EPhase::Boarding, "Friday 17:59:59: boarding");
 	CHECK(M.At(TOf(2026, 10, 23, 18, 0)).Phase == EPhase::Underway, "Friday 18:00: sailed");
 	CHECK(M.At(TOf(2026, 10, 24, 10, 30)).Phase == EPhase::Circling, "Saturday 10:30: round Bird Island");
-	CHECK(M.At(TOf(2026, 10, 24, 17, 0)).Phase == EPhase::Circling, "Saturday 17:00: round the Far Light");
+	CHECK(M.At(TOf(2026, 10, 24, 17, 0)).Phase == EPhase::Anchored, "Saturday 17:00: at anchor off the Far Light");
+	CHECK(M.At(TOf(2026, 10, 24, 16, 29)).Phase == EPhase::Underway && M.At(TOf(2026, 10, 24, 18, 30)).Phase == EPhase::Underway, "the landing is 16:30-18:30");
 	CHECK(M.At(TOf(2026, 10, 25, 3, 0)).Phase == EPhase::Anchored, "Sunday 03:00: at anchor");
 	CHECK(M.At(TOf(2026, 10, 25, 6, 0)).Phase == EPhase::Underway, "Sunday 06:00: under way again");
 	CHECK(M.At(TOf(2026, 10, 25, 18, 0)).Phase == EPhase::Landing, "Sunday 18:00: landing");
@@ -344,6 +345,37 @@ static void TestRoute(const FModel& M)
 			CHECK(Off >= 400.0 && Off <= 600.0, "%s is circled %.0f m off", Isl.Id.c_str(), Off);
 			CHECK(std::fabs(Turned) >= 2.0 * Pi * 2.0 - 0.1, "%s is circled %.1f times", Isl.Id.c_str(), std::fabs(Turned) / (2.0 * Pi));
 		}
+		else if (Stop->bAshore)
+		{
+			// the landing: she lies still exactly where the seascape's island stands on the real rock (the city plot)
+			CHECK(M.AshoreStop >= 0 && M.AshoreIsland == Isl.Id && !M.AshorePlot.empty(), "the landing stop is the \"ashore\" island");
+			for (double Tv = Ev.T0 + 60.0; Tv < Ev.T1 - 30.0; Tv += 60.0)
+			{
+				const FState St = M.At(Sail + Tv);
+				CHECK(St.Phase == EPhase::Anchored && St.Speed == 0.0 && St.TurnRate == 0.0, "at the landing the ship does not move (%s)", Clock(Tv, M).c_str());
+				CHECK(M.AshoreMismatch(St) < 0.01, "at the landing the chart island is %.3f m from the real rock", M.AshoreMismatch(St));
+			}
+			CHECK(std::fabs(WrapAngle(Mid.Heading - M.AshoreHeading)) < 1e-9 && std::fabs(Mid.Heading) < 1e-6, "she lies at the landing with her bow to +X (%.5f deg)", Mid.Heading * 180.0 / Pi);
+			CHECK(M.AshoreOffset.Y > 200.0 && M.AshoreOffset.Y < 450.0 && std::fabs(M.AshoreOffset.X) < 80.0, "the rock is abeam to starboard, 200..450 m");
+			CHECK(D >= Isl.KeepOff && D <= 450.0, "the landing anchorage is %.0f m from the rock", D);
+			// the hand-over: a minute before and after she is metres away (the real rock must not be shown then)
+			CHECK(M.AshoreMismatch(M.At(Sail + Ev.T0 - 120.0)) > 1.0 && M.AshoreMismatch(M.At(Sail + Ev.T1 + 120.0)) > 1.0, "under way the copy is not on the rock");
+			CHECK(M.AshoreMismatch(M.At(Sail + Ev.T0 - 2.0)) < 1.0, "she comes to rest smoothly: %.3f m two seconds before", M.AshoreMismatch(M.At(Sail + Ev.T0 - 2.0)));
+			CHECK(M.AshoreMismatch(M.At(TOf(2026, 10, 21, 12))) > 1e6, "no rock in port");
+			// the launch
+			CHECK(!M.AshoreOpen(Ev.T0 + 60.0) && M.AshoreOpen(Ev.T0 + M.AshoreLeadSec) && M.AshoreOpen(Ev.T1 - M.AshoreLastSec - 1.0) && !M.AshoreOpen(Ev.T1 - M.AshoreLastSec)
+				&& !M.AshoreOpen(Ev.T0 - 1.0) && !M.AshoreOpen(Ev.T1 + 86400.0), "the launch's hours");
+			CHECK(Clock(M.AshoreLastLaunch(), M) == "Sat 18:20", "the last launch leaves at %s", Clock(M.AshoreLastLaunch(), M).c_str());
+			CHECK(M.AshoreWarnSec.size() == 3 && M.AshoreWarnings(Ev.T1 - 1801.0) == 0 && M.AshoreWarnings(Ev.T1 - 1800.0) == 1 && M.AshoreWarnings(Ev.T1 - 1200.0) == 2
+				&& M.AshoreWarnings(Ev.T1 - 700.0) == 3 && M.AshoreWarnings(Ev.T1 + 5.0) == 0, "three warnings from 18:00");
+			FHero H;
+			H.bAboard = true;
+			H.Voyage = M.VoyageAt(Sail);
+			CHECK(M.MayBeAshore(Sail + Ev.T0 + 10.0, H) && M.MayBeAshore(Sail + Ev.T1 - 601.0, H) && !M.MayBeAshore(Sail + Ev.T1 - 600.0, H) && !M.MayBeAshore(Sail + Ev.T0 - 1.0, H)
+				&& !M.MayBeAshore(Sail + Ev.T0 + 10.0 + WeekSec, H) && !M.MayBeAshore(Sail + 100000.0, H), "he may walk the rock only while she lies there, to the last launch");
+			H.bAboard = false;
+			CHECK(!M.MayBeAshore(Sail + Ev.T0 + 10.0, H), "a hero who is not a passenger is not on the landing");
+		}
 		else
 		{
 			for (double Tv = Ev.T0 + 60.0; Tv < Ev.T1 - 60.0; Tv += 600.0)
@@ -436,7 +468,7 @@ static void TestFlags(const FModel& M)
 	CHECK(Names.size() == M.FlagNames.size(), "a flag name comes twice");
 	for (const char* Name : { "cruise_season", "cruise_boarding", "cruise_landing", "cruise_aboard", "cruise_day1", "cruise_day2", "cruise_day3", "cruise_underway",
 		"cruise_anchor", "cruise_ev_concert1", "cruise_ev_isl_birds", "cruise_ev_wake", "cruise_at_birds", "cruise_at_home", "cruise_class_hold", "cruise_class_std",
-		"cruise_class_lux", "cruise_can_board", "cruise_has_ticket", "cruise_port", "cruise_voyage", "cruise_circling", "cruise_night", "cruise_done" })
+		"cruise_class_lux", "cruise_can_board", "cruise_has_ticket", "cruise_port", "cruise_voyage", "cruise_circling", "cruise_night", "cruise_done", "cruise_ashore_stop", "cruise_ashore_open" })
 	{
 		CHECK(Names.count(Name), "no flag %s", Name);
 	}
@@ -456,8 +488,11 @@ static void TestFlags(const FModel& M)
 		const bool bVoyage = St.Phase != EPhase::Port && St.Phase != EPhase::Laid;
 		CHECK(F[Index("cruise_season")] == 1 && F[Index("cruise_voyage")] == (bVoyage ? 1 : 0), "season and voyage");
 		CHECK(F[Index("cruise_day1")] + F[Index("cruise_day2")] + F[Index("cruise_day3")] == (bVoyage ? 1 : 0), "one day flag on a voyage, none in port");
-		CHECK(F[Index("cruise_boarding")] + F[Index("cruise_landing")] + F[Index("cruise_underway")] + F[Index("cruise_anchor")] == (bVoyage ? 1 : 0),
-			"boarding, under way, at anchor, landing: one of them on a voyage");
+		CHECK(F[Index("cruise_boarding")] + F[Index("cruise_landing")] + F[Index("cruise_underway")] + F[Index("cruise_anchor")] + F[Index("cruise_ashore_stop")] == (bVoyage ? 1 : 0),
+			"boarding, under way, at anchor, at the landing stop, landing: one of them on a voyage");
+		CHECK(F[Index("cruise_ashore_stop")] == (M.AtAshoreStop(St.Tv) && bVoyage ? 1 : 0) && F[Index("cruise_ashore_open")] == (bVoyage && M.AshoreOpen(St.Tv) ? 1 : 0)
+			&& (!F[Index("cruise_ashore_open")] || (F[Index("cruise_ashore_stop")] && F[Index("cruise_ev_isl_lighthouse")] && F[Index("cruise_at_lighthouse")])),
+			"the landing's flags at %s", Clock(St.Tv, M).c_str());
 		CHECK(F[Index("cruise_port")] == (St.Phase == EPhase::Port || St.Phase == EPhase::Boarding || St.Phase == EPhase::Landing ? 1 : 0)
 			&& (!F[Index("cruise_port")] || St.Speed == 0.0), "port: lying on the roads");
 		CHECK(!F[Index("cruise_circling")] || F[Index("cruise_underway")], "circling is under way");

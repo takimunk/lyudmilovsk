@@ -1,6 +1,8 @@
 """Ship-only pieces of the motor ship «Полдень» (exterior fittings): funnel with the sun disc, masts, lifeboats and
 davits, cowl vents, windlass, capstan, bollards, cargo hatch, searchlight, radar, life rings, bell, anchors, awning,
-deck stanchions, the name in raised letters. Everything is given in the SHIP frame (_shipframe.py) and goes through
+deck stanchions, the name in raised letters. Second pass (extras): the name and home port round the stern, name boards,
+the ensign and the house pennant, signal flags, draught marks and the load line, freeing ports, fenders, navigation
+light boxes (unlit; points in FITTINGS), mushroom vents, the fire point, coiled lines, boat No. 1 with its cover rolled back. Everything is given in the SHIP frame (_shipframe.py) and goes through
 motor_ship.qface, so the mirror of the building frame is taken care of.
 
 fittings(B, S, M): M = the motor_ship module (qface, rail). FITTINGS (filled while building): name -> ship (x, y, z),
@@ -11,6 +13,7 @@ import math
 FITTINGS = {}
 
 WHITE, HULL, RED, WOOD, BRASS, BLACK, CANVAS = "CT_SteelWhite", "CT_Steel", "CT_SteelRed", "CT_Wood", "CT_Brass", "CT_Lacquer", "CT_Cobogo"
+NAVY, CREAM, VARNISH = "CT_ShipNavy", "CT_ShipCream", "CT_WoodLight"
 
 _M = None
 _S = None
@@ -90,7 +93,7 @@ def tube(m, mat, path, radii, segs=8, caps=True):
 def torus(m, x, y, z, R, r, axis, mats, segs=16, sides=6):
     """A ring (life ring) centred at (x, y, z) whose axis is `axis` ("x" or "y"); mats: one material per quarter."""
     for i in range(segs):
-        a0, a1 = 2 * math.pi * i / segs, 2 * math.pi * (i + 1) / segs
+        a0, a1 = 2 * math.pi * i / segs - math.pi / 4, 2 * math.pi * (i + 1) / segs - math.pi / 4      # a white quarter on top
         mt = mats[(i * len(mats)) // segs]
         for k in range(sides):
             b0, b1 = 2 * math.pi * k / sides, 2 * math.pi * (k + 1) / sides
@@ -122,7 +125,7 @@ def funnel(B):
     sbox(m, WHITE, 20.0, 27.0, -1.5, 1.5, za, za + 1.0, faces="xXyYZ")
     sbox(d, HULL, 19.98, 27.02, -1.52, 1.52, za, za + 0.12, faces="xXyY")
     zb = za + 1.0
-    levels = [(zb, 1.0, WHITE), (za + 2.8, 0.985, RED), (za + 4.0, 0.975, WHITE), (za + 5.0, 0.965, BLACK), (za + 5.3, 0.96, None)]
+    levels = [(zb, 1.0, CREAM), (za + 2.8, 0.985, RED), (za + 4.0, 0.975, CREAM), (za + 5.0, 0.965, BLACK), (za + 5.3, 0.96, None)]
     segs = 28
     cx0, a, b = 23.9, 2.35, 1.25
 
@@ -179,13 +182,13 @@ def cowl_vent(B, x, y, z, h=2.0, face=0.0, r=0.2):
     fx, fy = math.cos(a), math.sin(a)
     path = [(x, y, z), (x, y, z + h - 0.80), (x + fx * 0.10, y + fy * 0.10, z + h - 0.42), (x + fx * 0.34, y + fy * 0.34, z + h - 0.16),
             (x + fx * 0.60, y + fy * 0.60, z + h - 0.08), (x + fx * 0.78, y + fy * 0.78, z + h - 0.06)]
-    tube(d, WHITE, path, [r, r, r * 1.08, r * 1.35, r * 1.9, r * 2.15], segs=12, caps=False)
+    tube(d, CREAM, path, [r, r, r * 1.08, r * 1.35, r * 1.9, r * 2.15], segs=12, caps=False)
     mouth = path[-1]
     tube(B.detail, RED, [(mouth[0] - fx * 0.03, mouth[1] - fy * 0.03, mouth[2]), (mouth[0] - fx * 0.04, mouth[1] - fy * 0.04, mouth[2])], [r * 2.05, r * 2.05], segs=12, caps=True)
     lathe(B.detail, WHITE, x, y, [(r + 0.08, z), (r + 0.08, z + 0.06), (r, z + 0.06)], segs=10)
 
 
-def mast(B, x, y, z0, z1, r0, r1, mat=WHITE, yard=None, name=None):
+def mast(B, x, y, z0, z1, r0, r1, mat=CREAM, yard=None, name=None):
     lathe(B.m, mat, x, y, [(r0, z0), (r0 * 0.9, z0 + (z1 - z0) * 0.5), (r1, z1), (0.0, z1 + 0.08)], segs=10)
     if yard:
         zy, half = yard
@@ -199,7 +202,7 @@ def stay(B, a, b, r=0.012):
     tube(B.detail, HULL, [a, b], r, segs=4, caps=False)
 
 
-def lifeboat(B, xc, sg, n):
+def lifeboat(B, xc, sg, n, open_fwd=False):
     """A 7.5 m double-ended boat under its davits on deck A, hanging outboard above the rail. sg: +1 starboard."""
     S, m, d = _S, B.m, B.detail
     za = S.Z_A
@@ -232,8 +235,12 @@ def lifeboat(B, xc, sg, n):
                 if sum(c * c for c in cr) < 1e-10:
                     continue
                 _q(m, WHITE, list(tri), nrm)
+                if open_fwd and i >= N // 2:            # the inside of the planking where the cover is rolled back
+                    _q(d, VARNISH, list(tri), (-nrm[0], -nrm[1], -nrm[2]))
     # the canvas cover: a low tent over the gunwale
     for i in range(N):
+        if open_fwd and i >= N // 2:
+            continue
         for side in (0, -1):
             g0, g1 = rows[i][side], rows[i + 1][side]
             r0 = (rows[i][0][0], yc, max(rows[i][0][2], rows[i][-1][2]) + 0.22 * math.sin(math.pi * i / N) + 0.02)
@@ -245,6 +252,29 @@ def lifeboat(B, xc, sg, n):
                     pts.append(p)
             if len(pts) >= 3:
                 _q(m, CANVAS, pts, (0, (g0[1] - yc) or 0.0, 1.0))
+    if open_fwd:
+        # the cover rolled back to amidships: its open end, the roll, three thwarts, the bottom boards, a pair of oars
+        i = N // 2
+        xr = rows[i][0][0]
+        zr = max(rows[i][0][2], rows[i][-1][2]) + 0.24
+        for sgx in (1, -1):
+            _q(d, CANVAS, [rows[i][0], rows[i][-1], (xr, yc, zr)], (sgx, 0, 0))
+        tube(d, CANVAS, [(xr + 0.08, yc - Bb / 2 + 0.1, zk + Db + 0.06), (xr + 0.08, yc + Bb / 2 - 0.1, zk + Db + 0.06)], 0.09, segs=6)
+        for j in (6, 7, 8):
+            xt = rows[j][0][0]
+            hw = 0.80 * (Bb / 2) * math.sin(math.pi * j / N) ** 0.55
+            sbox(d, VARNISH, xt - 0.11, xt + 0.11, yc - hw, yc + hw, zk + Db * 0.66, zk + Db * 0.66 + 0.035)
+        sbox(d, VARNISH, xr, rows[9][0][0] - 0.2, yc - 0.42, yc + 0.42, zk + 0.20, zk + 0.23, faces="Z")
+        for oy in (-0.22, 0.2):
+            tube(d, VARNISH, [(xr + 0.25, yc + oy, zk + Db * 0.66 + 0.06), (xr + 2.9, yc + oy * 0.6, zk + Db * 0.66 + 0.06)], 0.022, segs=5)
+            sbox(d, VARNISH, xr + 2.9, xr + 3.35, yc + oy * 0.6 - 0.07, yc + oy * 0.6 + 0.07, zk + Db * 0.66 + 0.05, zk + Db * 0.66 + 0.07)
+    # lashing bands over the cover, gunwale to gunwale
+    for i in ((2, 4) if open_fwd else (2, 4, 6, 8)):
+        xr = rows[i][0][0]
+        zr = max(rows[i][0][2], rows[i][-1][2]) + 0.22 * math.sin(math.pi * i / N) + 0.02
+        for side in (0, -1):
+            g0 = rows[i][side]
+            _q(d, VARNISH, [(xr - 0.03, g0[1], g0[2] + 0.012), (xr + 0.03, g0[1], g0[2] + 0.012), (xr + 0.03, yc, zr + 0.012), (xr - 0.03, yc, zr + 0.012)], (0, g0[1] - yc, 1.0))
     # davits: a curved arm at each end, feet on the deck inboard of the rail; falls down to the boat's ends
     for xe in (xc - Lb / 2 + 0.55, xc + Lb / 2 - 0.55):
         yf = sg * 4.25
@@ -346,6 +376,12 @@ def hatch(B):
 
 def life_ring(B, x, y, z, axis):
     torus(B.detail, x, y, z, 0.29, 0.065, axis, [RED, WHITE, RED, WHITE], segs=16, sides=6)
+    if axis == "y":
+        # the ship's name round the top white quarter, on the inboard face (the one people on deck see)
+        sg = 1 if y > 0 else -1
+        R = 0.262
+        letters(B, "ПОЛДЕНЬ", lambda r, v: (x - sg * (R + v) * math.sin(r / R), y - sg * 0.069, z + (R + v) * math.cos(r / R)),
+                (0, -sg, 0), h=0.055, w=0.036, gap=0.014, mat=BLACK)
 
 
 def searchlight(B, x, y, z):
@@ -395,7 +431,28 @@ GLYPHS = {
     "Е": [(0, 0, _T, 1), (0, 1 - _T, 1, 1), (0, 0, 1, _T), (0, 0.5 - _T / 2, 0.8, 0.5 + _T / 2)],
     "Н": [(0, 0, _T, 1), (1 - _T, 0, 1, 1), (0, 0.5 - _T / 2, 1, 0.5 + _T / 2)],
     "Ь": [(0, 0, _T, 1), (0, 0, 1, _T), (0, 0.55 - _T, 1, 0.55), (1 - _T, 0, 1, 0.55)],
+    "Ю": [(0, 0, _T, 1), (_T, 0.5 - _T / 2, 0.4, 0.5 + _T / 2), (0.4, 0, 0.4 + _T, 1), (1 - _T, 0, 1, 1), (0.4, 1 - _T, 1, 1), (0.4, 0, 1, _T)],
+    "М": [(0, 0, _T, 1), (1 - _T, 0, 1, 1), [(_T, 1), (0.5, 0.62), (0.5, 0.30), (_T, 0.68)], [(1 - _T, 1), (1 - _T, 0.68), (0.5, 0.30), (0.5, 0.62)]],
+    "И": [(0, 0, _T, 1), (1 - _T, 0, 1, 1), [(_T, 0), (_T, 0.36), (1 - _T, 1), (1 - _T, 0.64)]],
+    "В": [(0, 0, _T, 1), (0, 1 - _T, 0.85, 1), (0, 0.5 - _T / 2, 0.9, 0.5 + _T / 2), (0, 0, 1, _T), (0.85 - _T, 0.5, 0.85, 1), (1 - _T, 0, 1, 0.5)],
+    "С": [(0, 0, _T, 1), (0, 1 - _T, 1, 1), (0, 0, 1, _T)],
+    "К": [(0, 0, _T, 1), [(_T, 0.38), (_T, 0.62), (0.76, 1), (1, 1)], [(_T, 0.62), (_T, 0.38), (0.76, 0), (1, 0)]],
 }
+
+
+def letters(B, word, place, nrm, h=0.42, w=0.30, gap=0.12, mat=BLACK):
+    """Raised block letters anywhere: place(r, v) -> ship point for r metres along the reading direction from the
+    word's middle and v metres up from the baseline; nrm: the way the letters look (ship frame)."""
+    d = B.detail
+    n = len(word)
+    total = n * w + (n - 1) * gap
+    for i, ch in enumerate(word):
+        s0 = -total / 2 + i * (w + gap)
+        for g in GLYPHS[ch]:
+            if len(g) == 4 and not isinstance(g[0], tuple):
+                u0, v0, u1, v1 = g
+                g = [(u0, v0), (u1, v0), (u1, v1), (u0, v1)]
+            _q(d, mat, [place(s0 + u * w, v * h) for u, v in g], nrm(s0 + w / 2) if callable(nrm) else nrm)
 
 
 def lettering(B, word, x_mid, z, sg, h=0.42, y_of=None, mat=BLACK, w=0.30, gap=0.12, d_out=0.02, face_x=None):
@@ -436,7 +493,7 @@ def fittings(B, S, M):
     mast(B, 50.6, 0.0, zf - 0.05, 18.0, 0.22, 0.07, yard=(14.6, 1.6), name="foremast")
     mast(B, 17.5, 0.0, za, 17.5, 0.175, 0.06, yard=(15.0, 1.3), name="mainmast")
     # derrick boom stowed aft over the hatch, its crutch, the cargo winch
-    tube(d, WHITE, [(50.45, 0.0, zf + 1.3), (44.6, 0.0, S.Z_B + 1.75)], [0.09, 0.06], segs=8)
+    tube(d, CREAM, [(50.45, 0.0, zf + 1.3), (44.6, 0.0, S.Z_B + 1.75)], [0.09, 0.06], segs=8)
     sbox(m, HULL, 51.0, 51.8, -0.45, 0.45, S.foredeck_z(51.4) - 0.1, S.foredeck_z(51.4) + 0.55)
     tube(d, HULL, [(51.4, -0.6, S.foredeck_z(51.4) + 0.4), (51.4, 0.6, S.foredeck_z(51.4) + 0.4)], 0.2, segs=10)
     # stays and shrouds
@@ -456,7 +513,7 @@ def fittings(B, S, M):
     n = 1
     for xc in (24.75, 14.75):
         for sg in (1, -1):
-            lifeboat(B, xc, sg, n)
+            lifeboat(B, xc, sg, n, open_fwd=(n == 1))
             n += 1
     # raft capsules on cradles, 2 a side at x 30..33
     for sg in (1, -1):
@@ -527,12 +584,168 @@ def fittings(B, S, M):
             _q(d, CANVAS, [(xa, 0.0, zb + 2.505), (xb, 0.0, zb + 2.505), (xb, sg * hbb, zb + 2.405), (xa, sg * ha, zb + 2.405)], (0, 0, -1))
     # ---- the name on both bows (raised letters on the white bulwark)
     for sg in (1, -1):
-        lettering(B, "ПОЛДЕНЬ", 54.2, S.foredeck_z(54.2) + 0.38, sg, y_of=lambda x, z: S.half(x))
+        lettering(B, "ПОЛДЕНЬ", 54.2, S.foredeck_z(54.2) + 0.38, sg, y_of=lambda x, z: S.half(x), mat=WHITE)
+    extras(B)
     FITTINGS["bow"] = (60.6, 0.0, S.foredeck_z(60.6))
     FITTINGS["stern_rail"] = (2.3, 0.0, zb)
     FITTINGS["gangway"] = (31.1, 4.4, zc)
     B.note("fittings (ship frame): " + "; ".join("%s %s" % (k, tuple(round(c, 2) for c in v)) for k, v in sorted(FITTINGS.items()) if k != "life_rings"))
     B.note("life rings (ship frame): " + "; ".join("(%.2f, %.2f, %.2f)" % r for r in rings))
+
+
+# ================================================================================================ E1: the second pass
+def _stern_at(s):
+    """The stern bulwark's plan curve by arc length s from the centreline (starboard half): (x, y, nx, ny)."""
+    S = _S
+    pts = [(x, S.half(x)) for x in (0.0, 0.15, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0)]
+    for (xa, ya), (xb, yb) in zip(pts, pts[1:]):
+        Ls = math.hypot(xb - xa, yb - ya)
+        if s <= Ls:
+            t = s / Ls
+            return (xa + (xb - xa) * t, ya + (yb - ya) * t, -(yb - ya) / Ls, (xb - xa) / Ls)
+        s -= Ls
+    return pts[-1] + (0.0, 1.0)
+
+
+def _stern_place(z0, off=0.03):
+    def place(r, v):
+        x, y, nx, ny = _stern_at(abs(r))
+        sg = 1 if r >= 0 else -1
+        return (x + nx * off, sg * (y + ny * off), z0 + v)
+    return place
+
+
+def cloth(B, origin, length, hoist, bands, sun=None, taper=0.0, N=6, droop=0.30):
+    """A flag as a two-sided card flying aft from `origin` (the top of the hoist), sagging a little: bands
+    [(v0, v1, material)] over the hoist (v 0 bottom .. 1 top); sun (t, v, radius): a brass disc on both sides;
+    taper 1: a pennant running to a point."""
+    d = B.detail
+    ox, oy, oz = origin
+
+    def P(t, v, off=0.0):
+        hh = hoist * (1 - taper * t)
+        mid = oz - hoist / 2 - droop * hoist * t ** 1.4
+        return (ox - length * t * (1 - 0.06 * t), oy + 0.05 * length * math.sin(2.4 * t) * t + off, mid + (v - 0.5) * hh)
+    for i in range(N):
+        t0, t1 = i / N, (i + 1) / N
+        for (v0, v1, mat) in bands:
+            q = [P(t0, v0), P(t1, v0), P(t1, v1), P(t0, v1)]
+            if taper >= 1.0 and i == N - 1:
+                q = [P(t0, v0), P(t1, 0.5), P(t0, v1)]
+            for sg in (1, -1):
+                _q(d, mat, q, (0, sg, 0))
+    if sun:
+        tc, vc, rr = sun
+        for sg in (1, -1):
+            pts = [P(tc + rr * math.cos(2 * math.pi * k / 14) / length, vc + rr * math.sin(2 * math.pi * k / 14) / hoist, sg * 0.006) for k in range(14)]
+            _q(d, BRASS, pts, (0, sg, 0))
+
+
+def mushroom(B, x, y, z, h=0.45, r=0.09, mat=WHITE):
+    lathe(B.detail, mat, x, y, [(r, z), (r, z + h - 0.08), (r * 2.3, z + h - 0.07), (r * 2.3, z + h - 0.01), (r * 1.3, z + h + 0.06), (0.0, z + h + 0.08)], segs=8)
+
+
+def coil(B, x, y, z, r=0.34, turns=3):
+    """A mooring line coiled down flat on the deck."""
+    for k in range(turns):
+        rr = r - 0.085 * k
+        pts = [(x + rr * math.cos(2 * math.pi * i / 10), y + rr * math.sin(2 * math.pi * i / 10), z + 0.035 + 0.012 * k) for i in range(11)]
+        tube(B.detail, CANVAS, pts, 0.036, segs=4, caps=False)
+
+
+def extras(B):
+    S, m, d, M = _S, B.m, B.detail, _M
+    za, zb, zc = S.Z_A, S.Z_B, S.Z_C
+    # ---- the name and the home port round the stern (white raised letters on the navy bulwark)
+    letters(B, "ПОЛДЕНЬ", _stern_place(zc + 0.56), lambda r: (-1.0, 0.3 * r, 0.0), h=0.34, w=0.27, gap=0.11, mat=WHITE)
+    letters(B, "ЛЮДМИЛОВСК", _stern_place(zc + 0.20), lambda r: (-1.0, 0.3 * r, 0.0), h=0.20, w=0.16, gap=0.07, mat=WHITE)
+    # ---- name boards on the bridge wings' fronts (varnished boards are there): brass letters, read from ahead
+    for sg in (1, -1):
+        letters(B, "ПОЛДЕНЬ", lambda r, v, sg=sg: (41.506, sg * 4.05 - r, S.Z_BRIDGE + 0.55 + v), (1, 0, 0), h=0.20, w=0.13, gap=0.06, mat=BRASS)
+    # ---- flags: the ensign at the stern (cream, a red band, the sun), the house pennant on the mainmast
+    cloth(B, (1.76, 0.0, zb + 3.55), 1.55, 0.95, [(0.0, 0.30, RED), (0.30, 1.0, CREAM)], sun=(0.38, 0.66, 0.19))
+    cloth(B, (17.5, 0.0, 17.35), 1.9, 0.55, [(0.0, 1.0, NAVY)], sun=(0.16, 0.5, 0.15), taper=1.0, droop=0.5)
+    # signal flags on the starboard halyard
+    for k, mat in enumerate((RED, "CT_PlasterYellow", NAVY)):
+        t = 0.25 + 0.16 * k
+        hx, hy, hz = 37.5 - 0.5 * t, 1.45 + 1.45 * t, 16.8 - (16.8 - S.Z_WHEELHOUSE_TOP) * t
+        cloth(B, (hx, hy, hz), 0.5, 0.36, [(0.0, 1.0, mat)], N=2, droop=0.2)
+    # ---- draught marks at the bow and the stern, the load line amidships
+    for sg in (1, -1):
+        for x in (58.3, 4.2):
+            for k in range(7):
+                z = 0.35 + 0.2 * k
+                y = S.hull_half(x, z) + 0.012
+                y2 = S.hull_half(x + 0.12, z) + 0.012
+                _q(d, WHITE, [(x, sg * y, z), (x + 0.12, sg * y2, z), (x + 0.12, sg * y2, z + 0.035), (x, sg * y, z + 0.035)], (0, sg, 0))
+        yl = S.hull_half(31.0, 0.75) + 0.012
+        M._ring(d, WHITE, 31.0, sg * yl, 0.75, 0.15, 0.125, sg, 0.0, segs=14)
+        _q(d, WHITE, [(30.77, sg * yl, 0.7375), (31.23, sg * yl, 0.7375), (31.23, sg * yl, 0.7625), (30.77, sg * yl, 0.7625)], (0, sg, 0))
+        for k in range(4):
+            _q(d, WHITE, [(31.45, sg * yl, 0.55 + 0.12 * k), (31.62, sg * yl, 0.55 + 0.12 * k), (31.62, sg * yl, 0.575 + 0.12 * k), (31.45, sg * yl, 0.575 + 0.12 * k)], (0, sg, 0))
+        # freeing ports (scuppers) in the bulwarks: dark slots outside and inside
+        for x in (48.2, 50.8, 53.4, 56.0, 2.6, 4.6, 6.6):
+            z = S.foredeck_z(x) + 0.03
+            for (yy, n) in ((S.half(x) + 0.008, sg), (S.half(x) - 0.10 - 0.008, -sg)):
+                dy = (S.half(x + 0.35) - S.half(x))
+                _q(d, BLACK, [(x, sg * yy, z), (x + 0.35, sg * (yy + dy), z), (x + 0.35, sg * (yy + dy), z + 0.07), (x, sg * yy, z + 0.07)], (0, n, 0))
+        # rope fenders hung over the side at the gangway ports
+        for x in (29.9, 32.3):
+            yy = S.half(x) + 0.14
+            stay(B, (x, sg * (yy - 0.12), zc + 0.9), (x, sg * yy, zc - 0.25), 0.012)
+            tube(d, VARNISH, [(x, sg * yy, zc - 0.25), (x, sg * yy, zc - 0.35), (x, sg * yy, zc - 0.85), (x, sg * yy, zc - 0.95)], [0.05, 0.12, 0.12, 0.05], segs=8)
+    # ---- navigation light boxes (unlit): masthead light on the foremast, a second one on the mainmast, the stern light
+    for (x, z) in ((50.6, 12.2), (17.5, 14.0)):
+        sbox(d, BLACK, x + 0.10, x + 0.34, -0.14, 0.14, z, z + 0.26)
+        sbox(d, "CT_Glass", x + 0.34, x + 0.36, -0.09, 0.09, z + 0.05, z + 0.21, faces="X")
+        sbox(d, CREAM, x, x + 0.10, -0.03, 0.03, z + 0.08, z + 0.14)
+    sbox(d, BLACK, 1.86, 2.02, -0.12, 0.12, zb + 1.12, zb + 1.34)
+    sbox(d, "CT_Glass", 1.84, 1.86, -0.08, 0.08, zb + 1.16, zb + 1.30, faces="x")
+    FITTINGS["masthead_light"] = (50.95, 0.0, 12.33)
+    FITTINGS["stern_light"] = (1.85, 0.0, zb + 1.23)
+    FITTINGS["sidelight_stbd"] = (41.15, 5.15, S.Z_BRIDGE + 1.27)
+    FITTINGS["sidelight_port"] = (41.15, -5.15, S.Z_BRIDGE + 1.27)
+    FITTINGS["ensign"] = (1.76, 0.0, zb + 3.55)
+    # ---- mushroom ventilators: the stair hood's roof, the wheelhouse top, the crew's end of the boat deck
+    zh = S.ceil("A") + 0.12
+    for sg in (1, -1):
+        for x in (28.4, 30.6):
+            mushroom(B, x, sg * 1.05, zh)
+        mushroom(B, 39.1, sg * 2.2, S.Z_WHEELHOUSE_TOP, h=0.5)
+        mushroom(B, 44.3, sg * 1.3, za, h=0.75, r=0.11)
+    # ---- the crew's end of the boat deck (closed to passengers by the rails at the ladders' feet):
+    # the companion ladder stowed along the port rail, a lifejacket chest to starboard
+    for yy in (-4.45, -3.95):
+        sbox(d, VARNISH, 39.6, 43.0, yy - 0.03, yy + 0.03, za + 0.10, za + 0.24)
+    for k in range(10):
+        xx = 39.8 + 0.33 * k
+        sbox(d, VARNISH, xx, xx + 0.10, -4.42, -3.98, za + 0.15, za + 0.18)
+    for xx in (40.0, 42.6):
+        sbox(d, WHITE, xx, xx + 0.08, -4.5, -3.9, za, za + 0.10)
+    sbox(d, WHITE, 39.8, 41.4, 3.75, 4.45, za, za + 0.55, faces="xXyY")
+    sbox(d, VARNISH, 39.76, 41.44, 3.71, 4.49, za + 0.55, za + 0.60)
+    sbox(d, RED, 40.45, 40.75, 3.74, 3.75, za + 0.2, za + 0.4, faces="y")
+    # ---- the fire point on the casing top's starboard face: a red board, four buckets in a row, an axe; the
+    # boat-hook on the port face
+    sbox(d, RED, 22.6, 24.4, 1.50, 1.53, za + 0.42, za + 0.52, faces="xXYzZ")
+    for k in range(4):
+        xb = 22.85 + 0.43 * k
+        lathe(d, RED, xb, 1.70, [(0.10, za + 0.08), (0.145, za + 0.36), (0.13, za + 0.36), (0.09, za + 0.10), (0.0, za + 0.10)], segs=8)
+        tube(d, HULL, [(xb, 1.54, za + 0.47), (xb, 1.70, za + 0.47), (xb, 1.70, za + 0.36)], 0.008, segs=3, caps=False)
+    tube(d, VARNISH, [(21.2, -1.56, za + 0.72), (24.4, -1.56, za + 0.72)], 0.022, segs=5)
+    tube(d, BRASS, [(24.4, -1.56, za + 0.72), (24.62, -1.56, za + 0.72)], [0.02, 0.006], segs=5)
+    for xx in (21.8, 23.8):
+        sbox(d, BRASS, xx, xx + 0.04, -1.60, -1.50, za + 0.68, za + 0.76)
+    # ---- mooring lines coiled down, a spare on the foredeck
+    coil(B, 1.6, 1.2, zc + 0.005)
+    coil(B, 1.6, -1.2, zc + 0.005)
+    coil(B, 6.9, -3.0, zc + 0.005, r=0.30)
+    coil(B, 54.3, -1.5, S.foredeck_z(54.3) + 0.02, r=0.30)
+    # ---- handrails along the officers' house sides, grab rails by the hood doors
+    for sg in (1, -1):
+        tube(d, VARNISH, [(41.3, sg * 3.07, za + 0.92), (39.3, sg * 3.07, za + 0.92)], 0.02, segs=5)
+        for xx in (39.4, 41.2):
+            sbox(d, BRASS, xx - 0.015, xx + 0.015, sg * 3.0, sg * 3.07, za + 0.905, za + 0.935)
 
 
 # ================================================================================================ the pier's landing stage

@@ -30,6 +30,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "../Weather/WaveModel.h"
 #include "../Cruise/SeascapeMath.h"
+#include "../Cruise/ShipSeaMath.h"
 #include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
 #include "Winter/LyudWinter.h"
@@ -148,6 +149,7 @@ ALyudSea::ALyudSea()
 		UnderwaterMaterial = UnderMat.Object;
 	}
 	Field = MakePimpl<LyudWeather::FWaveField>();
+	Calm = MakePimpl<LyudWeather::FCalmFootprint>();
 }
 
 ALyudSea::~ALyudSea() = default;
@@ -194,6 +196,7 @@ void ALyudSea::ApplyQuality(int32 Quality)
 	P.Choppiness = Choppiness;
 	Field->Init(P);
 	KeepBasePhases();
+	HsCapWind = -1.f;
 	AppliedFetch = FetchKm;
 	AppliedChop = Choppiness;
 	AppliedWind = -1.f;
@@ -329,15 +332,26 @@ void ALyudSea::UpdateWaves(bool bForce)
 		Field->Params = P;
 		AppliedFetch = FetchKm;
 		AppliedChop = Choppiness;
+		HsCapWind = -1.f;
 		bForce = true;
 	}
-	if (!bForce && FMath::Abs(Speed - AppliedWind) < 0.02f && FVector2D::DotProduct(Dir, AppliedDir) > 0.9999f)
+	float GrowSpeed = Speed;
+	if (HsCapM > 0.f)
+	{
+		// the cruise's cap: the wind that grows the capped height (found once per cap, fetch and quality)
+		if (HsCapWind < 0.f)
+		{
+			HsCapWind = Field->WindForHs(HsCapM);
+		}
+		GrowSpeed = FMath::Min(Speed, HsCapWind);
+	}
+	if (!bForce && FMath::Abs(GrowSpeed - AppliedWind) < 0.02f && FVector2D::DotProduct(Dir, AppliedDir) > 0.9999f)
 	{
 		return;
 	}
-	AppliedWind = Speed;
+	AppliedWind = GrowSpeed;
 	AppliedDir = Dir;
-	Field->SetWind(Speed, Dir.X, Dir.Y);
+	Field->SetWind(GrowSpeed, Dir.X, Dir.Y);
 	UploadWaveTable();
 }
 
@@ -684,10 +698,15 @@ void ALyudSea::UpdateTide(float DeltaSeconds)
 		TideExtraHours += double(Speed - 1.f) * DeltaSeconds / 3600.0;
 	}
 	TideAge += DeltaSeconds;
-	if (TideAge < 0.2f && Speed == 1.f)
+	// a hold on its way in or out moves the water every frame
+	const bool bHoldWanted = bTideHoldWanted && TideHolder.IsValid();
+	const bool bHoldMoving = TideHoldK != (bHoldWanted ? 1.f : 0.f);
+	if (TideAge < 0.2f && Speed == 1.f && !bHoldMoving)
 	{
 		return;
 	}
+	// (an eased hold steps by real time: TideAge is also set huge to ask for an update at once)
+	const float HoldStep = FMath::Min(TideAge, 0.25f);
 	// the mean level eases to its target (winter's lower sea; lyud.Sea.MeanLevel pins it)
 	const float MeanPin = CVarSeaMeanLevel.GetValueOnGameThread();
 	if (MeanPin > -9000.f)
@@ -727,6 +746,14 @@ void ALyudSea::UpdateTide(float DeltaSeconds)
 		// as if on the ebb: the sand a little above the pinned water is still wet
 		WetLineCm = FMath::Min(TideCm + 120.f, 0.f);
 	}
+	// the cruise's hold: the water at the datum while the hero is at the standing ship (SetTideHold)
+	TrueTideCm = TideCm;
+	TideHoldK = float(LyudShipSea::StepHold(TideHoldK, bHoldWanted, HoldStep, TideHoldBlend));
+	if (TideHoldK > 0.f)
+	{
+		TideCm = float(LyudShipSea::Held(TideCm, TideHoldK));
+		WetLineCm = float(LyudShipSea::Held(WetLineCm, TideHoldK));
+	}
 	// the water volume's top rides the tide (moved only by whole centimetres: it is a big box)
 	if (WaterVolume && FMath::Abs(VolumeTideCm - TideCm) > 2.f)
 	{
@@ -734,6 +761,62 @@ void ALyudSea::UpdateTide(float DeltaSeconds)
 		FVector At = WaterVolume->GetActorLocation();
 		At.Z = SeaLevel() - WaterVolumeDepth * 0.5;
 		WaterVolume->SetActorLocation(At);
+	}
+}
+
+void ALyudSea::SetTideHold(const UObject* Owner, bool bHold, float BlendSeconds)
+{
+	if (!bHold && TideHolder.IsValid() && TideHolder.Get() != Owner)
+	{
+		return;   // another owner's hold is not this one's to lift
+	}
+	TideHolder = bHold ? Owner : nullptr;
+	bTideHoldWanted = bHold;
+	TideHoldBlend = FMath::Max(BlendSeconds, 0.f);
+	if (TideHoldBlend <= 0.f)
+	{
+		TideAge = 1e9f;   // at once, on the next tick
+	}
+}
+
+void ALyudSea::SetCalmFootprint(const FVector2D& CentreCm, float YawDeg, float HalfLenCm, float HalfWidCm, float EdgeCm, float KeepCm)
+{
+	const double Yaw = FMath::DegreesToRadians(double(YawDeg));
+	Calm->CX = CentreCm.X * 0.01;
+	Calm->CY = CentreCm.Y * 0.01;
+	Calm->DirX = FMath::Cos(Yaw);
+	Calm->DirY = FMath::Sin(Yaw);
+	Calm->HalfLen = FMath::Max(HalfLenCm, 0.f) * 0.01;
+	Calm->HalfWid = FMath::Max(HalfWidCm, 0.f) * 0.01;
+	Calm->Edge = FMath::Max(EdgeCm, 10.f) * 0.01;
+	CalmKeepM = FMath::Max(KeepCm, 0.f) * 0.01f;
+	PushCalm();
+}
+
+void ALyudSea::PushCalm()
+{
+	// how much of this sea may stay inside the patch; the material and SampleSurface read the same eight numbers
+	Calm->Inner = LyudWeather::FCalmFootprint::InnerFor(Field->Hs, CalmKeepM);
+	if (SeaMID)
+	{
+		SeaMID->SetVectorParameterValue(TEXT("CalmA"), FLinearColor(float(Calm->CX), float(Calm->CY), float(Calm->DirX), float(Calm->DirY)));
+		SeaMID->SetVectorParameterValue(TEXT("CalmB"), FLinearColor(float(Calm->HalfLen), float(Calm->HalfWid), float(Calm->Edge), Calm->Inner));
+	}
+}
+
+float ALyudSea::CalmAt(const FVector& Location) const
+{
+	return Calm->At(Location.X * 0.01, Location.Y * 0.01);
+}
+
+void ALyudSea::SetSeaStateCap(float MaxHsM)
+{
+	MaxHsM = FMath::Max(MaxHsM, 0.f);
+	if (MaxHsM != HsCapM)
+	{
+		HsCapM = MaxHsM;
+		HsCapWind = -1.f;
+		WaveAge = 1e9f;   // grow the sea again on the next tick
 	}
 }
 
@@ -813,7 +896,7 @@ FLyudSeaSample ALyudSea::SampleSurface(const FVector& Location) const
 	S.bIsSea = D > 0.f && Location.X >= LandSideX;
 	if (S.bIsSea)
 	{
-		const LyudWeather::FSeaSurface W = Field->SurfaceAt(X, Y, WaveClock(), D);
+		const LyudWeather::FSeaSurface W = Field->SurfaceAt(X, Y, WaveClock(), D, Calm->At(X, Y));
 		S.SurfaceZ = SeaZ + W.Height * 100.f;
 		S.Normal = FVector(W.Normal[0], W.Normal[1], W.Normal[2]);
 		S.Velocity = FVector(W.Velocity[0], W.Velocity[1], W.Velocity[2]) * 100.f;
@@ -1110,6 +1193,11 @@ void ALyudSea::Tick(float DeltaSeconds)
 		}
 		SeaMID->SetVectorParameterValue(TEXT("SeaClock"), FLinearColor((float)WaveClock(), (float)Segments, MinStepCm * 0.01f, OpenSeaDepthM));
 		SeaMID->SetScalarParameterValue(TEXT("Tide"), TideCm * 0.01f);
+		if (Calm->IsSet() || bCalmSent)
+		{
+			bCalmSent = Calm->IsSet();
+			PushCalm();
+		}
 	}
 	UpdateLook(DeltaSeconds);
 	if (Collection)
@@ -1153,6 +1241,15 @@ FString ALyudSea::GetDebugReport() const
 }
 
 FString ALyudSea::GetDebugReportCore() const
+{
+	const FString Ship = TideHoldK > 0.f || HsCapM > 0.f || Calm->IsSet()
+		? FString::Printf(TEXT(", tide held %.2f (true %+.2f m), Hs cap %.1f m (wind %.1f), calm patch %s inner %.3f"), TideHoldK, TrueTideCm * 0.01f,
+			HsCapM, HsCapWind, Calm->IsSet() ? TEXT("set") : TEXT("none"), Calm->Inner)
+		: FString();
+	return Ship.IsEmpty() ? GetDebugReportTide() : GetDebugReportTide() + Ship;
+}
+
+FString ALyudSea::GetDebugReportTide() const
 {
 	return FString::Printf(TEXT("sea: tide %+.2f m (low %.2f, wet line %+.2f, springs %.2f, %s), wind %.1f m/s, Hs %.2f m, peak %.0f m, chop %.2f, quality %d (%d geo + %d detail trains, %d segments), depth map %d/%d rows, camera %s, mean level %+.0f cm (to %+.0f), look cloud %.2f storm %.2f cold %+.2f night %.2f"),
 		TideCm * 0.01f, TideLowCm * 0.01f, WetLineCm * 0.01f, TideSpringK, bTideRising ? TEXT("flood") : TEXT("ebb"),

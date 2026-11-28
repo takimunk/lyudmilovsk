@@ -49,12 +49,21 @@ ISLANDS = [
     {"id": "arch", "kind": "arch", "x": 28000, "y": 16000, "radius": 70, "height": 32, "keep_off": 250},
     {"id": "birds", "kind": "cliff_isle", "x": 45000, "y": 12000, "radius": 300, "height": 70, "keep_off": 600,
      "length": 600, "width": 260, "yaw": 20, "birds": True},
-    {"id": "lighthouse", "kind": "lighthouse_isle", "x": 52000, "y": 30000, "radius": 70, "height": 38, "keep_off": 400,
+    {"id": "lighthouse", "kind": "lighthouse_isle", "x": 52000, "y": 30000, "radius": 70, "height": 38, "keep_off": 300,
      "light": True},
     {"id": "long", "kind": "long_isle", "x": 30000, "y": 38000, "radius": 1250, "height": 55, "keep_off": 450,
      "length": 2500, "width": 600, "yaw": 0, "bay": [30000, 38850]},
     {"id": "seals", "kind": "seal_rocks", "x": 11000, "y": 24000, "radius": 180, "height": 3, "keep_off": 350, "seals": True},
 ]
+
+# The landing at the Far Light (Saturday 16:30-18:30): the real rock is the city plot P-FARLIGHT (tools/city_plan.py),
+# standing "offset_m" (x to the bow, y to starboard) from the stage ship's midship point; the route below brings the ship
+# to the chart point and the heading for which the seascape shows the chart island exactly there. The launch runs from
+# lead_s after the event's beginning to last_s before its end; the bosun warns warn_s seconds before the end.
+ASHORE = {"island": "lighthouse", "plot": "P-FARLIGHT", "offset_m": [-24.0, 331.0], "lead_s": 300, "last_s": 600,
+          "warn_s": [1800, 1200, 780]}
+FL_ANCHOR = (52000 - ASHORE["offset_m"][0], 30000 - ASHORE["offset_m"][1])     # the ship's midship point at anchor (heading 0)
+FL_R = 600
 
 # The belt: circles joined by their tangents (CruiseModel.h). home: the roads; via: a turning point (r = the turn's radius);
 # pass: an island left abeam at r from its centre during its event, at "speed" m/s; orbit: round an island at r, "laps"
@@ -74,11 +83,18 @@ ROUTE = [
     {"kind": "via", "at": [38000, 4500], "r": 800},
     {"kind": "via", "at": [52000, 3500], "r": 800},
     {"kind": "orbit", "island": "birds", "r": 800, "laps": 2, "event": "isl_birds"},
-    {"kind": "via", "at": [62000, 9000], "r": 800},
-    {"kind": "via", "at": [66000, 24000], "r": 800},
-    {"kind": "orbit", "island": "lighthouse", "r": 560, "laps": 2, "event": "isl_lighthouse"},
-    {"kind": "via", "at": [60000, 44000], "r": 800},
-    {"kind": "via", "at": [42000, 54000], "r": 800},
+    {"kind": "via", "at": [60000, 13000], "r": 800},
+    # the landing at the Far Light (ASHORE below): she passes the rock 3 km off, turns back round a shoal and comes up to
+    # it from the west, to lie with her bow to +X exactly ASHORE["offset_m"] from the island's chart point. The two turning
+    # points either side of the anchor circle mirror each other (same r, same way round), so the middle of its arc, where
+    # she stops, is the circle's lowest point and her heading there is 0: tools/cruisesim checks it to a centimetre.
+    {"kind": "via", "at": [44500, 32500], "r": 1000},
+    {"kind": "via", "at": [FL_ANCHOR[0] - 3000, FL_ANCHOR[1] + FL_R + 600], "r": 800},
+    {"kind": "anchor", "island": "lighthouse", "at": [FL_ANCHOR[0], FL_ANCHOR[1] + FL_R], "r": FL_R, "event": "isl_lighthouse",
+     "ashore": True},
+    {"kind": "via", "at": [FL_ANCHOR[0] + 3000, FL_ANCHOR[1] + FL_R + 600], "r": 800},
+    {"kind": "via", "at": [58000, 43000], "r": 800},
+    {"kind": "via", "at": [42000, 52000], "r": 800},
     {"kind": "anchor", "island": "long", "at": [30000, 39150], "r": 300, "event": "anchor"},
     {"kind": "via", "at": [13000, 46000], "r": 600},
     {"kind": "pass", "island": "seals", "r": 520, "event": "isl_seals", "speed": 1.5},
@@ -107,7 +123,7 @@ EVENTS = [
     ("quiet", 2, "14:00", "15:00", "cabin"),
     ("bridge_tour", 2, "15:00", "16:00", "bridge"),
     ("tea2", 2, "16:00", "16:30", "dining"),
-    ("isl_lighthouse", 2, "16:30", "17:30", "deck"),
+    ("isl_lighthouse", 2, "16:30", "18:30", "deck"),
     ("captains_dinner", 2, "19:00", "20:30", "dining"),
     ("concert2", 2, "20:30", "23:30", "saloon"),
     ("cards2", 2, "22:00", "01:00", "saloon"),
@@ -209,9 +225,9 @@ EVENT_WORDS = {
               E + "Tea and sushki rings in the dining saloon. The samovar is a real one, have no doubt.",
               J + "食堂でお茶とスーシキをどうぞ。サモワールは本物です。ご安心を。")),
     "isl_lighthouse": (("Маяк Дальний", "The Far Light", "遠灯台"),
-                       (R + "Прямо по курсу — маяк Дальний, последний огонь перед открытым морем. Обходим его кругом. Смотритель обычно машет; помашите и вы.",
-                        E + "Dead ahead: the Far Light, the last light before the open sea. We are going round it. The keeper usually waves; do wave back.",
-                        J + "正面に「遠灯台」です。外海の手前、最後の灯です。ぐるりと回ります。灯台守はたいてい手を振ってくれます。皆さまもどうぞ。")),
+                       (R + "Становимся на якорь у маяка Дальнего, это последний огонь перед открытым морем. Желающих катер свезёт на скалу: стоим два часа. Последний катер обратно — в восемнадцать двадцать. Смотритель гостям рад, но виду не подаст.",
+                        E + "We are anchoring off the Far Light, the last light before the open sea. The launch will take those who wish to the rock: we lie here two hours. The last launch back leaves at eighteen twenty. The keeper is glad of guests, though he will not show it.",
+                        J + "外海の手前、最後の灯「遠灯台」の沖に錨を下ろします。ご希望の方はランチで岩へお渡しします。停泊は二時間。帰りの最終ランチは十八時二十分です。灯台守は客人を喜びますが、顔には出しません。")),
     "captains_dinner": (("Капитанский ужин", "The captain's dinner", "船長主催の夕食会"),
                         (R + "Капитанский ужин. Капитан Громов приглашает всех к столу. Форма одежды — какая есть, но причесаться.",
                          E + "The captain's dinner. Captain Gromov invites everyone to table. Dress as you are, but do comb your hair.",
@@ -313,6 +329,31 @@ STRINGS = {
         "А вы как здесь? Без билета на борту не положено. Ну да ладно, осмотритесь — и на берег.",
         "And how did you get here? Nobody is allowed aboard without a ticket. Oh well, have a look round, and then ashore with you.",
         "おや、どうやってここへ？切符なしの乗船は禁止だ。まあいい、ひと回り見たら上陸するんだな。"),
+    "cruise.say.ashore_warn.1": (
+        "На скале! Восемнадцать ноль-ноль. Катер уходит через двадцать минут. Подтягивайтесь к причалу, не спеша.",
+        "Ahoy on the rock! Eighteen hundred. The launch leaves in twenty minutes. Make your way to the jetty, no hurry.",
+        "岩の皆さん！十八時だ。ランチは二十分後に出る。ゆっくりでいい、桟橋へ集まってくれ。"),
+    "cruise.say.ashore_warn.2": (
+        "На скале! Десять минут до последнего катера. Кто на галерее маяка — спускайтесь, ступеньки считать не обязательно.",
+        "Ahoy on the rock! Ten minutes to the last launch. Whoever is up on the lighthouse gallery, come down, and never mind counting the steps.",
+        "岩の皆さん！最終ランチまであと十分。灯台の回廊にいる人は下りてきな。段を数えなくていいから。"),
+    "cruise.say.ashore_warn.3": (
+        "Последний катер! Три минуты. Кого не досчитаюсь — приду за тем сам, и это хуже.",
+        "Last launch! Three minutes. Anyone I find missing I shall come and fetch myself, and that is worse.",
+        "最終ランチだ！あと三分。数が合わなかったら、わしが自分で迎えに行く。そっちのほうが怖いぞ。"),
+    "cruise.say.ashore_fetch": (
+        "Вот он где! Теплоход ждать не нанимался. В катер — и чтобы я тебя на скалах больше не искал. Смотрителю поклон передал?",
+        "So there you are! The ship is not paid to wait. Into the launch with you, and let me not go hunting for you on the rocks again. Did you give the keeper my regards?",
+        "こんなところにいたか！船は待つために雇われてるんじゃないぞ。ランチに乗れ。もう岩の上を探し回らせるなよ。灯台守によろしく言ったか？"),
+    "cruise.say.ashore_swim": (
+        "Куда?! Вода восемь градусов, а до теплохода триста метров. Вылезай на причал, пловец. Катер довезёт.",
+        "Where to?! The water is eight degrees and the ship is three hundred metres off. Out you come onto the jetty, swimmer. The launch will take you.",
+        "どこへ行く！水温は八度、船まで三百メートルだ。桟橋に上がれ、泳ぎ屋さん。ランチが送ってやる。"),
+    "cruise.ui.map.farlight": ("Маяк Дальний", "The Far Light", "遠灯台"),
+    "dev.tp.farlight_jetty": ("Маяк Дальний: причал", "The Far Light: the jetty", "遠灯台：桟橋"),
+    "dev.tp.farlight_hut": ("Маяк Дальний: у домика смотрителя", "The Far Light: by the keeper's hut", "遠灯台：灯台守の小屋の前"),
+    "dev.tp.farlight_gallery": ("Маяк Дальний: галерея маяка", "The Far Light: the lantern gallery", "遠灯台：灯室の回廊"),
+    "dev.action.cruise.landing_now": ("Круиз: высадка на маяк (суббота 16:40, на скалу)", "Cruise: the landing at the Far Light (Saturday 16:40, onto the rock)", "クルーズ：遠灯台に上陸（土曜16:40、岩へ）"),
     "cruise.ui.next": ("Далее по программе: {0} — через {1} мин.", "Next on the programme: {0}, in {1} min.", "次の予定：{0}（{1}分後）"),
     "cruise.ui.next_none": ("Теплоход «Полдень» сейчас не в рейсе.", "The Polden is not on a voyage now.", "ポルデニ号はただいま航海中ではありません。"),
     "cruise.ui.map.roads": ("Рейд: теплоход «Полдень»", "The roads: the motor ship Polden", "泊地：客船ポルデニ号"),
@@ -322,7 +363,7 @@ STRINGS = {
     "cruise.ui.phase.boarding": ("идёт посадка", "boarding", "乗船中"),
     "cruise.ui.phase.underway": ("на ходу", "under way", "航行中"),
     "cruise.ui.phase.circling": ("обходит остров", "rounding an island", "島を周回中"),
-    "cruise.ui.phase.anchored": ("на якоре у острова Долгого", "at anchor off Long Island", "長島沖に停泊中"),
+    "cruise.ui.phase.anchored": ("на якоре", "at anchor", "停泊中"),
     "cruise.ui.phase.landing": ("идёт высадка", "landing", "下船中"),
     "cruise.ui.class.hold": ("третий класс (трюмная каюта)", "third class (a hold cabin)", "三等（船倉の客室）"),
     "cruise.ui.class.std": ("второй класс", "second class", "二等"),
@@ -535,7 +576,7 @@ def build():
     data = collections.OrderedDict([
         ("about", "The motor ship Polden's cruise. Generated by tools/ship/cruise.py: do not edit."),
         ("season", SEASON), ("voyage", VOYAGE), ("sight_m", SIGHT_M), ("ramp_s", 300), ("wait_cap_min", 180),
-        ("islands", islands), ("route", ROUTE), ("events", events), ("tickets", TICKETS),
+        ("islands", islands), ("route", ROUTE), ("ashore", ASHORE), ("events", events), ("tickets", TICKETS),
         ("stage", stage), ("roads", {"sea_z_cm": SEA_DATUM_M * 100.0, "portal_face_y_cm": PORTAL_FACE_Y_CM}),
         ("hull", {"length_cm": 6200.0, "half_beam_cm": 500.0, "plan_cm": hull_plan(S)}),
         ("pier_fallback", {"map": [311.3, 905.0], "yaw_deg": 180.0}),

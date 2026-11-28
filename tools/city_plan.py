@@ -260,6 +260,7 @@ BUILDING_TYPES = {
     "cog_club": ("Клуб-шестерня", "Cog club", "Constructivism: a workers' club with a glazed drum and cantilevered halls in a gear-like plan (after Golosov's Zuev Club, Moscow, 1928, and Melnikov's clubs)"),
     "capsule_library": ("Библиотека-капсула", "Capsule library", "Japanese metabolism: reading-room capsules plugged round a concrete core (after Kurokawa's capsules and Kikutake's Miyakonojo Civic Hall, 1966)"),
     "shell_chapel_hall": ("Дом собраний под сводами", "Shell vault hall", "Brazilian modernism: a community hall under a row of thin concrete vaults (after Niemeyer's São Francisco de Assis, Pampulha, 1943)"),
+    "far_light": ("Маяк на скале", "Rock lighthouse", "A bare granite skerry far out at sea with a banded lighthouse tower, the keeper's hut and a jetty: the Far Light, where the cruise lands; the whole island is one building of the pipeline"),
     "motor_ship": ("Теплоход", "Motor ship", "A 62 m coastal passenger motor ship of the 1960s (after the Soviet project 543 «Алупка» type): the cruise ship «Полдень», built as a furnished building standing at the cruise stage far out at sea"),
     "plain_block": ("Дом", "Plain block", "An ordinary 4-5 storey house (filler; the buildings thread may swap it for any type)"),
 }
@@ -288,6 +289,7 @@ STAFF = {
 
 
 SHIP_STAGE_X, SHIP_STAGE_Y = 26000.0, 4000.0      # the cruise stage (map metres): where the motor ship's plot P-SHIP stands
+FARLIGHT_OFFSET = (-24.0, 331.0)                   # the Far Light rock (plot P-FARLIGHT) from the stage: metres along map X, Y
 
 
 def _plot(pid, kind, building, terrace, s, y, w, d, ru, en, yaw=None, height_max=None, notes=""):
@@ -330,6 +332,15 @@ def _plots():
     a(_plot("P-SHIP", "ship", "motor_ship", -1, W.shore_x(SHIP_STAGE_Y) - SHIP_STAGE_X, SHIP_STAGE_Y, 62, 10,
             "Теплоход «Полдень»", "Motor ship Polden", yaw=90.0, height_max=21,
             notes="the cruise stage far out at sea (sea datum); no street: boarded by the launch from the pier head"))
+    # the Far Light: the real rock the cruise lands on (blender/city/buildings/far_light.py). Its map point is the island's
+    # chart point as the seascape shows it while the ship lies at the landing stop: FARLIGHT_OFFSET from the stage ship's
+    # midship point (= tools/ship/cruise.py ASHORE["offset_m"]; tools/cruisesim checks the route against it, cruise.py
+    # --check the two numbers). Yaw 90 like the ship: the island's own frame is the chart's, not turned.
+    fx, fy = SHIP_STAGE_X + FARLIGHT_OFFSET[0], SHIP_STAGE_Y + FARLIGHT_OFFSET[1]
+    a(_plot("P-FARLIGHT", "ship", "far_light", -1, W.shore_x(fy) - fx, fy, 222, 144,
+            "Маяк Дальний", "The Far Light", yaw=90.0, height_max=37,
+            notes="a rock 331 m off the cruise stage's starboard beam; kind ship: no town life, no street; reached by the "
+                  "launch link P-SHIP/launch_ashore <-> P-FARLIGHT/jetty_gate while the ship lies there (docs/ship.md)"))
     for k, y in enumerate((470, 640, 800, 1020, 1180, 1330)):
         a(_plot("P-KIOSK%d" % (k + 1), "kiosk", "bus_stop_kiosk", 0, 50.0, float(y), 6, 5, "Киоск %d" % (k + 1),
                 "Kiosk %d" % (k + 1), height_max=5, notes="ice cream, newspapers, sodas, rent of loungers"))

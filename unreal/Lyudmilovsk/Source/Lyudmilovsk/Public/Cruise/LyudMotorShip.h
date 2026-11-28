@@ -59,6 +59,10 @@ private:
 	float SwingYaw = 0.f;
 	bool bSwingSet = false;
 	float LampGlow = -1.f;
+	/** The ride on the sea (heave cm, pitch deg, roll deg): where it eases to (read at 5 Hz) and where it is. */
+	FVector RideTo = FVector::ZeroVector;
+	FVector RideNow = FVector::ZeroVector;
+	float RideClock = 0.f;
 	float LengthCm = 6200.f;
 
 	/** The stage ship's meshes (or the stand-in) on this actor; true once the real ones are on. */

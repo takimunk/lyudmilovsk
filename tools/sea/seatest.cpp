@@ -9,6 +9,7 @@
 
 #include "WaveModel.h"
 #include "WindModel.h"
+#include "../Cruise/ShipSeaMath.h"
 
 using namespace LyudWeather;
 
@@ -165,6 +166,88 @@ static int Test()
 		for (size_t I = 0; I < F.Geo.size(); I++)
 			Same &= F.Geo[I].Phase == A.Geo[I].Phase && F.Geo[I].K == A.Geo[I].K && F.Geo[I].DirX == A.Geo[I].DirX;
 		Check(Same, "wind turn keeps every train's phase, wavenumber, direction", 1);
+	}
+	// the calm footprint (a hull standing still at the cruise stage): a gale outside, a quiet patch at the hull
+	{
+		FWaveField G;
+		G.Init(FWaveParams());
+		G.SetWind(16.f, 0.6f, 0.8f);
+		FCalmFootprint None;
+		Check(None.At(0.0, 0.0) == 1.f && None.At(26000.0, 4000.0) == 1.f, "no footprint set: calm is exactly 1", None.At(0.0, 0.0));
+		FCalmFootprint Fp;
+		Fp.CX = 26000.0; Fp.CY = 4000.0; Fp.DirX = 1.0; Fp.DirY = 0.0; Fp.HalfLen = 31.0; Fp.HalfWid = 5.0; Fp.Edge = 10.0;
+		Fp.Inner = FCalmFootprint::InnerFor(G.Hs, 0.15f);
+		Check(Fp.Inner > 0.f && Fp.Inner < 0.12f, "gale: the footprint keeps under 12 % of the waves", Fp.Inner);
+		Check(FCalmFootprint::InnerFor(0.1f, 0.15f) == 1.f, "a sea lower than the bound is left alone", FCalmFootprint::InnerFor(0.1f, 0.15f));
+		double In = 0, Out = 0, Far = 0, Jump = 0, Same = 0;
+		for (int I = 0; I < 3000; I++)
+		{
+			const double T = I * 0.37;
+			const double X = Fp.CX + std::fmod(I * 13.37, 62.0) - 31.0, Y = Fp.CY + std::fmod(I * 7.77, 10.0) - 5.0;
+			In = std::max(In, (double)std::fabs(G.HeightAt(X, Y, T, 25.f, Fp.At(X, Y))));
+			const double XF = Fp.CX + 41.0 + std::fmod(I * 3.1, 500.0), YF = Fp.CY + 15.0 + std::fmod(I * 1.7, 500.0);
+			Out = std::max(Out, (double)std::fabs(G.HeightAt(XF, YF, T, 25.f, Fp.At(XF, YF))));
+			Far += Fp.At(XF, YF) != 1.f;
+			Same += G.HeightAt(XF, YF, T, 25.f, Fp.At(XF, YF)) != G.HeightAt(XF, YF, T, 25.f);
+			// across the soft edge, 5 cm apart: no step in the surface
+			const double YE = Fp.CY + 5.0 + std::fmod(I * 0.0331, 10.0);
+			Jump = std::max(Jump, (double)std::fabs(G.HeightAt(X, YE, T, 25.f, Fp.At(X, YE)) - G.HeightAt(X, YE + 0.05, T, 25.f, Fp.At(X, YE + 0.05))));
+		}
+		std::printf("     gale Hs %.2f m: inside the hull's box the surface stays within %.3f m, outside %.2f m\n", G.Hs, In, Out);
+		Check(In < 0.2, "inside the footprint the surface stays within 0.2 m (deck D is 0.3 m up)", In);
+		Check(Out > 1.0, "outside it the gale is the gale", Out);
+		Check(Far == 0 && Same == 0, "beyond the edge: calm exactly 1, heights bit for bit", Far + Same);
+		Check(Jump < 0.12, "no step across the soft edge (5 cm apart, m)", Jump);
+		Check(std::fabs(Fp.Distance(Fp.CX + 31.0, Fp.CY)) < 1e-9 && std::fabs(Fp.Distance(Fp.CX, Fp.CY) + 5.0) < 1e-9
+			&& std::fabs(Fp.Distance(Fp.CX + 34.0, Fp.CY + 9.0) - 5.0) < 1e-9, "distance to the box (edge, centre, corner)", Fp.Distance(Fp.CX + 34.0, Fp.CY + 9.0));
+		Check(Fp.At(Fp.CX, Fp.CY) == Fp.Inner && Fp.At(Fp.CX, Fp.CY + 15.0) == 1.f, "inner share inside, 1 at the edge", Fp.At(Fp.CX, Fp.CY + 10.0));
+		double Mono = 0, Last = Fp.Inner;
+		for (double D = 0; D <= 10.0; D += 0.01) { const double C = Fp.At(Fp.CX, Fp.CY + 5.0 + D); Mono += C < Last - 1e-7; Last = C; }
+		Check(Mono == 0, "calm grows steadily across the edge", Mono);
+		// turned 30 degrees: the same patch in its own frame
+		FCalmFootprint Tu = Fp;
+		Tu.DirX = std::cos(M_PI / 6); Tu.DirY = std::sin(M_PI / 6);
+		Check(std::fabs(Tu.Distance(Fp.CX + 31.0 * Tu.DirX, Fp.CY + 31.0 * Tu.DirY)) < 1e-9, "a turned footprint: its bow is on its edge", Tu.Distance(Fp.CX + 31.0 * Tu.DirX, Fp.CY + 31.0 * Tu.DirY));
+		// the cap of the sea state aboard: the wind that grows Hs 1.2 m
+		const float UCap = G.WindForHs(1.2f);
+		FWaveField C = G;
+		C.SetWind(UCap, 0.6f, 0.8f);
+		Check(C.Hs <= 1.2f && C.Hs > 1.17f && UCap > 5.f && UCap < 10.f, "WindForHs(1.2): the capped sea is Hs 1.2 m", C.Hs);
+		Check(G.WindForHs(50.f) >= 39.f, "a cap no wind reaches caps nothing", G.WindForHs(50.f));
+	}
+	// the tide held at the datum aboard, the ride of the ship on the roads, the camera's sway
+	{
+		using namespace LyudShipSea;
+		Check(Held(-450.0, 0.0) == -450.0 && Held(-450.0, 1.0) == 0.0 && Held(-450.0, 0.5) == -225.0, "tide hold: free, held at the datum, half way", Held(-450.0, 0.5));
+		Check(StepHold(0.0, true, 0.2, 0.0) == 1.0 && StepHold(1.0, false, 0.2, 0.0) == 0.0, "hold at once behind a fade", 1);
+		double H = 0.0, MaxStep = 0.0;
+		int N = 0;
+		for (; H < 1.0 && N < 100000; N++) { const double B = H; H = StepHold(H, true, 1.0 / 60, 60.0); MaxStep = std::max(MaxStep, H - B); }
+		Check(std::fabs(N / 60.0 - 60.0) < 0.1 && MaxStep * 450.0 < 0.13, "eased over a minute: 4.5 m in steps under 1.3 mm a frame", MaxStep * 450.0);
+		Check(StepHold(0.4, false, 100.0, 60.0) == 0.0 && StepHold(0.4, true, 100.0, 60.0) == 1.0, "the hold never overshoots", 0);
+		FRide R = RideFrom(200.0, -200.0, 150.0, -150.0, 6200.0, 1000.0);
+		Check(R.PitchDeg > 0.0 && R.PitchDeg <= 0.8 && R.RollDeg > 0.0 && R.RollDeg <= 1.5 && R.HeaveCm == 0.0, "ride: bow up, starboard down, bounded", R.RollDeg);
+		R = RideFrom(900.0, 900.0, 900.0, 900.0, 6200.0, 1000.0);
+		Check(R.HeaveCm == 20.0 && R.PitchDeg == 0.0 && R.RollDeg == 0.0, "ride: heave within 20 cm", R.HeaveCm);
+		FRide E;
+		for (int I = 0; I < 600; I++) E = EaseRide(E, R, 1.0 / 60, 1.5);
+		Check(std::fabs(E.HeaveCm - 20.0) < 0.1, "ride eases to its target", E.HeaveCm);
+		double MaxRoll = 0, MaxPitch = 0, MaxRate = 0, Rl, Pt, Rl2, Pt2;
+		for (int I = 0; I < 200000; I++)
+		{
+			Sway(I * 0.05, 3.0, 1.0, Rl, Pt);
+			Sway(I * 0.05 + 0.01, 3.0, 1.0, Rl2, Pt2);
+			MaxRoll = std::max(MaxRoll, std::fabs(Rl)); MaxPitch = std::max(MaxPitch, std::fabs(Pt));
+			MaxRate = std::max(MaxRate, std::fabs(Rl2 - Rl) / 0.01);
+		}
+		Check(MaxRoll <= 0.6 && MaxRoll > 0.5 && MaxPitch <= 0.24, "sway in a gale at full scale: roll within 0.6 deg", MaxRoll);
+		Check(MaxRate < 0.5, "sway is slow (deg/s)", MaxRate);
+		Sway(123.4, 0.0, 1.0, Rl, Pt);
+		Sway(123.4, 2.0, 0.0, Rl2, Pt2);
+		Check(Rl == 0.0 && Pt == 0.0 && Rl2 == 0.0 && Pt2 == 0.0, "no sway in a flat calm or at lyud.Cruise.Sway 0", 0);
+		Sway(50.0, 0.6, 0.5, Rl, Pt);
+		Sway(50.0, 1.2, 1.0, Rl2, Pt2);
+		Check(std::fabs(Rl * 4.0 - Rl2) < 1e-12, "sway scales with the sea and the cvar", Rl);
 	}
 	std::printf("%s: %d failure(s)\n", Failures ? "FAILED" : "PASSED", Failures);
 	return Failures ? 1 : 0;

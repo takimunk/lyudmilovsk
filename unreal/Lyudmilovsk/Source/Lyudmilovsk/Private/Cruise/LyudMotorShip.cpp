@@ -11,6 +11,7 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "../Transport/LyudMeshKit.h"
+#include "ShipSeaMath.h"
 #include "Sea/LyudSea.h"
 #include "Sky/LyudSky.h"
 #include "Sound/SoundAttenuation.h"
@@ -332,17 +333,22 @@ void ALyudMotorShip::Tick(float DeltaSeconds)
 		return;
 	}
 	// afloat: on the tide, lifting and rolling a little with the sea
-	const float T = GetWorld()->GetTimeSeconds();
-	float Heave = 0.f;
-	if (Sea.IsValid())
+	// (the level is the sea's now, tide and all; the ride is a small share of the surface at her bow, stern and sides,
+	// read five times a second and eased every frame: LyudShipSea::RideFrom, within 20 cm, 0.8 and 1.5 degrees)
+	RideClock -= DeltaSeconds;
+	if (RideClock <= 0.f && Sea.IsValid())
 	{
-		Heave = 0.25f * (Sea->SurfaceZ(FVector(Mid.X, Mid.Y, Level)) - Level);
+		RideClock = 0.2f;
+		const FRotator Flat(0.f, Yaw, 0.f);
+		const FVector Fwd = Flat.Vector() * (LengthCm * 0.4f), Side = Flat.RotateVector(FVector::RightVector) * 450.f;
+		const FVector Here(Mid.X, Mid.Y, Level);
+		const LyudShipSea::FRide R = LyudShipSea::RideFrom(Sea->SurfaceZ(Here + Fwd) - Level, Sea->SurfaceZ(Here - Fwd) - Level,
+			Sea->SurfaceZ(Here - Side) - Level, Sea->SurfaceZ(Here + Side) - Level, LengthCm * 0.8, 900.0);
+		RideTo = FVector(R.HeaveCm, R.PitchDeg, R.RollDeg);
 	}
-	const float Hs = Sea.IsValid() ? Sea->WaveHeight() * 0.01f : 0.3f;
-	const float Roll = FMath::Min(Hs, 2.f) * 1.6f * FMath::Sin(T * 0.9f);
-	const float Pitch = FMath::Min(Hs, 2.f) * 0.5f * FMath::Sin(T * 0.7f + 0.8f);
-	const FRotator Rot(Pitch, Yaw, Roll);
-	const FVector Origin = FVector(Mid.X, Mid.Y, Level + Heave) - Rot.RotateVector(FVector(LengthCm * 0.5f, 0.f, 0.f));
+	RideNow += (RideTo - RideNow) * (1.0 - FMath::Exp(-double(FMath::Min(DeltaSeconds, 0.5f)) / 1.5));
+	const FRotator Rot(float(RideNow.Y), Yaw, float(RideNow.Z));
+	const FVector Origin = FVector(Mid.X, Mid.Y, Level + RideNow.X) - Rot.RotateVector(FVector(LengthCm * 0.5f, 0.f, 0.f));
 	SetActorLocationAndRotation(Origin, Rot);
 	if (Wake)
 	{

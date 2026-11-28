@@ -15,8 +15,9 @@ _ship_inside_ba.py (furnish_ba: decks B, A, bridge), called at the end if they a
 Open passages are plain holes (>= 1.10 x 2.10 m). A CLOSED door is a solid wall with a door leaf drawn on it
 (leaf(): the furnishers put their `door` thing there). Lists: OPEN_DOORS, CLOSED_DOORS (ship frame), filled while
 building and written to the notes.
-Livery: dark hull, red boot-topping and bottom, white sheer strake, bulwarks and superstructure, wood decks, funnel
-white with a red band and a brass sun disc, black top.
+Livery: deep navy hull and bulwarks, red boot-topping and bottom, a white sheer stripe, white superstructure, cream
+funnel, masts and ventilators, the funnel with a red band and a brass sun disc and a black top; planked wood decks
+(the timber texture's boards run along U = fore and aft), green deck paint on the steel foredeck and mooring deck.
 Requests: none.
 """
 import math
@@ -37,6 +38,9 @@ WHITE = "CT_SteelWhite"
 HULL = "CT_Steel"
 RED = "CT_SteelRed"
 WOOD = "CT_Wood"
+NAVY = "CT_ShipNavy"
+CREAM = "CT_ShipCream"
+DECKPAINT = "CT_Baize"          # green deck paint on the steel working decks
 INT = "CT_Interior"
 FLOOR = "CT_Floor"
 
@@ -268,7 +272,7 @@ def hull(B):
     for j in range(len(rows) - 1):
         zmid = (rows[j][0][len(HULL_U) // 2][2] + rows[j + 1][0][len(HULL_U) // 2][2]) / 2
         t1 = rows[j + 1][1]
-        mats.append(RED if zmid < 0.25 else (WHITE if (t1 == 1.0) else HULL))
+        mats.append(RED if zmid < 0.25 else (WHITE if (t1 is not None and t1 >= 0.93) else NAVY))
     for j in range(len(rows) - 1):
         r0, r1 = rows[j][0], rows[j + 1][0]
         for i in range(len(HULL_U) - 1):
@@ -295,9 +299,9 @@ def hull(B):
             o = 0.07
             qa = [(pa[0], pa[1] + sg * o, pa[2] - 0.20), (pb[0], pb[1] + sg * o, pb[2] - 0.20),
                   (pb[0], pb[1] + sg * o, pb[2] - 0.06), (pa[0], pa[1] + sg * o, pa[2] - 0.06)]
-            qface(B.detail, HULL, qa, na)
-            qface(B.detail, HULL, [qa[3], qa[2], (pb[0], pb[1], pb[2] - 0.03), (pa[0], pa[1], pa[2] - 0.03)], (0, sg, 1))
-            qface(B.detail, HULL, [qa[0], qa[1], (pb[0], pb[1], pb[2] - 0.23), (pa[0], pa[1], pa[2] - 0.23)], (0, sg, -1))
+            qface(B.detail, WHITE, qa, na)
+            qface(B.detail, WHITE, [qa[3], qa[2], (pb[0], pb[1], pb[2] - 0.03), (pa[0], pa[1], pa[2] - 0.03)], (0, sg, 1))
+            qface(B.detail, WHITE, [qa[0], qa[1], (pb[0], pb[1], pb[2] - 0.23), (pa[0], pa[1], pa[2] - 0.23)], (0, sg, -1))
 
 
 def bulwark(B, x0, x1, h=S.BULWARK_H, t=0.10, gaps=()):
@@ -315,7 +319,7 @@ def bulwark(B, x0, x1, h=S.BULWARK_H, t=0.10, gaps=()):
             ia, ib = (xa, sg * max(0.0, ha - t)), (xb, sg * max(0.0, hb - t))
             if ha < 1e-6 and hb < 1e-6:
                 continue
-            qface(m, WHITE, [(oa[0], oa[1], za - 0.02), (ob[0], ob[1], zb - 0.02), (ob[0], ob[1], zb + h), (oa[0], oa[1], za + h)], (0, sg, 0))
+            qface(m, NAVY, [(oa[0], oa[1], za - 0.02), (ob[0], ob[1], zb - 0.02), (ob[0], ob[1], zb + h), (oa[0], oa[1], za + h)], (0, sg, 0))
             if max(ha, hb) > t + 0.02:
                 qface(m, WHITE, [(ia[0], ia[1], za), (ib[0], ib[1], zb), (ib[0], ib[1], zb + h), (ia[0], ia[1], za + h)], (0, -sg, 0))
             # cap rail
@@ -589,10 +593,10 @@ def deck_c(B):
         qface(B.m, WHITE, [(a[0], a[1], zl0), (b[0], b[1], zl0), (b[0], b[1], zl1), (a[0], a[1], zl1)], nrm)
     hf = lambda x: S.half(x) - 0.03
     deck_slab(B, 0.0, 46.0, hf, zf, voids=voids, top=WOOD, bot=WHITE, sides=False)
-    deck_slab(B, 46.0, S.L, hf, zf, top="CT_PlasterRed", bot=HULL, zfun=S.foredeck_z, sides=False)
+    deck_slab(B, 46.0, S.L, hf, zf, top=DECKPAINT, bot=HULL, zfun=S.foredeck_z, sides=False)
     floor_patch(B, 8.08, 45.92, 0, 0, zf, hfun=lambda x: S.half(x) - S.SIDE_T - 0.01, voids=[(27.0, 31.06, -1.51, 1.51), (19.95, 27.0, -1.55, 1.55)])
     floor_patch(B, 22.0, 25.5, 0.30, 1.44, zf, mat="CT_Steel")
-    floor_patch(B, 0.0, 7.95, 0, 0, zf, mat="CT_PlasterRed", hfun=lambda x: max(0.0, S.half(x) - 0.11))
+    floor_patch(B, 0.0, 7.95, 0, 0, zf, mat=DECKPAINT, hfun=lambda x: max(0.0, S.half(x) - 0.11))
     side_c(B)
     hi = lambda x: S.half(x) - S.SIDE_T
     # ---- house ends
@@ -874,7 +878,11 @@ def rails(B):
     rail(B, [(45.9, -hx), (45.94, 0.0), (45.9, hx)], S.Z_A, post=0.8)
     # the stair opening from deck B (x 6.5..10.7, y -4.3..-3.05): arrival at the fwd end x 10.7
     rail(B, [(10.7, -2.99), (6.44, -2.99), (6.44, -4.36)], S.Z_A, post=1.4)
-    # the stair wells to the bridge wings: the foot is at x 34.8 on deck A (open), nothing to guard on A
+    # the bridge ladders fill the side decks: the strip left outboard of them (0.5 m) leads nowhere a passenger
+    # should go (the forward end of the boat deck is the crew's: ventilators, the stowed companion ladder, the
+    # lifejacket chest), so a short rail closes it at the ladder's foot on both sides
+    for sg in (1, -1):
+        rail(B, [(35.3, sg * 4.45), (35.3, sg * (S.deck_half("A", 35.3) - 0.06))], S.Z_A, post=0.5)
     # ---- bridge deck: wings and the open deck aft
     zb = S.Z_BRIDGE
     for sg in (1, -1):

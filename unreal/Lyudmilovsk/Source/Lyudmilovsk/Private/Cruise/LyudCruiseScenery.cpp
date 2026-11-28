@@ -2,6 +2,7 @@
 
 #include "Audio/LyudSoundscape.h"
 #include "Birds/BirdActor.h"
+#include "Camera/PlayerCameraManager.h"
 #include "City/LyudCityThings.h"
 #include "Components/AudioComponent.h"
 #include "Components/SceneComponent.h"
@@ -16,12 +17,16 @@
 #include "Engine/World.h"
 #include "EngineUtils.h"
 #include "HAL/IConsoleManager.h"
+#include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
 #include "North/LyudNorthFx.h"
 #include "Plants/GameCalendar.h"
 #include "Railway/LyudRailTrack.h"
 #include "Sea/LyudSea.h"
 #include "SeascapeMath.h"
+#include "ShipSeaMath.h"
 #include "Sky/LyudSky.h"
 #include "Sound/SoundAttenuation.h"
 #include "Sound/SoundBase.h"
@@ -33,6 +38,16 @@ namespace
 TAutoConsoleVariable<int32> CVarCruiseScenery(TEXT("lyud.Cruise.Scenery"), 1,
 	TEXT("The cruise's scenery (the visual ship on the roads, the islands passing the stage ship, her wake, the drifting waves, gulls, sounds): on (1) or off (0)."),
 	ECVF_Default);
+
+TAutoConsoleVariable<float> CVarCruiseSway(TEXT("lyud.Cruise.Sway"), 0.5f,
+	TEXT("The view's sway aboard the motor ship, 0 (none) .. 1 (0.6 degrees of roll in a fresh sea)."), ECVF_Default);
+TAutoConsoleVariable<float> CVarCruiseMaxHs(TEXT("lyud.Cruise.MaxHs"), 1.2f,
+	TEXT("While the hero is at the cruise's standing ship the sea grows no higher than this significant height, m (she cannot pitch); 0 = no cap."), ECVF_Default);
+TAutoConsoleVariable<int32> CVarCruiseTideHold(TEXT("lyud.Cruise.TideHold"), 1,
+	TEXT("1: the sea is held at the datum while the hero is at the cruise's standing ship; 0: the tide is left free (she will hang in the air at low water)."), ECVF_Default);
+
+constexpr double StageNearCm = 250000.0;   // 2.5 km round the stage: the sea is the ship's
+constexpr double EyeJumpCm = 50000.0;      // the camera moved this far in a frame: a teleport behind a fade
 
 FAutoConsoleCommandWithWorld CmdSceneryReport(TEXT("lyud.Cruise.SceneryReport"), TEXT("Logs the cruise scenery's state."),
 	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
@@ -74,6 +89,14 @@ ULyudCruiseScenery* ULyudCruiseScenery::Get(const UObject* WorldContext)
 	return World ? World->GetSubsystem<ULyudCruiseScenery>() : nullptr;
 }
 
+bool ULyudShipSwayCamera::ModifyCamera(float DeltaTime, FMinimalViewInfo& InOutPOV)
+{
+	Super::ModifyCamera(DeltaTime, InOutPOV);
+	InOutPOV.Rotation.Roll += RollDeg;
+	InOutPOV.Rotation.Pitch += PitchDeg;
+	return false;
+}
+
 bool ULyudCruiseScenery::ShouldCreateSubsystem(UObject* Outer) const
 {
 	const UWorld* World = Cast<UWorld>(Outer);
@@ -97,6 +120,7 @@ void ULyudCruiseScenery::Deinitialize()
 	{
 		GoAshore();
 	}
+	ReleaseSea();
 	if (UWorld* World = GetWorld())
 	{
 		if (ULyudCityThings* Things = World->GetSubsystem<ULyudCityThings>())
@@ -127,6 +151,7 @@ void ULyudCruiseScenery::Make()
 		Wake->RegisterComponent();
 		Seascape->AddInstanceComponent(Wake);
 		MakeSounds();
+		MakeNavLamps();
 	}
 	if (ULyudCruise* Cruise = ULyudCruise::Get(World))
 	{
@@ -145,12 +170,14 @@ void ULyudCruiseScenery::Tick(float DeltaTime)
 		{
 			GoAshore();
 		}
+		ReleaseSea();
 		return;
 	}
 	if (!bMade)
 	{
 		Make();
 	}
+	TickSeaAtStage(*Cruise, DeltaTime);
 	if (!bHooked)
 	{
 		// the stern rail's act: the city's things tell us, we only send the birds (the act goes on as it is)
@@ -175,6 +202,188 @@ void ULyudCruiseScenery::Tick(float DeltaTime)
 	if (bAboard)
 	{
 		TickAboard(View, DeltaTime);
+	}
+}
+
+// --------------------------------------------------------------------------------------------------- the sea at the hull
+
+void ULyudCruiseScenery::TickSeaAtStage(const ULyudCruise& Cruise, float DeltaTime)
+{
+	if (!Sea.IsValid())
+	{
+		Sea = ALyudSea::Get(this);
+	}
+	ALyudSea* TheSea = Sea.Get();
+	const FTransform Stage = Cruise.StageTransform();
+	const FVector Mid = Stage.TransformPosition(FVector(3100.0, 0.0, 0.0));
+	if (TheSea && PatchSea.Get() != TheSea)
+	{
+		// the hull's box (62 x 10 m) is kept calm, the open sea comes back over 10 m outside it; her lowest deck is
+		// 30 cm over the waterline and nothing masks the sea inside a hull. The patch stands for the whole season.
+		PatchSea = TheSea;
+		const float Yaw = float(Stage.GetRotation().Rotator().Yaw);
+		TheSea->SetCalmFootprint(FVector2D(Mid.X, Mid.Y), Yaw, 3100.f, 500.f, 1000.f, 15.f);
+		// belt and braces for deck D's cabins (x 12..46 m, where the hull is at its full breadth): no swimming and no
+		// underwater look there whatever the surface does. A box in world axes: only for a stage that is not turned
+		if (FMath::Abs(FMath::Sin(FMath::DegreesToRadians(2.f * Yaw))) < 0.02f)
+		{
+			FBox Dry(ForceInit);
+			Dry += Stage.TransformPosition(FVector(1200.0, -400.0, -330.0));
+			Dry += Stage.TransformPosition(FVector(4600.0, 400.0, 270.0));
+			TheSea->SetDryZone(this, Dry);
+		}
+	}
+	UWorld* World = GetWorld();
+	APlayerController* PC = World ? World->GetFirstPlayerController() : nullptr;
+	APlayerCameraManager* PCM = PC ? PC->PlayerCameraManager.Get() : nullptr;
+	if (!PCM)
+	{
+		return;
+	}
+	const FVector Eye = PCM->GetCameraLocation();
+	const bool bJump = !bEyeSet || FVector::DistSquared(Eye, LastEye) > FMath::Square(EyeJumpCm);
+	LastEye = Eye;
+	bEyeSet = true;
+	const bool bNear = FVector::DistSquared2D(Eye, Mid) < FMath::Square(StageNearCm);
+	if (TheSea)
+	{
+		// the tide: she is a building at the datum, so while he is here the sea stands at the datum. He comes and goes
+		// through a fade (the camera jumps 26 km): at once then; if he ever comes by himself, over a minute
+		const bool bHold = bNear && CVarCruiseTideHold.GetValueOnGameThread() != 0;
+		if (bHold != bSeaHeld)
+		{
+			bSeaHeld = bHold;
+			TheSea->SetTideHold(this, bHold, bJump ? 0.f : 60.f);
+		}
+		TheSea->SetSeaStateCap(bNear ? FMath::Max(CVarCruiseMaxHs.GetValueOnGameThread(), 0.f) : 0.f);
+	}
+	// the view sways a little with the sea while he is in her (not with a panel open: the pointer is shown then)
+	const APawn* Pawn = PC->GetPawn();
+	const bool bInShip = bNear && Pawn && Cruise.IsInsideHull(Pawn->GetActorLocation(), 300.f);
+	const float Scale = FMath::Clamp(CVarCruiseSway.GetValueOnGameThread(), 0.f, 1.f);
+	const bool bSway = bInShip && Scale > 0.f && !PC->bShowMouseCursor;
+	SwayGain = FMath::FInterpConstantTo(SwayGain, bSway ? 1.f : 0.f, DeltaTime, 0.5f);
+	if (SwayGain > 0.f && !SwayCam)
+	{
+		SwayCam = Cast<ULyudShipSwayCamera>(PCM->AddNewCameraModifier(ULyudShipSwayCamera::StaticClass()));
+	}
+	if (SwayCam)
+	{
+		double Roll = 0.0, Pitch = 0.0;
+		if (SwayGain > 0.f)
+		{
+			LyudShipSea::Sway(World->GetTimeSeconds(), TheSea ? TheSea->WaveHeight() * 0.01 : 0.5, Scale * SwayGain, Roll, Pitch);
+		}
+		SwayCam->RollDeg = float(Roll);
+		SwayCam->PitchDeg = float(Pitch);
+	}
+	// her lights from dusk to dawn: under way the masthead light, the sidelights and the stern light; at anchor (the
+	// roads, the night's bay) one white light forward
+	if (NavLamps.Num() == 5)
+	{
+		if (!Sky.IsValid())
+		{
+			TActorIterator<ALyudSky> It(World);
+			if (It)
+			{
+				Sky = *It;
+			}
+		}
+		const FLyudCruiseView& View = Cruise.View();
+		const float Alt = Sky.IsValid() ? Sky->SunAltitude() : 20.f;
+		const float Dark = bNear && View.Phase != ELyudCruisePhase::Laid ? FMath::Clamp((4.f - Alt) / 8.f, 0.f, 1.f) : 0.f;
+		const bool bWay = (View.Phase == ELyudCruisePhase::Underway || View.Phase == ELyudCruisePhase::Circling) && View.SpeedMS > 0.2f;
+		const float Code = Dark + (bWay ? 10.f : 0.f);
+		if (FMath::Abs(Code - NavCode) > 0.03f)
+		{
+			NavCode = Code;
+			static const FVector ShipCm[5] = { FVector(5140.0, 0.0, 1233.0), FVector(4115.0, -522.0, 1187.0), FVector(4115.0, 522.0, 1187.0),
+				FVector(178.0, 0.0, 663.0), FVector(5095.0, 0.0, 1600.0) };
+			for (int32 I = 0; I < 5; I++)
+			{
+				const bool bOn = Dark > 0.1f && (I == 4 ? !bWay : bWay);
+				NavLamps[I]->SetVisibility(bOn);
+				if (bOn)
+				{
+					NavLamps[I]->SetWorldLocation(Stage.TransformPosition(ShipCm[I]));
+				}
+				if (NavMids.IsValidIndex(I) && NavMids[I])
+				{
+					NavMids[I]->SetScalarParameterValue(TEXT("Intensity"), bOn ? 40.f * Dark : 0.f);
+				}
+			}
+		}
+	}
+}
+
+void ULyudCruiseScenery::ReleaseSea()
+{
+	if (ALyudSea* TheSea = PatchSea.Get())
+	{
+		TheSea->SetTideHold(this, false, 0.f);
+		TheSea->SetSeaStateCap(0.f);
+		TheSea->ClearCalmFootprint();
+		TheSea->SetDryZone(this, FBox(ForceInit));
+	}
+	PatchSea.Reset();
+	bSeaHeld = false;
+	bEyeSet = false;
+	SwayGain = 0.f;
+	if (SwayCam)
+	{
+		SwayCam->RollDeg = 0.f;
+		SwayCam->PitchDeg = 0.f;
+	}
+	for (UStaticMeshComponent* L : NavLamps)
+	{
+		if (L)
+		{
+			L->SetVisibility(false);
+		}
+	}
+	NavCode = -1.f;
+}
+
+void ULyudCruiseScenery::MakeNavLamps()
+{
+	// masthead (white), port (red), starboard (green), stern (white), anchor (white): small unlit balls at the hull's
+	// own lamp boxes (blender/city/buildings/_shipkit.py FITTINGS), no light components, on the seascape's actor
+	UStaticMesh* Ball = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+	UMaterialInterface* Glow = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Transport/Materials/M_TR_Glow.M_TR_Glow"), nullptr, LOAD_NoWarn | LOAD_Quiet);
+	if (!Ball || !Seascape)
+	{
+		return;
+	}
+	const FLinearColor Colours[5] = { FLinearColor(1.f, 0.95f, 0.85f), FLinearColor(1.f, 0.05f, 0.03f), FLinearColor(0.05f, 1.f, 0.35f),
+		FLinearColor(1.f, 0.95f, 0.85f), FLinearColor(1.f, 0.95f, 0.85f) };
+	for (int32 I = 0; I < 5; I++)
+	{
+		UStaticMeshComponent* C = NewObject<UStaticMeshComponent>(Seascape, *FString::Printf(TEXT("StageNavLamp%d"), I));
+		C->SetMobility(EComponentMobility::Movable);
+		C->SetStaticMesh(Ball);
+		C->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		C->SetGenerateOverlapEvents(false);
+		C->SetCanEverAffectNavigation(false);
+		C->SetCastShadow(false);
+		C->bAffectDynamicIndirectLighting = false;
+		C->bAffectDistanceFieldLighting = false;
+		UMaterialInstanceDynamic* M = Glow ? UMaterialInstanceDynamic::Create(Glow, this) : nullptr;
+		if (M)
+		{
+			M->SetVectorParameterValue(TEXT("Color"), Colours[I]);
+			M->SetScalarParameterValue(TEXT("Intensity"), 0.f);
+			C->SetMaterial(0, M);
+		}
+		NavMids.Add(M);
+		C->SetupAttachment(Seascape->GetRootComponent());
+		C->SetUsingAbsoluteLocation(true);
+		C->SetUsingAbsoluteRotation(true);
+		C->SetUsingAbsoluteScale(true);
+		C->RegisterComponent();
+		C->SetWorldScale3D(FVector(0.16f));
+		C->SetVisibility(false);
+		Seascape->AddInstanceComponent(C);
+		NavLamps.Add(C);
 	}
 }
 

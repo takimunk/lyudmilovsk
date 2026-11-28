@@ -176,6 +176,8 @@ namespace LyudCruise
 		int Laps = 0;
 		/** A pass: the speed the island is passed at (m/s). */
 		double Speed = 1.5;
+		/** An anchor stop where the passengers go ashore by the launch (the Far Light). */
+		bool bAshore = false;
 		// --- built
 		/** +1 counter-clockwise on the chart (the heading grows), -1 clockwise. */
 		int Dir = 1;
@@ -270,7 +272,20 @@ namespace LyudCruise
 		std::vector<FEvent> Events;
 		std::vector<FTicket> Tickets;
 		std::vector<FStop> Stops;
+		/** The landing at the Far Light ("ashore" of cruise.json): the island, the city plot of the real rock, where the island's
+		 *  chart point must stand from the stage ship's pivot (her midship point; metres, x to the bow, y to starboard) while she
+		 *  lies there; the launch runs from AshoreLeadSec after the stop's event begins to AshoreLastSec before it ends; the
+		 *  bosun's warnings are AshoreWarnSec[] seconds before the event's end. */
+		std::string AshoreIsland, AshorePlot;
+		FVec2 AshoreOffset;
+		double AshoreLeadSec = 300.0, AshoreLastSec = 600.0;
+		std::vector<double> AshoreWarnSec;
 		// --- built
+		/** The stop with "ashore" (-1: none), its event's hours (tv), the ship's place and heading there. */
+		int AshoreStop = -1;
+		double AshoreT0 = 0.0, AshoreT1 = 0.0;
+		FVec2 AshorePos;
+		double AshoreHeading = 0.0;
 		std::vector<FSeg> Segs;
 		std::vector<FFix> Fixes;
 		double Length = 0.0;
@@ -381,6 +396,7 @@ namespace LyudCruise
 				St.Event = R["event"].S();
 				St.Laps = std::max(0, R["laps"].I(0));
 				St.Speed = R["speed"].F(1.5f);
+				St.bAshore = R["ashore"].F(0.f) > 0.f;
 				St.R = R["r"].F(300.f);
 				const LyudJson::FValue& At = R["at"];
 				if (At.Type == LyudJson::FValue::Array && At.Size() >= 2)
@@ -413,6 +429,22 @@ namespace LyudCruise
 				LastError = "cruise.json: the route needs 3 stops or more and begins with the home stop";
 				return false;
 			}
+			const LyudJson::FValue& Ash = Root["ashore"];
+			AshoreIsland = Ash["island"].S();
+			AshorePlot = Ash["plot"].S();
+			AshoreOffset = {};
+			if (Ash["offset_m"].Type == LyudJson::FValue::Array && Ash["offset_m"].Size() >= 2)
+			{
+				AshoreOffset = { (double)Ash["offset_m"][0].Num, (double)Ash["offset_m"][1].Num };
+			}
+			AshoreLeadSec = Ash["lead_s"].F(300.f);
+			AshoreLastSec = Ash["last_s"].F(600.f);
+			AshoreWarnSec.clear();
+			for (const LyudJson::FValue& W : Ash["warn_s"].Items)
+			{
+				AshoreWarnSec.push_back((double)W.Num);
+			}
+			std::sort(AshoreWarnSec.begin(), AshoreWarnSec.end(), [](double L, double R) { return L > R; });
 			return Build();
 		}
 
@@ -625,8 +657,78 @@ namespace LyudCruise
 					return false;
 				}
 			}
+			AshoreStop = -1;
+			for (size_t I = 1; I < N; ++I)
+			{
+				if (Stops[I].Kind == EStop::Anchor && Stops[I].bAshore && AshoreStop < 0)
+				{
+					AshoreStop = (int)I;
+					const FEvent& Ev = Events[(size_t)Stops[I].EventIndex];
+					AshoreT0 = Ev.T0;
+					AshoreT1 = Ev.T1;
+					PathAt(Stops[I].S0 + Stops[I].R * Stops[I].Sweep * 0.5, AshorePos, AshoreHeading);
+					if (AshoreT1 - AshoreT0 < AshoreLeadSec + AshoreLastSec + 600.0)
+					{
+						LastError = "cruise.json: the landing's event is too short for the launch";
+						return false;
+					}
+				}
+			}
 			BuildFlagNames();
 			return true;
+		}
+
+		// --- the landing at the Far Light
+
+		/** Does the ship lie at the landing stop at tv (the whole of its event)? */
+		bool AtAshoreStop(double Tv) const
+		{
+			return AshoreStop >= 0 && Tv >= AshoreT0 && Tv < AshoreT1;
+		}
+		/** Does the launch take passengers ashore at tv (the door aboard is open)? */
+		bool AshoreOpen(double Tv) const
+		{
+			return AshoreStop >= 0 && Tv >= AshoreT0 + AshoreLeadSec && Tv < AshoreT1 - AshoreLastSec;
+		}
+		/** When the last launch leaves the rock (tv). */
+		double AshoreLastLaunch() const
+		{
+			return AshoreT1 - AshoreLastSec;
+		}
+		/** How many of the bosun's warnings are due by tv (0 before the first and outside the landing). */
+		int AshoreWarnings(double Tv) const
+		{
+			int Due = 0;
+			if (AtAshoreStop(Tv))
+			{
+				for (const double W : AshoreWarnSec)
+				{
+					Due += Tv >= AshoreT1 - W ? 1 : 0;
+				}
+			}
+			return Due;
+		}
+		/** May a hero of this voyage walk the rock at T: the ship lies there and the last launch has not left? Otherwise he is
+		 *  fetched (the calendar jumped while he stood there, a load, the launch is gone). */
+		bool MayBeAshore(double T, const FHero& H) const
+		{
+			const FState St = At(T);
+			return H.bAboard && St.bRuns && St.Voyage == H.Voyage && AtAshoreStop(St.Tv) && St.Tv < AshoreLastLaunch();
+		}
+		/** Metres between where the seascape shows the landing island for a ship in St and where the real rock stands
+		 *  (AshoreOffset from the stage ship's pivot): 0 while she lies at the stop. The real rock is shown instead of the
+		 *  far copy while this is under a metre. A big number when there is no landing. */
+		double AshoreMismatch(const FState& St) const
+		{
+			const FIsland* Isl = AshoreStop >= 0 ? FindIsland(AshoreIsland) : nullptr;
+			if (!Isl || St.Phase == EPhase::Laid || St.Phase == EPhase::Port)
+			{
+				return 1e9;
+			}
+			const FVec2 D = Isl->At - St.Pos;
+			const double C = std::cos(-St.Heading), Sn = std::sin(-St.Heading);
+			const FVec2 Shown = { D.X * C - D.Y * Sn, D.X * Sn + D.Y * C };
+			return Len(Shown - AshoreOffset);
 		}
 
 		/** The ramp of a leg between two fixes (s) and its steady speed (m/s). */
@@ -958,7 +1060,8 @@ namespace LyudCruise
 		{
 			FlagNames = { "cruise_season", "cruise_voyage", "cruise_boarding", "cruise_landing", "cruise_has_ticket", "cruise_can_board",
 				"cruise_aboard", "cruise_day1", "cruise_day2", "cruise_day3", "cruise_underway", "cruise_circling", "cruise_anchor",
-				"cruise_port", "cruise_class_hold", "cruise_class_std", "cruise_class_lux", "cruise_night", "cruise_done" };
+				"cruise_port", "cruise_class_hold", "cruise_class_std", "cruise_class_lux", "cruise_night", "cruise_done",
+				"cruise_ashore_stop", "cruise_ashore_open" };
 			EventFlag.assign(Events.size(), 0);
 			for (size_t I = 0; I < Events.size(); ++I)
 			{
@@ -997,13 +1100,17 @@ namespace LyudCruise
 			Out[I++] = St.Day == 3;
 			Out[I++] = St.Phase == EPhase::Underway || St.Phase == EPhase::Circling;
 			Out[I++] = St.Phase == EPhase::Circling;
-			Out[I++] = St.Phase == EPhase::Anchored;
+			// (the night anchorage: at the landing stop the flag is cruise_ashore_stop)
+			const bool bAshoreStop = St.Phase == EPhase::Anchored && AtAshoreStop(St.Tv);
+			Out[I++] = St.Phase == EPhase::Anchored && !bAshoreStop;
 			Out[I++] = St.Phase == EPhase::Port || St.Phase == EPhase::Boarding || St.Phase == EPhase::Landing;
 			Out[I++] = H.bAboard && H.Class == 0;
 			Out[I++] = H.bAboard && H.Class == 1;
 			Out[I++] = H.bAboard && H.Class == 2;
 			Out[I++] = bVoyage && (Clock >= 23.0 * 3600.0 || Clock < 7.0 * 3600.0);
 			Out[I++] = H.Cruises > 0;
+			Out[I++] = bAshoreStop;
+			Out[I++] = bAshoreStop && AshoreOpen(St.Tv);
 			if (bVoyage)
 			{
 				const uint64_t Bits = EventsOnTv(St.Tv);

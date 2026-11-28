@@ -155,6 +155,7 @@ suite cruisesim.test              - bash tools/cruisesim/run.sh test
 suite cruisesim.table             - bash tools/cruisesim/run.sh table
 suite pokersim.test               - bash tools/pokersim/run.sh test
 suite pokersim.play               - bash tools/pokersim/run.sh play 7 3 ru
+suite bandsim.test                slow bash tools/bandsim/run.sh test
 suite seascapesim.test            - bash tools/seascapesim/run.sh test
 # peoplesim reads the gitignored railway timetable when it is there: once with it, once without
 if wanted peoplesim; then

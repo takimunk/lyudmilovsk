@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Camera/CameraModifier.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "LyudCruiseScenery.generated.h"
 
@@ -10,12 +11,27 @@ class ALyudMotorShip;
 class ALyudSea;
 class ALyudSky;
 class UAudioComponent;
+class ULyudCruise;
 class ULyudShipWake;
+class UMaterialInstanceDynamic;
 class USceneComponent;
+class UStaticMeshComponent;
 class USoundAttenuation;
 class USoundBase;
 struct FCityActInfo;
 struct FLyudCruiseView;
+
+/** The view's slow sway aboard the standing ship (ULyudCruiseScenery sets the angles; LyudShipSea::Sway, lyud.Cruise.Sway). */
+UCLASS()
+class LYUDMILOVSK_API ULyudShipSwayCamera : public UCameraModifier
+{
+	GENERATED_BODY()
+
+public:
+	float RollDeg = 0.f;
+	float PitchDeg = 0.f;
+	virtual bool ModifyCamera(float DeltaTime, struct FMinimalViewInfo& InOutPOV) override;
+};
 
 /**
  * Everything that makes the standing ship at the cruise stage feel under way (docs/ship.md), and the ship the town
@@ -31,7 +47,11 @@ struct FLyudCruiseView;
  *   - the ship's sounds: the diesel's hum from the engine room, the wash at the stem, the wind in the rigging, the
  *     cabins' creak, the bell every half hour of the day's watches, the horn (three long at the departure, one at
  *     the arrival and at every island), the anchor's chain; ULyudSoundscapeSubsystem::SetOpenSea (no beach breakers).
- * Console: lyud.Cruise.Scenery 0|1, lyud.Cruise.SceneryReport, lyud.Cruise.FeedGulls.
+ *   - the sea at her hull (docs/ship.md "The sea at the hull"): while the camera is within 2.5 km of the stage the tide
+ *     is held at the datum (ALyudSea::SetTideHold: she is a building standing at the datum) and the sea state capped
+ *     (lyud.Cruise.MaxHs); a calm patch (SetCalmFootprint) and a dry zone keep the waves out of her lowest deck; the
+ *     camera sways a little with the sea (lyud.Cruise.Sway); her navigation lights at night.
+ * Console: lyud.Cruise.Scenery 0|1, lyud.Cruise.SceneryReport, lyud.Cruise.FeedGulls, lyud.Cruise.Sway, lyud.Cruise.MaxHs.
  */
 UCLASS()
 class LYUDMILOVSK_API ULyudCruiseScenery : public UTickableWorldSubsystem
@@ -80,6 +100,22 @@ private:
 	int32 HideRound = 0;
 	float BirdClock = 0.f;
 	bool bAskBirds = false;
+
+	// --- the sea at the hull, the view's sway, the navigation lights
+	TWeakObjectPtr<ALyudSea> PatchSea;
+	bool bSeaHeld = false;
+	bool bEyeSet = false;
+	FVector LastEye = FVector::ZeroVector;
+	float SwayGain = 0.f;
+	float NavCode = -1.f;
+	UPROPERTY(Transient) TObjectPtr<ULyudShipSwayCamera> SwayCam;
+	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> NavLamps;
+	UPROPERTY(Transient) TArray<TObjectPtr<UMaterialInstanceDynamic>> NavMids;
+	/** Every frame while the cruise runs: the hold, the cap, the patch, the sway, the lights. */
+	void TickSeaAtStage(const ULyudCruise& Cruise, float DeltaTime);
+	/** Lets the sea go (the hold, the cap, the patch, the dry zone) and stills the view. */
+	void ReleaseSea();
+	void MakeNavLamps();
 
 	void Make();
 	/** Hides what is shown of the world's far, standing things (the static mesh actors are the long list: not every time). */

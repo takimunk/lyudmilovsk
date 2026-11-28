@@ -1237,19 +1237,21 @@ def _saloon(K, C, z, ch):
 def _lobby(K, C, z, ch):
     core = 1.55                                             # outer faces of the stair core walls
     # ---- library corner, port: two glazed cases on the stair core, armchairs under the windows, floor lamp, chess
-    for i, (bx, topic, seed) in enumerate(((28.35, "sea", 11), (29.65, "classics", 12))):
+    for i, (bx, topic, seed) in enumerate(((28.1, "sea", 11), (29.4, "classics", 12))):
         r = K.put(glazed_bookcase, bx, -core, z, PORT, w=1.2, topic=None, seed=seed)
-        K.thing_at("library_case_%d" % (i + 1), "shelf", r["pos"], r["yaw"], topic=topic)
-    for i, ax in enumerate((28.25, 29.45)):
-        r = K.put(kit.armchair, ax, -2.93, z, STBD, mat="CT_Leather")
+        K.thing("library_case_%d" % (i + 1), "shelf", bx, -core - 0.42, z + 1.3, PORT, topic=topic)   # on the glass
+    # (the strip beside the stair core is 1.8 m wide: nothing stands opposite the cases, the armchairs have their
+    # backs to bulkhead 33, port of the saloon doors)
+    for i, ay in enumerate((-1.3, -2.1)):
+        r = K.put(kit.armchair, 32.55, ay, z, AFT, mat="CT_Leather")
         K.seat("library_chair_%d" % (i + 1), r, floor=K.P(0, 0, z)[2])
-    K.put(kit.floor_lamp, 28.85, -3.1, z, STBD, shade="CT_PlasterYellow")
-    ct = K.put(kit.chess_table, 30.72, -2.85, z, STBD)
+    K.put(kit.floor_lamp, 32.75, -2.75, z, AFT, shade="CT_PlasterYellow")
+    ct = K.put(kit.chess_table, 30.9, -2.93, z, STBD)
     K.thing_at("chess_table", "play", ct["pos"], ct["yaw"], dz=0.42, what="chess")
-    for i, (sx, h) in enumerate(((30.15, FWD), (31.29, AFT))):
-        r = K.put(kit.chair, sx, -2.85, z, h, kind="wood", mat="CT_Leather")
+    for i, (sx, h) in enumerate(((30.33, FWD), (31.47, AFT))):
+        r = K.put(kit.chair, sx, -2.93, z, h, kind="wood", mat="CT_Leather")
         K.seat("chess_seat_%d" % (i + 1), r, floor=K.P(0, 0, z)[2])
-    g = K.put(kit.globe, 30.72, -1.82, z, PORT, floor=True)
+    g = K.put(kit.globe, 29.0, -3.08, z, STBD, floor=True)
     K.thing_at("library_globe", "board", g["pos"], g["yaw"], topic="globe")
     K.put(kit.rug, 28.85, -2.4, z + 0.002, FWD, w=1.0, d=2.4, name="rug")
     # ---- notice niche, starboard: the programme, the honour board, the model in its case
@@ -1261,10 +1263,10 @@ def _lobby(K, C, z, ch):
     K.thing_at("ship_model", "board", r["pos"], r["yaw"], dz=0.25)
     K.put(wall_sconce, 29.1, core, z, STBD, zc=2.05)
     K.put(wall_sconce, 29.0, -core, z, PORT, zc=2.1) if False else None
-    K.path("path_lobby", [(31.8, 0.0), (32.2, 2.6), (32.2, -2.6), (29.5, 2.5), (27.3, 2.45), (30.6, -2.2)], z)
+    K.path("path_lobby", [(31.8, 0.0), (32.2, 2.6), (31.7, -2.7), (29.5, 2.5), (27.3, 2.45), (30.6, -2.2)], z)
     K.spot("stand_lobby_1", "stand", 28.9, 2.3, z, PORT)
     K.spot("stand_lobby_2", "stand", 31.9, 1.75, z, FWD)
-    K.spot("stand_library_1", "stand", 28.95, -2.2, z, STBD)
+    K.spot("stand_library_1", "stand", 28.75, -2.6, z, STBD)
 
 
 # ------------------------------------------------------------------------------------------------ lux cabins
@@ -1356,7 +1358,7 @@ def _smoking_deck(K, C, z, S):
     r = K.put(ring_toss, 3.3, -1.75, z, FWD)
     K.thing("ring_toss", "play", 3.3 + 0.2, -1.75, z + 0.85, FWD, what="ring_toss")
     K.spot("ring_toss_throw", "stand", 5.8, -1.75, z, AFT)
-    K.thing("stern_rail", "machine", 2.32, 0.4, z + 1.0, AFT, what="gull_feed")
+    K.thing("stern_rail", "machine", 2.32, 0.4, z + 1.0, FWD, what="gull_feed")
     K.spot("stern_rail", "mark", 2.75, 0.4, z, AFT)
     for i, (rx, ry, h) in enumerate(((2.75, -0.6, AFT), (2.75, 1.1, AFT), (2.95, -2.6, 215.0), (5.0, -3.75, PORT),
                                      (8.6, 4.3, STBD), (10.9, 4.4, STBD))):
@@ -1421,7 +1423,8 @@ def _radio_room(K, C, z):
     K.put(morse_key, 35.2, y0 + 0.45, z + 0.75, STBD)
     K.put(kit.chair, 35.7, y0 + 1.0, z, PORT, kind="wood", mat="CT_Leather")
     K.put(transmitter_rack, x1, -1.55, z, AFT)
-    r = K.put(clock_24h, 35.8, y0, z, STBD, zc=2.08, r=0.16)
+    # the radio clock hangs in the officers' corridor beside the radio-room door, where a passenger can read it
+    r = K.put(clock_24h, 36.5, wy + 0.05, z, STBD, zc=1.85, r=0.16)
     K.thing_at("radio_clock", "board", r["pos"], r["yaw"], what="clock")
     K.put(kit.picture, x0, -1.75, z, FWD, name="map_world", w=0.9, zc=1.6)
     K.put(kit.filing_cabinet, x0, -2.5, z, FWD)
@@ -1493,7 +1496,7 @@ def _bridge(K, C, z, ch):
     K.put(kit.stool, 37.95, -2.5, z, FWD, mat=WOOD, h=0.6)
     # ---- wings
     for s, name, h in ((1, "bridge_wing_stbd", STBD), (-1, "bridge_wing_port", PORT)):
-        K.thing(name, "board", 40.25, s * 4.86, z + 1.12, h, topic="sea_view")
+        K.thing(name, "board", 40.25, s * 4.86, z + 1.12, (h + 180) % 360, topic="sea_view")   # front = inboard
         K.spot("wing_%s_1" % ("stbd" if s > 0 else "port"), "stand", 40.25, s * 4.4, z, h)
         K.spot("wing_%s_2" % ("stbd" if s > 0 else "port"), "stand", 39.6, s * 4.3, z, h)
     K.path("path_bridge", [(39.2, 4.2), (40.1, 2.4), (40.1, 0.0), (40.1, -2.4), (39.2, -4.2), (38.0, -1.2)], z)

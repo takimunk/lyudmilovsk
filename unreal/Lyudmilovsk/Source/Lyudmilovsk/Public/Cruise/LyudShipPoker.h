@@ -77,6 +77,11 @@ public:
 	UPROPERTY(SaveGame)
 	FString Saved;
 
+	/** Roubles lying on the table when the game was saved in the middle of a sitting (set just before a save is written):
+	 *  a load finds him standing, so they go back to his pocket then. 0 at any other time. */
+	UPROPERTY(SaveGame)
+	int32 SavedStake = 0;
+
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override
 	{
@@ -125,7 +130,11 @@ private:
 	void HandOver();
 	void End(EWhy Why);
 	/** His stack goes back to his pocket, the purses to the night's count; once a sitting. */
-	void Settle();
+	void Settle(bool bQuiet = false);
+	/** Lets the sitting go with no word to the quests and no last page (the level ending, a load, a new game). bPay: his
+	 *  stack goes back to his pocket (the level ending); not after a load, whose pocket is the saved one. */
+	void Drop(bool bPay);
+	void BeforeSave();
 	void Watch();
 	void SetBanner(const FText& Line, const FText& Line2 = FText::GetEmpty(), bool bBad = false);
 	void AddLog(const FText& Line);
@@ -144,6 +153,7 @@ private:
 	FDelegateHandle OpenHandle;
 	void OnCityOpen(FName InScreen, int32 Thing);
 	FDelegateHandle LoadHandle;
+	FDelegateHandle SaveHandle;
 	FDelegateHandle NewGameHandle;
 	void AfterLoad();
 };

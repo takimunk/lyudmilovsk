@@ -26,6 +26,8 @@ struct FLyudPokerSeatView
 /** Everything the poker panel paints, made by ULyudShipPoker::Refresh when something happened (never per frame). */
 struct FLyudPokerView
 {
+	/** Goes up with every Refresh: the panel fits the lines to their places again only when it changed. */
+	uint32 Serial = 0;
 	/** 0: choosing the table; 1: playing; 2: the sitting is over. */
 	int32 Stage = 0;
 	bool bHelp = false;
@@ -55,7 +57,9 @@ struct FLyudPokerView
  * The poker table at the foot of the screen (docs/ship.md "Poker"), in the look of the HUD: the regulars across the top
  * (name, stack, bet, their cards face down or shown), the pot, the line that gives a man away, the hero's five cards drawn as
  * little cards (rank and suit, red and black; the suits are drawn from boxes, no font needs them), a short log and the keys.
- * It only paints ULyudShipPoker::View(): no layout, no input, nothing allocated per frame.
+ * It only paints ULyudShipPoker::View(): no layout, no input, nothing allocated per frame. A line too long for its place
+ * (Japanese names and sums run wide) is set smaller, down to 8 pt, and clipped if that is still not enough; the sizes are
+ * measured once per change of the view (FLyudPokerView::Serial), never per frame.
  */
 class SLyudPokerPanel : public SLeafWidget
 {
@@ -77,6 +81,21 @@ private:
 	TWeakObjectPtr<ULyudShipPoker> Owner;
 	/** "2" .. "10", "J", "Q", "K", "A" by rank - 2. */
 	TArray<FString> Ranks;
+
+	/** The sizes the fitted lines came out at, in the order they are painted (negative: clipped too); kept while the view's
+	 *  Serial and the panel's width stay the same. Mutable: filled in OnPaint, on the game thread only. */
+	mutable TArray<int32> Fitted;
+	mutable int32 FitAt = 0;
+	mutable uint32 FitSerial = 0;
+	mutable float FitWidth = -1.f;
+
+	/** The size (points) at which S is no wider than MaxWidth; negative when even the smallest is too wide. */
+	int32 FitSize(const FString& S, int32 Size, const char* Face, float MaxWidth) const;
+	/** A line of text kept inside MaxWidth: smaller when it is long, clipped at the worst. */
+	void FitText(FSlateWindowElementList& Out, int32 Layer, const FGeometry& Geo, const FVector2f& At, const FString& S, int32 Size,
+		const char* Face, const FLinearColor& Color, float MaxWidth) const;
+	void FitText(FSlateWindowElementList& Out, int32 Layer, const FGeometry& Geo, const FVector2f& At, const FText& S, int32 Size,
+		const char* Face, const FLinearColor& Color, float MaxWidth) const;
 
 	void PaintCard(FSlateWindowElementList& Out, int32 Layer, const FGeometry& Geo, const FVector2f& At, const FVector2f& Size, int32 Card,
 		bool bFace, float Fade) const;

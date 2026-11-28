@@ -179,9 +179,9 @@ namespace LyudWeather
 		return W < 0.0 ? W + L : W;
 	}
 
-	void FWaveField::Displace(double X0, double Y0, double T, float DepthM, float Out[3]) const
+	void FWaveField::Displace(double X0, double Y0, double T, float DepthM, float Out[3], float Calm) const
 	{
-		const double Cap = BreakCap(DepthM);
+		const double Cap = double(BreakCap(DepthM)) * Calm;
 		double DX = 0.0, DY = 0.0, DZ = 0.0;
 		for (const FWaveTrain& W : Geo)
 		{
@@ -198,21 +198,21 @@ namespace LyudWeather
 		}
 		Out[0] = float(DX);
 		Out[1] = float(DY);
-		Out[2] = float(DZ) + SurfHeight(DepthM, T);
+		Out[2] = float(DZ) + SurfHeight(DepthM, T) * Calm;
 	}
 
-	FSeaSurface FWaveField::SurfaceAt(double X, double Y, double T, float DepthM) const
+	FSeaSurface FWaveField::SurfaceAt(double X, double Y, double T, float DepthM, float Calm) const
 	{
 		// find the particle that sits over (X, Y): undo the horizontal displacement a few times
 		double X0 = X, Y0 = Y;
 		float D[3];
 		for (int I = 0; I < 5; I++)
 		{
-			Displace(X0, Y0, T, DepthM, D);
+			Displace(X0, Y0, T, DepthM, D, Calm);
 			X0 = X - D[0];
 			Y0 = Y - D[1];
 		}
-		const double Cap = BreakCap(DepthM);
+		const double Cap = double(BreakCap(DepthM)) * Calm;
 		double H = 0.0, VX = 0.0, VY = 0.0, VZ = 0.0;
 		double Txx = 1.0, Txy = 0.0, Txz = 0.0, Tyy = 1.0, Tyz = 0.0;
 		for (const FWaveTrain& W : Geo)
@@ -242,8 +242,8 @@ namespace LyudWeather
 		double NZ = Txx * Tyy - Txy * Txy;
 		const double L = std::sqrt(NX * NX + NY * NY + NZ * NZ);
 		float SurfRise;
-		H += SurfHeight(DepthM, T, &SurfRise);
-		VZ += SurfRise;
+		H += SurfHeight(DepthM, T, &SurfRise) * Calm;
+		VZ += SurfRise * Calm;
 		FSeaSurface S;
 		S.Height = float(H);
 		if (L > 1e-9)
@@ -270,5 +270,52 @@ namespace LyudWeather
 			Tyy -= C * W.DirY * W.DirY;
 		}
 		return float(Txx * Tyy - Txy * Txy);
+	}
+
+	float FWaveField::WindForHs(float HsM) const
+	{
+		FWaveField Probe = *this;
+		double Lo = 0.0, Hi = 40.0;
+		Probe.SetWind(float(Hi), WindDirX, WindDirY);
+		if (Probe.Hs <= HsM)
+		{
+			return float(Hi);
+		}
+		for (int I = 0; I < 16; I++)
+		{
+			const double Mid = 0.5 * (Lo + Hi);
+			Probe.SetWind(float(Mid), WindDirX, WindDirY);
+			(Probe.Hs > HsM ? Hi : Lo) = Mid;
+		}
+		return float(Lo);
+	}
+
+	double FCalmFootprint::Distance(double X, double Y) const
+	{
+		const double RX = X - CX, RY = Y - CY;
+		const double QX = std::fabs(RX * DirX + RY * DirY) - HalfLen, QY = std::fabs(RY * DirX - RX * DirY) - HalfWid;
+		const double OX = std::max(QX, 0.0), OY = std::max(QY, 0.0);
+		return std::sqrt(OX * OX + OY * OY) + std::min(std::max(QX, QY), 0.0);
+	}
+
+	float FCalmFootprint::At(double X, double Y) const
+	{
+		if (!IsSet())
+		{
+			return 1.f;
+		}
+		const double D = Distance(X, Y);
+		if (D >= Edge)
+		{
+			return 1.f;
+		}
+		const double S = Clamp01(D / std::max(Edge, 1e-3));
+		return float(Inner + (1.0 - Inner) * S * S * (3.0 - 2.0 * S));
+	}
+
+	float FCalmFootprint::InnerFor(float HsM, float KeepM)
+	{
+		// the highest crests of a sea stand about 0.9 Hs over the level
+		return float(Clamp01(KeepM / std::max(0.9 * double(HsM), 1e-3)));
 	}
 }
