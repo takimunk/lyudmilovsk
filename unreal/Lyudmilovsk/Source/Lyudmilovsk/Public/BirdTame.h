@@ -121,6 +121,9 @@ private:
 	TArray<TWeakObjectPtr<class AStarlingMurmuration>> Murmurations;
 
 	bool bWantOffer = false;
+	/** The hand's hold is this subsystem's own (the seeds, the empty palm): only then is it cleared here, so a kite's reel
+	 *  or anything else held is not let go every frame. */
+	bool bOwnHold = false;
 	bool bApproaching = false;
 	bool bTold = false;
 	bool bBound = false;
