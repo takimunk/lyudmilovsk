@@ -346,7 +346,8 @@ def shell():
         m.bx("CT_Concrete", x - 0.15, x + 0.15, Y0 - 0.10, Y0, -0.2, top)
         m.bx("CT_Concrete", x - 0.15, x + 0.15, Y1, Y1 + 0.38, -0.2, top)
         m.bx("CT_Concrete", x - 0.12, x + 0.12, Y0 - 0.10, Y1 + 0.38, top, top + 0.45)
-        m.bx("CT_Concrete", x - 0.12, x + 0.12, Y0 + T, Y1 - T, zu(x) - 0.42, zu(x))
+        if 0 < k < 6:       # (at the two ends the downstand beam would lie wholly inside the gable wall)
+            m.bx("CT_Concrete", x - 0.12, x + 0.12, Y0 + T, Y1 - T, zu(x) - 0.42, zu(x))
     xf = X1 + OVER - 0.30
     for y0_, y1_ in ((Y0 - 0.40, Y0 - 0.10), (Y1 + 0.08, Y1 + 0.38)):
         m.bx("CT_Concrete", xf - 0.15, xf + 0.15, y0_, y1_, ground(xf) - 0.3, zu(xf) - 0.42)

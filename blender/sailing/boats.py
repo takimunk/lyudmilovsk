@@ -244,7 +244,7 @@ def _open_details(m, b, xs, q):
                 pts.append((x, sg * y, z + 0.01))
             m.pipe(pts, 0.012, "SL_Wood", seg=5)
         for x in (-0.95, -0.35, 0.35):
-            sec = section(b, x, inset=0.016)
+            sec = section(b, x, inset=0.019)          # (its outer face clear of the skin's inner one)
             half = [(x, y, z) for y, z in sec]
             ribs = [(x, -y, z) for _, y, z in reversed(half)] + half[1:]
             for p0, p1 in zip(ribs, ribs[1:]):

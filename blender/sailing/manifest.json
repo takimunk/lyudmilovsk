@@ -1199,7 +1199,7 @@
   {
    "asset": "SM_Sail_Boathouse",
    "kit": "sailing_house",
-   "tris": 6080,
+   "tris": 6056,
    "bounds": [
     [-9.67, -6.6, -1.329],
     [11.035, 6.5, 6.513]
