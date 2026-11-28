@@ -16,7 +16,7 @@ namespace LyudPeople
 			"water", "weed", "mop", "torch" };
 		const char* PropNames[(int)EProp::Num] = { "none", "phone", "cigarette", "camera", "umbrella", "rod", "brush", "binoculars",
 			"newspaper", "book", "knitting", "ice_cream", "cup", "bag", "spade", "watering_can", "mop", "torch", "suitcase",
-			"broom", "rake" };
+			"broom", "rake", "cake_box", "flowers" };
 		const char* HabitNames[] = { "smoker", "phone", "reader", "feeder", "photographer", "knitter", "umbrella", "sweet", "dozer",
 			"hands_back" };
 		constexpr int NumHabits = (int)(sizeof(HabitNames) / sizeof(HabitNames[0]));
@@ -279,6 +279,7 @@ namespace LyudPeople
 			Strings(J["doing"], D.Doing, &D.NotDoing);
 			Strings(J["at"], D.At, nullptr);
 			Strings(J["after"], D.After, nullptr);
+			Strings(J["going"], D.Going, nullptr);
 			D.AfterSeconds = J["after_s"].F(900.f);
 			if (!J["habit"].IsNull())
 			{
@@ -427,6 +428,7 @@ namespace LyudPeople
 			};
 			Mask(D.Doing, D.NotDoing, D.DoingOk);
 			Mask(D.After, std::vector<std::string>(), D.AfterOk);
+			Mask(D.Going, std::vector<std::string>(), D.GoingOk);
 		}
 		Cand.reserve(Defs.size());
 		CandW.reserve(Defs.size());
@@ -864,6 +866,14 @@ namespace LyudPeople
 		if (!D.DoingOk.empty() && (Act < 0 || Act >= (int)D.DoingOk.size() || !D.DoingOk[Act]))
 		{
 			return 0.f;
+		}
+		if (!D.GoingOk.empty())
+		{
+			// walking to it (the activity is chosen and the way begun)
+			if (P.State != EState::Going || P.Activity < 0 || P.Activity >= (int)D.GoingOk.size() || !D.GoingOk[P.Activity])
+			{
+				return 0.f;
+			}
 		}
 		if (!D.AfterOk.empty())
 		{

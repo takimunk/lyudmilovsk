@@ -176,19 +176,44 @@ curled). So a gesture goes with any pose and any body, melts into the next one, 
 hand. Standing with folded arms uses the `FoldArms` clip (`LyudGesture::ClipFor`).
 
 Props are static meshes `/Game/Characters/Humans/Props/SM_Prop_<name>` (phone, cigarette, camera, umbrella, rod,
-brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, spade, watering_can, suitcase, and easel), made by `blender/humans/props.py` and
-imported by `unreal/scripts/import_props.py`. A manner whose prop's mesh is missing is never picked. How each sits in
-the hands is `LyudGesture::HoldOf`:
+brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, spade, watering_can, mop, torch, suitcase, broom,
+rake, cake_box, flowers; and the things that stand by them: easel, bucket, chess), made by `blender/humans/props.py`
+and imported by `unreal/scripts/import_props.py`. A manner whose prop's mesh is missing is never picked. How each sits
+in the hands is `LyudGesture::HoldOf`:
 
 | hold | props | the mesh |
 | --- | --- | --- |
 | Upright | umbrella, ice_cream, cup, watering_can | origin at the grip, +Z up (the can's spout +X) |
-| Hanging | bag, suitcase | origin at the handles, hangs along -Z |
+| Hanging | bag, suitcase, cake_box, flowers | origin at the handles (the box's string loop, the bouquet's stems), hangs along -Z |
 | Palm | phone | long axis X, the screen +Z |
 | Fingers | cigarette, brush | along +X from the fingers |
 | TwoHands | camera, binoculars, newspaper, book, knitting | length X, the face the holder looks at +Z |
-| Pointing | rod | along +X from the grip |
-| Shaft | spade | both hands on it: +X from the main hand's grip through the other hand and on to the blade |
+| Pointing | rod, torch | along +X from the grip |
+| Shaft | spade, mop, broom, rake | both hands on it: +X from the main hand's grip through the other hand and on to the head |
+
+The props are low-poly, flat colours, no words. UV0 is metres on each face's own plane (the house's way, as
+`blender/city/interior_kit.py`). Every prop is linted as it is built: degenerate and needle triangles, stretched or folded
+UVs, a winding that fights the normal. A prop that fails is not written and the run exits 1. `--only chess,cake` builds
+a few.
+
+**The days' things** (docs/town_life.md "The days"):
+
+| prop | who, when | how |
+| --- | --- | --- |
+| `chess` (1496 tris) | the plan's two chess friends on a bench (`chess_bench`), and anyone playing alone there | not a manner's: `UPeopleLifeSubsystem::PresentChess` puts it on the seat between the two (`ANpcBody::PutDown` of the one with the lower id, or of the other when that one is not drawn), White toward the holder; both turn 20 degrees to it; alone (or when their bench was taken and the friend sits at the next one), it lies on the seat at their right. The dominoes gesture moves the pieces |
+| `cake_box` (252) | a birthday, walking for 40 minutes after `buy_cake` (a shop or a cafe, 8:00 to 12:30, once) | manner `carry_bag`, `"after": ["buy_cake"]`, `"today": "birthday"` |
+| `flowers` (381) | a birthday guest of 14 and over on the way to the visit | manner `carry_bag`, `"going": ["visit_home"]`, `"today": "guest"`; younger guests carry the bag (a present) |
+| `cake` (940) | for a table at a birthday | made and imported, not shown yet: every town flat is a shell, so there is no table to put it on. A walkable flat's host would show it at `host_guests` |
+
+A two-seat town bench given as one point (`town_places.json` `"capacity": 2`) used to seat both sitters on the very
+spot. `FWorld::SpotOf` now puts each 0.36 m to one side along the bench (the side the other has not taken), so two on a
+bench sit side by side and the chess board fits between them. `tools/mannersim/run.sh` checks the chess pairs (two in five of
+the plan's person-minutes side by side on one bench, none on one spot; the rest at the next bench) and a day with a
+dozen birthdays (the cake box and the carnations carried).
+
+`"going"` (manners.json) is new: only while walking to one of these activities. The guest's bag row had `"doing":
+["visit_home"]` with walking poses, so it was never seen. A `"doing"` row can't fit on the way, because the activity
+counts only once they are at it.
 
 ## API
 
