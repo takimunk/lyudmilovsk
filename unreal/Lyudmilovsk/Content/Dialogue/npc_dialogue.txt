@@ -60,7 +60,6 @@ quest.tq2_plant.thank = hero.tq2_plant_ask.1 | owner.tq2_plant_ask.2 | owner.tq2
 quest.tq2_plant.care = owner.tq2_plant_wait.1
 quest.tq2_plant.care.again = owner.tq2_plant_wife.1
 quest.tq2_plant.care.if.night = owner.tq2_plant_night.1
-aside.tq2_fortune.road,eat,shell = owner.tq2_fortune_card.1
 quest.tq2_whiteear.done = owner.tq2_whiteear_after.1
 quest.tq2_jam.done = owner.tq2_jam_after.1
 quest.tq2_plant.done = owner.tq2_plant_after.1
@@ -90,6 +89,7 @@ quest.tq_square.shots.if.cloudy = clerk.tq_square_grey.1
 quest.tq_square.show = clerk.tq_square_show.1 | clerk.tq_square_show.2 | hero.tq_square_show.3 | clerk.tq_square_show.4 | clerk.tq_square_show.5
 quest.tq_square.done = clerk.tq_square_after.1
 aside.tq2_whiteear.beach,tell = clerk.tq2_whiteear_aside.1
+aside.tq2_fortune.road,eat,shell = clerk.tq2_fortune_card.1
 
 [Streamer]
 first = streamer.first.1 | hero.streamer_first.2 | streamer.first.3 | streamer.first.4
@@ -116,6 +116,15 @@ quest.tq_request.listen.again = streamer.tq_request_inlove.1
 quest.tq_request.listen.if.night = streamer.tq_request_evening.1
 quest.tq_request.tell = streamer.tq_request_tell.1 | hero.tq_request_tell.2 | streamer.tq_request_tell.3 | streamer.tq_request_tell.4
 quest.tq_request.done = streamer.tq_request_after.1
+quest.tq2_fortune.show = hero.tq2_fortune_ask.1 | streamer.tq2_fortune_ask.2 | streamer.tq2_fortune_ask.3 | streamer.tq2_fortune_ask.4
+quest.tq2_fortune.road = streamer.tq2_fortune_wait.1
+quest.tq2_fortune.road.again = streamer.tq2_fortune_legend.1
+quest.tq2_fortune.road.if.have:sandwich = streamer.tq2_fortune_pocket.1
+quest.tq2_fortune.road.if.night = streamer.tq2_fortune_night.1
+quest.tq2_fortune.eat = streamer.tq2_fortune_eat.1
+quest.tq2_fortune.shell = streamer.tq2_fortune_shell.1 | hero.tq2_fortune_shell.2 | streamer.tq2_fortune_shell.3 | streamer.tq2_fortune_shell.4
+quest.tq2_fortune.shell_empty = streamer.tq2_fortune_noshell.1
+quest.tq2_fortune.done = streamer.tq2_fortune_after.1
 
 [Kid_boy]
 first = kid_boy.first.1 | hero.kid_boy_first.2 | kid_boy.first.3 | kid_boy.first.4
@@ -278,15 +287,6 @@ quest.overdue_journal.visit.if.night = girl_b.overdue_dark_bench.1
 quest.overdue_journal.buy.if.cloudy = girl_b.overdue_cloudy_quiet.1
 aside.tq_quote.book,line = girl_b.tq_quote_card.1
 aside.tq_card.send = girl_b.tq_card_hello.1
-quest.tq2_fortune.show = hero.tq2_fortune_ask.1 | girl_b.tq2_fortune_ask.2 | girl_b.tq2_fortune_ask.3 | girl_b.tq2_fortune_ask.4
-quest.tq2_fortune.road = girl_b.tq2_fortune_wait.1
-quest.tq2_fortune.road.again = girl_b.tq2_fortune_thread.1
-quest.tq2_fortune.road.if.have:sandwich = girl_b.tq2_fortune_pocket.1
-quest.tq2_fortune.road.if.night = girl_b.tq2_fortune_night.1
-quest.tq2_fortune.eat = girl_b.tq2_fortune_eat.1
-quest.tq2_fortune.shell = girl_b.tq2_fortune_shell.1 | hero.tq2_fortune_shell.2 | girl_b.tq2_fortune_shell.3 | girl_b.tq2_fortune_shell.4
-quest.tq2_fortune.shell_empty = girl_b.tq2_fortune_noshell.1
-quest.tq2_fortune.done = girl_b.tq2_fortune_after.1
 
 [Nao]
 first = nao.first.1 | hero.nao_first.2 | nao.first.3 | nao.first.4
