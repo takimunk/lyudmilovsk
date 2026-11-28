@@ -32,6 +32,7 @@
 #include "Weather/LyudWeather.h"
 #include "Weather/LyudWind.h"
 
+#include <cmath>
 #include <sstream>
 
 DEFINE_LOG_CATEGORY_STATIC(LogLyudSailing, Log, All);
@@ -1686,9 +1687,19 @@ void ULyudSailing::WriteBook(ULyudSailingBook& Out) const
 	O << "m1 " << S.ResolvedDay << ' ' << (S.Hero.bNightLeave ? 1 : 0) << ' ' << S.ForcedSeason << ' ' << (bOut ? 1 : 0) << ' ' << (bOut ? Boat->Boat().X : 0.0) << ' '
 		<< (bOut ? Boat->Boat().Y : 0.0) << ' ' << (bOut ? Boat->Boat().Yaw : 0.0) << ' ' << (bOut && Boat->IsHeroAboard() ? 1 : 0) << ' ' << (S.Hero.bHired ? 1 : 0) << ' '
 		<< (S.Hero.bLeftElsewhere ? 1 : 0) << ' ' << (S.Hero.bNightOut ? 1 : 0) << ' ' << (S.Race.bHeroIn ? S.Day : -1);
-	O << ' ' << S.States.size();
+	// (a session the developer sent out is not the timetable's: it is not remembered)
+	size_t Remembered = 0;
 	for (const FSchoolSessionState& St : S.States)
 	{
+		Remembered += S.bDevWater && St.Key == S.DevNow.Key ? 0 : 1;
+	}
+	O << ' ' << Remembered;
+	for (const FSchoolSessionState& St : S.States)
+	{
+		if (S.bDevWater && St.Key == S.DevNow.Key)
+		{
+			continue;
+		}
 		O << ' ' << St.Key << ' ' << (int)St.Go << ' ' << (int)St.Reason << ' ' << St.RecallHour;
 	}
 	O << ' ' << S.Learned.size();
@@ -1710,11 +1721,8 @@ void ULyudSailing::ReadBook(const ULyudSailingBook& In)
 	{
 		Boat->Leave(true);
 	}
-	if (S.HeroHull >= 0)
-	{
-		S.Hulls[(size_t)S.HeroHull].bAfloat = false;
-		S.Hulls[(size_t)S.HeroHull].Shown = -1;
-	}
+	// whatever was on the water belongs to the game that was running: every boat back to the park
+	StowFleet();
 	S.Journal = FSchoolLog();
 	if (!In.Journal.IsEmpty() && !S.Journal.Load(LyudSailingImpl::Std(In.Journal)))
 	{

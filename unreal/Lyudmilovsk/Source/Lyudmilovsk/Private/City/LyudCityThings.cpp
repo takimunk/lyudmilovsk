@@ -50,6 +50,7 @@
 #include "People/TownTalk.h"
 #include "Sky/LyudTelescope.h"
 #include "Plants/GameCalendar.h"
+#include "Sailing/LyudSailing.h"
 #include "Tasks/Task.h"
 #include "UI/LyudGameScreen.h"
 #include "UI/LyudQuests.h"
@@ -3608,6 +3609,17 @@ void ULyudCityThings::OpenBook(int32 Text, int32 Thing, bool bSeated)
 			BookPages.Init(FString(), BookGenPages.Num());
 		}
 	}
+	else if (T->Gen.rfind("sail:", 0) == 0)
+	{
+		// the yacht school's boards (docs/yacht_school.md): the notice of the week and the last race day's tables
+		TArray<FText> Gen;
+		const ULyudSailing* Sailing = ULyudSailing::Get(World);
+		if (Sailing && Sailing->BoardPages(LyudCityThingsImpl::Str(T->Gen), Gen) && Gen.Num() > 0)
+		{
+			BookGenPages = MoveTemp(Gen);
+			BookPages.Init(FString(), BookGenPages.Num());
+		}
+	}
 	else if (!T->Gen.empty())
 	{
 		if (ULyudTownPaper* Paper = ULyudTownPaper::Get(World))
@@ -3683,7 +3695,7 @@ void ULyudCityThings::ShowBookPage()
 	{
 		CupSheetRead(LyudCityThingsImpl::Str(T->Gen));
 	}
-	else if (bGen && bLast)
+	else if (bGen && bLast && T->Gen.rfind("sail:", 0) != 0)
 	{
 		if (ULyudTownPaper* Paper = ULyudTownPaper::Get(this))
 		{

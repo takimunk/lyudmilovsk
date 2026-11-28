@@ -14,6 +14,9 @@
 #include "LyudInventory.h"
 #include "Sailing/LyudDinghy.h"
 
+#include <cmath>
+#include <string>
+
 DEFINE_LOG_CATEGORY_STATIC(LogLyudSailDev, Log, All);
 
 using namespace LyudSail;

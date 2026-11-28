@@ -27,6 +27,9 @@
 #include "Sailing/LyudDinghy.h"
 #include "UObject/Package.h"
 
+#include <cmath>
+#include <string>
+
 // The wind-kites branch brings the town's windsocks (ULyudWindTells): until it is merged the school flies its own sock.
 #if defined(__has_include)
 #if __has_include("Weather/LyudWindsock.h")

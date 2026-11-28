@@ -6,7 +6,7 @@
 #
 #   tools/run_all_suites.sh             everything (~20 min; birdsim alone ~6)
 #   tools/run_all_suites.sh --quick     skips the slow rows (birdsim, barksim's en/ja days, peoplesim summary,
-#                                       audiosim render, underwater bed, peoplesim sailing): ~6 min
+#                                       audiosim render, underwater bed, peoplesim sailing, sailfleetsim test): ~6 min
 #   tools/run_all_suites.sh --only peoplesim,check_data    rows whose name contains one of these words
 #   tools/run_all_suites.sh --keep      leaves a generator's changed output in the tree (default: put back as committed)
 #   tools/run_all_suites.sh --no-werror warnings are not errors
@@ -178,6 +178,8 @@ fi
 suite sailsim.quick               - bash tools/sailsim/run.sh quick
 suite sailsim.test                slow bash tools/sailsim/run.sh test
 suite sailsim.polar               - bash tools/sailsim/run.sh polar
+suite sailfleetsim.quick          - bash tools/sailfleetsim/run.sh quick
+suite sailfleetsim.test           slow bash tools/sailfleetsim/run.sh test
 suite sea.test                    - bash tools/sea/run.sh test
 suite skyeventsim.test            - bash tools/skyeventsim/run.sh test
 suite sea.days                    - bash tools/sea/run.sh days

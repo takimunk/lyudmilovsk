@@ -1,0 +1,6 @@
+{
+ "_doc": "String keys the yacht school's ENGINE (the school's half: LyudSailing*.cpp) shows and that no strings table has yet, with ru/en/ja drafts. The words' part moves them into the tables. Until then the code shows the English draft (LyudSailHud::Word), never the bare key.",
+ "keys": {
+  "sail.board.hero": {"ru": "Я", "en": "Me", "ja": "自分", "note": "The results board (text gen sail:results): the hero's own row in a class table, where the others are shown by their names"}
+ }
+}

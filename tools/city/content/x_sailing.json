@@ -730,7 +730,7 @@
  "collections": {
   "sailing": {
    "title": "city.coll.sailing",
-   "by": "ULyudSailing (Private/Sailing/LyudSailing.cpp, not written yet: when it is, replace this field with \"code\": [that path] so every piece is checked against the source): the stamps of FSchoolEvents",
+   "code": ["unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Sailing/LyudSailing.cpp"],
    "pieces": [
     "joined",
     "first_sail",
