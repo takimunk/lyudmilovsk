@@ -251,26 +251,33 @@ In the game: `lyud.People.Today [key [cold|sleepy|birthday|payday|pension|guest|
 Test: `tools/peoplesim/run.sh days [n] [off]` runs the town n days from a Monday (7), prints a few residents' diaries and
 checks the above; `off` runs the same town without the days.
 
-Before and after (seven days, the same town and seed, `run.sh days 7 off` against `run.sh days 7`):
+Before and after (seven days, the same town and seed, `run.sh days 7 off` against `run.sh days 7`, on main b70f1e7b
+with tonight's street life and holidays in):
 
 | | before | after |
 |---|---|---|
-| what somebody did on one day and on the next too (activity and place) | 41.0% | 37.2% |
+| what somebody did on one day and on the next too (activity and place) | 41.2% | 37.4% |
+| two days running in the very same order | 0.3% | 0.1% |
 | different things a person did in the week | 17.0 | 18.4 |
-| person-days with a cold, after a bad night, birthdays, paid, pensions due | 0 | 169, 381 (306 up late, 44 min on average), 15, 447, 173 |
-| plans made / kept: tea, birthday guests, family dinners, strolls, chess | 0 | 201 / 198, 15 / 15, 85 / 85, 196 / 187, 79 / 51 |
-| on the way: stops for a word, greetings in passing, doors held | 0 | 444, 2904, 632 |
-| the market on Saturday, books taken back, the pension fetched | 0 | 1826 and 1593 person-minutes, 108 of 173 pensioners |
-| the cafes on payday's evening against another weekday's | the same | 25736 against 23434 person-minutes |
-| a nap (a bad night, a cold), person-minutes | 28623 | 46148 |
-| `run.sh town`: a step of the whole town (949 people) | 0.606 ms | 0.603 ms |
+| person-days with a cold, after a bad night, birthdays, paid, pensions due | 0 | 169, 381 (305 up late, 44 min on average), 15, 451, 170 |
+| plans made / kept: tea, birthday guests, family dinners, strolls, chess | 0 | 199 / 195, 15 / 14, 84 / 83, 189 / 182, 75 / 48 |
+| on the way: stops for a word, greetings in passing, doors held | 0 | 436, 2942, 707 |
+| the market on Saturday, books taken back, the pension fetched | 0 | 1792 and 1616 person-minutes, 111 of 170 pensioners |
+| the cafes on payday's evening against another weekday's | the same | 25780 against 23490 person-minutes |
+| a nap (a bad night, a cold), person-minutes | 28207 | 45581 |
+| `run.sh days`: a step of 2 s with the test's own bookkeeping | 1.31 ms | 1.18 ms |
+| `run.sh town`: a step of the whole town (949 people) | 0.61 to 0.63 ms | 0.61 to 0.65 ms (noise of this box) |
 
-Before, a pensioner's week was the bench, the cafe and the beach every day. After, the same man (`t_benitez_rafael`,
-77) has a friend to tea on Monday, goes to tea himself on Tuesday, walks the promenade as a couple on Thursday (the
-strolls planned for Wednesday and Saturday were not walked), and plays chess on a bench on Friday and on Sunday. A
-programmer with a cold stays in for two days but for the clinic, and is up late on the Wednesday after a bad night.
-`run.sh town` had one failing check before (the trail walk, 1 person off it) and has none in this run; `run.sh days`
-costs 0.93 ms a step with its own bookkeeping.
+Before, a pensioner's week was the bench and the cafe every day. After, the same man (`t_tkachuk_tigran`, 85) has
+his friend `t_benitez_rafael` to tea on Tuesday, is in bed with a cold on Friday and Saturday (the clinic on the Friday
+morning, naps), and hosts the family's Sunday dinner. The strolls planned for Monday and Wednesday evenings were not
+walked (he stayed on his bench): a plan is a pull, not an order.
+
+Checks: `run.sh town` keeps only the tower watch's failing check that main has. `tools/mannersim/run.sh` keeps main's
+failing "binoculars never seen"; its weekly dates' check now leaves out the pairs with a cold that day (their date is
+off by design), and a once-a-day errand (the pension, the market, the books back) waits while a date, an outing or a
+plan is due instead of pulling people away from it. A door held is `FPerson::DoorFor` (main's `HoldFor` is the
+hero's word on the way); neither is picked for a street meeting.
 
 Not done: no post office building; guests in a shell flat are not seen; the chess board is not drawn (a prop on the
 bench is owed); a birthday has no cake or song; the weather does not bring colds; the story's people have no days.
