@@ -342,7 +342,7 @@ def build():
         p.setdefault("likes", OD())["mend_nets"] = 2.9
         p["likes"]["boats_evening"] = 2.7
     for p in keeper:
-        p.setdefault("likes", OD())["tend_hives"] = 3.6
+        p.setdefault("likes", OD())["tend_hives"] = 4.2      # the hives first on a warm morning (a coin toss against a bench at 3.6: peoplesim town)
     for p in birders:
         p.setdefault("likes", OD())["watch_starlings"] = 2.4
     hide_evenings(fd["people"], birders)
