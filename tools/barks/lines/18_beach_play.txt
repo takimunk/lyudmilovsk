@@ -9,7 +9,7 @@
 [beach_castle_kid]
 doing = beach_castle
 age = kid
-say town.beach_castle_kid.1 | Я копаю ров! Ров — это самое главное. | I'm digging the moat! The moat is the most important part. | ぼくがお堀を掘る！お堀がいちばん大事なんだ。
+say town.beach_castle_kid.1 | Я копаю ров! Ров — это самое главное. | I'm digging the moat! The moat is the most important part. | お堀を掘ってるの！お堀がいちばん大事なんだ。
 say town.beach_castle_kid.2 | Песок надо мокрый. Сухой сразу рассыпается. | The sand has to be wet. Dry sand just falls apart. | 砂はぬれてなきゃ。かわいた砂はすぐくずれる。
 say town.beach_castle_kid.3 | Давай ещё одну башню, вон там, с краю. | Let's do one more tower, over there, at the edge. | もうひとつ塔をつくろう、あっちのはじっこに。
 say town.beach_castle_kid.4 | Сейчас волна придёт. Строй быстрее! | A wave's coming soon. Build faster! | もうすぐ波が来るよ。はやくつくって！
