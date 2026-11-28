@@ -230,6 +230,13 @@ Town talk sets: `manner = smoke phone_call ...` (what their hands are doing now)
   shows, cost). The holiday is the sea festival on a Friday: the fair, the concert and the dance on the square, and the
   Vaults' Friday dances. Every manner must be seen in one of the five days; the claps and the sways only come at it.
   `run.sh day`, `run.sh outing`, `run.sh dates`, `run.sh who`.
+- `SIM_SEED=<n> tools/mannersim/run.sh ...` runs the people's life with another seed (0 is the house seed). The picks
+  are seeded, and some hashes mix in an activity's row number, so any change to the order of activities.json reshuffles
+  the day. The bar of "friends keep their weekly date" is set from the spread over seeds. Measured on 2026-11-28 with
+  `run.sh dates` over seeds 0-11: 38-50% of the Wednesday pairs met (mean 43%, sd 3.7; 61-69 pairs a seed). The old
+  bar of 40% sat inside that spread, so a merge flipped it at random. The bar is now 30%: about 3.5 sd under the mean,
+  8 points under the lowest seed. A real break (dates not kept, friends sent to different places) drops it far lower.
+  When the town's content moves the mean, measure the seeds again and move the bar.
 - `tools/peoplesim/run.sh test|town`, `tools/barksim/run.sh`.
 - In the game: `lyud.People.Manner <manner|next|auto>` (everybody drawn does it), `lyud.People.Who <key>`,
   `lyud.People.SkyShow`; developer mode (F7), group "Townsfolk".
