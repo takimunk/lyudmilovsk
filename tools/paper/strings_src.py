@@ -805,7 +805,7 @@ NOTICES = [
     ("club", "dnc_vaults", ("10-11", "11-30"), None,
      "Танцы в «Сводах»: по пятницам и субботам с семи до одиннадцати. Пластинки и живая музыка, в десять белый танец. Сторож просит не опаздывать к закрытию: сам он не опаздывает.",
      "Dances at the Vaults: Fridays and Saturdays, seven to eleven. Records and a live band, the ladies' choice at ten. The watchman asks you not to be late for closing: he never is.",
-     "「ヴォールト」のダンス：毎週金曜と土曜、七時から十一時。レコードと生演奏、十時は白いダンス。夜警より、閉館に遅れないように。夜警は遅れません。"),
+     "「ヴォールト」のダンス：毎週金曜と土曜、七時から十一時。レコードと生演奏、十時は白いダンス。夜警からのお願い：閉館に遅れないこと。本人は一度も遅れたことがありません。"),
     ("club", "dnc_winter", ("01-15", "02-28"), None,
      "Зимние танцы в «Сводах»: гардероб работает, валенки сдаём, туфли приносим с собой. Пятница и суббота, с семи.",
      "Winter dances at the Vaults: the cloakroom is open, felt boots are handed in, bring your shoes with you. Friday and Saturday, from seven.",

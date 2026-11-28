@@ -121,12 +121,12 @@
  },
  "city.dnc.pl.aigerim.hello": {
   "ru": "Давай. Только я после волейбола, ноги гудят.",
-  "en": "All right. Only I've just come from volleyball, my feet are humming.",
+  "en": "All right. Only I've just come from volleyball, my legs are aching.",
   "ja": "いいよ。ただバレーの練習帰りで、足がじんじんしてる。"
  },
  "city.dnc.pl.aigerim.win": {
   "ru": "Хорошо прошлись. Как задачка по алгебре — всё сошлось с ответом.",
-  "en": "That went well. Like an algebra problem: it all came out to the answer.",
+  "en": "That went well. Like an algebra problem: it all came out right.",
   "ja": "いい踊りだった。代数の問題みたいに、答えがぴったり合った。"
  },
  "city.dnc.pl.aigerim.lose": {
@@ -167,12 +167,12 @@
  "city.dnc.pl.ursula.hello": {
   "ru": "Я… я тут в первый раз. Мама сказала, надо выходить в люди.",
   "en": "I'm… I'm here for the first time. Mum said I ought to get out more.",
-  "ja": "わ、わたし、初めて来たの。母が、たまには人前に出なさいって。"
+  "ja": "わ、わたし、初めて来たの。お母さんが、たまには人前に出なさいって。"
  },
  "city.dnc.pl.ursula.win": {
   "ru": "Я ни разу не сбилась! Расскажу маме — не поверит.",
   "en": "I didn't lose the step once! I'll tell Mum; she won't believe it.",
-  "ja": "一度もずれなかった！　母に話しても信じないだろうな。"
+  "ja": "一度もずれなかった！　お母さんに話しても信じないだろうな。"
  },
  "city.dnc.pl.ursula.lose": {
   "ru": "Ой, нет, я… я лучше у стенки. Не обижайся.",
@@ -181,13 +181,13 @@
  },
  "city.dnc.pl.yumiko.hello": {
   "ru": "Белый танец! Не отказывайся, у меня рука лёгкая.",
-  "en": "Ladies' choice! Don't say no, I have a light hand.",
-  "ja": "白いダンス！　断らないで、リードは軽いから。"
+  "en": "Ladies' choice! Don't say no, I'm lucky to dance with.",
+  "ja": "白いダンス！　断らないで、わたしと踊ると運がつくよ。"
  },
  "city.dnc.pl.yumiko.win": {
   "ru": "Я играю в школьном оркестре, но танцевать люблю больше. Спасибо, кавалер.",
   "en": "I play in the school band, but I like dancing better. Thank you, sir.",
-  "ja": "学校の楽団で弾いてるけど、踊るほうが好き。ありがとう、騎士さん。"
+  "ja": "学校の楽団で弾いてるけど、踊るほうが好き。ありがとう、王子さま。"
  },
  "city.dnc.pl.yumiko.lose": {
   "ru": "Ничего, я поведу ещё раз. В следующую субботу.",
@@ -216,7 +216,7 @@
  },
  "city.dnc.pl.ama.win": {
   "ru": "Хорошо. Ровно, спокойно, как море в штиль.",
-  "en": "Good. Even and calm, like the sea in a flat calm.",
+  "en": "Good. Smooth and calm, like the sea with no wind.",
   "ja": "よかった。凪の海みたいに、穏やかで静か。"
  },
  "city.dnc.pl.ama.lose": {
@@ -226,7 +226,7 @@
  },
  "city.dnc.pl.femke.hello": {
   "ru": "Можно… можно тебя? Сейчас ведь белый танец.",
-  "en": "May I… may I have you? It's the ladies' choice now.",
+  "en": "May I… may I have this dance? It's the ladies' choice now.",
   "ja": "あの…いいかな？　今、白いダンスだから。"
  },
  "city.dnc.pl.femke.win": {
@@ -326,7 +326,7 @@
  },
  "city.dnc.invite.after.1": {
   "ru": "Ноги гудят. Ты садишься у столика и смотришь, как танцуют другие. Тоже неплохое занятие.",
-  "en": "Your feet hum. You sit at a table and watch the others dance. Not a bad thing to do either.",
+  "en": "Your feet ache. You sit at a table and watch the others dance. Not a bad thing to do either.",
   "ja": "足がじんじんする。テーブルに座って、ほかの人たちが踊るのを眺める。これも悪くない。"
  },
  "city.dnc.invite.after.2": {

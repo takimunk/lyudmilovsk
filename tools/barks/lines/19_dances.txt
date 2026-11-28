@@ -12,7 +12,7 @@ doing = dance_evening
 weight = 4
 say town.dnc_floor.1 | Раз-два-три, раз-два-три… Только не смотри на ноги. | One-two-three, one-two-three… Just don't look at your feet. | ワン・ツー・スリー、ワン・ツー・スリー…足は見ないで。
 say town.dnc_floor.2 | Это же «Амурские волны»! Под них ещё бабушка танцевать училась. | It's "Waves of the Amur"! Grandma learned to dance to this one. | 「アムールの波」だ！　おばあちゃんもこれで踊りを覚えたんだって。
-say town.dnc_floor.3 | Кто опять поставил польку? Дыхание после фокстрота ещё не вернулось. | Who put the polka on again? I haven't got my breath back from the foxtrot. | 誰がまたポルカかけたの？　フォックストロットの息がまだ戻らない。
+say town.dnc_floor.3 | Кто опять поставил польку? Тут после фокстрота ещё не отдышишься. | Who put the polka on again? I haven't got my breath back from the foxtrot. | 誰がまたポルカかけたの？　フォックストロットの息がまだ戻らない。
 say town.dnc_floor.4 | Шар крутится, а голова у меня ещё быстрее. | The ball's spinning, and my head's spinning faster. | ミラーボールが回ってる。頭はもっと速く回ってる。
 say town.dnc_floor.5 | Под пластинку танцевать одно, под живой оркестр совсем другое. | Dancing to a record is one thing, to a live band quite another. | レコードで踊るのと生演奏で踊るのは、まるで別物。
 
@@ -55,9 +55,9 @@ doing = dance_watch
 doing2 = dance_watch
 weight = 3
 talk
-- town.dnc_watch_talk1.1 | Смотри, Мамедова девочка опять со всеми танцует. | Look, the Mamedov girl's dancing with everybody again. | ほら、ママドフさんとこの娘がまたみんなと踊ってる。
+- town.dnc_watch_talk1.1 | Смотри, Мамедовых девочка опять со всеми танцует. | Look, the Mamedov girl's dancing with everybody again. | ほら、マメドフさんとこの娘がまたみんなと踊ってる。
 - town.dnc_watch_talk1.2 | Пусть танцует. Нам с тобой уже только смотреть. | Let her. All we can do now is watch. | 踊らせときな。わたしらはもう見るだけさ。
-- town.dnc_watch_talk1.3 | Почему это только? Вот объявят дамский — пойду. | What do you mean, all? When they call the ladies' choice, I'm going. | だけってなにさ。白いダンスになったら、わたしは行くよ。
+- town.dnc_watch_talk1.3 | Почему это только? Вот объявят дамский — посмотрим, кого пригласят. | What do you mean, all? When they call the ladies' choice, we'll see who gets asked. | だけってなにさ。白いダンスになったら、誰が誘われるか見ものだよ。
 talk
 - town.dnc_watch_talk2.1 | Раньше оркестр был в пять человек. | The band used to be five people. | 昔は楽団が五人いたのに。
 - town.dnc_watch_talk2.2 | А теперь пианист и барабанщик на табуретке. | And now it's a pianist and a drummer on a stool. | 今はピアノと、丸椅子の太鼓叩きだけ。
@@ -116,8 +116,8 @@ weekday = sat sun
 hours = 8-14
 age = 13-35
 weight = 2
-say town.dnc_after.1 | Вчера на танцах был белый танец, и меня пригласили дважды. Дважды! | At the dance yesterday there was the ladies' choice, and I got asked twice. Twice! | 昨日のダンスで白いダンスがあって、二回も誘われた。二回だよ！
-say town.dnc_after.2 | Ноги после вчерашнего гудят. Это была полька, она не прощает. | My feet are still humming from last night. That was the polka; it doesn't forgive. | 昨日のせいで足がじんじん。あれはポルカだった。容赦ないんだ。
+say town.dnc_after.1 | Вчера на белом танце одного парня пригласили сразу трое. Трое! | At the ladies' choice last night three girls asked the same boy. Three! | 昨日の白いダンスで、ひとりの男の子に三人も申し込んだんだよ。三人！
+say town.dnc_after.2 | Ноги после вчерашнего гудят. Это была полька, она не прощает. | My legs are still aching from last night. That was the polka; it doesn't forgive. | 昨日のせいで足がじんじん。あれはポルカだった。容赦ないんだ。
 say town.dnc_after.3 | Сторож вчера опять выгонял всех ровно в одиннадцать. Как часы. | The watchman threw everyone out at eleven sharp again last night. Like clockwork. | 昨日も夜警がきっかり十一時にみんなを追い出した。時計みたいに。
 
 [dnc_after_bench]
@@ -158,4 +158,4 @@ to = hero
 heard_of = dance
 bond = friend close
 weight = 9
-say town.rumour_dance_friend.1 | {0}, говорят, твоя партнёрша на танцах — {1}. А мне ни слова! | {0}, they say your partner at the dance was {1}. And not a word to me! | {0}、ダンスの相手は{1}だったって聞いたよ。ぼくにはひと言もなし！
+say town.rumour_dance_friend.1 | {0}, говорят, твоя партнёрша на танцах — {1}. А мне ни слова! | {0}, they say your partner at the dance was {1}. And not a word to me! | {0}、ダンスの相手は{1}だったって聞いたよ。こっちにはひと言もなし！

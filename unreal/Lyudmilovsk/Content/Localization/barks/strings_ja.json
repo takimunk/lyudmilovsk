@@ -2219,9 +2219,9 @@
  "line.town.dnc_watch.4": "今夜のビュッフェのお茶は濃い。管理人の機嫌がいい証拠だ。",
  "line.town.dnc_watch_grannies.1": "わたし、この床で夫と出会ったの。あの人も壁ぎわに立ってたっけ。",
  "line.town.dnc_watch_grannies.2": "誰が誰と踊ったか数えとこう。明日のベンチの話の種になる。",
- "line.town.dnc_watch_talk1.1": "ほら、ママドフさんとこの娘がまたみんなと踊ってる。",
+ "line.town.dnc_watch_talk1.1": "ほら、マメドフさんとこの娘がまたみんなと踊ってる。",
  "line.town.dnc_watch_talk1.2": "踊らせときな。わたしらはもう見るだけさ。",
- "line.town.dnc_watch_talk1.3": "だけってなにさ。白いダンスになったら、わたしは行くよ。",
+ "line.town.dnc_watch_talk1.3": "だけってなにさ。白いダンスになったら、誰が誘われるか見ものだよ。",
  "line.town.dnc_watch_talk2.1": "昔は楽団が五人いたのに。",
  "line.town.dnc_watch_talk2.2": "今はピアノと、丸椅子の太鼓叩きだけ。",
  "line.town.dnc_watch_talk2.3": "そのぶん、うるさいけどね。",
@@ -2237,7 +2237,7 @@
  "line.town.dnc_going1.3": "きついなら、そのぶん丁寧に踊れる。",
  "line.town.dnc_going2.1": "七時からダンス。くし持った？",
  "line.town.dnc_going2.2": "持ったよ。どうせ風でぼさぼさになるけど。",
- "line.town.dnc_after.1": "昨日のダンスで白いダンスがあって、二回も誘われた。二回だよ！",
+ "line.town.dnc_after.1": "昨日の白いダンスで、ひとりの男の子に三人も申し込んだんだよ。三人！",
  "line.town.dnc_after.2": "昨日のせいで足がじんじん。あれはポルカだった。容赦ないんだ。",
  "line.town.dnc_after.3": "昨日も夜警がきっかり十一時にみんなを追い出した。時計みたいに。",
  "line.town.dnc_after_bench1.1": "昨日、ダンスの帰りに誰が誰と歩いてたか見た？",
@@ -2250,5 +2250,5 @@
  "line.town.rumour_dance_greet.2": "おや、騎士どの！　{1}が、君は一度も足を踏まなかったってみんなに話してるよ。",
  "line.town.rumour_dance_greet_young.1": "ほんとに{1}と踊ったの？　クラスじゅう知ってるよ！",
  "line.town.rumour_dance_greet_young.2": "ひゅーひゅー…はいはい、黙るって。でも{1}のことは本当でしょ！",
- "line.town.rumour_dance_friend.1": "{0}、ダンスの相手は{1}だったって聞いたよ。ぼくにはひと言もなし！"
+ "line.town.rumour_dance_friend.1": "{0}、ダンスの相手は{1}だったって聞いたよ。こっちにはひと言もなし！"
 }
