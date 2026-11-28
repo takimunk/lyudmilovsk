@@ -780,6 +780,7 @@ namespace LyudPeople
 		/** Height fields of ground off the walk grid (the sea island), Unreal metres. */
 		struct FPatch { float X0 = 0.f, Y0 = 0.f, Cell = 4.f; int NX = 0, NY = 0; std::vector<float> Z; bool Has(float X, float Y) const; float At(float X, float Y) const; };
 		std::vector<FPatch> Patches;
+		void AddPatches(const LyudJson::FValue& List);     // a json "ground_patches" list onto Patches
 
 		/** The town's terraces (town_places.json "town"): flat levels joined by stairs. Inside its box people keep to their
 		 *  terrace's height and go up and down by the stairs (until the walk grid knows the terraces). */
