@@ -215,7 +215,18 @@
     23
    ],
    "days": "fri-sat",
-   "closed": "dnc_floor_off"
+   "closed": "dnc_floor_off",
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    9,
+    10,
+    11,
+    12
+   ]
   },
   "P-HALL/dance_2": {
    "act": "dnc_invite",
@@ -224,7 +235,18 @@
     23
    ],
    "days": "fri-sat",
-   "closed": "dnc_floor_off"
+   "closed": "dnc_floor_off",
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    9,
+    10,
+    11,
+    12
+   ]
   },
   "P-HALL/dance_3": {
    "act": "dnc_invite",
@@ -233,7 +255,18 @@
     23
    ],
    "days": "fri-sat",
-   "closed": "dnc_floor_off"
+   "closed": "dnc_floor_off",
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    9,
+    10,
+    11,
+    12
+   ]
   },
   "P-HALL/dance_4": {
    "act": "dnc_white",
@@ -242,7 +275,18 @@
     23
    ],
    "days": "fri-sat",
-   "closed": "dnc_white_wait"
+   "closed": "dnc_white_wait",
+   "months": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    9,
+    10,
+    11,
+    12
+   ]
   },
   "P-HALL/dance_floor_centre": {
    "act": "hall_dance_night",
@@ -442,7 +486,7 @@
       "k": "city.dnc.notice.summer",
       "date": [
        "05-20",
-       "08-31"
+       "09-05"
       ]
      },
      {

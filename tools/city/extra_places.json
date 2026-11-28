@@ -17,6 +17,290 @@
    "name_en": "My room at the club"
   },
   {
+   "id": "P-PROM-DANCE",
+   "kind": "yard",
+   "building": "prom_dance",
+   "front": [
+    -21.25,
+    912.9,
+    -36.16
+   ],
+   "yaw": 0.0,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Танцы на площади",
+   "name_en": "The dances on the square",
+   "export": {
+    "footprint": [
+     [
+      -6.1,
+      -7.75
+     ],
+     [
+      8.9,
+      -7.75
+     ],
+     [
+      8.9,
+      3.25
+     ],
+     [
+      -6.1,
+      3.25
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "pev_dance_1",
+      "kind": "sport",
+      "pos": [
+       3.9,
+       1.75,
+       1.0
+      ],
+      "yaw": 0.0,
+      "props": {
+       "what": "dance"
+      }
+     },
+     {
+      "id": "pev_dance_2",
+      "kind": "sport",
+      "pos": [
+       -4.6,
+       -2.25,
+       1.0
+      ],
+      "yaw": 180.0,
+      "props": {
+       "what": "dance"
+      }
+     },
+     {
+      "id": "pev_white",
+      "kind": "sport",
+      "pos": [
+       7.4,
+       -6.25,
+       1.0
+      ],
+      "yaw": 225.0,
+      "props": {
+       "what": "dance"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-PROM-BAND",
+   "kind": "yard",
+   "building": "prom_band",
+   "front": [
+    -30.4,
+    912.9,
+    -36.16
+   ],
+   "yaw": 0.0,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Духовой оркестр",
+   "name_en": "The brass band",
+   "export": {
+    "footprint": [
+     [
+      -1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      1.5
+     ],
+     [
+      -1.5,
+      1.5
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "pev_band_spot",
+      "kind": "seat",
+      "pos": [
+       0.0,
+       -0.0,
+       0.1
+      ],
+      "yaw": 180.0,
+      "props": {
+       "what": "listen",
+       "height": 0.1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-PROM-BOARD",
+   "kind": "yard",
+   "building": "prom_board",
+   "front": [
+    -31.5,
+    897.0,
+    -36.16
+   ],
+   "yaw": 0.0,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Афиша у эстрады",
+   "name_en": "The poster by the stage",
+   "export": {
+    "footprint": [
+     [
+      -32.0,
+      -12.0
+     ],
+     [
+      1.5,
+      -12.0
+     ],
+     [
+      1.5,
+      1.5
+     ],
+     [
+      -32.0,
+      1.5
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "pev_poster",
+      "kind": "board",
+      "pos": [
+       0.0,
+       -0.0,
+       1.5
+      ],
+      "yaw": 0.0,
+      "props": {
+       "topic": "timetable"
+      }
+     },
+     {
+      "id": "pev_floor",
+      "kind": "board",
+      "pos": [
+       -30.5,
+       -10.5,
+       1.5
+      ],
+      "yaw": 90.0,
+      "props": {
+       "topic": "view"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-PROM-LIGHT",
+   "kind": "yard",
+   "building": "prom_light",
+   "front": [
+    142.14,
+    927.0,
+    -39.5
+   ],
+   "yaw": 0.0,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Вечерний свет у моря",
+   "name_en": "The evening light by the sea",
+   "export": {
+    "footprint": [
+     [
+      -1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      1.5
+     ],
+     [
+      -1.5,
+      1.5
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "pev_light",
+      "kind": "board",
+      "pos": [
+       0.0,
+       -0.0,
+       1.5
+      ],
+      "yaw": 180.0,
+      "props": {
+       "topic": "view"
+      }
+     }
+    ]
+   }
+  },
+  {
    "id": "P-STREET-KVASS",
    "kind": "stall",
    "building": "street_kvass",

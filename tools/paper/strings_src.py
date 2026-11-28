@@ -785,10 +785,10 @@ NOTICES = [
      "Кружок воздушных змеев: собираемся в субботу на пляже. Нужны бумага, рейки и ветер — ветер обещали.",
      "Kite circle: we meet on the beach on Saturday. Bring paper, sticks and wind; the wind has been promised.",
      "凧クラブ：土曜に浜で集合。紙と竹ひごと風を持参のこと。風は約束済み。"),
-    ("club", "dance", ("07-01", "07-31"), None,
-     "Танцы на набережной по пятницам в девять. Оркестр живой, пол деревянный, туфли — какие есть.",
-     "Dancing on the promenade on Fridays at nine. Live band, wooden floor, whatever shoes you've got.",
-     "金曜21時、遊歩道でダンス。生演奏、木の床、靴はお手持ちのもので。"),
+    ("club", "dance", ("05-20", "09-05"), None,
+     "Танцы на площади Солнца, у эстрады: с 25 мая по 5 сентября, по пятницам и субботам с семи. В десять белый танец, в одиннадцать дружинник выключает музыку. В дождь отменяются.",
+     "Dancing on Sun Square, by the stage: 25 May to 5 September, Fridays and Saturdays from seven. The ladies' choice at ten; at eleven the volunteer switches the music off. Cancelled if it rains.",
+     "太陽広場のステージ前でダンス。五月二十五日から九月五日まで、金曜と土曜の七時から。十時に白いダンス、十一時に自警団員が音楽を止めます。雨天中止。"),
     ("club", "astro", ("08-01", "08-14"), None,
      "Астрономический кружок: наблюдаем Персеиды. Берите плед и термос, телескопы наши.",
      "Astronomy club: we're watching the Perseids. Bring a blanket and a flask; the telescopes are ours.",
@@ -966,6 +966,21 @@ NOTICES += [
      "После Дня Нептуна на первой вышке ждут хозяев: шесть полотенец, одна сандалия и борода из мочалки. Автомобильную камеру с надписью «чемпион» просят вернуть в прокат, она с грузовика директора клуба.",
      "Waiting for their owners at the first tower after Neptune Day: six towels, one sandal and a loofah beard. The inner tube chalked “champion” is asked back at the rental: it is off the club director's lorry.",
      "ネプチューンの日のあと、第一監視塔で持ち主を待っています：タオル六枚、サンダル片方、へちまのひげ。「優勝」と書かれたタイヤチューブは貸し出し屋へお返しください。クラブ所長のトラックのものです。"),
+]
+# the promenade's summer evenings (docs/promenade.md): the brass band's Sundays and the photographer's sunset portraits
+NOTICES += [
+    ("club", "pev_band", ("05-25", "08-31"), None,
+     "Духовой оркестр Дома культуры: с июня по август, по воскресеньям с трёх до пяти, на эстраде площади Солнца. «Амурские волны», «На сопках Маньчжурии», «Прощание славянки». Вход свободный, квас у фонтана.",
+     "The House of Culture brass band: June to August, Sundays from three to five, on the stage on Sun Square. \"Waves of the Amur\", \"On the Hills of Manchuria\", \"Farewell of Slavianka\". Admission free, kvass by the fountain.",
+     "文化会館吹奏楽団：六月から八月の日曜、三時から五時、太陽広場のステージにて。「アムールの波」「満州の丘に立ちて」「スラヴ娘の別れ」。入場無料、噴水のそばにクワスあり。"),
+    ("lost", "pev_stand", ("06-08", "06-20"), None,
+     "После воскресного концерта у эстрады остался пюпитр, складной, с нотами вальса «Осенний сон». Ноты нужны оркестру к следующему воскресенью. Вернуть капельмейстеру или сторожу «Сводов».",
+     "Left by the stage after Sunday's concert: a folding music stand with the music for the waltz \"Autumn Dream\". The band needs the music by next Sunday. Return to the bandmaster or the Vaults' watchman.",
+     "日曜の演奏会のあと、ステージに折りたたみ譜面台の忘れもの。ワルツ「秋の夢」の楽譜つき。楽団は次の日曜までに楽譜が必要です。楽長か「ヴォールト」の夜警へ。"),
+    ("club", "pev_photo", ("06-15", "08-20"), None,
+     "Фотоателье на набережной: вечерние портреты у парапета, на закате, с семи до девяти. Пары, семьи, с собакой тоже. Карточки через три дня.",
+     "The photo studio on the promenade: evening portraits by the parapet at sunset, seven to nine. Couples, families, with the dog as well. Prints in three days.",
+     "遊歩道の写真館：夕焼けの欄干で夕方の肖像写真、七時から九時。カップル、家族、犬連れもどうぞ。写真は三日後。"),
 ]
 # the photo circle's own sheet (text notices_photo, read at P-CLUB3/photo_board in turn with the lab's guide): its title and
 # its rules; the page before them is the contest notice of the day (the seven above)

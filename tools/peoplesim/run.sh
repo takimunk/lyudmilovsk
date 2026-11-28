@@ -10,6 +10,7 @@
 #   tools/peoplesim/run.sh bookclub              the library's book club on Thursday evenings (book_club_people.h)
 #   tools/peoplesim/run.sh street                the street's everyday life: the barrel and the cart, the dawn, the yards, the seasons (street_people.h)
 #   tools/peoplesim/run.sh dances                the dances at the Vaults on Friday and Saturday evenings (dance_people.h)
+#   tools/peoplesim/run.sh promenade             the summer evenings: dances on the square, the Sunday band, the evening walk (promenade_people.h)
 #   tools/peoplesim/run.sh day [start_hour hours] -> Saved/PeopleSim/day.csv + acts.txt (python3 tools/peoplesim/render_people.py)
 #   tools/peoplesim/run.sh trace <key> [start_hour hours]
 #   tools/peoplesim/run.sh summary [start_hour hours [weekday]]   a day of the Academgorodok's residents, one line each

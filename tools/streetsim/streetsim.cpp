@@ -111,6 +111,43 @@ int main()
 		&& !On(At(Fine, 2027, 11, 5, 12.f), TrunksWhite) && !On(At(Fine, 2027, 4, Sd - 1, 12.f), TrunksWhite), "the trunks white from the subbotnik to October");
 	CHECK(On(At(Fine, 2027, 6, 1, 6.f), Sweep) && !On(At(Fine, 2027, 1, 12, 6.f), Sweep), "the dawn sweep in June, not in January");
 
+	// the promenade's summer evenings (docs/promenade.md): 2027-07-16 is a Friday, 07-18 a Sunday, 07-14 a Wednesday
+	CHECK(WeekdayOf(2027, 7, 16) == 4 && WeekdayOf(2027, 7, 18) == 6, "16 July 2027 is a Friday, the 18th a Sunday");
+	CHECK(CondIndex("prom_evening") == 11 && CondIndex("hall_dances") == 14 && NumConds <= 16, "the promenade's conditions fit the game's forces (16)");
+	CHECK(On(At(Fine, 2027, 7, 14, 20.f), PromEvening) && !On(At(Fine, 2027, 7, 14, 17.f), PromEvening) && !On(At(Fine, 2027, 7, 14, 23.f), PromEvening),
+		"a fine July evening: the promenade from half past six to half past ten");
+	CHECK(!On(At(Fine, 2027, 10, 6, 20.f), PromEvening) && !On(At(Fine, 2027, 5, 10, 20.f), PromEvening) && On(At(Fine, 2027, 9, 10, 19.f), PromEvening),
+		"its season: not in October nor early May, still on 10 September");
+	{
+		FClimate WetEve = Fine;
+		WetEve.RainFrom = 19.5f; WetEve.RainTo = 21.f;
+		CHECK(!On(At(WetEve, 2027, 7, 14, 20.f), PromEvening) && On(At(WetEve, 2027, 7, 14, 21.5f), PromEvening), "the promenade empties in the rain, fills after it");
+		At(WetEve, 2027, 7, 16, 12.f, &P);
+		CHECK(!P.bDanceEve && !On(At(WetEve, 2027, 7, 16, 22.f), PromDances),
+			"rain at eight in the Friday's forecast: the dance on the square is called off for the whole evening");
+		FClimate WetSunday = Fine;
+		WetSunday.RainFrom = 14.5f; WetSunday.RainTo = 16.5f;
+		At(WetSunday, 2027, 7, 18, 12.f, &P);
+		CHECK(!P.bBandDay && !On(At(WetSunday, 2027, 7, 18, 16.8f), PromBand), "a wet Sunday afternoon: no band");
+	}
+	At(Fine, 2027, 7, 16, 12.f, &P);
+	CHECK(P.bDanceEve && On(At(Fine, 2027, 7, 16, 19.5f), PromDances) && On(At(Fine, 2027, 7, 17, 22.5f), PromDances)
+		&& !On(At(Fine, 2027, 7, 16, 18.5f), PromDances) && !On(At(Fine, 2027, 7, 16, 23.1f), PromDances), "a dry July Friday and Saturday: dances from seven to eleven");
+	CHECK(!On(At(Fine, 2027, 7, 14, 20.f), PromDances) && !On(At(Fine, 2027, 7, 18, 20.f), PromDances), "not on a Wednesday or a Sunday");
+	CHECK(On(At(Fine, 2027, 5, 28, 20.f), PromDances) && On(At(Fine, 2027, 9, 3, 20.f), PromDances) && !On(At(Fine, 2027, 5, 21, 20.f), PromDances)
+		&& !On(At(Fine, 2027, 9, 10, 20.f), PromDances), "the dance season: from 25 May to 5 September");
+	{
+		FClimate Shower = Fine;
+		Shower.RainFrom = 21.f; Shower.RainTo = 21.5f;
+		CHECK(On(At(Shower, 2027, 7, 16, 20.5f), PromDances) && !On(At(Shower, 2027, 7, 16, 21.2f), PromDances) && On(At(Shower, 2027, 7, 16, 21.8f), PromDances),
+			"a shower the forecast missed: the floor empties while it lasts");
+	}
+	CHECK(On(At(Fine, 2027, 7, 18, 15.5f), PromBand) && !On(At(Fine, 2027, 7, 18, 14.5f), PromBand) && !On(At(Fine, 2027, 7, 18, 17.2f), PromBand)
+		&& !On(At(Fine, 2027, 7, 17, 15.5f), PromBand) && !On(At(Fine, 2027, 5, 30, 15.5f), PromBand) && On(At(Fine, 2027, 8, 29, 15.5f), PromBand),
+		"the band: Sundays of June to August, three to five");
+	CHECK(On(At(Fine, 2027, 5, 28, 20.f), HallDances) && !On(At(Fine, 2027, 7, 16, 20.f), HallDances) && On(At(Fine, 2027, 9, 3, 20.f), HallDances)
+		&& On(At(Fine, 2027, 1, 15, 20.f), HallDances), "the hall's dances: all the year but June to August (both floors at the season's turns)");
+
 	// a year of days: every scene comes and goes (none always on, none never)
 	std::printf("a year (a fair climate, a shower every fifth afternoon, a wet morning every seventh):\n");
 	static const int Len[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };

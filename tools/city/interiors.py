@@ -85,6 +85,9 @@ QUEST_EVENTS += ("beach",)
 # the kitchen (ULyudKitchen, docs/kitchen.md): a hot plate opens its recipes; its quest event: cook dish | ukha | fried_potatoes | fried_fish | salad | jam
 OPEN_SCREENS += ("cook",)
 QUEST_EVENTS += ("cook",)
+# a stamp of a collection given (ULyudCityThings::GiveStamp tells the quests stamp <set/piece>; docs/promenade.md: the band's whole
+# programme, the lighthouse coming on)
+QUEST_EVENTS += ("stamp",)
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of

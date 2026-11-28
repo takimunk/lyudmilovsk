@@ -1,0 +1,675 @@
+{
+ "_doc": "The warm season's evenings on Sun Square and the promenade (docs/promenade.md): the summer dances by the stage (asking a girl: the duel of the hall «Своды» with the same shy rules and the same partners, dnc_invite; the ladies' choice under the lamp on the floor's corner at 22, dnc_white), the brass band on summer Sunday afternoons (sit on the warm slabs in front of it: the whole programme heard is a stamp), the poster by the stage (a paper notice: the dances' rules, the band's programme, pencilled notes), the floor's look by the hour and the weather, the evening light by the sea (the photographer's best light, the lighthouse coming on). The places are tools/town/town_promenade.py's (extra_places.json P-PROM-*); ULyudStreetLife shows P-PROM-DANCE while prom_dances holds and P-PROM-BAND while prom_band does. Words: strings/x_promenade_eve.json (city.pev.*).",
+ "acts": {
+  "pev_floor_off": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.pev.off.on.*",
+     "d": "fri-sat",
+     "h": [
+      19,
+      21
+     ]
+    },
+    {
+     "k": "city.pev.off.dusk.*",
+     "d": "fri-sat",
+     "h": [
+      21,
+      23
+     ]
+    },
+    {
+     "k": "city.pev.off.late.*",
+     "h": [
+      23,
+      24
+     ]
+    },
+    {
+     "k": "city.pev.off.day.*",
+     "h": [
+      8,
+      19
+     ]
+    },
+    {
+     "k": "city.pev.off.day.*",
+     "d": "sun-thu",
+     "h": [
+      19,
+      23
+     ]
+    },
+    {
+     "k": "city.pev.off.night.*",
+     "h": [
+      0,
+      8
+     ]
+    },
+    {
+     "k": "city.pev.off.fest.*",
+     "festival": "any"
+    }
+   ]
+  },
+  "pev_white_wait": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.pev.wait.early.*",
+     "d": "fri-sat",
+     "h": [
+      19,
+      22
+     ]
+    },
+    {
+     "k": "city.pev.off.late.*",
+     "h": [
+      23,
+      24
+     ]
+    },
+    {
+     "k": "city.pev.off.day.*",
+     "h": [
+      8,
+      19
+     ]
+    },
+    {
+     "k": "city.pev.off.day.*",
+     "d": "sun-thu",
+     "h": [
+      19,
+      23
+     ]
+    },
+    {
+     "k": "city.pev.off.dusk.*",
+     "d": "fri-sat",
+     "h": [
+      22,
+      23
+     ]
+    },
+    {
+     "k": "city.pev.off.night.*",
+     "h": [
+      0,
+      8
+     ]
+    },
+    {
+     "k": "city.pev.off.fest.*",
+     "festival": "any"
+    }
+   ]
+  },
+  "pev_invite": {
+   "prompt": "city.pev.invite.prompt",
+   "minutes": 8,
+   "pose": "stand",
+   "sound": "dance_square",
+   "closed": "pev_floor_off",
+   "lines": "city.pev.invite.after",
+   "collect": "pev_evening/dance",
+   "game": {
+    "type": "duel",
+    "vs": "dnc_invite",
+    "title": "city.pev.invite.title",
+    "keys": "city.dnc.invite.keys",
+    "moves": [
+     {
+      "k": "city.dnc.invite.move.1",
+      "power": 2,
+      "tell": "city.dnc.invite.tell.1"
+     },
+     {
+      "k": "city.dnc.invite.move.2",
+      "power": 2,
+      "tell": "city.dnc.invite.tell.2"
+     },
+     {
+      "k": "city.dnc.invite.move.3",
+      "power": 2,
+      "tell": "city.dnc.invite.tell.3"
+     }
+    ],
+    "win": "city.pev.invite.win",
+    "lose": "city.pev.invite.lose",
+    "draw": "city.pev.invite.draw",
+    "collect": "dnc_partners/{opponent}",
+    "daily": 4
+   }
+  },
+  "pev_white": {
+   "prompt": "city.pev.white.prompt",
+   "minutes": 6,
+   "pose": "stand",
+   "sound": "dance_square",
+   "closed": "pev_white_wait",
+   "lines": "city.pev.white.after",
+   "collect": "pev_evening/white",
+   "game": {
+    "type": "rally",
+    "vs": "dnc_white",
+    "title": "city.pev.white.title",
+    "keys": "city.dnc.white.keys",
+    "need": 4,
+    "speed": 0.6,
+    "zone": 0.6,
+    "shrink": 0.93,
+    "pace": 1.03,
+    "win": "city.pev.white.win",
+    "lose": "city.pev.white.lose",
+    "draw": "city.pev.white.draw",
+    "collect": "dnc_partners/{opponent}",
+    "daily": 1
+   }
+  },
+  "pev_floor": {
+   "like": "look_misc",
+   "prompt": "city.pev.floor.prompt",
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.pev.off.fest.*",
+     "festival": "any"
+    },
+    {
+     "k": "city.pev.off.day.*",
+     "date": [
+      "05-25",
+      "09-05"
+     ],
+     "h": [
+      8,
+      18
+     ]
+    },
+    {
+     "k": "city.pev.off.early.*",
+     "date": [
+      "05-25",
+      "09-05"
+     ],
+     "d": "fri-sat",
+     "h": [
+      18,
+      19
+     ],
+     "weather": "!rain"
+    },
+    {
+     "k": "city.pev.off.on.*",
+     "date": [
+      "05-25",
+      "09-05"
+     ],
+     "d": "fri-sat",
+     "h": [
+      19,
+      21
+     ],
+     "weather": "!rain"
+    },
+    {
+     "k": "city.pev.off.dusk.*",
+     "date": [
+      "05-25",
+      "09-05"
+     ],
+     "d": "fri-sat",
+     "h": [
+      21,
+      23
+     ],
+     "weather": "!rain"
+    },
+    {
+     "k": "city.pev.off.rain.*",
+     "date": [
+      "05-25",
+      "09-05"
+     ],
+     "d": "fri-sat",
+     "h": [
+      18,
+      23
+     ],
+     "weather": "rain"
+    },
+    {
+     "k": "city.pev.off.rehearsal.*",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "d": "thu",
+     "h": [
+      18,
+      21
+     ]
+    },
+    {
+     "k": "city.pev.off.band.*",
+     "date": [
+      "06-01",
+      "08-31"
+     ],
+     "d": "sun",
+     "h": [
+      15,
+      17
+     ]
+    },
+    {
+     "k": "city.pev.off.late.*",
+     "date": [
+      "05-25",
+      "09-05"
+     ],
+     "h": [
+      23,
+      24
+     ]
+    },
+    {
+     "k": "city.pev.off.night.*",
+     "h": [
+      0,
+      8
+     ]
+    },
+    {
+     "k": "city.pev.off.winter.*",
+     "date": [
+      "09-06",
+      "05-24"
+     ],
+     "h": [
+      8,
+      24
+     ]
+    },
+    {
+     "k": "city.pev.off.day.*",
+     "date": [
+      "05-25",
+      "09-05"
+     ],
+     "d": "mon-wed,sun",
+     "h": [
+      18,
+      24
+     ]
+    }
+   ]
+  },
+  "pev_poster": {
+   "like": "look_misc",
+   "prompt": "city.pev.poster.prompt",
+   "minutes": 2,
+   "lines": [
+    "city.pev.poster.1"
+   ],
+   "read": {
+    "texts": [
+     "pev_poster"
+    ],
+    "rotate": "use"
+   }
+  },
+  "pev_band_listen": {
+   "prompt": "city.pev.band.prompt",
+   "minutes": 105,
+   "pose": "sit",
+   "sound": "brass_band",
+   "closed": "pev_band_off",
+   "daily": 1,
+   "lines": [
+    {
+     "k": "city.pev.band.full.*",
+     "h": [
+      15,
+      15.6
+     ],
+     "collect": "pev_evening/band"
+    },
+    {
+     "k": "city.pev.band.late.*",
+     "h": [
+      15.6,
+      17
+     ]
+    },
+    {
+     "k": "city.pev.band.off.*",
+     "h": [
+      17,
+      15
+     ]
+    }
+   ]
+  },
+  "pev_band_off": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.pev.band.off.*"
+    }
+   ]
+  },
+  "pev_light": {
+   "like": "look_misc",
+   "prompt": "city.pev.light.prompt",
+   "minutes": 10,
+   "sound": "sea_evening",
+   "lines": [
+    {
+     "k": "city.pev.light.gold.*",
+     "date": [
+      "05-15",
+      "09-15"
+     ],
+     "h": [
+      19.5,
+      21.5
+     ],
+     "weather": "!rain",
+     "collect": "pev_evening/light"
+    },
+    {
+     "k": "city.pev.light.walk.*",
+     "date": [
+      "05-15",
+      "09-15"
+     ],
+     "h": [
+      18.5,
+      22.5
+     ],
+     "weather": "!rain"
+    },
+    {
+     "k": "city.pev.light.lamp.*",
+     "date": [
+      "05-15",
+      "09-15"
+     ],
+     "h": [
+      21.5,
+      23.5
+     ],
+     "weather": "!rain",
+     "collect": "pev_evening/lighthouse"
+    },
+    {
+     "k": "city.pev.light.rain.*",
+     "weather": "rain"
+    },
+    {
+     "k": "city.pev.light.day.*",
+     "h": [
+      8,
+      18.5
+     ],
+     "weather": "!rain"
+    },
+    {
+     "k": "city.pev.light.cold.*",
+     "date": [
+      "09-16",
+      "05-14"
+     ],
+     "h": [
+      17,
+      22
+     ],
+     "weather": "!rain"
+    },
+    {
+     "k": "city.pev.light.night.*",
+     "h": [
+      23.5,
+      24
+     ]
+    },
+    {
+     "k": "city.pev.light.night.*",
+     "h": [
+      0,
+      8
+     ]
+    }
+   ]
+  }
+ },
+ "rules": {
+  "P-PROM-DANCE/pev_dance_1": {
+   "act": "pev_invite",
+   "hours": [
+    19,
+    23
+   ],
+   "days": "fri-sat",
+   "closed": "pev_floor_off"
+  },
+  "P-PROM-DANCE/pev_dance_2": {
+   "act": "pev_invite",
+   "hours": [
+    19,
+    23
+   ],
+   "days": "fri-sat",
+   "closed": "pev_floor_off"
+  },
+  "P-PROM-DANCE/pev_white": {
+   "act": "pev_white",
+   "hours": [
+    22,
+    23
+   ],
+   "days": "fri-sat",
+   "closed": "pev_white_wait"
+  },
+  "P-PROM-BAND/pev_band_spot": {
+   "act": "pev_band_listen",
+   "hours": [
+    15,
+    17
+   ],
+   "days": "sun",
+   "closed": "pev_band_off"
+  },
+  "P-PROM-BOARD/pev_poster": {
+   "act": "pev_poster",
+   "hours": [
+    0,
+    24
+   ],
+   "days": "mon-sun"
+  },
+  "P-PROM-BOARD/pev_floor": {
+   "act": "pev_floor",
+   "hours": [
+    0,
+    24
+   ],
+   "days": "mon-sun"
+  },
+  "P-PROM-LIGHT/pev_light": {
+   "act": "pev_light",
+   "hours": [
+    0,
+    24
+   ],
+   "days": "mon-sun"
+  }
+ },
+ "texts": {
+  "pev_poster": {
+   "title": "city.pev.text.poster.title",
+   "kind": "notice",
+   "minutes": 2,
+   "pages": [
+    "city.pev.poster.1",
+    "city.pev.poster.2",
+    "city.pev.poster.3",
+    [
+     {
+      "k": "city.pev.poster.3"
+     },
+     {
+      "k": "city.pev.poster.rain",
+      "weather": "rain",
+      "date": [
+       "05-25",
+       "09-05"
+      ]
+     },
+     {
+      "k": "city.pev.poster.winter",
+      "date": [
+       "09-06",
+       "05-24"
+      ]
+     },
+     {
+      "k": "city.pev.poster.fest",
+      "festival": "any"
+     }
+    ]
+   ]
+  }
+ },
+ "collections": {
+  "pev_evening": {
+   "title": "city.pev.coll.pev_evening.title",
+   "pieces": [
+    "dance",
+    "white",
+    "band",
+    "light",
+    "lighthouse"
+   ]
+  }
+ },
+ "rewards": {
+  "pev_evening": {
+   "item": "eskimo",
+   "count": 2
+  }
+ },
+ "quests": [
+  {
+   "id": "pev_summer_evening",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "pev_poster"
+   },
+   "stages": [
+    {
+     "id": "band",
+     "objectives": [
+      {
+       "id": "band",
+       "event": "stamp",
+       "target": "pev_evening/band"
+      }
+     ],
+     "dev": {
+      "tp": "city.pt.pev_band",
+      "time": "15:05",
+      "exec": [
+       "lyud.Street.Date 07-15",
+       "lyud.City.Weekday sun",
+       "lyud.Street.Force prom_band 1"
+      ]
+     }
+    },
+    {
+     "id": "dance",
+     "objectives": [
+      {
+       "id": "dance",
+       "event": "win",
+       "target": "pev_invite"
+      }
+     ],
+     "dev": {
+      "tp": "city.pt.pev_floor",
+      "time": "20:30",
+      "exec": [
+       "lyud.Street.Date 07-15",
+       "lyud.City.Weekday sat",
+       "lyud.Street.Force prom_dances 1"
+      ]
+     }
+    },
+    {
+     "id": "lighthouse",
+     "objectives": [
+      {
+       "id": "lighthouse",
+       "event": "stamp",
+       "target": "pev_evening/lighthouse"
+      }
+     ],
+     "reward": {
+      "rubles": 40
+     },
+     "dev": {
+      "tp": "city.pt.pev_light",
+      "time": "21:40",
+      "exec": [
+       "lyud.Street.Date 07-15",
+       "lyud.Street.Force prom_evening 1"
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "dev_points": {
+  "pev_floor": {
+   "thing": "P-PROM-DANCE/pev_dance_1",
+   "name": "city.pev.pt.floor",
+   "time": "20:30"
+  },
+  "pev_white": {
+   "thing": "P-PROM-DANCE/pev_white",
+   "name": "city.pev.pt.white",
+   "time": "22:05"
+  },
+  "pev_band": {
+   "thing": "P-PROM-BAND/pev_band_spot",
+   "name": "city.pev.pt.band",
+   "time": "15:05"
+  },
+  "pev_poster": {
+   "thing": "P-PROM-BOARD/pev_poster",
+   "name": "city.pev.pt.poster"
+  },
+  "pev_floor_look": {
+   "thing": "P-PROM-BOARD/pev_floor",
+   "name": "city.pev.pt.floor_look"
+  },
+  "pev_light": {
+   "thing": "P-PROM-LIGHT/pev_light",
+   "name": "city.pev.pt.light",
+   "time": "21:40"
+  }
+ }
+}

@@ -36,6 +36,10 @@ namespace LyudStreetImpl
 		{ TEXT("P-STREET-SUBBOTNIK"), LyudStreet::Subbotnik },
 		{ TEXT("P-STREET-LEAVES"), LyudStreet::Raking | LyudStreet::LeafPiles },
 		{ TEXT("P-STREET-DOMINO"), LyudStreet::Dominoes },
+		// the square's summer evenings (tools/town/town_promenade.py): the hero's dance places while the dance is on, the
+		// bench by the stage while the band plays (the poster and the evening light, P-PROM-BOARD and P-PROM-LIGHT, always)
+		{ TEXT("P-PROM-DANCE"), LyudStreet::PromDances },
+		{ TEXT("P-PROM-BAND"), LyudStreet::PromBand },
 	};
 
 	LyudStreet::FSky SkyOf(const FLyudWeatherState& S)
@@ -140,6 +144,8 @@ void ULyudStreetLife::Update()
 		});
 		bHotDay = P.bHotDay;
 		bHang = P.bHang;
+		bDanceEve = P.bDanceEve;
+		bBandDay = P.bBandDay;
 		TakeAt = P.TakeAt;
 		HotMax = P.HotMax;
 	}
@@ -162,6 +168,8 @@ void ULyudStreetLife::Update()
 	P.bHotDay = bHotDay;
 	P.bHang = bHang;
 	P.TakeAt = TakeAt;
+	P.bDanceEve = bDanceEve;
+	P.bBandDay = bBandDay;
 	uint32 Bits = LyudStreet::Conditions(N, P);
 	for (int32 I = 0; I < LyudStreet::NumConds; I++)
 	{
@@ -356,10 +364,39 @@ void ULyudStreetLife::ClearForces()
 	Clock = 1e6f;
 }
 
+bool ULyudStreetLife::MoveToDate(int32 Month, int32 Day)
+{
+	UWorld* World = GetWorld();
+	UGameCalendar* Cal = World ? World->GetSubsystem<UGameCalendar>() : nullptr;
+	if (!Cal || Month < 1 || Month > 12 || Day < 1 || Day > 31)
+	{
+		return false;
+	}
+	const FDateTime T = Cal->Now();
+	int32 Y = T.GetYear();
+	if (Day > FDateTime::DaysInMonth(Y, Month))
+	{
+		return false;
+	}
+	FDateTime To(Y, Month, Day, T.GetHour(), T.GetMinute(), T.GetSecond());
+	if (To < T)
+	{
+		Y += 1;
+		if (Day > FDateTime::DaysInMonth(Y, Month))
+		{
+			return false;
+		}
+		To = FDateTime(Y, Month, Day, T.GetHour(), T.GetMinute(), T.GetSecond());
+	}
+	Cal->SetNow(To);
+	Replan();
+	return true;
+}
+
 FString ULyudStreetLife::Report() const
 {
-	FString Out = FString::Printf(TEXT("STREET plan %d: hot day %d (%.1f C), washing %d (in at %.2f); things %d sets"), PlanKey, bHotDay ? 1 : 0, HotMax,
-		bHang ? 1 : 0, TakeAt, Things.IsValid() ? Things->Sets.Num() : 0);
+	FString Out = FString::Printf(TEXT("STREET plan %d: hot day %d (%.1f C), washing %d (in at %.2f), dance evening %d, band Sunday %d; things %d sets"), PlanKey,
+		bHotDay ? 1 : 0, HotMax, bHang ? 1 : 0, TakeAt, bDanceEve ? 1 : 0, bBandDay ? 1 : 0, Things.IsValid() ? Things->Sets.Num() : 0);
 	for (int32 I = 0; I < LyudStreet::NumConds; I++)
 	{
 		Out += FString::Printf(TEXT("\n  %s: %s%s"), UTF8_TO_TCHAR(LyudStreet::CondName(I)), (Now & (1u << I)) ? TEXT("on") : TEXT("off"),
@@ -371,7 +408,7 @@ FString ULyudStreetLife::Report() const
 namespace
 {
 	FAutoConsoleCommandWithWorldAndArgs GStreetForce(TEXT("lyud.Street.Force"),
-		TEXT("lyud.Street.Force <street_hot|street_sweep|laundry_hang|laundry_out|laundry_take|yard_grannies|yard_dominoes|leaf_raking|leaf_piles|subbotnik|trunks_white> <1|0|-1>"),
+		TEXT("lyud.Street.Force <street_hot|street_sweep|laundry_hang|laundry_out|laundry_take|yard_grannies|yard_dominoes|leaf_raking|leaf_piles|subbotnik|trunks_white|prom_evening|prom_dances|prom_band|hall_dances> <1|0|-1>"),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* W)
 		{
 			ULyudStreetLife* S = ULyudStreetLife::Get(W);
@@ -384,6 +421,17 @@ namespace
 		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudStreetLife* S = ULyudStreetLife::Get(W)) S->ClearForces(); }));
 	FAutoConsoleCommandWithWorld GStreetReport(TEXT("lyud.Street.Report"), TEXT("lyud.Street.Report: the day's plan and the street's conditions (STREET ...)"),
 		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudStreetLife* S = ULyudStreetLife::Get(W)) UE_LOG(LogTemp, Display, TEXT("%s"), *S->Report()); }));
+	FAutoConsoleCommandWithWorldAndArgs GStreetDate(TEXT("lyud.Street.Date"),
+		TEXT("lyud.Street.Date <MM-DD>: move the calendar on to the next such day, same time of day, and plan it (the promenade's summer evenings in a dev block)"),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* W)
+		{
+			ULyudStreetLife* S = ULyudStreetLife::Get(W);
+			FString M, D;
+			if (!S || Args.Num() < 1 || !Args[0].Split(TEXT("-"), &M, &D) || !S->MoveToDate(FCString::Atoi(*M), FCString::Atoi(*D)))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("lyud.Street.Date: give a day as MM-DD (07-18)"));
+			}
+		}));
 	FAutoConsoleCommandWithWorld GStreetReplan(TEXT("lyud.Street.Replan"), TEXT("lyud.Street.Replan: plan the day again from the forecast (after moving the clock or the weather)"),
 		FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* W) { if (ULyudStreetLife* S = ULyudStreetLife::Get(W)) S->Replan(); }));
 
@@ -404,6 +452,16 @@ namespace
 		[](UWorld* W) { LyudStreetImpl::StreetToggle(W, TEXT("leaf_raking"), TEXT("leaf_piles")); }, [](UWorld* W) { return LyudStreetImpl::StreetLit(W, TEXT("leaf_piles")); });
 	LyudDev::FAutoAction GDevStreetSubbotnik(TEXT("street.subbotnik"), TEXT("street"), TEXT("dev.action.street.subbotnik"),
 		[](UWorld* W) { LyudStreetImpl::StreetToggle(W, TEXT("subbotnik"), TEXT("trunks_white")); }, [](UWorld* W) { return LyudStreetImpl::StreetLit(W, TEXT("subbotnik")); });
+	LyudDev::FAutoAction GDevStreetPromEvening(TEXT("street.prom_evening"), TEXT("street"), TEXT("dev.action.street.prom_evening"),
+		[](UWorld* W) { LyudStreetImpl::StreetToggle(W, TEXT("prom_evening")); }, [](UWorld* W) { return LyudStreetImpl::StreetLit(W, TEXT("prom_evening")); });
+	LyudDev::FAutoAction GDevStreetPromDances(TEXT("street.prom_dances"), TEXT("street"), TEXT("dev.action.street.prom_dances"),
+		[](UWorld* W) { LyudStreetImpl::StreetToggle(W, TEXT("prom_dances")); }, [](UWorld* W) { return LyudStreetImpl::StreetLit(W, TEXT("prom_dances")); });
+	LyudDev::FAutoAction GDevStreetPromBand(TEXT("street.prom_band"), TEXT("street"), TEXT("dev.action.street.prom_band"),
+		[](UWorld* W) { LyudStreetImpl::StreetToggle(W, TEXT("prom_band")); }, [](UWorld* W) { return LyudStreetImpl::StreetLit(W, TEXT("prom_band")); });
+	LyudDev::FAutoAction GDevStreetHallDances(TEXT("street.hall_dances"), TEXT("street"), TEXT("dev.action.street.hall_dances"),
+		[](UWorld* W) { LyudStreetImpl::StreetToggle(W, TEXT("hall_dances")); }, [](UWorld* W) { return LyudStreetImpl::StreetLit(W, TEXT("hall_dances")); });
+	LyudDev::FAutoAction GDevStreetSummer(TEXT("street.summer"), TEXT("street"), TEXT("dev.action.street.summer"),
+		[](UWorld* W) { if (ULyudStreetLife* S = ULyudStreetLife::Get(W)) S->MoveToDate(7, 15); });
 	LyudDev::FAutoAction GDevStreetAuto(TEXT("street.auto"), TEXT("street"), TEXT("dev.action.street.auto"),
 		[](UWorld* W) { if (ULyudStreetLife* S = ULyudStreetLife::Get(W)) S->ClearForces(); });
 	LyudDev::FAutoAction GDevStreetReport(TEXT("street.report"), TEXT("street"), TEXT("dev.action.street.report"),

@@ -46,6 +46,7 @@ ones to `UPeopleLifeSubsystem::SetCondition`.
 | `leaf_raking`, `leaf_piles` | 20 September to 15 November: raking 8:00-11:30 (not in a shower or snow), the piles lie 8:30-18:00 |
 | `subbotnik` | the third Saturday of April, 9:00-13:00 |
 | `trunks_white` | from ten on the subbotnik morning (its first hour done) to the end of October |
+| `prom_evening`, `prom_dances`, `prom_band`, `hall_dances` | the promenade's summer evenings, the dances on the square, the Sunday brass band and the hall's own dances' months (docs/promenade.md) |
 
 Nothing is saved: it all follows from the date and the weather. Moving the clock or the weather by hand: `lyud.Street.Replan`.
 

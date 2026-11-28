@@ -4,7 +4,8 @@
 //
 // Checked: a Friday evening fills the floor (dancers standing at the floor's slots, old ones sitting to watch, some of the
 // twelve partners the hero may ask among them); nobody is there before seven or after the watchman's eleven; nobody too
-// young or too old dances; a Saturday fills it too; a Wednesday evening it stays empty; no slot overbooked.
+// young or too old dances; a Saturday fills it too; a Wednesday evening it stays empty; a Friday with hall_dances off (the
+// summer months: the dance is on the square) it stays empty; no slot overbooked.
 
 static int Dances()
 {
@@ -64,6 +65,8 @@ static int Dances()
 		C.Set(W);
 		W.Resettle();
 	};
+	// the hall's dances are the colder months' (ULyudStreetLife: hall_dances off in June to August, docs/promenade.md)
+	W.SetCondition("hall_dances", true);
 	struct FCount { int Dancing = 0, Watching = 0, Partners = 0, Going = 0, WrongAge = 0, WrongPose = 0; };
 	auto Count = [&]()
 	{
@@ -141,6 +144,10 @@ static int Dances()
 	Evening(4, "Friday", true);
 	Evening(5, "Saturday", true);
 	Evening(2, "Wednesday", false);
+	// a July Friday: the dances are on the square, the hall's room stays empty
+	W.SetCondition("hall_dances", false);
+	Evening(4, "a July Friday (hall_dances off)", false);
+	W.SetCondition("hall_dances", true);
 	CHECK(Overbooked == 0, "no slot of the dance room overbooked (%d)", Overbooked);
 	return Failures > Fails0 ? 1 : 0;
 }
