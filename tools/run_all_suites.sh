@@ -6,7 +6,7 @@
 #
 #   tools/run_all_suites.sh             everything (~20 min; birdsim alone ~6)
 #   tools/run_all_suites.sh --quick     skips the slow rows (birdsim, barksim's en/ja days, peoplesim summary,
-#                                       audiosim render, underwater bed): ~6 min
+#                                       audiosim render, underwater bed, peoplesim sailing): ~6 min
 #   tools/run_all_suites.sh --only peoplesim,check_data    rows whose name contains one of these words
 #   tools/run_all_suites.sh --keep      leaves a generator's changed output in the tree (default: put back as committed)
 #   tools/run_all_suites.sh --no-werror warnings are not errors
@@ -165,6 +165,7 @@ suite peoplesim.test              - bash tools/peoplesim/run.sh test
 suite peoplesim.town              - bash tools/peoplesim/run.sh town
 suite peoplesim.weather           - bash tools/peoplesim/run.sh weather
 suite peoplesim.bookclub          - bash tools/peoplesim/run.sh bookclub
+suite peoplesim.sailing           slow bash tools/peoplesim/run.sh sailing
 suite peoplesim.day               - bash tools/peoplesim/run.sh day 6 2
 suite peoplesim.summary           slow bash tools/peoplesim/run.sh summary
 if wanted peoplesim.test.norail && [ -f "$RAIL" ]; then
@@ -226,6 +227,7 @@ fi
 suite railway.check           - python3 tools/railway.py --check
 suite transport.check         - python3 tools/transport.py --check
 suite sailing.check           - python3 tools/sailing/sailing.py --check
+suite sailing_people.check    - python3 tools/sailing/sailing_people.py --check
 
 # --- 3. the data's cross-checks and the string tables -----------------------------------------------------------------
 suite check_data              - python3 tools/check_data.py
