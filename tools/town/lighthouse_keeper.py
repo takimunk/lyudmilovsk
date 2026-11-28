@@ -49,7 +49,9 @@ ACTIVITIES_ROWS = [
     '{"id": "lamp_out", %s, "meets": {"mind": 0.2}}' % _TOWER,
     '{"id": "lens_polish", %s, "meets": {"mind": 0.35, "fun": 0.1}}' % _TOWER,
     '{"id": "lamp_light", %s, "meets": {"mind": 0.3}}' % _TOWER,
-    '{"id": "lamp_watch", %s, "meets": {"mind": 0.4, "fun": 0.15}}' % _TOWER,
+    # the watch is kept sitting in the lantern: it rests him a little ("tired"), so a long day's tiredness does not call him
+    # down from it again and again (FWorld::Interrupt breaks off what does not meet a need over its limit)
+    '{"id": "lamp_watch", %s, "meets": {"mind": 0.4, "fun": 0.15, "tired": 0.1}}' % _TOWER,
     '{"id": "weather_obs_8", %s, "meets": {"nature": 0.3, "mind": 0.2}}' % _SCREEN,
     '{"id": "weather_obs_14", %s, "meets": {"nature": 0.3, "mind": 0.2}}' % _SCREEN,
     '{"id": "weather_obs_20", %s, "meets": {"nature": 0.3, "mind": 0.2}}' % _SCREEN,

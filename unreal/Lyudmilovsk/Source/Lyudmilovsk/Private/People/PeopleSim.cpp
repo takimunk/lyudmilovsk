@@ -4116,8 +4116,17 @@ namespace LyudPeople
 				if (!(Places[P.Place].bIndoor && !Slots[Was].Inside.empty() && !Slots[Next].Inside.empty()
 					&& Route(P, P.Pos, Was, Next, P.Path)))
 				{
+					// out of doors past the spots taken (K > 1), not across: by each of them in turn, so a walk keeps to
+					// its trail's bends on a crowded day
 					P.Path.clear();
-					WayToSlot(P.Pos, Slots[Next], P.Path);
+					V3 From = P.Pos;
+					for (int J = 1; J < K; J++)
+					{
+						const FSlot& Past = Slots[(size_t)Round[(size_t)(((It - Round.begin()) + J) % N)]];
+						WayToSlot(From, Past, P.Path);
+						From = Past.Approach;
+					}
+					WayToSlot(From, Slots[Next], P.Path);
 				}
 				P.PathI = 0;
 				P.Pose = EPose::Walk;

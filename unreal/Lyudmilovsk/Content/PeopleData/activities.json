@@ -117,7 +117,7 @@
     {"id": "lamp_out", "places": ["mayak_tower"], "slots": ["staff"], "pose": "hidden", "minutes": [60, 60], "free": 0, "staff": 1, "meets": {"mind": 0.2}},
     {"id": "lens_polish", "places": ["mayak_tower"], "slots": ["staff"], "pose": "hidden", "minutes": [60, 60], "free": 0, "staff": 1, "meets": {"mind": 0.35, "fun": 0.1}},
     {"id": "lamp_light", "places": ["mayak_tower"], "slots": ["staff"], "pose": "hidden", "minutes": [60, 60], "free": 0, "staff": 1, "meets": {"mind": 0.3}},
-    {"id": "lamp_watch", "places": ["mayak_tower"], "slots": ["staff"], "pose": "hidden", "minutes": [60, 60], "free": 0, "staff": 1, "meets": {"mind": 0.4, "fun": 0.15}},
+    {"id": "lamp_watch", "places": ["mayak_tower"], "slots": ["staff"], "pose": "hidden", "minutes": [60, 60], "free": 0, "staff": 1, "meets": {"mind": 0.4, "fun": 0.15, "tired": 0.1}},
     {"id": "weather_obs_8", "places": ["mayak_meteo"], "slots": ["staff"], "pose": "look", "minutes": [10, 10], "free": 0, "staff": 1, "meets": {"nature": 0.3, "mind": 0.2}},
     {"id": "weather_obs_14", "places": ["mayak_meteo"], "slots": ["staff"], "pose": "look", "minutes": [10, 10], "free": 0, "staff": 1, "meets": {"nature": 0.3, "mind": 0.2}},
     {"id": "weather_obs_20", "places": ["mayak_meteo"], "slots": ["staff"], "pose": "look", "minutes": [10, 10], "free": 0, "staff": 1, "meets": {"nature": 0.3, "mind": 0.2}},
