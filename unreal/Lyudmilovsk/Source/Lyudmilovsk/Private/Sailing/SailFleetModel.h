@@ -1821,7 +1821,7 @@ namespace LyudSail
 					Task = FSchoolLaunchTask();
 					TaskIn = 0.0;
 					HelpT = 0.0;
-					Emit(EFleetSignal::TowStart, Task.Boat);
+					Emit(EFleetSignal::TowStart, Towing);
 				}
 				else if (Task.Kind == FSchoolLaunchTask::Right && HelpT > 6.0 && U.CapsizedS > 0.0 && !U.bHero)
 				{
