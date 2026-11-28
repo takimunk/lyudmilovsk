@@ -28,6 +28,6 @@
   "rail_ticket",
   "rail_ticket_punched"
  ],
- "sha256": null,
+ "sha256": "80e9acab569750a83259da6a6d188381edb6b9996dbc321f2e17e68b8a791e5e",
  "note": "Cut by tools/icons_from_sheets.py on the Mac (this cloud box cannot reach the CDN); it fills sha256 and saves the picture as sheet_3.png next to this file."
 }

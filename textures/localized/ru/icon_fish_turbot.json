@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_turbot",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_3.json (cell 1 (row 1, left)).",
+ "source": "design/fishing/icons_grid_3.png (sidecar design/fishing/icons_grid_3.json), cell 1 (row 1, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "5099de81e941bd1f8be0af7f44f665d0ab61b19e77e2e5db6d3f3b852118b26b",
+ "strings": {}
+}

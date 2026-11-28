@@ -1,0 +1,10 @@
+{
+ "id": "icon_travel_card",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small cream cardboard cable car travel card with a row of seven little printed squares along its edge and a tiny cabin drawn in one corner, no lettering.",
+ "source": "design/icons_1127/sheet_3.png (sidecar design/icons_1127/sheet_3.json), cell 7 (row 3, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "fe420070f2adee776ab009f787e897508efb1773ad0ed938a5ac163f817c8e51",
+ "strings": {}
+}

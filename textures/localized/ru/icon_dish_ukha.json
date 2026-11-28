@@ -1,0 +1,10 @@
+{
+ "id": "icon_dish_ukha",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a white enamel bowl of clear golden fish soup with a piece of white fish, potato chunks and a sprig of dill, an aluminium spoon beside it",
+ "source": "design/icons_1127/sheet_1.png (sidecar design/icons_1127/sheet_1.json), cell 9 (row 3, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "96a17a5b497b4d05f56bacf407f0ce0fa34fb4e8dc17db08bc1c1b4f624da24f",
+ "strings": {}
+}

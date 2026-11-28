@@ -28,6 +28,6 @@
   "dish_salad",
   "dish_ukha"
  ],
- "sha256": null,
+ "sha256": "c0655e5b445eee122c5e80f4c98cfa4682fea97edd55fcf20700c5e57207712b",
  "note": "Cut by tools/icons_from_sheets.py on the Mac (this cloud box cannot reach the CDN); it fills sha256 and saves the picture as sheet_1.png next to this file."
 }

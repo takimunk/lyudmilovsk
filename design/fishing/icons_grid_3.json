@@ -33,5 +33,6 @@
   "fish_eel",
   "fish_rockgunnel"
  ],
- "note": "3x3 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language)."
+ "note": "3x3 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language).",
+ "sha256": "3748f6699c5725ee8fbd15d3a98e68fa636d90aeb392b2fec81757948e476f3c"
 }

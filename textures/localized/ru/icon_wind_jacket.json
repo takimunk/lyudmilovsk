@@ -1,0 +1,10 @@
+{
+ "id": "icon_wind_jacket",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a neatly folded bottle-green zip windbreaker of thin crisp fabric with a stand-up collar and elastic cuffs",
+ "source": "design/icons_1127/sheet_2.png (sidecar design/icons_1127/sheet_2.json), cell 3 (row 1, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "77d2fb9f7e01732b57c886dfd3cfa86d2ec213c79e7ccd1f5cbbea612fef2335",
+ "strings": {}
+}

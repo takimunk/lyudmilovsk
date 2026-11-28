@@ -1,0 +1,10 @@
+{
+ "id": "icon_lure_wobbler",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_6.json (cell 5 (row 2, middle)).",
+ "source": "design/fishing/icons_grid_6.png (sidecar design/fishing/icons_grid_6.json), cell 5 (row 2, middle), cut into 3x2 equal cells, resized to 512x512",
+ "sha256": "4eaf7583d6acd3ddf1bcd3f42225d0765db666ea73166443ab7f2e812172311a",
+ "strings": {}
+}

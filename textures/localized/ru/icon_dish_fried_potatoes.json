@@ -1,0 +1,10 @@
+{
+ "id": "icon_dish_fried_potatoes",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a cast iron frying pan of golden fried potato slices with a crisp crust, chopped fresh dill scattered on top",
+ "source": "design/icons_1127/sheet_1.png (sidecar design/icons_1127/sheet_1.json), cell 4 (row 2, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "e41a93b016067a28c0b2ac9ab665aee832af061a526ee7335e03b4239478670b",
+ "strings": {}
+}

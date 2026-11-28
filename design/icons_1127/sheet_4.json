@@ -28,6 +28,6 @@
   "carrot",
   "coal"
  ],
- "sha256": null,
+ "sha256": "6ceab745685a245e7ae30ac81a5d5314a4ef09d39f45063843e51e76573f29f8",
  "note": "Cut by tools/icons_from_sheets.py on the Mac (this cloud box cannot reach the CDN); it fills sha256 and saves the picture as sheet_4.png next to this file."
 }

@@ -1,0 +1,10 @@
+{
+ "id": "icon_banya_towel",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A neatly folded thick white terry towel with a thin blue stripe across its end, soft loops visible.",
+ "source": "design/icons_1127/sheet_2.png (sidecar design/icons_1127/sheet_2.json), cell 6 (row 2, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "f6349d2933643b6308d98bc92b271050062f3bb95f9a155e67fd3284274a02ff",
+ "strings": {}
+}

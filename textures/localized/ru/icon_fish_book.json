@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_book",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_4.json (cell 4 (row 2, column 2)).",
+ "source": "design/fishing/icons_grid_4.png (sidecar design/fishing/icons_grid_4.json), cell 4 (row 2, column 2), cut into 2x2 equal cells, resized to 512x512",
+ "sha256": "cbe1eab26b016058d8b8a973f6d0e5686b83eb2fc9dfd6fe23aed12b9e6d11b7",
+ "strings": {}
+}

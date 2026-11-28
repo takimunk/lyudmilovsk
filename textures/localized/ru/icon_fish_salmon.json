@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_salmon",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_3.json (cell 5 (row 2, middle)).",
+ "source": "design/fishing/icons_grid_3.png (sidecar design/fishing/icons_grid_3.json), cell 5 (row 2, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "1b705998fc2374da7964ff55851ce92a60a37a09c495e1d26845986ae1b017eb",
+ "strings": {}
+}

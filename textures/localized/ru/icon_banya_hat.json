@@ -1,0 +1,10 @@
+{
+ "id": "icon_banya_hat",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A pointed felted wool banya cap of natural off-white felt with a rolled brim and a little loop at the tip.",
+ "source": "design/icons_1127/sheet_2.png (sidecar design/icons_1127/sheet_2.json), cell 5 (row 2, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "843f95befbc922df9f712a5b28fec3dc7238311884ad56630f560ae098824379",
+ "strings": {}
+}

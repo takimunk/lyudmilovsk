@@ -1,0 +1,10 @@
+{
+ "id": "icon_bait_dough",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_6.json (cell 4 (row 2, left)).",
+ "source": "design/fishing/icons_grid_6.png (sidecar design/fishing/icons_grid_6.json), cell 4 (row 2, left), cut into 3x2 equal cells, resized to 512x512",
+ "sha256": "25d0070a401c05d13996882fecc56985c1ad5e6c8d4c29c964d12c4ebd2df110",
+ "strings": {}
+}

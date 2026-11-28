@@ -28,6 +28,6 @@
   "skates",
   "ticket_stub"
  ],
- "sha256": null,
+ "sha256": "dd47bd4eb509d0742be0765cde3a1592a15e33c55303bc968cf70476a0991c83",
  "note": "Cut by tools/icons_from_sheets.py on the Mac (this cloud box cannot reach the CDN); it fills sha256 and saves the picture as sheet_2.png next to this file."
 }

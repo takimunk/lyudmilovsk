@@ -1,0 +1,10 @@
+{
+ "id": "icon_bait_worm",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_1.json (cell 2 (row 1, middle)).",
+ "source": "design/fishing/icons_grid_1.png (sidecar design/fishing/icons_grid_1.json), cell 2 (row 1, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "00c21fc6337f65f3a75d5bd06a919f5bf887f9fa5ca2acf94decc28d0ccf1803",
+ "strings": {}
+}

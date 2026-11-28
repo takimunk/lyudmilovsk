@@ -1,0 +1,10 @@
+{
+ "id": "icon_lost_mitten",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A single red hand-knitted wool mitten with a white snowflake pattern.",
+ "source": "design/icons_1127/sheet_3.png (sidecar design/icons_1127/sheet_3.json), cell 2 (row 1, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "6afbcc9301b9fe05cb7398de22aa63ff3a538b2107091d17e19ef68526d30b5e",
+ "strings": {}
+}

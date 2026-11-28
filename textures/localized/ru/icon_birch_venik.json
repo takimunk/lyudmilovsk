@@ -1,0 +1,10 @@
+{
+ "id": "icon_birch_venik",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A bath whisk of fresh birch twigs with glossy green leaves, its handle tied tight with rough twine, the leaves wet and glistening.",
+ "source": "design/icons_1127/sheet_2.png (sidecar design/icons_1127/sheet_2.json), cell 7 (row 3, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "18b996e23eb1bcedf0beaed78817a43ae17266ec180448e460a792a1d39bcb4a",
+ "strings": {}
+}

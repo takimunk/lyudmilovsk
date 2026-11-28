@@ -1,0 +1,10 @@
+{
+ "id": "icon_seashell",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A single small Baltic cockle shell, pale cream with fine ribs, a few grains of wet sand on it.",
+ "source": "design/icons_1127/sheet_4.png (sidecar design/icons_1127/sheet_4.json), cell 1 (row 1, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "7c624515a0ecd412a0c3ef6be7e635c4d7e87b3b3088b407917aeb8ee31d1e65",
+ "strings": {}
+}

@@ -33,5 +33,6 @@
   "fish_lumpsucker",
   "fish_flounder"
  ],
- "note": "3x3 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language)."
+ "note": "3x3 grid of fishing icons; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language).",
+ "sha256": "73727d2d4c39897565a785e7b9b998f789c57f0ecdc192c1c32c7119a5bb0e5a"
 }

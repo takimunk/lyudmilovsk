@@ -1,0 +1,10 @@
+{
+ "id": "icon_carrot",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "One fresh orange carrot with its feathery green top, a little dark soil still on it, lying diagonally.",
+ "source": "design/icons_1127/sheet_4.png (sidecar design/icons_1127/sheet_4.json), cell 8 (row 3, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "4d67db96806e72c7f0b320485c610ecbd1da68a9ed7e90edb6aa47a0195e2788",
+ "strings": {}
+}
