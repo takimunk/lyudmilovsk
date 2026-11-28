@@ -875,7 +875,10 @@ int32 ULyudKiteFlying::Fly(FFlight& F, float Reel, float DeltaTime, const AActor
 		F.WindIn = &F == &Hero ? 0.f : 0.1f;
 		if (const ULyudWindSubsystem* WindSys = ULyudWindSubsystem::Get(this))
 		{
-			const FLyudLocalWind Air = WindSys->GetLocalWind(Before);
+			// no lower than 2 m over its ground: a kite on the sand stands about a metre tall and open sand is smooth, while
+			// the land's profile at the kite's own 0.3 m leaves a third of the 10 m wind (a laid stunt kite never rose)
+			const float OverM = FMath::Max(float(Before.Z - F.GroundZ) * 0.01f, 2.f);
+			const FLyudLocalWind Air = WindSys->GetLocalWindAbove(FVector(Before.X, Before.Y, F.GroundZ), OverM);
 			F.Wind = Air.Velocity;
 			F.Turbulence = Air.Turbulence;
 		}
@@ -2110,8 +2113,9 @@ void ULyudKiteFlying::SpawnTestKites(int32 N, int32 Shape)
 	const FVector Across = FVector::CrossProduct(FVector::UpVector, Down);
 	for (int32 I = 0; I < N; ++I)
 	{
-		// a row of flyers across the wind, 6 m apart, 25 m downwind of the camera
-		FVector At = Cam + Down * 2500.f + Across * (float(I) - 0.5f * float(N - 1)) * 600.f;
+		// a row of flyers across the wind, 6 m apart, a step downwind of the camera: their kites fly some 25 m on, not 50 m
+		// (from the beach that put the row into the promenade's trees and the cable car's wires)
+		FVector At = Cam + Down * 300.f + Across * (float(I) - 0.5f * float(N - 1)) * 600.f;
 		FHitResult Hit;
 		FCollisionQueryParams Q(SCENE_QUERY_STAT(KiteTest), false);
 		if (World->LineTraceSingleByChannel(Hit, At + FVector(0, 0, 5000), At - FVector(0, 0, 20000), ECC_Visibility, Q))
