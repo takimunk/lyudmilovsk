@@ -334,7 +334,7 @@
   {"id": "city.q.unit_cats.3", "group": "interiors", "name": "dev.tp.city.q.unit_cats.3", "x": 80.12, "y": 749.01, "z": -3950.0, "yaw": 176.5},
   {"id": "city.pt.dnc_floor", "group": "interiors", "name": "dev.tp.city.pt.dnc_floor", "x": -553.83, "y": 1283.78, "z": -1500.0, "yaw": 173.1, "time": "20:00"},
   {"id": "city.pt.dnc_notice", "group": "interiors", "name": "dev.tp.city.pt.dnc_notice", "x": -545.45, "y": 1288.11, "z": -1500.0, "yaw": -96.9, "time": "10:00"},
-  {"id": "city.pt.dnc_white", "group": "interiors", "name": "dev.tp.city.pt.dnc_white", "x": -557.31, "y": 1285.81, "z": -1500.0, "yaw": -96.9, "time": "23:00"},
+  {"id": "city.pt.dnc_white", "group": "interiors", "name": "dev.tp.city.pt.dnc_white", "x": -557.31, "y": 1285.81, "z": -1500.0, "yaw": -96.9, "time": "22:05"},
   {"id": "city.pt.tch_cooler", "group": "interiors", "name": "dev.tp.city.pt.tch_cooler", "x": -213.97, "y": 857.9, "z": -2900.0, "yaw": -94.3, "time": "09:00"},
   {"id": "city.pt.tch_fountain", "group": "interiors", "name": "dev.tp.city.pt.tch_fountain", "x": 99.41, "y": 641.52, "z": -3950.0, "yaw": 87.3, "time": "09:00"},
   {"id": "city.pt.tch_fscale", "group": "interiors", "name": "dev.tp.city.pt.tch_fscale", "x": 109.89, "y": 801.81, "z": -3950.0, "yaw": 176.2, "time": "09:00"},

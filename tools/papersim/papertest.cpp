@@ -111,6 +111,7 @@ static std::string TalkDetail(const std::string& Kind)
 	if (Kind == "beat") return "@npc.t_sorokin_gennady.name";
 	if (Kind == "job") return "@rumour.job.kiosk";
 	if (Kind == "tune") return "@music.tune.fur_elise";
+	if (Kind == "dance") return "@city.dnc.p.lan";      // a partner at the Vaults' dances (docs/dances.md)
 	return std::string();
 }
 
