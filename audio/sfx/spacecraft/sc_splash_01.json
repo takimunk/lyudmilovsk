@@ -1,0 +1,32 @@
+{
+ "name": "sc_splash_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_splash_01",
+ "pool": "sc_splash",
+ "file": "audio/sfx/spacecraft/sc_splash_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7551,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.787,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -24.07,
+ "params": {
+  "impact_s": 0.02
+ },
+ "checks": {
+  "seconds": 1.787,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -24.07,
+  "crest_db": 18.1,
+  "centroid_hz": 275,
+  "rolloff85_hz": 317,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "0d81334e51f3f5f3f0038539e4226e81385430dd3d5167350389641472400518",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

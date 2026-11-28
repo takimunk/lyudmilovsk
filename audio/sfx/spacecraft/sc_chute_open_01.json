@@ -1,0 +1,32 @@
+{
+ "name": "sc_chute_open_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_chute_open_01",
+ "pool": "sc_chute_open",
+ "file": "audio/sfx/spacecraft/sc_chute_open_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7521,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.749,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -23.82,
+ "params": {
+  "crack_s": 0.62
+ },
+ "checks": {
+  "seconds": 1.749,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -23.82,
+  "crest_db": 17.8,
+  "centroid_hz": 337,
+  "rolloff85_hz": 599,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "e8d85d7017d4c13ba670e912fb7df420123f4043e596b68f24de2c4e473a10ae",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

@@ -1,0 +1,44 @@
+{
+ "name": "sc_rattle_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_rattle_01",
+ "pool": "sc_rattle",
+ "file": "audio/sfx/spacecraft/sc_rattle_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7461,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -26.47,
+ "params": {
+  "rate_per_s": 32,
+  "objects": [
+   "pencil",
+   "carabiner",
+   "thermos cap",
+   "screws",
+   "cable clip"
+  ]
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -26.47,
+  "crest_db": 20.5,
+  "centroid_hz": 2675,
+  "rolloff85_hz": 3919,
+  "dc": -0.0,
+  "clipped": 0,
+  "seam_jump": 0.0,
+  "seam_jump_pct": 16.4,
+  "seam_energy": 0.0,
+  "seam_pct": 3.8,
+  "seam_level_db": -16.0
+ },
+ "sha256": "4a4c6f166258425cf2398645943fb4f1f08f1b245abc9c37657e92f7ab84b850",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

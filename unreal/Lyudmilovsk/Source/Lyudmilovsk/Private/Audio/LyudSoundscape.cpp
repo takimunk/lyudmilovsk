@@ -381,6 +381,39 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 	}
 }
 
+void ULyudSoundscapeSubsystem::LoadPool(const TCHAR* Group, FName Id)
+{
+	FPool& P = Pools.FindOrAdd(Id);
+	if (P.Sounds.Num() > 0)
+	{
+		return;
+	}
+	// the same naming as LoadSounds' pools; held by the pool itself, not by CueRefs, so UnloadPool frees them
+	const FString Name = Id.ToString();
+	for (int32 N = 1; N <= 12; N++)
+	{
+		USoundBase* S = LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("/Game/Audio/%s/S_%s_%02d.S_%s_%02d"), Group, *Name, N, *Name, N), nullptr, LOAD_NoWarn | LOAD_Quiet);
+		if (!S)
+		{
+			break;
+		}
+		P.Sounds.Add(S);
+		LazyRefs.Add(S);
+	}
+}
+
+void ULyudSoundscapeSubsystem::UnloadPool(FName Id)
+{
+	if (FPool* P = Pools.Find(Id))
+	{
+		for (const TObjectPtr<USoundBase>& S : P->Sounds)
+		{
+			LazyRefs.RemoveSwap(S, EAllowShrinking::No);
+		}
+		Pools.Remove(Id);
+	}
+}
+
 USoundBase* ULyudSoundscapeSubsystem::Pick(FName Pool)
 {
 	FPool* P = Pools.Find(Pool);

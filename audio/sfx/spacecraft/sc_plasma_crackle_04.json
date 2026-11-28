@@ -1,0 +1,32 @@
+{
+ "name": "sc_plasma_crackle_04",
+ "asset": "/Game/Audio/Spacecraft/S_sc_plasma_crackle_04",
+ "pool": "sc_plasma_crackle",
+ "file": "audio/sfx/spacecraft/sc_plasma_crackle_04.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7494,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.266,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -33.19,
+ "params": {
+  "span_s": 0.183
+ },
+ "checks": {
+  "seconds": 0.266,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -33.19,
+  "crest_db": 27.2,
+  "centroid_hz": 4390,
+  "rolloff85_hz": 6774,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "2e2da57ea10f91bf8c1676b6d73c80bba8560c4271346ee932a99fbd3534c88d",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

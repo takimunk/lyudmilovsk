@@ -1170,5 +1170,396 @@
    "seed": 40201,
    "prompt": "Very gentle luminous ambient, warm soft synth pads and slow shimmering bell-like arpeggios, a tender simple piano motif with long reverb, glowing and weightless like floating in a river of light at night, deeply calm, comforting and bittersweet, F major, 58 BPM, slowly swelling to a bright wash then fading out, no drums, no vocals"
   }
- ]
+ ],
+ "procedural": {
+  "about": "Sounds made by code, not by a model: each entry is rendered by its generator script (seeded, deterministic, nothing paid) to audio/sfx/<group>/<id>_<nn>.wav with a sidecar (seed, params, sha256, checks). tools/gen_sounds.py does not read this list. Variant n uses seed + n - 1.",
+  "generators": {
+   "spacecraft": "tools/spacecraft/sounds.py"
+  },
+  "sfx": [
+   {
+    "id": "sc_cabin_hum",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7101,
+    "what": "the cabin's electrics (400 Hz) and its two fans, soft and warm"
+   },
+   {
+    "id": "sc_fan",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7111,
+    "what": "one cabin fan, for a positional source"
+   },
+   {
+    "id": "sc_gyro_whine",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7121,
+    "what": "the gyros running (two rotors 2 Hz apart)"
+   },
+   {
+    "id": "sc_gyro_spinup",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 4.0,
+    "seed": 7131,
+    "what": "the gyros switched on: relay, motor growl, the whine rising over 4 s"
+   },
+   {
+    "id": "sc_air_hiss",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7141,
+    "what": "life support: the air through the vents, the regenerator's valve breathing"
+   },
+   {
+    "id": "sc_radio_static",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7151,
+    "what": "thin shortwave hiss with far whistles from the radio speaker"
+   },
+   {
+    "id": "sc_beacon",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7161,
+    "what": "a far two-tone telemetry beacon, like Sputnik"
+   },
+   {
+    "id": "sc_toggle",
+    "group": "spacecraft",
+    "variants": 3,
+    "duration": 0.374,
+    "seed": 7201,
+    "what": "a chunky guarded toggle switch"
+   },
+   {
+    "id": "sc_cover",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.426,
+    "seed": 7211,
+    "what": "the red cover flipped up or down"
+   },
+   {
+    "id": "sc_button",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.391,
+    "seed": 7221,
+    "what": "the big ПУСК button's clunk"
+   },
+   {
+    "id": "sc_relay",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.387,
+    "seed": 7231,
+    "what": "relays clattering after a switch"
+   },
+   {
+    "id": "sc_buzzer",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.7,
+    "seed": 7241,
+    "what": "the refusal buzzer (wrong order)"
+   },
+   {
+    "id": "sc_chime",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.914,
+    "seed": 7251,
+    "what": "the attention tone before a callout"
+   },
+   {
+    "id": "sc_lamp_tick",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.12,
+    "seed": 7261,
+    "what": "an annunciator lamp lighting"
+   },
+   {
+    "id": "sc_hatch_close",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 1.265,
+    "seed": 7271,
+    "what": "the hatch swung shut: clang, the dogs home"
+   },
+   {
+    "id": "sc_hatch_open",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 1.5,
+    "seed": 7281,
+    "what": "the hatch opened: dogs free, the seal lets go, the hinge groans"
+   },
+   {
+    "id": "sc_wheel",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.861,
+    "seed": 7291,
+    "what": "the hatch wheel turned"
+   },
+   {
+    "id": "sc_belt",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.447,
+    "seed": 7301,
+    "what": "the harness buckle"
+   },
+   {
+    "id": "sc_seat",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.713,
+    "seed": 7311,
+    "what": "settling into the padded couch"
+   },
+   {
+    "id": "sc_ignition",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 3.0,
+    "seed": 7401,
+    "what": "the engine lights: valves, igniters, the burn building (3 s)"
+   },
+   {
+    "id": "sc_engine",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7411,
+    "what": "the burn heard through the hull: deep, structure-borne"
+   },
+   {
+    "id": "sc_cutoff",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 1.515,
+    "seed": 7421,
+    "what": "thrust dies; the plumbing ticks"
+   },
+   {
+    "id": "sc_thruster",
+    "group": "spacecraft",
+    "variants": 3,
+    "duration": 0.487,
+    "seed": 7431,
+    "what": "cold-gas attitude puffs felt as thumps"
+   },
+   {
+    "id": "sc_sep_bang",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 1.237,
+    "seed": 7441,
+    "what": "the pyro bolts: a double bang and the hull ringing down"
+   },
+   {
+    "id": "sc_creak",
+    "group": "spacecraft",
+    "variants": 4,
+    "duration": 0.757,
+    "seed": 7451,
+    "what": "the hull creaking under g"
+   },
+   {
+    "id": "sc_rattle",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7461,
+    "what": "loose things rattling in the shake"
+   },
+   {
+    "id": "sc_entry_roar",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7471,
+    "what": "the entry: a broadband roar over a low rumble"
+   },
+   {
+    "id": "sc_entry_roar_hi",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7481,
+    "what": "the entry at its peak: more crackle and hiss"
+   },
+   {
+    "id": "sc_plasma_crackle",
+    "group": "spacecraft",
+    "variants": 4,
+    "duration": 0.342,
+    "seed": 7491,
+    "what": "plasma crackles on the shell and the glass"
+   },
+   {
+    "id": "sc_wind",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7501,
+    "what": "thick air rushing past under the drogue"
+   },
+   {
+    "id": "sc_drogue",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 1.384,
+    "seed": 7511,
+    "what": "the drogue: mortar bang, the bag, the snatch"
+   },
+   {
+    "id": "sc_chute_open",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 1.749,
+    "seed": 7521,
+    "what": "the main canopy cracks open; the lines groan"
+   },
+   {
+    "id": "sc_chute_creak",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7531,
+    "what": "swinging under the main canopy: line creaks, soft wind"
+   },
+   {
+    "id": "sc_jets",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 1.554,
+    "seed": 7541,
+    "what": "the soft-landing rockets (1.5 s)"
+   },
+   {
+    "id": "sc_splash",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 1.787,
+    "seed": 7551,
+    "what": "the splash: the heavy hit, spray, water running off"
+   },
+   {
+    "id": "sc_afloat",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 6.0,
+    "loop": true,
+    "seed": 7561,
+    "what": "afloat: water lapping on the hull, heard inside"
+   },
+   {
+    "id": "sc_drip",
+    "group": "spacecraft",
+    "variants": 3,
+    "duration": 0.262,
+    "seed": 7571,
+    "what": "a drip in the cabin after the splash"
+   },
+   {
+    "id": "sc_needle_down",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.57,
+    "seed": 7601,
+    "what": "the record player's needle set down"
+   },
+   {
+    "id": "sc_needle_up",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.39,
+    "seed": 7611,
+    "what": "the needle lifted"
+   },
+   {
+    "id": "sc_needle_skip",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.354,
+    "seed": 7621,
+    "what": "the needle skidding (a jolt)"
+   },
+   {
+    "id": "sc_vinyl_crackle",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 7.2,
+    "loop": true,
+    "seed": 7631,
+    "what": "surface noise to lay over the music (4 turns)"
+   },
+   {
+    "id": "sc_platter_start",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 1.6,
+    "seed": 7641,
+    "what": "the platter motor running up"
+   },
+   {
+    "id": "sc_runout",
+    "group": "spacecraft",
+    "variants": 1,
+    "duration": 7.2,
+    "loop": true,
+    "seed": 7651,
+    "what": "the run-out groove: a tick every 1.8 s"
+   },
+   {
+    "id": "sc_thermos_open",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.794,
+    "seed": 7701,
+    "what": "the thermos unscrewed, its cap's pop"
+   },
+   {
+    "id": "sc_sip",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.739,
+    "seed": 7711,
+    "what": "a sip of hot tea"
+   },
+   {
+    "id": "sc_page",
+    "group": "spacecraft",
+    "variants": 2,
+    "duration": 0.638,
+    "seed": 7721,
+    "what": "a page of the book turned"
+   }
+  ]
+ }
 }

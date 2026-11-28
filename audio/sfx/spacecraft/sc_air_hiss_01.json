@@ -1,0 +1,45 @@
+{
+ "name": "sc_air_hiss_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_air_hiss_01",
+ "pool": "sc_air_hiss",
+ "file": "audio/sfx/spacecraft/sc_air_hiss_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7141,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -20.56,
+ "params": {
+  "bands_hz": [
+   700,
+   3500
+  ],
+  "puffs_at_s": [
+   0.7,
+   2.9,
+   4.6
+  ]
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -20.56,
+  "crest_db": 14.6,
+  "centroid_hz": 3408,
+  "rolloff85_hz": 5000,
+  "dc": 0.0,
+  "clipped": 0,
+  "seam_jump": 0.14,
+  "seam_jump_pct": 11.2,
+  "seam_energy": 0.91,
+  "seam_pct": 24.8,
+  "seam_level_db": -1.0
+ },
+ "sha256": "ad2b07ae6d3fcc132d0be3d0b076844350290299b18c142213847660d151fddf",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

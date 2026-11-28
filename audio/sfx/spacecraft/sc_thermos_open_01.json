@@ -1,0 +1,32 @@
+{
+ "name": "sc_thermos_open_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_thermos_open_01",
+ "pool": "sc_thermos_open",
+ "file": "audio/sfx/spacecraft/sc_thermos_open_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7701,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.783,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -22.88,
+ "params": {
+  "pop_s": 0.42
+ },
+ "checks": {
+  "seconds": 0.783,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -22.88,
+  "crest_db": 16.9,
+  "centroid_hz": 1945,
+  "rolloff85_hz": 3263,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "d5fc3e96e9651bbb9ec76bca1ec142fa900a60a6155b0e35c84ef70f22a9b9f4",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

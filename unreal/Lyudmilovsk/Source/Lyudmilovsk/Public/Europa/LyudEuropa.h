@@ -278,6 +278,13 @@ public:
 	/** The planet's town faces Europa now (its island on the planet's face toward us). */
 	UFUNCTION(BlueprintPure, Category = "Europa") bool IsIslandFacing() const;
 
+	/** Gives the sky its view from Europa's ice again (ALyudSky::SetSpaceObserver has one seat: the flight home,
+	 *  ULyudSpaceflightSubsystem, takes it for the flight and hands it back through this). */
+	void InstallSpaceObserver();
+	/** Europa's place in the world (the far site's origin) and the radius inside which the player counts as there. */
+	FVector GetSiteOrigin() const { return SiteOrigin; }
+	float GetSpaceRadius() const { return SpaceRadius; }
+
 	/** E: do CurrentAction. */
 	UFUNCTION(BlueprintCallable, Category = "Europa") void Use();
 	/** Test teleports: beside the sea hatch (in the water over it), in the room by the console, on Europa by its hatch. */

@@ -1,0 +1,32 @@
+{
+ "name": "sc_button_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_button_01",
+ "pool": "sc_button",
+ "file": "audio/sfx/spacecraft/sc_button_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7221,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.384,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -22.86,
+ "params": {
+  "clunk_hz": 108.9
+ },
+ "checks": {
+  "seconds": 0.384,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -22.86,
+  "crest_db": 16.9,
+  "centroid_hz": 551,
+  "rolloff85_hz": 635,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "db808a2385f87c91548e7f8ced2ea895939281b8103a18ca016f13b150e571c5",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

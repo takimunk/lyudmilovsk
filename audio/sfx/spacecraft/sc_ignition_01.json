@@ -1,0 +1,38 @@
+{
+ "name": "sc_ignition_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_ignition_01",
+ "pool": "sc_ignition",
+ "file": "audio/sfx/spacecraft/sc_ignition_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7401,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 3.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -23.35,
+ "params": {
+  "igniters_s": [
+   0.15,
+   0.22,
+   0.27
+  ],
+  "light_s": 0.35,
+  "ends": "at full burn (cross-fade into sc_engine)"
+ },
+ "checks": {
+  "seconds": 3.0,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -23.35,
+  "crest_db": 17.4,
+  "centroid_hz": 228,
+  "rolloff85_hz": 340,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "1e69c432c1fd5dec20d0ac6bc13ff7dc1031a6dedfbc20d80f66aae5551ffa05",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

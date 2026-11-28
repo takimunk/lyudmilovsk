@@ -1,0 +1,44 @@
+{
+ "name": "sc_afloat_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_afloat_01",
+ "pool": "sc_afloat",
+ "file": "audio/sfx/spacecraft/sc_afloat_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7561,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 24000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -22.89,
+ "params": {
+  "waves_at_s": [
+   0.4,
+   2.3,
+   4.5
+  ],
+  "small_laps": 8,
+  "stored_rate": 24000,
+  "energy_above_new_nyquist_db": -104.8
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 24000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -22.89,
+  "crest_db": 16.9,
+  "centroid_hz": 190,
+  "rolloff85_hz": 320,
+  "dc": -0.0,
+  "clipped": 0,
+  "seam_jump": 0.45,
+  "seam_jump_pct": 58.2,
+  "seam_energy": 0.3,
+  "seam_pct": 13.0,
+  "seam_level_db": 0.4
+ },
+ "sha256": "c78814b3c3326c3ad9c8d7a1017af04f63da605a930b3dcd57f013b83412dd88",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

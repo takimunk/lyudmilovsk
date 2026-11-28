@@ -1,0 +1,1052 @@
+{
+ "flight.name": {
+  "ru": "Ласточка",
+  "en": "Lastochka",
+  "ja": "ツバメ号"
+ },
+ "flight.name.full": {
+  "ru": "Спускаемый аппарат «Ласточка»",
+  "en": "The descent craft Lastochka",
+  "ja": "降下船「ツバメ号」"
+ },
+ "place.flight_craft.name": {
+  "ru": "«Ласточка» на льду",
+  "en": "Lastochka on the ice",
+  "ja": "氷の上のツバメ号"
+ },
+ "place.flight_capsule.name": {
+  "ru": "Капсула на воде",
+  "en": "The capsule afloat",
+  "ja": "海に浮かぶカプセル"
+ },
+ "ui.flight.ladder": {
+  "ru": "[E] Подняться по трапу",
+  "en": "[E] Climb the ladder",
+  "ja": "[E] はしごを上る"
+ },
+ "ui.flight.ladder_down": {
+  "ru": "[E] Спуститься на лёд",
+  "en": "[E] Climb down to the ice",
+  "ja": "[E] 氷の上へ降りる"
+ },
+ "ui.flight.hatch_open": {
+  "ru": "[E] Открыть люк",
+  "en": "[E] Open the hatch",
+  "ja": "[E] ハッチを開ける"
+ },
+ "ui.flight.hatch_close": {
+  "ru": "[E] Закрыть люк",
+  "en": "[E] Close the hatch",
+  "ja": "[E] ハッチを閉める"
+ },
+ "ui.flight.enter": {
+  "ru": "[E] Забраться в кабину",
+  "en": "[E] Climb into the cabin",
+  "ja": "[E] 船室に入る"
+ },
+ "ui.flight.exit": {
+  "ru": "[E] Выбраться наружу",
+  "en": "[E] Climb out",
+  "ja": "[E] 外へ出る"
+ },
+ "ui.flight.wheel_seal": {
+  "ru": "[E] Повернуть штурвал: задраить люк",
+  "en": "[E] Turn the wheel: seal the hatch",
+  "ja": "[E] ハンドルを回す：ハッチを密閉する"
+ },
+ "ui.flight.wheel_unseal": {
+  "ru": "[E] Повернуть штурвал: отдраить люк",
+  "en": "[E] Turn the wheel: unseal the hatch",
+  "ja": "[E] ハンドルを回す：密閉を解く"
+ },
+ "ui.flight.sit": {
+  "ru": "[E] Сесть в кресло",
+  "en": "[E] Sit on the couch",
+  "ja": "[E] 座席に座る"
+ },
+ "ui.flight.stand": {
+  "ru": "[E] Встать",
+  "en": "[E] Get up",
+  "ja": "[E] 立ち上がる"
+ },
+ "ui.flight.buckle": {
+  "ru": "[E] Пристегнуться",
+  "en": "[E] Buckle up",
+  "ja": "[E] ベルトを締める"
+ },
+ "ui.flight.unbuckle": {
+  "ru": "[E] Отстегнуться",
+  "en": "[E] Unbuckle",
+  "ja": "[E] ベルトを外す"
+ },
+ "ui.flight.sw.power_on": {
+  "ru": "[E] Питание: включить",
+  "en": "[E] Power: on",
+  "ja": "[E] 電源：入れる"
+ },
+ "ui.flight.sw.power_off": {
+  "ru": "[E] Питание: отключить",
+  "en": "[E] Power: off",
+  "ja": "[E] 電源：切る"
+ },
+ "ui.flight.sw.air_on": {
+  "ru": "[E] Воздух: включить",
+  "en": "[E] Air: on",
+  "ja": "[E] 空気：入れる"
+ },
+ "ui.flight.sw.air_off": {
+  "ru": "[E] Воздух: отключить",
+  "en": "[E] Air: off",
+  "ja": "[E] 空気：切る"
+ },
+ "ui.flight.sw.gyro_on": {
+  "ru": "[E] Гироскопы: включить",
+  "en": "[E] Gyros: on",
+  "ja": "[E] ジャイロ：入れる"
+ },
+ "ui.flight.sw.gyro_off": {
+  "ru": "[E] Гироскопы: отключить",
+  "en": "[E] Gyros: off",
+  "ja": "[E] ジャイロ：切る"
+ },
+ "ui.flight.sw.seal_on": {
+  "ru": "[E] Герметизация люка: включить",
+  "en": "[E] Hatch seal: on",
+  "ja": "[E] ハッチ気密：入れる"
+ },
+ "ui.flight.sw.seal_off": {
+  "ru": "[E] Герметизация люка: отключить",
+  "en": "[E] Hatch seal: off",
+  "ja": "[E] ハッチ気密：切る"
+ },
+ "ui.flight.sw.arm_on": {
+  "ru": "[E] Взвод: включить",
+  "en": "[E] Arm: on",
+  "ja": "[E] 点火準備：入れる"
+ },
+ "ui.flight.sw.arm_off": {
+  "ru": "[E] Взвод: снять",
+  "en": "[E] Arm: off",
+  "ja": "[E] 点火準備：切る"
+ },
+ "ui.flight.cover_up": {
+  "ru": "[E] Откинуть красную крышку",
+  "en": "[E] Lift the red cover",
+  "ja": "[E] 赤いカバーを上げる"
+ },
+ "ui.flight.cover_down": {
+  "ru": "[E] Закрыть крышку",
+  "en": "[E] Close the cover",
+  "ja": "[E] カバーを閉じる"
+ },
+ "ui.flight.launch": {
+  "ru": "[E] ПУСК",
+  "en": "[E] LAUNCH",
+  "ja": "[E] 発射"
+ },
+ "ui.flight.light_on": {
+  "ru": "[E] Свет в кабине: включить",
+  "en": "[E] Cabin light: on",
+  "ja": "[E] 室内灯：つける"
+ },
+ "ui.flight.light_off": {
+  "ru": "[E] Свет в кабине: погасить",
+  "en": "[E] Cabin light: off",
+  "ja": "[E] 室内灯：消す"
+ },
+ "ui.flight.crt_mode": {
+  "ru": "[E] Экран: сменить режим",
+  "en": "[E] Screen: change mode",
+  "ja": "[E] 画面：表示を切り替える"
+ },
+ "ui.flight.radio_on": {
+  "ru": "[E] Радио: включить",
+  "en": "[E] Radio: on",
+  "ja": "[E] ラジオ：つける"
+ },
+ "ui.flight.radio_off": {
+  "ru": "[E] Радио: выключить",
+  "en": "[E] Radio: off",
+  "ja": "[E] ラジオ：消す"
+ },
+ "ui.flight.look_big": {
+  "ru": "[E] Наклониться к большому иллюминатору",
+  "en": "[E] Lean to the big porthole",
+  "ja": "[E] 大きな窓をのぞく"
+ },
+ "ui.flight.look_left": {
+  "ru": "[E] Наклониться к левому иллюминатору",
+  "en": "[E] Lean to the left porthole",
+  "ja": "[E] 左の窓をのぞく"
+ },
+ "ui.flight.look_right": {
+  "ru": "[E] Наклониться к правому иллюминатору",
+  "en": "[E] Lean to the right porthole",
+  "ja": "[E] 右の窓をのぞく"
+ },
+ "ui.flight.look_back": {
+  "ru": "[E] Отодвинуться от иллюминатора",
+  "en": "[E] Lean back",
+  "ja": "[E] 窓から離れる"
+ },
+ "ui.flight.record_put": {
+  "ru": "[E] Поставить пластинку",
+  "en": "[E] Put a record on",
+  "ja": "[E] レコードをかける"
+ },
+ "ui.flight.record_next": {
+  "ru": "[E] Следующая пластинка",
+  "en": "[E] Next record",
+  "ja": "[E] 次のレコード"
+ },
+ "ui.flight.needle_up": {
+  "ru": "[E] Поднять иглу",
+  "en": "[E] Lift the needle",
+  "ja": "[E] 針を上げる"
+ },
+ "ui.flight.thermos": {
+  "ru": "[E] Взять термос: глоток чая",
+  "en": "[E] Take the thermos: a sip of tea",
+  "ja": "[E] 魔法瓶を取る：お茶をひと口"
+ },
+ "ui.flight.book": {
+  "ru": "[E] Открыть журнал на первой странице",
+  "en": "[E] Open the log at its first page",
+  "ja": "[E] 日誌の最初のページを開く"
+ },
+ "ui.flight.book_close": {
+  "ru": "[E] Закрыть журнал",
+  "en": "[E] Close the log",
+  "ja": "[E] 日誌を閉じる"
+ },
+ "ui.flight.nap": {
+  "ru": "[E] Вздремнуть",
+  "en": "[E] Take a nap",
+  "ja": "[E] ひと眠りする"
+ },
+ "ui.flight.wake": {
+  "ru": "[E] Проснуться",
+  "en": "[E] Wake up",
+  "ja": "[E] 目を覚ます"
+ },
+ "ui.flight.chute_cover": {
+  "ru": "[E] Откинуть крышку над ручкой",
+  "en": "[E] Lift the cover off the handle",
+  "ja": "[E] ハンドルのカバーを上げる"
+ },
+ "ui.flight.chute_handle": {
+  "ru": "[E] Потянуть ручку парашюта",
+  "en": "[E] Pull the parachute handle",
+  "ja": "[E] パラシュートのハンドルを引く"
+ },
+ "ui.flight.hatch_open_sea": {
+  "ru": "[E] Открыть люк: там море",
+  "en": "[E] Open the hatch: the sea is out there",
+  "ja": "[E] ハッチを開ける：外は海だ"
+ },
+ "ui.flight.swim_out": {
+  "ru": "[E] Выплыть наружу",
+  "en": "[E] Swim out",
+  "ja": "[E] 外へ泳ぎ出る"
+ },
+ "ui.flight.no.order": {
+  "ru": "Не по порядку.",
+  "en": "Wrong order.",
+  "ja": "順番が違う。"
+ },
+ "ui.flight.no.order.power": {
+  "ru": "Питание отключают последним.",
+  "en": "Power goes off last.",
+  "ja": "電源を切るのは最後だ。"
+ },
+ "ui.flight.no.order.air": {
+  "ru": "Сначала питание.",
+  "en": "Power first.",
+  "ja": "先に電源だ。"
+ },
+ "ui.flight.no.order.gyro": {
+  "ru": "Сначала воздух.",
+  "en": "Air first.",
+  "ja": "先に空気だ。"
+ },
+ "ui.flight.no.order.seal": {
+  "ru": "Сначала гироскопы.",
+  "en": "Gyros first.",
+  "ja": "先にジャイロだ。"
+ },
+ "ui.flight.no.order.arm": {
+  "ru": "Сначала герметизация люка.",
+  "en": "Hatch seal first.",
+  "ja": "先にハッチの気密だ。"
+ },
+ "ui.flight.no.order.launch": {
+  "ru": "Кнопка молчит: взвод не включён.",
+  "en": "The button's dead: it isn't armed.",
+  "ja": "ボタンが反応しない。点火準備がまだだ。"
+ },
+ "ui.flight.no.hatch_unsealed": {
+  "ru": "Люк не задраен. Сначала штурвал.",
+  "en": "The hatch isn't sealed. The wheel first.",
+  "ja": "ハッチが密閉されていない。先にハンドルだ。"
+ },
+ "ui.flight.no.hatch_open": {
+  "ru": "Люк открыт.",
+  "en": "The hatch is open.",
+  "ja": "ハッチが開いている。"
+ },
+ "ui.flight.no.not_seated": {
+  "ru": "Сначала сесть в кресло.",
+  "en": "Sit down first.",
+  "ja": "まず座らないと。"
+ },
+ "ui.flight.no.not_buckled": {
+  "ru": "Сначала пристегнуться.",
+  "en": "Buckle up first.",
+  "ja": "まずベルトを締めないと。"
+ },
+ "ui.flight.no.no_records": {
+  "ru": "Своих пластинок с собой нет. Играет та, что была на борту.",
+  "en": "No records of your own. The one that was on board plays.",
+  "ja": "自分のレコードは持っていない。船にあった一枚が鳴る。"
+ },
+ "ui.flight.no.entry_player": {
+  "ru": "Трясёт: игла не удержится.",
+  "en": "Too much shaking: the needle won't stay down.",
+  "ja": "揺れがひどい。針が飛んでしまう。"
+ },
+ "ui.flight.no.hatch_flight": {
+  "ru": "В полёте люк не открывается.",
+  "en": "The hatch doesn't open in flight.",
+  "ja": "飛行中、ハッチは開かない。"
+ },
+ "ui.flight.no.switch_flight": {
+  "ru": "Автоматика не даёт: идёт полёт.",
+  "en": "The automatics won't allow it: in flight.",
+  "ja": "自動装置が受けつけない。飛行中だ。"
+ },
+ "ui.flight.no.gone": {
+  "ru": "Аппарата здесь нет. Он уже улетел.",
+  "en": "The craft isn't here. It has already gone.",
+  "ja": "船はここにない。もう飛んでいった。"
+ },
+ "ui.flight.no.chute_early": {
+  "ru": "Парашют? Здесь? Рановато.",
+  "en": "The parachute? Out here? A bit early.",
+  "ja": "パラシュート？ここで？まだ早い。"
+ },
+ "ui.flight.no.chute_late": {
+  "ru": "Он уже раскрылся. Сам.",
+  "en": "It's already out. By itself.",
+  "ja": "もう開いている。ひとりでに。"
+ },
+ "ui.flight.no.unbuckle_g": {
+  "ru": "Не отстегнуться: прижимает к креслу.",
+  "en": "Can't unbuckle: pressed into the couch.",
+  "ja": "外せない。座席に押しつけられている。"
+ },
+ "ui.flight.no.stand_now": {
+  "ru": "Сейчас лучше не вставать.",
+  "en": "Better not get up just now.",
+  "ja": "今は立たないほうがいい。"
+ },
+ "ui.flight.no.nap_now": {
+  "ru": "Сейчас не уснуть.",
+  "en": "No sleeping through this.",
+  "ja": "今は眠れそうにない。"
+ },
+ "ui.flight.no.nap_unbuckled": {
+  "ru": "Сначала пристегнуться, а то уплывёшь.",
+  "en": "Buckle up first, or you'll drift off.",
+  "ja": "まずベルトを。でないと浮いていってしまう。"
+ },
+ "ui.flight.no.swim_early": {
+  "ru": "Подожди: ещё качает.",
+  "en": "Wait: it's still pitching.",
+  "ja": "待って。まだ揺れている。"
+ },
+ "ui.flight.toast.buzzer": {
+  "ru": "Зуммер. На табло горит «Внимание».",
+  "en": "A buzzer. The board says CAUTION.",
+  "ja": "ブザー。表示板に「注意」が点いた。"
+ },
+ "ui.flight.toast.house_record": {
+  "ru": "Играет бортовая пластинка",
+  "en": "The ship's own record is playing",
+  "ja": "船のレコードが鳴っている"
+ },
+ "ui.flight.toast.record": {
+  "ru": "Играет: {0}",
+  "en": "Now playing: {0}",
+  "ja": "再生中：{0}"
+ },
+ "ui.flight.toast.tea": {
+  "ru": "Чай ещё горячий.",
+  "en": "The tea is still hot.",
+  "ja": "お茶はまだ熱い。"
+ },
+ "ui.flight.toast.sealed": {
+  "ru": "Люк задраен.",
+  "en": "Hatch sealed.",
+  "ja": "ハッチを密閉した。"
+ },
+ "ui.flight.toast.unsealed": {
+  "ru": "Люк отдраен.",
+  "en": "Hatch unsealed.",
+  "ja": "ハッチの密閉を解いた。"
+ },
+ "ui.flight.toast.landed": {
+  "ru": "Перелёт с Европы: дома",
+  "en": "The flight from Europa: home",
+  "ja": "エウロパからの飛行：帰ってきた"
+ },
+ "ui.flight.toast.slept": {
+  "ru": "Проспал {0} мин.",
+  "en": "Slept for {0} min.",
+  "ja": "{0}分眠った。"
+ },
+ "flight.record.house": {
+  "ru": "Бортовая пластинка",
+  "en": "The ship's record",
+  "ja": "船のレコード"
+ },
+ "flight.book.title": {
+  "ru": "Бортовой журнал",
+  "en": "Flight Log",
+  "ja": "飛行日誌"
+ },
+ "flight.book.1": {
+  "ru": "Запись первая. Лёд ровный до самого горизонта. Так тихо, что слышно часы на панели.",
+  "en": "First entry. The ice is flat all the way to the horizon. So quiet you can hear the clock on the panel.",
+  "ja": "最初の記録。氷は地平線まで平らだ。計器盤の時計の音が聞こえるほど静か。"
+ },
+ "flight.book.2": {
+  "ru": "Запись вторая. Остров сегодня на месте. Проверяю каждое утро, хотя утра здесь нет.",
+  "en": "Second entry. The island is where it should be today. I check every morning, though there is no morning here.",
+  "ja": "二つ目の記録。島は今日もあの場所にある。毎朝たしかめている。ここに朝はないのだけれど。"
+ },
+ "flight.book.3": {
+  "ru": "Запись третья. Второе кресло держу свободным.",
+  "en": "Third entry. I keep the second couch free.",
+  "ja": "三つ目の記録。二つ目の座席は空けてある。"
+ },
+ "flight.book.4": {
+  "ru": "Запись четвёртая. Всё проверено. Тумблеры по порядку, потом ПУСК.",
+  "en": "Fourth entry. Everything is checked. The switches in order, then LAUNCH.",
+  "ja": "四つ目の記録。点検はすべて済んだ。スイッチを順番に、それから「発射」。"
+ },
+ "flight.book.5": {
+  "ru": "Чай в термосе. Дома скажи, что долетел.",
+  "en": "There's tea in the thermos. When you get home, say you made it.",
+  "ja": "魔法瓶にお茶がある。帰ったら、無事に着いたと伝えて。"
+ },
+ "flight.book.blank": {
+  "ru": "Дальше страницы чистые.",
+  "en": "The rest of the pages are blank.",
+  "ja": "その先のページは白紙だ。"
+ },
+ "flight.phase.parked": {
+  "ru": "СТОЯНКА",
+  "en": "PARKED",
+  "ja": "待機"
+ },
+ "flight.phase.prelaunch": {
+  "ru": "ПРЕДСТАРТ",
+  "en": "PRELAUNCH",
+  "ja": "発射準備"
+ },
+ "flight.phase.ascent": {
+  "ru": "ВЫВЕДЕНИЕ",
+  "en": "ASCENT",
+  "ja": "上昇"
+ },
+ "flight.phase.coast": {
+  "ru": "ПЕРЕЛЁТ",
+  "en": "COAST",
+  "ja": "慣性飛行"
+ },
+ "flight.phase.approach": {
+  "ru": "СБЛИЖЕНИЕ",
+  "en": "APPROACH",
+  "ja": "接近"
+ },
+ "flight.phase.entry": {
+  "ru": "ВХОД В АТМ.",
+  "en": "ENTRY",
+  "ja": "大気圏突入"
+ },
+ "flight.phase.chute": {
+  "ru": "ПАРАШЮТ",
+  "en": "PARACHUTE",
+  "ja": "傘降下"
+ },
+ "flight.phase.splash": {
+  "ru": "ПРИВОДНЕНИЕ",
+  "en": "SPLASHDOWN",
+  "ja": "着水"
+ },
+ "flight.phase.afloat": {
+  "ru": "НА ПЛАВУ",
+  "en": "AFLOAT",
+  "ja": "漂流中"
+ },
+ "flight.lamp.power": {
+  "ru": "ПИТАНИЕ",
+  "en": "POWER",
+  "ja": "電源"
+ },
+ "flight.lamp.air": {
+  "ru": "ВОЗДУХ",
+  "en": "AIR",
+  "ja": "空気"
+ },
+ "flight.lamp.gyro": {
+  "ru": "ГИРО",
+  "en": "GYRO",
+  "ja": "ジャイロ"
+ },
+ "flight.lamp.hatch": {
+  "ru": "ЛЮК",
+  "en": "HATCH",
+  "ja": "ハッチ"
+ },
+ "flight.lamp.armed": {
+  "ru": "ВЗВЕДЕНО",
+  "en": "ARMED",
+  "ja": "点火準備"
+ },
+ "flight.lamp.engine": {
+  "ru": "ДВИГАТЕЛЬ",
+  "en": "ENGINE",
+  "ja": "エンジン"
+ },
+ "flight.lamp.sep": {
+  "ru": "РАЗДЕЛ.",
+  "en": "SEP",
+  "ja": "分離"
+ },
+ "flight.lamp.zero_g": {
+  "ru": "НЕВЕСОМ.",
+  "en": "ZERO G",
+  "ja": "無重力"
+ },
+ "flight.lamp.burn": {
+  "ru": "КОРРЕКЦИЯ",
+  "en": "BURN",
+  "ja": "軌道修正"
+ },
+ "flight.lamp.comm": {
+  "ru": "СВЯЗЬ",
+  "en": "COMM",
+  "ja": "通信"
+ },
+ "flight.lamp.blackout": {
+  "ru": "НЕТ СВЯЗИ",
+  "en": "BLACKOUT",
+  "ja": "通信途絶"
+ },
+ "flight.lamp.g_high": {
+  "ru": "ПЕРЕГРУЗ.",
+  "en": "HIGH G",
+  "ja": "高G"
+ },
+ "flight.lamp.hull_hot": {
+  "ru": "НАГРЕВ",
+  "en": "HULL HOT",
+  "ja": "外板高温"
+ },
+ "flight.lamp.drogue": {
+  "ru": "ВЫТЯЖНОЙ",
+  "en": "DROGUE",
+  "ja": "補助傘"
+ },
+ "flight.lamp.main_chute": {
+  "ru": "КУПОЛ",
+  "en": "MAIN CHUTE",
+  "ja": "主傘"
+ },
+ "flight.lamp.alt_low": {
+  "ru": "МАЛАЯ ВЫС.",
+  "en": "ALT LOW",
+  "ja": "低高度"
+ },
+ "flight.lamp.jets": {
+  "ru": "ДМП",
+  "en": "JETS",
+  "ja": "逆噴射"
+ },
+ "flight.lamp.splash": {
+  "ru": "ПРИВОДН.",
+  "en": "SPLASH",
+  "ja": "着水"
+ },
+ "flight.lamp.beacon": {
+  "ru": "МАЯК",
+  "en": "BEACON",
+  "ja": "ビーコン"
+ },
+ "flight.lamp.o2_low": {
+  "ru": "МАЛО O2",
+  "en": "O2 LOW",
+  "ja": "酸素低下"
+ },
+ "flight.lamp.co2_high": {
+  "ru": "CO2 ПРЕДЕЛ",
+  "en": "CO2 HIGH",
+  "ja": "CO2上昇"
+ },
+ "flight.lamp.batt_low": {
+  "ru": "РАЗРЯД",
+  "en": "BATT LOW",
+  "ja": "電池低下"
+ },
+ "flight.lamp.master_caution": {
+  "ru": "ВНИМАНИЕ",
+  "en": "CAUTION",
+  "ja": "注意"
+ },
+ "flight.lamp.record": {
+  "ru": "ЗАПИСЬ",
+  "en": "REC",
+  "ja": "記録"
+ },
+ "flight.inst.globe": {
+  "ru": "ГЛОБУС",
+  "en": "GLOBE",
+  "ja": "地球儀"
+ },
+ "flight.inst.clock": {
+  "ru": "ВРЕМЯ ПОЛЁТА",
+  "en": "FLIGHT TIME",
+  "ja": "飛行時間"
+ },
+ "flight.inst.range": {
+  "ru": "ДАЛЬНОСТЬ",
+  "en": "RANGE",
+  "ja": "距離"
+ },
+ "flight.inst.speed": {
+  "ru": "СКОРОСТЬ",
+  "en": "VELOCITY",
+  "ja": "速度"
+ },
+ "flight.inst.alt": {
+  "ru": "ВЫСОТА",
+  "en": "ALTITUDE",
+  "ja": "高度"
+ },
+ "flight.inst.gmeter": {
+  "ru": "ПЕРЕГРУЗКА",
+  "en": "G LOAD",
+  "ja": "荷重"
+ },
+ "flight.inst.horizon": {
+  "ru": "ОРИЕНТАЦИЯ",
+  "en": "ATTITUDE",
+  "ja": "姿勢"
+ },
+ "flight.inst.press": {
+  "ru": "ДАВЛЕНИЕ",
+  "en": "PRESSURE",
+  "ja": "気圧"
+ },
+ "flight.inst.o2": {
+  "ru": "КИСЛОРОД",
+  "en": "OXYGEN",
+  "ja": "酸素"
+ },
+ "flight.inst.co2": {
+  "ru": "УГЛЕК. ГАЗ",
+  "en": "CO2",
+  "ja": "炭酸ガス"
+ },
+ "flight.inst.temp": {
+  "ru": "ТЕМПЕРАТУРА",
+  "en": "CABIN TEMP",
+  "ja": "室温"
+ },
+ "flight.inst.volts": {
+  "ru": "НАПРЯЖЕНИЕ",
+  "en": "VOLTS",
+  "ja": "電圧"
+ },
+ "flight.inst.fuel": {
+  "ru": "ТОПЛИВО",
+  "en": "PROPELLANT",
+  "ja": "燃料"
+ },
+ "flight.inst.hull": {
+  "ru": "ТЕПЛОЗАЩИТА",
+  "en": "HEAT SHIELD",
+  "ja": "耐熱板"
+ },
+ "flight.inst.crt": {
+  "ru": "ТРАЕКТОРИЯ",
+  "en": "TRAJECTORY",
+  "ja": "軌道"
+ },
+ "flight.inst.lamps": {
+  "ru": "ТАБЛО",
+  "en": "ANNUNCIATOR",
+  "ja": "表示灯"
+ },
+ "flight.unit.km": {
+  "ru": "км",
+  "en": "km",
+  "ja": "km"
+ },
+ "flight.unit.kms": {
+  "ru": "км/с",
+  "en": "km/s",
+  "ja": "km/s"
+ },
+ "flight.unit.ms": {
+  "ru": "м/с",
+  "en": "m/s",
+  "ja": "m/s"
+ },
+ "flight.unit.g": {
+  "ru": "g",
+  "en": "g",
+  "ja": "G"
+ },
+ "flight.unit.degc": {
+  "ru": "°C",
+  "en": "°C",
+  "ja": "°C"
+ },
+ "flight.unit.volt": {
+  "ru": "В",
+  "en": "V",
+  "ja": "V"
+ },
+ "flight.unit.pct": {
+  "ru": "%",
+  "en": "%",
+  "ja": "%"
+ },
+ "flight.unit.mmhg": {
+  "ru": "мм рт. ст.",
+  "en": "mmHg",
+  "ja": "mmHg"
+ },
+ "flight.sw.power": {
+  "ru": "ПИТАНИЕ",
+  "en": "POWER",
+  "ja": "電源"
+ },
+ "flight.sw.air": {
+  "ru": "ВОЗДУХ",
+  "en": "AIR",
+  "ja": "空気"
+ },
+ "flight.sw.gyro": {
+  "ru": "ГИРОСКОПЫ",
+  "en": "GYROS",
+  "ja": "ジャイロ"
+ },
+ "flight.sw.seal": {
+  "ru": "ГЕРМЕТИЗ.",
+  "en": "HATCH SEAL",
+  "ja": "気密"
+ },
+ "flight.sw.arm": {
+  "ru": "ВЗВОД",
+  "en": "ARM",
+  "ja": "点火準備"
+ },
+ "flight.sw.launch": {
+  "ru": "ПУСК",
+  "en": "LAUNCH",
+  "ja": "発射"
+ },
+ "flight.sw.light": {
+  "ru": "СВЕТ",
+  "en": "LIGHT",
+  "ja": "室内灯"
+ },
+ "flight.sw.crt": {
+  "ru": "ЭКРАН",
+  "en": "DISPLAY",
+  "ja": "表示切替"
+ },
+ "flight.sw.radio": {
+  "ru": "РАДИО",
+  "en": "RADIO",
+  "ja": "ラジオ"
+ },
+ "flight.mark.on": {
+  "ru": "ВКЛ",
+  "en": "ON",
+  "ja": "入"
+ },
+ "flight.mark.off": {
+  "ru": "ОТКЛ",
+  "en": "OFF",
+  "ja": "切"
+ },
+ "flight.mark.open": {
+  "ru": "ОТКР",
+  "en": "OPEN",
+  "ja": "開"
+ },
+ "flight.mark.shut": {
+  "ru": "ЗАКР",
+  "en": "SHUT",
+  "ja": "閉"
+ },
+ "flight.mark.chute": {
+  "ru": "ПАРАШЮТ",
+  "en": "PARACHUTE",
+  "ja": "パラシュート"
+ },
+ "flight.mark.manual": {
+  "ru": "ВРУЧНУЮ",
+  "en": "MANUAL",
+  "ja": "手動"
+ },
+ "flight.plate.name": {
+  "ru": "ЛАСТОЧКА",
+  "en": "LASTOCHKA",
+  "ja": "ツバメ号"
+ },
+ "flight.plate.maker": {
+  "ru": "ЛЮДМИЛОВСКИЙ ПРИБОРНЫЙ ЗАВОД",
+  "en": "LYUDMILOVSK INSTRUMENT WORKS",
+  "ja": "リュドミロフスク計器製作所"
+ },
+ "flight.plate.type": {
+  "ru": "АППАРАТ СПУСКАЕМЫЙ СА-1",
+  "en": "DESCENT VEHICLE SA-1",
+  "ja": "降下船 SA-1型"
+ },
+ "flight.plate.serial": {
+  "ru": "ЗАВ. № 000001",
+  "en": "SERIAL No. 000001",
+  "ja": "製造番号 000001"
+ },
+ "flight.plate.year": {
+  "ru": "1968 г.",
+  "en": "1968",
+  "ja": "1968年製"
+ },
+ "flight.auto.ready": {
+  "ru": "Системы готовы к пуску.",
+  "en": "All systems are ready for launch.",
+  "ja": "発射の準備が整いました。"
+ },
+ "flight.auto.launch": {
+  "ru": "Внимание. Пуск.",
+  "en": "Attention, please. Launch.",
+  "ja": "ご注意ください。発射します。"
+ },
+ "flight.auto.cutoff": {
+  "ru": "Двигатель выключен.",
+  "en": "The engine has shut down.",
+  "ja": "エンジンを停止しました。"
+ },
+ "flight.auto.weightless": {
+  "ru": "Невесомость. Ремни можно отстегнуть.",
+  "en": "Weightlessness. You may unfasten your belts.",
+  "ja": "無重力に入りました。ベルトをお外しいただけます。"
+ },
+ "flight.auto.burn": {
+  "ru": "Внимание. Коррекция траектории.",
+  "en": "Attention, please. Course correction.",
+  "ja": "ご注意ください。軌道を修正します。"
+ },
+ "flight.auto.half": {
+  "ru": "Пройдена половина пути.",
+  "en": "We are now half way.",
+  "ja": "行程の半分を過ぎました。"
+ },
+ "flight.auto.approach": {
+  "ru": "Начинается сближение с планетой.",
+  "en": "We are beginning our approach to the planet.",
+  "ja": "まもなく惑星に接近します。"
+ },
+ "flight.auto.sep": {
+  "ru": "Отделение приборного отсека.",
+  "en": "Instrument module separation.",
+  "ja": "機械船を切り離します。"
+ },
+ "flight.auto.entry": {
+  "ru": "Вход в атмосферу. Пожалуйста, пристегните ремни.",
+  "en": "Entering the atmosphere. Please fasten your belts.",
+  "ja": "大気圏に入ります。ベルトをお締めください。"
+ },
+ "flight.auto.blackout": {
+  "ru": "Связь временно прервётся.",
+  "en": "Communications will be lost for a short time.",
+  "ja": "しばらくの間、通信が途切れます。"
+ },
+ "flight.auto.chute": {
+  "ru": "Парашют раскрыт.",
+  "en": "The parachute is open.",
+  "ja": "パラシュートが開きました。"
+ },
+ "flight.auto.splash": {
+  "ru": "Приготовьтесь к приводнению.",
+  "en": "Please prepare for splashdown.",
+  "ja": "着水にそなえてください。"
+ },
+ "flight.auto.home": {
+  "ru": "Добро пожаловать домой.",
+  "en": "Welcome home.",
+  "ja": "おかえりなさい。"
+ },
+ "line.hero.flight_liftoff.1": {
+  "ru": "Лёд уходит вниз. ...Я правда улетаю.",
+  "en": "The ice is dropping away. ...I'm really leaving.",
+  "ja": "氷が下へ遠ざかっていく。…本当に、飛んでるんだ。"
+ },
+ "line.hero.flight_weightless.1": {
+  "ru": "Руки сами всплывают. Как под водой, только воды нет.",
+  "en": "My hands just float up. Like being underwater, only there's no water.",
+  "ja": "手が勝手に浮いてくる。水の中みたいだ。水なんてないのに。"
+ },
+ "line.hero.flight_europa_behind.1": {
+  "ru": "Европа уже с монетку. А я только что там стоял.",
+  "en": "Europa's the size of a coin already. And I was just standing on it.",
+  "ja": "エウロパ、もうコインくらいだ。さっきまで、あそこに立ってたのに。"
+ },
+ "line.hero.flight_planet_grows.1": {
+  "ru": "Она всё больше. И вся синяя. Нигде ни клочка земли.",
+  "en": "It keeps growing. And it's all blue. Not a scrap of land anywhere.",
+  "ja": "どんどん大きくなる。ぜんぶ青い。陸なんて、どこにもない。"
+ },
+ "line.hero.flight_ocean.1": {
+  "ru": "Одна вода. Куда ни посмотри... одна вода.",
+  "en": "Just water. Wherever I look... just water.",
+  "ja": "水だけだ。どこを見ても…水だけ。"
+ },
+ "line.hero.flight_island.1": {
+  "ru": "Вон он. Наш остров. Такой маленький... А больше ничего и нет.",
+  "en": "There it is. Our island. So small... And there's nothing else at all.",
+  "ja": "あった。僕らの島だ。あんなに小さい…ほかには、何もない。"
+ },
+ "line.hero.flight_fire.1": {
+  "ru": "Горит. За стеклом всё горит. ...Держись, Ласточка. Пожалуйста.",
+  "en": "It's burning. Everything outside is burning. ...Hold on, Lastochka. Please.",
+  "ja": "燃えてる。窓の外が、ぜんぶ燃えてる。…がんばれ、ツバメ。お願いだ。"
+ },
+ "line.hero.flight_chute.1": {
+  "ru": "Купол... Раскрылся. Можно дышать.",
+  "en": "The canopy... It's open. I can breathe.",
+  "ja": "傘が…開いた。やっと、息ができる。"
+ },
+ "line.hero.flight_home.1": {
+  "ru": "Плеск. И тихо. ...Я дома.",
+  "en": "A splash. Then quiet. ...I'm home.",
+  "ja": "水の音。静かだ。…帰ってきた。"
+ },
+ "line.hero.flight_afloat.1": {
+  "ru": "Качает. Пахнет водорослями. Вон пляж... Доплыву.",
+  "en": "It's rocking. Smells of seaweed. There's the beach... I can swim that.",
+  "ja": "揺れてる。海藻のにおいがする。あそこが浜だ…泳いでいける。"
+ },
+ "flight.diary.stamp": {
+  "ru": "Перелёт с Европы",
+  "en": "The flight from Europa",
+  "ja": "エウロパからの飛行"
+ },
+ "flight.diary.stamp.line": {
+  "ru": "Улетел со льда на «Ласточке» и упал в море у своего пляжа.",
+  "en": "Left the ice aboard Lastochka and came down in the sea off my own beach.",
+  "ja": "ツバメ号で氷の上を飛び立って、いつもの浜の沖に降りた。"
+ },
+ "diary.day.flight.plain.0": {
+  "ru": "Летел домой с Европы. Пятнадцать минут, а как будто целая жизнь.",
+  "en": "Flew home from Europa. Fifteen minutes, and it felt like a whole life.",
+  "ja": "エウロパから飛んで帰ってきた。十五分なのに、一生ぶんみたいだった。"
+ },
+ "diary.day.flight.plain.1": {
+  "ru": "Видел наш остров сверху. Он один на всю планету.",
+  "en": "Saw our island from above. It's the only one on the whole planet.",
+  "ja": "上から僕らの島を見た。星ぜんたいで、あれひとつだけ。"
+ },
+ "diary.day.flight.plain.2": {
+  "ru": "За стеклом был огонь, потом купол, потом море. Руки до сих пор дрожат.",
+  "en": "Fire outside the glass, then the canopy, then the sea. My hands are still shaking.",
+  "ja": "窓の外は火で、それから傘、それから海。手がまだ震えてる。"
+ },
+ "dev.group.flight": {
+  "ru": "Перелёт с Европы",
+  "en": "The flight from Europa",
+  "ja": "エウロパからの飛行"
+ },
+ "dev.tp.flight_craft": {
+  "ru": "Европа: к «Ласточке»",
+  "en": "Europa: to Lastochka",
+  "ja": "エウロパ：ツバメ号へ"
+ },
+ "dev.tp.flight_cabin": {
+  "ru": "Европа: в кабину «Ласточки»",
+  "en": "Europa: into Lastochka's cabin",
+  "ja": "エウロパ：ツバメ号の船室へ"
+ },
+ "dev.action.flight.start": {
+  "ru": "Перелёт: начать (сесть, пристегнуть, ПУСК)",
+  "en": "Flight: start (seat, buckle, LAUNCH)",
+  "ja": "飛行：開始（着席・ベルト・発射）"
+ },
+ "dev.action.flight.phase_parked": {
+  "ru": "Перелёт: фаза «стоянка»",
+  "en": "Flight: phase parked",
+  "ja": "飛行：フェーズ「待機」"
+ },
+ "dev.action.flight.phase_prelaunch": {
+  "ru": "Перелёт: фаза «предстарт»",
+  "en": "Flight: phase prelaunch",
+  "ja": "飛行：フェーズ「発射準備」"
+ },
+ "dev.action.flight.phase_ascent": {
+  "ru": "Перелёт: фаза «выведение»",
+  "en": "Flight: phase ascent",
+  "ja": "飛行：フェーズ「上昇」"
+ },
+ "dev.action.flight.phase_coast": {
+  "ru": "Перелёт: фаза «перелёт»",
+  "en": "Flight: phase coast",
+  "ja": "飛行：フェーズ「慣性飛行」"
+ },
+ "dev.action.flight.phase_approach": {
+  "ru": "Перелёт: фаза «сближение»",
+  "en": "Flight: phase approach",
+  "ja": "飛行：フェーズ「接近」"
+ },
+ "dev.action.flight.phase_entry": {
+  "ru": "Перелёт: фаза «вход в атмосферу»",
+  "en": "Flight: phase entry",
+  "ja": "飛行：フェーズ「大気圏突入」"
+ },
+ "dev.action.flight.phase_chute": {
+  "ru": "Перелёт: фаза «парашют»",
+  "en": "Flight: phase parachute",
+  "ja": "飛行：フェーズ「傘降下」"
+ },
+ "dev.action.flight.phase_splash": {
+  "ru": "Перелёт: фаза «приводнение»",
+  "en": "Flight: phase splashdown",
+  "ja": "飛行：フェーズ「着水」"
+ },
+ "dev.action.flight.phase_afloat": {
+  "ru": "Перелёт: фаза «на плаву»",
+  "en": "Flight: phase afloat",
+  "ja": "飛行：フェーズ「漂流中」"
+ },
+ "dev.action.flight.fast": {
+  "ru": "Перелёт: быстрое время вкл./выкл.",
+  "en": "Flight: fast time on/off",
+  "ja": "飛行：早送り オン/オフ"
+ },
+ "dev.action.flight.records": {
+  "ru": "Перелёт: все пластинки в карман",
+  "en": "Flight: all records into pocket",
+  "ja": "飛行：レコードを全部ポケットへ"
+ },
+ "dev.action.flight.reset": {
+  "ru": "Перелёт: вернуть кабину на Европу",
+  "en": "Flight: put the cabin back on Europa",
+  "ja": "飛行：船室をエウロパに戻す"
+ }
+}

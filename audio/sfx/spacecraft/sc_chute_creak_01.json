@@ -1,0 +1,40 @@
+{
+ "name": "sc_chute_creak_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_chute_creak_01",
+ "pool": "sc_chute_creak",
+ "file": "audio/sfx/spacecraft/sc_chute_creak_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7531,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 24000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -22.95,
+ "params": {
+  "swing_s": 3.0,
+  "creaks": 4,
+  "stored_rate": 24000,
+  "energy_above_new_nyquist_db": -48.1
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 24000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -22.95,
+  "crest_db": 16.9,
+  "centroid_hz": 264,
+  "rolloff85_hz": 340,
+  "dc": 0.0,
+  "clipped": 0,
+  "seam_jump": 0.41,
+  "seam_jump_pct": 45.8,
+  "seam_energy": 1.41,
+  "seam_pct": 65.5,
+  "seam_level_db": -0.6
+ },
+ "sha256": "bc67b370becfd1ce4ec006c90bbfe4018cfca8678f0e62a7877a2752d10e129c",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

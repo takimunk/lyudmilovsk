@@ -1,0 +1,45 @@
+{
+ "name": "sc_entry_roar_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_entry_roar_01",
+ "pool": "sc_entry_roar",
+ "file": "audio/sfx/spacecraft/sc_entry_roar_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7471,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 24000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -18.1,
+ "params": {
+  "formants_hz": [
+   250,
+   500,
+   900,
+   1600
+  ],
+  "buffet_depth": 0.3,
+  "stored_rate": 24000,
+  "energy_above_new_nyquist_db": -122.0
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 24000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -18.1,
+  "crest_db": 12.1,
+  "centroid_hz": 206,
+  "rolloff85_hz": 436,
+  "dc": -0.0,
+  "clipped": 0,
+  "seam_jump": 0.61,
+  "seam_jump_pct": 52.2,
+  "seam_energy": 3.68,
+  "seam_pct": 91.2,
+  "seam_level_db": -0.2
+ },
+ "sha256": "a3a59ece14b946c27fec4ed8636036f54088cd3dd8edded3c9be96ed54649264",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

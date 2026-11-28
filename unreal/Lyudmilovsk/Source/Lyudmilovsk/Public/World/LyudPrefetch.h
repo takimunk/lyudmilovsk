@@ -30,6 +30,9 @@ public:
 	/** Lets go of a loaded object once its user holds it itself (a body with its mesh): the garbage collector frees it
 	 *  after that user goes. For the one-off assets (a townsperson's own look), not the shared ones. */
 	static void Release(const UObject* WorldContext, const FString& ObjectPath);
+	/** Lets go of everything FolderReady(Folder, Skip) held (the flight home's set after the flight, ULyudSpaceflightSubsystem):
+	 *  the garbage collector frees what nothing else uses; a later FolderReady loads it again. */
+	static void ReleaseFolder(const UObject* WorldContext, const FString& Folder, const TCHAR* Skip = nullptr);
 
 	int32 NumLoading() const { return Loading.Num(); }
 

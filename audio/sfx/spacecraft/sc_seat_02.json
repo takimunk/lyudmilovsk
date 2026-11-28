@@ -1,0 +1,30 @@
+{
+ "name": "sc_seat_02",
+ "asset": "/Game/Audio/Spacecraft/S_sc_seat_02",
+ "pool": "sc_seat",
+ "file": "audio/sfx/spacecraft/sc_seat_02.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7312,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.713,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -18.59,
+ "params": {},
+ "checks": {
+  "seconds": 0.713,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -18.59,
+  "crest_db": 12.6,
+  "centroid_hz": 439,
+  "rolloff85_hz": 686,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "85b830686294af10c097395cd8e81c7424fd82b7f3a9a97bfea920565ccc2468",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

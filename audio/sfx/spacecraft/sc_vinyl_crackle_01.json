@@ -1,0 +1,38 @@
+{
+ "name": "sc_vinyl_crackle_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_vinyl_crackle_01",
+ "pool": "sc_vinyl_crackle",
+ "file": "audio/sfx/spacecraft/sc_vinyl_crackle_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7631,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 7.2,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -30.05,
+ "params": {
+  "turn_s": 1.8,
+  "pops_per_s": 25
+ },
+ "checks": {
+  "seconds": 7.2,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -30.05,
+  "crest_db": 24.1,
+  "centroid_hz": 4483,
+  "rolloff85_hz": 7990,
+  "dc": -0.0,
+  "clipped": 0,
+  "seam_jump": 0.05,
+  "seam_jump_pct": 3.6,
+  "seam_energy": 1.29,
+  "seam_pct": 93.0,
+  "seam_level_db": -0.5
+ },
+ "sha256": "09d01ef3ae92773dde9a7c665cba80eb38268858a8f357cf01035daf283402e8",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

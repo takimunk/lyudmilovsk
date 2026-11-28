@@ -1,0 +1,36 @@
+{
+ "name": "sc_chime_02",
+ "asset": "/Game/Audio/Spacecraft/S_sc_chime_02",
+ "pool": "sc_chime",
+ "file": "audio/sfx/spacecraft/sc_chime_02.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7252,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.914,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -18.86,
+ "params": {
+  "notes_hz": [
+   659.3,
+   784.0,
+   1046.5
+  ]
+ },
+ "checks": {
+  "seconds": 0.914,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -18.86,
+  "crest_db": 12.9,
+  "centroid_hz": 868,
+  "rolloff85_hz": 785,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "65bec003bab3d54af181d3a881b2b7c8fa15e8e314691b4d234336587db32404",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}
