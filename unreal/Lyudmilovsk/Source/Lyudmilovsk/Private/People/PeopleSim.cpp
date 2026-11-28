@@ -3397,9 +3397,9 @@ namespace LyudPeople
 		{
 			Urgent = (int)ENeed::Hunger;    // past what Interrupt calls them away for: not back to something that doesn't meet it
 		}
-		else if (P.N[(int)ENeed::Tired] > 0.96f)
+		else if (P.N[(int)ENeed::Tired] > 0.96f && FreeHoursLeft(P) < 3.f)
 		{
-			Urgent = (int)ENeed::Tired;
+			Urgent = (int)ENeed::Tired;     // the evening's tiredness (bed, or the next duty, near): rest at home (below)
 		}
 		// a break from work is taken at the work's own place when it has what's needed (the owner eats in the club, not
 		// at home); otherwise anywhere
@@ -3427,6 +3427,12 @@ namespace LyudPeople
 				}
 				int S = -1;
 				const float Sc = Score(P, Activities[I], S);
+				// worn out (not on a break): rest at home, not a long way off to something restful (the North's hot spring);
+				// nothing at home: the usual pick (Pass 2)
+				if (Urgent == (int)ENeed::Tired && !bBreakNow && (S < 0 || Slots[(size_t)S].Place != P.Home))
+				{
+					continue;
+				}
 				if (Sc > BestScore)
 				{
 					BestScore = Sc;
