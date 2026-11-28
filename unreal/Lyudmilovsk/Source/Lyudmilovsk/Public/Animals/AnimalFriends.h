@@ -40,7 +40,7 @@ struct LYUDMILOVSK_API FLyudAnimalFriend
  * "Friends" pages (after the birds) with a portrait and the name. Saved with the game ("AnimalFriends"). The bond itself and the
  * given name live in the animal life's own save (FAnimalMemory); this is the diary's record.
  *
- * UAnimalFriendSubsystem writes in it. Console: lyud.Pets.Report.
+ * UAnimalFriendSubsystem writes in it. Console: lyud.Pets.Friends.
  */
 UCLASS()
 class LYUDMILOVSK_API ULyudAnimalFriends : public UGameInstanceSubsystem
@@ -87,7 +87,7 @@ public:
  * Reads keys by polling and never consumes them. Sends the quests animal_sniffed|animal_stroked|animal_fed|animal_friend|
  * animal_walk|animal_home|animal_lap <Maru|Cat|Dog> and animal_walk_reach <place>; residents remark on the dog (town talk
  * "dog_walk"). Console: lyud.Pets.Do hand|stroke|feed|walk|home [id], lyud.Pets.Befriend [id], lyud.Pets.Name <id> <name>,
- * lyud.Pets.Report. lyud.Pets 0 turns the player's side off.
+ * lyud.Pets.Friends. lyud.Pets 0 turns the player's side off.
  */
 UCLASS()
 class LYUDMILOVSK_API UAnimalFriendSubsystem : public UTickableWorldSubsystem
