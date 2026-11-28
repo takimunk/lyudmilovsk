@@ -1426,8 +1426,202 @@ rest (`lyud.Sail.Fleet`, `Board`, `Lesson`, `Race`, `Capsize`, ...).
 - `PlayEffect` uses each pool's own attenuation: the whistle and the horn carry as far as their pools say.
 - The launch's driver gets no `TalkId` (the school knows the role's dialogue id; set it on the body if he should talk).
 - Telltales ride a guessed belly offset (5 % of the chord); tune `MoveParts` against the imported cloth.
-- The school's half also appends to this file and may write `tools/sailing/strings_engine_needed.json` too: expect a
-  trivial merge of the two.
+- The school's half has its own section below and its own keys file (`tools/sailing/strings_school_needed.json`).
+
+## Engine: the school
+
+The school's half of the engine (branch `yacht-school-engine-school`): `ULyudSailing`, a `UTickableWorldSubsystem`
+that runs the school by the rules of `SailSchoolModel.h` on `Content/City/sailing.json`, with the boats of "Engine: the
+boats". Not compiled yet (written in the cloud): see "Mac checklist" and "Open issues". The fleet's brain is plain C++
+and IS tested on the host (`tools/sailfleetsim`).
+
+### Files
+
+| file | what it does |
+|---|---|
+| `Public/Sailing/LyudSailing.h` | `ULyudSailing` and the save object `ULyudSailingBook` (key `Sailing`) |
+| `Private/Sailing/LyudSailingState.h` | everything the subsystem keeps between ticks, in plain C++ behind a `TPimplPtr` (the rules' data, the log, the brain, the hero's outing, the race of the day) |
+| `Private/Sailing/SailFleetModel.h` | `LyudSail::FFleetBrain`, engine-free: every helmsman's orders (out of the corridor, the drill, the race, home), the launch's jobs (lead, stand by, rescue, tow, committee boat), the start sequence, OCS and the general recall, the trackers, contacts between hulls and with the pier, LOD buckets and budget, a member's skill and what a session teaches, an unwatched session by numbers |
+| `LyudSailing.cpp` | life cycle, the clock's facts (2 s), the people's conditions (10 s), the decision and the recall, the hero (the acts at the desk, his boat, boarding, the recall, the area's edge, the night sail, lessons, the HUD's task), the boards' pages, the news' providers, the report, the save |
+| `LyudSailingSite.cpp` | the boathouse and what stands in it (`Content/City/sailing_boathouse.json`), doors, the slip's boards down to today's water, the mast's flags, the windsock, lamps, the halyards' loop; a plain shed while the kit is not imported |
+| `LyudSailingFleet.cpp` | the pool (a dinghy per hull of the data, the launch, 24 marks), who goes afloat and when, levels of detail, the brain's events turned into flags and sounds, the boats' places ashore, the session nobody watched |
+| `LyudSailingRace.cpp` | a race day on the water: courses at each warning signal, the log, the wait between races, the town at the rail, the fanfare and the prize, the hero's race lines |
+| `LyudSailingDev.cpp` | `lyud.Sail.*` commands and the F7 group `sailing` |
+| `tools/sailfleetsim/` | the REQUIRED host test: whole sessions and races of the real data in the game's gust field |
+| `tools/sailing/strings_school_needed.json` | new keys with ru/en/ja drafts for the words' part (one: `sail.board.hero`) |
+
+Shared files touched: `Private/City/LyudCityThings.cpp` (a text whose `gen` begins `sail:` takes its pages from
+`ULyudSailing::BoardPages`; such a text is not reported to the paper as read), `tools/city/content/x_sailing.json`
+(collection `sailing`: `"code"` instead of `"by"`) with the regenerated `Content/City/interiors.json`,
+`tools/run_all_suites.sh` (rows `sailfleetsim.quick`, and `sailfleetsim.test` as slow).
+
+`Content/City/sailing_boathouse.json` is a copy of `blender/sailing/boathouse_layout.json`: after `boathouse.py`
+changes the layout, copy it again by hand.
+
+### The tick
+
+`Tick` does nothing while `sailing.json` is missing or `lyud.Sail` is 0. Otherwise, in this order:
+
+| stage | rate | what |
+|---|---|---|
+| `RefreshFacts` | 2 s | the date (or the forced season's stand-in day), the hour, the day off, the weather over the water of the session's area (wind: the mean at 10 m there, `ULyudWindSubsystem::GetWindAt(.., 10, true)` without its gust factor; gust = mean x (1 + gustiness)), the tide, the launch point on the real sea bed, the session and its phase, the decision (`SchoolDecide`, once, when a water session is first seen) and the recall (`SchoolMustRecall`, while its phase is on the water), the unseen race day's end (`SchoolResolveDay`, once: `ResolvedDay`), the mast's signal |
+| `PushConditions` | 10 s | `sail_season`, `sail_kids`, `sail_juniors`, `sail_adults`, `sail_race`, `sail_shore`, `sail_fitout` from `SchoolConditionsAt`; `sail_prizes` (the phase `prizes`), `sail_watch`; the spectators' gathering and the prize-giving (`RaceWatchers`) |
+| `TickSite` | 0.5 s | builds the site once within 400 m of the boathouse; shows it within 400 m, hides it beyond 460; re-lays the slip when the launch point has moved over 1 m; re-hoists the flags when the signal changed (`sail_flag_squeak`); turns flags and the sock downwind; lamps, the boat door, the halyards' loop |
+| `TickFleet` | every frame within 1.5 km of the slip (1.65 km once a session is being watched), or wherever the hero's boat is out | `WaterControl` (begin / end a session's water, one boat pushed off every 7 s once her helmsman has come to the slip, the drill of the block, the race's stages); `ParkHulls` and the tide's new launch point (2 s); LOD buckets (0.25 s); the brain: `Think`, the boats' `Advance*`, the launch, `After`, the events |
+| `TickHero` | every frame | boarding prompt and E, the outing's rules, the lesson's step, the HUD's task (0.5 s) |
+
+Beyond 1.5 km (and the hero's boat ashore) nothing is stepped: a session on the water is taken off it at once
+(`ResolveUnwatched`), the dinghies stay parked actors.
+
+### Levels of detail and budgets
+
+- Near to 60 m (kept to 72), Mid to 250 m (kept to 280), Far beyond (`FleetLodOf`); at most `lyud.Sail.NearBoats`
+  (default 6) Near at once, the farthest of the rest go to Mid, the hero's own boat is always Near and counts.
+- Near and Mid boats get the helmsman's `FControls` every frame (the boat steps Mid at 15 Hz itself); Far boats get
+  `AdvanceFar(course, speed scale)` ten times a second, each on its own clock.
+- The brain thinks for every unit afloat each frame (21 at most: the twenty members in the 8 + 4 + 9 hulls and the hero); neighbours are
+  refreshed five times a second. Nothing is allocated per frame: the units' array is reserved (32), the events are a
+  fixed array of 48, the sailors' list (`GetSailors`, 2 s) and the slip's transforms are kept arrays.
+- Marks ride the waves within 180 m of the eye only.
+- The site is one actor: about 120 static mesh components (cull 300 m), 12 shadowless point lights (lit after dark
+  only), one instanced mesh for the slip (19 to 230 boards), 5 `ALyudDoor`, 5 flag quads. It is hidden beyond 460 m.
+
+### What is statistical when the hero is away
+
+- A lesson he does not see (farther than 1.5 km, or the fleet never made): at its water time's end each member of the
+  group gets `FleetResolveSession` (seeded by the session's key and the member) and `FleetSkillGain` is added to what
+  he has learned (`Learned`, saved, at most 0.12). Nothing is drawn; the people's life shows them by its own means.
+- A race day he does not see to the end: `SchoolResolveDay` once the last race session's time is over (or at the next
+  day's turn if he slept through it) fills the races that were not sailed in front of him; races that were are already
+  in the log (`SchoolRecordRace` at each finish). `ResolvedDay` makes it once.
+- Walking away from a session in full swing takes the boats off the water at once and the rest goes by the two rules
+  above. Coming back within the same session's water time sends them out again from the slip.
+
+### The hero's flow
+
+1. **Join**: act `sail_join` at the coach's desk: the fee, the item `sail_card`, stamp `joined`, quest event
+   `sail join`.
+2. **Life jacket**: act `sail_jacket` at the rail takes one and puts it on (again: hangs it back). No boat is boarded
+   without it worn (`sail.jacket.need`).
+3. **Lessons**: act `sail_lesson` starts the next one when `LessonAvailable` lets it (else the gate's word). Shore
+   lessons listen to the acts `sail_knot`, `sail_parts`, `sail_rig`. A lesson afloat puts his boat (the data's
+   `hero_boat`, Luch number nine) afloat by the slip; **E** beside her boards (prompt `ui.sail.board`). The boat's
+   keys are the boats' half's ("Engine: the boats"). The lesson runs as `FLessonRun`: its title, objective line with
+   progress, countdown and next mark go to the boat's HUD (`SetHudTask`), its hints to `ShowHint`; buoys and the
+   lesson's own course come from the mark pool (16 to 23); the coach leads in the launch on `follow` objectives. The
+   first lessons sail with the assists on.
+4. **Hire**: act `sail_hire` (certificate, the hire's hours and weather, the jacket, the fee) puts the boat afloat.
+   Stepping out within 70 m of the launch point ends the outing: miles, hours and capsizes go to the log
+   (`SchoolAddSailing`), the boat back to her place. Stepping out anywhere else leaves her there: the launch tows her
+   home and the bosun says so (`sail.hire.towed`); until then nothing else can be hired.
+5. **Recall** (the session's recall, the hire's last quarter-hour before sunset, thunder, too much wind): a word and the
+   HUD's line home. Coming in is noted (`SchoolNoteRecall`: stamp `recall`); five minutes ignored beyond 70 m and the
+   launch takes him in tow: `sail.recall.tow` and the quest event `sail towed`.
+6. **The water's edge**: six seconds outside every sailing area (and farther than 160 m from the launch point) a
+   warning, 75 seconds and the launch comes.
+7. **Racing**: act `sail_enter` on a race day (certificate, the entry fee, the jacket) puts the boat afloat and him in
+   the fleet's next start: the warning, the countdown, OCS, the place and the next mark on the HUD; each race into the
+   log. At the prize-giving (the phase `prizes`: `sail_fanfare` at the podium) a place in the first three of the day's
+   table pays (4 - place) x the larger of the entry fee and the hire fee (the rules have no prize money: see "Open
+   issues").
+8. **Night sail**: with the head coach's leave (`lyud.Sail.Night 1`, `SetNightLeave`, or rank helm2) the hire works
+   after dusk in a steady 1 to 6 m/s; three minutes out past the corridor's end send the quest event `sail night`.
+
+Everything the rules say happened goes through one place, `Emit(FSchoolEvents)`: stamps
+(`ULyudCityThings::GiveStamp("sailing/<piece>")`, each id written out in `LyudSailing.cpp` for `interiors.py`), quest
+events (`ULyudQuests::Notify("sail", <target>)`), a new rank's toast.
+
+### Console and developer mode
+
+`lyud.Sail 0|1` (cvar: 0 stows the fleet, hides the site, clears the conditions), `lyud.Sail.NearBoats <n>`, and the
+commands `lyud.Sail.Report`, `lyud.Sail.Season 0|1|-1`, `lyud.Sail.Board [optimist|cadet|luch]`,
+`lyud.Sail.Lesson <id|next>`, `lyud.Sail.Race [wl|triangle|kids]`, `lyud.Sail.Fleet <n>` (0: everybody ashore and kept
+there; -1: the timetable again), `lyud.Sail.Capsize`, `lyud.Sail.Rank <none|yunga|helm3|helm2|helm1>`, `lyud.Sail.Kit`,
+`lyud.Sail.Night 0|1`, `lyud.Sail.Off` (toggles `lyud.Sail`). The F7 panel's group `sailing` has the thirteen actions
+of "Dev mode" above as `LyudDev::FAutoAction`s that call the same functions (`wind`: `lyud.Wind.Speed 6` and
+`lyud.Wind.From 90`, again gives the weather's wind back; `easy`: `lyud.Sail.Easy 2`, again 1).
+
+`lyud.Sail.Season 1` asks the rules about a July day of the same weekday (0: a January day): the timetable, the
+conditions, the mast and the boats follow; the weather stays the real one, so winter ice or darkness still keeps the
+boats ashore. `lyud.Sail.Fleet` and `lyud.Sail.Race` send a session of their own out whatever the timetable says (the
+developer's session stands in for the hour's until its boats are home; a boat does not wait for her helmsman to walk
+to the slip). A dev race on a day that is not a race day is not written into the log.
+
+### Save
+
+`ULyudSailingBook` under the key `Sailing`: `Journal` (`FSchoolLog::Save`: membership, lessons, rank, miles, races,
+series, the last day's tables, stamps given) and `Memory` (`m1 ...`: the last resolved race day, the night leave, the
+forced season, the hero's boat afloat with its place and whether he was aboard, hired, left elsewhere, a night outing,
+the day he entered a regatta, today's session decisions and recalls, what each member has learned). Loading gives
+nothing to the pocket and tells no quest; every boat goes back to the park, and the hero's is put back where she was
+(he in her) once the fleet exists. A new game clears the log.
+
+### Cross-branch switches
+
+- `__has_include("Weather/LyudWindsock.h")` (the wind-kites branch) only sets `LYUD_SAIL_HAS_WINDTELLS`, which so far
+  changes one line of the log: the school flies its own sock either way. When that branch is in, register the pole
+  with its subsystem there and drop the school's own sock (index 4 of `MastFlags`).
+- No kit meshes (`SM_Sail_Boathouse` missing): a boarded shed of the same footprint with the two north doorways open,
+  no props, no hinged doors; flags are plain coloured quads. A single missing prop is left out.
+- No `ALyudSea`: depths come from the data's bed profile; no weather or wind subsystem: calm defaults (the school
+  stays ashore).
+- The gathering asks the people's life for the place kind `sail_spectators` and skips it on a day whose regatta
+  belongs to a festival that is active (the festival leads its own crowd).
+
+### Host test
+
+`tools/sailfleetsim/run.sh [test]` (a few minutes; `quick` 45 s, 95 checks): 201 checks, 0 failed. Skills by group and
+their growth; LOD buckets and the budget; hull contacts and the pier; unwatched sessions (deterministic, more capsizes
+near the limit); seventeen two-hour sessions, each group with two drills (kids 3 to 5 m/s, juniors 4 and 6.5, adults 6
+and 8.5, from two or three directions: all ashore within 22 minutes of the recall, nobody over 15 m outside the area,
+buoys laid, at most 10 contacts a boat, laps sailed); twenty-four races of the twelve cadets and luches, windward-leeward
+and triangle, at 3, 6 and 9 m/s from eight directions, and four of the optimists at 4.5 m/s (everybody finishes, but for
+one boat at most from 8 m/s up and among the optimists; the first inside the time limit, the last inside the finish
+window, the worst start under 200 s late, nobody over 15 m outside the area, at most 30 contacts, all ashore within 30
+minutes). The winds given are the school's: means at 10 m (the sail feels the
+wind at 2 m, about 0.8 of it, in the game's own gust field).
+
+### Mac checklist
+
+1. Build. Expect first-compile errors in the five new `LyudSailing*.cpp` (none was compiled).
+2. `lyud.Sail.Report` at the school; `lyud.Sail.Season 1` in winter. Look at the site:
+   - the boathouse stands on its floor, the props where the layout has them. **Rotated props** (masts on brackets,
+     hanging sails: `rot_deg`) use a Blender-to-Unreal Euler conversion that was not seen: if they lie wrong, fix
+     `LyudSailingSiteImpl::Turned`;
+   - hinged doors face and swing the right way (the door's X is the layout's `out` with Y flipped);
+   - the slip's boards run from the door's apron down to the water at any tide; flags at the masthead and the yard;
+     the sock; lamps after dark; the halyards in a breeze.
+3. `lyud.Sail.Kit`, `lyud.Sail.Board luch` (then `optimist`, `cadet`): aboard off the slip; sail out, step out by the
+   slip (the outing ends), step out far away (the launch tows her home).
+4. `lyud.Sail.Fleet 8`, `12`, `22`: boats push off one by one, sail the drill, marks laid; `lyud.Sail.Fleet 0` brings
+   them home and up the beach. `lyud.Sail.Race triangle`: the sequence's flags and horns on the launch, the start,
+   rounding, the finish, the boats home. With the hero's boat out he is in it: the HUD's race lines.
+5. `lyud.Sail.Lesson first_sail` and on through the course; `lyud.Sail.Rank helm3`, then hire and enter at the desk.
+6. A real day: a training session from the people's side (they come, rig, launch), a recall (raise the wind:
+   `lyud.Wind.Speed 12`), a race Sunday with the town at the rail and the prize-giving.
+7. Save with the boat out and aboard; load: she is where she was.
+8. Bench with `lyud.Sail.Fleet 22` as in the boats' checklist; `lyud.Sail.NearBoats 3` and `12` against the default.
+
+### Open issues
+
+- **Part A, `SailModel.cpp` `Heading()` mode 1**: `const double Side = -Rel * H.Tack;` looks sign-inverted (a boat
+  told to keep a lane on one side of the rhumb line heads for the other). The brain works round it (a very wide lane,
+  close-reach approaches to the line); not changed here.
+- Prize money is the engine's invention (see the hero's flow, 7): the rules and the data have none. Move it to
+  `sailing.json` and `SailSchoolModel.h` if it stays.
+- The layout's `boats` list (hulls on the hall's racks) is not drawn: the real fleet's actors stand in the hall's
+  slots when the school is laid up and in the park otherwise, so the racks are empty.
+- `lyud.Sail.Season` is saved with the game (`Memory`), like the rest of the school's memory.
+- `lyud.Sail.Board` with another class gives the hero's unit that hull until the game is loaded again (the hire and
+  the lessons then use her).
+- `lyud.Sail.Capsize` pushes the boat's heel past the point of no return and lets the model take her over: a boat at
+  Far (on her polar) or with `lyud.Sail.Easy 2` does not go.
+- People are shown in the boats by the boats' half (`SetCrew`); a member whose helmsman has not reached the slip within
+  four minutes of the launch's start sails anyway (nobody is left without a boat by a blocked path).
+- The bell at the door is only a sound (`sail_bell_single`); the pools `sail_halyard_chorus_light/fresh`,
+  `sail_flag_squeak`, `sail_fanfare` must be imported for the site to be heard.
+- Events the brain raises outside its own tick (a recall ordered by the school, a race abandoned by it) are heard at
+  the start of the next tick: `FleetEvents` runs before `Think` and after `After`.
 
 ## Words, quests, items (part G)
 
