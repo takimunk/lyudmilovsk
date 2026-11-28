@@ -1001,7 +1001,8 @@ static int GuestsRota()
 	std::vector<int> Stay;
 	for (const FPerson& P : W.People)
 	{
-		if (P.StayCycle > 0)
+		// (a stay with a season, "when", is the motor ship's: her people and the townsfolk who cruise, cruise_people.h)
+		if (P.StayCycle > 0 && P.StayWhenId < 0)
 		{
 			Stay.push_back(P.Id);
 		}
@@ -1305,7 +1306,8 @@ static int Town()
 	};
 	for (const FPerson& P : W.People)
 	{
-		Guests += P.StayCycle > 0 && !W.Gone(P) ? 1 : 0;
+		// (not the motor ship's people nor the townsfolk who cruise: their stay has a season, "when")
+		Guests += P.StayCycle > 0 && P.StayWhenId < 0 && !W.Gone(P) ? 1 : 0;
 	}
 	double Longest = 0.0;
 	std::string LongestWho;

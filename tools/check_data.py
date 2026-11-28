@@ -157,7 +157,7 @@ Z0, Z1 = -80.0, 250.0                             # deepest sea bed .. highest h
 
 # the motor ship's cruise stage far out at sea (tools/city_plan.py SHIP_STAGE_X/Y, plot P-SHIP): off the map's sheet by
 # design, a place of its own (60 m round the stage)
-SHIP_STAGE = (26000.0, 4000.0, 60.0)
+SHIP_STAGE = (26000.0, 4000.0, 480.0)      # 480 m: the Far Light rock (plot P-FARLIGHT) stands 331 m off the stage
 
 
 def in_map(where, x, y, z=None):

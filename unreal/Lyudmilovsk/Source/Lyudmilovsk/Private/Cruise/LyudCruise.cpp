@@ -12,6 +12,7 @@
 #include "Plants/GameCalendar.h"
 #include "Sea/LyudSwim.h"
 #include "UI/LyudQuests.h"
+#include "World/LyudCityBuilding.h"
 
 #include "Camera/PlayerCameraManager.h"
 #include "Components/CapsuleComponent.h"
@@ -19,6 +20,7 @@
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
+#include "EngineUtils.h"
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
@@ -61,6 +63,14 @@ static FAutoConsoleCommandWithWorld CmdCruiseBoard(TEXT("lyud.Cruise.Board"), TE
 			C->DevBoardNow();
 		}
 	}));
+static FAutoConsoleCommandWithWorld CmdCruiseLanding(TEXT("lyud.Cruise.Landing"), TEXT("The landing at the Far Light: the clock at Saturday 16:40 of the voyage, the hero on the rock's jetty."),
+	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
+	{
+		if (ULyudCruise* C = ULyudCruise::Get(World))
+		{
+			C->DevLanding();
+		}
+	}));
 static FAutoConsoleCommandWithWorld CmdCruiseNext(TEXT("lyud.Cruise.Next"), TEXT("The calendar on to five seconds before the next event of the programme."),
 	FConsoleCommandWithWorldDelegate::CreateLambda([](UWorld* World)
 	{
@@ -100,6 +110,8 @@ static FAutoConsoleCommandWithWorld CmdCruiseBridgePass(TEXT("lyud.Cruise.Bridge
 // developer mode (docs/dev_mode.md): the group "cruise"; the teleports are Content/Dev/teleports/ship.json (tools/ship/cruise.py)
 static LyudDev::FAutoAction GDevCruiseBoard(TEXT("cruise.board_now"), TEXT("cruise"), TEXT("dev.action.cruise.board_now"),
 	[](UWorld* W) { if (ULyudCruise* C = ULyudCruise::Get(W)) { C->DevBoardNow(); } });
+static LyudDev::FAutoAction GDevCruiseLanding(TEXT("cruise.landing_now"), TEXT("cruise"), TEXT("dev.action.cruise.landing_now"),
+	[](UWorld* W) { if (ULyudCruise* C = ULyudCruise::Get(W)) { C->DevLanding(); } });
 static LyudDev::FAutoAction GDevCruiseNext(TEXT("cruise.next_event"), TEXT("cruise"), TEXT("dev.action.cruise.next_event"),
 	[](UWorld* W) { if (ULyudCruise* C = ULyudCruise::Get(W)) { C->DevNextEvent(); } });
 static LyudDev::FAutoAction GDevCruiseAshore(TEXT("cruise.ashore"), TEXT("cruise"), TEXT("dev.action.cruise.ashore"),
@@ -131,6 +143,16 @@ namespace LyudCruiseImpl
 	const TCHAR* const LaunchGate = TEXT("P-PIER/launch_gate");
 	/** Where a man fished out of the sea is set down: the aft mooring deck. */
 	const TCHAR* const AftThing = TEXT("P-SHIP/capstan");
+	/** The landing at the Far Light: the launch's two ends, and how far round the rock's chart point is "on the rock" (cm;
+	 *  the rock is 130 m at its longest from that point, the ship's side is 326 m from it). */
+	const TCHAR* const GangwayThing = TEXT("P-SHIP/gangway");
+	const TCHAR* const JettyThing = TEXT("P-FARLIGHT/jetty_gate");
+	const FName RockPlot(TEXT("P-FARLIGHT"));
+	constexpr double RockCm = 17000.0;
+	/** The real rock is shown while the seascape's copy would stand within this of it (m), or a hero who is no passenger
+	 *  is within RockVisitCm of it (a developer's visit). */
+	constexpr double RockMatchM = 1.0;
+	constexpr double RockVisitCm = 120000.0;
 	const TCHAR* const ClassNames[3] = { TEXT("hold"), TEXT("std"), TEXT("lux") };
 	/** Seconds between the looks at the hero and the flags. */
 	constexpr float PollEvery = 0.25f;
@@ -202,6 +224,14 @@ struct ULyudCruise::FWork
 	float AwayFor = 0.f;
 	float AtShipFor = 0.f;
 	bool bArrivalSeen = false;
+
+	// the landing at the Far Light: the rock's building (found lazily), whether it is shown, the bosun's warnings said
+	TWeakObjectPtr<ALyudCityBuilding> Rock;
+	bool bRockApplied = false;
+	bool bRockShown = false;
+	double RockMismatchM = 1e9;
+	float RockSwimFor = 0.f;
+	int32 WarnSaid = 0;
 
 	// announcements waiting their turn
 	struct FLine
@@ -416,6 +446,22 @@ bool ULyudCruise::Start()
 		}
 	}
 	PierFallback = Frame.ToWorld(PierMap, 0.0);
+	// the landing's jetty (world cm, the capsule's middle; cruise.py computes it from the rock's export)
+	JettyFallback = Stage.TransformPosition(FVector(HullLengthCm * 0.5, 26800.0, 480.0));
+	const TSharedPtr<FJsonObject>* AshoreObj = nullptr;
+	if (Root->TryGetObjectField(TEXT("ashore"), AshoreObj))
+	{
+		FVector Jetty = FVector::ZeroVector;
+		if (LyudCruiseImpl::ReadVector(*AshoreObj, TEXT("jetty_world_cm"), Jetty))
+		{
+			JettyFallback = Jetty;
+		}
+		double JettyYaw = 0.0;
+		if ((*AshoreObj)->TryGetNumberField(TEXT("jetty_yaw_deg"), JettyYaw))
+		{
+			JettyFallbackYaw = (float)JettyYaw;
+		}
+	}
 
 	// the names
 	for (const std::string& F : Model.FlagNames)
@@ -508,6 +554,7 @@ void ULyudCruise::Step(double Now)
 	Seen.SpeedMS = (float)St.Speed;
 	Seen.TurnRateRad = (float)St.TurnRate;
 	Seen.VoyageSeconds = St.Tv;
+	Work->RockMismatchM = Model.AshoreMismatch(St);
 
 	const bool bOn = St.Phase != LyudCruise::EPhase::Laid && St.Phase != LyudCruise::EPhase::Port;
 	uint64 Bits = 0;
@@ -773,7 +820,37 @@ void ULyudCruise::Poll(float DeltaTime)
 			Work->bArrivalSeen = false;
 		}
 		const LyudCruise::FHero H = HeroState();
-		if (bAboard && Model.MustGoAshore(Now, H))
+		// the landing at the Far Light: on the rock he is neither overboard nor gone ashore
+		const bool bOnRock = Model.AshoreStop >= 0 && FVector::DistSquared2D(At, RockWorld()) < FMath::Square(LyudCruiseImpl::RockCm) && !bAtShip;
+		bHeroOnRock = bOnRock;
+		const int32 Due = bAboard && bOnRock && Work->SeenVoyage == H.Voyage ? Model.AshoreWarnings(Work->SeenTv) : 0;
+		if (Due > Work->WarnSaid)
+		{
+			static const TCHAR* const WarnKeys[3] = { TEXT("cruise.say.ashore_warn.1"), TEXT("cruise.say.ashore_warn.2"), TEXT("cruise.say.ashore_warn.3") };
+			Say(LyudText::Get(TEXT("cruise.speaker.bosun")), LyudText::Get(WarnKeys[FMath::Clamp(Due, 1, 3) - 1]), 8.f);
+		}
+		Work->WarnSaid = Due;
+		Work->RockSwimFor = bOnRock && bSwims ? Work->RockSwimFor + DeltaTime : 0.f;
+		if (bOnRock && !(bAboard && Model.MustGoAshore(Now, H)))
+		{
+			Work->OverFor = 0.f;
+			Work->AwayFor = 0.f;
+			if (bAboard && !Model.MayBeAshore(Now, H))
+			{
+				// the last launch has left (18:20), or the clock moved while he stood there: the bosun fetches him
+				FVector Gangway = Stage.TransformPosition(FVector(3140.0, 240.0, 380.0));
+				GetShipPoint(TEXT("vestibule"), Gangway);
+				BeginMove(3, LyudCruiseImpl::GangwayThing, Gangway, (float)Stage.Rotator().Yaw + 180.f, false, TEXT("cruise.speaker.bosun"), TEXT("cruise.say.ashore_fetch"));
+				UE_LOG(LogLyudCruise, Log, TEXT("CRUISE fetched from the rock"));
+			}
+			else if (Work->RockSwimFor >= 2.5f)
+			{
+				// he swam off the rock: back onto the jetty
+				Work->RockSwimFor = 0.f;
+				BeginMove(4, LyudCruiseImpl::JettyThing, JettyFallback, JettyFallbackYaw, false, TEXT("cruise.speaker.bosun"), TEXT("cruise.say.ashore_swim"));
+			}
+		}
+		else if (bAboard && Model.MustGoAshore(Now, H))
 		{
 			if (bNear)
 			{
@@ -826,8 +903,41 @@ void ULyudCruise::Poll(float DeltaTime)
 		}
 	}
 
+	if (!Hero)
+	{
+		bHeroOnRock = false;
+	}
 	Work->ResendClock += DeltaTime;
 	const bool bAll = Work->ResendClock >= LyudCruiseImpl::ResendEvery;
+	// the real rock or the seascape's copy (ALyudCruiseSeascape asks IsRealRockShown): the real one while the copy would stand
+	// on it (the ship lies at the landing stop), or a hero who is no passenger is near it. Applied only when it changes.
+	{
+		const bool bVisit = Hero && !bAboard && FVector::DistSquared2D(Hero->GetActorLocation(), RockWorld()) < FMath::Square(LyudCruiseImpl::RockVisitCm);
+		const bool bShow = Work->Model.AshoreStop >= 0 && (Work->RockMismatchM < LyudCruiseImpl::RockMatchM || bVisit || bHeroOnRock);
+		if (!Work->Rock.IsValid() && (bAll || !Work->bRockApplied))
+		{
+			for (TActorIterator<ALyudCityBuilding> It(World); It; ++It)
+			{
+				if (It->PlotId == LyudCruiseImpl::RockPlot)
+				{
+					Work->Rock = *It;
+					Work->bRockApplied = false;
+					break;
+				}
+			}
+		}
+		if (ALyudCityBuilding* Rock = Work->Rock.Get())
+		{
+			if (!Work->bRockApplied || Work->bRockShown != bShow)
+			{
+				Rock->SetActorHiddenInGame(!bShow);
+				Rock->SetActorEnableCollision(bShow);
+				Work->bRockApplied = true;
+				UE_LOG(LogLyudCruise, Log, TEXT("CRUISE the Far Light: the real rock %s (the copy is %.2f m off it)"), bShow ? TEXT("shown") : TEXT("hidden"), Work->RockMismatchM);
+			}
+		}
+		Work->bRockShown = bShow;
+	}
 	if (bAll)
 	{
 		Work->ResendClock = 0.f;
@@ -1259,6 +1369,56 @@ bool ULyudCruise::DevJumpTo(FName EventId)
 	SetClock(When - 5.0);
 	UE_LOG(LogLyudCruise, Warning, TEXT("CRUISE jump: %s in 5 s (the clock moved %.1f h)"), *Work->EventTexts[Index], (When - 5.0 - Now) / 3600.0);
 	return true;
+}
+
+FVector ULyudCruise::RockWorld() const
+{
+	// the island's chart point: the model's offset from the stage ship's midship point (x to the bow, y to starboard)
+	const LyudCruise::FVec2 Off = Work.IsValid() ? Work->Model.AshoreOffset : LyudCruise::FVec2();
+	return Stage.TransformPosition(FVector(HullLengthCm * 0.5 + Off.X * 100.0, Off.Y * 100.0, 0.0));
+}
+
+bool ULyudCruise::IsRealRockShown() const
+{
+	return Work.IsValid() && Work->bRockShown;
+}
+
+void ULyudCruise::DevLanding()
+{
+	if (!bStarted || !Work.IsValid() || Work->Model.AshoreStop < 0)
+	{
+		return;
+	}
+	const LyudCruise::FModel& Model = Work->Model;
+	const double Now = NowSeconds();
+	const LyudCruise::FState St = Model.At(Now);
+	// ten minutes into the landing of the voyage on now (while it is still ahead or on), else of the next one that sails
+	double Sail = -1.0;
+	if (St.bRuns && St.Tv < Model.AshoreLastLaunch() - 1200.0)
+	{
+		Sail = Model.SailTime(St.Voyage);
+	}
+	else
+	{
+		const double Boarding = Model.NextBoarding(Now + 1.0);
+		Sail = Boarding < 0.0 ? -1.0 : Boarding + Model.BoardSec();
+	}
+	if (Sail < 0.0)
+	{
+		UE_LOG(LogLyudCruise, Warning, TEXT("CRUISE landing: no voyage ahead"));
+		return;
+	}
+	const double When = Sail + Model.AshoreT0 + Model.AshoreLeadSec + 300.0;
+	if (When > Now)
+	{
+		SetClock(When);
+	}
+	ULyudCityThings* Things = ULyudCityThings::Get(this);
+	if (!Things || !Things->GoToThing(LyudCruiseImpl::JettyThing))
+	{
+		LyudDev::TeleportWorld(GetWorld(), JettyFallback, JettyFallbackYaw, false);
+	}
+	UE_LOG(LogLyudCruise, Warning, TEXT("CRUISE landing: Saturday 16:40 at the Far Light's jetty%s"), bAboard ? TEXT("") : TEXT(" (he is no passenger: board first for the bosun's warnings and the fetch)"));
 }
 
 void ULyudCruise::DevAshore()

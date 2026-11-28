@@ -66,6 +66,6 @@
   "motor_ship/chronometer": {"act": "ship_chronometer"}
  },
  "topics": {
-  "ship_telegram": [{"id": "ship.radio.morse", "k": "city.ask.ship.radio.morse", "lines": ["city.ask.ship.radio.morse.1", "city.ask.ship.radio.morse.2"]}, {"id": "ship.radio.air", "k": "city.ask.ship.radio.air", "lines": ["city.ask.ship.radio.air.1", {"k": "city.ask.ship.radio.air.2", "flag": "cruise_anchor"}, "city.ask.ship.radio.air.3"]}, {"id": "ship.radio.life", "k": "city.ask.ship.radio.life", "lines": ["city.ask.ship.radio.life.1", "city.ask.ship.radio.life.2"]}]
+  "ship_telegram": [{"id": "ship.radio.morse", "k": "city.ask.ship.radio.morse", "lines": ["city.ask.ship.radio.morse.1", "city.ask.ship.radio.morse.2"]}, {"id": "ship.radio.air", "k": "city.ask.ship.radio.air", "lines": ["city.ask.ship.radio.air.1", {"k": "city.ask.ship.radio.air.2", "flag": "cruise_anchor"}, "city.ask.ship.radio.air.3"]}, {"id": "ship.radio.life", "k": "city.ask.ship.radio.life", "lines": ["city.ask.ship.radio.life.1", "city.ask.ship.radio.life.2"]}, {"id": "farlight.move", "k": "city.ask.farlight.move", "lines": ["city.ask.farlight.move.1", "city.ask.farlight.move.2"], "flag": "cruise_day2"}, {"id": "farlight.answer", "k": "city.ask.farlight.answer", "lines": ["city.ask.farlight.answer.1", "city.ask.farlight.answer.2"], "did": "farlight_chess", "heard": "farlight.move"}]
  }
 }

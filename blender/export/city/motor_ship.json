@@ -6624,6 +6624,19 @@
    }
   },
   {
+   "id": "launch_ashore",
+   "kind": "door",
+   "pos": [
+    1.6,
+    0.6,
+    2.4
+   ],
+   "yaw": -180.0,
+   "props": {
+    "to": "P-FARLIGHT/jetty_gate"
+   }
+  },
+  {
    "id": "bar_counter",
    "kind": "counter",
    "pos": [

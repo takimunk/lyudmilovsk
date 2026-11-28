@@ -1433,6 +1433,9 @@ def furnish_cd(B, S, fittings=None):
     gx, gy = fittings.get("gangway", (31.1, 4.4, S.Z_C))[:2]
     if not any(t["id"] == "gangway" for t in B.things):
         F.thing("gangway", "door", gx, gy, S.Z_C + 1.1, PORT if gy > 0 else STBD, to="P-PIER/launch_gate")
+    # the launch to the Far Light (L1: the landing on Saturday; the way back is P-FARLIGHT/jetty_gate): beside the gangway
+    if not any(t["id"] == "launch_ashore" for t in B.things):
+        F.thing("launch_ashore", "door", gx + 1.5, gy, S.Z_C + 1.1, PORT if gy > 0 else STBD, to="P-FARLIGHT/jetty_gate")
     # named points of ULyudCruise::GetShipPoint that lie on these decks
     have = {sp["id"] for sp in B.spots}
     if "gangway" not in have:

@@ -348,7 +348,7 @@ def tower(B):
     B.thing("watch_desk", "board", P(T[0] + 1.55, T[1] - 0.8, z0 + WATCH_Z + 0.9), face_yaw(-1.0, 0.5))
     kit.table(B, *P(T[0] + 1.6, T[1] - 0.85, z0 + WATCH_Z), yaw=face_yaw(-1.0, 0.5), w=0.9, d=0.5, solid=False)
     # the gallery (the hatch is on the hut's side; the view of the ship is on the jetty's side, +ky)
-    B.thing("gallery_hatch", "door", P(T[0] - 2.75, T[1] - 0.4, z0 + GALLERY_Z + 0.9), face_yaw(-1.0, 0.0), to="watch_ladder")
+    B.thing("gallery_hatch", "door", P(T[0] - 2.75, T[1] - 0.4, z0 + GALLERY_Z + 0.9), face_yaw(1.0, 0.0), to="watch_ladder")
     hx, hy, hz = P(T[0] - 2.75, T[1] - 0.4, z0 + GALLERY_Z)
     box(d, "CT_SteelRed", hx - 0.35, hx + 0.35, hy - 0.35, hy + 0.35, hz, hz + 0.05)
     B.thing("gallery_view", "board", P(T[0] + 0.6, T[1] + 3.5, z0 + GALLERY_Z + 1.1), face_yaw(0.0, -1.0), topic="sea_view")

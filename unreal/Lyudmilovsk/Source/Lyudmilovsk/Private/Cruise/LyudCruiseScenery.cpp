@@ -510,6 +510,7 @@ void ULyudCruiseScenery::TickAboard(const FLyudCruiseView& View, float DeltaTime
 	}
 	if (Seascape)
 	{
+		Seascape->SetRealRock(Cruise->IsRealRockShown());      // the landing at the Far Light: the real rock for its copy
 		Seascape->Place(View, Stage, DeltaTime);
 	}
 	// the water streams aft at her speed: the waves' pattern (the sea), the foam (the wake)

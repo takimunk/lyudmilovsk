@@ -122,6 +122,18 @@ public:
 	bool DevJumpTo(FName EventId);
 	/** Ashore at once (as at the voyage's end). */
 	void DevAshore();
+	/** The landing at the Far Light: the clock at Saturday 16:40 of the voyage, the hero on the rock's jetty. */
+	void DevLanding();
+
+	// --- the landing at the Far Light (docs/ship.md): the real rock is the city building of plot P-FARLIGHT
+
+	/** Is the real rock shown (and solid) now? Then the seascape hides its far-view copy of the lighthouse island: the two
+	 *  stand in the same place while the ship lies at the landing stop. */
+	bool IsRealRockShown() const;
+	/** Is the hero walking the rock (within 170 m of its chart point, not aboard)? */
+	bool IsHeroOnRock() const { return bHeroOnRock; }
+	/** The rock's chart point in the world (cm, at the sea's datum): the stage ship's midship point + the model's offset. */
+	FVector RockWorld() const;
 	/** The wheelhouse opens to him for today (the city's stay "cruise_bridge": the bridge tour, the captain's invitation). */
 	void GiveBridgePass();
 
@@ -157,7 +169,8 @@ private:
 	void Board(double Now);
 	/** His voyage is over in the books: the key handed in, the stays ended, the quests told. */
 	void FinishAshore(double Now);
-	/** A fade that takes the hero to a thing (or, when the city cannot, to a fallback place); Kind: 1 ashore, 2 overboard. */
+	/** A fade that takes the hero to a thing (or, when the city cannot, to a fallback place); Kind: 1 ashore, 2 overboard, 3 fetched from
+	 *  the Far Light's rock to the gangway, 4 out of the water onto the rock's jetty. */
 	void BeginMove(int32 Kind, const TCHAR* Thing, const FVector& Fallback, float FallbackYaw, bool bFallbackGround, const TCHAR* SpeakerKey, const TCHAR* LineKey);
 	void TickMove();
 	void TickSubtitle();
@@ -183,6 +196,10 @@ private:
 	/** Where the hero is put ashore when the city has no launch gate (world cm, dropped onto the ground; Unreal degrees). */
 	FVector PierFallback = FVector::ZeroVector;
 	float PierFallbackYaw = 180.f;
+	/** The Far Light's jetty (world cm, the capsule's middle) when the city has no jetty gate; whether the hero is on the rock. */
+	FVector JettyFallback = FVector::ZeroVector;
+	float JettyFallbackYaw = 0.f;
+	bool bHeroOnRock = false;
 
 	float PollClock = 0.f;
 	TSharedPtr<SLyudCityPage> Page;

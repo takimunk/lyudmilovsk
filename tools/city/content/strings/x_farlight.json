@@ -1,0 +1,578 @@
+{
+ "_doc": "The Far Light (plot P-FARLIGHT, building far_light): the rock the cruise lands on on Saturday 16:30-18:30. First person, the hero's voice; the keeper August Tamm speaks little and exactly. ja: 僕.",
+ "city.plot.p_farlight.name": {
+  "ru": "Маяк Дальний",
+  "en": "The Far Light",
+  "ja": "遠灯台"
+ },
+ "city.farlight.name.tamm": {
+  "ru": "Аугуст Тамм, смотритель маяка",
+  "en": "August Tamm, the lighthouse keeper",
+  "ja": "灯台守 アウグスト・タム"
+ },
+ "city.farlight.launch.prompt": {
+  "ru": "E — катером на маяк",
+  "en": "E — take the launch to the lighthouse",
+  "ja": "E：ランチで灯台へ"
+ },
+ "city.farlight.launch.1": {
+  "ru": "Спускаюсь по штормтрапу в катер. Боцман считает нас по головам: «Двенадцать. На скале не разбредаться, в воду не лезть, последний катер в восемнадцать двадцать». Мотор кашляет, и борт «Полдня» отходит назад, как стена.",
+  "en": "I climb down the rope ladder into the launch. The bosun counts heads: \"Twelve. No wandering off on the rock, no going in the water, last launch at eighteen twenty.\" The motor coughs, and the Polden's side draws away like a wall.",
+  "ja": "縄ばしごでランチに下りる。甲板長が頭数を数える。「十二人。岩の上でばらばらになるな、水に入るな、最終ランチは十八時二十分だ」。エンジンが咳をして、ポルデニ号の舷側が壁のように遠ざかっていく。"
+ },
+ "city.farlight.launch.no.1": {
+  "ru": "У борта табличка: «Катер на маяк Дальний. Только на стоянке у маяка, в субботу». Под ней свёрнутый штормтрап и запах солярки.",
+  "en": "A plate by the rail: \"Launch to the Far Light. Only while at anchor off the light, on Saturday.\" Under it a rolled rope ladder and a smell of diesel.",
+  "ja": "舷側に札がある。「遠灯台行きランチ。土曜、灯台沖に停泊中のみ」。その下に巻いた縄ばしごと、軽油のにおい。"
+ },
+ "city.farlight.launch.no.2": {
+  "ru": "Катер ещё на талях: матросы спускают его на воду. «Пять минут, — говорит боцман. — Маяк сто лет стоял, ещё пять постоит».",
+  "en": "The launch is still in the falls: the hands are lowering her. \"Five minutes,\" says the bosun. \"The light has stood a hundred years, it will stand five more.\"",
+  "ja": "ランチはまだ吊られたままで、水夫たちが下ろしているところだ。「五分待て」と甲板長。「灯台は百年立ってる。あと五分くらい立ってるさ」"
+ },
+ "city.farlight.launch.no.3": {
+  "ru": "Катер уже поднят и принайтовлен. «Опоздал, — говорит боцман без злости. — Маяк посмотришь через неделю. Он никуда не денется, проверено».",
+  "en": "The launch is already hoisted and lashed down. \"Too late,\" says the bosun without malice. \"You will see the light next week. It is not going anywhere, that has been tested.\"",
+  "ja": "ランチはもう引き上げられ、固縛されている。「遅かったな」と甲板長は怒りもせずに言う。「灯台は来週見ればいい。あれはどこにも行かん。実証済みだ」"
+ },
+ "city.farlight.back.prompt": {
+  "ru": "E — катером на теплоход",
+  "en": "E — take the launch back to the ship",
+  "ja": "E：ランチで船へ戻る"
+ },
+ "city.farlight.back.1": {
+  "ru": "Матрос подаёт руку, я прыгаю в катер. Скала отходит, и только теперь видно, какая она маленькая: башня, домик и больше ничего на всё море.",
+  "en": "A sailor gives me a hand and I jump into the launch. The rock draws away, and only now do I see how small it is: a tower, a hut and nothing else on the whole sea.",
+  "ja": "水夫の手を借りてランチに飛び乗る。岩が遠ざかり、今になってその小ささがわかる。塔と小屋。海じゅうで、それだけ。"
+ },
+ "city.farlight.bollard.1": {
+  "ru": "Чугунный кнехт, вытертый тросами до блеска. На бетоне рядом выцарапано: «Полдень — 19 сезонов» и ниже, другой рукой: «а я — 26. А. Т.»",
+  "en": "A cast-iron bollard, rubbed bright by hawsers. Scratched in the concrete beside it: \"Polden: 19 seasons\", and below, in another hand: \"and I: 26. A. T.\"",
+  "ja": "ロープですり減って光る鋳鉄の係船柱。そばのコンクリートに引っかき傷で「ポルデニ号 十九シーズン」。その下に別の筆跡で「こちらは二十六。A・T」。"
+ },
+ "city.farlight.stair.up": {
+  "ru": "E — подняться по винтовой лестнице",
+  "en": "E — climb the spiral stair",
+  "ja": "E：らせん階段を上る"
+ },
+ "city.farlight.stair.down": {
+  "ru": "E — спуститься",
+  "en": "E — go down",
+  "ja": "E：下りる"
+ },
+ "city.farlight.ladder.up": {
+  "ru": "E — по трапу на галерею",
+  "en": "E — up the ladder to the gallery",
+  "ja": "E：はしごで回廊へ"
+ },
+ "city.farlight.stair_up.1": {
+  "ru": "Чугунные ступени идут по стене винтом. Я считаю: сто четыре. На семидесятой перестаю считать и начинаю дышать.",
+  "en": "The iron steps wind up along the wall. I count them: a hundred and four. At the seventieth I stop counting and start breathing.",
+  "ja": "鋳鉄の段が壁に沿ってらせんに上っていく。数えてみる。百四段。七十段目で数えるのをやめて、息をすることにした。"
+ },
+ "city.farlight.stair_down.1": {
+  "ru": "Вниз быстрее. Ступени гудят под ногами, как большой камертон.",
+  "en": "Down is quicker. The steps hum underfoot like a big tuning fork.",
+  "ja": "下りは速い。足の下で段が大きな音叉のように鳴る。"
+ },
+ "city.farlight.ladder_up.1": {
+  "ru": "Десять перекладин, люк, и ветер сразу берёт за воротник.",
+  "en": "Ten rungs, a hatch, and the wind takes me by the collar at once.",
+  "ja": "横木が十本、ハッチ、そしてすぐに風が襟首をつかむ。"
+ },
+ "city.farlight.plate.1": {
+  "ru": "Бронзовая доска у двери: «Маяк Дальний. Зажжён в 1911 году. Здесь служили и не оставили огня: И. Каск, 1911–1934; братья Вейде, 1934–1941; М. Сорокина, 1941–1946, одна; П. Орав, 1946–1973». Последняя строка свежее: «А. Тамм, с 1974».",
+  "en": "A bronze plate by the door: \"The Far Light. First lit in 1911. Here served and never left the light: I. Kask, 1911–1934; the Veide brothers, 1934–1941; M. Sorokina, 1941–1946, alone; P. Orav, 1946–1973.\" The last line is newer: \"A. Tamm, since 1974.\"",
+  "ja": "扉の脇の青銅の板。「遠灯台。一九一一年点灯。ここに勤め、灯を絶やさなかった者：I・カスク 一九一一〜三四年、ヴェイデ兄弟 一九三四〜四一年、M・ソローキナ 一九四一〜四六年（ひとりで）、P・オラフ 一九四六〜七三年」。最後の一行だけ新しい。「A・タム 一九七四年より」。"
+ },
+ "city.farlight.plate.2": {
+  "ru": "Перечитываю строчку про Сорокину. Пять лет. Одна. Кто-то положил под доску три гладких камешка, и они лежат здесь явно не первый год.",
+  "en": "I read the line about Sorokina again. Five years. Alone. Someone has laid three smooth pebbles under the plate, and they have clearly lain here for more than one year.",
+  "ja": "ソローキナの行を読み返す。五年。ひとりで。板の下に誰かがなめらかな小石を三つ置いていて、それはどう見ても何年も前からここにある。"
+ },
+ "city.farlight.clockwork.1": {
+  "ru": "Часовой механизм линзы: гиря на цепи уходит в шахту посреди башни. На кожухе мелом: «Завод — 4 ч. Не проспи». Рядом ручка, отполированная одной ладонью за двадцать шесть лет.",
+  "en": "The clockwork that turns the lens: a weight on a chain goes down the shaft in the middle of the tower. Chalked on the casing: \"Wind every 4 h. Do not oversleep.\" Beside it a crank polished by one palm over twenty-six years.",
+  "ja": "レンズを回す時計仕掛け。鎖につるしたおもりが塔の真ん中の縦穴を下りていく。覆いにチョークで「巻き上げ四時間ごと。寝過ごすな」。そばのクランクは、二十六年のあいだ一つの手のひらで磨かれてきた。"
+ },
+ "city.farlight.clockwork.2": {
+  "ru": "На стене порядок зажигания, от руки: «1. Протереть стёкла. 2. Снять чехол с линзы. 3. Зажечь за четверть часа до захода. 4. Пустить механизм. 5. Записать в журнал. 6. Не уходить, пока не сделает три оборота». Шестой пункт подчёркнут дважды.",
+  "en": "On the wall, the order of lighting, by hand: \"1. Wipe the panes. 2. Take the cover off the lens. 3. Light a quarter of an hour before sunset. 4. Start the clockwork. 5. Enter it in the log. 6. Do not leave until it has made three turns.\" The sixth is underlined twice.",
+  "ja": "壁に手書きの点灯手順。「一、ガラスを拭く。二、レンズの覆いを外す。三、日没の十五分前に点灯。四、仕掛けを動かす。五、日誌に記す。六、三回転するまで離れないこと」。六番目には二重線が引いてある。"
+ },
+ "city.farlight.watch_desk.1": {
+  "ru": "Вахтенный столик: бинокль, кружка с отбитой ручкой, сигнальная книга и заяц, вырезанный из пробки. Заяц смотрит в окно.",
+  "en": "The watch desk: binoculars, a mug with a broken handle, the signal book and a hare carved out of cork. The hare is looking out of the window.",
+  "ja": "当直机。双眼鏡、取っ手の欠けたマグ、信号書、それからコルクを彫ったウサギ。ウサギは窓の外を見ている。"
+ },
+ "city.farlight.view.1": {
+  "ru": "Отсюда «Полдень» как игрушка на якоре: белый, с жёлтым солнцем на трубе. От борта к причалу тянется катер и оставляет на воде нитку. Слышно, как на палубе кто-то смеётся: над водой звук идёт далеко.",
+  "en": "From here the Polden is a toy at anchor: white, with the yellow sun on her funnel. The launch is crawling from her side to the jetty, leaving a thread on the water. I can hear someone laugh on deck: sound carries far over water.",
+  "ja": "ここからだとポルデニ号は錨を下ろしたおもちゃだ。白くて、煙突に黄色い太陽。舷側から桟橋へランチが這っていき、水に一本の糸を残す。甲板で誰かが笑うのが聞こえる。水の上では音が遠くまで届く。"
+ },
+ "city.farlight.view.2": {
+  "ru": "Туман. Теплоход угадывается по огням и по тому, как где-то внизу бьют склянки. Скала под ногами кончается через двадцать метров, дальше просто серое.",
+  "en": "Fog. The ship can be guessed by her lamps and by the bells struck somewhere below. The rock ends twenty metres from my feet, and beyond is simply grey.",
+  "ja": "霧。船は灯りと、どこか下のほうで鳴る時鐘でそれとわかるだけだ。岩は足もとから二十メートルで終わり、その先はただの灰色。"
+ },
+ "city.farlight.view.3": {
+  "ru": "Солнце идёт к воде, и тень башни ложится на море длинной стрелкой. Она показывает прямо на теплоход. Часы, у которых один час.",
+  "en": "The sun is going down to the water, and the tower's shadow lies on the sea like a long hand. It points straight at the ship. A clock with a single hour.",
+  "ja": "太陽が水に近づき、塔の影が長い針のように海に伸びる。まっすぐ船を指している。一時間しかない時計だ。"
+ },
+ "city.farlight.view.4": {
+  "ru": "Перила холодные и липкие от соли. Внизу домик, грядки за каменной стенкой, флагшток. Всё хозяйство человека, который двадцать шесть зим не видел отсюда ни одного дерева.",
+  "en": "The rail is cold and sticky with salt. Below are the hut, the beds behind their stone wall, the flagpole. The whole household of a man who has not seen a single tree from here in twenty-six winters.",
+  "ja": "手すりは冷たく、塩でべたつく。下には小屋、石垣に囲まれた畑、旗竿。ここから二十六回の冬、一本の木も見ていない人の全財産だ。"
+ },
+ "city.farlight.north.1": {
+  "ru": "С этой стороны нет ничего. Вообще. Следующая земля, если верить карте в рубке, через четыреста миль. Теперь понятно, почему его назвали Дальним.",
+  "en": "On this side there is nothing. Nothing at all. The next land, if the chart in the wheelhouse is to be believed, is four hundred miles off. Now I see why they called it the Far Light.",
+  "ja": "こちら側には何もない。本当に何も。操舵室の海図を信じるなら、次の陸地は四百海里先だ。なぜ「遠」灯台と呼ばれるのか、やっとわかった。"
+ },
+ "city.farlight.north.2": {
+  "ru": "Чайка висит на ветру вровень с галереей и смотрит на меня одним глазом. Она здесь дома. Я — нет.",
+  "en": "A gull hangs on the wind level with the gallery and looks at me with one eye. She is at home here. I am not.",
+  "ja": "カモメが回廊と同じ高さで風に浮かび、片目で僕を見ている。彼女はここが家だ。僕は違う。"
+ },
+ "city.farlight.lantern.1": {
+  "ru": "Линза Френеля, выше меня ростом: кольца стекла, как годовые у дерева. Внутри лампа с кулак. Вся хитрость в том, чтобы маленький свет не разбежался, а пошёл в одну сторону. На латунном ободе: «Barbier & Bénard, Paris, 1910».",
+  "en": "A Fresnel lens, taller than I am: rings of glass like the rings of a tree. Inside is a lamp the size of a fist. The whole trick is that a small light must not scatter but go one way. On the brass rim: \"Barbier & Bénard, Paris, 1910\".",
+  "ja": "僕の背より高いフレネルレンズ。木の年輪のようなガラスの輪。中にはこぶしほどのランプ。小さな光を散らさず、一方向へ送る。仕掛けはそれだけだ。真鍮の縁に「Barbier & Bénard, Paris, 1910」。"
+ },
+ "city.farlight.lantern.2": {
+  "ru": "Стёкла фонаря вымыты так, что их не видно: я понимаю, что они есть, только по отпечатку собственного носа.",
+  "en": "The lantern panes are washed so clean they cannot be seen: I know they are there only by the print of my own nose.",
+  "ja": "灯室のガラスは見えないほど磨いてある。そこにあるとわかるのは、自分の鼻の跡がついたからだ。"
+ },
+ "city.farlight.radio.1": {
+  "ru": "Рация: серый ящик, ключ, наушники с треснувшим оголовьем. На шкале карандашная метка и подпись: «Лев». Рядом расписание: «06.00 погода. 18.00 погода. Чт 21.00 — ход».",
+  "en": "The radio set: a grey box, a key, headphones with a cracked band. On the dial a pencil mark labelled \"Lev\". Beside it a timetable: \"06.00 weather. 18.00 weather. Thu 21.00: the move.\"",
+  "ja": "無線機。灰色の箱、電鍵、バンドにひびの入ったヘッドホン。目盛りに鉛筆の印と「レフ」の文字。そばに予定表。「06:00 気象。18:00 気象。木曜 21:00 指し手」。"
+ },
+ "city.farlight.stove.1": {
+  "ru": "Печь тёплая. На плите чайник, который, похоже, не остывал с семьдесят четвёртого года.",
+  "en": "The stove is warm. On it stands a kettle that seems not to have gone cold since seventy-four.",
+  "ja": "ストーブは温かい。上のやかんは、どうやら七四年から一度も冷めたことがないらしい。"
+ },
+ "city.farlight.bunk.1": {
+  "ru": "Койка заправлена по-флотски: одеяло натянуто так, что от него отскочит монета. В ногах спит свёрнутый свитер. Или кот. Нет, свитер.",
+  "en": "The bunk is made navy fashion: the blanket is drawn so tight a coin would bounce off it. At its foot sleeps a rolled-up jersey. Or a cat. No, a jersey.",
+  "ja": "寝台は海軍式に整えてある。毛布は硬貨が跳ね返るほどぴんと張ってある。足もとで丸めたセーターが眠っている。いや、猫か。いや、セーターだ。"
+ },
+ "city.farlight.tins.1": {
+  "ru": "Полки с банками: тушёнка, сгущёнка, килька, горох. Каждая подписана мелом: месяц и год. Расставлены по срокам, как книги в библиотеке. Завоз два раза в год, а в ноябре, говорят, как повезёт.",
+  "en": "Shelves of tins: stewed beef, condensed milk, sprats, peas. Each is chalked with a month and a year. They stand in order of date, like books in a library. Supplies come twice a year, and in November, they say, as luck will have it.",
+  "ja": "缶詰の棚。牛肉の煮込み、練乳、小イワシ、豆。どの缶にもチョークで年月が書いてある。図書館の本のように期限順に並んでいる。補給は年に二回。十一月は運しだいだそうだ。"
+ },
+ "city.farlight.nets.1": {
+  "ru": "Сеть сохнет на козлах. В ячее застрял поплавок из пенопласта, изгрызенный кем-то маленьким и упорным.",
+  "en": "A net is drying on its rack. A foam float is caught in the mesh, gnawed by someone small and stubborn.",
+  "ja": "網が台の上で乾いている。網目に発泡スチロールの浮きが引っかかっていて、小さくて頑固な誰かにかじられている。"
+ },
+ "city.farlight.cat_bowl.1": {
+  "ru": "Миска с водой и вторая, с рыбьим хвостом. Кота не видно. Но хвост свежий.",
+  "en": "A bowl of water and another with a fish tail in it. No cat to be seen. But the tail is fresh.",
+  "ja": "水の入った皿と、魚のしっぽの入った皿。猫の姿はない。でも、しっぽは新しい。"
+ },
+ "city.farlight.tank.1": {
+  "ru": "Цинковый бак для дождевой воды, под водосточной трубой. Кран с ледяной каплей на носу. Другой пресной воды на скале нет.",
+  "en": "A zinc tank for rain water, under the down pipe. The tap has an icy drop on its nose. There is no other fresh water on the rock.",
+  "ja": "雨どいの下の、雨水をためる亜鉛のタンク。蛇口の先に氷のように冷たいしずく。この岩に、ほかの真水はない。"
+ },
+ "city.farlight.oil.1": {
+  "ru": "Керосиновый склад, бетонный, без окон. На двери замок и трафарет: «Огнеопасно. Курить — на теплоходе».",
+  "en": "The paraffin store: concrete, windowless. A padlock on the door and a stencil: \"Inflammable. Smoke aboard your ship.\"",
+  "ja": "灯油庫。コンクリート造りで窓がない。扉に南京錠と型抜きの文字。「火気厳禁。煙草は船で」。"
+ },
+ "city.farlight.weather.1": {
+  "ru": "Метеобудка на четырёх ногах, белая, с жалюзи. Внутри два термометра и волосной гигрометр. На дверце сроки: 08, 14, 20. Ни одного пропуска за двадцать шесть лет, сказано в судовой газете.",
+  "en": "The weather box on four legs, white, louvred. Inside are two thermometers and a hair hygrometer. On its door the hours: 08, 14, 20. Not one reading missed in twenty-six years, the ship's paper says.",
+  "ja": "四本足の白い百葉箱。中には温度計が二本と毛髪湿度計。扉に観測時刻。08、14、20。船内新聞によれば、二十六年間一度も欠測なし。"
+ },
+ "city.farlight.flag.1": {
+  "ru": "Флагшток с реей для штормовых сигналов. Сегодня на рее пусто: значит, хорошо. Фал набит и не хлопает: у этого человека ничего не хлопает.",
+  "en": "A flagpole with a yard for storm signals. Today the yard is bare: that means fair. The halyard is taut and does not slap: nothing of this man's slaps.",
+  "ja": "暴風信号用の桁がついた旗竿。今日は桁に何もない。つまり好天だ。揚げ索はぴんと張られ、ばたつかない。この人の持ち物は何ひとつばたつかない。"
+ },
+ "city.farlight.patch.1": {
+  "ru": "Огород за каменной стенкой по пояс: три грядки. Лук, укроп и что-то упрямое, похожее на картошку. Землю сюда возили с берега, в мешках, на катере.",
+  "en": "A vegetable patch behind a waist-high stone wall: three beds. Onions, dill and something stubborn that looks like potatoes. The soil was brought from the mainland, in sacks, by launch.",
+  "ja": "腰の高さの石垣に囲まれた畑。畝が三本。ネギ、ディル、それからジャガイモらしき頑固な何か。土は本土から袋に詰めてランチで運んだそうだ。"
+ },
+ "city.farlight.patch.2": {
+  "ru": "Между грядками воткнута дощечка: «Чайкам вход воспрещён». Чайка сидит на дощечке.",
+  "en": "A little board stands between the beds: \"No gulls allowed.\" A gull is sitting on the board.",
+  "ja": "畝のあいだに小さな札が立っている。「カモメ立入禁止」。札の上にカモメがとまっている。"
+ },
+ "city.farlight.ledge.1": {
+  "ru": "Дальше тропы нет: скала уходит в воду уступами, и на каждом уступе кто-то сидит. Чистики, моёвки, один баклан сушит крылья, как бельё.",
+  "en": "The path ends here: the rock goes down into the water in ledges, and somebody sits on every ledge. Guillemots, kittiwakes, one cormorant drying its wings like washing.",
+  "ja": "道はここまで。岩は段々になって海に落ち、どの段にも誰かが座っている。ウミバト、ミツユビカモメ、鵜が一羽、洗濯物のように翼を干している。"
+ },
+ "city.farlight.bell.1": {
+  "ru": "Туманный колокол, бронзовый, в мой обхват. Я трогаю язык, и он отвечает низко и долго, так что звук слышен ещё и ногами.",
+  "en": "The fog bell: bronze, as big round as my arms can reach. I touch the clapper and it answers low and long, so that I hear the sound with my feet as well.",
+  "ja": "霧鐘。青銅で、僕の両腕がやっと回るほどの太さ。舌に触れると、低く長く応える。音は足の裏からも聞こえる。"
+ },
+ "city.farlight.bell.prompt": {
+  "ru": "E — ударить в колокол",
+  "en": "E — strike the bell",
+  "ja": "E：鐘を打つ"
+ },
+ "city.farlight.wind.prompt": {
+  "ru": "E — завести механизм колокола",
+  "en": "E — wind the bell's clockwork",
+  "ja": "E：鐘の仕掛けを巻く"
+ },
+ "city.farlight.wind.1": {
+  "ru": "В красном ящике заводная ручка. Сорок оборотов, сказал Тамм, и не сорок один. На тридцать пятом руки горят. На сороковом внутри что-то щёлкает, и молоток сам отходит от колокола на взвод. Теперь в тумане он будет бить дважды в минуту, восемь часов подряд.",
+  "en": "In the red box is a winding crank. Forty turns, Tamm said, and not forty-one. At the thirty-fifth my arms burn. At the fortieth something clicks inside and the hammer draws back from the bell by itself, cocked. Now, in fog, it will strike twice a minute for eight hours on end.",
+  "ja": "赤い箱の中に巻き上げクランクがある。四十回、とタムは言った。四十一回ではない。三十五回目で腕が燃える。四十回目で中の何かがかちりと鳴り、槌がひとりでに鐘から離れて構えの位置につく。これで霧の日には、一分に二回、八時間つづけて鳴る。"
+ },
+ "city.farlight.wind.2": {
+  "ru": "Механизм заведён. Ручка не идёт дальше ни на волос: сорок, и не сорок один.",
+  "en": "The clockwork is wound. The crank will not go a hair further: forty, and not forty-one.",
+  "ja": "仕掛けは巻いてある。クランクはもう髪の毛一本ぶんも動かない。四十回。四十一回ではない。"
+ },
+ "city.farlight.baro.prompt": {
+  "ru": "E — снять показания барометра",
+  "en": "E — read the barometer",
+  "ja": "E：気圧計を読む"
+ },
+ "city.farlight.baro.1": {
+  "ru": "Барометр-анероид в деревянной оправе. Стучу по стеклу ногтем, как положено: стрелка вздрагивает и встаёт на «ясно». Под ним карандаш на верёвочке, чтобы никто не унёс. Уносить некому.",
+  "en": "An aneroid barometer in a wooden case. I tap the glass with a fingernail, as one should: the needle starts and settles on \"fair\". Under it hangs a pencil on a string, so that nobody carries it off. There is nobody to carry it off.",
+  "ja": "木枠のアネロイド気圧計。作法どおり爪でガラスをたたくと、針がぴくりとして「晴」で止まる。下に鉛筆がひもでつるしてある。誰も持っていかないように。持っていく人はいないのだけれど。"
+ },
+ "city.farlight.baro.2": {
+  "ru": "Стучу по стеклу: стрелка падает на деление. «Падает, — говорит Тамм, не оборачиваясь. — К ночи задует. Вашему капитану скажите, хотя он и сам знает».",
+  "en": "I tap the glass: the needle drops a division. \"Falling,\" says Tamm without turning round. \"It will blow by night. Tell your captain, though he knows it himself.\"",
+  "ja": "ガラスをたたくと、針が一目盛り下がる。「下がっている」とタムは振り向かずに言う。「夜には吹く。船長に伝えなさい。もっとも、あの人は自分でわかっているが」"
+ },
+ "city.farlight.sit.prompt": {
+  "ru": "E — посидеть на скамье",
+  "en": "E — sit on the bench",
+  "ja": "E：ベンチに座る"
+ },
+ "city.farlight.bench.1": {
+  "ru": "Скамья у стены, на солнечной стороне. Доска вытерта в двух местах: одно его, второе, наверное, для гостей раз в неделю. Сижу на гостевом.",
+  "en": "A bench by the wall, on the sunny side. The board is worn in two places: one is his, the other, I suppose, is for guests once a week. I sit on the guests'.",
+  "ja": "壁ぎわの、日の当たる側のベンチ。板は二か所すり減っている。ひとつは彼の場所、もうひとつはたぶん週に一度の客のため。僕は客の側に座る。"
+ },
+ "city.farlight.bench.2": {
+  "ru": "Сижу и слушаю. Прибой, чайки, флагшток гудит на одной ноте. И больше ничего на сорок миль вокруг. Странно, что от этого не страшно, а наоборот.",
+  "en": "I sit and listen. Surf, gulls, the flagpole humming on one note. And nothing else for forty miles around. Strange that it is not frightening but the opposite.",
+  "ja": "座って耳をすます。波、カモメ、旗竿がひとつの音で鳴っている。四十海里四方、ほかには何もない。それが怖くなく、むしろ逆なのが不思議だ。"
+ },
+ "city.farlight.birds.prompt": {
+  "ru": "E — рассмотреть деревянных птиц",
+  "en": "E — look at the wooden birds",
+  "ja": "E：木彫りの鳥を見る"
+ },
+ "city.farlight.birds.1": {
+  "ru": "На подоконнике птицы из плавника: крачка, чистик, кулик с длинным носом. Дерево серое, вымытое морем, и у каждой видно, какой корягой она была раньше. «Возьми кулика, — говорит Тамм. — Он всё равно смотрит на дверь».",
+  "en": "On the window sill stand birds of driftwood: a tern, a guillemot, a long-billed sandpiper. The wood is grey, washed by the sea, and in each one I can see what snag it used to be. \"Take the sandpiper,\" says Tamm. \"He keeps looking at the door anyway.\"",
+  "ja": "窓台に流木の鳥が並んでいる。アジサシ、ウミバト、くちばしの長いシギ。海に洗われた灰色の木で、どの鳥も、もとはどんな流木だったかがわかる。「シギを持っていきなさい」とタム。「どのみち、ずっと扉のほうを見ている」"
+ },
+ "city.farlight.birds.2": {
+  "ru": "Крачка и чистик остались вдвоём. На месте кулика чистое пятно без пыли. К следующей субботе, я думаю, там будет стоять новый.",
+  "en": "The tern and the guillemot are left on their own. Where the sandpiper stood is a clean patch without dust. By next Saturday, I think, a new one will stand there.",
+  "ja": "アジサシとウミバトだけが残っている。シギのいた場所は、ほこりのないきれいな跡になっている。次の土曜までには、きっと新しいのが立っているだろう。"
+ },
+ "city.farlight.log.prompt": {
+  "ru": "E — полистать вахтенный журнал",
+  "en": "E — leaf through the log book",
+  "ja": "E：当直日誌をめくる"
+ },
+ "city.farlight.log.title": {
+  "ru": "Вахтенный журнал маяка Дальний",
+  "en": "The Far Light's log book",
+  "ja": "遠灯台 当直日誌"
+ },
+ "city.farlight.log.p1": {
+  "ru": "«Суббота. Ветер зюйд-вест, 3 балла. Видимость 10 миль. Барометр 762, ровно. Огонь зажжён 20.41, погашен 04.52. 16.30 т/х „Полдень“ на якоре, свезли гостей: 14 чел. Колокол заведён. Кот ел».",
+  "en": "\"Saturday. Wind south-west, force 3. Visibility 10 miles. Barometer 762, steady. Light lit 20.41, put out 04.52. 16.30 m/s Polden at anchor, guests landed: 14 persons. Bell wound. The cat ate.\"",
+  "ja": "「土曜。風 南西、風力三。視程十海里。気圧七六二、変化なし。点灯二〇時四一分、消灯〇四時五二分。一六時三〇分 客船ポルデニ号投錨、客上陸、十四名。鐘、巻き上げ済み。猫、食事した」"
+ },
+ "city.farlight.log.p2": {
+  "ru": "Листаю назад. Все страницы одинаковые: ветер, видимость, огонь, кот. Почерк не меняется годами, только чернила то синие, то чёрные. «Вторник. Туман с 03.10. Колокол 11 ч. без перерыва. Не спал». «Среда. Туман. Колокол. Не спал». «Четверг. Ясно. Спал. 21.00 — ход: Кf3. Лев думает».",
+  "en": "I leaf back. Every page is the same: wind, visibility, the light, the cat. The hand does not change over the years, only the ink is now blue, now black. \"Tuesday. Fog from 03.10. Bell 11 h without a break. No sleep.\" \"Wednesday. Fog. Bell. No sleep.\" \"Thursday. Clear. Slept. 21.00: the move, Nf3. Lev is thinking.\"",
+  "ja": "さかのぼってめくる。どのページも同じだ。風、視程、灯、猫。筆跡は何年たっても変わらず、インクが青になったり黒になったりするだけ。「火曜。〇三時一〇分より霧。鐘、十一時間連続。眠らず」「水曜。霧。鐘。眠らず」「木曜。晴。眠った。二一時 指し手：Nf3。レフ、考慮中」"
+ },
+ "city.farlight.log.p3": {
+  "ru": "Пять лет назад, ноябрь: «Шторм 10 баллов, третьи сутки. Волна идёт через причал. Сорвало бак, поймал. Завоза не будет до весны. Банок: 212. Керосину хватит. Огонь не гас». И на следующий день, тем же ровным почерком: «Шторм. Огонь не гас. Вырезал крачку».",
+  "en": "Five years ago, November: \"Storm force 10, third day. The sea is coming over the jetty. The tank was torn loose, caught it. No supply until spring. Tins: 212. Paraffin will last. The light did not go out.\" And the next day, in the same even hand: \"Storm. The light did not go out. Carved a tern.\"",
+  "ja": "五年前の十一月。「暴風、風力十、三日目。波が桟橋を越える。タンクが外れた、つかまえた。春まで補給なし。缶詰二一二個。灯油は足りる。灯は消えず」。翌日も同じ平らな字で。「暴風。灯は消えず。アジサシを彫った」"
+ },
+ "city.farlight.log.p4": {
+  "ru": "Одиннадцать лет назад, четверг: «21.00. Радист т/х „Полдень“ Штерн Л. М. вызвал не по службе. Предложил партию в шахматы, по ходу в неделю. Ответил: согласен, белые ваши. 1. e4». Ниже, через строчку: «Не знаю, зачем согласился».",
+  "en": "Eleven years ago, a Thursday: \"21.00. The radio operator of m/s Polden, Stern L. M., called off duty. Proposed a game of chess, a move a week. Answered: agreed, you have white. 1. e4.\" A line lower: \"I do not know why I agreed.\"",
+  "ja": "十一年前の木曜。「二一時。客船ポルデニ号の無線士シュテルン・L・Mより業務外の呼び出し。チェスを一局、週に一手で、との申し出。返信：了解、白はそちら。1. e4」。一行あけて。「なぜ承知したのか、自分でもわからない」"
+ },
+ "city.farlight.log.p5": {
+  "ru": "Первая страница, двадцать шесть лет назад. Почерк тот же, только буквы чуть крупнее: «Принял маяк у Орава П. Он сказал: „Главное — не разговаривай с огнём, привыкнешь“. Огонь зажжён 19.02». И всё. Дальше — ветер, видимость, огонь. Кот появляется на четвёртый год, без объяснений.",
+  "en": "The first page, twenty-six years ago. The same hand, only the letters a little larger: \"Took over the light from Orav P. He said: 'The main thing is, do not talk to the light, you will get used to it.' Light lit 19.02.\" And that is all. After that: wind, visibility, the light. The cat appears in the fourth year, without explanation.",
+  "ja": "最初のページ、二十六年前。同じ筆跡で、字が少しだけ大きい。「オラフ・Pより灯台を引き継ぐ。彼いわく、『肝心なのは灯に話しかけないことだ。癖になる』。点灯一九時〇二分」。それだけ。あとは風、視程、灯。猫は四年目に、何の説明もなく現れる。"
+ },
+ "city.farlight.log.open.1": {
+  "ru": "Толстая книга в клеёнчатой обложке. Тамм кивает: можно.",
+  "en": "A thick book in an oilcloth cover. Tamm nods: I may.",
+  "ja": "油布の表紙の分厚い帳面。タムがうなずく。見てもいい、ということだ。"
+ },
+ "city.farlight.chess.prompt": {
+  "ru": "E — посмотреть на позицию",
+  "en": "E — look at the position",
+  "ja": "E：局面を見る"
+ },
+ "city.farlight.chess.1": {
+  "ru": "Над рацией приколота диаграмма, вся в карандашных стрелках и стёртых резинкой дырах. Сорок первый ход. Одиннадцать лет. У белых лишняя пешка, у чёрных — терпение.",
+  "en": "A diagram is pinned over the radio set, all pencil arrows and holes rubbed through by the eraser. Move forty-one. Eleven years. White has an extra pawn; Black has patience.",
+  "ja": "無線機の上に局面図が留めてある。鉛筆の矢印と、消しゴムですり切れた穴だらけ。四十一手目。十一年。白は一歩得、黒には忍耐がある。"
+ },
+ "city.farlight.chess.2": {
+  "ru": "Тамм смотрит на диаграмму, потом на конверт на столе. «Сначала колокол, — говорит он. — Сорок оборотов. Ход подождёт, он ждал неделю».",
+  "en": "Tamm looks at the diagram, then at the envelope on the table. \"The bell first,\" he says. \"Forty turns. The move will wait; it has waited a week.\"",
+  "ja": "タムは局面図を見て、それから机の上の封筒を見る。「先に鐘だ」と彼は言う。「四十回。指し手は待てる。一週間待ったのだから」"
+ },
+ "city.farlight.chess.3": {
+  "ru": "Тамм вскрывает конверт ножом, которым режет птиц. Читает. Долго молчит. Потом переставляет на диаграмме одну булавку и впервые за весь день улыбается, одним углом рта. «Он жертвует ладью. Одиннадцать лет он играл, как бухгалтер, а руками прислал жертву». Он пишет на обороте три знака и заклеивает конверт хлебным мякишем. «Передай ему: принимаю. И ещё передай — ничья меня больше не устроит».",
+  "en": "Tamm slits the envelope with the knife he carves birds with. He reads. He is silent a long while. Then he moves one pin on the diagram and, for the first time all day, smiles with one corner of his mouth. \"He is sacrificing the rook. For eleven years he has played like a book-keeper, and by hand he sends a sacrifice.\" He writes three signs on the back and seals the envelope with a pellet of bread. \"Tell him: I accept. And tell him too that a draw will no longer do for me.\"",
+  "ja": "タムは鳥を彫るナイフで封を切る。読む。長いあいだ黙っている。それから局面図のピンを一本動かし、今日はじめて、口の片端だけで笑う。「ルークを捨ててきた。十一年、帳簿係のように指してきた男が、手渡しでは捨て駒を送ってよこす」。裏に記号を三つ書き、パンのかけらで封をする。「伝えなさい。受ける、と。それから、もう引き分けでは済まさない、とも」"
+ },
+ "city.farlight.keeper.prompt": {
+  "ru": "E — поговорить со смотрителем",
+  "en": "E — talk to the keeper",
+  "ja": "E：灯台守と話す"
+ },
+ "city.farlight.keeper.1": {
+  "ru": "У стола сидит старик в свитере до подбородка и режет что-то из серой деревяшки. Он смотрит на меня ровно столько, сколько нужно, чтобы сосчитать. «Четырнадцатый, — говорит он. — Чайник на плите. Журнал на столе. Наверх — сто четыре ступени».",
+  "en": "At the table sits an old man in a jersey up to his chin, carving something out of a grey piece of wood. He looks at me exactly as long as it takes to count. \"The fourteenth,\" he says. \"The kettle is on the stove. The log is on the table. Up top is a hundred and four steps.\"",
+  "ja": "机の前に、あごまでセーターを着た老人が座り、灰色の木切れから何かを彫っている。彼は数えるのに必要なだけ僕を見る。「十四人目」と彼は言う。「やかんはストーブの上。日誌は机の上。上までは百四段」"
+ },
+ "city.farlight.keeper.2": {
+  "ru": "«Спрашивай, — говорит Тамм, не поднимая головы от ножа. — Отвечу. Коротко».",
+  "en": "\"Ask,\" says Tamm without raising his head from the knife. \"I shall answer. Briefly.\"",
+  "ja": "「聞きなさい」とタムはナイフから顔を上げずに言う。「答える。短く」"
+ },
+ "city.farlight.keeper.3": {
+  "ru": "Тамм молчит и режет. Стружка падает ему на колени. Здесь можно просто постоять: похоже, это тоже считается разговором.",
+  "en": "Tamm is silent and carves. The shavings fall on his knees. One may simply stand here: it seems that counts as conversation too.",
+  "ja": "タムは黙って彫っている。削りくずがひざに落ちる。ここではただ立っていてもいい。それも会話のうちに入るらしい。"
+ },
+ "city.ask.farlight.winters": {
+  "ru": "Вы здесь давно?",
+  "en": "Have you been here long?",
+  "ja": "ここは長いんですか"
+ },
+ "city.ask.farlight.winters.1": {
+  "ru": "«Двадцать шесть зим». Он считает зимами. Лето, видимо, не в счёт: летом ходят теплоходы.",
+  "en": "\"Twenty-six winters.\" He counts in winters. Summer, it seems, does not count: in summer the ships come.",
+  "ja": "「冬が二十六回」。彼は冬で数える。夏は数に入らないらしい。夏は船が来るから。"
+ },
+ "city.ask.farlight.winters.2": {
+  "ru": "«Пришёл на один год. Сменщик не приехал. Потом я перестал спрашивать».",
+  "en": "\"I came for one year. The relief did not arrive. Later I stopped asking.\"",
+  "ja": "「一年のつもりで来た。交代が来なかった。そのうち聞くのをやめた」"
+ },
+ "city.ask.farlight.alone": {
+  "ru": "Не страшно одному?",
+  "en": "Is it not frightening alone?",
+  "ja": "ひとりで怖くないですか"
+ },
+ "city.ask.farlight.alone.1": {
+  "ru": "«Одному — нет. Страшно, когда гаснет огонь. Он не гас». Тамм стучит костяшкой по столу, по дереву.",
+  "en": "\"Alone, no. It is frightening when the light goes out. It has not gone out.\" Tamm raps a knuckle on the table, on the wood.",
+  "ja": "「ひとりは怖くない。怖いのは灯が消える時だ。消えたことはない」。タムは指の関節で机を、木をたたく。"
+ },
+ "city.ask.farlight.alone.2": {
+  "ru": "«И я не один. Есть кот. Есть Лев по четвергам. Есть вы по субботам, четырнадцать человек. Это много».",
+  "en": "\"And I am not alone. There is the cat. There is Lev on Thursdays. There are you on Saturdays, fourteen persons. That is a great many.\"",
+  "ja": "「それに、ひとりではない。猫がいる。木曜にはレフがいる。土曜にはあなたがたが十四人。大勢だ」"
+ },
+ "city.ask.farlight.light": {
+  "ru": "Как зажигают маяк?",
+  "en": "How is the light lit?",
+  "ja": "灯台はどうやって点けるんですか"
+ },
+ "city.ask.farlight.light.1": {
+  "ru": "«За четверть часа до захода. Протереть стёкла, снять чехол, зажечь, пустить механизм, записать. Потом стоять и смотреть три оборота».",
+  "en": "\"A quarter of an hour before sunset. Wipe the panes, take off the cover, light it, start the clockwork, write it down. Then stand and watch three turns.\"",
+  "ja": "「日没の十五分前。ガラスを拭く、覆いを外す、点ける、仕掛けを動かす、記す。それから立って三回転見届ける」"
+ },
+ "city.ask.farlight.light.2": {
+  "ru": "«Зачем три? Первый — для моряков. Второй — для инспекции. Третий — для меня».",
+  "en": "\"Why three? The first is for the seamen. The second is for the inspector. The third is for me.\"",
+  "ja": "「なぜ三回か。一回目は船乗りのため。二回目は検査官のため。三回目は自分のため」"
+ },
+ "city.ask.farlight.birds": {
+  "ru": "Вы режете птиц?",
+  "en": "Do you carve birds?",
+  "ja": "鳥を彫っているんですか"
+ },
+ "city.ask.farlight.birds.1": {
+  "ru": "«Море приносит дерево. В дереве уже есть птица. Убираю лишнее». Он поворачивает деревяшку: и правда, уже видна шея.",
+  "en": "\"The sea brings the wood. The bird is already in the wood. I take away what is not needed.\" He turns the piece: and indeed, there is a neck already.",
+  "ja": "「海が木を運んでくる。木の中にはもう鳥がいる。余分を取るだけだ」。彼が木切れを回すと、たしかにもう首が見える。"
+ },
+ "city.ask.farlight.birds.2": {
+  "ru": "«За зиму — около сорока. Весной отдаю на первый теплоход. Себе оставляю тех, кто не получился. Их жалко».",
+  "en": "\"Over a winter, about forty. In spring I give them to the first ship. I keep the ones that did not come out. I am sorry for them.\"",
+  "ja": "「ひと冬で四十羽ほど。春に最初の船に渡す。出来そこないは手もとに置く。かわいそうだから」"
+ },
+ "city.ask.farlight.lev": {
+  "ru": "Вы знаете нашего радиста?",
+  "en": "Do you know our radio operator?",
+  "ja": "うちの無線士をご存じですか"
+ },
+ "city.ask.farlight.lev.1": {
+  "ru": "«Льва? Одиннадцать лет. Ни разу не видел». Тамм кивает на диаграмму над рацией. «Знаю, как он ходит конём. Этого достаточно, чтобы знать человека».",
+  "en": "\"Lev? Eleven years. I have never once seen him.\" Tamm nods at the diagram over the radio. \"I know how he moves his knight. That is enough to know a man.\"",
+  "ja": "「レフか。十一年になる。一度も会ったことはない」。タムは無線機の上の局面図をあごで指す。「彼がナイトをどう動かすかは知っている。人を知るにはそれで足りる」"
+ },
+ "city.ask.farlight.lev.2": {
+  "ru": "«Он с борта не сходит. Говорит — колени. Я со скалы не схожу. Говорю — огонь. Оба врём. Просто так интереснее».",
+  "en": "\"He does not leave the ship. He says: his knees. I do not leave the rock. I say: the light. We are both lying. It is simply more interesting this way.\"",
+  "ja": "「彼は船を下りない。ひざが、と言う。私は岩を下りない。灯が、と言う。二人とも嘘だ。このほうが面白い、それだけのこと」"
+ },
+ "city.ask.farlight.cat": {
+  "ru": "А где кот?",
+  "en": "And where is the cat?",
+  "ja": "猫はどこですか"
+ },
+ "city.ask.farlight.cat.1": {
+  "ru": "«Где хочет. Пришёл сам, на четвёртый год. С какого судна — не сказал». Тамм впервые смотрит на меня с интересом. «У вас на борту, говорят, тоже есть. Серый? Значит, родня».",
+  "en": "\"Where he likes. He came by himself, in the fourth year. From what ship, he did not say.\" For the first time Tamm looks at me with interest. \"You have one aboard too, they say. Grey? Then they are kin.\"",
+  "ja": "「好きなところに。四年目に自分で来た。どの船からかは言わなかった」。タムがはじめて興味深そうに僕を見る。「そちらの船にもいるそうだな。灰色か。なら親戚だ」"
+ },
+ "city.ask.farlight.storm": {
+  "ru": "А в шторм?",
+  "en": "And in a storm?",
+  "ja": "嵐の時は？"
+ },
+ "city.ask.farlight.storm.1": {
+  "ru": "«Волна идёт через причал. Иногда — через дом. Тогда я в башне. Башня стоит с одиннадцатого года. Я ей верю больше, чем прогнозу».",
+  "en": "\"The sea comes over the jetty. Sometimes over the house. Then I am in the tower. The tower has stood since nineteen eleven. I trust it more than the forecast.\"",
+  "ja": "「波が桟橋を越える。時には家も越える。そういう時は塔にいる。塔は一九一一年から立っている。予報より塔を信じている」"
+ },
+ "city.ask.farlight.storm.2": {
+  "ru": "«В тумане хуже. В шторм тебя хотя бы видно. В тумане остаётся колокол. Заводить каждые восемь часов. Сорок оборотов».",
+  "en": "\"Fog is worse. In a storm one can at least be seen. In fog there is only the bell. To be wound every eight hours. Forty turns.\"",
+  "ja": "「霧のほうが悪い。嵐ならまだ見てもらえる。霧では鐘しか残らない。八時間ごとに巻く。四十回」"
+ },
+ "city.ask.farlight.town": {
+  "ru": "Вы бываете в Людмиловске?",
+  "en": "Do you ever go to Lyudmilovsk?",
+  "ja": "リュドミーロフスクには行きますか"
+ },
+ "city.ask.farlight.town.1": {
+  "ru": "«Был. В семьдесят четвёртом, проездом. Помню пирс и мороженое в вафле. Мороженое было хорошее».",
+  "en": "\"I have been. In seventy-four, passing through. I remember the pier and an ice cream in a wafer. The ice cream was good.\"",
+  "ja": "「行った。七四年に、通りがかりで。桟橋と、ウエハースにはさんだアイスクリームを覚えている。あれはうまかった」"
+ },
+ "city.ask.farlight.town.2": {
+  "ru": "«Там теперь, говорят, канатная дорога. По воздуху. Не понимаю, зачем по воздуху, когда есть вода. Но посмотрел бы».",
+  "en": "\"They say there is a cable car there now. Through the air. I do not understand why through the air when there is water. But I would have a look.\"",
+  "ja": "「今はロープウェイがあるそうだな。空を行く。水があるのに、なぜ空を行くのかわからない。だが、見てはみたい」"
+ },
+ "city.ask.farlight.move": {
+  "ru": "Вам что-нибудь передать на маяк?",
+  "en": "Shall I take anything to the lighthouse for you?",
+  "ja": "灯台へ何か届けましょうか"
+ },
+ "city.ask.farlight.move.1": {
+  "ru": "Лев Маркович долго смотрит на меня поверх очков. Потом достаёт из-под ключа заклеенный конверт. «Одиннадцать лет я стучу ему ход по четвергам. Точка, тире. А сегодня мы стоим у его скалы два часа, и я подумал: пусть хоть раз ход придёт ногами. Отнесите Тамму. Не вскрывать. И не говорите, что у меня дрожали руки».",
+  "en": "Lev Markovich looks at me over his glasses for a long while. Then he takes a sealed envelope from under the key. \"For eleven years I have tapped him a move on Thursdays. Dot, dash. And today we lie off his rock for two hours, and I thought: let a move come on foot for once. Take it to Tamm. Not to be opened. And do not tell him my hands were shaking.\"",
+  "ja": "レフ・マルコヴィチは眼鏡ごしに長いこと僕を見る。それから電鍵の下から封をした封筒を取り出す。「十一年、木曜ごとに指し手を打電してきた。トン、ツー。だが今日はあの男の岩の沖に二時間いる。それで思ったんだ。一度くらい、指し手が歩いて届いてもいいだろうと。タムに届けてくれ。開けてはいかん。それから、私の手が震えていたことは言わんでくれ」"
+ },
+ "city.ask.farlight.move.2": {
+  "ru": "«Сам? Нет. У меня колени. И потом, если я сойду, окажется, что он обыкновенный старик в свитере. А так он — лучший шахматист, какого я знаю».",
+  "en": "\"Myself? No. I have my knees. And besides, if I go ashore he will turn out to be an ordinary old man in a jersey. As it is, he is the best chess player I know.\"",
+  "ja": "「自分で？いや。ひざがね。それに、私が下りたら、彼がセーターを着たただの老人だとわかってしまう。今のままなら、私の知る最高のチェス指しだ」"
+ },
+ "city.ask.farlight.answer": {
+  "ru": "Тамм просил передать ответ",
+  "en": "Tamm asked me to give you his answer",
+  "ja": "タムさんから返事を預かってきました"
+ },
+ "city.ask.farlight.answer.1": {
+  "ru": "Лев Маркович отколупывает хлебный мякиш ногтем, читает три знака и садится мимо стула, но попадает. «Принял. Он принял жертву! Одиннадцать лет он не брал ничего, что я ему предлагал. Я уж думал, там на скале автомат». Он снимает очки и долго их протирает. «Что он ещё сказал?»",
+  "en": "Lev Markovich picks off the pellet of bread with a fingernail, reads the three signs and sits down beside his chair, yet lands on it. \"Accepted. He has accepted the sacrifice! For eleven years he took nothing I offered him. I had begun to think there was a machine on that rock.\" He takes off his glasses and wipes them for a long time. \"What else did he say?\"",
+  "ja": "レフ・マルコヴィチは爪でパンのかけらをはがし、三つの記号を読み、椅子を外して座りかけて、それでも座れた。「受けた。捨て駒を受けたぞ！十一年、私の差し出すものは何ひとつ取らなかった男が。あの岩には機械がいるのかと思い始めていたよ」。眼鏡を外し、長いこと拭く。「ほかに何か言っていたかね」"
+ },
+ "city.ask.farlight.answer.2": {
+  "ru": "«Ничья его не устроит? — Он смеётся так, что в наушниках что-то откликается. — Меня тоже. Одиннадцать лет мы оба играли на ничью, потому что боялись, что партия кончится. Спасибо вам. Теперь она кончится как следует. Лет через шесть».",
+  "en": "\"A draw will not do for him?\" He laughs so that something answers in the headphones. \"Nor for me. For eleven years we have both played for a draw, because we were afraid the game would end. Thank you. Now it will end properly. In six years or so.\"",
+  "ja": "「引き分けでは済まさない、と？」彼の笑い声に、ヘッドホンの中で何かが応える。「私もだ。十一年、二人とも引き分けを狙って指していた。対局が終わるのが怖くてね。ありがとう。これでちゃんと終わる。六年後くらいには」"
+ },
+ "city.farlight.coll.title": {
+  "ru": "Маяк Дальний",
+  "en": "The Far Light",
+  "ja": "遠灯台"
+ },
+ "quest.ship_farlight.title": {
+  "ru": "Ход по радио",
+  "en": "A move by radio",
+  "ja": "無線の一手"
+ },
+ "quest.ship_farlight.desc": {
+  "ru": "Радист Лев Маркович одиннадцать лет играет одну шахматную партию со смотрителем маяка Дальнего. По радио, по ходу в неделю. В субботу мы встаём у маяка на якорь.",
+  "en": "The radio operator Lev Markovich has been playing one game of chess with the keeper of the Far Light for eleven years. By radio, a move a week. On Saturday we anchor off the light.",
+  "ja": "無線士のレフ・マルコヴィチは、遠灯台の灯台守と十一年間、一局のチェスを指しつづけている。無線で、週に一手ずつ。土曜、船は灯台の沖に錨を下ろす。"
+ },
+ "quest.ship_farlight.done": {
+  "ru": "Партия продолжается. Лев Маркович говорит, что кончится она лет через шесть. По-моему, оба надеются, что позже.",
+  "en": "The game goes on. Lev Markovich says it will end in six years or so. If you ask me, they both hope for later.",
+  "ja": "対局は続く。レフ・マルコヴィチは六年後くらいに終わると言う。僕が思うに、二人とも、もっと先であってほしいのだ。"
+ },
+ "quest.ship_farlight.envelope.log": {
+  "ru": "За обедом говорили, что радист ищет, кто поедет на маяк. Радиорубка на шлюпочной палубе, принимает с девяти до восьми. Спрошу, не надо ли чего передать.",
+  "en": "At lunch they said the radio operator is looking for someone who is going to the lighthouse. The radio room is on the boat deck, open nine to eight. I'll ask whether there is anything to take.",
+  "ja": "昼食の席で、無線士が灯台へ行く人を探していると聞いた。無線室はボートデッキ、九時から八時まで。何か届けるものがないか聞いてみよう。"
+ },
+ "quest.ship_farlight.ask_lev.obj": {
+  "ru": "Спросить радиста, не передать ли что на маяк",
+  "en": "Ask the radio operator if there is anything for the lighthouse",
+  "ja": "灯台へ届けるものがないか無線士に聞く"
+ },
+ "quest.ship_farlight.carry.log": {
+  "ru": "У меня в кармане заклеенный конверт с шахматным ходом. Первый за одиннадцать лет ход, который едет не по радио. Катер на маяк ходит с 16:35, последний обратно в 18:20. Смотритель — в домике у башни.",
+  "en": "I have a sealed envelope with a chess move in my pocket. The first move in eleven years to travel otherwise than by radio. The launch to the light runs from 16:35, the last one back is at 18:20. The keeper is in the hut by the tower.",
+  "ja": "ポケットに、チェスの指し手を入れた封筒がある。十一年ではじめて、無線以外で運ばれる一手だ。灯台行きのランチは十六時三十五分から、帰りの最終は十八時二十分。灯台守は塔のそばの小屋にいる。"
+ },
+ "quest.ship_farlight.see_tamm.obj": {
+  "ru": "Отнести конверт смотрителю Тамму",
+  "en": "Take the envelope to the keeper, Tamm",
+  "ja": "封筒を灯台守のタムさんに届ける"
+ },
+ "quest.ship_farlight.chore.log": {
+  "ru": "Тамм положил конверт на стол и не вскрыл. Сказал: сперва завести туманный колокол, сорок оборотов, красный ящик на дальнем конце скалы. По-моему, он просто хочет, чтобы ход подождал ещё немного.",
+  "en": "Tamm laid the envelope on the table and did not open it. He said: first the fog bell is to be wound, forty turns, the red box at the far end of the rock. If you ask me, he simply wants the move to wait a little longer.",
+  "ja": "タムは封筒を机に置いたまま、開けなかった。まず霧鐘を巻いてこい、四十回、岩のいちばん向こうの赤い箱だ、と言う。僕が思うに、彼はただ、指し手にもう少し待っていてほしいのだ。"
+ },
+ "quest.ship_farlight.wind_bell.obj": {
+  "ru": "Завести механизм туманного колокола",
+  "en": "Wind the fog bell's clockwork",
+  "ja": "霧鐘の仕掛けを巻く"
+ },
+ "quest.ship_farlight.answer.log": {
+  "ru": "Колокол заведён. Теперь к диаграмме над рацией: Тамм сказал, что вскроет конверт там, где висит позиция.",
+  "en": "The bell is wound. Now to the diagram over the radio set: Tamm said he would open the envelope where the position hangs.",
+  "ja": "鐘は巻いた。次は無線機の上の局面図へ。タムは、局面の前で封を切ると言っていた。"
+ },
+ "quest.ship_farlight.get_answer.obj": {
+  "ru": "Подойти с Таммом к шахматной диаграмме",
+  "en": "Go to the chess diagram with Tamm",
+  "ja": "タムさんとチェスの局面図のところへ行く"
+ },
+ "quest.ship_farlight.back.log": {
+  "ru": "В кармане тот же конверт, заклеенный хлебным мякишем, с ответом на обороте. Тамм принял жертву. И просил передать, что ничья его больше не устроит. Обратно на борт, в радиорубку. Если сегодня не успею, Лев Маркович подождёт: он ждал одиннадцать лет.",
+  "en": "In my pocket is the same envelope, sealed with a pellet of bread, the answer on its back. Tamm has accepted the sacrifice. And he asked me to say that a draw will no longer do for him. Back aboard, to the radio room. If I do not make it today, Lev Markovich will wait: he has waited eleven years.",
+  "ja": "ポケットには同じ封筒。パンのかけらで封をして、裏に返事が書いてある。タムは捨て駒を受けた。そして、もう引き分けでは済まさないと伝えてくれ、と。船に戻って無線室へ。今日間に合わなくても、レフ・マルコヴィチは待ってくれる。十一年待った人だ。"
+ },
+ "quest.ship_farlight.tell_lev.obj": {
+  "ru": "Передать ответ радисту",
+  "en": "Give the radio operator the answer",
+  "ja": "無線士に返事を伝える"
+ }
+}

@@ -105,6 +105,8 @@ private:
 	float WantGain = 1.f, WantLowPass = 20000.f;
 	float Gain = 0.f, LowPass = 20000.f;
 	float SilentFor = 0.f;
+	/** What was last sent to the audio component (its setters are commands to the audio thread: not every tick). */
+	float SentVolume = -1.f, SentLowPass = -1.f;
 	/** The performance last announced (its seed): a title is shown once. */
 	uint32 Announced = 0;
 };

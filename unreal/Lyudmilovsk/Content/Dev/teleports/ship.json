@@ -89,6 +89,33 @@
    "y": 4001.4,
    "z": -3660.0,
    "yaw": 90.0
+  },
+  {
+   "id": "farlight_jetty",
+   "group": "cruise",
+   "name": "dev.tp.farlight_jetty",
+   "x": 25995.91,
+   "y": 4278.6,
+   "z": -3970.0,
+   "yaw": 74.5
+  },
+  {
+   "id": "farlight_hut",
+   "group": "cruise",
+   "name": "dev.tp.farlight_hut",
+   "x": 25953.13,
+   "y": 4320.89,
+   "z": -3660.0,
+   "yaw": 102.0
+  },
+  {
+   "id": "farlight_gallery",
+   "group": "cruise",
+   "name": "dev.tp.farlight_gallery",
+   "x": 25982.8,
+   "y": 4326.2,
+   "z": -1205.0,
+   "yaw": -90.0
   }
  ]
 }

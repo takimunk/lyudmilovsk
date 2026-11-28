@@ -310,6 +310,7 @@ void ALyudCruiseSeascape::HideAll()
 		if (P.bShown)
 		{
 			P.bShown = false;
+			P.bMeshHidden = false;
 			Comps[P.Comp]->SetVisibility(false);
 		}
 		if (P.bLit && P.LightsComp != INDEX_NONE)
@@ -400,8 +401,17 @@ void ALyudCruiseSeascape::Place(const FLyudCruiseView& View, const FTransform& S
 		if (bShow != P.bShown)
 		{
 			P.bShown = bShow;
-			C->SetVisibility(bShow);
+			C->SetVisibility(bShow && !P.bMeshHidden);
 			P.SlowClock = 1.f;
+		}
+		// the landing at the Far Light: the real rock stands exactly here while the ship lies at the stop (ULyudCruise shows
+		// it); the copy's mesh gives way, the piece stays "shown" for its lamp and beam
+		static const FName LandingPiece(TEXT("lighthouse"));
+		const bool bHideMesh = bShow && bRealRock && P.Id == LandingPiece;
+		if (bHideMesh != P.bMeshHidden)
+		{
+			P.bMeshHidden = bHideMesh;
+			C->SetVisibility(bShow && !bHideMesh);
 		}
 		if (!bShow)
 		{

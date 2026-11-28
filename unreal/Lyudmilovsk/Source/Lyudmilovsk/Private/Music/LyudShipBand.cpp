@@ -242,7 +242,10 @@ bool ULyudShipBand::EnsureVoice()
 	{
 		Wave = NewObject<USoundWaveProcedural>(this);
 		Wave->SetSampleRate(LyudBandImpl::Rate);
-		Wave->NumChannels = 2;
+		// mono, as every spatialised procedural voice of this game (BirdSound, the kite's hum, the fountain): the player renders
+		// L/R and Pump sums them. A 2-channel source would be spread by the engine's stereo spatialisation (or, with a
+		// spatialisation plugin set, not spatialised at all); one channel is the form known to work, in the world and in 2D.
+		Wave->NumChannels = 1;
 		Wave->Duration = INDEFINITELY_LOOPING_DURATION;
 		Wave->SoundGroup = SOUNDGROUP_Music;
 		Wave->bLooping = false;
@@ -331,7 +334,8 @@ void ULyudShipBand::Pump(float DeltaTime)
 		StopVoice();
 		return;
 	}
-	const int32 BytesPerFrame = 2 * (int32)sizeof(int16);
+	// the wave is mono (EnsureVoice): one int16 a frame; the player's L/R are summed (half each: the limiter's peak stays < 1)
+	const int32 BytesPerFrame = (int32)sizeof(int16);
 	const int32 Have = Wave->GetAvailableAudioByteCount() / BytesPerFrame;
 	const int32 Want = (int32)(LyudBandImpl::Rate * LyudBandImpl::AheadSeconds) - Have;
 	if (Want <= 0)
@@ -340,11 +344,12 @@ void ULyudShipBand::Pump(float DeltaTime)
 	}
 	const int32 N = FMath::Min(Want + (int32)(FMath::Min(DeltaTime, 0.25f) * LyudBandImpl::Rate), LyudBandImpl::MaxBlock);
 	Mix.SetNumUninitialized(N * 2, EAllowShrinking::No);
-	Pcm.SetNumUninitialized(N * 2, EAllowShrinking::No);
+	Pcm.SetNumUninitialized(N, EAllowShrinking::No);
 	Player->Render(Mix.GetData(), N);
-	for (int32 I = 0; I < N * 2; ++I)
+	for (int32 I = 0; I < N; ++I)
 	{
-		Pcm[I] = (int16)FMath::Clamp(Mix[I] * 32000.f, -32767.f, 32767.f);
+		const float M = 0.5f * (Mix[2 * I] + Mix[2 * I + 1]);
+		Pcm[I] = (int16)FMath::Clamp(M * 32000.f, -32767.f, 32767.f);
 	}
 	Wave->QueueAudio((const uint8*)Pcm.GetData(), N * BytesPerFrame);
 }
@@ -373,9 +378,19 @@ void ULyudShipBand::Tick(float DeltaTime)
 		const ULyudSoundscapeSubsystem* Scape = ULyudSoundscapeSubsystem::Get(this);
 		// as loud as a record (ULyudMusic::MusicLevel): above the ambient cues, which sit at 0.45 of the music volume
 		const float Level = Scape ? Scape->MasterVolume * FMath::Clamp(Scape->MusicVolume * 1.8f, 0.2f, 1.f) : 0.8f;
-		Voice->SetVolumeMultiplier(FMath::Max(0.001f, Level * Gain));
-		Voice->SetLowPassFilterEnabled(LowPass < 15000.f);
-		Voice->SetLowPassFilterFrequency(LowPass);
+		// each setter sends a command to the audio thread: only when it has moved enough to be heard
+		const float Volume = FMath::Max(0.001f, Level * Gain);
+		if (FMath::Abs(Volume - SentVolume) > 0.004f)
+		{
+			SentVolume = Volume;
+			Voice->SetVolumeMultiplier(Volume);
+		}
+		if (FMath::Abs(LowPass - SentLowPass) > FMath::Max(20.f, 0.02f * LowPass))
+		{
+			SentLowPass = LowPass;
+			Voice->SetLowPassFilterEnabled(LowPass < 15000.f);
+			Voice->SetLowPassFilterFrequency(LowPass);
+		}
 	}
 	Pump(DeltaTime);
 }
@@ -449,7 +464,7 @@ void ULyudShipBand::Decide()
 	if (bOther || bAdrift)
 	{
 		const LyudBand::FTune& T = Book->Tunes[(size_t)Pos.Tune];
-		if (Pos.Offset > T.Seconds - 6.0 && bOther)
+		if (Pos.Offset > (Set.bSoft ? T.SecondsSoft : T.Seconds) - 6.0 && bOther)
 		{
 			return;  // only its last chord is left: wait for the next number
 		}

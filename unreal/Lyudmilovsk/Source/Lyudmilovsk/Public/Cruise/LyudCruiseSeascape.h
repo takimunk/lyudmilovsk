@@ -42,6 +42,9 @@ public:
 	void Place(const FLyudCruiseView& View, const FTransform& Stage, float DeltaSeconds);
 	/** Everything out of sight (the hero went ashore). */
 	void HideAll();
+	/** The landing at the Far Light: while the real rock (the city building of plot P-FARLIGHT) is shown, the "lighthouse"
+	 *  piece's mesh is not drawn; its lamp and beam go on (they stand where the real tower's would). Call before Place. */
+	void SetRealRock(bool bReal) { bRealRock = bReal; }
 
 	/** Where an island's origin is shown now (world cm) and how far off it is (m); false: unknown or not shown. */
 	bool GetIslandWorld(FName Id, FVector& OutOrigin, float* OutDistM = nullptr) const;
@@ -65,11 +68,14 @@ private:
 		bool bFaceSun = false;
 		// state
 		bool bShown = false, bFar = false, bShadow = false, bLit = false;
+		/** Shown, but its mesh gives way to the real rock (SetRealRock). */
+		bool bMeshHidden = false;
 		float DistM = 0.f;
 		float SlowClock = 0.f;
 		FTransform World = FTransform::Identity;
 	};
 	TArray<FPiece> Pieces;
+	bool bRealRock = false;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMesh>> Meshes;
 	UPROPERTY(Transient) TArray<TObjectPtr<UStaticMeshComponent>> Comps;
 	/** Emissive instances by slot name ("glow_lamp", "glow_window"), put on every piece's glow slots. */
