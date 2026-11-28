@@ -1027,19 +1027,10 @@ void ULyudCruise::Board(double Now)
 	const int32 ClassIndex = FMath::Clamp(HeroClassIndex, 0, 2);
 	if (ULyudCityThings* Things = ULyudCityThings::Get(this))
 	{
-		// the stays of the city's rules: "cruise" (everything aboard that is for passengers) and his class's cabin, to Sunday night
+		// the stays of the city's rules: "cruise" (everything aboard that is for passengers), to Sunday night; the cabins go by the flags cruise_class_*
 		const int32 Days = FMath::Clamp(4 - FMath::Max(1, Seen.Day), 1, 3);
 		Things->StartStay(TEXT("cruise"), 0);
 		Things->StartStay(TEXT("cruise"), Days);
-		for (int32 C = 0; C < 3; ++C)
-		{
-			const FString StayId = FString(TEXT("cruise_")) + LyudCruiseImpl::ClassNames[C];
-			Things->StartStay(StayId, 0);
-			if (C == ClassIndex)
-			{
-				Things->StartStay(StayId, Days);
-			}
-		}
 	}
 	const bool bLate = Seen.Phase != ELyudCruisePhase::Boarding;
 	const FString LineKey = bLate ? FString(TEXT("cruise.say.board.late")) : FString(TEXT("cruise.say.board.")) + LyudCruiseImpl::ClassNames[ClassIndex];
@@ -1072,10 +1063,6 @@ void ULyudCruise::FinishAshore(double Now)
 	{
 		Things->StartStay(TEXT("cruise"), 0);
 		Things->StartStay(TEXT("cruise_bridge"), 0);
-		for (int32 C = 0; C < 3; ++C)
-		{
-			Things->StartStay(FString(TEXT("cruise_")) + LyudCruiseImpl::ClassNames[C], 0);
-		}
 	}
 	UE_LOG(LogLyudCruise, Log, TEXT("CRUISE hero ashore%s; cruises sailed %d"), bSailed ? TEXT(" (the voyage counts)") : TEXT(""), CruisesSailed);
 	ULyudQuests::Notify(this, TEXT("cruise_event"), TEXT("ashore"));

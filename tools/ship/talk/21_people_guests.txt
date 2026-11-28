@@ -489,7 +489,7 @@ Overcast. Better for observation: no glare. Worse for the heart. I write down bo
 - me
 Доброе утро. Сегодня в десять остров Птичий. Я не спал. Перед островом я никогда не сплю, уже шестой год.
 Good morning. Today at ten, Bird Island. I have not slept. I never sleep before the island, six years now.
-おはようございます。今日は十時に鳥島です。眠っていません。島の前の晩は眠れないのです。もう六年。
+おはようございます。今日は十時に鳥の島です。眠っていません。島の前の晩は眠れないのです。もう六年。
 > aside.ship_voyage.sun : sun
 - me
 Сегодня я считаю итог. Тридцать один вид за рейс. В прошлом году двадцать девять. Мир стал богаче на два вида. Или я внимательнее.

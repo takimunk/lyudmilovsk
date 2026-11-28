@@ -98,7 +98,7 @@ doing = cruise_isl_lighthouse
 weight = 3
 say town.cruise_isl_lighthouse.1 | Маяк Дальний. Голая скала, башня и один огород в три грядки. | The Far Light. A bare rock, a tower and one garden of three beds. | 遠灯台だ。はだかの岩に塔がひとつ、畑はうねが三つ。
 say town.cruise_isl_lighthouse.2 | Кто-то машет с галереи. Помашем в ответ, ему приятно. | Somebody is waving from the gallery. Let's wave back, he'll be glad. | 回廊でだれか手を振っている。振り返そう、喜ぶから。
-say town.cruise_isl_lighthouse.3 | Ночью его огонь видно из каюты. Считай вспышки и засыпай. | At night you can see its light from the cabin. Count the flashes and fall asleep. | 夜は船室から灯が見える。光を数えながら眠るんだ。
+say town.cruise_isl_lighthouse.3 | Катер на скалу ходит до двадцати минут седьмого. Успеем? | The launch to the rock runs till twenty past six. Shall we make it? | 岩へのランチは六時二十分まで。間に合うかな。
 
 [cruise_isl_seals]
 doing = cruise_isl_seals

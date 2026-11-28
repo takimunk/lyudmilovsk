@@ -445,7 +445,7 @@ The Bird Colony
 @quest.ship_birds.desc
 Господин Мори шестой год считает птиц на острове Птичьем. У него две руки, а видов на скале четыре.
 Mr Mori has counted the birds of Bird Island for six years. He has two hands, and there are four species on the cliff.
-森さんは六年、鳥島の鳥を数えている。手は二本、崖の鳥は四種類。
+森さんは六年、鳥の島の鳥を数えている。手は二本、崖の鳥は四種類。
 @quest.ship_birds.meet.log
 На шлюпочной палубе у борта стоит человек с подзорной трубой на треноге и с блокнотом. Харуто Мори, из Саппоро. Он там почти всегда, даже когда птиц нет.
 On the boat deck, at the rail, stands a man with a telescope on a tripod and a notebook. Haruto Mori, from Sapporo. He's almost always there, even when there are no birds.
@@ -457,11 +457,11 @@ Talk to Mr Mori
 @quest.ship_birds.count.log
 Мори-сан считает птиц для общества в Саппоро: один час в году, когда теплоход идёт вокруг острова Птичьего. Он считает моёвок, а мне доверил кайр на северном уступе: стоят как пингвины, все одинаковые. Считать десятками. «Ошибка допустима, ложь — нет». Суббота, с десяти до половины двенадцатого, шлюпочная палуба, скамья у трубы.
 Mori-san counts birds for a society in Sapporo: one hour a year, while the ship goes round Bird Island. He counts the kittiwakes and has trusted me with the guillemots on the north ledge: they stand like penguins, all alike. Count in tens. "An error is allowed, a lie is not." Saturday, ten till half past eleven, boat deck, the bench by the funnel.
-森さんは札幌の会のために鳥を数えている。年に一時間、船が鳥島を回るあいだだけ。彼はミツユビカモメを数え、ぼくには北の岩棚のウミガラスを任せた。ペンギンみたいに立っていて、みんな同じ顔だ。十羽ずつ数える。「誤差は許される。嘘は許されない」。土曜の十時から十一時半、ボート甲板、煙突のそばのベンチ。
+森さんは札幌の会のために鳥を数えている。年に一時間、船が鳥の島を回るあいだだけ。彼はミツユビカモメを数え、ぼくには北の岩棚のウミガラスを任せた。ペンギンみたいに立っていて、みんな同じ顔だ。十羽ずつ数える。「誤差は許される。嘘は許されない」。土曜の十時から十一時半、ボート甲板、煙突のそばのベンチ。
 @quest.ship_birds.count_birds.obj
 Сосчитать кайр со шлюпочной палубы, когда теплоход идёт вокруг Птичьего
 Count the guillemots from the boat deck while the ship rounds Bird Island
-船が鳥島を回るあいだ、ボート甲板からウミガラスを数える
+船が鳥の島を回るあいだ、ボート甲板からウミガラスを数える
 @quest.ship_birds.report.log
 Сосчитал. Десятками, как велено. Вышло около девяноста: четыре ряда на карнизе, все лицом к скале. На последнем десятке одна кайра нырнула. Доложить Мори-сану.
 Counted. In tens, as told. It came to about ninety: four rows on the ledge, all facing the rock. In the last ten one guillemot dived. Report to Mori-san.
@@ -512,7 +512,7 @@ When?
 - me
 Суббота, десять часов, остров Птичий. Шлюпочная палуба, скамья у трубы. Не опаздывайте: остров не ждёт, теплоход тоже.
 Saturday, ten o'clock, Bird Island. Boat deck, the bench by the funnel. Do not be late: the island does not wait, nor does the ship.
-土曜、十時、鳥島。ボート甲板、煙突のそばのベンチ。遅れないように。島は待ちません。船も待ちません。
+土曜、十時、鳥の島。ボート甲板、煙突のそばのベンチ。遅れないように。島は待ちません。船も待ちません。
 > quest.ship_birds.count : birds_wait
 - me
 Суббота, с десяти до половины двенадцатого. Скамья у трубы. Считать десятками.
@@ -711,7 +711,7 @@ That's it! I buried it as treasure so I wouldn't lose it. And forgot where. Pira
 - me
 На. Стёклышко с Тюленьих камней, мне его матрос дал. Зелёное, как тесёмка. Самое ценное, что у меня есть. Кроме бабушки.
 Here. A bit of glass from the Seal Rocks, a sailor gave it me. Green, like the tape. The most valuable thing I've got. Except Granny.
-あげる。あざらし岩のガラス。水夫さんにもらったんだ。ひもと同じ緑。ぼくのいちばんの宝物。おばあちゃんの次に。
+あげる。アザラシ岩のガラス。水夫さんにもらったんだ。ひもと同じ緑。ぼくのいちばんの宝物。おばあちゃんの次に。
 > quest.ship_key.done : key_done
 - me
 Бабушка открыла чемодан, посмотрела на платок и закрыла. Сказала: «На месте». А ключ опять дала мне. Я его теперь не зарываю. Я его записал.

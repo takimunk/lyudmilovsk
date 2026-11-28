@@ -21,13 +21,13 @@ I'm aboard. The motor ship Polden, a yellow disc on her funnel. We sailed at six
 Live through the first evening and night aboard
 船での最初の夕べと夜を過ごす
 @quest.ship_voyage.sat.log
-Суббота. Проснулся от того, что пол гудит: это дизель, к нему привыкаешь, как к собственному пульсу. В десять остров Птичий, после обеда маяк Дальний, вечером капитанский ужин и танцы. Вчерашние незнакомые за завтраком кивают мне, как своему.
-Saturday. I woke because the floor was humming: the diesel, you get used to it like your own pulse. Bird Island at ten, the Far Light after lunch, the captain's dinner and dancing tonight. Yesterday's strangers nod to me at breakfast as if I were one of them.
-土曜日。床のうなりで目が覚めた。ディーゼルだ。自分の脈みたいに、すぐ慣れる。十時に鳥島、昼すぎに遠灯台、夜は船長の晩餐とダンス。昨日は他人だった人たちが、朝食の席で仲間みたいにうなずいてくる。
+Суббота. Проснулся от того, что пол гудит: это дизель, к нему привыкаешь, как к собственному пульсу. В десять остров Птичий, после чая маяк Дальний, и на него, говорят, можно сойти, вечером капитанский ужин и танцы. Вчерашние незнакомые за завтраком кивают мне, как своему.
+Saturday. I woke because the floor was humming: the diesel, you get used to it like your own pulse. Bird Island at ten, the Far Light after tea, and they say we can go ashore there, the captain's dinner and dancing tonight. Yesterday's strangers nod to me at breakfast as if I were one of them.
+土曜日。床のうなりで目が覚めた。ディーゼルだ。自分の脈みたいに、すぐ慣れる。十時に鳥の島、お茶のあとに遠灯台。上陸もできるらしい。夜は船長の晩餐とダンス。昨日は他人だった人たちが、朝食の席で仲間みたいにうなずいてくる。
 @quest.ship_voyage.saturday.obj
 Прожить субботний день: остров Птичий, палубные игры, маяк Дальний
 Live through Saturday: Bird Island, the deck games, the Far Light
-土曜の昼を過ごす(鳥島、甲板の競技、遠灯台)
+土曜の昼を過ごす(鳥の島、甲板の競技、遠灯台)
 @quest.ship_voyage.eve.log
 Суббота, вечер. Капитанский ужин: белые скатерти, Громов в парадном кителе говорит тост из одиннадцати слов. Потом квартет, вальс, окна салона отражаются в чёрной воде. В полночь встанем на якорь у острова Долгого, и дизель замолчит в первый раз с пятницы.
 Saturday evening. The captain's dinner: white tablecloths, Gromov in his dress tunic gives a toast of eleven words. Then the quartet, a waltz, the saloon windows reflected in black water. At midnight we anchor off Long Island, and the diesel falls silent for the first time since Friday.
@@ -39,7 +39,7 @@ Live through the captain's evening and the night at anchor
 @quest.ship_voyage.sun.log
 Воскресенье. Ночь стояли на якоре у острова Долгого, и было так тихо, что слышно, как на камбузе тётя Паша ставит чайник. Сегодня викторина, Тюленьи камни, в три грамоты, а в шесть наш рейд. Все уже говорят «у нас на „Полдне“». Я тоже.
 Sunday. We lay at anchor off Long Island all night, so quiet you could hear Aunt Pasha put the kettle on in the galley. Today the quiz, the Seal Rocks, diplomas at three, and at six our own roads. Everyone already says "here on the Polden". So do I.
-日曜日。一晩じゅう長島の沖に錨を下ろしていた。厨房でパーシャおばさんがやかんをかける音が聞こえるほど静かだった。今日はクイズ、あざらし岩、三時に表彰、六時には町の沖に戻る。みんなもう「うちのポルデニ号では」と言う。ぼくも言う。
+日曜日。一晩じゅう長島の沖に錨を下ろしていた。厨房でパーシャおばさんがやかんをかける音が聞こえるほど静かだった。今日はクイズ、アザラシ岩、三時に表彰、六時には町の沖に戻る。みんなもう「うちのポルデニ号では」と言う。ぼくも言う。
 @quest.ship_voyage.sunday.obj
 Прожить воскресенье: викторина, Тюленьи камни, грамоты в три часа
 Live through Sunday: the quiz, the Seal Rocks, the diplomas at three
@@ -567,7 +567,7 @@ A geography teacher pointed at these islands with a stick for thirty years and n
 @quest.ship_pilot.islands.log
 Остров. Настоящий, не на карте. Рядом у борта стояла старая учительница со списком и шептала названия: Каменные Братья, Игольное Ушко, Птичий, маяк Дальний, Долгий, Тюленьи камни. За каждый увиденный она ставит птичку, но сама у борта долго стоять не может: ветер. Посмотрю за неё. Смотреть лучше с носа или с крыла мостика, а что когда будет, сказано в «Лоции островов» в судовой библиотеке.
 An island. A real one, not on a map. An old teacher stood beside me at the rail with a list, whispering the names: the Stone Brothers, the Needle's Eye, Bird Island, the Far Light, Long Island, the Seal Rocks. She ticks each one she sees, but she can't stand at the rail for long: the wind. I'll look for her. The bow or a bridge wing is best, and what comes when is in the "Pilot of the Islands" in the ship's library.
-島だ。地図ではなく本物の。となりの手すりに年とった先生が一覧表を持って立ち、名前をつぶやいていた。石の兄弟、針の目、鳥島、遠灯台、長島、あざらし岩。見えた島にはしるしをつけるが、風があって長くは立っていられない。ぼくが代わりに見よう。船首か船橋の張り出しがいい。いつ何が見えるかは、船の図書室の『島々の水路誌』に書いてある。
+島だ。地図ではなく本物の。となりの手すりに年とった先生が一覧表を持って立ち、名前をつぶやいていた。石の兄弟岩、針の穴岩、鳥の島、遠灯台、長島、アザラシ岩。見えた島にはしるしをつけるが、風があって長くは立っていられない。ぼくが代わりに見よう。船首か船橋の張り出しがいい。いつ何が見えるかは、船の図書室の『島々の水路誌』に書いてある。
 @quest.ship_pilot.see_three.obj
 Увидеть с палубы три острова
 See three islands from the deck

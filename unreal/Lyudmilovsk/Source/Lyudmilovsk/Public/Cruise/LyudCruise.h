@@ -21,7 +21,7 @@ enum class ELyudCruisePhase : uint8
 	/** Friday 16:00-18:00: the launch runs from the pier head. */
 	Boarding,
 	Underway,
-	/** Round an island (Bird Island, the Far Light). */
+	/** Round an island (Bird Island). */
 	Circling,
 	/** The night anchorage in Long Island's bay. */
 	Anchored,
