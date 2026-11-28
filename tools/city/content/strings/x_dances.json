@@ -1,0 +1,617 @@
+{
+ "city.dnc.p.lan": {
+  "ru": "Лан Дюбуа",
+  "en": "Lan Dubois",
+  "ja": "ラン・デュボワ"
+ },
+ "city.dnc.p.siobhan": {
+  "ru": "Шивон Мамедова",
+  "en": "Siobhán Mamedova",
+  "ja": "シボーン・マメドワ"
+ },
+ "city.dnc.p.lucia": {
+  "ru": "Лусия Коваленко",
+  "en": "Lucía Kovalenko",
+  "ja": "ルシア・コヴァレンコ"
+ },
+ "city.dnc.p.malgorzata": {
+  "ru": "Малгожата Свободова",
+  "en": "Małgorzata Svobodová",
+  "ja": "マウゴジャタ・スヴォボドヴァー"
+ },
+ "city.dnc.p.aigerim": {
+  "ru": "Айгерим Чжан",
+  "en": "Aigerim Zhang",
+  "ja": "アイゲリム・チャン"
+ },
+ "city.dnc.p.akosua": {
+  "ru": "Акосуа Романо",
+  "en": "Akosua Romano",
+  "ja": "アコスア・ロマーノ"
+ },
+ "city.dnc.p.marketa": {
+  "ru": "Маркета Чжоу",
+  "en": "Markéta Zhou",
+  "ja": "マルケタ・チョウ"
+ },
+ "city.dnc.p.ursula": {
+  "ru": "Урсула Виртанен",
+  "en": "Ursula Virtanen",
+  "ja": "ウルズラ・ヴィルタネン"
+ },
+ "city.dnc.p.yumiko": {
+  "ru": "Юмико Янушкевич",
+  "en": "Yumiko Yanushkevich",
+  "ja": "ヤヌシケヴィチ由美子"
+ },
+ "city.dnc.p.aigerim_h": {
+  "ru": "Айгерим Эрнандес",
+  "en": "Aigerim Hernández",
+  "ja": "アイゲリム・エルナンデス"
+ },
+ "city.dnc.p.ama": {
+  "ru": "Ама Хуан",
+  "en": "Ama Huang",
+  "ja": "アマ・ホアン"
+ },
+ "city.dnc.p.femke": {
+  "ru": "Фемке Бекеле",
+  "en": "Femke Bekele",
+  "ja": "フェムケ・ベケレ"
+ },
+ "city.dnc.pl.lan.hello": {
+  "ru": "Я? Ой. Я вообще-то пришла с подругой посмотреть…",
+  "en": "Me? Oh. I actually came with a friend, just to watch…",
+  "ja": "わたし？　あ…友だちと見に来ただけなんだけど…"
+ },
+ "city.dnc.pl.lan.win": {
+  "ru": "Спасибо. Я думала, меня сегодня никто не пригласит. А оказалось — не страшно.",
+  "en": "Thank you. I thought nobody would ask me tonight. It turned out not to be scary at all.",
+  "ja": "ありがとう。今夜は誰にも誘われないと思ってた。こわくなかった。"
+ },
+ "city.dnc.pl.lan.lose": {
+  "ru": "Простите, я… лучше постою. Может быть, в следующий раз.",
+  "en": "Sorry, I'd… rather stand. Maybe next time.",
+  "ja": "ごめんなさい…今日は立ってる。また今度ね。"
+ },
+ "city.dnc.pl.siobhan.hello": {
+  "ru": "Ну наконец-то! Я уже думала сама тебя пригласить.",
+  "en": "At last! I was about to ask you myself.",
+  "ja": "やっと来た！　こっちから誘おうかと思ってた。"
+ },
+ "city.dnc.pl.siobhan.win": {
+  "ru": "Вот это я понимаю — вальс! Ещё один, пока пластинку не сменили?",
+  "en": "Now that's what I call a waltz! One more before they change the record?",
+  "ja": "これぞワルツ！　レコードが替わる前にもう一曲どう？"
+ },
+ "city.dnc.pl.siobhan.lose": {
+  "ru": "Скучно приглашаешь. Придумай что-нибудь — и приходи.",
+  "en": "That's a boring way to ask. Think of something and come back.",
+  "ja": "誘い方が退屈。何か考えてからまた来て。"
+ },
+ "city.dnc.pl.lucia.hello": {
+  "ru": "Угадай, о чём мы с подругой сейчас смеялись. Не угадаешь — не пойду.",
+  "en": "Guess what my friend and I were laughing about. Wrong guess, no dance.",
+  "ja": "友だちと何で笑ってたか当ててみて。外れたら踊らない。"
+ },
+ "city.dnc.pl.lucia.win": {
+  "ru": "Ты не наступил мне ни разу. Подруга мне проспорила пирог.",
+  "en": "You didn't tread on me once. My friend owes me a pie on that bet.",
+  "ja": "一度も足を踏まなかった。友だちとの賭けはわたしの勝ち、パイ一個。"
+ },
+ "city.dnc.pl.lucia.lose": {
+  "ru": "Мимо! Спроси ещё раз после полечки.",
+  "en": "Missed! Ask again after the polka.",
+  "ja": "はずれ！　ポルカのあとでもう一回どうぞ。"
+ },
+ "city.dnc.pl.malgorzata.hello": {
+  "ru": "Я плохо танцую. Честно. Ты точно хочешь?",
+  "en": "I'm a bad dancer. Honestly. Are you sure?",
+  "ja": "わたし、踊るの下手なの。本当に。それでもいい？"
+ },
+ "city.dnc.pl.malgorzata.win": {
+  "ru": "Я считала про себя: раз-два-три. Ты, кажется, тоже. Получилось!",
+  "en": "I was counting to myself: one-two-three. I think you were too. It worked!",
+  "ja": "心の中でワン・ツー・スリーって数えてた。あなたもでしょ。うまくいった！"
+ },
+ "city.dnc.pl.malgorzata.lose": {
+  "ru": "Нет-нет, я не умею, я только посмотреть. Извини.",
+  "en": "No, no, I can't, I'm only watching. Sorry.",
+  "ja": "ううん、踊れないの、見てるだけ。ごめんね。"
+ },
+ "city.dnc.pl.aigerim.hello": {
+  "ru": "Давай. Только я после волейбола, ноги гудят.",
+  "en": "All right. Only I've just come from volleyball, my feet are humming.",
+  "ja": "いいよ。ただバレーの練習帰りで、足がじんじんしてる。"
+ },
+ "city.dnc.pl.aigerim.win": {
+  "ru": "Хорошо прошлись. Как задачка по алгебре — всё сошлось с ответом.",
+  "en": "That went well. Like an algebra problem: it all came out to the answer.",
+  "ja": "いい踊りだった。代数の問題みたいに、答えがぴったり合った。"
+ },
+ "city.dnc.pl.aigerim.lose": {
+  "ru": "Не сейчас. Дай дух перевести, следующий танец твой.",
+  "en": "Not now. Let me get my breath; the next one's yours.",
+  "ja": "今はだめ。ひと息つかせて。次の曲はあなたの番。"
+ },
+ "city.dnc.pl.akosua.hello": {
+  "ru": "Ты смотришь так, будто собираешься что-то сказать. Говори.",
+  "en": "You look as if you're about to say something. Go on.",
+  "ja": "何か言いたそうな顔してる。言ってごらん。"
+ },
+ "city.dnc.pl.akosua.win": {
+  "ru": "С тобой легко. Как в школьном коридоре на перемене: все бегут, а мы в такт.",
+  "en": "You're easy to dance with. Like the school corridor at break: everyone running, and we're in step.",
+  "ja": "あなたとは踊りやすい。休み時間の廊下みたい。みんな走ってるのに、わたしたちは拍子どおり。"
+ },
+ "city.dnc.pl.akosua.lose": {
+  "ru": "Не так. Смелее надо, смелее. Попробуй потом.",
+  "en": "Not like that. Bolder, bolder. Try later.",
+  "ja": "そうじゃない。もっと大胆に。またあとでね。"
+ },
+ "city.dnc.pl.marketa.hello": {
+  "ru": "Сначала скажи, какая сейчас играет пластинка. Тогда подумаю.",
+  "en": "First tell me which record is playing. Then I'll think about it.",
+  "ja": "まず、今かかってるレコードを当てて。それから考える。"
+ },
+ "city.dnc.pl.marketa.win": {
+  "ru": "Неплохо для человека, который не знает названия пластинки.",
+  "en": "Not bad for someone who doesn't know the record's name.",
+  "ja": "レコードの名前も知らない人にしては悪くない。"
+ },
+ "city.dnc.pl.marketa.lose": {
+  "ru": "Нет уж. Хитрее надо быть, хитрее.",
+  "en": "No, thanks. You'll have to be craftier than that.",
+  "ja": "やめとく。もっとうまくやらなきゃ。"
+ },
+ "city.dnc.pl.ursula.hello": {
+  "ru": "Я… я тут в первый раз. Мама сказала, надо выходить в люди.",
+  "en": "I'm… I'm here for the first time. Mum said I ought to get out more.",
+  "ja": "わ、わたし、初めて来たの。母が、たまには人前に出なさいって。"
+ },
+ "city.dnc.pl.ursula.win": {
+  "ru": "Я ни разу не сбилась! Расскажу маме — не поверит.",
+  "en": "I didn't lose the step once! I'll tell Mum; she won't believe it.",
+  "ja": "一度もずれなかった！　母に話しても信じないだろうな。"
+ },
+ "city.dnc.pl.ursula.lose": {
+  "ru": "Ой, нет, я… я лучше у стенки. Не обижайся.",
+  "en": "Oh, no, I'd… better stay by the wall. Don't be offended.",
+  "ja": "あ、ううん、わたしは壁ぎわでいい。気を悪くしないで。"
+ },
+ "city.dnc.pl.yumiko.hello": {
+  "ru": "Белый танец! Не отказывайся, у меня рука лёгкая.",
+  "en": "Ladies' choice! Don't say no, I have a light hand.",
+  "ja": "白いダンス！　断らないで、リードは軽いから。"
+ },
+ "city.dnc.pl.yumiko.win": {
+  "ru": "Я играю в школьном оркестре, но танцевать люблю больше. Спасибо, кавалер.",
+  "en": "I play in the school band, but I like dancing better. Thank you, sir.",
+  "ja": "学校の楽団で弾いてるけど、踊るほうが好き。ありがとう、騎士さん。"
+ },
+ "city.dnc.pl.yumiko.lose": {
+  "ru": "Ничего, я поведу ещё раз. В следующую субботу.",
+  "en": "Never mind, I'll lead again. Next Saturday.",
+  "ja": "大丈夫、またリードしてあげる。来週の土曜にね。"
+ },
+ "city.dnc.pl.aigerim_h.hello": {
+  "ru": "Белый танец, а ты стоишь, как швабра в углу. Пойдём.",
+  "en": "Ladies' choice, and you're standing there like a mop in the corner. Come on.",
+  "ja": "白いダンスなのに、隅のモップみたいに立ってる。行こう。"
+ },
+ "city.dnc.pl.aigerim_h.win": {
+  "ru": "Видел, как подружки смотрели? Завтра весь подъезд будет знать.",
+  "en": "Did you see my friends watching? Tomorrow the whole staircase will know.",
+  "ja": "友だちが見てたの気づいた？　明日には階段じゅうに知れわたるよ。"
+ },
+ "city.dnc.pl.aigerim_h.lose": {
+  "ru": "Ай! Мой мизинец! Ладно, живи.",
+  "en": "Ow! My little toe! All right, you're forgiven.",
+  "ja": "いたっ！　小指！　まあ、許してあげる。"
+ },
+ "city.dnc.pl.ama.hello": {
+  "ru": "Объявили белый танец. Я приглашаю тебя — вот, сказала.",
+  "en": "They've called the ladies' choice. I'm asking you; there, I've said it.",
+  "ja": "白いダンスだって。あなたを誘うわ。ほら、言えた。"
+ },
+ "city.dnc.pl.ama.win": {
+  "ru": "Хорошо. Ровно, спокойно, как море в штиль.",
+  "en": "Good. Even and calm, like the sea in a flat calm.",
+  "ja": "よかった。凪の海みたいに、穏やかで静か。"
+ },
+ "city.dnc.pl.ama.lose": {
+  "ru": "Сбились — бывает. Море тоже иногда сбивается.",
+  "en": "We lost the step; it happens. The sea loses it too sometimes.",
+  "ja": "ずれちゃったね。よくあること。海だってときどきずれる。"
+ },
+ "city.dnc.pl.femke.hello": {
+  "ru": "Можно… можно тебя? Сейчас ведь белый танец.",
+  "en": "May I… may I have you? It's the ladies' choice now.",
+  "ja": "あの…いいかな？　今、白いダンスだから。"
+ },
+ "city.dnc.pl.femke.win": {
+  "ru": "Я весь вечер собиралась с духом. Хорошо, что собралась.",
+  "en": "I spent all evening working up the courage. I'm glad I did.",
+  "ja": "ひと晩じゅう勇気をためてたの。言えてよかった。"
+ },
+ "city.dnc.pl.femke.lose": {
+  "ru": "Ой, это я сбилась, не ты. Прости.",
+  "en": "Oh, that was me who lost the step, not you. Sorry.",
+  "ja": "あ、ずれたのはわたし。ごめんね。"
+ },
+ "city.game.vs.dnc_invite": {
+  "ru": "приглашение на танец",
+  "en": "asking for a dance",
+  "ja": "ダンスの申し込み"
+ },
+ "city.game.vs.dnc_white": {
+  "ru": "белый танец",
+  "en": "the ladies' choice",
+  "ja": "白いダンス"
+ },
+ "city.dnc.invite.prompt": {
+  "ru": "E — пригласить на танец",
+  "en": "E — ask someone to dance",
+  "ja": "E：ダンスに誘う"
+ },
+ "city.dnc.invite.title": {
+  "ru": "Приглашение на танец",
+  "en": "Asking for a dance",
+  "ja": "ダンスの申し込み"
+ },
+ "city.dnc.invite.keys": {
+  "ru": "1 — протянуть руку, 2 — заговорить, 3 — пошутить",
+  "en": "1 — hold out your hand, 2 — start talking, 3 — make a joke",
+  "ja": "1：手を差し出す　2：話しかける　3：冗談を言う"
+ },
+ "city.dnc.invite.move.1": {
+  "ru": "Просто протянуть руку",
+  "en": "Simply hold out your hand",
+  "ja": "黙って手を差し出す"
+ },
+ "city.dnc.invite.move.2": {
+  "ru": "Сначала заговорить",
+  "en": "Start a conversation first",
+  "ja": "まず話しかける"
+ },
+ "city.dnc.invite.move.3": {
+  "ru": "Пошутить",
+  "en": "Make a joke",
+  "ja": "冗談を言う"
+ },
+ "city.dnc.invite.tell.1": {
+  "ru": "{0} смотрит прямо на тебя и постукивает каблуком в такт.",
+  "en": "{0} looks straight at you and taps a heel in time.",
+  "ja": "{0}はまっすぐこちらを見て、かかとで拍子を取っている。"
+ },
+ "city.dnc.invite.tell.2": {
+  "ru": "{0} смотрит в пол и теребит ремешок сумочки.",
+  "en": "{0} looks at the floor and fiddles with the strap of her bag.",
+  "ja": "{0}は床を見つめ、バッグの紐をいじっている。"
+ },
+ "city.dnc.invite.tell.3": {
+  "ru": "{0} шепчет что-то подруге, и обе прыскают со смеху.",
+  "en": "{0} whispers something to her friend and they both burst out laughing.",
+  "ja": "{0}は友だちに何かささやき、二人して吹き出した。"
+ },
+ "city.dnc.invite.win.1": {
+  "ru": "{0} кладёт руку тебе на плечо. Вальс. Зеркальный шар рассыпает пятна света, и вы кружитесь, пока пластинка не зашипит.",
+  "en": "{0} puts her hand on your shoulder. A waltz. The mirror ball scatters its spots of light, and you turn until the record hisses.",
+  "ja": "{0}があなたの肩に手を置く。ワルツ。ミラーボールが光の粒をまき、レコードが針音を立てるまで二人で回る。"
+ },
+ "city.dnc.invite.win.2": {
+  "ru": "Фокстрот с {0}. Ты дважды чуть не наступаешь ей на ногу, и оба раза она смеётся, а не морщится.",
+  "en": "A foxtrot with {0}. Twice you nearly tread on her foot, and both times she laughs instead of wincing.",
+  "ja": "{0}とフォックストロット。二度足を踏みかけたが、二度とも彼女は顔をしかめずに笑った。"
+ },
+ "city.dnc.invite.win.3": {
+  "ru": "Медленный танец. {0} молчит, ты тоже. За окном фонари, на подоконнике чьи-то перчатки. Хорошо.",
+  "en": "A slow dance. {0} says nothing, and neither do you. Street lamps outside the window, somebody's gloves on the sill. It's good.",
+  "ja": "スローダンス。{0}は黙っている。あなたも。窓の外に街灯、窓辺に誰かの手袋。いい夜だ。"
+ },
+ "city.dnc.invite.lose.1": {
+  "ru": "{0} качает головой и отходит к подруге. Ты возвращаешься к стенке. Стенка, как всегда, принимает всех.",
+  "en": "{0} shakes her head and goes back to her friend. You return to the wall. The wall, as ever, takes everybody.",
+  "ja": "{0}は首を振って友だちのほうへ戻った。あなたは壁ぎわへ。壁はいつだって誰でも受け入れてくれる。"
+ },
+ "city.dnc.invite.lose.2": {
+  "ru": "Не вышло: {0} уже обещала этот танец. Сторож у двери сочувственно кашляет.",
+  "en": "No luck: {0} has already promised this dance. The watchman by the door gives a sympathetic cough.",
+  "ja": "だめだった。{0}はこの曲をもう約束していた。戸口の夜警が気の毒そうに咳払いする。"
+ },
+ "city.dnc.invite.draw.1": {
+  "ru": "{0} говорит: «Может быть, следующий». Пластинку меняют. Следующий — это когда?",
+  "en": "{0} says: \"Maybe the next one.\" They change the record. When is the next one?",
+  "ja": "{0}は「次の曲なら」と言った。レコードが替わる。次っていつだろう。"
+ },
+ "city.dnc.invite.after.1": {
+  "ru": "Ноги гудят. Ты садишься у столика и смотришь, как танцуют другие. Тоже неплохое занятие.",
+  "en": "Your feet hum. You sit at a table and watch the others dance. Not a bad thing to do either.",
+  "ja": "足がじんじんする。テーブルに座って、ほかの人たちが踊るのを眺める。これも悪くない。"
+ },
+ "city.dnc.invite.after.2": {
+  "ru": "Ты уже не раз выходил на паркет. Бабушки на лавочке у входа считают вслух и сбиваются.",
+  "en": "You've been out on the parquet more than once already. The grannies on the bench by the door count out loud and lose track.",
+  "ja": "もう何度もフロアに出た。入口のベンチのおばあさんたちが声に出して数えて、途中で分からなくなっている。"
+ },
+ "city.dnc.off.day.1": {
+  "ru": "У зеркальной стены пусто. На паркете меловые следы чьих-то шагов: раз-два-три, раз-два-три. Танцы в пятницу и субботу с семи.",
+  "en": "Nobody by the mirrored wall. Chalk prints of someone's steps on the parquet: one-two-three, one-two-three. Dances on Friday and Saturday from seven.",
+  "ja": "鏡の壁ぎわには誰もいない。床にはチョークの足跡、ワン・ツー・スリー。ダンスは金曜と土曜の七時から。"
+ },
+ "city.dnc.off.day.2": {
+  "ru": "Кто-то оставил на подоконнике программку прошлой субботы: вальс, полька, фокстрот, «белый танец» в десять.",
+  "en": "Someone has left last Saturday's programme on the sill: waltz, polka, foxtrot, the ladies' choice at ten.",
+  "ja": "窓辺に先週土曜のプログラムが置き忘れてある。ワルツ、ポルカ、フォックストロット、十時に白いダンス。"
+ },
+ "city.dnc.off.class.1": {
+  "ru": "Кружок: руководительница хлопает в ладоши, пары считают вслух. Приглашать сейчас некого: все заняты счётом.",
+  "en": "The dance class: the teacher claps, the couples count out loud. Nobody to ask just now: everybody's busy counting.",
+  "ja": "ダンス教室。先生が手をたたき、ペアが声に出して数えている。今は誘える相手がいない。みんな数えるのに忙しい。"
+ },
+ "city.dnc.off.early.1": {
+  "ru": "Без четверти семь. Девушки стоят у зеркала и поправляют причёски, парни делают вид, что пришли случайно. Пластинку ещё не поставили.",
+  "en": "A quarter to seven. The girls stand at the mirror fixing their hair, the boys pretend they just happened by. The record isn't on yet.",
+  "ja": "七時十五分前。娘たちは鏡の前で髪を直し、若者たちはたまたま来たふりをしている。レコードはまだかかっていない。"
+ },
+ "city.dnc.off.late.1": {
+  "ru": "Сторож гремит ключами: «Всё, молодёжь, одиннадцать. По домам! Провожайте девушек, а не стойте».",
+  "en": "The watchman rattles his keys: \"That's it, young people, eleven o'clock. Off home! See the girls home instead of standing about.\"",
+  "ja": "夜警が鍵をじゃらじゃら鳴らす。「はい、若い衆、十一時だ。帰った帰った！　突っ立ってないで娘さんを送ってやりな」"
+ },
+ "city.dnc.off.late.2": {
+  "ru": "Свет в танцзале погашен, только дежурная лампа над дверью. На паркете блестит забытая заколка.",
+  "en": "The dance room's lights are out, only the night lamp over the door. A forgotten hairpin glints on the parquet.",
+  "ja": "ダンスホールの明かりは消え、戸口の常夜灯だけ。床に忘れものの髪どめが光っている。"
+ },
+ "city.dnc.off.sun.1": {
+  "ru": "Воскресенье: днём здесь чайные танцы для тех, кто постарше. Молодёжь отсыпается после субботы.",
+  "en": "Sunday: in the afternoon there are tea dances here for the older folk. The young ones are sleeping off Saturday.",
+  "ja": "日曜日。昼は年配の人たちのティーダンス。若者たちは土曜の疲れで寝坊中。"
+ },
+ "city.dnc.off.fest.1": {
+  "ru": "Праздник! Сегодня танцуют на площади, а здесь только сторож и его радиоприёмник.",
+  "en": "A holiday! Today the dancing is on the square; here there's only the watchman and his radio.",
+  "ja": "祝日だ！　今日は広場で踊っている。ここには夜警と彼のラジオだけ。"
+ },
+ "city.dnc.white.prompt": {
+  "ru": "E — белый танец: подождать, кто пригласит",
+  "en": "E — the ladies' choice: wait and see who asks",
+  "ja": "E：白いダンス：誰が誘うか待つ"
+ },
+ "city.dnc.white.title": {
+  "ru": "Белый танец",
+  "en": "The ladies' choice",
+  "ja": "白いダンス"
+ },
+ "city.dnc.white.keys": {
+  "ru": "E — шаг, когда она ведёт",
+  "en": "E — step as she leads",
+  "ja": "E：彼女のリードに合わせてステップ"
+ },
+ "city.dnc.white.win.1": {
+  "ru": "Последний медленный танец вечера. {0} ведёт уверенно, ты слушаешься. Музыка кончается, а вы ещё секунду стоите.",
+  "en": "The last slow dance of the evening. {0} leads with confidence, you follow. The music ends, and you stand still a second longer.",
+  "ja": "今夜最後のスローダンス。{0}のリードは確かで、あなたはそれに従う。曲が終わっても、二人はもう一秒立ったまま。"
+ },
+ "city.dnc.white.win.2": {
+  "ru": "Белый танец: {0} пригласила тебя через весь зал, и теперь весь зал смотрит. Смотрите, не жалко.",
+  "en": "Ladies' choice: {0} asked you from across the whole room, and now the whole room is watching. Let them; you don't mind.",
+  "ja": "白いダンス。{0}は部屋の向こうから誘ってきて、今や部屋じゅうが見ている。見ればいい、かまわない。"
+ },
+ "city.dnc.white.lose.1": {
+  "ru": "Ты сбиваешься, она смеётся, ты сбиваешься ещё раз. {0} говорит: «Ничего, это вальс сбился, а не ты».",
+  "en": "You lose the step, she laughs, you lose it again. {0} says: \"Never mind, it's the waltz that slipped, not you.\"",
+  "ja": "ステップがずれ、彼女が笑い、またずれる。{0}は言う。「平気、ずれたのはワルツのほう」"
+ },
+ "city.dnc.white.draw.1": {
+  "ru": "Танец кончился посередине такта: сторож выключил проигрыватель. {0} пожимает плечами.",
+  "en": "The dance ended in the middle of a bar: the watchman switched off the player. {0} shrugs.",
+  "ja": "曲は小節の途中で終わった。夜警がプレーヤーを止めたのだ。{0}は肩をすくめる。"
+ },
+ "city.dnc.white.after.1": {
+  "ru": "Белый танец бывает один раз за вечер. Ты своё уже станцевал.",
+  "en": "There's only one ladies' choice an evening. You've had yours.",
+  "ja": "白いダンスは一晩に一度だけ。あなたの分はもう踊った。"
+ },
+ "city.dnc.wait.early.1": {
+  "ru": "У колонны девушки шепчутся и поглядывают на парней. «Белый танец» объявят в десять — тогда и посмотрим, кто кого пригласит.",
+  "en": "By the pillar the girls whisper and glance at the boys. The ladies' choice is called at ten; then we'll see who asks whom.",
+  "ja": "柱のそばで娘たちがささやき合い、若者たちをちらちら見ている。白いダンスは十時。そのとき誰が誰を誘うか分かる。"
+ },
+ "city.dnc.wait.early.2": {
+  "ru": "Подружки делят парней на «пригласит сама» и «пусть сам пригласит». Ты, судя по взглядам, где-то посередине.",
+  "en": "The girlfriends sort the boys into \"I'll ask him myself\" and \"let him ask me\". Judging by the glances, you're somewhere in between.",
+  "ja": "娘たちは若者を「自分から誘う」と「向こうから誘わせる」に分けている。視線からして、あなたはその中間らしい。"
+ },
+ "city.dnc.wait.day.1": {
+  "ru": "У колонны пусто. На ней кнопкой приколот листок: «Белый танец — в 22.00. Дамы приглашают кавалеров. Отказывать не принято».",
+  "en": "Nobody by the pillar. A sheet is pinned to it: \"Ladies' choice at 22:00. The ladies ask the gentlemen. It is not done to refuse.\"",
+  "ja": "柱のそばには誰もいない。画鋲で紙が留めてある。「白いダンスは22時。ご婦人が殿方を誘います。断らないのが礼儀です」"
+ },
+ "city.dnc.notice.prompt": {
+  "ru": "E — прочитать афишу танцев",
+  "en": "E — read the dance poster",
+  "ja": "E：ダンスのポスターを読む"
+ },
+ "city.dnc.text.notice.title": {
+  "ru": "Афиша: танцы в «Сводах»",
+  "en": "Poster: dances at the Vaults",
+  "ja": "ポスター：「ヴォールト」のダンス"
+ },
+ "city.dnc.notice.1": {
+  "ru": "ТАНЦЫ! Каждую пятницу и субботу с 19.00 до 23.00 в танцевальном зале «Сводов». Пластинки и живая музыка. Вход свободный, буфет до 22.00.",
+  "en": "DANCES! Every Friday and Saturday 19:00 to 23:00 in the dance room of the Vaults. Records and a live band. Admission free, buffet till 22:00.",
+  "ja": "ダンス！　毎週金曜と土曜19時〜23時、「ヴォールト」のダンスホールにて。レコードと生演奏。入場無料、ビュッフェは22時まで。"
+ },
+ "city.dnc.notice.2": {
+  "ru": "Программа вечера: вальс, полька, фокстрот, танго по заявкам. В 22.00 «белый танец»: приглашают дамы. В 23.00 сторож закрывает зал.",
+  "en": "The evening's programme: waltz, polka, foxtrot, a tango on request. At 22:00 the ladies' choice: the ladies ask. At 23:00 the watchman locks the room.",
+  "ja": "当夜のプログラム：ワルツ、ポルカ、フォックストロット、リクエストでタンゴ。22時は白いダンス、ご婦人から誘います。23時に夜警が閉館。"
+ },
+ "city.dnc.notice.3": {
+  "ru": "Карандашом на полях, чьим-то аккуратным почерком: «Робкую не заговаривай — просто протяни руку. Смешливую разговори. Смелую рассмеши».",
+  "en": "In pencil in the margin, in someone's neat hand: \"Don't talk a shy one round, just hold out your hand. Get a giggly one talking. Make a bold one laugh.\"",
+  "ja": "余白に鉛筆で、誰かのきれいな字。「内気な子には話しかけず、黙って手を差し出せ。笑い上戸には話しかけろ。度胸のある子は笑わせろ」"
+ },
+ "city.dnc.notice.4": {
+  "ru": "Ниже, другой ручкой: «В прошлую субботу забыт зонт, чёрный. Спросить у смотрителя». И ещё ниже: «Зонт мой. Спасибо».",
+  "en": "Below, in a different pen: \"An umbrella left behind last Saturday, black. Ask the caretaker.\" And further down: \"The umbrella's mine. Thanks.\"",
+  "ja": "その下に別のペンで。「先週土曜、黒い傘の忘れもの。管理人まで」。さらに下に。「傘はわたしのです。ありがとう」"
+ },
+ "city.dnc.notice.summer": {
+  "ru": "Наклеено поверх: «С июня по август по пятницам ещё и танцы на набережной, у эстрады. Оркестр тот же, небо бесплатно».",
+  "en": "Stuck on top: \"From June to August, on Fridays there's dancing on the promenade too, by the bandstand. The same band; the sky is free.\"",
+  "ja": "上から貼り紙。「六月から八月は金曜日に遊歩道の野外ステージでもダンス。楽団は同じ、空は無料」"
+ },
+ "city.dnc.notice.fest": {
+  "ru": "Поперёк афиши лента: «В праздник танцы на площади!»",
+  "en": "A ribbon across the poster: \"On the holiday the dancing is on the square!\"",
+  "ja": "ポスターに斜めのリボン。「祝日は広場でダンス！」"
+ },
+ "city.ask.hall.dnc_rules": {
+  "ru": "Как тут приглашают на танец?",
+  "en": "How do you ask someone to dance here?",
+  "ja": "ここではどうやってダンスに誘うの？"
+ },
+ "city.ask.hall.dnc_rules.1": {
+  "ru": "— Подходишь, кланяешься, спрашиваешь: «Разрешите?» А дальше смотри на неё, а не на ноги. Робкую не уговаривай, протяни руку и жди.",
+  "en": "\"You go up, bow, and ask: 'May I?' After that, look at her, not at your feet. Don't coax a shy one: hold out your hand and wait.\"",
+  "ja": "「近づいて、お辞儀して、『よろしいですか』と聞く。そのあとは足じゃなく相手を見る。内気な子を口説くな、手を差し出して待て」"
+ },
+ "city.ask.hall.dnc_rules.2": {
+  "ru": "— Хохотушек сначала разговори, про пластинку, про погоду. А смелые любят, когда их смешат. Записано на афише, я сам и записал.",
+  "en": "\"Get the gigglers talking first: about the record, the weather. And the bold ones like being made to laugh. It's written on the poster; I wrote it myself.\"",
+  "ja": "「笑い上戸にはまず話しかける。レコードの話、天気の話。度胸のある子は笑わされるのが好きだ。ポスターに書いてある。書いたのはわしだ」"
+ },
+ "city.ask.hall.dnc_rules.3": {
+  "ru": "— Сегодня как раз танцы. Иди, не стой у стойки, пирог от тебя не убежит.",
+  "en": "\"There's a dance on tonight. Go on, don't stand at the bar; the pie won't run away.\"",
+  "ja": "「ちょうど今夜はダンスだ。カウンターに立ってないで行きな。パイは逃げやしない」"
+ },
+ "city.ask.hall.dnc_white": {
+  "ru": "Что такое «белый танец»?",
+  "en": "What's the ladies' choice?",
+  "ja": "「白いダンス」って何？"
+ },
+ "city.ask.hall.dnc_white.1": {
+  "ru": "— В десять объявляют: приглашают дамы. Отказывать не принято. Встань у колонны и не прячься — пригласят.",
+  "en": "\"At ten they call it: the ladies ask. It isn't done to refuse. Stand by the pillar and don't hide; someone will ask you.\"",
+  "ja": "「十時に告げるんだ、ご婦人から誘いますってな。断らないのが礼儀。柱のそばに立って、隠れるなよ。誰か誘ってくれる」"
+ },
+ "city.ask.hall.dnc_white.2": {
+  "ru": "— Я свою жену так и встретил. Пригласила меня на белый танец в пятьдесят девятом. Сорок лет потом не отпускала.",
+  "en": "\"That's how I met my wife. She asked me for the ladies' choice in fifty-nine. Didn't let go of me for forty years.\"",
+  "ja": "「わしも家内とはそうやって出会った。五十九年に白いダンスに誘われてな。それから四十年、放してくれなかった」"
+ },
+ "city.ask.hall.dnc_who": {
+  "ru": "Кто это меня пригласила на белый танец?",
+  "en": "Who was it that asked me for the ladies' choice?",
+  "ja": "白いダンスに誘ってくれたのは誰？"
+ },
+ "city.ask.hall.dnc_who.1": {
+  "ru": "— Видел, видел. Хорошая девушка, наша, с Террас. Теперь пол-улицы знает, что ты танцуешь. Ты не красней, это хорошо.",
+  "en": "\"I saw, I saw. A nice girl, one of ours, from the Terraces. Now half the street knows you dance. Don't blush; it's a good thing.\"",
+  "ja": "「見てたぞ。いい娘だ、テラスの子さ。これで通りの半分が、おまえさんが踊るって知ってる。赤くなるな、いいことだ」"
+ },
+ "city.ask.hall.dnc_who.2": {
+  "ru": "— Совет старика: в следующую субботу пригласи её сам. На обычный танец. Белый — это она тебе, обычный — ты ей.",
+  "en": "\"An old man's advice: next Saturday ask her yourself. For an ordinary dance. The ladies' choice was hers to you; an ordinary one is yours to her.\"",
+  "ja": "「年寄りの忠告だ。来週の土曜は自分から誘え。普通の曲でな。白いダンスは向こうから、普通の曲はおまえさんから」"
+ },
+ "city.dnc.coll.dnc_partners.title": {
+  "ru": "Партнёры по танцам",
+  "en": "Dance partners",
+  "ja": "ダンスのパートナー"
+ },
+ "city.coll.reward.dnc_partners.name": {
+  "ru": "бутоньерка из «Сводов»",
+  "en": "a buttonhole from the Vaults",
+  "ja": "「ヴォールト」のブートニエール"
+ },
+ "city.coll.reward.dnc_partners.note": {
+  "ru": "Смотритель приколол мне на лацкан бумажную гвоздику: «Двенадцать партнёрш — это уже звание. Кавалер «Сводов»».",
+  "en": "The caretaker pinned a paper carnation to my lapel: \"Twelve partners: that's a title now. A gentleman of the Vaults.\"",
+  "ja": "管理人が襟に紙のカーネーションを留めてくれた。「パートナー十二人、これはもう称号だ。『ヴォールト』の騎士」"
+ },
+ "quest.dnc_white_dance.title": {
+  "ru": "Белый танец",
+  "en": "The ladies' choice",
+  "ja": "白いダンス"
+ },
+ "quest.dnc_white_dance.desc": {
+  "ru": "Афиша в «Сводах» зовёт на танцы по пятницам и субботам. Стоять у стенки весь вечер не хочется. Надо разобраться, как тут приглашают, и дожить до белого танца.",
+  "en": "The poster at the Vaults invites everyone to the dances on Fridays and Saturdays. I don't want to spend the evening by the wall. I need to find out how people ask each other here, and last until the ladies' choice.",
+  "ja": "「ヴォールト」のポスターが金曜と土曜のダンスに誘っている。ひと晩じゅう壁の花はいやだ。ここでの誘い方を覚えて、白いダンスまで残ろう。"
+ },
+ "quest.dnc_white_dance.rules.log": {
+  "ru": "Смотритель за стойкой бара наверняка знает здешние правила.",
+  "en": "The caretaker at the bar is sure to know the rules here.",
+  "ja": "バーの管理人ならここの決まりを知っているはずだ。"
+ },
+ "quest.dnc_white_dance.rules.obj": {
+  "ru": "Спросить у стойки бара, как тут приглашают",
+  "en": "Ask at the bar how people ask for a dance",
+  "ja": "バーでダンスの誘い方を聞く"
+ },
+ "quest.dnc_white_dance.steps.log": {
+  "ru": "Правила ясны. Теперь ноги: на полу танцзала нарисованы шаги, в пятницу и субботу с семи там ставят пластинку.",
+  "en": "The rules are clear. Now the feet: the steps are painted on the dance room's floor, and on Friday and Saturday from seven a record goes on.",
+  "ja": "決まりは分かった。次は足だ。ダンスホールの床にステップが描いてあり、金曜と土曜の七時からレコードがかかる。"
+ },
+ "quest.dnc_white_dance.steps.obj": {
+  "ru": "Разучить шаги на метках (вечер танцев)",
+  "en": "Learn the steps on the marks (a dance night)",
+  "ja": "床の印でステップを覚える（ダンスの夜）"
+ },
+ "quest.dnc_white_dance.invite.log": {
+  "ru": "Ноги слушаются. Пора пригласить кого-нибудь, кто стоит у стенки, и не перепутать, кого как приглашать.",
+  "en": "My feet obey. Time to ask someone standing by the wall, and not to mix up who should be asked how.",
+  "ja": "足は言うことを聞く。壁ぎわの誰かを誘う時だ。誰をどう誘うか間違えないように。"
+ },
+ "quest.dnc_white_dance.invite.obj": {
+  "ru": "Пригласить кого-нибудь на танец и станцевать",
+  "en": "Ask someone to dance, and dance",
+  "ja": "誰かをダンスに誘って踊る"
+ },
+ "quest.dnc_white_dance.white.log": {
+  "ru": "Вальс был. Теперь дождаться десяти: объявят белый танец, и приглашать будут меня. Встать у колонны и не прятаться.",
+  "en": "That was a waltz. Now to wait until ten: they'll call the ladies' choice, and I'll be the one asked. Stand by the pillar and don't hide.",
+  "ja": "ワルツは踊った。あとは十時を待つ。白いダンスが告げられて、今度は誘われる側だ。柱のそばに立って、隠れないこと。"
+ },
+ "quest.dnc_white_dance.white.obj": {
+  "ru": "Станцевать белый танец (с 22 до 23)",
+  "en": "Dance the ladies' choice (22:00 to 23:00)",
+  "ja": "白いダンスを踊る（22〜23時）"
+ },
+ "quest.dnc_white_dance.who.log": {
+  "ru": "Сторож закрыл зал, а я так и не понял, кто меня пригласил. Смотритель всё видел, спрошу у него за стойкой.",
+  "en": "The watchman locked the room, and I never found out who asked me. The caretaker saw everything; I'll ask him at the bar.",
+  "ja": "夜警がホールを閉めたが、誰に誘われたのか分からないままだ。管理人は全部見ていた。バーで聞いてみよう。"
+ },
+ "quest.dnc_white_dance.who.obj": {
+  "ru": "Спросить у стойки бара, кто пригласил",
+  "en": "Ask at the bar who it was that asked you",
+  "ja": "バーで誰に誘われたのか聞く"
+ },
+ "quest.dnc_white_dance.done": {
+  "ru": "Смотритель сказал: «Белый танец — это она тебе, обычный — ты ей». Кажется, в следующую субботу мне опять в «Своды».",
+  "en": "The caretaker said: \"The ladies' choice was hers to you; an ordinary dance is yours to her.\" It seems I'm off to the Vaults again next Saturday.",
+  "ja": "管理人は言った。「白いダンスは向こうから、普通の曲はおまえさんから」。どうやら来週の土曜もまた「ヴォールト」だ。"
+ },
+ "city.dnc.pt.floor": {
+  "ru": "Своды: танцы — пригласить",
+  "en": "Vaults: dances, asking someone",
+  "ja": "ヴォールト：ダンスに誘う"
+ },
+ "city.dnc.pt.white": {
+  "ru": "Своды: белый танец",
+  "en": "Vaults: the ladies' choice",
+  "ja": "ヴォールト：白いダンス"
+ },
+ "city.dnc.pt.notice": {
+  "ru": "Своды: афиша танцев",
+  "en": "Vaults: the dance poster",
+  "ja": "ヴォールト：ダンスのポスター"
+ }
+}

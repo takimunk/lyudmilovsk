@@ -1,0 +1,579 @@
+{
+ "_doc": "Saturday dances at the Vaults hall (docs/dances.md): asking a partner (a duel: read her and choose the way to ask), the ladies' choice at 22 (a rally: she leads), the floor's words outside the dances and at the watchman's 23:00, the poster in the lobby, the bar's talk, the partners' stamps and their reward, the quest dnc_white_dance. The partners are real residents under names of our own keys (city.dnc.p.*) so that a dance goes round town as the rumour kind 'dance', not 'beat'. The townsfolk who come are tools/town/town_dances.py's.",
+ "acts": {
+  "dnc_floor_off": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.dnc.off.day.*",
+     "h": [
+      9,
+      18
+     ]
+    },
+    {
+     "k": "city.dnc.off.day.*",
+     "d": "fri-sat",
+     "h": [
+      18,
+      19
+     ]
+    },
+    {
+     "k": "city.dnc.off.early.*",
+     "d": "fri-sat",
+     "h": [
+      18,
+      19
+     ]
+    },
+    {
+     "k": "city.dnc.off.day.*",
+     "d": "fri-sat",
+     "h": [
+      19,
+      23
+     ]
+    },
+    {
+     "k": "city.dnc.off.class.*",
+     "d": "mon-thu",
+     "h": [
+      18,
+      21
+     ]
+    },
+    {
+     "k": "city.dnc.off.day.*",
+     "d": "mon-thu",
+     "h": [
+      21,
+      24
+     ]
+    },
+    {
+     "k": "city.dnc.off.sun.*",
+     "d": "sun",
+     "h": [
+      18,
+      24
+     ]
+    },
+    {
+     "k": "city.dnc.off.late.*",
+     "d": "fri-sat",
+     "h": [
+      23,
+      24
+     ]
+    },
+    {
+     "k": "city.dnc.off.late.*",
+     "h": [
+      0,
+      9
+     ]
+    },
+    {
+     "k": "city.dnc.off.fest.*",
+     "festival": "any"
+    }
+   ]
+  },
+  "dnc_white_wait": {
+   "like": "look_misc",
+   "prompt": "city.act.look.prompt",
+   "minutes": 1,
+   "lines": [
+    {
+     "k": "city.dnc.wait.day.*",
+     "h": [
+      23,
+      19
+     ]
+    },
+    {
+     "k": "city.dnc.wait.day.*",
+     "d": "sun-thu",
+     "h": [
+      19,
+      23
+     ]
+    },
+    {
+     "k": "city.dnc.wait.early.*",
+     "d": "fri-sat",
+     "h": [
+      19,
+      22
+     ]
+    },
+    {
+     "k": "city.dnc.wait.day.*",
+     "d": "fri-sat",
+     "h": [
+      22,
+      23
+     ]
+    },
+    {
+     "k": "city.dnc.off.late.*",
+     "d": "fri-sat",
+     "h": [
+      23,
+      24
+     ]
+    },
+    {
+     "k": "city.dnc.off.fest.*",
+     "festival": "any"
+    }
+   ]
+  },
+  "dnc_invite": {
+   "prompt": "city.dnc.invite.prompt",
+   "minutes": 8,
+   "pose": "stand",
+   "sound": "waltz",
+   "closed": "dnc_floor_off",
+   "lines": "city.dnc.invite.after",
+   "game": {
+    "type": "duel",
+    "vs": "dnc_invite",
+    "title": "city.dnc.invite.title",
+    "keys": "city.dnc.invite.keys",
+    "moves": [
+     {
+      "k": "city.dnc.invite.move.1",
+      "power": 2,
+      "tell": "city.dnc.invite.tell.1"
+     },
+     {
+      "k": "city.dnc.invite.move.2",
+      "power": 2,
+      "tell": "city.dnc.invite.tell.2"
+     },
+     {
+      "k": "city.dnc.invite.move.3",
+      "power": 2,
+      "tell": "city.dnc.invite.tell.3"
+     }
+    ],
+    "win": "city.dnc.invite.win",
+    "lose": "city.dnc.invite.lose",
+    "draw": "city.dnc.invite.draw",
+    "collect": "dnc_partners/{opponent}",
+    "daily": 4
+   }
+  },
+  "dnc_white": {
+   "prompt": "city.dnc.white.prompt",
+   "minutes": 6,
+   "pose": "stand",
+   "sound": "waltz",
+   "closed": "dnc_white_wait",
+   "lines": "city.dnc.white.after",
+   "game": {
+    "type": "rally",
+    "vs": "dnc_white",
+    "title": "city.dnc.white.title",
+    "keys": "city.dnc.white.keys",
+    "need": 4,
+    "speed": 0.6,
+    "zone": 0.6,
+    "shrink": 0.93,
+    "pace": 1.03,
+    "win": "city.dnc.white.win",
+    "lose": "city.dnc.white.lose",
+    "draw": "city.dnc.white.draw",
+    "collect": "dnc_partners/{opponent}",
+    "daily": 1
+   }
+  },
+  "dnc_notice": {
+   "like": "look_misc",
+   "prompt": "city.dnc.notice.prompt",
+   "minutes": 2,
+   "lines": [
+    "city.dnc.notice.1"
+   ],
+   "read": {
+    "texts": [
+     "dnc_notice"
+    ],
+    "rotate": "use"
+   }
+  }
+ },
+ "rules": {
+  "P-HALL/dance_1": {
+   "act": "dnc_invite",
+   "hours": [
+    19,
+    23
+   ],
+   "days": "fri-sat",
+   "closed": "dnc_floor_off"
+  },
+  "P-HALL/dance_2": {
+   "act": "dnc_invite",
+   "hours": [
+    19,
+    23
+   ],
+   "days": "fri-sat",
+   "closed": "dnc_floor_off"
+  },
+  "P-HALL/dance_3": {
+   "act": "dnc_invite",
+   "hours": [
+    19,
+    23
+   ],
+   "days": "fri-sat",
+   "closed": "dnc_floor_off"
+  },
+  "P-HALL/dance_4": {
+   "act": "dnc_white",
+   "hours": [
+    22,
+    23
+   ],
+   "days": "fri-sat",
+   "closed": "dnc_white_wait"
+  },
+  "P-HALL/dance_floor_centre": {
+   "act": "hall_dance_night",
+   "hours": [
+    9,
+    23
+   ]
+  },
+  "P-HALL/lobby_stand_2": {
+   "act": "dnc_notice"
+  }
+ },
+ "regulars": {
+  "dnc_lan": {
+   "name": "city.dnc.p.lan",
+   "style": "careful",
+   "skill": 0.7,
+   "plays": [
+    "dnc_invite"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.lan.hello",
+   "win": "city.dnc.pl.lan.win",
+   "lose": "city.dnc.pl.lan.lose"
+  },
+  "dnc_siobhan": {
+   "name": "city.dnc.p.siobhan",
+   "style": "bold",
+   "skill": 0.45,
+   "plays": [
+    "dnc_invite"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.siobhan.hello",
+   "win": "city.dnc.pl.siobhan.win",
+   "lose": "city.dnc.pl.siobhan.lose"
+  },
+  "dnc_lucia": {
+   "name": "city.dnc.p.lucia",
+   "style": "tricky",
+   "skill": 0.6,
+   "plays": [
+    "dnc_invite"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.lucia.hello",
+   "win": "city.dnc.pl.lucia.win",
+   "lose": "city.dnc.pl.lucia.lose"
+  },
+  "dnc_malgorzata": {
+   "name": "city.dnc.p.malgorzata",
+   "style": "careful",
+   "skill": 0.5,
+   "plays": [
+    "dnc_invite"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.malgorzata.hello",
+   "win": "city.dnc.pl.malgorzata.win",
+   "lose": "city.dnc.pl.malgorzata.lose"
+  },
+  "dnc_aigerim": {
+   "name": "city.dnc.p.aigerim",
+   "style": "steady",
+   "skill": 0.4,
+   "plays": [
+    "dnc_invite"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.aigerim.hello",
+   "win": "city.dnc.pl.aigerim.win",
+   "lose": "city.dnc.pl.aigerim.lose"
+  },
+  "dnc_akosua": {
+   "name": "city.dnc.p.akosua",
+   "style": "bold",
+   "skill": 0.65,
+   "plays": [
+    "dnc_invite"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.akosua.hello",
+   "win": "city.dnc.pl.akosua.win",
+   "lose": "city.dnc.pl.akosua.lose"
+  },
+  "dnc_marketa": {
+   "name": "city.dnc.p.marketa",
+   "style": "tricky",
+   "skill": 0.5,
+   "plays": [
+    "dnc_invite"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.marketa.hello",
+   "win": "city.dnc.pl.marketa.win",
+   "lose": "city.dnc.pl.marketa.lose"
+  },
+  "dnc_ursula": {
+   "name": "city.dnc.p.ursula",
+   "style": "careful",
+   "skill": 0.35,
+   "plays": [
+    "dnc_invite"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.ursula.hello",
+   "win": "city.dnc.pl.ursula.win",
+   "lose": "city.dnc.pl.ursula.lose"
+  },
+  "dnc_yumiko": {
+   "name": "city.dnc.p.yumiko",
+   "style": "bold",
+   "skill": 0.7,
+   "plays": [
+    "dnc_white"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.yumiko.hello",
+   "win": "city.dnc.pl.yumiko.win",
+   "lose": "city.dnc.pl.yumiko.lose"
+  },
+  "dnc_aigerim_h": {
+   "name": "city.dnc.p.aigerim_h",
+   "style": "tricky",
+   "skill": 0.5,
+   "plays": [
+    "dnc_white"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.aigerim_h.hello",
+   "win": "city.dnc.pl.aigerim_h.win",
+   "lose": "city.dnc.pl.aigerim_h.lose"
+  },
+  "dnc_ama": {
+   "name": "city.dnc.p.ama",
+   "style": "steady",
+   "skill": 0.6,
+   "plays": [
+    "dnc_white"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.ama.hello",
+   "win": "city.dnc.pl.ama.win",
+   "lose": "city.dnc.pl.ama.lose"
+  },
+  "dnc_femke": {
+   "name": "city.dnc.p.femke",
+   "style": "careful",
+   "skill": 0.4,
+   "plays": [
+    "dnc_white"
+   ],
+   "plots": [
+    "P-HALL"
+   ],
+   "hello": "city.dnc.pl.femke.hello",
+   "win": "city.dnc.pl.femke.win",
+   "lose": "city.dnc.pl.femke.lose"
+  }
+ },
+ "texts": {
+  "dnc_notice": {
+   "title": "city.dnc.text.notice.title",
+   "kind": "notice",
+   "minutes": 2,
+   "pages": [
+    "city.dnc.notice.1",
+    "city.dnc.notice.2",
+    "city.dnc.notice.3",
+    [
+     {
+      "k": "city.dnc.notice.4"
+     },
+     {
+      "k": "city.dnc.notice.summer",
+      "date": [
+       "05-20",
+       "08-31"
+      ]
+     },
+     {
+      "k": "city.dnc.notice.fest",
+      "festival": "any"
+     }
+    ]
+   ]
+  }
+ },
+ "collections": {
+  "dnc_partners": {
+   "title": "city.dnc.coll.dnc_partners.title"
+  }
+ },
+ "rewards": {
+  "dnc_partners": {
+   "item": "candy",
+   "count": 3
+  }
+ },
+ "quests": [
+  {
+   "id": "dnc_white_dance",
+   "kind": "side",
+   "start_on": {
+    "event": "do",
+    "target": "dnc_notice"
+   },
+   "stages": [
+    {
+     "id": "rules",
+     "objectives": [
+      {
+       "id": "rules",
+       "event": "ask",
+       "target": "hall.dnc_rules"
+      }
+     ],
+     "dev": {
+      "tp": "city.pt.dnc_notice",
+      "time": "12:00"
+     }
+    },
+    {
+     "id": "steps",
+     "objectives": [
+      {
+       "id": "steps",
+       "event": "win",
+       "target": "hall_dance_steps"
+      }
+     ],
+     "dev": {
+      "tp": "city.pt.dnc_floor",
+      "time": "19:30",
+      "exec": [
+       "lyud.City.Weekday sat"
+      ]
+     }
+    },
+    {
+     "id": "invite",
+     "objectives": [
+      {
+       "id": "invite",
+       "event": "win",
+       "target": "dnc_invite"
+      }
+     ],
+     "dev": {
+      "tp": "city.pt.dnc_floor",
+      "time": "20:00",
+      "exec": [
+       "lyud.City.Weekday sat"
+      ]
+     }
+    },
+    {
+     "id": "white",
+     "objectives": [
+      {
+       "id": "white",
+       "event": "win",
+       "target": "dnc_white"
+      }
+     ],
+     "dev": {
+      "tp": "city.pt.dnc_white",
+      "time": "22:05",
+      "exec": [
+       "lyud.City.Weekday sat"
+      ]
+     }
+    },
+    {
+     "id": "who",
+     "objectives": [
+      {
+       "id": "who",
+       "event": "ask",
+       "target": "hall.dnc_who"
+      }
+     ],
+     "reward": {
+      "rubles": 40
+     },
+     "dev": {
+      "tp": "city.pt.dnc_notice",
+      "time": "12:00",
+      "exec": [
+       "lyud.City.Weekday sun"
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "dev_points": {
+  "dnc_floor": {
+   "thing": "P-HALL/dance_1",
+   "name": "city.dnc.pt.floor"
+  },
+  "dnc_white": {
+   "thing": "P-HALL/dance_4",
+   "name": "city.dnc.pt.white",
+   "time": "22:05"
+  },
+  "dnc_notice": {
+   "thing": "P-HALL/lobby_stand_2",
+   "name": "city.dnc.pt.notice"
+  }
+ }
+}

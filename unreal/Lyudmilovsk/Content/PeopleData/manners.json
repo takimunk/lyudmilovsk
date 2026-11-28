@@ -74,6 +74,9 @@
     {"id": "carry_bag", "poses": ["walk", "stand", "look"], "doing": ["visit_home"], "today": "guest", "force": 1, "prop": "bag"},
     {"id": "yawn", "poses": ["stand", "look", "sit", "walk"], "today": "sleepy", "hours": [5, 13], "seconds": [3, 4], "weight": 2.5, "cooldown": 70},
     {"id": "dominoes", "poses": ["sit"], "doing": ["chess_bench"], "seconds": [2.2, 3.0], "weight": 3.0, "cooldown": 16},
+    {"id": "sway", "poses": ["stand"], "doing": ["dance_evening"], "at": ["dance_floor"], "seconds": [20, 60], "weight": 12.0, "cooldown": 3},
+    {"id": "knit", "poses": ["sit"], "habit": "knitter", "doing": ["dance_watch"], "seconds": [180, 600], "weight": 2.0, "cooldown": 600, "prop": "knitting"},
+    {"id": "drink", "poses": ["sit"], "doing": ["dance_watch"], "seconds": [40, 100], "weight": 1.0, "cooldown": 400, "prop": "cup"},
     {"id": "wave", "react": 1, "cooldown": 90},
     {"id": "nod", "react": 1, "cooldown": 90}
   ]

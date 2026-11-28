@@ -1055,7 +1055,7 @@ def main():
     # what is added to the town after it is made: the sanatorium's guests, the new things to do, the night jobs, the pets,
     # the Aton coast's people, the Mayak lighthouse's keeper (all idempotent; each keeps the later ones' rows after its own)
     for extra_script in ("sanatorium_guests.py", "town_activities.py", "town_night.py", "town_pets.py", "south_people.py", "lighthouse_keeper.py",
-                         "street_life.py", "town_days.py"):
+                         "street_life.py", "town_days.py", "town_dances.py"):
         subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), extra_script)], check=True)
     # the library's book club (docs/books.md "The book club"): its members, its seats round the lounge's table
     subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "reading", "build_reading.py")], check=True)

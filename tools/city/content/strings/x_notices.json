@@ -120,6 +120,16 @@
   "en": "The drama circle is staging a New Year fairy tale. Wanted: a Grandfather Frost with his own beard.",
   "ja": "演劇サークルが新年のおとぎ話を上演します。自前のひげのあるジェド・マロースを募集。"
  },
+ "city.note.club.dnc_vaults": {
+  "ru": "Танцы в «Сводах»: по пятницам и субботам с семи до одиннадцати. Пластинки и живая музыка, в десять белый танец. Сторож просит не опаздывать к закрытию: сам он не опаздывает.",
+  "en": "Dances at the Vaults: Fridays and Saturdays, seven to eleven. Records and a live band, the ladies' choice at ten. The watchman asks you not to be late for closing: he never is.",
+  "ja": "「ヴォールト」のダンス：毎週金曜と土曜、七時から十一時。レコードと生演奏、十時は白いダンス。夜警より、閉館に遅れないように。夜警は遅れません。"
+ },
+ "city.note.club.dnc_winter": {
+  "ru": "Зимние танцы в «Сводах»: гардероб работает, валенки сдаём, туфли приносим с собой. Пятница и суббота, с семи.",
+  "en": "Winter dances at the Vaults: the cloakroom is open, felt boots are handed in, bring your shoes with you. Friday and Saturday, from seven.",
+  "ja": "「ヴォールト」の冬のダンス：クロークあり、フェルトの長靴は預けて、靴は持参で。金曜と土曜、七時から。"
+ },
  "city.note.club.start_welcome": {
   "ru": "Клуб приветствует новых жильцов побережья! Заходите на чай по вечерам: самовар горячий, разговоры тоже.",
   "en": "The club welcomes the coast's new residents! Drop in for tea in the evenings: the samovar is hot, and so is the talk.",

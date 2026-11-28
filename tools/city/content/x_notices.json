@@ -192,9 +192,18 @@
       ]
      },
      {
-      "k": "city.note.club.start_welcome",
-      "after": 0,
-      "before": 6
+      "k": "city.note.club.dnc_vaults",
+      "date": [
+       "10-11",
+       "11-30"
+      ]
+     },
+     {
+      "k": "city.note.club.dnc_winter",
+      "date": [
+       "01-15",
+       "02-28"
+      ]
      },
      {
       "k": "city.note.club.nh_ony_soon",
@@ -205,6 +214,11 @@
      }
     ],
     [
+     {
+      "k": "city.note.club.start_welcome",
+      "after": 0,
+      "before": 6
+     },
      {
       "k": "city.note.club.contest_sea",
       "date": [
@@ -287,90 +301,6 @@
       "date": [
        "12-01",
        "12-19"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "01-20",
-       "01-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "02-20",
-       "02-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "03-20",
-       "03-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "04-20",
-       "04-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "05-20",
-       "05-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "06-20",
-       "06-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "07-20",
-       "07-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "08-20",
-       "08-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "09-20",
-       "09-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "10-20",
-       "10-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "11-20",
-       "11-25"
-      ]
-     },
-     {
-      "k": "city.note.club.contest_soon",
-      "date": [
-       "12-20",
-       "12-25"
       ]
      },
      {
@@ -539,6 +469,92 @@
       "date": [
        "12-27",
        "12-31"
+      ]
+     }
+    ],
+    [
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "01-20",
+       "01-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "02-20",
+       "02-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "03-20",
+       "03-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "04-20",
+       "04-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "05-20",
+       "05-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "06-20",
+       "06-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "07-20",
+       "07-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "08-20",
+       "08-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "09-20",
+       "09-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "10-20",
+       "10-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "11-20",
+       "11-25"
+      ]
+     },
+     {
+      "k": "city.note.club.contest_soon",
+      "date": [
+       "12-20",
+       "12-25"
       ]
      }
     ],
