@@ -356,7 +356,7 @@ def build_places(plan, extra, args):
     # workplaces: plots with staff, promenade units
     work = []
     for p in plan["plots"]:
-        if p["kind"] in ("residential", "square", "park", "pool"):
+        if p["kind"] in ("residential", "square", "park", "pool", "ship"):     # the ship: its crew is the cruise's own (ship_people.json)
             continue
         work.append({"id": PLOT_ALIAS.get(p["id"], p["id"]), "plot": p["id"], "kind": "culture_club" if p["kind"] == "club" else p["kind"],
                      "door": ue_m(plan, p["front"]), "yaw": p["yaw"], "staff": p.get("staff") or [], "w": p["w"], "d": p["d"],
@@ -1024,8 +1024,9 @@ def main():
     stairs = []
     for s in plan["stairs"]:
         stairs.append({"id": s["id"], "bottom": from_ue_cm(s["bottom_ue"]), "top": from_ue_cm(s["top_ue"])})
-    ys = [p["ue"][1] / 100.0 for p in plan["plots"]] + [s["ue"][1] / 100.0 for s in plan["spots"]]
-    xs = [p["ue"][0] / 100.0 for p in plan["plots"]] + [s["ue"][0] / 100.0 for s in plan["spots"]] + [d["door_ue"][0] / 100.0 for d in plan["wall_dwellings"]]
+    town_plots = [p for p in plan["plots"] if p["kind"] != "ship"]       # the motor ship stands 26 km out at sea: not the town
+    ys = [p["ue"][1] / 100.0 for p in town_plots] + [s["ue"][1] / 100.0 for s in plan["spots"]]
+    xs = [p["ue"][0] / 100.0 for p in town_plots] + [s["ue"][0] / 100.0 for s in plan["spots"]] + [d["door_ue"][0] / 100.0 for d in plan["wall_dwellings"]]
     town = {"box": [round(min(xs) - 60, 1), round(min(ys) - 60, 1), round(max(xs) + 60, 1), round(max(ys) + 60, 1)], "levels": levels, "stairs": stairs}
 
     write(OUT_PLACES, {"_doc": "The town's places for the people's simulation, made by tools/town/town_life.py from Content/City/city_plan.json "

@@ -1,0 +1,21 @@
+{
+ "band.name": "真昼のカルテット",
+ "band.tune.saints.title": "聖者の行進",
+ "band.tune.entertainer.title": "ジ・エンターテイナー（スコット・ジョプリンのラグ）",
+ "band.tune.old_folks.title": "故郷の人々（スワニー河）",
+ "band.tune.oh_susanna.title": "おお、スザンナ",
+ "band.tune.st_james.title": "セント・ジェームス病院",
+ "band.tune.londonderry.title": "ロンドンデリーの歌",
+ "band.tune.korobeiniki.title": "コロブチカ（タンゴで）",
+ "band.tune.ochi.title": "黒い瞳",
+ "band.tune.sakura.title": "さくら さくら",
+ "band.tune.aura_lea.title": "オーラ・リー",
+ "band.tune.amazing_grace.title": "アメイジング・グレイス",
+ "band.tune.greensleeves.title": "グリーンスリーブス",
+ "band.tune.brahms_lullaby.title": "ブラームスの子守歌",
+ "band.tune.blue_danube.title": "美しく青きドナウ",
+ "band.tune.daisy_bell.title": "デイジー・ベル（ワルツ）",
+ "band.tune.choclo.title": "エル・チョクロ（タンゴ）",
+ "band.tune.auld_lang_syne.title": "蛍の光",
+ "dev.action.band.play_next": "バンド：次の曲（ここで、船なしで）"
+}

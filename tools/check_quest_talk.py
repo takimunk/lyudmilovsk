@@ -43,6 +43,14 @@ def main():
     people = set()
     for p in people_data.get("people", people_data if isinstance(people_data, list) else []):
         people.add((p.get("key") or p.get("id") or "").lower())
+    # the motor ship's crew, band and tourists (tools/ship/cruise_people.py), when she is in the tree: talked to like
+    # the story's people (not the twins of the townsfolk, not the patches of the town's records)
+    ship_path = os.path.join(ROOT, "PeopleData", "ship_people.json")
+    if os.path.exists(ship_path):
+        with open(ship_path, encoding="utf-8") as f:
+            for p in json.load(f).get("people", []):
+                if not p.get("patch") and not p.get("town"):
+                    people.add(p["key"].lower())
     # the townsfolk (townsfolk.json): talked to on the town's page, their quest lines are strings, not npc_dialogue.txt
     residents = set()
     tf_path = os.path.join(ROOT, "PeopleData", "townsfolk.json")

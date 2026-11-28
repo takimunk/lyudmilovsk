@@ -233,6 +233,7 @@ namespace LyudPeople
 		std::vector<int> PlaceIdx;          // the places of its kinds (built after loading; "home" and gatherings aside)
 		std::vector<int> SlotK, PlaceK;     // Slots and Places interned
 		bool bHome = false;                 // "home" among its places
+		int FarIsland = -1;                 // every place of its kinds is on this island, 4 or beyond (the motor ship); -1 otherwise (Index)
 		bool bK = false;                    // interned
 	};
 
@@ -331,6 +332,8 @@ namespace LyudPeople
 		// they are gone (the activity stay_gone: away by the railway's platform), needing nothing. Cycle 0: always here.
 		int StayCycle = 0, StayFrom = 0, StayDays = 0;
 		float StayArrive = 11.f, StayLeave = 10.75f;
+		int StayWhenId = -1;        // "stay": {"when": ...}: the condition (FWorld::ConditionId) the stay is kept under, -1 always
+		bool bStayOffHere = false;  // "off": "here": while that condition is off they are here all the time (else gone)
 		int DateAct = -1, DateDay = -1, DatePlace = -1, DateWith = -1;
 		float DateHour = 0.f;
 		// today (FWorld::RollToday, at midnight and after a load: worked out from the calendar's day and who they are, so
@@ -690,6 +693,16 @@ namespace LyudPeople
 		/** The household's child (under 12) out at play whom P could keep an eye on: nobody else of the household does
 		 *  already. -1 none. */
 		int ChildToMind(const FPerson& P) const;
+		/** The box of the slots of the places on the far islands (4 and beyond: the motor ship), with 30 m around; empty
+		 *  (bFarBox false) without such places (Index()). */
+		bool bFarBox = false;
+		float FarX0 = 0.f, FarY0 = 0.f, FarX1 = 0.f, FarY1 = 0.f;
+		/** A point aboard the motor ship (in the far islands' box): no walk grid there, the way is straight
+		 *  (OutdoorWay). Always false in a world without the ship. */
+		bool OffWalkGrid(const V3& P) const
+		{
+			return bFarBox && P.X >= FarX0 && P.X <= FarX1 && P.Y >= FarY0 && P.Y <= FarY1;
+		}
 		/** A route between two points (each indoors at a place's slot or outdoors); false = no way. */
 		bool Route(const FPerson& P, const V3& From, int FromSlot, int ToSlot, std::vector<FPerson::FWay>& Out) const;
 		/** Where they are drawn and which way they face (between steps it is Pos). */

@@ -180,6 +180,9 @@ def sea_material(coll):
     rect = g.vparam("DepthRect", (0.0, 0.0, 0.0, 0.0))
     land = g.param("LandSideX", -1.0e7)
     tide = g.param("Tide", 0.0)
+    # the calm footprint (a hull standing still at the cruise stage, Lyud.Calm): none by default
+    calm_a = (g.vparam("CalmA", (0.0, 0.0, 1.0, 0.0)), "RGBA")
+    calm_b = (g.vparam("CalmB", (0.0, 0.0, 10.0, 0.0)), "RGBA")
     wind = g.mpc(coll, "Wind")
     drift = g.mpc(coll, "WindDrift")
 
@@ -191,7 +194,7 @@ def sea_material(coll):
 
     wpo = g.custom(H.GUST_LIB + H.VERTEX_HLSL,
                    [("Pos", vpos), ("Cam", cam), ("Tab", tab), ("Dep", dep), ("Clock", clock), ("SP", sp), ("Rect", rect), ("LandX", land),
-                    ("Tide", tide)],
+                    ("Tide", tide), ("CalmA", calm_a), ("CalmB", calm_b)],
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT3, desc="SeaWaves")
     g.out(wpo, MP.MP_WORLD_POSITION_OFFSET)
 
@@ -199,7 +202,8 @@ def sea_material(coll):
     view = g.node(X.MaterialExpressionCameraVectorWS)
     pix = g.custom(H.GUST_LIB + H.PIXEL_HLSL,
                    [("XY", uv), ("V", view), ("Tab", tab), ("Dep", dep), ("Clock", clock), ("SP", sp), ("Rect", rect), ("LandX", land),
-                    ("Tide", tide), ("Wind", wind), ("Drift", drift), ("Glit", (g.vparam("Glitter", (0.18, 0.03, 0.0, 0.0)), "RGBA"))],
+                    ("Tide", tide), ("Wind", wind), ("Drift", drift), ("Glit", (g.vparam("Glitter", (0.18, 0.03, 0.0, 0.0)), "RGBA")),
+                    ("CalmA", calm_a), ("CalmB", calm_b)],
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT4, desc="SeaNormal")
 
     # surf over the shallows, from the scene's own depth under the water and the depth map
@@ -207,8 +211,9 @@ def sea_material(coll):
     below = g.node(X.MaterialExpressionSceneDepthWithoutWater, fallback_depth=1.0e6)
     here = g.node(X.MaterialExpressionPixelDepth)
     thick = g.custom("return (Below - Here) * abs(V.z);", [("Below", below), ("Here", here), ("V", view)])
-    bed = g.custom(H.GUST_LIB + "return Lyud.Water(XY, Rect, Clock.w, LandX, Tide, Dep, DepSampler).xy;",
-                   [("XY", uv), ("Rect", rect), ("Clock", clock), ("LandX", land), ("Tide", tide), ("Dep", dep)],
+    bed = g.custom(H.GUST_LIB + "float2 w = Lyud.Water(XY, Rect, Clock.w, LandX, Tide, Dep, DepSampler).xy; w.y *= Lyud.Calm(XY, CalmA, CalmB); return w;",
+                   [("XY", uv), ("Rect", rect), ("Clock", clock), ("LandX", land), ("Tide", tide), ("Dep", dep),
+                    ("CalmA", calm_a), ("CalmB", calm_b)],
                    out=unreal.CustomMaterialOutputType.CMOT_FLOAT2, desc="Bed")
     surf = g.custom(H.GUST_LIB + H.SURF_HLSL,
                     [("Pos", ppos), ("Clock", clock), ("Depth", thick), ("Bed", bed), ("SP", sp)],

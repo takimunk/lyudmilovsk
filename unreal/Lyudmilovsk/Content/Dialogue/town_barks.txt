@@ -4190,6 +4190,190 @@ at = beach
 weather = warm
 say = town.beach_race_talk.1..3
 
+# The weekend cruise of the motor ship «Полдень» (docs/ship.md; tools/ship/cruise_people.py): the townsfolk who
+# sail this weekend (job = cruise_passenger: their twins aboard, and their town records waiting for the launch at
+# the pier head). The crew and the tourists are talked to with E and say no lines of these. The islands by the
+# programme: the Stone Brothers on Friday evening, Bird Island and the Far Light on Saturday, the Seal Rocks on Sunday.
+# Russian: the speaker's own words never agree in gender. Nobody offers the hero a drink: he is a teenager.
+# --- the moments the ship's programme may call out (ULyudTownTalkSubsystem::SayEvent; nobody calls them yet)
+
+[cruise_board]
+doing = cruise_board
+say = town.cruise_board.1..4
+
+[cruise_board_hero]
+doing = cruise_board
+to = hero
+say = town.cruise_board_hero.1..2
+
+[cruise_settle]
+doing = cruise_settle
+say = town.cruise_settle.1..4
+
+[cruise_departure]
+doing = cruise_departure
+say = town.cruise_departure.1..4
+
+[cruise_drill]
+doing = cruise_drill
+say = town.cruise_drill.1..4
+
+[cruise_dinner]
+doing = cruise_dinner
+say = town.cruise_dinner.1..4
+
+[cruise_breakfast]
+doing = cruise_breakfast
+say = town.cruise_breakfast.1..3
+
+[cruise_lunch]
+doing = cruise_lunch
+say = town.cruise_lunch.1..3
+
+[cruise_tea]
+doing = cruise_tea
+say = town.cruise_tea.1..3
+
+[cruise_gala]
+doing = cruise_gala_dinner
+weight = 3
+say = town.cruise_gala.1..3
+
+[cruise_isl_brothers]
+doing = cruise_isl_brothers
+weight = 3
+say = town.cruise_isl_brothers.1..3
+
+[cruise_isl_arch]
+doing = cruise_isl_arch
+weight = 3
+say = town.cruise_isl_arch.1..2
+
+[cruise_isl_birds]
+doing = cruise_isl_birds
+weight = 3
+say = town.cruise_isl_birds.1..4
+
+[cruise_isl_lighthouse]
+doing = cruise_isl_lighthouse
+weight = 3
+say = town.cruise_isl_lighthouse.1..3
+
+[cruise_isl_seals]
+doing = cruise_isl_seals
+weight = 3
+say = town.cruise_isl_seals.1..3
+
+[cruise_isl_home]
+doing = cruise_isl_home
+weight = 3
+say = town.cruise_isl_home.1..3
+
+[cruise_rail]
+doing = ship_rail_look
+say = town.cruise_rail.1..4
+
+[cruise_rail_night]
+doing = ship_rail_look
+sun = night
+weight = 3
+say = town.cruise_rail_night.1..2
+
+[cruise_deck_walk]
+doing = ship_deck_walk
+say = town.cruise_deck_walk.1..3
+
+[cruise_deckchair]
+doing = ship_deckchair ship_bench ship_deck_read
+say = town.cruise_deckchair.1..4
+
+[cruise_exercise]
+doing = cruise_exercise
+say = town.cruise_exercise.1..3
+
+[cruise_deckgames]
+doing = cruise_deckgames
+say = town.cruise_deckgames.1..3
+
+[cruise_concert]
+doing = cruise_concert cruise_concert2
+say = town.cruise_concert.1..4
+
+[cruise_dance]
+doing = cruise_dance
+say = town.cruise_dance.1..3
+
+[cruise_quiz]
+doing = cruise_quiz
+say = town.cruise_quiz.1..3
+
+[cruise_diplomas]
+doing = cruise_diplomas
+say = town.cruise_diplomas.1..3
+
+[cruise_saloon]
+doing = ship_saloon_sit ship_bar
+say = town.cruise_saloon.1..3
+
+[cruise_library]
+doing = ship_library_read cruise_library
+say = town.cruise_library.1..2
+
+[cruise_cards]
+doing = cruise_cards
+say = town.cruise_cards.1..2
+
+[cruise_smoke]
+doing = ship_smoke
+say = town.cruise_smoke.1..2
+
+[cruise_pack]
+doing = cruise_pack
+say = town.cruise_pack.1..3
+
+[cruise_hello]
+job = cruise_passenger
+to = hero
+at = ship_deck ship_saloon ship_dining ship_library
+say = town.cruise_hello.1..4
+
+[cruise_hello_known]
+job = cruise_passenger
+to = hero
+met = known
+at = ship_deck ship_saloon ship_dining ship_library
+weight = 3
+say = town.cruise_hello_known.1..2
+
+[cruise_chat_deck]
+job = cruise_passenger
+job2 = cruise_passenger
+at = ship_deck
+talk = town.cruise_chat_deck.1 | town.cruise_chat_deck.2 | town.cruise_chat_deck.3
+talk = town.cruise_chat_deck.4 | town.cruise_chat_deck.5
+
+[cruise_chat_table]
+job = cruise_passenger
+job2 = cruise_passenger
+doing = cruise_dinner cruise_lunch cruise_breakfast cruise_tea cruise_gala_dinner
+talk = town.cruise_chat_table.1 | town.cruise_chat_table.2
+talk = town.cruise_chat_table.3 | town.cruise_chat_table.4
+
+[cruise_ev_cast_off]
+on = cruise_cast_off
+job = cruise_passenger
+say = town.cruise_ev_cast_off.1..2
+
+[cruise_ev_island]
+on = cruise_island
+job = cruise_passenger
+say = town.cruise_ev_island.1..2
+
+[cruise_ev_home]
+on = cruise_home
+job = cruise_passenger
+say = town.cruise_ev_home.1..2
+
 # The town cooks at home too (docs/kitchen.md "The town cooks"): what people carry home from the shops and the
 # market by the season (the same Baltic dishes the hero learns: spring smelt, summer okroshka, autumn herring and
 # draniki), and a word over the table at home

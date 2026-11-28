@@ -183,7 +183,9 @@ namespace LyudTownChat
 	std::string NameId(const std::string& PersonKey)
 	{
 		const size_t At = PersonKey.rfind('_');
-		return PersonKey.compare(0, 2, "t_") == 0 && At != std::string::npos && At > 1 ? PersonKey.substr(At + 1) : std::string();
+		// (c_: a cruising townsperson's twin aboard the motor ship, ship_people.json's twin_of: the same person, the same name)
+		const bool bTownsperson = PersonKey.compare(0, 2, "t_") == 0 || PersonKey.compare(0, 2, "c_") == 0;
+		return bTownsperson && At != std::string::npos && At > 1 ? PersonKey.substr(At + 1) : std::string();
 	}
 
 	const char* KinEvent(const FPerson& P, const FPerson& O)

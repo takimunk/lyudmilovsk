@@ -52,6 +52,8 @@ unreal/Lyudmilovsk/Content/Transport/network_built.json
 # the sea railway resolved against it (python3 tools/railway.py) and its kit's export (blender/railway/rail_kit.py)
 unreal/Lyudmilovsk/Content/Railway/railway_built.json
 design/railway/game/
+# the cruise's islands (blender/ship/seascape_kit.py; unreal/scripts/import_cruise.sh builds it when missing and imports it)
+design/ship/game/
 # the diary's bird sheets (design/birds_diary/sheets.json has their URLs and sha256; the cut drawings are in textures/ui/birds)
 design/birds_diary/gen/
 blender/animals/gen/*/model.glb

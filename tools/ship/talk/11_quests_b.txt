@@ -1,0 +1,840 @@
+# The cruise's quests, part B: the waltz, the night watch, the diesel, the bird count, the deck games, the suitcase key,
+# the captain's hour. Format: see 10_quests_a.txt.
+
+# ------------------------------------------------------------------ 5. the first waltz
+@quest.ship_waltz.title
+Первый вальс
+The First Waltz
+はじめてのワルツ
+@quest.ship_waltz.desc
+Молодожёны из двенадцатой каюты в ссоре, а в субботу капитанский ужин с танцами. Муж второй час «дышит воздухом» на корме.
+The honeymooners in cabin twelve have fallen out, and Saturday is the captain's dinner with dancing. The husband has been "getting some air" aft for two hours.
+十二号室の新婚さんがけんか中。土曜は船長の晩餐とダンスなのに、夫はもう二時間も船尾で「風に当たって」いる。
+@quest.ship_waltz.misha.log
+На корме, где курят, второй час стоит высокий человек в сером пиджаке и не курит. Уши красные. Это Миша, молодожён из двенадцатой каюты. Его жена сидит на скамейке прогулочной палубы и смотрит не на море, а на дверь. К столу оба приходят минута в минуту и садятся рядом: за едой его застать проще всего.
+Aft, where people smoke, a tall man in a grey jacket has stood for two hours, not smoking. Red ears. That's Misha, the bridegroom from cabin twelve. His wife sits on a promenade deck bench looking not at the sea but at the door. They both come to table on the minute and sit side by side: mealtimes are the surest place to catch him.
+船尾の喫煙所に、灰色の上着の背の高い男が、たばこも吸わずにもう二時間立っている。耳が赤い。十二号室の新郎ミーシャだ。奥さんは遊歩甲板のベンチに座って、海ではなくドアを見ている。食事には二人とも時間ぴったりに来て並んで座る。彼をつかまえるなら食事どきがいちばん確かだ。
+@quest.ship_waltz.talk_misha.obj
+Поговорить с Мишей, молодожёном из двенадцатой каюты
+Talk to Misha, the bridegroom from cabin twelve
+十二号室の新郎ミーシャと話す
+@quest.ship_waltz.tune.log
+Миша не умеет танцевать. Совсем. На свадьбе обошлось, а в субботу капитанский ужин и вальс при капитане, и Оля везла платье в отдельном чемодане. Он просит узнать у пианиста, седого, что будут играть первым: вдруг не вальс. Пианист Блюм с квартетом в музыкальном салоне: вечером на концерте, в субботу с одиннадцати на репетиции.
+Misha can't dance. At all. At the wedding he got away with it, but Saturday is the captain's dinner and a waltz in front of the captain, and Olya has brought her dress in a suitcase of its own. He asks me to find out from the grey-haired pianist what they'll play first: perhaps not a waltz. Blum and his quartet are in the music saloon: at the concert in the evening, at rehearsal from eleven on Saturday.
+ミーシャは踊れない。まったく。結婚式は切り抜けたが、土曜は船長の晩餐で、船長の前でワルツだ。オーリャはドレスを別のスーツケースで運んできたのに。白髪のピアニストに最初の曲を聞いてきてくれと頼まれた。ワルツじゃないかもしれないから。ブリュームと四重奏団は音楽サロンにいる。夜は演奏会、土曜は十一時から練習。
+@quest.ship_waltz.talk_blum.obj
+Спросить пианиста Блюма, что играют первым
+Ask Blum the pianist what they play first
+ピアニストのブリュームに最初の曲をたずねる
+@quest.ship_waltz.lesson.log
+Первым будет вальс, «Амурские волны»: капитан иначе не понимает, что вечер начался. Но Блюм обещал играть медленно и велел передать: вальс — это до трёх. Раз — шагнул, два — приставил, три — постоял и понял, что жив. Несу это Мише.
+The first will be a waltz, "Waves of the Amur": otherwise the captain doesn't know the evening has begun. But Blum promised to play slowly and sent a message: a waltz goes up to three. One, step; two, close; three, stand and find you're alive. I'm carrying this to Misha.
+最初はワルツ、「アムール河の波」。そうでないと船長は夜会が始まったとわからないらしい。でもブリュームはゆっくり弾くと約束し、伝言をくれた。ワルツは三つまで。一で踏み出し、二でそろえ、三で立って、生きていると気づく。これをミーシャに届ける。
+@quest.ship_waltz.teach_misha.obj
+Передать Мише, как считают вальс
+Tell Misha how a waltz is counted
+ワルツの数え方をミーシャに伝える
+@quest.ship_waltz.ball.log
+Миша считал до четырёх, в этом всё дело. Теперь считает до трёх и ходит вокруг шлюпки. Танцы в субботу, с половины девятого, в музыкальном салоне. Он просил прийти: «если упаду, хоть будет кому сказать, что было красиво». Надо выйти на паркет самому.
+Misha was counting to four, that was the whole trouble. Now he counts to three and walks round a lifeboat. The dancing is on Saturday from half past eight in the music saloon. He asked me to come: "if I fall, at least someone can say it looked good". I'll have to step onto the floor myself.
+ミーシャは四つまで数えていた。原因はそれだけ。今は三つ数えながら救命艇のまわりを歩いている。ダンスは土曜の八時半から音楽サロンで。来てくれと頼まれた。「転んでも、きれいだったと言ってくれる人がいるように」。ぼくも踊り場に出なくては。
+@quest.ship_waltz.dance.obj
+Прийти на танцы в музыкальный салон и выйти на паркет
+Come to the dancing in the music saloon and step onto the floor
+音楽サロンのダンスに行き、踊り場に出る
+@quest.ship_waltz.after.log
+Они танцевали. Он считал губами, это было видно через весь салон. Найти Мишу и сказать, что было красиво: я обещал.
+They danced. He counted with his lips, you could see it across the whole saloon. Find Misha and tell him it looked good: I promised.
+二人は踊った。彼は口を動かして数えていて、サロンの端からでも見えた。ミーシャを見つけて、きれいだったと言おう。約束だから。
+@quest.ship_waltz.hear_misha.obj
+Поговорить с Мишей после вальса
+Talk to Misha after the waltz
+ワルツのあとでミーシャと話す
+@quest.ship_waltz.done
+Миша считал губами весь вальс и четыре раза наступил Оле на ногу. Она говорит: лучший вальс в жизни. Взрослые странно считают, что такое «лучший».
+Misha counted with his lips all through the waltz and trod on Olya's foot four times. She says it was the best waltz of her life. Grown-ups have an odd way of counting "best".
+ミーシャはワルツのあいだじゅう口で数え、オーリャの足を四回踏んだ。彼女は人生最高のワルツだと言う。大人の「最高」の数え方は、ふしぎだ。
+
+[ship_olya]
+> aside.ship_waltz.misha,tune,lesson : waltz_wait
+- me
+Мой опять на корме, где курят. Он не курит. Он там стоит. Какие дела на корме у человека в свадебном путешествии?
+Mine's aft again, where they smoke. He doesn't smoke. He stands there. What business aft does a man have on his honeymoon?
+うちの人、また船尾の喫煙所よ。吸わないのに。ただ立ってるの。新婚旅行で船尾に何の用事があるっていうの？
+> aside.ship_waltz.ball : waltz_before
+- me
+Он где-то пропадал полдня и вернулся весёлый. Я ничего не спрашиваю. Я умная. Танцы в субботу с половины девятого.
+He vanished for half a day and came back cheerful. I ask nothing. I'm clever. The dancing is on Saturday from half past eight.
+半日どこかに消えて、ごきげんで戻ってきたの。私は何も聞かない。賢いから。ダンスは土曜の八時半からよ。
+> quest.ship_waltz.done : waltz_after
+- me
+Ты видел? Видел, как он считал? Губами. Раз-два-три. Весь вальс.
+Did you see? Did you see him counting? With his lips. One-two-three. The whole waltz.
+見た？数えてたの、見た？口で。いち、に、さん。ワルツのあいだじゅう。
+- me
+Он наступил мне на ногу четыре раза. Это был лучший вальс в моей жизни, а я в училище танцевала с солистами.
+He trod on my foot four times. It was the best waltz of my life, and at college I danced with soloists.
+足を四回踏まれたわ。人生最高のワルツだった。学校ではソリストと踊ってたこの私がよ。
+- me
+Это ведь ты его научил? Молчи. Я ничего не знаю. Я умная.
+It was you who taught him, wasn't it? Hush. I know nothing. I'm clever.
+教えたの、あなたでしょう？言わないで。私は何も知らない。賢いから。
+
+[ship_misha]
+> quest.ship_waltz.misha : waltz_confess
+- me
+Тебя Оля прислала? Не отвечай. Даже если не прислала, скоро пришлёт.
+Did Olya send you? Don't answer. Even if she didn't, she soon will.
+オーリャに頼まれた？答えなくていい。頼まれてなくても、じきに頼まれる。
+- me
+Я не умею танцевать. Совсем. На свадьбе обошлось: оркестр опоздал, все просто ели. А в субботу вальс при капитане.
+I can't dance. At all. At the wedding I got away with it: the band was late, everyone just ate. But Saturday is a waltz in front of the captain.
+おれは踊れない。まったく。式のときは助かった。楽団が遅れて、みんな食べてただけだから。でも土曜は船長の前でワルツだ。
+- me
+Она в училище танцевала. Я увидел и поэтому подошёл знакомиться. И поэтому же теперь тут стою.
+She danced at college. I saw her, and that's why I went up to meet her. And that's why I'm standing here now.
+彼女は学校で踊ってた。それを見て声をかけたんだ。そして同じ理由で、いまここに立ってる。
+- me
+Слушай. В салоне пианист, седой. Узнай у него, что играют первым. Может, хоть не вальс.
+Listen. There's a pianist in the saloon, grey-haired. Find out what they play first. Maybe it's not a waltz at least.
+なあ。サロンに白髪のピアニストがいる。最初に何を弾くか聞いてきてくれ。せめてワルツじゃなければ。
+> quest.ship_waltz.tune : waltz_pace
+- me
+Узнал? Нет ещё? Я пока постою. Я хорошо стою, это у меня получается.
+Found out? Not yet? I'll go on standing. I'm good at standing, that I can do.
+わかった？まだ？じゃあ立ってる。立つのは得意なんだ。これならできる。
+> quest.ship_waltz.lesson : waltz_lesson
+- hero
+Первым вальс. Но он сыграет медленно. И вальс — это до трёх. Раз — шагнул, два — приставил, три — постоял.
+A waltz first. But he'll play it slowly. And a waltz goes up to three. One, step; two, close; three, stand.
+最初はワルツです。でもゆっくり弾くそうです。それとワルツは三つまで。一で踏み出し、二でそろえ、三で立つ。
+- me
+До трёх. А я до четырёх считал. Вот дурак... Погоди, покажи. Раз. Два. Три — постоял.
+Up to three. And I was counting to four. What a fool... Wait, show me. One. Two. Three, stand.
+三つまで。おれは四つ数えてた。ばかだな……待って、見せてくれ。いち。に。さん、で立つ。
+- me
+Получается? Со стороны как? Только честно.
+Is it working? How does it look? Honestly.
+できてる？はたから見てどう？正直に。
+- hero
+Как технолог.
+Like a technologist.
+技術者みたいです。
+- me
+Значит, получается. Приходи в субботу в салон. Упаду — хоть будет кому сказать, что было красиво.
+Then it's working. Come to the saloon on Saturday. If I fall, at least someone can say it looked good.
+じゃあできてるんだ。土曜、サロンに来てくれ。転んでも、きれいだったと言ってくれる人がいるように。
+> quest.ship_waltz.ball : waltz_drill
+- me
+Раз, два, три. Раз, два, три. Не сбивай. Я обошёл шлюпку сорок раз. Шлюпка, по-моему, уже умеет.
+One, two, three. One, two, three. Don't put me off. I've been round the lifeboat forty times. I think the lifeboat can do it by now.
+いち、に、さん。いち、に、さん。邪魔しないで。救命艇のまわりを四十周した。艇のほうはもう覚えたと思う。
+> quest.ship_waltz.after : waltz_done_m
+- me
+Не упал. Ты видел? Не упал! До трёх. Всю жизнь теперь буду считать до трёх.
+I didn't fall. Did you see? I didn't fall! Up to three. I'll count to three for the rest of my life.
+転ばなかった。見た？転ばなかったぞ！三つまで。これからは一生、三つまで数えるよ。
+- hero
+Было красиво.
+It looked good.
+きれいでした。
+- me
+Врёшь. Но спасибо. Держи леденцы, это со свадебного стола. Мы их до сих пор едим.
+You're lying. But thanks. Have some sweets, they're from the wedding table. We're still eating them.
+嘘だろ。でもありがとう。あめを持っていけよ。披露宴の残りだ。まだ食べきれないんだ。
+> quest.ship_waltz.done : waltz_done_m2
+- me
+Оля говорит, я во сне считаю. Раз, два, три. Она говорит, под это хорошо засыпать.
+Olya says I count in my sleep. One, two, three. She says it's good to fall asleep to.
+オーリャが言うには、おれは寝言で数えてるらしい。いち、に、さん。それを聞いてるとよく眠れるんだってさ。
+
+[ship_blum]
+> quest.ship_waltz.tune : waltz_tune
+- hero
+Маэстро, что вы в субботу играете первым?
+Maestro, what do you play first on Saturday?
+マエストロ、土曜は最初に何を弾くんですか。
+- me
+Вальс, деточка. На капитанском ужине первым всегда вальс: капитан иначе не понимает, что вечер начался.
+A waltz, child. At the captain's dinner the first is always a waltz: otherwise the captain doesn't know the evening has begun.
+ワルツだよ、坊や。船長の晩餐は必ずワルツから。でないと船長は、夜会が始まったとわからないのさ。
+- hero
+А можно не вальс? Там один человек не умеет.
+Could it not be a waltz? There's a man who can't.
+ワルツじゃなくできませんか。踊れない人がいるんです。
+- me
+Жених? Серый пиджак? Он третий час ходит мимо рояля и считает шёпотом. Только до четырёх. Передай: вальс — это до трёх. Раз — шагнул, два — приставил, три — постоял и понял, что жив.
+The bridegroom? Grey jacket? He's walked past my piano for three hours, counting in a whisper. Only to four. Tell him a waltz goes up to three. One, step; two, close; three, stand and find you're alive.
+花婿かい？灰色の上着の。三時間もピアノの前を行ったり来たり、小声で数えてる。ただし四つまで。伝えておくれ、ワルツは三つまでだと。一で踏み出し、二でそろえ、三で立って、生きていると気づく。
+- me
+И ещё передай: сыграю медленно. «Амурские волны» можно играть так медленно, что научится даже технолог. Тридцать лет играю на свадьбах: падают не те, кто не умеет, а те, кто не вышел.
+And tell him I'll play it slowly. "Waves of the Amur" can go so slowly even a technologist will learn. Thirty years I've played at weddings: it isn't those who can't dance that fall, it's those who never step out.
+それから、ゆっくり弾くとも伝えて。「アムール河の波」は、技術者でも覚えられるくらいゆっくり弾ける。三十年、婚礼で弾いてきた。転ぶのは踊れない者じゃない。踊りに出なかった者さ。
+> quest.ship_waltz.lesson,ball : waltz_slow
+- me
+Передал? Хорошо. Я уже сказал контрабасу: в субботу первый номер играем, как будто несём спящего ребёнка.
+Did you tell him? Good. I've already told the bass: on Saturday we play the first number as if carrying a sleeping child.
+伝えたかい。よろしい。コントラバスにはもう言ってある。土曜の一曲目は、眠った子どもを運ぶように弾くと。
+> quest.ship_waltz.done : waltz_done
+- me
+Жених не упал. Невеста плакала. Контрабас сфальшивил от чувств. Хороший был вальс, деточка.
+The bridegroom didn't fall. The bride cried. The bass went flat from feeling. A good waltz, child.
+花婿は転ばなかった。花嫁は泣いた。コントラバスは感極まって音を外した。いいワルツだったよ、坊や。
+
+# ------------------------------------------------------------------ 6. the watch
+# Vitya steers from half past six in the evening till midnight; from seven the captain has gone below and the mate
+# sleeps before her own watch: he is alone in the wheelhouse. The bell rung after ten at night is the bell act's own
+# night line (he looks out of the wheelhouse and shows a thumb); by day the bosun stops the hand, and Taras says so.
+# No stage waits for the clock: it holds over every jump and on either night.
+@quest.ship_watch.title
+Вахта
+The Watch
+当直
+@quest.ship_watch.desc
+Рулевой Витя Чиж ходит первый сезон. С семи вечера до полуночи он в рубке один, и после десяти ему кажется, что на всём теплоходе не спит только он.
+Helmsman Vitya Chizh is in his first season. From seven in the evening till midnight he is alone in the wheelhouse, and after ten it seems to him that he is the only one awake in the whole ship.
+操舵手ヴィーチャ・チーシは今年が最初の季節。夜七時から真夜中まで操舵室にひとりきりで、十時を過ぎると、船じゅうで起きているのは自分だけのような気がしてくる。
+@quest.ship_watch.fear.log
+За штурвалом стоит парень немногим старше меня. Витя Чиж, рулевой. На руле он с восьми до полудня и с половины седьмого вечера до полуночи, а ест в столовой раньше всех.
+At the wheel stands a lad not much older than me. Vitya Chizh, helmsman. He steers from eight till noon and from half past six in the evening till midnight, and eats in the dining saloon before everyone else.
+舵輪の前に、僕とあまり年の違わない若者が立っている。操舵手のヴィーチャ・チーシ。当直は八時から正午までと、夕方六時半から真夜中まで。食事は誰よりも早く食堂でとる。
+@quest.ship_watch.talk_vitya.obj
+Поговорить с рулевым Витей Чижом
+Talk to helmsman Vitya Chizh
+操舵手ヴィーチャ・チーシと話す
+@quest.ship_watch.bell.log
+Вечером Витя в рубке один: капитан ужинает, старпом спит перед своей вахтой. После десяти на палубах гасят лишний свет, и впереди ничего, кроме чёрной воды. Он просит выйти ночью на нос и один раз, тихо, ударить в рынду: обернуться он не может, а услышать может. Рында висит на баке. Днём её трогать нельзя, днём колокол говорит время.
+In the evening Vitya is alone in the wheelhouse: the captain is at dinner, the chief mate asleep before her own watch. After ten the deck lights are turned down and there is nothing ahead but black water. He asks me to go forward at night and strike the bell once, softly: he can't turn round, but he can hear. The bell hangs on the foredeck. By day it is not to be touched: by day the bell tells the time.
+夜、ヴィーチャは操舵室にひとりだ。船長は夕食、一等航海士は自分の当直の前に眠っている。十時を過ぎると甲板の余分な灯りが消え、前には黒い水しかない。彼の頼みはこうだ。夜、船首に出て、号鐘を一度だけ、そっと鳴らしてほしい。振り向くことはできないが、聞くことはできるから。号鐘は船首甲板に下がっている。昼はさわってはいけない。昼の鐘は時を告げるものだから。
+@quest.ship_watch.strike_bell.obj
+После десяти вечера ударить в рынду на носу
+After ten at night, strike the ship's bell in the bows
+夜十時を過ぎてから船首の号鐘を鳴らす
+@quest.ship_watch.tell.log
+Ударил, один раз. Звук ушёл по всему судну и долго не кончался. Теперь спросить Витю, слышал ли: он на руле до полуночи и с восьми утра, а завтракает в столовой в начале восьмого.
+I struck it, once. The sound went through the whole ship and took a long time to end. Now to ask Vitya whether he heard: he is at the wheel till midnight and from eight in the morning, and breakfasts in the dining saloon just after seven.
+一度だけ鳴らした。音は船じゅうに広がって、なかなか消えなかった。あとはヴィーチャに聞こえたかどうか尋ねる。彼は真夜中までと朝八時から舵輪の前、朝食は七時すぎに食堂でとる。
+@quest.ship_watch.tell_vitya.obj
+Спросить Витю, слышал ли он рынду
+Ask Vitya whether he heard the bell
+号鐘が聞こえたかヴィーチャに尋ねる
+@quest.ship_watch.done
+Я вышел ночью на нос и один раз ударил в рынду, чтобы рулевой знал, что не спит не он один. Никогда не думал, что можно помочь человеку тем, что просто не спишь.
+I went forward at night and struck the bell once, so the helmsman would know he was not the only one awake. I never thought you could help someone just by not being asleep.
+夜、船首に出て号鐘を一度鳴らした。起きているのは自分だけじゃないと、操舵手にわかるように。眠らずにいるだけで人の助けになるなんて、考えたこともなかった。
+
+[ship_vitya]
+> quest.ship_watch.fear : watch_fear
+- me
+Ты из пассажиров? Слушай, ты ночью спишь или как?
+You're a passenger? Listen, do you sleep at night, or what?
+お客さん? あのさ、夜は寝てる? それとも?
+- me
+Я с половины седьмого до полуночи на руле. С семи один: капитан ужинает, Ирина Сергеевна спит перед своей вахтой. Первый сезон.
+I'm at the wheel from half past six till midnight. From seven I'm alone: the captain's at dinner, Irina Sergeyevna sleeps before her own watch. First season.
+僕は六時半から真夜中まで舵を取る。七時からはひとり。船長は夕食、イリーナ・セルゲーエヴナは自分の当直の前に寝てる。今年が最初の季節なんだ。
+- me
+Пока светло, ничего. А после десяти гасят свет на палубах, и впереди только чёрное. И кажется, что на всём судне не сплю один я. И веду его неизвестно куда.
+While it's light it's all right. But after ten they turn the deck lights down, and there's only black ahead. And it feels as if I'm the only one awake in the whole ship. Taking her nobody knows where.
+明るいうちは平気。でも十時を過ぎると甲板の灯りが消えて、前は真っ黒だけになる。船じゅうで起きてるのは僕ひとりみたいな気がしてくる。どこへ連れていくのかもわからないまま。
+- me
+Мне бы знать, что на носу кто-то стоит. Не из команды, просто человек. Выйди после десяти, ударь в рынду, один раз, тихо. Обернуться я не смогу, а услышать смогу.
+I'd like to know someone is standing in the bows. Not crew, just a person. Come out after ten and strike the bell, once, softly. I won't be able to turn round, but I'll be able to hear.
+船首に誰かが立ってるって、わかっていたいんだ。乗組員じゃなくて、ただの誰か。十時を過ぎたら出てきて、号鐘を鳴らして。一度だけ、そっと。振り向けないけど、聞くことはできるから。
+- me
+Только днём не трогай. Днём боцман за рынду руки отрывает. Ночью он в карты играет.
+Only don't touch it by day. By day the bosun will have your hands off for the bell. At night he's at cards.
+ただし昼はさわっちゃだめ。昼に号鐘をさわると甲板長に手をもがれる。夜はあの人、トランプしてるから。
+> quest.ship_watch.bell : watch_wait
+- me
+После десяти. Один раз, тихо. Рында на самом носу, не промахнёшься.
+After ten. Once, softly. The bell is right in the bows, you can't miss it.
+十時を過ぎてから。一度だけ、そっと。号鐘は船首のいちばん先。見落としっこないよ。
+> quest.ship_watch.bell.again : watch_wait2
+- me
+Не выйдет сегодня — ночь будет и завтра. И в следующем рейсе. Я тоже буду.
+If tonight doesn't work, there's a night tomorrow too. And next voyage. I'll be here as well.
+今夜だめでも、夜は明日もある。次の航海にも。僕もいるし。
+> quest.ship_watch.tell : watch_tell
+- me
+Я слышал. Один удар. Выглянул: стоишь. Я тебе палец показал, ты видел?
+I heard it. One stroke. I looked out: there you were. I gave you a thumbs-up, did you see?
+聞こえた。一打。のぞいたら、君が立ってた。親指を立てて見せたんだけど、見えた?
+- me
+Смешно: ничего же не изменилось. Та же вода, тот же курс. А руки на штурвале стали сухие.
+Funny: nothing changed at all. Same water, same course. But my hands on the wheel went dry.
+変だよね。何も変わってないんだ。同じ水、同じ針路。なのに舵輪を握る手の汗が引いた。
+- me
+Держи. Шоколад. Его дают на ночную вахту, плитку на человека. Эта твоя: ты тоже стоял.
+Here. Chocolate. It's issued for the night watch, a bar a man. This one's yours: you stood a watch too.
+はい、チョコレート。夜の当直に一人一枚ずつ出るんだ。これは君の分。君も当直に立ったんだから。
+> quest.ship_watch.done : watch_done
+- me
+Боцман говорит, рында после тебя звенит чище. Врёт, конечно. Но я проверил: чище.
+The bosun says the bell rings cleaner since you. He's making it up, of course. But I checked: it does.
+甲板長が言うんだ、君が鳴らしてから号鐘の音が澄んだって。もちろん冗談だよ。でも確かめてみた。澄んでる。
+
+[ship_vais]
+> aside.ship_watch.bell,tell : watch_mate
+- me
+Чиж по вечерам на руле один. Он думает, что я сплю. Я не сплю: я лежу и слушаю ход. Но знать ему об этом не нужно.
+Chizh has the wheel alone in the evenings. He thinks I am asleep. I am not: I lie and listen to how she runs. But he need not know that.
+チーシは夜、ひとりで舵を取っています。私が眠っていると思っている。眠ってはいません。横になって船の走りを聞いているのです。でも、彼が知る必要はありません。
+- hero
+А вы ему скажете, что он справляется?
+Will you tell him he's managing?
+うまくやっていると、彼に言ってあげるんですか?
+- me
+Нет. Я ему это покажу. Тем, что не приду.
+No. I shall show him. By not coming up.
+いいえ。見せてやるのです。上がっていかないことで。
+> quest.ship_watch.done : watch_done
+- me
+Ночью кто-то ударил в рынду. В журнал я не записала. В журнал пишут происшествия, а это было не происшествие.
+Someone struck the bell in the night. I did not enter it in the log. The log is for incidents, and that was not an incident.
+夜中に誰かが号鐘を鳴らしました。日誌には書いていません。日誌は事故を書くもの。あれは事故ではありませんから。
+
+# ------------------------------------------------------------------ 7. the old man and the diesel
+@quest.ship_diesel.title
+Дед и дизель
+The Chief and His Diesel
+機関長とディーゼル
+@quest.ship_diesel.desc
+Старший механик Эйнар Каск, по-судовому «дед», третий день слышит в машине стук, которого больше никто не слышит.
+Chief Engineer Einar Kask, "Grandad" as ships call the chief, has heard a knock in the engine for three days that nobody else hears.
+機関長エイナル・カスク、船では「じいさん」と呼ばれる人が、三日前から機関の中に、ほかの誰にも聞こえないノックを聞いている。
+@quest.ship_diesel.knock.log
+На главной палубе есть дверь в машинное отделение и галерея над дизелем. Там с восьми до восьми стоит стармех, «дед», и слушает. Говорят, он эстонец и может молчать целую вахту.
+On the main deck there is a door to the engine room and a gallery over the diesel. The chief engineer, "Grandad", stands there from eight to eight, listening. They say he's Estonian and can keep silent a whole watch.
+主甲板に機関室へのドアがあり、ディーゼルの上に回廊がある。朝八時から夜八時まで、機関長の「じいさん」がそこに立って耳をすましている。エストニア人で、当直のあいだじゅう黙っていられるそうだ。
+@quest.ship_diesel.talk_einar.obj
+Поговорить со стармехом Эйнаром
+Talk to Einar, the chief engineer
+機関長エイナルと話す
+@quest.ship_diesel.rag.log
+Дед слышит стук: раз в четыре секунды, третий день. Механики говорят, ему кажется. Отойти от машины он не может. Ему нужна чистая белая ветошь, она у кока, и ключ на двадцать семь: его брал барабанщик. Сначала на камбуз, к тёте Паше, она там с шести утра до восьми вечера.
+Grandad hears a knock: once every four seconds, for three days. The engineers say he imagines it. He can't leave the engine. He needs a clean white rag, the cook has those, and a twenty-seven spanner: the drummer borrowed it. First the galley, Aunt Pasha, she's there from six in the morning till eight at night.
+じいさんにはノックが聞こえる。四秒に一度、三日前から。機関士たちは気のせいだと言う。彼は機関のそばを離れられない。きれいな白い布がいる。それはコックのところ。二十七ミリのスパナもいる。それはドラム奏者が借りていった。まずは厨房、パーシャおばさんだ。朝六時から夜八時までいる。
+@quest.ship_diesel.ask_pasha.obj
+Попросить у тёти Паши чистую ветошь
+Ask Aunt Pasha for a clean rag
+パーシャおばさんにきれいな布をもらう
+@quest.ship_diesel.key.log
+Ветоши тётя Паша не дала. Дала платок, льняной, глаженый: «тряпку он выбросит, а платок вернёт». Теперь ключ на двадцать семь. Его брал барабанщик квартета, Костя Ёж. Квартет в музыкальном салоне: вечером на концерте, в субботу с одиннадцати на репетиции.
+Aunt Pasha gave me no rag. She gave a handkerchief, linen, ironed: "a rag he'd throw away, a handkerchief he'll return". Now the twenty-seven spanner. Kostya Yozh, the quartet's drummer, borrowed it. The quartet is in the music saloon: at the concert in the evening, at rehearsal from eleven on Saturday.
+パーシャおばさんは布をくれなかった。代わりにアイロンのかかった麻のハンカチをくれた。「布なら捨てるけど、ハンカチなら返しに来る」。次は二十七ミリのスパナ。四重奏団のドラム奏者、コースチャ・ヨーシが借りたという。四重奏団は音楽サロンにいる。夜は演奏会、土曜は十一時から練習。
+@quest.ship_diesel.ask_kostya.obj
+Спросить у барабанщика Кости ключ на двадцать семь
+Ask Kostya the drummer for the twenty-seven spanner
+ドラム奏者コースチャに二十七ミリのスパナのことを聞く
+@quest.ship_diesel.give.log
+Ключ, оказывается, у самого деда: Костя вернул его ещё в четверг, положил в дедов ящик, под журнал, чтобы не потерялся. А дед под журнал не заглядывает: он его наизусть знает. Отнести платок и сказать про ящик.
+The spanner, it turns out, is with Grandad himself: Kostya returned it back on Thursday and put it in Grandad's drawer, under the log, so it wouldn't get lost. And Grandad never looks under the log: he knows it by heart. Take him the handkerchief and tell him about the drawer.
+スパナは、なんとじいさん本人のところにあった。コースチャは木曜に返して、なくならないよう、じいさんの引き出しの日誌の下に入れたのだ。でもじいさんは日誌の下なんて見ない。中身を暗記しているから。ハンカチを届けて、引き出しのことを伝える。
+@quest.ship_diesel.bring_rag.obj
+Отнести деду платок
+Take Grandad the handkerchief
+じいさんにハンカチを届ける
+@quest.ship_diesel.done
+Стук был на самом деле: гайка на третьем цилиндре, четверть оборота. Дед Эйнар слышит дизель, как Лев Маркович эфир. А на берег он не идёт, потому что в тишине слышно, что стучит в тебе самом, и туда ключом не подлезешь.
+The knock was real: a nut on the third cylinder, a quarter turn. Grandad Einar hears the diesel the way Lev Markovich hears the air. And he won't go ashore because in the quiet you hear what knocks in yourself, and no spanner reaches there.
+ノックは本物だった。第三シリンダーのナット、四分の一回転。エイナルじいさんは、レフ・マルコヴィチが電波を聞くようにディーゼルを聞く。陸に上がらないのは、静けさの中では自分の中のノックが聞こえるからだ。そこにはスパナが届かない。
+
+[ship_einar]
+> quest.ship_diesel.knock : diesel_knock
+- me
+Стой. Слышишь?
+Stop. Hear it?
+止まれ。聞こえるか。
+- hero
+Дизель?
+The diesel?
+ディーゼルですか。
+- me
+Дизель — это восемьсот оборотов. А под ними: тук. Раз в четыре секунды. Третий день.
+The diesel is eight hundred revolutions. And under them: knock. Once in four seconds. Three days now.
+ディーゼルは八百回転だ。その下に、コツ。四秒に一度。三日前から。
+- me
+Говорят: дед, тебе кажется. Мне не кажется. Нужна ветошь, чистая, белая, у кока. И ключ на двадцать семь: его брал барабанщик, Ёж. Я отойти не могу: уйду, а он без меня стукнет.
+They say: Grandad, you imagine it. I don't. I need a rag, clean, white, from the cook. And the twenty-seven spanner: the drummer took it, Yozh. I can't leave: I go, and it knocks without me.
+じいさんの気のせいだと言う。気のせいではない。布がいる。きれいな白いのをコックから。それと二十七ミリのスパナ。ドラムのヨーシが持っていった。私は離れられん。離れたら、私のいない間に打つ。
+> quest.ship_diesel.rag,key,give_empty : diesel_wait
+- me
+Ветошь. Белую. У кока. Ключ у барабанщика.
+A rag. White. From the cook. The spanner from the drummer.
+布。白いの。コックから。スパナはドラム奏者。
+> quest.ship_diesel.give : diesel_give
+- me
+Платок. Глаженый. Это Паша.
+A handkerchief. Ironed. That's Pasha.
+ハンカチ。アイロンがかかっている。パーシャだな。
+- hero
+А ключ у вас. В ящике, под журналом.
+And you have the spanner. In the drawer, under the log.
+スパナはご自分でお持ちです。引き出しの、日誌の下に。
+- me
+...Да. Под журналом. Смотри. Веду по трубке. Белое — чисто. Белое — чисто. А тут капля. Гайка форсунки, третий цилиндр. Четверть оборота.
+...Yes. Under the log. Watch. I run it along the pipe. White: clean. White: clean. And here, a drop. Injector nut, third cylinder. A quarter turn.
+……ああ。日誌の下だ。見ていろ。管に沿ってなぞる。白い、きれいだ。白い、きれいだ。ここに一滴。噴射弁のナット、第三シリンダー。四分の一回転。
+- me
+Всё. Слушай теперь. Нет стука.
+Done. Listen now. No knock.
+終わりだ。聞いてみろ。ノックはない。
+- me
+Меня каждую осень зовут на берег, в мастерские. Тепло, восемь часов, суббота. Я пробовал. На берегу тихо. В тишине слышно, что стучит в тебе самом. А туда ключом не подлезешь.
+Every autumn they call me ashore, to the workshops. Warm, eight hours, Saturdays off. I tried. Ashore it's quiet. In the quiet you hear what knocks in yourself. And no spanner reaches there.
+毎年秋になると、陸の工場に来いと言われる。暖かくて、八時間で、土曜は休み。行ってみた。陸は静かだ。静かだと、自分の中で何が打っているか聞こえる。そこにはスパナが届かん。
+- me
+Возьми. Янтарь, с нашего берега. В нём мушка. Она тоже осталась там, где ей было хорошо.
+Take this. Amber, from our shore. There's a little fly in it. She too stayed where she was happy.
+持っていけ。琥珀だ、うちの浜の。中に小さな羽虫がいる。あれも、居心地のよかった場所に残ったのだ。
+> quest.ship_diesel.done : diesel_done
+- me
+Восемьсот оборотов. Ровно. Платок я выстирал. Отдам Паше в воскресенье. Глаженым.
+Eight hundred revolutions. Even. I've washed the handkerchief. Pasha gets it back on Sunday. Ironed.
+八百回転。安定している。ハンカチは洗った。日曜にパーシャへ返す。アイロンをかけて。
+
+[ship_pasha]
+> quest.ship_diesel.rag : diesel_rag
+- me
+Ветошь деду? Белую? Опять он своему дизелю температуру меряет.
+A rag for Grandad? A white one? He's taking his diesel's temperature again.
+じいさんに布？白いの？またディーゼルの熱を測ってるんだね。
+- me
+На, платок. Льняной, глаженый. Тряпку не дам: тряпкой он вытрет и выбросит, а платок вернёт. Эстонец. И скажи, чтоб обедать шёл, суп третий раз грею.
+Here, a handkerchief. Linen, ironed. No rag: he'd wipe with a rag and throw it out, but a handkerchief he'll bring back. Estonian. And tell him to come and eat, I've warmed his soup three times.
+ほら、ハンカチ。麻で、アイロンずみ。布はやらないよ。布なら拭いて捨てるけど、ハンカチなら返しに来る。エストニア人だからね。それと、ごはんに来いって言っとくれ。スープを三回温め直してるんだ。
+> quest.ship_diesel.key,give : diesel_soup
+- me
+Отдал платок? А про суп сказал? Вот и все вы так. Машина у них стучит, а что человек не ел, никто не слышит.
+Did you give him the handkerchief? And tell him about the soup? You're all the same. The engine knocks, and nobody hears that a man hasn't eaten.
+ハンカチは渡した？スープのことは言った？みんなそうなんだから。機械のノックは聞こえても、人が食べてないのは誰にも聞こえない。
+
+[ship_kostya]
+> quest.ship_diesel.key : diesel_key
+- me
+Ключ на двадцать семь? Я вернул! В четверг. Положил деду в ящик, под журнал, чтоб не потерялся.
+The twenty-seven spanner? I gave it back! Thursday. Put it in Grandad's drawer, under the log, so it wouldn't get lost.
+二十七ミリのスパナ？返したよ！木曜に。なくならないように、じいさんの引き出しの日誌の下に入れたんだ。
+- me
+Он не нашёл? Он под журнал не заглядывает, он его наизусть знает.
+He hasn't found it? He never looks under the log, he knows it by heart.
+見つけてない？あの人、日誌の下なんて見ないもんな。中身を暗記してるから。
+- me
+И скажи: тарелка с тех пор не дребезжит. Он один на всём судне слышал, что она дребезжит. Даже я не слышал, а я на ней играю.
+And tell him the cymbal hasn't rattled since. He was the only one on the whole ship who heard it rattle. Even I didn't, and I play the thing.
+それと伝えて。あれからシンバルはびりつかないって。びりついてるのを聞き取ったのは、船じゅうであの人だけだ。叩いてるおれにも聞こえなかったのに。
+> quest.ship_diesel.give : diesel_key_again
+- me
+В ящике, под журналом. Слева. Нет, справа. Под журналом точно.
+In the drawer, under the log. On the left. No, the right. Under the log for sure.
+引き出しの、日誌の下。左。いや右だ。日誌の下なのは確か。
+
+[ship_taras]
+> aside.ship_diesel.rag,key,give : diesel_bosun
+- me
+Дед опять машину слушает? Он тогда ничего не помнит. Ни где ключ, ни обедал ли. Ты проследи, чтоб обедал.
+Grandad listening to his engine again? Then he remembers nothing. Not where his spanner is, not whether he's eaten. You see that he eats.
+じいさん、また機械の音を聞いてるのか。そうなると何も覚えちゃいない。スパナの場所も、飯を食ったかも。ちゃんと食うよう見てやってくれ。
+
+# ------------------------------------------------------------------ 8. the bird colony
+@quest.ship_birds.title
+Птичий базар
+The Bird Colony
+海鳥の崖
+@quest.ship_birds.desc
+Господин Мори шестой год считает птиц на острове Птичьем. У него две руки, а видов на скале четыре.
+Mr Mori has counted the birds of Bird Island for six years. He has two hands, and there are four species on the cliff.
+森さんは六年、鳥の島の鳥を数えている。手は二本、崖の鳥は四種類。
+@quest.ship_birds.meet.log
+На шлюпочной палубе у борта стоит человек с подзорной трубой на треноге и с блокнотом. Харуто Мори, из Саппоро. Он там почти всегда, даже когда птиц нет.
+On the boat deck, at the rail, stands a man with a telescope on a tripod and a notebook. Haruto Mori, from Sapporo. He's almost always there, even when there are no birds.
+ボート甲板の手すりに、三脚つきの望遠鏡と手帳を持った人が立っている。札幌から来た森春人さん。鳥がいないときも、たいていそこにいる。
+@quest.ship_birds.talk_haruto.obj
+Поговорить с господином Мори
+Talk to Mr Mori
+森さんと話す
+@quest.ship_birds.count.log
+Мори-сан считает птиц для общества в Саппоро: один час в году, когда теплоход идёт вокруг острова Птичьего. Он считает моёвок, а мне доверил кайр на северном уступе: стоят как пингвины, все одинаковые. Считать десятками. «Ошибка допустима, ложь — нет». Суббота, с десяти до половины двенадцатого, шлюпочная палуба, скамья у трубы.
+Mori-san counts birds for a society in Sapporo: one hour a year, while the ship goes round Bird Island. He counts the kittiwakes and has trusted me with the guillemots on the north ledge: they stand like penguins, all alike. Count in tens. "An error is allowed, a lie is not." Saturday, ten till half past eleven, boat deck, the bench by the funnel.
+森さんは札幌の会のために鳥を数えている。年に一時間、船が鳥の島を回るあいだだけ。彼はミツユビカモメを数え、ぼくには北の岩棚のウミガラスを任せた。ペンギンみたいに立っていて、みんな同じ顔だ。十羽ずつ数える。「誤差は許される。嘘は許されない」。土曜の十時から十一時半、ボート甲板、煙突のそばのベンチ。
+@quest.ship_birds.count_birds.obj
+Сосчитать кайр со шлюпочной палубы, когда теплоход идёт вокруг Птичьего
+Count the guillemots from the boat deck while the ship rounds Bird Island
+船が鳥の島を回るあいだ、ボート甲板からウミガラスを数える
+@quest.ship_birds.report.log
+Сосчитал. Десятками, как велено. Вышло около девяноста: четыре ряда на карнизе, все лицом к скале. На последнем десятке одна кайра нырнула. Доложить Мори-сану.
+Counted. In tens, as told. It came to about ninety: four rows on the ledge, all facing the rock. In the last ten one guillemot dived. Report to Mori-san.
+数えた。言われたとおり十羽ずつ。九十羽ほど。岩棚に四列、みんな岩のほうを向いている。最後の十羽のところで一羽もぐった。森さんに報告する。
+@quest.ship_birds.report_haruto.obj
+Доложить господину Мори, сколько кайр
+Report the guillemot count to Mr Mori
+ウミガラスの数を森さんに報告する
+@quest.ship_birds.gull.log
+Девяносто записано, «наблюдатель — местный юноша». Теперь личная просьба: за кормой шестой год летит серебристая чайка с тёмным пятном на клюве, Мори-сан зовёт её Капитан. Покормить её с кормы: когда она берёт хлеб, она зависает, и он успевает рисовать. Бублики продают в киоске и в буфете.
+Ninety is entered, "observer: a local youth". Now a personal request: a herring gull with a dark spot on its bill has followed the stern for six years; Mori-san calls it Captain. Feed it from the stern: when it takes bread it hangs in the air, and he has time to draw. The kiosk and the buffet sell bubliki.
+九十羽と記録された。「観察者は地元の少年」。次は個人的な頼み。くちばしに黒い斑のあるセグロカモメが、六年前から船尾についてくる。森さんは「船長」と呼んでいる。船尾から餌をやってほしい。パンを取るとき空中で止まるので、そのあいだに描けるのだ。輪形パンは売店と配膳口で買える。
+@quest.ship_birds.feed_gull.obj
+Покормить чаек с кормового релинга
+Feed the gulls from the stern rail
+船尾の手すりからカモメに餌をやる
+@quest.ship_birds.sketch.log
+Чайка с пятном на клюве взяла бублик прямо из пальцев и на секунду повисла в воздухе. Мори-сан за это время что-то успел.
+The gull with the spot on its bill took the bublik right from my fingers and hung in the air for a second. Mori-san got something down in that time.
+くちばしに斑のあるカモメが、指からじかにパンを取り、一秒だけ空中に止まった。森さんはそのあいだに何か描いた。
+@quest.ship_birds.see_sketch.obj
+Посмотреть, что нарисовал господин Мори
+See what Mr Mori has drawn
+森さんが描いたものを見る
+@quest.ship_birds.done
+Девяносто кайр, одна чайка по имени Капитан и тетрадь с рисунком, где моя рука хуже птицы. Мори-сан извинился, что я теперь не смогу просто смотреть на небо. Я не против.
+Ninety guillemots, one gull called Captain and a notebook with a drawing where my hand is worse than the bird. Mori-san apologised that I'll never be able to just look at the sky again. I don't mind.
+ウミガラス九十羽、「船長」という名のカモメ一羽、そして鳥よりぼくの手のほうが下手に描かれたノート。もうただ空を見ることはできないでしょう、と森さんは謝った。ぼくはかまわない。
+
+[ship_haruto]
+> quest.ship_birds.meet : birds_meet
+- me
+Простите. У вас две руки свободны? У меня две заняты, а птиц четыре вида.
+Excuse me. Have you two hands free? Mine are both taken, and there are four species of bird.
+失礼。両手は空いていますか。私の手は二本ともふさがっていて、鳥は四種類いるのです。
+- me
+Я Мори. Считаю птиц для общества в Саппоро. Шестой год этот остров, каждый год один час, пока теплоход идёт вокруг.
+I am Mori. I count birds for a society in Sapporo. Six years this island, one hour each year, while the ship goes round.
+森と申します。札幌の会のために鳥を数えています。この島は六年目。毎年一時間、船が回るあいだだけです。
+- me
+На северном уступе кайры. Стоят как пингвины, все одинаковые. Я считаю моёвок, это труднее. Вы считайте кайр. Десятками. Ошибка допустима, ложь — нет.
+On the north ledge are guillemots. They stand like penguins, all alike. I count kittiwakes, that is harder. You count the guillemots. In tens. An error is allowed, a lie is not.
+北の岩棚にウミガラスがいます。ペンギンのように立って、みな同じ姿。私はミツユビカモメを数えます、こちらが難しい。あなたはウミガラスを。十羽ずつ。誤差は許されます。嘘は許されません。
+- hero
+А когда?
+When?
+いつですか。
+- me
+Суббота, десять часов, остров Птичий. Шлюпочная палуба, скамья у трубы. Не опаздывайте: остров не ждёт, теплоход тоже.
+Saturday, ten o'clock, Bird Island. Boat deck, the bench by the funnel. Do not be late: the island does not wait, nor does the ship.
+土曜、十時、鳥の島。ボート甲板、煙突のそばのベンチ。遅れないように。島は待ちません。船も待ちません。
+> quest.ship_birds.count : birds_wait
+- me
+Суббота, с десяти до половины двенадцатого. Скамья у трубы. Считать десятками.
+Saturday, ten till half past eleven. The bench by the funnel. Count in tens.
+土曜、十時から十一時半。煙突のそばのベンチ。十羽ずつ。
+> quest.ship_birds.report : birds_report
+- hero
+Кайр около девяноста. Четыре ряда на карнизе. Одна нырнула, я её посчитал.
+About ninety guillemots. Four rows on the ledge. One dived, I counted it.
+ウミガラスは九十羽くらい。岩棚に四列です。一羽もぐりましたが、数に入れました。
+- me
+Девяносто. Пишу: наблюдатель — местный юноша. В прошлом году было восемьдесят две. Вы привезли хорошую новость.
+Ninety. I write: observer, a local youth. Last year it was eighty-two. You have brought good news.
+九十羽。記録します。観察者、地元の少年。去年は八十二でした。あなたは良い知らせを運んできた。
+- me
+Теперь личная просьба. За кормой летит серебристая чайка с тёмным пятном на клюве. Шестой год. Я зову её Капитан. Покормите её с кормы: когда она берёт хлеб, она зависает, и я успеваю рисовать.
+Now a personal request. A herring gull with a dark spot on its bill follows the stern. Six years. I call it Captain. Feed it from the stern: when it takes bread it hangs, and I have time to draw.
+次は個人的なお願いです。船尾に、くちばしに黒い斑のあるセグロカモメがついてきます。六年目です。私は「船長」と呼んでいます。船尾から餌をやってください。パンを取るとき空中で止まるので、私は描くことができます。
+> quest.ship_birds.gull : birds_gull
+- me
+Корма, релинг. Нужен бублик: их продают в киоске и в буфете. Чайка с пятном на клюве. Остальные просто чайки.
+The stern, the rail. You need a bublik: the kiosk and the buffet sell them. The gull with the spot on its bill. The others are merely gulls.
+船尾の手すりです。輪形パンが要ります。売店と配膳口で売っています。くちばしに斑のあるカモメ。ほかは、ただのカモメです。
+> quest.ship_birds.sketch : birds_sketch
+- me
+Успел. Смотрите: вот она, вот ваша рука. Руку я нарисовал плохо, птицу хорошо. Так и должно быть у орнитолога.
+I had time. Look: here she is, here is your hand. The hand I drew badly, the bird well. That is as it should be with an ornithologist.
+間に合いました。ごらんなさい。これが彼女、これがあなたの手。手は下手に、鳥は上手に描けました。鳥類学者はそうあるべきです。
+- me
+Тетрадь ваша. В ней ещё много чистых страниц. У нас говорят: кто однажды сосчитал птиц, уже не умеет просто смотреть на небо. Простите меня за это.
+The notebook is yours. It has many clean pages left. We say: one who has once counted birds can no longer simply look at the sky. Forgive me for that.
+ノートは差し上げます。白いページがまだたくさんあります。一度鳥を数えた人は、もうただ空を見ることができない、と言います。そのことは、お許しください。
+> quest.ship_birds.done : birds_done
+- me
+Я отправил цифры в Саппоро. В графе «наблюдатели» теперь двое. Шесть лет там был один.
+I have sent the figures to Sapporo. The column "observers" now says two. For six years it said one.
+数字を札幌へ送りました。「観察者」の欄は二名になりました。六年間、一名でした。
+
+# ------------------------------------------------------------------ 9. the deck games
+@quest.ship_games.title
+Палубное двоеборье
+The Deck Biathlon
+甲板二種競技
+@quest.ship_games.desc
+У культорганизатора Риммы план по радости: сорок два человека за рейс. Меня записали сорок первым.
+Rimma the entertainer has a plan for joy: forty-two people a voyage. I've been put down as the forty-first.
+娯楽係のリンマには「喜びのノルマ」がある。一航海で四十二人。ぼくは四十一人目として登録された。
+@quest.ship_games.enroll.log
+Римма Вольская, культорганизатор, носит свисток и блокнот и появляется везде, где двое стоят без дела. Обычно она в музыкальном салоне, утром на зарядке на шлюпочной палубе, в субботу с половины двенадцатого на палубных играх.
+Rimma Volskaya, the entertainer, carries a whistle and a notepad and turns up wherever two people stand idle. Usually she's in the music saloon, at morning exercise on the boat deck, and at the deck games from half past eleven on Saturday.
+娯楽係のリンマ・ヴォリスカヤは笛とメモ帳を持ち、二人がぼんやり立っている所にはどこでも現れる。たいてい音楽サロンに、朝はボート甲板の体操に、土曜は十一時半から甲板競技にいる。
+@quest.ship_games.talk_rimma.obj
+Поговорить с культорганизатором Риммой
+Talk to Rimma the entertainer
+娯楽係のリンマと話す
+@quest.ship_games.play.log
+Меня записали в палубное двоеборье как «юнгу». Надо выиграть в кольца на корме прогулочной палубы и в шаффлборд на шлюпочной. Победителю Римма обещала грамоту с печатью капитана. Печать, говорит, настоящая: она сама её ставит.
+I've been entered in the deck biathlon as "ship's boy". I have to win at ring toss, aft on the promenade deck, and at shuffleboard on the boat deck. Rimma promises the winner a certificate with the captain's seal. A real seal, she says: she stamps it herself.
+甲板二種競技に「少年水夫」として登録された。遊歩甲板の船尾の輪投げと、ボート甲板のシャッフルボードで勝たなくては。勝者には船長の印入りの賞状をくれるという。印は本物よ、私が自分で押すんだから、だそうだ。
+@quest.ship_games.win_rings.obj
+Выиграть в кольца на корме
+Win at ring toss on the after deck
+船尾の輪投げで勝つ
+@quest.ship_games.win_shuffle.obj
+Выиграть в шаффлборд на шлюпочной палубе
+Win at shuffleboard on the boat deck
+ボート甲板のシャッフルボードで勝つ
+@quest.ship_games.award.log
+Оба раза выиграл. Кольца оказались труднее: палуба качается, а колышек нет. Доложить Римме.
+Won both. The rings were harder: the deck rolls and the peg doesn't. Report to Rimma.
+両方勝った。輪投げのほうが難しかった。甲板は揺れるのに、的の棒は揺れないから。リンマに報告する。
+@quest.ship_games.report_rimma.obj
+Доложить Римме о победах
+Report the wins to Rimma
+勝ったことをリンマに報告する
+@quest.ship_games.done
+Мне вручили грамоту «при море», потому что рядом никого не было. Римма каждый рейс записывает себя сорок второй, если людей не хватает. Сегодня хватило.
+I was given my certificate "before the sea", there being nobody else about. Every voyage Rimma writes herself down as the forty-second if she's a person short. Today she wasn't.
+ほかに誰もいなかったので、賞状は「海の前で」授与された。リンマは人数が足りないと、毎航海、自分を四十二人目に書きこむ。今日は足りた。
+
+[ship_rimma]
+> quest.ship_games.enroll : games_enroll
+- me
+Так! Молодой, красивый, без дела. Записываю. Фамилия? Неважно, пишу «юнга».
+Right! Young, handsome, idle. I'm writing you down. Surname? Never mind, I'll put "ship's boy".
+はい！若くて、いい男で、暇そう。登録します。名字は？いいわ、「少年水夫」と書いとく。
+- me
+Палубное двоеборье: кольца на корме и шаффлборд на шлюпочной. Победителю грамота с печатью капитана. Печать настоящая, я её сама ставлю.
+The deck biathlon: ring toss aft and shuffleboard on the boat deck. The winner gets a certificate with the captain's seal. A real seal, I stamp it myself.
+甲板二種競技。船尾の輪投げと、ボート甲板のシャッフルボード。勝者には船長の印入りの賞状。印は本物よ、私が自分で押すんだから。
+- me
+И не смотри так. У меня план по радости: сорок два человека за рейс. Ты сорок первый.
+And don't look at me like that. I have a plan for joy: forty-two people a voyage. You're the forty-first.
+そんな目で見ないの。私には喜びのノルマがあるの。一航海で四十二人。あなたは四十一人目。
+> quest.ship_games.play : games_wait
+- me
+Кольца на корме, шаффлборд наверху. Играть можно в любое время, но в субботу с половины двенадцатого я ещё и свищу.
+Rings aft, shuffleboard up top. You can play any time, but on Saturday from half past eleven I also blow the whistle.
+輪投げは船尾、シャッフルボードは上。いつでも遊べるけど、土曜の十一時半からは私が笛も吹くわよ。
+> quest.ship_games.award : games_award
+- me
+Юнга! Кольца — есть. Шаффлборд — есть. Вручаю при всех... Никого нет? Вручаю при море. Море, внимание: грамота!
+Ship's boy! Rings: done. Shuffleboard: done. I present, before everyone... Nobody here? I present before the sea. Sea, attention: a certificate!
+少年水夫！輪投げ、よし。シャッフルボード、よし。皆さんの前で授与……誰もいない？では海の前で授与します。海、注目。賞状！
+- me
+Сорок два. План выполнен. Знаешь, кто сорок второй? Я. Каждый рейс записываю себя последней, если не хватает. Сегодня хватило.
+Forty-two. Plan fulfilled. Know who the forty-second is? Me. Every voyage I write myself in last if I'm one short. Today I wasn't.
+四十二人。ノルマ達成。四十二人目は誰だと思う？私。足りないときは毎航海、最後に自分を書くの。今日は足りたわ。
+- me
+А большой диплом, с золотым кругом, дают в воскресенье тем, у кого в путёвке все отметки. Но это уже не радость, это упорство. За него отвечает Нонна Аркадьевна.
+The big diploma, the one with the gold disc, goes on Sunday to those with every stamp in their cruise card. But that's not joy, that's persistence. Nonna Arkadyevna is in charge of that.
+金の円のついた大きな証書は、日曜に、航海手帳のしるしを全部集めた人に出るの。でもそれは喜びじゃなくて根気。そっちの担当はノンナ・アルカージエヴナよ。
+
+# ------------------------------------------------------------------ 10. grandmother's suitcase
+@quest.ship_key.title
+Бабушкин чемодан
+Grandmother's Suitcase
+おばあちゃんのスーツケース
+@quest.ship_key.desc
+Сеня, десять лет, потерял ключ от бабушкиного чемодана. В чемодане подарок маме. Бабушка думает, что ключ у него в носке.
+Senya, aged ten, has lost the key of his grandmother's suitcase. Inside is the present for his mother. Grandmother thinks the key is in his sock.
+十歳のセーニャが、おばあちゃんのスーツケースの鍵をなくした。中にはお母さんへの贈りもの。おばあちゃんは、鍵は彼の靴下の中だと思っている。
+@quest.ship_key.secret.log
+На шлюпочной палубе, у шезлонгов, мальчик лет десяти что-то ищет под каждым по очереди и делает вид, что завязывает шнурок. Рядом в шезлонге его бабушка вяжет.
+On the boat deck, by the deck chairs, a boy of about ten is looking under each one in turn and pretending to tie his shoelace. Beside him his grandmother knits in a deck chair.
+ボート甲板のデッキチェアのあたりで、十歳くらいの男の子が、いすの下を順にのぞいては靴ひもを結ぶふりをしている。となりのデッキチェアでは、おばあさんが編み物をしている。
+@quest.ship_key.talk_senya.obj
+Поговорить с Сеней
+Talk to Senya
+セーニャと話す
+@quest.ship_key.search.log
+Ключ на зелёной тесёмке. В чемодане платок, бабушка Фаина вязала его маме два года, мама встречает в воскресенье. Сеня играл в пиратов: заглядывал под чехол шлюпки, шезлонги были островом, а под скамейкой на прогулочной палубе у него был клад. Посмотреть во всех трёх местах. Бабушке ни слова.
+The key is on a green tape. In the suitcase is a shawl, Granny Faina knitted it for his mother for two years, and his mother meets them on Sunday. Senya was playing pirates: he looked under the lifeboat's cover, the deck chairs were an island, and under a bench on the promenade deck he had his treasure. Look in all three places. Not a word to Granny.
+鍵には緑のひもがついている。スーツケースの中はショール。ファイーナおばあちゃんが二年かけてお母さんに編んだもので、日曜にお母さんが迎えに来る。セーニャは海賊ごっこをしていた。救命艇の覆いの下をのぞき、デッキチェアは島で、遊歩甲板のベンチの下が宝の隠し場所。三か所とも見る。おばあちゃんには内緒。
+@quest.ship_key.look_boat.obj
+Заглянуть под чехол шлюпки
+Look under the lifeboat's cover
+救命艇の覆いの下をのぞく
+@quest.ship_key.look_chair.obj
+Посмотреть в шезлонгах
+Look in the deck chairs
+デッキチェアを調べる
+@quest.ship_key.look_bench.obj
+Посмотреть под скамейкой на прогулочной палубе
+Look under a bench on the promenade deck
+遊歩甲板のベンチの下を見る
+@quest.ship_key.open.log
+В двух местах пусто, а в третьем, в самой щели, ключ на зелёной тесёмке и рядом деревянная сабля. Клад как клад. Отнести Сене, пока бабушка опять не спросила про носок.
+Nothing in two places, and in the third, right in the crack, a key on a green tape with a wooden sword beside it. A proper treasure. Take it to Senya before Granny asks about the sock again.
+二か所は空っぽ。三か所めのすき間の奥に、緑のひものついた鍵と、木の剣。ちゃんとした宝だ。おばあちゃんがまた靴下のことを聞く前に、セーニャに届ける。
+@quest.ship_key.bring_key.obj
+Отнести ключ Сене
+Take the key to Senya
+鍵をセーニャに届ける
+@quest.ship_key.done
+Ключ лежал там, где Сеня зарыл его как клад, чтобы не потерять. А у бабушки Фаины, оказывается, на шее с сорок шестого года запасной. Она молчала, чтобы он нашёл сам. На этом теплоходе все молчат очень по-доброму.
+The key lay where Senya had buried it as treasure, so as not to lose it. And Granny Faina, it turns out, has worn a spare round her neck since forty-six. She kept quiet so he would find it himself. On this ship everyone keeps quiet very kindly.
+鍵は、なくさないようにとセーニャが宝として埋めた場所にあった。そしてファイーナおばあちゃんは、四六年から合鍵を首にさげていたのだ。自分で見つけさせるために黙っていた。この船では、みんなとてもやさしく黙っている。
+
+[ship_senya]
+> quest.ship_key.secret : key_secret
+- me
+Ты умеешь хранить тайну? Только по-настоящему. Не как взрослые.
+Can you keep a secret? Properly, I mean. Not like grown-ups.
+秘密、守れる？ほんとのやつ。大人みたいなのじゃなくて。
+- me
+Я потерял ключ от бабушкиного чемодана. Она дала подержать. А там подарок маме: платок, бабушка его два года вязала. Мама встречает в воскресенье.
+I've lost the key of Granny's suitcase. She gave it me to hold. And the present for Mum is in there: a shawl, Granny knitted it for two years. Mum's meeting us on Sunday.
+おばあちゃんのスーツケースの鍵、なくしちゃった。持っててって言われたのに。中にママへのプレゼントがあるんだ。おばあちゃんが二年かけて編んだショール。日曜にママが迎えに来る。
+- me
+Я играл в пиратов. Под чехол шлюпки заглядывал. Шезлонги были остров. А под скамейкой на нижней палубе, где гуляют, у меня был клад.
+I was playing pirates. I looked under the lifeboat cover. The deck chairs were an island. And under a bench on the deck below, where people walk, I had my treasure.
+海賊ごっこしてたんだ。救命艇の覆いの下をのぞいた。デッキチェアは島。それと下の、みんなが散歩する甲板のベンチの下に、宝を隠してた。
+- me
+Ключ на зелёной тесёмке. Найди, а? Я бабушке сказал, что он у меня в носке.
+The key's on a green tape. Find it, will you? I told Granny it's in my sock.
+鍵には緑のひもがついてる。探してくれない？おばあちゃんには、靴下の中にあるって言っちゃった。
+> quest.ship_key.search,open_empty : key_wait
+- me
+Шлюпка, шезлонги, скамейка. Зелёная тесёмка. Бабушка уже два раза спросила про носок. Тише, она идёт. Мы говорим про чаек.
+Lifeboat, deck chairs, bench. Green tape. Granny's asked about the sock twice already. Shh, she's coming. We're talking about gulls.
+救命艇、デッキチェア、ベンチ。緑のひも。おばあちゃん、もう二回も靴下のこと聞いてきた。しっ、来る。ぼくたちはカモメの話をしてるんだ。
+> quest.ship_key.open : key_found
+- me
+Нашёл! Зелёная тесёмка! Где он был?
+You found it! The green tape! Where was it?
+あった！緑のひも！どこにあったの？
+- hero
+Там же, где твоя сабля.
+Same place as your sword.
+きみの剣と同じところ。
+- me
+Точно! Я же его зарыл как клад, чтобы не потерять. И забыл, где зарыл. Пираты всегда так.
+That's it! I buried it as treasure so I wouldn't lose it. And forgot where. Pirates always do.
+そうだ！なくさないように宝として埋めたんだ。で、どこに埋めたか忘れた。海賊っていつもそう。
+- me
+На. Стёклышко с Тюленьих камней, мне его матрос дал. Зелёное, как тесёмка. Самое ценное, что у меня есть. Кроме бабушки.
+Here. A bit of glass from the Seal Rocks, a sailor gave it me. Green, like the tape. The most valuable thing I've got. Except Granny.
+あげる。アザラシ岩のガラス。水夫さんにもらったんだ。ひもと同じ緑。ぼくのいちばんの宝物。おばあちゃんの次に。
+> quest.ship_key.done : key_done
+- me
+Бабушка открыла чемодан, посмотрела на платок и закрыла. Сказала: «На месте». А ключ опять дала мне. Я его теперь не зарываю. Я его записал.
+Granny opened the suitcase, looked at the shawl and shut it. She said: "All present." And she gave me the key again. I don't bury it now. I've written it down.
+おばあちゃんはスーツケースを開けて、ショールを見て、閉めた。「ちゃんとあるね」って。で、鍵はまたぼくに預けた。もう埋めないよ。メモしたんだ。
+
+[ship_faina]
+> aside.ship_key.search : key_knows
+- me
+Ключ ищете? Ищите, ищите. Запасной у меня на шее с сорок шестого года. Но мужчина должен хоть раз в жизни сам найти, что потерял.
+Looking for a key? Look, look. I've had the spare round my neck since forty-six. But a man ought to find what he's lost himself, at least once in his life.
+鍵を探してるのかい。探しなさい、探しなさい。合鍵なら四六年から私の首にさがってるよ。でも男は一生に一度くらい、なくした物を自分で見つけなきゃ。
+> quest.ship_key.done : key_done
+- me
+Платок дочке понравится. А Сенька теперь знает, что клады записывают. Спасибо, что не выдал. Я тоже не выдала.
+My daughter will like the shawl. And Senka knows now that treasure gets written down. Thank you for not giving him away. I didn't either.
+ショールは娘が喜ぶよ。セーニャも、宝は書きとめるものだって覚えた。あの子のことを黙っててくれてありがとう。私も黙ってたからね。
+
+# ------------------------------------------------------------------ 11. the captain's hour
+@quest.ship_captain.title
+Капитанский час
+The Captain's Hour
+船長の時間
+@quest.ship_captain.desc
+На «Полдне» всё, что делается, рано или поздно докладывают капитану. Про меня, кажется, тоже доложили.
+On the Polden everything that happens is reported to the captain sooner or later. I seem to have been reported too.
+ポルデニ号では、起きたことはいずれすべて船長に報告される。どうやら、ぼくのことも報告されたらしい。
+@quest.ship_captain.bridge.log
+Зоя принесла записку на бланке пассажирского помощника: «Вас приглашают на мостик. Не „можно зайти“, а приглашают. Н. А. Лисицкая. P. S. Причешитесь». Мостик на самом верху, за шлюпочной палубой. Капитан Громов на вахте с восьми до полудня и с четырёх до семи.
+Zoya brought a note on the purser's form: "You are invited to the bridge. Not 'may drop in': invited. N. A. Lisitskaya. P.S. Comb your hair." The bridge is at the very top, beyond the boat deck. Captain Gromov has the watch from eight till noon and from four till seven.
+ゾーヤが事務長の用箋に書かれたメモを持ってきた。「船橋にお招きします。『入ってもよい』ではなく『お招き』です。N・A・リシツカヤ。追伸、髪をとかすこと」。船橋はいちばん上、ボート甲板の先。グロモフ船長の当直は八時から正午と、四時から七時。
+@quest.ship_captain.talk_gromov.obj
+Подняться на мостик к капитану Громову
+Go up to Captain Gromov on the bridge
+船橋のグロモフ船長のところへ上がる
+@quest.ship_captain.wheel.log
+Капитан поставил меня справа от рулевого и велел взяться за штурвал. «Держите минуту. Минута на руле длиннее, чем на берегу». Штурвал посреди рубки, деревянный, тёплый от рук.
+The captain stood me to the right of the helmsman and told me to take the wheel. "Hold her for a minute. A minute at the wheel is longer than one ashore." The wheel is in the middle of the wheelhouse, wooden, warm from hands.
+船長はぼくを操舵手の右に立たせ、舵輪を握れと言った。「一分間保ちなさい。舵の一分は陸の一分より長い」。舵輪は操舵室の真ん中にあって、木製で、人の手で温かい。
+@quest.ship_captain.hold_wheel.obj
+Встать к штурвалу и держать курс
+Take the wheel and hold the course
+舵輪を握り、針路を保つ
+@quest.ship_captain.story.log
+Минута прошла. Она правда длиннее. Капитан смотрит на меня и, кажется, собирается что-то рассказать.
+The minute is up. It really is longer. The captain is looking at me and seems about to tell me something.
+一分が過ぎた。本当に長かった。船長がこちらを見ている。何か話してくれそうだ。
+@quest.ship_captain.hear_gromov.obj
+Выслушать капитана
+Hear the captain out
+船長の話を聞く
+@quest.ship_captain.done
+Капитан Громов сорок суток ждал во льдах четыре минуты солнца. Поэтому теплоход зовут «Полдень»: чтобы полдень был у него каждый день. Я держал штурвал одну минуту. У меня теперь его бинокль. В него хорошо видно то, чего ждёшь.
+Captain Gromov waited forty days in the ice for four minutes of sun. That is why the ship is called Polden, "noon": so that he has a noon every day. I held the wheel for one minute. I have his binoculars now. They show you well the thing you're waiting for.
+グロモフ船長は氷の中で四十日、四分間の太陽を待った。だから船の名はポルデニ、「正午」。毎日、正午が自分のもとにあるように。ぼくは一分間、舵を握った。今は船長の双眼鏡がぼくのところにある。待っているものが、よく見える双眼鏡だ。
+
+[ship_nonna]
+> aside.ship_captain.bridge,wheel,story : cap_invite
+- me
+Записку получил? «Можно зайти» и «приглашают» — разные вещи, запомни на всю жизнь.
+You got the note? "May drop in" and "invited" are different things, remember it all your life.
+メモは受け取った？「入ってもいい」と「お招き」は別物。一生覚えておきなさい。
+- me
+Арсений Павлович сказал: «Тот юноша, про которого вы мне всё время докладываете». Я докладываю не всё время. Я докладываю по существу.
+Arseny Pavlovich said: "That young man you keep reporting to me about." I do not keep reporting. I report to the point.
+アルセーニー・パーヴロヴィチは「あなたがしょっちゅう報告してくる例の少年」と言ったの。しょっちゅうじゃありません。要点を報告しているだけ。
+- me
+Мостик на самом верху. Капитан на вахте с восьми до двенадцати и с четырёх до семи. Причешись.
+The bridge is at the very top. The captain has the watch from eight to twelve and from four to seven. Comb your hair.
+船橋はいちばん上。船長の当直は八時から十二時と、四時から七時。髪をとかして行きなさい。
+> aside.ship_captain.bridge,wheel,story.again : cap_hint
+- me
+Капитан два раза не приглашает. Он один раз приглашает и потом помнит.
+The captain doesn't invite twice. He invites once and then remembers.
+船長は二度は招かないわ。一度招いて、あとは覚えている人よ。
+> quest.ship_captain.done : cap_done
+- me
+Бинокль отдал? Свой? Хм. Он его даже мне подержать не давал. Береги. И причёсывайся: с таким биноклем уже нельзя ходить как попало.
+He gave you the binoculars? His own? Hm. He never let even me hold them. Take care of them. And comb your hair: with binoculars like that you can't go about any old how.
+双眼鏡をくれたの？ご自分のを？ふむ。私にだって持たせてくれなかったのに。大事になさい。髪もとかすこと。あんな双眼鏡をさげて、だらしない格好はできないわよ。
+
+[ship_gromov]
+> quest.ship_captain.bridge : cap_bridge
+- me
+Проходите. Встаньте здесь, справа от рулевого. Слева стоит тот, кто отвечает.
+Come in. Stand here, to the right of the helmsman. On the left stands the one who answers for it.
+入りなさい。ここ、操舵手の右に立って。左は、責任を負う者の場所だ。
+- me
+Мне доложили, что на моём судне завёлся человек, который делает больше, чем написано в билете. Таких я обязан знать в лицо.
+It has been reported to me that there is someone on my ship doing more than his ticket says. Such people I am obliged to know by sight.
+私の船に、切符に書いてある以上のことをする人間がいる、と報告があった。そういう人の顔は、知っておく義務がある。
+- me
+Возьмитесь за штурвал. Не бойтесь, рулевой рядом. Держите минуту. Минута на руле длиннее, чем на берегу.
+Take the wheel. Don't be afraid, the helmsman is beside you. Hold her for a minute. A minute at the wheel is longer than one ashore.
+舵輪を握りなさい。こわがらなくていい、操舵手がそばにいる。一分間保ちなさい。舵の一分は陸の一分より長い。
+> quest.ship_captain.wheel : cap_wheel
+- me
+Штурвал перед вами. Смотрите не на него, а вперёд. Судно идёт туда, куда смотрит рулевой.
+The wheel is in front of you. Don't look at it, look ahead. A ship goes where her helmsman looks.
+舵輪は目の前だ。それを見るのではなく、前を見なさい。船は、操舵手の見ているほうへ進む。
+> quest.ship_captain.story : cap_story
+- me
+Минута. Курс ровный. Вахтенный, запишите: на руле стоял пассажир, замечаний нет.
+One minute. Course steady. Officer of the watch, enter it: a passenger stood at the wheel, no remarks.
+一分。針路安定。当直、記入。乗客が舵に立った、特記事項なし。
+- me
+Вы не спросили, почему «Полдень». Все спрашивают. Я двадцать лет ходил во льдах. Там зимой полудня нет: солнце не встаёт, и часы показывают двенадцать просто из вежливости.
+You haven't asked why "Polden", noon. Everyone asks. I sailed twenty years in the ice. In winter there is no noon there: the sun doesn't rise, and the clock shows twelve out of mere politeness.
+なぜ「ポルデニ(正午)」かと、君は聞かなかったな。みんな聞くのだが。私は二十年、氷の海を走った。あそこの冬に正午はない。太陽は昇らず、時計はただ礼儀で十二時をさす。
+- me
+Однажды нас зажало на сорок суток. На сорок первые, в полдень, над торосами показался край солнца. На четыре минуты. Вся команда стояла на палубе без шапок. Никто не командовал.
+Once we were beset for forty days. On the forty-first, at noon, the rim of the sun showed over the ice ridges. For four minutes. The whole crew stood on deck bareheaded. Nobody gave the order.
+あるとき四十日間、氷に閉じこめられた。四十一日目の正午、氷丘の上に太陽の縁が見えた。四分間だ。乗組員は全員、帽子を取って甲板に立っていた。誰も号令をかけなかった。
+- me
+Когда мне дали это судно и спросили, как назвать, я сказал: «Полдень». Чтобы он у меня был каждый день. С тех пор я его ни разу не проспал.
+When they gave me this ship and asked what to call her, I said: Polden. So that I should have a noon every day. I have not slept through one since.
+この船を任されて名前を聞かれたとき、「ポルデニ」と答えた。毎日、正午が私のもとにあるように。それ以来、一度も寝過ごしたことはない。
+- me
+Возьмите бинокль. Он был там со мной. В него хорошо видно то, чего ждёшь.
+Take these binoculars. They were there with me. They show you well the thing you are waiting for.
+この双眼鏡を持っていきなさい。あそこで私と一緒だった。待っているものが、よく見える。
+> quest.ship_captain.done : cap_done
+- me
+В полдень поднимитесь на палубу. Просто постойте. Шапку можно не снимать, мы не во льдах. Но я снимаю.
+At noon come up on deck. Just stand a while. You needn't take your cap off, we're not in the ice. But I take mine off.
+正午になったら甲板に上がりなさい。ただ立っていればいい。帽子は取らなくていい、ここは氷の海ではない。だが私は取る。

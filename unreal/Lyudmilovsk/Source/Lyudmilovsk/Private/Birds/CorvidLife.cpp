@@ -1,5 +1,6 @@
 #include "Birds/CorvidLife.h"
 
+#include "Cruise/LyudCruise.h"
 #include "NpcDialogue.h"
 #include "BirdCorvid.h"
 #include "BirdSim.h"
@@ -275,7 +276,8 @@ void UCorvidLifeSubsystem::UpdatePlayer()
 			Take(Best);
 			Best = -1;
 		}
-		if (PC->WasInputKeyJustPressed(EKeys::G))
+		// not aboard the motor ship: there G at the stern rail is for the gulls (ULyudCruiseScenery), no pile on the deck
+		if (PC->WasInputKeyJustPressed(EKeys::G) && !ULyudCruise::IsHeroAboard(this))
 		{
 			ThrowFeed(true);
 		}

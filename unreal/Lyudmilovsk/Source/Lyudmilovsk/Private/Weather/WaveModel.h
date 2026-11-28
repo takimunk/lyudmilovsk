@@ -92,14 +92,38 @@ namespace LyudWeather
 		static constexpr double SurfRate = 0.16;
 
 		/** Where the water particle that rests at (X0, Y0) is at time T: offset from rest, m. */
-		void Displace(double X0, double Y0, double T, float DepthM, float Out[3]) const;
-		/** The surface above the world point (X, Y): height, normal and water velocity. */
-		FSeaSurface SurfaceAt(double X, double Y, double T, float DepthM) const;
-		float HeightAt(double X, double Y, double T, float DepthM) const { return SurfaceAt(X, Y, T, DepthM).Height; }
+		void Displace(double X0, double Y0, double T, float DepthM, float Out[3], float Calm = 1.f) const;
+		/** The surface above the world point (X, Y): height, normal and water velocity. Calm (FCalmFootprint::At, 1 =
+		 *  the open sea) scales every train and the breakers, as the material's Lyud.Calm does. */
+		FSeaSurface SurfaceAt(double X, double Y, double T, float DepthM, float Calm = 1.f) const;
+		float HeightAt(double X, double Y, double T, float DepthM, float Calm = 1.f) const { return SurfaceAt(X, Y, T, DepthM, Calm).Height; }
+		/** The sea-state wind (m/s) at which this field's Hs reaches HsM (bisection on a copy: call it rarely). */
+		float WindForHs(float HsM) const;
 		/** Smallest Jacobian of the horizontal displacement found at (X0, Y0), for checking crests never fold. */
 		float Jacobian(double X0, double Y0, double T) const;
 		/** The loop's clock for a time in seconds. */
 		double Wrap(double Seconds) const;
+	};
+
+	/**
+	 * A patch of sea kept calm: an oriented box in world metres (a hull that stands still in the water, docs/ship.md)
+	 * inside which the waves keep only Inner of their height, relaxing to the open sea over Edge metres outside it.
+	 * The depth is NOT changed, so no surf forms round it. The material's Lyud.Calm (tools/sea/sea_hlsl.py) is the
+	 * same function of the same eight numbers: keep both in step. HalfLen <= 0 = no footprint: At() is exactly 1.
+	 */
+	struct FCalmFootprint
+	{
+		double CX = 0.0, CY = 0.0;        // centre, m
+		double DirX = 1.0, DirY = 0.0;    // the long axis (unit)
+		double HalfLen = 0.0, HalfWid = 0.0, Edge = 10.0;   // m
+		float Inner = 0.f;                // share of the waves' height left inside, 0..1
+		bool IsSet() const { return HalfLen > 0.0; }
+		/** Signed distance to the box's edge, m (negative inside). */
+		double Distance(double X, double Y) const;
+		/** 1 = the open sea (exactly 1 at Edge and beyond, and when not set), Inner inside the box. */
+		float At(double X, double Y) const;
+		/** The Inner that keeps the surface within about KeepM of the level in a sea of HsM. */
+		static float InnerFor(float HsM, float KeepM);
 	};
 
 	/** Angular frequency of a water wave of wavenumber K (gravity + surface tension), rad/s. */

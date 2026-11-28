@@ -244,6 +244,48 @@ CAST = {
 }
 
 
+# the motor ship's people (Content/PeopleData/ship_people.json, tools/ship/cruise_people.py; docs/ship.md): the crew's
+# uniforms and the band's black. The wardrobe has no striped vest, so the bosun's and the helmsman's is a pale blue
+# work top; the tourists and the entertainer are drawn like anybody. tints: garment:slot -> colour, over the drawn ones.
+NAVY, WHITE, BLACK = [0.07, 0.09, 0.17], [0.93, 0.93, 0.91], [0.05, 0.05, 0.06]
+SHIP_CAST = {
+    # the captain: a dark jacket, a white flat cap, a short grey beard
+    "ship_gromov": dict(clothes=["male_elegantsuit01", "shoes03"], tints={"male_elegantsuit01:top": NAVY},
+                        acc=["flat_cap", "short_beard"], acc_tints={"flat_cap": WHITE}, hair_color="grey"),
+    # the mate: the same dark jacket and white cap
+    "ship_vais": dict(clothes=["female_elegantsuit01", "shoes03"], tints={"female_elegantsuit01:top": NAVY, "female_elegantsuit01:bottom": NAVY},
+                      acc=["flat_cap"], acc_tints={"flat_cap": WHITE}),
+    # the bosun and the helmsman: a sailor's pale blue top over dark trousers (a striped vest when the wardrobe has one)
+    "ship_taras": dict(clothes=["male_casualsuit05", "punkduck_winter_boots"],
+                       tints={"male_casualsuit05:top": [0.72, 0.80, 0.90], "male_casualsuit05:bottom": NAVY}, acc=["mustache"]),
+    "ship_vitya": dict(clothes=["male_casualsuit05", "shoes02"],
+                       tints={"male_casualsuit05:top": [0.72, 0.80, 0.90], "male_casualsuit05:bottom": NAVY}, acc=[]),
+    # the purser: a dark suit
+    "ship_nonna": dict(clothes=["female_elegantsuit01", "shoes01"], tints={"female_elegantsuit01:top": NAVY, "female_elegantsuit01:bottom": NAVY},
+                       acc=["glasses:rect"]),
+    # the barman and the steward: a white jacket over black
+    "ship_givi": dict(clothes=["male_casualsuit03", "shoes03"], tints={"male_casualsuit03:top": WHITE, "male_casualsuit03:bottom": BLACK},
+                      acc=["mustache"]),
+    "ship_zoya": dict(clothes=["female_elegantsuit01", "shoes01"], tints={"female_elegantsuit01:top": WHITE, "female_elegantsuit01:bottom": BLACK},
+                      acc=["waist_apron"], acc_tints={"waist_apron": WHITE}),
+    # the cook: whites, a white apron and a headscarf
+    "ship_pasha": dict(clothes=["male_worksuit01", "shoes02"], tints={"male_worksuit01:top": WHITE, "male_worksuit01:bottom": [0.80, 0.80, 0.78]},
+                       acc=["headscarf", "bib_apron"], acc_tints={"headscarf": WHITE, "bib_apron": WHITE}),
+    # the radio operator: a dark jacket, glasses
+    "ship_lev": dict(clothes=["male_casualsuit03", "shoes03"], tints={"male_casualsuit03:top": NAVY, "male_casualsuit03:bottom": NAVY},
+                     acc=["glasses:round"]),
+    # the engineer: dark blue overalls, a knitted cap
+    "ship_einar": dict(clothes=["male_worksuit01", "punkduck_winter_boots"],
+                       tints={"male_worksuit01:top": [0.20, 0.27, 0.40], "male_worksuit01:bottom": [0.13, 0.17, 0.27]},
+                       acc=["knit_beanie", "short_beard"], acc_tints={"knit_beanie": NAVY}),
+    # the quartet: black
+    "ship_blum": dict(clothes=["male_elegantsuit01", "shoes04"], tints={"male_elegantsuit01:top": BLACK}, acc=["glasses:round"]),
+    "ship_otar": dict(clothes=["male_elegantsuit01", "shoes04"], tints={"male_elegantsuit01:top": BLACK}, acc=["mustache"]),
+    "ship_kostya": dict(clothes=["male_elegantsuit01", "shoes04"], tints={"male_elegantsuit01:top": BLACK}, acc=[]),
+    "ship_asta": dict(clothes=["mindfront_f_dress_01", "shoes01"], tints={"mindfront_f_dress_01:top": BLACK}, acc=[]),
+}
+
+
 def wearable(name, sex, age, styles):
     g = W.GARMENTS[name]
     return (g["sex"] in ("u", sex)) and g["ages"][0] <= age <= g["ages"][1] and any(s in g["styles"] for s in styles)
@@ -460,6 +502,7 @@ def make_look(person, seed, names, parents_looks=None, fixed=None):
             t = tint_for(rnd, g, slot, style, extras, age)
             if t:
                 tints["%s:%s" % (g, slot)] = t
+    tints.update(fixed.get("tints", {}))                      # a uniform's colours (SHIP_CAST)
     acc = list(extras.get("acc", []))
     for a, p in extras.get("acc_p", []):
         if rnd.random() < p:
@@ -598,6 +641,17 @@ def make_cast(people, seed, names):
     return looks
 
 
+def make_ship(people, seed, names):
+    """Looks for the motor ship's crew, band and tourists (ship_people.json: mesh Town/R_<key>); the cruising
+    townsfolk's twins wear the townsperson's own model and the patches are nobody."""
+    looks = {}
+    for p in people:
+        if p.get("patch") or p.get("twin_of") or p.get("mesh") != "Town/" + model_name(p["key"]):
+            continue
+        looks[p["key"]] = make_look(p, seed, names, None, SHIP_CAST.get(p["key"]))
+    return looks
+
+
 def game_model(look):
     """The model as the game names it: Town/R_<key> for a townsperson or a stand-in, the people.json body for the CAST."""
     return look["model"] if look["key"] in CAST else "Town/" + look["model"]
@@ -624,6 +678,8 @@ def main():
     ap.add_argument("--names", default=os.path.join(ROOT, "tools", "town", "names.json"))
     ap.add_argument("--people", nargs="?", default=os.path.join(PEOPLE, "people.json"), const=os.path.join(PEOPLE, "people.json"),
                     help="people.json (read always): its CAST and the people whose mesh is Town/R_<key> get looks too")
+    ap.add_argument("--ship", default=os.path.join(PEOPLE, "ship_people.json"),
+                    help="ship_people.json (read when there): the motor ship's crew, band and tourists get looks too")
     ap.add_argument("--ref", help="read townsfolk.json and names.json from this git ref (e.g. origin/town-life)")
     ap.add_argument("--seed", type=int, default=SEED)
     ap.add_argument("--out", default=os.path.join(HERE, "cache", "looks.json"))
@@ -639,12 +695,15 @@ def main():
     names = load_names(nm)
     looks = make_all(people, a.seed, names)
     looks.update(make_cast(load_json(a.people)["people"], a.seed, names))
+    if os.path.isfile(a.ship):
+        looks.update(make_ship(load_json(a.ship)["people"], a.seed, names))
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:
         json.dump({"seed": a.seed, "version": VERSION, "looks": looks}, f, indent=1, sort_keys=True)
     game = {"_doc": "Each townsperson's own model, made by blender/residents (docs/residents.md). tools/town/town_life.py "
                     "copies it into townsfolk.json 'body'; the pool model stays as 'mesh' until the model is imported. "
-                    "Keys without t_ are named people of people.json (looks.py CAST): their model is their 'body'.",
+                    "Keys without t_ are named people of people.json (looks.py CAST): their model is their 'body'. "
+                    "Keys ship_* are the motor ship's people (ship_people.json): their model is their 'mesh'.",
             "seed": a.seed, "version": VERSION,
             "people": {k: {"model": game_model(lk), "hash": lk["hash"]} for k, lk in sorted(looks.items())}}
     with open(a.game_out, "w", encoding="utf-8") as f:

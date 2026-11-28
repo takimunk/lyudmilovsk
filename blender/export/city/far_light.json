@@ -1,0 +1,659 @@
+{
+ "type": "far_light",
+ "info": {
+  "name_ru": "Маяк Дальний",
+  "name_en": "The Far Light",
+  "style": "sea mark",
+  "use": "public",
+  "inspired_by": "rock lighthouses of the Baltic and the White Sea: a banded tower, a keeper's hut, a jetty on the lee side"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -110.0,
+   0.0
+  ],
+  [
+   112.0,
+   0.0
+  ],
+  [
+   112.0,
+   144.0
+  ],
+  [
+   -110.0,
+   144.0
+  ]
+ ],
+ "height": 35.2,
+ "entrances": [],
+ "spots": [
+  {
+   "id": "gallery_stand",
+   "kind": "stand",
+   "pos": [
+    6.8,
+    76.8,
+    28.45
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "farlight_gallery",
+   "kind": "mark",
+   "pos": [
+    6.8,
+    76.8,
+    28.45
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "staff_keeper",
+   "kind": "work",
+   "pos": [
+    -22.145,
+    76.998,
+    3.95
+   ],
+   "yaw": 348.0
+  },
+  {
+   "id": "keeper_bed",
+   "kind": "bed",
+   "pos": [
+    -19.106,
+    79.535,
+    3.95
+   ],
+   "yaw": 348.0
+  },
+  {
+   "id": "farlight_hut",
+   "kind": "mark",
+   "pos": [
+    -22.873,
+    82.108,
+    3.9
+   ],
+   "yaw": 348.0
+  },
+  {
+   "id": "hut_bench_1",
+   "kind": "seat",
+   "pos": [
+    -20.776,
+    81.378,
+    3.9
+   ],
+   "yaw": 168.0
+  },
+  {
+   "id": "hut_bench_2",
+   "kind": "seat",
+   "pos": [
+    -19.993,
+    81.545,
+    3.9
+   ],
+   "yaw": 168.0
+  },
+  {
+   "id": "farlight_jetty",
+   "kind": "mark",
+   "pos": [
+    19.911,
+    124.4,
+    0.8
+   ],
+   "yaw": 15.5
+  },
+  {
+   "id": "jetty_stand_1",
+   "kind": "stand",
+   "pos": [
+    21.922,
+    132.761,
+    0.8
+   ],
+   "yaw": 195.5
+  },
+  {
+   "id": "jetty_stand_2",
+   "kind": "stand",
+   "pos": [
+    17.518,
+    116.534,
+    0.8
+   ],
+   "yaw": 285.5
+  },
+  {
+   "id": "bell_stand",
+   "kind": "stand",
+   "pos": [
+    45.7,
+    65.4,
+    3.5
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "patch_stand",
+   "kind": "stand",
+   "pos": [
+    -33.6,
+    88.5,
+    3.1
+   ],
+   "yaw": 270.0
+  },
+  {
+   "id": "ashore_1",
+   "kind": "stand",
+   "pos": [
+    10.0,
+    88.0,
+    4.073
+   ],
+   "yaw": 200.0
+  },
+  {
+   "id": "ashore_2",
+   "kind": "stand",
+   "pos": [
+    3.5,
+    80.5,
+    5.696
+   ],
+   "yaw": 20.0
+  },
+  {
+   "id": "ashore_3",
+   "kind": "stand",
+   "pos": [
+    -12.0,
+    84.6,
+    4.227
+   ],
+   "yaw": 180.0
+  },
+  {
+   "id": "ashore_4",
+   "kind": "stand",
+   "pos": [
+    -17.5,
+    85.5,
+    3.763
+   ],
+   "yaw": 160.0
+  },
+  {
+   "id": "ashore_5",
+   "kind": "stand",
+   "pos": [
+    22.0,
+    69.8,
+    4.729
+   ],
+   "yaw": 0.0
+  },
+  {
+   "id": "ashore_6",
+   "kind": "stand",
+   "pos": [
+    36.0,
+    64.4,
+    3.372
+   ],
+   "yaw": 180.0
+  }
+ ],
+ "lamps": [
+  {
+   "pos": [
+    7.2,
+    75.0,
+    8.3
+   ],
+   "lumens": 500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    6.9,
+    73.1,
+    27.1
+   ],
+   "lumens": 500,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 5.0
+  },
+  {
+   "pos": [
+    -22.0,
+    78.0,
+    6.3
+   ],
+   "lumens": 700,
+   "colour": "#FFD9A8",
+   "kind": "public",
+   "radius": 6.0
+  }
+ ],
+ "things": [
+  {
+   "id": "memorial_plate",
+   "kind": "board",
+   "pos": [
+    2.35,
+    73.184,
+    7.2
+   ],
+   "yaw": 282.6,
+   "props": {}
+  },
+  {
+   "id": "tower_stair_foot",
+   "kind": "door",
+   "pos": [
+    7.679,
+    73.734,
+    6.8
+   ],
+   "yaw": 261.0,
+   "props": {
+    "to": "watch_stair_top"
+   }
+  },
+  {
+   "id": "watch_stair_top",
+   "kind": "door",
+   "pos": [
+    7.3,
+    75.2,
+    25.4
+   ],
+   "yaw": 315.0,
+   "props": {
+    "to": "tower_stair_foot"
+   }
+  },
+  {
+   "id": "watch_ladder",
+   "kind": "door",
+   "pos": [
+    4.5,
+    75.0,
+    25.5
+   ],
+   "yaw": 59.0,
+   "props": {
+    "to": "gallery_hatch"
+   }
+  },
+  {
+   "id": "lens_clockwork",
+   "kind": "machine",
+   "pos": [
+    6.0,
+    72.5,
+    25.3
+   ],
+   "yaw": 180.0,
+   "props": {
+    "what": "clockwork"
+   }
+  },
+  {
+   "id": "watch_desk",
+   "kind": "board",
+   "pos": [
+    7.55,
+    73.2,
+    25.2
+   ],
+   "yaw": 243.4,
+   "props": {}
+  },
+  {
+   "id": "gallery_hatch",
+   "kind": "door",
+   "pos": [
+    3.25,
+    73.6,
+    29.35
+   ],
+   "yaw": 90.0,
+   "props": {
+    "to": "watch_ladder"
+   }
+  },
+  {
+   "id": "gallery_view",
+   "kind": "board",
+   "pos": [
+    6.6,
+    77.5,
+    29.55
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "sea_view"
+   }
+  },
+  {
+   "id": "lantern",
+   "kind": "board",
+   "pos": [
+    8.0,
+    73.8,
+    29.85
+   ],
+   "yaw": 90.0,
+   "props": {}
+  },
+  {
+   "id": "gallery_north",
+   "kind": "board",
+   "pos": [
+    6.3,
+    70.5,
+    29.55
+   ],
+   "yaw": 180.0,
+   "props": {}
+  },
+  {
+   "id": "keeper_table",
+   "kind": "counter",
+   "pos": [
+    -21.544,
+    76.819,
+    4.85
+   ],
+   "yaw": 168.0,
+   "props": {
+    "role": "keeper",
+    "service": "farlight"
+   }
+  },
+  {
+   "id": "log_book",
+   "kind": "shelf",
+   "pos": [
+    -21.614,
+    76.426,
+    4.77
+   ],
+   "yaw": 168.0,
+   "props": {
+    "topic": "farlight_log"
+   }
+  },
+  {
+   "id": "radio_set",
+   "kind": "machine",
+   "pos": [
+    -25.134,
+    76.874,
+    4.95
+   ],
+   "yaw": 78.0,
+   "props": {
+    "what": "radio"
+   }
+  },
+  {
+   "id": "chess_card",
+   "kind": "board",
+   "pos": [
+    -25.482,
+    76.779,
+    5.7
+   ],
+   "yaw": 78.0,
+   "props": {
+    "topic": "chess"
+   }
+  },
+  {
+   "id": "keeper_stove",
+   "kind": "machine",
+   "pos": [
+    -20.571,
+    78.253,
+    4.55
+   ],
+   "yaw": 258.0,
+   "props": {
+    "what": "stove"
+   }
+  },
+  {
+   "id": "keeper_bunk",
+   "kind": "board",
+   "pos": [
+    -19.595,
+    79.431,
+    4.45
+   ],
+   "yaw": 258.0,
+   "props": {}
+  },
+  {
+   "id": "tins_shelf",
+   "kind": "shelf",
+   "pos": [
+    -24.599,
+    79.646,
+    5.4
+   ],
+   "yaw": 348.0,
+   "props": {
+    "topic": "tins"
+   }
+  },
+  {
+   "id": "barometer",
+   "kind": "machine",
+   "pos": [
+    -21.39,
+    80.42,
+    5.55
+   ],
+   "yaw": 348.0,
+   "props": {
+    "what": "barometer"
+   }
+  },
+  {
+   "id": "drying_nets",
+   "kind": "board",
+   "pos": [
+    -19.776,
+    80.763,
+    5.25
+   ],
+   "yaw": 348.0,
+   "props": {}
+  },
+  {
+   "id": "cat_bowl",
+   "kind": "board",
+   "pos": [
+    -21.098,
+    78.805,
+    4.05
+   ],
+   "yaw": 348.0,
+   "props": {}
+  },
+  {
+   "id": "carved_birds",
+   "kind": "shelf",
+   "pos": [
+    -23.804,
+    75.183,
+    4.97
+   ],
+   "yaw": 168.0,
+   "props": {
+    "topic": "birds"
+   }
+  },
+  {
+   "id": "hut_bench",
+   "kind": "seat",
+   "pos": [
+    -20.384,
+    81.462,
+    4.35
+   ],
+   "yaw": 168.0,
+   "props": {
+    "height": 0.45
+   }
+  },
+  {
+   "id": "rain_tank",
+   "kind": "machine",
+   "pos": [
+    -16.116,
+    78.024,
+    4.5
+   ],
+   "yaw": 78.0,
+   "props": {
+    "what": "tap"
+   }
+  },
+  {
+   "id": "jetty_gate",
+   "kind": "door",
+   "pos": [
+    22.604,
+    128.305,
+    1.8
+   ],
+   "yaw": 285.5,
+   "props": {
+    "to": "P-SHIP/launch_ashore"
+   }
+  },
+  {
+   "id": "jetty_bollard",
+   "kind": "board",
+   "pos": [
+    24.06,
+    134.106,
+    1.2
+   ],
+   "yaw": 285.5,
+   "props": {}
+  },
+  {
+   "id": "fog_bell",
+   "kind": "machine",
+   "pos": [
+    46.0,
+    64.1,
+    5.1
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "bell"
+   }
+  },
+  {
+   "id": "bell_clockwork",
+   "kind": "machine",
+   "pos": [
+    47.15,
+    64.3,
+    4.3
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "clockwork"
+   }
+  },
+  {
+   "id": "oil_store",
+   "kind": "board",
+   "pos": [
+    30.534,
+    67.466,
+    4.3
+   ],
+   "yaw": 200.0,
+   "props": {}
+  },
+  {
+   "id": "weather_box",
+   "kind": "board",
+   "pos": [
+    -9.5,
+    85.24,
+    5.276
+   ],
+   "yaw": 0.0,
+   "props": {
+    "topic": "weather"
+   }
+  },
+  {
+   "id": "flagpole",
+   "kind": "board",
+   "pos": [
+    -34.0,
+    86.3,
+    4.459
+   ],
+   "yaw": 180.0,
+   "props": {}
+  },
+  {
+   "id": "veg_patch",
+   "kind": "board",
+   "pos": [
+    -34.55,
+    88.5,
+    3.8
+   ],
+   "yaw": 90.0,
+   "props": {}
+  },
+  {
+   "id": "bird_ledge",
+   "kind": "board",
+   "pos": [
+    49.5,
+    65.0,
+    4.287
+   ],
+   "yaw": 90.0,
+   "props": {
+    "topic": "birds"
+   }
+  }
+ ],
+ "flats": [],
+ "windows": [],
+ "light_tex": 64,
+ "notes": [
+  "the island's chart point is the plot's map point; kit frame -> building frame: (kx, ky + 72, kz - 1.5)",
+  "must match blender/ship/seascape_kit.py lighthouse() (the far-view copy swapped for this one at anchor)"
+ ],
+ "dress": [],
+ "tris": {
+  "shell": 12474,
+  "detail": 3328,
+  "windows": 0,
+  "dress": 0
+ }
+}

@@ -8,6 +8,7 @@
 #   tools/peoplesim/run.sh winter                winter play on the town (also part of test): the rink, the ice hole, the banya
 #   tools/peoplesim/run.sh days [n] [off]        the town over n days (7): diaries, how alike the days are, colds, plans, errands (town_days.h; off: as before)
 #   tools/peoplesim/run.sh bookclub              the library's book club on Thursday evenings (book_club_people.h)
+#   tools/peoplesim/run.sh cruise                the motor ship's people over a voyage: watches, meals, berths, the twins (cruise_people.h)
 #   tools/peoplesim/run.sh street                the street's everyday life: the barrel and the cart, the dawn, the yards, the seasons (street_people.h)
 #   tools/peoplesim/run.sh dances                the dances at the Vaults on Friday and Saturday evenings (dance_people.h)
 #   tools/peoplesim/run.sh promenade             the summer evenings: dances on the square, the Sunday band, the evening walk (promenade_people.h)

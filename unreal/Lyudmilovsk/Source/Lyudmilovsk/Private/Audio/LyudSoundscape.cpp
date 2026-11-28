@@ -335,6 +335,13 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 		{ TEXT("Winter"), TEXT("ice_fall") }, { TEXT("Winter"), TEXT("banya_ladle") }, { TEXT("Winter"), TEXT("venik_swish") },
 		{ TEXT("Winter"), TEXT("banya_door") }, { TEXT("Winter"), TEXT("snow_scoop") }, { TEXT("Winter"), TEXT("snowball_throw") },
 		{ TEXT("Winter"), TEXT("snowball_hit") }, { TEXT("Winter"), TEXT("snow_pat") },
+		// the motor ship (ULyudCruiseScenery, the ship's acts and room tone; tools/ship/ship_sounds.py): the diesel's hum, the
+		// wash at the stem, the horn (one long, three long), the bell, the anchor's chain, wind in the rigging, the joinery's
+		// creak, the engine gallery's roar, the telegraph, gulls over food
+		{ TEXT("Ship"), TEXT("ship_hum") }, { TEXT("Ship"), TEXT("ship_wash") }, { TEXT("Ship"), TEXT("ship_horn") },
+		{ TEXT("Ship"), TEXT("ship_horn3") }, { TEXT("Ship"), TEXT("ship_bell") }, { TEXT("Ship"), TEXT("ship_chain") },
+		{ TEXT("Ship"), TEXT("ship_rigging") }, { TEXT("Ship"), TEXT("ship_creak") }, { TEXT("Ship"), TEXT("ship_engine") },
+		{ TEXT("Ship"), TEXT("ship_telegraph") }, { TEXT("Ship"), TEXT("gulls_feed") },
 	};
 	for (const auto& G : Groups)
 	{
@@ -709,7 +716,7 @@ void ULyudSoundscapeSubsystem::UpdateBed()
 
 	if (bHaveShore)
 	{
-		P.SurfHeight = SurfHeight;
+		P.SurfHeight = bOpenSea ? 0.f : SurfHeight;      // aboard the motor ship: no beach breaks at her side
 		P.SurfPeriod = SurfPeriod;
 		P.SurfDistance = float(FVector::Dist(Shore, Listener)) / 100.f;
 		P.SurfPan = PanOf(Shore);

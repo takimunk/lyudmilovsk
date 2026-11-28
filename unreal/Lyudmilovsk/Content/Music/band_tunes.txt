@@ -1,0 +1,326 @@
+# The lead sheets of the motor ship's quartet «Полуденный квартет» (docs/ship.md "The band"; the format is described at the
+# top of Private/Music/ShipBandModel.h; checked by tools/bandsim/run.sh). The band is synthesised from these as it plays.
+#
+# The house rule (as in tunes.txt): every MELODY here is free: traditional, or its composer died in 1955 or earlier.
+# Nothing is sung, so lyricists do not matter. Each block names the composer, the year of death (0: traditional or
+# anonymous and older) and where the tune comes from. The notes were written out from memory, not copied from an edition:
+# "sure" marks the ones known note for note, "to check" the ones a musician should compare with a printed score
+# (the harmony is right, a turn of the melody may be simplified). The arrangements are our own.
+#
+# Titles: band.tune.<id>.title (Content/Localization/shipband/strings_*.json).
+
+[saints]
+# sure
+composer = traditional
+died = 0
+source = «When the Saints Go Marching In», American spiritual, in print by 1896; the New Orleans bands' closing number
+bpm = 184
+feel = swing
+key = F
+reed = clarinet
+plan = head head solo solo piano fours fours out out
+pickup = F4 A4 Bb4
+form = A
+A: notes = C5/4 | r/1 F4 A4 Bb4 | C5/4 | r/1 F4 A4 Bb4 | C5/2 A4/2 | F4/2 A4/2 | G4/4 | r/1 A4 A4 G4
+A: notes = F4/3 F4/1 | A4/2 C5/2 | C5/2 Bb4/2 | r/2 A4 Bb4 | C5/2 A4/2 | F4/2 G4/2 | F4/4 | r/4
+A: chords = F/4 F/4 F/4 F/4 F/4 F/4 C7/4 C7/4 F/4 F7/4 Bb/4 Bbm/4 F/2 C7/2 F/2 C7/2 F/4 F/2 C7/2
+
+[entertainer]
+# sure (the first strain; written with every value doubled: the rag's sixteenths are eighths here)
+composer = Scott Joplin
+died = 1917
+source = «The Entertainer. A Rag Time Two Step», John Stark & Son, St. Louis, 1902
+bpm = 152
+feel = ragtime
+key = C
+reed = clarinet
+plan = head head solo piano out out
+pickup = D4/0.5 D#4/0.5
+form = A
+A: notes = E4/0.5 C5/1 E4/0.5 C5/1 E4/0.5 C5/3 C5/0.5 D5/0.5 D#5/0.5 | E5/0.5 C5/0.5 D5/0.5 E5/1 B4/0.5 D5/1 | C5/3 D4/0.5 D#4/0.5
+A: notes = E4/0.5 C5/1 E4/0.5 C5/1 E4/0.5 C5/3.5 A4/0.5 G4/0.5 | F#4/0.5 A4/0.5 C5/0.5 E5/1 D5/0.5 C5/0.5 A4/0.5 | D5/3 D4/0.5 D#4/0.5
+A: notes = E4/0.5 C5/1 E4/0.5 C5/1 E4/0.5 C5/3 C5/0.5 D5/0.5 D#5/0.5 | E5/0.5 C5/0.5 D5/0.5 E5/1 B4/0.5 D5/1 | C5/3 C5/0.5 D5/0.5
+A: notes = E5/0.5 C5/0.5 D5/0.5 E5/1 C5/0.5 D5/0.5 C5/0.5 | E5/0.5 C5/0.5 D5/0.5 E5/1 C5/0.5 D5/0.5 C5/0.5 | E5/0.5 C5/0.5 D5/0.5 E5/1 B4/0.5 D5/1 | C5/3 r/1
+A: chords = C/4 C/4 C/2 G7/2 C/4 C/4 C/4 D7/4 G7/4 C/4 C/4 C/2 G7/2 C/2 C7/2 F/2 F#dim/2 C/4 D7/2 G7/2 C/4
+
+[old_folks]
+# sure
+composer = Stephen Foster
+died = 1864
+source = «Old Folks at Home» ("Swanee River"), Firth, Pond & Co., New York, 1851
+bpm = 126
+feel = swing
+key = C
+reed = sax
+plan = head solo piano fours out
+form = A1 A2 B A2
+A1: notes = E4/2 D4/0.5 C4/0.5 E4/0.5 D4/0.5 | C4 C5 A4/0.5 C5/1.5 | G4/2 E4 C4 | D4/4
+A1: chords = C/4 C/2 F/2 C/4 G7/4
+A2: notes = E4/2 D4/0.5 C4/0.5 E4/0.5 D4/0.5 | C4 C5 A4/0.5 C5/1.5 | G4 E4/0.5 C4/0.5 D4/1.5 D4/0.5 | C4/4
+A2: chords = C/4 C/2 F/2 C/2 G7/2 C/4
+B: notes = B4/1.5 C5/0.5 D5 G4 | G4/1.5 A4/0.5 G4/2 | C5 C5 A4/0.5 C5/1.5 | G4/4
+B: chords = G7/4 C/4 F/4 C/2 G7/2
+
+[oh_susanna]
+# sure
+composer = Stephen Foster
+died = 1864
+source = «Oh! Susanna», W. C. Peters, Cincinnati, 1848
+bpm = 176
+feel = foxtrot
+key = G
+reed = clarinet
+plan = head head solo piano fours out out
+pickup = G4/0.5 A4/0.5
+form = A B
+A: notes = B4 D5 D5/1.5 E5/0.5 | D5 B4 G4/1.5 A4/0.5 | B4 B4 A4 G4 | A4/3 G4/0.5 A4/0.5 | B4 D5 D5/1.5 E5/0.5 | D5 B4 G4/1.5 A4/0.5 | B4 B4 A4 A4 | G4/3 r/1
+A: chords = G/4 G/4 G/4 D7/4 G/4 G/4 G/2 D7/2 G/4
+B: notes = C5/2 C5/2 | E5 E5/2 E5 | D5 D5 B4 G4 | A4/3 G4/0.5 A4/0.5 | B4 D5 D5/1.5 E5/0.5 | D5 B4 G4/1.5 A4/0.5 | B4 B4 A4 A4 | G4/3 r/1
+B: chords = C/4 C/4 G/4 D7/4 G/4 G/4 G/2 D7/2 G/4
+
+[st_james]
+# to check: the harmony is the song's; the melody is its outline (the rise through the minor chord, the fall home)
+composer = traditional
+died = 0
+source = «St. James Infirmary», American folk blues out of the 18th-century English ballad "The Unfortunate Rake"
+bpm = 92
+feel = swing
+swing = 0.66
+key = Dm
+reed = sax
+plan = head head solo solo piano out out
+pickup = D4/0.5 F4/0.5 A4/0.5
+form = A
+A: notes = A4/2 A4/0.5 G4/0.5 F4/0.5 E4/0.5 | D4/2.5 D4/0.5 F4/0.5 A4/0.5 | A4/1.5 A4/0.5 G4 F4 | E4/2.5 D4/0.5 F4/0.5 A4/0.5
+A: notes = D5/1.5 D5/0.5 D5/0.5 C5/0.5 A4 | F4 D4/1.5 r/0.5 A4 | F4/1.5 A4/0.5 F4 E4 | D4/2.5 r/1.5
+A: chords = Dm/2 A7/2 Dm/4 Dm/2 Gm/2 A7/4 Dm/2 A7/2 Dm/4 Bb7/2 A7/2 Dm/4
+
+[londonderry]
+# sure (the last cadence in its plainest form)
+composer = traditional
+died = 0
+source = «Londonderry Air», Irish, taken down by Jane Ross of Limavady, printed by George Petrie in 1855
+bpm = 63
+feel = ballad
+key = C
+reed = clarinet
+plan = head solo out
+pickup = B3/0.5 C4/0.5 D4/0.5
+form = A B
+A: notes = E4/1.5 D4/0.5 E4/0.5 A4/0.5 G4/0.5 E4/0.5 | D4/0.5 C4/0.5 A3/1.5 C4/0.5 E4/0.5 F4/0.5 | G4/1.5 A4/0.5 G4/0.5 E4/0.5 C4/0.5 E4/0.5 | D4/2.5 B3/0.5 C4/0.5 D4/0.5
+A: notes = E4/1.5 D4/0.5 E4/0.5 A4/0.5 G4/0.5 E4/0.5 | D4/0.5 C4/0.5 A3/1.5 B3/0.5 C4/0.5 D4/0.5 | E4/1.5 F4/0.5 E4/0.5 D4/0.5 C4/0.5 D4/0.5 | C4/2.5 G4/0.5 A4/0.5 B4/0.5
+A: chords = C/4 F/4 C/2 Am/2 D7/2 G7/2 C/2 C7/2 F/4 C/2 G7/2 C/4
+B: notes = C5/1.5 B4/0.5 B4/0.5 A4/0.5 G4/0.5 A4/0.5 | G4/0.5 E4/0.5 C4/1.5 G4/0.5 A4/0.5 B4/0.5 | C5/1.5 B4/0.5 B4/0.5 A4/0.5 G4/0.5 E4/0.5 | D4/2.5 G4/0.5 G4/0.5 G4/0.5
+B: notes = E5/1.5 D5/0.5 D5/0.5 C5/0.5 A4/0.5 C5/0.5 | G4/0.5 E4/0.5 C4/1.5 B3/0.5 C4/0.5 D4/0.5 | E4/0.5 A4/0.5 G4/0.5 E4/0.5 D4/0.5 C4/0.5 A3/0.5 B3/0.5 | C4/2.5 r/1.5
+B: chords = Am/2 F/2 C/4 Am/2 F/2 D7/2 G7/2 C/2 F/2 C/4 Am/2 Dm7/1 G7/1 C/4
+
+[korobeiniki]
+# sure (the notes of tunes.txt), played as a tango
+composer = traditional
+died = 0
+source = «Коробейники», Russian folk tune sung to Nekrasov's verse of 1861
+bpm = 132
+feel = tango
+key = Am
+reed = clarinet
+plan = head head solo solo piano piano out out
+form = A
+A: notes = E5 B4/0.5 C5/0.5 D5 C5/0.5 B4/0.5 | A4 A4/0.5 C5/0.5 E5 D5/0.5 C5/0.5 | B4/1.5 C5/0.5 D5 E5 | C5 A4 A4/2
+A: notes = D5/1.5 F5/0.5 A5 G5/0.5 F5/0.5 | E5/1.5 C5/0.5 E5 D5/0.5 C5/0.5 | B4 B4/0.5 C5/0.5 D5 E5 | C5 A4 A4/2
+A: chords = E7/4 Am/4 E7/4 Am/4 Dm/4 Am/4 E7/4 Am/4
+
+[ochi]
+# to check: the first eight bars are the song's; the second eight follow its harmony in the same manner
+composer = Florian Hermann
+died = 1892
+source = «Очи чёрные»: the melody is Hermann's «Valse hommage», printed in 1884 in S. Gerdal's arrangement
+bpm = 126
+meter = 3
+feel = waltz
+key = Am
+reed = clarinet
+plan = head head solo piano out out
+pickup = E4 D#4
+form = A
+A: notes = E4 C5 B4/2 E4 D#4 | E4 B4 A4/2 B4 A#4 | B4 F5 E5/2 E5 D5 | C5 B4 A4/2 A4 G#4
+A: notes = A4 E5 D5/2 D5 C5 | B4 C5 A4/2 B4 A#4 | B4 E5 D5/2 E5 D5 | C5 B4 G#4 | A4 r/2
+A: chords = E7/6 Am/6 E7/6 Am/6 Dm/6 Am/6 E7/9 Am/3
+
+[sakura]
+# sure (the notes of tunes.txt)
+composer = traditional
+died = 0
+source = «さくら さくら», Japanese, an Edo-period koto tune
+bpm = 72
+feel = ballad
+key = Am
+reed = clarinet
+plan = head solo out
+form = A
+A: notes = A4 A4 B4/2 | A4 A4 B4/2 | A4 B4 C5 B4 | A4 B4/0.5 A4/0.5 F4/2 | E4 C4 E4 F4 | E4 E4/0.5 C4/0.5 B3/2
+A: notes = A4 B4 C5 B4 | A4 B4/0.5 A4/0.5 F4/2 | E4 C4 E4 F4 | E4 E4/0.5 C4/0.5 B3/2
+A: notes = A4 A4 B4/2 | A4 A4 B4/2 | E4 F4 B4/0.5 A4/0.5 F4 | E4/4
+A: chords = Am/4 Am/4 Am/4 Dm/4 Am/4 E7/4 Am/4 Dm/4 Am/4 E7/4 Am/4 Am/4 Dm/4 Am/4
+
+[aura_lea]
+# sure
+composer = George R. Poulton
+died = 1867
+source = «Aura Lea», John Church, Cincinnati, 1861
+bpm = 96
+feel = foxtrot
+key = C
+reed = sax
+plan = head solo piano out
+form = A A B
+A: notes = G4 C5 B4 C5 | D5 A4 D5/2 | C5 B4 A4 B4 | C5/4
+A: chords = C/4 D7/4 G7/4 C/4
+B: notes = E5 E5 E5/2 | E5 E5 E5/2 | E5 D5 C5 D5 | E5/4 | E5 E5 F5 E5 | D5 A4 D5/2 | C5 B4 A4 B4 | C5/4
+B: chords = C/4 E7/4 Am/4 C7/4 C/2 A7/2 D7/4 G7/4 C/4
+
+[amazing_grace]
+# sure
+composer = anonymous
+died = 0
+source = «Amazing Grace»: the tune "New Britain", American, first printed in Columbian Harmony, 1829
+bpm = 96
+meter = 3
+feel = waltz
+key = G
+reed = clarinet
+plan = head solo piano out
+pickup = D4
+form = A
+A: notes = G4/2 B4/0.5 G4/0.5 | B4/2 A4 | G4/2 E4 | D4/2 D4 | G4/2 B4/0.5 G4/0.5 | B4/2 A4 | D5/3 | D5/2 B4
+A: notes = D5/1.5 B4/0.5 D5/0.5 B4/0.5 | G4/2 D4 | E4/1.5 G4/0.5 G4/0.5 E4/0.5 | D4/2 D4 | G4/2 B4/0.5 G4/0.5 | B4/2 A4 | G4/3 | G4/2 r/1
+A: chords = G/3 G/3 C/3 G/3 G/3 G/3 D7/3 D7/3 G/3 G/3 C/3 G/3 G/3 G/2 D7/1 G/3 G/3
+
+[greensleeves]
+# sure (the notes of tunes.txt: the verse)
+composer = traditional
+died = 0
+source = «Greensleeves», English, 16th century
+bpm = 150
+meter = 3
+feel = waltz
+key = Am
+reed = clarinet
+plan = head head solo solo piano out out
+pickup = A4
+form = A
+A: notes = C5/2 D5 | E5/1.5 F5/0.5 E5 | D5/2 B4 | G4/1.5 A4/0.5 B4 | C5/2 A4 | A4/1.5 G#4/0.5 A4 | B4/2 G#4 | E4/2 A4
+A: notes = C5/2 D5 | E5/1.5 F5/0.5 E5 | D5/2 B4 | G4/1.5 A4/0.5 B4 | C5/1.5 B4/0.5 A4 | G#4/1.5 F#4/0.5 G#4 | A4/3 | A4/2 r/1
+A: chords = Am/3 C/3 G/3 Em/3 Am/3 F/3 E7/3 E7/3 Am/3 C/3 G/3 Em/3 Am/3 E7/3 Am/3 Am/3
+
+[brahms_lullaby]
+# sure
+composer = Johannes Brahms
+died = 1897
+source = «Wiegenlied» op. 49 no. 4, Simrock, Berlin, 1868
+bpm = 84
+meter = 3
+feel = waltz
+key = C
+reed = clarinet
+plan = head solo out
+pickup = E4/0.5 E4/0.5
+form = A
+A: notes = G4/2 E4/0.5 E4/0.5 | G4/2 E4/0.5 G4/0.5 | C5 B4/1.5 A4/0.5 | A4 G4 D4/0.5 E4/0.5 | F4 D4 D4/0.5 E4/0.5 | F4/2 D4/0.5 F4/0.5 | B4/0.5 A4/0.5 G4 B4 | C5/2 C4/0.5 C4/0.5
+A: notes = C5/2 A4/0.5 F4/0.5 | G4/2 E4/0.5 C4/0.5 | F4 G4 A4 | G4/2 C4/0.5 C4/0.5 | C5/2 A4/0.5 F4/0.5 | G4/2 E4/0.5 C4/0.5 | F4 E4 D4 | C4/2 r/1
+A: chords = C/3 C/3 G7/3 C/3 G7/3 G7/3 G7/3 C/3 F/3 C/3 G7/3 C/3 F/3 C/3 G7/3 C/3
+
+[blue_danube]
+# sure for the first 24 bars (the echoes of the upper strings are in the line); the last eight simplified
+composer = Johann Strauss II
+died = 1899
+source = «An der schönen blauen Donau» op. 314, waltz no. 1, C. A. Spina, Vienna, 1867
+bpm = 174
+meter = 3
+feel = waltz
+key = D
+reed = clarinet
+plan = head solo piano out
+pickup = D4
+form = A
+A: notes = D4 F#4 A4 | A4/2 A5 | A5/2 F#5 | F#5/2 D4 | D4 F#4 A4 | A4/2 A5 | A5/2 G5 | G5/2 C#4
+A: notes = C#4 E4 B4 | B4/2 B5 | B5/2 G5 | G5/2 C#4 | C#4 E4 B4 | B4/2 B5 | B5/2 F#5 | F#5/2 D4
+A: notes = D4 F#4 A4 | D5/2 D6 | D6/2 A5 | A5/2 D4 | D4 F#4 A4 | D5/2 D6 | D6/2 B5 | B5/2 E4
+A: notes = E4 G4 B4 | B4/2 G#4 | A4/2 F#5 | F#5/2 D5 | F#5/2 E5 | E5/2 B4 | D5/3 | D5/2 r/1
+A: chords = D/3 D/3 D/3 D/3 D/3 D/3 A7/3 A7/3 A7/3 A7/3 A7/3 A7/3 A7/3 A7/3 D/3 D/3
+A: chords = D/3 D/3 D/3 D/3 D/3 D/3 G/3 G/3 Em/3 E7/3 D/3 D/3 A7/3 A7/3 D/3 D/3
+
+[daisy_bell]
+# sure
+composer = Harry Dacre
+died = 1922
+source = «Daisy Bell (Bicycle Built for Two)», T. B. Harms, New York, 1892
+bpm = 168
+meter = 3
+feel = waltz
+key = G
+reed = clarinet
+plan = head solo piano out
+form = A
+A: notes = D5/3 | B4/3 | G4/3 | D4/3 | E4 F#4 G4 | E4/2 G4 | D4/6
+A: notes = A4/3 | D5/3 | B4/3 | G4/3 | E4 F#4 G4 | A4/2 B4 | A4/5 B4
+A: notes = C5 B4 A4 | D5/2 B4 | A4 G4/4 A4 | B4/2 G4 | E4/2 G4 | E4 D4/4 D4
+A: notes = G4/2 B4 | A4/2 D4 | G4/2 B4 | A4 B4 C5 | D5 B4 G4 | A4/2 D4 | G4/3 | G4/2 r/1
+A: chords = G/3 G/3 G/3 G/3 C/3 C/3 G/3 G/3 D7/3 D7/3 G/3 G/3 A7/3 A7/3 D7/3 D7/3
+A: chords = D7/3 G/3 G/3 G/3 G/3 C/3 G/3 G/3 G/3 D7/3 G/3 D7/3 G/3 D7/3 G/3 G/3
+
+[choclo]
+# to check: the first strain's shape (the climbing chord, the repeated note with its half-step turn), simplified;
+# written with every value doubled
+composer = Ángel Villoldo
+died = 1919
+source = «El Choclo», tango criollo, Buenos Aires, 1903
+bpm = 126
+feel = tango
+key = Dm
+reed = clarinet
+plan = head head solo solo piano piano out out
+pickup = A4/0.5 D5/0.5 F5/0.5
+form = A
+A: notes = A5 A5 A5/0.5 G#5/0.5 A5/0.5 Bb5/0.5 | A5 F5 D5/0.5 A4/0.5 C#5/0.5 E5/0.5 | G5 G5 G5/0.5 F#5/0.5 G5/0.5 A5/0.5 | G5 E5 C#5/0.5 A4/0.5 C#5/0.5 E5/0.5
+A: notes = Bb5 Bb5 Bb5/0.5 A5/0.5 Bb5/0.5 C6/0.5 | Bb5 G5 E5/0.5 A4/0.5 D5/0.5 F5/0.5 | A5 A5 A5/0.5 G5/0.5 F5/0.5 E5/0.5 | D5/2.5 r/1.5
+A: chords = Dm/4 Dm/4 A7/4 A7/4 A7b9/4 A7/2 Dm/2 Dm/2 A7/2 Dm/4
+
+[auld_lang_syne]
+# sure
+composer = traditional
+died = 0
+source = «Auld Lang Syne», Scottish air, printed with Burns's words in Thomson's Select Songs of Scotland, 1799
+bpm = 100
+feel = foxtrot
+key = C
+reed = sax
+plan = head solo piano out
+pickup = G4
+form = A B
+A: notes = C5/1.5 C5/0.5 C5 E5 | D5/1.5 C5/0.5 D5 E5 | C5/1.5 C5/0.5 E5 G5 | A5/3 A5 | G5/1.5 E5/0.5 E5 C5 | D5/1.5 C5/0.5 D5 E5 | C5/1.5 A4/0.5 A4 G4 | C5/3 A5
+A: chords = C/4 G7/4 C/2 C7/2 F/4 C/4 G7/4 F/2 G7/2 C/4
+B: notes = G5/1.5 E5/0.5 E5 C5 | D5/1.5 C5/0.5 D5 A5 | G5/1.5 E5/0.5 E5 G5 | A5/3 A5 | G5/1.5 E5/0.5 E5 C5 | D5/1.5 C5/0.5 D5 E5 | C5/1.5 A4/0.5 A4 G4 | C5/3 r/1
+B: chords = C/4 G7/4 C/2 C7/2 F/4 C/4 G7/4 F/2 G7/2 C/4
+
+# ---------------------------------------------------------------------------------------------------------------- the sets
+# The programme events of the cruise (Content/Cruise/cruise.json) the band plays at; pauses between numbers are left to
+# the saloon (applause and talk are the soundscape's).
+
+[set concert1]
+# Friday 21:00-23:00, lively
+tunes = saints old_folks entertainer st_james oh_susanna londonderry korobeiniki ochi
+pause = 22
+interval = 600
+
+[set captains_dinner]
+# Saturday 19:00-20:30: the trio plays softly under the talk, the reed joins for the last chorus of each number
+tunes = londonderry sakura aura_lea amazing_grace greensleeves old_folks brahms_lullaby
+pause = 30
+interval = 300
+style = soft
+
+[set concert2]
+# Saturday 20:30-23:30 with dancing: waltzes, tangos, foxtrots, a waltz again, a slow last dance and the farewell
+tunes = blue_danube daisy_bell choclo korobeiniki oh_susanna saints ochi greensleeves aura_lea brahms_lullaby auld_lang_syne
+pause = 25
+interval = 600
