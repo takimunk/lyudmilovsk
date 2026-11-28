@@ -3832,6 +3832,52 @@
    ]
   },
   {
+   "id": "reader_left",
+   "when": {
+    "visit": [
+     "read_library"
+    ],
+    "at": "",
+    "keep": 2.0
+   },
+   "tris": 142,
+   "bounds": [
+    [
+     -9.03,
+     23.848,
+     0.75
+    ],
+    [
+     -8.601,
+     24.301,
+     0.785
+    ]
+   ]
+  },
+  {
+   "id": "bookclub_after",
+   "when": {
+    "visit": [
+     "book_club"
+    ],
+    "at": "-CLUB",
+    "keep": 3.0
+   },
+   "tris": 333,
+   "bounds": [
+    [
+     4.069,
+     8.872,
+     0.42
+    ],
+    [
+     4.438,
+     9.295,
+     0.56
+    ]
+   ]
+  },
+  {
    "id": "periodicals_morning",
    "when": {
     "hours": [
@@ -3935,6 +3981,6 @@
   "shell": 7124,
   "detail": 48264,
   "windows": 228,
-  "dress": 10180
+  "dress": 10655
  }
 }

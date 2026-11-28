@@ -1021,6 +1021,14 @@ def _dress(B, IY1):
         for r in (1, 3):
             for c, cx in enumerate(cxs):
                 dk.school_bag(B, cx + 0.70, ys[r] - 0.45, 0.0, (40 + 55 * (r + c)) % 360, seed=30 + r * 3 + c)
+    # --- traces of a visit (docs/city_dress.md "Traces of a visit"): the class register and a glass of tea on the teacher's
+    #     desk (-13.3, 12.9, top 0.91) after a teacher's day; exercise books left on three desks after the pupils' day
+    with B.dress("teacher_left", visit="work_office", who=("teacher",), keep=3.0):
+        dk.class_register(B, -13.82, 12.82, 0.91, 8.0)
+        dk.tea_in_holder(B, -13.45, 13.1, 0.91, 200.0, lemon=False)
+    with B.dress("pupils_books", visit="school_town", keep=2.5, months=(9, 10, 11, 12, 1, 2, 3, 4, 5)):
+        for r, c, s in ((0, 0, -0.28), (1, 2, 0.28), (3, 1, -0.28)):
+            dk.exercise_books(B, cxs[c] + s + (0.15 if s < 0 else 0.0), ys[r] - 0.02, 0.76, 180.0, seed=r * 3 + c)
     # --- rain: a wet mat, galoshes and an umbrella stand by the street door, an umbrella left open to dry
     with B.dress("door_rain", weather=("rain", "wet")):
         dk.doormat_wet(B, 0.0, 7.55, 0.0, 0.0)

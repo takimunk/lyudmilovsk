@@ -15,7 +15,8 @@ namespace LyudPeople
 			"newspaper", "book", "knit", "ice_cream", "drink", "carry_bag", "point_sky", "skip_stone", "dominoes", "piano", "dig",
 			"water", "weed", "mop", "torch" };
 		const char* PropNames[(int)EProp::Num] = { "none", "phone", "cigarette", "camera", "umbrella", "rod", "brush", "binoculars",
-			"newspaper", "book", "knitting", "ice_cream", "cup", "bag", "spade", "watering_can", "mop", "torch", "suitcase" };
+			"newspaper", "book", "knitting", "ice_cream", "cup", "bag", "spade", "watering_can", "mop", "torch", "suitcase",
+			"broom", "rake", "cake_box", "flowers" };
 		const char* HabitNames[] = { "smoker", "phone", "reader", "feeder", "photographer", "knitter", "umbrella", "sweet", "dozer",
 			"hands_back" };
 		constexpr int NumHabits = (int)(sizeof(HabitNames) / sizeof(HabitNames[0]));
@@ -278,6 +279,7 @@ namespace LyudPeople
 			Strings(J["doing"], D.Doing, &D.NotDoing);
 			Strings(J["at"], D.At, nullptr);
 			Strings(J["after"], D.After, nullptr);
+			Strings(J["going"], D.Going, nullptr);
 			D.AfterSeconds = J["after_s"].F(900.f);
 			if (!J["habit"].IsNull())
 			{
@@ -336,6 +338,11 @@ namespace LyudPeople
 				}
 			}
 			D.bWaiting = J["waiting"].I() != 0;
+			D.Today = TodayFromName(J["today"].S());
+			if (!J["today"].IsNull() && D.Today == 0)
+			{
+				Warnings.push_back(Id + ": unknown today " + J["today"].S());
+			}
 			D.Trait = J["trait"].S();
 			D.Weight = J["weight"].F(1.f);
 			if (J["seconds"].Size() == 2)
@@ -421,6 +428,7 @@ namespace LyudPeople
 			};
 			Mask(D.Doing, D.NotDoing, D.DoingOk);
 			Mask(D.After, std::vector<std::string>(), D.AfterOk);
+			Mask(D.Going, std::vector<std::string>(), D.GoingOk);
 		}
 		Cand.reserve(Defs.size());
 		CandW.reserve(Defs.size());
@@ -846,6 +854,10 @@ namespace LyudPeople
 		{
 			return 0.f;
 		}
+		if (D.Today && !(P.Today & D.Today))
+		{
+			return 0.f;
+		}
 		if (D.bWaiting && P.State != EState::Waiting)
 		{
 			return 0.f;
@@ -854,6 +866,14 @@ namespace LyudPeople
 		if (!D.DoingOk.empty() && (Act < 0 || Act >= (int)D.DoingOk.size() || !D.DoingOk[Act]))
 		{
 			return 0.f;
+		}
+		if (!D.GoingOk.empty())
+		{
+			// walking to it (the activity is chosen and the way begun)
+			if (P.State != EState::Going || P.Activity < 0 || P.Activity >= (int)D.GoingOk.size() || !D.GoingOk[P.Activity])
+			{
+				return 0.f;
+			}
 		}
 		if (!D.AfterOk.empty())
 		{
@@ -1259,13 +1279,17 @@ namespace LyudPeople
 					SA.LookCool = SA.LookUntil + 4.f;
 				}
 				// people who know each other: a wave or a nod, answered
-				const bool bKnow = PA.Household == PB.Household || Among(PA.Friends, PB.Key) || Among(PB.Friends, PA.Key);
+				bool bKnow = PA.Household == PB.Household || Among(PA.Friends, PB.Key) || Among(PB.Friends, PA.Key);
+				// neighbours of one house: a nod (never a wave)
+				const bool bNeighbour = !bKnow && PA.Home >= 0 && PB.Home >= 0 && !W.Places[(size_t)PA.Home].Building.empty()
+					&& W.Places[(size_t)PA.Home].Building == W.Places[(size_t)PB.Home].Building;
+				bKnow |= bNeighbour;
 				if (!bKnow || Now.Clock - SA.Last[(int)EManner::Wave] < 90.f || Now.Clock - SA.Last[(int)EManner::Nod] < 90.f
 					|| SA.Cur == EManner::Wave || SA.Cur == EManner::Nod)
 				{
 					continue;
 				}
-				const EManner Mine = Personas[A].Warmth > 0.5f ? EManner::Wave : EManner::Nod;
+				const EManner Mine = Personas[A].Warmth > 0.5f && !bNeighbour ? EManner::Wave : EManner::Nod;
 				if (React(A, Mine, Now.Clock, Mine == EManner::Wave ? 2.4f : 1.6f))
 				{
 					if (!bFacing)
@@ -1284,7 +1308,7 @@ namespace LyudPeople
 					}
 					if (PB.Pose != EPose::Read && PB.Pose != EPose::Eat && PB.Pose != EPose::Computer && PB.Pose != EPose::Work)
 					{
-						const EManner Theirs = Personas[B].Warmth > 0.5f ? EManner::Wave : EManner::Nod;
+						const EManner Theirs = Personas[B].Warmth > 0.5f && !bNeighbour ? EManner::Wave : EManner::Nod;
 						React(B, Theirs, Now.Clock, Theirs == EManner::Wave ? 2.6f : 1.8f);
 					}
 				}

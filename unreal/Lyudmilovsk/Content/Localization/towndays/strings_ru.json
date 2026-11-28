@@ -1,0 +1,9 @@
+{
+ "dev.group.townlife": "Жизнь города: дни",
+ "dev.action.townlife.report": "Что сегодня в городе (в лог)",
+ "dev.action.townlife.pension": "Пенсионный день: старики идут в контору",
+ "dev.action.townlife.payday": "День получки: вечером в кафе",
+ "dev.action.townlife.tea": "Ближайший житель идёт к другу на чай",
+ "dev.action.townlife.chess": "Ближайший житель с другом: шахматы на лавке",
+ "dev.action.townlife.cold": "Ближайший житель простыл: идёт домой"
+}

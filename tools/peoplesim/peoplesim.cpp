@@ -7,6 +7,7 @@
 //   tools/peoplesim/run.sh summary [start_hour hours [weekday]]
 #include "WindModel.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleSim.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleManners.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/Railway/RailRun.h"
 
 #include <chrono>
@@ -928,6 +929,7 @@ static void Bikes(FWorld& W)
 
 static int Winter();     // winter_people.h
 static int BookClub();   // book_club_people.h
+static int StreetLife(); // street_people.h
 
 static int Test()
 {
@@ -1973,6 +1975,10 @@ static int Day(int Argc, char** Argv, const char* TraceKey, bool bSummary = fals
 #include "winter_people.h"
 #include "indoor_weather.h"
 #include "book_club_people.h"
+#include "street_people.h"
+#include "town_days.h"
+#include "dance_people.h"
+#include "promenade_people.h"
 
 int main(int Argc, char** Argv)
 {
@@ -1989,9 +1995,31 @@ int main(int Argc, char** Argv)
 	{
 		return Week();
 	}
+	if (Mode == "days")
+	{
+		return TownDays(Argc - 2, Argv + 2);
+	}
 	if (Mode == "bookclub")
 	{
 		const int R = BookClub();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return R;
+	}
+	if (Mode == "street")
+	{
+		const int R = StreetLife();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return R;
+	}
+	if (Mode == "dances")
+	{
+		const int R = Dances();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return R;
+	}
+	if (Mode == "promenade")
+	{
+		const int R = Promenade();
 		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 		return R;
 	}

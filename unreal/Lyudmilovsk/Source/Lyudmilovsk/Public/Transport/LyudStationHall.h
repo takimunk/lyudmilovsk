@@ -84,6 +84,8 @@ private:
 		FString Model;
 		bool bGreeted = false;
 		int32 Run = -1;                     // the station life's run (ULyudTransportSubsystem::GetLife()->Today), -1: none
+		int32 RunDay = -1;                  // the station life's Day that Run indexes (a new day makes Today again)
+		int32 RunTrip = -1;                 // and that run's trip (the same index on another day is someone else)
 		int32 Pid = -1;                     // their id in the town's life (shown here: the town doesn't draw them), -1
 		int32 StaffIndex = -1;              // staff: their place in station_life.json's rota
 		float TalkLeft = 0.f;               // the attendant turned to a regular for a word

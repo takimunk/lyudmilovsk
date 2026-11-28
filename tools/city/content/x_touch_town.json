@@ -1,0 +1,616 @@
+{
+ "_doc": "Coins, scales and strips: the town's small machines answer a touch (docs/city_interiors.md \"Coins, scales and strips\"). Payphones dial a number you pick (the speaking clock reads the game's {time}; numbers torn off the bus-stop notices), the bus-stop weighing machine and the fair's globe give fortune cards, the clinic's scales say your weight, «Морской бой» at the Cog club, drinking fountains held to the right height, the library's and the store's staff doors answer a knock, the lobbies' magazines can be taken. Scenes are procs with \"scene\": true (not a cure). Words: strings/x_touch_town.json. Keys tch_* / city.tch.*.",
+ "acts": {
+  "tch_call": {
+   "like": "payphone",
+   "rotate": "use",
+   "lines": [
+    {
+     "k": "city.tch.call.after.night",
+     "h": [
+      21,
+      6
+     ]
+    },
+    {
+     "k": "city.tch.call.after.rain",
+     "weather": "rain"
+    },
+    {
+     "k": "city.tch.call.after.snow",
+     "weather": "snow"
+    },
+    "city.tch.call.after.1",
+    "city.tch.call.after.2",
+    "city.tch.call.after.3"
+   ],
+   "proc": {
+    "id": "tch_call",
+    "scene": true,
+    "title": "city.tch.call.title",
+    "steps": [
+     {
+      "do": "say",
+      "secs": 3,
+      "lines": [
+       {
+        "k": "city.tch.call.coin.cold",
+        "weather": "cold"
+       },
+       {
+        "k": "city.tch.call.coin.rain",
+        "weather": "rain"
+       },
+       {
+        "k": "city.tch.call.coin.1",
+        "weather": [
+         "!cold",
+         "!rain"
+        ]
+       },
+       {
+        "k": "city.tch.call.coin.2",
+        "weather": [
+         "!cold",
+         "!rain"
+        ]
+       }
+      ]
+     },
+     {
+      "do": "pick",
+      "lines": [
+       "city.tch.call.pick",
+       "city.tch.call.dial.clock",
+       {
+        "k": "city.tch.call.dial.puppy",
+        "have": "strips/puppy"
+       },
+       {
+        "k": "city.tch.call.dial.guitar",
+        "have": "strips/guitar"
+       },
+       {
+        "k": "city.tch.call.dial.cat",
+        "have": "strips/cat"
+       },
+       {
+        "k": "city.tch.call.dial.swap",
+        "have": "strips/swap"
+       },
+       "city.tch.call.dial.info",
+       "city.tch.call.dial.random"
+      ]
+     },
+     {
+      "do": "say",
+      "by_pick": true,
+      "lines": [
+       "city.tch.call.ans.clock",
+       {
+        "k": "city.tch.call.ans.puppy",
+        "have": "strips/puppy"
+       },
+       {
+        "k": "city.tch.call.ans.guitar",
+        "have": "strips/guitar"
+       },
+       {
+        "k": "city.tch.call.ans.cat",
+        "have": "strips/cat"
+       },
+       {
+        "k": "city.tch.call.ans.swap",
+        "have": "strips/swap"
+       },
+       "city.tch.call.ans.info",
+       "city.tch.call.ans.random"
+      ]
+     }
+    ],
+    "good": [
+     "city.tch.call.hang.1",
+     "city.tch.call.hang.2",
+     "city.tch.call.hang.3"
+    ],
+    "fair": [
+     "city.tch.call.hang.1"
+    ],
+    "collect": "coin_slots/phone"
+   }
+  },
+  "tch_fortune_scale": {
+   "like": "use_misc",
+   "prompt": "city.tch.fscale.prompt",
+   "price": 1,
+   "minutes": 1,
+   "sound": "scale_clunk",
+   "lines": [
+    "city.tch.fscale.after.1",
+    "city.tch.fscale.after.2"
+   ],
+   "proc": {
+    "id": "tch_fortune_scale",
+    "scene": true,
+    "title": "city.tch.fscale.title",
+    "steps": [
+     {
+      "do": "say",
+      "secs": 3,
+      "lines": [
+       "city.tch.fscale.coin.1",
+       "city.tch.fscale.coin.2"
+      ]
+     },
+     {
+      "do": "measure",
+      "lines": [
+       "city.tch.fscale.weight"
+      ]
+     }
+    ],
+    "good": [
+     {
+      "k": "city.tch.fortune.1",
+      "collect": "fortunes/1"
+     },
+     {
+      "k": "city.tch.fortune.2",
+      "collect": "fortunes/2"
+     },
+     {
+      "k": "city.tch.fortune.3",
+      "collect": "fortunes/3"
+     },
+     {
+      "k": "city.tch.fortune.4",
+      "collect": "fortunes/4"
+     },
+     {
+      "k": "city.tch.fortune.5",
+      "collect": "fortunes/5"
+     },
+     {
+      "k": "city.tch.fortune.6",
+      "collect": "fortunes/6"
+     },
+     {
+      "k": "city.tch.fortune.7",
+      "collect": "fortunes/7"
+     },
+     {
+      "k": "city.tch.fortune.8",
+      "collect": "fortunes/8"
+     }
+    ],
+    "fair": [
+     "city.tch.fscale.jam"
+    ],
+    "collect": "coin_slots/scale"
+   }
+  },
+  "tch_globe": {
+   "like": "fortune",
+   "collect": "coin_slots/globe",
+   "lines": [
+    {
+     "k": "city.tch.fortune.5",
+     "collect": "fortunes/5"
+    },
+    {
+     "k": "city.tch.fortune.2",
+     "collect": "fortunes/2"
+    },
+    {
+     "k": "city.tch.fortune.8",
+     "collect": "fortunes/8"
+    },
+    {
+     "k": "city.tch.fortune.3",
+     "collect": "fortunes/3"
+    },
+    {
+     "k": "city.tch.fortune.6",
+     "collect": "fortunes/6"
+    },
+    {
+     "k": "city.tch.fortune.1",
+     "collect": "fortunes/1"
+    },
+    {
+     "k": "city.tch.fortune.4",
+     "collect": "fortunes/4"
+    },
+    {
+     "k": "city.tch.fortune.7",
+     "collect": "fortunes/7"
+    }
+   ]
+  },
+  "tch_med_scales": {
+   "like": "scales",
+   "target": "scales",
+   "minutes": 2,
+   "proc": {
+    "id": "tch_med_scales",
+    "scene": true,
+    "title": "city.tch.mscales.title",
+    "steps": [
+     {
+      "do": "say",
+      "secs": 3,
+      "lines": [
+       {
+        "k": "city.tch.mscales.nurse",
+        "h": [
+         8,
+         20
+        ]
+       },
+       {
+        "k": "city.tch.mscales.alone",
+        "h": [
+         20,
+         8
+        ]
+       }
+      ]
+     },
+     {
+      "do": "measure",
+      "lines": [
+       {
+        "k": "city.tch.mscales.weight.nurse",
+        "h": [
+         8,
+         20
+        ]
+       },
+       {
+        "k": "city.tch.mscales.weight.alone",
+        "h": [
+         20,
+         8
+        ]
+       }
+      ]
+     }
+    ],
+    "good": [
+     "city.tch.mscales.off.1",
+     "city.tch.mscales.off.2"
+    ],
+    "fair": [
+     "city.tch.mscales.off.1"
+    ]
+   }
+  },
+  "tch_seabattle": {
+   "like": "arcade",
+   "prompt": "city.tch.sea.prompt",
+   "lines": [
+    "city.tch.sea.after.1",
+    "city.tch.sea.after.2",
+    "city.tch.sea.after.3"
+   ],
+   "game": {
+    "type": "aim",
+    "title": "city.tch.sea.title",
+    "keys": "city.tch.sea.keys",
+    "rounds": 5,
+    "need": 6,
+    "speed": 0.85,
+    "zone": 0.15,
+    "shrink": 0.9,
+    "pace": 1.08,
+    "win": [
+     "city.tch.sea.win.1",
+     "city.tch.sea.win.2"
+    ],
+    "lose": [
+     "city.tch.sea.lose.1",
+     "city.tch.sea.lose.2"
+    ],
+    "draw": [
+     "city.tch.sea.draw.1"
+    ],
+    "collect": "coin_slots/seabattle",
+    "sounds": {
+     "hit": "rest_clink",
+     "miss": "",
+     "end": "rest_bell"
+    }
+   }
+  },
+  "tch_fountain": {
+   "like": "use_misc",
+   "prompt": "city.do.fountain.prompt",
+   "minutes": 1,
+   "sound": "water_sip",
+   "lines": "city.do.fountain",
+   "proc": {
+    "id": "tch_fountain",
+    "scene": true,
+    "title": "city.tch.fountain.title",
+    "when": {
+     "weather": [
+      "!cold",
+      "!snow"
+     ]
+    },
+    "steps": [
+     {
+      "do": "pour",
+      "secs": 3.5,
+      "mark": [
+       0.6,
+       0.82
+      ],
+      "lines": [
+       "city.tch.fountain.press.1",
+       "city.tch.fountain.press.2"
+      ]
+     }
+    ],
+    "good": [
+     "city.tch.fountain.good.1",
+     "city.tch.fountain.good.2"
+    ],
+    "fair": [
+     "city.tch.fountain.fair.1"
+    ],
+    "poor": [
+     "city.tch.fountain.poor.1",
+     "city.tch.fountain.poor.2"
+    ]
+   }
+  },
+  "tch_cooler": {
+   "like": "fountain",
+   "proc": {
+    "id": "tch_cooler",
+    "scene": true,
+    "title": "city.tch.cooler.title",
+    "steps": [
+     {
+      "do": "pour",
+      "secs": 4,
+      "mark": [
+       0.7,
+       0.88
+      ],
+      "lines": [
+       "city.tch.cooler.pour"
+      ]
+     }
+    ],
+    "good": [
+     "city.tch.cooler.good"
+    ],
+    "fair": [
+     "city.tch.cooler.fair"
+    ],
+    "poor": [
+     "city.tch.cooler.poor"
+    ]
+   }
+  },
+  "tch_lib_knock": {
+   "like": "door_any",
+   "prompt": "city.tch.knock.prompt",
+   "lines": [
+    {
+     "k": "city.tch.lib.morning",
+     "h": [
+      10,
+      13
+     ],
+     "d": "tue-sun"
+    },
+    {
+     "k": "city.tch.lib.lunch",
+     "h": [
+      13,
+      14
+     ],
+     "d": "tue-sun"
+    },
+    {
+     "k": "city.tch.lib.afternoon",
+     "h": [
+      14,
+      20
+     ],
+     "d": "tue-sun"
+    },
+    {
+     "k": "city.tch.lib.thursday",
+     "h": [
+      10,
+      20
+     ],
+     "d": "thu"
+    },
+    {
+     "k": "city.tch.lib.note",
+     "once": true
+    },
+    "city.tch.lib.plate"
+   ]
+  },
+  "tch_store_knock": {
+   "like": "door_any",
+   "prompt": "city.tch.knock.prompt",
+   "lines": [
+    {
+     "k": "city.tch.store.morning",
+     "h": [
+      9,
+      12
+     ]
+    },
+    {
+     "k": "city.tch.store.day",
+     "h": [
+      12,
+      17
+     ]
+    },
+    {
+     "k": "city.tch.store.evening",
+     "h": [
+      17,
+      20
+     ]
+    },
+    {
+     "k": "city.tch.store.saturday",
+     "h": [
+      12,
+      20
+     ],
+     "d": "sat"
+    },
+    {
+     "k": "city.tch.store.night",
+     "h": [
+      20,
+      9
+     ]
+    },
+    "city.tch.store.plate"
+   ]
+  },
+  "take_magazine_travel": {
+   "prompt": "city.tch.mag.prompt",
+   "give": [
+    [
+     "magazine_travel",
+     1
+    ]
+   ],
+   "daily": 1,
+   "sound": "diary_pages",
+   "any_hour": true,
+   "lines": [
+    "city.tch.mag.1",
+    "city.tch.mag.2",
+    "city.tch.mag.3"
+   ]
+  }
+ },
+ "rules": {
+  "machine:what=payphone,id=*phone*": {
+   "act": "tch_call"
+  },
+  "P-CLINIC/patient_0": {
+   "act": "tch_med_scales"
+  },
+  "P-SANATORIUM/treat_scales": {
+   "act": "tch_med_scales"
+  },
+  "P-CLUB3/arcade_1": {
+   "act": "tch_seabattle"
+  },
+  "P-CLINIC/water_cooler": {
+   "act": "tch_cooler"
+  },
+  "P-LIBRARY/office_door": {
+   "act": "tch_lib_knock",
+   "closed": "city.tch.lib.shut.*"
+  },
+  "P-STORE/g_staff_door": {
+   "act": "tch_store_knock"
+  }
+ },
+ "collections": {
+  "coin_slots": {
+   "title": "city.coll.coin_slots.title",
+   "pieces": [
+    "phone",
+    "scale",
+    "globe",
+    "seabattle"
+   ]
+  },
+  "strips": {
+   "title": "city.coll.strips.title",
+   "pieces": [
+    "puppy",
+    "guitar",
+    "cat",
+    "swap"
+   ]
+  },
+  "fortunes": {
+   "title": "city.coll.fortunes.title",
+   "pieces": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  }
+ },
+ "rewards": {
+  "coin_slots": {
+   "pay": 30
+  },
+  "strips": {
+   "pay": 20
+  },
+  "fortunes": {
+   "pay": 25
+  }
+ },
+ "dev_points": {
+  "tch_payphone": {
+   "thing": "W1-U12/payphone",
+   "name": "city.tch.dev.payphone"
+  },
+  "tch_strips": {
+   "thing": "P-KIOSK2/stop_notices",
+   "name": "city.tch.dev.strips"
+  },
+  "tch_fscale": {
+   "thing": "P-KIOSK3/k3_scales",
+   "name": "city.tch.dev.fscale"
+  },
+  "tch_globe": {
+   "thing": "P-FAIR/fortune_globe",
+   "name": "city.tch.dev.globe"
+  },
+  "tch_scales": {
+   "thing": "P-CLINIC/patient_0",
+   "name": "city.tch.dev.scales"
+  },
+  "tch_seabattle": {
+   "thing": "P-CLUB3/arcade_1",
+   "name": "city.tch.dev.seabattle"
+  },
+  "tch_fountain": {
+   "thing": "P-KIOSK2/k2_fountain",
+   "name": "city.tch.dev.fountain"
+  },
+  "tch_cooler": {
+   "thing": "P-CLINIC/water_cooler",
+   "name": "city.tch.dev.cooler"
+  },
+  "tch_lib_door": {
+   "thing": "P-LIBRARY/office_door",
+   "name": "city.tch.dev.lib_door"
+  },
+  "tch_store_door": {
+   "thing": "P-STORE/g_staff_door",
+   "name": "city.tch.dev.store_door"
+  },
+  "tch_magazine": {
+   "thing": "P-CAPSULE/lobby_magazine",
+   "name": "city.tch.dev.magazine"
+  }
+ }
+}

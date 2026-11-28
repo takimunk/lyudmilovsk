@@ -5,6 +5,7 @@
 #include "LyudCityDress.generated.h"
 
 class ALyudCityBuilding;
+class UPeopleLifeSubsystem;
 
 /**
  * When a dressing set of a town building is shown (docs/city_dress.md; the export json's "when", blender/city/citykit.py
@@ -34,6 +35,14 @@ struct LYUDMILOVSK_API FLyudDressWhen
 	UPROPERTY(EditAnywhere, Category = "Dress") int32 PhaseTo = 0;
 	/** -1 no condition, 1 in the building's open hours, 0 out of them. */
 	UPROPERTY(EditAnywhere, Category = "Dress") int32 Open = -1;
+	/** A trace of a visit (citykit visit=, docs/city_dress.md "Traces of a visit"): shown for VisitKeep hours (0: no condition)
+	 *  after a townsperson ended one of VisitActs (activities.json ids) at the place VisitAt of the building's plot ("" any
+	 *  place of the building, "/0-03" its flat 0-03, "-LOUNGE" the place <plot>-LOUNGE); VisitWho: only these person keys or
+	 *  occupations (empty: anybody). */
+	UPROPERTY(EditAnywhere, Category = "Dress") TArray<FName> VisitActs;
+	UPROPERTY(EditAnywhere, Category = "Dress") FString VisitAt;
+	UPROPERTY(EditAnywhere, Category = "Dress") TArray<FString> VisitWho;
+	UPROPERTY(EditAnywhere, Category = "Dress") float VisitKeep = 0.f;
 };
 
 /**
@@ -43,6 +52,9 @@ struct LYUDMILOVSK_API FLyudDressWhen
  * step, the day, the weather words, the holidays, the mode), asks every set of every registered building whether it shows.
  * A set's static mesh component is made the first time it is shown (no collision, out of the distance fields), then only
  * shown or hidden: nothing per frame, nothing moved or rebuilt, nothing saved (it all follows from the date and the weather).
+ * Sets with a visit condition (a cup after the family's breakfast, a chess game left after the club's evening) listen to
+ * the people's life (UPeopleLifeSubsystem::OnPersonEvent Arrive / Leave): a matching visit's end is noted with its time and
+ * the sets are looked at again at the next tick. Those times are not saved either (the trace comes with the next visit).
  *
  * Console: lyud.City.Dress 1 (auto) | 0 (all hidden) | 2 (all shown); lyud.City.Dress.Report.
  */
@@ -70,7 +82,45 @@ public:
 	/** Every live subsystem looks again (the console's mode changed). */
 	static void MarkAllDirty();
 
+	/** The people's life told of somebody arriving or leaving (bound on the first tick the life is there). */
+	UFUNCTION()
+	void OnLifeEvent(int32 PersonId, FName Event, int32 Other);
+
+	/** Developer mode (F7, interiors.dress_visits): every visit set's visit ended now. */
+	void StampAllVisits();
+
+	/** Hours since the last visit matching set I of B ended (< 0: none since the game was loaded). */
+	float VisitAgo(const ALyudCityBuilding* B, int32 I, double NowHours) const;
+
 private:
+	/** A set with a visit condition: which building and set, and when its last matching visit ended (game hours: day * 24 +
+	 *  hour; < 0 none yet). */
+	struct FVisitListen
+	{
+		TWeakObjectPtr<ALyudCityBuilding> B;
+		int32 Set = -1;
+		FString Plot;
+		FString At;
+		TArray<FString> Who;
+		double LastAt = -1.0;
+	};
+	void AddListens(ALyudCityBuilding* B);
+	/** Drops the listens of unloaded buildings and rebuilds the indices (at a tick after an Unregister, not per frame). */
+	void PruneListens();
+	void BindLife();
+
+	TArray<FVisitListen> Listens;
+	/** Activity id -> Listens indices. */
+	TMultiMap<FName, int32> ListenByAct;
+	/** (the building's unique id << 16 | set) -> Listens index. */
+	TMap<uint64, int32> ListenOf;
+	/** Person -> the place they arrived at for a listened activity (read back when they leave). */
+	TMap<int32, int32> ArrivedAt;
+	TWeakObjectPtr<UPeopleLifeSubsystem> Life;
+	bool bLifeBound = false;
+	/** A building went away: its listens are dropped at the next tick. */
+	bool bListensStale = false;
+
 	TArray<TWeakObjectPtr<ALyudCityBuilding>> Buildings;
 	uint64 LastKey = 0;
 	float Accum = 1e9f;

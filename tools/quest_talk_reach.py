@@ -523,6 +523,13 @@ def main():
     with open(os.path.join(content, "PeopleData", "people.json"), encoding="utf-8") as f:
         pdata = json.load(f)
     people_keys = {lc(x.get("key") or x.get("id")) for x in pdata.get("people", [])}
+    residents = set()
+    tf_path = os.path.join(content, "PeopleData", "townsfolk.json")
+    if os.path.exists(tf_path):
+        with open(tf_path, encoding="utf-8") as f:
+            residents = {x.get("key", "") for x in json.load(f).get("people", [])}
+    with open(os.path.join(content, "UI", "quests.json"), encoding="utf-8") as f:
+        quest_ids = {q["id"] for q in json.load(f)["quests"]}
     people = parse_dialogue(os.path.join(content, "Dialogue", "npc_dialogue.txt"))
 
     remarks = scenes.get("remarks", [])
@@ -695,6 +702,11 @@ def main():
         if speaker not in prefixes or key in referenced:
             continue
         if key in blob or key[5:] in blob:
+            continue
+        # a townsperson's own quest line (line.<resident>.<quest>.<stage>...): ULyudFriends::OpenTalk builds the key at run
+        # time; tools/check_quest_talk.py checks these
+        parts = key.split(".")
+        if speaker in residents and len(parts) >= 5 and parts[2] in quest_ids:
             continue
         orphans.append(key)
 

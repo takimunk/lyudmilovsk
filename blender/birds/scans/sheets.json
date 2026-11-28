@@ -1,0 +1,144 @@
+{
+ "model": "gpt_image_2_6",
+ "service": "Higgsfield MCP generate_image(_batch)",
+ "args": {
+  "aspect_ratio": "4:3 (sheet 10: 1:1)",
+  "quality": "high",
+  "resolution": "4k",
+  "background": "opaque"
+ },
+ "layout": "columns = species, rows = front / left side / back",
+ "prompt_template": "see blender/birds/scans/sheet_prompt.txt",
+ "pilot": {
+  "job": "67ed91dd-6f4e-42e4-aa25-03a21cbeaf43",
+  "species": [
+   "Rook",
+   "HerringGull",
+   "GreatTit",
+   "Peregrine"
+  ],
+  "note": "side row had only one wing raised and an upright body; superseded"
+ },
+ "sheets": {
+  "7": {
+   "job": "81fbe0e8-420d-4617-ad72-7a4f51bb2923",
+   "species": [
+    "Rook",
+    "HoodedCrow",
+    "CarrionCrow",
+    "Raven"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193218_81fbe0e8-420d-4617-ad72-7a4f51bb2923.png",
+   "sha256": "2981cc77087723c6bff8b3a8276fb65e8f1adfc758840eb618fe14e68ca7d824"
+  },
+  "1": {
+   "job": "4b6ea908-3e52-48f5-a75f-2e6069d9137d",
+   "species": [
+    "GreatTit",
+    "BlueTit",
+    "Goldfinch",
+    "Chaffinch"
+   ],
+   "sha256": "f10744ba7cc6687617145ecf1b612b5689e2678746887310119d2bf46f088836",
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_194006_4b6ea908-3e52-48f5-a75f-2e6069d9137d.png"
+  },
+  "2": {
+   "job": "75fbf2fe-b8d2-4761-97c2-4c5ba12736b2",
+   "species": [
+    "Bullfinch",
+    "HouseSparrow",
+    "TreeSparrow",
+    "Robin"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193457_75fbf2fe-b8d2-4761-97c2-4c5ba12736b2.png",
+   "sha256": "827493064f829bb03315a6095cb86f4c1a6a26c4211512408832392978d65d0d"
+  },
+  "3": {
+   "job": "b1b1cafe-2d6e-40f0-980d-e731f76632bc",
+   "species": [
+    "SandMartin",
+    "BarnSwallow",
+    "CommonSwift",
+    "WhiteWagtail"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193457_b1b1cafe-2d6e-40f0-980d-e731f76632bc.png",
+   "sha256": "de9e5930e07e14dd6bc1997f17d5d0d23251167f05886728b7ccab80cce593cc"
+  },
+  "4": {
+   "job": "c3329953-70ea-4c2c-a415-8e6428cf5c2e",
+   "species": [
+    "Starling",
+    "SongThrush",
+    "Blackbird",
+    "Fieldfare"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193458_c3329953-70ea-4c2c-a415-8e6428cf5c2e.png",
+   "sha256": "05d81a6d32dee61504aff26abc2b7f4c3f9720e734fb9cb3508632e8c16fb29e"
+  },
+  "5": {
+   "job": "8b1904f0-0eae-4b96-8fb7-e584697582bb",
+   "species": [
+    "Waxwing",
+    "Jay",
+    "Nutcracker",
+    "Jackdaw"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193456_8b1904f0-0eae-4b96-8fb7-e584697582bb.png",
+   "sha256": "b01415876674083516c2231418fbd030c4991900fd32ae75bfd86e7e872e8e2d"
+  },
+  "6": {
+   "job": "ef17c040-e3c6-48f4-b0fb-5a24261737b5",
+   "species": [
+    "FeralPigeon",
+    "WoodPigeon",
+    "Magpie",
+    "Sparrowhawk"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193457_ef17c040-e3c6-48f4-b0fb-5a24261737b5.png",
+   "sha256": "7f071e13b7298a269ed9083bccef42008c5c3cd66a050f9b687734f5130dc049"
+  },
+  "8": {
+   "job": "14451153-7b7f-4eb3-98ba-e85da2fab73f",
+   "species": [
+    "BlackHeadedGull",
+    "CommonGull",
+    "HerringGull",
+    "Peregrine"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193457_14451153-7b7f-4eb3-98ba-e85da2fab73f.png",
+   "sha256": "5c1881b1a3512aee0218fdcb7e64dc651a4c633016f37cf64adade2e8de225a7"
+  },
+  "9": {
+   "job": "a9c07183-3613-4b51-b9aa-f16c141134b7",
+   "species": [
+    "CommonBuzzard",
+    "Cormorant",
+    "GreyHeron",
+    "MuteSwan"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193457_a9c07183-3613-4b51-b9aa-f16c141134b7.png",
+   "sha256": "ac00eec36781b5001ccbabef35dbecce1cd744293ee6e5df1a0cf7e698f1e0ce"
+  },
+  "10": {
+   "job": "eec3223f-e52f-4383-b55f-a920ced4367d",
+   "species": [
+    "WhiteTailedEagle",
+    "GoldenEagle",
+    "BlackBrowedAlbatross"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_193458_eec3223f-e52f-4383-b55f-a920ced4367d.png",
+   "sha256": "dc802871ee450310a47163aa36f474fc7fc318b751fb6200a33ee09f6fb73208"
+  },
+  "11": {
+   "job": "d34ee23b-c3db-441d-9126-243836329ae2",
+   "species": [
+    "MuteSwan",
+    "GreyHeron",
+    "Cormorant"
+   ],
+   "url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_221428_d34ee23b-c3db-441d-9126-243836329ae2.png",
+   "sha256": "e69b4bf5f1b516bda3bac42e1527de59792ce90f31087116db67af36f5325c72",
+   "note": "re-shoot with the neck stretched straight and level (single-valued centreline)"
+  }
+ }
+}

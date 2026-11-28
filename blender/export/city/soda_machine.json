@@ -1,0 +1,139 @@
+{
+ "type": "soda_machine",
+ "info": {
+  "name_ru": "Автомат газированной воды",
+  "name_en": "Soda-water automat",
+  "style": "late-soviet street furniture",
+  "use": "public",
+  "inspired_by": "the AT-101 / AT-110 street soda-water automats of the 1960s-80s USSR (red lit head, 1 and 3 kopeck slots, a shared faceted glass on a washer); proportions and details are our own"
+ },
+ "frame": "x along the street front, y into the plot, z up; origin on the front line, mid-frontage, z 0 = ground at the main entrance",
+ "footprint": [
+  [
+   -0.45,
+   0.005
+  ],
+  [
+   0.45,
+   0.005
+  ],
+  [
+   0.45,
+   0.755
+  ],
+  [
+   -0.45,
+   0.755
+  ]
+ ],
+ "height": 1.91,
+ "entrances": [],
+ "spots": [
+  {
+   "id": "drink",
+   "kind": "stand",
+   "pos": [
+    0.0,
+    -0.47,
+    0.0
+   ],
+   "yaw": 180.0
+  }
+ ],
+ "lamps": [],
+ "things": [
+  {
+   "id": "plain",
+   "kind": "machine",
+   "pos": [
+    -0.17,
+    0.1,
+    1.36
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "soda",
+    "syrup": 0
+   }
+  },
+  {
+   "id": "syrup",
+   "kind": "machine",
+   "pos": [
+    0.17,
+    0.1,
+    1.36
+   ],
+   "yaw": 0.0,
+   "props": {
+    "what": "soda",
+    "syrup": 1
+   }
+  }
+ ],
+ "flats": [],
+ "windows": [],
+ "light_tex": 64,
+ "notes": [],
+ "dress": [
+  {
+   "id": "broken",
+   "when": {
+    "months": [
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ],
+    "chance": 0.12
+   },
+   "tris": 14,
+   "bounds": [
+    [
+     -0.22,
+     0.104,
+     1.0
+    ],
+    [
+     0.22,
+     0.112,
+     1.14
+    ]
+   ]
+  },
+  {
+   "id": "winter",
+   "when": {
+    "months": [
+     1,
+     2,
+     3,
+     4,
+     11,
+     12
+    ]
+   },
+   "tris": 70,
+   "bounds": [
+    [
+     -0.41,
+     0.02,
+     0.33
+    ],
+    [
+     0.41,
+     0.73,
+     1.965
+    ]
+   ]
+  }
+ ],
+ "tris": {
+  "shell": 36,
+  "detail": 608,
+  "windows": 0,
+  "dress": 84
+ }
+}

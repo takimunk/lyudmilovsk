@@ -526,11 +526,13 @@ UMaterialInstanceDynamic* ULyudGarden::Mat(const FLinearColor& Colour)
 
 UStaticMeshComponent* ULyudGarden::AddBox(const FVector& At, const FVector& HalfCm, float Yaw, const FLinearColor& Colour, bool bCollide)
 {
-	static UStaticMesh* Cube = nullptr;
-	if (!Cube)
+	// weak: a raw static outlives a world reload, and the engine cube can be collected in between
+	static TWeakObjectPtr<UStaticMesh> CubeRef;
+	if (!CubeRef.IsValid())
 	{
-		Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+		CubeRef = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
 	}
+	UStaticMesh* Cube = CubeRef.Get();
 	if (!Site || !Cube)
 	{
 		return nullptr;
@@ -550,11 +552,12 @@ UStaticMeshComponent* ULyudGarden::AddBox(const FVector& At, const FVector& Half
 
 UStaticMeshComponent* ULyudGarden::AddCylinder(const FVector& At, float RadiusCm, float HalfHeightCm, const FLinearColor& Colour)
 {
-	static UStaticMesh* Cyl = nullptr;
-	if (!Cyl)
+	static TWeakObjectPtr<UStaticMesh> CylRef;
+	if (!CylRef.IsValid())
 	{
-		Cyl = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+		CylRef = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
 	}
+	UStaticMesh* Cyl = CylRef.Get();
 	if (!Site || !Cyl)
 	{
 		return nullptr;
@@ -1446,6 +1449,19 @@ void ULyudGarden::CloseSow()
 	SowItems.Reset();
 }
 
+int32 ULyudGarden::HarvestQuality(const FString& Item) const
+{
+	return Model ? FMath::Clamp(Model->LastQuality(Std(Item)), 1, 3) : 2;
+}
+
+void ULyudGarden::OwnJam(int32 Quality)
+{
+	if (Model)
+	{
+		Model->JamJarQuality = FMath::Clamp(Quality, 1, 3);
+	}
+}
+
 void ULyudGarden::Toast(const FText& Text) const
 {
 	if (ULyudGameScreen* Screen = ULyudGameScreen::Get(this))
@@ -1493,7 +1509,8 @@ void ULyudGarden::TickNeighbour(float DeltaTime)
 	if (bWant && !NeighbourBody)
 	{
 		const FString ModelName = Life->ShownModel(NeighbourId);
-		if (ModelName.IsEmpty())
+		// the model loaded in the background first (asked again next tick): Setup's load stalled the frame
+		if (ModelName.IsEmpty() || !ANpcBody::IsModelReady(this, ModelName))
 		{
 			return;
 		}
@@ -1510,6 +1527,7 @@ void ULyudGarden::TickNeighbour(float DeltaTime)
 			NeighbourBody = nullptr;
 			return;
 		}
+		ANpcBody::ReleaseModel(this, ModelName);      // the body holds it now
 		Life->SetPresentedExternally(NeighbourId, true);
 		NeighbourBody->Drive(NeighbourStand, NeighbourYaw, EPersonPose::Shovel, 1, 0.f, 0.f, DeltaTime, true);
 		AdviceClock = 4.f;

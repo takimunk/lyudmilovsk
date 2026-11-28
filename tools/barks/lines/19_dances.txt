@@ -1,0 +1,161 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The dances at the hall «Своды» on Friday and Saturday evenings (docs/dances.md): what the dancers and the old ones
+## watching from the tables say, the girls who ask the hero at the ladies' choice (22-23), a friend there, the young ones
+## setting off in the early evening, and the talk of the morning after. Russian: the speaker's own words never agree in
+## gender unless the set says sex; the hero is a teenage boy, and only girls of his age ask him.
+## ---------------------------------------------------------------------------------------------------------------
+
+## ---- on the floor
+
+[dnc_floor]
+doing = dance_evening
+weight = 4
+say town.dnc_floor.1 | Раз-два-три, раз-два-три… Только не смотри на ноги. | One-two-three, one-two-three… Just don't look at your feet. | ワン・ツー・スリー、ワン・ツー・スリー…足は見ないで。
+say town.dnc_floor.2 | Это же «Амурские волны»! Под них ещё бабушка танцевать училась. | It's "Waves of the Amur"! Grandma learned to dance to this one. | 「アムールの波」だ！　おばあちゃんもこれで踊りを覚えたんだって。
+say town.dnc_floor.3 | Кто опять поставил польку? Тут после фокстрота ещё не отдышишься. | Who put the polka on again? I haven't got my breath back from the foxtrot. | 誰がまたポルカかけたの？　フォックストロットの息がまだ戻らない。
+say town.dnc_floor.4 | Шар крутится, а голова у меня ещё быстрее. | The ball's spinning, and my head's spinning faster. | ミラーボールが回ってる。頭はもっと速く回ってる。
+say town.dnc_floor.5 | Под пластинку танцевать одно, под живой оркестр совсем другое. | Dancing to a record is one thing, to a live band quite another. | レコードで踊るのと生演奏で踊るのは、まるで別物。
+
+[dnc_floor_talk]
+doing = dance_evening
+doing2 = dance_evening
+weight = 3
+talk
+- town.dnc_floor_talk1.1 | Ты мне на ногу наступаешь. | You're treading on my foot. | 足、踏んでる。
+- town.dnc_floor_talk1.2 | Это я так веду. | That's me leading. | これがリードってやつ。
+- town.dnc_floor_talk1.3 | Веди тогда по паркету, а не по мне. | Then lead on the parquet, not on me. | なら床の上でリードして、わたしの上じゃなくて。
+talk
+- town.dnc_floor_talk2.1 | Белый танец будет? | Will there be a ladies' choice? | 白いダンス、ある？
+- town.dnc_floor_talk2.2 | В десять. Как всегда. | At ten. As always. | 十時。いつもどおり。
+- town.dnc_floor_talk2.3 | Тогда до десяти я никого не приглашаю. Пусть сами. | Then I'm not asking anyone until ten. Let them do it. | じゃあ十時まで誰も誘わない。向こうから来てもらう。
+talk
+- town.dnc_floor_talk3.1 | Пластинку бы сменить. | We should change the record. | レコード替えたいね。
+- town.dnc_floor_talk3.2 | Сторож говорит, эта лучшая. Она у него одна такая. | The watchman says this one's the best. He's only got the one like it. | 夜警はこれがいちばんだって。同じのは一枚しかないんだって。
+
+## ---- the old ones watching from the tables and the benches
+
+[dnc_watch]
+doing = dance_watch
+weight = 4
+say town.dnc_watch.1 | В наше время под вальс не прыгали. Плыли. | In our day nobody hopped to a waltz. We glided. | わたしらの頃は、ワルツで跳ねたりしなかった。すべるように踊ったもんだ。
+say town.dnc_watch.2 | Вон та пара хорошо идёт. Только он всё время считает губами. | That couple there move well. Only he keeps counting with his lips. | あの二人、上手だね。ただ男の子がずっと口で数えてる。
+say town.dnc_watch.3 | Сижу, смотрю. Смотреть тоже танец, только медленный. | I sit and watch. Watching is a dance too, just a slow one. | 座って見てる。見るのも踊りのうち、ゆっくりなやつさ。
+say town.dnc_watch.4 | Чай в буфете сегодня крепкий. Значит, смотритель в духе. | The tea at the buffet's strong tonight. That means the caretaker's in a good mood. | 今夜のビュッフェのお茶は濃い。管理人の機嫌がいい証拠だ。
+
+[dnc_watch_grannies]
+doing = dance_watch
+sex = female
+age = elder
+weight = 4
+say town.dnc_watch_grannies.1 | Я на этом паркете с мужем познакомилась. Он тогда тоже у стенки стоял. | I met my husband on this parquet. He was standing by the wall too, back then. | わたし、この床で夫と出会ったの。あの人も壁ぎわに立ってたっけ。
+say town.dnc_watch_grannies.2 | Посчитаю, кто с кем танцует, завтра будет о чём поговорить на лавочке. | I'll count who dances with whom; tomorrow there'll be plenty to talk about on the bench. | 誰が誰と踊ったか数えとこう。明日のベンチの話の種になる。
+
+[dnc_watch_talk]
+doing = dance_watch
+doing2 = dance_watch
+weight = 3
+talk
+- town.dnc_watch_talk1.1 | Смотри, Мамедовых девочка опять со всеми танцует. | Look, the Mamedov girl's dancing with everybody again. | ほら、マメドフさんとこの娘がまたみんなと踊ってる。
+- town.dnc_watch_talk1.2 | Пусть танцует. Нам с тобой уже только смотреть. | Let her. All we can do now is watch. | 踊らせときな。わたしらはもう見るだけさ。
+- town.dnc_watch_talk1.3 | Почему это только? Вот объявят дамский — посмотрим, кого пригласят. | What do you mean, all? When they call the ladies' choice, we'll see who gets asked. | だけってなにさ。白いダンスになったら、誰が誘われるか見ものだよ。
+talk
+- town.dnc_watch_talk2.1 | Раньше оркестр был в пять человек. | The band used to be five people. | 昔は楽団が五人いたのに。
+- town.dnc_watch_talk2.2 | А теперь пианист и барабанщик на табуретке. | And now it's a pianist and a drummer on a stool. | 今はピアノと、丸椅子の太鼓叩きだけ。
+- town.dnc_watch_talk2.3 | Зато громче. | Louder, though. | そのぶん、うるさいけどね。
+
+## ---- the hero at the dance
+
+[dnc_hero_wall]
+to = hero
+doing = dance_evening dance_watch
+hours = 19-22
+weekday = fri sat
+weight = 5
+say town.dnc_hero_wall.1 | Не стой у стенки, стенка и без тебя устоит. | Don't stand by the wall; the wall will stay up without you. | 壁ぎわに立ってないで。壁はあなたがいなくても倒れない。
+say town.dnc_hero_wall.2 | Пригласи кого-нибудь! Вон у колонны девочки скучают. | Ask someone! There are girls getting bored by the pillar. | 誰か誘いなよ！　柱のところで女の子たちが退屈してる。
+
+[dnc_hero_white]
+to = hero
+doing = dance_evening
+sex = female
+age = teen
+hours = 22-23
+weekday = fri sat
+weight = 9
+say town.dnc_hero_white.1 | Белый танец! Можно тебя пригласить? Не отказывайся, так не принято. | Ladies' choice! May I ask you? Don't say no, it isn't done. | 白いダンス！　誘ってもいい？　断っちゃだめ、そういう決まりだから。
+say town.dnc_hero_white.2 | Объявили дамский. Пойдём, а то подружки уже смотрят. | They've called the ladies' choice. Come on, my friends are already watching. | 白いダンスだって。行こう、友だちがもう見てる。
+say town.dnc_hero_white.3 | Ты у колонны стоишь, значит ждёшь. Вот я и пришла. | You're standing by the pillar, so you're waiting. So here I am. | 柱のそばに立ってるってことは、待ってるんでしょ。だから来た。
+
+[dnc_friend]
+to = hero
+doing = dance_evening dance_watch
+bond = friend close
+weight = 7
+say town.dnc_friend.1 | {0}! И ты на танцы? Вот это новость. Завтра расскажешь, с кем танцевал. | {0}! You at the dance too? That's news. Tomorrow you'll tell me who you danced with. | {0}！　君もダンス？　これはニュースだ。明日、誰と踊ったか教えてね。
+say town.dnc_friend.2 | {0}, смотри: у колонны стоит та, что весь вечер на тебя поглядывает. | {0}, look: by the pillar there's the one who's been glancing at you all evening. | {0}、ほら。柱のそばの子、ひと晩じゅう君のこと見てるよ。
+
+## ---- setting off, and the morning after
+
+[dnc_going]
+weekday = fri sat
+hours = 17.5-19.5
+age = 15-30
+doing = free
+at = outdoors
+weight = 2
+talk
+- town.dnc_going1.1 | Идёшь сегодня в «Своды»? | Going to the Vaults tonight? | 今夜「ヴォールト」行く？
+- town.dnc_going1.2 | Если туфли не жмут. | If my shoes don't pinch. | 靴がきつくなければね。
+- town.dnc_going1.3 | Жмут — значит, танцевать будешь осторожнее. | If they pinch, you'll dance more carefully. | きついなら、そのぶん丁寧に踊れる。
+talk
+- town.dnc_going2.1 | В семь танцы. Расчёска с собой? | Dances at seven. Got your comb? | 七時からダンス。くし持った？
+- town.dnc_going2.2 | С собой. Только ветер всё равно растреплет. | Got it. The wind will mess it all up anyway. | 持ったよ。どうせ風でぼさぼさになるけど。
+
+[dnc_after]
+weekday = sat sun
+hours = 8-14
+age = 13-35
+weight = 2
+say town.dnc_after.1 | Вчера на белом танце одного парня пригласили сразу трое. Трое! | At the ladies' choice last night three girls asked the same boy. Three! | 昨日の白いダンスで、ひとりの男の子に三人も申し込んだんだよ。三人！
+say town.dnc_after.2 | Ноги после вчерашнего гудят. Это была полька, она не прощает. | My legs are still aching from last night. That was the polka; it doesn't forgive. | 昨日のせいで足がじんじん。あれはポルカだった。容赦ないんだ。
+say town.dnc_after.3 | Сторож вчера опять выгонял всех ровно в одиннадцать. Как часы. | The watchman threw everyone out at eleven sharp again last night. Like clockwork. | 昨日も夜警がきっかり十一時にみんなを追い出した。時計みたいに。
+
+[dnc_after_bench]
+weekday = sat sun
+hours = 9-13
+age = elder
+doing = sit_bench
+weight = 3
+talk
+- town.dnc_after_bench1.1 | Видела вчера, кто с кем с танцев шёл? | Did you see who walked home from the dance with whom last night? | 昨日、ダンスの帰りに誰が誰と歩いてたか見た？
+- town.dnc_after_bench1.2 | Видела. И кто один шёл, тоже видела. | I saw. And I saw who walked alone, too. | 見たよ。ひとりで帰った子もね。
+- town.dnc_after_bench1.3 | Ничего, в субботу опять пойдут. | Never mind, they'll go again on Saturday. | 大丈夫、土曜にまた行くさ。
+talk
+- town.dnc_after_bench2.1 | Наш-то вчера на белый танец пригласили. | Our boy got asked for the ladies' choice last night. | うちの子、昨日白いダンスに誘われたんだって。
+- town.dnc_after_bench2.2 | Кто? | Who by? | 誰に？
+- town.dnc_after_bench2.3 | Не говорит. Улыбается и молчит. Значит, хорошая. | He won't say. Smiles and says nothing. So she must be nice. | 言わないの。にこにこ黙ってる。いい子なんだね。
+
+## ---- the talk of the town: the hero danced with one of the girls (rumour kind dance, detail: her name)
+
+[rumour_dance_greet]
+to = hero
+heard_of = dance
+age = adult elder
+weight = 8
+say town.rumour_dance_greet.1 | Говорят, на танцах в «Сводах» ты был нарасхват! А партнёрша — {1}, верно? | They say you were the toast of the dance at the Vaults! And your partner was {1}, wasn't she? | 「ヴォールト」のダンスで引っぱりだこだったって？　相手は{1}だろ？
+say town.rumour_dance_greet.2 | А, кавалер! {1} всем рассказывает, что ты ни разу не наступил ей на ногу. | Ah, the gallant! {1} is telling everybody you didn't once tread on her foot. | おや、騎士どの！　{1}が、君は一度も足を踏まなかったってみんなに話してるよ。
+
+[rumour_dance_greet_young]
+to = hero
+heard_of = dance
+age = kid teen
+weight = 8
+say town.rumour_dance_greet_young.1 | Это правда, что {1} танцевала с тобой? Весь класс знает! | Is it true {1} danced with you? The whole class knows! | ほんとに{1}と踊ったの？　クラスじゅう知ってるよ！
+say town.rumour_dance_greet_young.2 | Тили-тили-тесто… Ладно, ладно, молчу. Но {1} — это ведь правда! | Sitting in a tree… All right, all right, I'll shut up. But {1}, that's true! | ひゅーひゅー…はいはい、黙るって。でも{1}のことは本当でしょ！
+
+[rumour_dance_friend]
+to = hero
+heard_of = dance
+bond = friend close
+weight = 9
+say town.rumour_dance_friend.1 | {0}, говорят, твоя партнёрша на танцах — {1}. А мне ни слова! | {0}, they say your partner at the dance was {1}. And not a word to me! | {0}、ダンスの相手は{1}だったって聞いたよ。こっちにはひと言もなし！

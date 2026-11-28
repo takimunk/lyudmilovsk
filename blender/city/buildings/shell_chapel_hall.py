@@ -29,6 +29,7 @@ from _sheet import thick_sheet
 from _surrounds import add_surrounds
 from furn_int2 import Furn
 import interior_kit as kit
+import dress_kit as dk
 
 INFO = {
     "name_ru": "Дом собраний «Своды»", "name_en": "Shell Chapel Hall",
@@ -370,6 +371,10 @@ def hall_b(B, F):
     sx_, sy_, sz_ = gp["seats"][0][:3] if gp.get("seats") else (xc + 1.6, 21.5, zs)
     kit.stool(B, xc + 1.55, 21.5, zs, 90.0, h=0.5)
     T("stage_piano", "play", (xc + 3.0, 21.5, zs + 0.9), 270.0, what="piano")
+    # a trace of a visit (docs/city_dress.md "Traces of a visit"): whoever played in the evening left their music up on the
+    # piano at the keyboard's back edge (under the open lid) till the next day
+    with B.dress("piano_music", visit="play_piano", at="-STAGE", keep=14.0):
+        dk.sheet_music(B, xc + 3.0 - 0.8, 21.5, zs + 0.98, 270.0, tilt=70.0, seed=3)
     B.spot("stage_piano", "work", (xc + 1.55, 21.5, zs), 90.0)
     T("stage_piano_stool", "seat", (xc + 1.55, 21.5, zs + 0.5), 90.0, height=0.5)
     # a choir: two rows of wooden chairs on the stage's west half, a conductor's music stand, a microphone

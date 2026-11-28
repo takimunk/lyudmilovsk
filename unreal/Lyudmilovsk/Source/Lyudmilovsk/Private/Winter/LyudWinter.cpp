@@ -18,6 +18,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Volume.h"
 #include "HAL/IConsoleManager.h"
+#include "HeroCharacter.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "LandscapeProxy.h"
 #include "Materials/MaterialInterface.h"
@@ -453,6 +454,23 @@ void ULyudWinterSubsystem::Tick(float DeltaTime)
 		return;
 	}
 	LyudWinter::FWinterState& S = *State;
+	// nothing of the winter shows (spring to autumn, a thaw): the whole step at 4 Hz with the gathered time, not every
+	// frame (the MPC's dozen parameters, the weather read, the flakes' and near snow's checks); the first step after snow
+	// or ice comes back is at most a quarter second late
+	const bool bQuiet = (S.Phase == LyudWinter::EPhase::Idle || S.Phase == LyudWinter::EPhase::Ready)
+		&& S.In.LevelCm <= 0.2f && S.IceP.Cover <= 0.f && Now.SnowfallCmPerHour <= 0.02f && Now.BlowingSnow <= 0.f
+		&& (!Decal || !Decal->IsVisible()) && (!NearSnow || NearSnow->IsHidden()) && (!Ice || Ice->IsHidden())
+		&& (!Flakes || !Flakes->Flakes || !Flakes->Flakes->IsVisible()) && CVarWinterDebug.GetValueOnGameThread() == 0;
+	if (bQuiet)
+	{
+		QuietDt += DeltaTime;
+		if (QuietDt < 0.25f)
+		{
+			return;
+		}
+		DeltaTime = QuietDt;
+	}
+	QuietDt = 0.f;
 	if (!Sea.IsValid())
 	{
 		Sea = ALyudSea::Get(GetWorld());
@@ -1375,19 +1393,34 @@ void ULyudWinterSubsystem::KeepOffDecals()
 			It->SetReceivesDecals(false);
 		}
 	}
-	// the plants carry their own snow (their materials read MPC_LyudWinter)
-	for (TActorIterator<AActor> It(GetWorld()); It; ++It)
+	// the plants carry their own snow (their materials read MPC_LyudWinter). Walked by their classes (the object hash),
+	// not every actor of the level tested with WinterIsPlant: this runs every 2 s all winter long, and the whole-level
+	// walk was a periodic spike on a city of thousands of actors.
+	auto KeepOffPlant = [](AActor* A)
 	{
-		if (WinterIsPlant(*It))
+		A->ForEachComponent<UPrimitiveComponent>(false, [](UPrimitiveComponent* C)
 		{
-			It->ForEachComponent<UPrimitiveComponent>(false, [](UPrimitiveComponent* C)
+			if (C->bReceivesDecals)
 			{
-				if (C->bReceivesDecals)
-				{
-					C->SetReceivesDecals(false);
-				}
-			});
-		}
+				C->SetReceivesDecals(false);
+			}
+		});
+	};
+	for (TActorIterator<AProceduralPlant> It(GetWorld()); It; ++It)
+	{
+		KeepOffPlant(*It);
+	}
+	for (TActorIterator<AProceduralForest> It(GetWorld()); It; ++It)
+	{
+		KeepOffPlant(*It);
+	}
+	for (TActorIterator<AProceduralGrass> It(GetWorld()); It; ++It)
+	{
+		KeepOffPlant(*It);
+	}
+	for (TActorIterator<AProceduralVine> It(GetWorld()); It; ++It)
+	{
+		KeepOffPlant(*It);
 	}
 	if (Ice && Ice->Sheet && Ice->Sheet->bReceivesDecals)
 	{
@@ -1412,6 +1445,12 @@ void ULyudWinterSubsystem::Wade(float DeltaTime)
 	}
 	const float DepthM = IsReady() ? State->Field.DepthAt(Hero->GetActorLocation().X, Hero->GetActorLocation().Y) : 0.f;
 	const float Scale = Move->IsMovingOnGround() ? FMath::Lerp(1.f, 0.42f, FMath::Clamp((DepthM - 0.12f) / 0.8f, 0.f, 1.f)) : 1.f;
+	if (AHeroCharacter* Player = Cast<AHeroCharacter>(Hero))
+	{
+		// the hero sets his speeds afresh every frame (ReadInput): a scale on MaxWalkSpeed here would be overwritten
+		Player->SetWadeScale(Scale);
+		return;
+	}
 	const float Applied = WadeSpeed > 0.f ? WadeSpeed : 1.f;
 	if (FMath::Abs(Scale - Applied) > 0.01f)
 	{

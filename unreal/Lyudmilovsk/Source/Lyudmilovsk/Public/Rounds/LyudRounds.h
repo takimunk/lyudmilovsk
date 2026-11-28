@@ -74,6 +74,18 @@ public:
 	UPROPERTY(SaveGame) int32 ParcelsHanded = 0;
 	UPROPERTY(SaveGame) int32 RoublesEarned = 0;
 
+	/** The round under way when the game was saved (written in OnBeforeSave, resumed in OnAfterLoad; SavedKind -1: none). */
+	UPROPERTY(SaveGame) int32 SavedKind = -1;
+	UPROPERTY(SaveGame) int32 SavedRoute = -1;
+	UPROPERTY(SaveGame) TArray<int32> SavedStops;
+	UPROPERTY(SaveGame) TArray<int32> SavedResults;
+	UPROPERTY(SaveGame) int32 SavedPapers = 0;
+	UPROPERTY(SaveGame) int32 SavedStray = 0;
+	UPROPERTY(SaveGame) double SavedStarted = 0.0;
+	UPROPERTY(SaveGame) double SavedDeadline = 0.0;
+	UPROPERTY(SaveGame) int32 SavedRoundDay = 0;
+	UPROPERTY(SaveGame) int32 SavedTerrace = 0;
+
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override
 	{
@@ -87,7 +99,10 @@ private:
 	bool LoadData();
 	int32 Today() const;
 	double HourNow() const;
+	/** HourNow on the clock of the day the round began (over 24 after midnight). */
+	double RoundHour() const;
 	int32 RoundTerrace = 0;
+	int32 RoundDay = 0;
 
 	// the papers in flight and on the steps: a few meshes on one actor, reused
 	struct FFlight
@@ -123,4 +138,9 @@ private:
 	void Finish(bool bInTime);
 	void ResetAll();
 	FDelegateHandle NewGameHandle;
+	FDelegateHandle BeforeSaveHandle;
+	FDelegateHandle AfterLoadHandle;
+	void WriteRound();
+	void ResumeRound();
+	void ClearSavedRound();
 };

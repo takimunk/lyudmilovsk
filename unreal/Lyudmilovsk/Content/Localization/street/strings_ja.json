@@ -1,0 +1,18 @@
+{
+ "dev.group.street": "通り",
+ "dev.action.street.hot": "通り：暑い日（クワスとアイス）",
+ "dev.action.street.sweep": "通り：用務員が遊歩道を掃く",
+ "dev.action.street.laundry": "通り：中庭の洗濯物",
+ "dev.action.street.laundry_take": "通り：洗濯物を取り込む",
+ "dev.action.street.grannies": "通り：ベンチのおばあさんたち",
+ "dev.action.street.dominoes": "通り：中庭のドミノ",
+ "dev.action.street.leaves": "通り：落ち葉の山",
+ "dev.action.street.subbotnik": "通り：春の奉仕作業",
+ "dev.action.street.auto": "通り：すべて天気と日付どおり",
+ "dev.action.street.report": "通り：一日の予定をログへ",
+ "dev.tp.street.kvass": "通り：クワスの樽",
+ "dev.tp.street.icecart": "通り：アイスのカート",
+ "dev.tp.street.sweep": "通り：夜明けの遊歩道",
+ "dev.tp.street.yard": "通り：洗濯物の中庭",
+ "dev.tp.street.dominoes": "通り：ドミノのテーブル"
+}

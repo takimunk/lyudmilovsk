@@ -487,6 +487,16 @@
   },
   {
    "event": "do",
+   "target": "buy_street_*",
+   "topic": "street"
+  },
+  {
+   "event": "do",
+   "target": "street_*",
+   "topic": "street"
+  },
+  {
+   "event": "do",
    "target": "~chess",
    "topic": "games"
   },
@@ -534,6 +544,36 @@
    "event": "do",
    "target": "~bike",
    "topic": "bike"
+  },
+  {
+   "event": "do",
+   "target": "tch_call",
+   "topic": "phone_call"
+  },
+  {
+   "event": "do",
+   "target": "xk1_phone",
+   "topic": "phone_call"
+  },
+  {
+   "event": "do",
+   "target": "xk3_weigh",
+   "topic": "fortune"
+  },
+  {
+   "event": "do",
+   "target": "tch_globe",
+   "topic": "fortune"
+  },
+  {
+   "event": "do",
+   "target": "soda_plain",
+   "topic": "soda"
+  },
+  {
+   "event": "do",
+   "target": "soda_syrup",
+   "topic": "soda"
   }
  ],
  "topics": [
@@ -923,6 +963,17 @@
    "plain": 4
   },
   {
+   "id": "street",
+   "rank": 40,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 5
+  },
+  {
    "id": "brook",
    "rank": 44,
    "slot": "",
@@ -1086,6 +1137,39 @@
    "one": 0,
    "many": 0,
    "plain": 3
+  },
+  {
+   "id": "phone_call",
+   "rank": 32,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "fortune",
+   "rank": 28,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 3
+  },
+  {
+   "id": "soda",
+   "rank": 34,
+   "slot": "",
+   "doodle": "",
+   "once": false,
+   "filler": false,
+   "one": 0,
+   "many": 0,
+   "plain": 4
   },
   {
    "id": "eat",

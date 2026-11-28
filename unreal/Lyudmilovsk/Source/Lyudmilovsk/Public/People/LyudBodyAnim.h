@@ -206,9 +206,12 @@ protected:
 	virtual FAnimInstanceProxy* CreateAnimInstanceProxy() override { return new FLyudBodyAnimProxy(this); }
 	virtual void DestroyAnimInstanceProxy(FAnimInstanceProxy* InProxy) override { delete InProxy; }
 	virtual void NativeInitializeAnimation() override;
+	virtual void NativeUninitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 private:
+	/** The components this instance put on the owner (eyeballs, gamepad) destroyed, to be made again when needed. */
+	void DropProps();
 	FBikeRiderPose BikePose;
 	FLyudGesturePose GestureWant, GestureNow;
 	void UpdateGesture(float Dt);

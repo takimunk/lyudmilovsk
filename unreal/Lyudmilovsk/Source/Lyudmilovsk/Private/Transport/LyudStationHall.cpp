@@ -489,7 +489,12 @@ void ALyudStationHall::Unpresent(FPerson& P)
 {
 	if (P.Pid >= 0)
 	{
-		if (UPeopleLifeSubsystem* PeopleLife = UPeopleLifeSubsystem::Get(GetWorld()))
+		// counted with the cabins' riders (the same person may sit in a cabin while their hall body waits to go unseen)
+		if (ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this))
+		{
+			Tr->PresentPerson(P.Pid, false);
+		}
+		else if (UPeopleLifeSubsystem* PeopleLife = UPeopleLifeSubsystem::Get(GetWorld()))
 		{
 			PeopleLife->SetPresentedExternally(P.Pid, false);
 		}
@@ -546,7 +551,11 @@ bool ALyudStationHall::SpawnPerson(FPerson& P)
 	}
 	if (P.Pid >= 0)
 	{
-		if (UPeopleLifeSubsystem* PeopleLife = UPeopleLifeSubsystem::Get(GetWorld()))
+		if (ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this))
+		{
+			Tr->PresentPerson(P.Pid, true);
+		}
+		else if (UPeopleLifeSubsystem* PeopleLife = UPeopleLifeSubsystem::Get(GetWorld()))
 		{
 			PeopleLife->SetPresentedExternally(P.Pid, true);
 		}
@@ -765,17 +774,27 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 	// the staff: the next shift takes over (out of the player's sight)
 	for (FPerson& P : People)
 	{
-		if (P.Role == TEXT("passenger") || !P.Body.IsValid() || P.StaffIndex < 0)
+		if (P.Role == TEXT("passenger") || P.StaffIndex < 0)
 		{
 			continue;
 		}
 		const int32 Want = Life->OnShift(Station, TCHAR_TO_UTF8(*P.Role.ToString()), Tr->LifeWeekday(), Tr->LifeHour());
+		if (!P.Body.IsValid())
+		{
+			// a body that could not be made holds the role till their shift ends (then the plan below may bring the next)
+			P.StaffIndex = Want == P.StaffIndex ? P.StaffIndex : -1;
+			continue;
+		}
 		if (Want != P.StaffIndex && Unseen(P.At))
 		{
 			P.Body->Destroy();
 			P.Body = nullptr;
 			Unpresent(P);
-			if (Want >= 0)
+			if (Want < 0)
+			{
+				P.StaffIndex = -1;  // nobody after them: this entry is done (a later shift comes in by the plan, below)
+			}
+			else
 			{
 				const LyudTransport::FLifeStaff& St = Life->Staff[Want];
 				P.StaffIndex = Want;
@@ -785,8 +804,46 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 				{
 					P.Model = M;
 				}
-				SpawnPerson(P);
+				if (!SpawnPerson(P))
+				{
+					P.Pid = -1;     // not presented: nothing to take back
+				}
 			}
+		}
+	}
+	// a role with nobody standing for it whose shift starts now (the barista's buffet opening after the hall did, the next
+	// shift after a gap): they come in out of the player's sight, not only when the hall is next entered
+	for (const FPerson& Plan : StaffPlan)
+	{
+		bool bHas = false;
+		for (const FPerson& P : People)
+		{
+			bHas = bHas || (P.Role == Plan.Role && (P.StaffIndex >= 0 || P.Body.IsValid()));
+		}
+		if (bHas || !Unseen(Plan.At))
+		{
+			continue;
+		}
+		const int32 Want = Life->OnShift(Station, TCHAR_TO_UTF8(*Plan.Role.ToString()), Tr->LifeWeekday(), Tr->LifeHour());
+		if (Want < 0)
+		{
+			continue;
+		}
+		{
+			FPerson P = Plan;
+			P.StaffIndex = Want;
+			const LyudTransport::FLifeStaff& St = Life->Staff[Want];
+			const FString M = LifeModel(UTF8_TO_TCHAR(St.Key.c_str()), UTF8_TO_TCHAR(St.Mesh.c_str()), P.Pid);
+			if (!M.IsEmpty())
+			{
+				P.Model = M;
+			}
+			// kept even when the body can't be made (the role is then taken till the shift changes, not tried every second)
+			if (!SpawnPerson(P))
+			{
+				P.Pid = -1;         // not presented: nothing to take back
+			}
+			People.Add(P);
 		}
 	}
 	// the riders: those waiting here before the platform and those walking out from a cabin
@@ -804,8 +861,14 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 		{
 			continue;
 		}
-		Have.Add(P.Run);
-		if (Want.Contains(P.Run))
+		// the index is only good for the day it was taken on (a new day or a clock jump makes Today again, and the same
+		// index is then another rider: their body would stand here with this one's face)
+		const bool bSameRun = P.RunDay == Life->Day && P.Run < (int32)Life->Today.size() && Life->Today[P.Run].Trip == P.RunTrip;
+		if (bSameRun)
+		{
+			Have.Add(P.Run);
+		}
+		if (bSameRun && Want.Contains(P.Run))
 		{
 			P.GoneSince = -1.0;
 			continue;
@@ -867,6 +930,8 @@ void ALyudStationHall::SyncLife(const FVector& Cam, const FVector& Look)
 		FPerson P;
 		P.Role = TEXT("passenger");
 		P.Run = I;
+		P.RunDay = Life->Day;
+		P.RunTrip = R.Trip;
 		P.Slot = K;
 		P.At = Slots[K].At;
 		P.Yaw = Slots[K].Yaw;
@@ -1656,7 +1721,8 @@ void ALyudStationHall::StepLine(const FVector& Cam, const FVector& Look)
 		// a regular at the front: the barista knows what they'll have
 		const ULyudTransportSubsystem* Tr = ULyudTransportSubsystem::Get(this);
 		const LyudTransport::FStationLife* Life = Tr ? Tr->GetLife() : nullptr;
-		if (Barista && Life && P.Run >= 0 && P.Run < (int32)Life->Today.size() && Now >= NextUsualBark && FVector::Dist(Cam, P.At) < 1500.f)
+		if (Barista && Life && P.Run >= 0 && P.Run < (int32)Life->Today.size() && P.RunDay == Life->Day
+			&& Life->Today[P.Run].Trip == P.RunTrip && Now >= NextUsualBark && FVector::Dist(Cam, P.At) < 1500.f)
 		{
 			const LyudTransport::FLifeTrip& T = Life->Trips[Life->Today[P.Run].Trip];
 			if (Life->Riders[T.Rider].bRegular)

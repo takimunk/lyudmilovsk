@@ -78,7 +78,7 @@
    "price": 1,
    "minutes": 2,
    "sound": "phone_dial",
-   "like": "use_misc"
+   "like": "tch_call"
   },
   "xk1_crossword": {
    "prompt": "city.act.look.prompt",
@@ -128,6 +128,26 @@
   "xk1_notices": {
    "prompt": "city.act.look.prompt",
    "lines": [
+    {
+     "k": "city.tch.strip.guitar",
+     "once": true,
+     "collect": "strips/guitar"
+    },
+    {
+     "k": "city.tch.strip.puppy",
+     "once": true,
+     "collect": "strips/puppy"
+    },
+    {
+     "k": "city.tch.strip.swap",
+     "once": true,
+     "collect": "strips/swap"
+    },
+    {
+     "k": "city.tch.strip.cat",
+     "once": true,
+     "collect": "strips/cat"
+    },
     "city.look.lost.*",
     {
      "k": "city.xk.k1notice.1",
@@ -251,7 +271,7 @@
    ],
    "minutes": 1,
    "sound": "water_sip",
-   "like": "use_misc"
+   "like": "tch_fountain"
   },
   "xk3_pipes": {
    "prompt": "city.xk.3_pipes.prompt",
@@ -338,7 +358,7 @@
    "price": 1,
    "minutes": 1,
    "sound": "scale_clunk",
-   "like": "use_misc"
+   "like": "tch_fortune_scale"
   },
   "xk4_wrap": {
    "prompt": "city.xk.4_wrap.prompt",
@@ -455,7 +475,7 @@
    ],
    "minutes": 1,
    "sound": "water_sip",
-   "like": "use_misc"
+   "like": "tch_fountain"
   },
   "xk5_lost": {
    "prompt": "city.act.look.prompt",
@@ -708,6 +728,26 @@
    "minutes": 2,
    "any_hour": true,
    "lines": [
+    {
+     "k": "city.tch.strip.puppy",
+     "once": true,
+     "collect": "strips/puppy"
+    },
+    {
+     "k": "city.tch.strip.cat",
+     "once": true,
+     "collect": "strips/cat"
+    },
+    {
+     "k": "city.tch.strip.guitar",
+     "once": true,
+     "collect": "strips/guitar"
+    },
+    {
+     "k": "city.tch.strip.swap",
+     "once": true,
+     "collect": "strips/swap"
+    },
     "city.look.lost.*",
     {
      "k": "city.xk.nt.1",

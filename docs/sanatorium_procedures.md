@@ -31,10 +31,14 @@ The wing passes lint at 0/0. It has two lit pendants, and it doesn't shift any e
 ```
 "proc": {"title": key, "keys": key, "when": {line conditions}, "steps": [step, ...],
          "good": [lines], "fair": [lines], "poor": [lines], "good_share": 0.7, "fair_share": 0.35,
-         "collect": "set/piece", "vitals": true}
+         "collect": "set/piece", "vitals": true, "scene": false}
 step: {"do": "say|pick|pour|sip|breathe|tap|cut|measure|guest|news", "lines": [...], "guests": {"<key>"|"": [...]},
-       "by_pick": true, "secs": s, "count": n, "every": s, "window": s, "in": s, "out": s, "mark": [lo, hi], "minutes": n}
+       "by_pick": true, "secs": s, "count": n, "every": s, "window": s, "in": s, "out": s, "mark": [lo, hi], "minutes": n,
+       "chance": share, "stop_below": share}
 ```
+
+`"scene": true` makes it a small scene of the town instead of a cure (a payphone's dial, a street scale: docs/city_interiors.md
+"Coins, scales and strips"): it is not counted by `ProcCount` and sends no `procedure` event.
 
 `tools/city/interiors.py` checks every field and string. `CityThingsModel.h` holds the model: `FProcDef`, `FProcState`,
 `ProcNow`, `StartProc`, `TickProc`, `PressProc`, `EndProc` and `FinishProc`.
@@ -55,6 +59,9 @@ step: {"do": "say|pick|pour|sip|breathe|tap|cut|measure|guest|news", "lines": [.
 * **`measure`**: the doctor's numbers (see below). Its line gets them as `{0}`..`{9}`.
 * **`guest`**: a guest at the same procedure says their own line, from `guests[<key>]` or else `guests[""]`. `{0}` is
   their name. With nobody there, the step is left out.
+* **`chance`** (any step): the step happens on that share of scenes, at most once a day per thing. The soda machine's
+  coin that sticks works this way (`docs/soda_machines.md`). Dev action `interiors.soda_jam` makes every such step happen.
+* **`stop_below`** (a scored step): a result under it ends the scene there, with the poor lines.
 * **`news`**: the town's talk, the first "everywhere" topic line that holds (item 22). Otherwise the step's own lines are
   used.
 

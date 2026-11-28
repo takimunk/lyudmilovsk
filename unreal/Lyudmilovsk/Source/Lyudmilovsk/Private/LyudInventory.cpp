@@ -110,6 +110,13 @@ namespace
 		Good(TEXT("postcard"), K::Misc, L::Flat, FVector(0.2f, 10.f, 15.f), FLinearColor(0.8f, 0.78f, 0.7f), 4, 3.f);
 		Good(TEXT("badge"), K::Misc, L::Flat, FVector(0.5f, 3.f, 3.5f), FLinearColor(0.8f, 0.6f, 0.15f), 12, 2.f);
 		Good(TEXT("amber_charm"), K::Misc, L::Flat, FVector(1.2f, 3.5f, 4.5f), FLinearColor(0.9f, 0.5f, 0.05f), 90, 2.f);
+		// picked up on the waterline (docs/beach.md, ULyudBeach): a shell any day, amber after a storm
+		Good(TEXT("seashell"), K::Misc, L::Flat, FVector(1.5f, 4.5f, 5.f), FLinearColor(0.88f, 0.82f, 0.74f), 3, 2.f);
+		Good(TEXT("amber_piece"), K::Misc, L::Flat, FVector(1.5f, 2.5f, 3.f), FLinearColor(0.85f, 0.5f, 0.08f), 25, 1.5f);
+		// the rare find after a storm (BeachModel's EFind::AmberFly), sold at the souvenir counter; and the kiosk's paper flag
+		// that tops a finished sandcastle (docs/beach.md "Children at the castle")
+		Good(TEXT("amber_fly"), K::Misc, L::Flat, FVector(1.5f, 2.5f, 3.f), FLinearColor(0.95f, 0.62f, 0.12f), 150, 1.5f);
+		Good(TEXT("sand_flag"), K::Misc, L::Flat, FVector(0.4f, 8.f, 22.f), FLinearColor(0.85f, 0.15f, 0.12f), 3, 2.f);
 		// the sanatorium's diploma for a full course of cure (docs/city_interiors.md "Stays"): a stiff sheet; carried, it lengthens
 		// the hero's breath underwater (ULyudSwimComponent's air)
 		Good(TEXT("san_diploma"), K::Misc, L::Flat, FVector(0.3f, 21.f, 15.f), FLinearColor(0.92f, 0.86f, 0.7f), 0, 3.f);
@@ -151,6 +158,8 @@ namespace
 		Good(TEXT("lost_glasses"), K::Misc, L::Flat, FVector(1.5f, 6.f, 14.f), FLinearColor(0.12f, 0.12f, 0.12f), 0, 3.f);
 		Good(TEXT("lost_keys"), K::Misc, L::Flat, FVector(1.f, 4.f, 7.f), FLinearColor(0.72f, 0.63f, 0.25f), 0, 2.f);
 		Good(TEXT("lost_bear"), K::Misc, L::Pack, FVector(10.f, 12.f, 18.f), FLinearColor(0.54f, 0.35f, 0.17f), 0, 5.f);
+		// the yard keeper's whistle, lost in the autumn leaves of yard 1 (the town quest tq3_whistle, docs/quests.md): a pickup
+		Good(TEXT("keeper_whistle"), K::Misc, L::Flat, FVector(1.2f, 2.f, 6.f), FLinearColor(0.72f, 0.7f, 0.62f), 0, 2.f);
 		Good(TEXT("record_club_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.25f, 0.15f, 0.35f), 60, 4.f);
 		Good(TEXT("record_club_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.10f, 0.45f, 0.42f), 60, 4.f);
 		Good(TEXT("record_club_3"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.15f, 0.20f, 0.25f), 60, 4.f);
@@ -219,6 +228,9 @@ namespace
 		Good(TEXT("eskimo"), K::Food, L::Pack, FVector(2.5f, 5.f, 14.f), FLinearColor(0.75f, 0.75f, 0.8f), 22, 2.5f);
 		Good(TEXT("milkshake"), K::Drink, L::Glass, FVector(7.f, 7.f, 14.f), FLinearColor(0.98f, 0.94f, 0.88f), 20, 3.6f);
 		Good(TEXT("kvass"), K::Drink, L::Glass, FVector(8.f, 8.f, 12.f), FLinearColor(0.45f, 0.25f, 0.08f), 6, 4.f);
+		// the street in summer (docs/street_life.md): the barrel's three-litre can, the cart's fruit ice on a stick
+		Good(TEXT("kvass_can"), K::Drink, L::Pack, FVector(14.f, 14.f, 22.f), FLinearColor(0.74f, 0.76f, 0.8f), 15, 6.f);
+		Good(TEXT("fruit_ice"), K::Food, L::Pack, FVector(2.5f, 5.f, 13.f), FLinearColor(0.9f, 0.28f, 0.32f), 12, 2.5f);
 		Good(TEXT("tomato_juice"), K::Drink, L::Glass, FVector(6.f, 6.f, 9.f), FLinearColor(0.75f, 0.15f, 0.08f), 10, 3.f);
 		Good(TEXT("milk_pyramid"), K::Drink, L::Pack, FVector(9.f, 9.f, 11.f), FLinearColor(0.95f, 0.95f, 0.97f), 16, 4.5f);
 		Good(TEXT("condensed_milk"), K::Food, L::Pack, FVector(7.5f, 7.5f, 8.f), FLinearColor(0.85f, 0.9f, 0.95f), 35, 4.f);
@@ -262,6 +274,17 @@ namespace
 		Good(TEXT("tomatoes"), K::Food, L::Pack, FVector(7.f, 10.f, 14.f), FLinearColor(0.85f, 0.2f, 0.12f), 5, 5.f);
 		Good(TEXT("strawberries"), K::Food, L::Cup, FVector(8.f, 8.f, 12.f), FLinearColor(0.85f, 0.12f, 0.18f), 6, 4.f);
 		Good(TEXT("jam_strawberry"), K::Food, L::Glass, FVector(8.f, 8.f, 12.f), FLinearColor(0.6f, 0.05f, 0.1f), 40, 4.f);
+		// cooked by the hero himself from the bed and the catch (docs/kitchen.md, ULyudKitchen): a bowl or a plate, eaten by hand
+		Good(TEXT("dish_ukha"), K::Food, L::Pack, FVector(7.f, 16.f, 16.f), FLinearColor(0.82f, 0.74f, 0.5f), 35, 8.f);
+		Good(TEXT("dish_fried_potatoes"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.85f, 0.65f, 0.25f), 25, 8.f);
+		Good(TEXT("dish_fried_fish"), K::Food, L::Pack, FVector(4.f, 18.f, 18.f), FLinearColor(0.72f, 0.47f, 0.18f), 30, 8.f);
+		Good(TEXT("dish_salad"), K::Food, L::Pack, FVector(6.f, 16.f, 16.f), FLinearColor(0.75f, 0.3f, 0.2f), 20, 8.f);
+		// the dishes the town teaches (docs/kitchen.md "Recipes the town teaches")
+		Good(TEXT("dish_okroshka"), K::Food, L::Pack, FVector(7.f, 14.f, 14.f), FLinearColor(0.9f, 0.86f, 0.78f), 20, 8.f);
+		Good(TEXT("dish_fried_smelt"), K::Food, L::Pack, FVector(4.f, 16.f, 16.f), FLinearColor(0.8f, 0.58f, 0.26f), 30, 8.f);
+		Good(TEXT("dish_herring_potatoes"), K::Food, L::Pack, FVector(5.f, 18.f, 18.f), FLinearColor(0.75f, 0.68f, 0.55f), 30, 8.f);
+		Good(TEXT("dish_draniki"), K::Food, L::Pack, FVector(4.f, 16.f, 16.f), FLinearColor(0.82f, 0.6f, 0.28f), 25, 8.f);
+		Good(TEXT("dish_carrot_salad"), K::Food, L::Pack, FVector(5.f, 14.f, 14.f), FLinearColor(0.95f, 0.55f, 0.15f), 15, 8.f);
 		// the diner by the lower station (docs/diner.md): ordered over its counter and served on a plate or in a cup there (ALyudDiner,
 		// Content/Food/food.json "plated"), eaten with a fork or a spoon or drunk at the counter; the burger in the hand. The looks here are
 		// only fallbacks (a burger left in the pocket)
@@ -329,6 +352,11 @@ namespace
 		// winter play (docs/winter_play.md): skates on the feet (the pond's ice glides under them), the banya's felt hat
 		Wear(TEXT("skates"), ELyudEquipSlot::Feet);
 		Wear(TEXT("banya_hat"), ELyudEquipSlot::Head);
+		// the department store's clothes (docs/look.md, ULyudLook: the outer layer's look, what residents say in the weather)
+		Wear(TEXT("wind_jacket"), ELyudEquipSlot::Outer);
+		Wear(TEXT("raincoat"), ELyudEquipSlot::Outer);
+		Wear(TEXT("winter_coat"), ELyudEquipSlot::Outer);
+		Wear(TEXT("cap"), ELyudEquipSlot::Head);
 		// fishing (docs/fishing.md): the rods (taken in the hand), their baits (a bait taken in the hand goes on the rig; each unit is
 		// one on the hook), the spoon (cast and wound in, lost only with the line), and every fish one can catch (fish_<species>)
 		FLyudItemDef Rod;
@@ -1079,12 +1107,13 @@ void ULyudInventoryUI::Tick(float)
 
 void ULyudInventoryUI::Lock(bool bLock)
 {
+	const bool bWasLocked = LockCount > 0;
+	LockCount = bLock ? LockCount + 1 : FMath::Max(0, LockCount - 1);
 	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
-	if (!PC || bLocked == bLock)
+	if (!PC || bWasLocked == (LockCount > 0))
 	{
 		return;
 	}
-	bLocked = bLock;
 	PC->SetIgnoreLookInput(bLock);
 	PC->SetIgnoreMoveInput(bLock);
 	PC->bShowMouseCursor = bLock;

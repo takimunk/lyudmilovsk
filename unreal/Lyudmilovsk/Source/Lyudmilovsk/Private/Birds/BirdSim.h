@@ -108,6 +108,10 @@ namespace LyudBirds
 		float Fov = 300.f;               // deg
 		float Tameness = 0.3f;           // 0..1: how fast it learns to trust
 		float Curiosity = 0.3f;          // 0..1: comes closer to look
+		// food (BirdEcology.cpp FoodSense): how far off it spots feed in a person's hand or thrown on the ground, sharp-eyed
+		// and bold town birds (pigeons, sparrows, crows, gulls) from far, shy woodland birds only near; 0 = never comes to it
+		float FoodNotice = 0.f;          // m
+		float BegDistance = 3.f;         // m from the person it lands and waits at (bolder: nearer)
 		// other birds
 		int Dominance = 30;              // the bigger number wins a spot
 		bool bKlepto = false;            // steals food (gulls, crows)
@@ -166,7 +170,7 @@ namespace LyudBirds
 		V3 A, B;                    // a point (A == B) or a segment (ridge, rope, ledge)
 		float Radius = 0.f;         // patch round it to walk in (ground and water)
 		int Capacity = 8;
-		uint8_t Flags = 0;          // 1 guessed tree, 2 hero plant (replaced in the game), 4 a feeder's tray (FFeeder)
+		uint8_t Flags = 0;          // 1 guessed tree, 2 hero plant (replaced in the game), 4 a feeder's tray (FFeeder), 8 dropped by the game
 		// live
 		int Occupants = 0;
 		float Disturbed = 0.f;      // game seconds until the birds trust this spot again
@@ -221,8 +225,15 @@ namespace LyudBirds
 		float Struggle = 0.f;       // s it has been flying without making way against the wind
 		uint8_t Weather = 0;        // EWeathering: what the weather has it doing now (a pose for the game)
 		float RidgeYaw = 0.f;       // riding a cliff's updraft: the way along the rim it beats up and down
+		float GustHeld = 0.f;       // s it has sat crouched through gusts without a lull (GustHolds lets go at 20 s)
 		double SightUntil = -1.0;   // the sight line to the player is taken as it was until then (a trace per bird per frame was too many)
 		bool bSightClear = true;
+		// food it spotted (the feed in the player's hand, a handful thrown): it comes and waits or pecks (FWorld::LureThink)
+		int Lure = -2;              // -2 none, -1 the player's hand, k >= 0 the thrown pile Piles[k]
+		float LureTime = 0.f;       // s since it set off for the food
+		float LureCool = 0.f;       // s before it may be drawn to food again (after giving up or a fright)
+		bool bSpotChecked = false;  // it sits on a perch checked against the real branch/roof near the camera (FWorld::Perch)
+		bool bSpotOk = false;       // the spot it is flying to was checked (it becomes bSpotChecked when it lands there)
 	};
 
 	struct FGroup
@@ -244,6 +255,7 @@ namespace LyudBirds
 		V3 Avoid;
 		float AvoidR = 0.f;
 		bool bAvoidPlayer = false;
+		int Lured = 0;              // members at the food now (the others follow them: a flock finds food together)
 	};
 
 	/** The player, as birds perceive them (filled by the wrapper ~every frame). */
@@ -255,11 +267,12 @@ namespace LyudBirds
 		float TurnRate = 0.f;            // camera angular speed, deg/s
 		bool bCrouched = false;
 		bool bOffer = false;             // food held out
+		bool bFeed = false;              // feed in the hand (the bag carried, or held out): birds that like it come from FoodNotice
 		V3 Palm;
 		float HandSpeed = 0.f;           // m/s of the palm
 		float ExtraThreat = 0.f;         // added by gameplay (AddPlayerThreat), decays
 		bool bClaimedBird = false;       // the player is a bird now: birds treat them as one
-		float OfferLike[64];             // how much each species wants the food held out, 0..1 (the feed's table, BirdFeeder.cpp)
+		float OfferLike[64];             // how much each species wants the feed in the hand, 0..1 (the feed's table, BirdFeeder.cpp)
 		FPlayer() { for (float& L : OfferLike) L = 1.f; }
 	};
 
@@ -280,6 +293,23 @@ namespace LyudBirds
 		float Ready = 0.f;                // 0..1: how far the birds round about have found it (the game ramps it over a couple of hours)
 		float Food = 0.f;                 // handfuls in it
 		float Eaten = 0.f;                // handfuls pecked since the game last took them off
+	};
+
+	/** A handful of feed the player threw on the ground (G): birds that like it and spot it come and peck it up. */
+	struct FPile
+	{
+		bool bActive = false;
+		V3 Pos;
+		float Food = 0.f;                 // handfuls left
+		float Like[64] = {};              // how much each species wants it, 0..1
+		double Until = 0.0;               // gone (blown about, trodden in) by then, if not eaten
+	};
+
+	/** Something standing birds fly round, not through: the player, a person, a cat (a vertical capsule). */
+	struct FBody
+	{
+		V3 Feet;
+		float Height = 1.8f, Radius = 0.35f;
 	};
 
 	/** A ground animal birds watch out for: the animal life's cats and dogs (docs/animals.md), filled by the game every frame. */
@@ -353,6 +383,8 @@ namespace LyudBirds
 		bool bNests = true;
 		/** The species' signature behaviours near the hero (BirdHabit.h); off = none (A/B, lyud.Birds.Habits 0). */
 		bool bHabits = true;
+		/** Flying birds swerve round the player and the people near (AvoidBodies); off = straight through (A/B, lyud.Birds.Avoid 0). */
+		bool bAvoid = true;
 	};
 
 	/** Line-of-sight test from the wrapper (true = clear); null = always clear. */
@@ -369,6 +401,26 @@ namespace LyudBirds
 		FPlayer Player;
 		/** Cats and dogs (cleared and refilled by the game each frame); empty = none. */
 		std::vector<FBeast> Beasts;
+		/** People near the camera (the game refills it now and then): flying birds steer round them and the player. */
+		std::vector<FBody> Bodies;
+		/** Thrown feed (index = pile id; an eaten one goes inactive and is reused). */
+		std::vector<FPile> Piles;
+		/** Throws a handful at P (m) that each species wants by Like (64 entries); returns its id. */
+		int AddPile(const V3& P, float Handfuls, const float* Like);
+		/** Handfuls of thrown feed the birds ate since the last call (all piles). */
+		float TakePileEaten() { const float E = PileEaten; PileEaten = 0.f; return E; }
+		/**
+		 * The real thing under a perch near the camera (the game: a branch of the drawn tree, a roof, a rail): moves Spot onto
+		 * it and returns 1, 0 if there is nothing within reach (the spot is in the air), -1 if it can't tell now (checked
+		 * again later). Null = every spot is good (tools/birdsim).
+		 */
+		std::function<int(const FBird& B, const FSite& Site, V3& Spot)> Perch;
+		/** Perches found in the air and moved or given up (Perch): for the report and tests. */
+		int PerchMoved = 0, PerchRefused = 0;
+		/** Bird-steps a flying bird was inside the player's body (near the camera): for the report and A/B of AvoidBodies. */
+		int Intrusions = 0;
+		/** How far off a bird of this species spots feed now (m; 0 = it never comes to it). */
+		float FoodNoticeDist(const FBird& B, bool bThrown) const;
 		FSightFn Sight;
 		/** Exact ground height at (X, Y) from the wrapper (a line trace); false = use the grid. */
 		std::function<bool(float X, float Y, float& Z)> Probe;
@@ -466,6 +518,8 @@ namespace LyudBirds
 		float NoGridZ = -43.f;
 		/** The clock jumped (developer mode, a loaded save): every group goes straight to where it would be now. */
 		void Resettle();
+		/** Sends a bird flying to Spot on Site (-1: a spot of its own); a perch near the camera is checked first (Perch). */
+		void FlyTo(FBird& B, int Site, const V3& Spot);
 		/** Advances the world by Dt seconds (call every frame with the frame's dt). */
 		void Step(float Dt);
 		/** Position a bird is drawn at now (between its coarse steps). */
@@ -527,6 +581,9 @@ namespace LyudBirds
 		double LastThink[4] = {};
 		struct FPredator { int Bird = -1; int Prey = -1; float Timer = 0.f; float Mobbed = 0.f; };
 		std::vector<FPredator> Predators;
+		float PileEaten = 0.f;
+		int LuredAtHand = 0;
+		int PerchBudget = 0;        // Perch checks left this step (they trace and read tree skeletons in the game)
 
 		void BuildHash();
 		void ForNear(const V3& P, float R, const std::function<void(int)>& Fn) const;
@@ -557,7 +614,6 @@ namespace LyudBirds
 		V3 SpotOn(const FSite& Site, uint32_t& Rng) const;
 		void SendGroup(FGroup& G, int Site);
 		bool Avoided(const FGroup& G, const V3& P) const;
-		void FlyTo(FBird& B, int Site, const V3& Spot);
 		void SetAct(FBird& B, EAct A, float Len);
 		void Flush(FBird& B, const V3& From, int Cause);
 		void Settle(FBird& B);
@@ -580,6 +636,20 @@ namespace LyudBirds
 		float Danger(const FBird& B, float Dist, bool bSeen) const;
 		void PlaceAtStart(FBird& B, FGroup& G);
 		void UpdateApproach(FBird& B, float Dt);
+		/** Spots food it likes (the player's feed, a thrown pile) and sets off for it; LureThink runs it there. */
+		void UpdateLure(FBird& B, float Dt);
+		bool LureThink(FBird& B, float Dt);
+		void EndLure(FBird& B, float Cool);
+		/** Where to wait for the hand (a ring round the player at its beg distance, on the ground) or peck at a pile. */
+		bool LureSpot(FBird& B, V3& Spot);
+		/** How far from the player a bird waits for the hand now (m). */
+		float WaitDist(const FBird& B) const;
+		const float* LureLike(int Lure) const { return Lure == -1 ? Player.OfferLike : Piles[Lure].Like; }
+		V3 LurePos(int Lure) const { return Lure == -1 ? Player.Feet : Piles[Lure].Pos; }
+		/** Flying round the player and the people near (cheap: a few capsules, only for birds near the camera). */
+		void AvoidBodies(const FBird& B, const FSpecies& S, V3& Want) const;
+		/** A perch spot near the camera checked against the real world (Perch); false = take another place. */
+		bool CheckPerch(FBird& B, int Site, V3& Spot);
 		/** Where the hand is for this bird: the summon's palm for the called bird, the offer's for the others. */
 		const V3& PalmFor(const FBird& B) const { return B.Id == Summoned ? SummonPalm : Player.Palm; }
 		/** Is there something in the hand for this bird (food held out, or it was called)? */

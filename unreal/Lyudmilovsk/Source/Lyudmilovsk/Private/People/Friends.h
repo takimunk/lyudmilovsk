@@ -32,6 +32,9 @@ namespace LyudFriends
 		int Outing = 12;
 		int Festival = 8;       // a holiday spent together: met at the festival (once a day a friend)
 		int FestivalLevel = 3;  // from a friend up
+		int Chat = 1;           // a talk with him (E on them, docs/town_talk.md "A talk"): the first topic of a day
+		int ChatAnswer = 1;     // he answered their question
+		int ChatCap = 2;        // a day's talks give at most this
 		int TeaLevel = 2;       // a host invites to tea from this level
 		int TeaEvery = 7;       // days between a tea (or a missed invitation) and the next invitation
 		int TeaAhead = 2;       // the tea is this many days after the invitation is written (its letter takes a post day)
@@ -125,6 +128,8 @@ namespace LyudFriends
 		int OutingDay = -1;         // an invitation to their outing: on this day (-1 none)
 		int OutingLast = -1;        // the day of the last outing he was invited to
 		int FestDay = -1;           // the last holiday they met at (once a day)
+		int ChatDay = -1, ChatToday = 0;    // the last day they talked (E on them), the points the talks of that day gave
+		int Chats = 0;              // days they talked on
 		int LevelShown = 0;         // the highest level already told (the game's toast once each)
 	};
 
@@ -173,6 +178,10 @@ namespace LyudFriends
 		int Outing(const std::string& Key, int Day);
 		/** They met at a holiday's gathering (docs/festivals.md "The new toys"): counts once a day, from a friend up. */
 		int Festival(const std::string& Key, int Day);
+		/** A talk with him (docs/town_talk.md "A talk"): a topic heard (the day's first counts), his answer to their question;
+		 *  a day's talks give at most FRules::ChatCap. */
+		int Chatted(const std::string& Key, int Day);
+		int ChatAnswered(const std::string& Key, int Day);
 
 		/** What they think of an item (no state). */
 		EGift Likes(const std::string& Item, const FWho& Who) const;

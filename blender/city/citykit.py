@@ -307,7 +307,22 @@ class Building:
 WEATHER_WORDS = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")   # LyudCity::WeatherBits, same order
 SEASONS = {"winter": (12, 1, 2), "spring": (3, 4, 5), "summer": (6, 7, 8), "autumn": (9, 10, 11),
            "cold_months": (11, 12, 1, 2, 3)}
-DRESS_KEYS = ("weather", "weather_not", "months", "season", "weekdays", "hours", "festival", "chance", "phase", "open")
+DRESS_KEYS = ("weather", "weather_not", "months", "season", "weekdays", "hours", "festival", "chance", "phase", "open",
+              "visit", "at", "keep", "who")
+_ACTIVITY_IDS = []
+
+
+def activity_ids():
+    """The people's activity ids (unreal/Lyudmilovsk/Content/PeopleData/activities.json): what a visit= may name."""
+    if not _ACTIVITY_IDS:
+        import json
+        p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "unreal", "Lyudmilovsk", "Content",
+                         "PeopleData", "activities.json")
+        try:
+            _ACTIVITY_IDS.extend(a["id"] for a in json.load(open(p, encoding="utf-8"))["activities"])
+        except (OSError, ValueError, KeyError):
+            pass
+    return _ACTIVITY_IDS
 
 
 def dress_when(w):
@@ -323,6 +338,11 @@ def dress_when(w):
                                   [from, to). Weekly drawings: four sets phase=(28, 0, 7), (28, 7, 14)...; a jigsaw that
                                   grows one stage a day for six days: stage k phase=(9, k, 9)
         open=True | False         the building's public open hours (ALyudCityBuilding OpenHour..CloseHour)
+        visit=("eat_home",)       a trace somebody left: shown for `keep` hours (default 3) after a townsperson ended one of
+                                  these activities (activities.json ids) at the place `at` of this plot: "" (default) any place
+                                  of the building, "/0-03" its flat 0-03 (people place id <plot>/0-03), "-LOUNGE" the place
+                                  <plot>-LOUNGE. who=("t_key" | occupation, ...): only these people. Not saved: after a load
+                                  the trace comes with the next visit (docs/city_dress.md "Traces of a visit")
     Returns a plain dict with only lists and numbers (the export json; the game's LyudCity::FDressWhen reads the same)."""
     bad = [k for k in w if k not in DRESS_KEYS]
     if bad:
@@ -369,6 +389,25 @@ def dress_when(w):
         out["phase"] = [per, a, b]
     if "open" in w:
         out["open"] = bool(w["open"])
+    if any(k in w for k in ("at", "keep", "who")) and "visit" not in w:
+        raise ValueError("dress at/keep/who need visit=")
+    if "visit" in w:
+        acts = [w["visit"]] if isinstance(w["visit"], str) else list(w["visit"])
+        known = activity_ids()
+        bad = [a for a in acts if known and a not in known]
+        if not acts or bad:
+            raise ValueError("dress visit: unknown activities %r (activities.json ids)" % (bad or acts))
+        at = str(w.get("at", ""))
+        if at and at[0] not in "/-":
+            raise ValueError("dress at %r: \"\" (the building), \"/<flat>\" or \"-<PLACE>\"" % at)
+        keep = float(w.get("keep", 3.0))
+        if not 0.0 < keep <= 48.0:
+            raise ValueError("dress keep (0, 48] hours: %r" % keep)
+        out["visit"] = acts
+        out["at"] = at
+        out["keep"] = keep
+        if "who" in w:
+            out["who"] = [w["who"]] if isinstance(w["who"], str) else list(w["who"])
     return out
 
 
@@ -397,7 +436,8 @@ def dress_in_hours(h, o, c):
 def dress_visible(when, plot, did, now):
     """Is a set with condition `when` shown? now: {"since": days since the game began, "day": absolute day number,
     "hour", "weekday", "month", "weather": set of WEATHER_WORDS, "festivals": set of ids, "festival_today": bool,
-    "open": bool}. Mirrors LyudCity::DressVisible (tools/citydress checks they agree)."""
+    "open": bool, "visit_ago": {set id: hours since the last matching visit ended}}. Mirrors LyudCity::DressVisible
+    (tools/citydress checks they agree)."""
     wx = now.get("weather", set())
     if "weather" in when and not any(x in wx for x in when["weather"]):
         return False
@@ -427,6 +467,10 @@ def dress_visible(when, plot, did, now):
         return False
     if "chance" in when and dress_hash01(plot, did, now["day"]) >= when["chance"]:
         return False
+    if "visit" in when:
+        ago = now.get("visit_ago", {}).get(did)
+        if ago is None or not (0.0 <= ago < when["keep"]):
+            return False
     return True
 
 

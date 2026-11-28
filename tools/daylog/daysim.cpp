@@ -311,7 +311,8 @@ int main(int Argc, char** Argv)
 			{ "bird_habit", "x", "bird_habit" }, { "cup_won", "x", "cup" }, { "beat", "x", "win" }, { "round_done", "t3", "rounds" },
 			{ "winter", "snowball_fight", "snow_play" }, { "winter", "fall", "skate" }, { "winter", "venik", "banya" },
 			{ "winter", "walrus_club", "walrus" }, { "fined", "conductor", "fined" }, { "collection", "x", "collection" },
-			{ "do", "pu_bakery_cat", "cat" }, { "reach", "beach", "place" } };
+			{ "do", "pu_bakery_cat", "cat" }, { "reach", "beach", "place" }, { "do", "tch_call", "phone_call" }, { "do", "xk1_phone", "phone_call" },
+			{ "do", "xk3_weigh", "fortune" }, { "do", "tch_globe", "fortune" } };
 		for (const auto& W : Want)
 		{
 			const FTopic* T = M.Data.Match(W[0], W[1]);

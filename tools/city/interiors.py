@@ -82,6 +82,14 @@ ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "
 # photo studio's counter service, the darkroom where the hero develops his own film, the photo club's monthly contest (its
 # table: hand a print in, hear the result) and the wall of its winners (Private/Photo/LyudPhoto.cpp, docs/photo.md)
 OPEN_SCREENS = ("books", "piano", "photo_lab", "photo_darkroom", "photo_contest", "photo_wall")
+# the beach's own quest event (ULyudBeach, docs/beach.md): beach shell | amber | skip3 | skip5 | skip_record | castle | swim ...
+QUEST_EVENTS += ("beach",)
+# the kitchen (ULyudKitchen, docs/kitchen.md): a hot plate opens its recipes; its quest event: cook dish | ukha | fried_potatoes | fried_fish | salad | jam
+OPEN_SCREENS += ("cook",)
+QUEST_EVENTS += ("cook",)
+# a stamp of a collection given (ULyudCityThings::GiveStamp tells the quests stamp <set/piece>; docs/promenade.md: the band's whole
+# programme, the lighthouse coming on)
+QUEST_EVENTS += ("stamp",)
 # a line's conditions (docs/city_interiors.md "Lines by the day and the hour"): hours [from, to), weekdays, a calendar date or
 # range ("MM-DD" or ["MM-DD", "MM-DD"], wrapping the year), days since the game began (after N), every [n, r] game days
 # festival ("any", "none", an id of PeopleData/festivals.json or a list of ids), weather (a word of WEATHER or a list: any of
@@ -94,10 +102,12 @@ LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", 
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
-            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments", "rewards")
+            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments", "rewards", "dev_points")
 # what a complete collection gives (docs/city_interiors.md "A complete set pays"): a reward's fields
 REWARD_FIELDS = ("name", "note", "pay", "item", "count", "item_from", "like", "free", "days")
 # the staff talk (docs/city_interiors.md "Staff talk"): a topic's fields besides its line conditions (when it is offered)
+# the hero's look (ULyudLook, docs/look.md): the barber's chair, the clothes rail and the fitting room open its pages
+OPEN_SCREENS += ("barber", "clothes", "fitting")
 TOPIC_FIELDS = ("id", "k", "lines", "once", "gives", "everywhere")
 MAX_TOPICS = 8
 # room tones (docs/city_interiors.md "Room tones")
@@ -122,6 +132,12 @@ MAIN_STRINGS = os.path.join(CONTENT, "Localization", "strings_ru.json")
 TOWN_STRINGS = os.path.join(CONTENT, "Localization", "town", "strings_ru.json")
 PROP_ORDER = ("topic", "what", "service", "item", "to", "role", "shop")
 MIN_GAP = 0.3
+# rooms that stand on no plot of the plan (the hero's room in the club, docs/hero_room.md): [{"id", "kind", "building", "front"
+# (Unreal metres), "yaw", "name_ru", "name_en"}]; their things, acts and teleports are made like a plot's
+EXTRA_PLACES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "extra_places.json")
+# the places of the hero's room are his own screen too (Private/Home/LyudHeroRoom.cpp); kept apart from the list above
+# so that the two do not collide in merges
+OPEN_SCREENS += ("home",)
 UNIT_TYPE = "promenade_unit"   # the promenade units' rooms (exports promenade_unit__<variant>.json)
 FOOTPRINT_SLACK = 3.0
 
@@ -304,7 +320,8 @@ def load_strings():
 
 
 CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}, "topics": {}, "topic_sets": {},
-                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}, "rewards": {}}
+                 "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}, "rewards": {},
+                 "dev_points": {}}
 
 
 def content_files():
@@ -346,7 +363,8 @@ def load_content():
                               ("topics", CONTENT_EXTRA["topics"]), ("topic_sets", CONTENT_EXTRA["topic_sets"]),
                               ("tones", CONTENT_EXTRA["tones"]), ("tone_by", CONTENT_EXTRA["tone_by"]),
                               ("sound_alias", CONTENT_EXTRA["sound_alias"]), ("stays", CONTENT_EXTRA["stays"]),
-                              ("tournaments", CONTENT_EXTRA["tournaments"]), ("rewards", CONTENT_EXTRA["rewards"])):
+                              ("tournaments", CONTENT_EXTRA["tournaments"]), ("rewards", CONTENT_EXTRA["rewards"]),
+                              ("dev_points", CONTENT_EXTRA["dev_points"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -482,7 +500,7 @@ def resolve(thing, rules, defaults, by_plot_kind, plot, acts):
         props.update(r.get("props") or {})
         act = r.get("act", act)
         hours, days = r.get("hours", hours), r.get("days", days)
-        for k in ("collect", "closed"):
+        for k in ("collect", "closed", "months", "broken"):
             if r.get(k):
                 extra[k] = r[k]
         if r.get("topics"):
@@ -766,10 +784,13 @@ def opponents_at(regs, vs, plot):
 
 # procedures (docs/sanatorium_procedures.md): an act's "proc" is played as a short hands-on scene before the act runs
 PROC_STEPS = ("say", "pick", "pour", "sip", "breathe", "tap", "cut", "measure", "guest", "news")
-PROC_FIELDS = ("id", "title", "keys", "when", "steps", "good", "fair", "poor", "good_share", "fair_share", "collect", "vitals")
-PROC_STEP_FIELDS = ("do", "lines", "guests", "by_pick", "secs", "count", "every", "window", "in", "out", "mark", "minutes")
+PROC_FIELDS = ("id", "title", "keys", "when", "steps", "good", "fair", "poor", "good_share", "fair_share", "collect", "vitals", "scene")
+PROC_STEP_FIELDS = ("do", "lines", "guests", "by_pick", "secs", "count", "every", "window", "in", "out", "mark", "minutes",
+                    "chance", "stop_below")
+# chance: the step is played by the scene's die, at most once a game day at a thing (FProcStep::Chance); stop_below: a
+# hands-on step scoring under it ends the scene (FProcStep::StopBelow)
 PROC_RANGES = {"secs": (0.5, 60), "count": (1, 24), "every": (0.4, 4.0), "window": (0.05, 1.8), "in": (1.0, 10.0), "out": (1.0, 12.0),
-               "minutes": (0, 120)}
+               "minutes": (0, 120), "chance": (0.01, 1.0), "stop_below": (0.05, 1.0)}
 # hands-on steps (the scene's result is the share of them done well)
 PROC_SCORED = ("pour", "sip", "breathe", "tap")
 
@@ -850,6 +871,8 @@ def build_proc(where, pr, strings):
                 err("%s: mark must be [low, high] of the cup, 0.2..0.98" % w)
             else:
                 o["mark"] = [float(m[0]), float(m[1])]
+        if "stop_below" in st and st["do"] not in PROC_SCORED:
+            err("%s: stop_below is for a hands-on step (%s)" % (w, ", ".join(PROC_SCORED)))
         if st["do"] == "sip" and o.get("window", 0.3) > o.get("every", 1.0) * 0.45:
             err("%s: the sip window must be under half the tick" % w)
         scored += st["do"] in PROC_SCORED
@@ -874,6 +897,10 @@ def build_proc(where, pr, strings):
         STAMPS_USED.append((where + " proc", out["collect"]))
     if pr.get("vitals"):
         out["vitals"] = True
+    if pr.get("scene"):
+        if pr.get("vitals"):
+            err("%s: a scene of the town measures no cure: not both scene and vitals" % where)
+        out["scene"] = True
     return out
 
 
@@ -1377,8 +1404,8 @@ def build_tones(plan_places, reg):
 # ------------------------------------------------------------------ the plots
 
 def places(plan):
-    """Every plot with a building, and the promenade units (a room behind the sea wall's face, dressed as its variant; a unit
-    whose variant is not built yet: one counter at its door)."""
+    """Every plot with a building, the promenade units (a room behind the sea wall's face, dressed as its variant; a unit
+    whose variant is not built yet: one counter at its door) and the plan's street machines (a building on no plot)."""
     out = []
     for p in plan["plots"]:
         if not p.get("building"):
@@ -1403,7 +1430,28 @@ def places(plan):
         out.append({"id": u["id"], "kind": u["kind"], "building": "unit_" + u["kind"], "front": ue_m(plan, u["door"]), "yaw": u["yaw"],
                     "staff": u.get("staff") or [], "name_ru": u.get("name_ru", ""), "name_en": u.get("name_en", ""),
                     "export": export, "w": w, "d": 6.0, "unit": 1})
+    for m in plan.get("street_machines", []):
+        # a street machine (the soda-water automats, docs/soda_machines.md): a building type of its own on no plot, its
+        # origin at the plan's "front" (the paving in front of it); rules name its things <type>/<thing id>
+        out.append({"id": m["id"], "kind": m["kind"], "building": m["building"], "front": ue_m(plan, m["front"]), "yaw": m["yaw"],
+                    "staff": [], "name_ru": m.get("name_ru", ""), "name_en": m.get("name_en", ""),
+                    "export": building_export(m["building"], m["id"]), "w": 1.0, "d": 1.0, "street": 1})
+    for e in extra_places():
+        # an entry may bring its own staff (the street's vendors, docs/street_life.md) and its export inline (a stall with
+        # one thing: no building module behind it)
+        out.append({"id": e["id"], "kind": e["kind"], "building": e["building"], "front": list(e["front"]), "yaw": e["yaw"],
+                    "staff": [list(r) for r in e.get("staff", [])], "name_ru": e.get("name_ru", ""), "name_en": e.get("name_en", ""),
+                    "export": e.get("export") or building_export(e["building"], e["id"]), "w": e.get("w", 6.0), "d": e.get("d", 6.0), "extra": 1})
     return out
+
+
+def extra_places():
+    return load(EXTRA_PLACES).get("places", []) if os.path.exists(EXTRA_PLACES) else []
+
+
+def all_plot_ids(plan):
+    return {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])} | {e["id"] for e in extra_places()} | \
+        {m["id"] for m in plan.get("street_machines", [])}
 
 
 def staff_variant(pl, props, kind, act, acts, tid):
@@ -1733,12 +1781,15 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
                     rec["topics"] = ids
                 if len(set(ids) | set(a.get("topics", []))) > MAX_TOPICS:
                     err("%s: more than %d topics (the act's and the rule's)" % (tid, MAX_TOPICS))
+            season_shut = season_rules(tid, extra, ex, rec)
             # what it says while its plot is shut: the thing's rule, its act's "closed", the closed_by of its plot, type or plot kind
             closed = extra.get("closed") or a.get("closed")
             for scope in (pl["id"], pl["building"], pl["kind"]):
                 cb = closed_by.get(scope) or {}
                 closed = closed or cb.get(kind) or cb.get("*")
-            if closed and list(hours) != [0, 24]:
+            if season_shut and not closed:
+                err("%s: shut by months / broken days but says nothing then (give it a \"closed\")" % tid)
+            if closed and (list(hours) != [0, 24] or season_shut):
                 rec["closed"] = closed_act(closed, acts, strings, tid)
                 if not rec["closed"]:
                     del rec["closed"]
@@ -1764,6 +1815,38 @@ def build_things(plan, rules, defaults, by_plot_kind, acts, strings=None, closed
             else:
                 skipped["sits standing"] += 1
     return things, summary, skipped
+
+
+def season_rules(tid, extra, export, rec):
+    """A rule's "months" ([1..12]: it works only then) and "broken" (0..0.5: the share of days it stands broken, by the die of
+    its building's dressing set "broken", which must show on the same days: the same chance and months). Written into the
+    thing's record; True when the thing may be shut by them (its closed act is needed then)."""
+    shut = False
+    if "months" in extra:
+        m = extra["months"]
+        if not (isinstance(m, list) and m and all(isinstance(v, int) and not isinstance(v, bool) and 1 <= v <= 12 for v in m)
+                and len(set(m)) == len(m) < 12):
+            err("%s: months must be a list of month numbers 1..12 (not all twelve)" % tid)
+        else:
+            rec["months"] = sorted(m)
+            shut = True
+    if "broken" in extra:
+        b = extra["broken"]
+        if isinstance(b, bool) or not isinstance(b, (int, float)) or not 0 < b <= 0.5:
+            err("%s: broken must be a share of days 0..0.5" % tid)
+        else:
+            rec["broken"] = float(b)
+            shut = True
+            sign = next((d for d in (export or {}).get("dress", []) if d.get("id") == "broken"), None)
+            if not sign:
+                err("%s: broken days but its building has no dressing set \"broken\" (the sign the game shows those days)" % tid)
+            else:
+                when = sign.get("when") or {}
+                if abs(float(when.get("chance", 1.0)) - float(b)) > 1e-6:
+                    err("%s: broken %.3f but the building's \"broken\" set shows on %.3f of the days" % (tid, b, when.get("chance", 1.0)))
+                if rec.get("months") and sorted(when.get("months") or []) != rec["months"]:
+                    err("%s: months %s but the building's \"broken\" set is for months %s" % (tid, rec["months"], when.get("months")))
+    return shut
 
 
 def seat_spot(pl, spots, seat_local, pos):
@@ -2216,6 +2299,41 @@ def check_quests(quests, acts, strings, items, plot_ids, map_places, existing_id
             err("quest string %s is missing" % k)
 
 
+def dev_points(points, things, plan, strings, gen_strings):
+    """Developer mode: a teleport in front of a thing a content file names ("dev_points": {"<id>": {"thing": "<plot>/<id>",
+    "name": "<string key>"[, "time": "HH:MM"]}}), "city.pt.<id>" in the interiors group, the clock an hour after the thing
+    opens (or its "time"). For a small
+    mechanic on one thing that no quest stage reaches (docs/city_interiors.md "Coins, scales and strips")."""
+    pf = plan["portal_face_y"] / 100.0
+    by_id = {t["id"]: t for t in things}
+    floors_of = {pl["id"]: spot_floors(pl) for pl in places(plan)}
+    tps = []
+    for pid, pt in sorted(points.items()):
+        if not isinstance(pt, dict) or not pt.get("thing") or not pt.get("name"):
+            err("dev point %s: needs {\"thing\": \"<plot>/<id>\", \"name\": \"<string key>\"}" % pid)
+            continue
+        t = by_id.get(pt["thing"])
+        if not t:
+            err("dev point %s: no thing %s" % (pid, pt["thing"]))
+            continue
+        if pt["name"] not in strings:
+            err("dev point %s: string %s is missing" % (pid, pt["name"]))
+            continue
+        floor = thing_floor(t, floors_of.get(t["plot"], []))
+        p = step([t["ue"][0] / 100.0, t["ue"][1] / 100.0, floor / 100.0], t["yaw"], 1.2 if t["kind"] not in ("seat", "bed") else 0.9)
+        yaw = (t["yaw"] + 180.0) % 360.0
+        tid = "city.pt." + pid
+        tp = {"id": tid, "group": "interiors", "name": "dev.tp." + tid, "x": round(p[0], 2), "y": round(p[1] - pf, 2),
+              "z": round(floor, 1), "yaw": round(yaw - 360.0 if yaw > 180.0 else yaw, 1)}
+        if pt.get("time"):
+            tp["time"] = pt["time"]     # its own hour ("HH:MM"): a thing open for one hour only (the Vaults' ladies' choice)
+        elif t["hours"] != [0, 24]:
+            tp["time"] = "%02d:00" % ((int(t["hours"][0]) + 1) % 24)
+        tps.append(tp)
+        gen_strings["dev.tp." + tid] = {l: strings[pt["name"]][l] for l in LANGS}
+    return tps
+
+
 def quest_dev(quests, things, acts, shops, plan, strings, gen_strings):
     """Developer mode (docs/dev_mode.md): a "dev" block for every stage of our quests, so a jump to the stage lands where it is
     played and when it can be: a teleport in front of a thing that makes the stage's first objective ("city.q.<quest>.<n>"),
@@ -2417,9 +2535,9 @@ def main():
             err("rule %s: unknown kind %s" % (k, r["kind"]))
     things, summary, skipped = build_things(plan, rules, defaults, by_plot_kind, acts, strings, CONTENT_EXTRA["closed_by"])
     stays = build_stays(CONTENT_EXTRA["stays"], acts, strings,
-                        {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])})
+                        all_plot_ids(plan))
     n_lifts = build_lifts(things, strings)
-    all_plots = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])}
+    all_plots = all_plot_ids(plan)
     regs = build_regulars(CONTENT_EXTRA["regulars"], strings, all_plots)
     for aid, a in sorted(acts.items()):
         g = a.get("game")
@@ -2448,7 +2566,7 @@ def main():
     existing = [q["id"] for q in json.loads(qtext)["quests"]]
     ours = {q["id"] for q in quests}
     map_places = {p["id"] for p in load(MAP)["places"]}
-    plot_ids = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])}
+    plot_ids = all_plot_ids(plan)
     check_quests(quests, acts, strings, items, plot_ids, map_places, [q for q in existing if q not in ours])
     # every quest step a thing must make must have a thing in town that makes it, with its staff on that plot
     staff_of = {pl["id"]: {r[0] for r in pl["staff"]} for pl in places(plan)}
@@ -2472,6 +2590,7 @@ def main():
             err("rule %s matches no thing (the id changed? fix or drop it)" % k)
 
     teleports += quest_dev(quests, things, acts, shops, plan, strings, gen_strings)
+    teleports += dev_points(CONTENT_EXTRA["dev_points"], things, plan, strings, gen_strings)
     all_strings = dict(strings)
     for k, v in gen_strings.items():
         if k in all_strings:

@@ -94,6 +94,9 @@ namespace LyudFriends
 		R.Outing = Ru["outing"].I(R.Outing);
 		R.Festival = Ru["festival"].I(R.Festival);
 		R.FestivalLevel = Ru["festival_level"].I(R.FestivalLevel);
+		R.Chat = Ru["chat"].I(R.Chat);
+		R.ChatAnswer = Ru["chat_answer"].I(R.ChatAnswer);
+		R.ChatCap = Ru["chat_cap"].I(R.ChatCap);
 		R.TeaLevel = Ru["tea_level"].I(R.TeaLevel);
 		R.TeaEvery = Ru["tea_every"].I(R.TeaEvery);
 		R.TeaAhead = Ru["tea_ahead"].I(R.TeaAhead);
@@ -505,6 +508,33 @@ namespace LyudFriends
 		return Add(Key, Day, Data.R.Festival);
 	}
 
+	int FModel::Chatted(const std::string& Key, int Day)
+	{
+		FBond& B = At(Key, Day);
+		if (B.ChatDay == Day)
+		{
+			return 0;
+		}
+		B.ChatDay = Day;
+		B.ChatToday = 0;
+		B.Chats++;
+		const int Points = std::max(0, std::min(Data.R.Chat, Data.R.ChatCap));
+		B.ChatToday = Points;
+		return Add(Key, Day, Points);
+	}
+
+	int FModel::ChatAnswered(const std::string& Key, int Day)
+	{
+		const auto It = Bonds.find(Key);
+		if (It == Bonds.end() || It->second.ChatDay != Day)
+		{
+			return 0;       // (their question comes after a topic: the talk has been counted)
+		}
+		const int Points = std::max(0, std::min(Data.R.ChatAnswer, Data.R.ChatCap - It->second.ChatToday));
+		It->second.ChatToday += Points;
+		return Points > 0 ? Add(Key, Day, Points) : 0;
+	}
+
 	bool FModel::EnsureNick(const std::string& Key, const FWho& Who)
 	{
 		const auto It = Bonds.find(Key);
@@ -602,9 +632,9 @@ namespace LyudFriends
 		{
 			const FBond& B = KV.second;
 			char Buf[512];
-			std::snprintf(Buf, sizeof Buf, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d", B.Points, B.FirstDay, B.LastDay,
+			std::snprintf(Buf, sizeof Buf, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d", B.Points, B.FirstDay, B.LastDay,
 				B.GreetDay, B.HeardDay, B.HeardToday, B.VisitDay, B.GiftDay, B.BenchDay, B.Cards, B.Teas, B.Outings, B.Benches, B.Gifts,
-				B.CardDay, B.TeaDay, B.TeaHour, B.TeaLast, B.OutingDay, B.OutingLast, B.LevelShown, B.FestDay);
+				B.CardDay, B.TeaDay, B.TeaHour, B.TeaLast, B.OutingDay, B.OutingLast, B.LevelShown, B.FestDay, B.ChatDay, B.ChatToday, B.Chats);
 			Out["b." + KV.first] = std::string(Buf) + "|" + B.Nick + "|" + Join(B.Quests, ',') + "|" + Join(B.Loves, ',');
 		}
 	}
@@ -635,6 +665,12 @@ namespace LyudFriends
 			B.Benches = V[12]; B.Gifts = V[13]; B.CardDay = V[14]; B.TeaDay = V[15]; B.TeaHour = V[16]; B.TeaLast = V[17];
 			B.OutingDay = V[18]; B.OutingLast = V[19]; B.LevelShown = V[20];
 			B.FestDay = N.size() > 21 ? std::atoi(N[21].c_str()) : -1;     // (saves from before the holidays together have 21)
+			if (N.size() > 24)      // (and from before the talks have 22)
+			{
+				B.ChatDay = std::atoi(N[22].c_str());
+				B.ChatToday = std::atoi(N[23].c_str());
+				B.Chats = std::atoi(N[24].c_str());
+			}
 			if (Parts.size() > 1)
 			{
 				B.Nick = Parts[1];

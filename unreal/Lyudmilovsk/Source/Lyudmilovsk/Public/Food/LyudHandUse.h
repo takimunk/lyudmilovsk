@@ -137,6 +137,12 @@ private:
 	/** The hero whose hand has the thing (Hold): Drop takes the hand's hold off him even when he is not the player's pawn
 	 *  any more (the player became a bird with the thing in the hand). */
 	TWeakObjectPtr<class AHeroCharacter> HandHero;
+	/** What else may have the hand (Tick, every frame while something is held): the hero's ladder climber and swim, looked up
+	 *  again only when the hero changes or his set of components changes size (two class scans a frame otherwise). */
+	TWeakObjectPtr<const AActor> RivalsOf;
+	TWeakObjectPtr<const class ULyudLadderClimber> ClimberCache;
+	TWeakObjectPtr<const class ULyudSwimComponent> SwimCache;
+	int32 RivalsScanCount = -1;
 	EPhase Phase = EPhase::Carry;
 	/** 0 carried .. 1 at the lips. */
 	float AtLips = 0.f;

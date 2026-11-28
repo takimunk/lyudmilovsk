@@ -29,8 +29,11 @@
   "lantern_night",
   "maslenitsa",
   "midsummer",
+  "neptune_day",
   "new_year",
+  "old_new_year",
   "perseids",
+  "science_day",
   "sea_festival",
   "sun_day"
  ],
@@ -93,8 +96,11 @@
   "fest.lantern_night": 2,
   "fest.maslenitsa": 2,
   "fest.midsummer": 2,
+  "fest.neptune_day": 2,
   "fest.new_year": 2,
+  "fest.old_new_year": 2,
   "fest.perseids": 2,
+  "fest.science_day": 2,
   "fest.sea_festival": 2,
   "fest.sun_day": 2
  },

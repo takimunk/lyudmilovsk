@@ -3428,9 +3428,35 @@
  "notes": [
   "4 parabolic vaults; hall B with stage, C dance room + bar, A foyer, D kitchen"
  ],
+ "dress": [
+  {
+   "id": "piano_music",
+   "when": {
+    "visit": [
+     "play_piano"
+    ],
+    "at": "-STAGE",
+    "keep": 14.0
+   },
+   "tris": 44,
+   "bounds": [
+    [
+     -1.55,
+     21.33,
+     1.981
+    ],
+    [
+     -1.466,
+     21.67,
+     2.208
+    ]
+   ]
+  }
+ ],
  "tris": {
   "shell": 4022,
   "detail": 34638,
-  "windows": 100
+  "windows": 100,
+  "dress": 44
  }
 }

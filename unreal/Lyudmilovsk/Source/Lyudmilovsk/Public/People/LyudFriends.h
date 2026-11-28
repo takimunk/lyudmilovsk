@@ -14,6 +14,7 @@ class ANpcBody;
 class APlayerController;
 class SLyudCityPage;
 namespace LyudFriends { class FModel; struct FWho; struct FHost; }
+namespace LyudTownChat { struct FData; struct FTalk; }
 
 /**
  * Friends among the residents (docs/friends.md). Every named resident the hero comes to know has a bond with him that grows
@@ -28,8 +29,16 @@ namespace LyudFriends { class FModel; struct FWho; struct FHost; }
  * town-talk lines (bond = friendly | friend | close, on = friend_*) are tools/barks/lines/13_friends.txt. Saved as "Friends".
  * Gifts and the tea use SLyudCityPage (keys polled, never consumed: 1-9, A/D, E, Esc).
  *
+ * A talk with a townsperson (docs/town_talk.md "A talk"): E on a resident who is free for a word opens the same page with
+ * their greeting, two to four things to ask about, now and then a question back and a goodbye; a gift is one of the page's
+ * entries. Who may be asked and what about is the engine-free LyudTownChat (Private/People/TownChat.*, tests in
+ * tools/townchatsim/run.sh); their words are the town-talk sets with on = tc_* (tools/barks/lines/18_townchat.txt), his are
+ * Content/Localization/townchat (tools/townchat/build_town_chat.py). The game side is LyudFriendsTalk.cpp. A talk reports
+ * the quests' event "talk <resident key>" (docs/quests.md).
+ *
  * Console: lyud.Friends.Report, lyud.Friends.Befriend [key] (the nearest townsperson or key: a close friend),
- * lyud.Friends.Tea <host> (an invitation for now), lyud.Friends.Invites (every invitation due now). Developer mode: "friends".
+ * lyud.Friends.Tea <host> (an invitation for now), lyud.Friends.Invites (every invitation due now), lyud.Friends.Talk [key]
+ * (a talk with the nearest townsperson or key, whatever they are doing), lyud.Friends.TalkReport. Developer mode: "friends".
  */
 UCLASS()
 class LYUDMILOVSK_API ULyudFriends : public UTickableWorldSubsystem, public ILyudSaveable
@@ -63,8 +72,9 @@ public:
 	/** A postcard of his reached them (ULyudLetters: the addressee's id, a person's key or a correspondent's). */
 	void OnCardDelivered(const FString& To);
 
-	/** A gift is offered on the prompt line now (others who use E step aside), a chooser or the tea has the keys. */
-	bool IsOffering() const { return OfferedPerson >= 0; }
+	/** A gift or a talk is offered on the prompt line now (others who use E step aside), a chooser, a talk or the tea has
+	 *  the keys. Somebody at work behind a counter is offered softly: the counter's own E comes first. */
+	bool IsOffering() const { return OfferedPerson >= 0 && !bOfferSoft; }
 	bool HasModeUp() const { return Mode != EMode::None; }
 
 	// --- the diary's «Люди» (SLyudDiary)
@@ -84,6 +94,10 @@ public:
 	bool DevBefriend(const FString& Key);
 	bool DevBefriendNearest();
 	bool DevTeaNow(const FString& HostId);
+	/** Opens the talk with a townsperson (Key empty: the nearest one), whatever they are doing. */
+	bool DevTalk(const FString& Key);
+	/** What the nearest townsperson would say now: whether they'd talk, the greeting, the topics, the question back. */
+	FString DevTalkReport();
 	void DevInvites();
 	/** Where to stand for a host's tea: in front of the chair at their table (false: no such host). */
 	bool TeaStand(const FString& HostId, FTransform& Out) const;
@@ -98,7 +112,10 @@ protected:
 	UPROPERTY(SaveGame) TMap<FString, FString> Saved;
 
 private:
-	enum class EMode : uint8 { None, Gift, Tea };
+	enum class EMode : uint8 { None, Gift, Tea, Talk };
+	/** A talk's page: quest lines first (if a quest has some for them), the topics, an answer before their question, their
+	 *  question, the goodbye. */
+	enum class ETalkStep : uint8 { Opener, Menu, Answer, Ask, Bye };
 
 	void Load();
 	int32 Today(float* Hour = nullptr, int32* Weekday = nullptr) const;
@@ -119,7 +136,7 @@ private:
 	void TickTeaChair(AHeroCharacter* Hero);
 	void TickOffer(AHeroCharacter* Hero, APlayerController* PC);
 	void TickMode(APlayerController* PC, float DeltaTime);
-	void SetPrompt(int32 PersonId);
+	void SetPrompt(int32 PersonId, bool bTalk = false, bool bSoft = false);
 
 	void OpenGift(int32 PersonId, const FString& Key);
 	void ShowGift();
@@ -130,6 +147,23 @@ private:
 	void PlaceTeaThings(const LyudFriends::FHost& Host);
 	void ClearTeaThings();
 	void DriveHostBody(float DeltaTime);
+	// a talk with a townsperson (LyudFriendsTalk.cpp)
+	void LoadTalk();
+	/** May PersonId be talked to now: 0 yes, else LyudTownChat::ERefuse. */
+	int32 TalkRefusal(int32 PersonId) const;
+	bool OpenTalk(int32 PersonId, bool bForce);
+	void ShowTalk();
+	/** The talk goes on: they stay where they are and look at him; false when they are gone or he walked away. */
+	bool TalkKeep(float DeltaTime);
+	void TalkKeys(APlayerController* PC);
+	void TalkChoose(int32 Entry);
+	void TalkAnswer(int32 Answer);
+	void TalkNext();
+	void TalkBye();
+	void EndTalk();
+	/** Their line for a moment of the talk, with the names put in; false if they have none. */
+	bool TalkLine(const FString& Event, int32 Other, FText& Out);
+	bool TalkMayGift() const;
 	void OpenPage();
 	void ClosePage();
 	void EndMode();
@@ -157,8 +191,11 @@ private:
 	bool bBenchSat = false;
 	int32 BenchLines = 0;
 	float BenchNextLine = 0.f;
-	/** The townsperson a gift is offered to (-1 none). */
+	/** The townsperson a gift or a talk is offered to (-1 none); a talk (a townsperson) or a gift (the story's people);
+	 *  softly (see IsOffering). */
 	int32 OfferedPerson = -1;
+	bool bOfferTalk = false;
+	bool bOfferSoft = false;
 	double RefusedUntil = 0.0;
 
 	// the mode up
@@ -172,6 +209,25 @@ private:
 	TArray<FName> GiftItems;
 	int32 GiftPage = 0;
 	EMode GiftReturn = EMode::None;
+	/** A talk: the data, the talk built when it opened, with whom, what is on the page. */
+	TPimplPtr<LyudTownChat::FData> TalkData;
+	TPimplPtr<LyudTownChat::FTalk> TalkNow;
+	bool bTalkLoaded = false;
+	int32 TalkPerson = -1;
+	FString TalkKey;
+	ETalkStep TalkStep = ETalkStep::Menu;
+	FText TalkSaid;
+	FText TalkLineText;
+	TArray<bool> TalkAsked;
+	/** The page's entries: a topic's index, -1 the gift. */
+	TArray<int32> TalkEntries;
+	int32 TalkSel = 0;
+	int32 TalkHeard = 0;
+	bool bTalkAsked = false;
+	bool bTalkForced = false;
+	TArray<FString> TalkOpeners;
+	int32 TalkOpener = 0;
+	float TalkHold = 0.f;
 	/** Tea: the host, the topics asked, the answer shown, whether anything was said. */
 	FString TeaHost;
 	TArray<bool> TeaAsked;

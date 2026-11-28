@@ -319,8 +319,16 @@ void ULyudHandUse::Tick(float DeltaTime)
 	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
 	// ... and the hand taken by something else: the bars of a bicycle, a ladder's rungs, the strokes in the water (the arm's own
 	// poses win there, the thing would ride on the bar or the rung and be "eaten" from it)
-	const ULyudLadderClimber* Climber = Hero->FindComponentByClass<ULyudLadderClimber>();
-	const ULyudSwimComponent* Swim = Hero->FindComponentByClass<ULyudSwimComponent>();
+	const int32 NumComponents = Hero->GetComponents().Num();
+	if (RivalsOf.Get() != Hero || NumComponents != RivalsScanCount)
+	{
+		RivalsOf = Hero;
+		RivalsScanCount = NumComponents;
+		ClimberCache = Hero->FindComponentByClass<ULyudLadderClimber>();
+		SwimCache = Hero->FindComponentByClass<ULyudSwimComponent>();
+	}
+	const ULyudLadderClimber* Climber = ClimberCache.Get();
+	const ULyudSwimComponent* Swim = SwimCache.Get();
 	const bool bHandTaken = Hero->IsOnBike() || (Climber && Climber->IsOnLadder()) || (Swim && Swim->IsSwimming());
 	const bool bBusy = Reach->IsBusy() || (UI && UI->IsOpen()) || (Menu && Menu->IsOpen()) || Hero->IsHidden() || bHandTaken;
 	if (bBusy)

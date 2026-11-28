@@ -1055,8 +1055,19 @@ void AProceduralVine::Tick(float DeltaSeconds)
 		SetActorHiddenInGame(!bShow);
 		bShownByCVar = bShow;
 	}
+	// caught up with its age, a vine changes a few cm a day: four looks a second (hidden: two); while it is still tracing
+	// its way up the wall, in a time-lapse or under the dev tool's age, every frame
+	const bool bLive = bDemoGrowth || DevAge >= 0.f || DevDay >= 0.f;
+	auto SetRate = [this](float Seconds)
+	{
+		if (PrimaryActorTick.TickInterval != Seconds)
+		{
+			SetActorTickInterval(Seconds);
+		}
+	};
 	if (!bShow)
 	{
+		SetRate(0.5f);
 		return;
 	}
 	if (BuiltSpecies != Species || BuiltSeed != Seed || Nodes.IsEmpty() || !BuiltAt.Equals(GetActorTransform(), 0.1f))
@@ -1072,9 +1083,11 @@ void AProceduralVine::Tick(float DeltaSeconds)
 		const bool bGame = GetWorld()->IsGameWorld();
 		if (!SimulateUntil(G, bGame ? TraceBudgetMs / 1000.0 : 1e9))
 		{
+			SetRate(0.f);
 			return;
 		}
 	}
+	SetRate(bLive ? 0.f : 0.25f);
 	SinceUpdate += DeltaSeconds;
 	// the vine grows a few cm a day: re-shape only when that shows; leaves when the day moves on
 	const bool bWood = FMath::Abs(G - WoodG) > 0.004f && (SinceUpdate > 0.5f || WoodG < 0.f);

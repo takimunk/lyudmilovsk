@@ -4,6 +4,7 @@
 #include "MiniJson.h"
 #include "PeopleManners.h"
 #include "PeopleSim.h"
+#include "TownChat.h"
 #include "City/LyudCityThings.h"
 #include "City/SLyudCityPage.h"
 #include "CollisionQueryParams.h"
@@ -87,7 +88,10 @@ void ULyudFriends::OnWorldBeginPlay(UWorld& InWorld)
 {
 	Super::OnWorldBeginPlay(InWorld);
 	Model = MakePimpl<LyudFriends::FModel>();
+	TalkData = MakePimpl<LyudTownChat::FData>();
+	TalkNow = MakePimpl<LyudTownChat::FTalk>();
 	Load();
+	LoadTalk();
 	if (ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(&InWorld))
 	{
 		Saves->RegisterSaveObject(TEXT("Friends"), this);
@@ -975,7 +979,8 @@ void ULyudFriends::DriveHostBody(float DeltaTime)
 	if (!HostBody)
 	{
 		const FString ModelName = Life->ShownModel(TeaPerson);
-		if (ModelName.IsEmpty())
+		// the model loaded in the background first (asked again next frame): Setup's load would stall the frame
+		if (ModelName.IsEmpty() || !ANpcBody::IsModelReady(this, ModelName))
 		{
 			return;
 		}
@@ -993,6 +998,7 @@ void ULyudFriends::DriveHostBody(float DeltaTime)
 			TeaPerson = -1;     // no model: the tea is told in words
 			return;
 		}
+		ANpcBody::ReleaseModel(this, ModelName);      // the body holds it now
 		Life->SetPresentedExternally(TeaPerson, true);
 		HostBody->Drive(At, Yaw, EPersonPose::Sit, 1, 0.f, H->HostChairHeight * 100.f, DeltaTime, true);
 		return;
@@ -1019,6 +1025,7 @@ void ULyudFriends::TickOffer(AHeroCharacter* Hero, APlayerController* PC)
 	{
 		OfferClock = 0.15f;
 		int32 Offer = -1;
+		bool bOffTalk = false, bOffSoft = false;
 		const ULyudInventoryUI* UI = ULyudInventoryUI::Get(World);
 		const ULyudCityThings* City = ULyudCityThings::Get(World);
 		const ULyudLetters* Letters = ULyudLetters::Get(World);
@@ -1035,35 +1042,63 @@ void ULyudFriends::TickOffer(AHeroCharacter* Hero, APlayerController* PC)
 			const FVector To = Actor->GetActorLocation() + FVector(0, 0, 40) - Eye;
 			const bool bNear = FVector::Dist2D(Actor->GetActorLocation(), Hero->GetActorLocation()) < GiftReach;
 			const bool bInView = FVector::DotProduct(To.GetSafeNormal(), Hero->GetControlRotation().Vector()) > GiftCone;
-			// a gift for somebody he knows (they greeted him at least once)
 			const UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(World);
-			if (bNear && bInView && Life && (Life->GetMet(Id) > 0 || Model->Level(Std(KeyOf(Id))) >= 1))
+			const LyudPeople::FWorld* S = Life ? Life->GetSim() : nullptr;
+			if (bNear && bInView && S && Id < (int32)S->People.size() && S->People[(size_t)Id].bTown && bTalkLoaded)
+			{
+				// a townsperson: a word with them (docs/town_talk.md "A talk"); one who is asleep, away or riding isn't offered
+				const LyudPeople::FPerson& P = S->People[(size_t)Id];
+				const int32 Refusal = TalkRefusal(Id);
+				bOffTalk = Refusal != (int32)LyudTownChat::ERefuse::Gone && Refusal != (int32)LyudTownChat::ERefuse::Riding;
+				// at work behind a counter: the counter's own E comes first, the talk only when nothing of it is in view
+				bOffSoft = P.State == LyudPeople::EState::Doing && P.Activity >= 0 && P.Activity < (int32)S->Activities.size()
+					&& !S->Activities[(size_t)P.Activity].bFree;
+				if (bOffTalk && !(bOffSoft && City && City->HasThingInView()))
+				{
+					Offer = Id;
+				}
+			}
+			// the story's people have their own talk: a gift for somebody he knows (they greeted him at least once)
+			else if (bNear && bInView && Life && (Life->GetMet(Id) > 0 || Model->Level(Std(KeyOf(Id))) >= 1))
 			{
 				Offer = Id;
 			}
 		}
-		SetPrompt(Offer);
+		SetPrompt(Offer, Offer >= 0 && bOffTalk, Offer >= 0 && bOffTalk && bOffSoft);
 	}
 	if (OfferedPerson >= 0 && ANpcTalkDirector::UsePressed(PC))
 	{
-		OpenGift(OfferedPerson, KeyOf(OfferedPerson));
+		if (!bOfferTalk)
+		{
+			OpenGift(OfferedPerson, KeyOf(OfferedPerson));
+		}
+		else
+		{
+			const ULyudCityThings* City = ULyudCityThings::Get(World);
+			if (!(bOfferSoft && City && City->HasThingInView()))
+			{
+				OpenTalk(OfferedPerson, false);
+			}
+		}
 	}
 }
 
-void ULyudFriends::SetPrompt(int32 PersonId)
+void ULyudFriends::SetPrompt(int32 PersonId, bool bTalk, bool bSoft)
 {
-	if (PersonId == OfferedPerson)
+	bOfferSoft = PersonId >= 0 && bSoft;
+	if (PersonId == OfferedPerson && (PersonId < 0 || bTalk == bOfferTalk))
 	{
 		return;
 	}
 	OfferedPerson = PersonId;
+	bOfferTalk = PersonId >= 0 && bTalk;
 	ULyudInventoryUI* UI = ULyudInventoryUI::Get(this);
 	if (!UI)
 	{
 		return;
 	}
 	UI->SetPrompt(this, PersonId < 0 ? FText::GetEmpty()
-		: LyudText::Get(TEXT("friends.gift.prompt"), { FStringFormatArg(NameOf(KeyOf(PersonId)).ToString()) }));
+		: LyudText::Get(bOfferTalk ? TEXT("townchat.prompt") : TEXT("friends.gift.prompt"), { FStringFormatArg(NameOf(KeyOf(PersonId)).ToString()) }));
 }
 
 void ULyudFriends::OpenGift(int32 PersonId, const FString& Key)
@@ -1150,6 +1185,20 @@ void ULyudFriends::GiveChosen(int32 Entry)
 		Mode = EMode::Tea;
 		ShowTea();
 	}
+	else if (Back == EMode::Talk)
+	{
+		// in a talk: their words on its page, and the talk goes on
+		const FString Nick = NickOf(TalkPerson);
+		TalkSaid = FText::GetEmpty();
+		TalkLineText = LyudText::Get(LineKey, { FStringFormatArg(Nick.IsEmpty() ? LyudText::Get(TEXT("friends.nick.neighbour")).ToString() : Nick) });
+		Mode = EMode::Talk;
+		TalkStep = ETalkStep::Menu;
+		ShowTalk();
+		if (UPeopleLifeSubsystem* L = UPeopleLifeSubsystem::Get(this))
+		{
+			L->ReactManner(TalkPerson, G == LyudFriends::EGift::Loved ? TEXT("wave") : TEXT("nod"), 2.f);
+		}
+	}
 	else
 	{
 		EndMode();
@@ -1214,6 +1263,10 @@ void ULyudFriends::EndMode()
 	{
 		EndTea();
 	}
+	if (Mode == EMode::Talk || GiftReturn == EMode::Talk)
+	{
+		EndTalk();
+	}
 	if (APlayerController* PC = MoveBlockedBy.Get())
 	{
 		PC->SetIgnoreMoveInput(false);
@@ -1246,9 +1299,19 @@ void ULyudFriends::TickMode(APlayerController* PC, float DeltaTime)
 			return;
 		}
 	}
+	if ((Mode == EMode::Talk || GiftReturn == EMode::Talk) && !TalkKeep(DeltaTime))
+	{
+		EndMode();
+		return;
+	}
 	const ULyudGameMenuSubsystem* Menu = World->GetSubsystem<ULyudGameMenuSubsystem>();
 	if ((Menu && Menu->IsOpen()) || GFrameCounter == ModeFrame)
 	{
+		return;
+	}
+	if (Mode == EMode::Talk)
+	{
+		TalkKeys(PC);
 		return;
 	}
 	const bool bEsc = PC->WasInputKeyJustPressed(EKeys::Escape) || PC->WasInputKeyJustPressed(EKeys::SpaceBar);
@@ -1261,6 +1324,11 @@ void ULyudFriends::TickMode(APlayerController* PC, float DeltaTime)
 			{
 				Mode = EMode::Tea;
 				ShowTea();
+			}
+			else if (GiftReturn == EMode::Talk)
+			{
+				Mode = EMode::Talk;
+				ShowTalk();
 			}
 			else
 			{
@@ -1539,6 +1607,18 @@ namespace LyudFriendsConsole
 			const bool bOk = F && Args.Num() > 0 && F->DevTeaNow(Args[0]);
 			UE_LOG(LogLyudFriends, Display, TEXT("Friends: tea %s"), bOk ? TEXT("is on: sit at their table") : TEXT("refused"));
 		}));
+	FAutoConsoleCommandWithWorldAndArgs GTalk(TEXT("lyud.Friends.Talk"), TEXT("lyud.Friends.Talk [key]: a talk with the nearest townsperson (or key), whatever they are doing."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>& Args, UWorld* World)
+		{
+			ULyudFriends* F = Of(World);
+			const bool bOk = F && F->DevTalk(Args.Num() > 0 ? Args[0] : FString());
+			UE_LOG(LogLyudFriends, Display, TEXT("Friends: talk %s"), bOk ? TEXT("opened") : TEXT("refused: nobody near, or they have nothing to say"));
+		}));
+	FAutoConsoleCommandWithWorldAndArgs GTalkReport(TEXT("lyud.Friends.TalkReport"), TEXT("What the nearest townsperson would say now: whether they'd talk, the topics, the question back."),
+		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
+		{
+			if (ULyudFriends* F = Of(World)) { UE_LOG(LogLyudFriends, Display, TEXT("%s"), *F->DevTalkReport()); }
+		}));
 	FAutoConsoleCommandWithWorldAndArgs GInvites(TEXT("lyud.Friends.Invites"), TEXT("Every invitation that is due now (the waits forgotten)."),
 		FConsoleCommandWithWorldAndArgsDelegate::CreateLambda([](const TArray<FString>&, UWorld* World)
 		{
@@ -1552,6 +1632,10 @@ namespace LyudFriendsDev
 	using namespace LyudDev;
 	FAutoAction GBefriendAction(TEXT("friends.befriend"), TEXT("friends"), TEXT("dev.action.friends.befriend"),
 		[](UWorld* W) { if (ULyudFriends* F = LyudFriendsConsole::Of(W)) { F->DevBefriendNearest(); } });
+	FAutoAction GTalkAction(TEXT("friends.talk_nearest"), TEXT("friends"), TEXT("dev.action.friends.talk_nearest"),
+		[](UWorld* W) { if (ULyudFriends* F = LyudFriendsConsole::Of(W)) { F->DevTalk(FString()); } });
+	FAutoAction GTalkReportAction(TEXT("friends.talk_report"), TEXT("friends"), TEXT("dev.action.friends.talk_report"),
+		[](UWorld* W) { if (ULyudFriends* F = LyudFriendsConsole::Of(W)) { UE_LOG(LogLyudFriends, Display, TEXT("%s"), *F->DevTalkReport()); } });
 	FAutoAction GTeaAction(TEXT("friends.tea_now"), TEXT("friends"), TEXT("dev.action.friends.tea_now"),
 		[](UWorld* W) { if (ULyudFriends* F = LyudFriendsConsole::Of(W)) { F->DevTeaNow(TEXT("tadesse")); } });
 	FAutoAction GInvitesAction(TEXT("friends.invite_all"), TEXT("friends"), TEXT("dev.action.friends.invite_all"),

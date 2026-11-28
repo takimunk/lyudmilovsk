@@ -348,6 +348,9 @@ static void Deep(FCalendar& C)
 		Between("mid_autumn", 9, 6, 10, 7, -1);
 		Between("diwali", 10, 17, 11, 16, -1);
 		Between("loy_krathong", 10, 30, 11, 29, -1);
+		Between("science_day", 12, 1, 12, 7, 5);        // the first Saturday of December
+		Between("old_new_year", 1, 13, 1, 13, -1);
+		Between("neptune_day", 7, 25, 7, 31, 6);        // the last Sunday of July
 	}
 
 	// ---- the program's hours: inside the decorations' time, inside what At can see, sane for the people's life

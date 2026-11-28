@@ -1,0 +1,156 @@
+
+## ---------------------------------------------------------------------------------------------------------------
+## The town's everyday street life (docs/street_life.md): the kvass barrel and the ice-cream cart on a hot day, the
+## dawn sweep and the milk round, the shutters going up, the washing in the yards, the grandmothers' benches, the
+## evening's dominoes, the autumn's leaves and the spring subbotnik. Russian: the speaker's own words never agree in
+## gender (no "я повесила").
+## ---------------------------------------------------------------------------------------------------------------
+
+[street_kvass_vendor]
+doing = vend_kvass
+say town.street_kvass_vendor.1 | Квас холодный, из бочки! Маленькая кружка, большая кружка! | Cold kvass, from the barrel! A small mug, a big mug! | 冷たいクワスだよ、樽から！小さいジョッキ、大きいジョッキ！
+say town.street_kvass_vendor.2 | Бидончик принесли? Налью до краёв. | Brought a can? I'll fill it to the brim. | 缶を持ってきた？ふちまで注ぐよ。
+say town.street_kvass_vendor.3 | К обеду бочка опустеет, кто не успел, тот опоздал. | The barrel will be dry by lunch. Latecomers miss out. | 昼までに樽はからっぽ。遅れた人は残念でした。
+say town.street_kvass_vendor.4 | Очередь, граждане, очередь. Квасу хватит всем, кто стоит. | A queue, citizens, a queue. There's kvass for everyone who stands in it. | 並んでね、皆さん。並んだ人にはみんな行き渡るから。
+say town.street_kvass_vendor.5 | Такая жара, а бочка ещё холодная. Вот это я понимаю. | Such heat, and the barrel still cold. That's what I call a barrel. | この暑さで樽はまだ冷たい。たいしたもんだ。
+
+[street_kvass_vendor_near]
+doing = vend_kvass
+near = hero
+weight = 3
+say town.street_kvass_vendor_near.1 | Молодой человек, кружечку? В такую жару грех мимо пройти. | Young man, a mug? In this heat it's a sin to walk past. | そこのお兄さん、一杯どう？この暑さで素通りは罪だよ。
+say town.street_kvass_vendor_near.2 | Подходите, не стесняйтесь, квас сам себя не выпьет. | Come up, don't be shy. The kvass won't drink itself. | 遠慮しないで。クワスは勝手に減らないよ。
+
+[street_icecream_vendor]
+doing = vend_icecream
+say town.street_icecream_vendor.1 | Пломбир, эскимо, фруктовый лёд! | Plombir, eskimo, fruit ice! | プロンビール、エスキモー、フルーツアイス！
+say town.street_icecream_vendor.2 | Эскимо кончается, берите, пока есть. | The eskimo's running out. Take one while there are some. | エスキモーはもう少し。あるうちにどうぞ。
+say town.street_icecream_vendor.3 | Не роняй, не роняй! Ну вот. Бери новый, этот чайкам. | Don't drop it, don't drop it! Well, there. Take a new one, that one's for the gulls. | 落とさないで、落とさないで！あーあ。新しいのをどうぞ、それはカモメの分。
+say town.street_icecream_vendor.4 | Тележка как холодильник, а я рядом как на сковородке. | The cart's like a fridge, and I'm next to it like on a frying pan. | カートは冷蔵庫みたいなのに、横の私はフライパンの上。
+
+[street_icecream_vendor_near]
+doing = vend_icecream
+near = hero
+weight = 3
+say town.street_icecream_vendor_near.1 | Мороженое! Холодное, вкусное, недорогое! | Ice cream! Cold, tasty, cheap! | アイスだよ！冷たくて、おいしくて、お安いよ！
+say town.street_icecream_vendor_near.2 | Вам пломбир или эскимо? По глазам вижу, что пломбир. | Plombir for you, or an eskimo? I can see by your eyes it's plombir. | プロンビール？エスキモー？その目はプロンビールだね。
+
+[street_kvass_buyer]
+doing = buy_kvass
+age = adult elder
+say town.street_kvass_buyer.1 | Большую, пожалуйста. Нет, лучше две маленьких. | A big one, please. No, two small ones instead. | 大きいのをひとつ。いや、小さいのをふたつ。
+say town.street_kvass_buyer.2 | Ух, ледяной. До затылка пробирает. | Oof, ice cold. Goes right to the back of the head. | うわ、きんきん。頭の後ろまで冷える。
+say town.street_kvass_buyer.3 | Квас из бочки и квас из бутылки это две разные жизни. | Kvass from the barrel and kvass from a bottle are two different lives. | 樽のクワスと瓶のクワスは別ものだね。
+say town.street_kvass_buyer.4 | Кто последний? Я за вами. | Who's last? I'm after you. | 最後はどなた？あなたの次ね。
+
+[street_icecream_kid]
+doing = buy_icecream
+age = kid teen
+say town.street_icecream_kid.1 | Мне эскимо! Нет, фруктовый! Нет, эскимо! | An eskimo for me! No, fruit ice! No, eskimo! | エスキモーちょうだい！やっぱりフルーツ！やっぱりエスキモー！
+say town.street_icecream_kid.2 | Если быстро есть, голова звенит. | If you eat it fast your head rings. | 急いで食べると頭がキーンとする。
+say town.street_icecream_kid.3 | Мама дала на одно. Я поделюсь. Может быть. | Mum gave me enough for one. I'll share. Maybe. | ママがひとつ分くれたの。分けてあげる。たぶん。
+say town.street_icecream_kid.4 | Оно уже течёт по руке, а это только первый укус. | It's already running down my hand, and that was only the first bite. | もう手に垂れてきた。まだひと口目なのに。
+
+[street_icecream_grown]
+doing = buy_icecream
+age = adult elder
+say town.street_icecream_grown.1 | Пломбир за двадцать восемь. Помню, когда был за двадцать. | Plombir at twenty-eight. I remember when it was twenty. | プロンビールが二十八。二十のころを覚えてるよ。
+say town.street_icecream_grown.2 | Один пломбир, пожалуйста. Мне. Не ребёнку, мне. | One plombir, please. For me. Not for a child, for me. | プロンビールをひとつ。私の分。子どもじゃなくて、私の。
+
+[street_sweep]
+doing = sweep_street
+say town.street_sweep.1 | Пока город спит, улица моя. | While the town sleeps, the street is mine. | 町が寝ているあいだ、通りは私のもの。
+say town.street_sweep.2 | Вчера опять семечки у скамеек. Каждый вечер семечки. | Sunflower husks by the benches again. Every evening, husks. | また昨日もベンチのそばにひまわりの種の殻。毎晩これだ。
+say town.street_sweep.3 | Метла берёзовая, своя. Покупные так не метут. | A birch broom, home made. Shop ones don't sweep like this. | 白樺のほうき、手作りさ。買ったのはこうは掃けない。
+say town.street_sweep.4 | Чайки за ночь натаскали, а мне убирай. | The gulls dragged it all here overnight, and I clean it up. | カモメが夜のうちに散らかして、片づけるのは私。
+
+[street_sweep_near]
+doing = sweep_street
+near = hero
+weight = 3
+say town.street_sweep_near.1 | Ранняя птичка. Обойдите, тут пыльно. | An early bird. Go round, it's dusty here. | 早起きだね。よけて通って、ほこりが立つから。
+say town.street_sweep_near.2 | Ноги поднимайте, молодой человек, а то замету. | Lift your feet, young man, or I'll sweep you up too. | 足を上げて、お兄さん。いっしょに掃いちゃうよ。
+
+[street_milk]
+doing = deliver_milk
+say town.street_milk.1 | Молоко, сметана, творог! Бидоны выносите! | Milk, sour cream, curd! Bring out your cans! | 牛乳、サワークリーム、カッテージチーズ！缶を出してね！
+say town.street_milk.2 | Третий подъезд опять проспал. Оставлю у двери. | The third entrance overslept again. I'll leave it at the door. | 三番入口はまた寝坊。ドアの前に置いとこう。
+say town.street_milk.3 | Утреннее, ещё тёплое. Вечернее будет завтра. | This morning's, still warm. The evening's will be tomorrow. | けさの搾りたて、まだあったかい。夕方のは明日ね。
+say town.street_milk.4 | Бутылки пустые не забывайте, мне их сдавать. | Don't forget the empty bottles, I have to hand them in. | 空き瓶を忘れないで、返さなきゃならないの。
+
+[street_shutters]
+doing = open_shutters
+say town.street_shutters.1 | Ну, с богом. Открываемся. | Well then. Opening up. | さて、開店だ。
+say town.street_shutters.2 | Ставня опять скрипит. Надо смазать. Каждое утро надо смазать. | The shutter squeaks again. Needs oiling. Every morning it needs oiling. | 雨戸がまたきしむ。油をささなきゃ。毎朝そう思う。
+say town.street_shutters.3 | Пока подметут, пока откроемся, а там уже и первый покупатель. | By the time it's swept and we're open, there's the first customer. | 掃いて、開けて、そしたらもう最初のお客さん。
+
+[street_hang_laundry]
+doing = hang_laundry
+say town.street_hang_laundry.1 | Солнце, ветерок, к обеду всё высохнет. | Sun, a breeze, it'll all be dry by lunch. | お日さまにそよ風、昼までに乾くね。
+say town.street_hang_laundry.2 | Прищепки где? Опять дети унесли. | Where are the pegs? The children took them again. | 洗濯ばさみは？また子どもが持っていった。
+say town.street_hang_laundry.3 | Простыни на дальнюю верёвку, там солнце дольше. | The sheets on the far line, the sun stays longer there. | シーツは奥のロープに。あっちのほうが日が長い。
+say town.street_hang_laundry.4 | На море сушить, бельё морем пахнет. Лучше всякого порошка. | Dry it by the sea and it smells of the sea. Better than any powder. | 海風で干すと海のにおい。どんな洗剤よりいい。
+
+[street_take_laundry]
+doing = take_laundry
+say town.street_take_laundry.1 | Тучи с моря идут. Снимаем, снимаем, быстро! | Clouds coming in from the sea. Take it in, take it in, quickly! | 海から雲が来る。取り込んで、早く！
+say town.street_take_laundry.2 | Ещё бы час, и было бы сухое. Ну ничего, дома досохнет. | One more hour and it'd be dry. Never mind, it'll finish at home. | あと一時間で乾いたのに。まあいい、家で乾かそう。
+say town.street_take_laundry.3 | Чьи носки? Опять ничьи. | Whose socks? Nobody's, again. | だれの靴下？またも持ち主なし。
+say town.street_take_laundry.4 | Пахнет солнцем. Вот за это и люблю сушить во дворе. | Smells of the sun. That's why I like drying it in the yard. | お日さまのにおい。だから庭で干すのが好きなの。
+
+[street_grannies]
+doing = granny_bench
+say town.street_grannies.1 | А у Петровых опять гости. Третий раз за неделю. | The Petrovs have guests again. Third time this week. | ペトロフさんちにまたお客。今週三回目。
+say town.street_grannies.2 | Давление сегодня скачет. Погода меняется, точно говорю. | My blood pressure's jumping today. The weather's changing, mark my words. | 今日は血圧が上がったり下がったり。天気が変わるよ、間違いない。
+say town.street_grannies.3 | Внук звонил. Обещал приехать. Летом. Каким летом, не сказал. | My grandson called. Promised to come. In summer. Which summer, he didn't say. | 孫から電話。来るって。夏に。どの夏かは言わなかった。
+say town.street_grannies.4 | Вот раньше во дворе порядок был. Хотя и сейчас ничего. | In the old days there was order in the yard. Though it's not bad now either. | 昔は庭もきちんとしてたもんだ。まあ、今も悪くないけど。
+say town.street_grannies.5 | Посиди, посиди, куда спешить. Солнышко же. | Sit, sit, where's the hurry. It's sunny. | 座って、座って、急ぐことないよ。お日さまだもの。
+
+[street_grannies_near]
+doing = granny_bench
+near = hero
+weight = 4
+say town.street_grannies_near.1 | Это кто такой? Не наш вроде. | Who's that? Not one of ours, it seems. | あれはだれだい？うちの人じゃないね。
+say town.street_grannies_near.2 | Здравствуй, милок. Ты чей будешь? | Hello, dear. Whose are you, then? | こんにちは、坊や。どこの家の子だい？
+say town.street_grannies_near.3 | Худенький какой. Кормят тебя там, нет? | So thin. Do they feed you over there, or not? | まあ、やせて。ちゃんと食べてるのかい？
+say town.street_grannies_near.4 | Шапку бы надел. Ветер с моря, продует. | You should put a hat on. The wind's off the sea, you'll catch a chill. | 帽子をかぶりなさい。海風で風邪をひくよ。
+
+[street_yard_dominoes]
+doing = yard_dominoes
+say town.street_yard_dominoes.1 | Рыба! Считай, Михалыч, считай. | Blocked! Count them up, Mikhalych, count. | 手詰まりだ！数えろよ、ミハールィチ。
+say town.street_yard_dominoes.2 | Не стучи так, весь двор слышит. | Don't slam them so, the whole yard can hear. | そんなに叩くな、庭じゅうに聞こえる。
+say town.street_yard_dominoes.3 | Ещё партию, пока светло. | One more game while it's light. | 明るいうちにもう一局。
+say town.street_yard_dominoes.4 | Этот стол ещё мой дед сколачивал. И проигрывал за ним тоже. | My grandfather knocked this table together. And lost at it too. | このテーブルはじいさんが作ったんだ。そして負けてたのもじいさん。
+say town.street_yard_dominoes.5 | Дубль пусто. Ходи, если есть чем. | Double blank. Your go, if you've got anything. | ダブルゼロ。出せるものがあるならどうぞ。
+
+[street_rake_leaves]
+doing = rake_leaves
+say town.street_rake_leaves.1 | Сгребёшь, а ветер обратно раскидает. Так и живём. | You rake them up, and the wind scatters them back. That's life. | かき集めても風がまた散らかす。そういうもんだ。
+say town.street_rake_leaves.2 | Клён в этом году рано облетел. Зима будет ранняя. | The maple shed early this year. Winter will come early. | 今年はカエデの葉が早く落ちた。冬が早いね。
+say town.street_rake_leaves.3 | Детвора, кучу не трогать! Ну ладно, одну можно. | Kids, leave the pile alone! Well, all right, you can have one. | ちびっこたち、山はさわるな！まあいい、ひとつだけな。
+say town.street_rake_leaves.4 | Листья пахнут осенью. Ничем больше так не пахнет. | Leaves smell of autumn. Nothing else smells like that. | 落ち葉は秋のにおい。ほかにこんなにおいはない。
+
+[street_subbotnik_paint]
+doing = subbotnik_paint
+say town.street_subbotnik_paint.1 | Зелёная скамейка, как всегда. Другой краски у нас не бывает. | A green bench, as always. We never have any other paint. | ベンチはいつもの緑。うちにはほかのペンキがないんだ。
+say town.street_subbotnik_paint.2 | Не садиться! Окрашено! Табличку кто-нибудь напишите. | Don't sit! Wet paint! Someone write a sign. | 座らないで！ペンキ塗りたて！だれか札を書いて。
+say town.street_subbotnik_paint.3 | Кисть одна на троих, зато краски на десятерых. | One brush for three of us, but paint enough for ten. | ブラシは三人で一本、ペンキは十人分。
+
+[street_subbotnik_whitewash]
+doing = subbotnik_whitewash
+say town.street_subbotnik_whitewash.1 | Белим по пояс, ровно. Чтобы как у соседей, только лучше. | Whitewash up to the waist, evenly. Like the neighbours', only better. | 腰の高さまで、まっすぐ白く。隣の庭みたいに、でもそれよりきれいに。
+say town.street_subbotnik_whitewash.2 | Известь в глаза не брызгай, держи ведро ниже. | Don't splash lime in your eyes, keep the bucket lower. | 石灰を目に飛ばさないで。バケツはもっと低く。
+say town.street_subbotnik_whitewash.3 | Деревья в белых гольфах, значит, весна пришла. | The trees in white knee socks: spring has come. | 木が白いソックスをはいたら、春が来たってこと。
+
+[street_subbotnik_sweep]
+doing = subbotnik_sweep
+say town.street_subbotnik_sweep.1 | Весь двор вышел. Даже с пятого этажа спустились. | The whole yard came out. Even the fifth floor came down. | 庭じゅう総出だ。五階の人まで降りてきた。
+say town.street_subbotnik_sweep.2 | После субботника чай у Зинаиды. Она обещала пирог. | Tea at Zinaida's after the subbotnik. She promised a pie. | 奉仕作業のあとはジナイーダさんちでお茶。パイを焼くって。
+say town.street_subbotnik_sweep.3 | Прошлогодние листья из-под снега вылезли. Гребём. | Last year's leaves came out from under the snow. Raking. | 去年の落ち葉が雪の下から出てきた。かき集めよう。
+
+[street_subbotnik_near]
+doing = subbotnik_paint subbotnik_whitewash subbotnik_sweep
+near = hero
+weight = 3
+say town.street_subbotnik_near.1 | Субботник! Грабли вон там, бери и присоединяйся. | Subbotnik! The rakes are over there, grab one and join in. | 奉仕作業だよ！熊手はあそこ、取って手伝って。
+say town.street_subbotnik_near.2 | Не стой столбом, парень. Хоть ведро подержи. | Don't stand there like a post, lad. At least hold a bucket. | 突っ立ってないで、兄ちゃん。バケツくらい持ってよ。

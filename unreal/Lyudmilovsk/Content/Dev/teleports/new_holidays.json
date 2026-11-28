@@ -1,0 +1,44 @@
+{
+ "teleports": [
+  {
+   "id": "nh_science_fair",
+   "group": "holidays",
+   "name": "dev.tp.nh_science_fair",
+   "x": 92.48,
+   "y": 1206.13,
+   "z": -3620.0,
+   "yaw": 174.0,
+   "time": "12:00"
+  },
+  {
+   "id": "nh_ony_dumplings",
+   "group": "holidays",
+   "name": "dev.tp.nh_ony_dumplings",
+   "x": 99.49,
+   "y": 958.33,
+   "z": -3950.0,
+   "yaw": 174.7,
+   "time": "18:00"
+  },
+  {
+   "id": "nh_neptune_tower",
+   "group": "holidays",
+   "name": "dev.tp.nh_neptune_tower",
+   "x": 156.76,
+   "y": 859.7,
+   "z": -4150.0,
+   "yaw": 175.7,
+   "time": "13:00"
+  },
+  {
+   "id": "nh_neptune_rental",
+   "group": "holidays",
+   "name": "dev.tp.nh_neptune_rental",
+   "x": 89.7,
+   "y": 838.7,
+   "z": -3950.0,
+   "yaw": 175.8,
+   "time": "13:00"
+  }
+ ]
+}
