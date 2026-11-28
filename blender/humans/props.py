@@ -668,7 +668,7 @@ def rake():
     p = Prop("rake")
     wood = p.mat("wood", (0.62, 0.47, 0.28), 0.7)
     iron = p.mat("iron", (0.3, 0.31, 0.33), 0.45)
-    p.rod(wood, (0.0, 0.0, 0.0), (1.4, 0.0, 0.0), 0.014, 0.015, seg=8)
+    p.rod(wood, (0.0, 0.0, 0.0), (1.385, 0.0, 0.0), 0.014, 0.015, seg=8)   # (its end inside the bar, not on its face)
     p.rod(iron, (1.38, -0.22, 0.0), (1.38, 0.22, 0.0), 0.012, seg=6)
     for k in range(12):
         y = -0.2 + 0.4 * k / 11
