@@ -14,6 +14,7 @@ pictures (tools/spacecraft/textures.json pins the seed and the SHA-1 of every ou
                                         stitching inside them
         shield       512 (1 m)          the ablator: filled honeycomb, charred in blotches
         rubber       512 (0.5 m)        ribbed black rubber
+        floor        512 (0.5 m)        the deck: grey-green studded rubber mat
         fabric       512 (0.5 m)        woven strap
         chute        512 (two gores)    ripstop: U 0..0.5 orange, 0.5..1 white (a gore each), seams between; the
                                         canopy's UVs run 0..1 round and up, the material tiles them (gores / 2)
@@ -50,7 +51,7 @@ import europa_textures as ET  # noqa: E402  (periodic_noise, band, smooth, strea
 SEED = 7151
 # one tile in metres (the import's TileInv = 1 / this) and the metalness of each tiling surface
 TILE_M = {"paint_white": 2.0, "paint_green": 2.0, "metal": 1.0, "foil": 1.0, "quilt": 0.57923, "shield": 1.0,
-          "rubber": 0.5, "fabric": 0.5, "net": 0.25}
+          "rubber": 0.5, "fabric": 0.5, "net": 0.25, "floor": 0.5}
 METAL = {"metal": 0.9, "foil": 1.0}
 # the dials when kit.json does not say: id -> (min, max, sweep degrees, major step, minors per major, zones)
 # zones: (from, to, colour) arcs just inside the scale; angles run clockwise from `start` (degrees from 12 o'clock)
@@ -316,6 +317,25 @@ def shield(n=512):
     save_ca("T_SC_shield_C.png", col, rough)
     h = 0.35 * dome * (0.6 + 0.4 * cell) + 0.5 * wall + 0.05 * fine
     save("T_SC_shield_N.png", normal_map(h, 0.03))
+
+
+def floor(n=512):
+    """The cabin's deck: a grey-green studded rubber mat (round coin studs, 12 a tile each way), scuffed where feet go."""
+    u, v = uv(n)
+    N = 12
+    fu, fv = u * N - np.floor(u * N) - 0.5, v * N - np.floor(v * N) - 0.5
+    r = np.sqrt(fu * fu + fv * fv)
+    stud = 1 - smooth(0.26, 0.34, r)
+    fine = ET.periodic_noise(n, 0.4, SEED + 81)
+    tone = ET.periodic_noise(n, 2.2, SEED + 82)
+    scuff = smooth(0.55, 0.95, ET.periodic_noise(n, 1.2, SEED + 83))
+    dirt = smooth(0.5, 0.9, ET.periodic_noise(n, 1.6, SEED + 84)) * (1 - stud)
+    base = srgb((0.36, 0.40, 0.40))
+    val = 0.9 + 0.12 * stud * (0.6 + 0.4 * scuff) + 0.06 * (fine - 0.5) + 0.08 * (tone - 0.5)
+    col = base * val[..., None]
+    col = col * (1 - 0.35 * dirt[..., None]) + srgb((0.16, 0.15, 0.13)) * (0.35 * dirt[..., None])
+    save_ca("T_SC_floor_C.png", col, 0.72 - 0.18 * stud * scuff + 0.12 * dirt + 0.06 * (fine - 0.5))
+    save("T_SC_floor_N.png", normal_map(0.6 * stud + 0.04 * fine, 0.012))
 
 
 def rubber(n=512):
@@ -611,7 +631,7 @@ def noise(n=256):
     save("T_SC_noise.png", np.stack([eq(r), eq(g), eq(b), eq(a)], -1))
 
 
-ALL = [paint_white, paint_green, metal, foil, quilt, shield, rubber, fabric, chute, net, dials, ball, digits, glass, noise]
+ALL = [paint_white, paint_green, metal, foil, quilt, shield, rubber, floor, fabric, chute, net, dials, ball, digits, glass, noise]
 
 
 def gpu_bytes(name, info):

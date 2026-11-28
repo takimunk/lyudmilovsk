@@ -50,7 +50,7 @@ LANGS = ("ru", "en", "ja")
 # when it is there), its metalness (tools/spacecraft/textures.py TILE_M / METAL: the lint compares them with
 # textures.json)
 TILE_M = {"paint_white": 2.0, "paint_green": 2.0, "metal": 1.0, "foil": 1.0, "quilt": 0.57923, "shield": 1.0,
-          "rubber": 0.5, "fabric": 0.5, "net": 0.25}
+          "rubber": 0.5, "fabric": 0.5, "net": 0.25, "floor": 0.5}
 METAL = {"metal": 0.9, "foil": 1.0}
 # surfaces with no normal map of their own, cut out by their colour's alpha
 CUTOUT = ("net",)

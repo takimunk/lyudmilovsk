@@ -1,5 +1,5 @@
 {
- "gpu_bytes_total": 12080460,
+ "gpu_bytes_total": 12779510,
  "island": {
   "about": "uv = 0.5 + (east, -north) / extent from the centre; map X is west, so east = -(X - centre X). M_SC_PlanetNear puts the texture's centre at IslandLat/IslandLon and scales it by IslandSizeKm against PlanetRadiusKm; see tools/spacecraft/MATERIAL_NOTES.md.",
   "centre_lat_lon_true_scale": [
@@ -234,6 +234,24 @@
    "channels": 3,
    "gpu_bytes": 349525,
    "sha1": "9c710351d7255477c25f6a0b65ff2b5cdf1f5d1e",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_floor_C.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "bc9404d4f191487250ff7704466ce78a358cd60c",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_floor_N.png": {
+   "channels": 3,
+   "gpu_bytes": 349525,
+   "sha1": "169a952bcf645d429c73e449f0773a7cfea01c69",
    "size": [
     512,
     512
