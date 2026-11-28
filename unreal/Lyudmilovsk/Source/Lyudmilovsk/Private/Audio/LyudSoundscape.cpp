@@ -388,6 +388,39 @@ void ULyudSoundscapeSubsystem::LoadSounds()
 	}
 }
 
+void ULyudSoundscapeSubsystem::LoadPool(const TCHAR* Group, FName Id)
+{
+	FPool& P = Pools.FindOrAdd(Id);
+	if (P.Sounds.Num() > 0)
+	{
+		return;
+	}
+	// the same naming as LoadSounds' pools; held by the pool itself, not by CueRefs, so UnloadPool frees them
+	const FString Name = Id.ToString();
+	for (int32 N = 1; N <= 12; N++)
+	{
+		USoundBase* S = LoadObject<USoundBase>(nullptr, *FString::Printf(TEXT("/Game/Audio/%s/S_%s_%02d.S_%s_%02d"), Group, *Name, N, *Name, N), nullptr, LOAD_NoWarn | LOAD_Quiet);
+		if (!S)
+		{
+			break;
+		}
+		P.Sounds.Add(S);
+		LazyRefs.Add(S);
+	}
+}
+
+void ULyudSoundscapeSubsystem::UnloadPool(FName Id)
+{
+	if (FPool* P = Pools.Find(Id))
+	{
+		for (const TObjectPtr<USoundBase>& S : P->Sounds)
+		{
+			LazyRefs.RemoveSwap(S, EAllowShrinking::No);
+		}
+		Pools.Remove(Id);
+	}
+}
+
 USoundBase* ULyudSoundscapeSubsystem::Pick(FName Pool)
 {
 	FPool* P = Pools.Find(Pool);
@@ -634,17 +667,42 @@ void ULyudSoundscapeSubsystem::UpdateBed()
 		P.Enclosure = 0.97f;
 	}
 
-	// wind at the ear (2 m over the ground), a little sheltered among trees
+	// Wind at the ear: the local wind where the listener is (docs/wind.md), so it drops in the lee of the cliff, of a
+	// house or a wall and comes up on the open beach and the pier. Among trees what is heard is the wind in the crowns
+	// overhead, a little sheltered as before: under the canopy the air itself is nearly still, and the leaves' and
+	// needles' voices take their strength from this same speed.
 	if (const ULyudWindSubsystem* Wind = World->GetSubsystem<ULyudWindSubsystem>())
 	{
-		const FLyudWindSample S = Wind->GetWindAt(Listener, 2.f, false);
-		const float Shelter = 1.f - 0.35f * FMath::Clamp(Leafy * LeafSeason + Conifer, 0.f, 1.f);
-		P.WindSpeed = S.Speed * Shelter;
+		const float Trees = FMath::Clamp(Leafy * LeafSeason + Conifer, 0.f, 1.f);
+		float Speed = 0.f, Gust = 1.f;
+		FVector Air = FVector::ZeroVector;
+		if (Wind->IsReliefReady())
+		{
+			const FLyudLocalWind Ear = Wind->GetLocalWind(Listener);
+			Speed = Ear.Speed;
+			Gust = Ear.Gust;
+			Air = Ear.Velocity;
+			LastWind = Speed;
+			if (Trees > 0.01f)
+			{
+				const FLyudLocalWind Crowns = Wind->GetLocalWind(Listener + FVector(0.0, 0.0, 2500.0));
+				Speed = FMath::Lerp(Speed, Crowns.Speed * 0.65f, Trees);
+			}
+		}
+		else
+		{
+			// the land is not read yet (the first seconds of play): 2 m over open ground, as it always was
+			const FLyudWindSample S = Wind->GetWindAt(Listener, 2.f, false);
+			Gust = S.Gust;
+			Air = S.Velocity;
+			LastWind = S.Speed;
+			Speed = S.Speed * (1.f - 0.35f * Trees);
+		}
+		P.WindSpeed = Speed;
 		P.WindGustiness = Wind->GetGustiness();
 		// pan toward where it comes from
-		P.WindPan = -float(FVector::DotProduct(S.Velocity.GetSafeNormal2D(), ListenerRight.GetSafeNormal2D()));
-		LastWind = S.Speed;
-		LastGust = S.Gust;
+		P.WindPan = -float(FVector::DotProduct(Air.GetSafeNormal2D(), ListenerRight.GetSafeNormal2D()));
+		LastGust = Gust;
 	}
 	if (bBirdFlying)
 	{

@@ -1,0 +1,50 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "1280c0ba0b874528b7eb4d4862bb36b5",
+  "points": 45,
+  "arguments": {
+   "file_tokens": "(uploaded views, see inputs)",
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/birds/scan_raw/WhiteTailedEagle/views/front.png",
+    "sha256": "2a6495951cc940ea699b0654c179b1cad9d9cd8405b4e3eaf4f94c64bf32c974"
+   },
+   {
+    "view": "back",
+    "file": "blender/birds/scan_raw/WhiteTailedEagle/views/back.png",
+    "sha256": "a6e5c2c4bd0af655f611350f5428903cf623d01650040963cac42a1e5a40ad89"
+   },
+   {
+    "view": "left",
+    "file": "blender/birds/scan_raw/WhiteTailedEagle/views/left.png",
+    "sha256": "08db693a13bec45a74e36145346f1c1b36142564705c5396a7a7c2978145b411"
+   },
+   {
+    "view": "right",
+    "file": "blender/birds/scan_raw/WhiteTailedEagle/views/right.png",
+    "sha256": "a9530250b0356d816405df6cf23cb7d31e5001dd23d1e8003c43b60342c8f246"
+   }
+  ],
+  "submitted": "2026-11-20T19:42:40+00:00",
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/ee0d9fadb3084af18bed31991b48f6e2/target/model/original/GLB0.glb?auth_key=fd4f4238d2a68ba955cad45216671931&t=1795208166",
+    "file": "blender/birds/scan_raw/WhiteTailedEagle/model.glb",
+    "bytes": 49434020,
+    "sha256": "fb13ab018cd4f3d8fe2aefad4313c5322463fab170f6a96e7a18df752e1f7aac"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/1280c0ba0b874528b7eb4d4862bb36b5",
+  "fetched": "2026-11-20T19:55:14+00:00"
+ }
+]

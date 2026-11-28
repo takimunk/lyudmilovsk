@@ -1,0 +1,30 @@
+{
+ "name": "sc_needle_up_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_needle_up_01",
+ "pool": "sc_needle_up",
+ "file": "audio/sfx/spacecraft/sc_needle_up_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7611,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.39,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -26.23,
+ "params": {},
+ "checks": {
+  "seconds": 0.39,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -26.23,
+  "crest_db": 20.2,
+  "centroid_hz": 727,
+  "rolloff85_hz": 1853,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "ff97c280a77c3809261b3928bae30a624e638ff54c8875e2ca4a09d3a765df2b",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

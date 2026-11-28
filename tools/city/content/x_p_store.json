@@ -285,6 +285,7 @@
   },
   "ps_fitting_room": {
    "like": "look_misc",
+   "open": "fitting",
    "prompt": "city.ps.fitting.prompt",
    "minutes": 10,
    "fade": true,
@@ -335,6 +336,7 @@
   },
   "ps_clothes": {
    "like": "look_misc",
+   "open": "clothes",
    "minutes": 4,
    "lines": "city.ps.clothes"
   },

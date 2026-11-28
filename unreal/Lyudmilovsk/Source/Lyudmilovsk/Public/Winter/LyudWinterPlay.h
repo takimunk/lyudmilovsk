@@ -117,6 +117,8 @@ public:
 	FText GetScoreLine() const;
 
 	UPROPERTY(SaveGame) FString Saved;
+	/** The day key (Year*1000+Month*40+Day) of the stoker's last free coal: saved, so a reload does not give it again. */
+	UPROPERTY(SaveGame) int32 CoalDay = -1;
 
 protected:
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override
@@ -215,7 +217,6 @@ private:
 	bool bSnowSaid = false;
 	bool bHoleOpen = false;
 	bool bCoalGiven = false;
-	int32 CoalDay = -1;
 
 	// snow
 	float ScoopT = -1.f;

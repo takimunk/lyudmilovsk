@@ -19,6 +19,27 @@ namespace
 		TEXT("Call"), TEXT("Takeoff"), TEXT("Flap"), TEXT("Glide"), TEXT("Bound"), TEXT("Land"), TEXT("Sleep") };
 }
 
+namespace BirdActorPlumage
+{
+	/** A material variant by path (_Female, _Winter, a pigeon morph). Most slot/variant combinations do not exist, and
+	 *  each body spawned for a bird coming near asks three times (SetSpecies, BeginPlay, SetSex): every miss was a
+	 *  package lookup again. The misses are remembered (game thread only; bounded by species x slots x variants). */
+	UMaterialInterface* LoadVariant(const FString& Path)
+	{
+		static TSet<FString> Missing;
+		if (Missing.Contains(Path))
+		{
+			return nullptr;
+		}
+		UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet);
+		if (!M)
+		{
+			Missing.Add(Path);
+		}
+		return M;
+	}
+}
+
 ABirdActor::ABirdActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -125,7 +146,7 @@ void ABirdActor::ApplyPlumage()
 				break;
 			}
 			const FString P = FString::Printf(TEXT("/Game/Birds/%s/%s%s.%s%s"), *N, *Base->GetName(), *Sfx, *Base->GetName(), *Sfx);
-			if (UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, *P, nullptr, LOAD_NoWarn | LOAD_Quiet))
+			if (UMaterialInterface* M = BirdActorPlumage::LoadVariant(P))
 			{
 				Use = M;
 				break;
@@ -359,7 +380,7 @@ void ABirdActor::ApplyMorph()
 			continue;
 		}
 		const FString P = FString::Printf(TEXT("/Game/Birds/FeralPigeon/%s_%s.%s_%s"), *Base->GetName(), *Suffix, *Base->GetName(), *Suffix);
-		if (UMaterialInterface* M = LoadObject<UMaterialInterface>(nullptr, *P, nullptr, LOAD_NoWarn | LOAD_Quiet))
+		if (UMaterialInterface* M = BirdActorPlumage::LoadVariant(P))
 		{
 			Body->SetMaterial(i, M);
 		}

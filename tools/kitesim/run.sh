@@ -1,7 +1,10 @@
 #!/bin/sh
 # Builds and runs the kite's lift model outside the engine (tools/kitesim/kitetest.cpp). Run from anywhere.
-#   tools/kitesim/run.sh            -> checks (calm, breeze, gale, storm, snag, the line's sag), exits 1 on failure
-#   tools/kitesim/run.sh fly 7 [box] -> a trace of a kite flown 2 minutes in a 7 m/s wind
+#   tools/kitesim/run.sh            -> checks (the five kinds in calm, breeze, gale and storm; the stunt kite's window,
+#                                      loops and twists; lee, lift and rough air; launches; tricks; a snag got
+#                                      down; the hum), exits 1 on failure
+#   tools/kitesim/run.sh fly 7 [box|delta|dragon|stunt] -> a trace of a kite flown 2 minutes in a 7 m/s wind
+#   tools/kitesim/run.sh trace N    -> the checks, with their Nth stunt flight printed four times a second
 set -e
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SRC="$ROOT/unreal/Lyudmilovsk/Source/Lyudmilovsk/Private"

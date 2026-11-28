@@ -1,0 +1,5 @@
+# The craft's records (tools/spacecraft/fetch_records.py): openly licensed recordings fetched per machine, never in git
+# or LFS. The originals and the game-ready WAVs are ignored; the <id>.json sidecars beside them are committed.
+_src/
+*.wav
+*.part

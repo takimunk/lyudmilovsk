@@ -1,0 +1,32 @@
+{
+ "name": "sc_drip_03",
+ "asset": "/Game/Audio/Spacecraft/S_sc_drip_03",
+ "pool": "sc_drip",
+ "file": "audio/sfx/spacecraft/sc_drip_03.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7573,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.262,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -22.05,
+ "params": {
+  "onto": "metal"
+ },
+ "checks": {
+  "seconds": 0.262,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -22.05,
+  "crest_db": 16.1,
+  "centroid_hz": 2383,
+  "rolloff85_hz": 2210,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "7e81800ef5e9bc5d75acdc82776699757db45ac2476103d91d8a64c251a0a3bd",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

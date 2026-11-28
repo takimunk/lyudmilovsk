@@ -87,6 +87,26 @@ void ULyudPrefetch::Release(const UObject* WorldContext, const FString& ObjectPa
 	}
 }
 
+void ULyudPrefetch::ReleaseFolder(const UObject* WorldContext, const FString& Folder, const TCHAR* Skip)
+{
+	const UWorld* World = WorldContext ? WorldContext->GetWorld() : nullptr;
+	ULyudPrefetch* Self = World ? World->GetSubsystem<ULyudPrefetch>() : nullptr;
+	const FString Key = Skip ? Folder + TEXT("|") + Skip : Folder;
+	const FFolder* Entry = Self ? Self->Folders.Find(Key) : nullptr;
+	if (!Entry)
+	{
+		return;
+	}
+	for (const FString& Path : Entry->Paths)
+	{
+		if (UObject* Asset = FindObject<UObject>(nullptr, *Path))
+		{
+			Self->Held.RemoveSwap(Asset, EAllowShrinking::No);
+		}
+	}
+	Self->Folders.Remove(Key);
+}
+
 bool ULyudPrefetch::FolderReady(const UObject* WorldContext, const FString& Folder, const TCHAR* Skip)
 {
 	if (CVarPrefetch.GetValueOnGameThread() == 0)

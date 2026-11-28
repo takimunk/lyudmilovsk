@@ -23,6 +23,9 @@
 # heard_of =  a rumour about the player the speaker would bring up now (docs/town_rumours.md: cup, beat, job, tamed, ...);
 #             lines may hold {1}: the rumour's detail (the cup, the regular beaten, the bird, the fish, the tune, the job)
 # gather =    at a holiday's gathering of this mode now: mingle, watch, sit, fair
+# today =     what today is for them (docs/town_life.md "The days"): cold, sleepy, birthday, payday, pension, guest (asked
+#             to a birthday); today's plan while they go to it or are at it: tea, stroll, chess, family (and host: at
+#             their own flat); street_meet: stopped on the way for a word with somebody they know. doing = plan: at it
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
 # sun =       day, low (sunrise or sunset), night, cloudy (overcast by day)
@@ -2416,6 +2419,13 @@ say = town.friend_gift_named.1..2
 
 # Kites (docs/kites.md): the children flying kites on windy afternoons (town life's fly_kite), the grown-ups who watch
 # them on the beach, a kite flier noticing the player's own kite
+# Kite afternoons (docs/kites.md "Kite afternoons"): the teens' two-line stunt kites (fly_kite_stunt), the deltas of
+# light days (fly_kite_delta), the dragons' owners (fly_kite_dragon), whoever came to the beach to look (watch_kites).
+# The barks know no wind, so the lore about it is said as a rule, never as what the air does this minute.
+# --- said at a moment the kite flying raises (ULyudKiteFlying::Bark -> ULyudTownTalkSubsystem::SayEvent): somebody on
+# the beach agrees to hold the hero's kite for a long launch and lets it go on his pull; a stunt flier who has just
+# shown him a loop and its undoing; a child whose kite he got out of a tree. The last two sets wait for the engine to
+# call them (kite_loop_cheer: somebody near when his stunt kite loops; kite_low_pass: somebody it passes low over).
 
 [kite_kid]
 doing = fly_kite
@@ -2436,6 +2446,80 @@ say = town.kite_watch.1..3
 doing = fly_kite
 near = hero
 say = town.kite_hero.1..2
+
+[kite_kid_more]
+doing = fly_kite
+age = kid
+say = town.kite_kid_more.1..4
+
+[kite_stunt]
+doing = fly_kite_stunt
+say = town.kite_stunt.1..8
+
+[kite_stunt_hero]
+doing = fly_kite_stunt
+near = hero
+say = town.kite_stunt_hero.1..2
+
+[kite_delta]
+doing = fly_kite_delta
+say = town.kite_delta.1..6
+
+[kite_delta_elder]
+doing = fly_kite_delta
+age = elder
+say = town.kite_delta_elder.1..3
+
+[kite_dragon]
+doing = fly_kite_dragon
+say = town.kite_dragon.1..6
+
+[kite_wind_lore]
+doing = fly_kite_stunt fly_kite_delta fly_kite_dragon
+say = town.kite_wind_lore.1..7
+
+[kite_cold]
+doing = fly_kite fly_kite_stunt fly_kite_delta fly_kite_dragon
+months = 11-3
+say = town.kite_cold.1..2
+
+[kite_onlooker]
+doing = watch_kites
+say = town.kite_onlooker.1..5
+
+[kite_parent]
+doing = watch_kites
+age = 25-50
+say = town.kite_parent.1..4
+
+[kite_onlooker_elder]
+doing = watch_kites
+age = elder
+say = town.kite_onlooker_elder.1..2
+
+[kite_hold_yes]
+on = kite_hold_yes
+say = town.kite_hold_yes.1..3
+
+[kite_hold_go]
+on = kite_hold_go
+say = town.kite_hold_go.1..3
+
+[kite_lesson]
+on = kite_lesson
+say = town.kite_lesson.1..3
+
+[kite_rescue_thanks]
+on = kite_rescue_thanks
+say = town.kite_rescue_thanks.1..4
+
+[kite_loop_cheer]
+on = kite_loop_cheer
+say = town.kite_loop_cheer.1..4
+
+[kite_low_pass]
+on = kite_low_pass
+say = town.kite_low_pass.1..3
 
 # The hero plays (docs/instruments.md): somebody near the piano or the guitar notices (on = hero_plays), a tune played to
 # its end gets a word (on = hero_played), and by a bonfire the circle sings the tune's words with him (on = hero_sing_<tune>,
@@ -4083,6 +4167,29 @@ age = elder
 weight = 5
 say = town.fv_amber_morning_elder.1
 
+# The beach at play, deeper (docs/beach.md "Children at the castle", "Summer visitors at the buoy"): children building
+# castles on warm days (town life's beach_castle; the same lines are said by a child who comes to help the hero with
+# his castle, ULyudBeach), and the grown-ups on the sand talking about the summer folk who race to the buoy.
+# Russian: the speaker's own words never agree in gender.
+
+[beach_castle_kid]
+doing = beach_castle
+age = kid
+say = town.beach_castle_kid.1..6
+
+[beach_castle_mind]
+doing = mind_child
+at = beach
+age = adult elder
+weather = warm
+say = town.beach_castle_mind.1..2
+
+[beach_race_talk]
+doing = swim_look sea_air
+at = beach
+weather = warm
+say = town.beach_race_talk.1..3
+
 # The weekend cruise of the motor ship «Полдень» (docs/ship.md; tools/ship/cruise_people.py): the townsfolk who
 # sail this weekend (job = cruise_passenger: their twins aboard, and their town records waiting for the launch at
 # the pier head). The crew and the tourists are talked to with E and say no lines of these. The islands by the
@@ -4266,3 +4373,1665 @@ say = town.cruise_ev_island.1..2
 on = cruise_home
 job = cruise_passenger
 say = town.cruise_ev_home.1..2
+
+# The town cooks at home too (docs/kitchen.md "The town cooks"): what people carry home from the shops and the
+# market by the season (the same Baltic dishes the hero learns: spring smelt, summer okroshka, autumn herring and
+# draniki), and a word over the table at home
+
+[cook_shop_spring]
+doing = shop shop_town
+age = adult elder
+months = 3-5
+weight = 0.6
+say = town.cook_shop_spring.1..3
+
+[cook_shop_summer]
+doing = shop shop_town
+age = adult elder
+months = 6-8
+weight = 0.6
+say = town.cook_shop_summer.1..4
+
+[cook_shop_autumn]
+doing = shop shop_town
+age = adult elder
+months = 9-11
+weight = 0.6
+say = town.cook_shop_autumn.1..3
+
+[cook_shop_winter]
+doing = shop shop_town
+age = adult elder
+months = 12-2
+weight = 0.5
+say = town.cook_shop_winter.1..2
+
+[cook_home_table]
+doing = eat_home
+age = adult elder
+weight = 0.8
+say = town.cook_home_table.1..4
+
+[cook_home_kid]
+doing = eat_home
+age = kid teen
+weight = 0.6
+say = town.cook_home_kid.1..3
+
+# Science Day, the Old New Year and Neptune Day (docs/festivals.md "Science Day, the Old New Year, Neptune Day"):
+# the four voices every holiday has (fv_<id>_bring, _grump, _kid, _elder), a greeting, the day's talk by its parts,
+# who works the stalls and what the children do. Russian: the speaker's own words never agree in gender.
+# ---- Science Day (the first Saturday of December)
+# ---- The Old New Year (13 January, the night to the 14th)
+# ---- Neptune Day (the last Sunday of July)
+
+[fv_science_day_bring]
+festival = science_day
+age = adult
+weight = 5
+say = town.fv_science_day_bring.1
+
+[fv_science_day_grump]
+festival = science_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_science_day_grump.1
+
+[fv_science_day_kid]
+festival = science_day
+age = kid
+weight = 5
+say = town.fv_science_day_kid.1
+
+[fv_science_day_elder]
+festival = science_day
+age = elder
+weight = 5
+say = town.fv_science_day_elder.1
+
+[nh_sci_greet]
+to = hero
+festival = science_day
+age = teen adult elder
+weight = 6
+say = town.nh_sci_greet.1..2
+
+[nh_sci]
+at = outdoors
+festival = science_day
+weight = 3
+say = town.nh_sci.1..4
+
+[nh_sci_fair_kid]
+festival = science_day
+phase = fair
+age = kid teen
+weight = 6
+say = town.nh_sci_fair_kid.1..2
+
+[nh_sci_fair_vendor]
+festival = science_day
+phase = fair
+job = vendor seller
+weight = 6
+say = town.nh_sci_fair_vendor.1..2
+
+[nh_sci_lecture]
+at = outdoors
+festival = science_day
+phase = lecture
+weight = 6
+say = town.nh_sci_lecture.1..2
+
+[nh_sci_quiz]
+at = outdoors
+festival = science_day
+phase = quiz
+weight = 6
+say = town.nh_sci_quiz.1..2
+
+[nh_sci_stars]
+at = outdoors
+festival = science_day
+phase = stars
+weight = 6
+say = town.nh_sci_stars.1..2
+
+[nh_sci_talk]
+festival = science_day
+doing = gather_mingle chat
+weight = 5
+talk = town.nh_sci_talk.1 | town.nh_sci_talk.2 | town.nh_sci_talk.3
+
+[fv_old_new_year_bring]
+festival = old_new_year
+age = adult
+weight = 5
+say = town.fv_old_new_year_bring.1
+
+[fv_old_new_year_grump]
+festival = old_new_year
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_old_new_year_grump.1
+
+[fv_old_new_year_kid]
+festival = old_new_year
+age = kid
+weight = 5
+say = town.fv_old_new_year_kid.1
+
+[fv_old_new_year_elder]
+festival = old_new_year
+age = elder
+weight = 5
+say = town.fv_old_new_year_elder.1
+
+[nh_ony_greet]
+to = hero
+festival = old_new_year
+age = teen adult elder
+weight = 6
+say = town.nh_ony_greet.1..2
+
+[nh_ony]
+at = outdoors
+festival = old_new_year
+weight = 3
+say = town.nh_ony.1..3
+
+[nh_ony_carols]
+at = outdoors
+festival = old_new_year
+phase = carols
+age = teen adult elder
+weight = 6
+say = town.nh_ony_carols.1..2
+
+[nh_ony_carols_kid]
+at = outdoors
+festival = old_new_year
+phase = carols
+age = kid
+weight = 8
+say = town.nh_ony_carols_kid.1..3
+
+[nh_ony_fortune]
+at = outdoors
+festival = old_new_year
+phase = fortune
+weight = 6
+say = town.nh_ony_fortune.1..3
+
+[nh_ony_midnight]
+at = outdoors
+festival = old_new_year
+phase = midnight
+weight = 7
+say = town.nh_ony_midnight.1..2
+
+[nh_ony_cook]
+festival = old_new_year
+job = cook waiter
+weight = 6
+say = town.nh_ony_cook.1..2
+
+[nh_ony_talk]
+festival = old_new_year
+doing = gather_mingle chat
+weight = 5
+talk = town.nh_ony_talk.1 | town.nh_ony_talk.2 | town.nh_ony_talk.3
+
+[fv_neptune_day_bring]
+festival = neptune_day
+age = adult
+weight = 5
+say = town.fv_neptune_day_bring.1
+
+[fv_neptune_day_grump]
+festival = neptune_day
+temper = nervy
+age = adult elder
+weight = 5
+say = town.fv_neptune_day_grump.1
+
+[fv_neptune_day_kid]
+festival = neptune_day
+age = kid
+weight = 5
+say = town.fv_neptune_day_kid.1
+
+[fv_neptune_day_elder]
+festival = neptune_day
+age = elder
+weight = 5
+say = town.fv_neptune_day_elder.1
+
+[nh_nep_greet]
+to = hero
+festival = neptune_day
+age = teen adult elder
+weight = 6
+say = town.nh_nep_greet.1..2
+
+[nh_nep]
+at = outdoors
+festival = neptune_day
+weight = 3
+say = town.nh_nep.1..3
+
+[nh_nep_landing]
+at = outdoors
+festival = neptune_day
+phase = landing
+weight = 7
+say = town.nh_nep_landing.1..2
+
+[nh_nep_court]
+at = outdoors
+festival = neptune_day
+phase = court
+age = teen adult elder
+weight = 6
+say = town.nh_nep_court.1..2
+
+[nh_nep_court_kid]
+at = outdoors
+festival = neptune_day
+phase = court
+age = kid
+weight = 8
+say = town.nh_nep_court_kid.1..2
+
+[nh_nep_parade]
+at = outdoors
+festival = neptune_day
+phase = boat_parade
+weight = 7
+say = town.nh_nep_parade.1..2
+
+[nh_nep_ukha]
+at = outdoors
+festival = neptune_day
+phase = ukha
+weight = 6
+say = town.nh_nep_ukha.1..2
+
+[nh_nep_lifeguard]
+festival = neptune_day
+job = lifeguard
+weight = 7
+say = town.nh_nep_lifeguard.1..2
+
+[nh_nep_talk]
+festival = neptune_day
+doing = gather_mingle chat
+weight = 5
+talk = town.nh_nep_talk.1 | town.nh_nep_talk.2 | town.nh_nep_talk.3
+
+# At the soda-water automats on a hot day (docs/soda_machines.md): the one shared glass, the syrup of the day,
+# the coin the machine swallows, the queue of two. Russian: the speaker's own words never agree in gender.
+
+[soda_kid]
+doing = soda_drink
+age = kid teen
+say = town.soda_kid.1..4
+
+[soda_grown]
+doing = soda_drink
+age = adult elder
+say = town.soda_grown.1..5
+
+[soda_elder]
+doing = soda_drink
+age = elder
+weight = 0.6
+say = town.soda_elder.1..2
+
+# The town's everyday street life (docs/street_life.md): the kvass barrel and the ice-cream cart on a hot day, the
+# dawn sweep and the milk round, the shutters going up, the washing in the yards, the grandmothers' benches, the
+# evening's dominoes, the autumn's leaves and the spring subbotnik. Russian: the speaker's own words never agree in
+# gender (no "я повесила").
+
+[street_kvass_vendor]
+doing = vend_kvass
+say = town.street_kvass_vendor.1..5
+
+[street_kvass_vendor_near]
+doing = vend_kvass
+near = hero
+weight = 3
+say = town.street_kvass_vendor_near.1..2
+
+[street_icecream_vendor]
+doing = vend_icecream
+say = town.street_icecream_vendor.1..4
+
+[street_icecream_vendor_near]
+doing = vend_icecream
+near = hero
+weight = 3
+say = town.street_icecream_vendor_near.1..2
+
+[street_kvass_buyer]
+doing = buy_kvass
+age = adult elder
+say = town.street_kvass_buyer.1..4
+
+[street_icecream_kid]
+doing = buy_icecream
+age = kid teen
+say = town.street_icecream_kid.1..4
+
+[street_icecream_grown]
+doing = buy_icecream
+age = adult elder
+say = town.street_icecream_grown.1..2
+
+[street_sweep]
+doing = sweep_street
+say = town.street_sweep.1..4
+
+[street_sweep_near]
+doing = sweep_street
+near = hero
+weight = 3
+say = town.street_sweep_near.1..2
+
+[street_milk]
+doing = deliver_milk
+say = town.street_milk.1..4
+
+[street_shutters]
+doing = open_shutters
+say = town.street_shutters.1..3
+
+[street_hang_laundry]
+doing = hang_laundry
+say = town.street_hang_laundry.1..4
+
+[street_take_laundry]
+doing = take_laundry
+say = town.street_take_laundry.1..4
+
+[street_grannies]
+doing = granny_bench
+say = town.street_grannies.1..5
+
+[street_grannies_near]
+doing = granny_bench
+near = hero
+weight = 4
+say = town.street_grannies_near.1..4
+
+[street_yard_dominoes]
+doing = yard_dominoes
+say = town.street_yard_dominoes.1..5
+
+[street_rake_leaves]
+doing = rake_leaves
+say = town.street_rake_leaves.1..4
+
+[street_subbotnik_paint]
+doing = subbotnik_paint
+say = town.street_subbotnik_paint.1..3
+
+[street_subbotnik_whitewash]
+doing = subbotnik_whitewash
+say = town.street_subbotnik_whitewash.1..3
+
+[street_subbotnik_sweep]
+doing = subbotnik_sweep
+say = town.street_subbotnik_sweep.1..3
+
+[street_subbotnik_near]
+doing = subbotnik_paint subbotnik_whitewash subbotnik_sweep
+near = hero
+weight = 3
+say = town.street_subbotnik_near.1..2
+
+# The days (docs/town_life.md "The days", Private/People/PeopleDays.cpp): what today is for somebody (today = cold,
+# sleepy, birthday, payday, pension, guest), the errands of the week (the Saturday market, the library's books, the
+# pension at the office), the day's plans (tea at a friend's, Sunday at the grandparents', a couple's stroll, chess on
+# a bench), and two who know each other on the way (today = street_meet, on = street_nod, on = door_hold).
+# No first-person past tense here: the lines are said by men and women alike.
+
+[days_cold]
+today = cold
+age = teen adult elder
+say = town.days_cold.1..4
+
+[days_cold_kid]
+today = cold
+age = kid
+say = town.days_cold_kid.1..2
+
+[days_sleepy]
+today = sleepy
+hours = 5-13
+age = teen adult elder
+say = town.days_sleepy.1..5
+
+[days_birthday]
+today = birthday
+age = teen adult elder
+say = town.days_birthday.1..3
+
+[days_birthday_kid]
+today = birthday
+age = kid
+say = town.days_birthday_kid.1..2
+
+[days_guest]
+today = guest
+doing = visit_home
+age = teen adult elder
+say = town.days_guest.1..3
+
+[days_payday]
+today = payday
+hours = 15-23
+say = town.days_payday.1..4
+
+[days_pension]
+today = pension
+hours = 7-14
+say = town.days_pension.1..4
+
+[days_market]
+doing = market_day
+say = town.days_market.1..4
+
+[days_library]
+doing = library_return
+say = town.days_library.1..3
+
+[days_tea_way]
+today = tea
+doing = visit_home
+age = teen adult elder
+say = town.days_tea.1..3
+
+[days_family_way]
+today = family
+doing = visit_home
+age = teen adult elder
+say = town.days_family.1..3
+
+[days_family_kid]
+today = family
+doing = visit_home
+age = kid
+say = town.days_family_kid.1..2
+
+[days_stroll]
+doing = couple_stroll
+say = town.days_stroll.1..4
+
+[days_stroll_talk]
+doing = couple_stroll
+doing2 = couple_stroll
+weight = 6
+talk = town.days_stroll_talk1.1 | town.days_stroll_talk1.2 | town.days_stroll_talk1.3
+talk = town.days_stroll_talk2.1 | town.days_stroll_talk2.2
+talk = town.days_stroll_talk3.1 | town.days_stroll_talk3.2 | town.days_stroll_talk3.3
+
+[days_chess]
+doing = chess_bench
+say = town.days_chess.1..3
+
+[days_chess_talk]
+doing = chess_bench
+doing2 = chess_bench
+weight = 6
+talk = town.days_chess_talk1.1 | town.days_chess_talk1.2 | town.days_chess_talk1.3
+talk = town.days_chess_talk2.1 | town.days_chess_talk2.2 | town.days_chess_talk2.3
+talk = town.days_chess_talk3.1 | town.days_chess_talk3.2
+
+[days_street_meet]
+today = street_meet
+weight = 8
+talk = town.days_meet1.1 | town.days_meet1.2 | town.days_meet1.3
+talk = town.days_meet2.1 | town.days_meet2.2 | town.days_meet2.3
+talk = town.days_meet3.1 | town.days_meet3.2 | town.days_meet3.3
+talk = town.days_meet4.1 | town.days_meet4.2
+talk = town.days_meet5.1 | town.days_meet5.2 | town.days_meet5.3
+
+[days_street_nod]
+on = street_nod
+say = town.days_nod.1..5
+
+[days_street_nod_morning]
+on = street_nod
+hours = 5-11
+say = town.days_nod_morning.1..2
+
+[days_street_nod_evening]
+on = street_nod
+hours = 18-23
+say = town.days_nod_evening.1..2
+
+[days_door_hold]
+on = door_hold
+say = town.days_door.1..4
+
+# A talk with the hero (docs/town_talk.md "A talk"): E on a townsperson who is free for a word opens a page with their
+# greeting, two to four things to ask about, now and then a question back, and a goodbye. These are their lines:
+# sets with on = tc_*, picked like any other line of theirs (job, age, the hour, the weather, the bond, the rumours).
+# The hero's side (his questions and answers), the events and which activity or like belongs to which event:
+# tools/townchat/content.py; python3 tools/townchat/build_town_chat.py checks this file against it.
+# {0}: the nickname a friend gave him (only in sets with bond = friend close). {1}: a rumour's detail (only on =
+# tc_rumour with heard_of). {2}..{7}: the given name of whoever the line names, in the six cases (only tc_friend,
+# tc_kin_*); the same numbers in ru, en and ja (English and Japanese get the plain name for each).
+# Russian: the speaker never speaks of themselves in the past tense (no gender); the hero is a boy, they say «ты».
+# A page shows one line: ru and en up to 100 characters, ja up to 48 (tools/barksim checks).
+# --- the greeting that opens the talk (by the hour, the weather, how well they know him, the bond)
+# --- the goodbye
+# --- not now: at their counter with a customer, late, a child who doesn't know him yet (said over the head, no page)
+# --- their work, their studies, their retirement (the topic «Как работа?»)
+# --- their day (the topic «Как день?»): by the hour, by what they are doing now
+# --- their job or school today: still ahead, behind them, a day off
+# --- what they did before this (the people's life's PrevActivity, tools/townchat/content.py DID): the day's news
+# --- the weather (the topic «Ну и погода…»)
+# --- the holiday on now (the topic is offered only while a festival is on)
+# --- what the town says of him (docs/town_rumours.md): offered while they know a rumour; {1} its detail
+# --- a friend of theirs (townsfolk.json friends). The friend's given name: {2} who, {3} of whom, {4} to whom, {5} whom,
+# --- {6} with whom, {7} about whom (townchat.fn.<id>.<form>). Their sex is not known here: no past tense about them.
+# --- their household (tc_kin_<who the other is to them>); the name's forms as above
+# --- what they like to do (townsfolk.json likes; tools/townchat/content.py HOBBIES)
+# --- the town: where to go (the topic «Что тут стоит посмотреть?»)
+# --- a question back to him (tools/townchat/content.py ASKS: his answers are townchat.ask.<id>.a<n>), then their reply to answer n
+
+[tc_hello]
+on = tc_hello
+weight = 0.5
+say = town.tc_hello.1..3
+
+[tc_hello_morning]
+on = tc_hello
+hours = 5-11
+say = town.tc_hello_morning.1..2
+
+[tc_hello_evening]
+on = tc_hello
+hours = 18-23
+say = town.tc_hello_evening.1..2
+
+[tc_hello_night]
+on = tc_hello
+hours = 23-5
+say = town.tc_hello_night.1..2
+
+[tc_hello_rain]
+on = tc_hello
+weather = rain
+say = town.tc_hello_rain.1
+
+[tc_hello_snow]
+on = tc_hello
+weather = snow
+say = town.tc_hello_snow.1
+
+[tc_hello_cold]
+on = tc_hello
+weather = cold
+say = town.tc_hello_cold.1
+
+[tc_hello_new_elder]
+on = tc_hello
+met = new
+age = elder
+say = town.tc_hello_new_elder.1
+
+[tc_hello_new]
+on = tc_hello
+met = new
+age = adult elder
+say = town.tc_hello_new.1
+
+[tc_hello_known]
+on = tc_hello
+met = known
+say = town.tc_hello_known.1..2
+
+[tc_hello_friendly]
+on = tc_hello
+bond = friendly
+weight = 2
+say = town.tc_hello_friendly.1..2
+
+[tc_hello_friend]
+on = tc_hello
+bond = friend close
+weight = 3
+say = town.tc_hello_friend.1..3
+
+[tc_hello_kid]
+on = tc_hello
+age = kid
+weight = 2
+say = town.tc_hello_kid.1..2
+
+[tc_hello_teen]
+on = tc_hello
+age = teen
+weight = 2
+say = town.tc_hello_teen.1..2
+
+[tc_hello_elder]
+on = tc_hello
+age = elder
+say = town.tc_hello_elder.1..2
+
+[tc_hello_work]
+on = tc_hello
+doing = work
+say = town.tc_hello_work.1..2
+
+[tc_hello_sit]
+on = tc_hello
+pose = sit
+age = adult elder
+at = outdoors
+say = town.tc_hello_sit.1
+
+[tc_hello_festival]
+on = tc_hello
+festival = any
+say = town.tc_hello_festival.1
+
+[tc_bye]
+on = tc_bye
+weight = 0.5
+say = town.tc_bye.1..3
+
+[tc_bye_evening]
+on = tc_bye
+hours = 18-5
+say = town.tc_bye_evening.1..2
+
+[tc_bye_rain]
+on = tc_bye
+weather = rain
+say = town.tc_bye_rain.1
+
+[tc_bye_cold]
+on = tc_bye
+weather = cold snow
+say = town.tc_bye_cold.1
+
+[tc_bye_friend]
+on = tc_bye
+bond = friend close
+weight = 3
+say = town.tc_bye_friend.1..2
+
+[tc_bye_friendly]
+on = tc_bye
+bond = friendly
+weight = 2
+say = town.tc_bye_friendly.1
+
+[tc_bye_kid]
+on = tc_bye
+age = kid
+weight = 2
+say = town.tc_bye_kid.1..2
+
+[tc_bye_teen]
+on = tc_bye
+age = teen
+weight = 2
+say = town.tc_bye_teen.1
+
+[tc_bye_elder]
+on = tc_bye
+age = elder
+say = town.tc_bye_elder.1
+
+[tc_bye_work]
+on = tc_bye
+doing = work
+say = town.tc_bye_work.1
+
+[tc_bye_new]
+on = tc_bye
+met = new
+age = adult elder
+say = town.tc_bye_new.1
+
+[tc_no_work]
+on = tc_no_work
+say = town.tc_no_work.1..3
+
+[tc_no_hurry]
+on = tc_no_hurry
+say = town.tc_no_hurry.1..3
+
+[tc_no_hurry_young]
+on = tc_no_hurry
+age = kid teen
+weight = 2
+say = town.tc_no_hurry_young.1
+
+[tc_no_shy]
+on = tc_no_shy
+say = town.tc_no_shy.1..3
+
+[tc_work]
+on = tc_work
+weight = 0.3
+say = town.tc_work.1..2
+
+[tc_work_pensioner]
+on = tc_work
+job = pensioner
+say = town.tc_work_pensioner.1..4
+
+[tc_work_pupil]
+on = tc_work
+job = pupil
+say = town.tc_work_pupil.1..4
+
+[tc_work_student]
+on = tc_work
+job = student
+say = town.tc_work_student.1..2
+
+[tc_work_away]
+on = tc_work
+job = away
+say = town.tc_work_away.1..2
+
+[tc_work_researcher]
+on = tc_work
+job = researcher
+say = town.tc_work_researcher.1..3
+
+[tc_work_fisherman]
+on = tc_work
+job = fisherman
+say = town.tc_work_fisherman.1..3
+
+[tc_work_writer]
+on = tc_work
+job = writer
+say = town.tc_work_writer.1..2
+
+[tc_work_seller]
+on = tc_work
+job = seller vendor stallholder cashier bookseller butcher baker fishmonger
+say = town.tc_work_seller.1..3
+
+[tc_work_programmer]
+on = tc_work
+job = programmer
+say = town.tc_work_programmer.1..2
+
+[tc_work_station]
+on = tc_work
+job = station_barista station_attendant
+say = town.tc_work_station.1..2
+
+[tc_work_homemaker]
+on = tc_work
+job = homemaker
+say = town.tc_work_homemaker.1..2
+
+[tc_work_musician]
+on = tc_work
+job = musician choir_leader
+say = town.tc_work_musician.1..2
+
+[tc_work_unemployed]
+on = tc_work
+job = unemployed
+say = town.tc_work_unemployed.1..2
+
+[tc_work_artist]
+on = tc_work
+job = artist photographer
+say = town.tc_work_artist.1..2
+
+[tc_work_cook]
+on = tc_work
+job = cook waiter barista bartender
+say = town.tc_work_cook.1..2
+
+[tc_work_office]
+on = tc_work
+job = clerk manager director receptionist librarian teacher doctor nurse
+say = town.tc_work_office.1..2
+
+[tc_work_guest]
+on = tc_work
+job = guest renter
+say = town.tc_work_guest.1..2
+
+[tc_work_keeper]
+on = tc_work
+job = lifeguard guard janitor cleaner caretaker repairman lighthouse_keeper postman
+say = town.tc_work_keeper.1..2
+
+[tc_day]
+on = tc_day
+weight = 0.4
+say = town.tc_day.1..2
+
+[tc_day_morning]
+on = tc_day
+hours = 5-11
+age = adult elder
+say = town.tc_day_morning.1..4
+
+[tc_day_evening]
+on = tc_day
+hours = 17-23
+age = adult elder
+say = town.tc_day_evening.1..2
+
+[tc_day_kid]
+on = tc_day
+age = kid
+weight = 2
+say = town.tc_day_kid.1..3
+
+[tc_day_teen]
+on = tc_day
+age = teen
+weight = 2
+say = town.tc_day_teen.1..3
+
+[tc_day_elder]
+on = tc_day
+age = elder
+say = town.tc_day_elder.1
+
+[tc_day_bench]
+on = tc_day
+doing = sit_bench read_bench read_paper
+say = town.tc_day_bench.1..3
+
+[tc_day_shop]
+on = tc_day
+doing = shop shop_town
+say = town.tc_day_shop.1..2
+
+[tc_day_eat]
+on = tc_day
+doing = eat_out coffee
+say = town.tc_day_eat.1..2
+
+[tc_day_walk]
+on = tc_day
+doing = walk stroll
+say = town.tc_day_walk.1..3
+
+[tc_day_night_walk]
+on = tc_day
+doing = night_walk
+say = town.tc_day_night_walk.1..4
+
+[tc_day_fish]
+on = tc_day
+doing = fish_shore
+say = town.tc_day_fish.1..3
+
+[tc_day_work]
+on = tc_day
+doing = work
+say = town.tc_day_work.1..2
+
+[tc_day_child]
+on = tc_day
+doing = mind_child
+say = town.tc_day_child.1
+
+[tc_day_before_work]
+on = tc_day_before_work
+job = !pupil !student
+say = town.tc_day_before_work.1..4
+
+[tc_day_before_school]
+on = tc_day_before_work
+job = pupil student
+say = town.tc_day_before_school.1..4
+
+[tc_day_after_work]
+on = tc_day_after_work
+job = !pupil !student
+say = town.tc_day_after_work.1..4
+
+[tc_day_after_school]
+on = tc_day_after_work
+job = pupil student
+say = town.tc_day_after_school.1..4
+
+[tc_day_off]
+on = tc_day_off
+job = !pupil !student
+say = town.tc_day_off.1..3
+
+[tc_day_off_school]
+on = tc_day_off
+job = pupil student
+say = town.tc_day_off_school.1
+
+[tc_did_shop]
+on = tc_did_shop
+say = town.tc_did_shop.1..2
+
+[tc_did_eat]
+on = tc_did_eat
+say = town.tc_did_eat.1..2
+
+[tc_did_sea]
+on = tc_did_sea
+say = town.tc_did_sea.1..2
+
+[tc_did_walk]
+on = tc_did_walk
+say = town.tc_did_walk.1..2
+
+[tc_did_bench]
+on = tc_did_bench
+say = town.tc_did_bench.1..2
+
+[tc_did_club]
+on = tc_did_club
+say = town.tc_did_club.1..2
+
+[tc_did_library]
+on = tc_did_library
+say = town.tc_did_library.1..2
+
+[tc_did_fish]
+on = tc_did_fish
+say = town.tc_did_fish.1..2
+
+[tc_did_fair]
+on = tc_did_fair
+say = town.tc_did_fair.1..2
+
+[tc_did_culture]
+on = tc_did_culture
+say = town.tc_did_culture.1..2
+
+[tc_did_sport]
+on = tc_did_sport
+say = town.tc_did_sport.1..2
+
+[tc_did_garden]
+on = tc_did_garden
+say = town.tc_did_garden.1..2
+
+[tc_did_play]
+on = tc_did_play
+say = town.tc_did_play.1..2
+
+[tc_did_school]
+on = tc_did_school
+say = town.tc_did_school.1..2
+
+[tc_did_clinic]
+on = tc_did_clinic
+say = town.tc_did_clinic.1..2
+
+[tc_weather]
+on = tc_weather
+weight = 0.4
+say = town.tc_weather.1..2
+
+[tc_weather_rain]
+on = tc_weather
+weather = rain
+weight = 2
+say = town.tc_weather_rain.1..3
+
+[tc_weather_snow]
+on = tc_weather
+weather = snow
+weight = 2
+say = town.tc_weather_snow.1..2
+
+[tc_weather_fog]
+on = tc_weather
+weather = fog
+weight = 2
+say = town.tc_weather_fog.1..2
+
+[tc_weather_cold]
+on = tc_weather
+weather = cold
+say = town.tc_weather_cold.1..2
+
+[tc_weather_warm]
+on = tc_weather
+weather = warm
+say = town.tc_weather_warm.1..2
+
+[tc_weather_clear]
+on = tc_weather
+weather = clear
+sun = day low
+say = town.tc_weather_clear.1..2
+
+[tc_weather_night]
+on = tc_weather
+weather = clear
+sun = night
+say = town.tc_weather_night.1
+
+[tc_weather_autumn]
+on = tc_weather
+months = 9-11
+say = town.tc_weather_autumn.1
+
+[tc_weather_spring]
+on = tc_weather
+months = 3-5
+say = town.tc_weather_spring.1
+
+[tc_weather_kid]
+on = tc_weather
+age = kid
+weight = 2
+say = town.tc_weather_kid.1
+
+[tc_festival]
+on = tc_festival
+say = town.tc_festival.1..3
+
+[tc_festival_kid]
+on = tc_festival
+age = kid
+weight = 2
+say = town.tc_festival_kid.1
+
+[tc_festival_elder]
+on = tc_festival
+age = elder
+say = town.tc_festival_elder.1
+
+[tc_festival_fair]
+on = tc_festival
+festival = weekend_market harvest_fair winter_fair
+say = town.tc_festival_fair.1
+
+[tc_festival_new_year]
+on = tc_festival
+festival = new_year
+say = town.tc_festival_new_year.1
+
+[tc_festival_sea]
+on = tc_festival
+festival = sea_festival fisherman_day
+say = town.tc_festival_sea.1
+
+[tc_festival_lantern]
+on = tc_festival
+festival = lantern_night toro_nagashi mid_autumn loy_krathong
+say = town.tc_festival_lantern.1
+
+[tc_rumour]
+on = tc_rumour
+weight = 0.3
+say = town.tc_rumour.1..2
+
+[tc_rumour_cup]
+on = tc_rumour
+heard_of = cup
+weight = 4
+say = town.tc_rumour_cup.1
+
+[tc_rumour_beat]
+on = tc_rumour
+heard_of = beat
+weight = 4
+say = town.tc_rumour_beat.1
+
+[tc_rumour_job]
+on = tc_rumour
+heard_of = job
+weight = 4
+say = town.tc_rumour_job.1
+
+[tc_rumour_tamed]
+on = tc_rumour
+heard_of = tamed
+weight = 4
+say = town.tc_rumour_tamed.1
+
+[tc_rumour_catch]
+on = tc_rumour
+heard_of = catch
+weight = 4
+say = town.tc_rumour_catch.1
+
+[tc_rumour_tune]
+on = tc_rumour
+heard_of = tune
+weight = 4
+say = town.tc_rumour_tune.1
+
+[tc_rumour_kite]
+on = tc_rumour
+heard_of = kite
+weight = 4
+say = town.tc_rumour_kite.1
+
+[tc_rumour_garden]
+on = tc_rumour
+heard_of = garden
+weight = 4
+say = town.tc_rumour_garden.1
+
+[tc_rumour_fine]
+on = tc_rumour
+heard_of = fine
+weight = 4
+say = town.tc_rumour_fine.1
+
+[tc_rumour_radio]
+on = tc_rumour
+heard_of = radio
+weight = 4
+say = town.tc_rumour_radio.1
+
+[tc_rumour_crows]
+on = tc_rumour
+heard_of = crows
+weight = 4
+say = town.tc_rumour_crows.1
+
+[tc_friend]
+on = tc_friend
+say = town.tc_friend.1..5
+
+[tc_friend_young]
+on = tc_friend
+age = kid teen
+weight = 2
+say = town.tc_friend_young.1..2
+
+[tc_friend_elder]
+on = tc_friend
+age = elder
+weight = 2
+say = town.tc_friend_elder.1..2
+
+[tc_kin_son]
+on = tc_kin_son
+say = town.tc_kin_son.1..2
+
+[tc_kin_daughter]
+on = tc_kin_daughter
+say = town.tc_kin_daughter.1..2
+
+[tc_kin_mum]
+on = tc_kin_mum
+say = town.tc_kin_mum.1..2
+
+[tc_kin_dad]
+on = tc_kin_dad
+say = town.tc_kin_dad.1..2
+
+[tc_kin_sister]
+on = tc_kin_sister
+say = town.tc_kin_sister.1..2
+
+[tc_kin_brother]
+on = tc_kin_brother
+say = town.tc_kin_brother.1..2
+
+[tc_kin_wife]
+on = tc_kin_wife
+say = town.tc_kin_wife.1..2
+
+[tc_kin_husband]
+on = tc_kin_husband
+say = town.tc_kin_husband.1..2
+
+[tc_kin_mate]
+on = tc_kin_mate
+say = town.tc_kin_mate.1..2
+
+[tc_hobby_play_club]
+on = tc_hobby_play_club
+say = town.tc_hobby_play_club.1..2
+
+[tc_hobby_night_walk]
+on = tc_hobby_night_walk
+say = town.tc_hobby_night_walk.1..2
+
+[tc_hobby_watch_sunrise]
+on = tc_hobby_watch_sunrise
+say = town.tc_hobby_watch_sunrise.1..2
+
+[tc_hobby_fish_shore]
+on = tc_hobby_fish_shore
+say = town.tc_hobby_fish_shore.1..2
+
+[tc_hobby_stroll]
+on = tc_hobby_stroll
+say = town.tc_hobby_stroll.1..2
+
+[tc_hobby_coffee]
+on = tc_hobby_coffee
+say = town.tc_hobby_coffee.1..2
+
+[tc_hobby_eat_out]
+on = tc_hobby_eat_out
+say = town.tc_hobby_eat_out.1..2
+
+[tc_hobby_swim_look]
+on = tc_hobby_swim_look
+say = town.tc_hobby_swim_look.1..2
+
+[tc_hobby_fair_visit]
+on = tc_hobby_fair_visit
+say = town.tc_hobby_fair_visit.1..2
+
+[tc_hobby_sea_air]
+on = tc_hobby_sea_air
+say = town.tc_hobby_sea_air.1..2
+
+[tc_hobby_sit_bench]
+on = tc_hobby_sit_bench
+say = town.tc_hobby_sit_bench.1..2
+
+[tc_hobby_read_library]
+on = tc_hobby_read_library
+say = town.tc_hobby_read_library.1..2
+
+[tc_hobby_play_piano]
+on = tc_hobby_play_piano
+say = town.tc_hobby_play_piano.1..2
+
+[tc_town]
+on = tc_town
+say = town.tc_town.1..4
+
+[tc_town_young]
+on = tc_town
+age = kid teen
+weight = 2
+say = town.tc_town_young.1..2
+
+[tc_town_elder]
+on = tc_town
+age = elder
+weight = 2
+say = town.tc_town_elder.1..2
+
+[tc_town_winter]
+on = tc_town
+months = 12-2
+say = town.tc_town_winter.1
+
+[tc_town_summer]
+on = tc_town
+months = 6-8
+say = town.tc_town_summer.1
+
+[tc_ask_new]
+on = tc_ask_new
+say = town.tc_ask_new.1..2
+
+[tc_reply_new_1]
+on = tc_reply_new_1
+say = town.tc_reply_new_1.1..2
+
+[tc_reply_new_2]
+on = tc_reply_new_2
+say = town.tc_reply_new_2.1..2
+
+[tc_ask_sea]
+on = tc_ask_sea
+say = town.tc_ask_sea.1..2
+
+[tc_reply_sea_1]
+on = tc_reply_sea_1
+say = town.tc_reply_sea_1.1..2
+
+[tc_reply_sea_2]
+on = tc_reply_sea_2
+say = town.tc_reply_sea_2.1..2
+
+[tc_ask_birds]
+on = tc_ask_birds
+say = town.tc_ask_birds.1..2
+
+[tc_reply_birds_1]
+on = tc_reply_birds_1
+say = town.tc_reply_birds_1.1..2
+
+[tc_reply_birds_2]
+on = tc_reply_birds_2
+say = town.tc_reply_birds_2.1..2
+
+[tc_ask_like]
+on = tc_ask_like
+say = town.tc_ask_like.1..2
+
+[tc_reply_like_1]
+on = tc_reply_like_1
+say = town.tc_reply_like_1.1..2
+
+[tc_reply_like_2]
+on = tc_reply_like_2
+say = town.tc_reply_like_2.1..2
+
+[tc_ask_eat]
+on = tc_ask_eat
+say = town.tc_ask_eat.1..2
+
+[tc_reply_eat_1]
+on = tc_reply_eat_1
+say = town.tc_reply_eat_1.1..2
+
+[tc_reply_eat_2]
+on = tc_reply_eat_2
+say = town.tc_reply_eat_2.1..2
+
+[tc_ask_game]
+on = tc_ask_game
+say = town.tc_ask_game.1..2
+
+[tc_reply_game_1]
+on = tc_reply_game_1
+say = town.tc_reply_game_1.1..2
+
+[tc_reply_game_2]
+on = tc_reply_game_2
+say = town.tc_reply_game_2.1..2
+
+# The dances at the hall «Своды» on Friday and Saturday evenings (docs/dances.md): what the dancers and the old ones
+# watching from the tables say, the girls who ask the hero at the ladies' choice (22-23), a friend there, the young ones
+# setting off in the early evening, and the talk of the morning after. Russian: the speaker's own words never agree in
+# gender unless the set says sex; the hero is a teenage boy, and only girls of his age ask him.
+# ---- on the floor
+# ---- the old ones watching from the tables and the benches
+# ---- the hero at the dance
+# ---- setting off, and the morning after
+# ---- the talk of the town: the hero danced with one of the girls (rumour kind dance, detail: her name)
+
+[dnc_floor]
+doing = dance_evening
+weight = 4
+say = town.dnc_floor.1..5
+
+[dnc_floor_talk]
+doing = dance_evening
+doing2 = dance_evening
+weight = 3
+talk = town.dnc_floor_talk1.1 | town.dnc_floor_talk1.2 | town.dnc_floor_talk1.3
+talk = town.dnc_floor_talk2.1 | town.dnc_floor_talk2.2 | town.dnc_floor_talk2.3
+talk = town.dnc_floor_talk3.1 | town.dnc_floor_talk3.2
+
+[dnc_watch]
+doing = dance_watch
+weight = 4
+say = town.dnc_watch.1..4
+
+[dnc_watch_grannies]
+doing = dance_watch
+sex = female
+age = elder
+weight = 4
+say = town.dnc_watch_grannies.1..2
+
+[dnc_watch_talk]
+doing = dance_watch
+doing2 = dance_watch
+weight = 3
+talk = town.dnc_watch_talk1.1 | town.dnc_watch_talk1.2 | town.dnc_watch_talk1.3
+talk = town.dnc_watch_talk2.1 | town.dnc_watch_talk2.2 | town.dnc_watch_talk2.3
+
+[dnc_hero_wall]
+to = hero
+doing = dance_evening dance_watch
+hours = 19-22
+weekday = fri sat
+weight = 5
+say = town.dnc_hero_wall.1..2
+
+[dnc_hero_white]
+to = hero
+doing = dance_evening
+sex = female
+age = teen
+hours = 22-23
+weekday = fri sat
+weight = 9
+say = town.dnc_hero_white.1..3
+
+[dnc_friend]
+to = hero
+doing = dance_evening dance_watch
+bond = friend close
+weight = 7
+say = town.dnc_friend.1..2
+
+[dnc_going]
+weekday = fri sat
+hours = 17.5-19.5
+age = 15-30
+doing = free
+at = outdoors
+weight = 2
+talk = town.dnc_going1.1 | town.dnc_going1.2 | town.dnc_going1.3
+talk = town.dnc_going2.1 | town.dnc_going2.2
+
+[dnc_after]
+weekday = sat sun
+hours = 8-14
+age = 13-35
+weight = 2
+say = town.dnc_after.1..3
+
+[dnc_after_bench]
+weekday = sat sun
+hours = 9-13
+age = elder
+doing = sit_bench
+weight = 3
+talk = town.dnc_after_bench1.1 | town.dnc_after_bench1.2 | town.dnc_after_bench1.3
+talk = town.dnc_after_bench2.1 | town.dnc_after_bench2.2 | town.dnc_after_bench2.3
+
+[rumour_dance_greet]
+to = hero
+heard_of = dance
+age = adult elder
+weight = 8
+say = town.rumour_dance_greet.1..2
+
+[rumour_dance_greet_young]
+to = hero
+heard_of = dance
+age = kid teen
+weight = 8
+say = town.rumour_dance_greet_young.1..2
+
+[rumour_dance_friend]
+to = hero
+heard_of = dance
+bond = friend close
+weight = 9
+say = town.rumour_dance_friend.1
+
+# The warm season's evenings on Sun Square and the promenade (docs/promenade.md): the summer dances by the stage
+# (prom_dance, prom_dance_watch), the brass band on Sunday afternoons (band_play, band_listen, band_kids), the evening
+# walk to the pier and back and the benches at sunset (prom_evening_walk, prom_sunset_bench), the couples' strolls,
+# the lighthouse coming on, the photographer's best light. Russian: the speaker's own words never agree in gender
+# unless the set says sex; the hero is a teenage boy, and only girls of his age ask him.
+# ---- the dance on the square
+# ---- the brass band on Sunday afternoon
+# ---- the evening promenade
+# ---- setting off, and the morning after
+
+[pev_floor]
+doing = prom_dance
+weight = 4
+say = town.pev_floor.1..5
+
+[pev_floor_dusk]
+doing = prom_dance prom_dance_watch
+hours = 21-23
+weight = 5
+say = town.pev_floor_dusk.1..4
+
+[pev_floor_talk]
+doing = prom_dance
+doing2 = prom_dance
+weight = 3
+talk = town.pev_floor_talk1.1 | town.pev_floor_talk1.2 | town.pev_floor_talk1.3
+talk = town.pev_floor_talk2.1 | town.pev_floor_talk2.2
+talk = town.pev_floor_talk3.1 | town.pev_floor_talk3.2
+
+[pev_watch]
+doing = prom_dance_watch
+weight = 4
+say = town.pev_watch.1..3
+
+[pev_watch_grannies]
+doing = prom_dance_watch
+sex = female
+age = elder
+weight = 4
+say = town.pev_watch_grannies.1..2
+
+[pev_hero_wall]
+to = hero
+doing = prom_dance prom_dance_watch
+hours = 19-22
+weekday = fri sat
+months = 5-9
+weight = 5
+say = town.pev_hero_wall.1..2
+
+[pev_hero_white]
+to = hero
+doing = prom_dance
+sex = female
+age = teen
+hours = 22-23
+weekday = fri sat
+months = 5-9
+weight = 9
+say = town.pev_hero_white.1..2
+
+[pev_band_play]
+doing = band_play
+weight = 4
+say = town.pev_band_play.1..3
+
+[pev_band_listen]
+doing = band_listen
+weight = 4
+say = town.pev_band_listen.1..4
+
+[pev_band_listen_old]
+doing = band_listen
+age = elder
+sex = male
+weight = 4
+say = town.pev_band_listen_old.1..2
+
+[pev_band_talk]
+doing = band_listen
+doing2 = band_listen
+weight = 3
+talk = town.pev_band_talk1.1 | town.pev_band_talk1.2
+talk = town.pev_band_talk2.1 | town.pev_band_talk2.2
+
+[pev_band_kids]
+doing = band_kids
+weight = 4
+say = town.pev_band_kids.1..3
+
+[pev_band_hero]
+to = hero
+doing = band_listen
+weight = 5
+say = town.pev_band_hero.1..2
+
+[pev_band_going]
+weekday = sun
+hours = 13.5-15
+months = 6-8
+doing = free
+at = outdoors
+weight = 2
+talk = town.pev_band_going1.1 | town.pev_band_going1.2
+
+[pev_walk]
+doing = prom_evening_walk
+weight = 4
+say = town.pev_walk.1..4
+
+[pev_walk_family]
+doing = prom_evening_walk
+doing2 = prom_evening_walk
+weight = 3
+talk = town.pev_walk_family1.1 | town.pev_walk_family1.2 | town.pev_walk_family1.3
+talk = town.pev_walk_family2.1 | town.pev_walk_family2.2 | town.pev_walk_family2.3
+
+[pev_walk_teens]
+doing = prom_evening_walk
+age = teen
+weight = 4
+say = town.pev_walk_teens.1..2
+
+[pev_bench]
+doing = prom_sunset_bench
+weight = 4
+say = town.pev_bench.1..3
+
+[pev_lighthouse]
+doing = prom_evening_walk prom_sunset_bench
+hours = 21-23
+weight = 6
+say = town.pev_lighthouse.1..3
+
+[pev_photographer]
+doing = prom_evening_walk prom_sunset_bench
+manner = photo
+weight = 9
+say = town.pev_photographer.1..2
+
+[pev_hero_evening]
+to = hero
+doing = prom_evening_walk prom_sunset_bench
+months = 5-9
+hours = 19-22
+weight = 4
+say = town.pev_hero_evening.1..2
+
+[pev_couple]
+today = stroll
+months = 5-9
+hours = 18-22
+weight = 5
+talk = town.pev_couple1.1 | town.pev_couple1.2
+talk = town.pev_couple2.1 | town.pev_couple2.2
+
+[pev_going]
+weekday = fri sat
+hours = 17.5-19.5
+months = 6-8
+age = 15-30
+doing = free
+at = outdoors
+weight = 2
+talk = town.pev_going1.1 | town.pev_going1.2 | town.pev_going1.3
+
+[pev_after]
+weekday = sat sun
+hours = 8-14
+months = 6-8
+age = 13-35
+weight = 2
+say = town.pev_after.1..2

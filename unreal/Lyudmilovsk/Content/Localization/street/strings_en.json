@@ -1,0 +1,18 @@
+{
+ "dev.group.street": "Street",
+ "dev.action.street.hot": "Street: a hot day (kvass and ice cream)",
+ "dev.action.street.sweep": "Street: the yard keeper sweeps the promenade",
+ "dev.action.street.laundry": "Street: the washing in the yards",
+ "dev.action.street.laundry_take": "Street: the washing taken in",
+ "dev.action.street.grannies": "Street: the grandmothers on the benches",
+ "dev.action.street.dominoes": "Street: dominoes in the yards",
+ "dev.action.street.leaves": "Street: the leaves raked into piles",
+ "dev.action.street.subbotnik": "Street: the subbotnik",
+ "dev.action.street.auto": "Street: all by the weather and the date",
+ "dev.action.street.report": "Street: the day's plan to the log",
+ "dev.tp.street.kvass": "Street: the kvass barrel",
+ "dev.tp.street.icecart": "Street: the ice-cream cart",
+ "dev.tp.street.sweep": "Street: the promenade at dawn",
+ "dev.tp.street.yard": "Street: a yard with the washing",
+ "dev.tp.street.dominoes": "Street: the domino table"
+}

@@ -1,0 +1,33 @@
+{
+ "name": "sc_relay_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_relay_01",
+ "pool": "sc_relay",
+ "file": "audio/sfx/spacecraft/sc_relay_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7231,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.341,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -27.05,
+ "params": {
+  "stages": 1,
+  "scale": 0.975
+ },
+ "checks": {
+  "seconds": 0.341,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -27.05,
+  "crest_db": 21.1,
+  "centroid_hz": 1818,
+  "rolloff85_hz": 4551,
+  "dc": -2e-05,
+  "clipped": 0
+ },
+ "sha256": "3b0df149f87874c5b6d0ebf9b7bc2632cde39817334f6bdee4c683449ec9bf58",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

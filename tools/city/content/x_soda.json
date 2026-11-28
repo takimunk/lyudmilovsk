@@ -1,0 +1,569 @@
+{
+ "_doc": "The street soda-water automats «Газированная вода» (docs/soda_machines.md): six machines of the plan's street_machines (tools/city_plan.py STREET_MACHINES; the mesh blender/city/buildings/soda_machine.py, things plain and syrup). A coin, rinse the shared glass or not (a passer-by minds), fill it, drink it in sips, the glass goes back on the washer; now and then the coin sticks and a thump on the side frees it (a tap step with chance, once a day a machine; missed: the coin is gone). The syrup of the day turns over six flavours (every [6, r]); each drunk is a stamp of soda_syrups. They work May to October (months) and stand broken on 12% of those days (broken: the die of the building's dressing set \"broken\", the cardboard sign). Words: strings/x_soda.json (city.soda.*). Depends on nothing outside main; when the scenes' \"scene\": true flag (branch interiors-touch-1127) is in, give both procs \"scene\": true so a soda is not counted as a sanatorium procedure.",
+ "acts": {
+  "soda_plain": {
+   "prompt": "city.soda.plain.prompt",
+   "price": 1,
+   "minutes": 3,
+   "pose": "stand",
+   "sound": "soda_pour",
+   "lines": [
+    {
+     "k": "city.soda.note.hot",
+     "weather": "warm"
+    },
+    {
+     "k": "city.soda.note.evening",
+     "h": [
+      19,
+      23
+     ]
+    },
+    {
+     "k": "city.soda.note.night",
+     "h": [
+      23,
+      6
+     ]
+    },
+    {
+     "k": "city.soda.note.morning",
+     "h": [
+      6,
+      10
+     ]
+    },
+    {
+     "k": "city.soda.note.fest",
+     "festival": "any"
+    },
+    "city.soda.note.1",
+    "city.soda.note.2",
+    "city.soda.note.3",
+    "city.soda.note.4",
+    "city.soda.note.5"
+   ],
+   "closed": "soda_closed",
+   "proc": {
+    "title": "city.soda.p.title",
+    "scene": true,
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       {
+        "k": "city.soda.p.coin.cold",
+        "weather": "cold"
+       },
+       {
+        "k": "city.soda.p.coin.rain",
+        "weather": "rain"
+       },
+       "city.soda.p.coin.1",
+       "city.soda.p.coin.2",
+       "city.soda.p.coin.3"
+      ],
+      "secs": 2.5
+     },
+     {
+      "do": "tap",
+      "lines": [
+       "city.soda.p.jam"
+      ],
+      "count": 3,
+      "secs": 4.5,
+      "chance": 0.15,
+      "stop_below": 1.0
+     },
+     {
+      "do": "pick",
+      "lines": [
+       "city.soda.p.rinse.ask",
+       "city.soda.p.rinse.yes",
+       "city.soda.p.rinse.no"
+      ]
+     },
+     {
+      "do": "say",
+      "by_pick": true,
+      "lines": [
+       {
+        "k": "city.soda.p.rinsed.yes.1",
+        "every": [
+         3,
+         0
+        ]
+       },
+       {
+        "k": "city.soda.p.rinsed.yes.2",
+        "every": [
+         3,
+         1
+        ]
+       },
+       {
+        "k": "city.soda.p.rinsed.yes.3",
+        "every": [
+         3,
+         2
+        ]
+       },
+       {
+        "k": "city.soda.p.rinsed.no.1",
+        "every": [
+         3,
+         0
+        ]
+       },
+       {
+        "k": "city.soda.p.rinsed.no.2",
+        "every": [
+         3,
+         1
+        ]
+       },
+       {
+        "k": "city.soda.p.rinsed.no.3",
+        "every": [
+         3,
+         2
+        ]
+       }
+      ],
+      "secs": 4.0
+     },
+     {
+      "do": "pour",
+      "lines": [
+       "city.soda.p.pour.plain"
+      ],
+      "secs": 4.0,
+      "mark": [
+       0.72,
+       0.88
+      ]
+     },
+     {
+      "do": "sip",
+      "lines": [
+       {
+        "k": "city.soda.p.sip.hot",
+        "weather": "warm"
+       },
+       "city.soda.p.sip.1",
+       "city.soda.p.sip.2"
+      ],
+      "count": 4,
+      "every": 1.1,
+      "window": 0.35
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.soda.p.back.1",
+       "city.soda.p.back.2",
+       "city.soda.p.back.3"
+      ],
+      "secs": 3.0
+     }
+    ],
+    "good": [
+     "city.soda.p.good.plain.1",
+     "city.soda.p.good.plain.2",
+     "city.soda.p.good.plain.3"
+    ],
+    "fair": [
+     "city.soda.p.fair.plain.1",
+     "city.soda.p.fair.plain.2"
+    ],
+    "poor": [
+     "city.soda.p.poor.1",
+     "city.soda.p.poor.2",
+     "city.soda.p.poor.3"
+    ]
+   }
+  },
+  "soda_syrup": {
+   "like": "soda_plain",
+   "prompt": "city.soda.syrup.prompt",
+   "price": 3,
+   "proc": {
+    "title": "city.soda.p.title",
+    "scene": true,
+    "steps": [
+     {
+      "do": "say",
+      "lines": [
+       {
+        "k": "city.soda.p.coin.cold",
+        "weather": "cold"
+       },
+       {
+        "k": "city.soda.p.coin.rain",
+        "weather": "rain"
+       },
+       "city.soda.p.coin.1",
+       "city.soda.p.coin.2",
+       "city.soda.p.coin.3"
+      ],
+      "secs": 2.5
+     },
+     {
+      "do": "tap",
+      "lines": [
+       "city.soda.p.jam"
+      ],
+      "count": 3,
+      "secs": 4.5,
+      "chance": 0.15,
+      "stop_below": 1.0
+     },
+     {
+      "do": "pick",
+      "lines": [
+       "city.soda.p.rinse.ask",
+       "city.soda.p.rinse.yes",
+       "city.soda.p.rinse.no"
+      ]
+     },
+     {
+      "do": "say",
+      "by_pick": true,
+      "lines": [
+       {
+        "k": "city.soda.p.rinsed.yes.1",
+        "every": [
+         3,
+         0
+        ]
+       },
+       {
+        "k": "city.soda.p.rinsed.yes.2",
+        "every": [
+         3,
+         1
+        ]
+       },
+       {
+        "k": "city.soda.p.rinsed.yes.3",
+        "every": [
+         3,
+         2
+        ]
+       },
+       {
+        "k": "city.soda.p.rinsed.no.1",
+        "every": [
+         3,
+         0
+        ]
+       },
+       {
+        "k": "city.soda.p.rinsed.no.2",
+        "every": [
+         3,
+         1
+        ]
+       },
+       {
+        "k": "city.soda.p.rinsed.no.3",
+        "every": [
+         3,
+         2
+        ]
+       }
+      ],
+      "secs": 4.0
+     },
+     {
+      "do": "say",
+      "lines": [
+       {
+        "k": "city.soda.p.syrup.cherry",
+        "every": [
+         6,
+         0
+        ]
+       },
+       {
+        "k": "city.soda.p.syrup.duchesse",
+        "every": [
+         6,
+         1
+        ]
+       },
+       {
+        "k": "city.soda.p.syrup.cream_soda",
+        "every": [
+         6,
+         2
+        ]
+       },
+       {
+        "k": "city.soda.p.syrup.tarragon",
+        "every": [
+         6,
+         3
+        ]
+       },
+       {
+        "k": "city.soda.p.syrup.lemon",
+        "every": [
+         6,
+         4
+        ]
+       },
+       {
+        "k": "city.soda.p.syrup.apple",
+        "every": [
+         6,
+         5
+        ]
+       }
+      ],
+      "secs": 3.5
+     },
+     {
+      "do": "pour",
+      "lines": [
+       "city.soda.p.pour.syrup"
+      ],
+      "secs": 4.5,
+      "mark": [
+       0.74,
+       0.9
+      ]
+     },
+     {
+      "do": "sip",
+      "lines": [
+       {
+        "k": "city.soda.p.sip.hot",
+        "weather": "warm"
+       },
+       "city.soda.p.sip.1",
+       "city.soda.p.sip.2"
+      ],
+      "count": 4,
+      "every": 1.1,
+      "window": 0.35
+     },
+     {
+      "do": "say",
+      "lines": [
+       "city.soda.p.back.1",
+       "city.soda.p.back.2",
+       "city.soda.p.back.3"
+      ],
+      "secs": 3.0
+     }
+    ],
+    "good": [
+     {
+      "k": "city.soda.p.good.syrup.cherry",
+      "every": [
+       6,
+       0
+      ],
+      "collect": "soda_syrups/cherry"
+     },
+     {
+      "k": "city.soda.p.good.syrup.duchesse",
+      "every": [
+       6,
+       1
+      ],
+      "collect": "soda_syrups/duchesse"
+     },
+     {
+      "k": "city.soda.p.good.syrup.cream_soda",
+      "every": [
+       6,
+       2
+      ],
+      "collect": "soda_syrups/cream_soda"
+     },
+     {
+      "k": "city.soda.p.good.syrup.tarragon",
+      "every": [
+       6,
+       3
+      ],
+      "collect": "soda_syrups/tarragon"
+     },
+     {
+      "k": "city.soda.p.good.syrup.lemon",
+      "every": [
+       6,
+       4
+      ],
+      "collect": "soda_syrups/lemon"
+     },
+     {
+      "k": "city.soda.p.good.syrup.apple",
+      "every": [
+       6,
+       5
+      ],
+      "collect": "soda_syrups/apple"
+     }
+    ],
+    "fair": [
+     {
+      "k": "city.soda.p.fair.syrup.cherry",
+      "every": [
+       6,
+       0
+      ],
+      "collect": "soda_syrups/cherry"
+     },
+     {
+      "k": "city.soda.p.fair.syrup.duchesse",
+      "every": [
+       6,
+       1
+      ],
+      "collect": "soda_syrups/duchesse"
+     },
+     {
+      "k": "city.soda.p.fair.syrup.cream_soda",
+      "every": [
+       6,
+       2
+      ],
+      "collect": "soda_syrups/cream_soda"
+     },
+     {
+      "k": "city.soda.p.fair.syrup.tarragon",
+      "every": [
+       6,
+       3
+      ],
+      "collect": "soda_syrups/tarragon"
+     },
+     {
+      "k": "city.soda.p.fair.syrup.lemon",
+      "every": [
+       6,
+       4
+      ],
+      "collect": "soda_syrups/lemon"
+     },
+     {
+      "k": "city.soda.p.fair.syrup.apple",
+      "every": [
+       6,
+       5
+      ],
+      "collect": "soda_syrups/apple"
+     }
+    ],
+    "poor": [
+     "city.soda.p.poor.1",
+     "city.soda.p.poor.2",
+     "city.soda.p.poor.3"
+    ]
+   }
+  },
+  "soda_closed": {
+   "prompt": "city.soda.closed.prompt",
+   "minutes": 0,
+   "pose": "stand",
+   "sound": "",
+   "lines": [
+    {
+     "k": "city.soda.closed.winter.1",
+     "date": [
+      "11-01",
+      "04-30"
+     ]
+    },
+    {
+     "k": "city.soda.closed.winter.2",
+     "date": [
+      "11-01",
+      "04-30"
+     ]
+    },
+    {
+     "k": "city.soda.closed.winter.snow",
+     "date": [
+      "11-01",
+      "04-30"
+     ],
+     "weather": "snow"
+    },
+    {
+     "k": "city.soda.closed.broken.1",
+     "date": [
+      "05-01",
+      "10-31"
+     ]
+    },
+    {
+     "k": "city.soda.closed.broken.2",
+     "date": [
+      "05-01",
+      "10-31"
+     ]
+    },
+    {
+     "k": "city.soda.closed.broken.3",
+     "date": [
+      "05-01",
+      "10-31"
+     ]
+    }
+   ]
+  }
+ },
+ "rules": {
+  "soda_machine/plain": {
+   "act": "soda_plain",
+   "months": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "broken": 0.12,
+   "closed": "soda_closed"
+  },
+  "soda_machine/syrup": {
+   "act": "soda_syrup",
+   "months": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "broken": 0.12,
+   "closed": "soda_closed"
+  }
+ },
+ "collections": {
+  "soda_syrups": {
+   "title": "city.coll.soda_syrups.title",
+   "pieces": [
+    "cherry",
+    "duchesse",
+    "cream_soda",
+    "tarragon",
+    "lemon",
+    "apple"
+   ]
+  }
+ },
+ "rewards": {
+  "soda_syrups": {
+   "pay": 20
+  }
+ },
+ "sound_alias": {
+  "soda_pour": "rest_pour"
+ }
+}

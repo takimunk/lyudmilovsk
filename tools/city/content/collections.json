@@ -5,7 +5,7 @@
   "films": {"title": "city.coll.films.title"},
   "records": {"title": "city.coll.records.title"},
   "kiosks": {"title": "city.coll.kiosks.title"},
-  "kites": {"title": "city.coll.kites.title", "pieces": ["first_flight", "high", "box", "storm"], "by": "ULyudKiteFlying (Private/Kite/LyudKite.cpp): flown, not found in town"},
+  "kites": {"title": "city.coll.kites.title", "pieces": ["first_flight", "high", "box", "storm", "loop", "eight", "low_pass", "helper_launch", "rescue", "lesson", "delta_calm", "dragon"], "by": "ULyudKiteFlying (Private/Kite/LyudKite.cpp): flown, not found in town"},
   "book_club": {"title": "city.coll.book_club.title", "pieces": ["faust", "queen_of_spades", "ibsen_doll", "time_machine", "two_cities", "white_nights", "twenty_thousand", "invisible_man", "rubaiyat", "little_princess", "dead_souls", "christmas_carol"], "by": "ULyudReading (Private/Books/LyudReading.cpp): joining the Thursday circle's talk about the month's book"},
   "bird_habits": {"title": "city.coll.bird_habits.title", "pieces": ["crows", "wings", "water", "garden", "singers", "raptors"], "by": "ULyudBirdBook::NoteHabit (Private/Birds/BirdBook.cpp): every habit of a family of birds watched, not found in town"}
  },

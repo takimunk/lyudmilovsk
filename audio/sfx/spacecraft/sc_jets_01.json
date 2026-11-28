@@ -1,0 +1,32 @@
+{
+ "name": "sc_jets_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_jets_01",
+ "pool": "sc_jets",
+ "file": "audio/sfx/spacecraft/sc_jets_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7541,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.554,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -22.57,
+ "params": {
+  "burn_s": 1.15
+ },
+ "checks": {
+  "seconds": 1.554,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -22.57,
+  "crest_db": 16.6,
+  "centroid_hz": 1170,
+  "rolloff85_hz": 2119,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "20b3dae624db21ae94cc87230cabae5683346bf522dd4d87285757d5b3feed64",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

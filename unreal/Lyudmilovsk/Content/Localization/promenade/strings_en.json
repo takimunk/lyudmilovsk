@@ -1,0 +1,13 @@
+{
+ "dev.group.promenade": "Promenade in summer",
+ "dev.tp.promenade.dances": "Promenade: the dances on the square (20:30)",
+ "dev.tp.promenade.band": "Promenade: the brass band (15:10)",
+ "dev.tp.promenade.poster": "Promenade: the poster by the stage",
+ "dev.tp.promenade.sunset": "Promenade: the evening light by the parapet (20:40)",
+ "dev.tp.promenade.evening": "Promenade: the evening walk (20:00)",
+ "dev.action.street.prom_evening": "Street: the evening walk on the promenade",
+ "dev.action.street.prom_dances": "Street: the dances on the square",
+ "dev.action.street.prom_band": "Street: the brass band at the stage",
+ "dev.action.street.hall_dances": "Street: the dances at the Vaults (not in summer)",
+ "dev.action.street.summer": "Street: move the calendar to 15 July"
+}

@@ -1,0 +1,417 @@
+{
+ "city.pev.invite.prompt": {
+  "ru": "E — пригласить на танец",
+  "en": "E — ask someone to dance",
+  "ja": "E：ダンスに誘う"
+ },
+ "city.pev.invite.title": {
+  "ru": "Танец на площади",
+  "en": "A dance on the square",
+  "ja": "広場のダンス"
+ },
+ "city.pev.invite.win.1": {
+  "ru": "Она кивает, и вы выходите на плиты под фонари. Оркестр играет вальс, над эстрадой первые звёзды.",
+  "en": "She nods, and you step out onto the slabs under the lamps. The band plays a waltz; the first stars are out over the stage.",
+  "ja": "彼女がうなずき、二人で街灯の下の石畳へ出る。楽団はワルツ、ステージの上には最初の星。"
+ },
+ "city.pev.invite.win.2": {
+  "ru": "«Только медленно», — говорит она. Медленно и выходит: с моря тянет прохладой, и никто не торопится.",
+  "en": "\"Only slowly,\" she says. Slowly it is: a cool breath comes off the sea, and nobody is in a hurry.",
+  "ja": "「ゆっくりね」と彼女。ほんとうにゆっくりになる。海から涼しい風が来て、誰も急がない。"
+ },
+ "city.pev.invite.win.3": {
+  "ru": "Вы танцуете фокстрот между фонтаном и эстрадой. Мальчишки на скамейке свистят, она смеётся и не сбивается.",
+  "en": "You dance a foxtrot between the fountain and the stage. The boys on the bench whistle; she laughs and keeps the step.",
+  "ja": "噴水とステージのあいだでフォックストロット。ベンチの少年たちが口笛を吹き、彼女は笑ってもステップを外さない。"
+ },
+ "city.pev.invite.lose.1": {
+  "ru": "«Спасибо, я с подругой», — говорит она и берёт подругу под руку. Подруга делает вид, что так и было.",
+  "en": "\"Thanks, I'm with my friend,\" she says, and takes her friend's arm. The friend acts as if that was always the plan.",
+  "ja": "「ありがとう、友だちと来てるから」と、彼女は友だちの腕を取る。友だちは最初からそうだったという顔。"
+ },
+ "city.pev.invite.lose.2": {
+  "ru": "Она качает головой: туфли натёрли, на плитах не то что на паркете. Может, в следующий раз.",
+  "en": "She shakes her head: her shoes have rubbed; slabs aren't parquet. Maybe next time.",
+  "ja": "彼女は首を振る。靴ずれ、石畳は寄せ木の床とはちがうの。またこんど。"
+ },
+ "city.pev.invite.draw.1": {
+  "ru": "Она думает так долго, что танец кончается. «Следующий — точно», — обещает она.",
+  "en": "She thinks so long that the dance ends. \"The next one, for sure,\" she promises.",
+  "ja": "彼女が考えこんでいるうちに曲が終わる。「次はきっとね」と約束する。"
+ },
+ "city.pev.invite.after.1": {
+  "ru": "Плиты ещё тёплые от дня. Над эстрадой гудят фонари, в них бьётся мошкара.",
+  "en": "The slabs are still warm from the day. The lamps over the stage hum, and midges beat against them.",
+  "ja": "石畳はまだ昼のぬくもり。ステージの上の街灯がうなり、羽虫がぶつかっている。"
+ },
+ "city.pev.invite.after.2": {
+  "ru": "С моря потянуло ветерком. Девочки накидывают кофты, музыканты прижимают ноты прищепками.",
+  "en": "A breeze has come up off the sea. The girls pull on their cardigans; the band clips their music down with clothes-pegs.",
+  "ja": "海から風。女の子たちはカーディガンをはおり、楽団は譜面を洗濯ばさみでとめる。"
+ },
+ "city.pev.white.prompt": {
+  "ru": "E — подойти к фонарю на углу",
+  "en": "E — go over to the lamp on the corner",
+  "ja": "E：角の街灯へ行く"
+ },
+ "city.pev.white.title": {
+  "ru": "Белый танец под фонарём",
+  "en": "The ladies' choice under the lamp",
+  "ja": "街灯の下の白いダンス"
+ },
+ "city.pev.white.win.1": {
+  "ru": "Вы ни разу не сбились. Под конец она кружится сама и смеётся: «Под открытым небом голова кружится по-другому».",
+  "en": "You never once lost the step. At the end she spins on her own and laughs: \"Under the open sky your head spins differently.\"",
+  "ja": "一度もステップを外さなかった。最後に彼女はひとりでくるりと回って笑う。「空の下だと、目の回り方がちがうね」"
+ },
+ "city.pev.white.win.2": {
+  "ru": "Она ведёт уверенно, будто танцует здесь каждое лето. «Каждое и танцую, — говорит она. — С третьего класса».",
+  "en": "She leads as surely as if she dances here every summer. \"Every one,\" she says. \"Since the third form.\"",
+  "ja": "毎年夏ここで踊っているみたいに、彼女のリードは迷いがない。「毎年踊ってるよ。三年生のときから」"
+ },
+ "city.pev.white.lose.1": {
+  "ru": "Ты наступил ей на сандалию. «На плитах это не считается», — великодушно решает она.",
+  "en": "You trod on her sandal. \"On slabs that doesn't count,\" she decides generously.",
+  "ja": "彼女のサンダルを踏んでしまった。「石畳の上ならノーカウント」と彼女は寛大に決める。"
+ },
+ "city.pev.white.draw.1": {
+  "ru": "Музыка кончилась раньше, чем вы договорились, кто ведёт. Она смеётся и машет подругам.",
+  "en": "The music ended before you'd settled who was leading. She laughs and waves to her friends.",
+  "ja": "どっちがリードするか決まらないうちに曲が終わった。彼女は笑って友だちに手を振る。"
+ },
+ "city.pev.white.after.1": {
+  "ru": "Над морем полоса заката, а на площади зажглись все фонари разом. Кто-то говорит: «Как в кино».",
+  "en": "There's a band of sunset over the sea, and every lamp on the square has come on at once. Somebody says, \"Like the pictures.\"",
+  "ja": "海の上に夕焼けの帯、広場の街灯がいっせいに灯る。誰かが言う。「映画みたい」"
+ },
+ "city.pev.wait.early.1": {
+  "ru": "У фонаря на углу шепчутся девочки и поглядывают на часы на эстраде. Белый танец объявят в десять.",
+  "en": "By the lamp on the corner the girls whisper and glance at the clock on the stage. The ladies' choice is called at ten.",
+  "ja": "角の街灯のそばで女の子たちがひそひそ話し、ステージの時計を見ている。白いダンスは十時。"
+ },
+ "city.pev.wait.early.2": {
+  "ru": "«До белого ещё рано, — говорит кто-то у фонаря. — Стой, где стоишь, и делай вид, что не ждёшь».",
+  "en": "\"It's early for the ladies' choice,\" somebody by the lamp says. \"Stand where you are and pretend you're not waiting.\"",
+  "ja": "「白いダンスにはまだ早いよ」と街灯のそばで誰か。「そこに立って、待ってないふりしてな」"
+ },
+ "city.pev.off.day.1": {
+  "ru": "Днём на площади пусто и солнечно. Плиты у эстрады исчерчены мелом: тут вечером танцуют, а утром играют в классики.",
+  "en": "By day the square is empty and sunny. The slabs by the stage are scribbled with chalk: dancing here at night, hopscotch in the morning.",
+  "ja": "昼の広場はがらんとして明るい。ステージ前の石畳はチョークだらけ。夜はダンス、朝はけんけんぱ。"
+ },
+ "city.pev.off.day.2": {
+  "ru": "На эстраде сохнет чей-то пюпитр. Летом по пятницам и субботам здесь танцплощадка, по воскресеньям духовой оркестр.",
+  "en": "Someone's music stand is drying on the stage. In summer this is the dance floor on Fridays and Saturdays, and on Sundays the brass band plays.",
+  "ja": "ステージで誰かの譜面台が乾かしてある。夏は金曜と土曜がダンス、日曜は吹奏楽団。"
+ },
+ "city.pev.off.early.1": {
+  "ru": "Дружинник с красной повязкой развешивает гирлянду лампочек между фонарями. Колонки уже стоят у эстрады. Танцы с семи.",
+  "en": "A volunteer with a red armband is stringing bulbs between the lamps. The loudspeakers are already by the stage. Dancing from seven.",
+  "ja": "赤い腕章の自警団員が街灯のあいだに電球を張っている。スピーカーはもうステージのそば。ダンスは七時から。"
+ },
+ "city.pev.off.on.1": {
+  "ru": "Танцы в разгаре: на плитах пар двадцать, вокруг стоят и смотрят. Пахнет морем, сиренью и духами «Красная Москва».",
+  "en": "The dance is in full swing: twenty pairs on the slabs, people standing round watching. It smells of the sea, of lilac and of Krasnaya Moskva scent.",
+  "ja": "ダンスは真っ盛り。石畳に二十組ほど、まわりで見物の人たち。海とライラックと香水「赤いモスクワ」の匂い。"
+ },
+ "city.pev.off.on.2": {
+  "ru": "Пластинку меняет сам дружинник и каждый раз объявляет: «Следующий — вальс». Иногда это правда.",
+  "en": "The volunteer changes the record himself and announces each time: \"The next one's a waltz.\" Sometimes it's true.",
+  "ja": "レコードは自警団員がみずから替え、毎回「次はワルツ」と言う。ときどき本当になる。"
+ },
+ "city.pev.off.dusk.1": {
+  "ru": "Стемнело, и над площадью зажглись фонари. Вокруг каждого кружит мошкара, а дальше, на конце пирса, мигает маяк.",
+  "en": "It's dark now, and the lamps have come on over the square. Midges wheel round every one, and farther off, at the end of the pier, the lighthouse blinks.",
+  "ja": "暗くなり、広場の街灯がともった。どの灯りにも羽虫が舞い、遠く桟橋の先で灯台がまたたく。"
+ },
+ "city.pev.off.dusk.2": {
+  "ru": "Комары нашли танцплощадку раньше всех. Бабушки отмахиваются веточками, кавалеры хлопают себя по шее в такт.",
+  "en": "The mosquitoes found the dance floor before anyone. The grannies wave them off with sprigs; the young men slap their necks in time to the music.",
+  "ja": "蚊はだれよりも先にダンスの場所を見つけた。おばあさんたちは小枝で払い、若者たちはリズムに合わせて首をたたく。"
+ },
+ "city.pev.off.dusk.3": {
+  "ru": "С моря потянуло холодком. Кто в кофте, тот танцует, кто без кофты, тот танцует быстрее.",
+  "en": "A chill has come in off the sea. Those with cardigans dance; those without dance faster.",
+  "ja": "海から冷えた風。カーディガンのある人は踊り、ない人はもっと速く踊る。"
+ },
+ "city.pev.off.rain.1": {
+  "ru": "Дождь. Колонки накрыты клеёнкой, на плитах лужи, на эстраде табличка мелом: «Танцы отменяются». Сторож «Сводов» говорит, что в зале сухо, но зал летом закрыт.",
+  "en": "Rain. The loudspeakers are under oilcloth, puddles on the slabs, and on the stage a chalked sign: \"Dancing cancelled.\" The Vaults' watchman says the hall is dry, but the hall is shut in summer.",
+  "ja": "雨。スピーカーにはビニールがかけられ、石畳は水たまり、ステージにはチョークで「ダンス中止」。「ヴォールト」の夜警はホールなら乾いてると言うが、夏のホールは閉まっている。"
+ },
+ "city.pev.off.late.1": {
+  "ru": "Ровно в одиннадцать дружинник выключил колонки и сматывает провод. «Провожайте девушек, молодые люди, а не стойте у фонтана».",
+  "en": "At eleven sharp the volunteer switched the loudspeakers off and is coiling the cable. \"See the girls home, young men, don't stand about by the fountain.\"",
+  "ja": "十一時ちょうど、自警団員がスピーカーを切ってコードを巻いている。「若い衆、噴水のそばに突っ立ってないで、娘さんを送っていきなさい」"
+ },
+ "city.pev.off.late.2": {
+  "ru": "Площадь пуста, только у фонтана кто-то договаривает то, что не успел сказать под музыку.",
+  "en": "The square is empty; only by the fountain somebody is finishing what they hadn't managed to say under the music.",
+  "ja": "広場は空っぽ。噴水のそばで誰かが、音楽のあいだに言えなかったことを言い終えようとしている。"
+ },
+ "city.pev.off.rehearsal.1": {
+  "ru": "Четверг: на эстраде репетирует духовой оркестр. Трубач начинает «Амурские волны» в третий раз, капельмейстер стучит палочкой по пюпитру.",
+  "en": "Thursday: the brass band is rehearsing on the stage. The trumpeter starts \"Waves of the Amur\" for the third time; the bandmaster taps his baton on the stand.",
+  "ja": "木曜。ステージで吹奏楽団の練習。トランペットが「アムールの波」を三度目に吹きはじめ、楽長が指揮棒で譜面台をたたく。"
+ },
+ "city.pev.off.band.1": {
+  "ru": "Воскресенье, на эстраде духовой оркестр. Полгорода стоит перед сценой, остальные слушают со скамеек у фонтана.",
+  "en": "Sunday, and the brass band is on the stage. Half the town stands in front of it; the rest listen from the benches by the fountain.",
+  "ja": "日曜、ステージには吹奏楽団。町の半分がステージの前に立ち、残りは噴水のベンチで聴いている。"
+ },
+ "city.pev.off.winter.1": {
+  "ru": "Летняя танцплощадка спит до конца мая. Зимой танцуют в «Сводах», по пятницам и субботам: там тепло и есть гардероб.",
+  "en": "The summer dance floor sleeps until the end of May. In winter they dance at the Vaults on Fridays and Saturdays: it's warm there, and there's a cloakroom.",
+  "ja": "夏のダンス場は五月の終わりまでお休み。冬は金曜と土曜に「ヴォールト」で踊る。暖かくてクロークもある。"
+ },
+ "city.pev.off.winter.2": {
+  "ru": "На эстраде снег или лужи, смотря по погоде. Афиша летних танцев выцвела, но дата ещё читается: «с 25 мая».",
+  "en": "Snow or puddles on the stage, depending on the weather. The summer dances' poster has faded, but the date still reads: \"from 25 May\".",
+  "ja": "ステージには天気しだいで雪か水たまり。夏のダンスのポスターは色あせたが、日付はまだ読める。「五月二十五日から」"
+ },
+ "city.pev.off.night.1": {
+  "ru": "Ночная площадь. Фонтан выключен, фонари горят через один. Где-то на набережной поёт кто-то, кого не проводили.",
+  "en": "The square at night. The fountain is off; every other lamp is lit. Somewhere on the promenade sings somebody nobody saw home.",
+  "ja": "夜の広場。噴水は止まり、街灯はひとつおき。遊歩道のどこかで、送ってもらえなかった誰かが歌っている。"
+ },
+ "city.pev.off.fest.1": {
+  "ru": "Сегодня праздник, и вся площадь танцует без расписания. Дружинник сдался и тоже притопывает.",
+  "en": "It's a holiday, and the whole square dances without a timetable. The volunteer has given up and is tapping his foot too.",
+  "ja": "今日はお祭り、広場じゅうが時間割なしで踊っている。自警団員もあきらめて足でリズムをとっている。"
+ },
+ "city.pev.floor.prompt": {
+  "ru": "E — посмотреть на танцплощадку",
+  "en": "E — look at the dance floor",
+  "ja": "E：ダンスの場所を見る"
+ },
+ "city.pev.band.prompt": {
+  "ru": "E — сесть на тёплые плиты и слушать оркестр",
+  "en": "E — sit on the warm slabs and listen to the band",
+  "ja": "E：あたたかい石畳に座って楽団を聴く"
+ },
+ "city.pev.band.full.1": {
+  "ru": "Ты сел на плиты в первом ряду, рядом с малышнёй. Капельмейстер поднял палочку: марш, «Амурские волны», «На сопках Маньчжурии», «Дунайские волны», «Осенний сон», полька «Трик-трак», и под конец, стоя, «Прощание славянки». Ты дослушал всё до последней ноты.",
+  "en": "You sat down on the slabs in the front row, among the little ones. The bandmaster raised his baton: a march, \"Waves of the Amur\", \"On the Hills of Manchuria\", \"Waves of the Danube\", \"Autumn Dream\", the polka \"Tritsch-Tratsch\", and to finish, everyone standing, \"Farewell of Slavianka\". You heard it all to the last note.",
+  "ja": "最前列の石畳に、小さい子たちにまじって座った。楽長が指揮棒を上げる。行進曲、「アムールの波」、「満州の丘に立ちて」、「ドナウ川のさざなみ」、「秋の夢」、ポルカ「トリッチ・トラッチ」、そして最後は総立ちで「スラヴ娘の別れ」。最後の一音まで聴いた。"
+ },
+ "city.pev.band.late.1": {
+  "ru": "Ты подсел, когда оркестр уже играл польку. Хорошо, но с середины: кто пришёл к маршу, тот слышал всё.",
+  "en": "You sat down when the band was already playing the polka. Lovely, but from the middle: whoever came for the march heard the lot.",
+  "ja": "楽団がもうポルカを演奏しているときに座った。いいけれど途中から。行進曲から来た人は全部聴けた。"
+ },
+ "city.pev.band.after.1": {
+  "ru": "Туба отдувается после «Прощания славянки», а дети уже выпрашивают у мам на мороженое у тележки.",
+  "en": "The tuba is getting its breath back after \"Farewell of Slavianka\", and the children are already wheedling money for ice cream at the cart.",
+  "ja": "「スラヴ娘の別れ」のあとでチューバがひと息、子どもたちはもう屋台のアイス代を母親にねだっている。"
+ },
+ "city.pev.band.off.1": {
+  "ru": "Музыканты укладывают трубы в футляры. «В следующее воскресенье в три, — говорит капельмейстер. — Если не будет дождя».",
+  "en": "The players are putting their horns back in their cases. \"Next Sunday at three,\" says the bandmaster. \"Unless it rains.\"",
+  "ja": "楽団員が楽器をケースにしまっている。「来週の日曜三時に」と楽長。「雨でなければね」"
+ },
+ "city.pev.poster.prompt": {
+  "ru": "E — прочитать афишу у эстрады",
+  "en": "E — read the poster by the stage",
+  "ja": "E：ステージのポスターを読む"
+ },
+ "city.pev.text.poster.title": {
+  "ru": "Афиша: летние вечера на площади",
+  "en": "Poster: summer evenings on the square",
+  "ja": "ポスター：広場の夏の夕べ"
+ },
+ "city.pev.poster.1": {
+  "ru": "ТАНЦЫ НА ПЛОЩАДИ СОЛНЦА. С 25 мая по 5 сентября, по пятницам и субботам, с 19 до 23 часов, у эстрады. Радиола и колонки клуба, по праздникам живой оркестр. Белый танец в 22 часа. В 23 часа дружинник выключает музыку. В дождь танцы отменяются: смотрите табличку на эстраде.",
+  "en": "DANCES ON SUN SQUARE. 25 May to 5 September, Fridays and Saturdays, 7 to 11 p.m., by the stage. The club's radiogram and loudspeakers, a live band on holidays. The ladies' choice at 10 p.m. At 11 the volunteer switches the music off. In rain the dance is cancelled: see the sign on the stage.",
+  "ja": "太陽広場のダンス。五月二十五日から九月五日まで、金曜と土曜の十九時から二十三時、ステージ前。クラブの電蓄とスピーカー、祝日は生演奏。二十二時に白いダンス。二十三時に自警団員が音楽を止めます。雨天中止。ステージの札をご覧ください。"
+ },
+ "city.pev.poster.2": {
+  "ru": "ДУХОВОЙ ОРКЕСТР ДОМА КУЛЬТУРЫ. Июнь, июль, август: по воскресеньям с 15 до 17 часов на эстраде. Программа: 1. Марш Преображенского полка. 2. «Амурские волны», вальс (М. Кюсс). 3. «На сопках Маньчжурии», вальс (И. Шатров). 4. «Дунайские волны», вальс (И. Ивановичи). 5. «Осенний сон», вальс (А. Джойс). 6. «Трик-трак», полька (И. Штраус). 7. «Прощание славянки», марш (В. Агапкин). Вход свободный.",
+  "en": "THE HOUSE OF CULTURE BRASS BAND. June, July, August: Sundays, 3 to 5 p.m., on the stage. Programme: 1. March of the Preobrazhensky Regiment. 2. \"Waves of the Amur\", waltz (M. Kyuss). 3. \"On the Hills of Manchuria\", waltz (I. Shatrov). 4. \"Waves of the Danube\", waltz (I. Ivanovici). 5. \"Autumn Dream\", waltz (A. Joyce). 6. \"Tritsch-Tratsch\", polka (J. Strauss). 7. \"Farewell of Slavianka\", march (V. Agapkin). Admission free.",
+  "ja": "文化会館吹奏楽団。六月・七月・八月の日曜、十五時から十七時、ステージにて。曲目：一、プレオブラジェンスキー連隊行進曲。二、ワルツ「アムールの波」（M・キュス）。三、ワルツ「満州の丘に立ちて」（I・シャトロフ）。四、ワルツ「ドナウ川のさざなみ」（I・イヴァノヴィチ）。五、ワルツ「秋の夢」（A・ジョイス）。六、ポルカ「トリッチ・トラッチ」（J・シュトラウス）。七、行進曲「スラヴ娘の別れ」（V・アガプキン）。入場無料。"
+ },
+ "city.pev.poster.3": {
+  "ru": "Внизу карандашом, разными почерками: «Кофту берите, с моря дует». «От комаров одеколон, не духи». «Кто вчера унёс пюпитр — верните, ноты были на нём». «Фотограф из ателье на набережной снимает пары на закате, у парапета, 40 копеек карточка».",
+  "en": "Below, in pencil, in different hands: \"Bring a cardigan, it blows off the sea.\" \"Eau de cologne for the mosquitoes, not scent.\" \"Whoever took the music stand yesterday, bring it back: the music was on it.\" \"The photographer from the studio on the promenade takes couples at sunset by the parapet, 40 kopecks a print.\"",
+  "ja": "下に鉛筆で、いろいろな筆跡。「カーディガン持参、海から風が来る」「蚊にはオーデコロン、香水じゃなくて」「昨日譜面台を持っていった人、返して。楽譜がのってたの」「遊歩道の写真館が夕焼けの欄干でカップルを撮ります。一枚四十コペイカ」"
+ },
+ "city.pev.poster.rain": {
+  "ru": "Поверх афиши свежий листок: «Сегодня из-за дождя танцы отменяются. Не огорчайтесь: дождь тоже музыка».",
+  "en": "A fresh sheet over the poster: \"Tonight's dance is cancelled because of the rain. Don't be sad: rain is music too.\"",
+  "ja": "ポスターの上に新しい紙。「本日は雨のためダンス中止。がっかりしないで。雨も音楽です」"
+ },
+ "city.pev.poster.winter": {
+  "ru": "Афиша прошлого лета, выцветшая. Поверх приколото: «Зимние танцы — в «Сводах», пятница и суббота, с семи».",
+  "en": "Last summer's poster, faded. Pinned over it: \"Winter dances at the Vaults, Fridays and Saturdays, from seven.\"",
+  "ja": "去年の夏の色あせたポスター。上にピンでとめてある。「冬のダンスは「ヴォールト」で、金曜と土曜の七時から」"
+ },
+ "city.pev.poster.fest": {
+  "ru": "Красная лента поперёк: «Сегодня праздник! Музыка на площади до полуночи».",
+  "en": "A red ribbon across it: \"Holiday today! Music on the square till midnight.\"",
+  "ja": "赤いリボンが斜めに。「本日お祭り！広場の音楽は真夜中まで」"
+ },
+ "city.pev.light.prompt": {
+  "ru": "E — смотреть на вечерний свет над морем",
+  "en": "E — watch the evening light over the sea",
+  "ja": "E：海の上の夕方の光を眺める"
+ },
+ "city.pev.light.gold.1": {
+  "ru": "Солнце уходит за спину, за город, и море делается розовым. Фотограф из ателье ставит треногу у парапета: «Ещё пять минут. Лучший свет за весь день, и бесплатный».",
+  "en": "The sun goes down behind you, behind the town, and the sea turns pink. The photographer from the studio sets up his tripod by the parapet: \"Five more minutes. The best light of the whole day, and it's free.\"",
+  "ja": "日は背中の向こう、町のうしろに沈み、海は桃色になる。写真館の写真屋が欄干に三脚を立てる。「あと五分。一日でいちばんいい光、しかもただ」"
+ },
+ "city.pev.light.gold.2": {
+  "ru": "Пары у парапета стоят парами, семьи семьями, мальчишки ватагой. Вечерний свет всех делает красивыми, и все это знают.",
+  "en": "The couples by the parapet stand in couples, the families as families, the boys in a gang. The evening light makes everyone beautiful, and everyone knows it.",
+  "ja": "欄干のそばで、恋人たちは二人で、家族は家族で、少年たちはひとかたまりで立っている。夕方の光はみんなをきれいに見せるし、みんなそれを知っている。"
+ },
+ "city.pev.light.lamp.1": {
+  "ru": "Над морем зажёгся маяк на конце пирса: вспышка, тишина, вспышка. Кто-то на скамейке считает вслух, кто-то просто смотрит.",
+  "en": "Out over the sea the lighthouse at the end of the pier has come on: a flash, a dark, a flash. Somebody on a bench counts aloud; somebody just watches.",
+  "ja": "海の上、桟橋の先の灯台がともった。光って、暗くなって、また光る。ベンチの誰かが声に出して数え、誰かはただ見ている。"
+ },
+ "city.pev.light.lamp.2": {
+  "ru": "Маяк зажёгся, и набережная сразу стала вечерней. Фонари вдоль моря загораются по очереди, от пирса к ярмарке.",
+  "en": "The lighthouse has come on, and the promenade is suddenly an evening one. The lamps along the sea light up in turn, from the pier toward the fair.",
+  "ja": "灯台がともると、遊歩道はたちまち夜の顔になる。海ぞいの街灯が桟橋から市場のほうへ順についていく。"
+ },
+ "city.pev.light.walk.1": {
+  "ru": "По набережной гуляют: пары под руку, семьи с колясками, школьники с мороженым. Все идут к пирсу и обратно, как будто так договорились.",
+  "en": "People are walking the promenade: couples arm in arm, families with prams, schoolchildren with ice creams. Everyone goes to the pier and back, as if they'd agreed to.",
+  "ja": "遊歩道はそぞろ歩き。腕を組んだ恋人たち、乳母車の家族、アイスを持った学校の子。みんな桟橋まで行って戻ってくる。申し合わせたみたいに。"
+ },
+ "city.pev.light.walk.2": {
+  "ru": "Скамейки у моря заняты все до одной. Бабушки уступают место только тем, кто будет рассказывать что-нибудь интересное.",
+  "en": "Every bench by the sea is taken. The grannies give up a place only to those who'll tell them something interesting.",
+  "ja": "海ぞいのベンチはひとつ残らずうまっている。おばあさんたちが席をゆずるのは、何かおもしろい話をしてくれる人だけ。"
+ },
+ "city.pev.light.day.1": {
+  "ru": "Днём море синее и деловое: катера, чайки, рыбаки на пирсе. Вечером сюда приходят смотреть, а не работать.",
+  "en": "By day the sea is blue and businesslike: launches, gulls, anglers on the pier. In the evening people come here to look, not to work.",
+  "ja": "昼の海は青くて忙しい。ランチ、カモメ、桟橋の釣り人。夕方になると、人は働くためでなく眺めるために来る。"
+ },
+ "city.pev.light.cold.1": {
+  "ru": "Холодное море, пустая набережная. Летом в этот час тут не протолкнуться: все гуляют до маяка и обратно.",
+  "en": "A cold sea, an empty promenade. In summer at this hour you couldn't move here: everybody walks to the lighthouse and back.",
+  "ja": "冷たい海、がらんとした遊歩道。夏のこの時間なら人でいっぱい。みんな灯台まで歩いて戻ってくる。"
+ },
+ "city.pev.light.rain.1": {
+  "ru": "Дождь гонит всех с набережной. Только фотограф стоит под зонтом у парапета: «Мокрые плиты отражают фонари. Это тоже свет».",
+  "en": "The rain chases everyone off the promenade. Only the photographer stands under his umbrella by the parapet: \"Wet slabs reflect the lamps. That's light too.\"",
+  "ja": "雨でみんな遊歩道から逃げていく。写真屋だけが欄干のそばで傘をさして立っている。「濡れた石畳は街灯を映す。これも光だよ」"
+ },
+ "city.pev.light.night.1": {
+  "ru": "Ночь. Маяк мигает в пустоту, на воде дорожка от фонарей. Набережная отдыхает до завтрашнего вечера.",
+  "en": "Night. The lighthouse blinks into the empty dark; the lamps lay a path on the water. The promenade rests until tomorrow evening.",
+  "ja": "夜。灯台がなにもない闇にまたたき、水面には街灯の道。遊歩道はあすの夕方までひと休み。"
+ },
+ "city.pev.coll.pev_evening.title": {
+  "ru": "Летние вечера на набережной",
+  "en": "Summer evenings on the promenade",
+  "ja": "遊歩道の夏の夕べ"
+ },
+ "city.pev.pt.floor": {
+  "ru": "Площадь: танцы у эстрады — пригласить",
+  "en": "Square: dances by the stage, asking someone",
+  "ja": "広場：ステージ前のダンスに誘う"
+ },
+ "city.pev.pt.white": {
+  "ru": "Площадь: белый танец у фонаря (22:05)",
+  "en": "Square: the ladies' choice by the lamp (22:05)",
+  "ja": "広場：街灯の白いダンス（22:05）"
+ },
+ "city.pev.pt.band": {
+  "ru": "Площадь: духовой оркестр (воскресенье, 15:05)",
+  "en": "Square: the brass band (Sunday, 15:05)",
+  "ja": "広場：吹奏楽団（日曜15:05）"
+ },
+ "city.pev.pt.poster": {
+  "ru": "Площадь: афиша у эстрады",
+  "en": "Square: the poster by the stage",
+  "ja": "広場：ステージのポスター"
+ },
+ "city.pev.pt.light": {
+  "ru": "Набережная: вечерний свет и маяк (21:40)",
+  "en": "Promenade: the evening light and the lighthouse (21:40)",
+  "ja": "遊歩道：夕方の光と灯台（21:40）"
+ },
+ "city.pev.pt.floor_look": {
+  "ru": "Площадь: танцплощадка (вид)",
+  "en": "Square: the dance floor (a look)",
+  "ja": "広場：ダンス場（眺め）"
+ },
+ "quest.pev_summer_evening.title": {
+  "ru": "Летний вечер",
+  "en": "A summer evening",
+  "ja": "夏の夕べ"
+ },
+ "quest.pev_summer_evening.desc": {
+  "ru": "Афиша у эстрады обещает целое лето вечеров: оркестр по воскресеньям, танцы по пятницам и субботам, а по набережной гуляют до маяка. Надо попробовать всё.",
+  "en": "The poster by the stage promises a whole summer of evenings: the band on Sundays, dances on Fridays and Saturdays, and walks along the promenade as far as the lighthouse. I should try all of it.",
+  "ja": "ステージのポスターは夏じゅうの夕べを約束している。日曜は楽団、金曜と土曜はダンス、遊歩道は灯台まで散歩。ぜんぶやってみよう。"
+ },
+ "quest.pev_summer_evening.done": {
+  "ru": "Оркестр, танец и маяк над морем. Теперь я понимаю, почему тут летом никто не сидит дома.",
+  "en": "The band, a dance and the lighthouse over the sea. Now I see why nobody stays at home here in summer.",
+  "ja": "楽団、ダンス、海の上の灯台。夏にここで家にいる人がいない理由がわかった。"
+ },
+ "quest.pev_summer_evening.band.obj": {
+  "ru": "Дослушать духовой оркестр с первой ноты (воскресенье, 15:00)",
+  "en": "Hear the brass band from the first note (Sunday, 3 p.m.)",
+  "ja": "吹奏楽団を最初の音から聴く（日曜15時）"
+ },
+ "quest.pev_summer_evening.band.log": {
+  "ru": "Оркестр начинает в три. Кто опоздает к маршу, тот услышит только половину.",
+  "en": "The band starts at three. Whoever is late for the march hears only half.",
+  "ja": "楽団は三時に始まる。行進曲に遅れたら半分しか聴けない。"
+ },
+ "quest.pev_summer_evening.dance.obj": {
+  "ru": "Пригласить кого-нибудь на танец на площади",
+  "en": "Ask someone to dance on the square",
+  "ja": "広場で誰かをダンスに誘う"
+ },
+ "quest.pev_summer_evening.dance.log": {
+  "ru": "Танцы на площади по пятницам и субботам с семи. Правила те же, что в «Сводах»: смотреть, какая она.",
+  "en": "Dances on the square on Fridays and Saturdays from seven. The rules are the Vaults' rules: see what she's like.",
+  "ja": "広場のダンスは金曜と土曜の七時から。決まりは「ヴォールト」と同じ。相手がどんな子か見ること。"
+ },
+ "quest.pev_summer_evening.lighthouse.obj": {
+  "ru": "Встретить на набережной вечер, когда зажигается маяк",
+  "en": "Be on the promenade when the lighthouse comes on",
+  "ja": "灯台がともる時間に遊歩道にいる"
+ },
+ "quest.pev_summer_evening.lighthouse.log": {
+  "ru": "Фотограф говорит, лучший свет за весь день — перед тем как зажжётся маяк. Встать у парапета и посмотреть.",
+  "en": "The photographer says the best light of the day is just before the lighthouse comes on. Stand by the parapet and watch.",
+  "ja": "写真屋さんいわく、一日でいちばんいい光は灯台がともる直前。欄干のそばで見てみよう。"
+ },
+ "city.coll.reward.pev_evening.name": {
+  "ru": "два эскимо от мороженщицы",
+  "en": "two choc-ices from the ice-cream lady",
+  "ja": "アイス売りのチョコアイス二本"
+ },
+ "city.coll.reward.pev_evening.note": {
+  "ru": "Мороженщица у тележки сказала: «Кто всё лето провёл на набережной, тому эскимо за счёт заведения. Одно тебе, одно той, с кем танцевал».",
+  "en": "The ice-cream lady at the cart said: \"Whoever spent the whole summer on the promenade gets a choc-ice on the house. One for you, one for whoever you danced with.\"",
+  "ja": "屋台のアイス売りが言った。「夏じゅう遊歩道にいた人には、チョコアイスをサービス。ひとつはあなたに、ひとつは一緒に踊った子に」"
+ },
+ "city.plot.p_prom_dance.name": {
+  "ru": "Танцы на площади Солнца",
+  "en": "The dances on Sun Square",
+  "ja": "太陽広場のダンス"
+ },
+ "city.plot.p_prom_band.name": {
+  "ru": "Духовой оркестр у эстрады",
+  "en": "The brass band by the stage",
+  "ja": "ステージの吹奏楽団"
+ },
+ "city.plot.p_prom_board.name": {
+  "ru": "Афиша у эстрады",
+  "en": "The poster by the stage",
+  "ja": "ステージのポスター"
+ },
+ "city.plot.p_prom_light.name": {
+  "ru": "Вечерний свет у моря",
+  "en": "The evening light by the sea",
+  "ja": "海辺の夕方の光"
+ }
+}

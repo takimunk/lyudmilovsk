@@ -103,6 +103,27 @@
       "k": "city.note.lost.start_parrot",
       "after": 0,
       "before": 4
+     },
+     {
+      "k": "city.note.lost.nh_ony_done",
+      "date": [
+       "01-14",
+       "01-21"
+      ]
+     },
+     {
+      "k": "city.note.lost.nh_neptune_done",
+      "date": [
+       "08-01",
+       "08-09"
+      ]
+     },
+     {
+      "k": "city.note.lost.pev_stand",
+      "date": [
+       "06-08",
+       "06-20"
+      ]
      }
     ],
     [
@@ -150,13 +171,6 @@
       ]
      },
      {
-      "k": "city.note.club.dance",
-      "date": [
-       "07-01",
-       "07-31"
-      ]
-     },
-     {
       "k": "city.note.club.astro",
       "date": [
        "08-01",
@@ -175,6 +189,36 @@
       "date": [
        "12-01",
        "12-28"
+      ]
+     },
+     {
+      "k": "city.note.club.dnc_vaults",
+      "date": [
+       "10-11",
+       "11-30"
+      ]
+     },
+     {
+      "k": "city.note.club.dnc_winter",
+      "date": [
+       "01-15",
+       "02-28"
+      ]
+     },
+     {
+      "k": "city.note.club.nh_ony_soon",
+      "date": [
+       "01-08",
+       "01-13"
+      ]
+     }
+    ],
+    [
+     {
+      "k": "city.note.club.dance",
+      "date": [
+       "05-20",
+       "09-05"
       ]
      },
      {
@@ -522,6 +566,24 @@
      }
     ],
     [
+     {
+      "k": "city.note.club.pev_band",
+      "date": [
+       "05-25",
+       "08-31"
+      ]
+     }
+    ],
+    [
+     {
+      "k": "city.note.club.pev_photo",
+      "date": [
+       "06-15",
+       "08-20"
+      ]
+     }
+    ],
+    [
      "city.look.club.1",
      "city.look.club.2",
      "city.look.club.3",
@@ -584,6 +646,13 @@
       "date": [
        "04-25",
        "06-10"
+      ]
+     },
+     {
+      "k": "city.note.health.nh_neptune_soon",
+      "date": [
+       "07-12",
+       "07-24"
       ]
      }
     ],
@@ -676,6 +745,22 @@
       "date": [
        "01-10",
        "02-14"
+      ]
+     }
+    ],
+    [
+     {
+      "k": "city.note.school.nh_science_soon",
+      "date": [
+       "11-22",
+       "11-30"
+      ]
+     },
+     {
+      "k": "city.note.school.nh_science_done",
+      "date": [
+       "12-08",
+       "12-16"
       ]
      }
     ],

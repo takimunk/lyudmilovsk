@@ -6073,6 +6073,30 @@
    ]
   },
   {
+   "id": "cinema_stubs",
+   "when": {
+    "visit": [
+     "cinema_evening",
+     "cinema_day"
+    ],
+    "at": "-CINEMA",
+    "keep": 12.0
+   },
+   "tris": 62,
+   "bounds": [
+    [
+     -10.564,
+     15.779,
+     0.32
+    ],
+    [
+     11.576,
+     25.476,
+     1.907
+    ]
+   ]
+  },
+  {
    "id": "lounge_book",
    "when": {
     "hours": [
@@ -6142,6 +6166,6 @@
   "shell": 2228,
   "detail": 39757,
   "windows": 136,
-  "dress": 9474
+  "dress": 9536
  }
 }

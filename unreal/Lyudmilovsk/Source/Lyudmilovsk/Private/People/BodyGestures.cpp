@@ -179,10 +179,15 @@ namespace LyudGesture
 		case EProp::Knitting: return EHold::TwoHands;
 		case EProp::Rod: return EHold::Pointing;
 		case EProp::Spade:
-		case EProp::Mop: return EHold::Shaft;
+		case EProp::Mop:
+		case EProp::Broom:
+		case EProp::Rake: return EHold::Shaft;
 		case EProp::Torch: return EHold::Pointing;
 		case EProp::Bag: return EHold::Hanging;
 		case EProp::Suitcase: return EHold::Hanging;
+		case EProp::CakeBox:                        // by its string's loop, as the bag
+		case EProp::Flowers: return EHold::Hanging; // heads down by the side
+
 		default: return EHold::Upright;
 		}
 	}

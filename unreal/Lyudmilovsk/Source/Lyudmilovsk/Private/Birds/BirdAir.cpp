@@ -161,5 +161,19 @@ FBirdAir::FSample FBirdAir::Sample(const FVector& PosCm, float Dt)
 	const bool bLand = CacheGround > WaterZ() + 100.f;
 	const float Low = 1.f - 0.4f * FMath::SmoothStep(20.f, 120.f, Agl);
 	S.Turbulence = Speed * Gustiness * (bLand ? 0.6f : 0.4f) * Low + 0.25f * S.Thermal;
+	// How this air agrees with the shared local wind (docs/wind.md) without counting anything twice:
+	//  - the horizontal wind above is GetWindAt's, which since the relief grid carries the slow swing of the direction
+	//    and the land's lee and speed-up (the calm under the cliff in an offshore wind, the squeeze over its brow);
+	//  - the rising and sinking air stays this class's own: its ridge lift comes from traces a few tens of metres
+	//    ahead of the bird (finer than the grid's 16 m cells, and it sees roofs), and the bird's soaring and its tests
+	//    are tuned on it. FLyudLocalWind::Updraft is the same physics for everything else and is NOT added here;
+	//  - the one thing taken from the local wind is its turbulence where that is the rougher: the tumbling behind solid
+	//    ground (the rotor in the cliff's lee) and over woods and roofs, which this class never had. It can only add to
+	//    the gusts above, and by a bounded amount.
+	if (World_Wind && CVarWindSpeed.GetValueOnGameThread() < 0.f && World_Wind->IsReliefReady())
+	{
+		const float Rotor = World_Wind->GetLocalWind(PosCm).Turbulence;
+		S.Turbulence = FMath::Max(S.Turbulence, FMath::Min(Rotor, S.Turbulence + 1.2f));
+	}
 	return S;
 }

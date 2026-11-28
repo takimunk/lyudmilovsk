@@ -73260,5 +73260,187 @@
     -4150.0
    ]
   }
+ ],
+ "street_machines": [
+  {
+   "id": "SM-SODA1",
+   "kind": "soda",
+   "building": "soda_machine",
+   "terrace": "T0",
+   "map": [
+    125.65,
+    960.0,
+    -39.46
+   ],
+   "front": [
+    126.03,
+    959.96,
+    -39.46
+   ],
+   "yaw": -5.3,
+   "name_ru": "Автомат газводы на набережной",
+   "name_en": "Soda machine on the promenade",
+   "notes": "the promenade's tree line between two plane trees, by the pier",
+   "ue": [
+    12565.0,
+    96790.0,
+    -3946.0
+   ],
+   "front_ue": [
+    12603.0,
+    96786.0,
+    -3946.0
+   ]
+  },
+  {
+   "id": "SM-SODA2",
+   "kind": "soda",
+   "building": "soda_machine",
+   "terrace": "T0",
+   "map": [
+    129.05,
+    1025.8,
+    -39.46
+   ],
+   "front": [
+    129.43,
+    1025.76,
+    -39.46
+   ],
+   "yaw": -5.6,
+   "name_ru": "Автомат газводы у остановки 4",
+   "name_en": "Soda machine at bus stop 4",
+   "notes": "beside kiosk 4 (P-KIOSK4), front to the sea like the stop",
+   "ue": [
+    12905.0,
+    103370.0,
+    -3946.0
+   ],
+   "front_ue": [
+    12943.0,
+    103366.0,
+    -3946.0
+   ]
+  },
+  {
+   "id": "SM-SODA3",
+   "kind": "soda",
+   "building": "soda_machine",
+   "terrace": "T0",
+   "map": [
+    129.66,
+    865.0,
+    -39.46
+   ],
+   "front": [
+    130.04,
+    864.97,
+    -39.46
+   ],
+   "yaw": -4.4,
+   "name_ru": "Автомат газводы у спуска на пляж",
+   "name_en": "Soda machine at the beach steps",
+   "notes": "at the head of the sea steps ST-SEA-07, by lifeguard tower 1",
+   "ue": [
+    12966.0,
+    87290.0,
+    -3946.0
+   ],
+   "front_ue": [
+    13004.0,
+    87287.0,
+    -3946.0
+   ]
+  },
+  {
+   "id": "SM-SODA4",
+   "kind": "soda",
+   "building": "soda_machine",
+   "terrace": "T0",
+   "map": [
+    112.02,
+    652.0,
+    -39.46
+   ],
+   "front": [
+    112.4,
+    651.98,
+    -39.46
+   ],
+   "yaw": -2.8,
+   "name_ru": "Автомат газводы у станции «Янтарь»",
+   "name_en": "Soda machine at Amber station",
+   "notes": "on the forecourt of the cable car's «amber» station and kiosk 2",
+   "ue": [
+    11202.0,
+    65990.0,
+    -3946.0
+   ],
+   "front_ue": [
+    11240.0,
+    65988.0,
+    -3946.0
+   ]
+  },
+  {
+   "id": "SM-SODA5",
+   "kind": "soda",
+   "building": "soda_machine",
+   "terrace": "T1",
+   "map": [
+    16.34,
+    927.5,
+    -36.16
+   ],
+   "front": [
+    16.34,
+    927.12,
+    -36.16
+   ],
+   "yaw": -90.0,
+   "name_ru": "Автомат газводы на площади Солнца",
+   "name_en": "Soda machine on Sun Square",
+   "notes": "north of the fountain, outside the ring of benches, front to the fountain",
+   "ue": [
+    1634.0,
+    93540.0,
+    -3616.0
+   ],
+   "front_ue": [
+    1634.0,
+    93502.0,
+    -3616.0
+   ]
+  },
+  {
+   "id": "SM-SODA6",
+   "kind": "soda",
+   "building": "soda_machine",
+   "terrace": "T1",
+   "map": [
+    -66.4,
+    1106.0,
+    -36.2
+   ],
+   "front": [
+    -66.78,
+    1106.0,
+    -36.2
+   ],
+   "yaw": 180.0,
+   "name_ru": "Автомат газводы в парке",
+   "name_en": "Soda machine in the park",
+   "notes": "by the park's avenue at its south end, front to the avenue",
+   "ue": [
+    -6640.0,
+    111390.0,
+    -3620.0
+   ],
+   "front_ue": [
+    -6678.0,
+    111390.0,
+    -3620.0
+   ]
+  }
  ]
 }

@@ -1,0 +1,29 @@
+{
+ "_doc": "Grid plan for the kitchen's four dish icons (docs/kitchen.md): one picture instead of four (the game-assets skill: always a grid). Cell order row by row, left to right. Generated on 2026-11-20 (job_id, output_url below); `python3 tools/garden/icons.py --plan localization/icon_grids_kitchen.json` downloads it to design/kitchen/, writes the sidecar and cuts textures/localized/ru/icon_<id>.jpg; then look at every cell, unreal/scripts/import_hall_assets.py and tools/ui_diary_icons.py <id> for the diary sketches.",
+ "grids": [
+  {
+   "id": "icons_kitchen",
+   "what": "the four dishes the hero cooks",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_5",
+   "aspect_ratio": "1:1",
+   "resolution": "2k",
+   "quality": "medium",
+   "cols": 2,
+   "rows": 2,
+   "output": "design/kitchen/icons_kitchen.png",
+   "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Home cooking of a 1970s-80s Soviet seaside town, no real brands. Row 1, left: a white enamel bowl of clear golden fish soup with a piece of white fish, potato chunks and a sprig of dill, an aluminium spoon beside it. Row 1, right: a cast iron frying pan of golden fried potato slices with a crisp crust, chopped fresh dill scattered on top. Row 2, left: a white plate with one whole small fried fish with a golden crisp crust and a sprig of dill beside it. Row 2, right: an enamel bowl of salad of red tomato wedges, sliced pink radishes and green dill, coarse salt.",
+   "ids": [
+    "dish_ukha",
+    "dish_fried_potatoes",
+    "dish_fried_fish",
+    "dish_salad"
+   ],
+   "job_id": "439f5dfe-e184-4894-b26b-60a9e3222c1d",
+   "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261120_231354_439f5dfe-e184-4894-b26b-60a9e3222c1d.png",
+   "generated": "2026-11-20",
+   "credits": 1
+  }
+ ]
+}

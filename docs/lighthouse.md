@@ -14,7 +14,7 @@ the light, the ways up and down, the weather log, the gallery's view, the keeper
 | Rules | `Private/South/LighthouseModel.{h,cpp}` (plain C++, namespace `LyudLighthouse`) |
 | Engine | `Public/South/LyudLighthouse.h`, `Private/South/LyudLighthouse.cpp` |
 | Game data | `tools/lighthouse/lighthouse.py` -> `Content/South/lighthouse.json`, `Content/Localization/lighthouse/strings_*.json` (words in `tools/lighthouse/strings_src.py`) |
-| Keeper | `tools/town/lighthouse_keeper.py` -> `people.json` (`vetrov_gordey`), `town_places.json` (`S-MAYAK-*`), `activities.json` |
+| Keeper | `tools/town/lighthouse_keeper.py` -> `people.json` (`vetrov_gordey`), `town_places.json` (`S-MAYAK-*`, and the cape's ground: `ground_patches` id `mayak`, a 2 m height field; the walk grid stops north of the cape), `activities.json` |
 | Quest | `Content/UI/quests.json` `lighthouse_paraffin`, `Content/Dialogue/npc_dialogue.txt` `[Vetrov_gordey]`, item `paraffin` (`LyudInventory.cpp`, hardware shop stock in `tools/city/content/furnished.json`) |
 | Dev | `Content/Dev/teleports/lighthouse.json`, actions `lighthouse.lamp`, `lighthouse.fog` |
 | Tests | `sh tools/lighthousesim/run.sh test` (light, fog, flash, log codes), `tools/peoplesim/run.sh test` (the keeper's day), `tools/audiosim` (horn every 30 s) |

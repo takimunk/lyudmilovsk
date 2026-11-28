@@ -14,6 +14,20 @@
    "drop_m": 1.3,
    "yaw": -11,
    "note": "the issue desk's reader's ledge (top 1.05 m over the floor), between the returned books and the card tray, its top towards the librarian: blender/academgorodok/library.py issue_desk() at ISSUE_DESK through people_map.py's house frame (her chair: -240.21, 628.99, facing 169); a visitor stands at about -241.8, 629.25"
+  },
+  {
+   "id": "tq3_keeper_whistle",
+   "item": "keeper_whistle",
+   "quest": "tq3_whistle",
+   "stages": [
+    "find"
+   ],
+   "ux": -580.0,
+   "uy": 1069.3,
+   "floor_uz": -15.0,
+   "drop_m": 0.6,
+   "yaw": 40,
+   "note": "yard 1, at the edge of the leaf pile by the dominoes table (street_props.json leaf_pile at -581.01, 1070.61, the table at -584.82, 1061.99; the rake round's first slot -581.14, 1069.22): on the ground beside the pile, so it shows when the piles are gone too"
   }
  ],
  "listeners": [
@@ -2295,6 +2309,407 @@
    ],
    "note": "the hero comes back to the club after his first walk to the town and passes Aslan's cheese tent by the club door (Tue-Sun till 20:00); said once, the braid's offer leads into the owner's supper if it is still open",
    "diary": "journal.heard.khuazhev_aslan.town_road"
+  },
+  {
+   "id": "tq_saturn_nao_point",
+   "person": "nao",
+   "quest": "tq_saturn",
+   "stages": [
+    "look"
+   ],
+   "within_m": 5,
+   "lines": [
+    "nao.tq_saturn_point.1"
+   ],
+   "note": "Nao at the club's door 10-21 every day: the hero passes her on his way out to the town after Tyoma's request, and again when he comes back. Not at_once: he is inside with Tyoma when the stage begins.",
+   "diary": "journal.heard.tq_saturn_nao"
+  },
+  {
+   "id": "tq_saturn_vera_victory",
+   "person": "girl_a",
+   "quest": "tq_saturn",
+   "stages": [
+    "done"
+   ],
+   "within_m": 4,
+   "lines": [
+    "girl_a.tq_saturn_victory.1"
+   ],
+   "note": "Vera at her Spectrum in the club after work (15:00 on weekdays, all day at weekends), two stations from the children; said the next time the hero passes her after telling Tyoma.",
+   "diary": "journal.heard.tq_saturn_vera"
+  },
+  {
+   "id": "tq_reel_nina_ears",
+   "person": "korneeva_nina",
+   "quest": "tq_reel",
+   "stages": [
+    "film",
+    "bring"
+   ],
+   "within_m": 5,
+   "lines": [
+    "korneeva_nina.tq_reel_ears.1"
+   ],
+   "note": "Nina on bench 0 of the Academgorodok's square 14:00-16:30 (Ivan on bench 3 from 15:00), and at the cats' bowls 7:54-8:21 and 18:24-18:51. Not at_once: the hero is beside Ivan, and may be within 5 m of her, when the stage begins.",
+   "diary": "journal.heard.tq_reel_nina"
+  },
+  {
+   "id": "tq_reel_nina_row",
+   "person": "korneeva_nina",
+   "quest": "tq_reel",
+   "stages": [
+    "done"
+   ],
+   "within_m": 5,
+   "lines": [
+    "korneeva_nina.tq_reel_row.1"
+   ],
+   "note": "Nina again, the next time the hero passes her after the stub is handed over (news takes a moment: he must have left her reach first).",
+   "diary": "journal.heard.tq_reel_nina_row"
+  },
+  {
+   "id": "tq_request_owner_smile",
+   "person": "owner",
+   "quest": "tq_request",
+   "stages": [
+    "done"
+   ],
+   "within_m": 4,
+   "lines": [
+    "owner.tq_request_smile.1"
+   ],
+   "note": "The owner in his booth 12:00-02:00 by the club's entrance; said the next time the hero passes within 4 m after telling Nika.",
+   "diary": "journal.heard.tq_request_owner"
+  },
+  {
+   "id": "tq_round_owner_debt",
+   "person": "owner",
+   "quest": "tq_round",
+   "stages": [
+    "done"
+   ],
+   "within_m": 4,
+   "lines": [
+    "owner.tq_round_debt.1"
+   ],
+   "note": "The owner in his booth 12:00-02:00 by the club's entrance; said the next time the hero passes within 4 m after telling Stas.",
+   "diary": "journal.heard.tq_round_owner"
+  },
+  {
+   "id": "tq_quote_galina_queue",
+   "person": "zotova_galina",
+   "quest": "tq_quote",
+   "stages": [
+    "done"
+   ],
+   "within_m": 5,
+   "lines": [
+    "zotova_galina.tq_quote_queue.1"
+   ],
+   "note": "Galina Zotova on bench 0 of the Academgorodok's square 17:30-19:00 every day, a few steps from the Gastronom kiosk; said the next time the hero passes her after reading the line to Tanya.",
+   "diary": "journal.heard.tq_quote_galina"
+  },
+  {
+   "id": "tq_square_nika_film",
+   "person": "streamer",
+   "quest": "tq_square",
+   "stages": [
+    "shots",
+    "show"
+   ],
+   "within_m": 4,
+   "lines": [
+    "streamer.tq_square_film.1"
+   ],
+   "note": "Nika at her station in the club from about noon till the small hours; the hero passes her with the camera once he has bought it (the camera stage is over) or with the prints.",
+   "diary": "journal.heard.tq_square_nika"
+  },
+  {
+   "id": "tq_card_owner_address",
+   "person": "owner",
+   "quest": "tq_card",
+   "stages": [
+    "send",
+    "tell"
+   ],
+   "within_m": 4,
+   "lines": [
+    "owner.tq_card_address.1"
+   ],
+   "note": "The owner in his booth 12:00-02:00 by the club's entrance: the hero walks in past him after Nao's request at the door, or on his way back from the postbox.",
+   "diary": "journal.heard.tq_card_owner"
+  },
+  {
+   "id": "tq_lullaby_sonya_steps",
+   "person": "kid_girl",
+   "quest": "tq_lullaby",
+   "stages": [
+    "done"
+   ],
+   "within_m": 4,
+   "lines": [
+    "kid_girl.tq_lullaby_steps.1"
+   ],
+   "note": "Sonya at station 7 in the club after school (13:00 on weekdays) till 21:00; said the next time the hero passes her after humming the tune to Vera.",
+   "diary": "journal.heard.tq_lullaby_sonya"
+  },
+  {
+   "id": "tq_water_nika_chat",
+   "person": "streamer",
+   "quest": "tq_water",
+   "stages": [
+    "fill",
+    "bring"
+   ],
+   "within_m": 4,
+   "lines": [
+    "streamer.tq_water_chat.1"
+   ],
+   "note": "Nika at her station in the club from about noon till the small hours; the hero passes her on his way out for the water or back with the bottle.",
+   "diary": "journal.heard.tq_water_nika"
+  },
+  {
+   "id": "tq_log_galina_window",
+   "person": "zotova_galina",
+   "quest": "tq_log",
+   "stages": [
+    "read",
+    "tell"
+   ],
+   "within_m": 5,
+   "lines": [
+    "zotova_galina.tq_log_window.1"
+   ],
+   "note": "Galina Zotova on bench 0 of the Academgorodok's square 17:30-19:00, Lev on bench 1 beside it at the same hours: not at_once, so it is said when the hero has walked away and comes past again (that day or after the lighthouse).",
+   "diary": "journal.heard.tq_log_galina"
+  },
+  {
+   "id": "tq2_whiteear_nao_door",
+   "person": "nao",
+   "quest": "tq2_whiteear",
+   "stages": [
+    "beach"
+   ],
+   "within_m": 5,
+   "lines": [
+    "nao.tq2_whiteear_door.1"
+   ],
+   "note": "Nao at the club's door 10-21: the hero passes her when he goes out to call Maru, who is at the door too.",
+   "diary": "journal.heard.tq2_whiteear_nao"
+  },
+  {
+   "id": "tq2_jam_clerk_dust",
+   "person": "clerk",
+   "quest": "tq2_jam",
+   "stages": [
+    "jar"
+   ],
+   "within_m": 6,
+   "lines": [
+    "clerk.tq2_jam_cough.1"
+   ],
+   "note": "Yamada at his seat in the club 10-19 on weekdays, a few steps from the owner's booth; heard when the hero walks back through the hall.",
+   "diary": "journal.heard.tq2_jam_clerk"
+  },
+  {
+   "id": "tq2_ukha_owner_smell",
+   "person": "owner",
+   "quest": "tq2_ukha",
+   "stages": [
+    "bring"
+   ],
+   "within_m": 6,
+   "lines": [
+    "owner.tq2_ukha_smell.1"
+   ],
+   "note": "The owner in his booth, across the hall from the hero's room with its hot plate: heard when the hero comes out with the bowl.",
+   "diary": "journal.heard.tq2_ukha_owner"
+  },
+  {
+   "id": "tq2_fortune_keeper_lunch",
+   "person": "vetrov_gordey",
+   "quest": "tq2_fortune",
+   "stages": [
+    "eat"
+   ],
+   "within_m": 10,
+   "lines": [
+    "vetrov_gordey.tq2_fortune_lunch.1"
+   ],
+   "note": "The keeper about the tower and the weather screen most of the day; heard once the hero has walked about the cape after arriving.",
+   "diary": "journal.heard.tq2_fortune_keeper"
+  },
+  {
+   "id": "tq2_plant_olya_forum",
+   "person": "girl_b",
+   "quest": "tq2_plant",
+   "stages": [
+    "care"
+   ],
+   "within_m": 5,
+   "lines": [
+    "girl_b.tq2_plant_forum.1"
+   ],
+   "note": "Olya at her seat in the club (not Wed-Sat 10-15): heard when the hero crosses the hall to his room.",
+   "diary": "journal.heard.tq2_plant_olya"
+  },
+  {
+   "id": "tq2_chess_galina_names",
+   "person": "zotova_galina",
+   "quest": "tq2_chess",
+   "stages": [
+    "done"
+   ],
+   "within_m": 6,
+   "lines": [
+    "zotova_galina.tq2_chess_names.1"
+   ],
+   "note": "Galina on the yard bench 17:30-19 beside Lev: heard on a later evening, after the hero has told him.",
+   "diary": "journal.heard.tq2_chess_galina"
+  },
+  {
+   "id": "tq2_science_vika_row",
+   "person": "li_vika",
+   "quest": "tq2_science",
+   "stages": [
+    "stars"
+   ],
+   "within_m": 6,
+   "lines": [
+    "li_vika.tq2_science_row.1"
+   ],
+   "note": "Vika on the yard bench from 18:00, beside the Zotovs: heard after the hero has told Lev and walked off a little.",
+   "diary": "journal.heard.tq2_science_vika"
+  },
+  {
+   "id": "tq3_whistle_nour",
+   "person": "t_hoffmann_nour",
+   "quest": "tq3_whistle",
+   "stages": [
+    "find"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_hoffmann_nour.tq3_whistle_quiet.1"
+   ],
+   "note": "Nour is on her milk round 6-7:30 Mon-Sat and on the benches by the square in the afternoons; the hero passes her looking for the whistle.",
+   "diary": "journal.heard.tq3_whistle_nour"
+  },
+  {
+   "id": "tq3_milk_tyler",
+   "person": "t_kovalenko_tyler",
+   "quest": "tq3_milk",
+   "stages": [
+    "carry"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_kovalenko_tyler.tq3_milk_pass.1"
+   ],
+   "note": "Tyler sweeps the promenade 5:30-7:30 every day, right where the hero takes the milk down to Le on the beach.",
+   "diary": "journal.heard.tq3_milk_tyler"
+  },
+  {
+   "id": "tq3_pension_maarja",
+   "person": "t_berntsen_maarja",
+   "quest": "tq3_pension",
+   "stages": [
+    "paper",
+    "post"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_berntsen_maarja.tq3_pension_bench.1"
+   ],
+   "note": "Maarja, Sachiko's friend and neighbour (T2H2), sits on the square's bench SQ04 in the afternoons and on the promenade in the mornings.",
+   "diary": "journal.heard.tq3_pension_maarja"
+  },
+  {
+   "id": "tq3_flag_le",
+   "person": "t_le_duc",
+   "quest": "tq3_flag",
+   "stages": [
+    "castle"
+   ],
+   "within_m": 7,
+   "lines": [
+    "t_le_duc.tq3_flag_shore.1"
+   ],
+   "note": "Le fishes on the town beach 5:30-7 every morning and often again around noon.",
+   "diary": "journal.heard.tq3_flag_le"
+  },
+  {
+   "id": "tq3_clock_alejandro",
+   "person": "t_gelashvili_alejandro",
+   "quest": "tq3_clock",
+   "stages": [
+    "call",
+    "tell"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_gelashvili_alejandro.tq3_clock_dogs.1"
+   ],
+   "note": "Alejandro walks his dog at 7 and 19 like Ingvild (walk_dog duties), mostly in the park; benches by the square by day.",
+   "diary": "journal.heard.tq3_clock_alejandro"
+  },
+  {
+   "id": "tq3_referee_aino",
+   "person": "t_macleod_aino",
+   "quest": "tq3_referee",
+   "stages": [
+    "judge"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_macleod_aino.tq3_referee_salt.1"
+   ],
+   "note": "Aino lives with Choi in T2H1 and sits out on the benches by the house.",
+   "diary": "journal.heard.tq3_referee_aino"
+  },
+  {
+   "id": "tq3_number_lyudmila",
+   "person": "t_hernandez_lyudmila",
+   "quest": "tq3_number",
+   "stages": [
+    "call"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_hernandez_lyudmila.tq3_number_playground.1"
+   ],
+   "note": "Lyudmila minds Caio at the playground and in yard 5 in the afternoons (14-16), where Isla plays after her kite.",
+   "diary": "journal.heard.tq3_number_lyudmila"
+  },
+  {
+   "id": "nina_kite_glue",
+   "person": "korneeva_nina",
+   "quest": "kite_lesson",
+   "stages": [
+    "launch",
+    "climb",
+    "land"
+   ],
+   "within_m": 6,
+   "lines": [
+    "korneeva_nina.kite_glue.1"
+   ],
+   "note": "Nina on her bench in the Academgorodok's yard (or at home with Ivan) while the hero is out learning to fly the kite her husband sent him off with; said once, after he has been out of reach",
+   "diary": "journal.heard.nina_kite_glue"
+  },
+  {
+   "id": "sonya_kite_saved",
+   "person": "kid_girl",
+   "quest": "kite_poplar",
+   "stages": [
+    "done"
+   ],
+   "within_m": 5,
+   "lines": [
+    "kid_girl.kite_saved.1"
+   ],
+   "note": "Sonya at the iMac beside Tyoma's station in the club, after he gave the hero his toy car for the kite got down from the poplar",
+   "diary": "journal.heard.sonya_kite_saved"
   },
   {
    "id": "ship_taras_bell_leave",

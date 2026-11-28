@@ -1,10 +1,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Containers/ArrayView.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Templates/PimplPtr.h"
 #include "LyudWind.generated.h"
 
+class ALyudSea;
 class UMaterialParameterCollection;
+namespace LyudWeather { struct FWindState; struct FWindTerrain; }
 
 /** The settings of the wind's weather (LyudWeather::FWindParams): where it comes from, how strong, how it varies. */
 USTRUCT(BlueprintType)
@@ -30,6 +34,76 @@ struct LYUDMILOVSK_API FLyudWindSettings
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wind") float SeaBearingDeg = 270.f;
 	/** Picks the weather: every seed is a different sequence of days (921: a breezy WSW afternoon on 20 October 2026). */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wind") int32 Seed = 921;
+};
+
+/**
+ * The air at a point with the land and the sea taken in (ULyudWindSubsystem::GetLocalWind): the lee of the cliff, of
+ * the forest and of houses, the speed-up over crests, ridge lift and lee sink, the freer wind over open water.
+ */
+USTRUCT(BlueprintType)
+struct LYUDMILOVSK_API FLyudLocalWind
+{
+	GENERATED_BODY()
+
+	/** World velocity of the air, m/s; Z is rising (ridge lift) or sinking (lee) air. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") FVector Velocity = FVector::ZeroVector;
+	/** Horizontal speed, m/s. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float Speed = 0.f;
+	/** Compass bearing the air here comes from, degrees. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float FromDegrees = 0.f;
+	/** The open-air gust factor here (1 = mean, 1.5 = a strong gust, 0.5 = a lull). */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float Gust = 1.f;
+	/** What the land does to the speed: 0 dead lee .. 1 open .. about 1.4 on a crest or a headland. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float Exposure = 1.f;
+	/** 0 open .. 1 deep in a lee. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float Shelter = 0.f;
+	/** Rising (+) or sinking (-) air, m/s. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float Updraft = 0.f;
+	/** The tumbling the mean does not carry, rms m/s (rotor behind the cliff, rough land, gusty air). */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float Turbulence = 0.f;
+	/** Height of the point over the ground or the water under it, m. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float HeightM = 10.f;
+	/** Open water upwind of the point, m (0 over land, capped at 3000). */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float FetchM = 0.f;
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") bool bOverWater = false;
+};
+
+/** The slow swing of the direction and the area's breathing now (LyudWeather::FWindShift). */
+USTRUCT(BlueprintType)
+struct LYUDMILOVSK_API FLyudWindShift
+{
+	GENERATED_BODY()
+
+	/** Degrees the wind stands veered (+, clockwise) or backed (-) from the weather's direction now. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float VeerDegrees = 0.f;
+	/** The area's puff (> 1) or lull (< 1) on the weather's speed. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float Factor = 1.f;
+	/** How far it swings either way today, degrees, and how long a swing takes, game minutes. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float RangeDegrees = 0.f;
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float PeriodMinutes = 8.f;
+	/** Game minutes until the veer next changes sign. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float NextTurnMinutes = 0.f;
+};
+
+/** What the next hours hold (LyudWeather::FWindOutlook). */
+USTRUCT(BlueprintType)
+struct LYUDMILOVSK_API FLyudWindOutlook
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float MinSpeed = 0.f;
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float MaxSpeed = 0.f;
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float MeanSpeed = 0.f;
+	/** The strongest gust to expect, m/s. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float GustSpeed = 0.f;
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float FromDegrees = 0.f;
+	/** How the direction ends against how it starts, degrees (+ veers, - backs). */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float TurnDegrees = 0.f;
+	/** m/s per hour: freshening > 0, easing < 0. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") float Trend = 0.f;
+	/** Beaufort force of the mean and of the strongest gust. */
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") int32 Force = 0;
+	UPROPERTY(BlueprintReadOnly, Category = "Wind") int32 ForceMax = 0;
 };
 
 /** The wind at a point at one moment. */
@@ -58,8 +132,10 @@ struct LYUDMILOVSK_API FLyudWindSample
  * sway with the same gusts (tools/sea/sea_hlsl.py GUST_HLSL computes the gust field from those).
  *
  * Console: lyud.Wind.Speed / lyud.Wind.From / lyud.Wind.Gustiness force a value (negative = the
- * calendar's), lyud.Wind.Debug 1 prints the wind on screen. The time follows UGameCalendar plus
- * lyud.SkyHourOffset, the same as the sky.
+ * calendar's), lyud.Wind.Shifts 0 stops the slow swing of the direction, lyud.Wind.Relief 0 takes the land out
+ * of GetWindAt, lyud.Wind.Debug 1 prints the wind on screen and 2 also draws arrows of the local wind round the
+ * camera, lyud.Wind.Report logs it all, lyud.Wind.RebuildRelief reads the land again. The time follows
+ * UGameCalendar plus lyud.SkyHourOffset, the same as the sky. The engine side is described in docs/wind.md.
  */
 UCLASS()
 class LYUDMILOVSK_API ULyudWindSubsystem : public UTickableWorldSubsystem
@@ -74,7 +150,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Wind") FLyudWindSettings Settings;
 
-	/** The wind at a world point (cm) with its gust, at a height over the ground (m; 10 = the standard). */
+	/**
+	 * The wind at a world point (cm) with its gust, at a height over the ground (m; 10 = the standard).
+	 * Since the local wind (docs/wind.md) it also carries the swing of the direction and the land's lee and
+	 * speed-up at that point (horizontal only; lyud.Wind.Relief 0 gives the old open-air answer).
+	 */
 	UFUNCTION(BlueprintCallable, Category = "Wind")
 	FLyudWindSample GetWindAt(const FVector& Location, float HeightAboveGroundM = 10.f, bool bOverWater = false) const;
 	/** The area's mean wind now (no gusts), world velocity m/s at 10 m. */
@@ -88,6 +168,55 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Wind") float GetDayStir() const;
 	/** The wind the sea's waves have grown in (the last few hours' mean), world velocity m/s. */
 	UFUNCTION(BlueprintCallable, Category = "Wind") FVector GetSeaStateWind() const;
+	// ---- The wind where you stand (docs/wind.md). GetWindAt above stays what it was: the open-air wind over a flat
+	// world. These take the land and the sea in, and are what sails, kites, flags, smoke and birds should ask.
+
+	/**
+	 * The air at a world point (cm): lee and speed-up of the relief, ridge lift, turbulence, the freer wind over
+	 * open water, with the gusts. The height over the ground or water is worked out from the point itself.
+	 * Before the relief grid is ready (a few seconds after the level starts) it answers as over open flat land.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Wind")
+	FLyudLocalWind GetLocalWind(const FVector& Location) const;
+	/** The same for something that stands a known height over its ground (a flag on a 6 m pole, a mast head). */
+	UFUNCTION(BlueprintCallable, Category = "Wind")
+	FLyudLocalWind GetLocalWindAbove(const FVector& GroundLocation, float HeightM) const;
+	/** Many points in one call (a fleet of dinghies, a row of flags): Out is resized to Locations. Not for Blueprints. */
+	void GetLocalWinds(TConstArrayView<FVector> Locations, TArray<FLyudLocalWind>& Out) const;
+	/** The same through the old sample type, at a fixed height over the surface (what GetWindAt gives, batched). */
+	void GetWindsAt(TConstArrayView<FVector> Locations, float HeightAboveGroundM, bool bOverWater, TArray<FLyudWindSample>& Out) const;
+	/** The wind felt by something moving (world velocity cm/s) at a point: local wind minus its own motion, m/s. */
+	UFUNCTION(BlueprintCallable, Category = "Wind")
+	FVector GetApparentWind(const FVector& Location, const FVector& BodyVelocityCmS) const;
+	/** The slow swing of the direction now (already inside GetMeanWind, GetFromDegrees and every sample). */
+	UFUNCTION(BlueprintCallable, Category = "Wind") FLyudWindShift GetShift() const;
+	/** The weather's direction without the swing, compass degrees it comes from. */
+	UFUNCTION(BlueprintCallable, Category = "Wind") float GetSteadyFromDegrees() const;
+	/** The open-air gust factor that will be at Location in Seconds (real seconds) if the wind holds. */
+	UFUNCTION(BlueprintCallable, Category = "Wind") float GetGustAhead(const FVector& Location, float Seconds) const;
+	/** Seconds until the next gust (or lull) worth a word reaches Location, its factor; false if none within WithinSeconds. */
+	UFUNCTION(BlueprintCallable, Category = "Wind")
+	bool GetNextGust(const FVector& Location, float WithinSeconds, float& OutInSeconds, float& OutFactor, bool& bOutLull) const;
+	/** Beaufort force 0..12 of the mean wind now (or of any speed: BeaufortOf). */
+	UFUNCTION(BlueprintCallable, Category = "Wind") int32 GetBeaufort() const;
+	UFUNCTION(BlueprintPure, Category = "Wind") static int32 BeaufortOf(float SpeedMs);
+	/** String-table keys: "wind.force.<0..12>" and "wind.from.<n|ne|e|se|s|sw|w|nw>" (Content/Localization). */
+	UFUNCTION(BlueprintPure, Category = "Wind") static FString BeaufortKey(int32 Force);
+	UFUNCTION(BlueprintPure, Category = "Wind") static FString CompassKey(float FromDegrees);
+	/** "SW 4, gusts 6": a short line for a board, the paper, a harbour master (localized through the keys above). */
+	UFUNCTION(BlueprintCallable, Category = "Wind") FText DescribeWind() const;
+	/** What the next game hours hold. */
+	UFUNCTION(BlueprintCallable, Category = "Wind") FLyudWindOutlook GetOutlook(float SpanHours = 3.f) const;
+	/** Game hours until the mean wind stays within [MinSpeed, MaxSpeed] for HoldHours (0 = now); -1 = not in 48 h. */
+	UFUNCTION(BlueprintCallable, Category = "Wind")
+	float HoursUntilWind(float MinSpeed, float MaxSpeed, float HoldHours = 1.f, bool bDaylight = true) const;
+	/** The relief grid is built (GetLocalWind answers with the land in). */
+	UFUNCTION(BlueprintCallable, Category = "Wind") bool IsReliefReady() const;
+	/** Forgets the relief grid and reads the land again over the next seconds (after the level's ground or houses changed). */
+	UFUNCTION(BlueprintCallable, Category = "Wind") void RebuildRelief();
+	/** The sea's still water now, world cm (the tide's level; the datum where there is no sea): what the local wind stands on. */
+	UFUNCTION(BlueprintCallable, Category = "Wind") float GetWaterZ() const;
+
 	/** How far the air has drifted (m, wrapped to 4096) and the gust clock (s): what materials get. */
 	FVector GetDrift() const { return FVector(DriftX, DriftY, GustClock); }
 	/** Local time the wind is for (calendar + lyud.SkyHourOffset). */
@@ -96,6 +225,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Wind") FString DebugReport() const;
 
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Deinitialize() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual TStatId GetStatId() const override;
 	virtual bool DoesSupportWorldType(const EWorldType::Type WorldType) const override;
@@ -107,14 +237,42 @@ private:
 		FVector Mean = FVector::ZeroVector;
 		FVector Sea = FVector::ZeroVector;
 		float Speed = 0.f, FromDeg = 0.f, Gustiness = 0.f, Day = 0.f;
+		/** The weather's own wind before the slow swing: the direction, the speed, the weather's speed before the day's rhythm. */
+		float SteadyFromDeg = 0.f, SteadySpeed = 0.f, Weather = 0.f;
+		/** The moment the swing below is for (it moves every frame; the weather above only every game second). */
+		double ShiftHours = -1e9;
+		FLyudWindShift Shift;
 	};
 	/** The calendar's wind, recomputed when the clock has moved (cheap; cached per hour fraction). */
 	const FState& State() const;
 	double NowHours() const;
+	/** The cached wind as the plain model takes it (the swing applied). */
+	void FillWindState(const FState& S, LyudWeather::FWindState& Out) const;
+	/** The relief once it is whole, else null (the model then answers as over open flat land). */
+	const LyudWeather::FWindTerrain* ReadyRelief() const;
+	/** The sea's still water now, world metres. */
+	float WaterZM() const;
+	/** The local wind at a world point in metres. HeightM >= 0: the point stands that high over the surface under it. */
+	FLyudLocalWind LocalAt(const LyudWeather::FWindState& W, double XM, double YM, double ZM, float HeightM) const;
+	/** Reads some more cells of the relief grid, for at most BudgetMs. */
+	void StepRelief(float DeltaTime, float BudgetMs);
+	void DrawDebugArrows() const;
 
 	mutable FState Cached;
 	mutable float LastForce[3] = { -2.f, -2.f, -2.f };
 	mutable float LastShift = 0.f;
+	mutable int32 LastShiftsOn = -1;
+	/** The land as the wind sees it (LyudWeather::FWindTerrain): 16 m cells of ground height and of what stands on it. */
+	TPimplPtr<LyudWeather::FWindTerrain> Relief;
+	int32 ReliefNext = 0;
+	float ReliefWait = 0.f;
+	double ReliefSpentMs = 0.0;
+	/** Where the column traces start, world cm (over the highest ground and what may stand on it). */
+	double ReliefTopZ = 60000.0;
+	bool bReliefStarted = false;
+	bool bReliefReady = false;
+	TWeakObjectPtr<ALyudSea> SeaRef;
+	float SeaLookAge = 1e9f;
 	double DriftX = 0.0, DriftY = 0.0, GustClock = 0.0;
 	UPROPERTY(Transient) TObjectPtr<UMaterialParameterCollection> Collection;
 	bool bCollectionLooked = false;

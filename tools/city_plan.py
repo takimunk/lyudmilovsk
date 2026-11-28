@@ -812,6 +812,45 @@ def links():
     ]
 
 
+# Street machines (docs/soda_machines.md): small things of the street that are buildings of their own type (a mesh, things,
+# dressing: blender/city/buildings/<building>.py) but no plot: they stand where people pass, on the paving between the
+# plan's furniture (tools/public_spaces.py leaves them be: each spot was chosen 4+ m from its benches, lamps and trees).
+# (id, building, where: ("s", s, y) on the terrace frame or ("m", x, y) map metres, yaw: "sea" | "land" | degrees the front
+#  faces, paving over the terrace ground (m), ru, en, what it stands by). Ids are stable; never reuse one.
+STREET_MACHINES = [
+    ("SM-SODA1", "soda_machine", ("s", 45.5, 960.0), "sea", 0.04, "Автомат газводы на набережной", "Soda machine on the promenade",
+     "the promenade's tree line between two plane trees, by the pier"),
+    ("SM-SODA2", "soda_machine", ("s", 48.5, 1025.8), "sea", 0.04, "Автомат газводы у остановки 4", "Soda machine at bus stop 4",
+     "beside kiosk 4 (P-KIOSK4), front to the sea like the stop"),
+    ("SM-SODA3", "soda_machine", ("s", 33.5, 865.0), "sea", 0.04, "Автомат газводы у спуска на пляж", "Soda machine at the beach steps",
+     "at the head of the sea steps ST-SEA-07, by lifeguard tower 1"),
+    ("SM-SODA4", "soda_machine", ("s", 38.0, 652.0), "sea", 0.04, "Автомат газводы у станции «Янтарь»", "Soda machine at Amber station",
+     "on the forecourt of the cable car's «amber» station and kiosk 2"),
+    ("SM-SODA5", "soda_machine", ("m", 16.34, 927.5), -90.0, 0.04, "Автомат газводы на площади Солнца", "Soda machine on Sun Square",
+     "north of the fountain, outside the ring of benches, front to the fountain"),
+    ("SM-SODA6", "soda_machine", ("m", -66.4, 1106.0), 180.0, 0.0, "Автомат газводы в парке", "Soda machine in the park",
+     "by the park's avenue at its south end, front to the avenue"),
+]
+STREET_MACHINE_DEPTH = 0.38       # the machine's middle behind its front point (soda_machine.MACHINE_Y)
+
+
+def street_machines():
+    """The street machines: map = the machine's middle on the ground, front = its building origin (the paving in front of
+    it, where a building's front point is), yaw = the way its front faces (Unreal degrees)."""
+    out = []
+    for mid, building, where, yaw, pave, ru, en, notes in STREET_MACHINES:
+        x, y = to_map(where[1], where[2]) if where[0] == "s" else (where[1], where[2])
+        t = terrace_at(x, y)
+        z = (TERRACES[t][3] if t >= 0 else W.BEACH_TOP) + pave
+        yw = seaward_yaw(y) if yaw == "sea" else (seaward_yaw(y) + 180.0 if yaw == "land" else float(yaw))
+        fx, fy = math.cos(math.radians(yw)), math.sin(math.radians(yw))
+        out.append({"id": mid, "kind": "soda", "building": building, "terrace": TERRACES[t][0] if t >= 0 else "B",
+                    "map": [round(x, 2), round(y, 2), round(z, 2)],
+                    "front": [round(x + fx * STREET_MACHINE_DEPTH, 2), round(y + fy * STREET_MACHINE_DEPTH, 2), round(z, 2)],
+                    "yaw": round(yw, 1), "name_ru": ru, "name_en": en, "notes": notes})
+    return out
+
+
 def ue(p, face_y):
     return [round(p[0] * 100.0, 1), round(face_y + p[1] * 100.0, 1), round(p[2] * 100.0, 1)]
 
@@ -844,6 +883,7 @@ def build():
         "wall_bays": {wall_id(i): wall_bays(i) for i in range(-1, len(WALLS))},
         "promenade_units": shops_in_seawall(),
         "links": links(),
+        "street_machines": street_machines(),
     }
     if face_y is not None:
         for group in ("plots", "spots", "links"):
@@ -863,6 +903,8 @@ def build():
                 w["ue"] = ue(w["map"], face_y)
         for s in data["stairs"]:
             s["bottom_ue"], s["top_ue"] = ue(s["bottom"], face_y), ue(s["top"], face_y)
+        for m in data["street_machines"]:
+            m["ue"], m["front_ue"] = ue(m["map"], face_y), ue(m["front"], face_y)
     return data
 
 

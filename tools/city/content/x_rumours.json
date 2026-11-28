@@ -64,6 +64,10 @@
      {
       "k": "city.ask.town_talk.film",
       "rumour": "film"
+     },
+     {
+      "k": "city.ask.town_talk.dance",
+      "rumour": "dance"
      }
     ]
    }

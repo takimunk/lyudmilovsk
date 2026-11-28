@@ -1,0 +1,35 @@
+{
+ "name": "sc_sep_bang_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_sep_bang_01",
+ "pool": "sc_sep_bang",
+ "file": "audio/sfx/spacecraft/sc_sep_bang_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7441,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.237,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -23.29,
+ "params": {
+  "bangs_s": [
+   0.01,
+   0.085
+  ]
+ },
+ "checks": {
+  "seconds": 1.237,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -23.29,
+  "crest_db": 17.3,
+  "centroid_hz": 337,
+  "rolloff85_hz": 600,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "583d4db7139b4c3c5c4dbaae9d65f8e8c60191918c85c2e25174ad6fb6499a45",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

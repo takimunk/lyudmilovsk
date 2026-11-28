@@ -1,0 +1,46 @@
+{
+ "name": "sc_radio_static_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_radio_static_01",
+ "pool": "sc_radio_static",
+ "file": "audio/sfx/spacecraft/sc_radio_static_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7151,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -21.03,
+ "params": {
+  "band_hz": [
+   300,
+   3400
+  ],
+  "whistles_hz": [
+   1450,
+   2380,
+   870
+  ],
+  "crackles": 30
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -21.03,
+  "crest_db": 15.0,
+  "centroid_hz": 1918,
+  "rolloff85_hz": 2633,
+  "dc": 0.0,
+  "clipped": 0,
+  "seam_jump": 1.12,
+  "seam_jump_pct": 75.8,
+  "seam_energy": 0.66,
+  "seam_pct": 1.0,
+  "seam_level_db": -0.9
+ },
+ "sha256": "b6b27513795d700f1fd8f8d6918d6cbc36055b75e802b0b28840d90bb83ec739",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

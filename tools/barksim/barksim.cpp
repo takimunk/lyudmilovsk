@@ -240,6 +240,10 @@ static int Run(bool bDay, const std::string& Lang)
 	// promenade, the fair at night (as ULyudFestivalSubsystem would set them)
 	FClock C = FClock::At(2, 4.f);
 	C.Set(W);
+	// the conditions ULyudStreetLife switches (docs/street_life.md): the hall dances are on in October; the warm season's
+	// evening, its dances and the Sunday band (docs/promenade.md) are switched on by the hour as well, as the invented
+	// holiday is, so that their sets are tried on somebody (who fits them, not whether a Wednesday in October has them)
+	W.SetCondition("hall_dances", true);
 	W.Resettle();
 	std::vector<char> FitA(Book.Sets.size(), 0), Picked(Book.Sets.size(), 0);
 	std::vector<int> Wins(Book.Sets.size(), 0);
@@ -263,6 +267,9 @@ static int Run(bool bDay, const std::string& Lang)
 			W.SetGathering("test_fair", "fair", 18.f, 23.f, 1.f, EGatherMode::Fair, false, V3());
 			bGather = true;
 		}
+		W.SetCondition("prom_band", H >= 15.f && H < 17.f);
+		W.SetCondition("prom_evening", H >= 18.5f && H < 22.5f);
+		W.SetCondition("prom_dances", H >= 19.f && H < 23.f);
 		W.Step(Dt);
 		W.Events.clear();
 		const int Sec = (int)std::lround(std::fmod(C.Seconds, 86400.0));

@@ -1,0 +1,50 @@
+{
+ "name": "sc_cabin_hum_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_cabin_hum_01",
+ "pool": "sc_cabin_hum",
+ "file": "audio/sfx/spacecraft/sc_cabin_hum_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7101,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -18.8,
+ "params": {
+  "electrics_hz": [
+   399.5,
+   400.5
+  ],
+  "fans": [
+   {
+    "rps": 24,
+    "blades": 7
+   },
+   {
+    "rps": 31,
+    "blades": 5
+   }
+  ]
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -18.8,
+  "crest_db": 12.8,
+  "centroid_hz": 1068,
+  "rolloff85_hz": 1820,
+  "dc": 0.0,
+  "clipped": 0,
+  "seam_jump": 0.24,
+  "seam_jump_pct": 18.9,
+  "seam_energy": 1.23,
+  "seam_pct": 76.2,
+  "seam_level_db": -0.6
+ },
+ "sha256": "83e1ae3ab71aa919024901e5abda367b04defc637bae6142347144ff1766cedb",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

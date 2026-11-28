@@ -206,6 +206,11 @@ bool ALyudRestaurant::EnsureWaiter()
 			// the model was missing a moment ago: not a spawn and a failed load every frame
 			return false;
 		}
+		// its model loaded in the background first (asked again next frame): Setup's load stalled the frame
+		if (!ANpcBody::IsModelReady(this, Mesh))
+		{
+			return false;
+		}
 		FActorSpawnParameters SP;
 		SP.ObjectFlags |= RF_Transient;
 		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -221,6 +226,7 @@ bool ALyudRestaurant::EnsureWaiter()
 			WaiterRetryAt = GetWorld()->GetTimeSeconds() + 10.f;
 			return false;
 		}
+		ANpcBody::ReleaseModel(this, Mesh);      // the body holds it now
 		WaiterBody->Tags.Add(TEXT("Restaurant"));
 		// posed only when seen (bNear also skips the hands' IK)
 		WaiterBody->Mesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;

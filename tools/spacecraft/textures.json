@@ -1,0 +1,426 @@
+{
+ "gpu_bytes_total": 12080460,
+ "island": {
+  "about": "uv = 0.5 + (east, -north) / extent from the centre; map X is west, so east = -(X - centre X). M_SC_PlanetNear puts the texture's centre at IslandLat/IslandLon and scales it by IslandSizeKm against PlanetRadiusKm; see tools/spacecraft/MATERIAL_NOTES.md.",
+  "centre_lat_lon_true_scale": [
+   55.0148,
+   20.40735
+  ],
+  "centre_map_m": [
+   -800.0,
+   7000.0
+  ],
+  "club_uv": [
+   0.46875,
+   0.77344
+  ],
+  "extent_km": 25.6,
+  "metres_per_texel": 25.0,
+  "north_up": true,
+  "planet_texture_island": {
+   "lat": 54.96,
+   "lon": 20.4,
+   "size_deg": 9.0
+  },
+  "real_part": {
+   "x": [
+    -1300.0,
+    1300.0
+   ],
+   "y": [
+    -900.0,
+    4200.0
+   ]
+  },
+  "seed": 7152,
+  "town_lat_lon": [
+   54.96,
+   20.4
+  ],
+  "town_map_m": [
+   -330.0,
+   900.0
+  ],
+  "town_uv": [
+   0.48164,
+   0.73828
+  ],
+  "west_left": true
+ },
+ "metal": {
+  "foil": 1.0,
+  "metal": 0.9
+ },
+ "seed": 7151,
+ "textures": {
+  "T_SC_ball.png": {
+   "channels": 3,
+   "gpu_bytes": 87381,
+   "sha1": "581bc2dd3639da0af21c2c1a9dab5340d72f45e0",
+   "size": [
+    512,
+    256
+   ]
+  },
+  "T_SC_chute_C.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "85fe91e578e1d0aad430f3efa2b16087b3552d77",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_chute_N.png": {
+   "channels": 3,
+   "gpu_bytes": 349525,
+   "sha1": "089efeefb0409c41f07d896a2b81a77c7aec0907",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_dials.png": {
+   "cells": {
+    "alt": {
+     "a_max": 360,
+     "a_min": 0,
+     "major": 1,
+     "max": 10,
+     "min": 0,
+     "minor": 0.2,
+     "rect": [
+      0,
+      0,
+      512,
+      512
+     ],
+     "show": 0.9338
+    },
+    "co2": {
+     "a_max": 120,
+     "a_min": -120,
+     "major": 1,
+     "max": 3,
+     "min": 0,
+     "minor": 0.2,
+     "rect": [
+      512,
+      512,
+      256,
+      256
+     ],
+     "show": 0.8714
+    },
+    "fuel": {
+     "a_max": 120,
+     "a_min": -120,
+     "major": 25,
+     "max": 100,
+     "min": 0,
+     "minor": 5,
+     "rect": [
+      256,
+      768,
+      256,
+      256
+     ],
+     "show": 0.8714
+    },
+    "gmeter": {
+     "a_max": 135,
+     "a_min": -135,
+     "major": 1,
+     "max": 6,
+     "min": 0,
+     "minor": 0.2,
+     "rect": [
+      512,
+      0,
+      512,
+      512
+     ],
+     "show": 0.9224
+    },
+    "o2": {
+     "a_max": 120,
+     "a_min": -120,
+     "major": 10,
+     "max": 40,
+     "min": 0,
+     "minor": 2,
+     "rect": [
+      256,
+      512,
+      256,
+      256
+     ],
+     "show": 0.8714
+    },
+    "press": {
+     "a_max": 120,
+     "a_min": -120,
+     "major": 200,
+     "max": 1000,
+     "min": 0,
+     "minor": 50,
+     "rect": [
+      0,
+      512,
+      256,
+      256
+     ],
+     "show": 0.8714
+    },
+    "temp": {
+     "a_max": 120,
+     "a_min": -120,
+     "major": 10,
+     "max": 40,
+     "min": 0,
+     "minor": 2,
+     "rect": [
+      768,
+      512,
+      256,
+      256
+     ],
+     "show": 0.8714
+    },
+    "volts": {
+     "a_max": 120,
+     "a_min": -120,
+     "major": 2,
+     "max": 32,
+     "min": 20,
+     "minor": 0.5,
+     "rect": [
+      0,
+      768,
+      256,
+      256
+     ],
+     "show": 0.8714
+    }
+   },
+   "channels": 3,
+   "gpu_bytes": 699050,
+   "layout": "kit.json",
+   "sha1": "c10b371b8c8f423d319361ac9eb3d73959c2f747",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "T_SC_digits.png": {
+   "channels": 1,
+   "gpu_bytes": 21845,
+   "sha1": "b9b8b5ee4448ab302b52edf0061ba6024bdc3de0",
+   "size": [
+    512,
+    64
+   ]
+  },
+  "T_SC_fabric_C.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "913d8e17ed939437b4358534e96e73b9d6899371",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_fabric_N.png": {
+   "channels": 3,
+   "gpu_bytes": 349525,
+   "sha1": "9c710351d7255477c25f6a0b65ff2b5cdf1f5d1e",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_foil_C.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "f48e710074fbc5d5c6a8c48cdb3a9b87a578e671",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_foil_N.png": {
+   "channels": 3,
+   "gpu_bytes": 349525,
+   "sha1": "4e1c83e367d3baefb11d67dad0993dfa2d72df26",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_glass.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "3fd61f092131a96a281035c3ef281492c9ce87f8",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_island.png": {
+   "channels": 4,
+   "gpu_bytes": 1398101,
+   "sha1": "32f445f6484700022b1e86776916932113f42d3d",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "T_SC_island_M.png": {
+   "channels": 3,
+   "gpu_bytes": 699050,
+   "sha1": "e941e70295b1df53a583ce615f89b85dc31a1334",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "T_SC_metal_C.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "0fd6989d5ef25d1a0e8d1a9c4bfd47b636925c3b",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_metal_N.png": {
+   "channels": 3,
+   "gpu_bytes": 349525,
+   "sha1": "fd84f46d724e5c647fadc9661195bf2ed32a8528",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_net_C.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "430b53b217d2ad35c642ec0e50dd32f820fc29a1",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_noise.png": {
+   "channels": 4,
+   "gpu_bytes": 87381,
+   "sha1": "bd7befe43c094828fa9a9f68ac315db1b353d5b6",
+   "size": [
+    256,
+    256
+   ]
+  },
+  "T_SC_paint_green_C.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "c2772698be23b5d9c3b76e6a68ba3697447522e6",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_paint_green_N.png": {
+   "channels": 3,
+   "gpu_bytes": 349525,
+   "sha1": "e13a6473a1fbe06e98929ca6b783fe9e6538f51e",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_paint_white_C.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "8fde72833013ce7db0dd32c9788a78943ee0b953",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_paint_white_N.png": {
+   "channels": 3,
+   "gpu_bytes": 349525,
+   "sha1": "55b48e2f171bc1f8235b88477b9a2d1d4c8968ef",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_quilt_C.png": {
+   "channels": 4,
+   "gpu_bytes": 1398101,
+   "sha1": "5fc8337f11ecda9dce5774893a826130d0227b07",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "T_SC_quilt_N.png": {
+   "channels": 3,
+   "gpu_bytes": 1398101,
+   "sha1": "858beff6e96b5a8f1466f4e26c278011ae24db19",
+   "size": [
+    1024,
+    1024
+   ]
+  },
+  "T_SC_rubber_C.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "0d6cd405fc4a51230b8137e77ca3c79d6c459f76",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_rubber_N.png": {
+   "channels": 3,
+   "gpu_bytes": 349525,
+   "sha1": "cd6d0ed949f6d68c5a89dad808619d9cf5091f9d",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_shield_C.png": {
+   "channels": 4,
+   "gpu_bytes": 349525,
+   "sha1": "477abaccc37653a6e21a4376cbe4e39fb45eb372",
+   "size": [
+    512,
+    512
+   ]
+  },
+  "T_SC_shield_N.png": {
+   "channels": 3,
+   "gpu_bytes": 349525,
+   "sha1": "56cddce7c5219be6e1d5c48de35aa32a5974b78f",
+   "size": [
+    512,
+    512
+   ]
+  }
+ },
+ "tile_m": {
+  "fabric": 0.5,
+  "floor": 0.5,
+  "foil": 1.0,
+  "metal": 1.0,
+  "net": 0.25,
+  "paint_green": 2.0,
+  "paint_white": 2.0,
+  "quilt": 0.57923,
+  "rubber": 0.5,
+  "shield": 1.0
+ }
+}

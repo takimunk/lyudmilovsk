@@ -1,0 +1,32 @@
+{
+ "name": "sc_page_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_page_01",
+ "pool": "sc_page",
+ "file": "audio/sfx/spacecraft/sc_page_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7721,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.565,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -27.28,
+ "params": {
+  "flick_s": 0.285
+ },
+ "checks": {
+  "seconds": 0.565,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -27.28,
+  "crest_db": 21.3,
+  "centroid_hz": 3937,
+  "rolloff85_hz": 6533,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "4c85016a097bfd7f05cf055e44010f92aeccb43e5a0a643ab8b045b47977756b",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

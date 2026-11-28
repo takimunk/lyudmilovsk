@@ -342,7 +342,7 @@
       "when": {"rule": "nth_weekday", "month": 9, "nth": 3, "weekday": 6},
       "origin": "town",
       "menu": ["rs_syrniki", "rs_tea"],
-      "decor": {"from": 9, "to": 19, "kinds": ["flags", "bunting"], "venues": ["beach"]},
+      "decor": {"from": 9, "to": 19, "kinds": ["flags", "bunting", "stalls"], "venues": ["beach"]},
       "program": [
         {"id": "kites", "hours": [11, 17], "venue": "beach", "mode": "watch", "face": "sky", "pull": 1.1, "show": ["kites"]}
       ],
@@ -381,6 +381,51 @@
         {"id": "amber", "hours": [6.5, 12], "venue": "beach", "mode": "mingle", "pull": 1.0}
       ],
       "priority": 1
+    },
+    {
+      "id": "science_day",
+      "when": {"rule": "nth_weekday", "month": 12, "nth": 1, "weekday": 5},
+      "origin": "town",
+      "menu": ["rs_syrniki", "rs_coffee", "rs_medovik"],
+      "decor": {"from": 9, "to": 22, "kinds": ["flags", "bunting", "stalls", "stage", "lanterns"], "venues": ["fair", "square"]},
+      "program": [
+        {"id": "fair", "hours": [11, 15], "venue": "fair", "mode": "fair", "pull": 0.9, "show": ["music"]},
+        {"id": "lecture", "hours": [15, 16.5], "venue": "square", "mode": "watch", "face": "stage", "pull": 0.9},
+        {"id": "quiz", "hours": [16.5, 18.5], "venue": "square", "mode": "watch", "face": "stage", "pull": 1.2, "show": ["music", "stage_lights"]},
+        {"id": "stars", "hours": [19, 21.5], "venue": "promenade", "mode": "watch", "face": "sky", "pull": 0.7}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "old_new_year",
+      "when": {"rule": "date", "month": 1, "day": 13},
+      "origin": "ru",
+      "late": 25.5,
+      "menu": ["rs_pelmeni", "rs_olivier", "rs_fest_sbiten"],
+      "decor": {"from": -6, "to": 26, "kinds": ["tree", "lanterns", "wreaths", "stage"], "venues": ["square"]},
+      "program": [
+        {"id": "carols", "hours": [16.5, 19], "venue": "square", "mode": "mingle", "pull": 0.8, "show": ["bells"]},
+        {"id": "fortune", "hours": [19, 22], "venue": "promenade", "mode": "mingle", "pull": 0.6},
+        {"id": "midnight", "hours": [23.3, 24.2], "venue": "square", "mode": "watch", "face": "tree", "pull": 1.4, "show": ["music", "bells"]},
+        {"id": "dance", "hours": [24.2, 25.5], "venue": "square", "mode": "mingle", "pull": 0.7, "show": ["music", "stage_lights"]}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "neptune_day",
+      "when": {"rule": "nth_weekday", "month": 7, "nth": -1, "weekday": 6},
+      "origin": "ru",
+      "late": 23.5,
+      "menu": ["rs_fest_ukha", "rs_fried_flounder", "rs_mors"],
+      "decor": {"from": 9, "to": 23.5, "kinds": ["flags", "bunting", "stalls", "stage", "balloons"], "venues": ["beach", "promenade", "square"]},
+      "program": [
+        {"id": "landing", "hours": [12, 13], "venue": "beach", "mode": "watch", "face": "sea", "pull": 1.3, "show": ["drums"]},
+        {"id": "court", "hours": [13, 15], "venue": "beach", "mode": "mingle", "pull": 1.2, "show": ["music"]},
+        {"id": "boat_parade", "hours": [15, 16], "venue": "pier", "mode": "watch", "face": "sea", "pull": 1.0},
+        {"id": "ukha", "hours": [16, 18.5], "venue": "promenade", "mode": "fair", "pull": 0.9, "show": ["music"]},
+        {"id": "dance", "hours": [20, 23], "venue": "square", "mode": "mingle", "pull": 0.8, "show": ["music", "stage_lights"]}
+      ],
+      "priority": 4
     }
   ]
 }

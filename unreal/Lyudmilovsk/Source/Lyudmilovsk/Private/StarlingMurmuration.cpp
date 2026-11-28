@@ -170,6 +170,7 @@ void AStarlingMurmuration::StartFlock()
 		ISM->ClearInstances();
 	}
 	PerchedComponent->ClearInstances();
+	FMemory::Memzero(ShownCount);
 	PoseTransforms.SetNum(NumPoses);
 	Flock = MakePimpl<FStarlingFlock>(BirdCount, Params, FVector2f(AreaHalfSize), (uint32)FMath::Rand() | 1u);
 	Flock->GroundProbe = [this](float X, float Z) { return ProbeGround(X, Z); };
@@ -404,7 +405,7 @@ TArray<FVector3f> AStarlingMurmuration::MakeLureSpots(const FVector& Feet) const
 
 // --- drawing ----------------------------------------------------------------------------------
 
-void AStarlingMurmuration::SyncInstances(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr)
+void AStarlingMurmuration::SyncInstances(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown)
 {
 	static const FTransform Hidden(FQuat::Identity, FVector::ZeroVector, FVector::ZeroVector);
 	const int32 Want = Arr.Num();
@@ -416,7 +417,11 @@ void AStarlingMurmuration::SyncInstances(UInstancedStaticMeshComponent* ISM, TAr
 		Extra.Init(Hidden, Want - Have + FMath::Max(16, Want / 5));
 		ISM->AddInstances(Extra, false);
 	}
-	Arr.SetNum(ISM->GetInstanceCount(), EAllowShrinking::No);
+	// only the instances shown now or last frame: the rest are parked already (the whole pool, up to the flock's size and
+	// its slack, was sent every frame, also all the hours the birds are away and nothing shows)
+	const int32 Send = FMath::Min(FMath::Max(Want, Shown), ISM->GetInstanceCount());
+	Shown = Want;
+	Arr.SetNum(Send, EAllowShrinking::No);
 	for (int32 J = Want; J < Arr.Num(); J++)
 	{
 		Arr[J] = Hidden;
@@ -475,9 +480,9 @@ void AStarlingMurmuration::UpdateInstances(float Ahead)
 	}
 	for (int32 K = 0; K < NumPoses; K++)
 	{
-		SyncInstances(PoseComponents[K], PoseTransforms[K]);
+		SyncInstances(PoseComponents[K], PoseTransforms[K], ShownCount[K]);
 	}
-	SyncInstances(PerchedComponent, PerchedTransforms);
+	SyncInstances(PerchedComponent, PerchedTransforms, ShownCount[NumPoses]);
 
 	const bool bPred = F.IsPredatorOn();
 	PeregrineComponent->SetVisibility(bPred);

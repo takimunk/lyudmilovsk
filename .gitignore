@@ -85,6 +85,8 @@ unreal/Lyudmilovsk/Content/World/forest_cover.fcv
 # named people the generator makes (blender/residents/looks.py CAST): beside the cast's models, local like Town/
 unreal/Lyudmilovsk/Content/Characters/Humans/Khuazhev_aslan/
 renders/city/interior/
+# hi3d bird scans: raw views and 2M-face GLBs stay local (URLs + sha256 in blender/birds/scans/<Id>/hi3d.json)
+blender/birds/scan_raw/
 
 # library classics: texts fetched by tools/books/fetch_books.py fetch (open licences, kept out of git and LFS)
 unreal/Lyudmilovsk/Content/Books/

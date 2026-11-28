@@ -1,12 +1,14 @@
 #include "People/TownTalk.h"
 
 #include "TownBarks.h"
+#include "TownChat.h"
 #include "PeopleSim.h"
 #include "PeopleManners.h"
 #include "People/PeopleLife.h"
 #include "People/LyudFriends.h"
 #include "People/LyudTownRumours.h"
 #include "HeroCharacter.h"
+#include "Look/LyudLook.h"
 #include "LyudText.h"
 #include "Plants/GameCalendar.h"
 #include "Sky/LyudSky.h"
@@ -402,6 +404,20 @@ void ULyudTownTalkSubsystem::Start(UWorld& InWorld)
 
 void ULyudTownTalkSubsystem::OnLifeEvent(int32 PersonId, FName Event, int32 Other)
 {
+	// two of them greet in passing, a door is held (docs/town_life.md "The days"): a word from the one who greets now and
+	// then, when they are drawn near the player
+	if (bStarted && (Event == TEXT("StreetNod") || Event == TEXT("DoorHold")))
+	{
+		if (Clock >= NextStreetAt && !Busy(PersonId))
+		{
+			AActor* Greeter = ActorOf(PersonId);
+			if (Greeter && SayMoment(Greeter, Event == TEXT("DoorHold") ? FName(TEXT("door_hold")) : FName(TEXT("street_nod")), PersonId, NAME_None))
+			{
+				NextStreetAt = Clock + 20.f;
+			}
+		}
+		return;
+	}
 	// somebody noticed the player: a word about it now and then (never a chorus)
 	if (!bStarted || Clock < NextNoticeAt || !(Event.ToString().StartsWith(TEXT("hero_")) || Event == TEXT("thunder")) || Busy(PersonId))
 	{
@@ -896,6 +912,11 @@ void ULyudTownTalkSubsystem::Scan()
 				{
 					F->OnGreeted(Id);
 				}
+				// a word about a new haircut, or about a shirt in the rain (docs/look.md)
+				if (ULyudLook* HeroLook = ULyudLook::Get(this))
+				{
+					HeroLook->OnGreeted(Id);
+				}
 				CountSaid(SetIx);
 				NextGreetAt = Clock + 4.f;
 				break;
@@ -1320,6 +1341,105 @@ bool ULyudTownTalkSubsystem::SayLine(AActor* Speaker, const FString& Key, int32 
 		State->Book.MarkSaid(TownTalkLocal::ToStd(K));
 	}
 	return Show(Speaker, PersonId, K);
+}
+
+// --- a talk with the player (ULyudFriends: on E, never on a clock) -----------------------------------------------------------
+
+bool ULyudTownTalkSubsystem::ChatWho(int32 PersonId)
+{
+	const UPeopleLifeSubsystem* Life = UPeopleLifeSubsystem::Get(this);
+	const LyudPeople::FWorld* S = Life ? Life->GetSim() : nullptr;
+	if (!State || !bLoaded || !S || PersonId < 0 || PersonId >= (int32)S->People.size())
+	{
+		return false;
+	}
+	UpdateNow();
+	LyudBarks::FWho& W = State->Who;
+	LyudBarks::FillWho(*S, S->People[(size_t)PersonId], W);
+	TownTalkLocal::FillManner(Life, PersonId, W);
+	W.bHeroNear = true;
+	// asked, they tell what they heard of him: the town's pause between two remarks is for the ones nobody asked for
+	W.Heard.clear();
+	if (const ULyudTownRumours* Rumours = ULyudTownRumours::Get(this))
+	{
+		TArray<FString> Kinds;
+		Rumours->KindsFor(PersonId, Kinds);
+		for (const FString& K : Kinds)
+		{
+			const FTCHARToUTF8 Conv(*K);
+			W.Heard.emplace_back(Conv.Get(), (size_t)Conv.Length());
+		}
+	}
+	return true;
+}
+
+bool ULyudTownTalkSubsystem::ChatBuild(int32 PersonId, const LyudTownChat::FData& Data, LyudTownChat::FTalk& Out)
+{
+	if (!ChatWho(PersonId))
+	{
+		return false;
+	}
+	const LyudPeople::FWorld* S = UPeopleLifeSubsystem::Get(this)->GetSim();
+	LyudTownChat::Build(*S, S->People[(size_t)PersonId], Data, State->Book, State->Who, State->Now, Today, Out);
+	return true;
+}
+
+bool ULyudTownTalkSubsystem::ChatLine(int32 PersonId, const FString& Event, FString& OutKey, FString& OutDetail)
+{
+	OutKey.Reset();
+	OutDetail.Reset();
+	if (!ChatWho(PersonId))
+	{
+		return false;
+	}
+	const std::string EventName = TownTalkLocal::ToStd(Event);
+	int SetIx = -1;
+	const std::string* Key = State->Book.PickLine(LyudBarks::EKind::Event, State->Who, State->Now, EventName.c_str(), &SetIx);
+	if (!Key)
+	{
+		return false;
+	}
+	OutKey = TEXT("line.") + TownTalkLocal::ToFString(*Key);
+	if (SetIx >= 0 && SetIx < (int32)State->Book.Sets.size())
+	{
+		OutDetail = TownTalkLocal::TakeHeard(this, State->Book.Sets[(size_t)SetIx], PersonId, State->Who);
+		CountSaid(SetIx);
+	}
+	return true;
+}
+
+bool ULyudTownTalkSubsystem::NowHolds(const FString& Word) const
+{
+	if (!State)
+	{
+		return false;
+	}
+	const LyudBarks::FNow& N = State->Now;
+	if (Word == TEXT("morning"))
+	{
+		return N.Hour >= 5.f && N.Hour < 12.f;
+	}
+	if (Word == TEXT("afternoon"))
+	{
+		return N.Hour >= 12.f && N.Hour < 17.f;
+	}
+	if (Word == TEXT("evening"))
+	{
+		return N.Hour >= 17.f && N.Hour < 23.f;
+	}
+	const std::string W = TownTalkLocal::ToStd(Word);
+	if (N.Sun == W)
+	{
+		return true;
+	}
+	for (const std::string& Each : N.Weather)
+	{
+		if (Each == W)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 int32 ULyudTownTalkSubsystem::NearestSpeaker(AActor*& OutActor) const

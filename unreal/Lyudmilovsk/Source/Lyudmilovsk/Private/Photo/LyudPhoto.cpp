@@ -493,6 +493,28 @@ FString ULyudPhoto::PhotoFile(int32 Roll, int32 Frame) const
 	return PhotoDir() / FString::Printf(TEXT("film%03d_%02d.jpg"), Roll, Frame);
 }
 
+UTexture2D* ULyudPhoto::LoadPrint(int32 Roll, int32 Frame)
+{
+	for (const PhotoModel::FShot* Shot : State().Album())
+	{
+		if (Shot->Roll == Roll && Shot->Frame == Frame)
+		{
+			const FString File = PhotoFile(Roll, Frame);
+			return FPaths::FileExists(File) ? FImageUtils::ImportFileAsTexture2D(File) : nullptr;
+		}
+	}
+	return nullptr;
+}
+
+void ULyudPhoto::NewestPrints(int32 Max, TArray<FIntPoint>& Out)
+{
+	const std::vector<const PhotoModel::FShot*> All = State().Album();
+	for (size_t I = All.size(); I > 0 && Out.Num() < Max; --I)
+	{
+		Out.Add(FIntPoint(All[I - 1]->Roll, All[I - 1]->Frame));
+	}
+}
+
 float ULyudPhoto::FocusDistance() const
 {
 	return PhotoModel::FocusStop(FocusIndex);
@@ -539,6 +561,19 @@ void ULyudPhoto::LockHero(bool bLock)
 	}
 }
 
+namespace LyudPhotoDetail
+{
+	/** What a finder line last showed, so the per-frame Text_Lambda formats only when it changes. */
+	struct FFinderTextCache
+	{
+		bool bValid = false;
+		int32 FocusKey = 0;
+		int32 FilmKey = 0;
+		FString Lang;
+		FText Text;
+	};
+}
+
 void ULyudPhoto::EnsureOverlay()
 {
 	if (Finder.IsValid() || !GEngine || !GEngine->GameViewport)
@@ -562,22 +597,33 @@ void ULyudPhoto::EnsureOverlay()
 			.ShadowOffset(FVector2D(1, 1))
 			.ShadowColorAndOpacity(FLinearColor(0, 0, 0, 0.7f))
 			.Visibility_Lambda([Self] { return Self.IsValid() && Self->RaiseAmount() > 0.5f ? EVisibility::HitTestInvisible : EVisibility::Collapsed; })
-			.Text_Lambda([Self]
+			.Text_Lambda([Self, Cache = MakeShared<LyudPhotoDetail::FFinderTextCache>()]
 			{
 				if (!Self.IsValid())
 				{
 					return FText::GetEmpty();
 				}
+				// read every frame while the camera is up: format only when what it shows changes
 				const float Focus = Self->FocusDistance();
+				const int32 FocusKey = Focus > 1.e6f ? MAX_int32 : Focus < 10.f ? FMath::RoundToInt(Focus * 10.f) : 1000000 + FMath::RoundToInt(Focus);
+				const int32 FilmKey = Self->HasFilm() ? Self->FramesLeft() : -1;
+				const FString& Lang = LyudText::Language();
+				if (Cache->bValid && Cache->FocusKey == FocusKey && Cache->FilmKey == FilmKey && Cache->Lang == Lang)
+				{
+					return Cache->Text;
+				}
 				const FText Ring = Focus > 1.e6f
 					? LyudText::Get(TEXT("ui.photo.focus.inf"))
 					: LyudText::Get(TEXT("ui.photo.focus.m"), { FStringFormatArg(Focus < 10.f ? FString::Printf(TEXT("%.1f"), Focus) : FString::Printf(TEXT("%.0f"), Focus)) });
-				if (!Self->HasFilm())
-				{
-					return LyudText::Get(TEXT("ui.photo.finder.no_film"), { FStringFormatArg(Ring.ToString()) });
-				}
-				return LyudText::Get(TEXT("ui.photo.finder"), { FStringFormatArg(Ring.ToString()),
-					FStringFormatArg(PhotoModel::FramesPerFilm - Self->FramesLeft()), FStringFormatArg(PhotoModel::FramesPerFilm) });
+				Cache->Text = !Self->HasFilm()
+					? LyudText::Get(TEXT("ui.photo.finder.no_film"), { FStringFormatArg(Ring.ToString()) })
+					: LyudText::Get(TEXT("ui.photo.finder"), { FStringFormatArg(Ring.ToString()),
+						FStringFormatArg(PhotoModel::FramesPerFilm - Self->FramesLeft()), FStringFormatArg(PhotoModel::FramesPerFilm) });
+				Cache->bValid = true;
+				Cache->FocusKey = FocusKey;
+				Cache->FilmKey = FilmKey;
+				Cache->Lang = Lang;
+				return Cache->Text;
 			})
 		]
 		+ SOverlay::Slot()
@@ -602,12 +648,25 @@ void ULyudPhoto::EnsureOverlay()
 				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 14)
 				[
 					SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Mono", 40)).ColorAndOpacity(FLinearColor(1.f, 0.55f, 0.42f))
-					.Text_Lambda([Self]
+					.Text_Lambda([Self, Cache = MakeShared<LyudPhotoDetail::FFinderTextCache>()]
 					{
-						return Self.IsValid() && Self->InDarkroom()
-							? LyudText::Get(TEXT("ui.photo.dark.seconds"), { FStringFormatArg(FString::Printf(TEXT("%.1f"), Self->DarkroomSeconds())),
-								FStringFormatArg(FString::Printf(TEXT("%.0f"), Self->DarkroomIdeal())) })
-							: FText::GetEmpty();
+						if (!Self.IsValid() || !Self->InDarkroom())
+						{
+							return FText::GetEmpty();
+						}
+						const int32 SecondsKey = FMath::RoundToInt(Self->DarkroomSeconds() * 10.f);
+						const int32 IdealKey = FMath::RoundToInt(Self->DarkroomIdeal());
+						const FString& Lang = LyudText::Language();
+						if (!Cache->bValid || Cache->FocusKey != SecondsKey || Cache->FilmKey != IdealKey || Cache->Lang != Lang)
+						{
+							Cache->Text = LyudText::Get(TEXT("ui.photo.dark.seconds"), { FStringFormatArg(FString::Printf(TEXT("%.1f"), Self->DarkroomSeconds())),
+								FStringFormatArg(FString::Printf(TEXT("%.0f"), Self->DarkroomIdeal())) });
+							Cache->bValid = true;
+							Cache->FocusKey = SecondsKey;
+							Cache->FilmKey = IdealKey;
+							Cache->Lang = Lang;
+						}
+						return Cache->Text;
 					})
 				]
 				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)

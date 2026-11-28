@@ -1,0 +1,18 @@
+{
+ "dev.group.street": "Улица",
+ "dev.action.street.hot": "Улица: жаркий день (квас и мороженое)",
+ "dev.action.street.sweep": "Улица: дворник метёт набережную",
+ "dev.action.street.laundry": "Улица: бельё во дворах",
+ "dev.action.street.laundry_take": "Улица: снимают бельё",
+ "dev.action.street.grannies": "Улица: бабушки на скамейках",
+ "dev.action.street.dominoes": "Улица: домино во дворах",
+ "dev.action.street.leaves": "Улица: листья и кучи",
+ "dev.action.street.subbotnik": "Улица: субботник",
+ "dev.action.street.auto": "Улица: всё по погоде и дате",
+ "dev.action.street.report": "Улица: план дня в лог",
+ "dev.tp.street.kvass": "Улица: бочка с квасом",
+ "dev.tp.street.icecart": "Улица: тележка с мороженым",
+ "dev.tp.street.sweep": "Улица: набережная на рассвете",
+ "dev.tp.street.yard": "Улица: двор с бельём",
+ "dev.tp.street.dominoes": "Улица: доминошный стол"
+}

@@ -1,0 +1,32 @@
+{
+ "name": "sc_thruster_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_thruster_01",
+ "pool": "sc_thruster",
+ "file": "audio/sfx/spacecraft/sc_thruster_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7431,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.388,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -23.81,
+ "params": {
+  "puffs": 1
+ },
+ "checks": {
+  "seconds": 0.388,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -23.81,
+  "crest_db": 17.8,
+  "centroid_hz": 410,
+  "rolloff85_hz": 819,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "c0cacf7ce9f7fc8b336c730a1d81beccdc87bd77271b7411abc0c5ce66c40313",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

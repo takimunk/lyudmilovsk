@@ -27,7 +27,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 VOICE = os.path.join(ROOT, "localization", "voice.json")
 STRINGS = os.path.join(ROOT, "unreal", "Lyudmilovsk", "Content", "Localization", "strings_%s.json")
 OUT = os.path.join(ROOT, "audio", "voice", "%s")
-VOICED_SUBS = ("quests",)
+VOICED_SUBS = ("quests", "spacecraft")
 
 
 def speaker_of(key):

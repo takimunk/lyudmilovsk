@@ -1,0 +1,634 @@
+{
+ "_doc": "Rooms on no plot of the town plan, read by tools/city/interiors.py (places). front: Unreal metres of the room's origin (the building frame's 0,0,0), yaw: Unreal degrees its front faces. P-HOME: the hero's room behind the club hall's left wall (docs/hero_room.md); the same numbers are in tools/home/home.py.",
+ "places": [
+  {
+   "id": "P-HOME",
+   "kind": "home",
+   "building": "hero_room",
+   "front": [
+    -3.0,
+    1.0,
+    0.0
+   ],
+   "yaw": 0.0,
+   "w": 4.9,
+   "d": 3.9,
+   "name_ru": "Своя комната в клубе",
+   "name_en": "My room at the club"
+  },
+  {
+   "id": "P-PROM-DANCE",
+   "kind": "yard",
+   "building": "prom_dance",
+   "front": [
+    -21.25,
+    912.9,
+    -36.16
+   ],
+   "yaw": 0.0,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Танцы на площади",
+   "name_en": "The dances on the square",
+   "export": {
+    "footprint": [
+     [
+      -6.1,
+      -7.75
+     ],
+     [
+      8.9,
+      -7.75
+     ],
+     [
+      8.9,
+      3.25
+     ],
+     [
+      -6.1,
+      3.25
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "pev_dance_1",
+      "kind": "sport",
+      "pos": [
+       3.9,
+       1.75,
+       1.0
+      ],
+      "yaw": 0.0,
+      "props": {
+       "what": "dance"
+      }
+     },
+     {
+      "id": "pev_dance_2",
+      "kind": "sport",
+      "pos": [
+       -4.6,
+       -2.25,
+       1.0
+      ],
+      "yaw": 180.0,
+      "props": {
+       "what": "dance"
+      }
+     },
+     {
+      "id": "pev_white",
+      "kind": "sport",
+      "pos": [
+       7.4,
+       -6.25,
+       1.0
+      ],
+      "yaw": 225.0,
+      "props": {
+       "what": "dance"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-PROM-BAND",
+   "kind": "yard",
+   "building": "prom_band",
+   "front": [
+    -30.4,
+    912.9,
+    -36.16
+   ],
+   "yaw": 0.0,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Духовой оркестр",
+   "name_en": "The brass band",
+   "export": {
+    "footprint": [
+     [
+      -1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      1.5
+     ],
+     [
+      -1.5,
+      1.5
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "pev_band_spot",
+      "kind": "seat",
+      "pos": [
+       0.0,
+       -0.0,
+       0.1
+      ],
+      "yaw": 180.0,
+      "props": {
+       "what": "listen",
+       "height": 0.1
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-PROM-BOARD",
+   "kind": "yard",
+   "building": "prom_board",
+   "front": [
+    -31.5,
+    897.0,
+    -36.16
+   ],
+   "yaw": 0.0,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Афиша у эстрады",
+   "name_en": "The poster by the stage",
+   "export": {
+    "footprint": [
+     [
+      -32.0,
+      -12.0
+     ],
+     [
+      1.5,
+      -12.0
+     ],
+     [
+      1.5,
+      1.5
+     ],
+     [
+      -32.0,
+      1.5
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "pev_poster",
+      "kind": "board",
+      "pos": [
+       0.0,
+       -0.0,
+       1.5
+      ],
+      "yaw": 0.0,
+      "props": {
+       "topic": "timetable"
+      }
+     },
+     {
+      "id": "pev_floor",
+      "kind": "board",
+      "pos": [
+       -30.5,
+       -10.5,
+       1.5
+      ],
+      "yaw": 90.0,
+      "props": {
+       "topic": "view"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-PROM-LIGHT",
+   "kind": "yard",
+   "building": "prom_light",
+   "front": [
+    142.14,
+    927.0,
+    -39.5
+   ],
+   "yaw": 0.0,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Вечерний свет у моря",
+   "name_en": "The evening light by the sea",
+   "export": {
+    "footprint": [
+     [
+      -1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      1.5
+     ],
+     [
+      -1.5,
+      1.5
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "pev_light",
+      "kind": "board",
+      "pos": [
+       0.0,
+       -0.0,
+       1.5
+      ],
+      "yaw": 180.0,
+      "props": {
+       "topic": "view"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-STREET-KVASS",
+   "kind": "stall",
+   "building": "street_kvass",
+   "front": [
+    38.1,
+    897.0,
+    -36.16
+   ],
+   "yaw": 180.0,
+   "w": 3.2,
+   "d": 3.2,
+   "name_ru": "Бочка с квасом",
+   "name_en": "The kvass barrel",
+   "staff": [
+    [
+     "vendor",
+     1,
+     [
+      10,
+      19
+     ],
+     "mon-sun"
+    ]
+   ],
+   "export": {
+    "footprint": [
+     [
+      -1.6,
+      -1.6
+     ],
+     [
+      1.6,
+      -1.6
+     ],
+     [
+      1.6,
+      1.6
+     ],
+     [
+      -1.6,
+      1.6
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "kvass_tap",
+      "kind": "counter",
+      "pos": [
+       0.0,
+       0.0,
+       0.95
+      ],
+      "yaw": 0.0,
+      "props": {
+       "shop": "street_kvass",
+       "role": "vendor"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-STREET-ICECART",
+   "kind": "stall",
+   "building": "street_icecart",
+   "front": [
+    125.9,
+    990.0,
+    -39.5
+   ],
+   "yaw": 0.0,
+   "w": 3.2,
+   "d": 3.2,
+   "name_ru": "Тележка с мороженым",
+   "name_en": "The ice-cream cart",
+   "staff": [
+    [
+     "vendor",
+     1,
+     [
+      10,
+      19
+     ],
+     "mon-sun"
+    ]
+   ],
+   "export": {
+    "footprint": [
+     [
+      -1.6,
+      -1.6
+     ],
+     [
+      1.6,
+      -1.6
+     ],
+     [
+      1.6,
+      1.6
+     ],
+     [
+      -1.6,
+      1.6
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "cart_lid",
+      "kind": "counter",
+      "pos": [
+       0.0,
+       0.0,
+       0.95
+      ],
+      "yaw": 0.0,
+      "props": {
+       "shop": "street_icecream",
+       "role": "vendor"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-STREET-SUBBOTNIK",
+   "kind": "yard",
+   "building": "street_subbotnik",
+   "front": [
+    -566.54,
+    1053.8,
+    -15.0
+   ],
+   "yaw": 320.5,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Субботник во дворе",
+   "name_en": "The subbotnik in the yard",
+   "export": {
+    "footprint": [
+     [
+      -1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      1.5
+     ],
+     [
+      -1.5,
+      1.5
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "whitewash_bucket",
+      "kind": "take",
+      "pos": [
+       0.0,
+       0.0,
+       0.3
+      ],
+      "yaw": 0.0,
+      "props": {
+       "what": "whitewash"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-STREET-LEAVES",
+   "kind": "yard",
+   "building": "street_leaves",
+   "front": [
+    -581.01,
+    1070.61,
+    -15.0
+   ],
+   "yaw": 0.0,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Листья во дворе",
+   "name_en": "Leaves in the yard",
+   "export": {
+    "footprint": [
+     [
+      -1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      1.5
+     ],
+     [
+      -1.5,
+      1.5
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "rake",
+      "kind": "take",
+      "pos": [
+       0.0,
+       0.0,
+       0.6
+      ],
+      "yaw": 0.0,
+      "props": {
+       "what": "rake"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "id": "P-STREET-DOMINO",
+   "kind": "yard",
+   "building": "street_domino",
+   "front": [
+    -584.82,
+    1061.99,
+    -15.0
+   ],
+   "yaw": 175.0,
+   "w": 3.0,
+   "d": 3.0,
+   "name_ru": "Доминошный стол",
+   "name_en": "The domino table",
+   "export": {
+    "footprint": [
+     [
+      -1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      -1.5
+     ],
+     [
+      1.5,
+      1.5
+     ],
+     [
+      -1.5,
+      1.5
+     ]
+    ],
+    "entrances": [
+     {
+      "id": "front",
+      "pos": [
+       0.0,
+       -1.2,
+       0.0
+      ],
+      "kind": "street"
+     }
+    ],
+    "things": [
+     {
+      "id": "domino_table",
+      "kind": "seat",
+      "pos": [
+       0.0,
+       0.0,
+       0.45
+      ],
+      "yaw": 0.0,
+      "props": {
+       "what": "dominoes",
+       "height": 0.45
+      }
+     }
+    ]
+   }
+  }
+ ]
+}

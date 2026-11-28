@@ -52,12 +52,14 @@ rest (the speakers are in `localization/voice.json`); `tools/check_localization.
 | Event, target | Sent when | By |
 |---|---|---|
 | `talk <Npc>` | a conversation starts (`<Npc>` = the dialogue id, the body's name: `Owner`, `Sorokin_oleg`) | `UNpcDialogueSubsystem` |
+| `talk <resident key>` | a talk with a townsperson opens (`t_sokolov_ilya`, the keys of townsfolk.json; docs/town_talk.md "A talk"). Their quest lines are strings `line.<resident key>.<quest>.<stage>.<n>`, not npc_dialogue.txt sections | `ULyudFriends` |
 | `leave_computer`, `walk` | the hero got up; took his first steps | the club computer, the game screen |
 | `reach <place>` | came within a place's radius (as the hero or as a bird) | `ULyudQuests::UpdatePosition` |
 | `get`, `use`, `wear <item>`; `have <item>` | pocket changes; `have` counts what is in the pocket | `ULyudInventory` |
 | `bring <item>@<Npc>` | a talk with that person while the pocket holds `need` of the item: they are taken | `ULyudQuests` (on `talk`) |
 | `eat <item>` | food or drink finished: a diner's dish to the last bite, food from the hand, a bottle (`use` is sent for anything that leaves the pocket, a dish that is ordered too) | `ULyudBiteSubsystem`, `ULyudFoodSubsystem` |
 | `fish_caught <fish item>` | a fish landed on the rod | `ULyudFishing` |
+| `kite <what>` | the hero's kite: `flown` (20 s in the air), `high` (30 m over the hand), `landed`, `helper_launch`, `loop`, `eight`, `low_pass` (a stunt kite's), `rescue` (a caught kite got down); docs/kites.md "Quests" | `ULyudKiteFlying` |
 | `photo <place \| maru \| resident key>` | a film was developed (at the photo studio or by the hero in a darkroom) with a frame taken at that map place, or with a sharp frame of the dog Maru (`maru`) or of that resident (the people sim's key, `FPersonInfo::Key`: `t_liepa_klaus`); the town's quests check the target against `map.json`, `maru` and the keys of `PeopleData/people.json` and `townsfolk.json` (`interiors.py` `photo_subjects`, `quest_audit.py`, questsim). A quest that ends by showing the print (`ask <topic>.done`) puts `"no_skip": true` on its photo stage, or the showing would jump over it (questsim checks this) | the film camera (`Private/Photo/LyudPhoto.cpp`) |
 | `bird` | became a bird | the game screen |
 | `bird_seen`, `bird_tamed <Species>` | first sight; a bird ate from the palm | `ULyudBirdBook` |
@@ -201,3 +203,155 @@ line goes last in its section, because the first quest talk that fits is said an
 People a quest needs must be findable: Sorokin, Aya and Lange have a daily duty on a bench (`birdwatch_yard`, `sketch_yard`,
 `mend_nets` in `PeopleData/activities.json`, duties in `people.json`), and the journal says when; the laboratory's people and
 the Korneevs sit out an hour or two in the square after work (`yard_evening`).
+
+## The town bundle (`tq_*`)
+
+Ten small stories that send the hero from the club and the Academgorodok down to the town's newer systems. Data and
+words only: no new item, no new event, no code. Every giver is one of the story's people (when they were written the
+townsfolk could not be talked to; a townsperson's talk now reports `talk <resident key>`, see the events table), so each has branching talk, a bystander's aside, a remark with a diary line, and `dev` blocks on every stage. The
+developer mode point `tq.wave_requests` (`Content/Dev/teleports/tq.json`) is the request box of the Wave.
+
+| Quest | Giver, where and when | Steps (events) | System |
+|---|---|---|---|
+| `tq_saturn` «Кольцо Сатурна» | Tyoma (`Kid_boy`), the club after school till 21 | `do telescope`, tell | telescopes |
+| `tq_reel` «Последняя бобина» | Ivan Korneev, yard bench 15:00–17:30 | `do cinema` + `have ticket_stub`, `bring ticket_stub@Korneev_ivan`; starts `tq_log` | cinema |
+| `tq_request` «Концерт по заявкам» | Nika (`Streamer`), the club from noon | `radio request`, `radio request_heard`, tell | records, radio |
+| `tq_round` «Три будильника» | Stas (`Guy_a`), the club after 14:00 | `round_done paper`, tell | bicycle rounds |
+| `tq_quote` «Строчка у весов» | Tanya Orlova, the Gastronom kiosk 9–19, Mon–Sat | `have library_book`, `quote *`, tell | books |
+| `tq_square` «Клетка за клеткой» | Yamada (`Clerk`), the club 10–19 on weekdays | `have camera`, `photo square` + `photo market` (`no_skip`), show | film camera |
+| `tq_card` «Открытка до двери» | Nao, the club door 10–21 | `letter_sent nao`, tell | letters |
+| `tq_lullaby` «Два такта» | Vera (`Girl_a`), the club after 15:00 | `play_tune brahms_lullaby`, tell | instruments |
+| `tq_water` «По глотку, под счёт» | Timur (`Guy_b`), the club after 15:00 | `do pump_room`, `bring water@Guy_b` | sanatorium |
+| `tq_log` «Дыра в семь дней» | Lev Zotov, yard bench from 17:30 for about an hour; begun by `tq_reel`'s reward | `read lighthouse_log`, tell | lighthouse |
+
+What writing them showed:
+
+- **Only repeatable events are safe objectives.** `observe <sight>`, `read_book` and `learn_tune` are sent once in a game
+  (the first sight, the first time to the end, the first lesson). A quest waiting for one is stuck for a hero who has
+  already done it. So Saturn is `do telescope` (every use of a coin, café or library telescope; the bridge house's,
+  the lighthouse's and the home telescopes have their own act ids and do not count), the lullaby is `play_tune` (every
+  play with a star) and the book is `have library_book` plus `quote`.
+- **A talk that begins a quest also finishes its first stage.** If the same talk belongs to another quest whose lines
+  stand earlier in the section, those are said and the new quest's `ask` passes unheard. So no giver here has another
+  quest that begins by talking to them, and `tq_log` is begun by `tq_reel`'s reward, not by a talk with Zotov (Olya's
+  `overdue_journal` sends the hero to him too). Two overlaps remain, both rare: `hot_corn`'s cob handed to Korneev and
+  `overdue_journal`'s visit to Zotov on the same talk as these quests' `ask`. The stage after `ask` and its journal
+  entry repeat the whole errand, so nothing is lost but the first exchange.
+- **A card can go to a story person** only when a quest already begun has a `talk` objective with them
+  (`ULyudLetters::BeginCard`): Nao is the addressee of the quest she gives.
+- A `[Section]` written twice in `npc_dialogue.txt` starts over: new lines go at the end of the person's own section.
+
+Not checked in the engine: the bundle was written and proven with the offline tools only.
+
+## The second town bundle (`tq2_*`)
+
+Seven stories on what came to the town on 2026-11-27 and had no story yet: the beach's play, the kitchen, the hero's room,
+the payphones and tear-off notices, the fortune cards, the traces a visit leaves, Science Day. Data and words only, like the
+first bundle: no new item, event or code. Each has branching talk (sun, weather, the pocket), a bystander's aside, a remark
+with a diary line, a reward and a `dev` block on every stage. Two first-bundle quests now chain on: `first_catch`'s reward
+starts `tq2_ukha`, `tq_log`'s starts `tq2_chess`; `tq2_whiteear`'s starts `tq2_jam`.
+
+| Quest | Giver, where and when | Begins | Steps (events) | Systems |
+|---|---|---|---|---|
+| `tq2_whiteear` «Белое ухо» | the owner, his booth 12–2 | the puppy notice torn (`stamp strips/puppy`) | `do tch_call`; ask the owner; Maru to the beach (`animal_walk_reach beach`) + `beach skip3`; tell | notices, payphone, Maru, skipping |
+| `tq2_jam` «Банка от простуды» | the owner (he caught cold waiting at the door) | `tq2_whiteear`'s reward | `have jam_strawberry` (cooked on a stove or the allotment neighbour's), `bring jam_strawberry@Owner` | kitchen, allotment |
+| `tq2_plant` «Записка под горшком» | the owner | the owner watered the dry plant (`do myroom_minded`) | thank him; `do myroom_water` ×3 (once a day) + `do myroom_put` | the hero's room |
+| `tq2_ukha` «Уха без лаврушки» | Pyotr Lange, the pier's net bench 12:30–17 | `first_catch`'s reward | `cook ukha`, `bring dish_ukha@Lange_pyotr` | kitchen, fishing |
+| `tq2_fortune` «Дальняя дорога» | Nika (`Streamer`), the club from noon | the fourth fortune card (`stamp fortunes/4`: the bus stop scale's fourth weighing) | show her; `have sandwich` + `reach mayak_lighthouse` (`no_skip`); `eat sandwich`; `bring seashell@Streamer` | fortune cards, scales, beach finds |
+| `tq2_chess` «Ход в неделю» | Lev Zotov, yard bench from 17:30 | `tq_log`'s reward | `do tch_call` (the stamp-swap number); `do chess` at the Cog, where a game is left mid-way (city_dress.md "Traces of a visit"); tell | payphone, notices, traces |
+| `tq2_science` «Лекция о Солнце» | Lev Zotov | `festival science_day` | `festival_visit science_day.lecture`; tell him; `do telescope` in the evening | Science Day |
+
+What writing them showed:
+
+- **A reward-begun quest hears the talk that paid for it**, so `tq2_ukha` and `tq2_jam` begin on a non-talk stage, and
+  `tq2_chess`'s first stage is the call: the giver's lines for that stage carry the request (his first talk after is the
+  ask), and the journal entry tells the whole errand at once. A first stage that is `have` would let an item already in the
+  pocket be handed over by that same talk (chain_met, then `bring`); so the ukha waits for a fresh `cook ukha` (Lange has a
+  line for a bowl already in the pocket). The jam keeps `have` (the neighbour's jar is fair): a jar already carried is taken
+  by the talk that ends `tq2_whiteear`, without the jam's lines.
+- **Three quests share the owner.** If two of his are on a talk stage at once, the first written (`tq2_whiteear`, then
+  `tq2_jam`, then `tq2_plant`; `owner_supper` before them all) is said and the other's talk passes unheard; every journal
+  entry after a talk repeats the whole errand. Nika (`tq_request`, which her first talk begins) and Zotov (`overdue_journal`,
+  `tq_log`) the same.
+- **Keep a person's quests few.** `quest_talk_reach.py` enumerates every combination of the quests a person has talk for
+  (asides count): one more quest on Olya, who already had five, took the run from a minute and a half to over ten. The
+  fortune went to Nika (two quests) and its aside to Yamada instead.
+- **Code-sent `do` targets.** The hero's room sends `do myroom_water|myroom_put|myroom_plant|myroom_minded` from code, not
+  from an act; questsim now reads those from `ULyudQuests::Notify(..., TEXT("do"), TEXT("..."))`.
+- Starts on a stamp (`strips/puppy`, `fortunes/4`) happen once in a save: a save that already has the stamp never begins
+  the quest. Tonight's systems are new, so no save has them; the objectives themselves are all repeatable.
+- The potatoes and the dill of the ukha, and the strawberries, only grow at the allotments: these two wait for a harvest.
+
+Not checked in the engine: written and proven with the offline tools only (`check_quest_talk.py`, `quest_talk_reach.py`,
+questsim, `check_devdata.py`, `quest_audit.py`).
+
+## Townsfolk as quest people
+
+Since the town's talk (docs/town_talk.md "A talk"), any of the ~900 townsfolk can give a quest or take part in one: E on a
+resident reports `talk <resident key>` (`t_kovalenko_tyler`), and `bring <item>@<resident key>` works with it. Their words
+are not in npc_dialogue.txt. They are strings in `Content/Localization/quests/`, said on the talk's page before the
+greeting (`ULyudFriends::OpenTalk`), at most eight lines in all:
+
+| Key | Said |
+|---|---|
+| `line.<resident>.<quest>.<stage>.<n>` | while the quest is on that stage (any quest: a bystander's aside is just lines for another quest's stage). A quest that begins by a talk with them counts as on its first stage; a stage that waits for `bring ...@<resident>` without the thing in the pocket is `<stage>_empty` |
+| `...<stage>.again.<n>` | on later talks on that stage, instead of the plain lines (write them for every stage where they wait: the plain lines carry the errand, the `.again` lines are a hint or a word of theirs) |
+| `...<stage>.if.<word>.<n>` | once, instead of the plain lines, while the word holds: `rain` `snow` `fog` `cold` `warm` `wet` `night` `low` `cloudy` `clear` `day` `morning` (5-12) `afternoon` (12-17) `evening` (17-23) (`ULyudTownTalkSubsystem::NowHolds`, the first in that order wins). It counts as the first talk too, so it must carry the errand |
+| `line.<resident>.<quest>.done.<n>` | once, after the quest is done |
+
+What was said is kept as quest flags `tcq.<resident>.<quest>.<stage>[.if.<word>]`. Remarks (`quest_scenes.json`) take a
+resident's key as `person` like a story person's. A dev block reaches a resident with `"exec": ["Quest.GoToPerson <key>"]`.
+
+**Findable.** A resident is a good quest person only if their day brings them to one place at known hours on most days,
+outdoors (nobody indoors, asleep or riding can be talked to) and not behind a counter (the counter's E comes first). Most
+are not: shifts rotate, likes pick a different bench every day. `tools/townchatsim/run.sh where` runs the town over seven
+autumn days from Tuesday 20 October (the street's conditions from `StreetLifeModel.h`, a rainy morning, a showery
+afternoon) and lists who is free for a word at one point at the same hour on three days in four; `where <key,key> [days]`
+prints each one's day by day: when they are free for a word, doing what, where. The journal entry of every stage says
+where and when the person is.
+
+`tools/check_quest_talk.py` checks these keys: the resident, the quest, the stage and the word exist; lines are numbered
+from 1; a variant or `.again` has plain lines; every stage that waits for a talk with a resident has their lines, and a
+`bring` to one has `<stage>_empty` lines too. `quest_talk_reach.py` does not count them as orphans, questsim accepts a
+resident as a `talk` or `bring` target.
+
+## The third town bundle (`tq3_*`)
+
+Seven small stories given by ordinary townsfolk, so the town reads as a community: the yard keeper, the milkwoman, the
+postwoman and her boy, two neighbours of fifty years, a dog walker, two chess rivals on a bench, a schoolgirl with a kite.
+They know each other: the helpers of one quest are the givers of the next, and their remarks and after-talks name each
+other. The first three chain on (`tq3_whistle` starts `tq3_milk`, which starts `tq3_pension`, which starts `tq3_flag`);
+each but the flag also begins by a talk with its giver. One new item, the whistle (a pickup); everything else is data and
+words.
+
+| Quest | Giver, where and when (simulated, `run.sh where`) | Steps (events) | Systems |
+|---|---|---|---|
+| `tq3_whistle` «Свисток в листьях» | Tyler Kovalenko, the yard keeper: sweeps the promenade 5:20-7:30 every day, rakes the yards' leaves 8:10-11:00 Mon-Sat (20 Sep-15 Nov) | ask; the whistle in yard 1's leaves by the dominoes table (pickup, `have keeper_whistle`); `bring keeper_whistle@t_kovalenko_tyler` | street life (sweep, leaf raking) |
+| `tq3_milk` «Два пакета молока» | Nour Hoffmann, the milkwoman: the milk round 5:50-7:30 Mon-Sat, the benches by the square in the afternoons | ask (two `milk_pyramid` given); `bring` to Đức Lê (fishing on the beach 5:30-6:50 every day) and to Maarja Berntsen (the promenade's south end 8:10-10, the square's bench SQ04 in the afternoons); tell | street life (milk round), beach |
+| `tq3_pension` «Пенсионный день» | Sachiko Patel (83): the benches by her house T2H2 from about 10:30 till evening, her allotment bed 15-17 | ask; `bring daily_paper@` her (the kiosk); talk to the postwoman Lyudmila Hernández (her round 8:20-12:10 Mon-Sat); tell | kiosk, the post round, allotment |
+| `tq3_flag` «Флажок для Кайо» | Lyudmila Hernández, the postwoman (as above; minds her son at the playground or yard 5 about 14-16); begun by `tq3_pension` | ask; `beach castle_paper_flag` (the kiosk's `sand_flag` on a finished sandcastle); tell | beach, kiosk |
+| `tq3_clock` «Сто: точное время» | Ingvild Solberg (76): walks her dog in the park 6:50-7:20 and 18:50-19:30 every day | ask; `do tch_call` (the speaking clock, 100); tell | payphones |
+| `tq3_referee` «Судья для двоих» | Haoran Choi (82): the benches by his house T2H1 8:00-12:30 most days; his rival Xiaoming Virtanen there 8-11 | ask; `have daily_paper` + `do chess` (a board at the Cog); tell | kiosk, chess |
+| `tq3_number` «Оторванный телефончик» | Isla Bondarenko (12): after school on weekdays her kite on the beach 14:40-15:20, then the playground till about 16:40 | ask; `do xk_notices` (the bus-stop boards) + `do tch_call`; tell | notices, payphones, kites |
+
+Every stage has a dev block (`Quest.GoToPerson <key>` at an hour they are out, `tq3.yard_leaves` and `tq3.beach_castle`
+in `Content/Dev/teleports/tq3.json`). Bystanders: Nour and Tyler on each other's errands, Maarja on her friend's pension,
+Le on the castle, Alejandro Gelashvili (a dog walker too) on the clock, Aino MacLeod (Choi's wife) on the referee, Lyudmila
+on Isla's guitar: each a remark with a diary line; Caio (shy till he knows the hero) and Virtanen have lines of their own.
+
+What writing them showed:
+
+- **Pick the giver from the simulation, not the job.** Of 900 townsfolk only a few dozen are at one point at the same hour
+  on three days in four; the lighthouse keepers work inside the pier's shell and can never be talked to at work; kiosk
+  and promenade sellers stand behind a counter. People on a round (the sweep, the milk, the post) are reliable by the
+  hour, not the spot: the journal says the hours and the route. The old on their own yard's benches, the fishermen at
+  dawn and the dog walkers at seven are the town's fixed points.
+- **Autumn.** The game begins on 20 October and the calendar runs at real time: soda machines are hooded from November,
+  the kvass barrel and the grandmothers' yard benches are summer things, the leaf raking ends on 15 November. So the
+  objectives here are things that work all year (the payphone, the kiosk, the sandcastle, the chess board), and the
+  whistle lies beside the leaf pile, not under it, so it is still there when the piles are gone.
+- A resident's lines from several quests all show on one page (up to eight), unlike a story person's first-fit talk:
+  keep each group to two or three lines.
+
+Not checked in the engine: the resident lines' code (`LyudFriendsTalk.cpp`, `TownTalk.cpp` `NowHolds`) and the whistle
+(`LyudInventory.cpp`) were written without Unreal; the icon `icon_keeper_whistle` is owed.

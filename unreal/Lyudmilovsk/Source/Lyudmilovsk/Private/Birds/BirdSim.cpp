@@ -153,7 +153,9 @@ namespace LyudBirds
 			return false;
 		}
 		const FSpecies& S = SpeciesTable()[B.Species];
-		return !Soars(S) && S.Flight != EFlight::Soar && GustAt(B) > 0.7f * S.WindLimit;
+		// a gust in a wind it can otherwise take: a gale that is too much even in its lulls is no gust to sit out (it goes
+		// to the lee instead, as the site choice has it)
+		return !Soars(S) && S.Flight != EFlight::Soar && Wind.Len2D() < 0.7f * S.WindLimit && GustAt(B) > 0.7f * S.WindLimit;
 	}
 
 	bool FWorld::FacesWind(const FBird& B) const
@@ -1097,6 +1099,11 @@ namespace LyudBirds
 
 	void FWorld::Resettle()
 	{
+		for (FBird& B : Birds)
+		{
+			EndLure(B, 0.f);           // (everybody is somewhere else now)
+			B.bSpotChecked = B.bSpotOk = false;
+		}
 		if (Murm)
 		{
 			Murm->Clear();
@@ -1282,9 +1289,9 @@ namespace LyudBirds
 				continue;
 			}
 			Present++;
-			if ((Corv && Corv->Busy(Id)) || (Nest && Nest->Busy(Id)))
+			if ((Corv && Corv->Busy(Id)) || (Nest && Nest->Busy(Id)) || B.Lure != -2)
 			{
-				continue;            // (a corvid on an errand of its own, a bird busy at its nest, comes back by itself)
+				continue;            // (a corvid on an errand of its own, a bird busy at its nest or at food, comes back by itself)
 			}
 			bBusy |= B.Act == EAct::Approach || B.Act == EAct::Eat || B.Act == EAct::Claimed || B.Act == EAct::Flee || B.Act == EAct::Chase || B.Act == EAct::Mob;
 			bScattered |= B.Site != G.Site && !(G.Plan == 2 && InRoost(G, B.Site)) && B.Act != EAct::Murmur && B.Target != -6;
@@ -1454,7 +1461,7 @@ namespace LyudBirds
 		{
 			FBird& B = Birds[Id];
 			if (B.Act == EAct::Approach || B.Act == EAct::Eat || B.Act == EAct::Claimed || B.Act == EAct::Murmur || B.bGone
-				|| (Corv && Corv->Busy(Id) && G.Plan != 2) || (Nest && Nest->Busy(Id)))
+				|| (Corv && Corv->Busy(Id) && G.Plan != 2) || (Nest && Nest->Busy(Id)) || (B.Lure != -2 && G.Plan != 2))
 			{
 				continue;
 			}
@@ -1494,8 +1501,38 @@ namespace LyudBirds
 
 	void FWorld::FlyTo(FBird& B, int Site, const V3& Spot)
 	{
+		V3 Goal = Spot;
+		B.bSpotChecked = B.bSpotOk = false;
+		if (Site >= 0 && Perch && !CheckPerch(B, Site, Goal))
+		{
+			// nothing real there (a crown spot between bare twigs, a perch on something that isn't drawn): another spot of
+			// the place, else its group's place, else the ground under it; the place is given up for a while
+			bool bOk = false;
+			for (int K = 0; K < 2 && !bOk; K++)
+			{
+				Goal = SpotOn(Sites[Site], B.Rng);
+				bOk = CheckPerch(B, Site, Goal);
+			}
+			if (!bOk)
+			{
+				Sites[Site].Disturbed = (float)Time + 1800.f;
+				const int GroupSite = Groups[B.Group].Site;
+				if (GroupSite >= 0 && GroupSite != Site)
+				{
+					Site = GroupSite;
+					Goal = SpotFor(B, Site);
+					bOk = CheckPerch(B, Site, Goal);
+				}
+				if (!bOk)
+				{
+					Site = -1;
+					float Z;
+					Goal.Z = Probe && Probe(Goal.X, Goal.Y, Z) ? Z : std::max(GroundZ(Goal.X, Goal.Y), SeaZ);
+				}
+			}
+		}
 		B.Site = Site;
-		B.Spot = Spot;
+		B.Spot = Goal;
 		B.FlyFrom = B.Pos;
 		B.Target = -1;
 		const FSpecies& S = SpeciesTable()[B.Species];
@@ -1506,7 +1543,7 @@ namespace LyudBirds
 		else
 		{
 			SetAct(B, EAct::Takeoff, 0.35f + 0.3f * Rand(B.Rng));
-			const V3 To = (Spot - B.Pos).Flat().Norm();
+			const V3 To = (Goal - B.Pos).Flat().Norm();
 			B.Vel = To * (S.Cruise * 0.3f) + V3(0.f, 0.f, 2.5f);
 			B.Yaw = std::atan2(To.Y, To.X);
 		}
@@ -1543,6 +1580,7 @@ namespace LyudBirds
 		B.Vel = V3();
 		B.Pos = B.Spot;
 		B.Target = -1;
+		B.bSpotChecked = B.bSpotOk;
 		if (Nest && Nest->Arrive(*this, B))
 		{
 			return;
@@ -1554,6 +1592,26 @@ namespace LyudBirds
 		if (S.bClings && B.Site >= 0 && !IsGroundHabitat(Sites[B.Site].Kind))
 		{
 			Cling(B, Sites[B.Site]);
+		}
+		if (B.Lure != -2 && B.Site < 0)
+		{
+			// down by the food: at a thrown handful it pecks, by the player it waits facing them, eyes on the hand
+			if (B.Lure >= 0)
+			{
+				SetAct(B, EAct::Peck, 0.5f + Rand(B.Rng) * 1.5f);
+			}
+			else
+			{
+				B.Yaw = std::atan2(Player.Feet.Y - B.Pos.Y, Player.Feet.X - B.Pos.X) + (Rand(B.Rng) - 0.5f) * 0.6f;
+				B.Look = Player.bOffer ? Player.Palm : Player.Eye;
+				B.bLook = true;
+				SetAct(B, EAct::Watch, 1.f + Rand(B.Rng) * 2.f);
+				if (Rand(B.Rng) < 0.5f)
+				{
+					Emit(EEvent::Call, B);
+				}
+			}
+			return;
 		}
 		if (B.Site < 0)
 		{
@@ -1635,6 +1693,7 @@ namespace LyudBirds
 		{
 			Approacher = -1;
 		}
+		EndLure(B, 120.f);
 		if (Corv)
 		{
 			Corv->OnFlush(*this, B, From, Cause);
@@ -1850,7 +1909,8 @@ namespace LyudBirds
 		const float Jerk = std::max(0.f, Player.TurnRate - 60.f) / 120.f + (Player.bOffer ? std::max(0.f, Player.HandSpeed - 0.4f) : 0.f) + Player.ExtraThreat;
 		if (Dist < 30.f)
 		{
-			B.Habituation = Clamp(B.Habituation + Dt * (Speed < 0.3f && Jerk <= 0.f ? 1.f / 8.f : -(Speed / 1.5f + Jerk * 2.f)), 0.f, 1.f);
+			// (one that came for the feed has made up its mind about the person: it settles twice as fast)
+			B.Habituation = Clamp(B.Habituation + Dt * (Speed < 0.3f && Jerk <= 0.f ? (B.Lure != -2 ? 1.f / 6.f : 1.f / 8.f) : -(Speed / 1.5f + Jerk * 2.f)), 0.f, 1.f);
 		}
 		float Target = 0.f;
 		float D = 0.f;
@@ -2183,6 +2243,7 @@ namespace LyudBirds
 			return;
 		}
 		// the boldest trusting bird around comes; it calls first sometimes
+		EndLure(B, 30.f);
 		Approacher = B.Id;
 		Emit(EEvent::Approach, B);
 		if (Rand(B.Rng) < 0.5f)
@@ -2196,6 +2257,453 @@ namespace LyudBirds
 		B.Vel = To * 2.f + V3(0.f, 0.f, 2.f);
 		SetAct(B, EAct::Approach, 0.f);
 		B.bAte = false;
+	}
+
+	// --- food the player brings: feed in the hand, thrown handfuls -------------------------------------
+
+	float FWorld::FoodNoticeDist(const FBird& B, bool bThrown) const
+	{
+		const FSpecies& S = SpeciesTable()[B.Species];
+		if (S.FoodNotice <= 0.f || S.bPredator || IsAerial(S))
+		{
+			return 0.f;
+		}
+		// a hungry bold bird looks harder; seeds on an open palm or scattered on the ground show farther than a bag
+		return S.FoodNotice * (0.7f + 0.3f * B.Boldness) * (0.6f + 0.8f * B.Hunger) * (bThrown ? 1.25f : (Player.bOffer ? 1.15f : 1.f));
+	}
+
+	int FWorld::AddPile(const V3& P, float Handfuls, const float* Like)
+	{
+		int K = 0;
+		while (K < (int)Piles.size() && Piles[K].bActive)
+		{
+			K++;
+		}
+		if (K == (int)Piles.size())
+		{
+			Piles.emplace_back();
+		}
+		FPile& Pile = Piles[K];
+		Pile.bActive = true;
+		Pile.Pos = P;
+		Pile.Food = Handfuls;
+		for (int I = 0; I < 64; I++)
+		{
+			Pile.Like[I] = Like ? Like[I] : 1.f;
+		}
+		Pile.Until = Time + 900.0;
+		return K;
+	}
+
+	void FWorld::EndLure(FBird& B, float Cool)
+	{
+		if (B.Lure == -2)
+		{
+			return;
+		}
+		if (B.Lure == -1)
+		{
+			LuredAtHand = std::max(0, LuredAtHand - 1);
+		}
+		FGroup& G = Groups[B.Group];
+		G.Lured = std::max(0, G.Lured - 1);
+		B.Lure = -2;
+		B.LureTime = 0.f;
+		B.LureCool = Cool;
+	}
+
+	bool FWorld::LureSpot(FBird& B, V3& Spot)
+	{
+		const V3 C = LurePos(B.Lure);
+		V3 From = (B.Pos - C).Flat();
+		if (From.Len2D() < 0.1f)
+		{
+			From = V3(std::cos(B.Yaw), std::sin(B.Yaw), 0.f);
+		}
+		for (int Try = 0; Try < 3; Try++)
+		{
+			float R;
+			if (B.Lure >= 0)
+			{
+				R = 0.1f + 0.45f * Rand(B.Rng);          // on the scattered seeds
+			}
+			else
+			{
+				R = WaitDist(B) * (0.9f + 0.25f * Rand(B.Rng));
+				if (R > 14.f)
+				{
+					return false;          // too wary to wait near enough for the palm (a rook): it keeps away
+				}
+			}
+			// on its own side of the food, spread round so a flock stands in a loose ring
+			const float A = std::atan2(From.Y, From.X) + (Rand(B.Rng) - 0.5f) * (B.Lure >= 0 ? 6.28f : 2.2f + 0.6f * Try);
+			Spot = C + V3(std::cos(A) * R, std::sin(A) * R, 0.f);
+			float Z;
+			if (Probe && Probe(Spot.X, Spot.Y, Z))
+			{
+				Spot.Z = Z;
+			}
+			else if (!Grid.Ground.empty())
+			{
+				Spot.Z = C.Z + (GroundZ(Spot.X, Spot.Y) - GroundZ(C.X, C.Y));
+			}
+			else
+			{
+				Spot.Z = C.Z;
+			}
+			// on the ground by the food: not in the water, not up on a wall or a bench top beside it
+			if (Spot.Z > SeaZ + 0.02f && std::fabs(Spot.Z - C.Z) < 1.2f)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	float FWorld::WaitDist(const FBird& B) const
+	{
+		// at its beg distance (nearer as it trusts the player), but out where the person doesn't make it uneasy (its alert
+		// stays low there, so it doesn't fly up or set the flock off): far at first, nearer as it gets used to them
+		const FSpecies& S = SpeciesTable()[B.Species];
+		const float D = Danger(B, 1.f, true);
+		return std::max(S.BegDistance * (1.2f - 0.6f * B.Trust), 2.2f * D + 1.2f);
+	}
+
+	void FWorld::UpdateLure(FBird& B, float Dt)
+	{
+		B.LureCool = std::max(0.f, B.LureCool - Dt);
+		const FSpecies& S = SpeciesTable()[B.Species];
+		if (B.Lure != -2 || B.LureCool > 0.f || S.FoodNotice <= 0.f || B.Id == Summoned || B.Id == Approacher || B.Hunger < 0.12f
+			|| B.Alert > 0.45f || B.Wary > 0.f)
+		{
+			return;
+		}
+		switch (B.Act)
+		{
+		case EAct::Perch: case EAct::Preen: case EAct::Forage: case EAct::Peck: case EAct::Swim: case EAct::Watch:
+		case EAct::Takeoff: case EAct::Fly: case EAct::Land: case EAct::Soar:
+			break;
+		default:
+			return;               // asleep, fleeing, chasing, mobbing, at the hand, in the murmuration
+		}
+		const FGroup& G = Groups[B.Group];
+		if (G.Plan == 2 || G.Plan == 4 || FeederAt(B.Site) >= 0 || (Nest && Nest->Busy(B.Id)) || (Corv && Corv->Busy(B.Id)))
+		{
+			return;
+		}
+		// a flock mate already at the food: the others follow it in (they watch each other, not the person)
+		const float Flock = G.Lured > 0 ? 1.5f : 1.f;
+		int Best = -2;
+		float BestD = 1e9f;
+		static const int MaxAtHand = 14;
+		if (Player.bPresent && Player.bFeed && !Player.bClaimedBird && Player.Vel.Len2D() < 2.5f && LuredAtHand < MaxAtHand && B.Species < 64
+			&& Player.OfferLike[B.Species] >= 0.3f)
+		{
+			const float D = (B.Pos - Player.Feet).Len();
+			if (D < FoodNoticeDist(B, false) * Flock && D > S.BegDistance + 1.f)
+			{
+				Best = -1;
+				BestD = D;
+			}
+		}
+		for (int K = 0; K < (int)Piles.size(); K++)
+		{
+			const FPile& P = Piles[K];
+			if (!P.bActive || P.Food <= 0.f || B.Species >= 64 || P.Like[B.Species] < 0.3f)
+			{
+				continue;
+			}
+			const float D = (B.Pos - P.Pos).Len();
+			if (D < FoodNoticeDist(B, true) * Flock && D < BestD)
+			{
+				Best = K;
+				BestD = D;
+			}
+		}
+		if (Best == -2)
+		{
+			return;
+		}
+		// spotting it takes a moment: a glance down on the way, a look round from the perch; quicker after a flock mate
+		const float Rate = (G.Lured > 0 ? 1.f : 0.3f) * (0.5f + S.Curiosity) * (IsAirborne(B.Act) ? 1.3f : 1.f);
+		if (Rand(B.Rng) > Dt * Rate)
+		{
+			return;
+		}
+		B.Lure = Best;
+		V3 Spot;
+		if (!LureSpot(B, Spot))
+		{
+			B.Lure = -2;
+			B.LureCool = 20.f;
+			return;
+		}
+		B.LureTime = 0.f;
+		Groups[B.Group].Lured++;
+		if (Best == -1)
+		{
+			LuredAtHand++;
+		}
+		if (!IsAirborne(B.Act) && B.Act != EAct::Swim && (Spot - B.Pos).Len() < 4.f && std::fabs(Spot.Z - B.Pos.Z) < 0.3f)
+		{
+			B.Site = -1;
+			B.Spot = Spot;
+			SetAct(B, EAct::Forage, 0.f);     // just walks over
+		}
+		else
+		{
+			FlyTo(B, -1, Spot);
+		}
+		if (!B.bNoticed)
+		{
+			B.bNoticed = true;
+			B.bTurned = false;
+			B.Seen = 0.f;
+			Emit(EEvent::Notice, B);
+		}
+		if (Rand(B.Rng) < 0.4f)
+		{
+			Emit(EEvent::Call, B);
+		}
+	}
+
+	bool FWorld::LureThink(FBird& B, float Dt)
+	{
+		const FSpecies& S = SpeciesTable()[B.Species];
+		const FGroup& G = Groups[B.Group];
+		B.LureTime += Dt;
+		bool bGone;
+		if (B.Lure == -1)
+		{
+			bGone = !Player.bPresent || !Player.bFeed || Player.bClaimedBird;
+		}
+		else
+		{
+			bGone = B.Lure >= (int)Piles.size() || !Piles[B.Lure].bActive || Piles[B.Lure].Food <= 0.f;
+		}
+		// it waits a minute or three for the hand (longer while the palm is out), then gives up
+		const float Patience = 60.f + 120.f * S.Curiosity + (Player.bOffer ? 120.f : 0.f);
+		if (bGone || G.Plan == 2 || G.Plan == 4 || (B.Lure == -1 && B.LureTime > Patience))
+		{
+			EndLure(B, bGone ? 15.f : 120.f);
+			if (!IsAirborne(B.Act) && B.Act != EAct::Approach && B.Act != EAct::Eat && G.Site >= 0)
+			{
+				FlyTo(B, G.Site, SpotFor(B, G.Site));
+			}
+			return true;
+		}
+		if (B.Act == EAct::Approach || B.Act == EAct::Eat || (B.Act == EAct::Watch && B.bWatching))
+		{
+			return false;
+		}
+		const V3 C = LurePos(B.Lure);
+		if (IsAirborne(B.Act))
+		{
+			// on the way: the player walked on, so it comes down by where they are now
+			if (B.Lure == -1 && B.Act == EAct::Fly && (B.Spot - C).Len2D() > S.BegDistance * 2.f + 4.f)
+			{
+				V3 Spot;
+				if (LureSpot(B, Spot))
+				{
+					B.Spot = Spot;
+				}
+			}
+			return true;
+		}
+		const float D = (B.Pos - C).Len2D();
+		if (B.Lure >= 0)
+		{
+			// at the thrown seeds: peck them up, a step now and then, a look round; a calm player near by is someone who brings food
+			FPile& P = Piles[B.Lure];
+			if (D > 1.2f && B.Act != EAct::Forage)
+			{
+				V3 Spot;
+				if (LureSpot(B, Spot))
+				{
+					FlyTo(B, -1, Spot);
+				}
+				return true;
+			}
+			if (B.Act == EAct::Peck)
+			{
+				const float Bite = std::min(P.Food, Dt * 0.001f);
+				P.Food -= Bite;
+				PileEaten += Bite;
+				if (Player.bPresent && !Player.bClaimedBird && B.bNoticed && B.Alert < 0.3f && (B.Pos - Player.Feet).Len() < 30.f)
+				{
+					B.Trust = std::min(0.6f, B.Trust + Dt * 0.006f * S.Tameness * (0.5f + 0.5f * B.Boldness));
+				}
+			}
+			if (B.ActTime > B.ActLen && B.Act != EAct::Forage)
+			{
+				const float R = Rand(B.Rng);
+				if (R < 0.6f)
+				{
+					SetAct(B, EAct::Peck, 0.6f + Rand(B.Rng) * 1.6f);
+				}
+				else if (R < 0.85f)
+				{
+					const float A = Rand(B.Rng) * 6.28f, Rr = 0.1f + 0.4f * Rand(B.Rng);
+					B.Spot = V3(P.Pos.X + std::cos(A) * Rr, P.Pos.Y + std::sin(A) * Rr, P.Pos.Z);
+					SetAct(B, EAct::Forage, 0.f);
+				}
+				else
+				{
+					SetAct(B, EAct::Perch, 0.4f + Rand(B.Rng));
+				}
+			}
+			return true;
+		}
+		// waiting for the hand, its eyes on it (on the person while the palm is in)
+		B.Look = Player.bOffer ? Player.Palm : Player.Eye;
+		B.bLook = true;
+		const float Want = std::min(WaitDist(B), 13.f);
+		if (D > std::max(Want * 1.8f + 2.f, Want + 4.f) && B.Act != EAct::Forage)
+		{
+			// the player walked off: it follows, on foot when they are near, else on the wing
+			V3 Spot;
+			if (LureSpot(B, Spot))
+			{
+				if ((Spot - B.Pos).Len2D() < 6.f && std::fabs(Spot.Z - B.Pos.Z) < 0.3f)
+				{
+					B.Spot = Spot;
+					SetAct(B, EAct::Forage, 0.f);
+				}
+				else
+				{
+					FlyTo(B, -1, Spot);
+				}
+			}
+			return true;
+		}
+		if (B.Act == EAct::Forage || B.ActTime < B.ActLen)
+		{
+			return true;
+		}
+		const float R = Rand(B.Rng);
+		if (D > Want + 0.8f && B.Alert < 0.2f && R < 0.6f)
+		{
+			// bolder now: a few hops nearer
+			const V3 To = (C - B.Pos).Flat().Norm();
+			B.Spot = B.Pos + To * std::min(D - Want, 0.4f + Rand(B.Rng) * 0.8f);
+			float Z;
+			if (Probe && Probe(B.Spot.X, B.Spot.Y, Z) && std::fabs(Z - B.Pos.Z) < 0.4f)
+			{
+				B.Spot.Z = Z;
+			}
+			SetAct(B, EAct::Forage, 0.f);
+		}
+		else if (R < 0.3f && (S.Forage[(int)EHabitat::Street] > 0.4f || S.Forage[(int)EHabitat::Meadow] > 0.6f))
+		{
+			SetAct(B, EAct::Peck, 0.6f + Rand(B.Rng));    // pigeons, sparrows, crows search the ground at the person's feet
+		}
+		else
+		{
+			// begging: it watches the hand, shifts about, calls
+			B.Yaw = std::atan2(C.Y - B.Pos.Y, C.X - B.Pos.X) + (Rand(B.Rng) - 0.5f) * 0.8f;
+			SetAct(B, EAct::Watch, 1.5f + Rand(B.Rng) * 3.f);
+			if (Rand(B.Rng) < 0.35f + 0.3f * S.Curiosity)
+			{
+				Emit(EEvent::Call, B);
+			}
+		}
+		return true;
+	}
+
+	void FWorld::AvoidBodies(const FBird& B, const FSpecies& S, V3& Want) const
+	{
+		// where it will be in a moment, against each standing body (a vertical capsule) near it: pushed out sideways, the
+		// way it was going taken off the part toward the body, so it swerves round rather than stops
+		const V3 Ahead = B.Pos + B.Vel * 0.4f;
+		const bool bHand = B.Act == EAct::Approach;
+		const float Margin = bHand ? 0.1f : 0.35f + S.Length * 1.5f;
+		const float Strength = std::max(S.Cruise, 5.f) * 3.5f;
+		auto Push = [&](const V3& Feet, float Height, float Radius)
+		{
+			const float R = Radius + Margin;
+			const float DX = Ahead.X - Feet.X, DY = Ahead.Y - Feet.Y;
+			if (DX * DX + DY * DY > (R + 1.f) * (R + 1.f) || Ahead.Z > Feet.Z + Height + Margin || Ahead.Z < Feet.Z - 0.2f)
+			{
+				return;
+			}
+			const V3 Axis(Feet.X, Feet.Y, Clamp(Ahead.Z, Feet.Z, Feet.Z + Height));
+			V3 Off = Ahead - Axis;
+			float D = Off.Len();
+			if (D >= R)
+			{
+				return;
+			}
+			if (D < 0.05f)
+			{
+				Off = V3(-B.Vel.Y, B.Vel.X, 0.f);         // dead on: round the side
+				if (Off.Len() < 0.01f)
+				{
+					Off = V3(1.f, 0.f, 0.f);
+				}
+				D = 0.05f;
+			}
+			const V3 N = Off.Norm();
+			const float K = 1.f - D / R;
+			const float In = Want.Dot(N);
+			if (In < 0.f)
+			{
+				Want -= N * (In * Smooth(K * 2.f));
+			}
+			Want += N * (Strength * K);
+		};
+		if (Player.bPresent && !Player.bClaimedBird)
+		{
+			// (a bird coming to the palm keeps off the body only: the hand is out in front of it)
+			Push(Player.Feet, Player.bCrouched ? 1.2f : 1.85f, bHand ? 0.22f : 0.35f);
+		}
+		if ((B.Pos - Camera).Len2D() < 80.f)
+		{
+			for (const FBody& Body : Bodies)
+			{
+				Push(Body.Feet, Body.Height, Body.Radius);
+			}
+			for (const FBeast& Beast : Beasts)
+			{
+				Push(Beast.Pos, Beast.bCat ? 0.35f : 0.65f, 0.3f);
+			}
+		}
+	}
+
+	bool FWorld::CheckPerch(FBird& B, int Site, V3& Spot)
+	{
+		if (!Perch || Site < 0 || Site >= (int)Sites.size())
+		{
+			return true;
+		}
+		const FSite& St = Sites[Site];
+		if (IsGroundHabitat(St.Kind) || (St.Flags & SiteFeeder))
+		{
+			return true;              // the ground is found by Probe; a feeder's tray is real
+		}
+		// far from the camera nobody sees a bird in the air between twigs: checked when it comes near (Step)
+		if ((Spot - Camera).Len() > Opt.NearDist * 1.5f || PerchBudget <= 0)
+		{
+			return true;
+		}
+		PerchBudget--;
+		V3 P = Spot;
+		const int Found = Perch(B, St, P);
+		if (Found < 0)
+		{
+			return true;              // can't tell yet: it goes, and is checked when it sits there near the camera
+		}
+		if (Found > 0)
+		{
+			B.bSpotOk = true;
+			if ((P - Spot).Len() > 0.05f)
+			{
+				PerchMoved++;
+			}
+			Spot = P;
+			return true;
+		}
+		PerchRefused++;
+		return false;
 	}
 
 	// --- predators ------------------------------------------------------------------------------------
@@ -2420,6 +2928,14 @@ namespace LyudBirds
 			Hab->Events.clear();
 		}
 		Player.ExtraThreat = std::max(0.f, Player.ExtraThreat - Dt * 1.5f);
+		PerchBudget = 6;
+		for (FPile& P : Piles)
+		{
+			if (P.bActive && (P.Food <= 0.f || Time > P.Until))
+			{
+				P.bActive = false;          // eaten up, or scattered and trodden in
+			}
+		}
 		UpdateTiers();
 		BuildHash();
 
@@ -2545,6 +3061,58 @@ namespace LyudBirds
 		{
 			Approacher = -1;
 		}
+		// perches that came near the camera unchecked (it sat down far off, or the camera came to it): onto the real branch
+		// or roof under it, or off to another place when there is nothing there
+		if (Perch)
+		{
+			for (FBird& B : Birds)
+			{
+				if (PerchBudget <= 0)
+				{
+					break;
+				}
+				if (B.bSpotChecked || B.Tier != 0 || B.bGone || B.Site < 0 || IsAirborne(B.Act) || B.Act == EAct::Claimed || B.Act == EAct::Eat
+					|| IsGroundHabitat(Sites[B.Site].Kind) || (Sites[B.Site].Flags & SiteFeeder) || (Nest && Nest->Busy(B.Id)) || (Corv && Corv->Busy(B.Id)))
+				{
+					continue;
+				}
+				V3 P = B.Pos;
+				B.bSpotOk = false;
+				const bool bThere = CheckPerch(B, B.Site, P);
+				if (bThere && !B.bSpotOk)
+				{
+					continue;                     // can't tell yet (the game builds that tree's branches later)
+				}
+				if (!bThere)
+				{
+					Sites[B.Site].Disturbed = (float)Time + 1800.f;
+					const int Site = Groups[B.Group].Site >= 0 && Groups[B.Group].Site != B.Site ? Groups[B.Group].Site : -1;
+					if (Site >= 0)
+					{
+						FlyTo(B, Site, SpotFor(B, Site));
+					}
+					else
+					{
+						float Z;
+						FlyTo(B, -1, V3(B.Pos.X, B.Pos.Y, Probe && Probe(B.Pos.X, B.Pos.Y, Z) ? Z : std::max(GroundZ(B.Pos.X, B.Pos.Y), SeaZ)));
+					}
+				}
+				else if ((P - B.Pos).Len() < 0.5f)
+				{
+					B.Pos = B.Spot = P;           // a step along the branch
+					B.bSpotChecked = true;
+				}
+				else
+				{
+					// a hop over to the wood (it counts as checked once it is there: something may stop it on the way)
+					B.Spot = P;
+					B.FlyFrom = B.Pos;
+					SetAct(B, EAct::Takeoff, 0.3f);
+					const V3 To = (P - B.Pos).Flat().Norm();
+					B.Vel = To * 1.5f + V3(0.f, 0.f, 1.5f);
+				}
+			}
+		}
 		for (int& C : SpeciesCount)
 		{
 			C = 0;
@@ -2597,6 +3165,7 @@ namespace LyudBirds
 				PerceiveBirds(B, Dt);
 				UpdateApproach(B, Dt);
 			}
+			UpdateLure(B, Dt);
 		}
 		else
 		{
@@ -2612,6 +3181,11 @@ namespace LyudBirds
 			ThinkVoice(B, Dt);
 		}
 
+		// a bird come for food (the player's feed, a thrown handful): waits, begs, pecks
+		if (B.Lure != -2 && LureThink(B, Dt))
+		{
+			return;
+		}
 		// a bird in one of its species' habits (BirdHabit.cpp), busy at its nest (BirdNest.cpp), a corvid busy with
 		// something of its own (BirdCorvid.cpp)
 		if (Hab && Hab->Busy(*this, B, Dt))
@@ -2648,13 +3222,20 @@ namespace LyudBirds
 				const float R = Rand(B.Rng);
 				const int Feeder = FeederAt(B.Site);
 				const float Wetting = B.Site >= 0 && IsCover(Sites[B.Site].Kind) ? RainStress(S) : 0.f;
+				// (not on the way to the roost, and for 20 s at the most at a time: then it gets on with its day)
+				const bool bGust = Feeder < 0 && G.Plan != 2 && GustHolds(B);
+				if (!bGust)
+				{
+					B.GustHeld = 0.f;
+				}
 				if (Feeder >= 0)
 				{
 					AtFeeder(B, Feeders[Feeder], Dt);
 				}
-				else if (GustHolds(B))
+				else if (bGust && B.GustHeld < 20.f)
 				{
 					// a gust over its perch: it crouches and holds on, and goes when the lull comes
+					B.GustHeld += B.Weather == (uint8_t)EWeathering::Crouched ? B.ActTime : 0.f;
 					SetAct(B, EAct::Perch, 1.f + Rand(B.Rng) * 1.5f);
 					B.Weather = (uint8_t)EWeathering::Crouched;
 				}
@@ -3166,6 +3747,11 @@ namespace LyudBirds
 					}
 				}
 			}
+			// never through the player or a person: swerve round them (near the camera, where it can be seen)
+			if (B.Tier <= 1 && B.Act != EAct::Flee && Opt.bAvoid)
+			{
+				AvoidBodies(B, S, Want);
+			}
 			// keep away from the player when escaping (never through them)
 			if (B.Act == EAct::Flee && Player.bPresent)
 			{
@@ -3185,6 +3771,11 @@ namespace LyudBirds
 			}
 			B.Vel += DV;
 			B.Pos += B.Vel * Dt;
+			if (B.Tier == 0 && Player.bPresent && B.Act != EAct::Approach && (B.Pos - Player.Feet).Len2D() < 0.3f && B.Pos.Z > Player.Feet.Z
+				&& B.Pos.Z < Player.Feet.Z + (Player.bCrouched ? 1.2f : 1.8f))
+			{
+				Intrusions++;
+			}
 			// never under the ground or the water while flying
 			const float G = std::max(GroundZ(B.Pos.X, B.Pos.Y), SeaZ) + 0.3f;
 			if (B.Pos.Z < G && !(bLanding && Dist < 4.f))
@@ -3336,6 +3927,7 @@ namespace LyudBirds
 		{
 			Summoned = -1;
 		}
+		EndLure(Birds[Id], 0.f);
 		SetAct(Birds[Id], EAct::Claimed, 0.f);
 		return true;
 	}
@@ -3576,6 +4168,19 @@ namespace LyudBirds
 		{
 			Out += "; " + Murm->Describe(*this);
 		}
+		int Lured = 0, AtPiles = 0, Piled = 0;
+		for (const FBird& B : Birds)
+		{
+			Lured += B.Lure == -1;
+			AtPiles += B.Lure >= 0;
+		}
+		for (const FPile& P : Piles)
+		{
+			Piled += P.bActive;
+		}
+		std::snprintf(Buf, sizeof(Buf), "; at the hand's feed %d, at %d thrown piles %d; perches checked: moved %d, refused %d; through the player %d",
+			Lured, Piled, AtPiles, PerchMoved, PerchRefused, Intrusions);
+		Out += Buf;
 		Out += "; on:";
 		for (int H = 0; H < NumHabitats; H++)
 		{

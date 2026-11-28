@@ -1,0 +1,33 @@
+{
+ "name": "sc_buzzer_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_buzzer_01",
+ "pool": "sc_buzzer",
+ "file": "audio/sfx/spacecraft/sc_buzzer_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7241,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.7,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -16.91,
+ "params": {
+  "hz": 180,
+  "pulses": 1
+ },
+ "checks": {
+  "seconds": 0.7,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -16.91,
+  "crest_db": 10.9,
+  "centroid_hz": 616,
+  "rolloff85_hz": 900,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "fa176c88befc95254b7e4d1f3407f980450c416c590d755f81dec03146ba173d",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

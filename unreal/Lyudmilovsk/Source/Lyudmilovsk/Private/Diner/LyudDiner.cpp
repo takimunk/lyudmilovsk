@@ -905,6 +905,16 @@ void ALyudDiner::Tick(float DeltaTime)
 		}
 	}
 	TickCoffee(DeltaTime);
+	// nothing on order, no coffee being poured and the hero not in the room: five looks a second (the urn's prompt and the
+	// hourly state need no more); otherwise every frame (the pour follows the hand)
+	const AHeroCharacter* Near = LyudDiner::Hero(GetWorld());
+	const bool bQuiet = Pending.IsEmpty() && Pour == EPour::None && !bCoffeePrompt
+		&& (!Near || FVector::DistSquared(Near->GetActorLocation(), ToWorld(CoffeeStand)) > FMath::Square(2500.f));
+	const float WantInterval = bQuiet ? 0.2f : 0.f;
+	if (PrimaryActorTick.TickInterval != WantInterval)
+	{
+		SetActorTickInterval(WantInterval);
+	}
 }
 
 // ---- self-service coffee ------------------------------------------------------------------------------------------------------

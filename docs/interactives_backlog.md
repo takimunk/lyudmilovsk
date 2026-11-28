@@ -157,7 +157,7 @@ string humming in the wind. Done: an offline test of the lift model, Mac shots a
 
 ## 8. The beach at play
 
-`[ ]` **Brief (Opus 5.5):** Small things to do on the beach and pier, each a minute long, using the sea and tides: (a)
+`[~] beach-depth-1127 2026-11-27 (branch beach-depth-1127 on top of the first pass of 2026-11-20; docs/beach.md: summer visitors race the buoy swim, children help at the castle and build their own, the kiosk's paper flag, finds sold at the souvenir counter; never compiled: awaits a Mac build and shots)` **Brief (Opus 5.5):** Small things to do on the beach and pier, each a minute long, using the sea and tides: (a)
 skipping stones: pick a flat stone on the shingle (some are flat, most not), throw with a timed release, count the skips
 on the real water surface (`ALyudSea` height), the town record on the lifeguard board; (b) sandcastles: build at the
 damp sand line by holding E (a few growing stages of a code-built castle, a moat, a flag from the kiosk), the tide
@@ -282,7 +282,7 @@ snowman. Done: offline tests where pure, Mac shots of the pond, bench with skate
 
 ## 19. The hero's own room
 
-`[ ]` **Brief (Fable 5.2):** Give the hero a room of his own in the club (a small room off the hall: ask the coordinator
+`[~] hero-room 2026-11-20` (depth pass 2026-11-27, branch `hero-room-depth-1127`: album prints on the wall, the room's records on its player, the hot plate, a thirsty plant the owner minds, weather lines; `docs/hero_room.md`) **Brief (Fable 5.2):** Give the hero a room of his own in the club (a small room off the hall: ask the coordinator
 which), furnished from the interior kit (`blender/city/interior_kit.py`): a bed (sleep until an hour, the existing chooser),
 a shelf and a wall where things he owns can be placed: prints from the camera (item 2), records and a player (item 10),
 postcards (item 11), the bird book, trophies (cups, the sanatorium diploma), a plant in a pot that grows (procedural plants).
@@ -291,7 +291,9 @@ a furnished room, save/load test.
 
 ## 20. Haircut and clothes
 
-`[ ]` **Brief (Fable 5.2):** The barber's haircut and the department store's clothes departments exist as acts, but change
+`[~]` (branch `hero-look`, `docs/look.md`: rules, pages, words, engine side and the mesh builder done in the cloud; first
+Mac compile, the meshes on the real hero, icons, shots and bench owed.)
+**Brief (Fable 5.2):** The barber's haircut and the department store's clothes departments exist as acts, but change
 nothing (backlog P3/P1 "thin"). Make them change the hero's look: three or four haircuts (hair meshes on the hero's skeleton,
 `Content/Characters/Hero` is local-only: work on the Mac), clothes as items worn (the inventory's "worn" page,
 `diary/screens/03_inventory_worn.png`): a jacket, a raincoat for rain, a winter coat, a cap; the hero's shadow mesh and the
@@ -385,7 +387,7 @@ code only where a hook is missing. Done: festivalsim + citysim, `lyud.Festival.G
 
 ## 25. Lived-in rooms
 
-`[ ]` **Brief (Opus 5.5):** Interiors are furnished but static. Add clutter that tells time passing: a cup left on the
+`[~] lived-rooms 2026-11-27` (branch `lived-rooms`; docs/city_dress.md "Traces of a visit") **Brief (Opus 5.5):** Interiors are furnished but static. Add clutter that tells time passing: a cup left on the
 table after a resident's breakfast, a newspaper of today on the café table (item 6), wet umbrellas by doors on rain days,
 coats on racks in winter, a half-done jigsaw in the sanatorium lounge that grows day by day, children's drawings on the
 school wall that change weekly, flowers in a vase that wilt and get replaced (backlog P5 "seasonal dressing"). Build as a
@@ -469,7 +471,7 @@ grandson, the old pier before it is repainted, Maru for the club's wall). Done: 
 
 ## 34. Allotment to kitchen
 
-`[ ]` **Brief (Opus 5.5):** Tie the allotment (item 9), fishing and food: cook at the commune canteen's stove, the
+`[~] kitchen 2026-11-27 (deepened on branch kitchen-depth-1127: five recipes the town teaches, seasons, the town cooks; first pass kitchen 2026-11-20; docs/kitchen.md; awaits a Mac build, icons and a shot)` **Brief (Opus 5.5):** Tie the allotment (item 9), fishing and food: cook at the commune canteen's stove, the
 sanatorium kitchen or the hero's room (a hot plate) from what he grew and caught: fish soup (ukha), fried potatoes with dill,
 a salad, strawberry jam in jars (the market's jam contest). Short recipes (combine items, wait minutes, a sizzle sound), the
 dish as a food item to eat (`ULyudFoodSubsystem`) or give to friends (bond). The restaurant buys fresh vegetables. Done:

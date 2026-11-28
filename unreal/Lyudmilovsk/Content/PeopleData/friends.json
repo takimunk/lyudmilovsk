@@ -22,6 +22,9 @@
   "outing": 12,
   "festival": 8,
   "festival_level": 3,
+  "chat": 1,
+  "chat_answer": 1,
+  "chat_cap": 2,
   "tea_level": 2,
   "tea_every": 7,
   "tea_ahead": 2,
@@ -450,6 +453,80 @@
     "warm",
     "reader"
    ]
+  },
+  {
+   "item": "dish_ukha",
+   "hints": [
+    "elder",
+    "adult",
+    "warm",
+    "sea"
+   ]
+  },
+  {
+   "item": "dish_fried_potatoes",
+   "hints": [
+    "teen",
+    "adult",
+    "warm"
+   ]
+  },
+  {
+   "item": "dish_fried_fish",
+   "hints": [
+    "elder",
+    "adult",
+    "sea"
+   ]
+  },
+  {
+   "item": "dish_salad",
+   "hints": [
+    "adult",
+    "tidy",
+    "artist"
+   ]
+  },
+  {
+   "item": "dish_okroshka",
+   "hints": [
+    "adult",
+    "elder",
+    "warm"
+   ]
+  },
+  {
+   "item": "dish_fried_smelt",
+   "hints": [
+    "sea",
+    "elder",
+    "adult"
+   ]
+  },
+  {
+   "item": "dish_herring_potatoes",
+   "hints": [
+    "sea",
+    "elder",
+    "adult"
+   ]
+  },
+  {
+   "item": "dish_draniki",
+   "hints": [
+    "kid",
+    "teen",
+    "elder",
+    "warm"
+   ]
+  },
+  {
+   "item": "dish_carrot_salad",
+   "hints": [
+    "kid",
+    "tidy",
+    "elder"
+   ]
   }
  ],
  "hosts": [
@@ -713,6 +790,7 @@
   "lifeguard": "friends.job.lifeguard",
   "lighthouse_keeper": "friends.job.lighthouse_keeper",
   "manager": "friends.job.manager",
+  "milk_round": "friends.job.milk_round",
   "musician": "friends.job.musician",
   "nurse": "friends.job.nurse",
   "pensioner": "friends.job.pensioner",

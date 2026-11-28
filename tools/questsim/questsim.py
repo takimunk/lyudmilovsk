@@ -128,6 +128,9 @@ class Tree:
             self.people |= {p['key'] for p in d.get('people', []) if 'key' in p}
         # what a photo may be of besides a map place: the dog Maru, a resident's key
         self.photo_subjects = {'maru'} | {low(k) for k in self.people}
+        # the townsfolk one can talk to on the town's page (talk <resident key>)
+        d = self.opt_json('PeopleData', 'townsfolk.json') or {}
+        self.residents = {low(p['key']) for p in d.get('people', []) if 'key' in p}
         self.teleports = set()
         for f in glob.glob(os.path.join(self.content, 'Dev', 'teleports', '*.json')):
             self.teleports |= {low(t['id']) for t in read_json(f).get('teleports', []) if 'id' in t}
@@ -148,6 +151,10 @@ class Tree:
         for aid, a in acts.items():
             if aid in used and a.get('event'):
                 self.act_events.setdefault(low(a['event']), set()).add(low(a.get('target', '')))
+        # some do <target> events are sent by the game's code itself (the hero's room: myroom_water, myroom_put, ...)
+        for text in self.cpp.values():
+            for tgt in re.findall(r'Notify\([^;]*?TEXT\("do"\),\s*TEXT\("([a-z_]+)"\)', text):
+                self.act_events.setdefault('do', set()).add(low(tgt))
         self.scenes = self.opt_json('UI', 'quest_scenes.json')
         cmds = set()
         for text in self.cpp.values():
@@ -323,7 +330,9 @@ def target_problem(t, ev, target):
     if e in NO_TARGET_EVENTS:
         return None if target == '' else 'event %s carries no target' % ev
     if e == 'talk':
-        return None if any_of(set(t.npcs), target) else 'talk %s: no [%s] in npc_dialogue.txt' % (target, target)
+        # a story person (a section of npc_dialogue.txt) or a townsperson (townsfolk.json: the town's talk reports their key,
+        # docs/town_talk.md; their quest lines are strings, docs/quests.md "Townsfolk as quest people")
+        return None if any_of(set(t.npcs) | t.residents, target) else 'talk %s: no [%s] in npc_dialogue.txt, no such resident' % (target, target)
     if e == 'reach':
         p = t.places.get(low(target))
         if not p:
@@ -349,8 +358,8 @@ def target_problem(t, ev, target):
             return 'bring %s: needs <item>@<Npc>' % target
         if low(item) not in t.items:
             return 'bring %s: no item %s' % (target, item)
-        if low(npc) not in t.npcs:
-            return 'bring %s: no [%s] in npc_dialogue.txt' % (target, npc)
+        if low(npc) not in t.npcs and low(npc) not in t.residents:
+            return 'bring %s: no [%s] in npc_dialogue.txt, no such resident' % (target, npc)
         return None
     if e == 'feeder_fill_at':
         item, sep, place = target.partition('@')

@@ -11,6 +11,7 @@ class UGameViewportClient;
 class USkeletalMeshComponent;
 struct FTownTalkState;
 struct FTownTalkView;
+namespace LyudTownChat { struct FData; struct FTalk; }
 
 /**
  * What the townsfolk say on their own (docs/town_talk.md): a short line over the head of somebody near the player, in
@@ -62,6 +63,19 @@ public:
 
 	/** The townsperson nearest the player who could speak now (-1 none): console tests. */
 	int32 NearestSpeaker(AActor*& OutActor) const;
+
+	// --- a talk with the player (docs/town_talk.md "A talk": ULyudFriends draws it and asks here, on E only)
+
+	/** The talk PersonId has in them now: the greeting, the topics that have a line this moment, a question back. False:
+	 *  nobody such, or the book isn't read. */
+	bool ChatBuild(int32 PersonId, const LyudTownChat::FData& Data, LyudTownChat::FTalk& Out);
+	/** Their line for a moment of the talk (a set with on = <Event>): its string key (with "line.") and, for a word about
+	 *  something the player did, the rumour's detail (the line's {1}), which they have then told. False if no line fits. */
+	bool ChatLine(int32 PersonId, const FString& Event, FString& OutKey, FString& OutDetail);
+	/** Does a word of the moment hold, as the last talk or line saw it: the sun's (day, low, night, cloudy), the weather's
+	 *  (rain, snow, fog, cold, warm, clear, wet) or the hour's (morning 5-12, afternoon 12-17, evening 17-23). A quest's own
+	 *  lines for a resident branch on it (docs/quests.md "Townsfolk as quest people"). */
+	bool NowHolds(const FString& Word) const;
 
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;
@@ -125,6 +139,7 @@ private:
 	FString PendingDetail;
 	/** No word about the player running past, standing too close or the lamp before this (the manners' notice events). */
 	float NextNoticeAt = 0.f;
+	float NextStreetAt = 0.f;       // a greeting in passing, a door held (the life's StreetNod, DoorHold): not before this
 	/** The life's events: somebody noticed the player (hero_runs, hero_close, hero_lamp: docs/town_manners.md). */
 	UFUNCTION()
 	void OnLifeEvent(int32 PersonId, FName Event, int32 Other);
@@ -165,6 +180,8 @@ private:
 	void TickRestaurant(float DeltaTime);
 	/** The waiter or cook on shift at the restaurant (the life's duties), -1 none. */
 	int32 StaffPerson(FName Role) const;
+	/** Who PersonId is for the sets now, with what they know of the player (a talk: ChatBuild, ChatLine). */
+	bool ChatWho(int32 PersonId);
 	/** A moment's line said by Speaker (SayEvent, and the restaurant's moments read off it). */
 	bool SayMoment(AActor* Speaker, FName Event, int32 PersonId, FName Role);
 	/** Every frame: where the lines are on screen, how strong (fading in and out, with the distance, behind walls). */

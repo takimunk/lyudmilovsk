@@ -1,0 +1,37 @@
+{
+ "name": "sc_hatch_open_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_hatch_open_01",
+ "pool": "sc_hatch_open",
+ "file": "audio/sfx/spacecraft/sc_hatch_open_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7281,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.5,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -22.57,
+ "params": {
+  "seal_s": 0.17,
+  "groan_s": [
+   0.25,
+   1.05
+  ],
+  "scale": 0.942
+ },
+ "checks": {
+  "seconds": 1.5,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -22.57,
+  "crest_db": 16.6,
+  "centroid_hz": 262,
+  "rolloff85_hz": 273,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "a86510885bf14953f5e3cab833a58f4c8375a44d8f54baac08795ada1f7737ec",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

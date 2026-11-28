@@ -150,6 +150,16 @@ GIFTS = [
     ("tomatoes", ["adult", "warm"]),
     ("strawberries", ["kid", "sweet", "teen"]),
     ("jam_strawberry", ["elder", "sweet", "warm", "reader"]),
+    # cooked by the hero himself (docs/kitchen.md)
+    ("dish_ukha", ["elder", "adult", "warm", "sea"]),
+    ("dish_fried_potatoes", ["teen", "adult", "warm"]),
+    ("dish_fried_fish", ["elder", "adult", "sea"]),
+    ("dish_salad", ["adult", "tidy", "artist"]),
+    ("dish_okroshka", ["adult", "elder", "warm"]),
+    ("dish_fried_smelt", ["sea", "elder", "adult"]),
+    ("dish_herring_potatoes", ["sea", "elder", "adult"]),
+    ("dish_draniki", ["kid", "teen", "elder", "warm"]),
+    ("dish_carrot_salad", ["kid", "tidy", "elder"]),
 ]
 
 # --- tea at home: the ten open-home owners (their homes: tools/city/content/strings/homes.json) ----------------------
@@ -585,6 +595,7 @@ for job, ru, en, ja in [
         ("researcher", "работает в лаборатории", "works at the lab", "研究所の研究員"),
         ("station_attendant", "дежурит на станции канатки", "works at the cable car station", "ロープウェイ駅の係員"),
         ("station_barista", "варит кофе в станционном буфете", "makes coffee at the station buffet", "駅のビュッフェでコーヒーをいれる仕事"),
+        ("milk_round", "развозит молоко по дворам", "does the morning milk round", "朝の牛乳配達の仕事"),
 ]:
     T("friends.job.%s" % job, ru, en, ja)
 

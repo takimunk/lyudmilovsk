@@ -29,6 +29,16 @@ CATALOGUE
   towel_hat         [prop] a folded striped towel and a straw hat on a chair or a bench (summer)
   school_bag        0.3x0.12x0.35 a satchel on the floor or hung on a desk hook (z = its bottom)
   mitten_pair       [prop] a pair of mittens drying on a radiator or a ledge
+  chess_left        0.42x0.42 [prop] a game left mid-way on a table's board: the pieces in one of six real middle-game
+                    positions (seed), two or three taken pieces stood beside the board; board=False when the table has its own
+  dominoes_left     [prop] a game of dominoes left on a table: the snake of played tiles, each player's few tiles stood on
+                    edge at their places (players 2..4), the face-down heap
+  tea_in_holder     [prop] a tea glass in a metal holder (podstakannik) with the spoon left in it, a slice of lemon
+  spectacles        [prop] reading glasses left folded on a table or a book
+  exercise_books    [prop] two exercise books left open, a pencil case and a pencil (homework, a pupil's desk)
+  class_register    [prop] the class register (a thick bound book), a duster and a stub of chalk on the teacher's desk
+  ticket_stubs      [prop] torn cinema ticket stubs and a sweet wrapper on a seat or the floor after a show
+  sheet_music       [prop] a book of music open on a stand or a lid, a loose sheet beside it
 """
 import math
 import os
@@ -482,5 +492,235 @@ def mitten_pair(B, x, y, z=0.0, yaw=0.0, mat=None, seed=0, solid=False):
     return p.done(top=0.02)
 
 
+# ------------------------------------------------------------------------------------------------ traces of a visit
+# (B.dress(..., visit=...): what a townsperson leaves behind; docs/city_dress.md "Traces of a visit")
+
+# Six middle-game positions (white's pieces upper case, black lower; rank 8 first, as in FEN): real games' middles, so a
+# player's eye reads "somebody stopped here", not a scatter. Kings castled or in the middle, a few pieces off.
+CHESS_MIDGAMES = (
+    "r1bq1rk1/pp2bppp/2n1pn2/3p4/2PP4/2N1PN2/PP3PPP/R2QKB1R",
+    "r2q1rk1/1b2bppp/p2ppn2/1p6/3NP3/1BN1B3/PPP2PPP/R2Q1RK1",
+    "2r2rk1/pp1q1ppp/4pn2/3p4/3P4/2PB1Q2/P4PPP/R4RK1",
+    "r4rk1/1pp1qppp/p1np1n2/4p3/2B1P1b1/2NP1N2/PPP1QPPP/R4RK1",
+    "3r1rk1/p4ppp/1pn1p3/2q5/2P5/P3P3/1B3PPP/2RQ1RK1",
+    "6k1/pp3ppp/2p5/3r4/3P4/2P1R3/PP3PPP/6K1",
+)
+_CHESS_H = {"p": 0.032, "r": 0.04, "n": 0.045, "b": 0.05, "q": 0.058, "k": 0.065}
+
+
+def _chess_piece(p, mat, u, v, kind, s):
+    """One piece of the kit's lathe set: a base, a waist, a head by kind (the knight a leaning block, the king a cross)."""
+    h = _CHESS_H[kind]
+    r = s * 0.32
+    if kind == "n":
+        p.lathe(mat, u, v, [(r, 0.0), (r * 0.8, 0.008), (r * 0.55, h * 0.45)], 4, top=True)
+        p.bev(mat, u - r * 0.35, u + r * 0.35, v - r * 0.75, v + r * 0.35, h * 0.45, h, 0.004, 0.0)
+        return
+    prof = [(r, 0.0), (r * 0.85, 0.007), (r * 0.42, h * 0.55), (r * (0.62 if kind in "rq" else 0.5), h * 0.8),
+            (r * (0.6 if kind == "r" else 0.2), h)]
+    p.lathe(mat, u, v, prof, 4, top=True)
+    if kind == "k":
+        p.box(mat, u - 0.003, u + 0.003, v - 0.003, v + 0.003, h, h + 0.016)
+        p.box(mat, u - 0.008, u + 0.008, v - 0.003, v + 0.003, h + 0.007, h + 0.012)
+
+
+def chess_left(B, x, y, z=0.0, yaw=0.0, board=True, size=0.42, seed=0, solid=False):
+    """[prop] A game of chess left half way: one of CHESS_MIDGAMES (by seed) on a board of `size` m (board=False: the
+    table has its own squares; the pieces stand on its top at z), two or three taken pieces beside the board."""
+    p = _P(B, x, y, z, yaw, "chess_left")
+    p.kind = "prop"
+    rnd = _rng(seed, x, y, "chess_left")
+    fen = CHESS_MIDGAMES[seed % len(CHESS_MIDGAMES)]
+    s = size * 0.9 / 8
+    z0 = 0.0
+    if board:
+        z0 = 0.012
+        p.box("CT_Wood", -size / 2, size / 2, -size / 2, size / 2, 0.0, z0, f="xXyYZ")
+        for i in range(8):
+            for j in range(8):
+                if (i + j) % 2 == 0:
+                    u, v = -size * 0.45 + i * s, -size * 0.45 + j * s
+                    p.face("CT_WoodLight", [(u, v, z0 + 0.0005), (u + s, v, z0 + 0.0005), (u + s, v + s, z0 + 0.0005),
+                                            (u, v + s, z0 + 0.0005)])
+    left = {"w": [], "b": []}
+    full = "rnbqkbnrpppppppp"
+    for rank, row in enumerate(fen.split("/")):
+        file_ = 0
+        for ch in row:
+            if ch.isdigit():
+                file_ += int(ch)
+                continue
+            u = -size * 0.45 + (file_ + 0.5) * s
+            v = size * 0.45 - (rank + 0.5) * s          # rank 8 at +y (black's side away from yaw's front)
+            mat = "CT_TileWhite" if ch.isupper() else "CT_Lacquer"
+            _chess_piece(p, mat, u, v, ch.lower(), s)
+            left["w" if ch.isupper() else "b"].append(ch.lower())
+            file_ += 1
+    # two or three of the pieces that are off the board, stood by the board's edge on the taker's side
+    for side, mat, vy in (("w", "CT_TileWhite", size / 2 + 0.04), ("b", "CT_Lacquer", -size / 2 - 0.04)):
+        gone = list(full)
+        for k in left[side]:
+            if k in gone:
+                gone.remove(k)
+        gone = [k for k in gone if k != "k"]
+        rnd.shuffle(gone)
+        for n, kind in enumerate(gone[:3]):
+            _chess_piece(p, mat, size / 2 - 0.03 - n * 0.045, vy if side == "b" else -vy, kind, s)
+    return p.done(top=0.08)
+
+
+def _tile(p, cx, cy, z, a, w=0.024, l=0.048, h=0.008, up=True, on_edge=False):
+    """One domino: an ivory block (or its dark back when not up), pips as two dark dots; on_edge: stood up facing +y."""
+    ca, sa = math.cos(a), math.sin(a)
+    if on_edge:
+        p.hexa("CT_TileWhite", [(cx - ca * l / 2, cy - sa * l / 2, z), (cx + ca * l / 2, cy + sa * l / 2, z),
+                                (cx + ca * l / 2 - sa * h, cy + sa * l / 2 + ca * h, z), (cx - ca * l / 2 - sa * h, cy - sa * l / 2 + ca * h, z)],
+               [(cx - ca * l / 2, cy - sa * l / 2, z + w), (cx + ca * l / 2, cy + sa * l / 2, z + w),
+                (cx + ca * l / 2 - sa * h, cy + sa * l / 2 + ca * h, z + w), (cx - ca * l / 2 - sa * h, cy - sa * l / 2 + ca * h, z + w)])
+        return
+
+    def pt(u, v, zz):
+        return (cx + ca * u - sa * v, cy + sa * u + ca * v, zz)
+    mat = "CT_TileWhite" if up else "CT_ConcreteDark"
+    p.hexa(mat, [pt(-l / 2, -w / 2, z), pt(l / 2, -w / 2, z), pt(l / 2, w / 2, z), pt(-l / 2, w / 2, z)],
+           [pt(-l / 2, -w / 2, z + h), pt(l / 2, -w / 2, z + h), pt(l / 2, w / 2, z + h), pt(-l / 2, w / 2, z + h)])
+    if up:
+        for su in (-1, 1):
+            d = 0.0035
+            p.face("CT_ConcreteDark", [pt(su * l / 4 - d, -d, z + h + 0.0005), pt(su * l / 4 + d, -d, z + h + 0.0005),
+                                       pt(su * l / 4 + d, d, z + h + 0.0005), pt(su * l / 4 - d, d, z + h + 0.0005)])
+
+
+def dominoes_left(B, x, y, z=0.0, yaw=0.0, players=4, seed=0, solid=False):
+    """[prop] A game of dominoes left on the table: a snake of played tiles turning at the ends, each player's last tiles
+    stood on edge at their side (players at -y, +x, +y, -x), the face-down heap ("базар") at a corner."""
+    p = _P(B, x, y, z, yaw, "dominoes_left")
+    p.kind = "prop"
+    rnd = _rng(seed, x, y, "dominoes")
+    n = 9 + seed % 6
+    cx, cy, a = -0.05 * (n // 2), 0.0, 0.0
+    for k in range(n):
+        _tile(p, cx, cy, 0.0, a)
+        step = 0.05
+        if k in (n // 2 + 2, 2) and rnd.random() < 0.7:
+            a += math.pi / 2 * (1 if k > 2 else -1)
+            step = 0.037
+        cx, cy = cx + math.cos(a) * step, cy + math.sin(a) * step
+    seats = ((0.0, -0.28, 0.0), (0.3, 0.0, math.pi / 2), (0.0, 0.28, math.pi), (-0.3, 0.0, -math.pi / 2))[:max(2, min(4, players))]
+    for sx, sy, sa in seats:
+        for j in range(rnd.randint(2, 4)):
+            u = (j - 1.5) * 0.028
+            _tile(p, sx + math.cos(sa) * u, sy + math.sin(sa) * u, 0.0, sa, on_edge=True)
+    for j in range(rnd.randint(3, 5)):
+        _tile(p, 0.24 + rnd.uniform(-0.03, 0.03), -0.2 + j * 0.03, 0.0, rnd.uniform(0, math.pi), up=False)
+    return p.done(top=0.03)
+
+
+def tea_in_holder(B, x, y, z=0.0, yaw=0.0, lemon=True, seed=0, solid=False):
+    """[prop] A tea glass in a metal holder (podstakannik): the openwork band, the handle, the spoon left standing in it,
+    the tea a third drunk; a slice of lemon on the saucer-less table beside it."""
+    p = _P(B, x, y, z, yaw, "tea_holder")
+    p.kind = "prop"
+    p.lathe("CT_Brass", 0, 0, [(0.03, 0.0), (0.037, 0.008), (0.035, 0.05), (0.038, 0.058)], 8, top=False, a0=math.pi / 8)
+    p.lathe("CT_Glass", 0, 0, [(0.033, 0.05), (0.036, 0.105)], 8, top=False, a0=math.pi / 8)
+    p.cyl("CT_Wood", 0, 0, 0.07, 0.072, 0.034, 8, a0=math.pi / 8)
+    p.tube("CT_Brass", [(0.036, 0.0, 0.052), (0.06, 0.0, 0.048), (0.06, 0.0, 0.016), (0.036, 0.0, 0.012)], 0.008, 3)
+    p.rod("CT_Aluminium", (0.006, 0.01, 0.03), (0.02, 0.025, 0.14), 0.005, 3)
+    if lemon:
+        p.cyl("CT_PlasterYellow", 0.085, -0.03, 0.0, 0.006, 0.022, 7)
+    return p.done(top=0.12)
+
+
+def spectacles(B, x, y, z=0.0, yaw=0.0, solid=False):
+    """[prop] Reading glasses left folded: two round lenses in a thin frame, the temples folded behind."""
+    p = _P(B, x, y, z, yaw, "spectacles")
+    p.kind = "prop"
+    for s in (-1, 1):
+        p.cyl("CT_Glass", s * 0.028, 0.0, 0.004, 0.006, 0.022, 8)
+        p.lathe("CT_Lacquer", s * 0.028, 0.0, [(0.024, 0.002), (0.024, 0.009)], 8, top=False)
+    p.rod("CT_Lacquer", (-0.007, 0.0, 0.008), (0.007, 0.0, 0.008), 0.004, 3)
+    p.rod("CT_Lacquer", (-0.05, 0.004, 0.006), (0.04, 0.012, 0.003), 0.003, 3)
+    p.rod("CT_Lacquer", (0.05, 0.008, 0.009), (-0.04, 0.016, 0.006), 0.003, 3)
+    return p.done(top=0.012)
+
+
+def exercise_books(B, x, y, z=0.0, yaw=0.0, seed=0, solid=False):
+    """[prop] Homework left out: two exercise books (thin, the school's green and blue covers), one open on its ruled pages,
+    a pencil case and a pencil."""
+    p = _P(B, x, y, z, yaw, "exercise_books")
+    p.kind = "prop"
+    rnd = _rng(seed, x, y, "exbooks")
+    # the open one: two pages side by side, a faint spine dip
+    p.box(rnd.choice(["CT_PlasterGreen", "CT_PlasterBlue"]), -0.17, 0.17, -0.1, 0.1, 0.0, 0.002, f="xXyYZ")
+    p.slab("CT_Paper", (-0.165, -0.095, 0.003), (-0.003, -0.095, 0.0025), (-0.003, 0.095, 0.0025), (-0.165, 0.095, 0.003), 0.001)
+    p.slab("CT_Paper", (0.003, -0.095, 0.0025), (0.165, -0.095, 0.003), (0.165, 0.095, 0.003), (0.003, 0.095, 0.0025), 0.001)
+    for k in range(6):                       # ruled lines, pencil grey
+        v = -0.07 + k * 0.028
+        p.face("CT_PlasterGrey", [(0.02, v, 0.0032), (0.15, v, 0.0032), (0.15, v + 0.002, 0.0032), (0.02, v + 0.002, 0.0032)])
+    # the shut one, askew on the side
+    a = rnd.uniform(-0.4, 0.4)
+    ca, sa = math.cos(a), math.sin(a)
+    q = [(-0.085, -0.1), (0.085, -0.1), (0.085, 0.1), (-0.085, 0.1)]
+    ox, oy = 0.27, 0.03
+    bot = [(ox + ca * u - sa * v, oy + sa * u + ca * v, 0.0) for u, v in q]
+    p.hexa(rnd.choice(["CT_PlasterRed", "CT_PlasterYellow", "CT_PlasterBlue"]), bot, [(b[0], b[1], 0.005) for b in bot])
+    # the pencil case and a pencil across the open book
+    p.bev("CT_PlasterRed", -0.12, 0.08, 0.13, 0.18, 0.0, 0.03, 0.008, 0.0)
+    p.rod("CT_PlasterYellow", (0.03, -0.06, 0.008), (0.16, 0.02, 0.008), 0.007, 6)
+    return p.done(top=0.03)
+
+
+def class_register(B, x, y, z=0.0, yaw=0.0, seed=0, solid=False):
+    """[prop] The class register (классный журнал): a thick bound book in a dark cloth cover with a pale label, a felt
+    duster grey with chalk, a stub of chalk."""
+    p = _P(B, x, y, z, yaw, "class_register")
+    p.kind = "prop"
+    p.bev("CT_PlasterBlue", -0.11, 0.11, -0.15, 0.15, 0.0, 0.03, 0.004, 0.0)
+    p.box("CT_Paper", -0.105, 0.1, -0.145, 0.145, 0.003, 0.027, f="xXyY")
+    p.box("CT_Paper", -0.05, 0.05, -0.02, 0.04, 0.03, 0.0305, f="Z")
+    p.bev("CT_Wood", 0.17, 0.3, -0.05, 0.0, 0.0, 0.025, 0.004, 0.0)
+    p.box("CT_PlasterGrey", 0.17, 0.3, -0.05, 0.0, 0.025, 0.04, f="xXyYZ")
+    p.rod("CT_TileWhite", (0.2, 0.06, 0.006), (0.24, 0.07, 0.006), 0.011, 6)
+    return p.done(top=0.04)
+
+
+def ticket_stubs(B, x, y, z=0.0, yaw=0.0, n=3, wrapper=True, seed=0, solid=False):
+    """[prop] Torn cinema ticket stubs (pale pink and blue slips) and a sweet wrapper twisted at the ends."""
+    p = _P(B, x, y, z, yaw, "ticket_stubs")
+    p.kind = "prop"
+    rnd = _rng(seed, x, y, "stubs")
+    for k in range(n):
+        cx, cy = rnd.uniform(-0.12, 0.12), rnd.uniform(-0.08, 0.08)
+        a = rnd.uniform(0, math.pi)
+        ca, sa = math.cos(a), math.sin(a)
+        q = [(-0.028, -0.014), (0.028, -0.014), (0.028, 0.014), (-0.028, 0.014)]
+        p.face(rnd.choice(["CT_PlasterPink", "CT_PlasterBlue", "CT_Paper"]),
+               [(cx + ca * u - sa * v, cy + sa * u + ca * v, 0.001 + 0.0004 * k) for u, v in q])
+    if wrapper:
+        wx, wy = rnd.uniform(-0.1, 0.1), rnd.uniform(-0.06, 0.06)
+        p.lathe(rnd.choice(["CT_PlasterRed", "CT_Brass", "CT_PlasterGreen"]), wx, wy,
+                [(0.0, 0.0), (0.012, 0.004), (0.0, 0.009)], 5)
+    return p.done(top=0.01)
+
+
+def sheet_music(B, x, y, z=0.0, yaw=0.0, tilt=0.0, seed=0, solid=False):
+    """[prop] A book of music open flat (tilt > 0: leaning back that many degrees, on a stand), a loose sheet beside."""
+    p = _P(B, x, y, z, yaw, "sheet_music")
+    p.kind = "prop"
+    t = math.radians(tilt)
+    dz, dy = 0.24 * math.sin(t), 0.24 * math.cos(t)
+    for x0, x1 in ((-0.17, -0.004), (0.004, 0.17)):
+        p.slab("CT_Paper", (x0, 0.0, 0.002), (x1, 0.0, 0.002), (x1, dy, 0.002 + dz), (x0, dy, 0.002 + dz), 0.002)
+        for k in range(5):           # the staves, dark lines across each page
+            f = 0.15 + k * 0.17
+            p.face("CT_ConcreteDark", [(x0 + 0.012, dy * f, 0.0045 + dz * f), (x1 - 0.012, dy * f, 0.0045 + dz * f),
+                                       (x1 - 0.012, dy * f + 0.003, 0.0045 + dz * (f + 0.012)), (x0 + 0.012, dy * f + 0.003, 0.0045 + dz * (f + 0.012))])
+    if tilt == 0.0:
+        p.face("CT_Paper", [(0.2, -0.02, 0.001), (0.4, 0.01, 0.001), (0.38, 0.27, 0.001), (0.18, 0.24, 0.001)])
+    return p.done(top=0.01 + dz)
+
+
 PIECES = {f.__name__: f for f in (coats_on_rail, umbrella_open, umbrella_closed, umbrella_stand, wall_hooks, boots, doormat_wet, jigsaw,
-                                   vase_wilted, plate_crumbs, book_face_down, sledge, towel_hat, school_bag, mitten_pair)}
+                                   vase_wilted, plate_crumbs, book_face_down, sledge, towel_hat, school_bag, mitten_pair,
+                                   chess_left, dominoes_left, tea_in_holder, spectacles, exercise_books, class_register,
+                                   ticket_stubs, sheet_music)}

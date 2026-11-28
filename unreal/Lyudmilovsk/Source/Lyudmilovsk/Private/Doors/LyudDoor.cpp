@@ -260,8 +260,19 @@ bool ALyudDoorBase::PlayerCanUse(const APawn* Pawn, const FVector& Eye, const FV
 	}
 	bool bHit = false;
 	float Best = InteractRange;
-	// the doorway itself (closed leaf or the open hole) ...
 	const FTransform& T = GetActorTransform();
+	// every door in the world is asked (DoorInView, several times a second from the things', the letters' pick): a far one
+	// is dropped before the transforms and the leaf list. A leaf (at any angle) stays within twice the doorway-and-sweep box's
+	// diagonal of its middle, and a hit counts only within InteractRange of the eye.
+	{
+		const FBox Near = GetDoorwayLocalBox() + GetSweepLocalBox();
+		const float Reach = InteractRange + 2.f * (float)Near.GetSize().Size() * (float)T.GetScale3D().GetAbsMax();
+		if (FVector::DistSquared(Eye, T.TransformPosition(Near.GetCenter())) > FMath::Square(Reach))
+		{
+			return false;
+		}
+	}
+	// the doorway itself (closed leaf or the open hole) ...
 	const FVector LocalEye = T.InverseTransformPosition(Eye);
 	const FVector LocalDir = T.InverseTransformVector(Dir).GetSafeNormal();
 	float Hit = 0.f;
@@ -838,31 +849,36 @@ void ULyudDoorSubsystem::UpdateAgents(float DeltaTime)
 	{
 		return;
 	}
-	// pawns nobody plays are agents by themselves; others must register
-	TSet<const AActor*> Known;
-	Known.Reserve(Agents.Num());
-	for (const FAgent& A : Agents)
+	// pawns nobody plays are agents by themselves; others must register. New ones are looked for every 0.3 s (every
+	// third update), not at every update: the sweep walks every pawn of the world and a pawn seldom appears
+	if (--PawnSweepIn <= 0)
 	{
-		Known.Add(A.Actor.Get());
-	}
-	for (TActorIterator<APawn> It(World); It; ++It)
-	{
-		APawn* Pawn = *It;
-		if (Pawn->IsPlayerControlled() || Known.Contains(Pawn))
+		PawnSweepIn = 3;
+		TSet<const AActor*>& Known = KnownScratch;
+		Known.Reset();
+		for (const FAgent& A : Agents)
 		{
-			continue;
+			Known.Add(A.Actor.Get());
 		}
-		Known.Add(Pawn);
-		FAgent& A = Agents.AddDefaulted_GetRef();
-		A.Actor = Pawn;
-		A.Radius = BodyRadius(Pawn);
-		A.LastPos = Pawn->GetActorLocation();
+		for (TActorIterator<APawn> It(World); It; ++It)
+		{
+			APawn* Pawn = *It;
+			if (Pawn->IsPlayerControlled() || Known.Contains(Pawn))
+			{
+				continue;
+			}
+			Known.Add(Pawn);
+			FAgent& A = Agents.AddDefaulted_GetRef();
+			A.Actor = Pawn;
+			A.Radius = BodyRadius(Pawn);
+			A.LastPos = Pawn->GetActorLocation();
+		}
+		Known.Reset();   // no addresses kept past this call
 	}
 	// each door once: whether people pass it and a sphere (world) round its approach box; an agent outside the sphere
 	// can't be in the box, so the transforms and the virtual box are skipped for it (the same answers, far cheaper)
-	struct FDoorReach { ALyudDoorBase* Door; bool bPass; FVector Centre; float Reach2; };
-	TArray<FDoorReach> Reach;
-	Reach.Reserve(Doors.Num());
+	TArray<FDoorReach>& Reach = ReachScratch;
+	Reach.Reset();
 	for (const TWeakObjectPtr<ALyudDoorBase>& DoorPtr : Doors)
 	{
 		ALyudDoorBase* Door = DoorPtr.Get();

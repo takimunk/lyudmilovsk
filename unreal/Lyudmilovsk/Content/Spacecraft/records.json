@@ -1,0 +1,141 @@
+{
+ "_doc": "Written by tools/spacecraft/records_strings.py from tools/spacecraft/records.json: do not edit by hand.",
+ "house_cue": "europa_1",
+ "records": [
+  {
+   "id": "record_sc_goldberg_aria",
+   "short": "goldberg_aria",
+   "cell": 0,
+   "seconds": 300.0,
+   "pinned": false,
+   "mood": [
+    "piano",
+    "still",
+    "start"
+   ],
+   "fallback": [
+    "dawn_2",
+    "day_2",
+    "rain_1"
+   ],
+   "asset": "/Game/Spacecraft/Music/record_sc_goldberg_aria"
+  },
+  {
+   "id": "record_sc_clair_de_lune",
+   "short": "clair_de_lune",
+   "cell": 1,
+   "seconds": 305.0,
+   "pinned": false,
+   "mood": [
+    "piano",
+    "moon",
+    "night"
+   ],
+   "fallback": [
+    "dawn_2",
+    "day_2",
+    "rain_1"
+   ],
+   "asset": "/Game/Spacecraft/Music/record_sc_clair_de_lune"
+  },
+  {
+   "id": "record_sc_gymnopedie",
+   "short": "gymnopedie",
+   "cell": 2,
+   "seconds": 187.5,
+   "pinned": false,
+   "mood": [
+    "piano",
+    "slow",
+    "weightless"
+   ],
+   "fallback": [
+    "dawn_2",
+    "day_2",
+    "rain_1"
+   ],
+   "asset": "/Game/Spacecraft/Music/record_sc_gymnopedie"
+  },
+  {
+   "id": "record_sc_rachmaninoff_andante",
+   "short": "rachmaninoff_andante",
+   "cell": 3,
+   "seconds": 367.5,
+   "pinned": false,
+   "mood": [
+    "orchestra",
+    "russian",
+    "tender"
+   ],
+   "fallback": [
+    "dusk_1"
+   ],
+   "asset": "/Game/Spacecraft/Music/record_sc_rachmaninoff_andante"
+  },
+  {
+   "id": "record_sc_strauss_waltzes",
+   "short": "strauss_waltzes",
+   "cell": 4,
+   "seconds": 295.0,
+   "pinned": false,
+   "mood": [
+    "orchestra",
+    "waltz",
+    "space"
+   ],
+   "fallback": [
+    "dusk_1"
+   ],
+   "asset": "/Game/Spacecraft/Music/record_sc_strauss_waltzes"
+  },
+  {
+   "id": "record_sc_air_1920",
+   "short": "air_1920",
+   "cell": 5,
+   "seconds": 257.5,
+   "pinned": false,
+   "mood": [
+    "violin",
+    "retro",
+    "tender"
+   ],
+   "fallback": [
+    "dusk_2"
+   ],
+   "asset": "/Game/Spacecraft/Music/record_sc_air_1920"
+  },
+  {
+   "id": "record_sc_japanese_sandman",
+   "short": "japanese_sandman",
+   "cell": 6,
+   "seconds": 175.0,
+   "pinned": false,
+   "mood": [
+    "jazz",
+    "retro",
+    "sleepy"
+   ],
+   "fallback": [
+    "dusk_2"
+   ],
+   "asset": "/Game/Spacecraft/Music/record_sc_japanese_sandman"
+  },
+  {
+   "id": "record_sc_floating_clouds",
+   "short": "floating_clouds",
+   "cell": 7,
+   "seconds": 315.0,
+   "pinned": false,
+   "mood": [
+    "ambient",
+    "electronic",
+    "space"
+   ],
+   "fallback": [
+    "europa_1",
+    "ural_1"
+   ],
+   "asset": "/Game/Spacecraft/Music/record_sc_floating_clouds"
+  }
+ ]
+}

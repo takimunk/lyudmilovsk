@@ -117,6 +117,34 @@
    "aspect": "1:1",
    "prompt": "A neatly folded loose camel-coloured corduroy overshirt with two chest pockets and buttons, the sleeves rolled."
   },
+  "icon_wind_jacket": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a neatly folded bottle-green zip windbreaker of thin crisp fabric with a stand-up collar and elastic cuffs",
+   "source": "localization/icon_grids_look.json: icons_look, cell 1 (row 1, left), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_raincoat": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a neatly folded yellow rubberised raincoat with a hood and big press studs, a matte sheen on the folds",
+   "source": "localization/icon_grids_look.json: icons_look, cell 2 (row 1, right), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_winter_coat": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a neatly folded heavy navy blue woollen winter coat with a dark fur collar and large buttons",
+   "source": "localization/icon_grids_look.json: icons_look, cell 3 (row 2, left), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_cap": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a grey herringbone tweed flat cap with a short stiff peak, seen from the front at three quarters",
+   "source": "localization/icon_grids_look.json: icons_look, cell 4 (row 2, right), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
   "icon_hoodie": {
    "kind": "icon",
    "style": "icon",
@@ -1140,6 +1168,27 @@
    "prompt": "A box kite of two blue cloth cells on four thin wooden slats with cross braces, a small wooden line reel with white string beside it.",
    "source": "design/kites/icon_kites_grid.json: one 2x2 Higgsfield grid (the game-assets rule), the better bottom-row cell cut"
   },
+  "icon_kite_delta": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A delta kite: a wide triangular wing of light orange ripstop cloth with one pale yellow stripe, a thin wooden spine and two leading-edge spars, a small keel under it, no tail, a small wooden line reel with white string beside it.",
+   "source": "design/kites/icon_kites_grid_2.json: one 2x2 Higgsfield grid (the game-assets rule), pinned and not generated yet; cell 1 (top left)"
+  },
+  "icon_kite_stunt": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A two-line stunt kite: a swept-back delta wing of teal and white ripstop cloth on thin dark spars with a small T-shaped centre fitting, two thin lines neatly coiled, two short padded wrist-strap handles lying beside it, no reel.",
+   "source": "design/kites/icon_kites_grid_2.json: one 2x2 Higgsfield grid (the game-assets rule), pinned and not generated yet; cell 2 (top right)"
+  },
+  "icon_kite_dragon": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A dragon kite laid out in a loose coil: a round hand-painted paper-and-bamboo dragon head in crimson and gold with big painted eyes, and a very long narrow crimson cloth tail with a gold edge curled in loops behind it, a small wooden line reel with white string beside it.",
+   "source": "design/kites/icon_kites_grid_2.json: one 2x2 Higgsfield grid (the game-assets rule), pinned and not generated yet; cell 3 or 4 (bottom row, the better one)"
+  },
   "icon_san_diploma": {
    "kind": "icon",
    "style": "icon",
@@ -1434,6 +1483,41 @@
    "prompt": "a glass jar of dark red strawberry jam with whole berries visible, a square of white gauze tied over the lid with string, a blank paper label",
    "source": "localization/icon_grids_garden.json: icons_garden_2, cell 6 (row 2, right), one 3x2 Higgsfield grid (the game-assets rule)"
   },
+  "icon_seashell": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A single small Baltic cockle shell, pale cream with fine ribs, a few grains of wet sand on it.",
+   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_seashell (fal, one picture; docs/beach.md)"
+  },
+  "icon_amber_piece": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small rough piece of raw Baltic amber, cloudy honey-yellow with a matte weathered crust, a strand of dark seaweed beside it.",
+   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_amber_piece (fal, one picture; docs/beach.md)"
+  },
+  "icon_amber_fly": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small polished drop of clear honey-coloured Baltic amber with a tiny dark fly caught inside it, lit from behind.",
+   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_amber_fly (fal, one picture; docs/beach.md)"
+  },
+  "icon_sand_flag": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small red paper flag glued to a thin wooden stick, the kind children put on top of a sandcastle.",
+   "source": "not generated yet: python3 tools/gen_localized.py --lang ru icon_sand_flag (fal, one picture; docs/beach.md)"
+  },
+  "icon_keeper_whistle": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small nickel-plated pea whistle on a short loop of faded cord, a damp yellow birch leaf stuck to it.",
+   "source": "owed: docs/quests.md tq3_whistle (the lead generates the icons of /home/user/wt/_brief/icons_owed.md)"
+  },
   "icon_travel_card": {
    "kind": "icon",
    "style": "icon",
@@ -1475,6 +1559,83 @@
    "style": "icon",
    "aspect": "1:1",
    "prompt": "A small worn brown plush teddy bear sitting upright, one ear slightly faded."
+  },
+  "icon_dish_ukha": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a white enamel bowl of clear golden fish soup with a piece of white fish, potato chunks and a sprig of dill, an aluminium spoon beside it",
+   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 1 (row 1, left), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_dish_fried_potatoes": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a cast iron frying pan of golden fried potato slices with a crisp crust, chopped fresh dill scattered on top",
+   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 2 (row 1, right), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_dish_fried_fish": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a white plate with one whole small fried fish with a golden crisp crust and a sprig of dill beside it",
+   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 3 (row 2, left), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_dish_salad": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "an enamel bowl of salad of red tomato wedges, sliced pink radishes and green dill, coarse salt",
+   "source": "localization/icon_grids_kitchen.json: icons_kitchen, cell 4 (row 2, right), one 2x2 Higgsfield grid (the game-assets rule)"
+  },
+  "icon_dish_okroshka": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a white enamel bowl of cold kefir soup with diced radish, potato and chopped green dill, an aluminium spoon",
+   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+  },
+  "icon_dish_fried_smelt": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a plate of small golden crisp fried smelt fish laid in a row, a lemon wedge",
+   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+  },
+  "icon_dish_herring_potatoes": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a plate with two small silver Baltic herring, boiled potatoes in their skins and dill",
+   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+  },
+  "icon_dish_draniki": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a stack of three golden lacy potato pancakes on a plate",
+   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+  },
+  "icon_dish_carrot_salad": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "a small glass bowl of finely grated orange carrot mixed with apple",
+   "source": "owed (2026-11-27, branch kitchen-depth-1127): /home/user/wt/_brief/icons_owed.md, one grid the lead makes"
+   },
+  "icon_kvass_can": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A small dented aluminium milk can with a wire handle and a tight lid, beads of cold condensation on its side, a little dark amber kvass foam at the rim.",
+   "source": "owed: docs/street_life.md (the lead generates the icons of /home/user/wt/_brief/icons_owed.md)"
+  },
+  "icon_fruit_ice": {
+   "kind": "icon",
+   "style": "icon",
+   "aspect": "1:1",
+   "prompt": "A bright red fruit ice lolly on a flat wooden stick, glossy and slightly melting, one drip running down, half unwrapped from a plain paper wrapper.",
+   "source": "owed: docs/street_life.md (the lead generates the icons of /home/user/wt/_brief/icons_owed.md)"
   }
  }
 }

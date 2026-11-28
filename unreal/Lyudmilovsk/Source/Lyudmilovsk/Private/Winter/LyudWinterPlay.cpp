@@ -249,6 +249,7 @@ void ULyudWinterPlay::StartOver()
 	M->Fight.End();
 	M->Balls.clear();
 	SkatedM = 0.f;
+	CoalDay = -1;
 	bFirstGlide = bLongGlide = false;
 	HideSnowmen();
 }
@@ -1695,9 +1696,25 @@ void ULyudWinterPlay::TickBalls(AHeroCharacter* Hero, float Dt)
 				continue;
 			}
 		}
+		// a child's ball leaves from inside the child's own body (hand height over the feet): no world test until it is
+		// clear of them, or it bursts on its thrower the moment it is thrown
+		FVector TraceFrom = A;
+		if (B.Owner >= 0)
+		{
+			const double ClearS = 0.6 / FMath::Max(1.0, P.KidSpeed);
+			if (B.Age < ClearS)
+			{
+				continue;
+			}
+			const double PrevAge = B.Age - Dt;
+			if (PrevAge < ClearS && Dt > 0.f)
+			{
+				TraceFrom = A + (Bc - A) * ((ClearS - PrevAge) / Dt);
+			}
+		}
 		FHitResult Hit;
 		FCollisionQueryParams Q(SCENE_QUERY_STAT(WinterPlayBall), false, B.Owner < 0 ? static_cast<AActor*>(Hero) : nullptr);
-		if (GetWorld()->LineTraceSingleByChannel(Hit, A, Bc, ECC_Visibility, Q))
+		if (GetWorld()->LineTraceSingleByChannel(Hit, TraceFrom, Bc, ECC_Visibility, Q))
 		{
 			B.bDone = true;
 			Burst(Hit.ImpactPoint);

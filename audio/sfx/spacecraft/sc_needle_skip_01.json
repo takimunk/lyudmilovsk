@@ -1,0 +1,30 @@
+{
+ "name": "sc_needle_skip_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_needle_skip_01",
+ "pool": "sc_needle_skip",
+ "file": "audio/sfx/spacecraft/sc_needle_skip_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7621,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.354,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -24.42,
+ "params": {},
+ "checks": {
+  "seconds": 0.354,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -24.42,
+  "crest_db": 18.4,
+  "centroid_hz": 1924,
+  "rolloff85_hz": 4175,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "3021677c456f1115ce19ec4ca21c9a16ffb43a22d6da61e9db905610476b77bc",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

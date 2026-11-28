@@ -504,6 +504,13 @@ void ULyudCityThings::OnGameLoaded_Implementation()
 		{
 			Model->ResetState();
 		}
+		// the tournaments too: ApplySaved does nothing for a save without this record, and the brackets, sign-ups and cups
+		// of the game left would carry into the one loaded
+		if (Cups)
+		{
+			Cups->Reset();
+		}
+		CupMatchCup = -1;
 		ApplySaved();
 		ApplyOpenAir();
 	}
@@ -544,6 +551,24 @@ int32 ULyudCityThings::PickInView(const AHeroCharacter* Hero, const APlayerContr
 	FCollisionQueryParams Q(SCENE_QUERY_STAT(CityThingSight), false, Hero);
 	for (int32 I = 0; I < Num; ++I)
 	{
+		if (HiddenPlots.Num() > 0)
+		{
+			// away now (SetPlotHidden: the street's barrel on a cool day); compared in place, no string built per pick
+			const FUTF8ToTCHAR ThingPlot(Model->Things[(size_t)Out[I]].Plot.c_str());
+			bool bAway = false;
+			for (const FString& Away : HiddenPlots)
+			{
+				if (FCString::Strcmp(*Away, ThingPlot.Get()) == 0)
+				{
+					bAway = true;
+					break;
+				}
+			}
+			if (bAway)
+			{
+				continue;
+			}
+		}
 		const FVector At = ThingLocation(Out[I]);
 		FHitResult Hit;
 		if (!World->LineTraceSingleByChannel(Hit, Eye, At, ECC_Visibility, Q) || Hit.Distance >= FVector::Dist(Eye, At) - 90.f)
@@ -552,6 +577,18 @@ int32 ULyudCityThings::PickInView(const AHeroCharacter* Hero, const APlayerContr
 		}
 	}
 	return -1;
+}
+
+void ULyudCityThings::SetPlotHidden(const FString& Plot, bool bHidden)
+{
+	if (bHidden)
+	{
+		HiddenPlots.Add(Plot);
+	}
+	else
+	{
+		HiddenPlots.Remove(Plot);
+	}
 }
 
 void ULyudCityThings::TrackPlot(const AHeroCharacter* Hero)
@@ -2172,6 +2209,16 @@ FString ULyudCityThings::ActOfThing(const FString& Id) const
 	return A >= 0 && A < (int)Model->Acts.size() ? LyudCityThingsImpl::Str(Model->Acts[(size_t)A].Id) : FString();
 }
 
+FString ULyudCityThings::ThingId(int32 Thing) const
+{
+	return Model && Thing >= 0 && Thing < NumThings() ? LyudCityThingsImpl::Str(Model->Things[(size_t)Thing].Id) : FString();
+}
+
+bool ULyudCityThings::HasStamp(const FString& Stamp) const
+{
+	return Model && Model->HasStamp(std::string(TCHAR_TO_UTF8(*Stamp)));
+}
+
 bool ULyudCityThings::GiveStamp(const FString& Stamp)
 {
 	if (!Model || !Model->GiveStamp(std::string(TCHAR_TO_UTF8(*Stamp))))
@@ -3014,6 +3061,7 @@ void ULyudCityThings::FinishProcedure()
 	const int32 Cut = Proc->CutMinutes;
 	const LyudCity::FProcDef* D = Model->ProcDef(Proc->Def);
 	const FString Id = D ? LyudCityThingsImpl::Str(D->Id) : FString();
+	const bool bScene = D && D->bScene;
 	LyudCity::FProcEnd End = Model->EndProc(*Proc, LyudCityThingsImpl::When(World));
 	UE_LOG(LogLyudCity, Display, TEXT("CityThings: procedure %s over: result %d line=%s%s"), *Id, End.Result, *LyudCityThingsImpl::Str(End.Line),
 		End.Vitals.Valid() ? *FString::Printf(TEXT(" vitals %.1f kg %d/%d pulse %d lungs %d"), End.Vitals.Weight, End.Vitals.Sys, End.Vitals.Dia, End.Vitals.Pulse, End.Vitals.Lungs) : TEXT(""));
@@ -3026,7 +3074,10 @@ void ULyudCityThings::FinishProcedure()
 		}
 		AnnounceStamps(Fresh);
 	}
-	ULyudQuests::Notify(this, TEXT("procedure"), Id);
+	if (!bScene)
+	{
+		ULyudQuests::Notify(this, TEXT("procedure"), Id);     // a town scene (a payphone's dial) is no cure: its act reports it
+	}
 	TArray<FString> Args;
 	for (const std::string& A : End.Args)
 	{
@@ -5393,6 +5444,10 @@ static LyudDev::FAutoAction GCityDevProc(TEXT("interiors.proc_nearest"), TEXT("i
 		Things->StartNearestProc();
 	}
 });
+// the street soda machines (docs/soda_machines.md): the swallowed coin and the thump on the side every time (toggle)
+static LyudDev::FAutoAction GCityDevSodaJam(TEXT("interiors.soda_jam"), TEXT("interiors"), TEXT("dev.action.interiors.soda_jam"),
+	[](UWorld*) { LyudCity::GDevChanceSteps = !LyudCity::GDevChanceSteps; },
+	[](UWorld*) { return LyudCity::GDevChanceSteps; });
 static LyudDev::FAutoAction GCityDevGameWin(TEXT("interiors.game_win"), TEXT("interiors"), TEXT("dev.action.interiors.game_win"), [](UWorld* W)
 {
 	if (ULyudCityThings* Things = ULyudCityThings::Get(W))
