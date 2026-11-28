@@ -66,6 +66,10 @@
       "rumour": "film"
      },
      {
+      "k": "city.ask.town_talk.dance",
+      "rumour": "dance"
+     },
+     {
       "k": "city.ask.town_talk.sail",
       "rumour": "sail"
      },

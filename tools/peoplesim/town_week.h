@@ -49,14 +49,11 @@ namespace TownWeek
 
 	/** Whether a duty's shift covers the moment (weekday, hour), from its start moved by Lead (h, may be negative) to its
 	 *  end moved by Tail. A shift over midnight (18:00-01:30) belongs to the day it starts on: its small hours are the
-	 *  next morning's. bDayOff: a holiday duty is skipped. */
+	 *  next morning's. bDayOff: today is a holiday, a holiday duty's shifts from today on are skipped. */
 	static bool InShift(const FWorld& W, const FDuty& D, int Weekday, float Hour, float Lead, float Tail, bool bDayOff)
 	{
 		const int A = W.ActOf(D);
-		if (bDayOff && A >= 0 && W.Activities[A].bHolidayOff)
-		{
-			return false;
-		}
+		const bool bSkipToday = bDayOff && A >= 0 && W.Activities[A].bHolidayOff;
 		// the shifts of yesterday, today and tomorrow as spans of hours from today's midnight
 		const float Len = D.To > D.From ? D.To - D.From : D.To + 24.f - D.From;
 		for (int Off = -1; Off <= 1; Off++)
@@ -64,6 +61,10 @@ namespace TownWeek
 			if (!((D.Days >> ((Weekday + Off + 7) % 7)) & 1))
 			{
 				continue;
+			}
+			if (bSkipToday && Off >= 0)
+			{
+				continue;       // the holiday's own shifts; yesterday's night shift still ends in its small hours
 			}
 			const float S = Off * 24.f + D.From - Lead, E = Off * 24.f + D.From + Len + Tail;
 			if (Hour >= S && Hour < E)
@@ -659,10 +660,11 @@ static int Week()
 			bool bOpen = false;
 			for (const auto& PD : Pl.second)
 			{
-				// a duty whose activity waits for a condition the game sets (the sailing school's office in season) opens nothing while it is off
-				const int DA = S.ActOf(S.People[PD.first].Duties[PD.second]);
-				if (DA >= 0 && !S.ConditionOk(S.Activities[(size_t)DA])) continue;
-				bOpen |= InShift(S, S.People[PD.first].Duties[PD.second], Wd, Hr, -0.75f, -0.25f, S.bDayOff);
+				// a duty whose activity has a "when" (the kvass barrel on a hot day, the Sunday band) or waits for a condition the
+				// game sets (the sailing school's office in season) is open only while it holds
+				const FDuty& D = S.People[PD.first].Duties[PD.second];
+				const int A = S.ActOf(D);
+				bOpen |= (A < 0 || S.ConditionOk(S.Activities[A])) && InShift(S, D, Wd, Hr, -0.75f, -0.25f, S.bDayOff);
 			}
 			if (!bOpen) continue;
 			S.StaffOnShift(S.Places[Pl.first.first].Id, Pl.first.second, Out);

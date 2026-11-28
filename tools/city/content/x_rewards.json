@@ -15,7 +15,7 @@
   "kiosk_pass": {"item": "eskimo", "count": 2},
   "kiosks": {"free": "daily_paper", "days": 30},
   "bird_habits": {"pay": 120},
-  "kites": {"pay": 60},
+  "kites": {"pay": 150},
   "lg_towers": {"pay": 40},
   "library_diary": {"item": "magazine_science"},
   "market_haggles": {"item": "cheese_braid"},

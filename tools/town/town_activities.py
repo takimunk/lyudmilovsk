@@ -41,7 +41,7 @@ EXPORT = os.path.join(ROOT, "blender", "export", "city", "%s.json")
 STRINGS = os.path.join(CONTENT, "Localization", "town", "strings_%s.json")
 OD = collections.OrderedDict
 
-PLACE_IDS = ["P-CLUB2-CINEMA", "P-SANATORIUM-LOUNGE", "P-SANATORIUM-PUMP", "P-HALL-STAGE", "P-T2H2-ALLOTMENT", "S-POST-ROUND", "S-BEACH-STONES"]
+PLACE_IDS = ["P-CLUB2-CINEMA", "P-SANATORIUM-LOUNGE", "P-SANATORIUM-PUMP", "P-HALL-STAGE", "P-T2H2-ALLOTMENT", "S-POST-ROUND", "S-BEACH-STONES", "S-SODA"]
 
 # activities.json rows, one a line. The cinema has two sessions a day (the Rassvet's programme: the day's film from 15:00,
 # the evening's from 19:00): "hours" is when people set off for one. "temp": [min, max] C: chosen only in such weather.
@@ -50,12 +50,15 @@ ACTIVITIES_ROWS = [
     '{"id": "cinema_evening", "places": ["cinema_hall"], "slots": ["cinema_seat"], "pose": "sit", "minutes": [88, 96], "hours": [18.6, 19.2], "ages": [12, 200], "meets": {"fun": 0.9, "mind": 0.3, "social": 0.3}, "base": -0.05, "trait": "social"}',
     '{"id": "san_cure", "places": ["sanatorium_pump"], "slots": ["cure_seat"], "pose": "sit", "minutes": [20, 40], "hours": [9, 12.5], "days": [0, 1, 2, 3, 4, 5], "ages": [60, 200], "meets": {"tired": 0.2, "social": 0.35, "hunger": 0.3}, "base": -0.28, "trait": ""}',
     '{"id": "dominoes", "places": ["sanatorium_lounge"], "slots": ["domino_seat"], "pose": "sit", "minutes": [40, 90], "hours": [15, 20], "ages": [58, 200], "meets": {"social": 0.9, "fun": 0.7, "mind": 0.2}, "base": -0.3, "trait": "social"}',
-    '{"id": "play_piano", "places": ["hall_stage"], "slots": ["piano_seat"], "pose": "sit", "minutes": [15, 35], "hours": [18, 20.6], "ages": [10, 200], "meets": {"fun": 0.6, "mind": 0.5}, "base": -1.7, "trait": "studious"}',
+    '{"id": "play_piano", "places": ["hall_stage"], "slots": ["piano_seat"], "pose": "sit", "minutes": [15, 35], "hours": [18, 20.6], "ages": [10, 200], "meets": {"fun": 0.6, "mind": 0.5}, "base": -1.3, "trait": "studious"}',
     '{"id": "tend_allotment", "places": ["allotment"], "slots": ["bed_side"], "pose": "stand", "minutes": [30, 70], "hours": [6.5, 10.5], "daylight": 1, "temp": [6, 40], "meets": {"nature": 0.9, "sun": 0.4, "fun": 0.2}, "costs": {"tired": 0.08, "hunger": 0.08}, "base": -1.6, "trait": "nature"}',
     '{"id": "water_allotment", "places": ["allotment"], "slots": ["bed_side"], "pose": "stand", "minutes": [15, 30], "hours": [14.5, 20.5], "daylight": 1, "temp": [5, 40], "meets": {"nature": 0.8, "fun": 0.2}, "costs": {"tired": 0.04}, "base": -1.6, "trait": "nature"}',
     '{"id": "read_paper", "places": ["park", "pond", "fountain", "promenade", "promenade_bench", "town_bench", "bench"], "slots": ["bench"], "pose": "sit", "minutes": [20, 45], "hours": [7, 11.5], "daylight": 1, "temp": [4, 40], "ages": [30, 200], "meets": {"mind": 0.55, "nature": 0.3, "sun": 0.2}, "base": -0.2, "trait": "studious"}',
     '{"id": "skip_stones", "places": ["stone_shore"], "slots": ["stand"], "pose": "look", "minutes": [10, 25], "hours": [9, 20], "ages": [6, 70], "daylight": 1, "wind": [0, 7.5], "temp": [3, 40], "meets": {"fun": 0.8, "nature": 0.6, "sun": 0.2}, "costs": {"tired": 0.03}, "base": -0.25, "trait": "active"}',
     '{"id": "post_round", "places": ["post_round"], "slots": ["stand"], "pose": "stand", "wander": 1, "round": 1, "wander_pause": [50, 130], "minutes": [60, 60], "meets": {"social": 0.4, "nature": 0.5, "sun": 0.3}, "costs": {"hunger": 0.05, "tired": 0.03}, "free": 0, "rain": "ok"}',
+    # the soda-water automats of the plan's street_machines (docs/soda_machines.md): a glass on a hot day, in their season
+    # (May-October: "temp" keeps them to warm days; the machines' own months and broken days are the city things', not the walkers')
+    '{"id": "soda_drink", "places": ["soda_machine"], "slots": ["stand"], "pose": "stand", "minutes": [3, 6], "hours": [9, 21], "daylight": 1, "temp": [22, 40], "ages": [6, 200], "meets": {"hunger": 0.2, "fun": 0.3, "sun": 0.1}, "base": -0.45, "trait": ""}',
 ]
 ACT_IDS = [json.loads(r)["id"] for r in ACTIVITIES_ROWS]
 OWN_LIKES = ("tend_allotment", "water_allotment", "play_piano")     # the likes this script gives (the guests' script gives its own)
@@ -263,6 +266,24 @@ def post_round(places):
     return OD([("id", "S-POST-ROUND"), ("kind", "post_round"), ("pos", list(slots[0]["pos"])), ("yaw", 0.0), ("island", 0), ("slots", slots)])
 
 
+def soda_machines(plan):
+    """The soda-water automats (tools/city_plan.py STREET_MACHINES): one standing place a machine, where the hero drinks too
+    (the building's "drink" spot: 0.85 m in front of the cabinet's middle), facing the machine."""
+    slots = []
+    for m in plan.get("street_machines", []):
+        if m.get("building") != "soda_machine":
+            continue
+        c, f = [v / 100.0 for v in m["ue"]], [v / 100.0 for v in m["front_ue"]]
+        dx, dy = f[0] - c[0], f[1] - c[1]
+        n = math.hypot(dx, dy) or 1.0
+        pos = r2([c[0] + dx / n * 0.85, c[1] + dy / n * 0.85, f[2]])
+        slots.append(OD([("kind", "stand"), ("pos", pos), ("yaw", round(math.degrees(math.atan2(-dy, -dx)) % 360.0, 1)), ("height", 0.0),
+                         ("approach", list(pos)), ("tag", m["id"])]))
+    if not slots:
+        sys.exit("town_activities: no soda machines in city_plan.json's street_machines (python3 tools/city_plan.py)")
+    return OD([("id", "S-SODA"), ("kind", "soda_machine"), ("pos", list(slots[0]["pos"])), ("yaw", 0.0), ("island", 0), ("slots", slots), ("roles", [])])
+
+
 def pick_postman(people):
     """Somebody without work, up early, of an age for the bag (the same one while the town is the same)."""
     was = [p for p in people if p.get("occupation") == "postman"]
@@ -292,7 +313,7 @@ def build():
     fd = load(FOLK)
     people = fd["people"]
     keys = {p["key"] for p in people}
-    new = [cinema(plan, things, by_id)] + sanatorium(plan, things, by_id) + [hall(plan, things, by_id), allotment(garden, keys), post_round(places), stone_shore()]
+    new = [cinema(plan, things, by_id)] + sanatorium(plan, things, by_id) + [hall(plan, things, by_id), allotment(garden, keys), post_round(places), stone_shore(), soda_machines(plan)]
     assert [p["id"] for p in new] == PLACE_IDS
     # each stays where it stands in the file (other add-ons put their places after ours); a new one goes to the end
     fresh = {p["id"]: p for p in new}

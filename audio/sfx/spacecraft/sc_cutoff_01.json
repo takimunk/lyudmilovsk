@@ -1,0 +1,33 @@
+{
+ "name": "sc_cutoff_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_cutoff_01",
+ "pool": "sc_cutoff",
+ "file": "audio/sfx/spacecraft/sc_cutoff_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7421,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.515,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -24.59,
+ "params": {
+  "dies_s": 0.12,
+  "ticks": "thermal, slowing"
+ },
+ "checks": {
+  "seconds": 1.515,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -24.59,
+  "crest_db": 18.6,
+  "centroid_hz": 1638,
+  "rolloff85_hz": 3224,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "f26802020503a18134f10facd4d0934cdf925c618b7a0684c3ddd2d4d11e706f",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

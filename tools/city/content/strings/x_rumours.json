@@ -80,6 +80,11 @@
   "en": "\"They say you went to the old newsreel at the Rassvet. Well, the train: was it scary?\"",
   "ja": "「『ラスヴェート』の古いニュース映画を見たんだって？で、列車は怖かった？」"
  },
+ "city.ask.town_talk.dance": {
+  "ru": "— Говорят, ты вчера на танцах был кавалером что надо. {detail} так и сказала подружкам.",
+  "en": "\"They say you were quite the gentleman at the dance. {detail} told her friends so.\"",
+  "ja": "「昨日のダンスでなかなかの騎士ぶりだったって？　{detail}が友だちにそう話してたよ。」"
+ },
  "city.ask.town_talk.sail": {
   "ru": "— Говорят, ты в яхт-школу записался. У нас тут один покупатель тоже ходил, сорок лет назад, до сих пор узлы вяжет.",
   "en": "\"They say you've joined the sailing school. One of our customers went too, forty years ago; still ties knots.\"",

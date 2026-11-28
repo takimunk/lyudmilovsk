@@ -45,7 +45,7 @@ A = ART.get(SPECIES)          # {"morph": {...}, "plumage": {...}}
 M = dict(ART.MORPH_DEFAULTS, **A["morph"])
 PLUM = A["plumage"]
 rng = random.Random(zlib.crc32(SPECIES.encode()))   # stable across runs (hash() is salted)
-OUTDIR = os.path.join(C.OUT, SPECIES)
+OUTDIR = os.environ.get("BIRD_OUTDIR") or os.path.join(C.OUT, SPECIES)
 # --hero: the body the player flies in: ~3-4x the feathers, a 4096 atlas, the same skeleton (SK_<Id>_Hero on SKEL_<Id>)
 HERO = "--hero" in FLAGS
 TAG = SPECIES + ("_Hero" if HERO else "")
@@ -215,6 +215,21 @@ def tail_len(k):
     return (0.064 - 0.0012 * k) * M["tail"] * m
 
 
+def eye_point(sx):
+    """The eye (species space): the template's, or on a scanned body the scan's own eye spot: just behind the bill
+    base (u 0.92), on the side of the head a little above its centre, just inside the skin (the bird's own camera)."""
+    if not (SCAN is not None and globals().get("SCAN_S")):
+        return warp(EYE_T * V(sx, 1, 1))
+    u = float(os.environ.get("BIRD_EYE_U", 0.92))
+    th = math.radians(float(os.environ.get("BIRD_EYE_DEG", 18)))
+    th = th if sx > 0 else math.pi - th
+    C0, T0, N0 = _centre(u)
+    r = _scan_rc(u, th)[0] * LT * 0.9
+    p = C0 + V(1, 0, 0) * r * math.cos(th) + N0 * r * math.sin(th)
+    p[1] += LEGLIFT
+    return p
+
+
 def build_skeleton(wk):
     """wk: wing scale factor (solved for the wingspan)."""
     BONES.clear()
@@ -229,8 +244,8 @@ def build_skeleton(wk):
     bone("head", warp((0, 0.059, 0.053)), warp((0, 0.062, 0.078)), parent)
     bone("jaw", warp((0, 0.0566, BEAK_Z0 - 0.002)), warp((0, 0.0560, BEAK_Z0 + 0.027 * M["beak_len"])), "head")
     # the eyes as bones: GetSocketLocation("eye_l") works on them (the bird's own camera)
-    bone("eye_l", warp(EYE_T), warp(EYE_T + V(0.004, 0, 0)), "head")
-    bone("eye_r", warp(EYE_T * V(-1, 1, 1)), warp(EYE_T * V(-1, 1, 1) + V(-0.004, 0, 0)), "head")
+    bone("eye_l", eye_point(1), eye_point(1) + V(0.004, 0, 0), "head")
+    bone("eye_r", eye_point(-1), eye_point(-1) + V(-0.004, 0, 0), "head")
     bone("tail", warp((0, 0.050, -0.040)), warp((0, 0.050, -0.058)), "body")
     for k in range(TF_N):
         for side, sx in (("L", 1), ("R", -1)):
@@ -249,6 +264,8 @@ def build_skeleton(wk):
         prof[-1] *= M["p_outer"]
     W["P_LEN"] = [P_LEN_T[i] * M["prim"] * wk * prof[i] for i in range(P_N)]
     W["S_LEN"] = [S_LEN_T[i] * M["sec"] * wk for i in range(S_TOTAL)]
+    if SCAN_S and WPH and os.environ.get("BIRD_WING_FIT", "1") == "1":
+        fit_wing_outline(W)
     for side, sx in (("L", 1), ("R", -1)):
         Mx = np.diag([sx, 1, 1])
         bone(f"humerus.{side}", Mx @ W["SHOULDER"], Mx @ W["ELBOW"], "body")
@@ -456,7 +473,10 @@ def cell(kind, style, variant=0):
 
 
 def bare_cells():
-    for k, (w, h) in {"body": (256, 256), "beak": (128, 128), "legs": (128, 64), "eye": (256, 256) if HERO else (128, 128), "eyering": (32, 32)}.items():
+    bw = (2048 if HERO else 1024) if SCAN_B else 256
+    if SCAN_S:
+        ATL.request("scan", "scan", None, 2048, 2048, 0, {})
+    for k, (w, h) in {"body": (bw, bw), "beak": (128, 128), "legs": (128, 64), "eye": (256, 256) if HERO else (128, 128), "eyering": (32, 32)}.items():
         ATL.request(k, k, None, w, h, 0, {})
 
 
@@ -472,7 +492,9 @@ def paint_atlas(variant=""):
     B = PLUM["bare"]
     for key, kind, style, w, h, seed, shape in ATL.requests:
         x0, y0, _, _ = ATL.cells[key]
-        if kind == "body":
+        if kind == "scan":
+            c, a, hh, r, ir = paint_scan_cell(w, h)
+        elif kind == "body":
             c, a, hh, r, ir = paint_body(w, h)
         elif kind == "beak":
             c, a, hh, r, ir = paint_beak(w, h, B)
@@ -490,6 +512,8 @@ def paint_atlas(variant=""):
         else:
             st = PLUM["styles"][style.replace("__bare__", "")]
             c, a, hh, r, ir = PL.paint_cell(kind, st, w, h, seed, shape)
+            if key in WCARD:
+                c = wing_photo_cell(key, w, h, c, a)
         col[y0:y0 + h, x0:x0 + w] = c
         alpha[y0:y0 + h, x0:x0 + w] = a
         height[y0:y0 + h, x0:x0 + w] = hh
@@ -576,6 +600,8 @@ def paint_eye(w, h, B):
 
 def paint_body(w, h):
     """The skin under the feathers, coloured by tract (seen between feathers and on far LODs)."""
+    if SCAN_B:
+        return paint_body_scan(w, h)
     zs = body_zs()
     c = np.zeros((h, w, 3))
     nz = C.tile_noise(max(w, h), 91, 1.2)[:h, :w]
@@ -588,6 +614,9 @@ def paint_body(w, h):
             th = 2 * math.pi * (xi / (w - 1))
             st = PLUM["styles"][style_for(z, th, jitter=0.0)]
             c[yi, xi] = PL.L(st.get("skin", st["c"]))
+            if SCAN is not None and not st.get("bare"):
+                sn = style_for(z, th, jitter=0.0)
+                c[yi, xi] = c[yi, xi] * float(np.clip(_lum(scan_colour(z, th)) / max(_lum(scan_means().get(sn, scan_colour(z, th))), 1e-4), 0.35, 2.2))
     rng.setstate(save)
     c = c * (1 + 0.08 * nz)[..., None]
     return np.clip(c, 0, 1), np.ones((h, w)), 0.3 * nz, np.full((h, w), 0.6), np.zeros((h, w))
@@ -757,6 +786,567 @@ def surf_normal(z, th):
     if np.dot(n, surf(z, th) - V(0, cy, z)) < 0:
         n = -n
     return n
+
+
+# ---------------------------------------------------------------- scanned body (--scan or BIRD_SCAN=1)
+# The hi3d model of the species, turned into cross-sections by tools/birds/scan_prep.py (blender/birds/scans/<Id>/
+# scan.npz: radius R(u, th) and colour COL(u, th) round a centreline, u = 0 at the body end .. 1 at the beak base, in
+# units of that length). It replaces the template's superellipse body: surf() and station() return the scanned skin,
+# mapped into template space through the inverse of warp() (affine in x, y at a fixed z), so the rig, cards, legs and
+# clips keep working unchanged. The rear (where the tail plate starts) blends back to the template's taper, the head is
+# shifted and scaled so the template's beak base and eye still sit on it, and the body texture and the contour feathers
+# take the scan's colours.
+SCAN = None
+_SCAN_NPZ = os.path.join(C.ROOT, "blender", "birds", "scans", SPECIES, "scan.npz")
+if ("--scan" in FLAGS or os.environ.get("BIRD_SCAN") == "1") and os.path.exists(_SCAN_NPZ):
+    SCAN = dict(np.load(_SCAN_NPZ))
+SCAN_B = SCAN is not None and os.environ.get("BIRD_SCAN_MODE", "A").upper() == "B"
+SCAN_S = SCAN is not None and os.environ.get("BIRD_SCAN_MODE", "A").upper() == "S"
+if SCAN_S:   # the scan mesh is the body (head, bill, eyes painted in its texture); its photo goes into a 2048 atlas cell
+    ATL = PL.Atlas(4096)
+    ATL.max_size = 4096
+if SCAN_B:   # the scan is the body: finer rings (the scan's shape and texture), a bigger atlas for its photo texture
+    NZ_BODY, NA_BODY = (128, 96) if HERO else (96, 64)
+    ATL = PL.Atlas(4096)
+SCAN_UH = np.linspace(SCAN["us"][0], SCAN["us"][-1], SCAN["COLH"].shape[0]) if SCAN is not None and "COLH" in SCAN else None
+_surf_proc = surf
+Z_END, Z_POLE = -0.056, 0.0825
+if SCAN is not None and not SCAN_S and os.environ.get("BIRD_SCAN_FIT", "1") == "1":
+    # proportions from the scan's mid-sagittal section (units of its body length): bill and tail lengths move part of
+    # the way toward the scan (the field-guide tuning in species_art.py stays the anchor; the picture can exaggerate)
+    _Ls = warp(V(0, CYB, BEAK_Z0))[2] - warp(V(0, CYB, Z_END))[2]
+    _fit = []
+    for key, scan_v, unit in (("beak_len", float(SCAN["beak_len"]), 0.027 * M["head"]),
+                              ("tail", float(SCAN["tail_len"]), 0.064 * M["body_len"])):
+        want = scan_v * _Ls / unit
+        new_v = M[key] + 0.6 * (want - M[key])
+        new_v = float(np.clip(new_v, M[key] * 0.78, M[key] * 1.28))
+        _fit.append(f"{key} {M[key]:.2f}->{new_v:.2f} (scan {want:.2f})")
+        M[key] = new_v
+    print("SCAN", SPECIES, "fit:", ", ".join(_fit))
+LT = BEAK_Z0 - Z_END          # template body length (body end .. beak base), the scan's unit
+RHO = {}
+
+
+def _srgb_to_lin(c):
+    c = np.asarray(c, float)
+    return np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4)
+
+
+def _scan_rc(u, th):
+    """Scan radius (units of its body length), colour at u (0 body end .. 1 beak base), th (bilinear, th periodic)."""
+    us, ths, R, COL = SCAN["us"], SCAN["ths"], SCAN["R"], SCAN["COL"]
+    nt = len(ths)
+    fu = float(np.clip(np.interp(u, us, np.arange(len(us))), 0, len(us) - 1.001))
+    i, a = int(fu), fu - int(fu)
+    ft = (th % (2 * math.pi)) / (2 * math.pi) * nt
+    j, b = int(ft) % nt, ft - int(ft)
+    j1 = (j + 1) % nt
+    r = (R[i, j] * (1 - b) + R[i, j1] * b) * (1 - a) + (R[i + 1, j] * (1 - b) + R[i + 1, j1] * b) * a
+    col = (COL[i, j] * (1 - b) + COL[i, j1] * b) * (1 - a) + (COL[i + 1, j] * (1 - b) + COL[i + 1, j1] * b) * a
+    return r, col
+
+
+def _u(z):
+    return (z - Z_END) / LT
+
+
+def _rho_table():
+    """rho(z, th): how much fuller or slimmer the scan is than the template at each spot, after one global girth
+    factor (hi3d's skin is the outside of the plumage, ours the skin under the cards). Clamped and smoothed: the scan
+    corrects the template's shape (crown, nape, breast, belly, flanks) without ever replacing it."""
+    if RHO:
+        return RHO
+    zs = np.linspace(Z_END, Z_POLE, 120)
+    ths = np.linspace(0, 2 * math.pi, 96, endpoint=False)
+    ratio = np.ones((len(zs), len(ths)))
+    for i, z in enumerate(zs):
+        cy = station(z)[3]
+        for j, th in enumerate(ths):
+            p = _surf_proc(z, th)
+            rp = math.hypot(p[0], p[1] - cy) / LT
+            rs = _scan_rc(min(max(_u(z), 0.0), 1.0), th)[0]
+            ratio[i, j] = rs / max(rp, 1e-6)
+    mid = (zs > -0.02) & (zs < 0.03)
+    g = float(np.median(ratio[mid]))
+    rho = np.clip(ratio / g, *((0.45, 2.2) if SCAN_B else (0.72, 1.38)))
+    # fade to the template at the rear (tail plate) and at the front pole (inside the bill base)
+    w = np.array([smooth(Z_END, -0.034, z) * (1 - smooth(0.0755, 0.0795, z)) for z in zs]) * float(os.environ.get("BIRD_SCAN_AMT", 1.0))
+    rho = 1 + (rho - 1) * w[:, None]
+    # smooth: 5 stations along, 5 angles round
+    k = np.hanning(7)[1:-1]
+    k /= k.sum()
+    for _ in range(1 if SCAN_B else 2):
+        rho = np.apply_along_axis(lambda r: np.convolve(np.r_[r[-2:], r, r[:2]], k, mode="valid"), 1, rho)
+        rho = np.apply_along_axis(lambda r: np.convolve(np.pad(r, 2, mode="edge"), k, mode="valid"), 0, rho)
+    RHO.update(zs=zs, ths=ths, rho=rho, g=g)
+    print("SCAN", SPECIES, "girth factor %.3f  rho range %.2f..%.2f" % (g, rho.min(), rho.max()))
+    return RHO
+
+
+def _rho(z, th):
+    t = _rho_table()
+    zs, ths, rho = t["zs"], t["ths"], t["rho"]
+    nt = len(ths)
+    fz = float(np.clip(np.interp(z, zs, np.arange(len(zs))), 0, len(zs) - 1.001))
+    i, a = int(fz), fz - int(fz)
+    ft = (th % (2 * math.pi)) / (2 * math.pi) * nt
+    j, b = int(ft) % nt, ft - int(ft)
+    j1 = (j + 1) % nt
+    return (rho[i, j] * (1 - b) + rho[i, j1] * b) * (1 - a) + (rho[i + 1, j] * (1 - b) + rho[i + 1, j1] * b) * a
+
+
+if SCAN is not None and not SCAN_S:
+    def surf(z, th):   # noqa: F811
+        p = _surf_proc(z, th)
+        cy = station(z)[3]
+        k = _rho(z, th)
+        return V(p[0] * k, cy + (p[1] - cy) * k, z)
+
+if SCAN is not None:
+    def scan_colour(z, th):
+        """Linear RGB of the scan at a template-space body spot."""
+        c = _scan_rc(float(np.clip(_u(z), SCAN["us"][0], SCAN["us"][-1])), th)[1]
+        return _srgb_to_lin(c) if bool(SCAN.get("srgb", True)) else c
+
+
+def paint_body_scan(w, h):
+    """Variant B: the body cell is the scan's own photographic texture (COLH, u along x th), resampled onto the body
+    rings' uv layout; bare skin (a rook's face) and the far end stay the species' palette."""
+    zs = body_zs()
+    rows = np.interp(np.arange(h) / (h - 1) * NZ_BODY, range(NZ_BODY + 1), zs)
+    ths = np.arange(w) / (w - 1) * 2 * math.pi
+    col = SCAN["COLH"].astype(float) / 255.0
+    nu, nt = col.shape[:2]
+    uu = np.clip(np.interp(_u(rows), SCAN_UH, np.arange(nu)), 0, nu - 1.001)
+    tt = (ths % (2 * math.pi)) / (2 * math.pi) * nt
+    i0, a = uu.astype(int), (uu - uu.astype(int))[:, None, None]
+    j0, b = tt.astype(int) % nt, (tt - tt.astype(int))[None, :, None]
+    j1 = (j0 + 1) % nt
+    c = (col[i0][:, j0] * (1 - b) + col[i0][:, j1] * b) * (1 - a) + (col[i0 + 1][:, j0] * (1 - b) + col[i0 + 1][:, j1] * b) * a
+    c = _srgb_to_lin(c) if bool(SCAN.get("srgb", True)) else c
+    # palette (and bare) at a low resolution, upsampled: the rear fade and the bare patches
+    lw, lh = 96, 96
+    pal = np.zeros((lh, lw, 3))
+    bare = np.zeros((lh, lw))
+    save = rng.getstate()
+    for yi in range(lh):
+        z = float(np.interp(yi / (lh - 1) * NZ_BODY, range(NZ_BODY + 1), zs))
+        for xi in range(lw):
+            st = PLUM["styles"][style_for(z, 2 * math.pi * xi / (lw - 1), jitter=0.0)]
+            pal[yi, xi] = PL.L(st.get("skin", st["c"]))
+            bare[yi, xi] = 1.0 if st.get("bare") else 0.0
+    rng.setstate(save)
+    ys, xs = (np.arange(h) * lh // h), (np.arange(w) * lw // w)
+    palh, bareh = pal[ys][:, xs], bare[ys][:, xs]
+    keep = (1 - bareh) * np.array([smooth(Z_END, -0.040, z) for z in rows])[:, None]
+    c = c * keep[..., None] + palh * (1 - keep[..., None])
+    nz = C.tile_noise(max(w, h), 91, 1.2)[:h, :w]
+    lum = 0.2126 * c[..., 0] + 0.7152 * c[..., 1] + 0.0722 * c[..., 2]
+    def box(a, r):
+        for ax in (0, 1):
+            cs = np.cumsum(np.pad(a, [(r + 1, r) if k == ax else (0, 0) for k in (0, 1)], mode="wrap" if ax == 1 else "edge"), axis=ax)
+            a = (np.take(cs, range(2 * r + 1, cs.shape[ax]), axis=ax) - np.take(cs, range(0, cs.shape[ax] - 2 * r - 1), axis=ax)) / (2 * r + 1)
+        return a
+    hgt = 4.0 * (lum - box(lum, 4)) + 0.1 * nz
+    return np.clip(c, 0, 1), np.ones((h, w)), hgt, np.full((h, w), 0.6), np.zeros((h, w))
+
+
+# ---------------------------------------------------------------- scan rig (BIRD_SCAN_MODE=S)
+# warp() itself is replaced: the template's body axis is carried onto the scan's curved centreline (u = template z
+# along the body), and each cross-section is scaled direction by direction so the template's skin lands exactly on the
+# scan's skin (points outside the skin are moved, not scaled: wings, legs and the tail keep their template sizes).
+# Bones, wing and tail cards, legs and clips then follow the scan's real body; the scan mesh itself is the body.
+if SCAN_S:
+    _warp_tpl = warp
+    _cl = {k: SCAN[k] for k in ("cl_u", "cl_f", "cl_up", "cl_tf", "cl_tu")}
+    _APU = float(SCAN["arc_per_u"])
+    _RT = {}
+
+    def _rt_table():
+        if _RT:
+            return _RT
+        zs = np.linspace(Z_END, Z_POLE, 140)
+        thg = np.linspace(0, 2 * math.pi, 96, endpoint=False)
+        tab = np.zeros((len(zs), len(thg)))
+        for i, z in enumerate(zs):
+            cy = station(z)[3]
+            pr = np.linspace(0, 2 * math.pi, 241)
+            pts = np.array([_surf_proc(z, t) for t in pr])
+            ang = np.arctan2(pts[:, 1] - cy, pts[:, 0]) % (2 * math.pi)
+            rad = np.hypot(pts[:, 0], pts[:, 1] - cy)
+            o = np.argsort(ang)
+            ang, rad = ang[o], rad[o]
+            tab[i] = np.interp(thg, np.r_[ang - 2 * math.pi, ang, ang + 2 * math.pi], np.r_[rad, rad, rad])
+        _RT.update(zs=zs, thg=thg, tab=np.maximum(tab, 1e-5))
+        return _RT
+
+    def _bil(tab, xs, x, th):
+        nt = tab.shape[1]
+        fx = float(np.clip(np.interp(x, xs, np.arange(len(xs))), 0, len(xs) - 1.001))
+        i, a = int(fx), fx - int(fx)
+        ft = (th % (2 * math.pi)) / (2 * math.pi) * nt
+        j, b = int(ft) % nt, ft - int(ft)
+        j1 = (j + 1) % nt
+        return (tab[i, j] * (1 - b) + tab[i, j1] * b) * (1 - a) + (tab[i + 1, j] * (1 - b) + tab[i + 1, j1] * b) * a
+
+    def _centre(u):
+        """Species-space centre, tangent and normal of the scan's centreline at u (extrapolated straight past its ends)."""
+        cu = _cl["cl_u"]
+        uc = min(max(u, cu[0]), cu[-1])
+        f = float(np.interp(uc, cu, _cl["cl_f"]))
+        up = float(np.interp(uc, cu, _cl["cl_up"]))
+        tf = float(np.interp(uc, cu, _cl["cl_tf"]))
+        tu = float(np.interp(uc, cu, _cl["cl_tu"]))
+        n = math.hypot(tf, tu) or 1.0
+        tf, tu = tf / n, tu / n
+        ext = (u - uc) * _APU
+        f, up = f + tf * ext, up + tu * ext
+        return V(0, CYB + up * LT, Z_END + f * LT), V(0, tu, tf), V(0, tf, -tu)
+
+    def warp(p):   # noqa: F811
+        p = np.asarray(p, float)
+        x, y, z = p
+        u = (z - Z_END) / LT
+        C0, T0, N0 = _centre(u)
+        zc = min(max(z, Z_END), Z_POLE)
+        cy = station(zc)[3]
+        dx, dy = x, y - cy
+        r = math.hypot(dx, dy)
+        th = math.atan2(dy, dx) % (2 * math.pi)
+        rt = _bil(_rt_table()["tab"], _RT["zs"], zc, th)
+        rs = _scan_rc(min(max(u, SCAN["us"][0]), SCAN["us"][-1]), th)[0] * LT
+        # the ratio fades out behind the body end and past the bill base (tail and bill keep template sizes)
+        k = smooth(-0.02, 0.06, u) * (1 - smooth(1.0, 1.05, u))
+        rs = rt + (rs - rt) * k
+        r2 = r * rs / rt if r <= rt else rs + (r - rt)
+        e = r2 / r if r > 1e-9 else 0.0
+        out = C0 + V(1, 0, 0) * dx * e + N0 * dy * e
+        out[1] += LEGLIFT
+        return out
+
+    # proportions taken whole from the scan: bill and tail lengths (template units -> the scan's body length)
+    M["beak_len"] = float(np.clip(float(SCAN["beak_len"]) * LT / (0.027 * _APU), 0.4, 3.0))
+    M["tail"] = float(np.clip(float(SCAN["tail_len"]) * LT / 0.064, 0.3, 3.5))
+    # broader flight feathers: neighbours overlap so the spread wing reads as one surface (no comb between tips)
+    M["prim_width"] *= float(os.environ.get("BIRD_SCAN_PW", 1.3))
+    M["sec_width"] *= float(os.environ.get("BIRD_SCAN_SW", 1.35))
+    print("SCAN", SPECIES, "rig from scan: beak_len %.2f tail %.2f" % (M["beak_len"], M["tail"]))
+    _BODY = dict(np.load(os.path.join(C.ROOT, "blender", "birds", "scan_raw", SPECIES, "body.npz")))
+
+    def build_scan_body(sb, lod=0):
+        """The scan mesh as the body: species-space verts (same frame as warp), weights by where along the template
+        body each vertex lies (blend_w), the lower mandible on the jaw, uvs into the atlas' scan cell (Bare: opaque)."""
+        L_ = min(lod, 3)
+        Vn, F, UV = _BODY[f"v{L_}"], _BODY[f"f{L_}"], _BODY[f"uv{L_}"]
+        cu = _cl["cl_u"]
+        P = np.stack([Vn[:, 2] * LT, CYB + Vn[:, 1] * LT + LEGLIFT, Z_END + Vn[:, 0] * LT], 1)
+        # u of each vertex: nearest centreline point (in the sagittal plane)
+        cf, cup = Z_END + _cl["cl_f"] * LT, CYB + _cl["cl_up"] * LT + LEGLIFT
+        d2 = (P[:, None, 2] - cf[None]) ** 2 + (P[:, None, 1] - cup[None]) ** 2
+        k = np.argmin(d2, 1)
+        uu = cu[k]
+        # past the centreline's front end (the bill): extrapolate u along it
+        front = k == len(cu) - 1
+        if front.any():
+            tf, tu = _cl["cl_tf"][-1], _cl["cl_tu"][-1]
+            ext = (P[front, 2] - cf[-1]) * tf + (P[front, 1] - cup[-1]) * tu
+            uu[front] = cu[-1] + ext / (LT * _APU)
+        below = (P[:, 1] - cup[k]) * _cl["cl_tf"][k] - (P[:, 2] - cf[k]) * _cl["cl_tu"][k] < 0
+        sb.new_part("scanbody")
+        ids = []
+        for i in range(len(P)):
+            zt = Z_END + uu[i] * LT
+            w = blend_w(min(zt, Z_POLE))
+            if uu[i] > 1.02 and below[i]:   # the lower mandible opens with the jaw
+                w = {"jaw": 1.0}
+            ids.append(sb.v(P[i], w))
+        zt_v = Z_END + uu * LT
+        for t, uvs in zip(F, UV):
+            sb.zt = float(zt_v[list(t)].mean())   # (the hero's Skull slot: the head round the camera)
+            sb.f(tuple(ids[j] for j in t), [ATL.uv_rect("scan", float(a), float(b)) for a, b in uvs], BARE)
+        sb.zt = None
+        return len(F)
+
+    def paint_scan_cell(w, h):
+        im = bpy.data.images.load(os.path.join(C.ROOT, "blender", "birds", "scan_raw", SPECIES, "body_tex.png"))
+        if im.size[0] != w or im.size[1] != h:
+            im.scale(w, h)
+        px = np.zeros(w * h * 4, np.float32)
+        im.pixels.foreach_get(px)
+        c = px.reshape(h, w, 4)[..., :3].astype(float)
+        c = _srgb_to_lin(c)
+        lum = 0.2126 * c[..., 0] + 0.7152 * c[..., 1] + 0.0722 * c[..., 2]
+        return np.clip(c, 0, 1), np.ones((h, w)), 2.0 * lum, np.full((h, w), 0.55), np.zeros((h, w))
+
+
+# ---------------------------------------------------------------- wing photo atlas (scan rig)
+# tools/birds/scan_prep.py renders the scan's raised wing square-on from above and below (wing.npz: images over span
+# xi and chord eta, with the leading and trailing edge per span column). Every wing card of the left wing gets its own
+# atlas cell, painted from the place it covers in the spread wing: template planform -> (xi, chord fraction between
+# the template's own edges) -> the same spot between the photographed wing's edges. Spread, the cards show the photo;
+# folded they stack as before. The right wing is the mirror (same cells).
+WPH = {}
+WCARD, WCOUNT, WPT = {}, {}, {}
+if SCAN_S and os.path.exists(os.path.join(C.ROOT, "blender", "birds", "scan_raw", SPECIES, "wing.npz")) and os.environ.get("BIRD_WING_PHOTO", "1") == "1":
+    WPH = dict(np.load(os.path.join(C.ROOT, "blender", "birds", "scan_raw", SPECIES, "wing.npz")))
+    for _side in ("dorsal", "ventral"):   # fill outside the silhouette with the nearest wing colour
+        _img = WPH[_side].astype(float) / 255.0
+        _m = WPH[_side + "_mask"].copy()
+        for _ in range(40):
+            if _m.all():
+                break
+            acc = np.zeros_like(_img)
+            cnt = np.zeros(_m.shape)
+            for dy, dx in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                m2 = np.roll(_m, (dy, dx), (0, 1))
+                acc += np.roll(_img, (dy, dx), (0, 1)) * m2[..., None]
+                cnt += m2
+            g = ~_m & (cnt > 0)
+            _img[g] = acc[g] / cnt[g][:, None]
+            _m |= g
+        WPH[_side + "_f"] = _srgb_to_lin(_img)
+    # colour-match the wing photo to the body beside the wing root (the scan's wings come out paler and greyer than
+    # its body): per channel mean and spread of the wing's own pixels -> those of the back (dorsal) / the flank and
+    # belly (ventral), 85 % of the way
+    if "COLH" in SCAN:
+        _body = _srgb_to_lin(SCAN["COLH"].astype(float) / 255.0)
+        _uh = np.linspace(SCAN["us"][0], SCAN["us"][-1], _body.shape[0])
+        _th = np.linspace(0, 2 * math.pi, _body.shape[1], endpoint=False)
+        _rows = (_uh > 0.40) & (_uh < 0.80)
+        for _side, (a0, a1) in (("dorsal", (math.radians(55), math.radians(125))), ("ventral", (math.radians(215), math.radians(325)))):
+            ref = _body[_rows][:, (_th > a0) & (_th < a1)].reshape(-1, 3)
+            m = WPH[_side + "_mask"]
+            img = WPH[_side + "_f"]
+            src = img[m]
+            if len(src) < 100 or len(ref) < 100:
+                continue
+            ms, ss = src.mean(0), src.std(0) + 1e-4
+            mr, sr = ref.mean(0), ref.std(0) + 1e-4
+            k = float(os.environ.get("BIRD_WING_MATCH", 0.85))
+            WPH[_side + "_f"] = np.clip(img + k * (((img - ms) / ss * sr + mr) - img), 0, 1)
+            print("SCAN", SPECIES, "wing photo", _side, "matched: mean", np.round(ms, 3), "->", np.round(mr, 3))
+WING_BONES = ("p", "s", "humerus.L", "forearm.L", "hand.L")
+_OVR_PATH = os.path.join(C.ROOT, "blender", "birds", "scans", "overrides.json")
+SCAN_OVR = json.load(open(_OVR_PATH)).get(SPECIES, {}) if os.path.exists(_OVR_PATH) else {}
+# "photo": every wing card from the scan's photo; "art" (default): flight feathers keep their painted field-guide
+# pattern (the photo mapping smears tip patterns: gull mirrors, magpie windows, finch bars), coverts from the photo
+WING_PAINT = os.environ.get("BIRD_WING_PAINT", SCAN_OVR.get("wing_paint", "art"))
+
+
+def fit_wing_outline(W):
+    """Flight feather lengths from the photographed wing's outline: each primary and secondary runs from its root
+    to the scan's trailing edge (the chord there, scaled by span), so the spread wing has the species' real shape
+    (a gull's long pointed hand, a buzzard's broad fingered wing) and the photo lands on the right feathers."""
+    sh = W["SHOULDER"]
+    tips = [p_root(i) + p_dir(i) * W["P_LEN"][i] for i in range(P_N)]
+    reach = max(float(t[0]) for t in tips) - float(sh[0])
+    if reach <= 0:
+        return
+    arm = [sh, W["ELBOW"], W["WRIST"], W["HANDTIP"]]
+    ax = np.array([(float(a[0]) - float(sh[0])) / reach for a in arm])
+    ae = np.array([float(sh[2]) - float(a[2]) for a in arm])
+    nx = len(WPH["lead"])
+    xs = np.linspace(0, 1, nx)
+    chord = np.maximum(WPH["trail"] - WPH["lead"], 0.0) * reach   # scan chord per span fraction, template units
+    chord[xs < 0.13] = chord[np.searchsorted(xs, 0.13)]
+
+    def target(xi):   # template trailing edge (eta, + toward the tail) at span fraction xi
+        return float(np.interp(xi, ax, ae)) + float(np.interp(xi, xs, chord))
+
+    def fit(root, d, L0, last):
+        best = None
+        for t in np.linspace(0.35 * L0, 2.2 * L0, 160):
+            q = root + d * t
+            xi = (float(q[0]) - float(sh[0])) / reach
+            if xi > 1.0:
+                best = t
+                break
+            if float(sh[2]) - float(q[2]) >= target(xi):
+                best = t
+                break
+        if best is None:
+            best = L0
+        return float(np.clip(best, 0.7 * L0, (1.6 if last is not None and last != "s" else 1.35) * L0))
+    P0, S0 = list(W["P_LEN"]), list(W["S_LEN"])
+    W["P_LEN"] = [fit(p_root(i), p_dir(i), P0[i], i == P_N - 1) for i in range(P_N)]
+    W["S_LEN"] = [fit(s_root(i), s_dir(i), S0[i], "s") if i < S_N else S0[i] for i in range(S_TOTAL)]
+    if not WPT.get("_said"):
+        print("SCAN", SPECIES, "wing outline: P", " ".join(f"{a / b:.2f}" for a, b in zip(W["P_LEN"], P0)),
+              "| S", " ".join(f"{a / b:.2f}" for a, b in zip(W["S_LEN"][:S_N], S0[:S_N])))
+
+
+def wing_photo_key(key, weights, root, d, side, Lc, Wc, flip):
+    bone = next(iter(weights)) if weights else ""
+    if not bone or not (bone.startswith(WING_BONES)) or not bone.endswith(".L"):
+        return key
+    kind = key.split(":")[0]
+    if WING_PAINT == "art_all" or (WING_PAINT == "art" and kind in ("primary", "secondary", "tertial")):
+        return key
+    n = WCOUNT.get((kind, bone), 0)
+    WCOUNT[(kind, bone)] = n + 1
+    nk = f"{kind}:wph|{bone}|{n}:0"
+    if ATL.cells and nk not in ATL.cells:   # a later LOD's extra card: the original painted cell
+        return key
+    if not ATL.cells:
+        w, h = PL.CELL[kind if kind in PL.CELL else "contour"]
+        st = key.split(":")[1]
+        ATL.request(nk, kind, st, w, h, zlib.crc32(nk.encode()) % 100000, SHAPE.get(kind, {}))
+        WCARD[nk] = (np.array(root, float), np.array(d, float), np.array(side, float), Lc, Wc, flip, kind == "underwing")
+    return nk
+
+
+def _wing_template_planform():
+    if WPT:
+        return WPT
+    pts = []
+    for root, d, side, Lc, Wc, flip, under in WCARD.values():
+        for t in (0.0, 0.5, 1.0):
+            for sg in (-1.0, 0.0, 1.0):
+                pts.append(root + d * Lc * t + side * (-sg) * Wc * 0.5)
+    pts = np.array(pts)
+    sh = WING["SHOULDER"]
+    span = max(float(pts[:, 0].max() - sh[0]), 1e-6)
+    xi = (pts[:, 0] - sh[0]) / span
+    eta = (sh[2] - pts[:, 2]) / span
+    nb = 48
+    lead, trail = np.full(nb, np.nan), np.full(nb, np.nan)
+    b = np.clip((xi * nb).astype(int), 0, nb - 1)
+    for i in range(nb):
+        e = eta[b == i]
+        if len(e):
+            lead[i], trail[i] = e.min(), e.max()
+    g = ~np.isnan(lead)
+    xb = (np.arange(nb) + 0.5) / nb
+    WPT.update(sh=sh, span=span, xb=xb, lead=np.interp(xb, xb[g], lead[g]), trail=np.interp(xb, xb[g], trail[g]))
+    return WPT
+
+
+def wing_photo_cell(key, w, h, c, a):
+    root, d, side, Lc, Wc, flip, under = WCARD[key]
+    T_ = _wing_template_planform()
+    ss = (np.arange(w) + 0.5) / w * 2 - 1
+    tt = (np.arange(h) + 0.5) / h
+    sg = -ss if flip else ss
+    P = root[None, None] + d[None, None] * Lc * tt[:, None, None] + side[None, None] * (-sg)[None, :, None] * Wc * 0.5
+    xi = np.clip((P[..., 0] - T_["sh"][0]) / T_["span"], 0, 1)
+    eta = (T_["sh"][2] - P[..., 2]) / T_["span"]
+    lt, tr = np.interp(xi, T_["xb"], T_["lead"]), np.interp(xi, T_["xb"], T_["trail"])
+    fr = np.clip((eta - lt) / np.maximum(tr - lt, 1e-6), 0, 1)
+    img = WPH["ventral_f" if under else "dorsal_f"]
+    ny, nx = img.shape[:2]
+    xi = np.maximum(xi, 0.13)   # the photo's root columns are body scraps: the inner wing takes the wing's own base
+    xs = np.linspace(0, 1, nx)
+    ls, ts = np.interp(xi, xs, WPH["lead"]), np.interp(xi, xs, WPH["trail"])
+    es = ls + fr * (ts - ls)
+    px = np.clip((xi * (nx - 1)).astype(int), 0, nx - 1)
+    py = np.clip(((es - WPH["e0"]) / (WPH["e1"] - WPH["e0"]) * (ny - 1)).astype(int), 0, ny - 1)
+    photo = img[py, px]
+    # calm: a card's photo pulled toward its own median (coverts most: a folded stack of busy cells reads as shards)
+    kind = key.split(":")[0]
+    if (a > 0.5).any():
+        med = np.median(photo[a > 0.5], 0)
+        keep = 0.7 if kind in ("primary", "secondary", "tertial") else 0.35
+        photo = med + (photo - med) * keep
+    # keep the painted feather's own light detail (rachis, vane edges) over the photo's colour
+    lum = 0.2126 * c[..., 0] + 0.7152 * c[..., 1] + 0.0722 * c[..., 2]
+    ref = float(np.median(lum[a > 0.5])) if (a > 0.5).any() else float(lum.mean())
+    k = np.clip(lum / max(ref, 1e-4), 0.6, 1.5) ** 0.5
+    return np.clip(photo * k[..., None], 0, 1)
+
+
+def render_raw_scan():
+    """The hi3d scan as it came (decimated, wings raised), in the bird's frame, from the preview cameras: the quality
+    bar for the comparison sheets (<Id>_raw_*.png)."""
+    f = os.path.join(C.ROOT, "blender", "birds", "scan_raw", SPECIES, "full.npz")
+    if not os.path.exists(f):
+        return
+    d = np.load(f)
+    Vn, F, UV = d["v"], d["f"], d["uv"]
+    P = np.stack([Vn[:, 2] * LT, CYB + Vn[:, 1] * LT + LEGLIFT, Z_END + Vn[:, 0] * LT], 1) * S
+    me = bpy.data.meshes.new("rawscan")
+    me.from_pydata([C.to_blender(tuple(p)) for p in P], [], F.tolist())
+    ul = me.uv_layers.new(name="UVMap")
+    ul.data.foreach_set("uv", UV.reshape(-1).astype(np.float32))
+    for poly in me.polygons:
+        poly.use_smooth = True
+    im = bpy.data.images.load(os.path.join(C.ROOT, "blender", "birds", "scan_raw", SPECIES, "body_tex.png"))
+    m = C.make_material("M_raw", (1, 1, 1), roughness=0.6, image=im)
+    me.materials.append(m)
+    ob = bpy.data.objects.new("rawscan", me)
+    hidden = []
+    for o in bpy.context.scene.objects:
+        if o.type in ("MESH", "ARMATURE") and not o.hide_render:
+            o.hide_render = True
+            hidden.append(o)
+    bpy.context.scene.collection.objects.link(ob)
+    for name, cam, tgt, lens in (("side", (-0.30, 0.06, 0.012), (0, 0.05, 0.006), 50), ("34", (0.2, 0.11, 0.21), (0, 0.05, 0.005), 50),
+                                 ("front", (0.0, 0.08, 0.32), (0, 0.05, 0.0), 50), ("back", (0.12, 0.16, -0.22), (0, 0.05, -0.01), 50),
+                                 ("fly_top", (0.0, 0.55, -0.05), (0, 0.05, -0.01), 40), ("glide_below", (0.05, -0.32, 0.18), (0, 0.05, 0.0), 40)):
+        render(f"{SPECIES}_raw_{name}", cam, tgt, lens=lens)
+    ob.hide_render = True
+    for o in hidden:
+        o.hide_render = False
+
+
+SCAN_FRINGE = set(os.environ.get("BIRD_SCAN_FRINGE", "flank,breastside,vent,nape,neckside,rump,uppertail,trousers").split(","))
+SCAN_CARDS = os.environ.get("BIRD_SCAN_CARDS", "fringe")
+SCAN_PAL = {}          # base style -> list of (lin colour, style name)
+SCAN_PAL_FROZEN = [False]
+
+
+SCAN_MEAN = {}
+
+
+def _lum(c):
+    return float(0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2])
+
+
+def scan_means():
+    """Mean scan colour of every plumage style over the body (a grid of spots; the build's rng is left untouched)."""
+    if SCAN_MEAN or SCAN is None:
+        return SCAN_MEAN
+    save = rng.getstate()
+    acc = {}
+    for z in np.linspace(-0.05, 0.077, 48):
+        for th in np.linspace(0, 2 * math.pi, 40, endpoint=False):
+            acc.setdefault(style_for(z, th, jitter=0.0), []).append(scan_colour(z, th))
+    rng.setstate(save)
+    for k, v in acc.items():
+        SCAN_MEAN[k] = np.mean(v, 0)
+    return SCAN_MEAN
+
+
+def scan_tint(base, z, th):
+    """The style's own colour, modulated by how much lighter or darker (and, a little, how differently coloured) the
+    scan is here than its mean over that style: the hand-tuned palette stays, the scan adds its local pattern."""
+    st = PLUM["styles"][base]
+    art = PL.L(st["c"])
+    col = scan_colour(z, th)
+    mean = scan_means().get(base)
+    if mean is None:
+        return art
+    k = float(np.clip(_lum(col) / max(_lum(mean), 1e-4), 0.35, 2.2))
+    kc = np.clip(col / np.maximum(mean, 1e-4), 0.35, 2.2)
+    return np.clip(art * (0.75 * k + 0.25 * kc), 0, 1)
+
+
+def scan_style(base, z, th):
+    """The contour feather's style tinted by the scan: the nearest of up to 5 tints of the base style (made on the
+    first LOD built, reused by the later ones), so body, cards and silhouette agree."""
+    if SCAN is None or PLUM["styles"].get(base, {}).get("bare"):
+        return base
+    col = scan_tint(base, z, th)
+    pal = SCAN_PAL.setdefault(base, [])
+    if pal:
+        d = [float(np.linalg.norm(np.sqrt(col) - np.sqrt(c))) for c, _ in pal]
+        i = int(np.argmin(d))
+        if d[i] < 0.05 or len(pal) >= 5 or SCAN_PAL_FROZEN[0]:
+            return pal[i][1]
+    name = f"{base}~{len(pal)}"
+    PLUM["styles"][name] = dict(PLUM["styles"][base], c=np.clip(col, 0, 1))
+    pal.append((col, name))
+    return name
 
 
 def build_body(sb, lod=0):
@@ -1114,6 +1704,8 @@ def card(sb, root, d, up, Lc, Wc, key, weights, segs=5, camber=0.0, flip=False, 
     d, up = nrm(d), nrm(up)
     side = nrm(np.cross(d, up))
     up = nrm(np.cross(side, d))
+    if SCAN_S and WPH:
+        key = wing_photo_key(key, weights, root, d, side, Lc, Wc, flip)
     kw = (Wc / 0.01) ** 0.5
     if cols is None:
         cols = (-1.0, 0.0, 1.0) if vane is None else (-1.0, -0.55, -0.12, 0.0, 0.12, 0.55, 1.0)
@@ -1483,6 +2075,10 @@ def build_contour(sb, lod=0):
             st = PLUM["styles"][stname]
             if st.get("bare"):
                 continue
+            if (SCAN_B or SCAN_S) and SCAN_CARDS == "fringe" and region_at(zz, th) not in SCAN_FRINGE and not (zz < -0.030):
+                continue   # variant B: the scan's photo texture is the plumage here; cards only where they shape the outline
+            if SCAN is not None:   # the scan's colour a little behind the root, where the feather's visible tip lies
+                stname = scan_style(stname, zz - 0.35 * Lc, th)
             nn = surf_normal(zz, th)
             back = surf(zz - 0.002, th) - surf(zz + 0.002, th)
             down = V(0, -1, 0) * (0.35 if abs(math.sin(th)) < 0.6 else 0.0)
@@ -1656,12 +2252,16 @@ def make_materials(albedo, normal, params):
 
 def build_mesh(mats, lod=0):
     sb = SkinBuilder()
-    build_body(sb, lod)
-    build_beak_eyes(sb, lod)
+    WCOUNT.clear()
+    if SCAN_S:
+        build_scan_body(sb, lod)
+    else:
+        build_body(sb, lod)
+        build_beak_eyes(sb, lod)
     build_legs(sb, lod)
     build_wing(sb, lod)
     build_tail(sb, lod)
-    nc = build_contour(sb, lod) if lod <= 1 else 0
+    nc = build_contour(sb, lod) if lod <= 1 and not (SCAN_S and SCAN_CARDS == "none") else 0
     print("contour feathers", nc, "lod", lod)
     if "--stats" in FLAGS:
         from collections import Counter
@@ -1678,6 +2278,8 @@ SKULL_ZT = float(os.environ.get("BIRD_SKULL_ZT", 0.047))   # template z: the hea
 def skull_face(f, sb, E):
     """Hero: a Plumage face of the head round the camera (eye midpoint E, species space) goes to the Skull slot."""
     idx, mat, _, _, zt = f
+    if SCAN_S and mat == BARE and zt is not None and sb.names.get(f[3]) == "scanbody":   # the scan's head (not its bill)
+        return SKULL_ZT <= zt <= BEAK_Z0 + 0.35 * 0.027 * M["beak_len"]   # the face round the bill base too (eyes)
     return mat == PLUMAGE and zt is not None and zt >= SKULL_ZT
 
 
@@ -2331,6 +2933,26 @@ def render_lod3(ob, arm, Acts, mats):
     bpy.data.objects.remove(o)
 
 
+def render_wing_blend(arm, Acts):
+    show(arm, Acts["Idle"], 0)
+    folded = {pb.name: pb.rotation_quaternion.copy() for pb in arm.pose.bones}
+    locs = {pb.name: pb.location.copy() for pb in arm.pose.bones}
+    act = arm.animation_data.action
+    arm.animation_data.action = None
+    wing = [pb for pb in arm.pose.bones if pb.name.endswith(".L") or pb.name.endswith(".R")]
+    wing = [pb for pb in wing if pb.name.split(".")[0] in ("humerus", "forearm", "hand") or pb.name[0] in "ps" and pb.name[1:2].isdigit()]
+    for pb in arm.pose.bones:
+        pb.rotation_quaternion = folded[pb.name]
+        pb.location = locs[pb.name]
+    for t in (0.3, 0.5, 0.7):
+        for pb in wing:
+            pb.rotation_quaternion = folded[pb.name].slerp(mathutils.Quaternion(), t)
+        bpy.context.view_layer.update()
+        render(f"{SPECIES}_blend{int(t * 100):03d}_top", (0.0, 0.5, -0.05), (0, 0.05, -0.01), lens=40)
+        render(f"{SPECIES}_blend{int(t * 100):03d}_front", (0.0, 0.10, 0.36), (0, 0.06, 0.0), lens=40)
+    arm.animation_data.action = act
+
+
 def show(arm, act, frame):
     arm.animation_data.action = act
     bpy.context.scene.frame_set(int(frame))
@@ -2343,6 +2965,7 @@ def main():
     solve_size()
     bare_cells()
     sb = build_mesh(None, 0)
+    SCAN_PAL_FROZEN[0] = True   # later LODs reuse the scan tints LOD0 made (the atlas is packed from LOD0's cells)
     albedo, normal, params = paint_atlas()
     # the same cells recoloured: an albedo per plumage variant (winter, female, female in winter)
     for suffix, parts in (("Winter", ["winter"]), ("Female", ["female"]), ("FemaleWinter", ["female", "winter"])):
@@ -2372,7 +2995,7 @@ def main():
     def ue(p):
         b = C.to_blender(tuple(np.asarray(p) * S))
         return [b[0] * 100, -b[1] * 100, b[2] * 100]
-    rig = {"species": SPECIES, "scale": S, "eye_l": ue(warp(EYE_T)), "eye_r": ue(warp(EYE_T * V(-1, 1, 1))),
+    rig = {"species": SPECIES, "scale": S, "eye_l": ue(eye_point(1)), "eye_r": ue(eye_point(-1)),
            "head": ue(BONES["head"][0]), "lengthCm": SP["lengthCm"], "wingspanCm": SP["wingspanCm"], "tris": len(ob.data.loop_triangles),
            "atlas": ATL.size, "clips": sorted(Acts), "gloss_hue": M.get("gloss_hue", 0.0)}
     json.dump(rig, open(os.path.join(OUTDIR, f"{TAG}_rig.json"), "w"), indent=1)
@@ -2408,6 +3031,10 @@ def main():
         render(f"{SPECIES}_glide_below", (0.05, -0.32, 0.18), (0, 0.05, 0.0), lens=40)
         show(arm, Acts["Walk" if SP["gait"] == "Walk" else "Hop"], 10)
         render(f"{SPECIES}_gait", (-0.30, 0.06, 0.03), (0, 0.04, 0.0), lens=50)
+        if SCAN_S and "--raw" in FLAGS:
+            render_raw_scan()
+        if "--blend" in FLAGS:   # Unreal's SetWingPose: per-bone blend from Idle frame 0 (folded) to the bind (spread)
+            render_wing_blend(arm, Acts)
         render_closeups(arm, Acts)
         if HERO:
             render_fpv(ob, arm, Acts)

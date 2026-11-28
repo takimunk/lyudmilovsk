@@ -29,11 +29,14 @@
   "lantern_night",
   "maslenitsa",
   "midsummer",
+  "neptune_day",
   "new_year",
+  "old_new_year",
   "perseids",
   "sail_closing",
   "sail_cup",
   "sail_opening",
+  "science_day",
   "sea_festival",
   "sun_day"
  ],
@@ -101,11 +104,14 @@
   "fest.lantern_night": 2,
   "fest.maslenitsa": 2,
   "fest.midsummer": 2,
+  "fest.neptune_day": 2,
   "fest.new_year": 2,
+  "fest.old_new_year": 2,
   "fest.perseids": 2,
   "fest.sail_closing": 2,
   "fest.sail_cup": 2,
   "fest.sail_opening": 2,
+  "fest.science_day": 2,
   "fest.sea_festival": 2,
   "fest.sun_day": 2
  },
@@ -365,14 +371,38 @@
   {
    "k": "paper.town.41",
    "months": [
-    12,
-    1,
-    2,
-    3
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
    ]
   },
   {
    "k": "paper.town.42",
+   "months": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  },
+  {
+   "k": "paper.town.43",
+   "months": [
+    5,
+    6,
+    7,
+    8,
+    9
+   ]
+  },
+  {
+   "k": "paper.town.44",
    "months": [
     12,
     1,
@@ -381,7 +411,16 @@
    ]
   },
   {
-   "k": "paper.town.43",
+   "k": "paper.town.45",
+   "months": [
+    12,
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "k": "paper.town.46",
    "months": [
     11,
     12,
@@ -391,7 +430,7 @@
    ]
   },
   {
-   "k": "paper.town.44",
+   "k": "paper.town.47",
    "months": [
     6,
     7,

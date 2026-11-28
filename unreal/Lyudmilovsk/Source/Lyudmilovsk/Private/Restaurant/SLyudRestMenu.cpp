@@ -5,6 +5,7 @@
 #include "Restaurant/LyudRestaurant.h"
 #include "Brushes/SlateColorBrush.h"
 #include "Brushes/SlateRoundedBoxBrush.h"
+#include "Fonts/CompositeFont.h"
 #include "Misc/Paths.h"
 #include "Styling/CoreStyle.h"
 #include "UI/LyudDiaryStyle.h"
@@ -36,7 +37,10 @@ namespace LyudRestMenu
 	/** Lines with a price: the engine's Roboto Regular and Bold have no ₽ (U+20BD), its Medium face has. */
 	FSlateFontInfo MoneyFont(int32 Size)
 	{
-		return FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Medium.ttf"), Size);
+		// one composite font for the run (the path constructor of FSlateFontInfo is deprecated); file-backed, no UObjects in it
+		static const TSharedPtr<const FCompositeFont> Medium = MakeShared<FCompositeFont>(NAME_None,
+			FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Medium.ttf"), EFontHinting::Default, EFontLoadingPolicy::LazyLoad);
+		return FSlateFontInfo(Medium, Size);
 	}
 
 	const FButtonStyle& Button()

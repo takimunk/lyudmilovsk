@@ -106,7 +106,8 @@ private:
 	FText NowOnAir() const;
 	void TickRequest();
 	void ShowSubtitle(bool bShow);
-	TArray<int32> OwnedRecords() const;
+	/** His records: in the pocket, and for the player of his own room the ones standing on its shelves and nails too. */
+	TArray<int32> OwnedRecords(bool bWithRoom = false) const;
 	void Stamp(int32 Record);
 
 	TPimplPtr<LyudMusic::FModel> Model;

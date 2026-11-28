@@ -1,0 +1,33 @@
+{
+ "name": "sc_cover_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_cover_01",
+ "pool": "sc_cover",
+ "file": "audio/sfx/spacecraft/sc_cover_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7211,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.426,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -24.76,
+ "params": {
+  "stop_s": 0.066,
+  "scale": 1.003
+ },
+ "checks": {
+  "seconds": 0.426,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -24.76,
+  "crest_db": 18.8,
+  "centroid_hz": 1426,
+  "rolloff85_hz": 2889,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "733ab19701aacd099953ac6c9db906f478d530f0995d3e9c3cc054250d12230f",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

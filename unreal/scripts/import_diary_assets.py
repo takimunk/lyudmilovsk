@@ -12,6 +12,9 @@
 
 Run with the editor closed:
   UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=unreal/scripts/import_diary_assets.py
+
+Only the sketches of some items (nothing else is touched; safe in a worktree without the other LFS pictures):
+  ICONS=icon_a,icon_b UnrealEditor-Cmd Lyudmilovsk.uproject -run=pythonscript -script=unreal/scripts/import_diary_assets.py
 """
 import glob
 import os
@@ -23,6 +26,9 @@ mel = unreal.MaterialEditingLibrary
 tools = unreal.AssetToolsHelpers.get_asset_tools()
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 DIARY = "/Game/UI/Diary"
+# ICONS=icon_a,icon_b: import just these items' sketches and skip everything else
+ONLY = {i.strip()[len("icon_"):] if i.strip().startswith("icon_") else i.strip()
+        for i in os.environ.get("ICONS", "").split(",") if i.strip()}
 
 
 def log(msg):
@@ -59,73 +65,85 @@ def import_texture(src, folder, name, compress):
     log("%s/%s %dx%d" % (folder, name, tex.blueprint_get_size_x(), tex.blueprint_get_size_y()))
 
 
-import_texture(os.path.join(ROOT, "textures", "ui", "diary_paper_left.png"), DIARY, "T_PaperLeft", True)
-import_texture(os.path.join(ROOT, "textures", "ui", "diary_paper_right.png"), DIARY, "T_PaperRight", True)
-import_texture(os.path.join(ROOT, "textures", "ui", "map_ink.png"), DIARY, "T_MapInk", True)
-for lang_dir in sorted(glob.glob(os.path.join(ROOT, "textures", "localized", "*"))):
-    lang = os.path.basename(lang_dir)
-    for path in sorted(glob.glob(os.path.join(lang_dir, "sketch_*.png"))):
-        item = os.path.basename(path)[len("sketch_"):-4]
-        import_texture(path, "/Game/Inventory/Localized/" + lang, "T_Sketch_" + item, False)
-for path in sorted(glob.glob(os.path.join(ROOT, "textures", "ui", "birds", "bird_*.png"))):
-    name = os.path.basename(path)[len("bird_"):-4]
-    import_texture(path, DIARY + "/Birds", "T_Bird_" + name, True)
-# the portraits of the hero's animal friends (tools/ui_diary_birds.py --friends)
-for path in sorted(glob.glob(os.path.join(ROOT, "textures", "ui", "friends", "friend_*.png"))):
-    name = os.path.basename(path)[len("friend_"):-4]
-    import_texture(path, DIARY + "/Friends", "T_Friend_" + name, True)
-
-# the handwriting: font faces, made in code (unreal.LyudFontTools: the .ttf factory asserts in a commandlet); the game
-# puts them together into one composite font (LyudDiaryStyle.cpp)
-for src, name in (("Caveat-Regular.ttf", "FF_Caveat_Regular"), ("Caveat-Bold.ttf", "FF_Caveat_Bold"),
-                  ("Yomogi-Regular.ttf", "FF_Yomogi_Regular")):
-    face = unreal.LyudFontTools.make_font_face(os.path.join(ROOT, "fonts", src), DIARY + "/Fonts/" + name)
-    if face is None:
-        log("could not import font %s" % src)
-        continue
-    eal.save_loaded_asset(face, False)
-    log("font %s (%s)" % (name, face.get_class().get_name()))
+def import_sketches(only=None):
+    for lang_dir in sorted(glob.glob(os.path.join(ROOT, "textures", "localized", "*"))):
+        lang = os.path.basename(lang_dir)
+        for path in sorted(glob.glob(os.path.join(lang_dir, "sketch_*.png"))):
+            item = os.path.basename(path)[len("sketch_"):-4]
+            if only and item not in only:
+                continue
+            import_texture(path, "/Game/Inventory/Localized/" + lang, "T_Sketch_" + item, False)
 
 
-# the open pages of the 3D book
-def node(m, cls, x, y, **props):
-    e = mel.create_material_expression(m, cls, x, y)
-    for k, v in props.items():
-        e.set_editor_property(k, v)
-    return e
+def import_all():
+    import_texture(os.path.join(ROOT, "textures", "ui", "diary_paper_left.png"), DIARY, "T_PaperLeft", True)
+    import_texture(os.path.join(ROOT, "textures", "ui", "diary_paper_right.png"), DIARY, "T_PaperRight", True)
+    import_texture(os.path.join(ROOT, "textures", "ui", "map_ink.png"), DIARY, "T_MapInk", True)
+    import_sketches()
+    for path in sorted(glob.glob(os.path.join(ROOT, "textures", "ui", "birds", "bird_*.png"))):
+        name = os.path.basename(path)[len("bird_"):-4]
+        import_texture(path, DIARY + "/Birds", "T_Bird_" + name, True)
+    # the portraits of the hero's animal friends (tools/ui_diary_birds.py --friends)
+    for path in sorted(glob.glob(os.path.join(ROOT, "textures", "ui", "friends", "friend_*.png"))):
+        name = os.path.basename(path)[len("friend_"):-4]
+        import_texture(path, DIARY + "/Friends", "T_Friend_" + name, True)
+
+    # the handwriting: font faces, made in code (unreal.LyudFontTools: the .ttf factory asserts in a commandlet); the game
+    # puts them together into one composite font (LyudDiaryStyle.cpp)
+    for src, name in (("Caveat-Regular.ttf", "FF_Caveat_Regular"), ("Caveat-Bold.ttf", "FF_Caveat_Bold"),
+                      ("Yomogi-Regular.ttf", "FF_Yomogi_Regular")):
+        face = unreal.LyudFontTools.make_font_face(os.path.join(ROOT, "fonts", src), DIARY + "/Fonts/" + name)
+        if face is None:
+            log("could not import font %s" % src)
+            continue
+        eal.save_loaded_asset(face, False)
+        log("font %s (%s)" % (name, face.get_class().get_name()))
+
+    # the open pages of the 3D book
+    def node(m, cls, x, y, **props):
+        e = mel.create_material_expression(m, cls, x, y)
+        for k, v in props.items():
+            e.set_editor_property(k, v)
+        return e
+
+    path = DIARY + "/M_DiaryPage"
+    if eal.does_asset_exist(path):
+        eal.delete_asset(path)
+    m = tools.create_asset("M_DiaryPage", DIARY, unreal.Material, unreal.MaterialFactoryNew())
+    m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
+    m.set_editor_property("two_sided", False)
+    white = eal.load_asset("/Engine/EngineResources/WhiteSquareTexture")
+    page = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -900, -100, parameter_name="Page",
+                sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_LINEAR_COLOR)
+    if white:
+        page.set_editor_property("texture", white)
+    gamma = node(m, unreal.MaterialExpressionConstant, -700, 60, r=2.2)
+    power = node(m, unreal.MaterialExpressionPower, -500, -60)
+    mel.connect_material_expressions(page, "RGB", power, "Base")
+    mel.connect_material_expressions(gamma, "", power, "Exponent")
+    paper = node(m, unreal.MaterialExpressionVectorParameter, -500, 120, parameter_name="Paper",
+                 default_value=unreal.LinearColor(0.86, 0.82, 0.72, 1.0))
+    has = node(m, unreal.MaterialExpressionScalarParameter, -500, 280, parameter_name="HasPage", default_value=0.0)
+    lerp = node(m, unreal.MaterialExpressionLinearInterpolate, -300, 0)
+    mel.connect_material_expressions(paper, "", lerp, "A")
+    mel.connect_material_expressions(power, "", lerp, "B")
+    mel.connect_material_expressions(has, "", lerp, "Alpha")
+    bright = node(m, unreal.MaterialExpressionScalarParameter, -300, 200, parameter_name="Bright", default_value=1.0)
+    mul = node(m, unreal.MaterialExpressionMultiply, -120, 40)
+    mel.connect_material_expressions(lerp, "", mul, "A")
+    mel.connect_material_expressions(bright, "", mul, "B")
+    eye = node(m, unreal.MaterialExpressionEyeAdaptationInverse, -120, 220)
+    mul2 = node(m, unreal.MaterialExpressionMultiply, 80, 80)
+    mel.connect_material_expressions(mul, "", mul2, "A")
+    mel.connect_material_expressions(eye, "", mul2, "B")
+    mel.connect_material_property(mul2, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    log("M_DiaryPage made")
 
 
-path = DIARY + "/M_DiaryPage"
-if eal.does_asset_exist(path):
-    eal.delete_asset(path)
-m = tools.create_asset("M_DiaryPage", DIARY, unreal.Material, unreal.MaterialFactoryNew())
-m.set_editor_property("shading_model", unreal.MaterialShadingModel.MSM_UNLIT)
-m.set_editor_property("two_sided", False)
-white = eal.load_asset("/Engine/EngineResources/WhiteSquareTexture")
-page = node(m, unreal.MaterialExpressionTextureSampleParameter2D, -900, -100, parameter_name="Page",
-            sampler_type=unreal.MaterialSamplerType.SAMPLERTYPE_LINEAR_COLOR)
-if white:
-    page.set_editor_property("texture", white)
-gamma = node(m, unreal.MaterialExpressionConstant, -700, 60, r=2.2)
-power = node(m, unreal.MaterialExpressionPower, -500, -60)
-mel.connect_material_expressions(page, "RGB", power, "Base")
-mel.connect_material_expressions(gamma, "", power, "Exponent")
-paper = node(m, unreal.MaterialExpressionVectorParameter, -500, 120, parameter_name="Paper",
-             default_value=unreal.LinearColor(0.86, 0.82, 0.72, 1.0))
-has = node(m, unreal.MaterialExpressionScalarParameter, -500, 280, parameter_name="HasPage", default_value=0.0)
-lerp = node(m, unreal.MaterialExpressionLinearInterpolate, -300, 0)
-mel.connect_material_expressions(paper, "", lerp, "A")
-mel.connect_material_expressions(power, "", lerp, "B")
-mel.connect_material_expressions(has, "", lerp, "Alpha")
-bright = node(m, unreal.MaterialExpressionScalarParameter, -300, 200, parameter_name="Bright", default_value=1.0)
-mul = node(m, unreal.MaterialExpressionMultiply, -120, 40)
-mel.connect_material_expressions(lerp, "", mul, "A")
-mel.connect_material_expressions(bright, "", mul, "B")
-eye = node(m, unreal.MaterialExpressionEyeAdaptationInverse, -120, 220)
-mul2 = node(m, unreal.MaterialExpressionMultiply, 80, 80)
-mel.connect_material_expressions(mul, "", mul2, "A")
-mel.connect_material_expressions(eye, "", mul2, "B")
-mel.connect_material_property(mul2, "", unreal.MaterialProperty.MP_EMISSIVE_COLOR)
-mel.recompile_material(m)
-eal.save_loaded_asset(m)
-log("M_DiaryPage made")
+if ONLY:
+    import_sketches(ONLY)
+    log("sketches only: %d ids, everything else skipped" % len(ONLY))
+else:
+    import_all()

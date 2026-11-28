@@ -1,0 +1,34 @@
+{
+ "name": "sc_toggle_02",
+ "asset": "/Game/Audio/Spacecraft/S_sc_toggle_02",
+ "pool": "sc_toggle",
+ "file": "audio/sfx/spacecraft/sc_toggle_02.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7202,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.374,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -22.49,
+ "params": {
+  "snap_s": 0.004,
+  "detent_s": 0.0261,
+  "scale": 0.943
+ },
+ "checks": {
+  "seconds": 0.374,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -22.49,
+  "crest_db": 16.5,
+  "centroid_hz": 867,
+  "rolloff85_hz": 1279,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "53e1e9c9b682654b44c0ab66e88c261a7de5ec414a1ec8bd560c18e6225d4c3c",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

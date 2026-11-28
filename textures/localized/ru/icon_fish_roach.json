@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_roach",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_3.json (cell 6 (row 2, right)).",
+ "source": "design/fishing/icons_grid_3.png (sidecar design/fishing/icons_grid_3.json), cell 6 (row 2, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "0380780920c9781607e887c6c49111f6998958b5a518df92e1dd3e6f799708a2",
+ "strings": {}
+}

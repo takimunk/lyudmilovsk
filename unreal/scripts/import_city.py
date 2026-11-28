@@ -327,6 +327,11 @@ def dress_when(w):
     s.set_editor_property("phase_from", int(ph[1]))
     s.set_editor_property("phase_to", int(ph[2]))
     s.set_editor_property("open", -1 if "open" not in w else (1 if w["open"] else 0))
+    # a trace of a visit (docs/city_dress.md "Traces of a visit"): the people's activities, the place, who, how long
+    s.set_editor_property("visit_acts", [unreal.Name(a) for a in w.get("visit", [])])
+    s.set_editor_property("visit_at", w.get("at", ""))
+    s.set_editor_property("visit_who", list(w.get("who", [])))
+    s.set_editor_property("visit_keep", float(w.get("keep", 0.0)) if w.get("visit") else 0.0)
     return s
 
 
@@ -428,6 +433,7 @@ def place(face_y):
                            "leaves": e.get("leaves", 1), "hinge": "left", "frame": True, "open": False,
                            "locked": False}, to_ue))
     n_units = place_units(face_y, eas, cls, kinds)
+    n_units += place_street_machines(face_y, eas, cls)
     if doors:
         import place_doors
         for entry, fn in doors:
@@ -488,6 +494,47 @@ def place_units(face_y, eas, cls, kinds):
         n += 1
     return n
 
+
+def place_street_machines(face_y, eas, cls):
+    """The plan's street machines (the soda-water automats, docs/soda_machines.md): an ALyudCityBuilding each at its "front"
+    (the paving in front of it), turned like a plot's building, plot_id = the machine's id (its things' plot, and the die of
+    its "broken" dressing set). No windows, no lamps, no door. Returns how many were placed."""
+    with open(PLAN) as f:
+        machines = json.load(f).get("street_machines", [])
+    n = 0
+    for m in machines:
+        t = m["building"]
+        tv = "%s__%s" % (t, m["id"].lower().replace("-", "_"))
+        if os.path.exists(os.path.join(EXPORT, tv + ".json")):
+            t = tv
+        jpath = os.path.join(EXPORT, t + ".json")
+        dest = "%s/Buildings/%s" % (DEST, t)
+        if not os.path.exists(jpath) or not eal.does_asset_exist("%s/SM_%s" % (dest, t)):
+            log("street machine %s: %s not imported, skipped" % (m["id"], t))
+            continue
+        with open(jpath) as f:
+            data = json.load(f)
+        fx, fy, fz = m["front"]
+        b = eas.spawn_actor_from_class(cls, unreal.Vector(*W.to_unreal(fx, fy, fz, face_y)), unreal.Rotator(0.0, 0.0, m["yaw"] - 90.0))
+        b.set_actor_label("City_%s_%s" % (m["id"], t))
+        b.set_folder_path(FOLDER + "/Street")
+        b.tags = [TAG, "NoGrass", "NoTree"]
+        for comp, suffix in (("shell", ""), ("detail", "_Detail"), ("windows", "_Windows")):
+            path = "%s/SM_%s%s" % (dest, t, suffix)
+            c = b.get_editor_property(comp)
+            if eal.does_asset_exist(path):
+                c.set_static_mesh(eal.load_asset(path))
+            c.set_editor_property("lighting_channels", unreal.LightingChannels(True, True, False))
+        b.set_editor_property("plot_id", m["id"])
+        b.set_editor_property("type_id", t)
+        for prop in ("window_ids", "window_kinds", "window_flats", "lamp_positions", "lamp_lumens", "lamp_colors", "lamp_radii", "lamp_kinds"):
+            b.set_editor_property(prop, [])
+        b.set_editor_property("open_hour", 0.0)
+        b.set_editor_property("close_hour", 24.0)
+        set_dress(b, data, dest, t)
+        n += 1
+    log("placed %d street machines" % n)
+    return n
 
 if __name__ == "__main__":
     args = sys.argv[1:]

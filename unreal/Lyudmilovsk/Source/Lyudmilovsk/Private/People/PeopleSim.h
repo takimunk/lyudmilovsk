@@ -20,6 +20,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <climits>
 #include <functional>
 #include <memory>
 #include <string>
@@ -218,6 +219,17 @@ namespace LyudPeople
 		float Regulars = 0.f;               // "regulars": only a fixed handful do it (this share of whoever could, more of those with
 		                                    // its trait; anybody with a like for it too); 0 everybody
 		float TempMin = -99.f, TempMax = 99.f;  // "temp": [min, max] C: chosen only in such weather (the allotment: not in the frost)
+		// the days (PeopleDays.cpp, docs/town_life.md "The days"): what the calendar and the day's luck do to it
+		bool bPlan = false;                 // "plan": 1: only as today's plan with somebody (FPerson::PlanAct: tea at a friend's, a couple's stroll)
+		bool bVisit = false;                // "visit": 1: at the flat of whoever they visit today (FPerson::PlanPlace), a guest at its seats
+		bool bOnce = false;                 // "once": 1: once a day each (the pension, the library's books taken back)
+		int OnceBit = -1;                   // its bit of FPerson::OnceDone (Index; 32 such activities at most)
+		bool bSickOff = false;              // "sick": "off": a duty of it is skipped with a cold (school, work out of town)
+		uint8_t TodayMask = 0;              // "today": ["pension"]: only for whoever has one of these today (ETodayBit)
+		float TodayMore[8] = {};            // "today_more": {"payday": 0.4}: liked more (or less) by whoever has that today
+		float OwnDay = 0.f;                 // "own_day": 0.5: liked this much more on their own weekday for it (everybody has one:
+		                                    // FWorld::OwnDayOf, of the activity's days); "own_day_only": 1: on no other day
+		bool bOwnDayOnly = false;
 		// the sailing school's people (docs/yacht_school.md "People (part F)"): "members": "<group>" only that group's members
 		// choose it (FWorld::LoadMembers); "afloat": 1 whoever does it is out on the water (hidden here: the engine shows them
 		// in a boat, UPeopleLifeSubsystem::GetSailors)
@@ -244,6 +256,23 @@ namespace LyudPeople
 	};
 	/** How long each takes, s. */
 	float BikeActSeconds(EBikeAct A);
+
+	/** What today is for somebody (FWorld::RollToday, PeopleDays.cpp): bits of FPerson::Today. */
+	enum ETodayBit : uint8_t
+	{
+		TodayCold = 1 << 0,         // a cold: stays in, no school, the clinic on its first morning
+		TodaySleepy = 1 << 1,       // slept badly: up late, coffee, a nap
+		TodayBirthday = 1 << 2,     // their birthday: the cake bought by day, guests in the evening
+		TodayPayday = 1 << 3,       // paid today (those who work): the cafe, the shops
+		TodayPension = 1 << 4,      // the pension is paid today (the old): the office in the morning, then the market
+		TodayGuest = 1 << 5,        // asked to somebody's birthday
+	};
+	constexpr int NumTodayBits = 6;
+	const char* TodayName(int Bit);                     // cold, sleepy, birthday, payday, pension, guest
+	uint8_t TodayFromName(const std::string& S);        // the bit, 0 if unknown
+	/** Today's plan with somebody (FPerson::PlanKind). */
+	enum class EPlan : uint8_t { None, Tea, Birthday, Stroll, Chess, Family, Num };
+	const char* PlanName(EPlan P);                      // "", tea, birthday, stroll, chess, family
 
 	struct FDuty
 	{
@@ -319,6 +348,24 @@ namespace LyudPeople
 		float StayArrive = 11.f, StayLeave = 10.75f;
 		int DateAct = -1, DateDay = -1, DatePlace = -1, DateWith = -1;
 		float DateHour = 0.f;
+		// today (FWorld::RollToday, at midnight and after a load: worked out from the calendar's day and who they are, so
+		// nothing of it is saved): what the day is for them, and the one thing planned with somebody. A plan works as a
+		// date does (FWorld::MeetNow 3): round PlanHour they are drawn to PlanAct at PlanPlace, where PlanWith is too
+		// (a guest: their host; a host: their first guest; a couple: each other)
+		uint8_t Today = 0;          // ETodayBit
+		float LateH = 0.f;          // slept badly: up this much later (WakeOf)
+		uint32_t OnceDone = 0;      // the once-a-day activities done today (FActivity::OnceBit)
+		EPlan PlanKind = EPlan::None;
+		bool bPlanHost = false;     // the plan is at their home
+		int PlanAct = -1, PlanPlace = -1, PlanWith = -1;
+		float PlanHour = 0.f;
+		// met somebody they know on the way (FWorld::StreetMeets): standing with them for so many seconds more; and not
+		// stopping again before MeetAgainAt. Holding a door for whoever comes behind (Move): so many seconds more
+		int MeetWith = -1;
+		float MeetFor = 0.f;
+		double MeetAgainAt = -1e18;
+		float DoorFor = 0.f;
+		bool bHeld = false;         // held a door on this way already
 		std::string OwnSlot;        // "club:9": a slot only they use
 		std::string StartActivity;  // what they do when a new game begins
 		float StartMinutes[2] = { 60.f, 120.f };
@@ -386,6 +433,7 @@ namespace LyudPeople
 		int Dips = 0;               // in the water how many times on this visit (an activity with "dip")
 		int PrevActivity = -1;      // what they did before this (the manners: a bag carried from the shop), -1 nothing yet
 		double PrevActivityEnd = -1e18;     // and when they left it (sim seconds)
+		float HoldFor = 0.f;        // stopped on their way for a word with the hero (FWorld::HoldWalk): s left to stand
 		std::string Why;            // a short reason for the last choice (debug)
 		// a member of a group with a programme (FMembership, in their order: the first group with one set wins), their
 		// place in it (the school's slot: kids_3, coach_head), who they talk as (a dialogue id over Body: Sail_bosun), their
@@ -398,7 +446,9 @@ namespace LyudPeople
 		int Choices = 0;
 	};
 
-	enum class EEvent : uint8_t { Start, Arrive, Leave, TalkStart, TalkEnd, Ride, Away, Back, Num };
+	// StreetMeet: two who know each other stop on the way for a word (Other: whom; once, by the one with the lower id);
+	// StreetNod: they only greet in passing; DoorHold: Person holds a door for Other, who comes behind
+	enum class EEvent : uint8_t { Start, Arrive, Leave, TalkStart, TalkEnd, Ride, Away, Back, StreetMeet, StreetNod, DoorHold, Num };
 	/** How people spend a gathering (a holiday's phase): in groups talking, facing a point (a stage, fireworks), seated, about the stalls. */
 	enum class EGatherMode : uint8_t { Mingle, Watch, Sit, Fair };
 	const char* EventName(EEvent E);
@@ -533,7 +583,7 @@ namespace LyudPeople
 		/** Today's wake and bedtime (their usual, moved by the day's roll). */
 		float WakeOf(const FPerson& P) const
 		{
-			const float W = std::fmod(P.Wake + P.WakeJ + 24.f, 24.f);
+			const float W = std::fmod(P.Wake + P.WakeJ + P.LateH + 24.f, 24.f);     // (LateH: a bad night, RollToday)
 			// the morning after a festival night: up as much later as they stayed up (4 h at most)
 			const float Late = StayLate(P);
 			return Late > 0.f ? std::fmod(W + Late, 24.f) : W;
@@ -591,8 +641,45 @@ namespace LyudPeople
 			{
 				return 1;
 			}
-			return P.DateAct == Ai && Weekday == P.DateDay && Hour > P.DateHour - 0.5f && Hour < P.DateHour + 1.25f ? 2 : 0;
+			if (P.DateAct == Ai && Weekday == P.DateDay && Hour > P.DateHour - 0.5f && Hour < P.DateHour + 1.25f)
+			{
+				return 2;
+			}
+			return P.PlanAct == Ai && Hour > P.PlanHour - 0.5f && Hour < P.PlanHour + 1.25f ? 3 : 0;
 		}
+
+		// --- the days (PeopleDays.cpp, docs/town_life.md "The days") ---
+		/** The calendar's day (Mondays counted as Week counts them). */
+		int DayIndex() const { return Week * 7 + Weekday; }
+		/** Works out everybody's day when the calendar's day changes (Step, Resettle): colds, bad nights, birthdays, the
+		 *  pay and the pension, and the day's plans (tea at a friend's, a birthday's guests, a couple's evening stroll,
+		 *  chess on a bench, Sunday at the grandparents'). The same for the same day and seed; bForce: again anyway. */
+		void RollToday(bool bForce = false);
+		int TodayDay = INT_MIN;           // the day it was last worked out for
+		bool bDays = true;                  // false: no days (the tests of what was there before: every day the same)
+		/** Their own weekday for an activity with "own_day" (of its days), the same every week. */
+		int OwnDayOf(const FPerson& P, const FActivity& A) const;
+		/** How much they feel like an activity today (-0.5 .. 0.5; the same all day, another tomorrow). */
+		float DayMood(const FPerson& P, const FActivity& A) const;
+		/** Whether they'd be at a duty or asleep at this hour of today (their usual hours). */
+		bool BusyAt(const FPerson& P, float AtHour, float ForHours) const;
+		/** People on their way who know each other and pass within a few metres stop for a word, or greet (every few
+		 *  seconds, over those out walking only). */
+		void StreetMeets();
+		float MeetTimer = 0.f;
+		int Meets = 0, Nods = 0, Holds = 0;    // counts for the tests
+		/** At a door: somebody bound for the same door a few steps behind has it held for them. */
+		void HoldDoor(FPerson& P);
+		/** Developer mode and the tests: gives somebody a day (bits of ETodayBit) till the next roll. */
+		void SetToday(int Person, uint8_t Bits);
+		/** ... and a plan of Kind with With (a visit: P goes to With's). False if it can't be made. */
+		bool MakePlan(int Person, int With, EPlan Kind, float AtHour);
+		std::string DescribeToday(int Person) const;
+	private:
+		int PlanActs[8] = { -1, -1, -1, -1, -1, -1, -1, -1 };   // Index: visit_home, host_guests, couple_stroll, chess_bench
+		void ClearPlan(FPerson& P);
+		int NearestPlaceFor(const FActivity& A, const V3& Near, int Island, int Room) const;
+	public:
 		bool OutingNow(const FPerson& P, const FActivity& A) const { return MeetNow(P, A) == 1; }
 		float PrevHour = -1.f;
 		int DayRoll = 0;
@@ -661,6 +748,9 @@ namespace LyudPeople
 		 *  some sitting activity of theirs fits, for Minutes; false if there is none. The seat the player is on is left out
 		 *  (nearer than 0.35 m to Pos). */
 		bool OrderBeside(int Person, const V3& Pos, float MaxDist, double Minutes);
+		/** Somebody on their way on foot stands for Seconds more (a talk with the hero, docs/town_talk.md), then goes on;
+		 *  0 lets them go at once. Nothing for whoever isn't walking a way. */
+		void HoldWalk(int Person, float Seconds);
 
 		/** Bicycles (docs/bikes.md): a household's bike lives in its entrance (a place on the stair's way in, Home) and
 		 *  goes where its rider leaves it. People ride it for an outdoor way of MinBikeWay or more on the valley's ground
@@ -735,6 +825,7 @@ namespace LyudPeople
 		/** Height fields of ground off the walk grid (the sea island), Unreal metres. */
 		struct FPatch { float X0 = 0.f, Y0 = 0.f, Cell = 4.f; int NX = 0, NY = 0; std::vector<float> Z; bool Has(float X, float Y) const; float At(float X, float Y) const; };
 		std::vector<FPatch> Patches;
+		void AddPatches(const LyudJson::FValue& List);     // a json "ground_patches" list onto Patches
 
 		/** The town's terraces (town_places.json "town"): flat levels joined by stairs. Inside its box people keep to their
 		 *  terrace's height and go up and down by the stairs (until the walk grid knows the terraces). */

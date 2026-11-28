@@ -1,0 +1,10 @@
+{
+ "id": "icon_dish_carrot_salad",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a small glass bowl of finely grated orange carrot mixed with apple",
+ "source": "design/icons_1127/sheet_1.png (sidecar design/icons_1127/sheet_1.json), cell 1 (row 1, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "497a181bbf36d15c547043a075b774574fec95f049d642992ec6cf4145087894",
+ "strings": {}
+}

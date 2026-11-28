@@ -1,0 +1,30 @@
+{
+ "name": "sc_needle_down_02",
+ "asset": "/Game/Audio/Spacecraft/S_sc_needle_down_02",
+ "pool": "sc_needle_down",
+ "file": "audio/sfx/spacecraft/sc_needle_down_02.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7602,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.561,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -22.34,
+ "params": {},
+ "checks": {
+  "seconds": 0.561,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -22.34,
+  "crest_db": 16.3,
+  "centroid_hz": 1783,
+  "rolloff85_hz": 4091,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "7db8f0fd3cfc1bf39867a2a594edc21a4c4498ce17ad6018ecdb2565ef4a0d9e",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

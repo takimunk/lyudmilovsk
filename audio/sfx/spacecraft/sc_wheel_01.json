@@ -1,0 +1,32 @@
+{
+ "name": "sc_wheel_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_wheel_01",
+ "pool": "sc_wheel",
+ "file": "audio/sfx/spacecraft/sc_wheel_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7291,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.827,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -20.54,
+ "params": {
+  "scale": 0.944
+ },
+ "checks": {
+  "seconds": 0.827,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -20.54,
+  "crest_db": 14.5,
+  "centroid_hz": 1947,
+  "rolloff85_hz": 3072,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "f811330d62ed1af863918575fbdeb24ab78e2fb0b75fc54a6c6465020483fd30",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

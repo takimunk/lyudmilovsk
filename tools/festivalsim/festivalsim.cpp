@@ -352,6 +352,9 @@ static void Deep(FCalendar& C)
 		Between("mid_autumn", 9, 6, 10, 7, -1);
 		Between("diwali", 10, 17, 11, 16, -1);
 		Between("loy_krathong", 10, 30, 11, 29, -1);
+		Between("science_day", 12, 1, 12, 7, 5);        // the first Saturday of December
+		Between("old_new_year", 1, 13, 1, 13, -1);
+		Between("neptune_day", 7, 25, 7, 31, 6);        // the last Sunday of July
 		Between("sail_opening", 4, 25, 5, 1, 5);        // the yacht school's opening: the first Saturday on or after 25 April
 		Between("sail_closing", 11, 1, 11, 7, 6);       // its closing: the first Sunday of November
 		Between("sail_cup", 6, 20, 6, 26, 5);           // the Lyudmilovsk Cup: the weekend on or after 20 June

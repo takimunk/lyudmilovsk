@@ -7,9 +7,11 @@
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleManners.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/Friends.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <map>
@@ -55,8 +57,17 @@ struct FClock
 	}
 };
 
+/** SIM_SEED=<n> in the environment: another seed for the people's life (0, the default, keeps the house seed), to
+ *  measure how much a check's number moves with the seeded picks (any change to activities.json's order reshuffles them). */
+static uint32_t SimSeed()
+{
+	const char* E = std::getenv("SIM_SEED");
+	return E ? (uint32_t)std::strtoul(E, nullptr, 10) * 2654435761u : 0u;
+}
+
 static bool LoadAll(FWorld& W, FManners& M)
 {
+	W.Opt.Seed ^= SimSeed();
 	if (!W.Load(DataDir, AnimalsDir))
 	{
 		std::printf("load failed: %s\n", W.LastError.c_str());
@@ -84,6 +95,8 @@ struct FDay
 	const char* Name = "";
 	float TempC = 12.f;
 	float RainFrom = -1.f, RainTo = -1.f;       // hours of a shower
+	int Weekday = 2;                            // Wednesday (0 Monday)
+	bool bSeaFestival = false;                  // the sea festival's program in the town (festivals.json sea_festival)
 	bool bPrint = false;
 	// results
 	std::map<std::string, double> Seconds;      // manner -> person-seconds (people out of doors or seen indoors)
@@ -102,10 +115,17 @@ struct FDay
 	bool bDates = false;
 	std::map<std::string, int> DateHalf;
 	int DatesClose = 0;         // of the kept: side by side (within 3 m) at some minute
-	int AllDates = 0, Dates = 0, DatesKept = 0;      // pairs of friends with a weekly date; those whose day is this Wednesday; kept
+	int AllDates = 0, Dates = 0, DatesKept = 0, DatesIll = 0;      // pairs of friends with a weekly date; those whose day is this Wednesday; kept
 	// ten minutes of something in the sky at 21:00: people out of doors, and those of them looking up, pointing or photographing,
 	// during it and in the ten minutes before; and an arm pointed at the sky at any other time
 	int SkyOut = 0, SkyUp = 0, BeforeOut = 0, BeforeUp = 0, PointNoShow = 0;
+	// the days' things (docs/town_manners.md): person-seconds with each prop in the hands; bBirthdays gives a dozen grown-ups
+	// their birthday and a guest each at six; chess on a bench sampled each minute (the plan's two players within 1.7 m:
+	// the board goes on the seat between them)
+	bool bBirthdays = false;
+	std::map<std::string, double> PropSeconds;
+	int Birthdays = 0, Guests = 0, ChessSamples = 0, ChessPaired = 0, ChessPlanned = 0;
+	int ChessGaps[10] = {};     // the two players' distance, by half metres
 };
 
 static void RunDay(FDay& D)
@@ -118,10 +138,33 @@ static void RunDay(FDay& D)
 		return;
 	}
 	FClock C;
-	C.Seconds = (2 * 24.0 + 5.0) * 3600.0;       // Wednesday 05:00
+	C.Seconds = (D.Weekday * 24.0 + 5.0) * 3600.0;       // the day's 05:00 (a Wednesday unless the day says)
 	C.Set(W);
 	W.TempC = D.TempC;
 	W.Resettle();
+	if (D.bBirthdays)
+	{
+		std::vector<int> Grown;
+		for (const FPerson& P : W.People)
+		{
+			if (P.bTown && P.Age >= 25 && P.Age < 70 && P.Home >= 0)
+			{
+				Grown.push_back(P.Id);
+			}
+		}
+		for (size_t K = 0; K + 1 < Grown.size() && D.Birthdays < 12; K += Grown.size() / 13)
+		{
+			const int Host = Grown[K], Guest = Grown[K + 1];
+			W.SetToday(Host, TodayBirthday);
+			D.Birthdays++;
+			if (W.People[(size_t)Guest].Home != W.People[(size_t)Host].Home)
+			{
+				W.SetToday(Guest, TodayGuest);
+				D.Guests += W.MakePlan(Guest, Host, EPlan::Birthday, 18.f) ? 1 : 0;
+			}
+		}
+	}
+	const int ChessAct = W.FindActivity("chess_bench");
 	std::vector<int> Shown;
 	FMannerNow Now;
 	Now.TempC = D.TempC;
@@ -130,6 +173,7 @@ static void RunDay(FDay& D)
 	int LastHour = -1;
 	std::vector<char> RitualKept;
 	std::vector<char> DateKept;
+	std::vector<char> DateIll;      // (a date with one of the two down with a cold today is off: docs/town_life.md "The days")
 	for (double T = 0.0; T < 19.0 * 3600.0; T += Dt)        // till midnight
 	{
 		C.Seconds += Dt;
@@ -137,14 +181,41 @@ static void RunDay(FDay& D)
 		const bool bRain = D.RainFrom >= 0.f && W.Hour >= D.RainFrom && W.Hour < D.RainTo;
 		W.bRain = bRain;
 		W.Rain = bRain ? 0.7f : 0.f;
+		if (D.bSeaFestival && (long)std::lround(T) % 60 == 0)
+		{
+			// the sea festival's program as ULyudFestivalSubsystem sends it to the people's life (festivals.json sea_festival:
+			// the fair 10-17, the concert on the square 17-21:30, the dance on the square from 22:06; the fireworks are the
+			// sky show at 21:00 below)
+			const auto Phase = [&W](const char* Id, const char* Venue, float From, float To, float Pull, EGatherMode Mode)
+			{
+				const bool bOn = W.Hour >= From - 0.1f && W.Hour < To;
+				const bool bSet = std::any_of(W.Gatherings.begin(), W.Gatherings.end(), [Id](const FWorld::FGathering& G) { return G.Id == Id; });
+				if (bOn && !bSet)
+				{
+					W.SetGathering(Id, Venue, From, To, Pull, Mode, false, V3());
+				}
+				else if (!bOn && bSet)
+				{
+					W.ClearGathering(Id);
+				}
+			};
+			Phase("sea_festival.fair", "fair", 10.f, 17.f, 1.0f, EGatherMode::Fair);
+			Phase("sea_festival.concert", "square", 17.f, 21.5f, 1.2f, EGatherMode::Watch);
+			Phase("sea_festival.dance", "square", 22.1f, 24.f, 0.7f, EGatherMode::Mingle);
+		}
 		W.Step(Dt);
 		W.Events.clear();
 		if ((long)std::lround(T) % 60 == 0)
 		{
 			// friends whose weekly date is today: the two of them at it together
 			DateKept.resize(W.People.size(), 0);
+			DateIll.resize(W.People.size(), 0);
 			for (const FPerson& P : W.People)
 			{
+				if (P.DateWith > P.Id && P.DateDay == W.Weekday && ((P.Today | W.People[(size_t)P.DateWith].Today) & TodayCold))
+				{
+					DateIll[(size_t)P.Id] = 1;
+				}
 				if (P.DateWith > P.Id && P.DateDay == W.Weekday && P.State == EState::Doing && P.Activity == P.DateAct)
 				{
 					const FPerson& F = W.People[(size_t)P.DateWith];
@@ -163,6 +234,22 @@ static void RunDay(FDay& D)
 						const bool bAt = P.State == EState::Doing && P.Activity == P.DateAct;
 						D.DateHalf[W.Activities[(size_t)P.DateAct].Id + " -> " + (bAt ? (P.Place == P.DatePlace ? "AT IT" : "at it elsewhere")
 							: P.Activity < 0 ? "nothing" : W.Activities[(size_t)P.Activity].Id + (P.State == EState::Doing ? "" : " (going)"))]++;
+					}
+				}
+			}
+			// chess on a bench: the plan's partner on the next seat
+			for (const FPerson& P : W.People)
+			{
+				if (ChessAct >= 0 && P.Activity == ChessAct && P.State == EState::Doing)
+				{
+					D.ChessSamples++;
+					const FPerson* O = P.PlanWith >= 0 ? &W.People[(size_t)P.PlanWith] : nullptr;
+					if (O && P.PlanKind == EPlan::Chess && O->Activity == ChessAct && O->State == EState::Doing && O->Place == P.Place)
+					{
+						D.ChessPlanned++;
+						const float Gap = (O->Pos - P.Pos).Len2D();
+						D.ChessPaired += Gap < 1.7f ? 1 : 0;
+						D.ChessGaps[std::min(9, (int)(Gap / 0.5f))]++;
 					}
 				}
 			}
@@ -232,6 +319,10 @@ static void RunDay(FDay& D)
 				D.MannerSeconds += Dt;
 				Distinct.insert(Name);
 				const FMannerDef* Def = M.DefOf(S);
+				if (Def && Def->Prop != EProp::None)
+				{
+					D.PropSeconds[PropName(Def->Prop)] += Dt;
+				}
 				// what must never be seen
 				const bool bBadPose = Def && !S.bReact && !((Def->Poses >> (int)P.Pose) & 1u);
 				const bool bSmokeKid = S.Cur == EManner::Smoke && P.Age < 18;
@@ -343,7 +434,9 @@ static void RunDay(FDay& D)
 	for (const FPerson& P : W.People)
 	{
 		D.AllDates += P.DateWith > P.Id ? 1 : 0;
-		D.Dates += P.DateWith > P.Id && P.DateDay == 2 ? 1 : 0;
+		const bool bIll = (size_t)P.Id < DateIll.size() && DateIll[(size_t)P.Id];
+		D.Dates += P.DateWith > P.Id && P.DateDay == D.Weekday && !bIll ? 1 : 0;
+		D.DatesIll += P.DateWith > P.Id && P.DateDay == D.Weekday && bIll ? 1 : 0;
 		D.DatesKept += P.DateWith > P.Id && (size_t)P.Id < DateKept.size() && DateKept[(size_t)P.Id] ? 1 : 0;
 		D.DatesClose += P.DateWith > P.Id && (size_t)P.Id < DateKept.size() && DateKept[(size_t)P.Id] == 2 ? 1 : 0;
 	}
@@ -1238,7 +1331,7 @@ int main(int Argc, char** Argv)
 	Noticing();
 	std::printf("a weekend:\n");
 	Outings(false);
-	FDay Mild, Shower, Frost, Warm;
+	FDay Mild, Shower, Frost, Warm, Festival;
 	Mild.Name = "a mild day";
 	Shower.Name = "a shower at 14:00";
 	Shower.RainFrom = 14.f;
@@ -1247,7 +1340,11 @@ int main(int Argc, char** Argv)
 	Frost.TempC = -8.f;
 	Warm.Name = "a warm day";
 	Warm.TempC = 23.f;
-	for (FDay* D : { &Mild, &Shower, &Frost, &Warm })
+	// the town's holiday: the sea festival falls on a Friday (the fourth of October), the evening the Vaults dance too
+	Festival.Name = "the sea festival, a Friday";
+	Festival.Weekday = 4;
+	Festival.bSeaFestival = true;
+	for (FDay* D : { &Mild, &Shower, &Frost, &Warm, &Festival })
 	{
 		RunDay(*D);
 		std::printf("%s (%.0f C): %.0f%% of the time people seen do something with their hands;", D->Name, D->TempC, 100.0 * D->MannerSeconds / std::max(1.0, D->DrawnSeconds));
@@ -1275,19 +1372,46 @@ int main(int Argc, char** Argv)
 		{
 			continue;
 		}
-		if (Mild.Seconds[Name] + Shower.Seconds[Name] + Frost.Seconds[Name] + Warm.Seconds[Name] <= 0.0)
+		if (Mild.Seconds[Name] + Shower.Seconds[Name] + Frost.Seconds[Name] + Warm.Seconds[Name] + Festival.Seconds[Name] <= 0.0)
 		{
 			Never += std::string(" ") + Name;
 		}
 	}
-	// claps and sways need a holiday (tools/festivalsim sets the gatherings); everything else is seen in these four days
-	CHECK(Never.empty() || Never == " clap sway" || Never == " clap" || Never == " sway", "every manner is seen in some weather%s%s", Never.empty() ? "" : ": never", Never.c_str());
+	// (claps and sways need a holiday's concert and dance, or the Vaults' Friday dances: the festival day has them)
+	CHECK(Never.empty(), "every manner is seen in some weather or at the holiday%s%s", Never.empty() ? "" : ": never", Never.c_str());
+	CHECK(Festival.Seconds["clap"] > 0.0 && Festival.Seconds["sway"] > 0.0, "the holiday's crowd claps at the concert and sways at the dances (%.1f, %.1f person-hours)",
+		Festival.Seconds["clap"] / 3600.0, Festival.Seconds["sway"] / 3600.0);
 	CHECK(Mild.SkyOut > 0 && Mild.SkyUp * 4 > Mild.SkyOut && Mild.SkyUp * (long)Mild.BeforeOut > 4L * Mild.BeforeUp * Mild.SkyOut,
 		"something in the sky turns the heads up (%d of %d person-samples out of doors during it, %d of %d before)",
 		Mild.SkyUp, Mild.SkyOut, Mild.BeforeUp, Mild.BeforeOut);
 	CHECK(Mild.PointNoShow == 0, "nobody points at an empty sky (%d)", Mild.PointNoShow);
-	CHECK(Mild.AllDates > 250 && Mild.Dates > 30 && Mild.DatesKept * 5 > Mild.Dates * 2,
-		"friends keep their weekly date (%d of the %d pairs whose day it is met; %d pairs in the town)", Mild.DatesKept, Mild.Dates, Mild.AllDates);
+	{
+		// the days' things: a mild day with a dozen birthdays and their guests (docs/town_manners.md "The days' things")
+		FDay Bd;
+		Bd.Name = "birthdays";
+		Bd.bBirthdays = true;
+		RunDay(Bd);
+		CHECK(Bd.Wrong == 0, "birthdays: nothing that must never be seen (%d%s%s)", Bd.Wrong, Bd.Wrong ? ": " : "", Bd.WrongWhat.c_str());
+		CHECK(Bd.Birthdays > 0 && Bd.PropSeconds["cake_box"] > 60.0, "a birthday's cake is carried home in its box (%d birthdays: %.0f person-minutes)",
+			Bd.Birthdays, Bd.PropSeconds["cake_box"] / 60.0);
+		CHECK(Bd.Guests > 0 && Bd.PropSeconds["flowers"] > 30.0, "birthday guests walk there with carnations (%d guests: %.0f person-minutes; a bag %.0f)",
+			Bd.Guests, Bd.PropSeconds["flowers"] / 60.0, Bd.PropSeconds["bag"] / 60.0);
+		// (a two-seat bench given as one point used to put both on the very spot; pairs whose bench was taken sit at the
+		// next one, each with a board of their own)
+		CHECK(Mild.ChessPaired > 0 && Mild.ChessGaps[0] == 0,
+			"the plan's chess players share a bench side by side, never on one spot, the board between them (%d of %d person-minutes within 1.7 m, %d closer than 0.5 m; %d at chess_bench in all)",
+			Mild.ChessPaired, Mild.ChessPlanned, Mild.ChessGaps[0], Mild.ChessSamples);
+		std::printf("  chess players' distance by half metres:");
+		for (int G : Mild.ChessGaps)
+		{
+			std::printf(" %d", G);
+		}
+		std::printf("\n");
+	}
+	// (the bar is set from the spread over seeds, docs/town_manners.md "Testing": SIM_SEED 0-11 kept 38-50% of the dates,
+	// mean 43%, sd 3.7; 30% is three and a half sd under the mean, eight points under the lowest seed)
+	CHECK(Mild.AllDates > 250 && Mild.Dates > 30 && Mild.DatesKept * 10 > Mild.Dates * 3,
+		"friends keep their weekly date (%d of the %d pairs whose day it is met, %d more off with a cold; %d pairs in the town)", Mild.DatesKept, Mild.Dates, Mild.DatesIll, Mild.AllDates);
 	CHECK(Warm.FrontEvening > Mild.FrontEvening && Warm.FrontEvening * 2 > Frost.FrontEvening * 3,
 		"a warm evening brings the town out to the sea front (%d person-samples warm, %d mild, %d in the frost)", Warm.FrontEvening, Mild.FrontEvening,
 		Frost.FrontEvening);

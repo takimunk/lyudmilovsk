@@ -1,0 +1,10 @@
+{
+ "id": "icon_dish_salad",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "an enamel bowl of salad of red tomato wedges, sliced pink radishes and green dill, coarse salt",
+ "source": "design/icons_1127/sheet_1.png (sidecar design/icons_1127/sheet_1.json), cell 8 (row 3, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "a486b2622fe0d29a14e1403560afc2d505fa8e4f90d60e6363ffddddc38b2be7",
+ "strings": {}
+}

@@ -1,0 +1,34 @@
+{
+ "name": "sc_hatch_close_02",
+ "asset": "/Game/Audio/Spacecraft/S_sc_hatch_close_02",
+ "pool": "sc_hatch_close",
+ "file": "audio/sfx/spacecraft/sc_hatch_close_02.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7272,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.206,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -21.46,
+ "params": {
+  "clang_s": 0.18,
+  "dogs": 3,
+  "scale": 0.954
+ },
+ "checks": {
+  "seconds": 1.206,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -21.46,
+  "crest_db": 15.5,
+  "centroid_hz": 234,
+  "rolloff85_hz": 274,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "ff0ab7a31a8950f35b79e4e0c056e913affcd780814aab1570d3024792b34461",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

@@ -97,6 +97,10 @@ namespace LyudPeople
 	{
 		None, Phone, Cigarette, Camera, Umbrella, Rod, Brush, Binoculars, Newspaper, Book, Knitting, IceCream, Cup, Bag,
 		Spade, WateringCan, Mop, Torch, Suitcase,
+		// the street (docs/street_life.md): the yard keeper's and the subbotnik's broom, the autumn's rake (held like the mop)
+		Broom, Rake,
+		// the days (docs/town_life.md "The days"): the birthday's cake box carried home, a birthday guest's carnations
+		CakeBox, Flowers,
 		// the yacht school's (props.py); EProp::Num stays <= 32 (FManners::PropsReady is a bit per prop)
 		Megaphone, Whistle, Stopwatch, Clipboard, StartFlag, HoseNozzle, KnotCord, Bailer, Num
 	};
@@ -176,6 +180,8 @@ namespace LyudPeople
 		std::vector<std::string> After; // only for a while after one of these activities (a bag after the shop)
 		std::vector<uint8_t> AfterOk;
 		float AfterSeconds = 900.f;
+		std::vector<std::string> Going; // only on the way to one of these (a guest's flowers on the way to the visit)
+		std::vector<uint8_t> GoingOk;
 		uint32_t Habit = 0;             // only people with this habit
 		int MinAge = 0, MaxAge = 200;
 		float From = 0.f, To = 24.f;    // game hours
@@ -190,6 +196,7 @@ namespace LyudPeople
 		float NeedOver = 0.f;
 		int Gather = -1;                // EGatherMode: only at a gathering of this mode
 		bool bWaiting = false;          // only waiting for the train
+		uint8_t Today = 0;              // "today": only whoever has this today (ETodayBit: sleepy, cold, guest; PeopleDays.cpp)
 		std::string Trait;              // warmth, nerve, curiosity, tidy: the more of it, the likelier
 		float Weight = 1.f;
 		float SecMin = 6.f, SecMax = 15.f;

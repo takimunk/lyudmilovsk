@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_smelt",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_3.json (cell 2 (row 1, middle)).",
+ "source": "design/fishing/icons_grid_3.png (sidecar design/fishing/icons_grid_3.json), cell 2 (row 1, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "a17c509ee8807dc914b49dcf660153217c4486161726501ea7905d495d6fec2f",
+ "strings": {}
+}

@@ -1,0 +1,50 @@
+[
+ {
+  "service": "hi3d MCP (agent.hi3d.ai) via tools/birds/hi3d_mcp.py",
+  "tool": "create_generation",
+  "kind": "model",
+  "task_id": "2c89277caed24cec8c2c13b9b49a43c9",
+  "points": 45,
+  "arguments": {
+   "file_tokens": "(uploaded views, see inputs)",
+   "version": "v3.0",
+   "model_type": "high_quality",
+   "generation_type": "model_with_texture",
+   "pbr": true,
+   "license": "private"
+  },
+  "inputs": [
+   {
+    "view": "front",
+    "file": "blender/birds/scan_raw/GreyHeron/views/front.png",
+    "sha256": "e9cc05c5106fe754c82dd669ea673c98de58337b79d7f45e1cb563210241940e"
+   },
+   {
+    "view": "back",
+    "file": "blender/birds/scan_raw/GreyHeron/views/back.png",
+    "sha256": "4711cbf62ded625a07a5cd7dae5a2191b39b227c75b02269ae1d42b432a8c730"
+   },
+   {
+    "view": "left",
+    "file": "blender/birds/scan_raw/GreyHeron/views/left.png",
+    "sha256": "368a62b38b6e0bdb513e326662008ff44baf5b5fd1804b98c6dcd35bfff560e2"
+   },
+   {
+    "view": "right",
+    "file": "blender/birds/scan_raw/GreyHeron/views/right.png",
+    "sha256": "84e3187a69fea7d75856ae43c89ca686f53c26dfdeffaf35215f8e9e64c0362f"
+   }
+  ],
+  "submitted": "2026-11-20T20:00:10+00:00",
+  "outputs": [
+   {
+    "url": "https://hitem3dstatic.zaohaowu.net/jjewelry/web/model3ds/img2model3d/20261120/2a60e6eff4e947f5b35a11525db68c91/target/model/original/GLB0.glb?auth_key=85e768215135d7fffb1b2e57be05bcb5&t=1795209184",
+    "file": "blender/birds/scan_raw/GreyHeron/model.glb",
+    "bytes": 49151744,
+    "sha256": "fd22dd579674001c6b21acf4cbb933e648ee274fc50fdc716dd125838eb2cc4c"
+   }
+  ],
+  "model_page_url": "https://www.hi3d.ai/3d-model/2c89277caed24cec8c2c13b9b49a43c9",
+  "fetched": "2026-11-20T20:44:22+00:00"
+ }
+]

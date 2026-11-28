@@ -1,0 +1,9 @@
+{
+ "dev.group.townlife": "Town life: the days",
+ "dev.action.townlife.report": "What today is in the town (to the log)",
+ "dev.action.townlife.pension": "Pension day: the old go to the office",
+ "dev.action.townlife.payday": "Payday: the cafes fill in the evening",
+ "dev.action.townlife.tea": "The nearest resident goes to a friend's for tea",
+ "dev.action.townlife.chess": "The nearest resident and a friend: chess on a bench",
+ "dev.action.townlife.cold": "The nearest resident has a cold: goes home"
+}

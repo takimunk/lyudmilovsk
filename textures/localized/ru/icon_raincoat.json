@@ -1,0 +1,10 @@
+{
+ "id": "icon_raincoat",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a neatly folded yellow rubberised raincoat with a hood and big press studs, a matte sheen on the folds",
+ "source": "design/icons_1127/sheet_2.png (sidecar design/icons_1127/sheet_2.json), cell 2 (row 1, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "d0b7735ed5353ff21cf191d2832c488780f4ea10dd705e64739553dc575e8a9c",
+ "strings": {}
+}

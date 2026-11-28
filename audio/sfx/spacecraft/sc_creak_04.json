@@ -1,0 +1,36 @@
+{
+ "name": "sc_creak_04",
+ "asset": "/Game/Audio/Spacecraft/S_sc_creak_04",
+ "pool": "sc_creak",
+ "file": "audio/sfx/spacecraft/sc_creak_04.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7454,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 0.733,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -19.98,
+ "params": {
+  "rate_hz": [
+   34,
+   119
+  ],
+  "seconds": 0.47
+ },
+ "checks": {
+  "seconds": 0.733,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -19.98,
+  "crest_db": 14.0,
+  "centroid_hz": 550,
+  "rolloff85_hz": 736,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "0b90693ed9dc1d9056e6ee23007147e0835b0f22caa2db44f01e6ed06fee6747",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

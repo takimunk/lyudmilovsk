@@ -1,0 +1,237 @@
+## ---------------------------------------------------------------------------------------------------------------
+## The warm season's evenings on Sun Square and the promenade (docs/promenade.md): the summer dances by the stage
+## (prom_dance, prom_dance_watch), the brass band on Sunday afternoons (band_play, band_listen, band_kids), the evening
+## walk to the pier and back and the benches at sunset (prom_evening_walk, prom_sunset_bench), the couples' strolls,
+## the lighthouse coming on, the photographer's best light. Russian: the speaker's own words never agree in gender
+## unless the set says sex; the hero is a teenage boy, and only girls of his age ask him.
+## ---------------------------------------------------------------------------------------------------------------
+
+## ---- the dance on the square
+
+[pev_floor]
+doing = prom_dance
+weight = 4
+say town.pev_floor.1 | Под открытым небом и вальс другой. Шире, что ли. | Under the open sky even a waltz is different. Wider, somehow. | 空の下だと、ワルツもちがう。広いっていうか。
+say town.pev_floor.2 | Плиты тёплые, как печка. До полуночи можно танцевать. | The slabs are warm as a stove. You could dance till midnight. | 石畳がストーブみたいにあったかい。真夜中まで踊れそう。
+say town.pev_floor.3 | Звёзды вышли. Считай не шаги, а звёзды, легче будет. | The stars are out. Count stars, not steps, it's easier. | 星が出た。ステップじゃなくて星を数えて。そのほうが楽だよ。
+say town.pev_floor.4 | Опять «Амурские волны». Дружинник другой пластинки не знает. | "Waves of the Amur" again. The volunteer doesn't know any other record. | また「アムールの波」。自警団の人、ほかのレコード知らないんだよ。
+say town.pev_floor.5 | Ветер с моря. Держи ноты, держи шляпу, держи меня. | Wind off the sea. Hold the music, hold your hat, hold me. | 海から風。楽譜を押さえて、帽子を押さえて、わたしを押さえて。
+
+[pev_floor_dusk]
+doing = prom_dance prom_dance_watch
+hours = 21-23
+weight = 5
+say town.pev_floor_dusk.1 | Фонари зажглись, и мошкара прилетела на танцы тоже. | The lamps have come on, and the midges have come to the dance too. | 街灯がついて、羽虫もダンスに来た。
+say town.pev_floor_dusk.2 | Комар! Прямо в такт укусил. | A mosquito! Bit me right on the beat. | 蚊！　ちょうど拍子に合わせて刺された。
+say town.pev_floor_dusk.3 | Похолодало. Кофту бы, да кофта дома, а танцы тут. | It's turned chilly. A cardigan would be nice, but the cardigan's at home and the dance is here. | 冷えてきた。カーディガンがほしいけど、カーディガンは家、ダンスはここ。
+say town.pev_floor_dusk.4 | Маяк мигает в такт. Или это мне так кажется после польки. | The lighthouse is blinking in time. Or that's just me after the polka. | 灯台がリズムに合わせて光ってる。それともポルカのせいでそう見えるだけ？
+
+[pev_floor_talk]
+doing = prom_dance
+doing2 = prom_dance
+weight = 3
+talk
+- town.pev_floor_talk1.1 | В «Сводах» паркет, а тут плиты. Каблуки жалко. | At the Vaults there's parquet, here it's slabs. Pity about my heels. | 「ヴォールト」は寄せ木、ここは石畳。ヒールがかわいそう。
+- town.pev_floor_talk1.2 | Зато тут потолок — небо. | But here the ceiling is the sky. | そのかわり、ここの天井は空だよ。
+- town.pev_floor_talk1.3 | Небо каблуки не чинит. | The sky doesn't mend heels. | 空はヒールを直してくれないよ。
+talk
+- town.pev_floor_talk2.1 | Белый в десять? | Ladies' choice at ten? | 白いダンスは十時？
+- town.pev_floor_talk2.2 | В десять, у фонаря на углу. Девчонки уже там стоят. | At ten, by the lamp on the corner. The girls are already standing there. | 十時、角の街灯のところ。女の子たちもうそこにいる。
+talk
+- town.pev_floor_talk3.1 | А если дождь? | And if it rains? | 雨が降ったら？
+- town.pev_floor_talk3.2 | Тогда отменят и все пойдут домой мокрые и счастливые. | Then they'll call it off and everyone will go home wet and happy. | そしたら中止で、みんなびしょぬれで幸せに帰る。
+
+[pev_watch]
+doing = prom_dance_watch
+weight = 4
+say town.pev_watch.1 | Летом на площади, зимой в «Сводах». Так мы и прожили, от танцев до танцев. | Summer on the square, winter at the Vaults. That's how we lived, from dance to dance. | 夏は広場、冬は「ヴォールト」。そうやって生きてきた、ダンスからダンスへ。
+say town.pev_watch.2 | Раньше тут доски клали, настоящий пол. А теперь плиты, и ничего, танцуют. | They used to lay boards here, a real floor. Now it's slabs, and never mind, they dance. | 昔はここに板を敷いて、本物の床だった。今は石畳。それでもみんな踊ってる。
+say town.pev_watch.3 | Смотри, как ведёт. Это у него от отца: тот тоже всё лето тут кружился. | Look how he leads. He gets it from his father: he spent every summer spinning here too. | ほら、あのリード。父親ゆずりだ。あの人も夏じゅうここで回ってた。
+
+[pev_watch_grannies]
+doing = prom_dance_watch
+sex = female
+age = elder
+weight = 4
+say town.pev_watch_grannies.1 | Я тут на площади с мужем познакомилась. Он комара у меня со лба согнал, вот и всё знакомство. | I met my husband on this square. He brushed a mosquito off my brow; that was all the introduction. | わたし、この広場で夫と出会ったの。おでこの蚊を払ってくれた、それが出会いのすべて。
+say town.pev_watch_grannies.2 | Веточку сирени держу от комаров. И для красоты. | I've a sprig of lilac against the mosquitoes. And for looks. | 蚊よけにライラックの小枝。それと、おしゃれに。
+
+[pev_hero_wall]
+to = hero
+doing = prom_dance prom_dance_watch
+hours = 19-22
+weekday = fri sat
+months = 5-9
+weight = 5
+say town.pev_hero_wall.1 | Не стой у фонтана, фонтан и без тебя бьёт. Пригласи кого-нибудь! | Don't stand by the fountain; the fountain plays without you. Ask someone! | 噴水のそばに立ってないで。噴水はあなたがいなくても噴いてる。誰か誘いなよ！
+say town.pev_hero_wall.2 | Под открытым небом стесняться некогда: лето короткое. | No time to be shy under the open sky: the summer's short. | 空の下で照れてる暇はないよ。夏は短いんだから。
+
+[pev_hero_white]
+to = hero
+doing = prom_dance
+sex = female
+age = teen
+hours = 22-23
+weekday = fri sat
+months = 5-9
+weight = 9
+say town.pev_hero_white.1 | Белый танец! Пошли, пока фонарь не погас. | Ladies' choice! Come on, before the lamp goes out. | 白いダンス！　行こう、街灯が消えないうちに。
+say town.pev_hero_white.2 | Я тебя приглашаю. Под звёздами отказывать нельзя, это примета. | I'm asking you. You can't say no under the stars; it's bad luck. | わたしが誘うの。星の下で断っちゃだめ、縁起が悪いから。
+
+## ---- the brass band on Sunday afternoon
+
+[pev_band_play]
+doing = band_play
+weight = 4
+say town.pev_band_play.1 | Раз, два… «Амурские волны», с затакта. Тромбоны, не спешим. | One, two… "Waves of the Amur", from the upbeat. Trombones, don't rush. | ワン、ツー…「アムールの波」、アウフタクトから。トロンボーン、急がないで。
+say town.pev_band_play.2 | Мундштук на солнце нагрелся, губы обжёг. Зато звук золотой. | The mouthpiece got hot in the sun and burnt my lips. But the sound's golden. | マウスピースが日に焼けて唇をやけどした。そのかわり音は金色。
+say town.pev_band_play.3 | Ноты прищепкой держи, ветер с моря. На «Прощании славянки» сдует, будет позор. | Peg your music down, there's a sea wind. Lose it in "Slavianka" and we'll never live it down. | 楽譜は洗濯ばさみで。海から風。「スラヴ娘の別れ」で飛ばされたら恥だよ。
+
+[pev_band_listen]
+doing = band_listen
+weight = 4
+say town.pev_band_listen.1 | «На сопках Маньчжурии». У меня мама под этот вальс плакала. Хорошо плакала. | "On the Hills of Manchuria". My mother used to cry to this waltz. A good kind of crying. | 「満州の丘に立ちて」。母はこのワルツで泣いてた。いい涙だった。
+say town.pev_band_listen.2 | Туба сегодня в ударе. Видно, капельмейстер пообещал ему квасу. | The tuba's on form today. The bandmaster must have promised him kvass. | 今日のチューバは絶好調。楽長がクワスを約束したんだな。
+say town.pev_band_listen.3 | Каждое воскресенье одна программа, а слушать не надоедает. Как море. | The same programme every Sunday, and you never tire of it. Like the sea. | 毎週日曜おなじ曲目なのに、聴き飽きない。海みたいに。
+say town.pev_band_listen.4 | Сейчас будет «Прощание славянки». Встаём, кто сидит. | "Farewell of Slavianka" next. Up on your feet, whoever's sitting. | 次は「スラヴ娘の別れ」。座ってる人は立って。
+
+[pev_band_listen_old]
+doing = band_listen
+age = elder
+sex = male
+weight = 4
+say town.pev_band_listen_old.1 | Раньше оркестр играл тут каждый вечер. А теперь по воскресеньям, и то праздник. | The band used to play here every evening. Now it's Sundays only, and even that's a treat. | 昔は楽団が毎晩ここで演奏したもんだ。今は日曜だけ。それでもごちそうだ。
+say town.pev_band_listen_old.2 | Я под этот марш в армию уходил. Под этот же и вернулся. | I went off to the army to this march. And came back to the same one. | わしはこの行進曲で兵隊に行った。帰ってきたのも同じ曲だった。
+
+[pev_band_talk]
+doing = band_listen
+doing2 = band_listen
+weight = 3
+talk
+- town.pev_band_talk1.1 | Мороженое будешь? Тележка у моря. | Want an ice cream? The cart's down by the sea. | アイス食べる？　屋台は海のほう。
+- town.pev_band_talk1.2 | После польки. Польку пропускать нельзя. | After the polka. You can't miss the polka. | ポルカのあとで。ポルカは聴きのがせない。
+talk
+- town.pev_band_talk2.1 | Трубач-то новый? | Is that a new trumpeter? | トランペット、新しい人？
+- town.pev_band_talk2.2 | Внук старого. Старый в первом ряду сидит, ноты за ним шепчет. | The old one's grandson. The old one is in the front row, whispering the notes after him. | 前の人の孫。おじいさんは最前列で、孫のあとから音を小声でなぞってる。
+
+[pev_band_kids]
+doing = band_kids
+weight = 4
+say town.pev_band_kids.1 | Догоняй! Кто последний до фонтана, тот туба! | Catch me! Last one to the fountain is a tuba! | つかまえてみな！　噴水にいちばん最後に着いた人はチューバ！
+say town.pev_band_kids.2 | Я, когда вырасту, буду на барабане играть. Бум! Бум! | I'm going to be the drummer when I grow up. Boom! Boom! | 大きくなったら太鼓たたきになる。ドン！　ドン！
+say town.pev_band_kids.3 | Мам, можно квасу? Ну пожалуйста, оркестр же! | Mum, can I have some kvass? Please, it's the band! | ママ、クワス飲んでいい？　ねえ、楽団の日なんだから！
+
+[pev_band_hero]
+to = hero
+doing = band_listen
+weight = 5
+say town.pev_band_hero.1 | Садись с малышнёй, на плиты, оттуда лучше всего слышно. | Sit with the little ones, on the slabs: you hear best from there. | 小さい子たちと石畳に座りな。あそこがいちばんよく聞こえる。
+say town.pev_band_hero.2 | Пришёл к маршу? Молодец. Кто пришёл к польке, тот только полпрограммы слышал. | Here for the march? Good lad. Whoever comes for the polka hears only half the programme. | 行進曲に間に合った？　えらい。ポルカから来た人は半分しか聴けないんだ。
+
+[pev_band_going]
+weekday = sun
+hours = 13.5-15
+months = 6-8
+doing = free
+at = outdoors
+weight = 2
+talk
+- town.pev_band_going1.1 | На оркестр идёшь? | Going to hear the band? | 楽団、聴きに行く？
+- town.pev_band_going1.2 | В три, у эстрады. Если дождя не будет. | At three, by the stage. If it doesn't rain. | 三時にステージで。雨じゃなければ。
+
+## ---- the evening promenade
+
+[pev_walk]
+doing = prom_evening_walk
+weight = 4
+say town.pev_walk.1 | До пирса и обратно. Так весь город гуляет, и мы не хуже. | To the pier and back. The whole town walks like that, and we're no worse. | 桟橋まで行って戻る。町じゅうそうやって歩く。わたしたちも負けてない。
+say town.pev_walk.2 | Вечером на набережной все друг с другом здороваются. Даже те, кто днём не здоровается. | In the evening on the promenade everybody says hello. Even those who don't by day. | 夕方の遊歩道では、みんなあいさつする。昼間はしない人まで。
+say town.pev_walk.3 | Смотри, солнце за город садится, а море розовое. | Look, the sun's going down behind the town, and the sea's gone pink. | ほら、太陽は町のうしろに沈むのに、海が桃色。
+say town.pev_walk.4 | Пахнет морем и жареными семечками. Это и есть лето. | It smells of the sea and of roasted sunflower seeds. That's summer for you. | 海と炒ったひまわりの種の匂い。これが夏ってもの。
+
+[pev_walk_family]
+doing = prom_evening_walk
+doing2 = prom_evening_walk
+weight = 3
+talk
+- town.pev_walk_family1.1 | Не беги вперёд, держись за коляску. | Don't run ahead, hold on to the pram. | 先に走らないで、乳母車につかまってて。
+- town.pev_walk_family1.2 | А до маяка дойдём? | Will we walk as far as the lighthouse? | 灯台まで行く？
+- town.pev_walk_family1.3 | До пирса. Маяк сам к нам придёт, когда зажжётся. | To the pier. The lighthouse will come to us when it lights up. | 桟橋まで。灯台は、ともったら向こうから来てくれるよ。
+talk
+- town.pev_walk_family2.1 | Мы так каждый вечер ходили, когда познакомились. | We walked like this every evening when we first met. | 知り合ったころ、毎晩こうして歩いたね。
+- town.pev_walk_family2.2 | Только тогда ты не уставал. | Only back then you didn't get tired. | ただ、あのころのあなたは疲れなかった。
+- town.pev_walk_family2.3 | Тогда и набережная была короче. | Back then the promenade was shorter, too. | あのころは遊歩道も短かったんだよ。
+
+[pev_walk_teens]
+doing = prom_evening_walk
+age = teen
+weight = 4
+say town.pev_walk_teens.1 | Пройдёмся ещё раз мимо фотоателье? Там она с подругами. | Shall we walk past the photo studio once more? She's there with her friends. | もう一回写真館の前を通る？　あの子が友だちといるんだ。
+say town.pev_walk_teens.2 | Ещё круг, и домой. Ну, ещё два. | One more round and home. Well, two more. | あと一周で帰る。じゃあ、あと二周。
+
+[pev_bench]
+doing = prom_sunset_bench
+weight = 4
+say town.pev_bench.1 | Подвинься, тут на закат лучшее место. Я его с весны держу. | Shove up, this is the best seat for the sunset. I've been keeping it since spring. | ちょっと詰めて。ここは夕焼けの特等席。春からとってあるんだから。
+say town.pev_bench.2 | Все лавочки заняты. Хороший вечер, значит. | Every bench is taken. A good evening, then. | ベンチがぜんぶうまってる。いい夕方ってことだ。
+say town.pev_bench.3 | Сижу, смотрю, как гуляют. Это тоже прогулка, только сидя. | I sit and watch them walk. That's a walk too, only sitting down. | 座って、歩く人たちを見てる。これも散歩、座ってるだけで。
+
+[pev_lighthouse]
+doing = prom_evening_walk prom_sunset_bench
+hours = 21-23
+weight = 6
+say town.pev_lighthouse.1 | Маяк зажёгся! Раз… два… три… вспышка. | The lighthouse is lit! One… two… three… flash. | 灯台がついた！　いち…に…さん…ぴかっ。
+say town.pev_lighthouse.2 | Как маяк зажжётся, так и домой пора. А мы всё сидим. | When the lighthouse comes on, it's time to go home. And here we are still sitting. | 灯台がついたら帰る時間。なのにまだ座ってる。
+say town.pev_lighthouse.3 | Фонари по набережной загораются один за другим, будто кто-то идёт и зажигает. | The promenade lamps come on one by one, as if somebody were walking along lighting them. | 遊歩道の街灯がひとつずつともる。誰かが歩きながら火をつけているみたいに。
+
+[pev_photographer]
+doing = prom_evening_walk prom_sunset_bench
+manner = photo
+weight = 9
+say town.pev_photographer.1 | Ещё пять минут — и свет уйдёт. Самый лучший, вечерний. Не шевелитесь! | Five more minutes and the light will be gone. The best there is, the evening light. Don't move! | あと五分で光がなくなる。いちばんいい夕方の光。動かないで！
+say town.pev_photographer.2 | Против солнца нельзя, а вот так, вполоборота к морю, — само золото. | Not into the sun; but like that, half turned to the sea, it's pure gold. | 逆光はだめ。でもそう、海に半分向いて。それで金色そのもの。
+
+[pev_hero_evening]
+to = hero
+doing = prom_evening_walk prom_sunset_bench
+months = 5-9
+hours = 19-22
+weight = 4
+say town.pev_hero_evening.1 | Добрый вечер! Гуляешь? Правильно, в такой вечер дома сидеть грех. | Good evening! Out for a walk? Quite right; on an evening like this staying in is a sin. | こんばんは！　お散歩？　そうだよ、こんな夕方に家にいるなんてもったいない。
+say town.pev_hero_evening.2 | Постой у парапета, когда маяк зажжётся. Загадаешь, и сбудется. | Stand by the parapet when the lighthouse comes on. Make a wish and it'll come true. | 灯台がつくとき欄干のそばに立って。願いごとをすればかなうよ。
+
+[pev_couple]
+today = stroll
+months = 5-9
+hours = 18-22
+weight = 5
+talk
+- town.pev_couple1.1 | До пирса и назад, как тогда? | To the pier and back, like that time? | 桟橋まで行って戻る？　あのときみたいに。
+- town.pev_couple1.2 | Как тогда. Только ты мне руку дай, как тогда. | Like that time. Only give me your arm, like that time. | あのときみたいに。だから腕を貸して、あのときみたいに。
+talk
+- town.pev_couple2.1 | Посидим на нашей лавочке? | Shall we sit on our bench? | わたしたちのベンチに座る？
+- town.pev_couple2.2 | Если её опять не заняли. Летом все лавочки чьи-нибудь. | If nobody's taken it again. In summer every bench is somebody's. | また取られてなければね。夏はどのベンチも誰かのものだから。
+
+## ---- setting off, and the morning after
+
+[pev_going]
+weekday = fri sat
+hours = 17.5-19.5
+months = 6-8
+age = 15-30
+doing = free
+at = outdoors
+weight = 2
+talk
+- town.pev_going1.1 | На площадь сегодня? | The square tonight? | 今夜、広場行く？
+- town.pev_going1.2 | Если дождя не будет. Кофту возьму, с моря дует. | If it doesn't rain. I'll take a cardigan, it blows off the sea. | 雨じゃなければ。カーディガン持ってく、海から風が来るから。
+- town.pev_going1.3 | И одеколон от комаров. | And eau de cologne for the mosquitoes. | それと蚊よけのオーデコロン。
+
+[pev_after]
+weekday = sat sun
+hours = 8-14
+months = 6-8
+age = 13-35
+weight = 2
+say town.pev_after.1 | Вчера на площади до одиннадцати танцевали. Комары съели, а всё равно хорошо. | Danced on the square till eleven last night. Eaten by mosquitoes, and lovely all the same. | 昨日は広場で十一時まで踊った。蚊に食われたけど、それでもよかった。
+say town.pev_after.2 | Белый танец был под фонарём на углу. Меня пригласили. Под фонарём, представляешь? | The ladies' choice was under the lamp on the corner. I got asked. Under a lamp, imagine! | 白いダンスは角の街灯の下だった。誘われたんだ。街灯の下でだよ、信じられる？

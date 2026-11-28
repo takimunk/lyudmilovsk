@@ -1,0 +1,42 @@
+{
+ "name": "sc_beacon_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_beacon_01",
+ "pool": "sc_beacon",
+ "file": "audio/sfx/spacecraft/sc_beacon_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7161,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": true,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 6.0,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -17.72,
+ "params": {
+  "tones_hz": [
+   1000,
+   750
+  ],
+  "beep_s": 0.3,
+  "pattern_s": 1.2
+ },
+ "checks": {
+  "seconds": 6.0,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -17.72,
+  "crest_db": 11.7,
+  "centroid_hz": 1179,
+  "rolloff85_hz": 1107,
+  "dc": 0.0,
+  "clipped": 0,
+  "seam_jump": 0.02,
+  "seam_jump_pct": 2.4,
+  "seam_energy": 1.27,
+  "seam_pct": 60.0,
+  "seam_level_db": -15.0
+ },
+ "sha256": "f1c31bb16976c50f5a5e5427394f2dee8912a5f8e63e42a2c758a99416f32cb2",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

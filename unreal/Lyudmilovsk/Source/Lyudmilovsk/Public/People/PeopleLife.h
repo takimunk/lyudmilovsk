@@ -7,7 +7,7 @@
 #include <vector>
 #include "PeopleLife.generated.h"
 
-namespace LyudPeople { class FWorld; class FManners; }
+namespace LyudPeople { class FWorld; class FManners; struct FPerson; }
 namespace LyudSail { struct FSchoolParams; }
 class ABoothOwner;
 class ANpcBody;
@@ -314,6 +314,12 @@ private:
 	UPROPERTY(Transient) TArray<TObjectPtr<class UStaticMesh>> PropMeshes;
 	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> EaselMesh;
 	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> BucketMesh;     // the cleaner's bucket by them while they mop
+	UPROPERTY(Transient) TObjectPtr<class UStaticMesh> ChessMesh;      // the folding board on the bench at chess_bench
+	/** chess_bench's index in the life's activities (LoadManners; -1: none). */
+	int32 ChessAct = -1;
+	/** The board on the bench between two chess players (or beside one alone), each turned a little to the other: the
+	 *  yaw to drive them with, and the board given to their body (or taken away). */
+	float PresentChess(const LyudPeople::FPerson& P, class ANpcBody* Body, const FVector& At, float SeatH, float Yaw);
 	TSharedPtr<struct FStreamableHandle> PropLoad;
 	/** Present's scratch: the people drawn this frame. */
 	TArray<int32> ShownIds;
@@ -476,6 +482,12 @@ public:
 
 	/** Loads the model and remembers whose clips to use. False if the model is missing. */
 	bool Setup(const FString& MeshName, const FString& ComputerClip);
+	/** Whether Setup(Model) would find the model and the shared clips in memory; else starts loading them in the
+	 *  background (ULyudPrefetch) and says no: ask again next frame instead of making the body now (a synchronous load
+	 *  of the model stalls the frame). True as well for a model that doesn't exist (Setup then fails). */
+	static bool IsModelReady(const UObject* WorldContext, const FString& Model);
+	/** Lets the prefetch let go of Model once a body holds it (Setup done): freed after the last body with it goes. */
+	static void ReleaseModel(const UObject* WorldContext, const FString& Model);
 	/** Pose this frame: where (cm; seated: the floor under the seat, lying: under the mattress's middle), facing (deg; lying:
 	 *  the bed's head to foot), the pose, the transition (1 sit down, 2 stand up, 3 lie down, 4 get up), the walking speed
 	 *  (cm/s) and the seat's or mattress's height (cm, 0 = the clips' own). Skate: on the ice, gliding at Speed; Walrus:
@@ -499,6 +511,10 @@ public:
 	/** What a manner puts in the hands (SM_Prop_*), and what stands before them. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerProp;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> MannerStand;
+	/** A thing they put down by them for the whole activity, not a manner's (the chess board on the bench). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "People") TObjectPtr<class UStaticMeshComponent> PutDown;
+	/** Shows InMesh at Where (world, its foot) turned Rot; null hides it. Cheap when nothing changed. */
+	void SetPutDown(class UStaticMesh* InMesh, const FVector& Where, const FRotator& Rot);
 	/** The night watchman's torch beam: made the first time this body holds a torch (one or two in the town), no shadows. */
 	UPROPERTY(Transient) TObjectPtr<class USpotLightComponent> TorchLight;
 

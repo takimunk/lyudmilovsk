@@ -1,0 +1,33 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image_batch",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "prompt": "Nine inventory icons for a moody adventure game, arranged as a 3 by 3 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell (every object drawn at the same icon size, as large as the cell allows with a margin), no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object or one small group per cell, no text, letters, numbers or logos anywhere, not even on the objects. Everyday goods of a 1970s-80s Soviet seaside town, no real brands. Long objects lie diagonally from the lower left to the upper right so they fit inside the cell. Row 1, left: a closed dark blue folding umbrella with a curved wooden handle, lying diagonally. Row 1, middle: a single red hand-knitted wool mitten with a white snowflake pattern. Row 1, right: a folded mustard yellow knitted wool scarf with short fringe at the ends. Row 2, left: a pair of folded black-rimmed reading glasses. Row 2, middle: a small bunch of three old brass keys on a ring with a little anchor key fob. Row 2, right: a small worn brown plush teddy bear sitting upright, one ear slightly faded. Row 3, left: a small cream cardboard cable car travel card with a row of seven little printed squares along its edge and a tiny cabin drawn in one corner, no lettering. Row 3, middle: a small pale green Edmondson card railway ticket, thick cardboard with rounded corners and a faint printed wave pattern, no lettering. Row 3, right: a small pale green Edmondson card railway ticket with a neat punched hole in its middle and a clipped corner, slightly worn, no lettering."
+ },
+ "job_id": "ccffa1a1-a3c2-4d8c-a06e-61a7dd1f8b2e",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261127_233259_ccffa1a1-a3c2-4d8c-a06e-61a7dd1f8b2e.png",
+ "credits": 0.75,
+ "date": "2026-11-27",
+ "what": "lost things and tickets",
+ "grid": [
+  3,
+  3
+ ],
+ "cells_row_major": [
+  "lost_umbrella",
+  "lost_mitten",
+  "lost_scarf",
+  "lost_glasses",
+  "lost_keys",
+  "lost_bear",
+  "travel_card",
+  "rail_ticket",
+  "rail_ticket_punched"
+ ],
+ "sha256": "80e9acab569750a83259da6a6d188381edb6b9996dbc321f2e17e68b8a791e5e",
+ "note": "Cut by tools/icons_from_sheets.py on the Mac (this cloud box cannot reach the CDN); it fills sha256 and saves the picture as sheet_3.png next to this file."
+}

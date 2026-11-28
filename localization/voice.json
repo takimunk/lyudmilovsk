@@ -275,6 +275,12 @@
   },
   "okada_kiyo": {
    "skip": "proposal (docs/north.md People): a camper of the North, not voiced until the campers are accepted; then a premade voice"
+  },
+  "flightauto": {
+   "voice": "Sarah",
+   "voice_id": "EXAVITQu4vr4xnSDxMaL",
+   "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+   "note": "the Lastochka's automatic voice (docs/spacecraft.md): line.flightauto.<id>.1 is written by tools/spacecraft/strings.py as a copy of flight.auto.<id> (the subtitle key); the same premade voice as `transport` on purpose"
   }
  },
  "lines": {
@@ -348,6 +354,66 @@
    "direction": "",
    "voice_setting": {
     "speed": 0.88
+   }
+  },
+  "line.hero.flight_liftoff.1": {
+   "direction": "hushed, pressed into the seat by the burn, watching the ice fall away; disbelief, then a quiet 'I'm really leaving'",
+   "voice_setting": {
+    "speed": 0.9
+   }
+  },
+  "line.hero.flight_weightless.1": {
+   "direction": "soft wonder, half a laugh in the breath, to himself; he is floating for the first time",
+   "voice_setting": {
+    "speed": 0.92
+   }
+  },
+  "line.hero.flight_europa_behind.1": {
+   "direction": "quiet, a little wistful, looking back through the side porthole at the small white moon",
+   "voice_setting": {
+    "speed": 0.9
+   }
+  },
+  "line.hero.flight_planet_grows.1": {
+   "direction": "low, uneasy awe; the blue planet fills the porthole and there is no land on it",
+   "voice_setting": {
+    "speed": 0.9
+   }
+  },
+  "line.hero.flight_ocean.1": {
+   "direction": "almost a whisper, slow, the unease growing; a pause before the last two words",
+   "voice_setting": {
+    "speed": 0.86
+   }
+  },
+  "line.hero.flight_island.1": {
+   "direction": "a small breath of relief and tenderness on 'our island', then quieter, sobered, on the last sentence",
+   "voice_setting": {
+    "speed": 0.88
+   }
+  },
+  "line.hero.flight_fire.1": {
+   "direction": "frightened, tight, voice shaking with the cabin, trying not to panic; the last words a plea to the craft",
+   "voice_setting": {
+    "speed": 0.95
+   }
+  },
+  "line.hero.flight_chute.1": {
+   "direction": "a gasp after the jolt, then a long shaky exhale of relief",
+   "voice_setting": {
+    "speed": 0.9
+   }
+  },
+  "line.hero.flight_home.1": {
+   "direction": "very quiet after the noise, spent, the last two words barely above a whisper, a small smile",
+   "voice_setting": {
+    "speed": 0.85
+   }
+  },
+  "line.hero.flight_afloat.1": {
+   "direction": "calm, tired and content, rocking on the swell, looking at the beach; a quiet decision at the end",
+   "voice_setting": {
+    "speed": 0.92
    }
   }
  },

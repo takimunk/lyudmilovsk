@@ -1,0 +1,33 @@
+{
+ "name": "sc_drogue_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_drogue_01",
+ "pool": "sc_drogue",
+ "file": "audio/sfx/spacecraft/sc_drogue_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7511,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.384,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -23.6,
+ "params": {
+  "mortar_s": 0.02,
+  "snatch_s": 0.56
+ },
+ "checks": {
+  "seconds": 1.384,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -23.6,
+  "crest_db": 17.6,
+  "centroid_hz": 607,
+  "rolloff85_hz": 813,
+  "dc": -0.0,
+  "clipped": 0
+ },
+ "sha256": "dd1b1695fb6a17ac75521fdf414acd52d5f4857ee2ef2ff861888b919f6c6758",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

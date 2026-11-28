@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_roundgoby",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_2.json (cell 4 (row 2, left)).",
+ "source": "design/fishing/icons_grid_2.png (sidecar design/fishing/icons_grid_2.json), cell 4 (row 2, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "e45e3c65fe4ec1c715c6f7468d0d6eb04ee03e62194f3b4bdc1fcb9c6ce7505c",
+ "strings": {}
+}

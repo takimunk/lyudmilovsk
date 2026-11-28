@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_stickleback",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_1.json (cell 8 (row 3, middle)).",
+ "source": "design/fishing/icons_grid_1.png (sidecar design/fishing/icons_grid_1.json), cell 8 (row 3, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "1d7d73be74ee5332454ffbfaf9d5b9e3f9b6d3ad0e46b705024f54baaf2871f8",
+ "strings": {}
+}

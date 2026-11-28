@@ -1,0 +1,507 @@
+{
+ "city.nh.coll.title": {
+  "ru": "Праздничный календарь",
+  "en": "The holiday calendar",
+  "ja": "祝日カレンダー"
+ },
+ "city.coll.reward.nh_calendar.name": {
+  "ru": "Отрывной календарь с тремя красными днями",
+  "en": "A tear-off calendar with three red days",
+  "ja": "赤い日が三つある日めくり"
+ },
+ "city.coll.reward.nh_calendar.note": {
+  "ru": "День науки, Старый Новый год и День Нептуна: я был на всех трёх и всё попробовал сам. В горсовете мне вручили отрывной календарь, где эти дни обведены красным, и премию «на следующий год».",
+  "en": "Science Day, the Old New Year and Neptune Day: I went to all three and tried everything myself. The town council gave me a tear-off calendar with those days ringed in red, and a bonus “for next year”.",
+  "ja": "科学の日、古い新年、ネプチューンの日。三つとも出かけて、全部自分でやってみた。町役場で、その三日を赤で囲んだ日めくりと「来年のぶん」のお祝い金をもらった。"
+ },
+ "city.nh.sci.quiz.title": {
+  "ru": "День науки: блиц-викторина",
+  "en": "Science Day: the blitz quiz",
+  "ja": "科学の日：早押しクイズ"
+ },
+ "city.nh.sci.quiz.host": {
+  "ru": "Сегодня вместо лотереи викторина. Младший научный сотрудник в свитере с оленями ставит на стол велосипедный звонок: «Кто первый звонит, тот и отвечает».",
+  "en": "Today the lottery table runs a quiz. A junior researcher in a reindeer jumper sets a bicycle bell on it: “First to ring gets to answer.”",
+  "ja": "今日はくじの代わりにクイズだ。トナカイ柄のセーターの若い研究員が、机に自転車のベルを置く。「先に鳴らした人が答えます」"
+ },
+ "city.nh.sci.quiz.bell1": {
+  "ru": "Вопрос читают медленно, а звонить надо быстро. Бью по звонку раньше соседа.",
+  "en": "The question is read slowly, but the bell wants to be quick. I go for it before my neighbour does.",
+  "ja": "問題はゆっくり読まれるけど、ベルは早い者勝ち。となりより先にたたく。"
+ },
+ "city.nh.sci.quiz.q1": {
+  "ru": "«Вопрос первый. Отчего днём не видно звёзд?»",
+  "en": "“Question one. Why can't we see the stars by day?”",
+  "ja": "「第一問。昼間に星が見えないのはなぜ？」"
+ },
+ "city.nh.sci.quiz.q1.a": {
+  "ru": "Их забивает свет Солнца, рассеянный в воздухе",
+  "en": "The Sun's light, scattered in the air, drowns them",
+  "ja": "空気で散らばった太陽の光にかき消されるから"
+ },
+ "city.nh.sci.quiz.q1.b": {
+  "ru": "Днём они уходят за горизонт",
+  "en": "They go below the horizon by day",
+  "ja": "昼のあいだは地平線の下に沈むから"
+ },
+ "city.nh.sci.quiz.q1.c": {
+  "ru": "Они гаснут до вечера",
+  "en": "They go out until evening",
+  "ja": "夕方まで消えているから"
+ },
+ "city.nh.sci.quiz.v1.a": {
+  "ru": "«Верно! Небо светится само, и звёзд за ним не разглядеть. Они на месте, просто Солнце ближе».",
+  "en": "“Right! The sky itself glows, and the stars can't be made out behind it. They are all there; the Sun is simply nearer.”",
+  "ja": "「正解！空そのものが光って、星が見分けられなくなる。星はちゃんとそこにある。太陽のほうが近いだけです」"
+ },
+ "city.nh.sci.quiz.v1.b": {
+  "ru": "«Не все. Половина звёзд днём прямо над нами, только небо светлее их. Виновато Солнце».",
+  "en": "“Not all of them. Half the stars are right overhead by day, only the sky is brighter than they are. Blame the Sun.”",
+  "ja": "「全部じゃありません。昼も星の半分は真上にある。空のほうが明るいだけ。太陽のせいです」"
+ },
+ "city.nh.sci.quiz.v1.c": {
+  "ru": "«Звёзды не лампочки, их никто не выключает. Их забивает свет нашего Солнца в воздухе».",
+  "en": "“Stars aren't light bulbs, nobody switches them off. The light of our Sun in the air drowns them.”",
+  "ja": "「星は電球じゃないので、誰も消しません。空気の中の太陽の光にかき消されるんです」"
+ },
+ "city.nh.sci.quiz.bell2": {
+  "ru": "«Вопрос второй!» Рука уже над звонком. Соседская тоже.",
+  "en": "“Question two!” My hand is already over the bell. So is my neighbour's.",
+  "ja": "「第二問！」手はもうベルの上。となりの手も。"
+ },
+ "city.nh.sci.quiz.q2": {
+  "ru": "«Сколько идёт до нас свет от Солнца?»",
+  "en": "“How long does the Sun's light take to reach us?”",
+  "ja": "「太陽の光がここまで届くのに、どれくらいかかる？」"
+ },
+ "city.nh.sci.quiz.q2.a": {
+  "ru": "Минут восемь",
+  "en": "About eight minutes",
+  "ja": "およそ八分"
+ },
+ "city.nh.sci.quiz.q2.b": {
+  "ru": "Одно мгновение",
+  "en": "No time at all",
+  "ja": "一瞬"
+ },
+ "city.nh.sci.quiz.q2.c": {
+  "ru": "Ровно сутки",
+  "en": "Exactly a day",
+  "ja": "ちょうど一日"
+ },
+ "city.nh.sci.quiz.v2.a": {
+  "ru": "«Верно, восемь с небольшим. Мы всегда видим Солнце таким, каким оно было восемь минут назад».",
+  "en": "“Right, a little over eight. We always see the Sun as it was eight minutes ago.”",
+  "ja": "「正解、八分とすこし。私たちが見ているのは、いつも八分前の太陽です」"
+ },
+ "city.nh.sci.quiz.v2.b": {
+  "ru": "«Свет быстрый, но не мгновенный. Ему нужно восемь минут. За это время можно съесть мороженое».",
+  "en": "“Light is quick, but not instant. It needs eight minutes. Time enough to eat an ice cream.”",
+  "ja": "「光は速いけれど、一瞬ではありません。八分かかる。アイスをひとつ食べられる時間です」"
+ },
+ "city.nh.sci.quiz.v2.c": {
+  "ru": "«За сутки свет улетает далеко за последнюю планету. До нас ему всего восемь минут».",
+  "en": "“In a day light gets far past the last planet. To us it takes only eight minutes.”",
+  "ja": "「一日あれば光はいちばん外の惑星のずっと先まで行きます。ここまではたった八分」"
+ },
+ "city.nh.sci.quiz.good.1": {
+  "ru": "Оба раза звонок был мой. Мне жмут руку и ставят в табель «быстрее света, почти». И лотерейный билет выиграл.",
+  "en": "The bell was mine both times. They shake my hand and write “faster than light, nearly” on the sheet. The lottery ticket won, too.",
+  "ja": "二回ともベルは自分が先。握手されて、表に「ほぼ光より速い」と書かれた。くじも当たった。"
+ },
+ "city.nh.sci.quiz.fair.1": {
+  "ru": "Один раз успел, один раз проспал звонок. Ведущий говорит, что для первого курса достаточно.",
+  "en": "Got to the bell once, slept through it once. The host says that will do for a first-year.",
+  "ja": "一回は間に合い、一回は出遅れた。司会は「一年生ならこれで十分」と言う。"
+ },
+ "city.nh.sci.quiz.poor.1": {
+  "ru": "Пока я тянулся к звонку, сосед отвечал. Ответы я знал, но наука любит быстрых.",
+  "en": "While I was reaching for the bell, my neighbour was answering. I knew the answers, but science likes the quick.",
+  "ja": "ベルに手をのばしているあいだに、となりが答えていた。答えは知っていたのに。科学はすばやい人が好きらしい。"
+ },
+ "city.nh.sci.globe.title": {
+  "ru": "День науки: электрический шар",
+  "en": "Science Day: the electric globe",
+  "ja": "科学の日：電気の玉"
+ },
+ "city.nh.sci.globe.intro": {
+  "ru": "У стеклянного шара дежурят ребята со станции юных техников. Они подключили к нему электрофорную машину и лейденскую банку: «Сегодня шар не гадает, а показывает».",
+  "en": "Children from the young technicians' station are on duty at the glass globe. They have wired it to a Wimshurst machine and a Leyden jar: “Today the globe doesn't tell fortunes, it shows things.”",
+  "ja": "ガラス玉の番をしているのは少年技術者ステーションの子たち。起電機とライデン瓶をつないである。「今日はこの玉、占いじゃなくて実験を見せます」"
+ },
+ "city.nh.sci.globe.crank": {
+  "ru": "Кручу ручку машины. Диски жужжат, между шариками пахнет грозой.",
+  "en": "I turn the machine's crank. The discs hum, and between the little balls it smells of a thunderstorm.",
+  "ja": "起電機のハンドルを回す。円板がうなり、小さな玉のあいだに雷のにおいがする。"
+ },
+ "city.nh.sci.globe.charge": {
+  "ru": "Теперь заряжаю банку. Стрелка ползёт к красной черте. Отпустить надо у черты, пока не проскочила искра.",
+  "en": "Now I charge the jar. The needle creeps towards the red line. I must let go at the line, before the spark jumps.",
+  "ja": "次は瓶に電気をためる。針が赤い線へじりじり動く。火花が飛ぶ前に、線のところで手を離す。"
+ },
+ "city.nh.sci.globe.pick": {
+  "ru": "«Заряд есть. Что показать?»",
+  "en": "“It's charged. What shall we show?”",
+  "ja": "「たまりました。何を見せましょう？」"
+ },
+ "city.nh.sci.globe.opt.1": {
+  "ru": "Поднять волосы дыбом",
+  "en": "Make my hair stand on end",
+  "ja": "髪の毛を逆立てる"
+ },
+ "city.nh.sci.globe.opt.2": {
+  "ru": "Зажечь лампу в руке без проводов",
+  "en": "Light a lamp in my hand, no wires",
+  "ja": "線なしで手の中の電球をつける"
+ },
+ "city.nh.sci.globe.opt.3": {
+  "ru": "Заставить плясать бумажных человечков",
+  "en": "Make the paper men dance",
+  "ja": "紙の人形を踊らせる"
+ },
+ "city.nh.sci.globe.show.1": {
+  "ru": "Кладу ладонь на шар. Волосы встают, как лучи у солнца на фонтане. Девочка с бантом смеётся и зовёт фотографа.",
+  "en": "I lay my palm on the globe. My hair rises like the rays of the sun on the fountain. A girl with a bow laughs and calls the photographer.",
+  "ja": "玉に手のひらを置く。髪が噴水の太陽の光みたいに立ち上がる。リボンの女の子が笑って写真屋を呼ぶ。"
+ },
+ "city.nh.sci.globe.show.2": {
+  "ru": "Мне дают длинную лампу. У шара она светится в руке сама. «Поле», важно говорит мальчик в очках.",
+  "en": "They hand me a long lamp. Beside the globe it glows in my hand by itself. “The field,” says a boy in glasses, gravely.",
+  "ja": "長い電球を渡される。玉のそばで、手の中でひとりでに光る。「電場です」とめがねの男の子がまじめに言う。"
+ },
+ "city.nh.sci.globe.show.3": {
+  "ru": "Под стеклом вскакивают бумажные человечки и пляшут, пока в банке есть заряд. Последним падает тот, что в шляпе.",
+  "en": "Under the glass the paper men jump up and dance for as long as the jar holds its charge. The one in the hat is the last to fall.",
+  "ja": "ガラスの下で紙の人形が跳ね起き、瓶の電気がなくなるまで踊る。最後に倒れるのは帽子のやつ。"
+ },
+ "city.nh.sci.globe.good.1": {
+  "ru": "Банку зарядил точно до черты. Юные техники ставят мне в зачётку «отл.» и печать с шестерёнкой.",
+  "en": "I charged the jar right to the line. The young technicians mark my record book “excellent” and stamp it with a cogwheel.",
+  "ja": "瓶は線ぴったりまでためられた。少年技術者たちが成績簿に「優」と書き、歯車のはんこを押してくれた。"
+ },
+ "city.nh.sci.globe.fair.1": {
+  "ru": "Заряда хватило на пол-опыта. «Для науки отрицательный результат тоже результат», утешает меня мальчик в очках.",
+  "en": "The charge lasted for half the experiment. “In science a negative result is a result too,” the boy in glasses consoles me.",
+  "ja": "電気は実験の半分しかもたなかった。「科学では、うまくいかない結果も結果です」とめがねの子がなぐさめてくれる。"
+ },
+ "city.nh.sci.globe.poor.1": {
+  "ru": "Искра проскочила раньше времени и щёлкнула меня по пальцу. Опыт вышел про осторожность.",
+  "en": "The spark jumped early and snapped at my finger. The experiment turned out to be about care.",
+  "ja": "火花が早く飛んで、指をぱちんとやられた。「用心」についての実験になった。"
+ },
+ "city.nh.ask.cocktail": {
+  "ru": "Что это у вас пенится?",
+  "en": "What is that foaming there?",
+  "ja": "その泡立っているのは何ですか？"
+ },
+ "city.nh.ask.cocktail.1": {
+  "ru": "Кислородный коктейль. Лаборатория из санатория привезла баллон, а сироп наш, шиповниковый. В День науки он бесплатно, пробуй.",
+  "en": "An oxygen cocktail. The sanatorium's lab brought a cylinder, and the syrup is ours, rosehip. On Science Day it's free, try it.",
+  "ja": "酸素カクテルだよ。療養所の実験室がボンベを持ってきてね、シロップはうちのローズヒップ。科学の日は無料、飲んでごらん。"
+ },
+ "city.nh.ask.cocktail.2": {
+  "ru": "Ем пену ложкой. На вкус как сладкий воздух. Продавщица говорит, что от него умнеют, но только до вечера.",
+  "en": "I eat the foam with a spoon. It tastes like sweet air. The stallholder says it makes you cleverer, but only until evening.",
+  "ja": "泡をスプーンで食べる。甘い空気みたいな味。おばさんが言うには、かしこくなるけど夕方までだそうだ。"
+ },
+ "city.nh.ask.kids_stall": {
+  "ru": "А кто это с вами за прилавком?",
+  "en": "Who is that behind the counter with you?",
+  "ja": "いっしょに店に立っているのは誰ですか？"
+ },
+ "city.nh.ask.kids_stall.1": {
+  "ru": "Шестой «Б». Сегодня школьники торгуют сами: пирожное «Картошка» своей лепки, а выручка идёт кружку на телескоп.",
+  "en": "Class 6B. Today the schoolchildren do the selling themselves: “potato” cakes they rolled, and the takings go to their club for a telescope.",
+  "ja": "六年B組さ。今日は子どもたちが自分で売るんだ。自分たちで丸めた「じゃがいも」ケーキで、売り上げはクラブの望遠鏡になる。"
+ },
+ "city.nh.ask.kids_stall.2": {
+  "ru": "Сдачу считают в столбик, на обёрточной бумаге. Ещё ни разу не ошиблись, я проверяла.",
+  "en": "They work out the change in a column on wrapping paper. Not one mistake so far, I checked.",
+  "ja": "おつりは包み紙に筆算で計算してる。まだ一度も間違えてないよ、ちゃんと確かめたんだから。"
+ },
+ "city.nh.ony.var.title": {
+  "ru": "Старый Новый год: вареники с сюрпризом",
+  "en": "Old New Year: dumplings with a surprise",
+  "ja": "古い新年：おたのしみ入りヴァレーニキ"
+ },
+ "city.nh.ony.var.intro": {
+  "ru": "Повариха раздаёт всем по кружку теста: «На Старый Новый год лепим с сюрпризом. Кому что попадётся, тому то и будет».",
+  "en": "The cook hands everyone a round of dough: “At the Old New Year we fill them with a surprise. Whatever you bite on is what you get.”",
+  "ja": "料理のおばさんがみんなに丸い生地を配る。「古い新年は、おたのしみを入れて包むの。当たったものが、その人の一年よ」"
+ },
+ "city.nh.ony.var.pick": {
+  "ru": "Что положить в свой вареник?",
+  "en": "What shall I put in mine?",
+  "ja": "自分のには何を入れよう？"
+ },
+ "city.nh.ony.var.opt.1": {
+  "ru": "Монетку, к деньгам",
+  "en": "A coin, for money",
+  "ja": "コイン（お金が入る）"
+ },
+ "city.nh.ony.var.opt.2": {
+  "ru": "Пуговицу, к обнове",
+  "en": "A button, for something new to wear",
+  "ja": "ボタン（新しい服が手に入る）"
+ },
+ "city.nh.ony.var.opt.3": {
+  "ru": "Горошину перца, к острым ощущениям",
+  "en": "A peppercorn, for a thrill",
+  "ja": "こしょうの粒（刺激的な年になる）"
+ },
+ "city.nh.ony.var.pinch": {
+  "ru": "Защипываю край, пока тесто не подсохло. Рядом дети лепят вдвое быстрее меня.",
+  "en": "I pinch the edge shut before the dough dries. Beside me the children are working twice as fast.",
+  "ja": "生地が乾かないうちにふちをつまんでいく。となりの子どもたちは倍の速さだ。"
+ },
+ "city.nh.ony.var.boil": {
+  "ru": "Повариха считает: «И раз! И раз!» На каждый счёт бросаю вареник в кипяток.",
+  "en": "The cook counts: “And one! And one!” At each count I drop a dumpling into the boiling water.",
+  "ja": "おばさんが数える。「はい！はい！」かけ声ごとに、ひとつずつ湯に落とす。"
+ },
+ "city.nh.ony.var.out.1": {
+  "ru": "Мой вареник с монеткой достался мальчишке за соседним столом. Он показывает её всем и уже считает, сколько это мороженого.",
+  "en": "My coin dumpling went to a boy at the next table. He shows it to everyone and is already working out how much ice cream that is.",
+  "ja": "コイン入りは、となりの席の男の子に当たった。みんなに見せて、アイスいくつぶんか、もう数えている。"
+ },
+ "city.nh.ony.var.out.2": {
+  "ru": "Пуговица попалась бабушке у окна. «К обнове, говорите? Значит, довяжу наконец кофту».",
+  "en": "The button turned up for a granny by the window. “Something new to wear, you say? Then I'll finish that cardigan at last.”",
+  "ja": "ボタンは窓ぎわのおばあさんに当たった。「新しい服、ですって？じゃあ、あの上着をやっと編みあげるわ」"
+ },
+ "city.nh.ony.var.out.3": {
+  "ru": "Перец достался поварихе. Она вытирает слёзы и говорит, что год будет весёлый.",
+  "en": "The peppercorn went to the cook herself. She wipes her eyes and says it will be a merry year.",
+  "ja": "こしょうは、料理のおばさん本人に当たった。涙をふきながら、にぎやかな年になるわね、と言う。"
+ },
+ "city.nh.ony.var.good.1": {
+  "ru": "Ни один мой вареник не развалился. Повариха ставит их в пример и записывает меня в помощники на следующий год.",
+  "en": "Not one of my dumplings came apart. The cook holds them up as an example and puts me down as a helper for next year.",
+  "ja": "ひとつもくずれなかった。おばさんがお手本だとほめて、来年の手伝いの名簿に名前を書いた。"
+ },
+ "city.nh.ony.var.fair.1": {
+  "ru": "Половина вареников всплыла целой, половина открыла всем свой сюрприз раньше времени.",
+  "en": "Half my dumplings came up whole; the other half showed everyone their surprise ahead of time.",
+  "ja": "半分は無事に浮いてきて、半分は中のおたのしみを早々とみんなに見せてしまった。"
+ },
+ "city.nh.ony.var.poor.1": {
+  "ru": "В кастрюле плавает тесто отдельно, вишня отдельно. Повариха вздыхает: «Зато суп вышел праздничный».",
+  "en": "Dough floats in the pot on its own, cherries on their own. The cook sighs: “Well, it's a festive soup.”",
+  "ja": "鍋には生地とさくらんぼが別々に浮いている。おばさんがため息。「まあ、お祝いのスープにはなったわね」"
+ },
+ "city.nh.ony.wax.title": {
+  "ru": "Старый Новый год: гадание на воске",
+  "en": "Old New Year: the wax fortune",
+  "ja": "古い新年：ろう占い"
+ },
+ "city.nh.ony.wax.intro": {
+  "ru": "У плиты рядом с котлом греется ковшик с воском и стоит миска с водой. «Сегодня можно, сегодня все гадают», говорит повариха и подаёт мне ковшик.",
+  "en": "By the stove, next to the pot, a little pan of wax is warming beside a bowl of water. “Tonight it's allowed, tonight everyone tells fortunes,” says the cook, and passes me the pan.",
+  "ja": "かまどの鍋のとなりで、ろうの小鍋があたためてあり、水のはった鉢がある。「今夜はいいのよ、みんな占うんだから」とおばさんが小鍋を渡してくれる。"
+ },
+ "city.nh.ony.wax.pour": {
+  "ru": "Лью воск в воду одной струйкой. Мало нальёшь, выйдет клякса. Перельёшь, выйдет блин.",
+  "en": "I pour the wax into the water in one stream. Too little makes a blot. Too much makes a pancake.",
+  "ja": "ろうをひとすじに水へ注ぐ。少なければしみになり、多すぎればパンケーキになる。"
+ },
+ "city.nh.ony.wax.blow": {
+  "ru": "Воск стынет. Дую на него ровно, чтобы фигурка не треснула: вдох, и медленный выдох.",
+  "en": "The wax is setting. I blow on it evenly so the figure won't crack: a breath in, and a slow breath out.",
+  "ja": "ろうが固まっていく。形が割れないよう、むらなく吹く。吸って、ゆっくり吐く。"
+ },
+ "city.nh.ony.wax.pick": {
+  "ru": "Вынимаю фигурку. На что она похожа?",
+  "en": "I lift the figure out. What does it look like?",
+  "ja": "形をすくい上げる。何に見える？"
+ },
+ "city.nh.ony.wax.opt.1": {
+  "ru": "На солнце с лучами",
+  "en": "The sun with its rays",
+  "ja": "光を放つ太陽"
+ },
+ "city.nh.ony.wax.opt.2": {
+  "ru": "На лодку под парусом",
+  "en": "A boat under sail",
+  "ja": "帆をあげた舟"
+ },
+ "city.nh.ony.wax.opt.3": {
+  "ru": "На птицу",
+  "en": "A bird",
+  "ja": "鳥"
+ },
+ "city.nh.ony.wax.read.1": {
+  "ru": "«Солнце! Это к долгому лету». Все в пельменной оборачиваются посмотреть. Здесь его ждут, и никто не скажет почему.",
+  "en": "“The sun! That means a long summer.” Everyone in the dumpling bar turns to look. They wait for it here, and nobody can say why.",
+  "ja": "「太陽！長い夏になるしるしよ」食堂じゅうがふり向いて見る。この町ではみんな太陽を待っている。なぜかは誰も言えない。"
+ },
+ "city.nh.ony.wax.read.2": {
+  "ru": "«Лодка, к дороге по воде. Весной откроют навигацию, вот и поплывёшь».",
+  "en": "“A boat: a journey by water. They open the sailing season in spring, and off you'll go.”",
+  "ja": "「舟ね。水の上の旅よ。春になって船が出るようになったら、あなたも出かけるのよ」"
+ },
+ "city.nh.ony.wax.read.3": {
+  "ru": "«Птица, к вестям издалека. Или к тому, что сам куда-нибудь полетишь». Повариха смотрит на меня слишком внимательно.",
+  "en": "“A bird: news from far away. Or else you'll be flying off somewhere yourself.” The cook looks at me a little too closely.",
+  "ja": "「鳥。遠くからの知らせ。それとも、あなた自身がどこかへ飛んでいくのかしら」おばさんが、ちょっと念入りにこちらを見る。"
+ },
+ "city.nh.ony.wax.good.1": {
+  "ru": "Фигурка вышла чистая, с каждой чёрточкой. Её кладут на подоконник сохнуть, рядом с прошлогодними.",
+  "en": "The figure came out clean, every little line of it. They lay it on the windowsill to dry, next to last year's.",
+  "ja": "形は細い線までくっきり出た。窓台に、去年のぶんと並べて乾かしてもらう。"
+ },
+ "city.nh.ony.wax.fair.1": {
+  "ru": "Фигурка вышла, но с одного боку оплыла. Гадать по ней можно, спорить тоже.",
+  "en": "The figure came out, though one side has run. You can read a fortune in it, and argue over it too.",
+  "ja": "形にはなったけれど、片側がたれた。占うこともできるし、言い争うこともできる。"
+ },
+ "city.nh.ony.wax.poor.1": {
+  "ru": "Вышел воск как воск. Повариха вертит его и решает: «К тому, что всё останется как было. Тоже неплохо».",
+  "en": "The wax came out looking like wax. The cook turns it over and decides: “It means everything stays as it was. That's not bad either.”",
+  "ja": "ろうは、ただのろうになった。おばさんがひっくり返して決める。「何もかも今までどおり、ってことね。それも悪くないわ」"
+ },
+ "city.nh.ask.surprise": {
+  "ru": "Говорят, у вас вареники с сюрпризом?",
+  "en": "I hear your dumplings have a surprise in them?",
+  "ja": "おたのしみ入りのヴァレーニキがあるんですって？"
+ },
+ "city.nh.ask.surprise.1": {
+  "ru": "Раз в году, на Старый Новый год. Держи тарелку за счёт заведения. Жуй осторожно, зубы у нас в поликлинике не казённые.",
+  "en": "Once a year, at the Old New Year. Here's a plate on the house. Chew carefully: teeth don't come free at the clinic.",
+  "ja": "年に一度、古い新年だけね。はい、一皿は店のおごり。そっとかむのよ、診療所でも歯はただじゃないんだから。"
+ },
+ "city.nh.ask.surprise.2": {
+  "ru": "В третьем варенике что-то твёрдое. Нитка! «К дальней дороге», объявляет официантка на весь зал.",
+  "en": "There is something hard in the third one. A thread! “A long journey,” the waitress announces to the whole room.",
+  "ja": "三つめに何か固いものがある。糸だ！「遠い旅に出るしるし」と、店じゅうに聞こえる声で言われた。"
+ },
+ "city.nh.ask.carols": {
+  "ru": "Кто это поёт под окном?",
+  "en": "Who is that singing under the window?",
+  "ja": "窓の下で歌っているのは誰？"
+ },
+ "city.nh.ask.carols.1": {
+  "ru": "Дети щедруют. Ходят по дворам с бумажным солнцем на палке, поют, а им за это дают пряники и мелочь.",
+  "en": "The children, carolling. They go round the yards with a paper sun on a pole and sing, and people give them gingerbread and small change.",
+  "ja": "子どもたちが歌ってまわってるのよ。棒につけた紙の太陽を持って中庭をめぐって歌うと、ジンジャーブレッドや小銭がもらえるの。"
+ },
+ "city.nh.ask.carols.2": {
+  "ru": "У других, говорят, носят звезду. А у нас всегда было солнце. Кто первый придумал, уже никто не помнит.",
+  "en": "Elsewhere they carry a star, they say. Here it has always been the sun. Who thought of it first, nobody remembers.",
+  "ja": "よそでは星を持つそうよ。ここは昔から太陽。誰が最初に思いついたのか、もう誰も覚えていないわ。"
+ },
+ "city.nh.nep.rope.title": {
+  "ru": "День Нептуна: канат",
+  "en": "Neptune Day: the rope",
+  "ja": "ネプチューンの日：綱引き"
+ },
+ "city.nh.nep.rope.intro": {
+  "ru": "Черти Нептуна, чумазые старшеклассники в водорослях, размотали спасательный канат: «Сухопутные против свиты морского царя! Проигравших макаем».",
+  "en": "Neptune's devils, grimy senior pupils draped in seaweed, have run out the lifeguards' rope: “Landlubbers against the sea king's court! Losers get ducked.”",
+  "ja": "ネプチューンの小鬼たち（海藻をかぶった、すすだらけの上級生）が救助用の綱をのばした。「陸の者 対 海の王のお供！負けたら海にざぶん」"
+ },
+ "city.nh.nep.rope.heave": {
+  "ru": "Спасатель командует в рупор: «И раз! И взяли!» Тяну на каждый счёт вместе со всеми.",
+  "en": "The lifeguard calls through the megaphone: “And heave! And pull!” I haul on every count with the rest.",
+  "ja": "監視員がメガホンで号令をかける。「そーれ！よいしょ！」かけ声ごとに、みんなと引く。"
+ },
+ "city.nh.nep.rope.last": {
+  "ru": "Черти упёрлись пятками в песок. Последний рывок!",
+  "en": "The devils have dug their heels into the sand. One last heave!",
+  "ja": "小鬼たちが砂にかかとを踏んばった。最後のひと引き！"
+ },
+ "city.nh.nep.rope.good.1": {
+  "ru": "Свита морского царя лежит на песке. Нептун стучит трезубцем: «За дерзость макнуть всё равно!» Мокрый до нитки, получаю грамоту «Житель моря».",
+  "en": "The sea king's court is lying on the sand. Neptune raps his trident: “Duck him anyway, for cheek!” Dripping wet, I am handed the certificate “Citizen of the Sea”.",
+  "ja": "海の王のお供は砂の上にのびている。ネプチューンが三つ又のほこを鳴らす。「生意気だから、やっぱりざぶん！」ずぶぬれで「海の住人」の賞状をもらった。"
+ },
+ "city.nh.nep.rope.fair.1": {
+  "ru": "Ничья: канат лопнул бы, если бы не был спасательным. Макают обе команды, для справедливости.",
+  "en": "A draw: the rope would have snapped had it not been a lifeguard's. Both teams are ducked, to be fair.",
+  "ja": "引き分け。救助用の綱でなければ切れていただろう。公平のため、両方ともざぶん。"
+ },
+ "city.nh.nep.rope.poor.1": {
+  "ru": "Нас утянули в воду всей шеренгой. Вода тёплая, а черти довольные.",
+  "en": "They dragged our whole line into the water. The water is warm, and the devils are pleased.",
+  "ja": "一列まるごと海に引きずりこまれた。水はぬるく、小鬼たちは満足そうだ。"
+ },
+ "city.nh.nep.tube.title": {
+  "ru": "День Нептуна: заплыв на камерах",
+  "en": "Neptune Day: the inner-tube race",
+  "ja": "ネプチューンの日：タイヤチューブ競争"
+ },
+ "city.nh.nep.tube.intro": {
+  "ru": "У проката очередь с чёрными автомобильными камерами: в День Нептуна на них плывут наперегонки вдоль пляжа. Мне выдают последнюю: «Накачаешь сам, и твоя».",
+  "en": "There is a queue at the rental with black inner tubes: on Neptune Day people race along the beach on them. I am given the last one: “Pump it up yourself and it's yours.”",
+  "ja": "貸し出し屋の前に、黒いタイヤチューブを持った列ができている。ネプチューンの日は、これで浜ぞいに競争するのだ。最後の一本を渡される。「自分でふくらませたら、きみのだ」"
+ },
+ "city.nh.nep.tube.pump": {
+  "ru": "Качаю ножным насосом. Камера сопит и толстеет.",
+  "en": "I work the foot pump. The tube wheezes and fattens.",
+  "ja": "足ぶみポンプを踏む。チューブがふうふう言いながら太っていく。"
+ },
+ "city.nh.nep.tube.top": {
+  "ru": "Последние качки. Тугая камера звенит, как арбуз. Остановиться надо вовремя, иначе лопнет.",
+  "en": "The last strokes. A tight tube rings like a watermelon. I must stop in time, or it will burst.",
+  "ja": "あと少し。ぱんぱんのチューブは、たたくとスイカみたいに鳴る。ちょうどいいところでやめないと破裂する。"
+ },
+ "city.nh.nep.tube.swim": {
+  "ru": "Старт! Лежу на камере животом и гребу руками. С берега считают: «Раз! Два!»",
+  "en": "Go! I lie on the tube on my stomach and paddle with my hands. From the shore they count: “One! Two!”",
+  "ja": "スタート！チューブに腹ばいになって手でこぐ。岸から「いち！に！」と声がかかる。"
+ },
+ "city.nh.nep.tube.good.1": {
+  "ru": "Пришёл к бую первым. Нептун велит прокатить меня на руках до полотенца, а камеру подписывают мелом: «чемпион».",
+  "en": "I reached the buoy first. Neptune orders me carried shoulder-high to my towel, and the tube is chalked “champion”.",
+  "ja": "ブイに一着。ネプチューンの命令で、タオルのところまでみんなにかつがれた。チューブにはチョークで「優勝」と書かれた。"
+ },
+ "city.nh.nep.tube.fair.1": {
+  "ru": "Приплыл в середине. Меня обогнали две девочки на одной камере, и это было честно.",
+  "en": "I came in somewhere in the middle. Two girls on one tube overtook me, and fairly too.",
+  "ja": "まんなかあたりでゴール。一本のチューブに乗った女の子二人に抜かれた。正々堂々とだ。"
+ },
+ "city.nh.nep.tube.poor.1": {
+  "ru": "Камера травила воздух с самого старта. К бую я прибыл вплавь, с камерой на шее.",
+  "en": "The tube leaked air from the very start. I arrived at the buoy swimming, with the tube round my neck.",
+  "ja": "チューブはスタートから空気がもれていた。ブイには、チューブを首にかけて泳いで着いた。"
+ },
+ "city.nh.ask.ukha": {
+  "ru": "Чем это пахнет на всю набережную?",
+  "en": "What is that smell all along the promenade?",
+  "ja": "遊歩道じゅうにしているこのにおいは？"
+ },
+ "city.nh.ask.ukha.1": {
+  "ru": "Уха из общего котла. Рыбу с утра несут все, кто что поймал, а варит наша смена. Держи миску, в День Нептуна она ничья и для всех.",
+  "en": "Fish soup from the common pot. Since morning everyone has brought whatever they caught, and our shift does the cooking. Take a bowl: on Neptune Day it's nobody's and everybody's.",
+  "ja": "みんなの大鍋のウハー（魚のスープ）だよ。朝からめいめい釣った魚を持ち寄って、うちの班が煮る。ほら一杯。ネプチューンの日は、誰のものでもなく、みんなのものさ。"
+ },
+ "city.nh.ask.ukha.2": {
+  "ru": "Уха пахнет дымом и лавровым листом. В миске попался окунь. Спасатель говорит, что это к хорошей воде до сентября.",
+  "en": "The soup smells of smoke and bay leaf. There is a perch in my bowl. The lifeguard says that means good water until September.",
+  "ja": "ウハーは煙と月桂樹のにおいがする。わんにパーチが入っていた。監視員によると、九月まで海がいいしるしだそうだ。"
+ },
+ "city.nh.ask.parade": {
+  "ru": "А парад лодок будет?",
+  "en": "Will there be a boat parade?",
+  "ja": "ボートのパレードはありますか？"
+ },
+ "city.nh.ask.parade.1": {
+  "ru": "В три, от пирса. Идёт всё, что держится на воде: прокатные лодки, наш ялик, а первым везут Нептуна. Смотри с пирса, оттуда видно весь строй.",
+  "en": "At three, from the pier. Everything that floats goes out: the hire boats, our dinghy, and Neptune is rowed at the head. Watch from the pier, you see the whole line from there.",
+  "ja": "三時に桟橋から。浮かぶものはみんな出るよ。貸しボートも、うちの小舟も。先頭にはネプチューンが乗る。桟橋から見るといい、列がぜんぶ見える。"
+ },
+ "city.nh.ask.parade.2": {
+  "ru": "Яхтсмены тоже просятся в строй. Пустим, если пообещают не обгонять морского царя.",
+  "en": "The yachtsmen keep asking to join the line. We'll let them, if they promise not to overtake the sea king.",
+  "ja": "ヨットの連中も列に入りたがっていてね。海の王を追い抜かないと約束するなら、入れてやるさ。"
+ },
+ "city.nh.ask.tubes": {
+  "ru": "Камеры для заплыва ещё остались?",
+  "en": "Any inner tubes left for the race?",
+  "ja": "競争用のチューブ、まだ残っていますか？"
+ },
+ "city.nh.ask.tubes.1": {
+  "ru": "Одна, у насоса. Старт от первой вышки, финиш у буя. Камеру потом верни, она с грузовика директора клуба.",
+  "en": "One, by the pump. The start is at the first tower, the finish at the buoy. Bring the tube back afterwards: it's off the club director's lorry.",
+  "ja": "一本、ポンプのところに。スタートは第一監視塔、ゴールはブイ。あとで返してくれよ、クラブの所長のトラックのやつなんだ。"
+ }
+}

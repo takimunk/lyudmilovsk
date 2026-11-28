@@ -201,6 +201,11 @@ void ALyudRestaurant::TickKitchen(float DeltaTime)
 			// the model was missing a moment ago: not a spawn and a failed load every frame
 			return;
 		}
+		// its model loaded in the background first (asked again next frame): Setup's load stalled the frame
+		if (!ANpcBody::IsModelReady(this, Mesh))
+		{
+			return;
+		}
 		FActorSpawnParameters SP;
 		SP.ObjectFlags |= RF_Transient;
 		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -215,6 +220,7 @@ void ALyudRestaurant::TickKitchen(float DeltaTime)
 			CookRetryAt = World->GetTimeSeconds() + 10.f;
 			return;
 		}
+		ANpcBody::ReleaseModel(this, Mesh);      // the body holds it now
 		CookBody->Tags.Add(TEXT("Restaurant"));
 		CookBody->Mesh->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::OnlyTickPoseWhenRendered;
 		CookMesh = Mesh;

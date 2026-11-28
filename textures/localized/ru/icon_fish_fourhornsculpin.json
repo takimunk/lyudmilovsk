@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_fourhornsculpin",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_4.json (cell 1 (row 1, column 1)).",
+ "source": "design/fishing/icons_grid_4.png (sidecar design/fishing/icons_grid_4.json), cell 1 (row 1, column 1), cut into 2x2 equal cells, resized to 512x512",
+ "sha256": "117e8a163ed2fd3e89ef08a68905dde8d4d881f6b92d5d4a4bc2c8beb0e8a9d1",
+ "strings": {}
+}

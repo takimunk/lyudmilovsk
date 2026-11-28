@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_twaiteshad",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_3.json (cell 3 (row 1, right)).",
+ "source": "design/fishing/icons_grid_3.png (sidecar design/fishing/icons_grid_3.json), cell 3 (row 1, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "4fdf1ca40e2b40e404ce1e7edc21fb157b2a5700c0ebbab1df73e5ca9cf52046",
+ "strings": {}
+}

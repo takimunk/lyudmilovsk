@@ -11,7 +11,10 @@ class UInstancedStaticMeshComponent;
 class UMaterialInstanceDynamic;
 class UStaticMesh;
 class USoundBase;
-namespace LyudBirds { class FWorld; }
+namespace LyudBirds { class FWorld; struct FBird; struct FSite; struct V3; }
+class FBirdPerches;
+/** UBirdLifeSubsystem::DispatchEvents' reusable buffers (BirdLife.cpp). */
+struct FBirdDispatchBuffers;
 
 /** What a wild bird is doing (the bird life's own states; ABirdActor's EBirdState is the body's animation). */
 UENUM(BlueprintType)
@@ -100,6 +103,22 @@ public:
 	/** Food held out in the hand: call every frame while it is (palm, world cm), and once with bOn false when it goes. */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
 	void SetOffer(FVector PalmLocation, FName Food, bool bOn);
+
+	/**
+	 * A handful of feed (an item in Content/BirdsData/feeds.json) thrown on the ground at Location (cm, G): birds round about
+	 * that like it and spot it come and peck it up (docs/bird_taming.md "Birds come to the feed"). Returns its id, -1 if the
+	 * birds aren't running.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	int32 AddFeedPile(FVector Location, FName Feed, float Handfuls = 1.f);
+
+	/** Tests: the birds sitting near the camera and how many have nothing under their feet (console lyud.Birds.PerchAudit). */
+	UFUNCTION(BlueprintCallable, Category = "Birds")
+	FString PerchAudit(float Radius = 6000.f);
+
+	/** How many birds are at the feed in the player's hand now (waiting round them, or coming), and at thrown piles. */
+	UFUNCTION(BlueprintPure, Category = "Birds")
+	int32 NumAtFeed(bool bThrown = false) const;
 
 	/** Something the player did that a bird minds (a dropped item, a shout): 0..2, fades in a second. */
 	UFUNCTION(BlueprintCallable, Category = "Birds")
@@ -277,6 +296,8 @@ private:
 	void LoadBrookPools();
 	/** The food in the hand (SetOffer) and how much each species wants it. */
 	FName OfferFood;
+	/** The feed whose likes are in the sim's player now (refilled when it changes). */
+	FName FeedLiked;
 	float StartDelay = 0.f;
 	/** The instanced poses' meshes and plumages are asked from ULyudPrefetch before the start (PrefetchPoses). */
 	bool bPosesReady = false;
@@ -304,6 +325,13 @@ private:
 	float SaveTimer = 0.f;
 	struct FSightCache { double Time = -1.0; bool bClear = true; };
 	TMap<int32, FSightCache> Sight;
+	/** The real branches and roofs under the wild birds' perches near the camera (the bird life's Perch check). */
+	TSharedPtr<FBirdPerches> Perches;
+	/** The sim's Perch check (kept while lyud.Birds.PerchCheck switches it off and on). */
+	TFunction<int(const LyudBirds::FBird&, const LyudBirds::FSite&, LyudBirds::V3&)> PerchFn;
+	/** People near the camera, refreshed a few times a second (flying birds steer round them). */
+	float BodiesTimer = 0.f;
+	void UpdateBodies(float DeltaTime);
 	/** Per species, its calls (raw pointers, kept alive by SoundRefs: a TMap of arrays can't be a UPROPERTY). */
 	TMap<FName, TArray<USoundBase*>> Sounds;
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> SoundRefs;
@@ -320,6 +348,9 @@ private:
 	TMap<int32, float> HabitWatch;
 	float HabitWatchTimer = 0.f;
 	int32 LastSnatchedMorsel = -1;
+	/** The sim's events are swapped into these each frame, not copied into new vectors (DispatchEvents). */
+	TPimplPtr<FBirdDispatchBuffers> Dispatched;
+	bool bDispatching = false;
 
 	bool Start();
 	bool StartEmpty(float GroundZ);
@@ -381,6 +412,8 @@ private:
 		TArray<int32> Shown;
 		/** Per pose, the transforms sent at the last sync: a pose whose birds have not moved is not sent again. */
 		TArray<TArray<FTransform>> Sent;
+		/** Per pose, seconds it has wanted far fewer instances than it has (Sync gives the spare ones back after a while). */
+		TArray<float> Idle;
 		/** Size relative to the mesh (placeholder meshes are a 21.5 cm starling). */
 		float Scale = 1.f;
 		/** Origin of the flight poses above the feet, cm. */
@@ -415,6 +448,6 @@ private:
 	TArray<float> NowPx;
 	TArray<int32> PopIds;
 
-	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown, TArray<FTransform>& Sent);
+	void Sync(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown, TArray<FTransform>& Sent, float& Idle, float Dt);
 	void DriveBody(AActor* Body, const LyudBirds::FWorld& World, int32 Id);
 };

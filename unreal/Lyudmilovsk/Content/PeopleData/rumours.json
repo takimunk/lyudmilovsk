@@ -94,6 +94,12 @@
    "pass": 0.5,
    "rank": 1
   },
+  "dance": {
+   "hops": 2,
+   "life": 3,
+   "pass": 0.55,
+   "rank": 4
+  },
   "sail": {
    "hops": 2,
    "life": 4,
@@ -214,6 +220,12 @@
    "detail": ""
   },
   {
+   "event": "beat",
+   "target": "city.dnc.p.*",
+   "kind": "dance",
+   "detail": "{t}"
+  },
+  {
    "event": "sail",
    "target": "join",
    "kind": "sail",
@@ -272,7 +284,8 @@
   "regatta": 1,
   "tow": 1,
   "skipper": 1,
-  "film": 1
+  "film": 1,
+  "dance": 1
  },
  "ps": [
   "beat",
@@ -281,6 +294,7 @@
   "crows",
   "cup",
   "cure",
+  "dance",
   "film",
   "fine",
   "garden",
@@ -302,6 +316,7 @@
   "crows",
   "cup",
   "cure",
+  "dance",
   "film",
   "fine",
   "garden",

@@ -1,0 +1,10 @@
+{
+ "id": "icon_dish_fried_fish",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a white plate with one whole small fried fish with a golden crisp crust and a sprig of dill beside it",
+ "source": "design/icons_1127/sheet_1.png (sidecar design/icons_1127/sheet_1.json), cell 3 (row 1, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "51d3ae2b1565dcffe1b7bc3d5d14cc4169c69cd1b68f9b433d367cbdd72c096e",
+ "strings": {}
+}

@@ -35,6 +35,7 @@ static void RumourChecks(const FWorld& W, const FBook& Book, bool bStory)
 		{ "play_tune", "bonfire", "sing", "" },
 		{ "play_tune", "fur_elise", "tune", "music.tune.fur_elise" },
 		{ "beat", "npc.t_sorokin_gennady.name", "beat", "npc.t_sorokin_gennady.name" },
+		{ "beat", "city.dnc.p.lan", "dance", "city.dnc.p.lan" },     // a dance at the Vaults is not a game won (docs/dances.md)
 		{ "cup_won", "cog_chess", "cup", "city.coll.cups.cog_chess" },
 		{ "bird_tamed", "herring_gull", "tamed", "bird.herring_gull.name" },
 		{ "fish_caught", "fish_perch", "catch", "item.fish_perch.name" },

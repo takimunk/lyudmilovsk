@@ -120,6 +120,10 @@ void ULyudRounds::OnWorldBeginPlay(UWorld& InWorld)
 	{
 		Saves->RegisterSaveObject(TEXT("Rounds"), this);
 		NewGameHandle = Saves->OnNewGame.AddWeakLambda(this, [this] { ResetAll(); });
+		// the round under way: copied into the SaveGame fields before they are written, picked up once everything
+		// (the calendar's clock among it) is restored
+		BeforeSaveHandle = Saves->OnBeforeSave.AddWeakLambda(this, [this](ULyudSaveGame*) { WriteRound(); });
+		AfterLoadHandle = Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*) { ResumeRound(); });
 	}
 }
 
@@ -130,6 +134,8 @@ void ULyudRounds::Deinitialize()
 		if (ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(World))
 		{
 			Saves->OnNewGame.Remove(NewGameHandle);
+			Saves->OnBeforeSave.Remove(BeforeSaveHandle);
+			Saves->OnAfterLoad.Remove(AfterLoadHandle);
 			Saves->UnregisterSaveObject(TEXT("Rounds"));
 		}
 		if (ULyudInventoryUI* UI = ULyudInventoryUI::Get(World))
@@ -150,10 +156,117 @@ void ULyudRounds::ResetAll()
 {
 	PaperDay = PostDay = -1;
 	PapersDelivered = ParcelsHanded = RoublesEarned = 0;
+	ClearSavedRound();
 	if (Round)
 	{
 		Round->bOver = true;
 	}
+	RingingEntry = -1;
+	SetPrompt(-2, FText::GetEmpty());
+}
+
+void ULyudRounds::ClearSavedRound()
+{
+	SavedKind = SavedRoute = -1;
+	SavedStops.Reset();
+	SavedResults.Reset();
+	SavedPapers = SavedStray = SavedRoundDay = SavedTerrace = 0;
+	SavedStarted = SavedDeadline = 0.0;
+}
+
+void ULyudRounds::WriteRound()
+{
+	ClearSavedRound();
+	if (!IsActive())
+	{
+		return;
+	}
+	const LyudRounds::FRound& R = *Round;
+	SavedKind = (int32)R.Kind;
+	SavedRoute = R.Route;
+	for (size_t I = 0; I < R.Stops.size(); ++I)
+	{
+		SavedStops.Add(R.Stops[I]);
+		// a door rung and not yet opened is saved still waiting (rung again after the load)
+		SavedResults.Add(I < R.Results.size() ? (int32)R.Results[I] : (int32)LyudRounds::EResult::Pending);
+	}
+	// papers in the air when it was saved are counted back into the bag (the flight isn't saved)
+	int32 Flying = 0;
+	for (const FFlight& F : Flights)
+	{
+		Flying += F.bFlying ? 1 : 0;
+	}
+	SavedPapers = R.Papers + (R.Kind == LyudRounds::EKind::Paper ? Flying : 0);
+	SavedStray = R.Stray;
+	SavedStarted = R.Started;
+	SavedDeadline = R.Deadline;
+	SavedRoundDay = RoundDay;
+	SavedTerrace = RoundTerrace;
+}
+
+void ULyudRounds::ResumeRound()
+{
+	// whatever was going on before the load is gone with the old game
+	if (Round)
+	{
+		Round->bOver = true;
+	}
+	RingingEntry = -1;
+	for (FFlight& F : Flights)
+	{
+		F = FFlight();
+	}
+	for (UStaticMeshComponent* C : PaperMeshes)
+	{
+		if (C)
+		{
+			C->SetVisibility(false);
+		}
+	}
+	SetPrompt(-2, FText::GetEmpty());
+	const int32 Kind = SavedKind;
+	if (Kind < 0)
+	{
+		return;
+	}
+	const bool bPaper = Kind == (int32)LyudRounds::EKind::Paper;
+	// only a round that still makes sense: the data it points into is there, and its day's deadline hasn't gone by
+	bool bValid = bLoaded && Round && (bPaper || Kind == (int32)LyudRounds::EKind::Post) && SavedStops.Num() > 0
+		&& SavedStops.Num() == SavedResults.Num() && FMath::IsFinite(SavedDeadline) && FMath::IsFinite(SavedStarted);
+	if (bValid && bPaper)
+	{
+		bValid = SavedRoute >= 0 && SavedRoute < (int32)Data->Routes.size();
+	}
+	const int32 NumStops = !bValid ? 0 : bPaper ? (int32)Data->Routes[(size_t)SavedRoute].size() : (int32)Data->Post.size();
+	std::vector<int> Stops;
+	std::vector<LyudRounds::EResult> Results;
+	for (int32 I = 0; bValid && I < SavedStops.Num(); ++I)
+	{
+		const int32 Res = SavedResults[I];
+		bValid = SavedStops[I] >= 0 && SavedStops[I] < NumStops && Res >= (int32)LyudRounds::EResult::Pending && Res <= (int32)LyudRounds::EResult::Perfect;
+		Stops.push_back(SavedStops[I]);
+		Results.push_back((LyudRounds::EResult)Res);
+	}
+	RoundDay = SavedRoundDay;
+	if (bValid && (Today() < SavedRoundDay || RoundHour() > SavedDeadline + 1.0))
+	{
+		bValid = false;     // a save of another day (or the clock past its end): no round to go on with
+	}
+	ClearSavedRound();
+	if (!bValid)
+	{
+		UE_LOG(LogLyudRounds, Display, TEXT("Rounds: the saved round is not resumed (another day or data changed)"));
+		return;
+	}
+	LyudRounds::FRound& R = *Round;
+	R.Begin(bPaper ? LyudRounds::EKind::Paper : LyudRounds::EKind::Post, bPaper ? SavedRoute : -1, Stops, FMath::Max(0, SavedPapers),
+		SavedStarted, SavedDeadline);
+	R.Results = Results;
+	R.Stray = FMath::Max(0, SavedStray);
+	RoundTerrace = SavedTerrace;
+	Prompted = -1;
+	UE_LOG(LogLyudRounds, Display, TEXT("Rounds: resumed the %s round: %d left, %d papers, by %.2f"), bPaper ? TEXT("paper") : TEXT("post"),
+		R.Left(), R.Papers, R.Deadline);
 }
 
 bool ULyudRounds::LoadData()
@@ -225,6 +338,13 @@ double ULyudRounds::HourNow() const
 	return Now.GetHour() + Now.GetMinute() / 60.0 + Now.GetSecond() / 3600.0;
 }
 
+double ULyudRounds::RoundHour() const
+{
+	// the hour on the round's own day's clock: past midnight (slept through it, a late forced round) it goes on past 24, so
+	// the deadline still comes
+	return HourNow() + 24.0 * (double)(Today() - RoundDay);
+}
+
 bool ULyudRounds::IsActive() const { return Round && !Round->bOver; }
 bool ULyudRounds::IsPaper() const { return IsActive() && Round->Kind == LyudRounds::EKind::Paper; }
 FVector ULyudRounds::BundleAt() const { return bLoaded ? Data->Bundle : FVector::ZeroVector; }
@@ -274,7 +394,7 @@ bool ULyudRounds::StartPaper(bool bForce)
 	const double Deadline = bForce ? H + (Data->PaperDeadline - Data->PaperFrom) : Data->PaperDeadline;
 	Round->Begin(LyudRounds::EKind::Paper, Route, Entries, (int)Entries.size() + Data->Spare, H, Deadline);
 	RoundTerrace = Data->RouteTerrace[(size_t)Route];
-	PaperDay = Day;
+	RoundDay = Day;   // PaperDay is set when it is over: a save made mid-round (the round isn't saved) leaves it to do again
 	Prompted = -1;  // the round's first prompt is always said (its code may equal the one showing)
 	if (GS)
 	{
@@ -303,7 +423,7 @@ bool ULyudRounds::StartPost(bool bForce)
 	const double Deadline = bForce ? H + (Data->PostDeadline - Data->PostFrom) : Data->PostDeadline;
 	Round->Begin(LyudRounds::EKind::Post, -1, Picks, 0, H, Deadline);
 	RoundTerrace = 0;
-	PostDay = Day;
+	RoundDay = Day;   // PostDay is set when it is over (as PaperDay)
 	Prompted = -1;
 	if (ULyudGameScreen* GS = ULyudGameScreen::Get(this))
 	{
@@ -329,11 +449,12 @@ void ULyudRounds::Finish(bool bInTime)
 	{
 		return;
 	}
-	const double H = HourNow();
+	const double H = RoundHour();
 	const int32 Pay = R.Pay(bInTime ? FMath::Min(H, R.Deadline) : R.Deadline + 1.0);
 	const std::string Stamp = R.Stamp(RoundTerrace);
 	const bool bPaper = R.Kind == LyudRounds::EKind::Paper;
 	R.bOver = true;
+	(bPaper ? PaperDay : PostDay) = RoundDay;
 	if (bPaper)
 	{
 		PapersDelivered += R.Count(LyudRounds::EResult::Good) + R.Count(LyudRounds::EResult::Perfect);
@@ -401,7 +522,7 @@ void ULyudRounds::Tick(float DeltaTime)
 		return;
 	}
 	TickFlights(DeltaTime);
-	if (IsActive() && HourNow() > Round->Deadline + 1.0)
+	if (IsActive() && RoundHour() > Round->Deadline + 1.0)
 	{
 		Finish(false);  // an hour past the deadline: the round is over, paid for what was done
 	}
@@ -516,7 +637,7 @@ void ULyudRounds::TickDoors()
 		}
 		if (R.AllDone() && !Flights[0].bFlying && !Flights[1].bFlying && !Flights[2].bFlying && !Flights[3].bFlying && !Flights[4].bFlying && !Flights[5].bFlying)
 		{
-			Finish(H <= R.Deadline);
+			Finish(RoundHour() <= R.Deadline);
 		}
 		return;
 	}
@@ -569,7 +690,7 @@ void ULyudRounds::TickDoors()
 	}
 	if (R.AllDone())
 	{
-		Finish(H <= R.Deadline);
+		Finish(RoundHour() <= R.Deadline);
 	}
 }
 

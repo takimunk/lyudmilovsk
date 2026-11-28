@@ -1,0 +1,10 @@
+{
+ "id": "icon_lost_bear",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small worn brown plush teddy bear sitting upright, one ear slightly faded.",
+ "source": "design/icons_1127/sheet_3.png (sidecar design/icons_1127/sheet_3.json), cell 6 (row 2, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "2a4f96adc0995f4c15f87f9d1be29512d7be73eb0674c7c32e7e18ee8c4b1310",
+ "strings": {}
+}

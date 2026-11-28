@@ -54,6 +54,7 @@ namespace LyudBarks
 	struct FWhoCond
 	{
 		FValues Job, Sex, Doing, At, Pose, Gather, Chrono, Need;
+		FValues Today;              // what today is for them and what they are at with somebody (FWho::Today)
 		FValues Met;                // how well they know the player: new, seen, known
 		FValues Bond;               // how close a friend of his they are: friendly, friend, close (docs/friends.md)
 		FValues Heard;              // heard_of: a rumour about him they would bring up (docs/town_rumours.md: cup, beat, ...)
@@ -75,6 +76,10 @@ namespace LyudBarks
 		std::string Pose;                   // stand, walk, talk, look, sit, computer, eat, read, work, shovel, skate, walrus
 		std::string Gather;                 // the holiday gathering's mode they are at (mingle, watch, sit, fair), "" none
 		std::string Chrono;                 // lark, owl, night, usual
+		// what today is for them (PeopleDays.cpp: cold, sleepy, birthday, payday, pension, guest), today's plan while they
+		// are on the way to it or at it (tea, stroll, chess, family; host: at their own flat), and street_meet (stopped for
+		// a word with somebody they know)
+		std::vector<std::string> Today;
 		std::string Met;                    // new (never greeted him), seen (a few days), known (five days and more); the caller sets it
 		std::string Bond;                   // friendly, friend, close ("" less: docs/friends.md); the caller sets it after FillWho
 		std::vector<std::string> Heard;     // the kinds of the rumours about him they would bring up now (docs/town_rumours.md);

@@ -262,6 +262,9 @@ private:
 	float PeregrineUntil = -1.f;
 	TArray<TArray<FTransform>> PoseTransforms;
 	TArray<FTransform> PerchedTransforms;
+	/** How many instances each pose component (then the perched one) showed last frame: the parked ones past it are
+	 *  already at zero scale and are not sent again. */
+	int32 ShownCount[NumPoses + 1] = {};
 	float ClockTimer = 0.f;
 	float ViewerTimer = 0.f;
 	bool bFeeding = false;
@@ -277,7 +280,7 @@ private:
 	TArray<FVector3f> MakeLureSpots(const FVector& Feet) const;
 	float ProbeGround(float X, float Z) const;
 
-	void SyncInstances(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr);
+	void SyncInstances(UInstancedStaticMeshComponent* ISM, TArray<FTransform>& Arr, int32& Shown);
 	void StartFlock();
 	void SampleGround();
 	void UpdateInstances(float Ahead);

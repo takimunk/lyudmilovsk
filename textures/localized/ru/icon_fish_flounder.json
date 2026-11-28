@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_flounder",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_2.json (cell 9 (row 3, right)).",
+ "source": "design/fishing/icons_grid_2.png (sidecar design/fishing/icons_grid_2.json), cell 9 (row 3, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "2fd6cf4ccbfcb09701bd3928eddb0c38679ef6eb08a46c0f1844bccb5079a7b4",
+ "strings": {}
+}

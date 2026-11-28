@@ -1,0 +1,33 @@
+{
+ "name": "sc_platter_start_01",
+ "asset": "/Game/Audio/Spacecraft/S_sc_platter_start_01",
+ "pool": "sc_platter_start",
+ "file": "audio/sfx/spacecraft/sc_platter_start_01.wav",
+ "generator": "tools/spacecraft/sounds.py",
+ "seed": 7641,
+ "rng": "numpy.random.default_rng (PCG64), numpy 2.5.3, scipy 1.18.1",
+ "loop": false,
+ "sample_rate": 48000,
+ "bit_depth": 16,
+ "channels": 1,
+ "seconds": 1.6,
+ "peak_dbfs": -6.0,
+ "rms_dbfs": -18.35,
+ "params": {
+  "motor_hz": 300,
+  "tau_s": 0.35
+ },
+ "checks": {
+  "seconds": 1.6,
+  "rate": 48000,
+  "peak_dbfs": -6.0,
+  "rms_dbfs": -18.35,
+  "crest_db": 12.4,
+  "centroid_hz": 196,
+  "rolloff85_hz": 282,
+  "dc": 0.0,
+  "clipped": 0
+ },
+ "sha256": "aafe88a3dbb034bca9fad1922286811be29e1879ba04db78e98ac267bcf07e19",
+ "license": "Procedural, made by the project (own work, no recordings, no generation service); CC BY 4.0."
+}

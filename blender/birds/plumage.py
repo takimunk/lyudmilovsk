@@ -309,6 +309,11 @@ class Atlas:
                     self.cells = cells
                     self.gutter = G
                     return
+            if getattr(self, "max_size", None) and self.size * 2 > self.max_size:
+                # capped (a hero body with a scan): every cell a little smaller instead of a bigger atlas
+                self.requests = [(r[0], r[1], r[2], max(16, int(r[3] * 0.9)), max(16, int(r[4] * 0.9)), r[5], r[6]) for r in self.requests]
+                reqs = sorted(self.requests, key=lambda r: -r[4])
+                continue
             self.size *= 2
 
     def uv(self, key, s, t, flip=False):

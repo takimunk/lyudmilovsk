@@ -1272,7 +1272,7 @@ static FAutoConsoleCommandWithWorldAndArgs GFriendsBefriend(TEXT("lyud.Pets.Befr
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&FriendsBefriend));
 static FAutoConsoleCommandWithWorldAndArgs GFriendsName(TEXT("lyud.Pets.Name"), TEXT("lyud.Pets.Name <id> [name]: names a friend (without a name: opens the box to type it)."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&FriendsName));
-static FAutoConsoleCommandWithWorldAndArgs GFriendsReport(TEXT("lyud.Pets.Report"), TEXT("lyud.Pets.Report: the friends' book and what the hand is doing."),
+static FAutoConsoleCommandWithWorldAndArgs GFriendsReport(TEXT("lyud.Pets.Friends"), TEXT("lyud.Pets.Friends: the friends' book and what the hand is doing."),
 	FConsoleCommandWithWorldAndArgsDelegate::CreateStatic(&FriendsReport));
 
 static LyudDev::FAutoAction GDevFriendMaru(TEXT("pets.maru"), TEXT("pets"), TEXT("dev.action.pets.maru"), [](UWorld* W)

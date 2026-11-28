@@ -904,6 +904,16 @@ def _dress(B):
         for k in (1, 3):
             tx, ty = tables[k]
             kit.cup(B, tx + 0.15, ty - 0.25, 0.75, 0.0)
+    # traces of a visit (docs/city_dress.md "Traces of a visit"): a reader's book left open and their glasses on the second
+    # table for two hours after they went; the book club's glasses of tea round the lounge table till the cleaner comes
+    with B.dress("reader_left", visit="read_library", keep=2.0):
+        tx, ty = tables[1]
+        dk.book_face_down(B, tx + 0.6, ty + 0.15, 0.75, 75.0, seed=21)
+        dk.spectacles(B, tx + 0.85, ty - 0.12, 0.75, 200.0)
+    with B.dress("bookclub_after", visit="book_club", at="-CLUB", keep=3.0):
+        dk.tea_in_holder(B, 4.22, 9.26, 0.42, 0.0, lemon=False)
+        dk.tea_in_holder(B, 4.4, 8.92, 0.42, 120.0)
+        dk.spectacles(B, 4.12, 8.9, 0.42, 10.0)
     with B.dress("periodicals_morning", hours=(9, 13)):
         kit.cup(B, 8.6, 5.3, 0.75, 0.0)
         dk.book_face_down(B, 10.2, 5.3, 0.75, 170.0, seed=8)

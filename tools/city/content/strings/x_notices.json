@@ -70,6 +70,21 @@
   "en": "Lost: a blue bucket and spade. The owner is four, very upset, and building castles with her hands.",
   "ja": "青いバケツとスコップをなくしました。持ち主は四歳。とても心配して、手で砂の城を作っています。"
  },
+ "city.note.lost.nh_ony_done": {
+  "ru": "В пельменной на набережной после Старого Нового года остались: варежка, два шарфа и пуговица из вареника, которую никто не признал своей. Восковые фигурки сохнут на подоконнике, забрать до конца недели.",
+  "en": "Left at the dumpling bar on the promenade after the Old New Year: a mitten, two scarves and a button out of a dumpling that nobody will own to. The wax figures are drying on the windowsill; collect by the end of the week.",
+  "ja": "古い新年のあと、遊歩道のペリメニ食堂に忘れ物：手袋片方、マフラー二本、そして誰も自分のだと言わないヴァレーニキのボタン。ろうの形は窓台で乾かしています。週末までにお引き取りを。"
+ },
+ "city.note.lost.nh_neptune_done": {
+  "ru": "После Дня Нептуна на первой вышке ждут хозяев: шесть полотенец, одна сандалия и борода из мочалки. Автомобильную камеру с надписью «чемпион» просят вернуть в прокат, она с грузовика директора клуба.",
+  "en": "Waiting for their owners at the first tower after Neptune Day: six towels, one sandal and a loofah beard. The inner tube chalked “champion” is asked back at the rental: it is off the club director's lorry.",
+  "ja": "ネプチューンの日のあと、第一監視塔で持ち主を待っています：タオル六枚、サンダル片方、へちまのひげ。「優勝」と書かれたタイヤチューブは貸し出し屋へお返しください。クラブ所長のトラックのものです。"
+ },
+ "city.note.lost.pev_stand": {
+  "ru": "После воскресного концерта у эстрады остался пюпитр, складной, с нотами вальса «Осенний сон». Ноты нужны оркестру к следующему воскресенью. Вернуть капельмейстеру или сторожу «Сводов».",
+  "en": "Left by the stage after Sunday's concert: a folding music stand with the music for the waltz \"Autumn Dream\". The band needs the music by next Sunday. Return to the bandmaster or the Vaults' watchman.",
+  "ja": "日曜の演奏会のあと、ステージに折りたたみ譜面台の忘れもの。ワルツ「秋の夢」の楽譜つき。楽団は次の日曜までに楽譜が必要です。楽長か「ヴォールト」の夜警へ。"
+ },
  "city.note.lost.sail_cup": {
   "ru": "Кубок Людмиловска по парусному спорту — в выходные после 20 июня, гонки у пирса с 11 до 16. Нашедшего синий бинокль с надписью «Луч» просят вернуть боцману.",
   "en": "The Lyudmilovsk Cup in sailing: the weekend after 20 June, racing off the pier from 11 to 4. Whoever found blue binoculars marked “Luch”, please return them to the bosun.",
@@ -101,9 +116,9 @@
   "ja": "凧クラブ：土曜に浜で集合。紙と竹ひごと風を持参のこと。風は約束済み。"
  },
  "city.note.club.dance": {
-  "ru": "Танцы на набережной по пятницам в девять. Оркестр живой, пол деревянный, туфли — какие есть.",
-  "en": "Dancing on the promenade on Fridays at nine. Live band, wooden floor, whatever shoes you've got.",
-  "ja": "金曜21時、遊歩道でダンス。生演奏、木の床、靴はお手持ちのもので。"
+  "ru": "Танцы на площади Солнца, у эстрады: с 25 мая по 5 сентября, по пятницам и субботам с семи. В десять белый танец, в одиннадцать дружинник выключает музыку. В дождь отменяются.",
+  "en": "Dancing on Sun Square, by the stage: 25 May to 5 September, Fridays and Saturdays from seven. The ladies' choice at ten; at eleven the volunteer switches the music off. Cancelled if it rains.",
+  "ja": "太陽広場のステージ前でダンス。五月二十五日から九月五日まで、金曜と土曜の七時から。十時に白いダンス、十一時に自警団員が音楽を止めます。雨天中止。"
  },
  "city.note.club.astro": {
   "ru": "Астрономический кружок: наблюдаем Персеиды. Берите плед и термос, телескопы наши.",
@@ -119,6 +134,16 @@
   "ru": "Драмкружок ставит новогоднюю сказку. Нужен Дед Мороз с собственной бородой.",
   "en": "The drama circle is staging a New Year fairy tale. Wanted: a Grandfather Frost with his own beard.",
   "ja": "演劇サークルが新年のおとぎ話を上演します。自前のひげのあるジェド・マロースを募集。"
+ },
+ "city.note.club.dnc_vaults": {
+  "ru": "Танцы в «Сводах»: по пятницам и субботам с семи до одиннадцати. Пластинки и живая музыка, в десять белый танец. Сторож просит не опаздывать к закрытию: сам он не опаздывает.",
+  "en": "Dances at the Vaults: Fridays and Saturdays, seven to eleven. Records and a live band, the ladies' choice at ten. The watchman asks you not to be late for closing: he never is.",
+  "ja": "「ヴォールト」のダンス：毎週金曜と土曜、七時から十一時。レコードと生演奏、十時は白いダンス。夜警からのお願い：閉館に遅れないこと。本人は一度も遅れたことがありません。"
+ },
+ "city.note.club.dnc_winter": {
+  "ru": "Зимние танцы в «Сводах»: гардероб работает, валенки сдаём, туфли приносим с собой. Пятница и суббота, с семи.",
+  "en": "Winter dances at the Vaults: the cloakroom is open, felt boots are handed in, bring your shoes with you. Friday and Saturday, from seven.",
+  "ja": "「ヴォールト」の冬のダンス：クロークあり、フェルトの長靴は預けて、靴は持参で。金曜と土曜、七時から。"
  },
  "city.note.club.start_welcome": {
   "ru": "Клуб приветствует новых жильцов побережья! Заходите на чай по вечерам: самовар горячий, разговоры тоже.",
@@ -159,6 +184,21 @@
   "ru": "Итоги фотоконкурса подведены. Три лучших снимка висят в фотолаборатории «Шестерни», на стене у лески. С первого числа — новая тема.",
   "en": "The photo contest has been judged. The three best prints hang in the Cog's photo lab, on the wall by the drying line. A new theme from the first of the month.",
   "ja": "写真コンクールの結果が出ました。上位三点は「歯車」の写真室、干し紐のそばの壁に。一日からは新しいテーマです。"
+ },
+ "city.note.club.nh_ony_soon": {
+  "ru": "13 января, Старый Новый год. С половины пятого дети ходят по дворам с бумажным солнцем. Солнце клеят в клубе в четверг, клей и фольга есть, нужны руки. В полночь встречаемся у ёлки, она стоит последнюю ночь.",
+  "en": "13 January, the Old New Year. From half past four the children go round the yards with a paper sun. The sun is being glued at the club on Thursday; there is glue and foil, hands are wanted. At midnight we meet at the tree, on its last night.",
+  "ja": "一月十三日は古い新年。四時半から子どもたちが紙の太陽を持って中庭をまわります。太陽は木曜にクラブで作ります。のりと銀紙はあり、人手を募集。真夜中はツリーの下で。ツリーは今夜かぎりです。"
+ },
+ "city.note.club.pev_band": {
+  "ru": "Духовой оркестр Дома культуры: с июня по август, по воскресеньям с трёх до пяти, на эстраде площади Солнца. «Амурские волны», «На сопках Маньчжурии», «Прощание славянки». Вход свободный, квас у фонтана.",
+  "en": "The House of Culture brass band: June to August, Sundays from three to five, on the stage on Sun Square. \"Waves of the Amur\", \"On the Hills of Manchuria\", \"Farewell of Slavianka\". Admission free, kvass by the fountain.",
+  "ja": "文化会館吹奏楽団：六月から八月の日曜、三時から五時、太陽広場のステージにて。「アムールの波」「満州の丘に立ちて」「スラヴ娘の別れ」。入場無料、噴水のそばにクワスあり。"
+ },
+ "city.note.club.pev_photo": {
+  "ru": "Фотоателье на набережной: вечерние портреты у парапета, на закате, с семи до девяти. Пары, семьи, с собакой тоже. Карточки через три дня.",
+  "en": "The photo studio on the promenade: evening portraits by the parapet at sunset, seven to nine. Couples, families, with the dog as well. Prints in three days.",
+  "ja": "遊歩道の写真館：夕焼けの欄干で夕方の肖像写真、七時から九時。カップル、家族、犬連れもどうぞ。写真は三日後。"
  },
  "city.note.club.sail_enrol": {
   "ru": "Взрослая группа яхт-школы «Луч» приглашает новичков: вторник и четверг вечером. Первое занятие — на берегу, узлы и устройство лодки.",
@@ -215,6 +255,11 @@
   "en": "School check-ups from the first of September, class by class. Bring your card and a good mood; we'll measure your height free.",
   "ja": "学校の健康診断：九月一日からクラスごとに。カードとご機嫌を持参で。身長は無料で測ります。"
  },
+ "city.note.health.nh_neptune_soon": {
+  "ru": "В последнее воскресенье июля День Нептуна. Спасательная станция предупреждает: обливать будут всех. Заплыв на камерах только до буя, уху варим у первой вышки, рыбу несите с утра. Часы и документы оставьте дома.",
+  "en": "Neptune Day is on the last Sunday of July. The lifeguard station gives warning: everyone will get a bucket. The inner-tube race goes to the buoy and no farther; the soup is cooked at the first tower, bring fish in the morning. Leave watches and papers at home.",
+  "ja": "七月の最終日曜はネプチューンの日。救助所より予告：全員に水がかかります。チューブ競争はブイまで。ウハーは第一監視塔で煮ます。魚は朝のうちに。時計と書類は家に置いてきてください。"
+ },
  "city.notices.school.title": {
   "ru": "Стенгазета",
   "en": "Wall newspaper",
@@ -269,6 +314,16 @@
   "ru": "День лыжника: если выпадет снег — гонка вокруг пруда. Если не выпадет — чай и надежда.",
   "en": "Ski day: if the snow comes, a race round the pond. If not, tea and hope.",
   "ja": "スキーの日：雪が降れば池のまわりでレース。降らなければ、お茶と希望。"
+ },
+ "city.note.school.nh_science_soon": {
+  "ru": "В первую субботу декабря День науки. Кружку юных техников нужны на ярмарку: старые радиолампы, велосипедный звонок и шестой «Б» в полном составе за прилавок. Выручка от пирожных идёт на телескоп.",
+  "en": "Science Day is on the first Saturday of December. For the fair the young technicians' club needs: old radio valves, a bicycle bell and the whole of class 6B behind the counter. The takings from the cakes go towards a telescope.",
+  "ja": "十二月の第一土曜は科学の日。少年技術者クラブが市のために募集：古い真空管、自転車のベル、そして売り子として六年B組全員。ケーキの売り上げは望遠鏡になります。"
+ },
+ "city.note.school.nh_science_done": {
+  "ru": "Итоги Дня науки. Викторину выиграл двор дома на Террасах: лаборатория уступила одно очко дворнику. На телескоп собрано сорок два рубля. Лейденская банка цела, пострадал один палец, владелец пальца доволен.",
+  "en": "Science Day, the results. The quiz was won by a yard on the Terraces: the laboratory lost by one point to the caretaker. Forty-two roubles were raised for the telescope. The Leyden jar is whole; one finger suffered, and the finger's owner is pleased.",
+  "ja": "科学の日の結果。クイズはテラスの中庭チームが優勝、研究室は管理人さんに一点差で負けました。望遠鏡の募金は四十二ルーブル。ライデン瓶は無事、指が一本やられましたが、持ち主は満足しています。"
  },
  "city.note.school.sail_enrol": {
   "ru": "Яхт-школа «Луч» набирает ребят 7–17 лет: «Оптимисты», «Кадеты», «Лучи». Запись у боцмана в эллинге, с собой — справка от врача и смелость.",

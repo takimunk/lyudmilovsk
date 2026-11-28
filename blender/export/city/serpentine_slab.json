@@ -22712,6 +22712,32 @@
    ]
   },
   {
+   "id": "bauer_tea",
+   "when": {
+    "visit": [
+     "eat_home",
+     "radio_hour",
+     "read_home",
+     "pastime_home"
+    ],
+    "at": "/1-17",
+    "keep": 2.5
+   },
+   "tris": 223,
+   "bounds": [
+    [
+     17.808,
+     9.75,
+     3.96
+    ],
+    [
+     18.242,
+     9.88,
+     4.1
+    ]
+   ]
+  },
+  {
    "id": "bauer_flowers_fresh",
    "when": {
     "phase": [
@@ -22857,6 +22883,6 @@
   "shell": 31490,
   "detail": 61901,
   "windows": 3324,
-  "dress": 3858
+  "dress": 4081
  }
 }

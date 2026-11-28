@@ -1,0 +1,10 @@
+{
+ "id": "icon_kvass_can",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small dented aluminium milk can with a wire handle and a tight lid, beads of cold condensation on its side, a little dark amber kvass foam at the rim.",
+ "source": "design/icons_1127/sheet_4.png (sidecar design/icons_1127/sheet_4.json), cell 5 (row 2, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "7293c44cf320a39004db1f371e2547a115ee9284cd60d0c8bfc264a872df4cd1",
+ "strings": {}
+}

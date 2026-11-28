@@ -1,0 +1,10 @@
+{
+ "id": "icon_rod_spinning",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_6.json (cell 1 (row 1, left)).",
+ "source": "design/fishing/icons_grid_6.png (sidecar design/fishing/icons_grid_6.json), cell 1 (row 1, left), cut into 3x2 equal cells, resized to 512x512",
+ "sha256": "4b315cd6dc6741bcde1a5850da695f199cf9f6dbaa1814090ca0d9cfe3e232c6",
+ "strings": {}
+}

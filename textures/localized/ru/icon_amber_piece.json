@@ -1,0 +1,10 @@
+{
+ "id": "icon_amber_piece",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small rough piece of raw Baltic amber, cloudy honey-yellow with a matte weathered crust, a strand of dark seaweed beside it.",
+ "source": "design/icons_1127/sheet_4.png (sidecar design/icons_1127/sheet_4.json), cell 2 (row 1, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "2ea7dad2d45b956572d6c042b526a09be32193f6d36289bb7a8c4d22e506fd10",
+ "strings": {}
+}

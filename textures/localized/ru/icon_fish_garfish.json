@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_garfish",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_2.json (cell 3 (row 1, right)).",
+ "source": "design/fishing/icons_grid_2.png (sidecar design/fishing/icons_grid_2.json), cell 3 (row 1, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "4f0226f31a856d4f0706096b374353f8ab1834681c7dcba58436e11f32506628",
+ "strings": {}
+}

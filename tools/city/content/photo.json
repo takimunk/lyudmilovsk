@@ -41,7 +41,8 @@
    "fest_perseids", "fest_harvest_fair", "fest_lunar_new_year", "fest_holi", "fest_nowruz", "fest_children_day",
    "fest_tanabata", "fest_toro_nagashi", "fest_mid_autumn", "fest_halloween", "fest_dia_de_muertos", "fest_diwali",
    "fest_loy_krathong", "fest_christmas", "fest_sun_day", "fest_city_day", "fest_kite_day", "fest_cat_day",
-   "fest_book_day", "fest_amber_morning", "fish", "maru"]}
+   "fest_book_day", "fest_amber_morning", "fish", "maru",
+   "fest_science_day", "fest_old_new_year", "fest_neptune_day"]}
  },
  "quests": [
   {"id": "city_portrait", "kind": "side", "start_on": {"event": "ask", "target": "photo.city"}, "stages": [

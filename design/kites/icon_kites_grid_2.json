@@ -1,0 +1,23 @@
+{
+ "service": "higgsfield MCP",
+ "tool": "generate_image",
+ "model": "gpt_image_2_5",
+ "arguments": {
+  "aspect_ratio": "1:1",
+  "resolution": "2k",
+  "quality": "medium",
+  "use_unlim": false,
+  "prompt": "Four inventory icons for a moody adventure game, arranged as a 2 by 2 grid of equal square cells on one picture: in every cell one object centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, no text, letters, numbers or logos anywhere. Top left cell: a 1970s delta kite, a wide triangular wing of light orange ripstop cloth with one pale yellow stripe, a thin wooden spine and two leading-edge spars, a small keel under it, no tail, a small wooden line reel with white string lying beside it. Top right cell: a two-line stunt kite, a swept-back delta wing of teal and white ripstop cloth on thin dark spars with a small T-shaped centre fitting, two thin lines neatly coiled, two short padded wrist-strap handles lying beside it, no reel. Bottom row, both cells: a dragon kite laid out in a loose coil, a round hand-painted paper-and-bamboo dragon head in crimson and gold with big painted eyes, and a very long narrow crimson cloth tail with a gold edge curled in loops behind it, a small wooden line reel with white string beside it; the two cells show slightly different arrangements of the tail."
+ },
+ "job_id": "2d5b828e-54d2-4e4d-891b-4e50cb60684b",
+ "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261128_031519_2d5b828e-54d2-4e4d-891b-4e50cb60684b.png",
+ "date": "2026-11-28",
+ "why_2x2": "three new items (kite_delta, kite_stunt, kite_dragon) in one 2x2 grid: the dragon, the hardest to fit in a square, gets both bottom cells and the better one becomes its icon",
+ "todo": "GENERATED 2026-11-28 (the cloud cannot reach the CDN). On the Mac: download output_url as design/kites/icon_kites_grid_2.png, fill in sha256 here, cut the cells (tools/characters/cut_grid.py) to textures/localized/ru/icon_kite_delta|kite_stunt|kite_dragon.jpg with a sidecar each (as icon_kite_box.json), unreal/scripts/import_hall_assets.py, then the diary sketches (python3 tools/ui_diary_icons.py kite_delta kite_stunt kite_dragon, unreal/scripts/import_diary_assets.py).",
+ "sha256": null,
+ "cells": {
+  "kite_delta": "1 (top left)",
+  "kite_stunt": "2 (top right)",
+  "kite_dragon": "3 or 4 (bottom row): choose the better"
+ }
+}

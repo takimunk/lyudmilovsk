@@ -40,6 +40,7 @@
 #include "UI/LyudQuests.h"
 #include "Weather/LyudWeather.h"
 #include "Winter/LyudWinter.h"
+#include "World/LyudPrefetch.h"
 
 #include <type_traits>
 
@@ -345,6 +346,32 @@ void ULyudFestivalSubsystem::OnWorldBeginPlay(UWorld& InWorld)
 	Timer = 1.5f;       // after the people's life has started
 	// the city plan is about 1 MB of JSON: parsed now, behind the loading screen, not when the first festival's hour comes
 	PlanSpots(TEXT("City/city_plan.json"));
+	// the shows' sounds, the tunes and the decorations' materials start loading in the background now: each was a
+	// LoadObject on the spot when a festival's hour came (the music's start, the first firework, the bonfire), a hitch
+	// in the middle of the evening. ULyudPrefetch holds them until the world ends, so those LoadObjects only find them.
+	{
+		const TCHAR* const Prefetch[] = {
+			TEXT("/Game/Audio/Festival/S_firework_launch_01.S_firework_launch_01"),
+			TEXT("/Game/Audio/Festival/S_firework_boom_01.S_firework_boom_01"),
+			TEXT("/Game/Audio/Festival/S_firework_boom_02.S_firework_boom_02"),
+			TEXT("/Game/Audio/Festival/S_firework_boom_03.S_firework_boom_03"),
+			TEXT("/Game/Audio/Festival/S_cheer_01.S_cheer_01"),
+			TEXT("/Game/Audio/Festival/S_bonfire_loop_01.S_bonfire_loop_01"),
+			TEXT("/Game/Audio/Festival/S_firecrackers_01.S_firecrackers_01"),
+			TEXT("/Game/Audio/Festival/S_firecrackers_02.S_firecrackers_02"),
+			TEXT("/Game/Audio/Festival/S_drums_loop_01.S_drums_loop_01"),
+			TEXT("/Game/Audio/Festival/S_bells_01.S_bells_01"),
+			TEXT("/Game/Audio/Festival/S_crowd_loop_01.S_crowd_loop_01"),
+			TEXT("/Game/Audio/Music/MU_festival_1.MU_festival_1"),
+			TEXT("/Game/Audio/Music/MU_festival_2.MU_festival_2"),
+			PaintPath,
+			GlowPath,
+		};
+		for (const TCHAR* const Asset : Prefetch)
+		{
+			ULyudPrefetch::Ready(&InWorld, Asset);
+		}
+	}
 	UE_LOG(LogTemp, Display, TEXT("Festivals: %d in the calendar"), (int32)Calendar->Festivals.size());
 }
 

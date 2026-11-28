@@ -1,0 +1,10 @@
+{
+ "id": "icon_cap",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "a grey herringbone tweed flat cap with a short stiff peak, seen from the front at three quarters",
+ "source": "design/icons_1127/sheet_2.png (sidecar design/icons_1127/sheet_2.json), cell 1 (row 1, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "7903fdde197f500ac567cdf1f78127e51f43b26a606c64bc4d085c9828fed51b",
+ "strings": {}
+}

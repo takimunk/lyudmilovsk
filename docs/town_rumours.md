@@ -16,7 +16,7 @@ After changing `rumours.py`, run it, then `python3 tools/barks/build_barks.py` a
 
 ## Kinds and rules
 
-There are 19 kinds: cup, garden, beat, cure, job, tamed, radio, fine, crows, catch, kite, tune, sing, film, and the yacht school's sail, capsize, regatta, tow, skipper (docs/yacht_school.md "Town"). Each kind has these fields:
+There are 20 kinds: cup, garden, beat, cure, job, tamed, radio, fine, crows, catch, kite, tune, sing, film, dance (the dances at the Vaults, docs/dances.md), and the yacht school's sail, capsize, regatta, tow, skipper (docs/yacht_school.md "Town"). Each kind has these fields:
 
 - `hops`: how far it travels.
 - `life`: days it is remembered.
@@ -30,6 +30,7 @@ Rules map `ULyudQuests::Notify(Event, Target)` to a kind and a detail key with `
 
 - `cup_won *` becomes cup with `city.coll.cups.{t}`.
 - `beat npc.*` becomes beat with the regular's name.
+- `beat city.dnc.p.*` becomes dance with the partner's name (the dance partners are regulars named by keys of their own).
 - `stamp work_book/*` becomes job.
 
 These events were added for it:

@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_lumpsucker",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_2.json (cell 8 (row 3, middle)).",
+ "source": "design/fishing/icons_grid_2.png (sidecar design/fishing/icons_grid_2.json), cell 8 (row 3, middle), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "a83bec4a0e219076ee96c7863ddbca29867452729446ce1ab11b30c45085d766",
+ "strings": {}
+}

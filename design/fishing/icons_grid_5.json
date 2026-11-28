@@ -17,5 +17,6 @@
  "ship": [
   "diner_fish"
  ],
- "note": "The fried catch the diner serves (docs/fishing.md); one cell, cut by tools/fishing_icons.py into textures/localized/ru/icon_diner_fish.jpg (no words: one language)."
+ "note": "The fried catch the diner serves (docs/fishing.md); one cell, cut by tools/fishing_icons.py into textures/localized/ru/icon_diner_fish.jpg (no words: one language).",
+ "sha256": "9cb8bc488cd05c6b1128451146fa1472237fa172555b650b2ea3d407f6e29c56"
 }

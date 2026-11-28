@@ -676,6 +676,17 @@ def _dress(B):
         kit.cup(B, -8.2, 5.7, 0.75, 0.0)
         kit.cup(B, -15.2, 6.6, 0.72, 0.0)
         kit.cup(B, -12.8, 6.6, 0.72, 0.0)
+    # a trace of a visit (docs/city_dress.md "Traces of a visit"): after a show the stubs and a sweet wrapper on the floor in
+    # front of a few seats and on a seat, till the morning's cleaner (rows of _hall_seats: y0 14.55, going 1.3, rise 0.16)
+    with B.dress("cinema_stubs", visit=("cinema_evening", "cinema_day"), at="-CINEMA", keep=12.0):
+        for n, (row, cx, k, on_seat) in enumerate(((1, -5.8, 2, False), (2, 0.0, 4, True), (4, 5.8, 1, False),
+                                                    (5, -11.6, 5, False), (7, 0.0, 0, False), (8, 11.6, 3, True))):
+            yc = 14.55 + 1.3 * row + 0.65
+            sx = cx - 1.925 + k * 0.55 + 0.275
+            if on_seat:
+                dk.ticket_stubs(B, sx, yc - 0.08, 0.16 * (row + 1) + 0.462, 15.0 * n, n=2, wrapper=False, seed=n)
+            else:
+                dk.ticket_stubs(B, sx, yc - 0.62, 0.16 * (row + 1), 25.0 * n, n=1 + n % 3, seed=n)
     with B.dress("lounge_book", hours=(10, 22), chance=0.6):
         dk.book_face_down(B, 15.55, 9.3, 0.42, 15.0, seed=10)
     # ---- the cleaner's morning before the doors open (7..10): the foyer between the buffet tables mopped (docs/city_night.md)

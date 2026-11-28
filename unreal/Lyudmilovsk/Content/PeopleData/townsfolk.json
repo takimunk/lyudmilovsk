@@ -189,7 +189,8 @@
     "night_walk": -1.0,
     "fish_shore": 0.74,
     "stroll": 0.51,
-    "fair_visit": 0.77
+    "fair_visit": 0.77,
+    "granny_bench": 0.9
    },
    "body": "Town/R_papadopoulos_marketa"
   },
@@ -447,7 +448,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.28,
     "swim_look": 0.29,
-    "read_library": 0.31
+    "read_library": 0.31,
+    "yard_dominoes": 0.92
    },
    "body": "Town/R_amada_tigran"
   },
@@ -575,6 +577,9 @@
     "watch_sunrise": 1.1,
     "sea_air": 0.45,
     "eat_out": 0.25,
+    "granny_bench": 0.9,
+    "yard_dominoes": 0.8,
+    "buy_kvass": 0.4,
     "mend_nets": 2.9,
     "boats_evening": 2.7
    },
@@ -593,6 +598,21 @@
    "bed": 22.5,
    "spread": 0.66,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U27",
+     "hours": [
+      8.75,
+      9.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U27",
@@ -904,6 +924,7 @@
     "fish_shore": 1.19,
     "shop_town": 0.75,
     "stroll": 0.22,
+    "granny_bench": 1.2,
     "tend_allotment": 2.0,
     "water_allotment": 2.7
    },
@@ -1174,10 +1195,12 @@
    "walk_speed": 1.29,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "play_club": 0.46,
     "play_town_club": 0.33,
     "swim_look": 0.67,
-    "eat_out": 0.51
+    "eat_out": 0.51,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_dubois_lan"
   },
@@ -1212,7 +1235,8 @@
    "likes": {
     "watch_sunrise": 0.64,
     "sea_air": 0.64,
-    "fish_shore": 0.41
+    "fish_shore": 0.41,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_bakker_ursula"
   },
@@ -1228,7 +1252,6 @@
    "wake": 4.58,
    "bed": 21.16,
    "spread": 0.37,
-   "duties": [],
    "friends": [
     "t_eze_wei",
     "t_ozols_eitan"
@@ -1250,9 +1273,26 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.42,
     "shop_town": 0.52,
-    "fish_shore": 0.46
+    "fish_shore": 0.46,
+    "granny_bench": 1.15,
+    "yard_dominoes": 0.92,
+    "buy_icecream": 0.4
    },
-   "body": "Town/R_demir_tunde"
+   "body": "Town/R_demir_tunde",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_girma_zsofia",
@@ -1301,7 +1341,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "swim_look": 0.7,
-    "fair_visit": 0.26
+    "fair_visit": 0.26,
+    "granny_bench": 1.0
    },
    "body": "Town/R_girma_zsofia"
   },
@@ -1352,7 +1393,8 @@
    "occupation": "researcher",
    "likes": {
     "fair_visit": 0.48,
-    "fish_shore": 0.3
+    "fish_shore": 0.3,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_romano_minh"
   },
@@ -1467,6 +1509,7 @@
    "walk_speed": 1.31,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "sea_air": 0.76,
     "eat_out": 0.64
    },
@@ -1567,7 +1610,8 @@
    "likes": {
     "night_walk": 0.27,
     "sea_air": 0.73,
-    "eat_out": 0.62
+    "eat_out": 0.62,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_nielsen_lilit"
   },
@@ -1717,7 +1761,8 @@
    "likes": {
     "watch_sunrise": 0.45,
     "sea_air": 0.3,
-    "shop_town": 0.7
+    "shop_town": 0.7,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_okonkwo_joao"
   },
@@ -1770,6 +1815,21 @@
    "bed": 22.76,
    "spread": 0.49,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U06",
+     "hours": [
+      9.75,
+      10.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U06",
@@ -2120,7 +2180,8 @@
     "play_club": 0.73,
     "play_town_club": 0.32,
     "eat_out": 0.29,
-    "sea_air": 0.36
+    "sea_air": 0.36,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_mansour_beatriz"
   },
@@ -2270,7 +2331,8 @@
    "occupation": "bartender",
    "likes": {
     "stroll": 0.42,
-    "fair_visit": 0.57
+    "fair_visit": 0.57,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_kowalski_milagros"
   },
@@ -2901,7 +2963,8 @@
    "likes": {
     "watch_sunrise": 1.07,
     "read_library": 0.59,
-    "fish_shore": 0.43
+    "fish_shore": 0.43,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_ostrovsky_elif"
   },
@@ -3089,7 +3152,8 @@
     "play_club": 0.4,
     "play_town_club": 0.87,
     "eat_out": 0.76,
-    "shop_town": 0.39
+    "shop_town": 0.39,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_oliveira_omar"
   },
@@ -3159,6 +3223,20 @@
    "bed": 22.18,
    "spread": 0.86,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U14",
+     "hours": [
+      6.75,
+      7.0
+     ],
+     "days": [
+      0,
+      1,
+      4,
+      5
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U14",
@@ -3431,6 +3509,21 @@
    "spread": 0.93,
    "duties": [
     {
+     "activity": "open_shutters",
+     "place": "S-FRONT-P-KIOSK6",
+     "hours": [
+      7.75,
+      8.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
      "activity": "work_town",
      "place": "P-KIOSK6",
      "role": "seller",
@@ -3545,7 +3638,8 @@
    "likes": {
     "watch_sunrise": 1.26,
     "coffee": 0.63,
-    "shop_town": 0.8
+    "shop_town": 0.8,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_oliveira_yael"
   },
@@ -3824,7 +3918,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.81,
     "stroll": 0.77,
-    "fair_visit": 0.61
+    "fair_visit": 0.61,
+    "granny_bench": 1.1
    },
    "body": "Town/R_balogun_shirin"
   },
@@ -4013,7 +4108,8 @@
    "likes": {
     "watch_sunrise": 0.98,
     "eat_out": 0.67,
-    "coffee": 0.72
+    "coffee": 0.72,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_beridze_zuzana"
   },
@@ -4147,7 +4243,8 @@
    "occupation": "pupil",
    "likes": {
     "stroll": 0.25,
-    "eat_out": 0.23
+    "eat_out": 0.23,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_savitsky_eoin"
   },
@@ -4270,7 +4367,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.9,
     "swim_look": 0.42,
-    "stroll": 0.69
+    "stroll": 0.69,
+    "granny_bench": 1.05
    },
    "body": "Town/R_horvath_carmen"
   },
@@ -4360,7 +4458,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.94,
     "coffee": 0.4,
-    "fish_shore": 0.26
+    "fish_shore": 0.26,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_murphy_tesfaye"
   },
@@ -4399,7 +4498,9 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.12,
     "read_library": 0.58,
-    "shop_town": 0.57
+    "shop_town": 0.57,
+    "granny_bench": 1.0,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_murphy_noriko"
   },
@@ -4436,7 +4537,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.5,
     "swim_look": 0.63,
-    "shop_town": 0.71
+    "shop_town": 0.71,
+    "granny_bench": 0.95
    },
    "body": "Town/R_lund_parisa"
   },
@@ -4834,7 +4936,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "read_library": 0.59,
-    "shop_town": 0.62
+    "shop_town": 0.62,
+    "granny_bench": 1.15
    },
    "body": "Town/R_okonkwo_madison"
   },
@@ -4922,7 +5025,8 @@
     "play_club": 0.56,
     "play_town_club": 0.76,
     "fish_shore": 0.56,
-    "swim_look": 0.71
+    "swim_look": 0.71,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_zhang_nour"
   },
@@ -5253,7 +5357,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.5,
     "fair_visit": 0.39,
-    "swim_look": 0.66
+    "swim_look": 0.66,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_benitez_rafael"
   },
@@ -5290,7 +5395,9 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.12,
     "eat_out": 0.46,
-    "fair_visit": 0.35
+    "fair_visit": 0.35,
+    "granny_bench": 0.95,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_papadopoulos_zinaida"
   },
@@ -5363,7 +5470,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fish_shore": 0.37,
-    "eat_out": 0.68
+    "eat_out": 0.68,
+    "yard_dominoes": 0.8
    },
    "body": "Town/R_choi_haoran"
   },
@@ -5398,7 +5506,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.18,
     "sea_air": 0.27,
-    "stroll": 0.2
+    "stroll": 0.2,
+    "granny_bench": 1.1
    },
    "body": "Town/R_macleod_aino"
   },
@@ -5739,7 +5848,6 @@
    "wake": 7.67,
    "bed": 22.63,
    "spread": 0.72,
-   "duties": [],
    "friends": [
     "t_horvath_jihoon"
    ],
@@ -5757,7 +5865,21 @@
     "read_library": 0.73,
     "eat_out": 0.78
    },
-   "body": "Town/R_balogun_padraig"
+   "body": "Town/R_balogun_padraig",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_kovalenko_kofi",
@@ -5788,7 +5910,8 @@
    "likes": {
     "watch_sunrise": 0.73,
     "read_library": 0.41,
-    "coffee": 0.66
+    "coffee": 0.66,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_kovalenko_kofi"
   },
@@ -5891,6 +6014,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "swim_look": 0.44,
     "eat_out": 0.44
    },
@@ -5979,7 +6103,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fair_visit": 0.69,
-    "eat_out": 0.28
+    "eat_out": 0.28,
+    "yard_dominoes": 0.92
    },
    "body": "Town/R_owusu_caio"
   },
@@ -6017,7 +6142,8 @@
     "fish_shore": 0.9,
     "watch_sunrise": 0.77,
     "fair_visit": 0.78,
-    "stroll": 0.62
+    "stroll": 0.62,
+    "granny_bench": 0.95
    },
    "body": "Town/R_haddad_oksana"
   },
@@ -6054,7 +6180,8 @@
     "play_club": -0.8,
     "night_walk": 0.06,
     "eat_out": 0.42,
-    "fish_shore": 0.22
+    "fish_shore": 0.22,
+    "granny_bench": 1.1
    },
    "body": "Town/R_zielinski_ines"
   },
@@ -6144,7 +6271,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fair_visit": 0.21,
-    "fish_shore": 0.42
+    "fish_shore": 0.42,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_gelashvili_yumiko"
   },
@@ -6518,6 +6646,7 @@
     "night_walk": 1.59,
     "sea_air": 0.67,
     "stroll": 0.81,
+    "yard_dominoes": 1.04,
     "play_piano": 1.75
    },
    "body": "Town/R_tsvetkov_rashid"
@@ -6617,7 +6746,8 @@
    "likes": {
     "watch_sunrise": 0.45,
     "coffee": 0.33,
-    "fish_shore": 0.29
+    "fish_shore": 0.29,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_chen_noriko"
   },
@@ -7267,7 +7397,8 @@
    "likes": {
     "watch_sunrise": 0.74,
     "fair_visit": 0.68,
-    "swim_look": 0.73
+    "swim_look": 0.73,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_ferrari_zsofia"
   },
@@ -7356,7 +7487,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.03,
     "swim_look": 0.78,
-    "shop_town": 0.25
+    "shop_town": 0.25,
+    "granny_bench": 0.95
    },
    "body": "Town/R_henderson_subin"
   },
@@ -7532,6 +7664,7 @@
     "night_walk": -1.0,
     "coffee": 0.41,
     "fair_visit": 0.42,
+    "granny_bench": 1.1,
     "tend_allotment": 2.0,
     "water_allotment": 2.7
    },
@@ -7627,7 +7760,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.82,
     "sea_air": 0.43,
-    "coffee": 0.55
+    "coffee": 0.55,
+    "granny_bench": 1.2
    },
    "body": "Town/R_kjaer_maricel"
   },
@@ -7765,7 +7899,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "shop_town": 0.74,
-    "swim_look": 0.72
+    "swim_look": 0.72,
+    "granny_bench": 1.2
    },
    "body": "Town/R_magi_liis"
   },
@@ -7898,7 +8033,8 @@
    "likes": {
     "watch_sunrise": 1.17,
     "read_library": 0.69,
-    "coffee": 0.55
+    "coffee": 0.55,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_nielsen_kenji"
   },
@@ -8000,7 +8136,8 @@
    "occupation": "pupil",
    "likes": {
     "coffee": 0.21,
-    "sea_air": 0.33
+    "sea_air": 0.33,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_nielsen_maarten"
   },
@@ -8040,7 +8177,8 @@
     "fish_shore": 1.13,
     "watch_sunrise": 0.83,
     "coffee": 0.26,
-    "read_library": 0.46
+    "read_library": 0.46,
+    "granny_bench": 1.1
    },
    "body": "Town/R_virtanen_akosua"
   },
@@ -8127,7 +8265,8 @@
     "night_walk": -1.0,
     "fish_shore": 0.63,
     "eat_out": 0.7,
-    "coffee": 0.48
+    "coffee": 0.48,
+    "yard_dominoes": 0.8
    },
    "body": "Town/R_tkachuk_tigran"
   },
@@ -8166,7 +8305,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "coffee": 0.54,
-    "fish_shore": 0.42
+    "fish_shore": 0.42,
+    "granny_bench": 1.0
    },
    "body": "Town/R_nguyen_milagros"
   },
@@ -8340,6 +8480,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "fair_visit": 0.47,
     "eat_out": 0.53
    },
@@ -8529,7 +8670,8 @@
     "night_walk": -1.0,
     "fish_shore": 1.04,
     "watch_sunrise": 0.93,
-    "swim_look": 0.72
+    "swim_look": 0.72,
+    "granny_bench": 0.9
    },
    "body": "Town/R_berntsen_tyler"
   },
@@ -8567,7 +8709,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.21,
     "sea_air": 0.48,
-    "stroll": 0.26
+    "stroll": 0.26,
+    "granny_bench": 1.0
    },
    "body": "Town/R_berntsen_maarja"
   },
@@ -8738,7 +8881,8 @@
     "fish_shore": 1.04,
     "watch_sunrise": 0.99,
     "coffee": 0.2,
-    "eat_out": 0.77
+    "eat_out": 0.77,
+    "granny_bench": 1.0
    },
    "body": "Town/R_berntsen_shira"
   },
@@ -8755,6 +8899,18 @@
    "bed": 22.15,
    "spread": 0.48,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U14",
+     "hours": [
+      6.75,
+      7.0
+     ],
+     "days": [
+      2,
+      3
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U14",
@@ -8791,6 +8947,7 @@
     "watch_sunrise": 0.96,
     "shop_town": 0.58,
     "swim_look": 0.53,
+    "buy_icecream": 0.4,
     "play_piano": 1.75
    },
    "body": "Town/R_kavanagh_eoin"
@@ -9049,7 +9206,8 @@
    "occupation": "pupil",
    "likes": {
     "swim_look": 0.21,
-    "shop_town": 0.2
+    "shop_town": 0.2,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_fraser_jukka"
   },
@@ -9168,7 +9326,8 @@
     "night_walk": -1.0,
     "shop_town": 0.37,
     "coffee": 0.54,
-    "tend_hives": 3.6
+    "yard_dominoes": 0.92,
+    "tend_hives": 4.2
    },
    "body": "Town/R_virtanen_xiaoming"
   },
@@ -9221,7 +9380,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.69,
     "swim_look": 0.23,
-    "sea_air": 0.37
+    "sea_air": 0.37,
+    "granny_bench": 1.05
    },
    "body": "Town/R_kobayashi_malgorzata"
   },
@@ -9505,7 +9665,8 @@
    "likes": {
     "watch_sunrise": 0.58,
     "fish_shore": 0.71,
-    "shop_town": 0.34
+    "shop_town": 0.34,
+    "yard_dominoes": 1.04
    },
    "body": "Town/R_nowak_lars"
   },
@@ -9600,6 +9761,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "play_club": 0.45,
     "play_town_club": 0.24,
     "eat_out": 0.35,
@@ -9745,7 +9907,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fish_shore": 0.86,
-    "sea_air": 0.68
+    "sea_air": 0.68,
+    "granny_bench": 1.15
    },
    "body": "Town/R_boateng_aigerim"
   },
@@ -9875,7 +10038,8 @@
    "occupation": "pupil",
    "likes": {
     "eat_out": 0.66,
-    "fair_visit": 0.2
+    "fair_visit": 0.2,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_korhonen_alesya"
   },
@@ -10019,7 +10183,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.96,
     "stroll": 0.45,
-    "eat_out": 0.47
+    "eat_out": 0.47,
+    "granny_bench": 1.15
    },
    "body": "Town/R_sorokin_lilit"
   },
@@ -10068,7 +10233,8 @@
    "occupation": "researcher",
    "likes": {
     "swim_look": 0.74,
-    "stroll": 0.2
+    "stroll": 0.2,
+    "yard_dominoes": 0.98
    },
    "body": "Town/R_nowak_tunde"
   },
@@ -10084,7 +10250,42 @@
    "wake": 5.69,
    "bed": 21.21,
    "spread": 0.44,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "hang_laundry",
+     "place": "S-YARD-02-LAUNDRY",
+     "hours": [
+      9.0,
+      9.6
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "take_laundry",
+     "place": "S-YARD-02-LAUNDRY",
+     "hours": [
+      9.6,
+      19.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_ostrovsky_elif",
     "t_park_maarten"
@@ -10104,7 +10305,8 @@
     "eat_out": 0.76,
     "fish_shore": 0.28
    },
-   "body": "Town/R_nowak_agnieszka"
+   "body": "Town/R_nowak_agnieszka",
+   "street_job": "laundry:S-YARD-02"
   },
   {
    "key": "t_seitkali_ales",
@@ -10408,7 +10610,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "eat_out": 0.59,
-    "fish_shore": 0.57
+    "fish_shore": 0.57,
+    "granny_bench": 1.05
    },
    "body": "Town/R_fraser_krzysztof"
   },
@@ -10634,7 +10837,6 @@
    "wake": 5.84,
    "bed": 21.28,
    "spread": 0.31,
-   "duties": [],
    "friends": [
     "t_heikkinen_lan",
     "t_patel_lars"
@@ -10656,9 +10858,24 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.74,
     "fair_visit": 0.68,
-    "read_library": 0.27
+    "read_library": 0.27,
+    "granny_bench": 0.9
    },
-   "body": "Town/R_prochazka_tatiana"
+   "body": "Town/R_prochazka_tatiana",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_mendoza_luana",
@@ -10754,7 +10971,8 @@
    "likes": {
     "watch_sunrise": 0.46,
     "sea_air": 0.45,
-    "shop_town": 0.22
+    "shop_town": 0.22,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_acosta_nils"
   },
@@ -10790,7 +11008,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "stroll": 0.48,
-    "shop_town": 0.21
+    "shop_town": 0.21,
+    "granny_bench": 0.95
    },
    "body": "Town/R_ek_zsofia"
   },
@@ -11170,7 +11389,8 @@
     "watch_sunrise": 0.57,
     "read_library": 0.4,
     "fish_shore": 0.4,
-    "stroll": 0.75
+    "stroll": 0.75,
+    "yard_dominoes": 1.04
    },
    "body": "Town/R_yilmaz_etienne"
   },
@@ -11554,7 +11774,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.85,
     "swim_look": 0.61,
-    "fish_shore": 0.3
+    "fish_shore": 0.3,
+    "yard_dominoes": 0.98
    },
    "body": "Town/R_gelashvili_alejandro"
   },
@@ -11591,7 +11812,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.17,
     "read_library": 0.76,
-    "fair_visit": 0.38
+    "fair_visit": 0.38,
+    "granny_bench": 1.15
    },
    "body": "Town/R_moreau_agnieszka"
   },
@@ -11871,7 +12093,8 @@
     "night_walk": -1.0,
     "fish_shore": 0.6,
     "read_library": 0.25,
-    "swim_look": 0.48
+    "swim_look": 0.48,
+    "granny_bench": 1.15
    },
    "body": "Town/R_lomidze_lan"
   },
@@ -11924,7 +12147,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.88,
     "swim_look": 0.24,
-    "coffee": 0.53
+    "coffee": 0.53,
+    "yard_dominoes": 0.8
    },
    "body": "Town/R_hrytsenko_tigran"
   },
@@ -12219,6 +12443,7 @@
     "fish_shore": 0.82,
     "eat_out": 0.54,
     "read_library": 0.74,
+    "granny_bench": 1.1,
     "play_piano": 1.75
    },
    "body": "Town/R_ozols_zsofia"
@@ -12271,7 +12496,8 @@
    "likes": {
     "watch_sunrise": 0.63,
     "swim_look": 0.52,
-    "sea_air": 0.36
+    "sea_air": 0.36,
+    "yard_dominoes": 0.86
    },
    "body": "Town/R_mamedov_kenji"
   },
@@ -12322,7 +12548,8 @@
    "likes": {
     "night_walk": 1.25,
     "sea_air": 0.6,
-    "read_library": 0.64
+    "read_library": 0.64,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_mamedov_mette"
   },
@@ -12361,7 +12588,8 @@
     "fish_shore": 0.62,
     "watch_sunrise": 0.95,
     "coffee": 0.28,
-    "stroll": 0.49
+    "stroll": 0.49,
+    "granny_bench": 1.2
    },
    "body": "Town/R_sharma_zsofia"
   },
@@ -12437,7 +12665,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.74,
     "swim_look": 0.61,
-    "read_library": 0.48
+    "read_library": 0.48,
+    "granny_bench": 0.9
    },
    "body": "Town/R_bogdanovich_aino"
   },
@@ -12630,7 +12859,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.17,
     "fair_visit": 0.67,
-    "sea_air": 0.26
+    "sea_air": 0.26,
+    "yard_dominoes": 0.86
    },
    "body": "Town/R_tehrani_omar"
   },
@@ -12777,6 +13007,21 @@
    "spread": 0.97,
    "duties": [
     {
+     "activity": "open_shutters",
+     "place": "S-FRONT-P-KIOSK2",
+     "hours": [
+      7.75,
+      8.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
      "activity": "work_town",
      "place": "P-KIOSK2",
      "role": "seller",
@@ -12846,7 +13091,8 @@
     "night_walk": -1.0,
     "fish_shore": 0.93,
     "eat_out": 0.54,
-    "sea_air": 0.46
+    "sea_air": 0.46,
+    "granny_bench": 1.05
    },
    "body": "Town/R_saar_oksana"
   },
@@ -13242,7 +13488,8 @@
    "occupation": "renter",
    "likes": {
     "eat_out": 0.57,
-    "read_library": 0.48
+    "read_library": 0.48,
+    "yard_dominoes": 1.04
    },
    "body": "Town/R_patel_lars"
   },
@@ -13376,7 +13623,8 @@
    "occupation": "pupil",
    "likes": {
     "stroll": 0.52,
-    "shop_town": 0.28
+    "shop_town": 0.28,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_laaksonen_francesca"
   },
@@ -13969,7 +14217,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.45,
     "fish_shore": 0.71,
-    "fair_visit": 0.79
+    "fair_visit": 0.79,
+    "granny_bench": 1.15
    },
    "body": "Town/R_dubois_shirin"
   },
@@ -14308,7 +14557,8 @@
    "likes": {
     "night_walk": 0.37,
     "fair_visit": 0.46,
-    "sea_air": 0.35
+    "sea_air": 0.35,
+    "yard_dominoes": 0.86
    },
    "body": "Town/R_kowalski_ilya"
   },
@@ -14464,7 +14714,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fish_shore": 0.72,
-    "shop_town": 0.35
+    "shop_town": 0.35,
+    "granny_bench": 0.95
    },
    "body": "Town/R_sato_ingrid"
   },
@@ -14745,7 +14996,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fish_shore": 0.6,
-    "shop_town": 0.21
+    "shop_town": 0.21,
+    "granny_bench": 0.9
    },
    "body": "Town/R_owusu_lars"
   },
@@ -14782,7 +15034,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.59,
     "eat_out": 0.36,
-    "fish_shore": 0.24
+    "fish_shore": 0.24,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_hernandez_lilit"
   },
@@ -14934,7 +15187,8 @@
    "likes": {
     "night_walk": 0.36,
     "fish_shore": 0.55,
-    "stroll": 0.37
+    "stroll": 0.37,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_krause_etienne"
   },
@@ -15023,7 +15277,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fair_visit": 0.44,
-    "read_library": 0.65
+    "read_library": 0.65,
+    "granny_bench": 0.9
    },
    "body": "Town/R_kovacs_nino"
   },
@@ -15108,7 +15363,8 @@
    "likes": {
     "eat_out": 0.4,
     "shop_town": 0.66,
-    "stroll": 0.67
+    "stroll": 0.67,
+    "yard_dominoes": 0.92
    },
    "body": "Town/R_ozols_yerlan"
   },
@@ -15176,7 +15432,42 @@
    "wake": 5.01,
    "bed": 21.51,
    "spread": 0.4,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "hang_laundry",
+     "place": "S-YARD-06-LAUNDRY",
+     "hours": [
+      9.0,
+      9.6
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "take_laundry",
+     "place": "S-YARD-06-LAUNDRY",
+     "hours": [
+      9.6,
+      19.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_bautista_tiago",
     "t_lomidze_lan",
@@ -15200,9 +15491,11 @@
     "fish_shore": 0.82,
     "watch_sunrise": 0.63,
     "shop_town": 0.54,
-    "sea_air": 0.75
+    "sea_air": 0.75,
+    "granny_bench": 0.9
    },
-   "body": "Town/R_nowak_chiara"
+   "body": "Town/R_nowak_chiara",
+   "street_job": "laundry:S-YARD-06"
   },
   {
    "key": "t_ferrari_greta",
@@ -15353,7 +15646,8 @@
    "likes": {
     "night_walk": 1.23,
     "swim_look": 0.67,
-    "read_library": 0.64
+    "read_library": 0.64,
+    "yard_dominoes": 0.92
    },
    "body": "Town/R_jansen_sigurd"
   },
@@ -15457,6 +15751,21 @@
    "bed": 20.92,
    "spread": 0.47,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-P-KIOSK5",
+     "hours": [
+      7.75,
+      8.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
     {
      "activity": "work_town",
      "place": "P-KIOSK5",
@@ -15923,6 +16232,7 @@
    "walk_speed": 1.22,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "shop_town": 0.47,
     "swim_look": 0.37
    },
@@ -16174,7 +16484,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.65,
     "eat_out": 0.21,
-    "shop_town": 0.73
+    "shop_town": 0.73,
+    "granny_bench": 1.2
    },
    "body": "Town/R_tulegenov_priya"
   },
@@ -16280,7 +16591,8 @@
     "play_club": -0.8,
     "night_walk": 0.53,
     "fair_visit": 0.76,
-    "coffee": 0.46
+    "coffee": 0.46,
+    "granny_bench": 1.05
    },
    "body": "Town/R_levi_aiko"
   },
@@ -16444,7 +16756,8 @@
    "likes": {
     "watch_sunrise": 0.48,
     "sea_air": 0.28,
-    "fish_shore": 0.51
+    "fish_shore": 0.51,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_mcmartin_yannis"
   },
@@ -16509,7 +16822,6 @@
    "wake": 7.66,
    "bed": 22.48,
    "spread": 0.71,
-   "duties": [],
    "friends": [
     "t_hernandez_lilit",
     "t_lebedev_lilit",
@@ -16532,9 +16844,24 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "shop_town": 0.25,
-    "stroll": 0.72
+    "stroll": 0.72,
+    "yard_dominoes": 0.86
    },
-   "body": "Town/R_haugen_ondrej"
+   "body": "Town/R_haugen_ondrej",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_kask_aram",
@@ -16958,6 +17285,7 @@
    "walk_speed": 1.29,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "shop_town": 0.23,
     "stroll": 0.26
    },
@@ -17194,6 +17522,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "fair_visit": 0.47,
     "eat_out": 0.49
    },
@@ -17231,7 +17560,9 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "stroll": 0.74,
-    "fair_visit": 0.33
+    "fair_visit": 0.33,
+    "granny_bench": 1.15,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_vinogradov_alesya"
   },
@@ -17503,6 +17834,21 @@
    "spread": 1.08,
    "duties": [
     {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U18",
+     "hours": [
+      9.75,
+      10.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
      "activity": "work_town",
      "place": "W1-U18",
      "role": "seller",
@@ -17658,7 +18004,8 @@
     "watch_sunrise": 1.25,
     "sea_air": 0.68,
     "shop_town": 0.25,
-    "stroll": 0.49
+    "stroll": 0.49,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_ramirez_shira"
   },
@@ -17788,7 +18135,9 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.42,
     "sea_air": 0.31,
-    "coffee": 0.65
+    "coffee": 0.65,
+    "granny_bench": 1.0,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_adeyemi_laima"
   },
@@ -17874,7 +18223,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "stroll": 0.57,
-    "fair_visit": 0.51
+    "fair_visit": 0.51,
+    "granny_bench": 0.95
    },
    "body": "Town/R_hargreaves_zuzana"
   },
@@ -17909,7 +18259,8 @@
    "likes": {
     "night_walk": 0.11,
     "stroll": 0.86,
-    "swim_look": 0.62
+    "swim_look": 0.62,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_vinogradov_lars"
   },
@@ -18009,7 +18360,8 @@
     "play_club": 0.34,
     "play_town_club": 0.86,
     "coffee": 0.38,
-    "read_library": 0.75
+    "read_library": 0.75,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_bondarenko_mindaugas"
   },
@@ -18256,7 +18608,8 @@
    "likes": {
     "night_walk": 1.35,
     "shop_town": 0.74,
-    "stroll": 0.54
+    "stroll": 0.54,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_okonkwo_yasmin"
   },
@@ -18402,7 +18755,8 @@
    "likes": {
     "watch_sunrise": 1.23,
     "coffee": 0.26,
-    "swim_look": 0.45
+    "swim_look": 0.45,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_watanabe_omar"
   },
@@ -18440,7 +18794,8 @@
     "night_walk": -1.0,
     "fish_shore": 1.02,
     "sea_air": 0.7,
-    "coffee": 0.71
+    "coffee": 0.71,
+    "granny_bench": 1.05
    },
    "body": "Town/R_lebedev_lilit"
   },
@@ -18856,7 +19211,8 @@
    "occupation": "away",
    "likes": {
     "fish_shore": 0.46,
-    "fair_visit": 0.5
+    "fair_visit": 0.5,
+    "yard_dominoes": 0.8
    },
    "body": "Town/R_hernandez_thibault"
   },
@@ -18957,7 +19313,8 @@
    "occupation": "station_barista",
    "likes": {
     "shop_town": 0.25,
-    "stroll": 0.48
+    "stroll": 0.48,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_tehrani_seoyeon"
   },
@@ -18994,7 +19351,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fish_shore": 0.66,
-    "eat_out": 0.44
+    "eat_out": 0.44,
+    "granny_bench": 1.05
    },
    "body": "Town/R_nascimento_zsofia"
   },
@@ -19033,7 +19391,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "shop_town": 0.46,
-    "coffee": 0.61
+    "coffee": 0.61,
+    "granny_bench": 1.05
    },
    "body": "Town/R_le_ursula"
   },
@@ -19084,7 +19443,9 @@
    "likes": {
     "watch_sunrise": 0.82,
     "fair_visit": 0.69,
-    "coffee": 0.21
+    "coffee": 0.21,
+    "yard_dominoes": 1.04,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_lund_facundo"
   },
@@ -19427,7 +19788,8 @@
     "play_club": -0.8,
     "night_walk": 0.48,
     "fish_shore": 1.02,
-    "stroll": 0.44
+    "stroll": 0.44,
+    "granny_bench": 0.9
    },
    "body": "Town/R_georgiou_madison"
   },
@@ -19727,6 +20089,21 @@
    "spread": 0.34,
    "duties": [
     {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U21",
+     "hours": [
+      8.75,
+      9.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
      "activity": "work_town",
      "place": "W1-U21",
      "role": "barber",
@@ -19813,6 +20190,21 @@
    "bed": 23.63,
    "spread": 0.57,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U24",
+     "hours": [
+      9.75,
+      10.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U24",
@@ -20385,7 +20777,8 @@
     "night_walk": 0.08,
     "fish_shore": 0.86,
     "coffee": 0.32,
-    "shop_town": 0.2
+    "shop_town": 0.2,
+    "granny_bench": 0.9
    },
    "body": "Town/R_korhonen_colette"
   },
@@ -20797,7 +21190,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "coffee": 0.65,
-    "shop_town": 0.79
+    "shop_town": 0.79,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_fraser_jericho"
   },
@@ -20848,7 +21242,8 @@
    "occupation": "seller",
    "likes": {
     "read_library": 0.51,
-    "sea_air": 0.36
+    "sea_air": 0.36,
+    "yard_dominoes": 0.98
    },
    "body": "Town/R_tkachuk_dawit"
   },
@@ -20955,7 +21350,9 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.07,
     "shop_town": 0.35,
-    "eat_out": 0.77
+    "eat_out": 0.77,
+    "yard_dominoes": 0.8,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_rousseau_kofi"
   },
@@ -21149,7 +21546,8 @@
    "occupation": "station_barista",
    "likes": {
     "swim_look": 0.58,
-    "coffee": 0.43
+    "coffee": 0.43,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_petrauskas_guadalupe"
   },
@@ -21205,7 +21603,42 @@
    "wake": 4.65,
    "bed": 21.28,
    "spread": 0.45,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "hang_laundry",
+     "place": "S-YARD-03-LAUNDRY",
+     "hours": [
+      9.0,
+      9.6
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "take_laundry",
+     "place": "S-YARD-03-LAUNDRY",
+     "hours": [
+      9.6,
+      19.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_berzins_zeynep",
     "t_sorokin_gennady",
@@ -21230,9 +21663,12 @@
     "fish_shore": 0.9,
     "watch_sunrise": 0.56,
     "sea_air": 0.7,
-    "shop_town": 0.75
+    "shop_town": 0.75,
+    "granny_bench": 1.0,
+    "buy_icecream": 0.4
    },
-   "body": "Town/R_bauer_eleni"
+   "body": "Town/R_bauer_eleni",
+   "street_job": "laundry:S-YARD-03"
   },
   {
    "key": "t_kask_duc",
@@ -21308,7 +21744,8 @@
     "fish_shore": 0.69,
     "watch_sunrise": 0.65,
     "read_library": 0.41,
-    "fair_visit": 0.3
+    "fair_visit": 0.3,
+    "granny_bench": 0.95
    },
    "body": "Town/R_kask_mette"
   },
@@ -21325,6 +21762,21 @@
    "bed": 21.09,
    "spread": 0.67,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U09",
+     "hours": [
+      8.75,
+      9.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U09",
@@ -21689,7 +22141,8 @@
     "fish_shore": 0.63,
     "watch_sunrise": 0.51,
     "eat_out": 0.51,
-    "swim_look": 0.78
+    "swim_look": 0.78,
+    "granny_bench": 1.05
    },
    "body": "Town/R_nascimento_zhanar"
   },
@@ -22127,7 +22580,41 @@
    "wake": 4.42,
    "bed": 20.8,
    "spread": 0.65,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "sweep_street",
+     "place": "S-SWEEP-ROUND",
+     "hours": [
+      5.5,
+      7.4
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "rake_leaves",
+     "place": "S-LEAF-ROUND",
+     "hours": [
+      8.0,
+      11.0
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
    "friends": [
     "t_kazlauskas_eleni",
     "t_tadesse_aiko",
@@ -22143,13 +22630,15 @@
     "sun": 1.0
    },
    "walk_speed": 1.15,
-   "occupation": "unemployed",
+   "occupation": "janitor",
    "likes": {
     "watch_sunrise": 0.68,
     "coffee": 0.34,
     "eat_out": 0.23
    },
-   "body": "Town/R_kovalenko_tyler"
+   "body": "Town/R_kovalenko_tyler",
+   "street_job": "keeper",
+   "street_was": "unemployed"
   },
   {
    "key": "t_bekele_nils",
@@ -22297,6 +22786,7 @@
    "walk_speed": 1.23,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "eat_out": 0.52,
     "stroll": 0.52
    },
@@ -22407,7 +22897,8 @@
     "night_walk": -1.0,
     "fish_shore": 1.05,
     "eat_out": 0.63,
-    "fair_visit": 0.27
+    "fair_visit": 0.27,
+    "yard_dominoes": 0.86
    },
    "body": "Town/R_yavorsky_tomohiko"
   },
@@ -22500,7 +22991,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "sea_air": 0.53,
-    "coffee": 0.71
+    "coffee": 0.71,
+    "granny_bench": 1.05
    },
    "body": "Town/R_eze_carmen"
   },
@@ -22779,7 +23271,8 @@
     "fish_shore": 0.67,
     "watch_sunrise": 1.1,
     "read_library": 0.7,
-    "fair_visit": 0.64
+    "fair_visit": 0.64,
+    "yard_dominoes": 0.86
    },
    "body": "Town/R_ferrari_arturs"
   },
@@ -22818,7 +23311,8 @@
     "fish_shore": 0.99,
     "watch_sunrise": 0.84,
     "shop_town": 0.67,
-    "read_library": 0.77
+    "read_library": 0.77,
+    "granny_bench": 0.95
    },
    "body": "Town/R_ferrari_yael"
   },
@@ -22857,7 +23351,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "stroll": 0.21,
-    "read_library": 0.51
+    "read_library": 0.51,
+    "granny_bench": 0.95
    },
    "body": "Town/R_reddy_ruta"
   },
@@ -23205,7 +23700,8 @@
    "occupation": "station_barista",
    "likes": {
     "eat_out": 0.6,
-    "read_library": 0.65
+    "read_library": 0.65,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_heikkinen_lan"
   },
@@ -23342,7 +23838,8 @@
    "occupation": "musician",
    "likes": {
     "eat_out": 0.23,
-    "coffee": 0.49
+    "coffee": 0.49,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_hoffmann_guadalupe"
   },
@@ -23565,7 +24062,8 @@
     "night_walk": -1.0,
     "fish_shore": 1.02,
     "watch_sunrise": 0.51,
-    "coffee": 0.67
+    "coffee": 0.67,
+    "yard_dominoes": 0.98
    },
    "body": "Town/R_dubovik_eoin"
   },
@@ -23604,7 +24102,9 @@
     "fish_shore": 0.86,
     "watch_sunrise": 1.18,
     "swim_look": 0.76,
-    "read_library": 0.6
+    "read_library": 0.6,
+    "granny_bench": 1.15,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_dubovik_elif"
   },
@@ -23853,7 +24353,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.73,
     "eat_out": 0.35,
-    "shop_town": 0.62
+    "shop_town": 0.62,
+    "granny_bench": 1.2
    },
    "body": "Town/R_nikolaidis_harriet"
   },
@@ -23890,7 +24391,8 @@
     "watch_sunrise": 1.23,
     "swim_look": 0.72,
     "shop_town": 0.79,
-    "stroll": 0.83
+    "stroll": 0.83,
+    "yard_dominoes": 0.92
    },
    "body": "Town/R_tolmachev_tyler"
   },
@@ -23961,6 +24463,21 @@
    "spread": 0.77,
    "duties": [
     {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U30",
+     "hours": [
+      9.75,
+      10.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
      "activity": "work_town",
      "place": "W1-U30",
      "role": "seller",
@@ -23995,7 +24512,8 @@
    "occupation": "seller",
    "likes": {
     "stroll": 0.58,
-    "eat_out": 0.74
+    "eat_out": 0.74,
+    "yard_dominoes": 0.92
    },
    "body": "Town/R_zaitsev_duc"
   },
@@ -24097,7 +24615,8 @@
    "occupation": "repairman",
    "likes": {
     "sea_air": 0.53,
-    "fair_visit": 0.65
+    "fair_visit": 0.65,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_nasser_jurgen"
   },
@@ -24233,7 +24752,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.1,
     "eat_out": 0.28,
-    "coffee": 0.38
+    "coffee": 0.38,
+    "granny_bench": 1.05
    },
    "body": "Town/R_tadesse_aiko"
   },
@@ -24330,6 +24850,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "shop_town": 0.22,
     "fair_visit": 0.62
    },
@@ -24990,6 +25511,7 @@
    "likes": {
     "coffee": 0.54,
     "stroll": 0.76,
+    "buy_icecream": 0.4,
     "watch_starlings": 2.4
    },
    "body": "Town/R_novotny_milagros"
@@ -25057,6 +25579,20 @@
    "bed": 22.22,
    "spread": 0.67,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U26",
+     "hours": [
+      6.75,
+      7.0
+     ],
+     "days": [
+      0,
+      1,
+      4,
+      5
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U26",
@@ -25128,7 +25664,9 @@
     "fish_shore": 0.74,
     "watch_sunrise": 1.07,
     "swim_look": 0.35,
-    "coffee": 0.68
+    "coffee": 0.68,
+    "granny_bench": 1.1,
+    "yard_dominoes": 0.98
    },
    "body": "Town/R_beridze_krzysztof"
   },
@@ -25403,7 +25941,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.53,
     "coffee": 0.73,
-    "fair_visit": 0.7
+    "fair_visit": 0.7,
+    "granny_bench": 1.1
    },
    "body": "Town/R_haile_aigerim"
   },
@@ -25481,7 +26020,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "shop_town": 0.6,
-    "fish_shore": 0.42
+    "fish_shore": 0.42,
+    "granny_bench": 1.0
    },
    "body": "Town/R_bauer_beatriz"
   },
@@ -25518,7 +26058,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.81,
     "fair_visit": 0.61,
-    "sea_air": 0.39
+    "sea_air": 0.39,
+    "granny_bench": 1.0
    },
    "body": "Town/R_girard_hiroshi"
   },
@@ -25556,7 +26097,8 @@
     "fish_shore": 0.61,
     "watch_sunrise": 0.96,
     "eat_out": 0.58,
-    "swim_look": 0.77
+    "swim_look": 0.77,
+    "granny_bench": 1.0
    },
    "body": "Town/R_berzins_yumiko"
   },
@@ -25852,7 +26394,26 @@
    "wake": 6.96,
    "bed": 23.55,
    "spread": 1.0,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "vend_kvass",
+     "place": "P-STREET-KVASS",
+     "role": "vendor",
+     "hours": [
+      10.0,
+      19.0
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [],
    "temper": {
     "social": 0.58,
@@ -25863,16 +26424,19 @@
     "sun": 0.91
    },
    "walk_speed": 1.01,
-   "occupation": "pensioner",
+   "occupation": "vendor",
    "likes": {
     "sit_bench": 0.66,
     "chat": 0.19,
     "play_club": -0.8,
     "night_walk": -1.0,
     "eat_out": 0.59,
-    "stroll": 0.48
+    "stroll": 0.48,
+    "granny_bench": 1.0
    },
-   "body": "Town/R_morales_egle"
+   "body": "Town/R_morales_egle",
+   "street_job": "kvass",
+   "street_was": "pensioner"
   },
   {
    "key": "t_gonzalez_giuseppe",
@@ -25976,7 +26540,9 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.01,
     "fair_visit": 0.69,
-    "fish_shore": 0.36
+    "fish_shore": 0.36,
+    "granny_bench": 1.0,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_gonzalez_astrid"
   },
@@ -26344,7 +26910,8 @@
    "occupation": "unemployed",
    "likes": {
     "read_library": 0.68,
-    "coffee": 0.67
+    "coffee": 0.67,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_bianchi_krzysztof"
   },
@@ -26628,6 +27195,7 @@
     "night_walk": 0.02,
     "swim_look": 0.6,
     "fair_visit": 0.49,
+    "buy_kvass": 0.4,
     "play_piano": 1.75
    },
    "body": "Town/R_brooks_kofi"
@@ -26818,6 +27386,7 @@
    "walk_speed": 1.26,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "play_club": 0.53,
     "play_town_club": 0.85,
     "coffee": 0.71,
@@ -27157,7 +27726,8 @@
     "night_walk": -1.0,
     "fish_shore": 0.88,
     "stroll": 0.73,
-    "read_library": 0.5
+    "read_library": 0.5,
+    "granny_bench": 1.15
    },
    "body": "Town/R_nasser_hanna"
   },
@@ -27195,7 +27765,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.73,
     "swim_look": 0.6,
-    "fair_visit": 0.78
+    "fair_visit": 0.78,
+    "yard_dominoes": 0.86
    },
    "body": "Town/R_ozols_eitan"
   },
@@ -27445,6 +28016,21 @@
    "spread": 0.53,
    "duties": [
     {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U08",
+     "hours": [
+      9.75,
+      10.0
+     ],
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
+    {
      "activity": "work_town",
      "place": "W1-U08",
      "role": "photographer",
@@ -27593,7 +28179,8 @@
    "likes": {
     "watch_sunrise": 0.52,
     "stroll": 0.73,
-    "fish_shore": 0.37
+    "fish_shore": 0.37,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_fontaine_elif"
   },
@@ -27766,7 +28353,9 @@
    "occupation": "seller",
    "likes": {
     "coffee": 0.51,
-    "shop_town": 0.52
+    "shop_town": 0.52,
+    "yard_dominoes": 0.98,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_dvorak_kwame"
   },
@@ -27783,6 +28372,21 @@
    "bed": 21.32,
    "spread": 0.47,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U20",
+     "hours": [
+      9.75,
+      10.0
+     ],
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U20",
@@ -27853,7 +28457,8 @@
     "play_club": 0.5,
     "play_town_club": 0.69,
     "fish_shore": 0.72,
-    "sea_air": 0.36
+    "sea_air": 0.36,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_villanueva_zsofia"
   },
@@ -28019,6 +28624,7 @@
     "fish_shore": 0.86,
     "watch_sunrise": 1.23,
     "swim_look": 0.63,
+    "granny_bench": 1.1,
     "tend_allotment": 2.0,
     "water_allotment": 2.7
    },
@@ -28307,7 +28913,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.6,
     "fish_shore": 0.3,
-    "swim_look": 0.23
+    "swim_look": 0.23,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_fujita_minh"
   },
@@ -28358,7 +28965,42 @@
    "wake": 4.41,
    "bed": 20.93,
    "spread": 0.44,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "hang_laundry",
+     "place": "S-YARD-01-LAUNDRY",
+     "hours": [
+      9.0,
+      9.6
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "take_laundry",
+     "place": "S-YARD-01-LAUNDRY",
+     "hours": [
+      9.6,
+      19.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_benitez_rafael",
     "t_tamm_madison",
@@ -28382,9 +29024,11 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.17,
     "stroll": 0.23,
-    "sea_air": 0.26
+    "sea_air": 0.26,
+    "granny_bench": 0.95
    },
-   "body": "Town/R_girma_ngozi"
+   "body": "Town/R_girma_ngozi",
+   "street_job": "laundry:S-YARD-01"
   },
   {
    "key": "t_watanabe_alejandro",
@@ -28565,6 +29209,7 @@
     "watch_sunrise": 0.96,
     "shop_town": 0.65,
     "read_library": 0.26,
+    "yard_dominoes": 0.86,
     "mend_nets": 2.9,
     "boats_evening": 2.7
    },
@@ -28616,7 +29261,8 @@
    "likes": {
     "watch_sunrise": 1.1,
     "sea_air": 0.43,
-    "fair_visit": 0.21
+    "fair_visit": 0.21,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_sargsyan_tomohiko"
   },
@@ -28684,6 +29330,21 @@
    "bed": 23.88,
    "spread": 0.97,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U32",
+     "hours": [
+      9.75,
+      10.0
+     ],
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U32",
@@ -28951,7 +29612,8 @@
    "occupation": "pupil",
    "likes": {
     "stroll": 0.76,
-    "fish_shore": 0.26
+    "fish_shore": 0.26,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_zhou_lilit"
   },
@@ -28990,7 +29652,9 @@
     "night_walk": -1.0,
     "fish_shore": 1.01,
     "watch_sunrise": 1.17,
-    "sea_air": 0.5
+    "sea_air": 0.5,
+    "yard_dominoes": 0.86,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_rousseau_eitan"
   },
@@ -29339,7 +30003,8 @@
    "occupation": "fishmonger",
    "likes": {
     "coffee": 0.64,
-    "shop_town": 0.32
+    "shop_town": 0.32,
+    "yard_dominoes": 0.8
    },
    "body": "Town/R_shevchuk_etienne"
   },
@@ -29530,7 +30195,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.08,
     "sea_air": 0.33,
-    "stroll": 0.27
+    "stroll": 0.27,
+    "granny_bench": 1.1
    },
    "body": "Town/R_araujo_anahit"
   },
@@ -29739,6 +30405,7 @@
     "watch_sunrise": 0.72,
     "eat_out": 0.62,
     "shop_town": 0.23,
+    "buy_kvass": 0.4,
     "play_piano": 1.75
    },
    "body": "Town/R_zhuravlev_giuseppe"
@@ -29941,6 +30608,21 @@
    "bed": 0.38,
    "spread": 0.53,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U12",
+     "hours": [
+      9.75,
+      10.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U12",
@@ -30416,7 +31098,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.9,
     "coffee": 0.38,
-    "shop_town": 0.59
+    "shop_town": 0.59,
+    "granny_bench": 1.0
    },
    "body": "Town/R_pemberton_zhanar"
   },
@@ -30602,7 +31285,8 @@
    "occupation": "station_barista",
    "likes": {
     "fish_shore": 0.21,
-    "coffee": 0.5
+    "coffee": 0.5,
+    "yard_dominoes": 0.86
    },
    "body": "Town/R_ferreira_dariush"
   },
@@ -30846,7 +31530,8 @@
    "likes": {
     "watch_sunrise": 0.83,
     "eat_out": 0.41,
-    "swim_look": 0.38
+    "swim_look": 0.38,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_cerny_rohan"
   },
@@ -30946,7 +31631,8 @@
    "occupation": "teacher",
    "likes": {
     "sea_air": 0.37,
-    "fish_shore": 0.42
+    "fish_shore": 0.42,
+    "yard_dominoes": 0.92
    },
    "body": "Town/R_ferrari_arkady"
   },
@@ -30996,7 +31682,8 @@
    "occupation": "away",
    "likes": {
     "fish_shore": 0.47,
-    "swim_look": 0.65
+    "swim_look": 0.65,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_ferrari_noriko"
   },
@@ -31036,7 +31723,8 @@
     "fish_shore": 0.99,
     "watch_sunrise": 0.47,
     "read_library": 0.56,
-    "coffee": 0.3
+    "coffee": 0.3,
+    "granny_bench": 1.15
    },
    "body": "Town/R_asante_lucia"
   },
@@ -31176,7 +31864,8 @@
    "occupation": "away",
    "likes": {
     "coffee": 0.35,
-    "eat_out": 0.6
+    "eat_out": 0.6,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_yavorsky_almaz"
   },
@@ -31340,7 +32029,8 @@
    "likes": {
     "night_walk": 1.18,
     "swim_look": 0.4,
-    "coffee": 0.65
+    "coffee": 0.65,
+    "yard_dominoes": 0.92
    },
    "body": "Town/R_karimi_rafael"
   },
@@ -31497,7 +32187,6 @@
    "wake": 5.22,
    "bed": 21.01,
    "spread": 0.65,
-   "duties": [],
    "friends": [
     "t_sorokin_lilit"
    ],
@@ -31520,7 +32209,21 @@
     "read_library": 0.64,
     "shop_town": 0.73
    },
-   "body": "Town/R_korhonen_john"
+   "body": "Town/R_korhonen_john",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_cerny_sanne",
@@ -31749,7 +32452,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fair_visit": 0.44,
-    "coffee": 0.25
+    "coffee": 0.25,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_kovacs_laszlo"
   },
@@ -31885,7 +32589,42 @@
    "wake": 7.01,
    "bed": 23.66,
    "spread": 0.6,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "hang_laundry",
+     "place": "S-YARD-05-LAUNDRY",
+     "hours": [
+      9.0,
+      9.6
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "take_laundry",
+     "place": "S-YARD-05-LAUNDRY",
+     "hours": [
+      9.6,
+      19.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_nasser_ilze",
     "t_tehrani_harriet",
@@ -31905,7 +32644,8 @@
     "fair_visit": 0.7,
     "eat_out": 0.76
    },
-   "body": "Town/R_nasser_astrid"
+   "body": "Town/R_nasser_astrid",
+   "street_job": "laundry:S-YARD-05"
   },
   {
    "key": "t_nasser_valentina",
@@ -32123,7 +32863,42 @@
    "wake": 8.14,
    "bed": 22.63,
    "spread": 0.8,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "hang_laundry",
+     "place": "S-YARD-08-LAUNDRY",
+     "hours": [
+      9.0,
+      9.6
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "take_laundry",
+     "place": "S-YARD-08-LAUNDRY",
+     "hours": [
+      9.6,
+      19.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_sato_ingrid"
    ],
@@ -32143,9 +32918,11 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "coffee": 0.75,
-    "fair_visit": 0.34
+    "fair_visit": 0.34,
+    "granny_bench": 1.1
    },
-   "body": "Town/R_ozols_agnieszka"
+   "body": "Town/R_ozols_agnieszka",
+   "street_job": "laundry:S-YARD-08"
   },
   {
    "key": "t_schneider_astrid",
@@ -32361,7 +33138,8 @@
     "watch_sunrise": 1.12,
     "fair_visit": 0.79,
     "eat_out": 0.36,
-    "stroll": 0.64
+    "stroll": 0.64,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_ferreira_jiri"
   },
@@ -32398,7 +33176,9 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.22,
     "shop_town": 0.59,
-    "fish_shore": 0.75
+    "fish_shore": 0.75,
+    "granny_bench": 1.15,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_petrosyan_ingrid"
   },
@@ -32471,7 +33251,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.19,
     "eat_out": 0.41,
-    "fair_visit": 0.42
+    "fair_visit": 0.42,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_petrauskas_klaus"
   },
@@ -32511,7 +33292,9 @@
     "night_walk": -1.0,
     "fish_shore": 1.19,
     "watch_sunrise": 1.28,
-    "coffee": 0.77
+    "coffee": 0.77,
+    "yard_dominoes": 0.92,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_horvath_dimitris"
   },
@@ -32550,7 +33333,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.88,
     "swim_look": 0.77,
-    "shop_town": 0.49
+    "shop_town": 0.49,
+    "granny_bench": 1.05
    },
    "body": "Town/R_krause_ilze"
   },
@@ -32656,7 +33440,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.18,
     "fish_shore": 0.46,
-    "sea_air": 0.31
+    "sea_air": 0.31,
+    "granny_bench": 0.9
    },
    "body": "Town/R_fontaine_nino"
   },
@@ -32786,7 +33571,9 @@
    "likes": {
     "watch_sunrise": 1.01,
     "eat_out": 0.32,
-    "coffee": 0.7
+    "coffee": 0.7,
+    "yard_dominoes": 0.86,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_ishikawa_klaus"
   },
@@ -32950,7 +33737,8 @@
     "night_walk": 1.38,
     "fish_shore": 0.82,
     "sea_air": 0.38,
-    "read_library": 0.64
+    "read_library": 0.64,
+    "yard_dominoes": 0.92
    },
    "body": "Town/R_oliveira_aram"
   },
@@ -32966,7 +33754,42 @@
    "wake": 6.59,
    "bed": 23.31,
    "spread": 0.74,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "hang_laundry",
+     "place": "S-YARD-09-LAUNDRY",
+     "hours": [
+      9.0,
+      9.6
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "take_laundry",
+     "place": "S-YARD-09-LAUNDRY",
+     "hours": [
+      9.6,
+      19.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_lukashevich_lilit",
     "t_lund_parisa",
@@ -32990,9 +33813,11 @@
     "night_walk": -1.0,
     "fish_shore": 0.89,
     "sea_air": 0.7,
-    "stroll": 0.31
+    "stroll": 0.31,
+    "granny_bench": 0.9
    },
-   "body": "Town/R_ishikawa_zeynep"
+   "body": "Town/R_ishikawa_zeynep",
+   "street_job": "laundry:S-YARD-09"
   },
   {
    "key": "t_georgiou_joao",
@@ -33027,7 +33852,8 @@
     "play_club": -0.8,
     "night_walk": 0.4,
     "fair_visit": 0.72,
-    "eat_out": 0.45
+    "eat_out": 0.45,
+    "granny_bench": 1.2
    },
    "body": "Town/R_georgiou_joao"
   },
@@ -33171,6 +33997,7 @@
     "night_walk": -1.0,
     "swim_look": 0.76,
     "fish_shore": 0.26,
+    "granny_bench": 0.9,
     "play_piano": 1.75
    },
    "body": "Town/R_haddad_folake"
@@ -33461,7 +34288,8 @@
    "likes": {
     "watch_sunrise": 0.82,
     "eat_out": 0.34,
-    "fair_visit": 0.56
+    "fair_visit": 0.56,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_tamm_egle"
   },
@@ -33800,7 +34628,8 @@
    "likes": {
     "watch_sunrise": 0.92,
     "sea_air": 0.64,
-    "fish_shore": 0.25
+    "fish_shore": 0.25,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_bautista_yael"
   },
@@ -33853,7 +34682,42 @@
    "wake": 4.9,
    "bed": 21.44,
    "spread": 0.47,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "hang_laundry",
+     "place": "S-YARD-07-LAUNDRY",
+     "hours": [
+      9.0,
+      9.6
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "take_laundry",
+     "place": "S-YARD-07-LAUNDRY",
+     "hours": [
+      9.6,
+      19.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_pemberton_dariush",
     "t_petrauskas_femke",
@@ -33877,9 +34741,11 @@
     "fish_shore": 1.17,
     "watch_sunrise": 0.54,
     "sea_air": 0.72,
-    "shop_town": 0.41
+    "shop_town": 0.41,
+    "granny_bench": 0.95
    },
-   "body": "Town/R_kalnins_lan"
+   "body": "Town/R_kalnins_lan",
+   "street_job": "laundry:S-YARD-07"
   },
   {
    "key": "t_bauer_anahit",
@@ -33894,6 +34760,21 @@
    "bed": 23.46,
    "spread": 0.67,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-P-KIOSK4",
+     "hours": [
+      7.75,
+      8.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
     {
      "activity": "work_town",
      "place": "P-KIOSK4",
@@ -33931,7 +34812,8 @@
     "night_walk": -1.0,
     "fish_shore": 1.12,
     "stroll": 0.79,
-    "shop_town": 0.22
+    "shop_town": 0.22,
+    "granny_bench": 1.05
    },
    "body": "Town/R_bauer_anahit"
   },
@@ -34006,7 +34888,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.07,
     "swim_look": 0.62,
-    "eat_out": 0.23
+    "eat_out": 0.23,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_kang_maarja"
   },
@@ -34074,7 +34957,26 @@
    "wake": 8.29,
    "bed": 23.78,
    "spread": 0.49,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "vend_icecream",
+     "place": "P-STREET-ICECART",
+     "role": "vendor",
+     "hours": [
+      10.0,
+      19.0
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_beridze_zuzana"
    ],
@@ -34087,14 +34989,16 @@
     "sun": 0.45
    },
    "walk_speed": 1.28,
-   "occupation": "unemployed",
+   "occupation": "vendor",
    "likes": {
     "play_club": 0.43,
     "play_town_club": 0.38,
     "eat_out": 0.42,
     "stroll": 0.28
    },
-   "body": "Town/R_moreau_astrid"
+   "body": "Town/R_moreau_astrid",
+   "street_job": "icecream",
+   "street_was": "unemployed"
   },
   {
    "key": "t_beridze_mehmet",
@@ -34378,6 +35282,7 @@
    "walk_speed": 1.35,
    "occupation": "pupil",
    "likes": {
+    "dance_evening": 2.2,
     "play_club": 0.69,
     "play_town_club": 0.85,
     "stroll": 0.59,
@@ -34666,7 +35571,8 @@
    "likes": {
     "watch_sunrise": 0.65,
     "stroll": 0.79,
-    "eat_out": 0.79
+    "eat_out": 0.79,
+    "yard_dominoes": 0.98
    },
    "body": "Town/R_bautista_giuseppe"
   },
@@ -34682,7 +35588,6 @@
    "wake": 7.76,
    "bed": 0.04,
    "spread": 0.78,
-   "duties": [],
    "friends": [
     "t_haile_klaus",
     "t_kowalski_yanka"
@@ -34705,7 +35610,21 @@
     "fish_shore": 0.76,
     "stroll": 0.69
    },
-   "body": "Town/R_zhaksybekov_arjun"
+   "body": "Town/R_zhaksybekov_arjun",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_zhaksybekov_madison",
@@ -34720,6 +35639,18 @@
    "bed": 20.9,
    "spread": 0.68,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U26",
+     "hours": [
+      6.75,
+      7.0
+     ],
+     "days": [
+      2,
+      3
+     ]
+    },
     {
      "activity": "work_town",
      "place": "W1-U26",
@@ -34759,7 +35690,8 @@
     "night_walk": -1.0,
     "fish_shore": 0.81,
     "watch_sunrise": 1.03,
-    "eat_out": 0.53
+    "eat_out": 0.53,
+    "granny_bench": 1.0
    },
    "body": "Town/R_zhaksybekov_madison"
   },
@@ -34857,7 +35789,8 @@
    "occupation": "away",
    "likes": {
     "coffee": 0.74,
-    "fish_shore": 0.46
+    "fish_shore": 0.46,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_haugen_krzysztof"
   },
@@ -34895,7 +35828,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.98,
     "fish_shore": 0.22,
-    "eat_out": 0.73
+    "eat_out": 0.73,
+    "granny_bench": 0.95
    },
    "body": "Town/R_zhaksybekov_almaz"
   },
@@ -34933,7 +35867,9 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fish_shore": 0.6,
-    "read_library": 0.53
+    "read_library": 0.53,
+    "granny_bench": 1.1,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_walker_eero"
   },
@@ -34949,7 +35885,6 @@
    "wake": 9.83,
    "bed": 2.11,
    "spread": 0.59,
-   "duties": [],
    "friends": [
     "t_lund_parisa",
     "t_mortensen_xiaoming",
@@ -34972,9 +35907,25 @@
     "play_club": -0.8,
     "night_walk": 0.16,
     "fish_shore": 0.7,
-    "sea_air": 0.7
+    "sea_air": 0.7,
+    "granny_bench": 1.2,
+    "buy_kvass": 0.4
    },
-   "body": "Town/R_walker_noriko"
+   "body": "Town/R_walker_noriko",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_reyes_aiko",
@@ -35275,7 +36226,8 @@
    "likes": {
     "watch_sunrise": 1.06,
     "swim_look": 0.43,
-    "stroll": 0.49
+    "stroll": 0.49,
+    "yard_dominoes": 0.8
    },
    "body": "Town/R_mortensen_xiaoming"
   },
@@ -35343,6 +36295,21 @@
    "spread": 0.34,
    "duties": [
     {
+     "activity": "open_shutters",
+     "place": "S-FRONT-W1-U15",
+     "hours": [
+      8.75,
+      9.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
      "activity": "work_town",
      "place": "W1-U15",
      "role": "renter",
@@ -35378,7 +36345,8 @@
     "play_club": 0.5,
     "play_town_club": 0.26,
     "fair_visit": 0.21,
-    "swim_look": 0.77
+    "swim_look": 0.77,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_girma_padraig"
   },
@@ -35516,7 +36484,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fish_shore": 0.72,
-    "shop_town": 0.62
+    "shop_town": 0.62,
+    "granny_bench": 1.1
    },
    "body": "Town/R_johansson_maricel"
   },
@@ -35809,7 +36778,8 @@
    "occupation": "writer",
    "likes": {
     "stroll": 0.63,
-    "fair_visit": 0.69
+    "fair_visit": 0.69,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_zhang_kaisa"
   },
@@ -35860,7 +36830,8 @@
    "likes": {
     "watch_sunrise": 0.73,
     "swim_look": 0.45,
-    "read_library": 0.77
+    "read_library": 0.77,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_kowalski_yanka"
   },
@@ -36289,7 +37260,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.06,
     "eat_out": 0.32,
-    "fish_shore": 0.48
+    "fish_shore": 0.48,
+    "granny_bench": 1.1
    },
    "body": "Town/R_tsvetkov_zuzana"
   },
@@ -36685,7 +37657,8 @@
    "occupation": "cleaner",
    "likes": {
     "fair_visit": 0.43,
-    "fish_shore": 0.71
+    "fish_shore": 0.71,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_mendoza_nils"
   },
@@ -36924,7 +37897,42 @@
    "wake": 6.42,
    "bed": 22.92,
    "spread": 0.99,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "hang_laundry",
+     "place": "S-YARD-04-LAUNDRY",
+     "hours": [
+      9.0,
+      9.6
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "activity": "take_laundry",
+     "place": "S-YARD-04-LAUNDRY",
+     "hours": [
+      9.6,
+      19.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_hoffmann_nour",
     "t_okafor_hiroshi",
@@ -36946,9 +37954,11 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fish_shore": 0.5,
-    "fair_visit": 0.35
+    "fair_visit": 0.35,
+    "granny_bench": 1.05
    },
-   "body": "Town/R_korhonen_subin"
+   "body": "Town/R_korhonen_subin",
+   "street_job": "laundry:S-YARD-04"
   },
   {
    "key": "t_lindqvist_facundo",
@@ -37335,7 +38345,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.83,
     "fair_visit": 0.78,
-    "fish_shore": 0.48
+    "fish_shore": 0.48,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_solberg_ingvild"
   },
@@ -37370,7 +38381,8 @@
    "likes": {
     "night_walk": 0.48,
     "sea_air": 0.28,
-    "coffee": 0.37
+    "coffee": 0.37,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_yilmaz_harriet"
   },
@@ -37409,7 +38421,8 @@
     "night_walk": -1.0,
     "fish_shore": 1.08,
     "stroll": 0.24,
-    "shop_town": 0.71
+    "shop_town": 0.71,
+    "yard_dominoes": 0.92
    },
    "body": "Town/R_sousa_yanka"
   },
@@ -37460,7 +38473,6 @@
    "wake": 6.93,
    "bed": 23.18,
    "spread": 0.52,
-   "duties": [],
    "friends": [
     "t_ozturk_yael"
    ],
@@ -37480,9 +38492,24 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "coffee": 0.74,
-    "swim_look": 0.32
+    "swim_look": 0.32,
+    "yard_dominoes": 0.98
    },
-   "body": "Town/R_hargreaves_rohan"
+   "body": "Town/R_hargreaves_rohan",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_cerny_shirin",
@@ -37571,7 +38598,9 @@
     "fish_shore": 0.85,
     "watch_sunrise": 0.91,
     "stroll": 0.37,
-    "fair_visit": 0.63
+    "fair_visit": 0.63,
+    "granny_bench": 1.15,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_vinogradov_malgorzata"
   },
@@ -37712,7 +38741,8 @@
     "play_club": 0.54,
     "play_town_club": 0.76,
     "swim_look": 0.38,
-    "stroll": 0.57
+    "stroll": 0.57,
+    "buy_icecream": 0.4
    },
    "body": "Town/R_chen_facundo"
   },
@@ -37958,7 +38988,8 @@
    "occupation": "pupil",
    "likes": {
     "fair_visit": 0.78,
-    "sea_air": 0.77
+    "sea_air": 0.77,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_tamm_yerlan"
   },
@@ -38183,7 +39214,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.22,
     "shop_town": 0.56,
-    "fair_visit": 0.26
+    "fair_visit": 0.26,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_pham_tiit"
   },
@@ -38653,7 +39685,8 @@
     "night_walk": -1.0,
     "fish_shore": 1.04,
     "fair_visit": 0.45,
-    "eat_out": 0.56
+    "eat_out": 0.56,
+    "granny_bench": 1.15
    },
    "body": "Town/R_hrytsenko_aiko"
   },
@@ -38701,7 +39734,8 @@
    "occupation": "vendor",
    "likes": {
     "read_library": 0.33,
-    "stroll": 0.67
+    "stroll": 0.67,
+    "yard_dominoes": 0.98
    },
    "body": "Town/R_berzins_daisuke"
   },
@@ -38939,7 +39973,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "stroll": 0.43,
-    "fish_shore": 0.49
+    "fish_shore": 0.49,
+    "granny_bench": 1.05
    },
    "body": "Town/R_friedman_wei"
   },
@@ -39261,7 +40296,8 @@
    "occupation": "pupil",
    "likes": {
     "eat_out": 0.64,
-    "shop_town": 0.79
+    "shop_town": 0.79,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_sousa_rodel"
   },
@@ -39405,7 +40441,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "fish_shore": 1.1,
-    "stroll": 0.49
+    "stroll": 0.49,
+    "granny_bench": 1.0
    },
    "body": "Town/R_rossi_valentina"
   },
@@ -39459,7 +40496,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.5,
     "shop_town": 0.26,
-    "sea_air": 0.49
+    "sea_air": 0.49,
+    "granny_bench": 1.15
    },
    "body": "Town/R_petrauskas_femke"
   },
@@ -39498,7 +40536,8 @@
     "night_walk": -1.0,
     "fish_shore": 1.15,
     "eat_out": 0.32,
-    "read_library": 0.25
+    "read_library": 0.25,
+    "granny_bench": 1.2
    },
    "body": "Town/R_colombo_subin"
   },
@@ -39762,7 +40801,24 @@
    "wake": 5.01,
    "bed": 21.87,
    "spread": 0.38,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "deliver_milk",
+     "place": "S-MILK-ROUND",
+     "hours": [
+      6.0,
+      7.5
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
    "friends": [
     "t_girma_ngozi"
    ],
@@ -39775,7 +40831,7 @@
     "sun": 0.72
    },
    "walk_speed": 1.0,
-   "occupation": "pensioner",
+   "occupation": "milk_round",
    "likes": {
     "sit_bench": 0.97,
     "chat": 0.12,
@@ -39783,9 +40839,12 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.84,
     "shop_town": 0.26,
-    "eat_out": 0.29
+    "eat_out": 0.29,
+    "granny_bench": 0.95
    },
-   "body": "Town/R_hoffmann_nour"
+   "body": "Town/R_hoffmann_nour",
+   "street_job": "milk",
+   "street_was": "pensioner"
   },
   {
    "key": "t_kazlauskas_eleni",
@@ -39872,7 +40931,8 @@
    "likes": {
     "sea_air": 0.75,
     "fair_visit": 0.33,
-    "stroll": 0.52
+    "stroll": 0.52,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_reddy_ama"
   },
@@ -40087,7 +41147,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.73,
     "stroll": 0.75,
-    "fish_shore": 0.23
+    "fish_shore": 0.23,
+    "granny_bench": 1.05
    },
    "body": "Town/R_tehrani_egle"
   },
@@ -40260,7 +41321,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.63,
     "fair_visit": 0.28,
-    "fish_shore": 0.25
+    "fish_shore": 0.25,
+    "granny_bench": 1.15
    },
    "body": "Town/R_takahashi_ursula"
   },
@@ -40277,6 +41339,21 @@
    "bed": 22.89,
    "spread": 0.8,
    "duties": [
+    {
+     "activity": "open_shutters",
+     "place": "S-FRONT-P-KIOSK1",
+     "hours": [
+      7.75,
+      8.0
+     ],
+     "days": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
     {
      "activity": "work_town",
      "place": "P-KIOSK1",
@@ -40401,7 +41478,8 @@
     "night_walk": -1.0,
     "watch_sunrise": 1.12,
     "fair_visit": 0.45,
-    "stroll": 0.72
+    "stroll": 0.72,
+    "granny_bench": 1.2
    },
    "body": "Town/R_zhuravlev_ngozi"
   },
@@ -40617,7 +41695,8 @@
     "night_walk": -1.0,
     "fish_shore": 0.91,
     "read_library": 0.48,
-    "fair_visit": 0.36
+    "fair_visit": 0.36,
+    "granny_bench": 1.15
    },
    "body": "Town/R_obrien_zhanar"
   },
@@ -40827,7 +41906,8 @@
     "night_walk": -1.0,
     "fish_shore": 0.91,
     "coffee": 0.45,
-    "read_library": 0.47
+    "read_library": 0.47,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_romano_tesfaye"
   },
@@ -40864,7 +41944,9 @@
     "night_walk": -1.0,
     "watch_sunrise": 0.45,
     "stroll": 0.4,
-    "coffee": 0.46
+    "coffee": 0.46,
+    "granny_bench": 1.15,
+    "buy_kvass": 0.4
    },
    "body": "Town/R_delacruz_yael"
   },
@@ -41049,7 +42131,8 @@
     "fish_shore": 0.98,
     "watch_sunrise": 0.58,
     "stroll": 0.64,
-    "coffee": 0.28
+    "coffee": 0.28,
+    "yard_dominoes": 0.98
    },
    "body": "Town/R_romero_chinedu"
   },
@@ -41088,7 +42171,8 @@
     "play_club": -0.8,
     "night_walk": -1.0,
     "sea_air": 0.35,
-    "fair_visit": 0.74
+    "fair_visit": 0.74,
+    "granny_bench": 1.0
    },
    "body": "Town/R_obrien_imogen"
   },

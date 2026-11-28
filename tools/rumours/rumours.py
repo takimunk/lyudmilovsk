@@ -44,6 +44,7 @@ KINDS = collections.OrderedDict([
     ("tune",   {"hops": 2, "life": 3, "pass": 0.5, "rank": 3}),
     ("sing",   {"hops": 2, "life": 2, "pass": 0.5, "rank": 2}),
     ("film",   {"hops": 1, "life": 2, "pass": 0.5, "rank": 1}),
+    ("dance",  {"hops": 2, "life": 3, "pass": 0.55, "rank": 4}),
     # the yacht school (docs/yacht_school.md "Town"): joined, capsized in front of the pier, won a race, towed home, the certificate
     ("sail",    {"hops": 2, "life": 4, "pass": 0.55, "once": 1, "rank": 4}),
     ("capsize", {"hops": 2, "life": 2, "pass": 0.6, "rank": 2}),
@@ -69,6 +70,9 @@ RULES = [
     {"event": "play_tune", "target": "bonfire", "kind": "sing", "detail": ""},
     {"event": "play_tune", "target": "*", "kind": "tune", "detail": "music.tune.{t}"},
     {"event": "stamp", "target": "films/*", "kind": "film", "detail": ""},
+    # a dance at the Vaults (docs/dances.md): the partners are regulars under names of their own (city.dnc.p.*), so their
+    # "beat" is a dance, not a game won
+    {"event": "beat", "target": "city.dnc.p.*", "kind": "dance", "detail": "{t}"},
     # the yacht school's quest events (ULyudQuests::Notify("sail", ...), docs/yacht_school.md "Quest events"; "towed" is fired
     # by the school's engine when the coach's launch tows the hero's boat home)
     {"event": "sail", "target": "join", "kind": "sail", "detail": ""},
@@ -185,6 +189,11 @@ PAPER = {
          "At the old newsreel in the Rassvet the whole hall laughed, loudest of all a schoolboy in the third row.",
          "『ラスヴェート』の古いニュース映画で客席じゅうが笑った。いちばん大きな声は三列目の少年。"),
     ],
+    "dance": [
+        ("На субботних танцах в «Сводах» новенький школьник не пропустил ни одного вальса. Партнёрша — {0} — говорит, что он ни разу не наступил ей на ногу.",
+         "At the Saturday dance at the Vaults a new schoolboy didn't miss a single waltz. His partner, {0}, says he never once trod on her foot.",
+         "土曜の「ヴォールト」のダンスで、新顔の少年がワルツを一曲も逃さなかった。相手の{0}によれば、一度も足を踏まなかったそうだ。"),
+    ],
 }
 
 PS_HEAD = ("P.S. ", "P.S. ", "追伸：")
@@ -228,6 +237,9 @@ PS = {
              "たき火のそばで歌ったんだって？行けなくて残念。"),
     "film": ("Видели тебя в «Рассвете». Как тебе старое кино?", "We saw you at the Rassvet. How did you like the old films?",
              "『ラスヴェート』で君を見かけたよ。古い映画はどうだった？"),
+    "dance": ("Говорят, ты танцуешь в «Сводах», и партнёрша — {0}. Смотри, весь двор теперь знает.",
+              "They say you dance at the Vaults, and your partner is {0}. Mind, the whole yard knows now.",
+              "「ヴォールト」で踊ってるんだって？　相手は{0}。近所じゅうもう知ってるよ。"),
     "sail": ("Говорят, ты записался в яхт-школу. Попутного ветра! И жилет застёгивай.", "They say you've joined the sailing school. Fair winds! And do your life jacket up.",
              "ヨット学校に入ったって？順風を！ライフジャケットはしっかり留めてね。"),
     "capsize": ("Слышали, ты перевернулся прямо у пирса. Главное — вынырнул с улыбкой.", "We heard you capsized right by the pier. The main thing is you came up smiling.",
@@ -287,6 +299,9 @@ STAFF = {
     "film": ("Говорят, ты ходил в «Рассвет» на старую хронику. Ну и как поезд, не страшно?",
              "They say you went to the old newsreel at the Rassvet. Well, the train: was it scary?",
              "『ラスヴェート』の古いニュース映画を見たんだって？で、列車は怖かった？"),
+    "dance": ("Говорят, ты вчера на танцах был кавалером что надо. {detail} так и сказала подружкам.",
+              "They say you were quite the gentleman at the dance. {detail} told her friends so.",
+              "昨日のダンスでなかなかの騎士ぶりだったって？　{detail}が友だちにそう話してたよ。"),
     "sail": ("Говорят, ты в яхт-школу записался. У нас тут один покупатель тоже ходил, сорок лет назад, до сих пор узлы вяжет.",
              "They say you've joined the sailing school. One of our customers went too, forty years ago; still ties knots.",
              "ヨット学校に入ったって？うちのお客さんにも四十年前に通った人がいてね、いまだにロープを結んでるよ。"),
@@ -313,6 +328,7 @@ NAMES = {
     "crows": ("подарки ворон", "the crows' presents", "カラスの贈り物"), "catch": ("улов", "a catch", "釣果"),
     "kite": ("змей", "a kite", "凧"), "tune": ("мелодия", "a tune", "曲"), "sing": ("песни у костра", "songs by the fire", "たき火の歌"),
     "film": ("старое кино", "the old films", "古い映画"),
+    "dance": ("танцы в «Сводах»", "the dance at the Vaults", "「ヴォールト」のダンス"),
     "sail": ("записался в яхт-школу", "joined the sailing school", "ヨット学校に入会"), "capsize": ("оверкиль у пирса", "a capsize by the pier", "桟橋のそばで転覆"),
     "regatta": ("победа в гонке", "a race won", "レースで優勝"), "tow": ("на буксире домой", "towed home", "引かれて帰港"),
     "skipper": ("свидетельство рулевого", "the helmsman's certificate", "舵手の証明書"),

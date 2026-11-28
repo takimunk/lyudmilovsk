@@ -31,3 +31,140 @@ doing = fly_kite
 near = hero
 say town.kite_hero.1 | У тебя тоже змей? Давай, кто выше! | You've got a kite too? Let's see whose goes higher! | 君も凧持ってるの？どっちが高く上がるか勝負しよう！
 say town.kite_hero.2 | Отойди подальше, а то лески перепутаем! | Move further off, or we'll tangle our lines! | もう少し離れて、糸がからまっちゃう！
+
+## ---------------------------------------------------------------------------------------------------------------
+## Kite afternoons (docs/kites.md "Kite afternoons"): the teens' two-line stunt kites (fly_kite_stunt), the deltas of
+## light days (fly_kite_delta), the dragons' owners (fly_kite_dragon), whoever came to the beach to look (watch_kites).
+## The barks know no wind, so the lore about it is said as a rule, never as what the air does this minute.
+## ---------------------------------------------------------------------------------------------------------------
+
+[kite_kid_more]
+doing = fly_kite
+age = kid
+say town.kite_kid_more.1 | Он меня тянет! Сейчас вместе улетим! | It's pulling me! We'll both fly off! | 引っぱられる！いっしょに飛んでっちゃう！
+say town.kite_kid_more.2 | Мама, смотри! Ну мам! Ну смотри же! | Mum, look! Mum! Look, will you! | ママ、見て！ねえママ！見てってば！
+say town.kite_kid_more.3 | Только не на дерево, только не на дерево… | Not the tree, not the tree… | 木はだめ、木はだめ…
+say town.kite_kid_more.4 | А если отпустить, он до Луны долетит? | If I let go, will it fly to the Moon? | 手を放したら、月まで行くかな？
+
+[kite_stunt]
+doing = fly_kite_stunt
+say town.kite_stunt.1 | Две стропы, две руки. Тянешь левую, идёт влево. Вся наука. | Two lines, two hands. Pull the left, it goes left. That's all the science. | 糸が二本、手も二本。左を引けば左へ行く。それだけ。
+say town.kite_stunt.2 | Сейчас петлю, смотри! | Watch, here comes a loop! | 見てて、今から宙返り！
+say town.kite_stunt.3 | Восьмёрку держать труднее, чем петлю. Стропы закручиваются. | An eight is harder to hold than a loop. The lines twist up. | 8の字は宙返りより難しい。糸がねじれるから。
+say town.kite_stunt.4 | Над самым песком прошёл! Видели? | Right over the sand! Did you see? | 砂すれすれを通った！見た？
+say town.kite_stunt.5 | В центре окна тянет так, что с ног сносит. | In the middle of the window it pulls you off your feet. | 風の真ん中だと、足ごと持っていかれそう。
+say town.kite_stunt.6 | Руки уже гудят. Ещё пять минут, и всё. | My arms are humming already. Five more minutes and that's it. | もう腕がじんじんする。あと五分だけ。
+say town.kite_stunt.7 | На краю окна он почти стоит. Там его и сажают. | At the edge of the window it almost stands still. That's where you land it. | 風の端だとほとんど止まる。そこで下ろすんだ。
+say town.kite_stunt.8 | Одному его поднимать мука. Вдвоём раз, и в небе. | Getting it up alone is a pain. With two it's up in one go. | 一人で上げるのは大変。二人なら一発で空へ。
+
+[kite_stunt_hero]
+doing = fly_kite_stunt
+near = hero
+say town.kite_stunt_hero.1 | Не стой под ним! Когда пикирует, он не шутит. | Don't stand under it! When it dives, it means it. | 下に立たないで！急降下は本気だから。
+say town.kite_stunt_hero.2 | Тоже хочешь такого? В спорттоварах лежат. Только руки потом отваливаются. | Want one too? The sports counter has them. Your arms drop off afterwards, mind. | 君も欲しい？スポーツ用品売り場にあるよ。腕はパンパンになるけど。
+
+[kite_delta]
+doing = fly_kite_delta
+say town.kite_delta.1 | В такую погоду только дельта и летает. | In weather like this only a delta flies. | こんな日に飛ぶのはデルタだけだね。
+say town.kite_delta.2 | Ветра на две ложки, а она стоит. Умная вещь. | Two spoonfuls of wind and it stays up. A clever thing. | 風はスプーン二杯ぶん。それでも浮いてる。賢い凧だ。
+say town.kite_delta.3 | Дельте хвост не нужен. Она сама себя держит. | A delta needs no tail. It holds itself. | デルタにしっぽはいらない。自分で安定する。
+say town.kite_delta.4 | Стоит почти над головой. Леска как отвес. | It stands almost overhead. The line's like a plumb line. | ほとんど真上にいる。糸がまるで下げ振りだ。
+say town.kite_delta.5 | Тихо как. Слышно, как ткань дышит. | So quiet. You can hear the cloth breathe. | 静かだ。布が息をするのが聞こえる。
+say town.kite_delta.6 | К вечеру бриз ляжет, тогда и смотаю. | The breeze will lie down by evening. I'll wind in then. | 夕方には風が落ちる。そしたら巻き取るよ。
+
+[kite_delta_elder]
+doing = fly_kite_delta
+age = elder
+say town.kite_delta_elder.1 | Врач велел гулять. Про змея не говорил, но и не запрещал. | The doctor said to walk. He didn't mention a kite, but he didn't forbid one. | 医者は歩けと言った。凧はだめとは言わなかったよ。
+say town.kite_delta_elder.2 | Внук в школе, а змей без дела висеть не должен. | My grandson's at school, and a kite shouldn't hang idle. | 孫は学校。凧を遊ばせておくのはもったいない。
+say town.kite_delta_elder.3 | Стоишь, держишь нитку. Вроде и занят, и отдыхаешь. | You stand and hold a string. Busy and resting at once. | 糸を持って立っているだけ。忙しくて、休める。
+
+[kite_dragon]
+doing = fly_kite_dragon
+say town.kite_dragon.1 | Хвост у него двенадцать метров. Разматывать дольше, чем летать. | Its tail is twelve metres. Longer to unroll than to fly. | しっぽは十二メートル。広げるほうが飛ばすより長い。
+say town.kite_dragon.2 | Голова расписана вручную. Три вечера на одни глаза. | The head's hand-painted. Three evenings on the eyes alone. | 頭は手描き。目だけで三晩かかった。
+say town.kite_dragon.3 | Ему нужен ровный ветер. В порывах хвост завязывается узлом. | It wants a steady wind. In gusts the tail ties itself in a knot. | 安定した風がいる。突風だとしっぽが結び目になる。
+say town.kite_dragon.4 | Смотрите, как волна идёт по хвосту. От головы до самого кончика. | Watch the wave run down the tail. From the head to the very tip. | しっぽを波が走るよ。頭から先っぽまで。
+say town.kite_dragon.5 | Собаки на него лают. Чайки делают вид, что не боятся. | Dogs bark at it. The gulls pretend they're not afraid. | 犬は吠える。カモメは怖くないふりをする。
+say town.kite_dragon.6 | Сматывать его надо вдвоём. Одному это на час. | It takes two to roll it up. Alone it's an hour's work. | 巻き取るのは二人がかり。一人だと一時間。
+
+[kite_wind_lore]
+doing = fly_kite_stunt fly_kite_delta fly_kite_dragon
+say town.kite_wind_lore.1 | Порыв видно заранее: по воде бежит тёмная рябь. | You can see a gust coming: a dark ripple runs over the water. | 突風は先に見える。水面を暗いさざ波が走るから。
+say town.kite_wind_lore.2 | Стихнет, не бросай. Подбери леску и жди. Бриз возвращается. | If it drops, don't give up. Take in line and wait. The breeze comes back. | 風がやんでも慌てない。糸を引いて待てば戻る。
+say town.kite_wind_lore.3 | Когда ветер с берега, под обрывом не полетит. Там ветровая тень. | With the wind off the land it won't fly under the cliff. That's a wind shadow. | 陸風の日は崖の下じゃ飛ばない。風の陰だから。
+say town.kite_wind_lore.4 | С моря ветер ровный. С берега рваный, как старая газета. | Off the sea the wind is even. Off the land it's ragged, like an old newspaper. | 海風はなめらか。陸風は古新聞みたいにちぎれてる。
+say town.kite_wind_lore.5 | Сначала смотри на рукав у спасательной вышки. Леску разматывай потом. | Look at the sock by the lifeguard tower first. Unwind the line after. | まず監視塔の吹き流しを見る。糸を出すのはそれから。
+say town.kite_wind_lore.6 | Чайки сидят носом к ветру. Лучше любого флюгера. | Gulls sit facing the wind. Better than any weathervane. | カモメは風上を向いてとまる。風見よりたしかだ。
+say town.kite_wind_lore.7 | Наверху всегда дует сильнее. Отпусти леску и почувствуешь. | It always blows harder up high. Let the line out and you'll feel it. | 上のほうが風は強い。糸を出せばわかる。
+
+[kite_cold]
+doing = fly_kite fly_kite_stunt fly_kite_delta fly_kite_dragon
+months = 11-3
+say town.kite_cold.1 | Пальцы мёрзнут, а смотать жалко. | My fingers are freezing, but it's a pity to wind in. | 指が凍える。でも巻き取るのは惜しい。
+say town.kite_cold.2 | Зимний ветер плотный. Змей в нём стоит как в воде. | Winter wind is dense. The kite stands in it as if in water. | 冬の風は重い。凧が水の中みたいに止まる。
+
+[kite_onlooker]
+doing = watch_kites
+say town.kite_onlooker.1 | Пришли на пять минут. Стоим уже полчаса, задрав головы. | We came for five minutes. Half an hour now, heads back. | 五分のつもりで来た。もう三十分、上を見たまま。
+say town.kite_onlooker.2 | Вон тот сейчас петлю сделает. Уже по замаху видно. | That one's about to loop. You can tell by the wind-up. | あれ、今から宙返りするよ。構えでもうわかる。
+say town.kite_onlooker.3 | Шея затекла. Но уходить жалко. | My neck's gone stiff. But it's a pity to leave. | 首がこった。でも帰るのは惜しい。
+say town.kite_onlooker.4 | Сколько их сегодня! Небо как бельевая верёвка в субботу. | So many today! The sky's like a washing line on a Saturday. | 今日は多いね！空が土曜の物干しみたいだ。
+say town.kite_onlooker.5 | Хорошо, когда в небе есть что-то, кроме погоды. | It's good when there's something in the sky besides the weather. | 空に天気のほかにも何かあるって、いいものだ。
+
+[kite_parent]
+doing = watch_kites
+age = 25-50
+say town.kite_parent.1 | Купили одного змея на двоих. Теперь делят небо по минутам. | We bought one kite for two. Now they share the sky by the minute. | 凧を二人で一つ買った。今は分刻みで空を分けてる。
+say town.kite_parent.2 | Обещали на полчаса. Это было два часа назад. | They promised half an hour. That was two hours ago. | 三十分って約束だった。それが二時間前。
+say town.kite_parent.3 | Пока змей в небе, про мороженое никто не вспоминает. | While the kite's up, nobody remembers ice cream. | 凧が上がってる間は、誰もアイスの話をしない。
+say town.kite_parent.4 | Запутают леску, а распутывать опять мне. | They'll tangle the line, and the untangling will be mine again. | 糸をからませるのは子ども、ほどくのは毎回こっち。
+
+[kite_onlooker_elder]
+doing = watch_kites
+age = elder
+say town.kite_onlooker_elder.1 | У нас на всю улицу был один змей. Очередь занимали с утра. | Our whole street had one kite. We queued for it from the morning. | 通りじゅうで凧は一つ。朝から順番待ちだった。
+say town.kite_onlooker_elder.2 | Раньше нитки были суровые, руки резало. А летало так же. | The thread was coarse back then, it cut your hands. It flew the same. | 昔の糸は粗くて手が切れた。でも同じように飛んだ。
+
+## --- said at a moment the kite flying raises (ULyudKiteFlying::Bark -> ULyudTownTalkSubsystem::SayEvent): somebody on
+## the beach agrees to hold the hero's kite for a long launch and lets it go on his pull; a stunt flier who has just
+## shown him a loop and its undoing; a child whose kite he got out of a tree. The last two sets wait for the engine to
+## call them (kite_loop_cheer: somebody near when his stunt kite loops; kite_low_pass: somebody it passes low over).
+
+[kite_hold_yes]
+on = kite_hold_yes
+say town.kite_hold_yes.1 | Давай, подержу. Отходи против ветра. | Go on, I'll hold it. Walk off upwind. | いいよ、持っててあげる。風上へ下がって。
+say town.kite_hold_yes.2 | Держу. Как натянешь, отпущу. | Got it. I'll let go when you pull. | 持ったよ。引いたら放すからね。
+say town.kite_hold_yes.3 | Держу носом вверх. Не спеши, расправь стропы. | Holding it nose up. No hurry, straighten your lines. | 頭を上にして持ってる。あわてず糸を伸ばして。
+
+[kite_hold_go]
+on = kite_hold_go
+say town.kite_hold_go.1 | Пошёл! | There it goes! | 行った！
+say town.kite_hold_go.2 | Отпускаю! Тяни! | Letting go! Pull! | 放すよ！引いて！
+say town.kite_hold_go.3 | Взял ветер. Красиво взял. | It's caught the wind. Caught it nicely. | 風をつかんだ。きれいに上がった。
+
+[kite_lesson]
+on = kite_lesson
+say town.kite_lesson.1 | Видел? Петля вправо, потом влево. Иначе стропы завьются. | See that? A loop to the right, then one to the left. Or the lines wind up. | 見た？右に一回、次は左。でないと糸がねじれる。
+say town.kite_lesson.2 | Вот так. Закрутил в одну сторону, раскрути в другую. | Like that. Wound it one way, unwind it the other. | こうやるんだ。片方に回したら、反対に戻す。
+say town.kite_lesson.3 | Запомнил? Тянуть плавно. Дёрнешь, и он сорвётся. | Got it? Pull smoothly. Jerk it and it stalls. | わかった？なめらかに引く。急に引くと失速する。
+
+[kite_rescue_thanks]
+on = kite_rescue_thanks
+say town.kite_rescue_thanks.1 | Спасибо! А то висел бы там до самой зимы. | Thank you! It would have hung there till winter. | ありがとう！冬までぶら下がってるところだった。
+say town.kite_rescue_thanks.2 | Ура! Он целый! Только хвост помялся. | Hooray! It's in one piece! Only the tail's crumpled. | やった！こわれてない！しっぽが曲がっただけ。
+say town.kite_rescue_thanks.3 | Спасибо! Папе не скажем, ладно? | Thanks! We won't tell Dad, all right? | ありがとう！お父さんにはないしょね？
+say town.kite_rescue_thanks.4 | Ты его снял, как кошку с дерева. Только это змей. Спасибо! | You got it down like a cat from a tree. Only it's a kite. Thanks! | 木から猫を下ろすみたいだった。凧だけど。ありがとう！
+
+[kite_loop_cheer]
+on = kite_loop_cheer
+say town.kite_loop_cheer.1 | Ого! Ещё раз! | Whoa! Again! | おおっ！もう一回！
+say town.kite_loop_cheer.2 | Вот это петля! Чистая. | Now that's a loop! Clean. | 今の宙返り、きれい！
+say town.kite_loop_cheer.3 | А теперь в другую сторону. Стропы-то раскрути. | Now the other way. Unwind those lines. | 次は反対回り。糸のねじれを戻さなきゃ。
+say town.kite_loop_cheer.4 | Красиво пишет. Как пером по небу. | It writes beautifully. Like a pen across the sky. | きれいに描くね。空にペンで書くみたい。
+
+[kite_low_pass]
+on = kite_low_pass
+say town.kite_low_pass.1 | Эй, по головам-то не надо! | Hey, not over our heads! | ちょっと、頭の上はやめて！
+say town.kite_low_pass.2 | Чуть кепку не унесло! | That nearly took my cap! | 帽子を持っていかれるところだった！
+say town.kite_low_pass.3 | Низко идёт. Красиво, но низко. | It's going low. Lovely, but low. | 低いね。きれいだけど、低い。

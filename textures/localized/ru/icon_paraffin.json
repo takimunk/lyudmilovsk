@@ -1,0 +1,10 @@
+{
+ "id": "icon_paraffin",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A small red tin can of lamp paraffin with a screw cap on a little chain and a wire handle, no readable words.",
+ "source": "design/icons_1127/sheet_4.png (sidecar design/icons_1127/sheet_4.json), cell 7 (row 3, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "565cc3b995363ad227575d9aa567935e6d2d256a062d9316b3b26a07924e9043",
+ "strings": {}
+}

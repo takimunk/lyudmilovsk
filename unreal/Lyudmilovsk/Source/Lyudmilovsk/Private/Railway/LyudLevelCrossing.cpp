@@ -161,6 +161,8 @@ void ALyudLevelCrossing::Setup(ULyudRailwaySubsystem* InRailway, const TSharedPt
 			Wc->SetSlateWidget(W);
 			// a still sign: redraw rarely, not every frame
 			Wc->SetRedrawTime(5.f);
+			// and its component looks at that (world-time) redraw clock once a second, not every frame
+			Wc->SetComponentTickInterval(1.f);
 			AddInstanceComponent(Wc);
 		}
 		// the barrier beside the post: its arm stands up, comes down across the path

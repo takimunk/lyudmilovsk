@@ -1,0 +1,10 @@
+{
+ "id": "icon_lost_glasses",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "A pair of folded black-rimmed reading glasses.",
+ "source": "design/icons_1127/sheet_3.png (sidecar design/icons_1127/sheet_3.json), cell 4 (row 2, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "0c970563b316f32976c4688740881524124bdae36be215548b2af399730f9521",
+ "strings": {}
+}

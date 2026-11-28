@@ -1224,23 +1224,32 @@ bool ULyudEuropaSubsystem::TrySpawn()
 			Site->PlanetDiameterDeg = (*PO)->GetNumberField(TEXT("diameter_deg"));
 		}
 		UGameplayStatics::FinishSpawningActor(Site, FTransform(SiteOrigin));
-		// the sky seen from the ice: Europa's own (the sun and the planet where its orbit has them)
-		TWeakObjectPtr<ALyudEuropaSite> WeakSite = Site;
-		for (TActorIterator<ALyudSky> It(World); It; ++It)
-		{
-			It->SetSpaceObserver([WeakSite](const FDateTime& Utc, FVector& OutSun, FVector& OutPlanet)
-			{
-				if (const ALyudEuropaSite* S = WeakSite.Get())
-				{
-					const ALyudEuropaSite::FSky Sky = S->SkyAt(Utc);
-					OutSun = Sky.Sun;
-					OutPlanet = Sky.Planet;
-				}
-			});
-		}
+		InstallSpaceObserver();
 	}
 	UE_LOG(LogTemp, Display, TEXT("EUROPA spawned: hatch %s, Europa %s"), *Hatch.ToString(), *SiteOrigin.ToString());
 	return true;
+}
+
+void ULyudEuropaSubsystem::InstallSpaceObserver()
+{
+	if (!Site)
+	{
+		return;
+	}
+	// the sky seen from the ice: Europa's own (the sun and the planet where its orbit has them)
+	TWeakObjectPtr<ALyudEuropaSite> WeakSite = Site;
+	for (TActorIterator<ALyudSky> It(GetWorld()); It; ++It)
+	{
+		It->SetSpaceObserver([WeakSite](const FDateTime& Utc, FVector& OutSun, FVector& OutPlanet)
+		{
+			if (const ALyudEuropaSite* S = WeakSite.Get())
+			{
+				const ALyudEuropaSite::FSky Sky = S->SkyAt(Utc);
+				OutSun = Sky.Sun;
+				OutPlanet = Sky.Planet;
+			}
+		});
+	}
 }
 
 float ULyudEuropaSubsystem::Speed() const

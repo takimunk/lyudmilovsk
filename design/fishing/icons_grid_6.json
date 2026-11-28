@@ -28,5 +28,6 @@
   "lure_wobbler"
  ],
  "note": "3x2 grid of the second round's tackle; cut by tools/fishing_icons.py into textures/localized/ru/icon_<id>.jpg (no words: one language). The boat cell is kept for a later map or diary picture, not shipped.",
- "job_id": "7e904eb1-0257-4ae6-aeb1-fbc6bedb5004"
+ "job_id": "7e904eb1-0257-4ae6-aeb1-fbc6bedb5004",
+ "sha256": "a1cefc4621588c3f33fd9e30259518e3a50cdcaa659b95775728e2f59b289019"
 }

@@ -374,9 +374,9 @@ void AHeroCharacter::ReadInput(float DeltaSeconds)
 	// leading a bike by the bars is a walk
 	bWantsWalk = IsLeadingBike() || (!PC->IsMoveInputIgnored() && (PC->IsInputKeyDown(EKeys::LeftShift) || PC->IsInputKeyDown(EKeys::RightShift)));
 	UCharacterMovementComponent* Move = GetCharacterMovement();
-	// SpeedScale: SetSpeedScale (ULyudTopiMind slows him in the dunes)
-	Move->MaxWalkSpeed = (bWantsWalk ? WalkSpeed : RunSpeed) * SpeedScale;
-	Move->MaxWalkSpeedCrouched = (bWantsWalk ? CrouchCreepSpeed : CrouchSpeed) * SpeedScale;
+	// SpeedScale: SetSpeedScale (ULyudTopiMind slows him in the dunes); WadeScale: SetWadeScale (deep snow)
+	Move->MaxWalkSpeed = (bWantsWalk ? WalkSpeed : RunSpeed) * SpeedScale * WadeScale;
+	Move->MaxWalkSpeedCrouched = (bWantsWalk ? CrouchCreepSpeed : CrouchSpeed) * SpeedScale * WadeScale;
 
 	if (IsSeated() || IsOnBike() || IsLeadingBike())
 	{

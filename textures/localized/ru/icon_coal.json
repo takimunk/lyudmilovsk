@@ -1,0 +1,10 @@
+{
+ "id": "icon_coal",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "Two small lumps of glossy black coal with sharp shiny facets, side by side.",
+ "source": "design/icons_1127/sheet_4.png (sidecar design/icons_1127/sheet_4.json), cell 9 (row 3, right), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "602eb93a0b0a3c4937801b8994832fd2c726d47c9d8cba84cf1e2e354766c83c",
+ "strings": {}
+}

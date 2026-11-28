@@ -49,7 +49,9 @@ ACTIVITIES_ROWS = [
     '{"id": "lamp_out", %s, "meets": {"mind": 0.2}}' % _TOWER,
     '{"id": "lens_polish", %s, "meets": {"mind": 0.35, "fun": 0.1}}' % _TOWER,
     '{"id": "lamp_light", %s, "meets": {"mind": 0.3}}' % _TOWER,
-    '{"id": "lamp_watch", %s, "meets": {"mind": 0.4, "fun": 0.15}}' % _TOWER,
+    # the watch is kept sitting in the lantern: it rests him a little ("tired"), so a long day's tiredness does not call him
+    # down from it again and again (FWorld::Interrupt breaks off what does not meet a need over its limit)
+    '{"id": "lamp_watch", %s, "meets": {"mind": 0.4, "fun": 0.15, "tired": 0.1}}' % _TOWER,
     '{"id": "weather_obs_8", %s, "meets": {"nature": 0.3, "mind": 0.2}}' % _SCREEN,
     '{"id": "weather_obs_14", %s, "meets": {"nature": 0.3, "mind": 0.2}}' % _SCREEN,
     '{"id": "weather_obs_20", %s, "meets": {"nature": 0.3, "mind": 0.2}}' % _SCREEN,
@@ -147,6 +149,21 @@ def person_line():
     return "    " + json.dumps(p, ensure_ascii=False)
 
 
+def mayak_patch(c, places, margin=12.0, cell=2.0):
+    """The cape's ground as a height field (town_places.json "ground_patches"): the walk grid stops north of it, so
+    without it the keeper walks at the grid's edge height, 60 m under his door (peoplesim week: trips end off-slot)."""
+    pts = []
+    for p in places:
+        pts += [q for q in [p.get("pos"), p.get("door")] + [s.get("pos") for s in p.get("slots", [])] + p.get("path", []) if q]
+    x0 = math.floor((min(q[0] for q in pts) - margin) / cell) * cell
+    x1 = math.ceil((max(q[0] for q in pts) + margin) / cell) * cell
+    y0 = math.floor((min(q[1] for q in pts) - margin) / cell) * cell
+    y1 = math.ceil((max(q[1] for q in pts) + margin) / cell) * cell
+    nx, ny = int(round((x1 - x0) / cell)) + 1, int(round((y1 - y0) / cell)) + 1
+    z = [round(T.ground_z(x0 + i * cell, y0 + j * cell - c.dy), 2) for j in range(ny) for i in range(nx)]
+    return OD([("id", "mayak"), ("x0", x0), ("y0", y0), ("cell", cell), ("nx", nx), ("ny", ny), ("z", z)])
+
+
 def build():
     out = {}
     c = SP.Coast()
@@ -160,6 +177,7 @@ def build():
     after = set(SP.PLACE_IDS) | {PETS.FEED_PLACE} | set(TN.PLACE_IDS) | set(TA.PLACE_IDS)
     at = next((i for i, p in enumerate(places) if p["id"] in after), len(places))
     pd["places"] = places[:at] + new + places[at:]
+    pd["ground_patches"] = [g for g in pd.get("ground_patches", []) if g.get("id") != "mayak"] + [mayak_patch(c, new)]
     out[PLACES] = SP.dump(pd)
 
     text = open(ACTIVITIES, encoding="utf-8").read()

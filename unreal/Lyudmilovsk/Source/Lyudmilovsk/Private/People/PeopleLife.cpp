@@ -149,7 +149,9 @@ namespace PeopleLifeLocal
 		return !Folder.IsEmpty() && M->GetName() == TEXT("SK_") + FPaths::GetCleanFilename(Folder) ? Folder : FString();
 	}
 
-	const TCHAR* PeopleEventNames[] = { TEXT("Start"), TEXT("Arrive"), TEXT("Leave"), TEXT("TalkStart"), TEXT("TalkEnd"), TEXT("Ride"), TEXT("Away"), TEXT("Back") };
+	const TCHAR* PeopleEventNames[] = { TEXT("Start"), TEXT("Arrive"), TEXT("Leave"), TEXT("TalkStart"), TEXT("TalkEnd"), TEXT("Ride"), TEXT("Away"), TEXT("Back"),
+		TEXT("StreetMeet"), TEXT("StreetNod"), TEXT("DoorHold") };
+	static_assert(UE_ARRAY_COUNT(PeopleEventNames) == (int32)LP::EEvent::Num, "a name for every event of the life (LyudPeople::EEvent)");
 }
 
 using namespace PeopleLifeLocal;
@@ -321,6 +323,7 @@ void UPeopleLifeSubsystem::Stop()
 	PropMeshes.Reset();
 	EaselMesh = nullptr;
 	BucketMesh = nullptr;
+	ChessMesh = nullptr;
 	SetLightsDriven(false);     // the buildings light themselves again (a seeded evening)
 	LightSinks.Reset();
 	bLightSinksBound = false;
@@ -1070,6 +1073,8 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		MNow.SkyShow = SkyShow;
 	}
 	bool bOwnerHere = false;
+	// looked up once a frame, not for every person drawn
+	ULyudBikeSubsystem* BikeSys = ULyudBikeSubsystem::Get(this);
 	for (const LP::FPerson& P : S.People)
 	{
 		const LP::FSlot* Sl = P.Slot >= 0 ? &S.Slots[P.Slot] : nullptr;
@@ -1221,9 +1226,9 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		}
 		const float SeatH = Sl && P.State != LP::EState::Going ? Sl->Height * 100.f : 0.f;
 		// with their bicycle in hand (Bikes/LyudBikeSubsystem): the bike's side places the body on it or beside it
-		ULyudBikeSubsystem* BikeSys = ULyudBikeSubsystem::Get(this);
 		if (BikeSys && P.Bike >= 0 && (P.BikeMode > 0 || P.BikeAct != LP::EBikeAct::None))
 		{
+			Body->SetPutDown(nullptr, FVector::ZeroVector, FRotator::ZeroRotator);
 			BikeSys->PresentPerson(P.Id, Body, DeltaTime);
 		}
 		else
@@ -1268,6 +1273,7 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 					Body->LookAtNothing();
 				}
 			}
+			Yaw = PresentChess(P, Body, At, SeatH, Yaw);
 			Body->Drive(At, Yaw, (EPersonPose)(uint8)P.Pose, Transit, P.Speed * 100.f, SeatH, DeltaTime, bWasHidden);
 		}
 	}
@@ -1339,6 +1345,17 @@ void UPeopleLifeSubsystem::DispatchEvents()
 			const LP::FPerson& P = S.People[E.Person];
 			UE_LOG(LogTemp, Log, TEXT("PeopleLife: %hs boards the train at %.0f (doors %.0f, off at %.0f, rail offset %.0f)"), P.Key.c_str(), S.Time,
 				P.DoorsAt, P.RideUntil, RailOffset);
+		}
+		// on the way (docs/town_life.md "The days"): a greeting in passing between people who know each other, a nod of
+		// thanks to whoever holds a door (only those drawn: ReactManner)
+		if (E.Kind == LP::EEvent::StreetNod)
+		{
+			ReactManner(E.Person, GetTrait(E.Person, TEXT("warmth")) > 0.6f ? FName(TEXT("wave")) : FName(TEXT("nod")), 2.2f);
+			ReactManner(E.Other, TEXT("nod"), 1.8f);
+		}
+		else if (E.Kind == LP::EEvent::DoorHold)
+		{
+			ReactManner(E.Other, TEXT("nod"), 1.8f);
 		}
 		OnPersonEvent.Broadcast(E.Person, FName(PeopleEventNames[(int)E.Kind]), E.Other);
 	}
@@ -1567,6 +1584,7 @@ void UPeopleLifeSubsystem::ReleaseBody(int32 Id)
 	{
 		Manners->Release(Id, MannerClock);
 	}
+	Body->SetPutDown(nullptr, FVector::ZeroVector, FRotator::ZeroRotator);
 	const bool bOwnLook = ShownModels.IsValidIndex(Id) && Sim && Id < (int32)Sim->People.size() && ShownModels[Id] != UTF8_TO_TCHAR(Sim->People[Id].Mesh.c_str());
 	Body->SetActorHiddenInGame(true);
 	TownPool.FindOrAdd(Body->MeshName).Add(Body);
@@ -2084,6 +2102,7 @@ FString UPeopleLifeSubsystem::Describe(int32 Id) const
 void UPeopleLifeSubsystem::LoadManners()
 {
 	Manners.Reset();
+	ChessAct = Sim ? Sim->FindActivity("chess_bench") : -1;
 	FString Text;
 	const FString Path = FPaths::ProjectContentDir() / TEXT("PeopleData/manners.json");
 	if (!FFileHelper::LoadFileToString(Text, *Path))
@@ -2127,6 +2146,7 @@ void UPeopleLifeSubsystem::LoadManners()
 	}
 	Want(TEXT("easel"));
 	Want(TEXT("bucket"));
+	Want(TEXT("chess"));
 	if (Paths.Num() == 0)
 	{
 		return;
@@ -2150,8 +2170,54 @@ void UPeopleLifeSubsystem::LoadManners()
 		}
 		EaselMesh = FindObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Prop_easel.SM_Prop_easel"));
 		BucketMesh = FindObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Prop_bucket.SM_Prop_bucket"));
+		ChessMesh = FindObject<UStaticMesh>(nullptr, TEXT("/Game/Characters/Humans/Props/SM_Prop_chess.SM_Prop_chess"));
 		UE_LOG(LogTemp, Display, TEXT("PeopleLife: %d of %d manner props"), Got, (int32)LP::EProp::Num - 1);
 	}));
+}
+
+float UPeopleLifeSubsystem::PresentChess(const LP::FPerson& P, ANpcBody* Body, const FVector& At, float SeatH, float Yaw)
+{
+	// chess on a bench (docs/town_life.md "The days"): the plan's two friends sit on neighbouring seats; the board lies on
+	// the seat between them, given to the body of the one with the lower id (to the other when that one is not drawn),
+	// White toward whoever holds it; both turn a little to the board. Somebody playing alone has it beside them.
+	const LP::FWorld& S = *Sim;
+	if (ChessAct < 0 || P.Activity != ChessAct || P.State != LP::EState::Doing || P.Pose != LP::EPose::Sit)
+	{
+		Body->SetPutDown(nullptr, FVector::ZeroVector, FRotator::ZeroRotator);
+		return Yaw;
+	}
+	// (the seat's own facing: Yaw may be turned to something they noticed)
+	const FVector Fwd = FRotator(0.f, P.Yaw, 0.f).Vector();
+	const FVector Side = FVector::CrossProduct(FVector::UpVector, Fwd);        // the bench's way, to the sitter's right
+	FVector Across = Side;
+	FVector Mid = At + Side * 42.f;
+	bool bMine = true;
+	const LP::FPerson* O = P.PlanWith >= 0 && P.PlanWith < (int32)S.People.size() ? &S.People[(size_t)P.PlanWith] : nullptr;
+	if (O && O->Activity == ChessAct && O->State == LP::EState::Doing && O->Place == P.Place)
+	{
+		FVector Other = PeopleToUE(O->Pos);
+		Other.Z = At.Z;
+		const FVector Way = Other - At;
+		if (Way.SizeSquared2D() < FMath::Square(170.f))
+		{
+			const bool bOtherOut = S.InsideShell(*O) || O->bExternal || (O->bTown && (O->Id >= TownAllowed.Num() || !TownAllowed[O->Id]));
+			bMine = P.Id < O->Id || bOtherOut;
+			Mid = (At + Other) * 0.5;
+			Across = (P.Id < O->Id ? Way : -Way).GetSafeNormal2D();
+		}
+	}
+	if (bMine && ChessMesh)
+	{
+		Body->SetPutDown(ChessMesh, FVector(Mid.X, Mid.Y, At.Z + SeatH), FRotationMatrix::MakeFromXZ(Across, FVector::UpVector).Rotator());
+	}
+	else
+	{
+		Body->SetPutDown(nullptr, FVector::ZeroVector, FRotator::ZeroRotator);
+	}
+	// turned some 20 degrees toward the board (no more: the bench's back is behind them)
+	const FVector ToBoard = Mid - At;
+	const float Turn = FVector::DotProduct(ToBoard, Side) >= 0.f ? 20.f : -20.f;
+	return ToBoard.SizeSquared2D() > 1.f ? Yaw + Turn : Yaw;
 }
 
 void UPeopleLifeSubsystem::UpdateManners(float DeltaTime)
@@ -2414,6 +2480,32 @@ ANpcBody::ANpcBody()
 	MannerProp = C;
 	Part(C, TEXT("MannerStand"), nullptr);
 	MannerStand = C;
+	Part(C, TEXT("PutDown"), nullptr);
+	PutDown = C;
+}
+
+void ANpcBody::SetPutDown(UStaticMesh* InMesh, const FVector& Where, const FRotator& Rot)
+{
+	if (!InMesh)
+	{
+		if (PutDown->IsVisible())
+		{
+			PutDown->SetVisibility(false);
+		}
+		return;
+	}
+	if (PutDown->GetStaticMesh() != InMesh)
+	{
+		PutDown->SetStaticMesh(InMesh);
+	}
+	if (!PutDown->GetComponentLocation().Equals(Where, 0.5) || !PutDown->GetComponentRotation().Equals(Rot, 0.5f))
+	{
+		PutDown->SetWorldLocationAndRotation(Where, Rot);
+	}
+	if (!PutDown->IsVisible())
+	{
+		PutDown->SetVisibility(true);
+	}
 }
 
 void ANpcBody::SetManner(uint8 InManner, uint8 InProp, float Since, float Left, bool bLeftHanded, UStaticMesh* PropMesh, UStaticMesh* StandMesh)
@@ -2674,6 +2766,18 @@ void ANpcBody::PlacePusher(bool bShow)
 	PusherBlade->SetWorldLocationAndRotation(BladeAt, FRotationMatrix::MakeFromXZ(Fwd, FVector::UpVector).Rotator() + FRotator(-12.f, 0.f, 0.f));
 	PusherBlade->SetWorldScale3D(FVector(0.025f, 0.75f, 0.34f));
 	PusherBlade->SetVisibility(true);
+}
+
+bool ANpcBody::IsModelReady(const UObject* WorldContext, const FString& Model)
+{
+	const bool bModel = ULyudPrefetch::Ready(WorldContext, PeopleLifeLocal::PeopleModelPath(Model));
+	const bool bClips = ULyudPrefetch::FolderReady(WorldContext, TEXT("/Game/Characters/Humans/Anims"));
+	return bModel && bClips;
+}
+
+void ANpcBody::ReleaseModel(const UObject* WorldContext, const FString& Model)
+{
+	ULyudPrefetch::Release(WorldContext, PeopleLifeLocal::PeopleModelPath(Model));
 }
 
 bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)

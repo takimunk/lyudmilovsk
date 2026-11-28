@@ -1,0 +1,10 @@
+{
+ "id": "icon_rod_sea",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_6.json (cell 2 (row 1, middle)).",
+ "source": "design/fishing/icons_grid_6.png (sidecar design/fishing/icons_grid_6.json), cell 2 (row 1, middle), cut into 3x2 equal cells, resized to 512x512",
+ "sha256": "556bda90ea0b19a073e6dc13be6c21f9433b6dc41379eecead3347440edce802",
+ "strings": {}
+}

@@ -1,0 +1,10 @@
+{
+ "id": "icon_fish_sandeel",
+ "lang": "ru",
+ "model": "higgsfield gpt_image_2_5 (2k, medium)",
+ "aspect": "1:1",
+ "prompt": "See design/fishing/icons_grid_1.json (cell 7 (row 3, left)).",
+ "source": "design/fishing/icons_grid_1.png (sidecar design/fishing/icons_grid_1.json), cell 7 (row 3, left), cut into 3x3 equal cells, resized to 512x512",
+ "sha256": "da4f4b10208b2eb9c40f02c2af3c283cb47406061ebb626e775022f15022c8dd",
+ "strings": {}
+}

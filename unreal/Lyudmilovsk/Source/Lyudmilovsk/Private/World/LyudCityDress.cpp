@@ -3,11 +3,13 @@
 #include "Dev/LyudDev.h"
 
 #include "../City/CityDressModel.h"
+#include "../People/PeopleSim.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "Festival/LyudFestival.h"
 #include "HAL/IConsoleManager.h"
+#include "People/PeopleLife.h"
 #include "Plants/GameCalendar.h"
 #include "Weather/LyudWeather.h"
 #include "World/LyudCityBuilding.h"
@@ -39,6 +41,10 @@ namespace
 	LyudDev::FAutoAction GDressHide(TEXT("interiors.dress_hide"), TEXT("interiors"), TEXT("dev.action.interiors.dress_hide"),
 		[](UWorld*) { ToggleDressMode(0); }, [](UWorld*) { return CVarCityDress.GetValueOnGameThread() == 0; });
 
+	/** Developer mode: every set with a visit condition is stamped as if its visit ended now (they show for their keep). */
+	LyudDev::FAutoAction GDressVisits(TEXT("interiors.dress_visits"), TEXT("interiors"), TEXT("dev.action.interiors.dress_visits"),
+		[](UWorld* World) { if (ULyudCityDress* D = ULyudCityDress::Get(World)) { D->StampAllVisits(); } }, nullptr);
+
 	/** Every live subsystem (for the console's mode). Game thread only. */
 	TArray<TWeakObjectPtr<ULyudCityDress>>& Live()
 	{
@@ -62,7 +68,26 @@ namespace
 		C.PhaseFrom = W.PhaseFrom;
 		C.PhaseTo = W.PhaseTo;
 		C.Open = W.Open;
+		C.VisitKeep = W.VisitActs.Num() > 0 ? W.VisitKeep : 0.f;
 		return C;
+	}
+
+	/** The game's clock as hours since day 0 (FWhen Day * 24 + Hour): when a visit ended, how long ago. */
+	double HoursOf(const LyudCity::FWhen& W)
+	{
+		return (double)W.Day * 24.0 + (double)W.Hour;
+	}
+
+	double NowHours(const UWorld* World)
+	{
+		const FDateTime Now = UGameCalendar::NowIn(World);
+		return (double)(Now.GetDate().GetTicks() / ETimespan::TicksPerDay) * 24.0 + (double)Now.GetHour() + (double)Now.GetMinute() / 60.0;
+	}
+
+	/** A set's key in ULyudCityDress::ListenOf. */
+	uint64 ListenKey(const ALyudCityBuilding* B, int32 I)
+	{
+		return ((uint64)B->GetUniqueID() << 16) | (uint64)(I & 0xFFFF);
 	}
 
 	/** The game's moment as the city things read it (LyudCityThings.cpp When): the date, the clock, the holidays, the weather. */
@@ -110,8 +135,9 @@ namespace
 	}
 
 	/** Shows or hides each set of B for the moment W; returns how many are shown. */
-	int32 ApplyTo(ALyudCityBuilding* B, int32 Mode, const LyudCity::FWhen& W)
+	int32 ApplyTo(ALyudCityBuilding* B, int32 Mode, const LyudCity::FWhen& W, const ULyudCityDress& D)
 	{
+		const double Now = HoursOf(W);
 		const int32 N = B->NumDress();
 		if (B->DressComps.Num() != N)
 		{
@@ -125,7 +151,9 @@ namespace
 			bool bShow = Mode == 2;
 			if (Mode == 1)
 			{
-				bShow = LyudCity::DressVisible(ToModel(B->DressWhen[I]), W, Plot, std::string(TCHAR_TO_UTF8(*B->DressIds[I].ToString())), bOpen);
+				const FLyudDressWhen& When = B->DressWhen[I];
+				const float Ago = When.VisitActs.Num() > 0 ? D.VisitAgo(B, I, Now) : -1.f;
+				bShow = LyudCity::DressVisible(ToModel(When), W, Plot, std::string(TCHAR_TO_UTF8(*B->DressIds[I].ToString())), bOpen, Ago);
 			}
 			UStaticMeshComponent* C = B->DressComps[I];
 			if (bShow && !C && B->DressMeshes[I])
@@ -176,7 +204,11 @@ void ULyudCityDress::Register(ALyudCityBuilding* B)
 	{
 		return;
 	}
-	Buildings.AddUnique(B);
+	if (!Buildings.Contains(B))
+	{
+		Buildings.Add(B);
+		AddListens(B);
+	}
 	Live().AddUnique(this);
 	bDirty = true;
 }
@@ -184,12 +216,171 @@ void ULyudCityDress::Register(ALyudCityBuilding* B)
 void ULyudCityDress::Unregister(ALyudCityBuilding* B)
 {
 	Buildings.Remove(B);
+	// its listens are skipped from now on and dropped at the next tick; a building that comes back gets new ones
+	for (FVisitListen& V : Listens)
+	{
+		if (V.B.Get() == B)
+		{
+			ListenOf.Remove(ListenKey(B, V.Set));
+			V.B.Reset();
+			bListensStale = true;
+		}
+	}
+}
+
+void ULyudCityDress::PruneListens()
+{
+	bListensStale = false;
+	const int32 Before = Listens.Num();
+	Listens.RemoveAll([](const FVisitListen& V) { return !V.B.IsValid(); });
+	if (Listens.Num() == Before)
+	{
+		return;
+	}
+	ListenByAct.Reset();
+	ListenOf.Reset();
+	for (int32 L = 0; L < Listens.Num(); ++L)
+	{
+		const FVisitListen& V = Listens[L];
+		const ALyudCityBuilding* B = V.B.Get();
+		if (B->DressWhen.IsValidIndex(V.Set))
+		{
+			for (const FName& A : B->DressWhen[V.Set].VisitActs)
+			{
+				ListenByAct.Add(A, L);
+			}
+		}
+		ListenOf.Add(ListenKey(B, V.Set), L);
+	}
+}
+
+void ULyudCityDress::AddListens(ALyudCityBuilding* B)
+{
+	const FString Plot = B->PlotId.ToString();
+	for (int32 I = 0; I < B->NumDress(); ++I)
+	{
+		const FLyudDressWhen& W = B->DressWhen[I];
+		if (W.VisitActs.Num() == 0 || W.VisitKeep <= 0.f)
+		{
+			continue;
+		}
+		FVisitListen V;
+		V.B = B;
+		V.Set = I;
+		V.Plot = Plot;
+		V.At = W.VisitAt;
+		V.Who = W.VisitWho;
+		const int32 L = Listens.Add(MoveTemp(V));
+		for (const FName& A : W.VisitActs)
+		{
+			ListenByAct.Add(A, L);
+		}
+		ListenOf.Add(ListenKey(B, I), L);
+	}
+}
+
+void ULyudCityDress::BindLife()
+{
+	if (bLifeBound || Listens.Num() == 0)
+	{
+		return;
+	}
+	if (UPeopleLifeSubsystem* L = UPeopleLifeSubsystem::Get(GetWorld()))
+	{
+		L->OnPersonEvent.AddUniqueDynamic(this, &ULyudCityDress::OnLifeEvent);
+		Life = L;
+		bLifeBound = true;
+	}
+}
+
+void ULyudCityDress::OnLifeEvent(int32 PersonId, FName Event, int32 Other)
+{
+	static const FName NArrive(TEXT("Arrive"));
+	static const FName NLeave(TEXT("Leave"));
+	if (Listens.Num() == 0 || (Event != NArrive && Event != NLeave))
+	{
+		return;
+	}
+	const UPeopleLifeSubsystem* L = Life.Get();
+	const LyudPeople::FWorld* S = L ? L->GetSim() : nullptr;
+	if (!S || PersonId < 0 || PersonId >= (int32)S->People.size())
+	{
+		return;
+	}
+	const LyudPeople::FPerson& P = S->People[PersonId];
+	auto ActName = [S](int32 A) { return A >= 0 && A < (int32)S->Activities.size() ? FName(UTF8_TO_TCHAR(S->Activities[A].Id.c_str())) : NAME_None; };
+	if (Event == NArrive)
+	{
+		// where they are now, for when they leave (by then the life may have moved them on within the same step)
+		if (ListenByAct.Contains(ActName(P.Activity)))
+		{
+			ArrivedAt.Add(PersonId, P.Place);
+		}
+		return;
+	}
+	TArray<int32, TInlineAllocator<8>> Hits;
+	ListenByAct.MultiFind(ActName(P.PrevActivity), Hits);
+	int32 PlaceI = P.Place;
+	ArrivedAt.RemoveAndCopyValue(PersonId, PlaceI);
+	if (Hits.Num() == 0 || PlaceI < 0 || PlaceI >= (int32)S->Places.size())
+	{
+		return;
+	}
+	const LyudPeople::FPlace& Pl = S->Places[PlaceI];
+	const FString PlaceId(UTF8_TO_TCHAR(Pl.Id.c_str()));
+	const FString Building(UTF8_TO_TCHAR(Pl.Building.c_str()));
+	const FString Key(UTF8_TO_TCHAR(P.Key.c_str()));
+	const FString Occupation(UTF8_TO_TCHAR(P.Occupation.c_str()));
+	const double Now = NowHours(GetWorld());
+	for (const int32 I : Hits)
+	{
+		FVisitListen& V = Listens[I];
+		if (!V.B.IsValid())
+		{
+			continue;
+		}
+		const bool bHere = V.At.IsEmpty() ? (Building == V.Plot || PlaceId == V.Plot) : PlaceId == V.Plot + V.At;
+		if (!bHere || (V.Who.Num() > 0 && !V.Who.Contains(Key) && !V.Who.Contains(Occupation)))
+		{
+			continue;
+		}
+		V.LastAt = Now;
+		bDirty = true;
+	}
+}
+
+void ULyudCityDress::StampAllVisits()
+{
+	const double Now = NowHours(GetWorld());
+	for (FVisitListen& V : Listens)
+	{
+		V.LastAt = V.B.IsValid() ? Now : V.LastAt;
+	}
+	bDirty = true;
+}
+
+float ULyudCityDress::VisitAgo(const ALyudCityBuilding* B, int32 I, double Now) const
+{
+	const int32* L = B ? ListenOf.Find(ListenKey(B, I)) : nullptr;
+	if (!L || Listens[*L].LastAt < 0.0)
+	{
+		return -1.f;
+	}
+	return (float)FMath::Max(0.0, Now - Listens[*L].LastAt);
 }
 
 void ULyudCityDress::Deinitialize()
 {
+	if (UPeopleLifeSubsystem* L = Life.Get())
+	{
+		L->OnPersonEvent.RemoveDynamic(this, &ULyudCityDress::OnLifeEvent);
+	}
 	Live().Remove(this);
 	Buildings.Reset();
+	Listens.Reset();
+	ListenByAct.Reset();
+	ListenOf.Reset();
+	ArrivedAt.Reset();
 	Super::Deinitialize();
 }
 
@@ -206,6 +397,11 @@ void ULyudCityDress::Tick(float DeltaTime)
 		return;
 	}
 	Accum = 0.f;
+	BindLife();
+	if (bListensStale)
+	{
+		PruneListens();
+	}
 	const int32 Mode = FMath::Clamp(CVarCityDress.GetValueOnGameThread(), 0, 2);
 	const LyudCity::FWhen W = Moment(GetWorld());
 	const uint64 Key = KeyOf(W, Mode);
@@ -219,7 +415,7 @@ void ULyudCityDress::Tick(float DeltaTime)
 	Buildings.RemoveAll([](const TWeakObjectPtr<ALyudCityBuilding>& B) { return !B.IsValid(); });
 	for (const TWeakObjectPtr<ALyudCityBuilding>& B : Buildings)
 	{
-		Shown += ApplyTo(B.Get(), Mode, W);
+		Shown += ApplyTo(B.Get(), Mode, W, *this);
 	}
 }
 

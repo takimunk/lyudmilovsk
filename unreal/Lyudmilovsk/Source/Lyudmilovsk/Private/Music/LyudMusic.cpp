@@ -10,6 +10,7 @@
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
 #include "Festival/LyudFestival.h"
+#include "Home/LyudHeroRoom.h"
 #include "HAL/IConsoleManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudInventory.h"
@@ -26,6 +27,7 @@
 #include "UI/LyudUIStyle.h"
 #include "Weather/LyudWeather.h"
 #include "Winter/LyudWinterPlay.h"
+#include "World/LyudPrefetch.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/SOverlay.h"
@@ -457,17 +459,19 @@ float ULyudMusic::MusicLevel() const
 
 // ------------------------------------------------------------------ the city's things
 
-TArray<int32> ULyudMusic::OwnedRecords() const
+TArray<int32> ULyudMusic::OwnedRecords(bool bWithRoom) const
 {
 	TArray<int32> Out;
 	const ULyudInventory* Inv = ULyudInventory::Get(this);
+	const ULyudHeroRoom* Room = bWithRoom ? ULyudHeroRoom::Get(this) : nullptr;
 	if (!Inv || !Model)
 	{
 		return Out;
 	}
 	for (int32 I = 0; I < (int32)Model->Records.size(); ++I)
 	{
-		if (Inv->Count(FName(*LyudMusicImpl::Str(Model->Records[(size_t)I].Id))) > 0)
+		const FName Id(*LyudMusicImpl::Str(Model->Records[(size_t)I].Id));
+		if (Inv->Count(Id) > 0 || (Room && Room->Holds(Id)))
 		{
 			Out.Add(I);
 		}
@@ -553,7 +557,8 @@ bool ULyudMusic::OnCityAct(const FCityActInfo& Info, FText& Line)
 	}
 	case LyudMusic::ERole::Player:
 	{
-		const TArray<int32> Owned = OwnedRecords();
+		// (the player of his own room plays what stands on its shelves too: docs/hero_room.md)
+		const TArray<int32> Owned = OwnedRecords(Info.Thing.StartsWith(TEXT("P-HOME/")));
 		std::vector<int> OwnedV(Owned.GetData(), Owned.GetData() + Owned.Num());
 		const int32 Rec = Model->NextOwned(Std(Info.Thing), OwnedV);
 		if (Rec >= 0)
@@ -730,7 +735,9 @@ void ULyudMusic::TickRadio(const FVector& Hero, float DeltaTime)
 	// a record heard nearby wins over the radio
 	if (!R || bDiscHeard)
 	{
-		if (Radio && (Radio->IsPlaying() || !RadioThing.IsEmpty()))
+		// once, as it goes quiet: asked again four times a second while the fade runs (it still IsPlaying), each FadeOut
+		// started the fade and its stop timer over, so the radio never stopped and kept its voice, nearly silent
+		if (Radio && !RadioThing.IsEmpty())
 		{
 			Radio->FadeOut(0.6f, 0.f);
 		}
@@ -797,6 +804,22 @@ void ULyudMusic::TickRadio(const FVector& Hero, float DeltaTime)
 			RadioTrack = P.Track;
 			RadioStart = P.Start;
 			bRadioStatic = false;
+			// the show's next record starts loading in the background now (held by ULyudPrefetch): Cue() loaded each
+			// track on the spot at its first second, a hitch every few minutes of listening
+			const LyudMusic::FPlay* Upcoming = nullptr;
+			for (const LyudMusic::FPlay& Q : Air.Timeline.Plays)
+			{
+				if (Q.Start > P.Start && Q.Track != P.Track && Q.Track >= 0 && Q.Track < (int32)Model->Tracks.size()
+					&& (!Upcoming || Q.Start < Upcoming->Start))
+				{
+					Upcoming = &Q;
+				}
+			}
+			if (Upcoming && !CueCache.Contains(Upcoming->Track))
+			{
+				const FString UpName = TEXT("MU_") + Str(Model->Tracks[(size_t)Upcoming->Track].Cue);
+				ULyudPrefetch::Ready(this, FString::Printf(TEXT("/Game/Audio/Music/%s.%s"), *UpName, *UpName));
+			}
 		}
 		else
 		{

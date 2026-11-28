@@ -14461,6 +14461,52 @@
    ]
   },
   {
+   "id": "lounge_tea",
+   "when": {
+    "visit": [
+     "dominoes"
+    ],
+    "at": "-LOUNGE",
+    "keep": 2.0
+   },
+   "tris": 239,
+   "bounds": [
+    [
+     -0.812,
+     11.849,
+     0.42
+    ],
+    [
+     0.118,
+     12.144,
+     0.56
+    ]
+   ]
+  },
+  {
+   "id": "pump_glasses",
+   "when": {
+    "visit": [
+     "san_cure"
+    ],
+    "at": "-PUMP",
+    "keep": 1.5
+   },
+   "tris": 48,
+   "bounds": [
+    [
+     6.638,
+     13.426,
+     0.78
+    ],
+    [
+     7.21,
+     13.854,
+     0.89
+    ]
+   ]
+  },
+  {
    "id": "flowers_fresh",
    "when": {
     "phase": [
@@ -14604,6 +14650,6 @@
   "shell": 16488,
   "detail": 43629,
   "windows": 1996,
-  "dress": 3131
+  "dress": 3418
  }
 }
