@@ -42,7 +42,7 @@
  "city.street.whitewash.prompt": {
   "ru": "E — побелить ствол",
   "en": "E — whitewash a trunk",
-  "ja": "E — 幹を白く塗る"
+  "ja": "E：幹を白く塗る"
  },
  "city.street.whitewash.1": {
   "ru": "Ведро извести и широкая кисть. Ствол белеет снизу до колена, как в носках. Соседка кивает: ровно.",
@@ -72,7 +72,7 @@
  "city.street.rake.prompt": {
   "ru": "E — помочь сгрести листья",
   "en": "E — help rake the leaves",
-  "ja": "E — 落ち葉かきを手伝う"
+  "ja": "E：落ち葉かきを手伝う"
  },
  "city.street.rake.1": {
   "ru": "Грабли длиннее меня. Листья шуршат и пахнут яблоками. Дворник машет: «Вот спасибо, держи на мороженое».",
@@ -97,12 +97,12 @@
  "city.street.dominoes.prompt": {
   "ru": "E — сесть забить козла",
   "en": "E — sit in for a game of dominoes",
-  "ja": "E — 座ってドミノに入る"
+  "ja": "E：座ってドミノに入る"
  },
  "city.street.dominoes.1": {
   "ru": "Костяшки щёлкают по фанере. «Рыба!» — и все смеются, хотя проиграл я.",
   "en": "The tiles clack on the plywood. \"Blocked!\" and everyone laughs, though I'm the one who lost.",
-  "ja": "牌が合板にぱちんと当たる。「詰みだ！」みんな笑う。負けたのはぼくなのに。"
+  "ja": "牌が合板にぱちんと当たる。「手詰まりだ！」みんな笑う。負けたのはぼくなのに。"
  },
  "city.street.dominoes.2": {
   "ru": "Дед в майке учит: «Не держи дубли до конца». Комары тоже играют.",
@@ -166,7 +166,7 @@
  },
  "city.ask.street_icecream.which.2": {
   "ru": "Пломбир в рожке. Только ешь быстро, у нас тут солнце, а не холодильник.",
-  "en": "The cone. Just eat it fast, it's the sun out here, not a fridge.",
+  "en": "Plombir in a cone. Just eat it fast, it's the sun out here, not a fridge.",
   "ja": "コーンのアイス。でも早く食べてね。ここは冷蔵庫じゃなくて太陽の下だから。"
  },
  "city.ask.street_icecream.cart": {
