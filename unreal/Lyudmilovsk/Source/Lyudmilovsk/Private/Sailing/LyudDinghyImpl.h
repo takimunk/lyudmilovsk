@@ -284,9 +284,18 @@ struct ALyudSailLaunch::FImpl
 	float Turn = 0.f;
 	float WakeRun = 0.f;
 	float LoopGain[4] = {};
+	float LoopQuiet[4] = {};
 	float SurfaceZ = 0.f;
+	float SlapIn = 1.f;
+	float FlagYaw = 180.f;
+	float ViewDist = 0.f;              // cm from the player's view, refreshed by Advance
+	bool bFlagAsset = false;
+	bool bParked = false;
 	void Build(ALyudSailLaunch& A);
+	void Sample(ALyudSailLaunch& A);
 	void Place(ALyudSailLaunch& A, float DeltaTime);
 	void Engine(ALyudSailLaunch& A, float DeltaTime);
+	void StopEngine(ALyudSailLaunch& A, float Fade);
+	void DressFlag(ALyudSailLaunch& A);
 	void DriverTick(ALyudSailLaunch& A);
 };
