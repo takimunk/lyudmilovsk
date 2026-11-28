@@ -10,10 +10,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Templates/PimplPtr.h"
 #include "LyudDinghy.generated.h"
 
 class AHeroCharacter;
+class UAudioComponent;
 class USceneComponent;
+class UStaticMeshComponent;
+struct FLyudSailHudData;
 namespace LyudSail { struct FBoat; struct FControls; struct FEnv; struct FHelm; struct FLaunch; }
 
 /** How much of a boat is simulated and drawn. */
@@ -109,6 +113,17 @@ public:
 	 *  the next mark's world position (zero = none) for the HUD's arrow. */
 	void SetHudTask(const FText& Title, const TArray<FText>& Lines, float Countdown, const FVector2D& NextMarkM);
 
+	// ---- additions of the boat part (not in the first contract) ----
+	/** The tutor's own hints from LyudSail::Advice on the hero's HUD (on by default; each at most once in ~20 s). A lesson
+	 *  that has its own words turns them off. */
+	void SetTutorHints(bool bOn);
+	/** The boat is shown ashore by ParkAt (on its trolley): SetLod(Parked) then keeps it drawn, still and unstepped. */
+	bool IsOnTrolley() const { return bOnTrolley; }
+	/** What the hero's HUD draws (LyudSailHud.h); never null after Setup. */
+	const FLyudSailHudData* HudData() const;
+	/** The scene component that heels and pitches (the hull's frame, boat origin at the waterline amidships). */
+	USceneComponent* HullFrame() const;
+
 	/** Fired (game thread) when the model raises events in Advance: (boat, LyudSail::EEvent bits). */
 	DECLARE_MULTICAST_DELEGATE_TwoParams(FOnSailEvents, ALyudDinghy&, uint32);
 	FOnSailEvents OnSailEvents;
@@ -121,11 +136,16 @@ private:
 	TPimplPtr<FImpl> Impl;
 	UPROPERTY(Transient) TObjectPtr<USceneComponent> Root;
 	UPROPERTY(Transient) TArray<TObjectPtr<UObject>> Kept;   // meshes, MIDs, components, audio kept alive
+	/** The nine loops of LyudSail::Sound::ELoop while the boat is Near (null: not playing). */
+	UPROPERTY(Transient) TArray<TObjectPtr<UAudioComponent>> Loops;
 	int32 BoatClass = 2;
 	int32 SailNumber = 0;
 	ELyudDinghyLod Lod = ELyudDinghyLod::Parked;
 	bool bHeroAboard = false;
+	bool bOnTrolley = false;
 	FLyudDinghyTelemetry Tele;
+	/** The hero is out of the boat (he stood up, or was stood up): the HUD, the view and the hooks go. */
+	void HeroGone(bool bStandHim);
 };
 
 /** The coach's aluminium launch with its outboard: LyudSail::FLaunch drawn, with a driver and a flag staff. */
@@ -160,6 +180,11 @@ private:
 	TPimplPtr<FImpl> Impl;
 	UPROPERTY(Transient) TObjectPtr<USceneComponent> Root;
 	UPROPERTY(Transient) TArray<TObjectPtr<UObject>> Kept;
+	/** The outboard's four loops (LyudSail::Sound::MixOutboard) while the engine runs. */
+	UPROPERTY(Transient) TArray<TObjectPtr<UAudioComponent>> Loops;
+
+protected:
+	virtual void EndPlay(const EEndPlayReason::Type Reason) override;
 };
 
 /** A race mark, the pin buoy with its flag, a training buoy or the man-overboard buoy: rides the waves where put. */
@@ -182,6 +207,11 @@ public:
 private:
 	UPROPERTY(Transient) TObjectPtr<USceneComponent> Root;
 	UPROPERTY(Transient) TArray<TObjectPtr<UObject>> Kept;
+	UPROPERTY(Transient) TObjectPtr<UStaticMeshComponent> Body;
 	FVector2D Pos = FVector2D::ZeroVector;
 	int32 Kind = 0;
+	int32 BuiltKind = -1;
+	float Clock = 0.f;
+	float LeanPitch = 0.f, LeanRoll = 0.f;
+	bool bStowed = true;
 };
