@@ -79,6 +79,14 @@
     {"id": "sway", "poses": ["stand"], "doing": ["dance_evening"], "at": ["dance_floor"], "seconds": [20, 60], "weight": 12.0, "cooldown": 3},
     {"id": "knit", "poses": ["sit"], "habit": "knitter", "doing": ["dance_watch"], "seconds": [180, 600], "weight": 2.0, "cooldown": 600, "prop": "knitting"},
     {"id": "drink", "poses": ["sit"], "doing": ["dance_watch"], "seconds": [40, 100], "weight": 1.0, "cooldown": 400, "prop": "cup"},
+    {"id": "sway", "poses": ["stand"], "doing": ["prom_dance"], "at": ["dance_square"], "seconds": [20, 60], "weight": 12.0, "cooldown": 3},
+    {"id": "scratch_head", "poses": ["stand", "look"], "doing": ["prom_dance", "prom_dance_watch"], "hours": [21, 23], "seconds": [3, 6], "weight": 1.5, "cooldown": 240},
+    {"id": "hug_self", "poses": ["stand", "look"], "doing": ["prom_dance_watch", "prom_evening_walk"], "hours": [21.5, 23], "temp_below": 17, "seconds": [10, 30], "weight": 1.0, "cooldown": 600},
+    {"id": "clap", "poses": ["look"], "doing": ["band_listen", "prom_dance_watch"], "seconds": [4, 8], "weight": 1.5, "cooldown": 150},
+    {"id": "sway", "poses": ["look"], "doing": ["band_listen"], "seconds": [10, 30], "weight": 1.2, "cooldown": 200},
+    {"id": "ice_cream", "poses": ["look", "walk", "sit"], "outdoors": 1, "doing": ["band_listen", "band_kids", "prom_evening_walk", "prom_sunset_bench"], "temp_above": 17, "rain": 0, "seconds": [90, 180], "weight": 0.6, "cooldown": 2400, "prop": "ice_cream"},
+    {"id": "photo", "poses": ["stand", "look", "sit"], "outdoors": 1, "habit": "photographer", "doing": ["prom_evening_walk", "prom_sunset_bench", "band_listen"], "sun_low": 1, "rain": 0, "seconds": [6, 14], "weight": 6.0, "cooldown": 45, "prop": "camera"},
+    {"id": "point_sky", "poses": ["stand", "look", "sit"], "doing": ["prom_evening_walk", "prom_sunset_bench"], "hours": [21, 22.5], "seconds": [3, 6], "weight": 0.8, "cooldown": 900},
     {"id": "wave", "react": 1, "cooldown": 90},
     {"id": "nod", "react": 1, "cooldown": 90}
   ]

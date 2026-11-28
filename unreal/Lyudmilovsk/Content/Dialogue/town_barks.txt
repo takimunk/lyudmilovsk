@@ -5596,3 +5596,177 @@ heard_of = dance
 bond = friend close
 weight = 9
 say = town.rumour_dance_friend.1
+
+# The warm season's evenings on Sun Square and the promenade (docs/promenade.md): the summer dances by the stage
+# (prom_dance, prom_dance_watch), the brass band on Sunday afternoons (band_play, band_listen, band_kids), the evening
+# walk to the pier and back and the benches at sunset (prom_evening_walk, prom_sunset_bench), the couples' strolls,
+# the lighthouse coming on, the photographer's best light. Russian: the speaker's own words never agree in gender
+# unless the set says sex; the hero is a teenage boy, and only girls of his age ask him.
+# ---- the dance on the square
+# ---- the brass band on Sunday afternoon
+# ---- the evening promenade
+# ---- setting off, and the morning after
+
+[pev_floor]
+doing = prom_dance
+weight = 4
+say = town.pev_floor.1..5
+
+[pev_floor_dusk]
+doing = prom_dance prom_dance_watch
+hours = 21-23
+weight = 5
+say = town.pev_floor_dusk.1..4
+
+[pev_floor_talk]
+doing = prom_dance
+doing2 = prom_dance
+weight = 3
+talk = town.pev_floor_talk1.1 | town.pev_floor_talk1.2 | town.pev_floor_talk1.3
+talk = town.pev_floor_talk2.1 | town.pev_floor_talk2.2
+talk = town.pev_floor_talk3.1 | town.pev_floor_talk3.2
+
+[pev_watch]
+doing = prom_dance_watch
+weight = 4
+say = town.pev_watch.1..3
+
+[pev_watch_grannies]
+doing = prom_dance_watch
+sex = female
+age = elder
+weight = 4
+say = town.pev_watch_grannies.1..2
+
+[pev_hero_wall]
+to = hero
+doing = prom_dance prom_dance_watch
+hours = 19-22
+weekday = fri sat
+months = 5-9
+weight = 5
+say = town.pev_hero_wall.1..2
+
+[pev_hero_white]
+to = hero
+doing = prom_dance
+sex = female
+age = teen
+hours = 22-23
+weekday = fri sat
+months = 5-9
+weight = 9
+say = town.pev_hero_white.1..2
+
+[pev_band_play]
+doing = band_play
+weight = 4
+say = town.pev_band_play.1..3
+
+[pev_band_listen]
+doing = band_listen
+weight = 4
+say = town.pev_band_listen.1..4
+
+[pev_band_listen_old]
+doing = band_listen
+age = elder
+sex = male
+weight = 4
+say = town.pev_band_listen_old.1..2
+
+[pev_band_talk]
+doing = band_listen
+doing2 = band_listen
+weight = 3
+talk = town.pev_band_talk1.1 | town.pev_band_talk1.2
+talk = town.pev_band_talk2.1 | town.pev_band_talk2.2
+
+[pev_band_kids]
+doing = band_kids
+weight = 4
+say = town.pev_band_kids.1..3
+
+[pev_band_hero]
+to = hero
+doing = band_listen
+weight = 5
+say = town.pev_band_hero.1..2
+
+[pev_band_going]
+weekday = sun
+hours = 13.5-15
+months = 6-8
+doing = free
+at = outdoors
+weight = 2
+talk = town.pev_band_going1.1 | town.pev_band_going1.2
+
+[pev_walk]
+doing = prom_evening_walk
+weight = 4
+say = town.pev_walk.1..4
+
+[pev_walk_family]
+doing = prom_evening_walk
+doing2 = prom_evening_walk
+weight = 3
+talk = town.pev_walk_family1.1 | town.pev_walk_family1.2 | town.pev_walk_family1.3
+talk = town.pev_walk_family2.1 | town.pev_walk_family2.2 | town.pev_walk_family2.3
+
+[pev_walk_teens]
+doing = prom_evening_walk
+age = teen
+weight = 4
+say = town.pev_walk_teens.1..2
+
+[pev_bench]
+doing = prom_sunset_bench
+weight = 4
+say = town.pev_bench.1..3
+
+[pev_lighthouse]
+doing = prom_evening_walk prom_sunset_bench
+hours = 21-23
+weight = 6
+say = town.pev_lighthouse.1..3
+
+[pev_photographer]
+doing = prom_evening_walk prom_sunset_bench
+manner = photo
+weight = 9
+say = town.pev_photographer.1..2
+
+[pev_hero_evening]
+to = hero
+doing = prom_evening_walk prom_sunset_bench
+months = 5-9
+hours = 19-22
+weight = 4
+say = town.pev_hero_evening.1..2
+
+[pev_couple]
+today = stroll
+months = 5-9
+hours = 18-22
+weight = 5
+talk = town.pev_couple1.1 | town.pev_couple1.2
+talk = town.pev_couple2.1 | town.pev_couple2.2
+
+[pev_going]
+weekday = fri sat
+hours = 17.5-19.5
+months = 6-8
+age = 15-30
+doing = free
+at = outdoors
+weight = 2
+talk = town.pev_going1.1 | town.pev_going1.2 | town.pev_going1.3
+
+[pev_after]
+weekday = sat sun
+hours = 8-14
+months = 6-8
+age = 13-35
+weight = 2
+say = town.pev_after.1..2

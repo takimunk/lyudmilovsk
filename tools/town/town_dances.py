@@ -30,10 +30,12 @@ ROOT = TA.ROOT
 PLACE_IDS = ["P-HALL-DANCE"]
 
 # Friday and Saturday (bit 0 Monday): people set off between seven and twenty past nine and stay 40-90 minutes, so the last
-# leave before the watchman's eleven. Not on a holiday's day off: the dancing is on the square then (the festivals).
+# leave before the watchman's eleven. Not on a holiday's day off: the dancing is on the square then (the festivals). Only
+# while hall_dances holds (ULyudStreetLife: all the year but June to August, when the dances are on the square:
+# tools/town/town_promenade.py, docs/promenade.md).
 ACTIVITIES_ROWS = [
-    '{"id": "dance_evening", "places": ["dance_floor"], "slots": ["dance_spot"], "pose": "stand", "minutes": [40, 90], "hours": [19, 21.35], "days": [4, 5], "ages": [15, 45], "meets": {"fun": 0.95, "social": 0.8}, "costs": {"tired": 0.06}, "base": 0.6, "trait": "social"}',
-    '{"id": "dance_watch", "places": ["dance_floor"], "slots": ["watch_seat"], "pose": "sit", "minutes": [30, 80], "hours": [19, 21.6], "days": [4, 5], "ages": [55, 200], "meets": {"social": 0.75, "fun": 0.5}, "base": 0.7, "trait": "social"}',
+    '{"id": "dance_evening", "places": ["dance_floor"], "slots": ["dance_spot"], "pose": "stand", "minutes": [40, 90], "hours": [19, 21.35], "days": [4, 5], "ages": [15, 45], "meets": {"fun": 0.95, "social": 0.8}, "costs": {"tired": 0.06}, "base": 0.6, "trait": "social", "when": "hall_dances"}',
+    '{"id": "dance_watch", "places": ["dance_floor"], "slots": ["watch_seat"], "pose": "sit", "minutes": [30, 80], "hours": [19, 21.6], "days": [4, 5], "ages": [55, 200], "meets": {"social": 0.75, "fun": 0.5}, "base": 0.7, "trait": "social", "when": "hall_dances"}',
 ]
 ACT_IDS = [json.loads(r)["id"] for r in ACTIVITIES_ROWS]
 

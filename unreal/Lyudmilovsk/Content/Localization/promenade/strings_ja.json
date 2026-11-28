@@ -1,0 +1,13 @@
+{
+ "dev.group.promenade": "夏の遊歩道",
+ "dev.tp.promenade.dances": "遊歩道：広場のダンス（20:30）",
+ "dev.tp.promenade.band": "遊歩道：吹奏楽団（15:10）",
+ "dev.tp.promenade.poster": "遊歩道：ステージのポスター",
+ "dev.tp.promenade.sunset": "遊歩道：欄干の夕方の光（20:40）",
+ "dev.tp.promenade.evening": "遊歩道：夕方の散歩（20:00）",
+ "dev.action.street.prom_evening": "通り：遊歩道の夕方の散歩",
+ "dev.action.street.prom_dances": "通り：広場のダンス",
+ "dev.action.street.prom_band": "通り：ステージの吹奏楽団",
+ "dev.action.street.hall_dances": "通り：「ヴォールト」のダンス（夏以外）",
+ "dev.action.street.summer": "通り：暦を七月十五日へ"
+}

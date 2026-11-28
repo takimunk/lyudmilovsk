@@ -1,0 +1,13 @@
+{
+ "dev.group.promenade": "Набережная летом",
+ "dev.tp.promenade.dances": "Набережная: танцы на площади (20:30)",
+ "dev.tp.promenade.band": "Набережная: духовой оркестр (15:10)",
+ "dev.tp.promenade.poster": "Набережная: афиша у эстрады",
+ "dev.tp.promenade.sunset": "Набережная: вечерний свет у парапета (20:40)",
+ "dev.tp.promenade.evening": "Набережная: вечерняя прогулка (20:00)",
+ "dev.action.street.prom_evening": "Улица: вечерняя прогулка по набережной",
+ "dev.action.street.prom_dances": "Улица: танцы на площади",
+ "dev.action.street.prom_band": "Улица: духовой оркестр у эстрады",
+ "dev.action.street.hall_dances": "Улица: танцы в «Сводах» (не летом)",
+ "dev.action.street.summer": "Улица: перенести календарь на 15 июля"
+}

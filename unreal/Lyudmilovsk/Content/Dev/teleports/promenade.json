@@ -1,0 +1,48 @@
+{
+ "teleports": [
+  {
+   "id": "promenade.dances",
+   "group": "promenade",
+   "name": "dev.tp.promenade.dances",
+   "x": -10.0,
+   "y": 912.9,
+   "yaw": 180.0,
+   "time": "20:30"
+  },
+  {
+   "id": "promenade.band",
+   "group": "promenade",
+   "name": "dev.tp.promenade.band",
+   "x": -21.0,
+   "y": 912.9,
+   "yaw": 180.0,
+   "time": "15:10"
+  },
+  {
+   "id": "promenade.poster",
+   "group": "promenade",
+   "name": "dev.tp.promenade.poster",
+   "x": -30.0,
+   "y": 897.0,
+   "yaw": 180.0
+  },
+  {
+   "id": "promenade.sunset",
+   "group": "promenade",
+   "name": "dev.tp.promenade.sunset",
+   "x": 140.6,
+   "y": 927.0,
+   "yaw": 0.0,
+   "time": "20:40"
+  },
+  {
+   "id": "promenade.evening",
+   "group": "promenade",
+   "name": "dev.tp.promenade.evening",
+   "x": 134.2,
+   "y": 1000.0,
+   "yaw": 90.0,
+   "time": "20:00"
+  }
+ ]
+}

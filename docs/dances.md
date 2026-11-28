@@ -75,6 +75,14 @@ After changing the content: `python3 tools/city/interiors.py`, then `python3 too
 hall's things). After the rumours: `python3 tools/rumours/rumours.py`, `python3 tools/barks/build_barks.py`, `python3
 tools/city/interiors.py`.
 
+## In summer
+
+From 25 May to 5 September the dances move out onto Sun Square, in front of the stage (docs/promenade.md): the same girls,
+the same shy rules and the same stamps, the ladies' choice under the lamp on the floor's corner, rain calling it off. The
+hall's own dances need the condition `hall_dances` (`ULyudStreetLife`: off in June, July and August), and the hero's four
+dance places in the room carry `"months": [1, 2, 3, 4, 5, 9, 10, 11, 12]`; so in late May and early September both floors
+are open. The poster's summer slip says so from 20 May to 5 September.
+
 ## Developer mode
 
 Teleports (group interiors): `city.pt.dnc_floor` (the floor, 20:00), `city.pt.dnc_white` (the pillar, 22:05: a dev point's
@@ -98,4 +106,4 @@ Console: `lyud.City.Collections grant dnc_partners`, `lyud.Rumours.Add dance cit
 - The pairs only sway facing each other; a real pair dance (two bodies, a slow turn) wants animation.
 - The band on the stand (`band_stand`) and the music: the jukebox's records play as before; a live band, a record player
   that the watchman switches off at 23:00, and the waltz sound (`waltz` plays nothing yet) are not there.
-- The summer dances on the promenade's bandstand are words only (the poster's slip, the July notice).
+- (Done: the summer dances are on Sun Square from 25 May to 5 September, docs/promenade.md.)

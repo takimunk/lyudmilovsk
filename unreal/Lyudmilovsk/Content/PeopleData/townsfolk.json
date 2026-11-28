@@ -1252,7 +1252,6 @@
    "wake": 4.58,
    "bed": 21.16,
    "spread": 0.37,
-   "duties": [],
    "friends": [
     "t_eze_wei",
     "t_ozols_eitan"
@@ -1279,7 +1278,21 @@
     "yard_dominoes": 0.92,
     "buy_icecream": 0.4
    },
-   "body": "Town/R_demir_tunde"
+   "body": "Town/R_demir_tunde",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_girma_zsofia",
@@ -5835,7 +5848,6 @@
    "wake": 7.67,
    "bed": 22.63,
    "spread": 0.72,
-   "duties": [],
    "friends": [
     "t_horvath_jihoon"
    ],
@@ -5853,7 +5865,21 @@
     "read_library": 0.73,
     "eat_out": 0.78
    },
-   "body": "Town/R_balogun_padraig"
+   "body": "Town/R_balogun_padraig",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_kovalenko_kofi",
@@ -10811,7 +10837,6 @@
    "wake": 5.84,
    "bed": 21.28,
    "spread": 0.31,
-   "duties": [],
    "friends": [
     "t_heikkinen_lan",
     "t_patel_lars"
@@ -10836,7 +10861,21 @@
     "read_library": 0.27,
     "granny_bench": 0.9
    },
-   "body": "Town/R_prochazka_tatiana"
+   "body": "Town/R_prochazka_tatiana",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_mendoza_luana",
@@ -16783,7 +16822,6 @@
    "wake": 7.66,
    "bed": 22.48,
    "spread": 0.71,
-   "duties": [],
    "friends": [
     "t_hernandez_lilit",
     "t_lebedev_lilit",
@@ -16809,7 +16847,21 @@
     "stroll": 0.72,
     "yard_dominoes": 0.86
    },
-   "body": "Town/R_haugen_ondrej"
+   "body": "Town/R_haugen_ondrej",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_kask_aram",
@@ -32104,7 +32156,6 @@
    "wake": 5.22,
    "bed": 21.01,
    "spread": 0.65,
-   "duties": [],
    "friends": [
     "t_sorokin_lilit"
    ],
@@ -32127,7 +32178,21 @@
     "read_library": 0.64,
     "shop_town": 0.73
    },
-   "body": "Town/R_korhonen_john"
+   "body": "Town/R_korhonen_john",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_cerny_sanne",
@@ -35463,7 +35528,6 @@
    "wake": 7.76,
    "bed": 0.04,
    "spread": 0.78,
-   "duties": [],
    "friends": [
     "t_haile_klaus",
     "t_kowalski_yanka"
@@ -35486,7 +35550,21 @@
     "fish_shore": 0.76,
     "stroll": 0.69
    },
-   "body": "Town/R_zhaksybekov_arjun"
+   "body": "Town/R_zhaksybekov_arjun",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_zhaksybekov_madison",
@@ -35747,7 +35825,6 @@
    "wake": 9.83,
    "bed": 2.11,
    "spread": 0.59,
-   "duties": [],
    "friends": [
     "t_lund_parisa",
     "t_mortensen_xiaoming",
@@ -35774,7 +35851,21 @@
     "granny_bench": 1.2,
     "buy_kvass": 0.4
    },
-   "body": "Town/R_walker_noriko"
+   "body": "Town/R_walker_noriko",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_reyes_aiko",
@@ -38322,7 +38413,6 @@
    "wake": 6.93,
    "bed": 23.18,
    "spread": 0.52,
-   "duties": [],
    "friends": [
     "t_ozturk_yael"
    ],
@@ -38345,7 +38435,21 @@
     "swim_look": 0.32,
     "yard_dominoes": 0.98
    },
-   "body": "Town/R_hargreaves_rohan"
+   "body": "Town/R_hargreaves_rohan",
+   "band_job": "brass",
+   "duties": [
+    {
+     "activity": "band_play",
+     "place": "P-PROM-BAND",
+     "hours": [
+      15.0,
+      17.0
+     ],
+     "days": [
+      6
+     ]
+    }
+   ]
   },
   {
    "key": "t_cerny_shirin",

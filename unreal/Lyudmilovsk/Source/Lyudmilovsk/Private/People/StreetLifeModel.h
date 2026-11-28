@@ -26,13 +26,19 @@ namespace LyudStreet
 		LeafPiles = 1u << 8,    // leaf_piles: the raked piles lie in the yards (the things only)
 		Subbotnik = 1u << 9,    // subbotnik: the spring cleaning morning, everybody out painting and whitewashing
 		TrunksWhite = 1u << 10, // trunks_white: the yards' trunks whitewashed (from the subbotnik to the end of October)
+		// the warm season's evenings on the promenade and Sun Square (docs/promenade.md)
+		PromEvening = 1u << 11, // prom_evening: the evening promenade (15 May to 15 September, 18:30-22:30, dry, 14 C and over)
+		PromDances = 1u << 12,  // prom_dances: the summer dances on the square (25 May to 5 September, Fri and Sat 19-23, a dry evening)
+		PromBand = 1u << 13,    // prom_band: the brass band at the stage (June to August, Sunday 15-17, a dry afternoon)
+		HallDances = 1u << 14,  // hall_dances: the hall «Своды»'s dances are on (all the year but June to August: then they are outdoors)
 	};
-	constexpr int NumConds = 11;
+	constexpr int NumConds = 15;
 
 	inline const char* CondName(int I)
 	{
 		static const char* Names[NumConds] = { "street_hot", "street_sweep", "laundry_hang", "laundry_out", "laundry_take", "yard_grannies",
-											   "yard_dominoes", "leaf_raking", "leaf_piles", "subbotnik", "trunks_white" };
+											   "yard_dominoes", "leaf_raking", "leaf_piles", "subbotnik", "trunks_white",
+											   "prom_evening", "prom_dances", "prom_band", "hall_dances" };
 		return I >= 0 && I < NumConds ? Names[I] : "";
 	}
 
@@ -79,6 +85,18 @@ namespace LyudStreet
 	/** The autumn's leaves: from 20 September to 15 November. */
 	inline bool LeafSeason(int M, int D) { return (M == 9 && D >= 20) || M == 10 || (M == 11 && D <= 15); }
 
+	/** The evening promenade's season: 15 May to 15 September. */
+	inline bool PromSeason(int M, int D) { const int K = M * 100 + D; return K >= 515 && K <= 915; }
+
+	/** The summer dances on the square: 25 May to 5 September (the hall «Своды» keeps its own till the end of May and from September). */
+	inline bool DanceSeason(int M, int D) { const int K = M * 100 + D; return K >= 525 && K <= 905; }
+
+	/** The brass band's Sundays: June, July and August. */
+	inline bool BandSeason(int M) { return M >= 6 && M <= 8; }
+
+	/** The hall's dance room is used for the dances: not in June, July and August. */
+	inline bool HallSeason(int M) { return M < 6 || M > 8; }
+
 	/** A wash day: Monday, Thursday and Saturday from April to October. */
 	inline bool WashDay(int M, int Weekday) { return M >= 4 && M <= 10 && (Weekday == 0 || Weekday == 3 || Weekday == 5); }
 
@@ -90,6 +108,8 @@ namespace LyudStreet
 		bool bHang = false;         // a wash day with a fine morning: the washing goes up at 9
 		float TakeAt = 18.f;        // when it is taken in: the first quarter hour with rain within 45 minutes, else 18 (17 on a hot day)
 		float HotMax = 0.f;         // the afternoon's warmest of the samples (C), for the report
+		bool bDanceEve = false;     // a dance evening on the square (its season, Fri or Sat) the forecast keeps dry: else it is called off
+		bool bBandDay = false;      // a band Sunday whose afternoon the forecast keeps dry: else the concert is called off
 	};
 
 	/** The plan of a day. At(hour) is the forecast for that hour of the day (the game: ULyudWeatherSubsystem::GetStateAt). */
@@ -124,6 +144,22 @@ namespace LyudStreet
 					}
 				}
 			}
+		}
+		// the dances on the square: the evening's forecast at 19, 20:30 and 22 dry and not cold, or the poster says "called off"
+		if (DanceSeason(M, D) && (Weekday == 4 || Weekday == 5))
+		{
+			bool bDry = true;
+			for (float H = 19.f; bDry && H <= 22.f; H += 1.5f)
+			{
+				const FSky S = At(H);
+				bDry = S.Rain < 0.2f && S.Snow < 0.5f && S.TempC >= 12.f;
+			}
+			P.bDanceEve = bDry;
+		}
+		// the brass band: a Sunday of its season, dry at 15 and 16
+		if (BandSeason(M) && Weekday == 6)
+		{
+			P.bBandDay = At(15.f).Rain < 0.2f && At(16.f).Rain < 0.2f;
 		}
 		return P;
 	}
@@ -183,6 +219,25 @@ namespace LyudStreet
 		if ((M == 4 && (N.Day > Sub || (N.Day == Sub && H >= 10.f))) || (M >= 5 && M <= 10))
 		{
 			B |= TrunksWhite;
+		}
+		// the evening promenade: a warm dry evening of its season
+		if (PromSeason(M, N.Day) && InHours(H, 18.5f, 22.5f) && !bRain && N.Sky.TempC >= 14.f)
+		{
+			B |= PromEvening;
+		}
+		// the dances on the square: a dry evening by the forecast, and off while a shower lasts (the band covers the amplifier)
+		if (P.bDanceEve && (N.Weekday == 4 || N.Weekday == 5) && InHours(H, 19.f, 23.f) && !bShower)
+		{
+			B |= PromDances;
+		}
+		// the brass band's Sunday afternoon at the stage
+		if (P.bBandDay && N.Weekday == 6 && InHours(H, 15.f, 17.f) && !bShower)
+		{
+			B |= PromBand;
+		}
+		if (HallSeason(M))
+		{
+			B |= HallDances;
 		}
 		return B;
 	}
