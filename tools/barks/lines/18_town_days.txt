@@ -17,7 +17,7 @@ say town.days_cold.4 | Апчхи! Вот тебе и морской возду�
 [days_cold_kid]
 today = cold
 age = kid
-say town.days_cold_kid.1 | А у меня температура. В школу нельзя! | I've got a temperature. No school for me! | ぼく、熱があるの。学校はお休み！
+say town.days_cold_kid.1 | А у меня температура. В школу нельзя! | I've got a temperature. No school for me! | 熱があるの。学校はお休み！
 say town.days_cold_kid.2 | Мама сказала — горло красное. Буду дома мультики смотреть. | Mum says my throat's red. I'll be at home watching cartoons. | お母さんが、のどが赤いって。おうちでアニメ見るんだ。
 
 [days_sleepy]
@@ -57,7 +57,7 @@ hours = 15-23
 say town.days_payday.1 | Получка! Сегодня ужинаем не дома. | Payday! We're not eating at home tonight. | 給料日！今夜は外で食べよう。
 say town.days_payday.2 | Раз в две недели можно и пирожное к кофе. | Once a fortnight you can have a pastry with your coffee. | 二週間に一度くらい、コーヒーにケーキをつけてもいいよね。
 say town.days_payday.3 | Деньги дали. К понедельнику их опять не будет, но сегодня — дали. | We've been paid. It'll be gone by Monday, but today we've been paid. | 給料が出た。月曜にはまた消えてるだろうけど、今日は出た。
-say town.days_payday.4 | Сначала долги, потом кафе. Или наоборот? | Debts first, then the cafe. Or the other way round? | まず借りを返して、それからカフェ。いや、逆かな？
+say town.days_payday.4 | Сначала долги, потом кафе. Или наоборот? | Debts first, then the café. Or the other way round? | まず借りを返して、それからカフェ。いや、逆かな？
 
 [days_pension]
 today = pension
@@ -152,8 +152,8 @@ talk
 today = street_meet
 weight = 8
 talk
-- town.days_meet1.1 | О, здравствуй! Куда путь держишь? | Oh, hello! Where are you off to? | あら、こんにちは！どちらへ？
-- town.days_meet1.2 | Да так, по делам. А тебя сто лет не видно. | Just errands. And you haven't been seen for ages. | ちょっと用事でね。そっちこそ、ずいぶん見かけなかったよ。
+- town.days_meet1.1 | О, здравствуй! Куда путь держишь? | Oh, hello! Where are you off to? | あ、こんにちは！どちらへ？
+- town.days_meet1.2 | Да так, по делам. А тебя сто лет не видно. | Just errands. And I haven't seen you for ages. | ちょっと用事でね。そっちこそ、ずいぶん見かけなかったよ。
 - town.days_meet1.3 | Заходи как-нибудь на чай. | Drop in for tea some time. | そのうちお茶でも飲みに来て。
 talk
 - town.days_meet2.1 | Постой, постой. Слышно что-нибудь про завтрашнюю погоду? | Wait, wait. Any word on tomorrow's weather? | ちょっと待って。明日の天気、何か聞いてる？
@@ -169,7 +169,7 @@ talk
 talk
 - town.days_meet5.1 | В субботу на рынок идёшь? | Are you going to the market on Saturday? | 土曜日、市場に行く？
 - town.days_meet5.2 | Иду. Займу тебе очередь за творогом. | I am. I'll keep you a place in the queue for curd cheese. | 行くよ。カッテージチーズの列、場所を取っておくね。
-- town.days_meet5.3 | Вот за это и люблю. Ну, бегу. | That's why I love you. Well, I must run. | だから好きなんだ。じゃ、急ぐから。
+- town.days_meet5.3 | Вот за это и люблю. Ну, бегу. | That's what I like about you. Well, I must run. | だから好きなんだ。じゃ、急ぐから。
 
 [days_street_nod]
 on = street_nod
