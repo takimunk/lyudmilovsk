@@ -3,12 +3,17 @@
 //                                               every talk's topics and lines, the names), the variety, the bond, the hold, the cost
 //   tools/townchatsim/run.sh talks [lang] [n]   n talks of the day written out as the page shows them (ru, en, ja; 12)
 //   tools/townchatsim/run.sh who <key> [lang]   one resident's talk at noon
+//   tools/townchatsim/run.sh where [key,key,...] [days]   where and when residents can be talked to, day by day from Tuesday
+//                                               20 October (autumn skies, the street's conditions); no keys: the residents
+//                                               found in the same place at the same hour on most days (quest givers)
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/Friends.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleManners.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleSim.h"
+#include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/StreetLifeModel.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/TownBarks.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/TownChat.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <cstdio>
@@ -773,6 +778,238 @@ static int Run(const std::string& Mode, const std::string& Lang, const std::stri
 	return Failures == 0 ? 0 : 1;
 }
 
+// ------------------------------------------------------------------ where: when a resident can be found for a word
+
+/** An autumn day's sky by the hour (the day's index picks one of seven): C, rain mm/h, cloud. */
+static LyudStreet::FSky AutumnSky(int Day, float H)
+{
+	LyudStreet::FSky S;
+	const int K = Day % 7;
+	S.TempC = 6.f + 5.f * std::sin(3.14159265f * std::fmax(0.f, std::fmin(1.f, (H - 6.f) / 14.f))) - (float)(K % 3);
+	S.Cloud = K == 0 || K == 4 ? 0.2f : 0.85f;
+	S.Rain = (K == 2 && H >= 7.f && H < 12.f) ? 2.f : (K == 5 && H >= 14.f && H < 17.f) ? 0.6f : 0.f;
+	return S;
+}
+
+static const char* const DayNames[7] = { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+
+static int Where(const std::string& KeyList, int Days)
+{
+	LyudTownChat::FData Data;
+	std::string Err;
+	if (!Data.Load(ReadFile(std::string(DataDir) + "/town_chat.json"), Err))
+	{
+		std::printf("town_chat.json: %s\n", Err.c_str());
+		return 1;
+	}
+	const char* Env = std::getenv("LYUD_ANIMALS_DIR");
+	const std::string AnimalsDir = Env && *Env ? Env : "unreal/Lyudmilovsk/Content/AnimalsData";
+	FWorld W;
+	if (!W.Load(DataDir, AnimalsDir))
+	{
+		std::printf("load failed: %s\n", W.LastError.c_str());
+		return 1;
+	}
+	W.AssignHomes();
+	std::vector<int> Watch;
+	for (size_t A = 0; A < KeyList.size();)
+	{
+		const size_t B = std::min(KeyList.find(',', A), KeyList.size());
+		const std::string Key = KeyList.substr(A, B - A);
+		const int Id = W.FindPerson(Key);
+		if (Id < 0)
+		{
+			std::printf("no resident %s\n", Key.c_str());
+			return 1;
+		}
+		Watch.push_back(Id);
+		A = B + 1;
+	}
+	// samples every 10 minutes from 5:00 to 23:00: free for a word, and where
+	const int Slots = 18 * 6;
+	struct FSample { bool bFree = false; V3 Pos; int Place = -1; int Act = -1; };
+	std::vector<std::vector<std::vector<FSample>>> S(W.People.size(), std::vector<std::vector<FSample>>((size_t)Days, std::vector<FSample>(Slots)));
+	static const int MonthDays[13] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	int Year = 2026, Month = 10, Date = 20;
+	FClock C = FClock::At(1, 4.f);
+	C.Set(W);
+	W.Resettle();
+	std::vector<int> DayWeekday((size_t)Days), DayDate((size_t)Days), DayMonth((size_t)Days);
+	const float Dt = 1.f;
+	for (int D = 0; D < Days; D++)
+	{
+		DayWeekday[(size_t)D] = W.Weekday;
+		DayDate[(size_t)D] = Date;
+		DayMonth[(size_t)D] = Month;
+		const int Wd = W.Weekday;
+		const LyudStreet::FDayPlan Plan = LyudStreet::PlanDay(Year, Month, Date, Wd, [D](float H) { return AutumnSky(D, H); });
+		uint32_t Was = 0xffffffffu;
+		for (double T = 0.0; T < 24.0 * 3600.0; T += Dt)
+		{
+			C.Seconds += Dt;
+			C.Set(W);
+			const int Sec = (int)std::lround(std::fmod(C.Seconds, 86400.0));
+			if (Sec % 60 == 0)
+			{
+				LyudStreet::FNow N;
+				N.Year = Year; N.Month = Month; N.Day = Date; N.Weekday = W.Weekday; N.Hour = W.Hour;
+				N.Sky = AutumnSky(D, W.Hour);
+				W.TempC = N.Sky.TempC;
+				W.Rain = std::fmin(1.f, N.Sky.Rain / 3.f);
+				W.bRain = N.Sky.Rain >= 0.2f;
+				W.Gloom = N.Sky.Cloud * 0.6f + (W.bRain ? 0.3f : 0.f);
+				const uint32_t Bits = LyudStreet::Conditions(N, Plan);
+				if (Bits != Was)
+				{
+					for (int I = 0; I < LyudStreet::NumConds; I++)
+					{
+						W.SetCondition(LyudStreet::CondName(I), (Bits & (1u << I)) != 0);
+					}
+					Was = Bits;
+				}
+			}
+			W.Step(Dt);
+			W.Events.clear();
+			const float H = W.Hour;
+			if (Sec % 600 != 0 || H < 5.f || H >= 23.f)
+			{
+				continue;
+			}
+			const int Slot = (int)std::lround((H - 5.f) * 6.f);
+			if (Slot < 0 || Slot >= Slots)
+			{
+				continue;
+			}
+			for (const FPerson& P : W.People)
+			{
+				if (!P.bTown)
+				{
+					continue;
+				}
+				FSample& X = S[(size_t)P.Id][(size_t)D][(size_t)Slot];
+				X.bFree = LyudTownChat::CanChat(W, P, Data, Data.R.KidShyMet, 1) == ERefuse::None;
+				X.Pos = P.Pos;
+				X.Place = P.Place;
+				X.Act = P.Activity;
+			}
+		}
+		if (++Date > MonthDays[Month])
+		{
+			Date = 1;
+			Month = Month % 12 + 1;
+		}
+	}
+	auto PlaceName = [&W](int Pl) { return Pl >= 0 && Pl < (int)W.Places.size() ? W.Places[(size_t)Pl].Id : std::string("-"); };
+	auto ActName = [&W](int A) { return A >= 0 && A < (int)W.Activities.size() ? W.Activities[(size_t)A].Id : std::string("-"); };
+	if (!Watch.empty())
+	{
+		for (int Id : Watch)
+		{
+			const FPerson& P = W.People[(size_t)Id];
+			std::printf("\n%s (%s, %d)\n", P.Key.c_str(), P.Occupation.c_str(), P.Age);
+			for (int D = 0; D < Days; D++)
+			{
+				std::printf("  %s %02d.%02d:", DayNames[DayWeekday[(size_t)D]], DayDate[(size_t)D], DayMonth[(size_t)D]);
+				// runs of free samples at one place and activity
+				int From = -1;
+				for (int Sl = 0; Sl <= Slots; Sl++)
+				{
+					const bool bEnd = Sl == Slots;
+					const FSample* X = bEnd ? nullptr : &S[(size_t)Id][(size_t)D][(size_t)Sl];
+					const FSample* F = From >= 0 ? &S[(size_t)Id][(size_t)D][(size_t)From] : nullptr;
+					const bool bSame = X && F && X->bFree && X->Place == F->Place && X->Act == F->Act;
+					if (F && !bSame)
+					{
+						if (Sl - From >= 2)
+						{
+							std::printf("  %02d:%02d-%02d:%02d %s@%s(%.0f,%.0f)", 5 + From / 6, From % 6 * 10, 5 + Sl / 6, Sl % 6 * 10,
+								ActName(F->Act).c_str(), PlaceName(F->Place).c_str(), F->Pos.X, F->Pos.Y);
+						}
+						From = -1;
+					}
+					if (X && X->bFree && From < 0)
+					{
+						From = Sl;
+					}
+				}
+				std::printf("\n");
+			}
+		}
+		return 0;
+	}
+	// no keys: for each resident the hours (of 5..23) when they are free for a word within 25 m of one point on most days
+	struct FRow { int Id; int Hours; int Best; std::string Text; };
+	std::vector<FRow> Rows;
+	for (const FPerson& P : W.People)
+	{
+		if (!P.bTown)
+		{
+			continue;
+		}
+		int Hours = 0, BestRun = 0, Run = 0, RunFrom = 0, BestFrom = 0;
+		V3 BestAt;
+		int BestPlace = -1, BestAct = -1;
+		for (int Hr = 0; Hr < 18; Hr++)
+		{
+			// the hour's middle sample on the first day that has one free is the anchor; count days free within 25 m of it
+			int Good = 0;
+			bool bAnchor = false;
+			V3 Anchor;
+			int AnchorPlace = -1, AnchorAct = -1;
+			for (int D = 0; D < Days; D++)
+			{
+				int FreeNear = 0;
+				for (int K = 0; K < 6; K++)
+				{
+					const FSample& X = S[(size_t)P.Id][(size_t)D][(size_t)(Hr * 6 + K)];
+					if (!X.bFree)
+					{
+						continue;
+					}
+					if (!bAnchor)
+					{
+						bAnchor = true;
+						Anchor = X.Pos;
+						AnchorPlace = X.Place;
+						AnchorAct = X.Act;
+					}
+					FreeNear += (X.Pos - Anchor).Len2D() < 25.f ? 1 : 0;
+				}
+				Good += FreeNear >= 4 ? 1 : 0;
+			}
+			const bool bOk = Good * 4 >= Days * 3;      // on three days in four at least
+			Hours += bOk ? 1 : 0;
+			Run = bOk ? Run + 1 : 0;
+			if (Run == 1)
+			{
+				RunFrom = Hr;
+			}
+			if (Run > BestRun)
+			{
+				BestRun = Run;
+				BestFrom = RunFrom;
+				BestAt = Anchor;
+				BestPlace = AnchorPlace;
+				BestAct = AnchorAct;
+			}
+		}
+		if (Hours > 0)
+		{
+			char Buf[512];
+			std::snprintf(Buf, sizeof(Buf), "%-28s %-16s %3d  %2d h, best %02d-%02d %s@%s (%.0f,%.0f)", P.Key.c_str(), P.Occupation.c_str(), P.Age,
+				Hours, 5 + BestFrom, 5 + BestFrom + BestRun, ActName(BestAct).c_str(), PlaceName(BestPlace).c_str(), BestAt.X, BestAt.Y);
+			Rows.push_back({ P.Id, Hours, BestRun, Buf });
+		}
+	}
+	std::sort(Rows.begin(), Rows.end(), [](const FRow& A, const FRow& B) { return A.Best != B.Best ? A.Best > B.Best : A.Hours > B.Hours; });
+	std::printf("%zu residents found at one point at the same hour on three days in four (%d days from Tue 20.10):\n", Rows.size(), Days);
+	for (const FRow& R : Rows)
+	{
+		std::printf("  %s\n", R.Text.c_str());
+	}
+	return 0;
+}
+
 int main(int Argc, char** Argv)
 {
 	const std::string Mode = Argc > 1 ? Argv[1] : "";
@@ -788,6 +1025,10 @@ int main(int Argc, char** Argv)
 			return 1;
 		}
 		return Run(Mode, Argc > 3 ? Argv[3] : "ru", Argv[2]);
+	}
+	if (Mode == "where")
+	{
+		return Where(Argc > 2 ? Argv[2] : "", Argc > 3 ? std::max(1, std::atoi(Argv[3])) : 7);
 	}
 	return Run("", "ru", "");
 }

@@ -72,6 +72,10 @@ public:
 	/** Their line for a moment of the talk (a set with on = <Event>): its string key (with "line.") and, for a word about
 	 *  something the player did, the rumour's detail (the line's {1}), which they have then told. False if no line fits. */
 	bool ChatLine(int32 PersonId, const FString& Event, FString& OutKey, FString& OutDetail);
+	/** Does a word of the moment hold, as the last talk or line saw it: the sun's (day, low, night, cloudy), the weather's
+	 *  (rain, snow, fog, cold, warm, clear, wet) or the hour's (morning 5-12, afternoon 12-17, evening 17-23). A quest's own
+	 *  lines for a resident branch on it (docs/quests.md "Townsfolk as quest people"). */
+	bool NowHolds(const FString& Word) const;
 
 	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 	virtual void OnWorldBeginPlay(UWorld& InWorld) override;

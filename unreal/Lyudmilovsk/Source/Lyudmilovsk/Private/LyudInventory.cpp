@@ -158,6 +158,8 @@ namespace
 		Good(TEXT("lost_glasses"), K::Misc, L::Flat, FVector(1.5f, 6.f, 14.f), FLinearColor(0.12f, 0.12f, 0.12f), 0, 3.f);
 		Good(TEXT("lost_keys"), K::Misc, L::Flat, FVector(1.f, 4.f, 7.f), FLinearColor(0.72f, 0.63f, 0.25f), 0, 2.f);
 		Good(TEXT("lost_bear"), K::Misc, L::Pack, FVector(10.f, 12.f, 18.f), FLinearColor(0.54f, 0.35f, 0.17f), 0, 5.f);
+		// the yard keeper's whistle, lost in the autumn leaves of yard 1 (the town quest tq3_whistle, docs/quests.md): a pickup
+		Good(TEXT("keeper_whistle"), K::Misc, L::Flat, FVector(1.2f, 2.f, 6.f), FLinearColor(0.72f, 0.7f, 0.62f), 0, 2.f);
 		Good(TEXT("record_club_1"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.25f, 0.15f, 0.35f), 60, 4.f);
 		Good(TEXT("record_club_2"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.10f, 0.45f, 0.42f), 60, 4.f);
 		Good(TEXT("record_club_3"), K::Misc, L::Flat, FVector(0.4f, 31.f, 31.f), FLinearColor(0.15f, 0.20f, 0.25f), 60, 4.f);

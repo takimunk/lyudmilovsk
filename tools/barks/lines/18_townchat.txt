@@ -423,6 +423,8 @@ say town.tc_day_night_walk.4 | День был длинный. Выгулива�
 on = tc_day
 doing = fish_shore
 say town.tc_day_fish.1 | Ловлю. Точнее, жду. Рыбалка — это в основном ждать. | Fishing. Or rather waiting. Fishing is mostly waiting. | 釣りだよ。というか待ってる。釣りはほとんど待つことさ。
+say town.tc_day_fish.2 | С рассвета тут. Рыба ещё спит, а я уже нет. | Here since first light. The fish are still asleep, I'm not. | 夜明けからここにいるよ。魚はまだ寝てるけど、こっちは起きてる。
+say town.tc_day_fish.3 | Клюёт помалу. Главное — тишина и термос. | Biting a little. What matters is the quiet and the flask. | ぽつぽつ釣れてる。大事なのは静けさと魔法瓶さ。
 
 [tc_day_work]
 on = tc_day

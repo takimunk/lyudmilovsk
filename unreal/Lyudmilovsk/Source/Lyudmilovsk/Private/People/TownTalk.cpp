@@ -1408,6 +1408,40 @@ bool ULyudTownTalkSubsystem::ChatLine(int32 PersonId, const FString& Event, FStr
 	return true;
 }
 
+bool ULyudTownTalkSubsystem::NowHolds(const FString& Word) const
+{
+	if (!State)
+	{
+		return false;
+	}
+	const LyudBarks::FNow& N = State->Now;
+	if (Word == TEXT("morning"))
+	{
+		return N.Hour >= 5.f && N.Hour < 12.f;
+	}
+	if (Word == TEXT("afternoon"))
+	{
+		return N.Hour >= 12.f && N.Hour < 17.f;
+	}
+	if (Word == TEXT("evening"))
+	{
+		return N.Hour >= 17.f && N.Hour < 23.f;
+	}
+	const std::string W = TownTalkLocal::ToStd(Word);
+	if (N.Sun == W)
+	{
+		return true;
+	}
+	for (const std::string& Each : N.Weather)
+	{
+		if (Each == W)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 int32 ULyudTownTalkSubsystem::NearestSpeaker(AActor*& OutActor) const
 {
 	OutActor = nullptr;

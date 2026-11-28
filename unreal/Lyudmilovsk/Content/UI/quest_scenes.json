@@ -14,6 +14,20 @@
    "drop_m": 1.3,
    "yaw": -11,
    "note": "the issue desk's reader's ledge (top 1.05 m over the floor), between the returned books and the card tray, its top towards the librarian: blender/academgorodok/library.py issue_desk() at ISSUE_DESK through people_map.py's house frame (her chair: -240.21, 628.99, facing 169); a visitor stands at about -241.8, 629.25"
+  },
+  {
+   "id": "tq3_keeper_whistle",
+   "item": "keeper_whistle",
+   "quest": "tq3_whistle",
+   "stages": [
+    "find"
+   ],
+   "ux": -580.0,
+   "uy": 1069.3,
+   "floor_uz": -15.0,
+   "drop_m": 0.6,
+   "yaw": 40,
+   "note": "yard 1, at the edge of the leaf pile by the dominoes table (street_props.json leaf_pile at -581.01, 1070.61, the table at -584.82, 1061.99; the rake round's first slot -581.14, 1069.22): on the ground beside the pile, so it shows when the piles are gone too"
   }
  ],
  "listeners": [
@@ -2566,6 +2580,106 @@
    ],
    "note": "Vika on the yard bench from 18:00, beside the Zotovs: heard after the hero has told Lev and walked off a little.",
    "diary": "journal.heard.tq2_science_vika"
+  },
+  {
+   "id": "tq3_whistle_nour",
+   "person": "t_hoffmann_nour",
+   "quest": "tq3_whistle",
+   "stages": [
+    "find"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_hoffmann_nour.tq3_whistle_quiet.1"
+   ],
+   "note": "Nour is on her milk round 6-7:30 Mon-Sat and on the benches by the square in the afternoons; the hero passes her looking for the whistle.",
+   "diary": "journal.heard.tq3_whistle_nour"
+  },
+  {
+   "id": "tq3_milk_tyler",
+   "person": "t_kovalenko_tyler",
+   "quest": "tq3_milk",
+   "stages": [
+    "carry"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_kovalenko_tyler.tq3_milk_pass.1"
+   ],
+   "note": "Tyler sweeps the promenade 5:30-7:30 every day, right where the hero takes the milk down to Le on the beach.",
+   "diary": "journal.heard.tq3_milk_tyler"
+  },
+  {
+   "id": "tq3_pension_maarja",
+   "person": "t_berntsen_maarja",
+   "quest": "tq3_pension",
+   "stages": [
+    "paper",
+    "post"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_berntsen_maarja.tq3_pension_bench.1"
+   ],
+   "note": "Maarja, Sachiko's friend and neighbour (T2H2), sits on the square's bench SQ04 in the afternoons and on the promenade in the mornings.",
+   "diary": "journal.heard.tq3_pension_maarja"
+  },
+  {
+   "id": "tq3_flag_le",
+   "person": "t_le_duc",
+   "quest": "tq3_flag",
+   "stages": [
+    "castle"
+   ],
+   "within_m": 7,
+   "lines": [
+    "t_le_duc.tq3_flag_shore.1"
+   ],
+   "note": "Le fishes on the town beach 5:30-7 every morning and often again around noon.",
+   "diary": "journal.heard.tq3_flag_le"
+  },
+  {
+   "id": "tq3_clock_alejandro",
+   "person": "t_gelashvili_alejandro",
+   "quest": "tq3_clock",
+   "stages": [
+    "call",
+    "tell"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_gelashvili_alejandro.tq3_clock_dogs.1"
+   ],
+   "note": "Alejandro walks his dog at 7 and 19 like Ingvild (walk_dog duties), mostly in the park; benches by the square by day.",
+   "diary": "journal.heard.tq3_clock_alejandro"
+  },
+  {
+   "id": "tq3_referee_aino",
+   "person": "t_macleod_aino",
+   "quest": "tq3_referee",
+   "stages": [
+    "judge"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_macleod_aino.tq3_referee_salt.1"
+   ],
+   "note": "Aino lives with Choi in T2H1 and sits out on the benches by the house.",
+   "diary": "journal.heard.tq3_referee_aino"
+  },
+  {
+   "id": "tq3_number_lyudmila",
+   "person": "t_hernandez_lyudmila",
+   "quest": "tq3_number",
+   "stages": [
+    "call"
+   ],
+   "within_m": 6,
+   "lines": [
+    "t_hernandez_lyudmila.tq3_number_playground.1"
+   ],
+   "note": "Lyudmila minds Caio at the playground and in yard 5 in the afternoons (14-16), where Isla plays after her kite.",
+   "diary": "journal.heard.tq3_number_lyudmila"
   }
  ]
 }
