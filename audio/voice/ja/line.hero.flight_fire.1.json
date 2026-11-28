@@ -1,0 +1,33 @@
+{
+ "key": "line.hero.flight_fire.1",
+ "lang": "ja",
+ "text": "燃えてる。窓の外が、ぜんぶ燃えてる。…がんばれ、ツバメ。お願いだ。",
+ "speaker": "hero",
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
+ },
+ "direction": "frightened, tight, voice shaking with the cabin, trying not to panic; the last words a plea to the craft",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "燃えてる。窓の外が、ぜんぶ燃えてる。…がんばれ、ツバメ。お願いだ。",
+  "voice_setting": {
+   "speed": 0.95,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a220b9-ba94-7b23-b1ff-6c23ef5f22b3",
+ "hash": "500b71b2d10b"
+}

@@ -307,6 +307,6 @@ struct FConsoleVariableMulticastDelegate
 	template <typename T> FDelegateHandle AddUObject(T*, void (T::*)(IConsoleVariable*)) { return FDelegateHandle(); }
 	void Remove(FDelegateHandle) {}
 };
-struct IConsoleVariable { FConsoleVariableMulticastDelegate& OnChangedDelegate() { static FConsoleVariableMulticastDelegate D; return D; } };
+struct IConsoleVariable { float GetFloat() const { return 0.f; } int GetInt() const { return 0; } FConsoleVariableMulticastDelegate& OnChangedDelegate() { static FConsoleVariableMulticastDelegate D; return D; } };
 struct IConsoleManager { static IConsoleManager& Get() { static IConsoleManager M; return M; } IConsoleVariable* FindConsoleVariable(const TCHAR*) { return nullptr; } };
 namespace LyudText { inline UTexture2D* LoadTexture(const FString&, const FString&) { return nullptr; } }

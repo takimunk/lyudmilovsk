@@ -152,13 +152,13 @@ panel's glow), `TickSky`, `TickHero`, `TickSounds`, `TickRecord`, `TickCamera`, 
 - 0 s .. `SwapT` (the second the model's height reaches 3 km, about 20 s; found once from the profile): the REAL cabin
   climbs straight up over the REAL ice. The cabin is always drawn upright; the model's small nose tilt in the climb is
   not shown.
-- From `SwapT` to 850 s it hangs still at that spot (inside Europa's 6 km "on Europa" radius, so the space view, the
+- From `SwapT` to 833 s it hangs still at that spot (inside Europa's 6 km "on Europa" radius, so the space view, the
   vacuum and the light channels stay as they are with no hook into the Europa subsystem). The site is hidden
   (`ALyudEuropaSite::SetShown(false)`), Europa becomes a sphere astern, and over `blend_seconds` (12 s) the universe is
   eased from the site's frame onto the model's: `Fix = Slerp(I, Qm, w) * Qm^-1`, `Qm` = the flight frame seen from the
   cabin (`FrameX/Z`), world direction of a model vector = `Pad * Fix * (X, -Y, Z)`. From then on the stars, the planet,
   Europa and the sun (through `ALyudSky::SetSpaceObserver`) turn round the upright cabin exactly as the model says.
-- 850 s (`bRealWorld`, the glass is opaque white): the cabin is put over the splash point at `AltSeaM` over the still
+- 833 s (`bRealWorld`, the glass is opaque white): the cabin is put over the splash point at `AltSeaM` over the still
   sea, coming down a 0.22 slope along the splash heading; the Europa subsystem notices the hero is gone and takes its
   space view, vacuum and gravity back by itself; its own sky observer is handed back
   (`ULyudEuropaSubsystem::InstallSpaceObserver`). The point is moved out to sea in 20 m steps while the game's own
@@ -224,6 +224,32 @@ because `LyudEuropa.cpp` has the same helpers unprefixed in its anonymous namesp
 hero up, so it cannot seat him; `flight.start` does), actions `flight.start`, `flight.phase_<nine ids>`,
 `flight.fast`, `flight.records`, `flight.reset`. `tools/check_devdata.py`: 0 problems.
 
+## First Mac run (2026-11-28, branch moon-flight-run)
+
+Built, imported, flown offscreen with `test_spaceflight.sh` (pad, whole flight, `SOUND=1`): 0 failed. Found and changed:
+
+- **The craft stood 6..15 m under Europa's ice**: `LevelPad` traced `ECC_WorldStatic` only, but the site's ground tiles
+  are movable components (`BlockAllDynamic`: WorldDynamic), so no pad ever hit and the stage stayed at the site's
+  origin height. Now it traces both object types (4 pads, 500826..500989 cm).
+- **The cabin was never drawn**: it is spawned `SetActorHiddenInGame(true)` and nothing showed it again (its parts
+  show themselves, the actor never did). `EnsureBuilt` unhides it after `Build()`.
+- **The camera sat inside the hero's shoulders** on the couch (the body stays upright, the eye is put on the reclined
+  seat's eye): the hero's mesh (and what his hands hold) is hidden while seated (`ScHideSeatedBody`), shown again on
+  every way off the couch.
+- Cabin lamps 22 cd -> 120 cd (`lyud.Flight.LampCd`, tuning): 22 was black at the game's exposure.
+- The glass's soot (`heat.scorch_max` 0.8 -> 0.45): at 0.8 it covered the whole pane at 87 % and the real island under
+  the canopy could not be seen; now the soot stays at the rim. Frost is lit a little by itself (it read as dirt).
+- The real world from 755 m (whiteout 826..842, peak 833; `real_world` cue 833): see MODEL_NOTES "The real world".
+- The island from orbit: true-sized it is a one-pixel line on the horizon all through the approach; drawn at least
+  `lyud.Flight.IslandScale` (0.4) of its distance across. The ball's orientation (the "Unverified" sign below) is right:
+  the island is where `FState::IslandDir` says.
+- The report line gives `island <dir> seen <0..1>` (tests aim at it).
+
+Still open from that run: a dark band between the planet and its air shell at 80..150 km (`M_SC_PlanetAir`'s inner
+edge); Europa's impostor after the 22 s swap shows a coarse tiled crust band under the white ball; the cloud tops in
+the real world under the canopy show square blocks; the outside view of the craft on the pad is backlit at the
+default hour (the test now stands on the star's side).
+
 ## Mac checklist (nothing here was compiled or run: there is no Unreal in the cloud)
 
 1. `python3 tools/spacecraft/flight.py --check && sh tools/spacecraftsim/run.sh` (23 131 checks),
@@ -256,9 +282,9 @@ hero up, so it cannot seat him; `flight.start` does), actions `flight.start`, `f
 - **Boarding.** The site's planet (`M_EU_Planet`, turned with the day) gives way to `M_SC_PlanetNear` (island fixed to
   the model) the moment the hero is inside the cabin: same place and size, but the cloud pattern and the island's
   place on the disc may differ. `CloudShift` is not matched to the site's.
-- **The real world starts 364.5 m up**, not the 1200..1500 m asked: the model's checks hold the speed before the jets
-  at 7 +- 1.5 m/s and the `real_world` cue at 850 s. One retune (`tau_main` 14 -> 30) was tried and reverted: 21 checks
-  failed. The model and `flight.json` are untouched; `run.sh`: 23 131 passed, 0 failed.
+- **The real world starts 755 m up** (was 364.5 m; the 1200..1500 m asked would need the canopy curve retuned): the
+  whiteout moved to 826..842 (2026-11-28). Before that, one retune (`tau_main` 14 -> 30) was tried and reverted: 21 checks
+  failed. `run.sh`: 23 131 passed, 0 failed (two checks that held the old numbers now hold the new ones).
 - **The splash point** was chosen on the macro relief (`spacecraft.json` `"terrain": "macro"`): reefs and the built
   terrain are not in it. The game re-checks the depth at the swap and moves out to sea if needed.
 - The ladder is the generic interactive ladder: its prompt is the ladder subsystem's, not `ui.flight.ladder` /

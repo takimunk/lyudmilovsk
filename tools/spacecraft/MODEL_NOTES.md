@@ -62,7 +62,7 @@ kept (and saved) for the whole flight.
 
 Moments inside the phases (all in `flight.json` `times`): the stage is left at 1.5; the cabin looks back at Europa 96..195;
 the turn to the planet 195..225; the burn 300..306; the instrument section goes at 700 (then the cabin yaws round, heat
-shield first, 702..718); drogue 810, main canopy 825; whiteout 840..860 with its peak at 850; jets 885; the water at 888.
+shield first, 702..718); drogue 810, main canopy 825; whiteout 826..842 with its peak at 833; jets 885; the water at 888.
 
 **The nap**: `StartNap()` works in the coast only, buckled, not within 12 s before the burn or during it, not after 560 s
 (`ui.flight.no.nap_now`, `.nap_unbuckled`). Flight time runs 8x; it ends by itself at 580 s exactly (events `nap_end`,
@@ -106,8 +106,8 @@ Units: km, km/s, m, m/s, g, degrees, °C, seconds. Directions are unit vectors i
 | `Plasma, PlasmaK` | 0..1 (722..807 s, peak 755) and its colour temperature 1800..7000 K |
 | `Scorch` | 0..0.8 on the glass; stays through chute, splash and afloat; 0 again when the craft is back on Europa |
 | `HullC` | heat shield, -120 in space, 1650 at 763 s, about 580 at the drogue, 60 at the water |
-| `Whiteout` | 0..1: 0 at 840, 1 at 850, 0 at 860 |
-| `bRealWorld` | false, then true from exactly 850.0 s (the whiteout's peak): swap to the real level there |
+| `Whiteout` | 0..1: 0 at 826, 1 at 833, 0 at 842 |
+| `bRealWorld` | false, then true from exactly 833.0 s (the whiteout's peak): swap to the real level there |
 | `Chute, ChuteInflation` | `EChute::None/Drogue/Main`; 0..1 of the stage that is out (main: reefed 0.35, full at 831.5; falls to 0 after the splash) |
 | `SwingPitchDeg, SwingRollDeg, ChuteYawDeg` | the canopy's pendulum (12° after the drogue, 7° after the main, 1.5° at rest) and the slow twist 0..35° |
 | `PlanetDir, PlanetDiaDeg` | to the planet's centre; 26° .. 150° at the entry .. 180° at the water. Never shrinks |
@@ -163,9 +163,9 @@ point off the beach, which the engine picks; the model's "island" is that point)
 - The globe instrument: crosshair at latitude `SubLatDeg`, longitude `island's + SubLonRelDeg` (also `I.Globe*`).
 - The craft comes in heading about 70° (east-north-east) at the island; `flight.json` `planet.arrival_heading_deg`.
 
-## The real world (850 s on)
+## The real world (833 s on)
 
-At `bRealWorld` (the frame the whiteout is 1.0) hang the cabin `AltSeaM` (364.5 m) over the splash point. From there:
+At `bRealWorld` (the frame the whiteout is 1.0) hang the cabin `AltSeaM` (755 m) over the splash point. From there:
 height = `AltSeaM` (15 m/s down at first, 7.7 m/s at 885 s, jets to 2 m/s, 0 at 888.0), tilt = `SwingPitchDeg` /
 `SwingRollDeg`, twist = `ChuteYawDeg` about any heading you like. Ignore the impostor directions after the swap. At
 888 the event `splash`; at 900 the phase is `Afloat` and the model stops moving the capsule: float it on the real waves.
@@ -234,7 +234,7 @@ say `weightless` 86, say `europa_behind` 185, `turn_start` 195, `auto.burn` 292,
 `correction_burn_off` 306, say `planet_grows` 325, `auto.half` 450, say `ocean` 520, `auto.approach` 596,
 `approach_start` 600, say `island` 683 (3 s after it is half over the horizon), `auto.sep` 694, `module_sep` 700,
 `entry_interface` 720, `auto.entry` 721.5, `auto.blackout` 727, `blackout_start` 731.7, say `fire` 745, `peak_g` 769.2,
-`blackout_end` 783.3, `drogue` 810, `main_chute` 825, `auto.chute` 827.5, say `chute` 833, `whiteout` 840, `real_world` 850,
+`blackout_end` 783.3, `drogue` 810, `main_chute` 825, `auto.chute` 827.5, say `chute` 833, `whiteout` 826, `real_world` 833,
 `auto.splash` 868, `jets` 885, `splash` 888, say `home` 890, `auto.home` 896. (Say ids are `line.hero.flight_<id>.1`.)
 No two spoken cues are closer than 3.5 s.
 
@@ -281,8 +281,8 @@ identical results, checked). `F.bFaultO2`, `F.bFaultBatt`.
   coast because the planet's angular size was asked to grow at a steady relative rate (about 19 % a minute from 200 s).
   The ascent IS consistent with its load (1.6 g less Europa's 0.13 for 75 s = 1.05 km/s, 38 km), and the descent under
   the canopy is exact (height = the integral of the speed; the load = 1 g + the deceleration).
-- The real world starts 364.5 m up: with a canopy that ends near 7 m/s and 35 s left, physics allows no more. Raise it by
-  moving `times.whiteout_peak` earlier or `chute.tau_main` up (then the last seconds are faster than 7 m/s).
+- The real world starts 755 m up (2026-11-28: the whiteout moved to 826..842, right after the main canopy at 825; it was
+  840..860 and 364.5 m). The canopy curve is untouched (7 m/s before the jets); only the swap is earlier.
 - The mission clock is plain HH:MM:SS of the flight second (during the nap it simply runs 8x).
 - Open on the engine side: when to swap the real Europa site for the impostor after liftoff (`EuropaDiaDeg` is 174° at
   8 s, 153° at 30 s); what CRT modes 1 and 2 show; the hatch/wheel/belt interactions that feed the four inputs.

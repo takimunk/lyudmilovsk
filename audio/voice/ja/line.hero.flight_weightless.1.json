@@ -1,0 +1,33 @@
+{
+ "key": "line.hero.flight_weightless.1",
+ "lang": "ja",
+ "text": "手が勝手に浮いてくる。水の中みたいだ。水なんてないのに。",
+ "speaker": "hero",
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
+ },
+ "direction": "soft wonder, half a laugh in the breath, to himself; he is floating for the first time",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "手が勝手に浮いてくる。水の中みたいだ。水なんてないのに。",
+  "voice_setting": {
+   "speed": 0.92,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "Japanese",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a220ba-20d3-7343-a59e-3d66fdb52a6b",
+ "hash": "4489a305ed1e"
+}

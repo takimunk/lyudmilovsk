@@ -1,0 +1,33 @@
+{
+ "key": "line.hero.flight_europa_behind.1",
+ "lang": "en",
+ "text": "Europa's the size of a coin already. And I was just standing on it.",
+ "speaker": "hero",
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
+ },
+ "direction": "quiet, a little wistful, looking back through the side porthole at the small white moon",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "Europa's the size of a coin already. And I was just standing on it.",
+  "voice_setting": {
+   "speed": 0.9,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a220b7-f995-78f1-bd0e-a075edccb6d3",
+ "hash": "df1983ca0f20"
+}

@@ -1,0 +1,33 @@
+{
+ "key": "line.hero.flight_island.1",
+ "lang": "en",
+ "text": "There it is. Our island. So small... And there's nothing else at all.",
+ "speaker": "hero",
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
+ },
+ "direction": "a small breath of relief and tenderness on 'our island', then quieter, sobered, on the last sentence",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "There it is. Our island. So small... And there's nothing else at all.",
+  "voice_setting": {
+   "speed": 0.88,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a220b8-2d03-7c61-9713-eac8406c5117",
+ "hash": "a22d4e4abe1f"
+}

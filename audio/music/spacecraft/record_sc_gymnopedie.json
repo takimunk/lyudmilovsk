@@ -1,0 +1,34 @@
+{
+ "id": "record_sc_gymnopedie",
+ "variant": 1,
+ "kind": "music",
+ "file": "audio/music/spacecraft/record_sc_gymnopedie.wav",
+ "endpoint": "fetched: commons",
+ "title": "Gymnopédie No. 1",
+ "composer": "Erik Satie",
+ "performer": "Kevin MacLeod",
+ "recorded": "incompetech, ISRC USUAN1100787",
+ "source_page": "https://commons.wikimedia.org/wiki/File:Gymnopedie_No._1_(ISRC_USUAN1100787).mp3",
+ "source_url": "https://upload.wikimedia.org/wikipedia/commons/2/2a/Gymnopedie_No._1_%28ISRC_USUAN1100787%29.mp3?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+ "source_sha256": "8cba6bb3da51066ad39520ec218a327bb6222d8fb32bc52f28a1e90b67756f70",
+ "source_bytes": 7487656,
+ "created": "2026-11-28T05:51:57Z",
+ "postprocess": "ffmpeg: trim silence below -50 dBFS at both ends; stereo; two-pass loudnorm I=-20 LUFS TP=-1.5 dB LRA=11; fade in 0.05s / out 1.5s; 48000 Hz 16-bit WAV; no vinyl noise baked in",
+ "measured_input": {
+  "input_i": "-19.99",
+  "input_tp": "-0.10",
+  "input_lra": "9.00"
+ },
+ "sha256": "7a6e40b2d204f210faf12a342eec5d7c54aa602aa45ebc510f81d9c207cc2d8f",
+ "seconds": 185.48,
+ "channels": 2,
+ "license": "CC BY 3.0 Unported",
+ "license_url": "https://creativecommons.org/licenses/by/3.0/",
+ "attribution": "\"Gymnopedie No. 1\" Kevin MacLeod (incompetech.com). Licensed under Creative Commons: By Attribution 3.0 License, https://creativecommons.org/licenses/by/3.0/. Trimmed and loudness-normalised.",
+ "host_licence": "CC BY 3.0",
+ "mood": [
+  "piano",
+  "slow",
+  "weightless"
+ ]
+}
