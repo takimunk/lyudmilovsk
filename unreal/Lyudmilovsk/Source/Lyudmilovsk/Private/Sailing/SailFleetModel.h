@@ -289,7 +289,10 @@ namespace LyudSail
 		int Capsizes = 0, Bumps = 0, Place = 0;
 		int Nb[6] = { -1, -1, -1, -1, -1, -1 };
 		int NbCount = 0;
-		bool bTouching = false, bInArea = false;
+		bool bInArea = false;
+		bool bStation = false;          // her order is to keep station (StationAt)
+		double StationR = 10.0;
+		double TouchT = 100.0;          // seconds since her hull last touched anything
 		double OutsideM = 0.0;          // the farthest she has been outside her area while at work (after entering it)
 
 		bool Afloat() const { return Stage != EFleetStage::Ashore && Stage != EFleetStage::Landed; }
@@ -338,6 +341,8 @@ namespace LyudSail
 		int SeqAt = 0;
 		double RaceT = 0.0;                     // seconds from the gun
 		bool bRaceRunning = false, bXUp = false;
+		bool bHeld = false;                     // the sequence waits for the fleet to come to the line
+		double HoldT = 0.0;
 		int GeneralRecalls = 0;
 
 		// the launch
@@ -364,6 +369,8 @@ namespace LyudSail
 				for (const FSchoolV2& V : A.Poly) { F.push_back(V.X); F.push_back(V.Y); }
 				Flat.push_back(F);
 			}
+			Corridor = -1;
+			for (size_t I = 0; I < InP.Areas.size(); I++) if (InP.Areas[I].Id == "corridor") Corridor = (int)I;
 			CorridorEnd = SchoolLaunchLineAt(InP, 115.0);
 			Home = SchoolLaunchLineAt(InP, 30.0);
 			Obstacles.clear();
@@ -385,6 +392,32 @@ namespace LyudSail
 			{
 				Units[(size_t)I].Beach = At + Across * (((double)I - 0.5 * (N - 1)) * Gap) + P->LaunchDir * -1.5;
 			}
+		}
+
+		/** Where the crews, wading, let go of their boats: the first water out along the launch line deep enough for the board
+		 *  (1.15 m; at most 120 m beyond the trolleys). */
+		FSchoolV2 PushOff(const FSchoolV2& LaunchAt) const
+		{
+			if (!DepthFn) return LaunchAt + P->LaunchDir * 25.0;
+			for (double D = 2.0; D <= 120.0; D += 2.0)
+			{
+				const FSchoolV2 At = LaunchAt + P->LaunchDir * D;
+				if (DepthFn(DepthUser, At.X, At.Y) >= 1.15) return At;
+			}
+			return LaunchAt + P->LaunchDir * 120.0;
+		}
+
+		/** The heading a boat is let go on: straight out when the wind lets her, else close-hauled (55 degrees off the wind) on
+		 *  the tack that takes her more to seaward, and of two alike the one away from the pier. */
+		double PushOffYaw() const
+		{
+			const double Out = std::atan2(P->LaunchDir.Y, P->LaunchDir.X);
+			const double From = WindFromYaw(WindTo.X, WindTo.Y);
+			if (std::fabs(WrapAngle(From - Out)) > 60.0 * Pi / 180.0) return Out;
+			const double A = WrapAngle(From + 55.0 * Pi / 180.0), B = WrapAngle(From - 55.0 * Pi / 180.0);
+			const FSchoolV2 Away = (CorridorEnd - (P->PierA + P->PierB) * 0.5).Norm();
+			auto Score = [this, &Away](double Yaw) { const FSchoolV2 F(std::cos(Yaw), std::sin(Yaw)); return F.Dot(P->LaunchDir) + 0.35 * F.Dot(Away); };
+			return Score(A) >= Score(B) ? A : B;
 		}
 
 		void SetWeather(const FSchoolV2& InWindTo, double InWindMs, double InTideM, double InWaterC)
@@ -496,10 +529,14 @@ namespace LyudSail
 			Middle = Groups[0].bOn ? Main.Middle : (Kids ? Kids->Middle : CorridorEnd);
 			Station = Groups[0].bOn ? CommitteeAt(Main) : (Kids ? CommitteeAt(*Kids) : Middle);
 			GeneralRecalls = 0;
-			BeginSequence();
+			bRaceRunning = false;
+			bHeld = true;
+			HoldT = 0.0;
+			for (int G = 0; G < 2; G++) Groups[G].bClosed = !Groups[G].bOn;
 			for (size_t I = 0; I < Units.size(); I++)
 			{
 				FFleetUnit& U = Units[I];
+				U.Tracker.Reset();
 				U.Group = GroupOf(U);
 				if (U.Group >= 0) Groups[U.Group].Entries++;
 				if (!U.Afloat() || U.bHero || U.Stage == EFleetStage::Towed) continue;
@@ -517,6 +554,7 @@ namespace LyudSail
 				return;
 			}
 			if (Mode == EFleetMode::Race && bRaceRunning) CloseRace(true);
+			bHeld = false;
 			Mode = EFleetMode::Recall;
 			bRecall = true;
 			if (bWhistle) Emit(EFleetSignal::WhistleRecall, -1);
@@ -677,7 +715,7 @@ namespace LyudSail
 			{
 				FFleetUnit& U = Units[I];
 				if (!U.Boat || !U.Afloat()) continue;
-				bool bAny = false;
+				U.TouchT += Dt;
 				for (int K = 0; K < U.NbCount; K++)
 				{
 					const int J = U.Nb[K];
@@ -687,14 +725,16 @@ namespace LyudSail
 					const double Hit = FleetBump(*U.Boat, *V.Boat);
 					if (Hit > 0.0)
 					{
-						bAny = true;
-						if (!U.bTouching)
+						// boats lying against each other are one contact, not one a tick
+						if (U.TouchT > 4.0 && V.TouchT > 4.0)
 						{
 							Contacts++;
 							U.Bumps++;
 							V.Bumps++;
 							Emit(EFleetSignal::Bump, (int)I, J, Hit);
 						}
+						U.TouchT = 0.0;
+						V.TouchT = 0.0;
 					}
 				}
 				for (const FFleetObstacle& O : Obstacles)
@@ -702,8 +742,8 @@ namespace LyudSail
 					const double Hit = FleetBumpFixed(*U.Boat, O);
 					if (Hit > 0.0)
 					{
-						bAny = true;
-						if (!U.bTouching) Emit(EFleetSignal::Bump, (int)I, -1, Hit);
+						if (U.TouchT > 4.0) Emit(EFleetSignal::Bump, (int)I, -1, Hit);
+						U.TouchT = 0.0;
 					}
 				}
 				if (Launch)
@@ -712,9 +752,8 @@ namespace LyudSail
 					O.A = FSchoolV2(Launch->X, Launch->Y) + FSchoolV2(std::cos(Launch->Yaw), std::sin(Launch->Yaw)) * 1.4;
 					O.B = FSchoolV2(Launch->X, Launch->Y) - FSchoolV2(std::cos(Launch->Yaw), std::sin(Launch->Yaw)) * 1.4;
 					O.R = 0.85;
-					if (U.Stage != EFleetStage::Towed && FleetBumpFixed(*U.Boat, O) > 0.0) bAny = true;
+					if (U.Stage != EFleetStage::Towed) FleetBumpFixed(*U.Boat, O);
 				}
-				U.bTouching = bAny;
 			}
 			if (Mode == EFleetMode::Race && bRaceRunning) AfterRace(Dt);
 		}
@@ -727,6 +766,7 @@ namespace LyudSail
 		FNeighbour NbBuf[16];
 		double NbClock = 0.0;
 		int Stagger = 0;
+		int Corridor = -1;
 
 		void Emit(EFleetSignal Kind, int Unit, int Other = -1, double Value = 0.0)
 		{
@@ -834,7 +874,11 @@ namespace LyudSail
 			In.DepthUser = DepthUser;
 			In.MinDepth = 0.6;
 			// her water's polygon only while she works in it (the ways out and home cross open water)
-			const int Ai = U.Stage == EFleetStage::Work && U.bInArea && !(Mode == EFleetMode::Drill && Drill == "follow") ? AreaIndexOf(U) : -1;
+			int Ai = U.Stage == EFleetStage::Work && U.bInArea && !(Mode == EFleetMode::Drill && Drill == "follow") ? AreaIndexOf(U) : -1;
+			if (U.Stage == EFleetStage::Out1 && Corridor >= 0 && U.Boat && SchoolInside(P->Areas[(size_t)Corridor], FSchoolV2(U.Boat->X, U.Boat->Y)))
+			{
+				Ai = Corridor;      // out between the bathers and the pier
+			}
 			if (Ai >= 0)
 			{
 				In.Poly = Flat[(size_t)Ai].data();
@@ -860,6 +904,19 @@ namespace LyudSail
 				Nb.Length = LaunchLength;
 				Nb.Tack = 0;
 			}
+			// the pier, when she is near it: its nearest point is a thing to keep clear of
+			if (!Obstacles.empty() && U.Boat && U.Stage != EFleetStage::Work)
+			{
+				FSchoolV2 Near;
+				const double D = SchoolSegDist(FSchoolV2(U.Boat->X, U.Boat->Y), Obstacles[0].A, Obstacles[0].B, &Near);
+				if (D < Obstacles[0].R + 35.0)
+				{
+					FNeighbour& Nb = NbBuf[C++];
+					Nb.X = Near.X; Nb.Y = Near.Y; Nb.VX = 0.0; Nb.VY = 0.0;
+					Nb.Length = 2.0 * Obstacles[0].R + 6.0;
+					Nb.Tack = 0;
+				}
+			}
 			// the buoys she is rounding
 			const FRaceCourse* Course = Mode == EFleetMode::Race ? (U.Group >= 0 ? &Groups[U.Group].Course : nullptr) : (DrillCourse.bOk ? &DrillCourse : nullptr);
 			if (Course && U.Boat)
@@ -883,13 +940,28 @@ namespace LyudSail
 			O.Kind = EOrder::SailTo;
 			O.X = To.X; O.Y = To.Y; O.Radius = Radius; O.Lane = Lane;
 			HelmOrder(U.Helm, O);
+			U.bStation = false;
 		}
+		/** Keep station at a point: from far off she sails there first (Keep() turns the order into a station on arriving). */
 		static void StationAt(FFleetUnit& U, const FSchoolV2& At, double Radius)
 		{
 			FOrder O;
-			O.Kind = EOrder::Station;
+			const double Far = U.Boat ? std::hypot(U.Boat->X - At.X, U.Boat->Y - At.Y) : 0.0;
+			O.Kind = Far > Radius + 25.0 ? EOrder::SailTo : EOrder::Station;
 			O.X = At.X; O.Y = At.Y; O.Radius = Radius;
 			HelmOrder(U.Helm, O);
+			U.StationR = Radius;
+			U.bStation = true;
+		}
+		static void Keep(FFleetUnit& U)
+		{
+			if (U.bStation && U.Helm.Order.Kind == EOrder::SailTo && U.Helm.bArrived)
+			{
+				FOrder O = U.Helm.Order;
+				O.Kind = EOrder::Station;
+				O.Radius = U.StationR;
+				HelmOrder(U.Helm, O);
+			}
 		}
 
 		/** A point of free sailing: somewhere well inside the area. */
@@ -934,7 +1006,7 @@ namespace LyudSail
 			switch (U.Stage)
 			{
 			case EFleetStage::Out1:
-				SailTo(U, CorridorEnd + P->LaunchDir.Left() * (((I % 5) - 2) * 2.5), 14.0, 12.0);
+				SailTo(U, CorridorEnd + P->LaunchDir.Left() * (((I % 5) - 2) * 2.0), 14.0, 40.0);
 				break;
 			case EFleetStage::Out2:
 				SailTo(U, EntryPoint(U), 22.0);
@@ -948,6 +1020,7 @@ namespace LyudSail
 				O.Kind = EOrder::Ashore;
 				O.X = U.Beach.X; O.Y = U.Beach.Y; O.Radius = 3.5; O.Lane = 10.0;
 				HelmOrder(U.Helm, O);
+				U.bStation = false;
 				break;
 			}
 			case EFleetStage::Work:
@@ -964,7 +1037,7 @@ namespace LyudSail
 			U.Pen = -1;
 			if (Mode == EFleetMode::Race)
 			{
-				if (U.Group < 0 || U.Tracker.Status == ERaceStatus::Finished || Groups[U.Group].bClosed || !bRaceRunning)
+				if (U.Group < 0 || U.Tracker.Status == ERaceStatus::Finished || Groups[U.Group].bClosed || (!bRaceRunning && !bHeld))
 				{
 					U.Sub = 5;
 					StationAt(U, U.Group >= 0 ? PreStart(U) : Middle, 14.0);
@@ -988,6 +1061,7 @@ namespace LyudSail
 				O.Gap = 11.0;
 				if (Launch) { O.LeaderX = Launch->X; O.LeaderY = Launch->Y; O.LeaderYaw = Launch->Yaw; O.LeaderSpeed = Launch->Speed; }
 				HelmOrder(U.Helm, O);
+				U.bStation = false;
 			}
 			else if ((Drill == "triangle" || Drill == "figure8") && !DrillRoute.empty())
 			{
@@ -1073,6 +1147,7 @@ namespace LyudSail
 				}
 				break;
 			case EFleetStage::Work:
+				Keep(U);
 				if (Mode == EFleetMode::Race) RaceOrders(U, I);
 				else if (Mode == EFleetMode::Drill) DrillOrders(U, I);
 				break;
@@ -1234,6 +1309,24 @@ namespace LyudSail
 
 		void ThinkRace(double Dt)
 		{
+			if (bHeld)
+			{
+				// the warning signal waits until most of the fleet is at the line (25 minutes at most)
+				HoldT += Dt;
+				int Want = 0, Ready = 0;
+				for (const FFleetUnit& U : Units)
+				{
+					if (U.Group < 0 || U.bHero) continue;
+					Want++;
+					if (U.Stage == EFleetStage::Work) Ready++;
+				}
+				if ((Want > 0 && Ready * 5 >= Want * 4 && HoldT > 20.0) || HoldT > 1500.0)
+				{
+					bHeld = false;
+					BeginSequence();
+				}
+				return;
+			}
 			if (!bRaceRunning)
 			{
 				return;
@@ -1256,8 +1349,10 @@ namespace LyudSail
 			const FRaceCourse& C = Groups[U.Group].Course;
 			const double Below = std::max(4.0, (LinePoint(U) - FSchoolV2(U.Boat->X, U.Boat->Y)).Dot(C.Up));
 			const int Cl = ClassOf(U);
-			const double V = std::max(0.5, P->SpeedMs[Cl] * (1.0 - std::exp(-std::max(0.0, WindMs) / 3.5)) * 0.62);
-			return Below / V + 6.0;
+			const double Tws = std::hypot(U.Env.WindX, U.Env.WindY);
+			const double Beat = BeatAngle(EBoat(Cl), Tws);
+			const double V = std::max(0.35, PolarSpeed(EBoat(Cl), Beat, Tws) * std::cos(Beat) * (0.72 + 0.28 * U.Helm.Skill));
+			return Below / V * 1.15 + 8.0;
 		}
 
 		void RaceOrders(FFleetUnit& U, int I)
