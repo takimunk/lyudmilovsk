@@ -68,6 +68,11 @@ public:
 	/** Lets go of a loop from AttachLoop: it fades over FadeSeconds (0: stops now) and its component is destroyed, not left
 	 *  attached to its parent as a stopped one. The caller clears its own pointer. */
 	static void ReleaseLoop(UAudioComponent* Loop, float FadeSeconds = 0.f);
+	/** Loads /Game/Audio/<Group>/S_<Id>_<nn> into the pool Id (a lazy group: the flight home's Spacecraft set, not resident
+	 *  in every world); a pool that is already loaded is left alone. */
+	void LoadPool(const TCHAR* Group, FName Id);
+	/** Empties a pool and lets its sounds go (stop the loops that use it first). */
+	void UnloadPool(FName Id);
 	/** A spoken line (LyudText::LoadVoice) at Where, at the effects volume (the cable car's announcements). */
 	UFUNCTION(BlueprintCallable, Category = "Sound") void PlayVoiceAt(USoundBase* Voice, const FVector& Where, float Volume = 1.f);
 	/** An umbrella over the player 0..1 (rain drums on it; equipment calls this). */
@@ -115,6 +120,8 @@ private:
 	struct FCue { TObjectPtr<USoundBase> Sound; FName Name; TArray<FName> Moods; float Seconds = 0.f; };
 	TArray<FCue> Cues;
 	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> CueRefs;
+	/** The sounds of the lazy pools (LoadPool): kept for the GC until UnloadPool. */
+	UPROPERTY(Transient) TArray<TObjectPtr<USoundBase>> LazyRefs;
 
 	// what the bed hears, refreshed at a few Hz
 	FVector Listener = FVector::ZeroVector;
