@@ -330,9 +330,9 @@
   "ja": "足がじんじんする。テーブルに座って、ほかの人たちが踊るのを眺める。これも悪くない。"
  },
  "city.dnc.invite.after.2": {
-  "ru": "Ты уже трижды выходил на паркет. Бабушки на лавочке у входа пересчитали: трижды.",
-  "en": "You've been out on the parquet three times already. The grannies on the bench by the door have counted: three.",
-  "ja": "もう三回もフロアに出た。入口のベンチのおばあさんたちがちゃんと数えている。三回。"
+  "ru": "Ты уже не раз выходил на паркет. Бабушки на лавочке у входа считают вслух и сбиваются.",
+  "en": "You've been out on the parquet more than once already. The grannies on the bench by the door count out loud and lose track.",
+  "ja": "もう何度もフロアに出た。入口のベンチのおばあさんたちが声に出して数えて、途中で分からなくなっている。"
  },
  "city.dnc.off.day.1": {
   "ru": "У зеркальной стены пусто. На паркете меловые следы чьих-то шагов: раз-два-три, раз-два-три. Танцы в пятницу и субботу с семи.",
