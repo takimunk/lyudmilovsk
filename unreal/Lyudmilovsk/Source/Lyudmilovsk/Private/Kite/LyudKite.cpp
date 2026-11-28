@@ -1363,6 +1363,19 @@ void ULyudKiteFlying::TickHero(float DeltaTime)
 			bAttached = true;
 		}
 	}
+	// the hand never took the reel (another hold or a busy hand kept the arm down): the kite must not fly unseen, so it is
+	// shown anyway, the reel in front of the chest where the line starts (seen on the Mac: a dragon taken out after a
+	// snagged kite flew invisible)
+	if (!bAttached && (HoldTime > 1.5f || Sim.State != LyudKite::EState::Wound))
+	{
+		if (HoldTime - DeltaTime <= 1.5f && HoldTime > 1.5f)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("KITE the hand has not taken the reel after 1.5 s (hold %.2f, override %d): shown from the chest"),
+				Reach ? Reach->HoldWeight() : -1.f, Reach && Reach->HasOverrideHold() ? 1 : 0);
+		}
+		K->SetActorLocationAndRotation(H->EyeLocation() + H->GetActorForwardVector() * 40.f - FVector(0, 0, 40.f), H->GetActorRotation());
+		K->SetActorHiddenInGame(false);
+	}
 	// the line leaves the reel at its drum (before the hand is up: from in front of the chest)
 	const FVector NewHand = bAttached && K->GetReel() ? K->GetReel()->GetComponentTransform().TransformPosition(FVector(0.f, 0.f, 2.f))
 		: H->EyeLocation() + H->GetActorForwardVector() * 40.f - FVector(0, 0, 40.f);
