@@ -237,8 +237,11 @@ all_place_ids = town_place_ids | pp_ids | flat_ids | plan_ids | tplan_ids
 # the yards the children play in (tools/yard/yard_areas.py): spots loaded by the life like the winter's
 yard_spots = load("PeopleData/yard_spots.json")["spots"] if os.path.exists(os.path.join(CONTENT, "PeopleData", "yard_spots.json")) else []
 all_place_ids |= {s["id"] for s in yard_spots}
+# the sailing school's places (tools/sailing/sailing_people.py): the boathouse, the spectators' places, the parents' bench
+sail_spots = load("PeopleData/sailing_spots.json")["spots"] if os.path.exists(os.path.join(CONTENT, "PeopleData", "sailing_spots.json")) else []
+all_place_ids |= {s["id"] for s in sail_spots}
 # "snow": the winter's path patches, made at run time (PeopleLife.cpp, PeopleSim.cpp KindNames)
-all_kinds = town_kinds | pp_kinds | plan_kinds | {"home", "club", "flat", "snow"} | {s["kind"] for s in yard_spots}
+all_kinds = town_kinds | pp_kinds | plan_kinds | {"home", "club", "flat", "snow"} | {s["kind"] for s in yard_spots} | {s["kind"] for s in sail_spots}
 
 acts = load("PeopleData/activities.json")
 act_ids = dups("PeopleData/activities.json", [a["id"] for a in acts["activities"]])

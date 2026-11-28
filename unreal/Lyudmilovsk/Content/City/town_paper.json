@@ -31,6 +31,9 @@
   "midsummer",
   "new_year",
   "perseids",
+  "sail_closing",
+  "sail_cup",
+  "sail_opening",
   "sea_festival",
   "sun_day"
  ],
@@ -82,6 +85,11 @@
   "front.cup": 3,
   "front.contest": 3,
   "front.contest_noplace": 2,
+  "sail.result": 3,
+  "sail.wind": 4,
+  "sail.opening": 2,
+  "sail.closing": 2,
+  "front.sail_win": 3,
   "fest.bird_day": 2,
   "fest.blossom": 2,
   "fest.children_day": 2,
@@ -95,6 +103,9 @@
   "fest.midsummer": 2,
   "fest.new_year": 2,
   "fest.perseids": 2,
+  "fest.sail_closing": 2,
+  "fest.sail_cup": 2,
+  "fest.sail_opening": 2,
   "fest.sea_festival": 2,
   "fest.sun_day": 2
  },
@@ -239,6 +250,12 @@
     5,
     10
    ]
+  },
+  {
+   "k": "paper.story.28",
+   "months": [
+    4
+   ]
   }
  ],
  "town": [
@@ -344,7 +361,43 @@
     6
    ]
   },
-  "paper.town.40"
+  "paper.town.40",
+  {
+   "k": "paper.town.41",
+   "months": [
+    12,
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "k": "paper.town.42",
+   "months": [
+    12,
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "k": "paper.town.43",
+   "months": [
+    11,
+    12,
+    1,
+    2,
+    3
+   ]
+  },
+  {
+   "k": "paper.town.44",
+   "months": [
+    6,
+    7,
+    8
+   ]
+  }
  ],
  "ads": [
   "paper.ad.1",
@@ -427,7 +480,41 @@
     8
    ]
   },
-  "paper.ad.25"
+  "paper.ad.25",
+  {
+   "k": "paper.ad.26",
+   "months": [
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "k": "paper.ad.27",
+   "months": [
+    4,
+    5,
+    6
+   ]
+  },
+  {
+   "k": "paper.ad.28",
+   "months": [
+    3,
+    4,
+    10,
+    11
+   ]
+  },
+  {
+   "k": "paper.ad.29",
+   "months": [
+    4,
+    5,
+    6,
+    7
+   ]
+  }
  ],
  "market": [
   {

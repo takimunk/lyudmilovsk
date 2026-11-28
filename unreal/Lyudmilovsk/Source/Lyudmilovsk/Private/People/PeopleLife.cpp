@@ -8,6 +8,7 @@
 
 #include "PeopleSim.h"
 #include "PeopleManners.h"
+#include "SailPeople.h"
 #include "BodyGestures.h"
 #include "UI/LyudGameScreen.h"
 #include "Bikes/HeroBike.h"
@@ -671,6 +672,7 @@ bool UPeopleLifeSubsystem::UpdateClock(bool bFirst)
 	if (!bFirst && bClockSeen && FMath::Abs(Seconds - LastSeconds) > 900.0)
 	{
 		UE_LOG(LogTemp, Display, TEXT("PeopleLife: the clock jumped %.2f h; people resettled"), (Seconds - LastSeconds) / 3600.0);
+		UpdateSailing();        // the sailing school's groups as at the new hour, so its people are placed at their session
 		S.Resettle();
 		LastSeconds = Seconds;
 		return true;
@@ -947,8 +949,9 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 		{
 			return nullptr;
 		}
-		// a townsperson: a free body of their look from the pool, if there is one
-		if (P.bTown)
+		// a townsperson: a free body of their look from the pool, if there is one (not for somebody who talks as a role of
+		// their own, the sailing school's staff: their body is theirs alone, see ReleaseBody)
+		if (P.bTown && P.TalkAs.empty())
 		{
 			if (TArray<TObjectPtr<ANpcBody>>* Free = TownPool.Find(Model))
 			{
@@ -988,7 +991,12 @@ ANpcBody* UPeopleLifeSubsystem::BodyFor(int32 Id)
 			ULyudPrefetch::Release(this, PeopleModelPath(Model));
 		}
 		Body->TalkId = UTF8_TO_TCHAR(P.Body.c_str());
-		if (P.Key.rfind("crowd", 0) == 0 || P.bTown)
+		if (!P.TalkAs.empty())
+		{
+			// the sailing school's staff talk as their role (npc_dialogue.txt [Sail_coach_head], [Sail_bosun], ...)
+			Body->TalkId = UTF8_TO_TCHAR(P.TalkAs.c_str());
+		}
+		else if (P.Key.rfind("crowd", 0) == 0 || P.bTown)
 		{
 			Body->Tags.Add(TEXT("NoTalk"));
 		}
@@ -1365,6 +1373,13 @@ void UPeopleLifeSubsystem::Tick(float DeltaTime)
 	const double Was = S.Time;
 	const bool bJumped = UpdateClock(false);
 	UpdateRailway();
+	// the sailing school's sessions (docs/yacht_school.md "People (part F)"): what its groups do now
+	SailTimer -= DeltaTime;
+	if (SailTimer <= 0.f)
+	{
+		SailTimer = 3.f;
+		UpdateSailing();
+	}
 	// the stretches of snowy path near the camera that want clearing (the shovel activity)
 	SnowTimer -= DeltaTime;
 	if (SnowTimer <= 0.f)
@@ -1531,6 +1546,20 @@ void UPeopleLifeSubsystem::ReleaseBody(int32 Id)
 	ANpcBody* Body = Id < Bodies.Num() ? Bodies[Id].Get() : nullptr;
 	if (!Body)
 	{
+		return;
+	}
+	if (Sim && Id < (int32)Sim->People.size() && !Sim->People[Id].TalkAs.empty())
+	{
+		// somebody who talks as a role (the sailing school's staff, registered with the talk director under it): the body is
+		// kept, hidden, never handed to another person of the same look
+		if (!Body->IsHidden())
+		{
+			Body->SetActorHiddenInGame(true);
+			if (Manners)
+			{
+				Manners->Release(Id, MannerClock);
+			}
+		}
 		return;
 	}
 	Bodies[Id] = nullptr;
@@ -1823,6 +1852,68 @@ void UPeopleLifeSubsystem::SetPresentedExternally(int32 Id, bool bExternal)
 	if (bExternal && Id < Bodies.Num() && Bodies[Id])
 	{
 		Bodies[Id]->SetActorHiddenInGame(true);
+	}
+}
+
+void UPeopleLifeSubsystem::UpdateSailing()
+{
+	if (!Sim || Sim->MemberIds.empty())
+	{
+		return;
+	}
+	if (!bSailTried)
+	{
+		bSailTried = true;
+		FString Text;
+		if (FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / TEXT("City/sailing.json"))))
+		{
+			TPimplPtr<LyudSail::FSchoolParams> Params = MakePimpl<LyudSail::FSchoolParams>();
+			std::string Error;
+			const FTCHARToUTF8 Utf8(*Text);
+			if (Params->Load(std::string(Utf8.Get(), Utf8.Length()), Error))
+			{
+				SailParams = MoveTemp(Params);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("PeopleLife: City/sailing.json: %s (the sailing school's people stay home)"), UTF8_TO_TCHAR(Error.c_str()));
+			}
+		}
+	}
+	if (!SailParams)
+	{
+		return;
+	}
+	const FDateTime Now = UGameCalendar::NowIn(GetWorld());
+	const LyudSail::FSchoolDate Date(Now.GetYear(), Now.GetMonth(), Now.GetDay());
+	LP::SailPeople::Apply(*Sim, LP::SailPeople::ProgramsAt(*SailParams, Date, PeopleLifeLocal::PeopleDayHour(Now), Sim->bDayOff, LP::SailPeople::ReadConds(*Sim)));
+}
+
+void UPeopleLifeSubsystem::GetSailors(TArray<FLyudSailorNow>& Out) const
+{
+	Out.Reset();
+	if (!Sim)
+	{
+		return;
+	}
+	const LP::FWorld& S = *Sim;
+	for (const int Id : S.MemberIds)
+	{
+		const LP::FPerson& P = S.People[(size_t)Id];
+		if (P.Program < 0 || P.Activity < 0 || P.MemberSlot.empty())
+		{
+			continue;       // not at a part of a session now (a parent waiting by the slip has no slot)
+		}
+		FLyudSailorNow& Row = Out.AddDefaulted_GetRef();
+		Row.Person = FName(UTF8_TO_TCHAR(P.Key.c_str()));
+		Row.Id = Id;
+		Row.Slot = FName(UTF8_TO_TCHAR(P.MemberSlot.c_str()));
+		// a regatta's classes are its own groups here (race_optimist, ...): the engine knows them as one, race
+		const std::string& G = S.GroupNames[(size_t)P.Program];
+		Row.Group = FName(UTF8_TO_TCHAR(G.rfind("race", 0) == 0 ? "race" : G.c_str()));
+		Row.Activity = FName(UTF8_TO_TCHAR(S.Activities[(size_t)P.Activity].Id.c_str()));
+		Row.AgeYears = (float)P.Age;
+		Row.bAfloat = S.Activities[(size_t)P.Activity].bAfloat && (P.State == LP::EState::Doing || P.State == LP::EState::Settling);
 	}
 }
 
@@ -2386,15 +2477,19 @@ bool ANpcBody::DriveManner(EPersonPose Pose, int32 Transit, float Speed)
 	{
 		Anim->SetGesture(G);
 	}
-	PlaceMannerProp(bCan);
-	if (bCan && (Pose == EPersonPose::Stand || Pose == EPersonPose::Look))
+	// a clip of the manner's own: standing (a seated one on the chair); the yacht school's hold their prop in the right hand
+	const bool bClipPose = Pose == EPersonPose::Stand || Pose == EPersonPose::Look || (Pose == EPersonPose::Sit && LyudGesture::ClipSeated(M));
+	const FName Own = bCan && bClipPose ? LyudGesture::ClipFor(M) : NAME_None;
+	const bool bOwn = !Own.IsNone() && Clip(Own) != nullptr;
+	if (bOwn && M >= EManner::SailRig)
 	{
-		const FName Own = LyudGesture::ClipFor(M);
-		if (!Own.IsNone() && Clip(Own))
-		{
-			Play(Own, true);
-			return true;
-		}
+		bMannerLeft = false;
+	}
+	PlaceMannerProp(bCan);
+	if (bOwn)
+	{
+		Play(Own, true);
+		return true;
 	}
 	return false;
 }

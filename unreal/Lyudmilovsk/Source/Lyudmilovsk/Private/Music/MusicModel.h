@@ -166,6 +166,17 @@ namespace LyudMusic
 		std::string Sound;                // radio_chime, radio_pips
 	};
 
+	/** A race of the yacht school for the bulletins (docs/yacht_school.md "Town"; the engine's LyudSailNewsOfDay). Podium:
+	 *  townsfolk keys (said as npc.<key>.name), "hero" the hero, "" a sailor nobody knows; bToday: sailed today (the evening
+	 *  bulletin), else yesterday (the morning one). */
+	struct FSailResult
+	{
+		std::string Event, Class;
+		std::vector<std::string> Podium;
+		bool bAbandoned = false;
+		bool bToday = false;
+	};
+
 	/** What the engine knows of the moment that the words need (weather, tide, the paper's front page). */
 	struct FFacts
 	{
@@ -184,6 +195,20 @@ namespace LyudMusic
 		 *  broadcast (docs/festivals.md "The new toys"): greets the town at sign-on and in every bulletin, and the music
 		 *  hours go out as the holiday programme. */
 		std::string Festival;
+		/** The yacht school's morning call for the sailors (docs/yacht_school.md "Town": ULyudMusic fills these from
+		 *  LyudSailMorningOf, Public/Sailing/LyudSailNews.h): 0 nothing to say (no school, out of season), 1 sail, 2 reef,
+		 *  3 race, 4 shore, 5 storm, 6 closed. Said in the morning weather (before noon). */
+		int Sail = 0;
+		std::string SailWhy;        // a shore or closed day's reason: calm, wind, gust, thunder, fog, dark, ice, low_water
+		std::string SailEvent;      // today's regatta: sail_opening, sail_closing, optimist_day, cup_lyudmilovsk, wednesday, sunday
+		std::string SailEventTime;  // "HH:MM" of its warning signal
+		std::string SailBest;       // "HH:MM" of the best hour to be out ("" none)
+		std::string SailLowWater;   // "HH:MM" of a low water that sends the trolleys far over the flats ("" no worry)
+		float SailWind = 0.f, SailGust = 0.f, SailFromDeg = 0.f;
+		int SailShift = 0;          // 0 steady, 1 veers, 2 backs, 3 dies away, 4 freshens
+		bool bSailRecallRisk = false;
+		/** Today's and yesterday's races (LyudSailNewsOfDay): yesterday's in the morning bulletin, today's in the evening one. */
+		std::vector<FSailResult> SailResults;
 	};
 
 	/** One segment laid out: what plays when, what is said when. */
@@ -748,6 +773,120 @@ namespace LyudMusic
 			Out.push_back(A);
 		}
 
+		/** The sailors' names of the winds (the way it blows from), the Pomor rose in Russian. */
+		static std::string SailDirKey(float FromDeg)
+		{
+			float D = std::fmod(FromDeg, 360.f);
+			D = D < 0.f ? D + 360.f : D;
+			return "music.radio.sail.dir." + std::to_string((int)std::floor((D + 22.5f) / 45.f) % 8);
+		}
+
+		/** The sea by the wind, the sailors' way: 0 glass, 1 ripples, 2 a few white horses, 3 white horses, 4 white crests
+		 *  everywhere, 5 a gale. */
+		static int SailForce(float Ms)
+		{
+			return Ms < 2.f ? 0 : (Ms < 4.f ? 1 : (Ms < 6.f ? 2 : (Ms < 9.f ? 3 : (Ms < 12.f ? 4 : 5))));
+		}
+
+		/** A sailor's name as a word argument. */
+		static FArg SailorArg(const std::string& Who)
+		{
+			if (Who == "hero") return Key("music.radio.sail.hero");
+			if (Who.empty()) return Key("music.radio.sail.someone");
+			return Key("npc." + Who + ".name");
+		}
+
+		/** The yacht school's words for the morning weather: the call of the day, the wind by the sailors' names and the
+		 *  sea, how it goes through the day, the recall risk, the low water for launching (docs/yacht_school.md "Town"). */
+		static void SailorsWords(const FFacts& F, std::vector<FCaption>& Out)
+		{
+			if (F.Sail <= 0 || F.Sail > 6)
+			{
+				return;
+			}
+			auto Add = [&Out](const std::string& K, std::vector<FArg> Args = {})
+			{
+				FCaption C;
+				C.Key = K;
+				C.Args = std::move(Args);
+				Out.push_back(C);
+			};
+			Add("music.radio.sail.intro");
+			Add("music.radio.sail.wind", { Key(SailDirKey(F.SailFromDeg)), Lit(Num(F.SailWind)), Lit(Num(std::max(F.SailWind, F.SailGust))),
+				Key("music.radio.sail.force." + std::to_string(SailForce(F.SailWind))) });
+			const std::string Why = "music.radio.sail.why." + (F.SailWhy.empty() ? std::string("wind") : F.SailWhy);
+			switch (F.Sail)
+			{
+			case 1:
+				if (F.SailBest.empty()) Add("music.radio.sail.call.sail_any");
+				else Add("music.radio.sail.call.sail", { Lit(F.SailBest) });
+				break;
+			case 2: Add("music.radio.sail.call.reef"); break;
+			case 3:
+				Add("music.radio.sail.call.race", { Key("music.radio.sail.event." + (F.SailEvent.empty() ? std::string("sunday") : F.SailEvent)),
+					Lit(F.SailEventTime.empty() ? std::string("11:00") : F.SailEventTime) });
+				break;
+			case 4: Add("music.radio.sail.call.shore", { Key(Why) }); break;
+			case 5: Add("music.radio.sail.call.storm"); break;
+			default: Add("music.radio.sail.call.closed", { Key(Why) }); break;
+			}
+			if (F.Sail <= 3)
+			{
+				if (F.SailShift >= 1 && F.SailShift <= 4)
+				{
+					Add("music.radio.sail.shift." + std::to_string(F.SailShift));
+				}
+				if (F.bSailRecallRisk)
+				{
+					Add("music.radio.sail.recall_risk");
+				}
+				if (!F.SailLowWater.empty())
+				{
+					Add("music.radio.sail.low_water", { Lit(F.SailLowWater) });
+				}
+			}
+		}
+
+		/** The results of the day's races (bToday) or yesterday's, at most three lines after a heading. */
+		static void SailResultWords(const FFacts& F, bool bToday, std::vector<FCaption>& Out)
+		{
+			bool bHead = false;
+			int N = 0;
+			for (const FSailResult& R : F.SailResults)
+			{
+				if (R.bToday != bToday || N >= 3 || R.Event.empty() || R.Class.empty())
+				{
+					continue;
+				}
+				if (!bHead)
+				{
+					FCaption H;
+					H.Key = bToday ? "music.radio.sail.news.today" : "music.radio.sail.news.yesterday";
+					Out.push_back(H);
+					bHead = true;
+				}
+				FCaption C;
+				const FArg Ev = Key("music.radio.sail.event." + R.Event), Cl = Key("music.radio.sail.class." + R.Class);
+				if (R.bAbandoned || R.Podium.empty())
+				{
+					C.Key = "music.radio.sail.abandoned";
+					C.Args = { Ev, Cl };
+				}
+				else if (R.Podium.size() >= 3)
+				{
+					C.Key = "music.radio.sail.result";
+					C.Args = { Ev, Cl, SailorArg(R.Podium[0]), SailorArg(R.Podium[1]), SailorArg(R.Podium[2]) };
+				}
+				else
+				{
+					C.Key = "music.radio.sail.result_one";
+					C.Args = { Ev, Cl, SailorArg(R.Podium[0]) };
+				}
+				Out.push_back(C);
+				++N;
+			}
+		}
+
 		/** The day's news items (indices into News or the season's), different from the day before's where it can. */
 		void NewsOfDay(long long Day, int Bulletin, int Season, std::vector<std::string>& Out) const
 		{
@@ -842,6 +981,11 @@ namespace LyudMusic
 				{
 					Say("music.radio.fest.sign_on", { Key(F.Festival) });
 				}
+				// the yacht school's own days get a word of their own at sign-on (docs/yacht_school.md "Town")
+				if (F.SailEvent == "sail_opening" || F.SailEvent == "sail_closing" || F.SailEvent == "cup_lyudmilovsk" || F.SailEvent == "optimist_day")
+				{
+					Say("music.radio.sail.special." + F.SailEvent);
+				}
 				Pips(T);
 				T += 6.0;
 				Say("music.radio.cap.time", { Lit(Clock(T)) });
@@ -881,6 +1025,27 @@ namespace LyudMusic
 				{
 					Say(K);
 				}
+				// the yacht school: yesterday's results in the morning, today's race at noon, today's results in the evening
+				// (a segment of yesterday's evening still on air after midnight says nothing of the school: its facts are today's)
+				if (!bYesterday)
+				{
+					std::vector<FCaption> SailCaps;
+					if (Bulletin == 1 && !F.SailEvent.empty() && F.Sail >= 1 && F.Sail <= 3)
+					{
+						FCaption C;
+						C.Key = "music.radio.sail.race_today";
+						C.Args = { Key("music.radio.sail.event." + F.SailEvent), Lit(F.SailEventTime.empty() ? std::string("11:00") : F.SailEventTime) };
+						SailCaps.push_back(C);
+					}
+					else if (Bulletin != 1)
+					{
+						SailResultWords(F, Bulletin == 2, SailCaps);
+					}
+					for (const FCaption& C : SailCaps)
+					{
+						Say(C.Key, C.Args);
+					}
+				}
 				Say("music.radio.news.outro");
 				Bed("day", Start, TalkEnd);
 				break;
@@ -896,6 +1061,11 @@ namespace LyudMusic
 				Say("music.radio.weather.intro");
 				std::vector<FCaption> W;
 				WeatherWords(F, W);
+				if (S.AtMin < 12 * 60 && !bYesterday)
+				{
+					// the morning weather: the yacht school's word for the sailors
+					SailorsWords(F, W);
+				}
 				for (FCaption& C : W)
 				{
 					C.Start = T;

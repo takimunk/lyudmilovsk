@@ -1,0 +1,1886 @@
+{
+ "_doc": "blender/humans/sail_clips.py: each A_Human_<clip>'s hand targets at its first frame, UE mesh space (cm; +Y the way the mesh faces, +X its left, +Z up; origin = the clip's origin, docs/yacht_school.md). boats: the numbers it was posed with.",
+ "boats": {
+  "luch": {
+   "scale": 1.0,
+   "deck_z": 0.25,
+   "half_beam": 0.685,
+   "cockpit_half": 0.26,
+   "length": [
+    -3.115,
+    1.115
+   ],
+   "sit_x": 0.6,
+   "strap": [
+    0.0,
+    0.08
+   ],
+   "sheet_block": [
+    0.0,
+    -0.05,
+    0.08
+   ],
+   "rudder": [
+    0,
+    1.155,
+    0.36
+   ],
+   "tiller_len": 1.02,
+   "ext_len": 1.0,
+   "boom_z": 1.1,
+   "mast_y": -2.13,
+   "origin_in_boat": [
+    -1.0,
+    0.0,
+    0.02
+   ]
+  },
+  "optimist": {
+   "scale": 0.74,
+   "deck_z": 0.4392,
+   "half_beam": 0.565,
+   "cockpit_half": 0.48,
+   "length": [
+    -1.55,
+    0.75
+   ],
+   "sit_x": 0.47,
+   "strap": [
+    0.0,
+    0.0592
+   ],
+   "sheet_block": [
+    0.0,
+    -0.15,
+    0.0692
+   ],
+   "boom_block": [
+    0,
+    -0.05,
+    0.7092
+   ],
+   "rudder": [
+    0,
+    0.78,
+    0.4892
+   ],
+   "tiller_len": 0.78,
+   "ext_len": 0.75,
+   "boom_z": 0.7392,
+   "mast_y": -1.1,
+   "origin_in_boat": [
+    -0.4,
+    0.0,
+    -0.1092
+   ]
+  },
+  "cadet": {
+   "scale": 0.86,
+   "deck_z": 0.4888,
+   "half_beam": 0.635,
+   "cockpit_half": 0.5,
+   "length": [
+    -2.51,
+    0.71
+   ],
+   "sit_x": 0.56,
+   "strap": [
+    0.3,
+    0.0688
+   ],
+   "sheet_block": [
+    0.0,
+    -0.35,
+    0.1088
+   ],
+   "rudder": [
+    0,
+    0.74,
+    0.5288
+   ],
+   "tiller_len": 0.95,
+   "ext_len": 0.85,
+   "boom_z": 1.2188,
+   "mast_y": -1.52,
+   "crew_dy": -0.75,
+   "jib_lead": [
+    -0.42,
+    -0.95,
+    0.3
+   ],
+   "crew_jib_lead": [
+    -0.42,
+    -0.2,
+    0.3
+   ],
+   "origin_in_boat": [
+    -0.9,
+    0.0,
+    -0.1288
+   ]
+  }
+ },
+ "boats_from": "blender/sailing/sockets.json (luch, optimist, cadet)",
+ "clips": {
+  "Sail_Helm_Port": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "Luch helm sitting on the windward side deck: small tiller corrections, trimming, looking at the luff, ahead, over the shoulder",
+   "hands": {
+    "tiller": {
+     "hand": "r",
+     "grip_cm": [
+      24.77,
+      12.46,
+      65.0
+     ],
+     "axis": [
+      0.41,
+      0.61,
+      0.68
+     ],
+     "palm": [
+      0.2,
+      0.66,
+      -0.72
+     ],
+     "fingers": [
+      -0.89,
+      0.43,
+      0.15
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "l",
+     "grip_cm": [
+      38.52,
+      30.91,
+      60.12
+     ],
+     "axis": [
+      0.55,
+      0.37,
+      0.75
+     ],
+     "palm": [
+      -0.59,
+      -0.46,
+      0.66
+     ],
+     "fingers": [
+      -0.59,
+      0.8,
+      0.04
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Helm_Stbd": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "Luch helm sitting on the windward side deck: small tiller corrections, trimming, looking at the luff, ahead, over the shoulder",
+   "hands": {
+    "tiller": {
+     "hand": "l",
+     "grip_cm": [
+      -24.77,
+      12.46,
+      65.0
+     ],
+     "axis": [
+      -0.41,
+      0.61,
+      0.68
+     ],
+     "palm": [
+      -0.2,
+      0.66,
+      -0.72
+     ],
+     "fingers": [
+      0.89,
+      0.43,
+      0.15
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "r",
+     "grip_cm": [
+      -38.52,
+      30.91,
+      60.12
+     ],
+     "axis": [
+      -0.55,
+      0.37,
+      0.75
+     ],
+     "palm": [
+      0.59,
+      -0.46,
+      0.66
+     ],
+     "fingers": [
+      0.59,
+      0.8,
+      0.04
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Hike_Half_Port": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "hiking with bent knees, the seat on the gunwale's edge (blend 0.5 of the hike; same loop phase as Sail_Helm)",
+   "hands": {
+    "tiller": {
+     "hand": "r",
+     "grip_cm": [
+      34.32,
+      9.34,
+      70.5
+     ],
+     "axis": [
+      0.55,
+      0.46,
+      0.69
+     ],
+     "palm": [
+      0.2,
+      0.73,
+      -0.65
+     ],
+     "fingers": [
+      -0.81,
+      0.5,
+      0.31
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "l",
+     "grip_cm": [
+      46.41,
+      28.92,
+      64.12
+     ],
+     "axis": [
+      0.61,
+      0.31,
+      0.73
+     ],
+     "palm": [
+      -0.54,
+      -0.51,
+      0.67
+     ],
+     "fingers": [
+      -0.58,
+      0.8,
+      0.14
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Hike_Half_Stbd": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "hiking with bent knees, the seat on the gunwale's edge (blend 0.5 of the hike; same loop phase as Sail_Helm)",
+   "hands": {
+    "tiller": {
+     "hand": "l",
+     "grip_cm": [
+      -34.32,
+      9.34,
+      70.5
+     ],
+     "axis": [
+      -0.55,
+      0.46,
+      0.69
+     ],
+     "palm": [
+      -0.2,
+      0.73,
+      -0.65
+     ],
+     "fingers": [
+      0.81,
+      0.5,
+      0.31
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "r",
+     "grip_cm": [
+      -46.41,
+      28.92,
+      64.12
+     ],
+     "axis": [
+      -0.61,
+      0.31,
+      0.73
+     ],
+     "palm": [
+      0.54,
+      -0.51,
+      0.67
+     ],
+     "fingers": [
+      0.58,
+      0.8,
+      0.14
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Hike_Full_Port": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "full hike: legs nearly straight under the strap, hips out over the water, back flat (blend 1)",
+   "hands": {
+    "tiller": {
+     "hand": "r",
+     "grip_cm": [
+      42.76,
+      6.79,
+      74.5
+     ],
+     "axis": [
+      0.63,
+      0.36,
+      0.68
+     ],
+     "palm": [
+      0.19,
+      0.78,
+      -0.59
+     ],
+     "fingers": [
+      -0.75,
+      0.5,
+      0.43
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "l",
+     "grip_cm": [
+      53.45,
+      27.17,
+      66.62
+     ],
+     "axis": [
+      0.65,
+      0.27,
+      0.71
+     ],
+     "palm": [
+      -0.5,
+      -0.55,
+      0.67
+     ],
+     "fingers": [
+      -0.57,
+      0.79,
+      0.22
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Hike_Full_Stbd": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "full hike: legs nearly straight under the strap, hips out over the water, back flat (blend 1)",
+   "hands": {
+    "tiller": {
+     "hand": "l",
+     "grip_cm": [
+      -42.76,
+      6.79,
+      74.5
+     ],
+     "axis": [
+      -0.63,
+      0.36,
+      0.68
+     ],
+     "palm": [
+      -0.19,
+      0.78,
+      -0.59
+     ],
+     "fingers": [
+      0.75,
+      0.5,
+      0.43
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "r",
+     "grip_cm": [
+      -53.45,
+      27.17,
+      66.62
+     ],
+     "axis": [
+      -0.65,
+      0.27,
+      0.71
+     ],
+     "palm": [
+      0.5,
+      -0.55,
+      0.67
+     ],
+     "fingers": [
+      0.57,
+      0.79,
+      0.22
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Cadet_Helm_Port": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "cadet",
+   "about": "cadet helm (a teenager) aft on the side deck, centre mainsheet from the block behind",
+   "hands": {
+    "tiller": {
+     "hand": "r",
+     "grip_cm": [
+      35.72,
+      10.6,
+      100.14
+     ],
+     "axis": [
+      0.57,
+      -0.27,
+      0.78
+     ],
+     "palm": [
+      0.51,
+      0.86,
+      -0.07
+     ],
+     "fingers": [
+      -0.65,
+      0.44,
+      0.62
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "l",
+     "grip_cm": [
+      48.48,
+      29.74,
+      94.36
+     ],
+     "axis": [
+      0.51,
+      -0.11,
+      0.85
+     ],
+     "palm": [
+      -0.71,
+      -0.62,
+      0.34
+     ],
+     "fingers": [
+      -0.49,
+      0.77,
+      0.4
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Cadet_Helm_Stbd": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "cadet",
+   "about": "cadet helm (a teenager) aft on the side deck, centre mainsheet from the block behind",
+   "hands": {
+    "tiller": {
+     "hand": "l",
+     "grip_cm": [
+      -35.72,
+      10.6,
+      100.14
+     ],
+     "axis": [
+      -0.57,
+      -0.27,
+      0.78
+     ],
+     "palm": [
+      -0.51,
+      0.86,
+      -0.07
+     ],
+     "fingers": [
+      0.65,
+      0.44,
+      0.62
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "r",
+     "grip_cm": [
+      -48.48,
+      29.74,
+      94.36
+     ],
+     "axis": [
+      -0.51,
+      -0.11,
+      0.85
+     ],
+     "palm": [
+      0.71,
+      -0.62,
+      0.34
+     ],
+     "fingers": [
+      0.49,
+      0.77,
+      0.4
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Tack_Port": {
+   "seconds": 2.2,
+   "loop": false,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "one-shot tack facing forward: tiller away, duck under the boom, cross, sit on the new side, hands swapped behind the back; _Port starts on port and ends as Sail_Helm_Stbd",
+   "hands": {
+    "tiller": {
+     "hand": "r",
+     "grip_cm": [
+      27.61,
+      11.53,
+      66.65
+     ],
+     "axis": [
+      0.49,
+      0.55,
+      0.67
+     ],
+     "palm": [
+      0.2,
+      0.68,
+      -0.7
+     ],
+     "fingers": [
+      -0.85,
+      0.48,
+      0.22
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "l",
+     "grip_cm": [
+      36.97,
+      32.92,
+      58.2
+     ],
+     "axis": [
+      0.54,
+      0.41,
+      0.73
+     ],
+     "palm": [
+      -0.56,
+      -0.47,
+      0.68
+     ],
+     "fingers": [
+      -0.62,
+      0.78,
+      0.02
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Tack_Stbd": {
+   "seconds": 2.2,
+   "loop": false,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "one-shot tack facing forward: tiller away, duck under the boom, cross, sit on the new side, hands swapped behind the back; _Port starts on port and ends as Sail_Helm_Stbd",
+   "hands": {
+    "tiller": {
+     "hand": "l",
+     "grip_cm": [
+      -27.61,
+      11.53,
+      66.65
+     ],
+     "axis": [
+      -0.49,
+      0.55,
+      0.67
+     ],
+     "palm": [
+      -0.2,
+      0.68,
+      -0.7
+     ],
+     "fingers": [
+      0.85,
+      0.48,
+      0.22
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "r",
+     "grip_cm": [
+      -36.97,
+      32.92,
+      58.2
+     ],
+     "axis": [
+      -0.54,
+      0.41,
+      0.73
+     ],
+     "palm": [
+      0.56,
+      -0.47,
+      0.68
+     ],
+     "fingers": [
+      0.62,
+      0.78,
+      0.02
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Gybe_Port": {
+   "seconds": 1.6,
+   "loop": false,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "one-shot gybe: quicker, lower duck, the sheet hand grabs the falls and throws the boom across; ends as the other side's Sail_Helm",
+   "hands": {
+    "tiller": {
+     "hand": "r",
+     "grip_cm": [
+      27.61,
+      11.53,
+      66.65
+     ],
+     "axis": [
+      0.49,
+      0.55,
+      0.67
+     ],
+     "palm": [
+      0.2,
+      0.68,
+      -0.7
+     ],
+     "fingers": [
+      -0.85,
+      0.48,
+      0.22
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "l",
+     "grip_cm": [
+      36.97,
+      32.92,
+      58.2
+     ],
+     "axis": [
+      0.54,
+      0.41,
+      0.73
+     ],
+     "palm": [
+      -0.56,
+      -0.47,
+      0.68
+     ],
+     "fingers": [
+      -0.62,
+      0.78,
+      0.02
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Gybe_Stbd": {
+   "seconds": 1.6,
+   "loop": false,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "one-shot gybe: quicker, lower duck, the sheet hand grabs the falls and throws the boom across; ends as the other side's Sail_Helm",
+   "hands": {
+    "tiller": {
+     "hand": "l",
+     "grip_cm": [
+      -27.61,
+      11.53,
+      66.65
+     ],
+     "axis": [
+      -0.49,
+      0.55,
+      0.67
+     ],
+     "palm": [
+      -0.2,
+      0.68,
+      -0.7
+     ],
+     "fingers": [
+      0.85,
+      0.48,
+      0.22
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "r",
+     "grip_cm": [
+      -36.97,
+      32.92,
+      58.2
+     ],
+     "axis": [
+      -0.54,
+      0.41,
+      0.73
+     ],
+     "palm": [
+      0.56,
+      -0.47,
+      0.68
+     ],
+     "fingers": [
+      0.62,
+      0.78,
+      0.02
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Lull_Port": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "light air: kneeling low in the cockpit's middle, leaning to leeward to heel the boat, gentle steering",
+   "hands": {
+    "tiller": {
+     "hand": "r",
+     "grip_cm": [
+      -26.15,
+      12.74,
+      55.0
+     ],
+     "axis": [
+      -0.67,
+      0.6,
+      0.44
+     ],
+     "palm": [
+      0.56,
+      0.02,
+      0.83
+     ],
+     "fingers": [
+      0.49,
+      0.8,
+      -0.36
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "l",
+     "grip_cm": [
+      -4.27,
+      26.93,
+      52.0
+     ],
+     "axis": [
+      -0.09,
+      0.44,
+      0.89
+     ],
+     "palm": [
+      -0.98,
+      -0.21,
+      0.01
+     ],
+     "fingers": [
+      -0.19,
+      0.87,
+      -0.45
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Lull_Stbd": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "light air: kneeling low in the cockpit's middle, leaning to leeward to heel the boat, gentle steering",
+   "hands": {
+    "tiller": {
+     "hand": "l",
+     "grip_cm": [
+      26.15,
+      12.74,
+      55.0
+     ],
+     "axis": [
+      0.67,
+      0.6,
+      0.44
+     ],
+     "palm": [
+      -0.56,
+      0.02,
+      0.83
+     ],
+     "fingers": [
+      -0.49,
+      0.8,
+      -0.36
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "r",
+     "grip_cm": [
+      4.27,
+      26.93,
+      52.0
+     ],
+     "axis": [
+      0.09,
+      0.44,
+      0.89
+     ],
+     "palm": [
+      0.98,
+      -0.21,
+      0.01
+     ],
+     "fingers": [
+      0.19,
+      0.87,
+      -0.45
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Opti_Helm_Port": {
+   "seconds": 7.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "optimist",
+   "about": "optimist child on the side: short extension in the aft hand, the forward hand on the sheet coming down from the boom",
+   "hands": {
+    "tiller": {
+     "hand": "r",
+     "grip_cm": [
+      28.29,
+      12.46,
+      97.35
+     ],
+     "axis": [
+      0.49,
+      0.33,
+      0.81
+     ],
+     "palm": [
+      0.35,
+      0.77,
+      -0.53
+     ],
+     "fingers": [
+      -0.8,
+      0.54,
+      0.27
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "l",
+     "grip_cm": [
+      44.67,
+      25.4,
+      125.04
+     ],
+     "axis": [
+      0.79,
+      0.33,
+      0.52
+     ],
+     "palm": [
+      -0.24,
+      -0.61,
+      0.76
+     ],
+     "fingers": [
+      -0.56,
+      0.72,
+      0.4
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Opti_Helm_Stbd": {
+   "seconds": 7.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "optimist",
+   "about": "optimist child on the side: short extension in the aft hand, the forward hand on the sheet coming down from the boom",
+   "hands": {
+    "tiller": {
+     "hand": "l",
+     "grip_cm": [
+      -28.29,
+      12.46,
+      97.35
+     ],
+     "axis": [
+      -0.49,
+      0.33,
+      0.81
+     ],
+     "palm": [
+      -0.35,
+      0.77,
+      -0.53
+     ],
+     "fingers": [
+      0.8,
+      0.54,
+      0.27
+     ],
+     "radius_cm": 1.2
+    },
+    "sheet": {
+     "hand": "r",
+     "grip_cm": [
+      -44.67,
+      25.4,
+      125.04
+     ],
+     "axis": [
+      -0.79,
+      0.33,
+      0.52
+     ],
+     "palm": [
+      0.24,
+      -0.61,
+      0.76
+     ],
+     "fingers": [
+      0.56,
+      0.72,
+      0.4
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Opti_Bail_Port": {
+   "seconds": 4.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "optimist",
+   "about": "optimist child kneeling on the bottom, bailing with the scoop and throwing the water over the lee side, the extension held low",
+   "hands": {
+    "tiller": {
+     "hand": "r",
+     "grip_cm": [
+      -12.58,
+      -9.58,
+      48.0
+     ],
+     "axis": [
+      -0.62,
+      -0.36,
+      -0.69
+     ],
+     "palm": [
+      -0.41,
+      -0.61,
+      0.68
+     ],
+     "fingers": [
+      -0.67,
+      0.71,
+      0.23
+     ],
+     "radius_cm": 1.2
+    }
+   }
+  },
+  "Sail_Opti_Bail_Stbd": {
+   "seconds": 4.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "optimist",
+   "about": "optimist child kneeling on the bottom, bailing with the scoop and throwing the water over the lee side, the extension held low",
+   "hands": {
+    "tiller": {
+     "hand": "l",
+     "grip_cm": [
+      12.58,
+      -9.58,
+      48.0
+     ],
+     "axis": [
+      0.62,
+      -0.36,
+      -0.69
+     ],
+     "palm": [
+      0.41,
+      -0.61,
+      0.68
+     ],
+     "fingers": [
+      0.67,
+      0.71,
+      0.23
+     ],
+     "radius_cm": 1.2
+    }
+   }
+  },
+  "Sail_Crew_Jib_Port": {
+   "seconds": 6.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "cadet",
+   "about": "cadet crew (a teenager) forward on the windward side, hiking with the helm, trimming the jib sheet from the lee fairlead",
+   "hands": {
+    "jib": {
+     "hand": "l",
+     "grip_cm": [
+      44.95,
+      23.71,
+      96.95
+     ],
+     "axis": [
+      0.83,
+      0.0,
+      0.55
+     ],
+     "palm": [
+      -0.31,
+      -0.83,
+      0.47
+     ],
+     "fingers": [
+      -0.46,
+      0.56,
+      0.69
+     ],
+     "radius_cm": 0.5
+    },
+    "jib_tail": {
+     "hand": "r",
+     "grip_cm": [
+      63.3,
+      18.79,
+      105.09
+     ],
+     "axis": [
+      0.83,
+      0.0,
+      0.55
+     ],
+     "palm": [
+      0.21,
+      0.92,
+      -0.33
+     ],
+     "fingers": [
+      -0.51,
+      0.39,
+      0.77
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Crew_Jib_Stbd": {
+   "seconds": 6.0,
+   "loop": true,
+   "frame": "boat",
+   "boat": "cadet",
+   "about": "cadet crew (a teenager) forward on the windward side, hiking with the helm, trimming the jib sheet from the lee fairlead",
+   "hands": {
+    "jib": {
+     "hand": "r",
+     "grip_cm": [
+      -44.95,
+      23.71,
+      96.95
+     ],
+     "axis": [
+      -0.83,
+      0.0,
+      0.55
+     ],
+     "palm": [
+      0.31,
+      -0.83,
+      0.47
+     ],
+     "fingers": [
+      0.46,
+      0.56,
+      0.69
+     ],
+     "radius_cm": 0.5
+    },
+    "jib_tail": {
+     "hand": "l",
+     "grip_cm": [
+      -63.3,
+      18.79,
+      105.09
+     ],
+     "axis": [
+      -0.83,
+      0.0,
+      0.55
+     ],
+     "palm": [
+      -0.21,
+      0.92,
+      -0.33
+     ],
+     "fingers": [
+      0.51,
+      0.39,
+      0.77
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Crew_Tack_Port": {
+   "seconds": 2.4,
+   "loop": false,
+   "frame": "boat",
+   "boat": "cadet",
+   "about": "cadet crew tacking: lets the old jib sheet fly, crosses under the boom, sits on the new side and takes the new sheet",
+   "hands": {
+    "jib": {
+     "hand": "l",
+     "grip_cm": [
+      33.31,
+      23.18,
+      93.09
+     ],
+     "axis": [
+      0.82,
+      -0.0,
+      0.58
+     ],
+     "palm": [
+      -0.35,
+      -0.8,
+      0.49
+     ],
+     "fingers": [
+      -0.46,
+      0.6,
+      0.65
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Crew_Tack_Stbd": {
+   "seconds": 2.4,
+   "loop": false,
+   "frame": "boat",
+   "boat": "cadet",
+   "about": "cadet crew tacking: lets the old jib sheet fly, crosses under the boom, sits on the new side and takes the new sheet",
+   "hands": {
+    "jib": {
+     "hand": "r",
+     "grip_cm": [
+      -33.31,
+      23.18,
+      93.09
+     ],
+     "axis": [
+      -0.82,
+      -0.0,
+      0.58
+     ],
+     "palm": [
+      0.35,
+      -0.8,
+      0.49
+     ],
+     "fingers": [
+      0.46,
+      0.6,
+      0.65
+     ],
+     "radius_cm": 0.5
+    }
+   }
+  },
+  "Sail_Capsize_Fall_Port": {
+   "seconds": 1.5,
+   "loop": false,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "one-shot: the boat goes over, the helm slides off the high side into the water; ends treading water at local (1.25, -0.1, -0.95) (water at -0.05)",
+   "hands": {}
+  },
+  "Sail_Capsize_Fall_Stbd": {
+   "seconds": 1.5,
+   "loop": false,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "one-shot: the boat goes over, the helm slides off the high side into the water; ends treading water at local (1.25, -0.1, -0.95) (water at -0.05)",
+   "hands": {}
+  },
+  "Sail_Swim_ToBoard_Port": {
+   "seconds": 3.0,
+   "loop": false,
+   "frame": "capsized",
+   "boat": null,
+   "about": "one-shot from treading water at local (0.75, 0, -0.95): reach the centreboard (x 0.25..0.8 at z 0.25), haul up onto it and stand, hands to the up gunwale; ends as Sail_Right",
+   "hands": {}
+  },
+  "Sail_Swim_ToBoard_Stbd": {
+   "seconds": 3.0,
+   "loop": false,
+   "frame": "capsized",
+   "boat": null,
+   "about": "one-shot from treading water at local (0.75, 0, -0.95): reach the centreboard (x 0.25..0.8 at z 0.25), haul up onto it and stand, hands to the up gunwale; ends as Sail_Right",
+   "hands": {}
+  },
+  "Sail_Right_Port": {
+   "seconds": 3.0,
+   "loop": true,
+   "frame": "capsized",
+   "boat": null,
+   "about": "righting loop: standing on the centreboard by the hull, hands on the up gunwale, leaning back in pulses until the boat comes up",
+   "hands": {
+    "gunwale_l": {
+     "hand": "l",
+     "grip_cm": [
+      -23.0,
+      -28.0,
+      115.0
+     ],
+     "axis": [
+      0.0,
+      -1.0,
+      0.0
+     ],
+     "palm": [
+      0.98,
+      -0.0,
+      -0.2
+     ],
+     "fingers": [
+      -0.2,
+      -0.0,
+      -0.98
+     ],
+     "radius_cm": 2.0
+    },
+    "gunwale_r": {
+     "hand": "r",
+     "grip_cm": [
+      -23.0,
+      28.0,
+      115.0
+     ],
+     "axis": [
+      -0.0,
+      1.0,
+      -0.0
+     ],
+     "palm": [
+      0.98,
+      -0.0,
+      -0.2
+     ],
+     "fingers": [
+      -0.2,
+      -0.0,
+      -0.98
+     ],
+     "radius_cm": 2.0
+    }
+   }
+  },
+  "Sail_Right_Stbd": {
+   "seconds": 3.0,
+   "loop": true,
+   "frame": "capsized",
+   "boat": null,
+   "about": "righting loop: standing on the centreboard by the hull, hands on the up gunwale, leaning back in pulses until the boat comes up",
+   "hands": {
+    "gunwale_l": {
+     "hand": "r",
+     "grip_cm": [
+      23.0,
+      -28.0,
+      115.0
+     ],
+     "axis": [
+      -0.0,
+      -1.0,
+      0.0
+     ],
+     "palm": [
+      -0.98,
+      -0.0,
+      -0.2
+     ],
+     "fingers": [
+      0.2,
+      -0.0,
+      -0.98
+     ],
+     "radius_cm": 2.0
+    },
+    "gunwale_r": {
+     "hand": "l",
+     "grip_cm": [
+      23.0,
+      28.0,
+      115.0
+     ],
+     "axis": [
+      0.0,
+      1.0,
+      -0.0
+     ],
+     "palm": [
+      -0.98,
+      -0.0,
+      -0.2
+     ],
+     "fingers": [
+      0.2,
+      -0.0,
+      -0.98
+     ],
+     "radius_cm": 2.0
+    }
+   }
+  },
+  "Sail_Climb_In_Port": {
+   "seconds": 3.2,
+   "loop": false,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "one-shot from the water by the port side (local (1.0, 0, -0.95)): hands on the gunwale, kick and haul, chest over, a leg in, roll into the cockpit and kneel up",
+   "hands": {}
+  },
+  "Sail_Climb_In_Stbd": {
+   "seconds": 3.2,
+   "loop": false,
+   "frame": "boat",
+   "boat": "luch",
+   "about": "one-shot from the water by the port side (local (1.0, 0, -0.95)): hands on the gunwale, kick and haul, chest over, a leg in, roll into the cockpit and kneel up",
+   "hands": {}
+  },
+  "Sail_Rig_Mast": {
+   "seconds": 5.0,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "standing at the stepped mast, hands up threading the sail's sleeve up it, hand over hand, looking up",
+   "hands": {
+    "mast_l": {
+     "hand": "l",
+     "grip_cm": [
+      3.5,
+      36.0,
+      145.0
+     ],
+     "axis": [
+      0.0,
+      -0.0,
+      1.0
+     ],
+     "palm": [
+      -0.8,
+      -0.6,
+      0.0
+     ],
+     "fingers": [
+      -0.6,
+      0.8,
+      0.0
+     ],
+     "radius_cm": 3.5
+    },
+    "mast_r": {
+     "hand": "r",
+     "grip_cm": [
+      -3.5,
+      36.0,
+      187.0
+     ],
+     "axis": [
+      0.0,
+      -0.0,
+      1.0
+     ],
+     "palm": [
+      0.8,
+      -0.6,
+      -0.0
+     ],
+     "fingers": [
+      0.6,
+      0.8,
+      0.0
+     ],
+     "radius_cm": 3.5
+    }
+   }
+  },
+  "Sail_Rig_Knot": {
+   "seconds": 4.0,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "crouched at the boat on its trolley, tying off at the boom/cleat about 0.5 m up, fingers working",
+   "hands": {}
+  },
+  "Sail_Trolley_Push": {
+   "seconds": 1.25,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "walk loop in place at 0.65 m/s pushing the launching trolley by its bow handle (bar 0.78 m up, 0.5 m ahead), leaning in",
+   "hands": {
+    "handle_l": {
+     "hand": "l",
+     "grip_cm": [
+      19.0,
+      52.0,
+      80.0
+     ],
+     "axis": [
+      1.0,
+      -0.0,
+      0.0
+     ],
+     "palm": [
+      -0.0,
+      -0.89,
+      0.45
+     ],
+     "fingers": [
+      0.0,
+      0.45,
+      0.89
+     ],
+     "radius_cm": 1.8
+    },
+    "handle_r": {
+     "hand": "r",
+     "grip_cm": [
+      -19.0,
+      52.0,
+      80.0
+     ],
+     "axis": [
+      -1.0,
+      -0.0,
+      0.0
+     ],
+     "palm": [
+      0.0,
+      -0.89,
+      0.45
+     ],
+     "fingers": [
+      0.0,
+      0.45,
+      0.89
+     ],
+     "radius_cm": 1.8
+    }
+   }
+  },
+  "Sail_Launch_Hold": {
+   "seconds": 6.0,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "standing thigh-deep (water 0.6 m) holding the boat head to wind by the bow (stem 0.55 m ahead, 0.75 m up), riding the waves",
+   "hands": {
+    "bow_l": {
+     "hand": "l",
+     "grip_cm": [
+      13.0,
+      66.0,
+      82.0
+     ],
+     "axis": [
+      0.0,
+      -0.29,
+      0.96
+     ],
+     "palm": [
+      -0.33,
+      -0.91,
+      -0.27
+     ],
+     "fingers": [
+      -0.95,
+      0.31,
+      0.09
+     ],
+     "radius_cm": 3.0
+    },
+    "bow_r": {
+     "hand": "r",
+     "grip_cm": [
+      -13.0,
+      66.0,
+      82.0
+     ],
+     "axis": [
+      0.0,
+      0.29,
+      0.96
+     ],
+     "palm": [
+      0.22,
+      -0.93,
+      0.28
+     ],
+     "fingers": [
+      0.97,
+      0.21,
+      -0.06
+     ],
+     "radius_cm": 3.0
+    }
+   }
+  },
+  "Sail_Hose": {
+   "seconds": 6.0,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "rinsing the hull on its trolley with a hose: the nozzle in the right hand sweeping along, the hose in the left",
+   "hands": {
+    "hose_l": {
+     "hand": "l",
+     "grip_cm": [
+      18.0,
+      25.0,
+      95.0
+     ],
+     "axis": [
+      -0.79,
+      0.6,
+      0.13
+     ],
+     "palm": [
+      -0.55,
+      -0.6,
+      -0.58
+     ],
+     "fingers": [
+      0.27,
+      0.53,
+      -0.8
+     ],
+     "radius_cm": 1.2
+    }
+   }
+  },
+  "Sail_Carry_Mast": {
+   "seconds": 1.1,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "walk loop in place at 1.0 m/s, the mast on the right shoulder, both hands on it in front",
+   "hands": {
+    "mast_r": {
+     "hand": "r",
+     "grip_cm": [
+      -13.67,
+      31.75,
+      139.72
+     ],
+     "axis": [
+      -0.0,
+      -1.0,
+      0.04
+     ],
+     "palm": [
+      0.96,
+      -0.01,
+      -0.29
+     ],
+     "fingers": [
+      0.29,
+      0.04,
+      0.96
+     ],
+     "radius_cm": 3.5
+    },
+    "mast_l": {
+     "hand": "l",
+     "grip_cm": [
+      -13.67,
+      58.75,
+      138.64
+     ],
+     "axis": [
+      0.0,
+      1.0,
+      -0.04
+     ],
+     "palm": [
+      0.98,
+      -0.01,
+      -0.2
+     ],
+     "fingers": [
+      0.2,
+      0.04,
+      0.98
+     ],
+     "radius_cm": 3.5
+    }
+   }
+  },
+  "Sail_Knots_Sit": {
+   "seconds": 6.0,
+   "loop": true,
+   "frame": "seat",
+   "boat": null,
+   "about": "seated at a desk (house chair; desk 0.76), tying a knot on a cord: loop, tuck, pull tight, shake it out",
+   "hands": {}
+  },
+  "Sail_Listen_Class": {
+   "seconds": 10.0,
+   "loop": true,
+   "frame": "seat",
+   "boat": null,
+   "about": "seated at a desk listening, looking at the blackboard (3.5 m ahead, 1.6 m up) and following the coach along it, a nod",
+   "hands": {}
+  },
+  "Sail_Coach_Point": {
+   "seconds": 6.0,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "the coach standing, pointing with the right arm at the blackboard / out to sea, the megaphone hanging in the left hand",
+   "hands": {}
+  },
+  "Sail_Coach_Megaphone": {
+   "seconds": 5.0,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "the coach calling through the megaphone held to the mouth, leaning into the calls, the left hand on the hip",
+   "hands": {
+    "megaphone": {
+     "hand": "r",
+     "grip_cm": [
+      -0.0,
+      19.0,
+      143.18
+     ],
+     "axis": [
+      0.0,
+      -0.0,
+      1.0
+     ],
+     "palm": [
+      0.93,
+      -0.37,
+      -0.0
+     ],
+     "fingers": [
+      0.37,
+      0.93,
+      0.0
+     ],
+     "radius_cm": 1.6
+    }
+   }
+  },
+  "Sail_Coach_Drive": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "seat",
+   "boat": null,
+   "about": "the coach on the launch's aft thwart (seat 0.40) steering the outboard's tiller behind on the right, looking round the fleet",
+   "hands": {
+    "tiller": {
+     "hand": "r",
+     "grip_cm": [
+      -28.0,
+      -20.0,
+      57.0
+     ],
+     "axis": [
+      -0.55,
+      0.83,
+      0.04
+     ],
+     "palm": [
+      -0.8,
+      -0.52,
+      -0.32
+     ],
+     "fingers": [
+      -0.24,
+      -0.21,
+      0.95
+     ],
+     "radius_cm": 1.7
+    }
+   }
+  },
+  "Sail_Whistle": {
+   "seconds": 3.0,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "the coach blowing the whistle (on its lanyard) in the right hand, the left arm up as the signal",
+   "hands": {}
+  },
+  "Sail_Flag_Hoist": {
+   "seconds": 2.4,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "hoisting a flag on the signal mast's halyard, hand over hand (halyard 0.33 m ahead)",
+   "hands": {
+    "halyard_l": {
+     "hand": "l",
+     "grip_cm": [
+      0.0,
+      33.0,
+      185.0
+     ],
+     "axis": [
+      0.0,
+      -0.0,
+      -1.0
+     ],
+     "palm": [
+      0.85,
+      0.53,
+      0.0
+     ],
+     "fingers": [
+      -0.53,
+      0.85,
+      0.0
+     ],
+     "radius_cm": 0.6
+    },
+    "halyard_r": {
+     "hand": "r",
+     "grip_cm": [
+      0.0,
+      33.0,
+      111.75
+     ],
+     "axis": [
+      0.0,
+      -0.0,
+      -1.0
+     ],
+     "palm": [
+      -0.85,
+      0.53,
+      -0.0
+     ],
+     "fingers": [
+      0.53,
+      0.85,
+      0.0
+     ],
+     "radius_cm": 0.6
+    }
+   }
+  },
+  "Sail_Watch_Sea": {
+   "seconds": 8.0,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "standing on the shore with a hand shading the eyes, slowly scanning the sea",
+   "hands": {}
+  },
+  "Sail_Cheer": {
+   "seconds": 3.0,
+   "loop": true,
+   "frame": "shore",
+   "boat": null,
+   "about": "spectators and finishers cheering: arms up with fists pumping and a bounce, then clapping",
+   "hands": {}
+  }
+ }
+}

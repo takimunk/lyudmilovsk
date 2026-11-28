@@ -154,6 +154,16 @@ def main():
     fixed += ["music.sky.%s" % a for a in ("clear", "partly", "cloudy", "overcast", "rain", "snow", "fog", "storm")]
     fixed += ["music.wind.%s" % a for a in ("n", "ne", "e", "se", "s", "sw", "w", "nw")]
     fixed += ["music.sea.%d" % i for i in range(4)] + ["music.vis.good", "music.vis.moderate", "music.vis.poor"]
+    # the yacht school's words (docs/yacht_school.md "Town": MusicModel.h SailorsWords, SailResultWords, the sign-on)
+    fixed += ["music.radio.sail.%s" % k for k in ("intro", "wind", "call.sail", "call.sail_any", "call.reef", "call.race", "call.shore",
+              "call.storm", "call.closed", "recall_risk", "low_water", "race_today", "news.today", "news.yesterday", "result",
+              "result_one", "abandoned", "hero", "someone")]
+    fixed += ["music.radio.sail.dir.%d" % i for i in range(8)] + ["music.radio.sail.force.%d" % i for i in range(6)]
+    fixed += ["music.radio.sail.shift.%d" % i for i in range(1, 5)]
+    fixed += ["music.radio.sail.why.%s" % k for k in ("calm", "wind", "gust", "thunder", "fog", "dark", "ice", "low_water")]
+    fixed += ["music.radio.sail.special.%s" % k for k in ("sail_opening", "sail_closing", "cup_lyudmilovsk", "optimist_day")]
+    fixed += ["music.radio.sail.event.%s" % k for k in ("sail_opening", "sail_closing", "optimist_day", "cup_lyudmilovsk", "wednesday", "sunday")]
+    fixed += ["music.radio.sail.class.%s" % k for k in ("optimist", "cadet", "luch")]
     for k in fixed:
         need(k, "used by the game")
 

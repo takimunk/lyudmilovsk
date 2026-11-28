@@ -732,6 +732,23 @@ def strings_needed(content, school):
     return dict(sorted(need.items()))
 
 
+# The people's part binds the slots to townsfolk (tools/sailing/sailing_people.py writes this file and then runs sailing.py again;
+# docs/yacht_school.md "People (part F)"): each sailor's and coach's "person" is the townsperson's key ("" while unbound).
+MEMBERS = os.path.join(CONTENT, "PeopleData", "sailing_members.json")
+
+
+def bind_people(data):
+    if not os.path.exists(MEMBERS):
+        return
+    by_slot = {m["slot"]: m["person"] for m in load(MEMBERS)["members"] if m.get("slot")}
+    for s in data["fleet"]["sailors"]:
+        s["person"] = by_slot.get(s["slot"], "")
+        if s.get("crew"):
+            s["crew_person"] = by_slot.get(s["crew"], "")
+    for c_id, c in data["coaches"].items():
+        c["person"] = by_slot.get(c_id, "")
+
+
 def main():
     check = "--check" in sys.argv
     content = load(os.path.join(HERE, "content.json"))
@@ -760,6 +777,7 @@ def main():
     for k in ("fleet", "groups", "coaches", "season", "limits", "signals", "timetable", "drills", "course", "races", "hero", "lessons",
               "stamps", "quest_events", "miles", "radio"):
         data[k] = strip_docs(content[k])
+    bind_people(data)
     need = strings_needed(content, school)
     if os.path.exists(STRINGS):
         have = load(STRINGS)

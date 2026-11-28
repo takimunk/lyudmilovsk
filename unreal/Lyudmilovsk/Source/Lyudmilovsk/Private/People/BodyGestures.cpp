@@ -162,7 +162,21 @@ namespace LyudGesture
 	FName ClipFor(EManner Manner)
 	{
 		static const FName FoldArms(TEXT("FoldArms"));
+		// the yacht school's (docs/yacht_school.md "Clips (part D)"), in EManner's order from SailRig
+		static const FName Sail[] = { TEXT("Sail_Rig_Mast"), TEXT("Sail_Rig_Knot"), TEXT("Sail_Hose"), TEXT("Sail_Knots_Sit"),
+			TEXT("Sail_Listen_Class"), TEXT("Sail_Coach_Point"), TEXT("Sail_Coach_Megaphone"), TEXT("Sail_Whistle"), TEXT("Sail_Flag_Hoist"),
+			TEXT("Sail_Watch_Sea"), TEXT("Sail_Cheer") };
+		static_assert(sizeof(Sail) / sizeof(Sail[0]) == (int)EManner::Num - (int)EManner::SailRig, "a clip per sail manner");
+		if (Manner >= EManner::SailRig && Manner < EManner::Num)
+		{
+			return Sail[(int)Manner - (int)EManner::SailRig];
+		}
 		return Manner == EManner::FoldArms ? FoldArms : NAME_None;
+	}
+
+	bool ClipSeated(EManner Manner)
+	{
+		return Manner == EManner::SailKnots || Manner == EManner::SailListen;
 	}
 
 	EHold HoldOf(EProp Prop)
@@ -183,6 +197,13 @@ namespace LyudGesture
 		case EProp::Torch: return EHold::Pointing;
 		case EProp::Bag: return EHold::Hanging;
 		case EProp::Suitcase: return EHold::Hanging;
+		case EProp::Megaphone:
+		case EProp::Stopwatch:
+		case EProp::Clipboard:
+		case EProp::Bailer: return EHold::Palm;
+		case EProp::Whistle: return EHold::Fingers;
+		case EProp::HoseNozzle: return EHold::Pointing;
+		case EProp::KnotCord: return EHold::TwoHands;
 		default: return EHold::Upright;
 		}
 	}

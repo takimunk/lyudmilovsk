@@ -31,14 +31,86 @@ def u_of(s, x):
     return (x + s["loa"] / 2) / s["loa"]
 
 
+# ================================================================================================ hull lines
+# The hulls are lofted from smooth (monotone cubic) curves through boatspec's keys; the luch has finer lines of its own
+# (a fine pointed bow with a raked, rounded stem, the planing run aft). Pivots and sockets stay boatspec's numbers.
+LUCH_LINES = {
+    "half_beam": [(0.0, 0.57), (0.15, 0.615), (0.40, 0.685), (0.60, 0.668), (0.75, 0.585), (0.85, 0.47), (0.92, 0.33),
+                  (0.965, 0.19), (0.99, 0.07), (1.0, 0.008)],
+    "keel_z": [(0.0, -0.055), (0.12, -0.10), (0.35, -0.13), (0.60, -0.128), (0.76, -0.10), (0.86, -0.045), (0.93, 0.04),
+               (0.975, 0.16), (1.0, 0.335)],
+    "fullness": [(0.0, 3.3), (0.5, 2.9), (0.8, 2.35), (1.0, 2.0)],      # superellipse exponent: 2 round .. 3+ flat-bottomed
+    "deadrise": [(0.0, 0.008), (0.5, 0.025), (0.8, 0.07), (1.0, 0.11)],
+    "flare": [(0.0, 0.03), (0.6, 0.06), (1.0, 0.16)],
+}
+
+
+def pchip(keys, t):
+    """Monotone cubic (Fritsch-Carlson) through [(t, v), ...], clamped at the ends."""
+    xs = [k[0] for k in keys]
+    ys = [k[1] for k in keys]
+    n = len(xs)
+    if t <= xs[0]:
+        return ys[0]
+    if t >= xs[-1]:
+        return ys[-1]
+    h = [xs[i + 1] - xs[i] for i in range(n - 1)]
+    d = [(ys[i + 1] - ys[i]) / h[i] for i in range(n - 1)]
+    m = [0.0] * n
+    m[0], m[-1] = d[0], d[-1]
+    for i in range(1, n - 1):
+        if d[i - 1] * d[i] <= 0:
+            m[i] = 0.0
+        else:
+            w1, w2 = 2 * h[i] + h[i - 1], h[i] + 2 * h[i - 1]
+            m[i] = (w1 + w2) / (w1 / d[i - 1] + w2 / d[i])
+    i = max(k for k in range(n - 1) if xs[k] <= t)
+    s = (t - xs[i]) / h[i]
+    return ((2 * s ** 3 - 3 * s ** 2 + 1) * ys[i] + (s ** 3 - 2 * s ** 2 + s) * h[i] * m[i] +
+            (-2 * s ** 3 + 3 * s ** 2) * ys[i + 1] + (s ** 3 - s ** 2) * h[i] * m[i + 1])
+
+
+def _lines(b, key):
+    if b == "luch" and key in LUCH_LINES:
+        return LUCH_LINES[key]
+    return B.BOATS[b][key]
+
+
+def hb_u(b, u):
+    return pchip(_lines(b, "half_beam"), u)
+
+
+def sheer_u(b, u):
+    return pchip(B.BOATS[b]["sheer_z"], u)
+
+
+def keel_u(b, u):
+    return pchip(_lines(b, "keel_z"), u)
+
+
+def half_beam(b, x):
+    return hb_u(b, u_of(B.BOATS[b], x))
+
+
+def sheer(b, x):
+    return sheer_u(b, u_of(B.BOATS[b], x))
+
+
+def deck_z(b, x, y=0.0):
+    """Deck surface (crowned toward the centreline) of the hull as lofted here."""
+    s = B.BOATS[b]
+    hb = max(half_beam(b, x), 1e-3)
+    return sheer(b, x) + s.get("crown", 0.0) * max(0.0, 1.0 - (y / hb) ** 2)
+
+
 # ================================================================================================ hull sections
 def section(b, x, n_side=None, inset=0.0):
     """Port half-section at x: [(y, z)] from the keel (y = 0) to the sheer; inset > 0 gives the inner skin."""
     s = B.BOATS[b]
     u = u_of(s, x)
-    Bh = B.lerp_keys(s["half_beam"], u) - inset
-    S = B.lerp_keys(s["sheer_z"], u)
-    K = B.lerp_keys(s["keel_z"], u) + inset
+    Bh = hb_u(b, u) - inset
+    S = sheer_u(b, u)
+    K = keel_u(b, u) + inset
     C = Bh * s["chine_frac"]
     Zc = K + s["deadrise"] + s["chine_up"] * (S - K)
     rnd = s["round"]
@@ -81,9 +153,13 @@ def stations(s, n, x0=None, x1=None, extra=()):
 # ================================================================================================ hulls
 def hull(b, q=1.0):
     s = B.BOATS[b]
+    if b == "luch":
+        m = luch_hull(q)
+        _fittings(m, b, q)
+        return m
     name = "SM_Sail_%s_Hull" % CLASS_NAME[b]
     m = Mesh(name + ("_LOD1" if q < 1 else ""))
-    n = max(8, int(26 * q))
+    n = max(8, int(40 * q))
     ck = s.get("cockpit")
     extra = []
     if ck:
@@ -100,10 +176,81 @@ def hull(b, q=1.0):
         _deck_decked(m, b, xs, rows)
     else:
         _open_hull(m, b, xs, rows, q)
-    m.smooth_slots = {"SL_Hull"}
+    m.smooth_slots = {"SL_Hull", "SL_Wood"}
+    m.sharp_angle = 32.0
     m.colour = WHITE
     _fittings(m, b, q)
+    _open_details(m, b, xs, q)
     return m
+
+
+def _open_details(m, b, xs, q):
+    """Optimist: straps over the air bags, a mast step and the mast clamp on the thwart, the bow transom's breasthook,
+    knees at the stern. Cadet: plank lines and a king plank on the foredeck, coamings along the side decks, the chine
+    stringers and frames inside (varnished ply), the jib cleats."""
+    s = B.BOATS[b]
+    hi = q >= 1
+    if b == "optimist":
+        for sg in (1, -1):
+            c = Vector((-0.15, sg * (half_beam(b, -0.15) - 0.21), sheer(b, -0.15) - 0.13))
+            for dx in (-0.32, 0.0, 0.32):
+                ring_ = []
+                for k in range(11 if hi else 7):
+                    a = math.pi * 2 * k / (10 if hi else 6)
+                    fx = math.sqrt(max(0.0, 1 - (dx / 0.55) ** 2))
+                    ring_.append((c.x + dx, c.y + math.cos(a) * (0.095 * fx + 0.006), c.z + math.sin(a) * (0.11 * fx + 0.006)))
+                m.pipe(ring_, 0.006, "SL_Strap", seg=4)
+        xb2 = s["loa"] / 2 - 0.25
+        z2 = sheer(b, xb2) - 0.16
+        for dy in (-0.14, 0.14):
+            m.pipe([(xb2 - 0.115, dy, z2 - 0.09), (xb2 - 0.115, dy, z2 + 0.095), (xb2 + 0.115, dy, z2 + 0.095),
+                    (xb2 + 0.115, dy, z2 - 0.09)], 0.006, "SL_Strap", seg=4)
+        mx = s["mast_x"]
+        zk = keel_u(b, u_of(s, mx))
+        m.bx("SL_Wood", mx - 0.08, mx + 0.08, -0.06, 0.06, zk + 0.01, zk + 0.06)
+        zt = sheer(b, mx) - 0.05
+        m.bx("SL_Steel", mx - 0.035, mx + 0.035, -0.04, 0.04, zt + 0.012, zt + 0.018)
+        xb = s["loa"] / 2 - 0.03
+        m.prism([(xb - 0.10, -0.18), (xb, -0.26), (xb, 0.26), (xb - 0.10, 0.18)], sheer(b, xb) - 0.04, sheer(b, xb) - 0.01, "SL_Wood")
+        xt = -s["loa"] / 2 + 0.02
+        for sg in (1, -1):
+            yy = sg * (half_beam(b, xt) - 0.06)
+            m.prism([(xt, yy - 0.012), (xt + 0.14, yy - 0.012), (xt + 0.14, yy + 0.012), (xt, yy + 0.012)],
+                    sheer(b, xt) - 0.13, sheer(b, xt) - 0.02, "SL_Wood")
+    if b == "cadet":
+        fx = s["foredeck_x"]
+        xb = s["loa"] / 2 - 0.01
+        # plank lines on the foredeck (thin dark seams) and the king plank
+        for yy in (-0.33, -0.22, -0.11, 0.11, 0.22, 0.33):
+            pts = [(x, yy, deck_z(b, x, yy) + 0.0125) for x in [fx + (xb - fx) * k / 6 for k in range(7)]
+                   if abs(yy) < half_beam(b, x) - 0.03]
+            if len(pts) >= 2:
+                for p0, p1 in zip(pts, pts[1:]):
+                    m.beam(p0, p1, 0.004, 0.0012, "SL_Dark")
+        m.beam((fx + 0.02, 0, deck_z(b, fx) + 0.0125), (xb - 0.02, 0, deck_z(b, xb - 0.02) + 0.0125), 0.07, 0.003, "SL_Wood")
+        # coamings: an upright varnished board along each side deck's inner edge
+        sd = s["side_deck"]
+        for sg in (1, -1):
+            xs2 = [x for x in xs if xs[0] + 0.15 < x < fx - 0.02]
+            pts = [(x, sg * (half_beam(b, x) - sd), sheer(b, x) + 0.04) for x in xs2]
+            for p0, p1 in zip(pts, pts[1:]):
+                m.beam(p0, p1, 0.012, 0.075, "SL_Wood")
+        # chine stringers and frames inside
+        for sg in (1, -1):
+            pts = []
+            for x in xs[2:-2]:
+                sec = section(b, x, inset=0.02)
+                y, z = sec[2]
+                pts.append((x, sg * y, z + 0.01))
+            m.pipe(pts, 0.012, "SL_Wood", seg=5)
+        for x in (-0.95, -0.35, 0.35):
+            sec = section(b, x, inset=0.016)
+            half = [(x, y, z) for y, z in sec]
+            ribs = [(x, -y, z) for _, y, z in reversed(half)] + half[1:]
+            for p0, p1 in zip(ribs, ribs[1:]):
+                m.beam(p0, p1, 0.02, 0.025, "SL_Wood")
+        for sg in (1, -1):
+            cleat(m, -0.35, sg * (half_beam(b, -0.35) - sd * 0.5), sheer(b, -0.35) + 0.012, L=0.07)
 
 
 def _cap(m, pts, slot, reverse=False):
@@ -111,51 +258,160 @@ def _cap(m, pts, slot, reverse=False):
     return m.face(pts, slot)
 
 
-def _deck_decked(m, b, xs, rows):
-    """Luch: crowned deck from sheer to sheer with the cockpit well; transom and stem caps. Every deck row has the same
-    columns: an outer band each side (sheer -> y = +-hw_eff) and a centre band (+-hw_eff), so rows join quad to quad."""
+def _smooth01(t):
+    t = min(1.0, max(0.0, t))
+    return t * t * (3 - 2 * t)
+
+
+def _luch_half_skin(x, nb):
+    """Port half of the luch's skin at x, keel -> lip: [(y, z)] and the index of each kind of point.
+    Superellipse section (flat run aft, rounder and V'd forward, flared topsides), a boot stripe band at a fixed depth
+    under the gunwale (sweeps up to the stem with the sheer), and a rolled gunwale lip."""
+    b = "luch"
+    s = B.BOATS[b]
+    u = u_of(s, x)
+    hb = hb_u(b, u)
+    S = sheer_u(b, u)
+    K = keel_u(b, u)
+    n = pchip(LUCH_LINES["fullness"], u)
+    dr = pchip(LUCH_LINES["deadrise"], u)
+    fl = pchip(LUCH_LINES["flare"], u)
+    L = 0.35 + 0.65 * min(1.0, hb / 0.12)           # lip size (smaller toward the stem)
+    Zt = S - 0.028 * L
+    Hs = max(Zt - K, 0.004)
+    ds = [min(0.165, 0.62 * Hs), min(0.135, 0.52 * Hs), min(0.095, 0.38 * Hs), min(0.045, 0.2 * Hs)]
+
+    def th_of(d):
+        return math.acos(min(1.0, max(0.0, d / Hs)) ** (n / 2.0))
+
+    th_top = th_of(ds[0])
+    ths = [th_top * (i / nb) ** 0.85 for i in range(nb)] + [th_of(d) for d in ds] + [math.pi / 2]
+    pts = []
+    for th in ths:
+        c, sn = max(0.0, math.cos(th)), max(0.0, math.sin(th))
+        y = hb * sn ** (2.0 / n)
+        z = Zt - Hs * c ** (2.0 / n)
+        fh = (z - K) / Hs
+        y *= 1.0 - fl * (1.0 - fh) ** 1.5
+        z += dr * (y / max(hb, 1e-4)) * c ** 0.7
+        pts.append((y, z))
+    lip = [(hb + 0.009 * L, S - 0.019 * L), (hb + 0.0135 * L, S - 0.008 * L), (hb + 0.010 * L, S + 0.003 * L),
+           (hb - 0.004 * L, S + 0.008 * L)]
+    kinds = {"stripe": nb, "top": nb + 4, "lip0": nb + 5}
+    return pts + lip, kinds, hb, L
+
+
+def _luch_deck_half(x, hb, L, a):
+    """Port half of the deck at x from the lip's inner edge to the centreline: [(y, z)], blending (a 0..1) from the plain
+    crowned deck into the cockpit section: rounded edge, sloped wall, flat floor, a recessed centre trough."""
+    b = "luch"
     s = B.BOATS[b]
     ck = s["cockpit"]
-    hw = ck["half_w"]
-    nk, nc = 4, 6
+    hw, fz = ck["half_w"], ck["floor_z"]
+    crown = s["crown"]
+    hbi = max(hb - 0.02 * L, hb * 0.3)
 
-    def cols(x):
-        Bh = B.half_beam(b, x)
-        he = min(hw, 0.6 * Bh)
-        ys = [-Bh + (Bh - he) * k / nk for k in range(nk)] + [-he + 2 * he * k / nc for k in range(nc + 1)] + \
-             [he + (Bh - he) * k / nk for k in range(1, nk + 1)]
-        return [(x, y, B.deck_z(b, x, y)) for y in ys]
-    D = [cols(x) for x in xs]
-    for k in range(len(xs)):          # the sheer columns are the hull skin's own points
-        D[k][0] = rows[k][0]
-        D[k][-1] = rows[k][-1]
-    m.colour = TINT
-    c0, c1 = nk, nk + nc              # the centre band's columns
-    for k in range(len(xs) - 1):
-        in_ck = ck["x0"] - 1e-6 <= xs[k] and xs[k + 1] <= ck["x1"] + 1e-6
-        for j in range(len(D[k]) - 1):
-            if in_ck and c0 <= j < c1:
-                continue
-            m.face([D[k][j], D[k + 1][j], D[k + 1][j + 1], D[k][j + 1]], "SL_HullDeck")
-    # cockpit well: side walls, end walls, floor
-    fz = ck["floor_z"]
-    ks = [k for k in range(len(xs)) if ck["x0"] - 1e-6 <= xs[k] <= ck["x1"] + 1e-6]
-    m.colour = (1.0, 0.85, 0.0, 1.0)
-    for k0, k1 in zip(ks, ks[1:]):
-        for j, sg in ((c0, -1), (c1, 1)):
-            a, c = D[k0][j], D[k1][j]
-            q = [a, c, (c[0], c[1], fz), (a[0], a[1], fz)]
-            m.face(q if sg > 0 else q[::-1], "SL_HullDeck")
-        m.face([(xs[k0], D[k0][c0][1], fz), (xs[k0], D[k0][c1][1], fz), (xs[k1], D[k1][c1][1], fz),
-                (xs[k1], D[k1][c0][1], fz)][::-1], "SL_HullDeck")
-    for k, sg in ((ks[0], 1), (ks[-1], -1)):
-        top = D[k][c0:c1 + 1]
-        poly = top + [(xs[k], top[-1][1], fz), (xs[k], top[0][1], fz)]
-        m.face(poly if sg > 0 else poly[::-1], "SL_HullDeck")
+    def dk(y):
+        return sheer(b, x) + crown * max(0.0, 1.0 - (y / max(hb, 1e-3)) ** 2)
+    # (y in the cockpit, z in the cockpit as (kind, offset)), and the plain-deck fraction of hbi
+    ck_pts = [(hbi, ("d", 0.0)), (None, ("d", 0.0)), (None, ("d", 0.0)), (hw + 0.10, ("d", 0.0)),
+              (hw + 0.035, ("d", 0.0)), (hw + 0.02, ("d", -0.004)), (hw + 0.006, ("d", -0.018)), (hw, ("d", -0.040)),
+              (hw - 0.035, ("f", 0.025)), (hw - 0.05, ("f", 0.006)), (hw - 0.07, ("f", 0.0)), (0.10, ("f", 0.0)),
+              (0.085, ("f", -0.004)), (0.072, ("f", -0.028)), (0.06, ("f", -0.035)), (0.0, ("f", -0.035))]
+    ck_pts[1] = (hbi - (hbi - (hw + 0.10)) / 3.0, ("d", 0.0))
+    ck_pts[2] = (hbi - 2.0 * (hbi - (hw + 0.10)) / 3.0, ("d", 0.0))
+    ref = 0.64
+    out = []
+    for k, (yc, (kind, off)) in enumerate(ck_pts):
+        if k == 0:
+            yp = hbi
+        elif k in (1, 2):
+            yp = hbi * (1.0 - 0.1 * k)
+        else:
+            yp = hbi * min(0.75, yc / ref) if yc > 0 else 0.0
+            yp = min(yp, hbi * (0.79 - 0.001 * k))
+        y = (1 - a) * yp + a * yc
+        zd = dk(y)
+        zc = zd + off if kind == "d" else fz + off
+        out.append((y, (1 - a) * zd + a * zc))
+    return out
+
+
+def luch_hull(q=1.0):
+    """The luch (a Laser-type single-hander) lofted as one closed tube per station: starboard lip -> keel -> port lip ->
+    deck (with the cockpit) back to the starboard lip; the transom and the stem tip capped. Smooth shading, sharp edges
+    by angle (gunwale lip, transom, cockpit edges). Hull outside takes the tint (COLOR_0.R), the deck stays pale with
+    non-skid areas, a navy boot stripe sweeps up to the stem."""
+    b = "luch"
+    s = B.BOATS[b]
+    ck = s["cockpit"]
+    m = Mesh("SM_Sail_Luch_Hull" + ("_LOD1" if q < 1 else ""))
+    nb = 8 if q >= 1 else 4
+    n_st = 30 if q >= 1 else 13
+    ramp = 0.15
+    nr = 5 if q >= 1 else 2
+    extra = [ck["x0"] + ramp * k / nr for k in range(nr + 1)] + [ck["x1"] - ramp * k / nr for k in range(nr + 1)]
+    xs = stations(s, n_st, extra=extra)
+    xs = [x for x in xs if all(abs(x - e) > 0.012 or x == e for e in extra)]
+    rings, meta = [], []
+    for x in xs:
+        a = _smooth01((x - ck["x0"]) / ramp) * _smooth01((ck["x1"] - x) / ramp)
+        half, kinds, hb, L = _luch_half_skin(x, nb)
+        deck = _luch_deck_half(x, hb, L, a)
+        skin = [(x, -y, z) for y, z in reversed(half)] + [(x, y, z) for y, z in half[1:]]
+        dk = [(x, y, z) for y, z in deck] + [(x, -y, z) for y, z in reversed(deck[:-1])]
+        rings.append(skin + dk)
+        meta.append((a, x))
+    nh = len(half)                     # points per half skin (keel = index 0)
+    nd = len(deck)
+    nsk = 2 * nh - 1
+    N = len(rings[0])
+    V_ = [[m.bm.verts.new(Vector(p)) for p in r] for r in rings]
+
+    def kind_of(j, a, x):
+        """(slot, colour) of the face from ring point j to j + 1."""
+        if j < nsk - 1:
+            t = (j - (nh - 1)) if j >= nh - 1 else (nh - 2 - j)     # skin segment index from the keel
+            if t == kinds["stripe"]:
+                return "SL_Stripe", WHITE
+            if t >= kinds["top"]:
+                return "SL_Hull", WHITE                             # the rolled lip: white gelcoat
+            return "SL_Hull", TINT
+        if j == nsk - 1 or j == N - 1:
+            return "SL_HullDeck", WHITE                             # lip -> deck edge
+        k = j - nsk                                                 # deck segment index (port half, then starboard)
+        t = k if k < nd - 1 else (2 * nd - 3 - k)
+        in_ck = ck["x0"] - 0.01 <= x <= ck["x1"] + 0.35
+        if a > 0.6 and t in (10, 14):
+            return "SL_NonSkid", WHITE                              # cockpit floor and the trough
+        if in_ck and t in (0, 1, 2):
+            return "SL_NonSkid", WHITE                              # the side decks where the helm hikes
+        return "SL_HullDeck", WHITE
+
+    faces = []
+    for i in range(len(xs) - 1):
+        a = min(meta[i][0], meta[i + 1][0])
+        xm = 0.5 * (meta[i][1] + meta[i + 1][1])
+        for j in range(N):
+            jj = (j + 1) % N
+            slot, col = kind_of(j, a, xm)
+            f = m.face([V_[i][j], V_[i][jj], V_[i + 1][jj], V_[i + 1][j]], slot, col=col, smooth=True)
+            if f is not None:
+                faces.append(f)
     m.colour = WHITE
-    # transom and stem caps: the hull section + the deck row back across
-    m.face(rows[0] + D[0][-2:0:-1], "SL_Hull")
-    m.face(list(reversed(rows[-1] + D[-1][-2:0:-1])), "SL_Hull")
+    faces.append(m.face(list(V_[0]), "SL_Hull", smooth=False))
+    faces.append(m.face(list(V_[-1]), "SL_Hull", smooth=False))
+    import bmesh
+    bmesh.ops.recalc_face_normals(m.bm, faces=[f for f in faces if f is not None])
+    m.smooth_slots = {"SL_Hull", "SL_HullDeck", "SL_NonSkid", "SL_Stripe"}
+    m.sharp_angle = 40.0
+    m.colour = WHITE
+    # transom details: the bailer's flap, the drain plug, the moulded rudder-head recess plate
+    xt = xs[0]
+    m.bx("SL_Black", xt - 0.012, xt + 0.002, -0.06, 0.06, 0.03, 0.075)
+    m.lathe([(0.0, 0.0), (0.018, 0.0), (0.018, 0.012), (0.012, 0.018), (0.0, 0.018)], "SL_Black", seg=10 if q >= 1 else 6,
+            c=(xt + 0.001, 0.30, 0.10), axis=Matrix(((0, 0, -1), (0, 1, 0), (1, 0, 0))).transposed())
+    return m
 
 
 def _open_hull(m, b, xs, rows, q):
@@ -170,17 +426,17 @@ def _open_hull(m, b, xs, rows, q):
     for x in xi:
         r = ring(b, x, inset=t)
         # keep the sheer height of the outer skin (the rim is flat)
-        sz = B.sheer(b, x)
+        sz = sheer(b, x)
         r[0] = (r[0][0], r[0][1], sz)
         r[-1] = (r[-1][0], r[-1][1], sz)
         inner.append(r)
     m.colour = WHITE
-    m.quad_grid(inner, "SL_Hull", flip=True, smooth=True)
+    m.quad_grid(inner, "SL_Wood" if b == "cadet" else "SL_Hull", flip=True, smooth=True)
     # transom and bow transom: outer cap (section + straight top) and inner cap, joined by the rim
     _cap(m, rows[0], "SL_Hull", reverse=False)       # stern, facing -X
-    _cap(m, inner[0], "SL_Hull", reverse=True)       # inner face of the stern transom, facing +X
+    _cap(m, inner[0], "SL_Wood" if b == "cadet" else "SL_Hull", reverse=True)       # inner face of the stern transom, facing +X
     _cap(m, rows[-1], "SL_Hull", reverse=True)       # bow transom, facing +X
-    _cap(m, inner[-1], "SL_Hull", reverse=False)
+    _cap(m, inner[-1], "SL_Wood" if b == "cadet" else "SL_Hull", reverse=False)
     # rim: port side, starboard side, and across both transom tops
     m.colour = WHITE
     n = len(xs)
@@ -196,7 +452,7 @@ def _open_hull(m, b, xs, rows, q):
         quad = [o_st, o_po, i_po, i_st] if sgn > 0 else [o_st, i_st, i_po, o_po]
         m.face(quad, "SL_Wood")
     # wooden gunwale capping and rubbing strake outside along the sheer
-    sheer_p = [(x, B.half_beam(b, x) + 0.012, B.sheer(b, x) - 0.03) for x in xs[1:-1]]
+    sheer_p = [(x, half_beam(b, x) + 0.012, sheer(b, x) - 0.03) for x in xs[1:-1]]
     m.pipe(sheer_p, 0.016, "SL_Rubber", seg=6)
     m.pipe([(x, -y, z) for x, y, z in sheer_p], 0.016, "SL_Rubber", seg=6)
     if s["deck"] == "foredeck":
@@ -207,25 +463,25 @@ def _open_hull(m, b, xs, rows, q):
         steps = 6
         for k in range(steps + 1):
             x = fx + (xb - fx) * k / steps
-            pts.append((x, B.half_beam(b, x) - 0.005, B.sheer(b, x)))
+            pts.append((x, half_beam(b, x) - 0.005, sheer(b, x)))
         poly2 = [(p[0], p[1]) for p in pts] + [(p[0], -p[1]) for p in reversed(pts)]
-        _plate_follow(m, b, poly2, 0.012, "SL_Wood", tint=True)
+        _plate_follow(m, b, poly2, 0.012, "SL_WoodDeck")
         sd = s["side_deck"]
         for sg in (1, -1):
             xs2 = [x for x in xs if xs[0] + 0.05 < x < fx]
-            outer = [(x, sg * (B.half_beam(b, x) - 0.005)) for x in xs2]
-            inn = [(x, sg * (B.half_beam(b, x) - sd)) for x in reversed(xs2)]
+            outer = [(x, sg * (half_beam(b, x) - 0.005)) for x in xs2]
+            inn = [(x, sg * (half_beam(b, x) - sd)) for x in reversed(xs2)]
             poly = outer + inn
             if sg < 0:
                 poly = poly[::-1]
-            _plate_follow(m, b, poly, 0.012, "SL_Wood", tint=True)
+            _plate_follow(m, b, poly, 0.012, "SL_WoodDeck")
         # breakwater on the foredeck
-        m.beam((fx + 0.02, -0.45, B.sheer(b, fx) + 0.02), (fx + 0.30, 0.0, B.sheer(b, fx) + 0.05), 0.02, 0.06, "SL_Wood")
-        m.beam((fx + 0.30, 0.0, B.sheer(b, fx) + 0.05), (fx + 0.02, 0.45, B.sheer(b, fx) + 0.02), 0.02, 0.06, "SL_Wood")
+        m.beam((fx + 0.02, -0.45, sheer(b, fx) + 0.02), (fx + 0.30, 0.0, sheer(b, fx) + 0.05), 0.02, 0.06, "SL_Wood")
+        m.beam((fx + 0.30, 0.0, sheer(b, fx) + 0.05), (fx + 0.02, 0.45, sheer(b, fx) + 0.02), 0.02, 0.06, "SL_Wood")
     # floor: duckboards (slatted floor boards) along the bottom
     for dy in (-0.16, -0.05, 0.06, 0.17):
         x0, x1 = (-0.75, 0.25) if b == "optimist" else (-1.25, 0.45)
-        zf = max(B.lerp_keys(s["keel_z"], u_of(s, x0)), B.lerp_keys(s["keel_z"], u_of(s, x1))) + 0.035
+        zf = max(keel_u(b, u_of(s, x0)), keel_u(b, u_of(s, x1))) + 0.035
         m.bx("SL_WoodRaw", x0, x1, dy - 0.035, dy + 0.035, zf - 0.012, zf + 0.012)
 
 
@@ -233,8 +489,8 @@ def _plate_follow(m, b, poly, t, slot, tint=False):
     """A plate whose top follows the deck height (crowned) over a polygon [(x, y)] (counter-clockwise from above)."""
     old = m.colour
     m.colour = TINT if tint else WHITE
-    top = [(x, y, B.deck_z(b, x, y) + t) for x, y in poly]
-    bot = [(x, y, B.deck_z(b, x, y) - 0.001) for x, y in poly]
+    top = [(x, y, deck_z(b, x, y) + t) for x, y in poly]
+    bot = [(x, y, deck_z(b, x, y) - 0.001) for x, y in poly]
     m.face(top, slot)
     m.face(bot[::-1], slot)
     n = len(poly)
@@ -275,7 +531,7 @@ def strap(m, pts, w=0.045, t=0.006, slot="SL_Strap"):
 def _fittings(m, b, q):
     s = B.BOATS[b]
     mx = s["mast_x"]
-    dz = B.deck_z(b, mx)
+    dz = deck_z(b, mx)
     hi = q >= 1
     # mast step / partner collar
     rm = s["mast_d"] / 2
@@ -284,10 +540,10 @@ def _fittings(m, b, q):
     # board slot rim
     bd = s["board"]
     if bd["kind"] == "dagger":
-        zt = B.deck_z(b, bd["x"]) if s["deck"] == "decked" else B.lerp_keys(s["keel_z"], u_of(s, bd["x"])) + 0.30
+        zt = deck_z(b, bd["x"]) if s["deck"] == "decked" else keel_u(b, u_of(s, bd["x"])) + 0.30
         if s["deck"] != "decked":
             # the daggerboard case: a box from the bottom up to the thwart height
-            zb = B.lerp_keys(s["keel_z"], u_of(s, bd["x"]))
+            zb = keel_u(b, u_of(s, bd["x"]))
             xa, xb_ = bd["x"] - bd["chord"] / 2 - 0.02, bd["x"] + bd["chord"] / 2 + 0.02
             m.bx("SL_WoodRaw", xa, xb_, bd["thick"] / 2 + 0.003, bd["thick"] / 2 + 0.018, zb, zt)
             m.bx("SL_WoodRaw", xa, xb_, -(bd["thick"] / 2 + 0.018), -(bd["thick"] / 2 + 0.003), zb, zt)
@@ -299,9 +555,9 @@ def _fittings(m, b, q):
     else:
         # cadet centreboard case: a long box on the centreline
         x0, x1 = bd["x"] - 0.12, bd["x"] + 0.62
-        zb = B.lerp_keys(s["keel_z"], 0.55)
-        m.bx("SL_Wood", x0, x1, -0.03, 0.03, zb, B.sheer(b, 0) - 0.02)
-        m.bx("SL_Wood", x0 - 0.02, x1 + 0.02, -0.04, 0.04, B.sheer(b, 0) - 0.04, B.sheer(b, 0) - 0.01)
+        zb = keel_u(b, 0.55)
+        m.bx("SL_Wood", x0, x1, -0.03, 0.03, zb, sheer(b, 0) - 0.02)
+        m.bx("SL_Wood", x0 - 0.02, x1 + 0.02, -0.04, 0.04, sheer(b, 0) - 0.04, sheer(b, 0) - 0.01)
     # pintles / gudgeons on the transom
     rud = s["rudder"]
     xt = -s["loa"] / 2
@@ -319,45 +575,46 @@ def _fittings(m, b, q):
         strap_line(p0, p1, -p0[1])
     # mainsheet ratchet block on its spring
     rx_, ry_, rz_ = s["ratchet"]
-    m.tube((rx_, ry_, rz_), (rx_, ry_, rz_ + 0.12), 0.012, "SL_Black", seg=8)
+    rz0 = s["cockpit"]["floor_z"] - 0.036 if b == "luch" else rz_
+    m.tube((rx_, ry_, rz0), (rx_, ry_, rz_ + 0.12), 0.012, "SL_Black", seg=8)
     block(m, (rx_, ry_, rz_ + 0.16), 0.035, axis=(0, 1, 0))
     # bow eye / painter: eye bolt and a coiled painter on the foredeck (luch) or tied to the mast thwart
     xb = s["loa"] / 2 - 0.05
     if hi:
-        torus(m, (xb, 0, B.sheer(b, xb) + 0.012), 0.016, 0.004, "SL_Steel", seg=10, rs=4)
+        torus(m, (xb, 0, sheer(b, xb) + 0.012), 0.016, 0.004, "SL_Steel", seg=10, rs=4)
     if b == "luch":
         cx = xb - 0.55
         if hi:
             for k in range(3):
-                torus(m, (cx, 0.18, B.deck_z(b, cx, 0.18) + 0.01 + k * 0.008), 0.11 - k * 0.012, 0.006, "SL_Rope", seg=18, rs=4)
-            m.pipe([(xb, 0, B.sheer(b, xb) + 0.015), (cx + 0.11, 0.12, B.deck_z(b, cx + 0.1, 0.12) + 0.01)], 0.006, "SL_Rope", seg=4)
+                torus(m, (cx, 0.18, deck_z(b, cx, 0.18) + 0.01 + k * 0.008), 0.11 - k * 0.012, 0.006, "SL_Rope", seg=18, rs=4)
+            m.pipe([(xb, 0, sheer(b, xb) + 0.015), (cx + 0.11, 0.12, deck_z(b, cx + 0.1, 0.12) + 0.01)], 0.006, "SL_Rope", seg=4)
         # traveller: rope bridle across the aft deck between two fairleads; its block
         tv = s["traveller"]
         xt2 = tv["x"]
-        zt = B.deck_z(b, xt2, tv["half_w"])
+        zt = deck_z(b, xt2, tv["half_w"])
         for sg in (1, -1):
             m.bx("SL_Black", xt2 - 0.03, xt2 + 0.03, sg * tv["half_w"] - 0.02, sg * tv["half_w"] + 0.02, zt - 0.01, zt + 0.025)
         m.pipe([(xt2, -tv["half_w"], zt + 0.02), (xt2, -0.1, zt + 0.10), (xt2, 0.1, zt + 0.10), (xt2, tv["half_w"], zt + 0.02)], 0.005, "SL_Rope", seg=4)
         block(m, (xt2, 0.0, zt + 0.13), 0.025, axis=(1, 0, 0))
         # control-line cleats either side of the daggerboard, fairleads at the mast
         for sg in (1, -1):
-            cleat(m, bd["x"] - 0.30, sg * 0.20, B.deck_z(b, bd["x"] - 0.3, 0.2), yaw=0.0)
-            cleat(m, -0.6, sg * 0.42, B.deck_z(b, -0.6, 0.42), yaw=0.0, L=0.08)
+            cleat(m, bd["x"] - 0.30, sg * 0.20, deck_z(b, bd["x"] - 0.3, 0.2), yaw=0.0)
+            cleat(m, -0.6, sg * 0.42, deck_z(b, -0.6, 0.42), yaw=0.0, L=0.08)
         # self-bailer in the cockpit floor (aft)
         ck = s["cockpit"]
-        m.bx("SL_Black", ck["x0"] + 0.06, ck["x0"] + 0.22, -0.05, 0.05, ck["floor_z"], ck["floor_z"] + 0.012)
+        m.bx("SL_Black", ck["x0"] + 0.20, ck["x0"] + 0.34, -0.045, 0.045, ck["floor_z"] - 0.037, ck["floor_z"] - 0.027)
         # deck hand-hold at the transom corners (rope loops)
         for sg in (1, -1):
             y = sg * 0.45
-            m.pipe([(xt + 0.10, y, B.deck_z(b, xt + 0.1, y)), (xt + 0.14, y, B.deck_z(b, xt + 0.1, y) + 0.05),
-                    (xt + 0.22, y, B.deck_z(b, xt + 0.2, y) + 0.05), (xt + 0.26, y, B.deck_z(b, xt + 0.26, y))], 0.005, "SL_Rope", seg=4)
+            m.pipe([(xt + 0.10, y, deck_z(b, xt + 0.1, y)), (xt + 0.14, y, deck_z(b, xt + 0.1, y) + 0.05),
+                    (xt + 0.22, y, deck_z(b, xt + 0.2, y) + 0.05), (xt + 0.26, y, deck_z(b, xt + 0.26, y))], 0.005, "SL_Rope", seg=4)
     else:
         # thwarts (the optimist has a mast thwart and a centre thwart; the cadet a centre thwart)
         for key in ("thwart_x", "mast_thwart_x"):
             if key in s:
                 x = s[key]
-                z = B.sheer(b, x) - 0.05
-                hb = B.half_beam(b, x) - 0.02
+                z = sheer(b, x) - 0.05
+                hb = half_beam(b, x) - 0.02
                 w = 0.20 if key == "thwart_x" else 0.24
                 m.bx("SL_Wood", x - w / 2, x + w / 2, -hb, hb, z - 0.012, z + 0.012)
                 # knees down to the inner skin
@@ -366,21 +623,21 @@ def _fittings(m, b, q):
         # cleats on the gunwale for the sheets / the painter at the bow transom
         for sg in (1, -1):
             x = -0.2
-            cleat(m, x, sg * (B.half_beam(b, x) - 0.03), B.sheer(b, x), L=0.08)
+            cleat(m, x, sg * (half_beam(b, x) - 0.03), sheer(b, x), L=0.08)
         if hi:
-            m.pipe([(xb, 0, B.sheer(b, xb) + 0.015), (xb - 0.05, 0, B.sheer(b, xb) + 0.05), (xb - 0.25, 0.08, B.sheer(b, xb - 0.25) - 0.02)], 0.006, "SL_Rope", seg=4)
+            m.pipe([(xb, 0, sheer(b, xb) + 0.015), (xb - 0.05, 0, sheer(b, xb) + 0.05), (xb - 0.25, 0.08, sheer(b, xb - 0.25) - 0.02)], 0.006, "SL_Rope", seg=4)
             # a bailer (scoop) on a lanyard on the floor
             bx0 = -0.25 if b == "optimist" else -0.8
-            zb = B.lerp_keys(s["keel_z"], u_of(s, bx0)) + 0.06
+            zb = keel_u(b, u_of(s, bx0)) + 0.06
             m.lathe([(0.0, 0.0), (0.06, 0.005), (0.075, 0.07), (0.07, 0.075)], "SL_Yellow", seg=10, c=(bx0, -0.22, zb), cap1=False)
             m.beam((bx0, -0.22, zb + 0.06), (bx0 + 0.10, -0.22, zb + 0.09), 0.025, 0.02, "SL_Yellow")
     if b == "optimist":
         # buoyancy bags: two along the sides, one in the bow
         for sg in (1, -1):
-            c = (-0.15, sg * (B.half_beam(b, -0.15) - 0.21), B.sheer(b, -0.15) - 0.13)
+            c = (-0.15, sg * (half_beam(b, -0.15) - 0.21), sheer(b, -0.15) - 0.13)
             ellipsoid(m, c, (0.55, 0.095, 0.11), "SL_Buoyancy", seg=12 if hi else 6, rings=8 if hi else 4)
         xb2 = s["loa"] / 2 - 0.25
-        m.box((xb2, 0, B.sheer(b, xb2) - 0.16), (0.22, 0.48, 0.18), "SL_Buoyancy")
+        m.box((xb2, 0, sheer(b, xb2) - 0.16), (0.22, 0.48, 0.18), "SL_Buoyancy")
     if b == "cadet":
         # shroud chainplates
         sh = s["shrouds"]
@@ -390,7 +647,7 @@ def _fittings(m, b, q):
         m.bx("SL_Steel", fs[0] - 0.02, fs[0] + 0.01, -0.006, 0.006, fs[2] - 0.01, fs[2] + 0.03)
         # jib fairleads on the side decks
         for sg in (1, -1):
-            block(m, (-0.05, sg * 0.50, B.sheer(b, -0.05) + 0.03), 0.02, axis=(1, 0, 0))
+            block(m, (-0.05, sg * 0.50, sheer(b, -0.05) + 0.03), 0.02, axis=(1, 0, 0))
 
 
 def ellipsoid(m, c, ax, slot, seg=12, rings=8):
@@ -436,7 +693,7 @@ def mast(b, q=1.0):
     gz = s["gooseneck_z"] - z0
     # gooseneck fitting and vang fitting
     m.lathe([(r0 + 0.002, gz - 0.04), (r0 + 0.008, gz - 0.04), (r0 + 0.008, gz + 0.03), (r0 + 0.002, gz + 0.03)], "SL_Black", seg=seg, cap0=False, cap1=False)
-    dz = B.deck_z(b, s["mast_x"]) - z0
+    dz = deck_z(b, s["mast_x"]) - z0
     m.bx("SL_Steel", -r0 - 0.025, -r0, -0.012, 0.012, dz + 0.08, dz + 0.12)
     if b == "luch":
         # sleeve stop cleat and the cunningham's cleat on the lower section
@@ -482,7 +739,7 @@ def boom(b, q=1.0):
         block(m, (s["boom_block"], 0, -r - 0.04), 0.025, axis=(0, 1, 0))
         m.pipe([(-L + 0.02, 0.0, r + 0.004), (-0.25, 0.0, r + 0.006)], 0.003, "SL_Rope", seg=4)
     # vang (kicker): two blocks and a strop from the boom down to the mast foot (deck)
-    dz = B.deck_z(b, s["mast_x"]) + 0.10 - s["gooseneck_z"]
+    dz = deck_z(b, s["mast_x"]) + 0.10 - s["gooseneck_z"]
     if b != "optimist":
         a = (-0.42 if b == "luch" else -0.36, 0.0, -r - 0.01)
         c = (-r_mast - 0.02, 0.0, dz)
@@ -723,7 +980,7 @@ def far(b):
     m.face(rows[0], "SL_Hull")
     m.face(list(reversed(rows[-1])), "SL_Hull")
     mx = s["mast_x"]
-    m.tube((mx, 0, B.deck_z(b, mx)), (mx, 0, s["mast_top_z"]), s["mast_d"] / 2, "SL_Alu", seg=4, smooth=False)
+    m.tube((mx, 0, deck_z(b, mx)), (mx, 0, s["mast_top_z"]), s["mast_d"] / 2, "SL_Alu", seg=4, smooth=False)
     gz = s["gooseneck_z"]
     m.tube((mx, 0, gz), (mx - s["boom_len"], 0, gz), s["boom_d"] / 2, "SL_Alu", seg=4, smooth=False)
     # sails: flat polygons on the centreline, both faces
@@ -738,6 +995,12 @@ def far(b):
     m.bx("SL_Foil" if b == "luch" else "SL_FoilWood", s["rudder"]["x"] - s["rudder"]["chord"], s["rudder"]["x"], -0.01, 0.01, s["rudder"]["z_bot"], 0.25)
     m.closed = False
     return m
+
+
+def _variants(cname, part):
+    """The sail's cloth variants: material instance per look (the mesh's default is "new"; the engine swaps the SL_Sail
+    slot's material per boat). Pictures: sail_<class>[_old|_patched].png; alpha = light through the cloth."""
+    return {v: "MI_SL_Sail_%s_%s%s" % (cname, part, suf) for v, suf in (("new", ""), ("old", "_Old"), ("patched", "_Patched"))}
 
 
 def build(reg, b, kit="sailing_boats"):
@@ -758,12 +1021,13 @@ def build(reg, b, kit="sailing_boats"):
         ww = hh * 3 * 0.62 * (z1 - z0) / (x1 - x0)
         nb[side] = [round(u - ww / 2, 4), round(v - hh / 2, 4), round(u + ww / 2, 4), round(v + hh / 2, 4)]
     extra = {"sail_picture": "sail_%s.png" % b, "number_boxes_uv": nb,
-             "sail_area_m2": round(B.sail_area(b), 2)}
+             "sail_area_m2": round(B.sail_area(b), 2), "cloth_variants": _variants(cname, "Main")}
     reg.add(sail(b, "main", 1.0), kit, closed=True, extra=extra)
     reg.add(sail(b, "main", 0.5), kit, closed=True, lod_of="SM_Sail_%s_Main" % cname)
     if b == "cadet":
         reg.add(sail(b, "jib", 1.0), kit, closed=True, extra={"sail_picture": "sail_cadet_jib.png",
-                                                               "sail_area_m2": round(B.sail_area(b, "jib"), 2)})
+                                                               "sail_area_m2": round(B.sail_area(b, "jib"), 2),
+                                                               "cloth_variants": _variants(cname, "Jib")})
         reg.add(sail(b, "jib", 0.5), kit, closed=True, lod_of="SM_Sail_Cadet_Jib")
     if b == "optimist":
         reg.add(sprit(b, 1.0), kit, closed=False)

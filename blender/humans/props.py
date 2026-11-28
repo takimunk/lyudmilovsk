@@ -1,8 +1,10 @@
 """The things the townsfolk's manners put in their hands (docs/town_manners.md): a phone, a cigarette, a camera, an
 umbrella, a fishing rod, a brush, binoculars, a newspaper, a book, knitting, an ice cream, a paper cup, a shopping
-bag, the painter's easel, the allotment's spade and watering can, the cleaner's mop and bucket, the night watchman's torch.
+bag, the painter's easel, the allotment's spade and watering can, the cleaner's mop and bucket, the night watchman's torch;
+the yacht school's megaphone, whistle, bailer, knot cord, hose nozzle, stopwatch, start flag, clipboard and the worn
+life jacket (docs/yacht_school.md "Clips (part D)").
 
-    Blender -b -P blender/humans/props.py [-- --preview]
+    Blender -b -P blender/humans/props.py [-- --preview] [--only megaphone,life_jacket]
         -> Saved/ClipSources/props/<name>.glb (unreal/scripts/import_props.py -> /Game/Characters/Humans/Props/SM_Prop_<name>)
         --preview: also Saved/ClipSources/props/preview_<name>.png (two views each), to look them over before the import
 
@@ -535,8 +537,170 @@ def easel():
     return p
 
 
+# --- the yacht school (docs/yacht_school.md "Clips (part D)") ---------------------------------------------------------
+# UE takes Blender's X and Z as they are and Blender's -Y as its +Y. EHold::Palm's frame in UE is X along the fingers,
+# Z out of the palm, Y = Z x X (the thumb's way for a right hand): in Blender a thumb-way part goes along -Y.
+
+
+def megaphone():
+    """The coach's megaphone (EHold::Palm, the right hand): the pistol grip across the fist (UE +Y = Blender -Y, the
+    thumb's way, up when held), the cone above it pointing along the fingers (+X), its mouthpiece behind (-X)."""
+    p = Prop("megaphone")
+    white = p.mat("shell", (0.9, 0.88, 0.82), 0.45)
+    red = p.mat("bell", (0.75, 0.08, 0.05), 0.5)
+    dark = p.mat("grip", (0.08, 0.08, 0.09), 0.7)
+    p.rod(dark, (0.0, 0.035, 0.016), (0.0, -0.06, 0.016), 0.016, seg=10)                  # the grip in the fist
+    p.box(dark, (-0.012, -0.004, 0.008), (0.012, 0.03, 0.03))                             # the trigger
+    y = -0.095
+    p.rod(white, (-0.07, y, 0.016), (0.02, y, 0.016), 0.022, 0.03, seg=14)                # the mouthpiece and body
+    p.rod(white, (0.02, y, 0.016), (0.2, y, 0.016), 0.032, 0.085, seg=16)                 # the cone
+    p.rod(red, (0.2, y, 0.016), (0.215, y, 0.016), 0.087, 0.09, seg=16)                   # the bell's rim
+    p.rod(dark, (-0.075, y, 0.016), (-0.07, y, 0.016), 0.018, seg=10)
+    return p
+
+
+def whistle():
+    """The coach's whistle (EHold::Fingers, along +X from the fingers): a chromed referee's whistle, the mouthpiece at
+    +X, the lanyard's loop hanging from its ring."""
+    p = Prop("whistle")
+    chrome = p.mat("chrome", (0.8, 0.8, 0.82), 0.2)
+    cord = p.mat("lanyard", (0.1, 0.25, 0.7), 0.9)
+    p.ball(chrome, (-0.01, 0.0, 0.0), 0.013, scale=(1.0, 0.85, 1.0), seg=12)              # the barrel
+    p.box(chrome, (0.0, -0.0075, -0.004), (0.035, 0.0075, 0.007))                          # the mouthpiece
+    p.rod(chrome, (-0.024, 0.0, 0.006), (-0.03, 0.0, 0.012), 0.003, seg=6)                 # the ring
+    for k in range(6):                                                                     # the lanyard down from it
+        a, b = k / 6.0, (k + 1) / 6.0
+        pa = Vector((-0.03 - 0.02 * math.sin(a * math.pi), 0.0, 0.012 - 0.12 * a))
+        pb = Vector((-0.03 - 0.02 * math.sin(b * math.pi), 0.0, 0.012 - 0.12 * b))
+        p.rod(cord, pa, pb, 0.002, seg=4, smooth=False)
+    return p
+
+
+def bailer():
+    """The optimist's bailer (EHold::Palm): a scoop cut from a plastic bottle, the handle in the fist across the palm
+    (along -Y), the scoop below the palm (+Z) and on past the fingers (+X), its mouth forward."""
+    p = Prop("bailer")
+    plast = p.mat("plastic", (0.95, 0.75, 0.05), 0.5)
+    p.rod(plast, (0.0, 0.04, 0.015), (0.0, -0.06, 0.015), 0.014, seg=10)
+    p.box(plast, (0.0, -0.06, 0.03), (0.17, 0.06, 0.035))                                  # the scoop's floor
+    p.box(plast, (0.0, -0.06, 0.03), (0.17, -0.055, 0.11))                                 # its sides
+    p.box(plast, (0.0, 0.055, 0.03), (0.17, 0.06, 0.11))
+    p.box(plast, (-0.005, -0.06, 0.03), (0.0, 0.06, 0.11))                                 # its back
+    return p
+
+
+def knot_cord():
+    """A metre of braided cord for the knots lesson (EHold::TwoHands): between the hands along X, sagging a little."""
+    p = Prop("knot_cord")
+    cord = p.mat("cord", (0.9, 0.85, 0.7), 0.9)
+    fleck = p.mat("fleck", (0.15, 0.3, 0.75), 0.9)
+    n = 14
+    for k in range(n):
+        a, b = k / n, (k + 1) / n
+        pa = Vector((-0.2 + 0.4 * a, 0.0, -0.06 * math.sin(a * math.pi)))
+        pb = Vector((-0.2 + 0.4 * b, 0.0, -0.06 * math.sin(b * math.pi)))
+        p.rod(fleck if k % 3 == 0 else cord, pa, pb, 0.004, seg=6)
+    for x in (-0.2, 0.2):                                                                   # the whipped ends hanging out
+        p.rod(cord, (x, 0.0, 0.0), (x + (0.02 if x < 0 else -0.02), 0.01, -0.09), 0.004, seg=6)
+    return p
+
+
+def hose_nozzle():
+    """The boathouse's hose nozzle (EHold::Pointing, along +X from the grip): a brass pistol nozzle, the hose going back
+    and down from its tail."""
+    p = Prop("hose_nozzle")
+    brass = p.mat("brass", (0.72, 0.55, 0.2), 0.35)
+    hose = p.mat("hose", (0.15, 0.4, 0.12), 0.7)
+    p.rod(brass, (-0.03, 0.0, 0.0), (0.12, 0.0, 0.0), 0.013, 0.009, seg=10)
+    p.rod(brass, (0.12, 0.0, 0.0), (0.15, 0.0, 0.0), 0.011, 0.013, seg=10)
+    p.box(brass, (0.0, -0.006, -0.06), (0.025, 0.006, 0.0))                                # the trigger lever
+    pts = [Vector((-0.03, 0.0, 0.0)), Vector((-0.1, 0.0, -0.02)), Vector((-0.16, 0.0, -0.09)), Vector((-0.19, 0.0, -0.2))]
+    for a, b in zip(pts, pts[1:]):
+        p.rod(hose, a, b, 0.011, seg=8)
+    return p
+
+
+def stopwatch():
+    """The coach's race stopwatch (EHold::Palm like the phone): in the palm, its face out of it (+Z), the crown at +X."""
+    p = Prop("stopwatch")
+    steel = p.mat("case", (0.7, 0.7, 0.72), 0.3)
+    face = p.mat("face", (0.95, 0.95, 0.92), 0.4)
+    hand = p.mat("hand", (0.6, 0.05, 0.05), 0.5)
+    p.rod(steel, (0.0, 0.0, -0.008), (0.0, 0.0, 0.008), 0.027, seg=20)
+    p.rod(face, (0.0, 0.0, 0.008), (0.0, 0.0, 0.0085), 0.024, seg=20)
+    p.box(hand, (0.0, -0.001, 0.0085), (0.02, 0.001, 0.009))
+    p.rod(steel, (0.027, 0.0, 0.0), (0.04, 0.0, 0.0), 0.004, seg=8)                        # the crown
+    p.rod(steel, (0.042, -0.008, 0.0), (0.042, 0.008, 0.0), 0.005, seg=8)                  # the ring
+    return p
+
+
+def start_flag():
+    """The start flag on its stick (EHold::Upright): the grip at the origin, the stick up +Z, a blue flag with a white
+    square."""
+    p = Prop("start_flag")
+    wood = p.mat("stick", (0.6, 0.45, 0.25), 0.7)
+    blue = p.mat("blue", (0.05, 0.15, 0.6), 0.8)
+    white = p.mat("white", (0.95, 0.95, 0.95), 0.8)
+    p.rod(wood, (0.0, 0.0, -0.12), (0.0, 0.0, 0.62), 0.009, seg=8)
+    p.sheet(blue, [(0.0, 0.0, 0.3), (0.34, 0.0, 0.3), (0.34, 0.0, 0.6), (0.0, 0.0, 0.6)])
+    for y in (0.002, -0.002):                                    # the white square on both faces, each facing out
+        q = [(0.1, y, 0.4), (0.24, y, 0.4), (0.24, y, 0.5), (0.1, y, 0.5)]      # (as listed it faces -Y)
+        vs = [p.bm.verts.new(Vector(c)) for c in (q if y < 0 else list(reversed(q)))]
+        p.bm.faces.new(vs).material_index = white
+    return p
+
+
+def clipboard():
+    """The coach's clipboard with the race sheet (EHold::Palm): along the fingers (X), its face with the sheet out of the
+    palm (+Z), the clip at +X."""
+    p = Prop("clipboard")
+    board = p.mat("board", (0.45, 0.3, 0.15), 0.7)
+    paper = p.mat("paper", (0.92, 0.92, 0.88), 0.9)
+    ink = p.mat("ink", (0.25, 0.25, 0.3), 0.9)
+    clip_ = p.mat("clip", (0.7, 0.7, 0.72), 0.3)
+    p.box(board, (-0.15, -0.115, 0.0), (0.17, 0.115, 0.004))
+    p.box(paper, (-0.145, -0.105, 0.004), (0.15, 0.105, 0.005))
+    for k in range(9):
+        x = 0.12 - k * 0.028
+        p.box(ink, (x - 0.004, -0.09, 0.005), (x + 0.004, 0.06 - (k % 3) * 0.02, 0.0055))
+    p.box(clip_, (0.14, -0.04, 0.004), (0.17, 0.04, 0.014))
+    return p
+
+
+def life_jacket():
+    """The school's orange foam life jacket, Soviet style (worn; not a manner's prop): two thick foam blocks in front
+    with a gap, one at the back, on a cloth vest, a foam collar roll behind the neck, white tapes and ties. Origin on the
+    spine_03 joint of a grown-up (Guy_a's size), in the body's frame at rest (faces -Y, its left +X, up +Z); a child
+    wears it scaled by its BodyScale (the cast's children are the same skeleton scaled). The engine attaches it to
+    spine_03 (docs/yacht_school.md "Clips (part D)")."""
+    p = Prop("life_jacket")
+    foam = p.mat("foam", (0.95, 0.32, 0.03), 0.75)
+    cloth = p.mat("cloth", (0.85, 0.28, 0.04), 0.9)
+    tape = p.mat("tape", (0.92, 0.92, 0.88), 0.8)
+    fy, by, hw = -0.128, 0.128, 0.19           # the chest's front and back (inner faces), half width
+    z0, z1 = -0.27, 0.13
+    for s in (-1, 1):
+        lo, hi = sorted((s * 0.04, s * hw))
+        p.box(foam, (lo, fy - 0.06, z0), (hi, fy, z1))                                     # a front block
+        lo, hi = sorted((s * 0.05, s * (hw - 0.01)))
+        p.box(foam, (lo, fy - 0.07, z0 + 0.02), (hi, fy - 0.06, z1 - 0.02))                 # its rounded face
+        lo, hi = sorted((s * hw, s * (hw + 0.012)))
+        p.box(cloth, (lo, fy, z0 + 0.02), (hi, by, z1 - 0.06))                              # the side panel round the back
+        lo, hi = sorted((s * 0.085, s * 0.15))
+        p.box(cloth, (lo, fy - 0.005, z1), (hi, by + 0.005, z1 + 0.04))                     # a shoulder strap
+        lo, hi = sorted((s * 0.005, s * 0.06))
+        p.box(tape, (lo, fy - 0.075, z0 + 0.1), (hi, fy - 0.068, z0 + 0.12))                # the front ties
+        p.box(tape, (lo, fy - 0.075, z0 + 0.22), (hi, fy - 0.068, z0 + 0.24))
+    p.box(foam, (-hw, by, z0 + 0.04), (hw, by + 0.055, z1))                                # the back block
+    p.rod(foam, (-0.11, 0.07, z1 + 0.09), (0.11, 0.07, z1 + 0.09), 0.045, seg=12)          # the collar roll
+    p.box(tape, (-hw - 0.014, fy - 0.01, z0 + 0.05), (hw + 0.014, by + 0.06, z0 + 0.075))  # the waist tape round it all
+    return p
+
+
+SAIL_MAKERS = [megaphone, whistle, bailer, knot_cord, hose_nozzle, stopwatch, start_flag, clipboard, life_jacket]
+
 MAKERS = [phone, cigarette, camera, umbrella, rod, brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, easel,
-          spade, watering_can, mop, torch, bucket, suitcase]
+          spade, watering_can, mop, torch, bucket, suitcase] + SAIL_MAKERS
 
 
 def preview(o, name):
@@ -566,7 +730,11 @@ def preview(o, name):
 
 def main():
     os.makedirs(OUT, exist_ok=True)
+    argv = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
+    only = argv[argv.index("--only") + 1].split(",") if "--only" in argv else None
     for make in MAKERS:
+        if only and make.__name__ not in only:
+            continue
         bpy.ops.wm.read_factory_settings(use_empty=True)
         p = make()
         o = p.build()
