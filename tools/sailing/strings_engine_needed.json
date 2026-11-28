@@ -1,0 +1,38 @@
+{
+ "_doc": "String keys the yacht school's ENGINE (the boats' half: LyudDinghy*.cpp, LyudSailHud.cpp) shows and that no strings table has yet, with ru/en/ja drafts. The words' part moves them into the tables. Until then the code shows the English draft (LyudSailHud::Word), never the bare key.",
+ "keys": {
+  "sail.point.in_irons": {"ru": "Левентик", "en": "In irons", "ja": "風位に立つ", "note": "HUD: the point of sail, head to wind and stopped"},
+  "sail.point.close_hauled": {"ru": "Крутой бейдевинд", "en": "Close-hauled", "ja": "クローズホールド", "note": "HUD: the point of sail"},
+  "sail.point.close_reach": {"ru": "Полный бейдевинд", "en": "Close reach", "ja": "クローズリーチ", "note": "HUD: the point of sail"},
+  "sail.point.beam_reach": {"ru": "Галфвинд", "en": "Beam reach", "ja": "アビーム", "note": "HUD: the point of sail"},
+  "sail.point.broad_reach": {"ru": "Бакштаг", "en": "Broad reach", "ja": "ブロードリーチ", "note": "HUD: the point of sail"},
+  "sail.point.run": {"ru": "Фордевинд", "en": "Running", "ja": "ランニング", "note": "HUD: the point of sail"},
+
+  "sail.advice.sheet_in": {"ru": "Парус полощет — подбери шкот", "en": "The sail is flapping: sheet in", "ja": "セールがばたついている。シートを引け", "note": "the tutor's hint on the HUD (LyudSail::EAdvice::SheetIn), at most once in 20 s"},
+  "sail.advice.ease": {"ru": "Потрави шкот", "en": "Ease the sheet", "ja": "シートを出せ", "note": "tutor hint: over-sheeted or overpowered"},
+  "sail.advice.bear_away": {"ru": "Слишком круто к ветру — увались", "en": "Too close to the wind: bear away", "ja": "風に近すぎる。ベアしろ", "note": "tutor hint: pinching"},
+  "sail.advice.in_irons": {"ru": "Встали в левентик: руль в другую сторону и сдай назад", "en": "In irons: tiller the other way and back her out", "ja": "風位に立った。ティラーを逆に切ってバックで抜けろ", "note": "tutor hint"},
+  "sail.advice.hike": {"ru": "Откренивай!", "en": "Lean out!", "ja": "ハイクアウト！", "note": "tutor hint: heeling too much"},
+  "sail.advice.board_up": {"ru": "Мелко — подними шверт", "en": "Shallow: board up", "ja": "浅い。センターボードを上げろ", "note": "tutor hint"},
+  "sail.advice.board_down": {"ru": "Опусти шверт, лодку сносит боком", "en": "Board down, she is sliding sideways", "ja": "センターボードを下ろせ。横流れしている", "note": "tutor hint"},
+  "sail.advice.by_the_lee": {"ru": "Ветер заходит со стороны гика: приведись или сделай поворот фордевинд", "en": "By the lee: head up, or gybe", "ja": "バイザリーだ。ラフするかジャイブしろ", "note": "tutor hint: a gybe is near"},
+  "sail.advice.right_boat": {"ru": "Встань на шверт и ставь лодку (держи Пробел)", "en": "Climb on the centreboard and right her (hold Space)", "ja": "センターボードに乗って起こせ（スペース長押し）", "note": "tutor hint: capsized; names the key"},
+  "sail.advice.bail": {"ru": "Отчерпай воду", "en": "Bail her out", "ja": "水をかき出せ", "note": "tutor hint: swamped"},
+  "sail.advice.float_off": {"ru": "Сели на мель: подними шверт и сойди с неё", "en": "Aground: board up and push off", "ja": "座礁した。センターボードを上げて離れろ", "note": "tutor hint: aground"},
+
+  "ui.sail.hud.keys": {"ru": "A / D руль   W / S шкот выбрать / потравить (колесо — точно)   Q / E в лодку / откренивать   Z / X шверт вверх / вниз   ЛКМ сбросить шкот   Alt отчерпывать   Пробел поставить лодку / выйти", "en": "A / D helm   W / S sheet in / out (wheel: fine)   Q / E lean in / out   Z / X board up / down   LMB let the sheet fly   Alt bail   Space right the boat / step out", "ja": "A / D 舵   W / S シートを引く / 出す（ホイールで微調整）   Q / E 体を入れる / ハイクアウト   Z / X センターボード 上 / 下   左クリック シートを放す   Alt 水をかき出す   スペース 艇を起こす / 降りる", "note": "the key map shown for 16 s after boarding. The items are separated by THREE spaces: the HUD puts each on its own line"},
+  "ui.sail.hud.cant_leave": {"ru": "Здесь не выйти: вернись к слипу", "en": "Not here: sail back to the slip", "ja": "ここでは降りられない。スリップまで戻ろう", "note": "the hero pressed the leave key afloat away from the slip"},
+  "ui.sail.hud.heel": {"ru": "Крен", "en": "Heel", "ja": "ヒール", "note": "gauge label, followed by degrees"},
+  "ui.sail.hud.sheet": {"ru": "Шкот", "en": "Sheet", "ja": "シート", "note": "gauge label"},
+  "ui.sail.hud.auto": {"ru": "авто", "en": "auto", "ja": "自動", "note": "after the sheet's label in brackets when the auto-sheet assist is on"},
+  "ui.sail.hud.board": {"ru": "Шверт", "en": "Board", "ja": "センターボード", "note": "gauge label"},
+  "ui.sail.hud.water": {"ru": "Вода в лодке", "en": "Water aboard", "ja": "艇内の水", "note": "gauge label, shown only when there is water"},
+  "ui.sail.hud.wind": {"ru": "Ветер", "en": "Wind", "ja": "風", "note": "under the wind rose, followed by the speed"},
+  "ui.sail.hud.kn": {"ru": "уз", "en": "kn", "ja": "kt", "note": "unit: knots"},
+  "ui.sail.hud.ms": {"ru": "м/с", "en": "m/s", "ja": "m/s", "note": "unit"},
+  "ui.sail.hud.m": {"ru": "м", "en": "m", "ja": "m", "note": "unit: metres (the distance to the mark, the depth)"},
+  "ui.sail.hud.shallow": {"ru": "Мелко", "en": "Shallow water", "ja": "浅瀬", "note": "blinking warning, followed by the depth"},
+  "ui.sail.hud.capsized": {"ru": "Оверкиль: держи Пробел, чтобы встать на шверт и поставить лодку", "en": "Capsized: hold Space to stand on the board and right her", "ja": "転覆：スペース長押しでセンターボードに乗って起こす", "note": "shown while capsized, over the righting bar"},
+  "ui.sail.hud.planing": {"ru": "Глиссирует", "en": "Planing", "ja": "プレーニング", "note": "under the speed while on the plane"}
+ }
+}

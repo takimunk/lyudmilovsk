@@ -1291,3 +1291,140 @@ Who calls the functions:
   not counted twice.
 - The pier sets `sail_watch_pier` and `sail_pier_talk1` fit nobody on barksim's sample day: the people sim seldom puts
   adults on the pier. They will fit once part F's spectator activities send people there.
+
+## Engine: the boats
+
+The boats' half of the engine (branch `yacht-school-engine-boat`): the dinghy, the coach's launch and the marks as
+actors, the helmsman's HUD and view. Nothing here ticks by itself: `ULyudSailing` (the school's half) calls `Advance*`.
+Not compiled yet (written in the cloud): see "Mac checklist" and "Open issues".
+
+### Files
+
+| file | what it does |
+|---|---|
+| `Public/Sailing/LyudDinghy.h` | the contract. Additions over the first version: `SetTutorHints`, `IsOnTrolley`, `HudData`, `HullFrame` on the dinghy; the `Loops` arrays (UPROPERTY) and `EndPlay` on the launch; the mark's `Body`, `BuiltKind`, `Clock`, leans, `bStowed` |
+| `Private/Sailing/LyudDinghyImpl.h` | what the two pimpls hold, and `LyudSailKit`: the classes' drawing numbers (`FClassDef`, copied by hand from `blender/sailing/sockets.json` and `blender/humans/sail_grips.json`), assets loaded once and rooted, the code-built stand-in meshes, component helpers, the wake's foam pool, crew bodies |
+| `LyudDinghyBuild.cpp` | the drawn boat: parts at their pivots (made once per actor; a pooled actor of another class only changes meshes), the stand-in boat built with `FLyudMeshKit`, the cloth variant by the boat's seed on slot `SL_Sail`, custom primitive data, the four levels of detail, the parts moved by the model's outputs (boom, the luch's mast, jib, rudder, tiller, the extension to the helm's hand, board, sheet ropes, telltales, masthead vane), the wake and the spray |
+| `LyudDinghy.cpp` | the actor: owns `LyudSail::FBoat`, samples wind and sea, steps (full / 15 Hz / polar / towed), places the boat, telemetry, the hero at the helm (boarding, keys, seat, view, tutor), the HUD's data, sounds. Console `lyud.Sail.Debug`, `lyud.Sail.Easy` |
+| `LyudDinghyCrew.cpp` | the people aboard: a townsperson's own `ANpcBody` held by the boat, the sailing clips by state, hands on the real extension and sheet (`SetBikeRider`), the life jacket on `spine_03` |
+| `LyudSailHud.h/.cpp` | `FLyudSailHudData` (filled by the boat), `SLyudSailHud` (drawn), `ULyudSailCamera` (the view's roll), `LyudSailHud::Word` (a key's words, or the English draft while no table has it). Console `lyud.Sail.Hud` |
+| `LyudSailLaunch.cpp` | `ALyudSailLaunch`: `LaunchDriveTo` + `StepLaunch`, hull, the outboard turning on its clamp, a signal flag streaming in the felt wind, wake, the driver (`Sail_Coach_Drive`), the outboard's four loops by `MixOutboard`, starter and kill-cord one-shots, `sail_alu_slap`, the whistle and horn signals |
+| `LyudSailMark.cpp` | `ALyudSailMark`: one mesh riding the surface, leaning with the slope; the kinds with a flag swing downwind |
+| `tools/sailing/strings_engine_needed.json` | 31 new keys with ru/en/ja drafts (points of sail, the tutor's hints, the HUD's labels and key map) for the words' part |
+
+### Semantics the school's half relies on
+
+- `Setup` leaves the boat `Parked` and hidden. `PlaceAt` puts it afloat (any state); it is drawn once its LOD is not
+  `Parked`. `ParkAt` shows it still on its trolley (the transform is the GROUND under the trolley; the boat's origin
+  rides `TrolleyZ` over it: 45 / 54 / 55 cm), sets `Parked`, drops the crew and steps nothing. `SetLod(Parked)` on a
+  boat that was placed afloat hides it.
+- `Advance` at `Near` (or with the hero aboard) steps every frame; at `Mid` (and `Far`, if called there) it accumulates
+  to 1/15 s and draws the boat between the steps by its speed. `AdvanceFar` is one `StepFar` per call with the wind and
+  depth refreshed every 0.5 s. `AdvanceTowed` is `StepTowed`.
+- The hero's boat is always `Near` (`Board` and `SetLod` see to it). `Board` refuses a boat on its trolley.
+- `SetCrew(Slot, Key, Age)` claims the person from the life at once (`SetPresentedExternally`), body or not, until
+  `SetCrew(Slot, NAME_None)`, `ParkAt` or `Setup`. Slot 0 with an age also sets the model's `CrewMass` (`CrewMassFor`).
+  A person whose `ShownModel` is empty has no body: the boat sails with nobody seen in it. Bodies exist at Near and
+  Mid only; slot 1 is drawn in the cadet only.
+- `SetAssist` flags are OR-ed with the player's `lyud.Sail.Easy` while he has the helm.
+- `ShowHint(Key)` shows that key's words; `SetTutorHints(false)` silences the boat's own `LyudSail::Advice` hints.
+- `SetHudTask`: the countdown runs down by itself between calls; pass 0 or less for none; a zero mark = no mark.
+- Leaving: Space asks `CanLeave` when set; without it the hero may step out in under 1.1 m of water at under 1.5 m/s.
+- The launch: `Advance` means the engine runs (cruise 0 = idling); `ParkAt` stops it, tilts the motor up and takes the
+  driver's body out (the person stays claimed until `SetDriver(NAME_None)`). The driver's body and the engine's loops
+  exist only within about 300-450 m of the player's view.
+
+### Key map (the hero at the helm)
+
+Polled from the player controller, nothing consumed; ignored while a screen is up or move input is ignored.
+
+| key | gamepad | does |
+|---|---|---|
+| A / D | left stick X | helm: over at a hand's speed, centres itself when let go (faster the faster she sails) |
+| W / S | left stick Y | sheet in / out |
+| mouse wheel | | sheet a little at a time |
+| LMB (held) | right trigger | let the sheet fly |
+| E / Q | shoulders R / L | lean out / come in (automatic with `lyud.Sail.Easy` >= 1) |
+| Z / X | D-pad up / down | board up / down a notch (by the depth itself with Easy >= 1) |
+| Left Alt (held) | | bail (by itself with Easy >= 1) |
+| Space (held) | A | capsized: stand on the board and right her. Otherwise: step out, where allowed |
+| mouse | right stick | look round; RMB stays the binoculars |
+
+The seat is a frame the boat moves: it crosses to the new windward deck in about a second on a tack or a gybe and goes
+into the water by the board on a capsize. The view rolls with 35 % of the heel (capped at 14 degrees, eased, turned
+into a pitch when he looks abeam), and tips 20 degrees while she lies on her side.
+
+### HUD (`lyud.Sail.Hud 0|1|2`, default 2)
+
+Bottom right: the wind rose, bow up: the no-go zone hatched red round the true wind (brighter when the bow is in it),
+the wind's arrow, a tick for the apparent wind, the wind's speed, a green diamond where the next mark bears with its
+distance over the rose. Left of it: the point of sail (red when by the lee), speed in knots and m/s, "Planing".
+Mode 2 adds the gauges: heel (green to red), sheet with a green mark where the sail would draw best (red while it
+flaps), board, water aboard. Middle of the screen: the tutor's hint (each advice at most once in 20 s, after it has
+held 1.5 s), "Shallow water" with the depth, the capsize line with the righting bar. Top left: the school's task
+panel; top middle: the countdown, large and pulsing in its last ten seconds. Bottom left: the key map for 16 s after
+boarding. `lyud.Sail.Debug 1` prints the model's numbers. Hidden with `lyud.Hud 0` and under any screen.
+
+### Levels of detail
+
+The school chooses them; the contract's distances are Near to ~60 m, Mid to ~250 m, Far beyond.
+
+| | steps | drawn | sound | cost a boat |
+|---|---|---|---|---|
+| Near | every frame, the sea at four points + the depth, one wind sample | every part (11-12 static meshes), extension, two sheet ropes, four telltales, the vane, wake + spray (one instanced batch), crew bodies with hand IK | up to nine loops (only the audible ones are attached; let go after 2 s of silence), all one-shots | ~16 component moves a frame, 5 sea samples |
+| Mid | 15 Hz, one sea sample a step | the parts' LOD (ForcedLodModel 2), moved only on a step; no extension, ropes, telltales or vane; wake at a wider spacing; bodies with update-rate optimisation and no IK | only `sail_capsize` and `sail_gybe_slam` | one actor move a frame, ~10 part moves 15 times a second |
+| Far | `StepFar` per call, depth and wind every 0.5 s | `SM_Sail_<C>_Far` (the hull, sail and mast alone when it is not imported), only heeled; no wake, no bodies, no shadows | none | one actor move and one rotation a call |
+| Parked | none | hidden, or still on the trolley (rigged, bare, or under its cover) | none | nothing |
+
+### Without the imported assets
+
+Everything is null-checked and falls back (one log line per missing asset, `SAIL no mesh ...` / `SAIL no clip ...`):
+
+- no `SM_Sail_<Class>_<Part>`: the part built in code (a lofted hull, spars, flat sails, foils), painted by the
+  colourway; no `_Far`: hull + main + mast shown far off; no trolley / cover / rope: a rod frame / nothing / a built rope;
+- no `SM_Sail_Launch*`, `SM_Sail_Mark/Pin/Buoy/MOB`, `SM_Sail_Flag_<id>`: built stand-ins (a plain coloured flag);
+- no `A_Human_Sail_*` clip: the body sits on the side deck in a seated life clip (`SitIdle`, else the owner's), hands
+  free; with no seated clip either the body is hidden;
+- no life jacket prop: `SM_Sail_LifeJacket_Worn`, else none;
+- no sea actor: the boat floats at its actor height in 100 m of water; no sound pools: silence.
+
+### Console
+
+`lyud.Sail.Hud 0|1|2`, `lyud.Sail.Debug 0|1`, `lyud.Sail.Easy 0|1|2` (0 nothing automatic; 1, the default: weight,
+board and bailing look after themselves; 2: the sheet too, and she cannot capsize). The school's half registers the
+rest (`lyud.Sail.Fleet`, `Board`, `Lesson`, `Race`, `Capsize`, ...).
+
+### Mac checklist
+
+1. Build. Expect first-compile errors in the six new .cpp files (none was compiled; see the risks in the hand-over).
+2. Import: `unreal/scripts/import_sailing.sh`, the clips and props of "Clips > Mac steps", the sounds' pools.
+3. Look, with the school's `lyud.Sail.Board` on each class:
+   - the parts sit at their pivots; the boom swings to the lee side; the cadet's board swings UP into its case as it is
+     raised (if it swings down, flip the sign of the 80 degrees in `MoveParts`); the jib turns about its stay;
+   - the sail bellies to leeward (custom data 0 is sent negated) and shivers when luffing; number and tint show;
+   - telltales: green to starboard, red to port, streaming aft when trimmed, lifting when it is wrong;
+   - the helm's hands on the extension and the sheet; the extension points at the hand; the jacket sits on the chest;
+   - tack and gybe: the crew crosses, the hero's seat crosses; capsize (`lyud.Sail.Capsize`): the fall, the swim, the
+     righting, the climb back in; the view;
+   - the HUD in ru / en / ja once the keys are in the tables; `lyud.Sail.Hud 1`, `0`;
+   - a boat on its trolley (rigged, covered); the launch with its driver, flag, wake and engine note; the marks.
+4. Bench: at the slip looking out to sea, `stat unit` with nothing afloat, then `lyud.Sail.Fleet 22`. Note game and
+   draw ms for both, and with the whole fleet at Near (sail into it), against main. The parts are out of Lumen and the
+   distance fields; shadows are off at Far.
+
+### Open issues
+
+- **The hero's seat may lag one frame**: the boat moves the seat in the school's tick, the hero re-seats himself in
+  his own. If it shows at speed, give `AHeroCharacter` a public `SyncSeat()` and call it from `HeroFrame`, or tick the
+  school before the hero.
+- The hero keeps his own animation at the helm (HeroAnimInstance cannot play the sailing clips): first person, so only
+  his shadow tells. No first-person hands on the extension.
+- Crew positions were not seen in the engine: the body origin, the capsized frame's origin (the board's root, the
+  hull's draught off the centreline) and the launch's seat (thwart at x -185, top 31 cm) are read from the scripts'
+  numbers. The optimist and the cadet use the luch's capsize and climb clips; only the luch's helm and the cadet's crew
+  have crossing clips (the others cross-fade between the two sides' loops).
+- `PlayEffect` uses each pool's own attenuation: the whistle and the horn carry as far as their pools say.
+- The launch's driver gets no `TalkId` (the school knows the role's dialogue id; set it on the body if he should talk).
+- Telltales ride a guessed belly offset (5 % of the chord); tune `MoveParts` against the imported cloth.
+- The school's half also appends to this file and may write `tools/sailing/strings_engine_needed.json` too: expect a
+  trivial merge of the two.
