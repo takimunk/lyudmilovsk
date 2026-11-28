@@ -289,7 +289,7 @@ say town.tc_work_programmer.2 | Программа работает. Никто 
 [tc_work_station]
 on = tc_work
 job = station_barista station_attendant
-say town.tc_work_station.1 | Канатка ходит, кофе варится. Пассажир нынче сонный, но вежливый. | The cable car runs, the coffee brews. Passengers are sleepy but polite. | ロープウェーは動く、コーヒーは沸く。お客さんは眠そうだけど丁寧。
+say town.tc_work_station.1 | Канатка ходит, кофе варится. Пассажир нынче сонный, но вежливый. | The cable car runs, the coffee brews. Passengers are sleepy but polite. | ロープウェイは動く、コーヒーは沸く。お客さんは眠そうだけど丁寧。
 say town.tc_work_station.2 | Весь день на станции. Вагончики туда-сюда, а я на месте. | All day at the station. Cabins go back and forth, I stay put. | 一日じゅう駅にいるよ。ゴンドラは行き来、私はここ。
 
 [tc_work_homemaker]
@@ -890,7 +890,7 @@ on = tc_town
 say town.tc_town.1 | Сходи на маяк. Оттуда весь город — как на ладони. | Go up to the lighthouse. The whole town lies in your palm from there. | 灯台へ行ってごらん。町がまるごと見わたせるよ。
 say town.tc_town.2 | На рынке по утрам самые свежие новости. И творог. | The market in the morning has the freshest news. And curd cheese. | 朝の市場には新鮮なうわさがあるよ。カッテージチーズもね。
 say town.tc_town.3 | Набережная на закате. Больше ничего советовать не буду. | The promenade at sunset. I'll recommend nothing else. | 夕暮れの遊歩道。ほかにすすめるものはないよ。
-say town.tc_town.4 | Садись на канатку и смотри вниз. Город сверху совсем другой. | Take the cable car and look down. The town's quite different from above. | ロープウェーに乗って下を見てごらん。町がちがって見える。
+say town.tc_town.4 | Садись на канатку и смотри вниз. Город сверху совсем другой. | Take the cable car and look down. The town's quite different from above. | ロープウェイに乗って下を見てごらん。町がちがって見える。
 
 [tc_town_young]
 on = tc_town
@@ -971,7 +971,7 @@ say town.tc_ask_like.2 | Нравится тебе Людмиловск? Тол�
 [tc_reply_like_1]
 on = tc_reply_like_1
 say town.tc_reply_like_1.1 | Вот и славно. Город это чувствует, между прочим. | That's grand. The town can tell, you know. | それはよかった。町にもちゃんと伝わるんだよ。
-say town.tc_reply_like_1.2 | Ещё бы. Море, канатка и никто не торопит. | I should think so. The sea, the cable car and nobody rushing you. | そうだろう。海とロープウェーがあって、誰も急がせない。
+say town.tc_reply_like_1.2 | Ещё бы. Море, канатка и никто не торопит. | I should think so. The sea, the cable car and nobody rushing you. | そうだろう。海とロープウェイがあって、誰も急がせない。
 
 [tc_reply_like_2]
 on = tc_reply_like_2
