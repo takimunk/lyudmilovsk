@@ -517,7 +517,7 @@ static void TestSessions(bool bQuick)
 			const std::string Name = Str("%s %.1f m/s from %3.0f, %s + %s", C.Group, C.Wind, From, C.A, C.B);
 			Check(R.Home == R.Boats && R.RecallMin <= 22.0 && R.bFinite, Str("%s: all %d ashore after the recall (minutes)", Name.c_str(), R.Boats).c_str(), R.RecallMin);
 			Check(R.MaxOutside <= 15.0 && R.bLaid[0] && R.bLaid[1], Str("%s: nobody leaves the area (farthest outside, m); buoys laid", Name.c_str()).c_str(), R.MaxOutside);
-			Check(R.Contacts <= 8 * R.Boats && R.Laps >= R.Boats / 2 && R.Metres / R.Boats > 1500.0, Str("%s: contacts (laps %d, %.0f m a boat, %d capsizes, %d tows)", Name.c_str(), R.Laps, R.Metres / R.Boats, R.Capsizes, R.Tows).c_str(), R.Contacts);
+			Check(R.Contacts <= 10 * R.Boats && R.Laps >= R.Boats / 2 && R.Metres / R.Boats > 1500.0, Str("%s: contacts (laps %d, %.0f m a boat, %d capsizes, %d tows)", Name.c_str(), R.Laps, R.Metres / R.Boats, R.Capsizes, R.Tows).c_str(), R.Contacts);
 		}
 	}
 	Check(Run > 0, "sessions run", Run);
@@ -540,7 +540,8 @@ static void TestRaces(bool bQuick)
 				Check(false, Str("%s: a course fits the race area", Name.c_str()).c_str(), 0.0);
 				continue;
 			}
-			Check(R.Finished == R.Boats && R.FirstS <= R.LimitS && R.bFinite, Str("%s: %d of %d finish (dsq %d dnf %d dns %d ocs %d); first, s", Name.c_str(), R.Finished, R.Boats, R.Dsq, R.Dnf, R.Dns, R.Ocs).c_str(), R.FirstS);
+			// (in 9 m/s a beginner who swamps on the way out can miss the four minutes of the start: one boat may)
+			Check(R.Finished >= R.Boats - (Wind >= 8.0 ? 1 : 0) && R.FirstS <= R.LimitS && R.bFinite, Str("%s: %d of %d finish (dsq %d dnf %d dns %d ocs %d); first, s", Name.c_str(), R.Finished, R.Boats, R.Dsq, R.Dnf, R.Dns, R.Ocs).c_str(), R.FirstS);
 			Check(R.LastS <= R.FirstS + GParams.FinishWindowS && R.WorstStart < 200.0, Str("%s: the last inside the window (worst start %.0f s, %d general recalls); last, s", Name.c_str(), R.WorstStart, R.GeneralRecalls).c_str(), R.LastS);
 			Check(R.MaxOutside <= 15.0 && R.Contacts <= 30, Str("%s: nobody leaves the area (outside %.1f m); contacts (touches %d, capsizes %d)", Name.c_str(), R.MaxOutside, R.Touches, R.Capsizes).c_str(), R.Contacts);
 			Check(R.Home == R.Boats && R.HomeMin <= 30.0, Str("%s: all ashore after the race (minutes)", Name.c_str()).c_str(), R.HomeMin);

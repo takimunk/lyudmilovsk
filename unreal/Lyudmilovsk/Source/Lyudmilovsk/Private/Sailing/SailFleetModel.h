@@ -188,8 +188,9 @@ namespace LyudSail
 		const double Closing = -(A.VX * N.X + A.VY * N.Y);
 		if (Closing > 0.0)
 		{
+			// the way into it is lost at once; along it she slides on (a hull pinned on a lee pier must be able to sail off its end)
 			A.VX += N.X * Closing; A.VY += N.Y * Closing;
-			A.VX *= 0.7; A.VY *= 0.7;
+			A.VX *= 0.985; A.VY *= 0.985;
 		}
 		return std::max(0.0, Closing) + 0.05;
 	}
@@ -790,6 +791,17 @@ namespace LyudSail
 		int Stagger = 0;
 		int Corridor = -1;
 
+		static double HelmDepth(void* User, double X, double Y)
+		{
+			const FFleetBrain* Self = static_cast<const FFleetBrain*>(User);
+			const FSchoolV2 At(X, Y);
+			for (const FFleetObstacle& O : Self->Obstacles)
+			{
+				if (SchoolSegDist(At, O.A, O.B, nullptr) < O.R + 3.0) return 0.0;
+			}
+			return Self->DepthFn ? Self->DepthFn(Self->DepthUser, X, Y) : 10.0;
+		}
+
 		void Emit(EFleetSignal Kind, int Unit, int Other = -1, double Value = 0.0)
 		{
 			if (EventCount < (int)(sizeof(Events) / sizeof(Events[0])))
@@ -892,8 +904,9 @@ namespace LyudSail
 			In.WindX = U.Env.WindX;
 			In.WindY = U.Env.WindY;
 			In.Depth = U.Env.Depth;
-			In.DepthFn = DepthFn;
-			In.DepthUser = DepthUser;
+			// the helmsman's chart: the caller's depths, and no water at all where the pier stands
+			In.DepthFn = &FFleetBrain::HelmDepth;
+			In.DepthUser = this;
 			In.MinDepth = 0.6;
 			// her water's polygon only while she works in it (the ways out and home cross open water)
 			int Ai = U.Stage == EFleetStage::Work && U.bInArea && !(Mode == EFleetMode::Drill && Drill == "follow") ? AreaIndexOf(U) : -1;
@@ -1373,16 +1386,16 @@ namespace LyudSail
 		{
 			if (bHeld)
 			{
-				// the warning signal waits until most of the fleet is at the line (25 minutes at most)
+				// the warning signal waits for the whole fleet to come to the line; after a quarter of an hour for four boats in five; 25 minutes at most
 				HoldT += Dt;
 				int Want = 0, Ready = 0;
 				for (const FFleetUnit& U : Units)
 				{
 					if (U.Group < 0 || U.bHero) continue;
 					Want++;
-					if (U.Stage == EFleetStage::Work) Ready++;
+					if (U.Stage == EFleetStage::Work && U.Boat && (FSchoolV2(U.Boat->X, U.Boat->Y) - PreStart(U)).Len() < 75.0) Ready++;
 				}
-				if ((Want > 0 && Ready * 5 >= Want * 4 && HoldT > 20.0) || HoldT > 1500.0)
+				if ((Want > 0 && Ready == Want && HoldT > 20.0) || (Want > 0 && Ready * 5 >= Want * 4 && HoldT > 900.0) || HoldT > 1500.0)
 				{
 					bHeld = false;
 					BeginSequence();
