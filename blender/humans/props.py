@@ -973,7 +973,7 @@ def megaphone():
     p.rod(white, (-0.07, y, 0.016), (0.02, y, 0.016), 0.022, 0.03, seg=14)                # the mouthpiece and body
     p.rod(white, (0.02, y, 0.016), (0.2, y, 0.016), 0.032, 0.085, seg=16)                 # the cone
     p.rod(red, (0.2, y, 0.016), (0.215, y, 0.016), 0.087, 0.09, seg=16)                   # the bell's rim
-    p.rod(dark, (-0.075, y, 0.016), (-0.07, y, 0.016), 0.018, seg=10)
+    p.rod(dark, (-0.082, y, 0.016), (-0.062, y, 0.016), 0.018, seg=10)                    # the mouthpiece's ring, set into it
     return p
 
 
@@ -1000,7 +1000,7 @@ def bailer():
     p = Prop("bailer")
     plast = p.mat("plastic", (0.95, 0.75, 0.05), 0.5)
     p.rod(plast, (0.0, 0.04, 0.015), (0.0, -0.06, 0.015), 0.014, seg=10)
-    p.box(plast, (0.0, -0.06, 0.03), (0.17, 0.06, 0.035))                                  # the scoop's floor
+    p.box(plast, (0.0, -0.055, 0.03), (0.17, 0.055, 0.035))                                # the scoop's floor, between its sides
     p.box(plast, (0.0, -0.06, 0.03), (0.17, -0.055, 0.11))                                 # its sides
     p.box(plast, (0.0, 0.055, 0.03), (0.17, 0.06, 0.11))
     p.box(plast, (-0.005, -0.06, 0.03), (0.0, 0.06, 0.11))                                 # its back
@@ -1076,12 +1076,23 @@ def clipboard():
     paper = p.mat("paper", (0.92, 0.92, 0.88), 0.9)
     ink = p.mat("ink", (0.25, 0.25, 0.3), 0.9)
     clip_ = p.mat("clip", (0.7, 0.7, 0.72), 0.3)
-    p.box(board, (-0.15, -0.115, 0.0), (0.17, 0.115, 0.004))
-    p.box(paper, (-0.145, -0.105, 0.004), (0.15, 0.105, 0.005))
-    for k in range(9):
-        x = 0.12 - k * 0.028
-        p.box(ink, (x - 0.004, -0.09, 0.005), (x + 0.004, 0.06 - (k % 3) * 0.02, 0.0055))
-    p.box(clip_, (0.14, -0.04, 0.004), (0.17, 0.04, 0.014))
+    # the board without its top face; the top is laid out as one plane of tiles (the board's rim, the sheet, the ruled
+    # lines), so that nothing lies on anything
+    vs = p.box(board, (-0.15, -0.115, 0.0), (0.17, 0.115, 0.004))
+    top = [f for f in {f for v in vs for f in v.link_faces} if f.normal.z > 0.9]
+    bmesh.ops.delete(p.bm, geom=top, context="FACES_ONLY")
+    lines = [(0.12 - k * 0.028, 0.06 - (k % 3) * 0.02) for k in range(9)]
+    xs = sorted({-0.15, -0.145, 0.15, 0.17} | {x + d for x, _ in lines for d in (-0.004, 0.004)})
+    ys = [-0.115, -0.105, -0.09, 0.02, 0.04, 0.06, 0.105, 0.115]
+    for xa, xb in zip(xs, xs[1:]):
+        for ya, yb in zip(ys, ys[1:]):
+            cx, cy = (xa + xb) / 2, (ya + yb) / 2
+            mi = board
+            if -0.145 < cx < 0.15 and -0.105 < cy < 0.105:
+                mi = ink if any(abs(cx - x) < 0.004 and -0.09 < cy < y1 for x, y1 in lines) else paper
+            f = p.bm.faces.new([p.bm.verts.new(Vector(c)) for c in ((xa, ya, 0.004), (xb, ya, 0.004), (xb, yb, 0.004), (xa, yb, 0.004))])
+            f.material_index = mi
+    p.box(clip_, (0.14, -0.04, 0.002), (0.168, 0.04, 0.016))                               # the clip, set into the board
     return p
 
 
@@ -1101,14 +1112,14 @@ def life_jacket():
         lo, hi = sorted((s * 0.04, s * hw))
         p.box(foam, (lo, fy - 0.06, z0), (hi, fy, z1))                                     # a front block
         lo, hi = sorted((s * 0.05, s * (hw - 0.01)))
-        p.box(foam, (lo, fy - 0.07, z0 + 0.02), (hi, fy - 0.06, z1 - 0.02))                 # its rounded face
+        p.box(foam, (lo, fy - 0.074, z0 + 0.02), (hi, fy - 0.06, z1 - 0.02))                # its rounded face
         lo, hi = sorted((s * hw, s * (hw + 0.012)))
         p.box(cloth, (lo, fy, z0 + 0.02), (hi, by, z1 - 0.06))                              # the side panel round the back
         lo, hi = sorted((s * 0.085, s * 0.15))
         p.box(cloth, (lo, fy - 0.005, z1), (hi, by + 0.005, z1 + 0.04))                     # a shoulder strap
         lo, hi = sorted((s * 0.005, s * 0.06))
-        p.box(tape, (lo, fy - 0.075, z0 + 0.1), (hi, fy - 0.068, z0 + 0.12))                # the front ties
-        p.box(tape, (lo, fy - 0.075, z0 + 0.22), (hi, fy - 0.068, z0 + 0.24))
+        p.box(tape, (lo, fy - 0.079, z0 + 0.1), (hi, fy - 0.072, z0 + 0.12))                # the front ties
+        p.box(tape, (lo, fy - 0.079, z0 + 0.22), (hi, fy - 0.072, z0 + 0.24))
     p.box(foam, (-hw, by, z0 + 0.04), (hw, by + 0.055, z1))                                # the back block
     p.rod(foam, (-0.11, 0.07, z1 + 0.09), (0.11, 0.07, z1 + 0.09), 0.045, seg=12)          # the collar roll
     p.box(tape, (-hw - 0.014, fy - 0.01, z0 + 0.05), (hw + 0.014, by + 0.06, z0 + 0.075))  # the waist tape round it all
