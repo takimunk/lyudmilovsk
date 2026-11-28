@@ -2094,7 +2094,8 @@ float UPeopleLifeSubsystem::PresentChess(const LP::FPerson& P, ANpcBody* Body, c
 		Body->SetPutDown(nullptr, FVector::ZeroVector, FRotator::ZeroRotator);
 		return Yaw;
 	}
-	const FVector Fwd = FRotator(0.f, Yaw, 0.f).Vector();
+	// (the seat's own facing: Yaw may be turned to something they noticed)
+	const FVector Fwd = FRotator(0.f, P.Yaw, 0.f).Vector();
 	const FVector Side = FVector::CrossProduct(FVector::UpVector, Fwd);        // the bench's way, to the sitter's right
 	FVector Across = Side;
 	FVector Mid = At + Side * 42.f;
