@@ -1028,11 +1028,19 @@ namespace LyudSail
 			return SchoolNearestInside(*A, Toward, 20.0);
 		}
 
-		/** Where she waits for her start: below the line, in her lane, in one of three ranks. */
-		FSchoolV2 PreStart(const FFleetUnit& U) const
+		/** The course she comes to the line on: a close reach on the starboard tack (16 degrees free of close-hauled), so she
+		 *  sails straight at her place on the line. (Beating up to it, SailModel's helmsman stands on past the lay line and
+		 *  comes in round the line's end.) */
+		FSchoolV2 StartCourse(const FFleetUnit& U) const
 		{
 			const FRaceCourse& C = Groups[U.Group].Course;
-			return LinePoint(U) - C.Up * (26.0 + 13.0 * (U.Lane % 3));
+			const double A = BeatAngle(EBoat(ClassOf(U)), std::max(1.0, WindMs)) + 16.0 * Pi / 180.0;
+			return C.Up * std::cos(A) + (C.LinePin - C.LineBoat).Norm() * std::sin(A);
+		}
+		/** Where she waits for her start: back along that course from her place on the line, in one of three ranks. */
+		FSchoolV2 PreStart(const FFleetUnit& U) const
+		{
+			return LinePoint(U) - StartCourse(U) * (30.0 + 13.0 * (U.Lane % 3));
 		}
 		FSchoolV2 LinePoint(const FFleetUnit& U) const
 		{
@@ -1422,12 +1430,13 @@ namespace LyudSail
 		double RunTime(const FFleetUnit& U) const
 		{
 			const FRaceCourse& C = Groups[U.Group].Course;
-			const double Below = std::max(4.0, (LinePoint(U) - FSchoolV2(U.Boat->X, U.Boat->Y)).Dot(C.Up));
+			(void)C;
+			const double Way = std::max(4.0, (LinePoint(U) - FSchoolV2(U.Boat->X, U.Boat->Y)).Len());
 			const int Cl = ClassOf(U);
 			const double Tws = std::hypot(U.Env.WindX, U.Env.WindY);
-			const double Beat = BeatAngle(EBoat(Cl), Tws);
-			const double V = std::max(0.35, PolarSpeed(EBoat(Cl), Beat, Tws) * std::cos(Beat) * (0.72 + 0.28 * U.Helm.Skill));
-			return Below / V * 1.15 + 8.0;
+			const double Reach = BeatAngle(EBoat(Cl), Tws) + 16.0 * Pi / 180.0;
+			const double V = std::max(0.35, PolarSpeed(EBoat(Cl), Reach, Tws) * (0.72 + 0.28 * U.Helm.Skill));
+			return Way / V * 1.12 + 7.0;
 		}
 
 		void RaceOrders(FFleetUnit& U, int I)
@@ -1474,7 +1483,7 @@ namespace LyudSail
 					if (U.Helm.bArrived || BelowLine(U, At))
 					{
 						U.bLineUp = false;
-						SailTo(U, LinePoint(U) + C.Up * 45.0, 10.0, 25.0);
+						SailTo(U, LinePoint(U) + StartCourse(U) * 45.0, 10.0, 25.0);
 						U.Helm.bArrived = false;
 					}
 					break;
@@ -1577,9 +1586,9 @@ namespace LyudSail
 			case 1:
 				// from beside the line's end she would sail round it: first under the line, then across
 				U.bLineUp = !U.Boat || !BelowLine(U, FSchoolV2(U.Boat->X, U.Boat->Y));
-				if (U.bLineUp) SailTo(U, LinePoint(U) - C.Up * 14.0, 6.0, 25.0); else SailTo(U, LinePoint(U) + C.Up * 45.0, 10.0, 25.0);
+				if (U.bLineUp) SailTo(U, LinePoint(U) - StartCourse(U) * 16.0, 6.0, 25.0); else SailTo(U, LinePoint(U) + StartCourse(U) * 45.0, 10.0, 25.0);
 				break;
-			case 2: SailTo(U, LinePoint(U) - C.Up * 16.0, 7.0, 25.0); break;
+			case 2: SailTo(U, LinePoint(U) - StartCourse(U) * 22.0, 7.0, 25.0); break;
 			case 3: RouteOrder(U, G.Route); break;
 			case 4: SailTo(U, C.LineMid() + (LinePoint(U) - C.LineMid()) * 0.6 - C.Up * 24.0, 8.0, 30.0); break;
 			case 6: SailTo(U, C.LineMid() + C.Up * 22.0, 8.0, 30.0); break;
