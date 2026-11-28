@@ -1,13 +1,19 @@
 """The things the townsfolk's manners put in their hands (docs/town_manners.md): a phone, a cigarette, a camera, an
 umbrella, a fishing rod, a brush, binoculars, a newspaper, a book, knitting, an ice cream, a paper cup, a shopping
 bag, the painter's easel, the allotment's spade and watering can, the cleaner's mop and bucket, the night watchman's torch,
-the yard keeper's broom and rake.
+the yard keeper's broom and rake; the days' things (docs/town_life.md "The days"): the folding chess board set out on a
+bench between two players, the birthday cake in its tied box carried home and the cake itself for a table, the guest's
+carnations.
 
-    Blender -b -P blender/humans/props.py [-- --preview]
+    Blender -b -P blender/humans/props.py [-- --preview] [--only chess,cake_box]
         -> Saved/ClipSources/props/<name>.glb (unreal/scripts/import_props.py -> /Game/Characters/Humans/Props/SM_Prop_<name>)
         --preview: also Saved/ClipSources/props/preview_<name>.png (two views each), to look them over before the import
 
-Built from primitives, flat colours (no textures, no words on them: nothing to localize), 100-900 triangles each.
+Built from primitives, flat colours (no textures, no words on them: nothing to localize), 100-900 triangles each (the
+chess board with its 28 pieces about 1100). UV0: metres, projected onto each face's own plane (the house's way, as
+blender/city/interior_kit.py: never stretched, so a tiling texture can go on any of them later). Every prop is linted
+as it is built (degenerate or sliver triangles, stretched or folded UVs, a face whose winding fights its normal); a
+prop that fails is not written, and the run ends with exit code 1.
 Metres. How each lies in its own frame is what ANpcBody::PlaceMannerProp expects (LyudGesture::HoldOf):
 
     umbrella, ice_cream, cup   origin at the grip, +Z up
@@ -25,6 +31,11 @@ Metres. How each lies in its own frame is what ANpcBody::PlaceMannerProp expects
     bucket                     origin on the ground under it, +Z up (stands by the cleaner like the easel)
     suitcase                   origin at the handle's grip, the case hangs along -Z, its broad sides +Y and -Y
     broom, rake                as the mop: the shaft's top at the origin, along +X to the head, the head's face +Z
+    chess                      origin on the bench's seat under the board's middle, +Z up, the board's files along Y,
+                               White's side -X (PeopleLife puts +X toward the second player: they sit side by side)
+    cake_box                   origin at the string's loop (the grip), the box hangs along -Z (EHold::Hanging, as the bag)
+    cake                       origin on the table under its middle, +Z up (for a table spot; the town's flats are shells)
+    flowers                    origin at the grip round the stems, the blooms hang along -Z (carried heads down, Hanging)
 """
 import math
 import os
@@ -37,6 +48,7 @@ from mathutils import Matrix, Vector
 ROOT = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 OUT = os.path.join(ROOT, "Saved", "ClipSources", "props")
 PREVIEW = "--preview" in sys.argv
+ONLY = sys.argv[sys.argv.index("--only") + 1].split(",") if "--only" in sys.argv else None
 
 
 class Prop:
@@ -105,10 +117,76 @@ class Prop:
         fb = self.bm.faces.new(vb)
         fb.material_index = mi if back is None else back
 
+    def lathe(self, mi, prof, c=(0.0, 0.0, 0.0), seg=6, rot=None, phase=0.0):
+        """A solid of revolution about +Z (then turned by rot about c and moved to c): prof is (r, z) from the bottom up
+        along the outside; r = 0 at either end closes it at a single pole, otherwise that end stays open."""
+        m = Matrix.Translation(Vector(c)) @ (rot.to_4x4() if rot else Matrix.Identity(4))
+        rings = []
+        for r, z in prof:
+            if r <= 0.0:
+                rings.append([self.bm.verts.new(m @ Vector((0.0, 0.0, z)))] * seg)
+            else:
+                rings.append([self.bm.verts.new(m @ Vector((r * math.cos(phase + 2.0 * math.pi * j / seg),
+                                                             r * math.sin(phase + 2.0 * math.pi * j / seg), z))) for j in range(seg)])
+        for lo, hi in zip(rings, rings[1:]):
+            for j in range(seg):
+                k = (j + 1) % seg
+                vs = []
+                for v in (lo[j], lo[k], hi[k], hi[j]):
+                    if v not in vs:
+                        vs.append(v)
+                if len(vs) >= 3:
+                    f = self.bm.faces.new(vs)
+                    f.material_index = mi
+                    f.smooth = True
+        return [v for ring in rings for v in set(ring)]
+
+    def uv_and_lint(self):
+        """UV0 in metres on each triangle's own plane (u along the level, v up the face; on a level face u is +X, v +Y),
+        then the lint: returns the problems found (an empty list: clean)."""
+        bm = self.bm
+        uv = bm.loops.layers.uv.verify()
+        bad = []
+        degenerate = sliver = stretched = folded = 0
+        for f in bm.faces:
+            n = f.normal
+            if n.length < 0.5:
+                degenerate += 1
+                continue
+            ref = Vector((0.0, 0.0, 1.0)) if abs(n.z) < 0.9 else Vector((0.0, 1.0, 0.0))
+            u = ref.cross(n).normalized()
+            v = n.cross(u)
+            for lp in f.loops:
+                lp[uv].uv = (lp.vert.co.dot(u), lp.vert.co.dot(v))
+            a, b, c = (lp.vert.co for lp in f.loops)
+            area = (b - a).cross(c - a).length * 0.5
+            longest = max((b - a).length, (c - b).length, (a - c).length)
+            if area < 1e-9:
+                degenerate += 1
+                continue
+            height = 2.0 * area / longest
+            if height < longest * 0.004 and height < 0.0002:      # a needle: under 0.4% of its length and 0.2 mm across
+                sliver += 1
+            (ua, ub, uc) = (lp[uv].uv for lp in f.loops)
+            uarea = ((ub - ua).x * (uc - ua).y - (uc - ua).x * (ub - ua).y) * 0.5
+            if uarea <= 0.0:
+                folded += 1
+            elif not (0.98 < uarea / area < 1.02):
+                stretched += 1
+            # the winding must agree with the normal the mesh would get from it
+            if (b - a).cross(c - a).normalized().dot(n) < 0.99:
+                folded += 1
+        for what, k in (("degenerate", degenerate), ("sliver", sliver), ("stretched UV", stretched), ("folded UV", folded)):
+            if k:
+                bad.append("%d %s" % (k, what))
+        return bad
+
     def build(self):
         me = bpy.data.meshes.new("SM_Prop_" + self.name)
         bmesh.ops.triangulate(self.bm, faces=self.bm.faces[:])
+        bmesh.ops.delete(self.bm, geom=[v for v in self.bm.verts if not v.link_faces], context="VERTS")
         self.bm.normal_update()
+        self.lint = self.uv_and_lint()
         self.bm.to_mesh(me)
         self.bm.free()
         for key, rgb, rough, emit in self.mats:
@@ -570,8 +648,180 @@ def easel():
     return p
 
 
+# ---------------------------------------------------------------------------------------------- the days' things
+def _board_half(p, x0, x1, xi0, xi1, frame, light, dark, rank0):
+    """One half of the folding board: a shallow wooden tray 0.022 m high, open underneath (it lies on the seat), its
+    top one grid (the frame round three sides and four ranks of squares up to the hinge) so no edge has a T-joint."""
+    top = 0.022
+    ys = [-0.16] + [-0.14 + 0.035 * k for k in range(9)] + [0.16]
+    xs = sorted(set(round(x, 6) for x in [x0, xi0] + [xi0 + (xi1 - xi0) * k / 4.0 for k in range(5)] + [xi1, x1]))
+    grid = {(i, j): p.bm.verts.new((x, y, top)) for i, x in enumerate(xs) for j, y in enumerate(ys)}
+    for i in range(len(xs) - 1):
+        for j in range(len(ys) - 1):
+            cx, cy = (xs[i] + xs[i + 1]) * 0.5, (ys[j] + ys[j + 1]) * 0.5
+            if xi0 < cx < xi1 and -0.14 < cy < 0.14:
+                rank = rank0 + int((cx - xi0) / (xi1 - xi0) * 4.0)
+                fil = int((cy + 0.14) / 0.035)
+                mi = dark if (rank + fil) % 2 == 0 else light       # a1 dark, h1 light
+            else:
+                mi = frame
+            f = p.bm.faces.new([grid[i, j], grid[i + 1, j], grid[i + 1, j + 1], grid[i, j + 1]])
+            f.material_index = mi
+    # the sides, down to the seat, from the same border vertices
+    ring = [(i, 0) for i in range(len(xs))] + [(len(xs) - 1, j) for j in range(1, len(ys))] + \
+        [(i, len(ys) - 1) for i in range(len(xs) - 2, -1, -1)] + [(0, j) for j in range(len(ys) - 2, 0, -1)]
+    low = {k: p.bm.verts.new((grid[k].co.x, grid[k].co.y, 0.0)) for k in ring}
+    for a, b in zip(ring, ring[1:] + ring[:1]):
+        f = p.bm.faces.new([grid[b], grid[a], low[a], low[b]])
+        f.material_index = frame
+
+
+def _piece(p, kind, mi, at, toward):
+    """A Staunton-ish piece, 6-sided, standing at at (its foot on the board), a knight looking along toward (+-X)."""
+    prof = {
+        "p": [(0.0085, 0.0), (0.0035, 0.017), (0.0058, 0.021), (0.0, 0.027)],
+        "r": [(0.0095, 0.0), (0.0075, 0.022), (0.0095, 0.024), (0.0095, 0.031), (0.0, 0.031)],
+        "b": [(0.009, 0.0), (0.004, 0.025), (0.006, 0.03), (0.0, 0.04)],
+        "q": [(0.01, 0.0), (0.0045, 0.03), (0.0072, 0.036), (0.0045, 0.038), (0.0, 0.044)],
+        "k": [(0.01, 0.0), (0.0048, 0.032), (0.0072, 0.038), (0.0045, 0.041), (0.0, 0.043)],
+        "n": [(0.0095, 0.0), (0.0075, 0.006), (0.0, 0.008)],
+    }[kind]
+    p.lathe(mi, prof, c=at, seg=6)
+    x, y, z = at
+    if kind == "k":
+        p.box(mi, (x - 0.0015, y - 0.0015, z + 0.041), (x + 0.0015, y + 0.0015, z + 0.054))
+        p.box(mi, (x - 0.0015, y - 0.0045, z + 0.0465), (x + 0.0015, y + 0.0045, z + 0.0495))
+    elif kind == "n":
+        s = 1.0 if toward > 0 else -1.0
+        neck = p.box(mi, (-0.0045, -0.0035, 0.0), (0.0045, 0.0035, 0.024), rot=rot_y(-12.0 * s))
+        bmesh.ops.translate(p.bm, vec=Vector((x - 0.001 * s, y, z + 0.007)), verts=neck)
+        hx = sorted((x - 0.004 * s, x + 0.011 * s))           # the head, the muzzle toward the other side
+        p.box(mi, (hx[0], y - 0.003, z + 0.022), (hx[1], y + 0.003, z + 0.031))
+
+
+def chess():
+    """The folding chess board set out on a bench between two players (PeopleLife: the plan's chess on a bench), opened
+    flat, 0.32 m square, a game of the Italian opening some fifteen moves in; the two pawns taken stand on the seat by
+    the board. The origin on the seat under the board's middle, files along Y, White at -X."""
+    p = Prop("chess")
+    frame = p.mat("frame", (0.3, 0.17, 0.08), 0.55)
+    light = p.mat("light", (0.82, 0.67, 0.44), 0.5)
+    dark = p.mat("dark", (0.4, 0.23, 0.11), 0.5)
+    brass = p.mat("hinge", (0.75, 0.6, 0.3), 0.35)
+    white = p.mat("white", (0.88, 0.83, 0.7), 0.4)
+    black = p.mat("black", (0.07, 0.05, 0.04), 0.35)
+    _board_half(p, -0.16, -0.001, -0.14, -0.001, frame, light, dark, 0)
+    _board_half(p, 0.001, 0.16, 0.001, 0.14, frame, light, dark, 4)
+    for y in (-0.12, 0.12):                     # the hinges over the fold
+        p.box(brass, (-0.006, y - 0.012, 0.0222), (0.006, y + 0.012, 0.0236))
+    s = 0.139 / 4.0
+
+    def square(f, r):
+        x = -0.14 + s * (r + 0.5) if r < 4 else 0.001 + s * (r - 4 + 0.5)
+        return (x, -0.14 + 0.035 * (f + 0.5), 0.022)
+
+    # files a..h = 0..7 (along +Y), ranks 1..8 = 0..7 (along +X)
+    game = [("r", 0, 0), ("b", 2, 0), ("q", 3, 0), ("r", 5, 0), ("k", 6, 0), ("n", 2, 2), ("n", 5, 2), ("b", 2, 3),
+            ("p", 0, 1), ("p", 2, 1), ("p", 3, 2), ("p", 4, 3), ("p", 5, 1), ("p", 6, 1), ("p", 7, 2)]
+    for kind, f, r in game:
+        _piece(p, kind, white, square(f, r), 1.0)
+        _piece(p, kind, black, square(f, 7 - r), -1.0)
+    # the taken pawns (b2 and b7) on the seat beside the board
+    _piece(p, "p", black, (-0.07, -0.2, 0.0), 1.0)
+    _piece(p, "p", white, (0.07, 0.2, 0.0), -1.0)
+    return p
+
+
+def cake_box():
+    """The birthday cake carried home (EHold::Hanging, as the bag): a square white card box with a blue lid, tied
+    crosswise with red string knotted in a loop on top; the origin at the loop (the grip), the box hangs along -Z."""
+    p = Prop("cake_box")
+    card = p.mat("card", (0.93, 0.91, 0.86), 0.85)
+    lid = p.mat("lid", (0.47, 0.64, 0.8), 0.8)
+    rim = p.mat("lid_print", (0.95, 0.75, 0.8), 0.8)
+    string = p.mat("string", (0.75, 0.14, 0.12), 0.9)
+    bot, seam, top = -0.205, -0.13, -0.1
+    p.box(card, (-0.13, -0.13, bot), (0.13, 0.13, seam + 0.002))
+    p.box(lid, (-0.133, -0.133, seam), (0.133, 0.133, top))
+    p.box(rim, (-0.08, -0.08, top), (0.08, 0.08, top + 0.0012))         # the printed oval's ground on the lid
+    w, t = 0.0025, 0.0016
+    for axis in (0, 1):
+        def bx(lo, hi):
+            if axis == 1:
+                lo, hi = (lo[1], lo[0], lo[2]), (hi[1], hi[0], hi[2])
+            p.box(string, lo, hi)
+        bx((-0.133 - t, -w, top), (0.133 + t, w, top + t + 0.0006 * (axis + 1)))     # over the lid (one string over the other)
+        for sx in (-1.0, 1.0):
+            x0 = 0.133 if sx > 0 else -0.133 - t
+            bx((x0, -w, seam), (x0 + t, w, top + t))                                   # down the lid's side
+            x1 = 0.13 if sx > 0 else -0.13 - t
+            bx((x1, -w, bot), (x1 + t, w, seam))                                      # down the box's side
+    p.ball(string, (0.0, 0.0, top + 0.006), 0.007, seg=6)                             # the knot
+    for x in (-0.022, 0.022):
+        p.rod(string, (x, 0.0, top + 0.006), (x * 0.25, 0.0, 0.0), 0.0018, seg=4, smooth=False)
+    p.rod(string, (-0.008, 0.0, 0.0), (0.008, 0.0, 0.0), 0.0022, seg=4, smooth=False)
+    return p
+
+
+def cake():
+    """The birthday cake on the table: a round cream cake on a white plate, pink rosettes round its top's edge, berries,
+    and five lit candles; the origin on the table under its middle, +Z up."""
+    p = Prop("cake")
+    plate = p.mat("plate", (0.95, 0.95, 0.93), 0.3)
+    side = p.mat("sponge_cream", (0.93, 0.83, 0.72), 0.7)
+    cream = p.mat("cream", (0.98, 0.96, 0.9), 0.6)
+    rose = p.mat("rosette", (0.93, 0.56, 0.64), 0.6)
+    berry = p.mat("berry", (0.6, 0.05, 0.1), 0.35)
+    wax = [p.mat("candle_blue", (0.35, 0.55, 0.9), 0.5), p.mat("candle_pink", (0.95, 0.6, 0.75), 0.5),
+           p.mat("candle_yellow", (0.98, 0.85, 0.35), 0.5)]
+    flame = p.mat("flame", (1.0, 0.72, 0.25), 0.5, emit=6.0)
+    wick = p.mat("wick", (0.1, 0.08, 0.06), 0.9)
+    p.lathe(plate, [(0.0, 0.0), (0.11, 0.0), (0.148, 0.007), (0.145, 0.009), (0.118, 0.004), (0.0, 0.004)][::-1], seg=20)
+    p.rod(side, (0.0, 0.0, 0.004), (0.0, 0.0, 0.064), 0.12, seg=20, caps=False)
+    p.lathe(cream, [(0.12, 0.064), (0.121, 0.068), (0.116, 0.071), (0.0, 0.071)], seg=20)
+    for k in range(12):
+        a = 2.0 * math.pi * (k + 0.5) / 12.0
+        p.lathe(rose, [(0.011, 0.0), (0.008, 0.008), (0.0, 0.016)], c=(0.1 * math.cos(a), 0.1 * math.sin(a), 0.069), seg=6,
+                phase=a)
+    for k in range(6):
+        a = 2.0 * math.pi * k / 6.0
+        p.lathe(berry, [(0.0, -0.002), (0.007, 0.002), (0.006, 0.008), (0.0, 0.011)], c=(0.06 * math.cos(a), 0.06 * math.sin(a), 0.071), seg=6)
+    for k in range(5):
+        a = 2.0 * math.pi * k / 5.0 + 0.3
+        x, y = 0.03 * math.cos(a), 0.03 * math.sin(a)
+        p.rod(wax[k % 3], (x, y, 0.07), (x, y, 0.125), 0.0032, seg=6, smooth=False)
+        p.rod(wick, (x, y, 0.125), (x, y, 0.13), 0.0008, seg=4, smooth=False)
+        p.lathe(flame, [(0.0, 0.127), (0.0042, 0.133), (0.0028, 0.139), (0.0, 0.147)], c=(x, y, 0.0), seg=6)
+    return p
+
+
+def flowers():
+    """A birthday guest's carnations (EHold::Hanging: carried heads down by the side, as people do walking): five red
+    blooms on their stems in a paper cone, the grip at the origin round the stems, the blooms along -Z."""
+    p = Prop("flowers")
+    stem = p.mat("stems", (0.22, 0.45, 0.18), 0.8)
+    leaf = p.mat("leaves", (0.3, 0.52, 0.25), 0.8)
+    paper = p.mat("paper", (0.92, 0.9, 0.78), 0.85)
+    red = p.mat("carnation", (0.78, 0.06, 0.1), 0.7)
+    p.rod(stem, (0.0, 0.0, 0.06), (0.0, 0.0, -0.21), 0.009, 0.014, seg=6)
+    # the paper cone open at the blooms' end: its outside, and its inside turned to face in
+    p.lathe(paper, [(0.06, -0.19), (0.022, -0.04)], seg=8)
+    inner = p.lathe(paper, [(0.058, -0.19), (0.02, -0.04)], seg=8)
+    bmesh.ops.reverse_faces(p.bm, faces=list({f for v in inner for f in v.link_faces}))
+    heads = [(0.0, 0.0, -0.255), (0.042, 0.0, -0.235), (-0.021, 0.037, -0.235), (-0.021, -0.037, -0.235), (0.02, 0.03, -0.215)]
+    for k, (x, y, z) in enumerate(heads):
+        p.rod(stem, (x * 0.4, y * 0.4, -0.17), (x, y, z + 0.034), 0.0025, seg=4, smooth=False)
+        tilt = Vector((x, y, -0.25)).normalized().to_track_quat("-Z", "Y").to_matrix()
+        p.lathe(red, [(0.0, -0.038), (0.019, -0.033), (0.024, -0.02), (0.014, -0.007), (0.006, 0.0)], c=(x, y, z + 0.034),
+                seg=7, rot=tilt, phase=0.4 * k)
+    for sgn in (-1.0, 1.0):
+        blade = p.box(leaf, (-0.003, -0.0008, -0.07), (0.003, 0.0008, 0.02), rot=rot_y(14.0 * sgn))
+        bmesh.ops.translate(p.bm, vec=Vector((0.035 * sgn, 0.0, -0.2)), verts=blade)
+    return p
+
+
 MAKERS = [phone, cigarette, camera, umbrella, rod, brush, binoculars, newspaper, book, knitting, ice_cream, cup, bag, easel,
-          spade, watering_can, mop, torch, bucket, suitcase, broom, rake]
+          spade, watering_can, mop, torch, bucket, suitcase, broom, rake, chess, cake_box, cake, flowers]
 
 
 def preview(o, name):
@@ -601,10 +851,17 @@ def preview(o, name):
 
 def main():
     os.makedirs(OUT, exist_ok=True)
+    failed = []
     for make in MAKERS:
+        if ONLY and make.__name__ not in ONLY:
+            continue
         bpy.ops.wm.read_factory_settings(use_empty=True)
         p = make()
         o = p.build()
+        if p.lint:
+            print("LINT %-11s %s: NOT written" % (p.name, ", ".join(p.lint)))
+            failed.append(p.name)
+            continue
         tris = len(o.data.polygons)
         bpy.ops.object.select_all(action="DESELECT")
         o.select_set(True)
@@ -617,6 +874,9 @@ def main():
             p.name, tris, len(o.data.materials), lo[0], hi[0], lo[1], hi[1], lo[2], hi[2], out))
         if PREVIEW:
             preview(o, p.name)
+    print("LINT %d props, %s" % (len(MAKERS) if not ONLY else len(ONLY), ("failed: " + ", ".join(failed)) if failed else "all clean"))
+    if failed:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
