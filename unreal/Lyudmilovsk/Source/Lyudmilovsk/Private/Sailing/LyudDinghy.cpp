@@ -557,7 +557,7 @@ bool ALyudDinghy::Board(AHeroCharacter* InHero, bool bCheckReach)
 	// the seat is a frame of its own that the boat moves (from one side deck to the other on a tack, into the water on
 	// a capsize): the hero sits on it; its origin is on the sole under the deck's inboard edge
 	I.HeroFrame(*this, 0.f);
-	const float SeatZ = FMath::Max(12.f, (Def.HelmSeat.Z - 10.f) - Def.BodyOrigin.Z);
+	const float SeatZ = FMath::Max(12.f, float(Def.HelmSeat.Z - 10.0 - Def.BodyOrigin.Z));
 	InHero->SitOn(I.HeroSeat, FTransform::Identity, SeatZ);
 	// stepping out goes over the side behind him
 	InHero->SetStandUpOffset(FVector(-115.f, 0.f, 0.f));

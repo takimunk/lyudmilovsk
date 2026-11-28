@@ -954,7 +954,7 @@ void ALyudDinghy::FImpl::MoveParts(ALyudDinghy& D, float DeltaTime)
 		const FVector Fall = OnBoom - Def.SheetBlock;
 		Rope[0]->SetRelativeLocationAndRotation(Def.SheetBlock, FRotationMatrix::MakeFromX(Fall.GetSafeNormal(1e-3f, FVector::UpVector)).Rotator());
 		Rope[0]->SetRelativeScale3D(FVector(FMath::Max(Fall.Size(), 1.f) * Unit, 1.f, 1.f));
-		const bool bHeld = Crew[0].Body != nullptr || D.bHeroAboard;
+		const bool bHeld = Crew[0].Body.IsValid() || D.bHeroAboard;
 		DinghyShow(Rope[1], bHeld);
 		if (bHeld)
 		{

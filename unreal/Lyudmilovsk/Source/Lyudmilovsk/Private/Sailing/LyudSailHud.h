@@ -78,6 +78,8 @@ protected:
 
 private:
 	TWeakObjectPtr<ALyudDinghy> Boat;
+	/** The labels, looked up once. */
+	FText WordHeel, WordSheet, WordBoard, WordWater, WordKn, WordMs, WordM, WordShallow, WordCapsized, WordPlaning, WordWind, WordAuto;
 };
 
 namespace LyudSailHud

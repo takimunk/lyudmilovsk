@@ -97,11 +97,12 @@ namespace LyudSailKit
 
 	/** A clip of the people's shared set (A_Human_<Name>), loaded once, rooted; null when it is not baked yet. */
 	UAnimSequence* Clip(const FString& Name);
-	/** A townsperson's own body for the boat to hold: spawned hidden from the life (SetPresentedExternally), or null (no
-	 *  such person, no model). OutId: their people-life id (-1). */
-	ANpcBody* SpawnBody(AActor* Boat, FName PersonKey, int32& OutId);
+	/** A townsperson's own body for the boat to hold: the life stops drawing them (SetPresentedExternally) and their
+	 *  model is spawned; null when there is no such person or they have no model. InOutId: their people-life id (-1 =
+	 *  look it up by the key). */
+	ANpcBody* SpawnBody(AActor* Boat, FName PersonKey, int32& InOutId);
 	/** Gives the person back to the life and destroys the boat's body. */
-	void ReleaseBody(AActor* Boat, ANpcBody*& Body, int32& Id);
+	void ReleaseBody(AActor* Boat, TWeakObjectPtr<ANpcBody>& Body, int32& Id);
 	/** The life jacket on a body's chest (the clips part's worn prop, else part C's mesh), kept by the body's actor. */
 	UStaticMeshComponent* PutJacketOn(ANpcBody* Body);
 
@@ -134,8 +135,8 @@ struct FLyudSailCrew
 	float Age = 0.f;
 	bool bJacket = true;
 	int32 PersonId = -1;
-	ANpcBody* Body = nullptr;          // kept by the world (an actor); cleared when it goes
-	UStaticMeshComponent* Jacket = nullptr;
+	TWeakObjectPtr<ANpcBody> Body;     // kept by the world (an actor)
+	TWeakObjectPtr<UStaticMeshComponent> Jacket;
 	bool bTried = false;               // the body was asked for (and maybe refused): not again every frame
 	// the clips' state
 	enum class EPlay : uint8 { None, Sit, Cross, Fall, Swim, Right, Climb };
@@ -144,6 +145,11 @@ struct FLyudSailCrew
 	float Left = 0.f;                  // seconds of a one-shot still to go
 	float HandWeight = 0.f;
 	bool bSailClips = true;            // false: the sailing clips are not baked, a seated stand-in plays
+	int32 Side = 0;                    // the side the playing clip is of (+1 starboard, -1 port)
+	int32 Level = -1;                  // the sitting pose: 0 helm, 1 half hike, 2 full hike, 3 lull, 4 bailing
+	FVector Rel = FVector::ZeroVector; // where the body is in the crew's frame (eased)
+	bool bRelSet = false;
+	bool bHandsOn = false;
 };
 
 struct ALyudDinghy::FImpl
@@ -203,6 +209,8 @@ struct ALyudDinghy::FImpl
 	int32 SitSide = 1;                 // the side the crew sits on: +1 starboard, -1 port
 	float SideHold = 0.f;
 	float CapsizeAlpha = 0.f;          // 0 in the boat .. 1 in the water / on the board
+	float CrewOver = 0.f;              // the same for the crew's frame (0 with the hull .. 1 level on the water)
+	int32 OverSide = -1;               // capsized: the side her bottom (and the board) faces
 
 	// ---- the hero at the helm ----
 	TWeakObjectPtr<AHeroCharacter> Hero;
@@ -269,7 +277,7 @@ struct ALyudSailLaunch::FImpl
 	FName FlagId;
 	FName DriverKey;
 	int32 DriverId = -1;
-	ANpcBody* Driver = nullptr;
+	TWeakObjectPtr<ANpcBody> Driver;
 	bool bDriverTried = false;
 	bool bBuilt = false;
 	bool bRunning = false;
