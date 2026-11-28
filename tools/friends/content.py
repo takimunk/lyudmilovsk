@@ -595,6 +595,7 @@ for job, ru, en, ja in [
         ("researcher", "работает в лаборатории", "works at the lab", "研究所の研究員"),
         ("station_attendant", "дежурит на станции канатки", "works at the cable car station", "ロープウェイ駅の係員"),
         ("station_barista", "варит кофе в станционном буфете", "makes coffee at the station buffet", "駅のビュッフェでコーヒーをいれる仕事"),
+        ("milk_round", "развозит молоко по дворам", "does the morning milk round", "朝の牛乳配達の仕事"),
 ]:
     T("friends.job.%s" % job, ru, en, ja)
 
