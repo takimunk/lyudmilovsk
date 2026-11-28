@@ -40,6 +40,14 @@ sys.path.insert(0, HERE)
 MAT_SPEC = {
     "SL_Hull": ("#F2F0EA", 0.25, 0.0, 0.0),        # glossy gelcoat (tinted per boat where COLOR_0.R = 1)
     "SL_HullDeck": ("#ECEAE2", 0.55, 0.0, 0.0),    # non-skid deck and cockpit (tinted where COLOR_0.R = 1)
+    "SL_NonSkid": ("#DCDCD6", 0.85, 0.0, 0.0),     # moulded non-skid pattern areas (cockpit floor, hiking decks)
+    "SL_Stripe": ("#1C2C55", 0.3, 0.0, 0.0),       # the boot stripe (navy gelcoat)
+    "SL_WoodDeck": ("#B07A3E", 0.3, 0.0, 0.0),     # varnished plywood decks (cadet), plank lines in SL_Dark
+    "SL_PaintSteel": ("#2F6F6A", 0.45, 0.3, 0.0),  # sea-green painted steel: the boat door, the stair, the door frames
+    "SL_Grime": ("#8C877B", 0.95, 0.0, 0.0),       # splash staining along the wall feet (thin layer on the plaster)
+    "SL_Sand": ("#CDBB97", 0.95, 0.0, 0.0),        # sand drifted against the walls
+    "SL_Stain": ("#6F675A", 0.6, 0.0, 0.0),        # paint and oil stains on the hall floor
+    "SL_Puddle": ("#55585A", 0.05, 0.0, 0.0),      # puddles on the park slab (wet, glossy)
     "SL_Foil": ("#F4F4F0", 0.3, 0.0, 0.0),         # rudder and board blades (white)
     "SL_FoilWood": ("#9A6A3C", 0.35, 0.0, 0.0),    # varnished plywood blades (optimist, cadet)
     "SL_Alu": ("#B9BEC2", 0.3, 1.0, 0.0),          # anodised spars
@@ -132,6 +140,7 @@ class Mesh:
         self.collision = []                     # boxes: dict(center, size, rot_z_deg)
         self.closed = True                      # lint: expect every island watertight
         self.uv_scale = 1.0                     # metre-UV scale (1 = metres)
+        self.sharp_angle = None                 # degrees: smooth slots get sharp edges where faces meet steeper
 
     def mi(self, slot):
         if slot not in self.slots:
@@ -492,6 +501,8 @@ class Registry:
                 m = o.data.materials[p.material_index]
                 if m and m.name in smooth:
                     p.use_smooth = True
+            if mesh.sharp_angle:
+                o.data.set_sharp_from_angle(angle=math.radians(mesh.sharp_angle))
         probs = lint(o, closed=closed)
         if probs:
             self.problems[o.name] = probs

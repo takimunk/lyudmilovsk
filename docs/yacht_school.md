@@ -656,10 +656,16 @@ and pivots: `blender/sailing/README.md`.
 - **Gear**: trolleys (`SM_Sail_Trolley_<C>`, the boat's origin at manifest `boat_origin`), winter covers
   (`SM_Sail_Cover_<C>`), sail bag, spars rack, the coach's launch `SM_Sail_Launch` + `SM_Sail_Launch_Motor`,
   `SM_Sail_Mark`, `SM_Sail_Pin`, `SM_Sail_Buoy`, `SM_Sail_MOB`, `SM_Sail_AnchorBlock`, `SM_Sail_Rope`, `SM_Sail_Block`.
-- **Boathouse** after part B's site (16.5 × 9 m, ridge to the sea, wall 3.4, ridge 5.6, both doors in the north wall:
-  boat door 3.2 m sliding (two `SM_Sail_Boathouse_DoorLeaf`), people's door ALyudDoor 1.20 × 2.18 hole; classroom in
+- **Sails**: cloth panels with stitched seams after the real layouts, tablings, corner patches, batten pockets, windows;
+  the picture's alpha = light through the cloth (M_Sail_Cloth subsurface). Three cloth looks per sail, chosen per boat by
+  the SL_Sail slot's material: `MI_SL_Sail_<C>_<Main|Jib>` (new), `…_Old`, `…_Patched` (manifest `cloth_variants`).
+- **Boathouse** after part B's site (16.5 × 9 m, both doors in the north wall: boat door 3.2 m sliding (two painted
+  steel `SM_Sail_Boathouse_DoorLeaf` on an overhead rail), people's door ALyudDoor 1.20 × 2.18 hole; classroom in
   the landward 5.3 m, then the hall, changing room + wet store with a sail loft at the seaward end; plinth to −0.85 for
-  the 7 % sand slope). `SM_Sail_Boathouse` (collision exact), `_Glass`, ~40 `SM_Sail_Prop_*`, 10 signal flags
+  the 7 % sand slope), built as 60s–70s seaside modernism: exposed concrete portal frame, a mono-pitch roof rising to
+  the sea (soffit 4.0 → 5.6) and oversailing it, a continuous clerestory band, a gridded glazed wall to the sea over
+  the tessellated mosaic, the starter's balcony (loft level 2.8, door `balcony`) with an external stair on the south
+  side; the hero's spot there is `spots` → `deck_view`. `SM_Sail_Boathouse` (collision exact), `_Glass`, ~50 `SM_Sail_Prop_*`, 10 signal flags
   `SM_Sail_Flag_<id>`, windsock, park slab + fence + gate, slip boards. Placement: `blender/sailing/boathouse_layout.json`
   (building frame: origin on the floor in the middle of the footprint, +X to the sea, −Y the north wall): props with
   rooms and `interactive` kinds, boats on racks / trolleys, doors for `place_doors.py`, sliding doors, lamps, rooms,
