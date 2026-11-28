@@ -8,6 +8,7 @@
 #include "LyudSailingState.h"
 #include "SailSound.h"
 
+#include "../People/MiniJson.h"
 #include "../Transport/LyudMeshKit.h"
 #include "Audio/LyudSoundscape.h"
 #include "Components/AudioComponent.h"
@@ -377,7 +378,7 @@ void ULyudSailing::BuildSite()
 			}
 		}
 		UStaticMesh* Sock = LyudSailKit::Asset(TEXT("Windsock"));
-		UStaticMeshComponent* C = LyudSailingSiteImpl::Prop(Holder, Kept, Sock ? Sock : LyudSailKit::FlagQuad().Mesh.Get(), FTransform(Pole), false, 40000.f);
+		UStaticMeshComponent* C = LyudSailingSiteImpl::Prop(Holder, Kept, Sock ? Sock : LyudSailKit::FlagQuad().Mesh, FTransform(Pole), false, 40000.f);
 		LyudSailKit::NoLumen(C);
 		C->SetCastShadow(false);
 		if (!Sock)
@@ -456,16 +457,20 @@ void ULyudSailing::ShowSite(bool bShow)
 		ULyudSoundscapeSubsystem::ReleaseLoop(HalyardLoop, 0.5f);
 		HalyardLoop = nullptr;
 	}
+	if (!bShow && bLampsOn)
+	{
+		bLampsOn = false;
+		for (UPointLightComponent* L : SiteLamps)
+		{
+			if (L)
+			{
+				L->SetVisibility(false);
+			}
+		}
+	}
 	if (M)
 	{
 		M->SignalShown = "?";
-		for (FLyudSailHull& Hull : M->Hulls)
-		{
-			if (!Hull.bAfloat && !bShow)
-			{
-				Hull.Shown = Hull.Shown == 100 ? 100 : Hull.Shown;
-			}
-		}
 	}
 	ParkHulls(false);
 }

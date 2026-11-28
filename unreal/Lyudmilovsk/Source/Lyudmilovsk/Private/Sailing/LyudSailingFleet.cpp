@@ -216,6 +216,8 @@ void ULyudSailing::StowFleet()
 	S.Brain.Task = FSchoolLaunchTask();
 	S.WaterKey = 0;
 	S.bWaterWatched = false;
+	S.bWaterRace = false;
+	S.bDevWater = false;
 	StowMarks(0, LyudSailingFleetImpl::MarkCount);
 	LaunchOut(false);
 	if (LaunchBoat)
@@ -409,7 +411,7 @@ void ULyudSailing::BeginWater(bool bRace)
 	{
 		const FSchoolSailor& Sailor = S.P.Sailors[K];
 		const int C = Sailor.Class;
-		const bool bIn = C >= 0 && C < SchoolBoats && Go.ClassOk[C] && (S.Now.Session.Classes >> C & 1) && (bRace || Sailor.Group == S.Now.Group);
+		const bool bIn = C >= 0 && C < SchoolBoats && Go.ClassOk[C] && (S.Now.Session.Classes >> C & 1) && (bRace || Sailor.Group == S.Now.Group || S.Now.Group == "race");
 		if (!bIn)
 		{
 			continue;
@@ -506,7 +508,7 @@ bool ULyudSailing::LaunchNextUnit()
 			break;
 		}
 	}
-	if (!bHere && S.WaterS < 240.0)
+	if (!bHere && S.WaterS < 240.0 && !S.bDevWater)
 	{
 		return false;
 	}
@@ -598,6 +600,22 @@ void ULyudSailing::EndWater()
 	S.bWaterRace = false;
 	S.bWaterWatched = false;
 	S.DrillSet.clear();
+	if (S.bDevWater)
+	{
+		// the developer's session is over: the timetable's hour comes back with the next look at the clock
+		S.bDevWater = false;
+		S.DevCourse.clear();
+		for (size_t I = S.States.size(); I-- > 0;)
+		{
+			if (S.States[I].Key == S.DevNow.Key)
+			{
+				S.States.erase(S.States.begin() + (std::ptrdiff_t)I);
+			}
+		}
+		S.Decisions.erase(S.DevNow.Key);
+		S.Now = FSchoolNow();
+		FactsIn = 0.f;
+	}
 	StowMarks(0, 16);
 	S.LaunchFlags[0] = S.LaunchFlags[1] = NAME_None;
 	if (LaunchBoat)
@@ -615,7 +633,8 @@ void ULyudSailing::WaterControl(float Dt)
 	const bool bSail = S.Now.bOn && S.Now.bAfloat && St && St->Go == ESchoolGo::Sail && St->RecallHour < 0.0 && S.Lp.bOk;
 	if (S.WaterKey == 0)
 	{
-		if (bSail && S.Hour < S.Now.Session.WaterTo - 0.25 && S.Brain.AllAshore() && !(S.Now.Kind == "race" && (S.Race.Stage == 3 || S.ResolvedDay == S.Day)))
+		if (bSail && S.DevFleet != 0 && S.Hour < S.Now.Session.WaterTo - 0.25 && S.Brain.AllAshore()
+			&& !(S.Now.Kind == "race" && !S.bDevWater && (S.Race.Stage == 3 || S.ResolvedDay == S.Day)))
 		{
 			BeginWater(S.Now.Kind == "race");
 		}
@@ -766,13 +785,15 @@ void ULyudSailing::FleetEvents()
 {
 	FLyudSailingState& S = *M;
 	const FFleetBrain& Brain = S.Brain;
-	// the events are copied out first: what they set off (a landing, a closed race) may make the brain think again
+	// the events are copied out first and the brain's list emptied: what they set off (a landing, a closed race) may add to
+	// it, and those are heard at the next call (the tick calls this before the brain thinks and after)
 	FFleetEvent Events[48];
 	const int32 Count = FMath::Clamp(Brain.EventCount, 0, 48);
 	for (int32 K = 0; K < Count; K++)
 	{
 		Events[K] = Brain.Events[K];
 	}
+	S.Brain.EventCount = 0;
 	auto ShowFlag = [this, &S]()
 	{
 		if (LaunchBoat)
@@ -934,6 +955,8 @@ void ULyudSailing::TickFleet(const FVector& Eye, float Dt, bool bNear)
 			Brain.Units[(size_t)I].Env = Dinghies[HullAt]->Env();
 		}
 	}
+	// what the brain was told between two ticks (a recall, an abandoned race) has its signals too
+	FleetEvents();
 	Brain.Think(Dt);
 	const FVector2D Hitch = LaunchBoat ? LaunchBoat->HitchM() : FVector2D::ZeroVector;
 	for (int32 I = 0; I < N; I++)

@@ -451,6 +451,11 @@ void ULyudSailing::RefreshFacts()
 			}
 		}
 	}
+	if (S.bDevWater)
+	{
+		// lyud.Sail.Fleet / lyud.Sail.Race: the developer's session stands in for the timetable's while its boats are out
+		S.Now = S.DevNow;
+	}
 
 	// a race day's end when it was not all sailed in front of the player
 	const FRaceDay Rd = RaceDayOn(P, Date);

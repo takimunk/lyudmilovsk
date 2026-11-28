@@ -142,6 +142,13 @@ struct FLyudSailingState
 	double WaterS = 0.0;                    // seconds since the session's boats began to go out
 	LyudSail::FSchoolV2 LpBrain = LyudSail::FSchoolV2(-1e9, 0.0);     // the launch point the brain was given
 	TArray<FLyudSailorNow> Sailors;         // the people's word on who is where (refreshed every 2 s while boats are out)
+	std::string DevCourse;                  // lyud.Sail.Race: the kind of course asked for (empty: the event's own)
+	bool bDevWater = false;                 // the boats were sent out by the developer, not by the timetable:
+	LyudSail::FSchoolNow DevNow;            // the session that stands in for the hour's while they are
+
+	// ---- the site
+	TArray<FTransform> SlipXf;              // the slip's boards (kept: nothing allocated when the tide moves them)
+	int32 HalyardPool = -1;
 
 	FLyudSailRaceRun Race;
 	FLyudSailHero Hero;
