@@ -12,8 +12,10 @@ carnations.
 Built from primitives, flat colours (no textures, no words on them: nothing to localize), 100-900 triangles each (the
 chess board with its 28 pieces about 1100). UV0: metres, projected onto each face's own plane (the house's way, as
 blender/city/interior_kit.py: never stretched, so a tiling texture can go on any of them later). Every prop is linted
-as it is built (degenerate or sliver triangles, stretched or folded UVs, a face whose winding fights its normal); a
-prop that fails is not written, and the run ends with exit code 1.
+as it is built (degenerate or sliver triangles, stretched or folded UVs, a face whose winding fights its normal,
+faces in one plane over one another facing the same way, and a flat piece laid on a face: a decal is cut into the face
+or lifted 12 mm, never laid on it); a prop that fails is not written, and the run ends with exit code 1. Faces wholly
+covered by faces turned against them (a stack of bars' end caps) are never seen and are dropped first.
 Metres. How each lies in its own frame is what ANpcBody::PlaceMannerProp expects (LyudGesture::HoldOf):
 
     umbrella, ice_cream, cup   origin at the grip, +Z up
@@ -141,6 +143,112 @@ class Prop:
                     f.smooth = True
         return [v for ring in rings for v in set(ring)]
 
+    def coplanar_pairs(self, gap=0.0003):
+        """Pairs of (convex) faces in one plane (within gap, facing either way) that lie over one another by more than 2 mm2,
+        with the area each covers of the other: [(fa, fb, overlap area, same facing)]."""
+        def clip(subject, a, b):
+            # Sutherland-Hodgman: the part of polygon subject left of the directed edge a->b (2D)
+            out = []
+            side = lambda pt: (b[0] - a[0]) * (pt[1] - a[1]) - (b[1] - a[1]) * (pt[0] - a[0])
+            for k, cur in enumerate(subject):
+                prev = subject[k - 1]
+                sc, sp = side(cur), side(prev)
+                if sc >= 0.0:
+                    if sp < 0.0:
+                        t = sp / (sp - sc)
+                        out.append((prev[0] + (cur[0] - prev[0]) * t, prev[1] + (cur[1] - prev[1]) * t))
+                    out.append(cur)
+                elif sp >= 0.0:
+                    t = sp / (sp - sc)
+                    out.append((prev[0] + (cur[0] - prev[0]) * t, prev[1] + (cur[1] - prev[1]) * t))
+            return out
+
+        def area(poly):
+            return 0.5 * sum(poly[k - 1][0] * poly[k][1] - poly[k][0] * poly[k - 1][1] for k in range(len(poly)))
+
+        buckets = {}
+        tris = []
+        for f in self.bm.faces:
+            n = f.normal.copy()
+            if n.length < 0.5:
+                continue
+            canon = n if (n.x, n.y, n.z) > (0.0, 0.0, 0.0) else -n
+            d = canon.dot(f.verts[0].co)
+            key = (round(canon.x, 2), round(canon.y, 2), round(canon.z, 2), int(round(d / gap)))
+            tris.append((f, canon, d))
+            buckets.setdefault(key, []).append(len(tris) - 1)
+        pairs = []
+        for (kx, ky, kz, kd), members in buckets.items():
+            near = []
+            for dd in (-1, 0, 1):
+                near += buckets.get((kx, ky, kz, kd + dd), [])
+            for a_i in members:
+                fa, na, da = tris[a_i]
+                ref = Vector((0.0, 0.0, 1.0)) if abs(na.z) < 0.9 else Vector((0.0, 1.0, 0.0))
+                u = ref.cross(na).normalized()
+                v = na.cross(u)
+                pa = [(w.co.dot(u), w.co.dot(v)) for w in fa.verts]
+                if area(pa) < 0.0:
+                    pa.reverse()
+                for b_i in near:
+                    if b_i <= a_i:
+                        continue
+                    fb, nb, db = tris[b_i]
+                    if abs(na.dot(nb)) < 0.9995 or abs(da - db) > gap:
+                        continue
+                    pb = [(w.co.dot(u), w.co.dot(v)) for w in fb.verts]
+                    if area(pb) < 0.0:
+                        pb.reverse()
+                    poly = pa
+                    for k in range(len(pb)):
+                        poly = clip(poly, pb[k - 1], pb[k])
+                        if len(poly) < 3:
+                            break
+                    if len(poly) >= 3 and area(poly) > 2e-6:
+                        pairs.append((fa, fb, area(poly), fa.normal.dot(fb.normal) > 0.0))
+        return pairs
+
+    def drop_hidden(self):
+        """Back-to-back faces in one plane (a stack of bars' end caps meeting): a triangle wholly covered by faces turned
+        against it is never seen and is dropped. A piece laid flat on a face (a decal) has its underside dropped the same
+        way, so that is told apart: the faces under it are only partly covered. Returns (dropped, decals)."""
+        cover = {}
+        def corners(f):
+            return sorted(tuple(round(c, 6) for c in v.co) for v in f.verts)
+
+        for fa, fb, a, same in self.coplanar_pairs():
+            # (a sheet's two sides, Prop.sheet: the same corners turned both ways, both seen)
+            if not same and corners(fa) != corners(fb):
+                cover[fa] = cover.get(fa, 0.0) + a
+                cover[fb] = cover.get(fb, 0.0) + a
+        hidden = [f for f, a in cover.items() if a >= f.calc_area() * 0.995]
+        # a decal: the piece a dropped underside belongs to is a flat sheet on the face (under 12 mm thick and thin
+        # against its breadth), not a bar standing on it
+        decals = 0
+        seen = set()
+        for f in hidden:
+            if f in seen:
+                continue
+            piece, todo = set(), [f]
+            while todo:
+                g = todo.pop()
+                if g in piece:
+                    continue
+                piece.add(g)
+                todo.extend(h for e in g.edges for h in e.link_faces if h not in piece)
+            under = [g for g in hidden if g in piece]
+            seen.update(under)
+            n = f.normal
+            ds = [v.co.dot(n) for g in piece for v in g.verts]
+            thick = max(ds) - min(ds)
+            foot = sum(g.calc_area() for g in under)
+            if thick < 0.012 and thick < 0.25 * math.sqrt(foot):
+                decals += len(under)
+        bmesh.ops.delete(self.bm, geom=hidden, context="FACES_ONLY")
+        bmesh.ops.delete(self.bm, geom=[v for v in self.bm.verts if not v.link_faces], context="VERTS")
+        self.bm.normal_update()
+        return len(hidden), decals
+
     def uv_and_lint(self):
         """UV0 in metres on each triangle's own plane (u along the level, v up the face; on a level face u is +X, v +Y),
         then the lint: returns the problems found (an empty list: clean)."""
@@ -176,13 +284,18 @@ class Prop:
             # the winding must agree with the normal the mesh would get from it
             if (b - a).cross(c - a).normalized().dot(n) < 0.99:
                 folded += 1
-        for what, k in (("degenerate", degenerate), ("sliver", sliver), ("stretched UV", stretched), ("folded UV", folded)):
+        coplanar = sum(1 for fa, fb, a, same in self.coplanar_pairs() if same)
+        for what, k in (("degenerate", degenerate), ("sliver", sliver), ("stretched UV", stretched), ("folded UV", folded),
+                        ("coplanar z-fighting", coplanar),
+                        ("laid on a face (a decal: cut it in or lift it 12 mm)", self.decals)):
             if k:
                 bad.append("%d %s" % (k, what))
         return bad
 
     def build(self):
         me = bpy.data.meshes.new("SM_Prop_" + self.name)
+        self.bm.normal_update()
+        self.dropped, self.decals = self.drop_hidden()        # on the faces as made (a sheet's two sides match there)
         bmesh.ops.triangulate(self.bm, faces=self.bm.faces[:])
         bmesh.ops.delete(self.bm, geom=[v for v in self.bm.verts if not v.link_faces], context="VERTS")
         self.bm.normal_update()
@@ -223,8 +336,8 @@ def phone():
     glass = p.mat("screen", (0.01, 0.012, 0.02), 0.12)
     lens = p.mat("lens", (0.1, 0.1, 0.11), 0.3)
     p.box(body, (-0.073, -0.035, -0.004), (0.073, 0.035, 0.0035))
-    p.box(glass, (-0.070, -0.032, 0.0035), (0.070, 0.032, 0.0042))
-    p.rod(lens, (0.055, 0.02, -0.004), (0.055, 0.02, -0.0055), 0.006, seg=10)
+    p.box(glass, (-0.070, -0.032, 0.003), (0.070, 0.032, 0.0042))          # (set into the body, not laid on it)
+    p.rod(lens, (0.055, 0.02, -0.003), (0.055, 0.02, -0.0055), 0.006, seg=10)
     return p
 
 
@@ -252,8 +365,8 @@ def camera():
     p.box(top, (-0.02, 0.043, -0.014), (0.02, 0.057, 0.014))            # the viewfinder's hump
     p.rod(top, (0.045, 0.043, 0.0), (0.045, 0.05, 0.0), 0.008, seg=10)  # the shutter button
     p.rod(lens, (0.0, -0.004, -0.02), (0.0, -0.004, -0.062), 0.031, 0.029, seg=16)
-    p.rod(glass, (0.0, -0.004, -0.062), (0.0, -0.004, -0.0635), 0.024, seg=16)
-    p.box(glass, (-0.012, 0.045, 0.014), (0.012, 0.054, 0.0145))        # the eyepiece
+    p.rod(glass, (0.0, -0.004, -0.0605), (0.0, -0.004, -0.0635), 0.024, seg=16)     # (set into the lens)
+    p.box(glass, (-0.012, 0.045, 0.0125), (0.012, 0.054, 0.0145))        # the eyepiece, set into the hump
     return p
 
 
@@ -265,8 +378,8 @@ def umbrella():
     wood = p.mat("handle", (0.2, 0.11, 0.05), 0.5)
     # the crook handle, the shaft, the tip
     p.rod(wood, (0, 0, -0.07), (0, 0, 0.06), 0.011, seg=10)
-    p.rod(wood, (0, 0, -0.07), (0.0, -0.03, -0.1), 0.011, seg=10)
-    p.rod(wood, (0.0, -0.03, -0.1), (0.0, -0.06, -0.075), 0.011, 0.01, seg=10)
+    p.rod(wood, (0, 0, -0.07), (0.0, -0.03, -0.1), 0.0104, seg=10)     # (a hair thinner each: no side lies on the last's)
+    p.rod(wood, (0.0, -0.03, -0.1), (0.0, -0.06, -0.075), 0.0098, 0.0092, seg=10)
     p.rod(steel, (0, 0, 0.06), (0, 0, 0.86), 0.005, seg=8)
     p.rod(steel, (0, 0, 0.86), (0, 0, 0.92), 0.004, 0.002, seg=8)
     # the canopy: eight panels sagging a little between the ribs, the ribs and the stretchers under it
@@ -338,9 +451,9 @@ def binoculars():
         p.rod(body, (x, 0, 0.045), (x, 0, -0.01), 0.017, 0.02, seg=14)
         p.rod(body, (x, 0, -0.01), (x, 0, -0.075), 0.024, 0.027, seg=14)
         p.rod(ring, (x, 0, -0.075), (x, 0, -0.082), 0.028, seg=14)
-        p.rod(glass, (x, 0, -0.082), (x, 0, -0.083), 0.024, seg=14)
+        p.rod(glass, (x, 0, -0.0805), (x, 0, -0.083), 0.024, seg=14)        # (the glasses set into the rings)
         p.rod(ring, (x, 0, 0.045), (x, 0, 0.058), 0.015, seg=12)
-        p.rod(glass, (x, 0, 0.058), (x, 0, 0.0585), 0.011, seg=12)
+        p.rod(glass, (x, 0, 0.0565), (x, 0, 0.0585), 0.011, seg=12)
     p.box(body, (-0.02, -0.008, -0.04), (0.02, 0.012, 0.03))
     p.rod(ring, (0, 0.012, 0.0), (0, 0.012, 0.02), 0.009, seg=10)       # the focus wheel
     return p
@@ -395,13 +508,14 @@ def book():
     for s in (-1, 1):
         tilt = rot_y(-s * 12.0)           # the halves lean toward the reader (+Z) about the spine
         lo, hi = sorted((0.0, s * w))
-        half = p.box(cover, (lo, -h / 2, -0.016), (hi, h / 2, -0.012))
+        e = h / 2 - (0.0006 if s > 0 else 0.0)        # (the halves' edges not in one plane where they meet at the spine)
+        half = p.box(cover, (lo, -e, -0.016), (hi, e, -0.012))
         lo, hi = sorted((s * 0.002, s * (w - 0.005)))
         half += p.box(pages, (lo, -h / 2 + 0.005, -0.012), (hi, h / 2 - 0.005, 0.0))
         lo, hi = sorted((s * 0.012, s * (w - 0.015)))
         half += _columns(p, ink, lo, hi, -h / 2 + 0.02, h / 2 - 0.02, 0.0006, 12, Matrix.Identity(3), False)
         bmesh.ops.transform(p.bm, matrix=tilt.to_4x4(), verts=half)
-    p.box(cover, (-0.004, -h / 2, -0.018), (0.004, h / 2, -0.012))      # the spine
+    p.box(cover, (-0.004, -h / 2 - 0.0008, -0.018), (0.004, h / 2 + 0.0008, -0.012))      # the spine
     return p
 
 
@@ -533,14 +647,18 @@ def broom():
     wire = p.mat("wire", (0.4, 0.4, 0.42), 0.5)
     twig = p.mat("twig", (0.42, 0.3, 0.2), 0.9)
     p.rod(wood, (0.0, 0.0, 0.0), (1.1, 0.0, 0.0), 0.015, 0.016, seg=8)
-    p.rod(wire, (1.04, 0.0, 0.0), (1.1, 0.0, 0.0), 0.034, seg=8)
+    p.rod(wire, (1.04, 0.0, 0.0), (1.104, 0.0, 0.0), 0.034, seg=8)
     # the twigs: two staggered fans of thin cones, wider across Y than Z
     n = 16
     for k in range(n):
         a = 2.0 * math.pi * k / n
         cy, cz = math.cos(a), math.sin(a)
         end = 1.42 + 0.03 * math.sin(5 * a)
-        p.rod(twig, (0.98, 0.025 * cy, 0.02 * cz), (end, 0.11 * cy, 0.05 * cz), 0.007, 0.003, seg=4, smooth=False)
+        a0, a1 = Vector((0.98, 0.025 * cy, 0.02 * cz)), Vector((end, 0.11 * cy, 0.05 * cz))
+        vs = p.rod(twig, a0, a1, 0.007, 0.003, seg=4, smooth=False)
+        # each twig turned about itself a little differently (the bundle's twigs never share a flat side)
+        spin = Matrix.Translation(a0) @ Matrix.Rotation(0.37 * k, 4, a1 - a0) @ Matrix.Translation(-a0)
+        bmesh.ops.transform(p.bm, matrix=spin, verts=vs)
     return p
 
 
@@ -568,7 +686,7 @@ def torch():
     switch = p.mat("switch", (0.7, 0.08, 0.06), 0.5)
     p.rod(rubber, (-0.05, 0.0, 0.0), (0.12, 0.0, 0.0), 0.017, seg=10)
     p.rod(chrome, (0.12, 0.0, 0.0), (0.18, 0.0, 0.0), 0.019, 0.026, seg=12)
-    p.rod(lens, (0.18, 0.0, 0.0), (0.186, 0.0, 0.0), 0.023, seg=12)
+    p.rod(lens, (0.176, 0.0, 0.0), (0.186, 0.0, 0.0), 0.023, seg=12)      # (set into the head)
     p.box(switch, (0.0, -0.007, 0.015), (0.025, 0.007, 0.022))
     return p
 
@@ -690,7 +808,7 @@ def _piece(p, kind, mi, at, toward):
     x, y, z = at
     if kind == "k":
         p.box(mi, (x - 0.0015, y - 0.0015, z + 0.041), (x + 0.0015, y + 0.0015, z + 0.054))
-        p.box(mi, (x - 0.0015, y - 0.0045, z + 0.0465), (x + 0.0015, y + 0.0045, z + 0.0495))
+        p.box(mi, (x - 0.0011, y - 0.0045, z + 0.0465), (x + 0.0011, y + 0.0045, z + 0.0495))
     elif kind == "n":
         s = 1.0 if toward > 0 else -1.0
         neck = p.box(mi, (-0.0045, -0.0035, 0.0), (0.0045, 0.0035, 0.024), rot=rot_y(-12.0 * s))
@@ -733,8 +851,9 @@ def chess():
 
 
 def cake_box():
-    """The birthday cake carried home (EHold::Hanging, as the bag): a square white card box with a blue lid, tied
-    crosswise with red string knotted in a loop on top; the origin at the loop (the grip), the box hangs along -Z."""
+    """The birthday cake carried home (EHold::Hanging, as the bag): a square white card box with a blue lid, its pink
+    print cut into the lid's top (its own faces of the lid, nothing laid on it), tied crosswise with red string knotted
+    in a loop on top; the origin at the loop (the grip), the box hangs along -Z."""
     p = Prop("cake_box")
     card = p.mat("card", (0.93, 0.91, 0.86), 0.85)
     lid = p.mat("lid", (0.47, 0.64, 0.8), 0.8)
@@ -742,21 +861,35 @@ def cake_box():
     string = p.mat("string", (0.75, 0.14, 0.12), 0.9)
     bot, seam, top = -0.205, -0.13, -0.1
     p.box(card, (-0.13, -0.13, bot), (0.13, 0.13, seam + 0.002))
-    p.box(lid, (-0.133, -0.133, seam), (0.133, 0.133, top))
-    p.box(rim, (-0.08, -0.08, top), (0.08, 0.08, top + 0.0012))         # the printed oval's ground on the lid
-    w, t = 0.0025, 0.0016
+    # the lid: four sides down to the seam (open underneath: the box is in it) and a 3 x 3 grid on top, the middle cell
+    # the print; the sides start from the grid's border vertices, so no edge has a T-joint
+    e, q = 0.133, 0.08
+    cs = [-e, -q, q, e]
+    grid = {(i, j): p.bm.verts.new((x, y, top)) for i, x in enumerate(cs) for j, y in enumerate(cs)}
+    for i in range(3):
+        for j in range(3):
+            f = p.bm.faces.new([grid[i, j], grid[i + 1, j], grid[i + 1, j + 1], grid[i, j + 1]])
+            f.material_index = rim if (i, j) == (1, 1) else lid
+    ring = [(i, 0) for i in range(4)] + [(3, j) for j in range(1, 4)] + [(i, 3) for i in range(2, -1, -1)] + [(0, j) for j in (2, 1)]
+    low = {k: p.bm.verts.new((grid[k].co.x, grid[k].co.y, seam)) for k in ring}
+    for a, b in zip(ring, ring[1:] + ring[:1]):
+        f = p.bm.faces.new([grid[b], grid[a], low[a], low[b]])
+        f.material_index = lid
+    # the string: round, sunk a little into the card it is tied round (it presses in; no face lies on another)
+    r = 0.0022
+    sink = r * 0.5
     for axis in (0, 1):
-        def bx(lo, hi):
+        def run(a, b):
             if axis == 1:
-                lo, hi = (lo[1], lo[0], lo[2]), (hi[1], hi[0], hi[2])
-            p.box(string, lo, hi)
-        bx((-0.133 - t, -w, top), (0.133 + t, w, top + t + 0.0006 * (axis + 1)))     # over the lid (one string over the other)
+                a, b = (a[1], a[0], a[2]), (b[1], b[0], b[2])
+            p.rod(string, a, b, r, seg=6, smooth=False)
+        lift = top + sink + 0.0012 * axis                      # one string over the other where they cross
+        run((-e - sink, 0.0, lift), (e + sink, 0.0, lift))                                 # over the lid
         for sx in (-1.0, 1.0):
-            x0 = 0.133 if sx > 0 else -0.133 - t
-            bx((x0, -w, seam), (x0 + t, w, top + t))                                   # down the lid's side
-            x1 = 0.13 if sx > 0 else -0.13 - t
-            bx((x1, -w, bot), (x1 + t, w, seam))                                      # down the box's side
-    p.ball(string, (0.0, 0.0, top + 0.006), 0.007, seg=6)                             # the knot
+            run((sx * (e + sink), 0.0, lift), (sx * (e + sink), 0.0, seam))                # down the lid's side
+            # down the box's side (sunk deeper: its outer side would lie in the lid's side's plane)
+            run((sx * (0.13 + r * 0.3), 0.0, seam + 0.001), (sx * (0.13 + r * 0.3), 0.0, bot + 0.002))
+    p.ball(string, (0.0, 0.0, top + 0.007), 0.007, seg=6)                                 # the knot
     for x in (-0.022, 0.022):
         p.rod(string, (x, 0.0, top + 0.006), (x * 0.25, 0.0, 0.0), 0.0018, seg=4, smooth=False)
     p.rod(string, (-0.008, 0.0, 0.0), (0.008, 0.0, 0.0), 0.0022, seg=4, smooth=False)
@@ -870,8 +1003,8 @@ def main():
         bpy.ops.export_scene.gltf(filepath=out, use_selection=True, export_format="GLB", export_yup=True)
         lo = [min(v.co[i] for v in o.data.vertices) for i in range(3)]
         hi = [max(v.co[i] for v in o.data.vertices) for i in range(3)]
-        print("PROP %-11s %4d triangles, %d materials, x %.3f..%.3f y %.3f..%.3f z %.3f..%.3f -> %s" % (
-            p.name, tris, len(o.data.materials), lo[0], hi[0], lo[1], hi[1], lo[2], hi[2], out))
+        print("PROP %-11s %4d triangles (%d hidden dropped), %d materials, x %.3f..%.3f y %.3f..%.3f z %.3f..%.3f -> %s" % (
+            p.name, tris, p.dropped, len(o.data.materials), lo[0], hi[0], lo[1], hi[1], lo[2], hi[2], out))
         if PREVIEW:
             preview(o, p.name)
     print("LINT %d props, %s" % (len(MAKERS) if not ONLY else len(ONLY), ("failed: " + ", ".join(failed)) if failed else "all clean"))

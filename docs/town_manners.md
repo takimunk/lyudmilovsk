@@ -193,7 +193,9 @@ in the hands is `LyudGesture::HoldOf`:
 
 The props are low-poly, flat colours, no words. UV0 is metres on each face's own plane (the house's way, as
 `blender/city/interior_kit.py`). Every prop is linted as it is built: degenerate and needle triangles, stretched or folded
-UVs, a winding that fights the normal. A prop that fails is not written and the run exits 1. `--only chess,cake` builds
+UVs, a winding that fights the normal, faces in one plane over one another facing the same way, and a flat piece laid on a
+face (a decal: cut it into the face, as the cake box's print, or lift it 12 mm). Faces wholly covered by faces turned
+against them (stacked bars' end caps) are dropped first; a sheet's two sides are kept. A prop that fails is not written and the run exits 1. `--only chess,cake` builds
 a few.
 
 **The days' things** (docs/town_life.md "The days"):
