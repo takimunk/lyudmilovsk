@@ -15,6 +15,8 @@ SRC = os.path.join(ROOT, "Saved", "ClipSources", "props")
 DEST = "/Game/Characters/Humans/Props"
 NAMES = ["phone", "cigarette", "camera", "umbrella", "rod", "brush", "binoculars", "newspaper", "book", "knitting",
          "ice_cream", "cup", "bag", "easel", "spade", "watering_can", "suitcase",
+         # the yacht school's (docs/yacht_school.md "Clips (part D)"); life_jacket is worn, attached to spine_03
+         "megaphone", "whistle", "bailer", "knot_cord", "hose_nozzle", "stopwatch", "start_flag", "clipboard", "life_jacket",
          # the hedgehog, walking and curled up (blender/animals/hedgehog.py writes them into the same folder; ULyudPets draws them)
          "hedgehog", "hedgehog_ball"]
 if os.environ.get("PROPS"):

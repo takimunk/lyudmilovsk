@@ -218,6 +218,12 @@ namespace LyudPeople
 		float Regulars = 0.f;               // "regulars": only a fixed handful do it (this share of whoever could, more of those with
 		                                    // its trait; anybody with a like for it too); 0 everybody
 		float TempMin = -99.f, TempMax = 99.f;  // "temp": [min, max] C: chosen only in such weather (the allotment: not in the frost)
+		// the sailing school's people (docs/yacht_school.md "People (part F)"): "members": "<group>" only that group's members
+		// choose it (FWorld::LoadMembers); "afloat": 1 whoever does it is out on the water (hidden here: the engine shows them
+		// in a boat, UPeopleLifeSubsystem::GetSailors)
+		std::string Members;
+		int MembersG = -1;
+		bool bAfloat = false;
 		std::vector<int> PlaceIdx;          // the places of its kinds (built after loading; "home" and gatherings aside)
 		std::vector<int> SlotK, PlaceK;     // Slots and Places interned
 		bool bHome = false;                 // "home" among its places
@@ -253,6 +259,15 @@ namespace LyudPeople
 		int8_t Sun = 0;             // 0 fixed hours, 1 sunset, 2 sunrise
 		float Off0 = 0.f, Off1 = 0.f;
 		int StayDay = -1;           // "stay_day": only on this day of their stay (0 the day they come; FPerson::StayCycle)
+	};
+
+	/** Somebody who belongs to a group that keeps a programme (the sailing school: Content/PeopleData/sailing_members.json,
+	 *  FWorld::LoadMembers): while a group of theirs has an activity set (FWorld::SetGroupActivity) they do it as a duty, through
+	 *  their role there (a coach rigging when the pupils rig: the role's map turns one activity into another). */
+	struct FMembership
+	{
+		int Group = -1;             // FWorld::GroupNames
+		int Role = -1;              // FWorld::RoleNames
 	};
 
 	struct FPerson
@@ -372,6 +387,14 @@ namespace LyudPeople
 		int PrevActivity = -1;      // what they did before this (the manners: a bag carried from the shop), -1 nothing yet
 		double PrevActivityEnd = -1e18;     // and when they left it (sim seconds)
 		std::string Why;            // a short reason for the last choice (debug)
+		// a member of a group with a programme (FMembership, in their order: the first group with one set wins), their
+		// place in it (the school's slot: kids_3, coach_head), who they talk as (a dialogue id over Body: Sail_bosun), their
+		// staff role for StaffOnShift (coach, bosun: "" none); the group whose programme they are at now (-1 none)
+		std::vector<FMembership> Member;
+		std::string MemberSlot;
+		std::string TalkAs;
+		std::string StaffRole;
+		int Program = -1;
 		int Choices = 0;
 	};
 
@@ -454,6 +477,28 @@ namespace LyudPeople
 		bool ConditionOk(const FActivity& A) const { return A.WhenId < 0 || (A.WhenId < (int)CondOn.size() && CondOn[(size_t)A.WhenId] != 0); }
 		std::vector<std::string> CondNames;
 		std::vector<uint8_t> CondOn;
+
+		/** Groups that keep a programme (the sailing school's kids, juniors, adults, race_<class>, staff, ...: sailing_members.json).
+		 *  SetGroupActivity(Group, Activity) sets what the group does now ("" nothing): its members do it as a duty (before their
+		 *  other duties, after sleep), turned by their role's map; when it changes they go on to the next, when it ends they
+		 *  leave. A group's id is interned on first sight. */
+		bool LoadMembers(const std::string& Text);
+		int GroupId(const std::string& Name);
+		int FindGroup(const std::string& Name) const;
+		void SetGroupActivity(const std::string& Group, const std::string& Activity);
+		/** Clears every group's activity (before a new set). */
+		void ClearGroupActivities() { std::fill(GroupAct.begin(), GroupAct.end(), -1); }
+		/** What P's programme asks of them now (an activity index, -1 none), and from which group. */
+		int ProgramNow(const FPerson& P, int* OutGroup = nullptr) const;
+		/** Whether P belongs to a group. */
+		bool IsMember(const FPerson& P, int Group) const;
+		std::vector<std::string> GroupNames;
+		std::vector<int> GroupAct;          // per group: the activity now, -1 none
+		std::vector<std::string> RoleNames;
+		/** Per role: (activity, the role's own activity) pairs, as names (sailing_members.json "roles") and indices (Index). */
+		std::vector<std::vector<std::pair<std::string, std::string>>> RoleMapNames;
+		std::vector<std::vector<std::pair<int, int>>> RoleMap;
+		std::vector<int> MemberIds;         // people with a membership
 
 		/** Extra outdoor and indoor spots in town_plan.json's "spots" format (Content/PeopleData/winter_spots.json, written by
 		 *  tools/winter_play/winter_play.py: the rink, the banya, the ice hole), loaded as town_life.py loads town_plan.json's:

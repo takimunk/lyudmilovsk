@@ -35,6 +35,9 @@ namespace LyudFest
 	FDate WesternEaster(int Y);
 	/** The Nth (1..5; -1 = last) weekday Wd (0 Monday) of month M; false if there is none. */
 	bool NthWeekday(int Y, int M, int N, int Wd, FDate& Out);
+	/** The first weekday Wd (0 Monday) on or after M/D of year Y (the yacht school's opening: the first Saturday on or
+	 *  after April 25); it may fall in the next month. */
+	FDate WeekdayOnOrAfter(int Y, int M, int D, int Wd);
 	/** The Julian Ephemeris Day of the K-th new moon (Phase 0) or full moon (Phase 0.5) after 2000-01-06 (Meeus ch. 49,
 	 *  the main periodic terms: a few minutes). */
 	double MoonPhaseJDE(int K, double Phase);
@@ -57,8 +60,8 @@ namespace LyudFest
 	struct FFestival
 	{
 		std::string Id;                 // strings: festival.<id>.name / .desc
-		std::string Rule = "date";      // date, nth_weekday, easter_orthodox, easter_western, weekly, trigger, new_moon, full_moon
-		int Month = 1, DayOfMonth = 1;  // date; nth_weekday: Month
+		std::string Rule = "date";      // date, nth_weekday, weekday_on_after, easter_orthodox, easter_western, weekly, trigger, new_moon, full_moon
+		int Month = 1, DayOfMonth = 1;  // date; nth_weekday: Month; weekday_on_after: the first Wd on or after Month/DayOfMonth
 		int Nth = 1, Wd = 5;            // nth_weekday: the Nth weekday Wd (0 Monday) of Month
 		int Offset = 0;                 // easter_*: days from Easter Sunday; any rule: shifts the found day
 		std::vector<int> Weekdays;      // weekly: which weekdays

@@ -115,83 +115,308 @@ EMBLEMS = {"luch": emblem_luch, "optimist": emblem_opti, "cadet": emblem_cadet}
 
 
 # ---------------------------------------------------------------------------------------------- sails
-def sail_picture(b, which="main", size=None, numbers=None):
+# Cloth variants (one picture each; the engine picks one per boat with the material instance, see import_sailing.py):
+#   new      crisp warm white Dacron
+#   old      yellowed old Dacron: creases, a grey tidemark along the foot, mildew specks, a faded emblem
+#   patched  old cloth with sticky-back repair patches, one replaced (whiter) panel and a re-stitched seam
+VARIANTS = ("new", "old", "patched")
+CLOTH_V = {"new": (247, 245, 238), "old": (235, 228, 205), "patched": (239, 233, 214)}
+# alpha = how much light the cloth lets through (the engine's subsurface / the preview's translucency)
+A_CLOTH = {"new": 150, "old": 118, "patched": 126}
+A_SEAM, A_TABLING, A_PATCH, A_INK, A_WINDOW = 92, 70, 52, 40, 245
+
+
+def _shade(c, k):
+    return tuple(max(0, min(255, int(v + k))) for v in c[:3])
+
+
+def _stitch(d, pts, col, width=1, dash=5):
+    """A dashed stitch line along a polyline."""
+    acc = 0.0
+    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+        L = math.hypot(x1 - x0, y1 - y0)
+        n = max(1, int(L / dash))
+        for k in range(n):
+            if (int(acc / dash) + k) % 2 == 0:
+                t0, t1 = k / n, (k + 0.7) / n
+                d.line([(x0 + (x1 - x0) * t0, y0 + (y1 - y0) * t0), (x0 + (x1 - x0) * t1, y0 + (y1 - y0) * t1)], fill=col, width=width)
+        acc += L
+
+
+def _offset(pts, dist):
+    """A polyline moved sideways (left of its direction) by dist pixels."""
+    out = []
+    for i, (x, y) in enumerate(pts):
+        a = pts[max(0, i - 1)]
+        c = pts[min(len(pts) - 1, i + 1)]
+        dx, dy = c[0] - a[0], c[1] - a[1]
+        L = math.hypot(dx, dy) or 1.0
+        out.append((x - dy / L * dist, y + dx / L * dist))
+    return out
+
+
+def sail_picture(b, which="main", size=None, numbers=None, variant="new", face="port"):
+    """RGBA picture of one sail. numbers (previews only): painted on the face's own box readable, and the other face's
+    box mirrored and faint (seen through the cloth); face = 'port' or 'stbd' (the starboard face sees the picture
+    mirrored, so its own number is painted mirrored)."""
     key = b if which == "main" else b + "_jib"
     marks = B.SAIL_MARKS[key]
     x0, x1, z0, z1 = B.sail_box(b, which)
     W_, H_ = x1 - x0, z1 - z0
     if size is None:
-        h = 2048 if H_ > 3 else 1024
-        w = 1024
-        size = (w, h)
+        size = (1024, 2048 if H_ > 3 else 1024)
     w, h = size
-    img = weave(w, h, CLOTH, seed=hash(key) & 255)
+    rnd = random.Random(hash((key, variant)) & 0xFFFF)
+    base = CLOTH_V[variant]
+    img = weave(w, h, base, seed=hash(key) & 255).convert("RGBA")
+    alpha = Image.new("L", (w, h), A_CLOTH[variant])
     d = ImageDraw.Draw(img)
+    da = ImageDraw.Draw(alpha)
+    thick = max(1, w // 512)
 
     def px(sv, hv):
         p = B.sail_point(b, sv, hv, which)
         u, v = B.sail_uv(b, p, which)
         return (u * w, (1 - v) * h)
 
-    # outside the sail: neutral cloth (never seen); inside: seams across, perpendicular-ish to the leech
+    outline = [px(0, k / 40) for k in range(41)] + [px(k / 40, 1) for k in range(41)] + \
+              [px(1, k / 40) for k in range(40, -1, -1)] + [px(k / 40, 0) for k in range(40, -1, -1)]
+    mask = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(mask).polygon(outline, fill=255)
+
+    # ---- old cloth: yellowing toward the foot and the leech, a tidemark, creases, mildew
+    if variant in ("old", "patched"):
+        grad = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        gd = ImageDraw.Draw(grad)
+        for y in range(0, h, 4):
+            t = y / h
+            gd.rectangle([0, y, w, y + 4], fill=(150, 120, 40, int(10 + 34 * t ** 2)))
+        img.alpha_composite(grad)
+        tide = [px(k / 30, 0.035 + 0.01 * math.sin(k * 0.9)) for k in range(31)]
+        d.line(tide, fill=_shade(base, -26), width=3 * thick)
+        for _ in range(9):
+            sv, hv = rnd.uniform(0.1, 0.9), rnd.uniform(0.1, 0.9)
+            a = rnd.uniform(-0.6, 0.6)
+            L = rnd.uniform(0.08, 0.25) * w
+            cx, cy = px(sv, hv)
+            p0 = (cx - math.cos(a) * L, cy - math.sin(a) * L)
+            p1 = (cx + math.cos(a) * L, cy + math.sin(a) * L)
+            d.line([p0, p1], fill=_shade(base, -13), width=2 * thick)
+            d.line([(p0[0], p0[1] + 2), (p1[0], p1[1] + 2)], fill=_shade(base, 7), width=thick)
+        for _ in range(110):
+            sv, hv = rnd.uniform(0.0, 1.0), rnd.uniform(0.0, 0.25) ** 1.4
+            cx, cy = px(sv, hv)
+            r = rnd.uniform(0.5, 1.6) * thick
+            d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=(118, 124, 104, 255))
+
+    # ---- panels: cross-cut seams square to the leech (the optimist: parallel to the foot), double stitched
     n = marks["panels"]
+    seam_col = _shade(base, -22)
+    st_col = _shade(base, -62)
+    bw = max(5, w // 150)
+    lx0, ly0 = px(1.0, 0.0)
+    lx1, ly1 = px(1.0, 1.0)
+    ldx, ldy = lx1 - lx0, ly1 - ly0
+    LL = math.hypot(ldx, ldy)
+    perp = (-ldy / LL, ldx / LL)
+    if perp[0] > 0:
+        perp = (-perp[0], -perp[1])
+    seams = []
     for k in range(1, n):
         hv = k / n
-        pts = [px(sv / 20, hv * (1 - 0.25 * sv / 20) + 0.25 * hv * sv / 20 - 0.03 * (sv / 20) * (1 - hv)) for sv in range(21)]
-        d.line(pts, fill=SEAM, width=max(2, w // 300))
-        d.line([(x, y + 4) for x, y in pts], fill=(228, 226, 216), width=1)
-    # corner patches (tack, clew, head) as layered fans
-    for (sc, hc, rs, rh) in ((0.0, 0.0, 0.22, 0.10), (1.0, 0.0, 0.25, 0.12), (0.0, 1.0, 1.0, 0.10)):
-        for lay in range(3):
-            f = 1.0 - lay * 0.3
-            pts = [px(sc, hc)]
-            for i in range(9):
-                a = i / 8
-                sv = sc + (rs * f) * (1 - a) * (1 if sc == 0 else -1)
-                hv = hc + (rh * f) * a * (1 if hc == 0 else -1)
-                pts.append(px(min(1, max(0, sv)), min(1, max(0, hv))))
-            d.polygon(pts, fill=tuple(v - 6 * (lay + 1) for v in PATCH))
-    # luff: sleeve (luch) or a tabling with lacing eyes
+        if b == "optimist" and which == "main":
+            sx, sy = px(1.0, hv * 0.92)
+            dirv = (-1.0, 0.0)
+        else:
+            sx, sy = px(1.0, hv)
+            dirv = perp
+        seams.append([(sx + dirv[0] * t * w * 1.6, sy + dirv[1] * t * w * 1.6) for t in (0.0, 0.5, 1.0)])
+    replaced = n // 2 if variant == "patched" else None
+    layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    ld = ImageDraw.Draw(layer)
+    la = Image.new("L", (w, h), 0)
+    lad = ImageDraw.Draw(la)
+    if replaced is not None and 0 < replaced < len(seams):
+        a_, c_ = seams[replaced - 1], seams[replaced]
+        ld.polygon(a_ + c_[::-1], fill=CLOTH_V["new"] + (255,))
+    for k, sp in enumerate(seams):
+        ld.line(sp, fill=seam_col + (255,), width=bw)
+        lad.line(sp, fill=A_SEAM, width=bw)
+        restitch = variant == "patched" and k == 1
+        for side in (-1, 1):
+            o = _offset(sp, side * (bw / 2 - 1))
+            if restitch:
+                zz = []
+                for i in range(60):
+                    t = i / 59
+                    x = o[0][0] + (o[-1][0] - o[0][0]) * t
+                    y = o[0][1] + (o[-1][1] - o[0][1]) * t + (3 if i % 2 else -3) * thick
+                    zz.append((x, y))
+                ld.line(zz, fill=(70, 70, 90, 255), width=thick)
+            else:
+                _stitch(ld, o, st_col + (255,), width=thick, dash=4 * thick)
+    img.paste(layer, (0, 0), Image.composite(layer.getchannel("A"), Image.new("L", (w, h), 0), mask))
+    alpha.paste(la, (0, 0), Image.composite(la, Image.new("L", (w, h), 0), mask))
+
+    # ---- tablings: leech, foot (and luff where there is no sleeve), a little different in tone, stitched
+    tab_col = _shade(base, -9)
+
+    def band(edge, width):
+        if edge == "leech":
+            a_ = [px(1.0, k / 40) for k in range(41)]
+        elif edge == "foot":
+            a_ = [px(k / 40, 0.0) for k in range(41)]
+        else:
+            a_ = [px(0.0, k / 40) for k in range(41)]
+        cen = px(0.5, 0.5)
+        o1 = _offset(a_, width)
+        o2 = _offset(a_, -width)
+        dist = lambda pts: sum(math.hypot(p[0] - cen[0], p[1] - cen[1]) for p in pts)
+        inner = o1 if dist(o1) < dist(o2) else o2
+        d.polygon(a_ + inner[::-1], fill=tab_col)
+        da.polygon(a_ + inner[::-1], fill=A_TABLING)
+        _stitch(d, _offset(inner, 0) if True else inner, st_col, width=thick, dash=4 * thick)
+        mid = [((p[0] + q[0]) / 2, (p[1] + q[1]) / 2) for p, q in zip(a_, inner)]
+        _stitch(d, mid, st_col, width=thick, dash=4 * thick)
+    band("leech", 0.014 * w)
+    band("foot", 0.012 * w)
+    if not (b == "luch" and which == "main"):
+        band("luff", 0.016 * w)
+
+    # ---- luff: the luch's sleeve, the optimist's lacing eyes
     if b == "luch" and which == "main":
         pts = [px(0, hv / 40) for hv in range(41)] + [px(0.045, hv / 40) for hv in range(40, -1, -1)]
-        d.polygon(pts, fill=(226, 224, 214))
-        d.line([px(0.045, hv / 40) for hv in range(41)], fill=SEAM, width=3)
-    else:
-        d.line([px(0.02, hv / 40) for hv in range(41)], fill=SEAM, width=3)
-        if b == "optimist":
-            for k in range(1, 12):
-                x, y = px(0.012, k / 12)
-                d.ellipse([x - 6, y - 6, x + 6, y + 6], fill=(170, 170, 165), outline=(110, 110, 110), width=2)
-    # leech tabling and batten pockets
-    d.line([px(0.985, hv / 40) for hv in range(41)], fill=SEAM, width=4)
-    for hb in marks["battens"]:
-        a = px(1.0 - marks["batten_len"], hb)
-        c = px(0.995, hb)
-        d.line([a, c], fill=(205, 203, 192), width=max(8, w // 70))
-        d.line([a, c], fill=(222, 220, 210), width=max(4, w // 160))
-    # window (luch): a clear panel low on the sail (reads as a greyish see-through rectangle)
-    win = B.BOATS[b].get(which, {}).get("window") if which == "main" else None
+        d.polygon(pts, fill=_shade(base, -12))
+        da.polygon(pts, fill=A_TABLING)
+        _stitch(d, [px(0.045, hv / 40) for hv in range(41)], st_col, width=2 * thick, dash=5 * thick)
+        _stitch(d, [px(0.04, hv / 40) for hv in range(41)], st_col, width=thick, dash=5 * thick)
+    if b == "optimist":
+        for k in range(1, 12):
+            x, y = px(0.012, k / 12)
+            d.ellipse([x - 7, y - 7, x + 7, y + 7], fill=(178, 178, 172), outline=(100, 100, 100), width=2)
+            da.ellipse([x - 7, y - 7, x + 7, y + 7], fill=0)
+        for k in range(1, 9):
+            x, y = px(k / 9, 0.008)
+            d.ellipse([x - 6, y - 6, x + 6, y + 6], fill=(178, 178, 172), outline=(100, 100, 100), width=2)
+
+    # ---- corner patches: layered fans with stitched outlines (tack, clew, head; the optimist's peak and throat)
+    corners = [(0.0, 0.0, 0.20, 0.09, 1, 1), (1.0, 0.0, 0.24, 0.11, -1, 1), (0.0, 1.0, 0.55, 0.07, 1, -1)]
+    if b == "optimist" and which == "main":
+        corners = [(0.0, 0.0, 0.16, 0.10, 1, 1), (1.0, 0.0, 0.20, 0.12, -1, 1), (0.0, 1.0, 0.18, 0.12, 1, -1),
+                   (1.0, 1.0, 0.24, 0.16, -1, -1)]
+    if which == "jib":
+        corners = [(0.0, 0.0, 0.22, 0.10, 1, 1), (1.0, 0.0, 0.25, 0.14, -1, 1), (0.0, 1.0, 1.0, 0.09, 1, -1)]
+    for (sc, hc, rs, rh, ss, hs) in corners:
+        for lay in range(3):
+            f = 1.0 - lay * 0.28
+            pts = [px(sc, hc)]
+            for i in range(13):
+                a = i / 12
+                sv = sc + ss * rs * f * (1 - a) ** 1.2
+                hv = hc + hs * rh * f * a ** 1.2
+                pts.append(px(min(1, max(0, sv)), min(1, max(0, hv))))
+            d.polygon(pts, fill=_shade(PATCH if variant == "new" else base, -5 * (lay + 1)))
+            da.polygon(pts, fill=max(10, A_PATCH - 12 * lay))
+            _stitch(d, pts[1:], st_col, width=thick, dash=4 * thick)
+        # the ring / cringle in the corner
+        cx, cy = px(min(0.985, max(0.015, sc + ss * 0.02)), min(0.985, max(0.015, hc + hs * 0.012)))
+        d.ellipse([cx - 9, cy - 9, cx + 9, cy + 9], fill=(190, 192, 194), outline=(90, 90, 92), width=3)
+    if b == "optimist" and which == "main":
+        # the sprit's peak: the sprit's eye strap running into the sail along the sprit's line
+        a_, c_ = px(0.0, 0.32), px(1.0, 1.0)
+        for t0 in (0.80,):
+            p0 = (a_[0] + (c_[0] - a_[0]) * t0, a_[1] + (c_[1] - a_[1]) * t0)
+            d.line([p0, (c_[0] - 6, c_[1] + 6)], fill=_shade(base, -20), width=10 * thick)
+
+    # ---- batten pockets: a stitched pocket with the elastic end and the batten's shadow
+    for hb_ in marks["battens"]:
+        a_ = px(1.0 - marks["batten_len"], hb_)
+        c_ = px(0.99, hb_)
+        wid = max(9, w // 64)
+        d.line([a_, c_], fill=_shade(base, -14), width=wid)
+        da.line([a_, c_], fill=A_PATCH, width=wid)
+        d.line([a_, c_], fill=_shade(base, -30), width=max(2, wid // 4))
+        for side in (-1, 1):
+            _stitch(d, _offset([a_, c_], side * wid / 2), st_col, width=thick, dash=4 * thick)
+        e_ = (c_[0] + (a_[0] - c_[0]) * 0.18, c_[1] + (a_[1] - c_[1]) * 0.18)
+        d.line([c_, e_], fill=_shade(base, -24), width=wid + 2)
+
+    # ---- window (luch main; the cadet's jib): clear film with a stitched border
+    win = None
+    if which == "main":
+        win = B.BOATS[b]["main"].get("window")
+        if win:
+            win = (win[0], win[1], win[2] * 0.4, win[3] * 0.4)
+    elif b == "cadet":
+        win = (0.30, 0.62, 0.10, 0.24)
     if win:
-        s0, s1, h0, h1 = win[0], win[1], win[2] * 0.4, win[3] * 0.4
+        s0, s1, h0, h1 = win
         q = [px(s0, h0), px(s1, h0), px(s1, h1), px(s0, h1)]
-        d.polygon(q, fill=(176, 186, 190), outline=(150, 150, 146))
-    # tell-tales
+        d.polygon(q, fill=(160, 172, 176), outline=_shade(base, -40))
+        da.polygon(q, fill=A_WINDOW)
+        _stitch(d, q + [q[0]], st_col, width=2 * thick, dash=4 * thick)
+
+    # ---- tell-tales (red to port, green to starboard: both seen), the class emblem
     for hv in (0.33, 0.55, 0.75):
         x, y = px(0.18, hv)
         d.line([(x, y), (x + w * 0.035, y + 6)], fill=RED if hv != 0.55 else (40, 120, 60), width=4)
-    # emblem
     if marks.get("emblem"):
         sv, hv, sz = marks["emblem"]
         cx, cy = px(sv, hv)
         r = sz * h
-        EMBLEMS[b](d, cx, cy, r) if b != "luch" else emblem_luch(d, cx, cy, r)
+        em = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        EMBLEMS[b](ImageDraw.Draw(em), cx, cy, r)
+        if variant != "new":
+            em.putalpha(em.getchannel("A").point(lambda v: int(v * 0.72)))
+        img.alpha_composite(em)
+        da.bitmap((0, 0), em.getchannel("A").point(lambda v: 255 if v > 60 else 0), fill=A_INK)
+
+    # ---- repairs (patched): sticky-back patches with sharp edges, in a fresher tone
+    if variant == "patched":
+        for (sv, hv, pw, ph, ang) in ((0.62, 0.30, 0.10, 0.05, 0.25), (0.35, 0.68, 0.07, 0.07, -0.4), (0.80, 0.12, 0.06, 0.04, 0.1)):
+            cx, cy = px(sv, hv)
+            hw_, hh_ = pw * w, ph * h * (1024 / h)
+            ca, sa = math.cos(ang), math.sin(ang)
+            q = [(cx + ca * x_ - sa * y_, cy + sa * x_ + ca * y_) for x_, y_ in ((-hw_, -hh_), (hw_, -hh_), (hw_, hh_), (-hw_, hh_))]
+            d.polygon(q, fill=_shade(CLOTH_V["new"], 2), outline=_shade(base, -34))
+            da.polygon(q, fill=A_PATCH)
+
+    # ---- numbers (previews; the engine draws them from T_Sail_Digits)
     if numbers is not None:
         f = font(int(marks["num_h"] * h))
         for side in ("num_stbd", "num_port"):
+            own = (side == "num_port") == (face == "port")
             sv, hv = marks[side]
             cx, cy = px(sv, hv)
-            d.text((cx, cy), str(numbers), fill=(30, 30, 34), font=f, anchor="mm")
-    return img.filter(ImageFilter.SMOOTH)
+            t = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+            ImageDraw.Draw(t).text((cx, cy), str(numbers), fill=(26, 28, 34, 255 if own else 70), font=f, anchor="mm")
+            if face == "stbd":
+                # mirror the number in place: the starboard face sees the picture mirrored
+                bb = t.getbbox()
+                if bb:
+                    crop = t.crop(bb).transpose(Image.FLIP_LEFT_RIGHT)
+                    t = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+                    t.paste(crop, bb[:2])
+            img.alpha_composite(t)
+    img = img.filter(ImageFilter.SMOOTH)
+    # outside the sail outline: plain cloth (never seen) and fully opaque
+    out = Image.composite(img, Image.new("RGBA", (w, h), base + (255,)), mask)
+    out.putalpha(Image.composite(alpha, Image.new("L", (w, h), A_CLOTH[variant]), mask))
+    return out
+
+
+def save_sails():
+    nums = {"luch": 147, "optimist": 23, "cadet": 58}
+    for b in B.BOATS:
+        jobs = [("main", b)] + ([("jib", "cadet_jib")] if b == "cadet" else [])
+        for which, stem in jobs:
+            for var in VARIANTS:
+                suf = "" if var == "new" else "_" + var
+                sail_picture(b, which, variant=var).save(os.path.join(OUT, "sail_%s%s.png" % (stem, suf)))
+                if which == "main":
+                    for face, fs in (("port", ""), ("stbd", "_stbd")):
+                        sail_picture(b, which, numbers=nums[b], variant=var, face=face).save(
+                            os.path.join(OUT, "sail_%s%s_demo%s.png" % (stem, suf, fs)))
 
 
 def digits():
@@ -220,7 +445,97 @@ CELLS = {      # name: (x, y, w, h) in a 2048 x 2048 picture (pixels, y down)
     "lifejacket": (512, 1280, 256, 256),
     "chart": (1024, 1024, 1024, 512),
     "paper": (768, 1280, 256, 256),
+    "timetable": (0, 1536, 512, 512),
+    "drawing0": (512, 1536, 256, 256), "drawing1": (768, 1536, 256, 256),
+    "drawing2": (512, 1792, 256, 256), "drawing3": (768, 1792, 256, 256),
+    "bay1": (1024, 1536, 128, 128), "bay2": (1152, 1536, 128, 128), "bay3": (1280, 1536, 128, 128),
+    "bay4": (1408, 1536, 128, 128), "bay5": (1536, 1536, 128, 128), "bay6": (1664, 1536, 128, 128),
 }
+
+
+def timetable(img):
+    """The painted timetable board by the door: a week grid (seven day columns as dots, the weekend in red), a row per
+    class (the class emblems) with clock faces at the lesson times and boat marks on the days it sails. No words."""
+    x, y, w, h = CELLS["timetable"]
+    pic = Image.new("RGB", (w, h), (36, 74, 112))
+    d = ImageDraw.Draw(pic)
+    d.rectangle([10, 10, w - 10, h - 10], outline=(236, 232, 214), width=5)
+    cols = 7
+    x0, cw = 140, (w - 160) / cols
+    for k in range(cols):
+        cx = x0 + cw * (k + 0.5)
+        d.ellipse([cx - 13, 40, cx + 13, 66], fill=(200, 60, 50) if k >= 5 else (236, 232, 214))
+    rows = [("optimist", (10, 13)), ("luch", (16,)), ("cadet", (12, 17))]
+    for r, (cls, hours) in enumerate(rows):
+        cy = 130 + r * 125
+        d.line([(24, cy - 58), (w - 24, cy - 58)], fill=(150, 170, 190), width=2)
+        if cls == "luch":
+            emblem_luch(d, 70, cy + 6, 38, col=(236, 120, 90))
+        elif cls == "optimist":
+            emblem_opti(d, 70, cy, 34)
+        else:
+            emblem_cadet(d, 70, cy, 36)
+        rr = random.Random(r + 7)
+        for k in range(cols):
+            if rr.random() < 0.55 or k in (5, 6):
+                cx = x0 + cw * (k + 0.5)
+                hh = hours[k % len(hours)]
+                d.ellipse([cx - 22, cy - 22, cx + 22, cy + 22], outline=(236, 232, 214), width=3)
+                a = math.radians(hh % 12 * 30)
+                d.line([(cx, cy), (cx + math.sin(a) * 12, cy - math.cos(a) * 12)], fill=(236, 232, 214), width=4)
+                d.line([(cx, cy), (cx, cy - 18)], fill=(236, 232, 214), width=2)
+    d.line([(24, 500 - 120), (w - 24, 500 - 120)], fill=(150, 170, 190), width=2)
+    # the flag that means "sailing today" and the one for "lesson ashore", as a key
+    flag_picture(d, 60, 405, 90, 60, "sail_on")
+    boat_icon(d, 200, 435, 0.0, 30, (236, 232, 214))
+    flag_picture(d, 290, 405, 90, 60, "shore")
+    d.rectangle([420, 410, 470, 460], outline=(236, 232, 214), width=4)
+    img.paste(noise(pic, 5, 11), (x, y))
+
+
+def drawings(img):
+    """Children's drawings of boats pinned in the classroom: crayon on paper (no words)."""
+    for k in range(4):
+        x, y, w, h = CELLS["drawing%d" % k]
+        r = random.Random(30 + k)
+        pic = Image.new("RGB", (w, h), (246, 242, 230))
+        d = ImageDraw.Draw(pic)
+        sea = [(40, 110, 200), (30, 140, 170), (60, 90, 180), (20, 120, 160)][k]
+        for j in range(5):
+            yy = 170 + j * 14
+            d.line([(i * 16, yy + (6 if i % 2 else 0)) for i in range(18)], fill=sea, width=5)
+        d.ellipse([w - 80, 18, w - 22, 76], fill=(250, 200, 40))
+        for j in range(8):
+            a = j * math.pi / 4
+            d.line([(w - 51 + math.cos(a) * 34, 47 + math.sin(a) * 34), (w - 51 + math.cos(a) * 48, 47 + math.sin(a) * 48)], fill=(250, 180, 30), width=4)
+        hull_c = [(220, 60, 50), (250, 200, 40), (90, 160, 220), (240, 120, 40)][k]
+        bx, by = 60 + r.randint(0, 40), 150
+        d.polygon([(bx, by), (bx + 120, by), (bx + 100, by + 26), (bx + 18, by + 26)], fill=hull_c, outline=(40, 40, 40))
+        d.line([(bx + 60, by), (bx + 60, by - 110)], fill=(60, 60, 60), width=4)
+        d.polygon([(bx + 63, by - 105), (bx + 63, by - 6), (bx + 120, by - 8)], fill=(255, 255, 255), outline=(60, 60, 60))
+        if k % 2:
+            d.polygon([(bx + 57, by - 90), (bx + 57, by - 8), (bx + 10, by - 8)], fill=(255, 255, 255), outline=(60, 60, 60))
+        for j in range(3):
+            gx, gy = r.randint(10, w - 30), r.randint(20, 90)
+            d.arc([gx, gy, gx + 18, gy + 10], 200, 340, fill=(60, 60, 60), width=3)
+            d.arc([gx + 16, gy, gx + 34, gy + 10], 200, 340, fill=(60, 60, 60), width=3)
+        img.paste(noise(pic, 7, 40 + k), (x, y))
+
+
+def bay_numbers(img):
+    """Numbers painted on the boat park's slab at each bay (white road paint, a little worn)."""
+    for k in range(1, 7):
+        x, y, w, h = CELLS["bay%d" % k]
+        pic = Image.new("RGBA", (w, h), (120, 118, 112, 255))
+        d = ImageDraw.Draw(pic)
+        d.text((w / 2, h / 2), str(k), fill=(236, 234, 226, 255), font=font(108), anchor="mm")
+        r = random.Random(k)
+        for _ in range(260):
+            px_, py_ = r.randrange(w), r.randrange(h)
+            d.point((px_, py_), fill=(120, 118, 112, 255))
+        img.paste(pic.convert("RGB"), (x, y))
+
+
 FLAGS = ["sail_on", "shore", "races", "storm", "closed", "class_optimist", "class_luch", "class_cadet", "prep", "recall"]
 
 
@@ -528,6 +843,9 @@ def atlas():
     parkplate(img)
     lifejacket(img)
     chart(img)
+    timetable(img)
+    drawings(img)
+    bay_numbers(img)
     x, y, w, h = CELLS["paper"]
     ImageDraw.Draw(img).rectangle([x, y, x + w, y + h], fill=(238, 234, 222))
     return img
@@ -535,10 +853,7 @@ def atlas():
 
 def main():
     os.makedirs(OUT, exist_ok=True)
-    for b in B.BOATS:
-        sail_picture(b).save(os.path.join(OUT, "sail_%s.png" % b))
-        sail_picture(b, numbers={"luch": 147, "optimist": 23, "cadet": 58}[b]).save(os.path.join(OUT, "sail_%s_demo.png" % b))
-    sail_picture("cadet", "jib").save(os.path.join(OUT, "sail_cadet_jib.png"))
+    save_sails()
     digits().save(os.path.join(OUT, "sail_digits.png"))
     atlas().save(os.path.join(OUT, "sail_atlas.png"))
     fl, fcells = flags_sheet()

@@ -29006,7 +29006,26 @@
    "wake": 5.12,
    "bed": 21.47,
    "spread": 0.63,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "sail_bosun_day",
+     "place": "S-SAIL-SCHOOL",
+     "role": "bosun",
+     "hours": [
+      9.0,
+      19.0
+     ],
+     "days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    }
+   ],
    "friends": [
     "t_ozturk_colette",
     "t_takahashi_ursula"
@@ -29020,7 +29039,7 @@
     "sun": 0.71
    },
    "walk_speed": 1.03,
-   "occupation": "pensioner",
+   "occupation": "sail_bosun",
    "likes": {
     "sit_bench": 0.85,
     "chat": 0.21,
@@ -29030,7 +29049,13 @@
     "fair_visit": 0.63,
     "read_library": 0.43
    },
-   "body": "Town/R_mansour_hamish"
+   "body": "Town/R_mansour_hamish",
+   "sail_was": "pensioner",
+   "sail_was_role": [
+    "пенсионер",
+    "pensioner",
+    "年金生活者"
+   ]
   },
   {
    "key": "t_wisniewski_ananya",
@@ -30609,12 +30634,18 @@
     "sun": 0.35
    },
    "walk_speed": 1.16,
-   "occupation": "homemaker",
+   "occupation": "sail_coach",
    "likes": {
     "swim_look": 0.26,
     "coffee": 0.75
    },
-   "body": "Town/R_ferreira_carmen"
+   "body": "Town/R_ferreira_carmen",
+   "sail_was": "homemaker",
+   "sail_was_role": [
+    "домохозяйка",
+    "homemaker",
+    "主婦"
+   ]
   },
   {
    "key": "t_ferreira_kofi",
@@ -31976,7 +32007,24 @@
    "wake": 5.65,
    "bed": 22.02,
    "spread": 0.52,
-   "duties": [],
+   "duties": [
+    {
+     "activity": "sail_office",
+     "place": "S-SAIL-SCHOOL",
+     "role": "coach",
+     "hours": [
+      10.0,
+      13.0
+     ],
+     "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ]
+    }
+   ],
    "friends": [
     "t_araujo_anahit",
     "t_mansour_hamish",
@@ -31992,7 +32040,7 @@
     "sun": 0.7
    },
    "walk_speed": 1.09,
-   "occupation": "pensioner",
+   "occupation": "sail_head_coach",
    "likes": {
     "sit_bench": 1.0,
     "chat": 0.48,
@@ -32003,7 +32051,13 @@
     "sea_air": 0.57,
     "play_piano": 1.75
    },
-   "body": "Town/R_kask_ruta"
+   "body": "Town/R_kask_ruta",
+   "sail_was": "pensioner",
+   "sail_was_role": [
+    "пенсионерка",
+    "pensioner",
+    "年金生活者"
+   ]
   },
   {
    "key": "t_kim_haoran",
@@ -33636,13 +33690,19 @@
     "sun": 0.56
    },
    "walk_speed": 1.34,
-   "occupation": "homemaker",
+   "occupation": "sail_coach",
    "likes": {
     "fish_shore": 0.62,
     "eat_out": 0.35,
     "play_piano": 1.75
    },
-   "body": "Town/R_chen_meiling"
+   "body": "Town/R_chen_meiling",
+   "sail_was": "homemaker",
+   "sail_was_role": [
+    "домохозяйка",
+    "homemaker",
+    "主婦"
+   ]
   },
   {
    "key": "t_amada_alesya",

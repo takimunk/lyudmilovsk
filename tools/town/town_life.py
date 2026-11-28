@@ -1058,6 +1058,8 @@ def main():
         subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), extra_script)], check=True)
     # the library's book club (docs/books.md "The book club"): its members, its seats round the lounge's table
     subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "reading", "build_reading.py")], check=True)
+    # the sailing school's members, its places and its activities (docs/yacht_school.md "People (part F)"; after sailing.py)
+    subprocess.run([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "sailing", "sailing_people.py")], check=True)
 
     jobs = sum(1 for p in people if any(d.get("place") for d in p["duties"]) and p["occupation"] != "pupil")
     open_posts = sum(sum(c for _, c, _, _ in w["staff"]) for w in workplaces)

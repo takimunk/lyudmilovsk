@@ -192,9 +192,10 @@
       "when": {"rule": "date", "month": 6, "day": 1},
       "origin": "intl",
       "menu": ["rs_plombir", "rs_syrniki", "rs_mors"],
-      "decor": {"from": 8, "to": 20, "kinds": ["balloons", "flags", "bunting"], "venues": ["park"]},
+      "decor": {"from": 8, "to": 20, "kinds": ["balloons", "flags", "bunting"], "venues": ["park", "pier"]},
       "program": [
-        {"id": "games", "hours": [10, 17], "venue": "park", "mode": "mingle", "pull": 0.9, "show": ["music", "kites"]}
+        {"id": "games", "hours": [10, 17], "venue": "park", "mode": "mingle", "pull": 0.9, "show": ["music", "kites"]},
+        {"id": "optimists", "hours": [11, 14.5], "venue": "pier", "mode": "watch", "face": "sea", "pull": 0.6}
       ],
       "priority": 2
     },
@@ -371,6 +372,49 @@
         {"id": "aloud", "hours": [18, 19.5], "venue": "square", "mode": "watch", "face": "stage", "pull": 0.7}
       ],
       "priority": 2
+    },
+    {
+      "id": "sail_opening",
+      "when": {"rule": "weekday_on_after", "month": 4, "day": 25, "weekday": 5},
+      "origin": "town",
+      "menu": ["rs_tea", "rs_syrniki", "rs_baltic_fish"],
+      "decor": {"from": 7, "to": 20, "kinds": ["flags", "bunting"], "venues": ["pier", "beach", "promenade"]},
+      "program": [
+        {"id": "flag", "hours": [10, 11], "venue": "beach", "mode": "watch", "face": "sea", "pull": 1.0, "show": ["music"]},
+        {"id": "parade", "hours": [11, 11.75], "venue": "pier", "mode": "watch", "face": "sea", "pull": 1.2},
+        {"id": "regatta", "hours": [11.75, 15.5], "venue": "promenade", "mode": "watch", "face": "sea", "pull": 0.7},
+        {"id": "tea", "hours": [15.5, 17], "venue": "beach", "mode": "mingle", "pull": 0.6}
+      ],
+      "priority": 3
+    },
+    {
+      "id": "sail_cup",
+      "when": {"rule": "weekday_on_after", "month": 6, "day": 20, "weekday": 5},
+      "days": 2,
+      "origin": "town",
+      "menu": ["rs_mors", "rs_plombir", "rs_fried_flounder"],
+      "decor": {"from": 8, "to": 19, "kinds": ["flags"], "venues": ["pier", "promenade"]},
+      "program": [
+        {"id": "races", "day": -1, "hours": [11, 16], "venue": "pier", "mode": "watch", "face": "sea", "pull": 0.8},
+        {"id": "prizes", "day": 1, "hours": [16, 17], "venue": "pier", "mode": "mingle", "pull": 0.7, "show": ["music"]}
+      ],
+      "priority": 2
+    },
+    {
+      "id": "sail_closing",
+      "when": {"rule": "nth_weekday", "month": 11, "nth": 1, "weekday": 6},
+      "origin": "town",
+      "menu": ["rs_fest_sbiten", "rs_solyanka", "rs_tea"],
+      "late": 21,
+      "decor": {"from": 8, "to": 21, "kinds": ["flags", "bunting", "lanterns"], "venues": ["pier", "beach"]},
+      "program": [
+        {"id": "regatta", "hours": [11, 14.5], "venue": "pier", "mode": "watch", "face": "sea", "pull": 0.9},
+        {"id": "prizes", "hours": [14.5, 15.5], "venue": "beach", "mode": "mingle", "pull": 0.7, "show": ["music"]},
+        {"id": "boats", "hours": [15.5, 16.5], "venue": "beach", "mode": "mingle", "pull": 0.5},
+        {"id": "flag", "hours": [16.5, 17], "venue": "beach", "mode": "watch", "face": "sea", "pull": 0.8, "show": ["music"]},
+        {"id": "bonfire", "hours": [17, 20.5], "venue": "bonfire", "mode": "watch", "face": "bonfire", "pull": 0.8, "show": ["bonfire"]}
+      ],
+      "priority": 4
     },
     {
       "id": "amber_morning",

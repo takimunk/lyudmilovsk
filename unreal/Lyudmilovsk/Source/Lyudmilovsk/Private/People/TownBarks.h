@@ -193,4 +193,7 @@ namespace LyudBarks
 	/** The weather for the sets' weather = (ULyudWeatherSubsystem's sky): rain and snow (mm/h of water, its snow part),
 	 *  fog, cold (under 2 C), warm (over 22 C), clear (few clouds, dry), wet (soaked ground). */
 	void WeatherWords(float Cloud, float RainMmH, float Snow, float Fog, float TempC, float Wet, std::vector<std::string>& Out);
+	/** The wind for the sets' weather = (added to Out, after WeatherWords): windy (the area's mean wind 8 m/s or more:
+	 *  white horses, the boats reef, the kites pull) or calm (under 1.5 m/s: the sails hang). */
+	void WindWords(float MeanWindMs, std::vector<std::string>& Out);
 }

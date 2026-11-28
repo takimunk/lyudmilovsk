@@ -54,6 +54,11 @@ counters = load(os.path.join(DATA, "counters.json"))["counters"]
 strings = {l: load(os.path.join(STRINGS, "strings_%s.json" % l)) for l in ("ru", "en", "ja")}
 places = places_doc["places"]
 by_id = {p["id"]: p for p in places}
+# the sailing school's places (tools/sailing/sailing_people.py: sailing_spots.json, loaded by the life after the town's)
+sail_path = os.path.join(DATA, "sailing_spots.json")
+sail_doc = load(sail_path) if os.path.exists(sail_path) else {"spots": [], "moved": []}
+for sp in sail_doc["spots"]:
+    by_id.setdefault(sp["id"], sp)
 print("the town's data: %d places, %d townsfolk, %d activities, %d counters" % (len(places), len(folk), len(acts), len(counters)))
 
 # --- ids
@@ -276,6 +281,11 @@ for sp in spaces["spots"]:
                 break
 check(not buried, "no public-space seat slot is inside solid geometry (%d slots, %d inside)" % (nslots, len(buried)), *buried)
 spot_xy = {sp["id"]: [tuple(sl["pos"][:2]) for sl in sp.get("slots", [])] for sp in spaces["spots"]}
+for mv in sail_doc.get("moved", []):
+    # moved out of the sailing school's footprints (docs/yacht_school.md "People (part F)"): where the record says, from where it was
+    xy = spot_xy.get(mv["place"])
+    if xy and mv["slot"] < len(xy) and math.hypot(xy[mv["slot"]][0] - mv["from"][0], xy[mv["slot"]][1] - mv["from"][1]) <= 0.01:
+        xy[mv["slot"]] = tuple(mv["to"])
 moved = []
 for p in places:
     want = spot_xy.get(p["id"])

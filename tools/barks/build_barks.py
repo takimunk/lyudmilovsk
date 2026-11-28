@@ -147,7 +147,7 @@ VALID = {
     "weekday": {"mon", "tue", "wed", "thu", "fri", "sat", "sun"},
     "sun": {"day", "low", "night", "cloudy"},
     "temper": {"warm", "reserved", "nervy", "calm", "curious", "tidy", "careless"},
-    "weather": {"rain", "snow", "fog", "cold", "warm", "clear", "wet", "aurora", "rainbow", "fireworks"},
+    "weather": {"rain", "snow", "fog", "cold", "warm", "clear", "wet", "aurora", "rainbow", "fireworks", "windy", "calm"},
     "job": jobs, "job2": jobs,
 }
 if FEST:
@@ -213,7 +213,8 @@ HEADER = """# What the townsfolk say on their own (docs/town_talk.md): a greetin
 # chrono =    lark, owl, night, usual                 need =  hunger, tired, social, fun, nature, mind, sun (over 0.75)
 # hours =     5-9 (from-to; over midnight 22-4; several ranges: 6-9 17-20)    months = 10-4    weekday = mon ... sun
 # sun =       day, low (sunrise or sunset), night, cloudy (overcast by day)
-# weather =   rain, snow, fog, cold (under 2 C), warm (over 22 C), clear (few clouds), wet (ULyudWeatherSubsystem)
+# weather =   rain, snow, fog, cold (under 2 C), warm (over 22 C), clear (few clouds), wet (ULyudWeatherSubsystem);
+#             windy (mean wind 8 m/s and over), calm (under 1.5 m/s) (ULyudWindSubsystem)
 #             aurora, rainbow, fireworks: while people look up at one (UPeopleLifeSubsystem::GetSkyShow)
 # festival =  festivals.json ids, or any: the festival on now (ULyudFestivalSubsystem::ActiveFestival); phase = its phase ids
 # near = hero the player is within 10 m of the speaker (remarks about him)

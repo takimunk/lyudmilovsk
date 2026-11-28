@@ -93,6 +93,39 @@
    "life": 2,
    "pass": 0.5,
    "rank": 1
+  },
+  "sail": {
+   "hops": 2,
+   "life": 4,
+   "pass": 0.55,
+   "once": 1,
+   "rank": 4
+  },
+  "capsize": {
+   "hops": 2,
+   "life": 2,
+   "pass": 0.6,
+   "rank": 2
+  },
+  "regatta": {
+   "hops": 3,
+   "life": 5,
+   "pass": 0.65,
+   "news": 0.3,
+   "rank": 8
+  },
+  "tow": {
+   "hops": 2,
+   "life": 3,
+   "pass": 0.6,
+   "rank": 3
+  },
+  "skipper": {
+   "hops": 3,
+   "life": 5,
+   "pass": 0.6,
+   "once": 1,
+   "rank": 6
   }
  },
  "rules": [
@@ -179,6 +212,36 @@
    "target": "films/*",
    "kind": "film",
    "detail": ""
+  },
+  {
+   "event": "sail",
+   "target": "join",
+   "kind": "sail",
+   "detail": ""
+  },
+  {
+   "event": "sail",
+   "target": "capsize",
+   "kind": "capsize",
+   "detail": ""
+  },
+  {
+   "event": "sail",
+   "target": "race_win",
+   "kind": "regatta",
+   "detail": ""
+  },
+  {
+   "event": "sail",
+   "target": "towed",
+   "kind": "tow",
+   "detail": ""
+  },
+  {
+   "event": "sail",
+   "target": "certificate",
+   "kind": "skipper",
+   "detail": ""
   }
  ],
  "far_m": 200,
@@ -204,10 +267,16 @@
   "kite": 1,
   "tune": 1,
   "sing": 1,
+  "sail": 1,
+  "capsize": 1,
+  "regatta": 1,
+  "tow": 1,
+  "skipper": 1,
   "film": 1
  },
  "ps": [
   "beat",
+  "capsize",
   "catch",
   "crows",
   "cup",
@@ -218,12 +287,17 @@
   "job",
   "kite",
   "radio",
+  "regatta",
+  "sail",
   "sing",
+  "skipper",
   "tamed",
+  "tow",
   "tune"
  ],
  "staff": [
   "beat",
+  "capsize",
   "catch",
   "crows",
   "cup",
@@ -234,8 +308,12 @@
   "job",
   "kite",
   "radio",
+  "regatta",
+  "sail",
   "sing",
+  "skipper",
   "tamed",
+  "tow",
   "tune"
  ]
 }

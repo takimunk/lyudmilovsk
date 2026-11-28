@@ -1270,6 +1270,11 @@ int main(int Argc, char** Argv)
 	for (int I = 1; I < NumManners; I++)
 	{
 		const char* Name = MannerName((EManner)I);
+		// the yacht school's are seen only at its places (place kind sail_school, docs/yacht_school.md part F)
+		if (std::string(Name).rfind("sail_", 0) == 0)
+		{
+			continue;
+		}
 		if (Mild.Seconds[Name] + Shower.Seconds[Name] + Frost.Seconds[Name] + Warm.Seconds[Name] <= 0.0)
 		{
 			Never += std::string(" ") + Name;

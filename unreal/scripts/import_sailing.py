@@ -113,13 +113,16 @@ def make_materials():
         out[slot] = mi
     # the sails: one instance per class (its picture and number boxes from the manifest)
     rows = {r["asset"]: r for r in manifest()}
+    # cloth variants: "" (new, the mesh's default), "_Old" (yellowed), "_Patched" (repaired); the engine picks one per
+    # boat by setting the SL_Sail slot's material to MI_SL_Sail_<Class>_<Part><Variant>
     for cls in ("Luch", "Optimist", "Cadet"):
-        for part, pic in (("Main", "sail_%s.png" % cls.lower()), ("Jib", "sail_cadet_jib.png")):
+      for var, vfile in (("", ""), ("_Old", "_old"), ("_Patched", "_patched")):
+        for part, pic in (("Main", "sail_%s%s.png" % (cls.lower(), vfile)), ("Jib", "sail_cadet_jib%s.png" % vfile)):
             row = rows.get("SM_Sail_%s_%s" % (cls, part))
             if row is None:
                 continue
-            tex = _tex(os.path.join(TEXDIR, pic), "T_Sail_%s_%s" % (cls, part))
-            mi = A.instance("%s/MI_SL_Sail_%s_%s" % (MATS, cls, part), masters["cloth"])
+            tex = _tex(os.path.join(TEXDIR, pic), "T_Sail_%s_%s%s" % (cls, part, var))
+            mi = A.instance("%s/MI_SL_Sail_%s_%s%s" % (MATS, cls, part, var), masters["cloth"])
             if tex:
                 A._set(mi, "t", "Image", tex)
             if digits:
@@ -130,6 +133,8 @@ def make_materials():
                 A._set(mi, "v", "NumPort", unreal.LinearColor(*nb["num_port"]))
             mel.update_material_instance(mi)
             eal.save_loaded_asset(mi, False)
+            if var:
+                continue
             out["SL_Sail@SM_Sail_%s_%s" % (cls, part)] = mi
             out["SL_Sail@SM_Sail_%s_%s_LOD1" % (cls, part)] = mi
             if part == "Main":
@@ -202,6 +207,8 @@ def materials_cached():
             n = a.get_name()
             if n.startswith("MI_SL_Sail_"):
                 cls_part = n[len("MI_SL_Sail_"):]
+                if cls_part.endswith(("_Old", "_Patched")):
+                    continue          # cloth variants: chosen by the engine, never the mesh's default
                 for suf in ("", "_LOD1"):
                     out["SL_Sail@SM_Sail_%s%s" % (cls_part, suf)] = a
                 if cls_part.endswith("_Main"):

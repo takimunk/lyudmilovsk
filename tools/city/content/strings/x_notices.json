@@ -70,6 +70,16 @@
   "en": "Lost: a blue bucket and spade. The owner is four, very upset, and building castles with her hands.",
   "ja": "青いバケツとスコップをなくしました。持ち主は四歳。とても心配して、手で砂の城を作っています。"
  },
+ "city.note.lost.sail_cup": {
+  "ru": "Кубок Людмиловска по парусному спорту — в выходные после 20 июня, гонки у пирса с 11 до 16. Нашедшего синий бинокль с надписью «Луч» просят вернуть боцману.",
+  "en": "The Lyudmilovsk Cup in sailing: the weekend after 20 June, racing off the pier from 11 to 4. Whoever found blue binoculars marked “Luch”, please return them to the bosun.",
+  "ja": "ヨットのリュドミロフスク杯は6月20日以降の週末、桟橋沖で11時〜16時。「ルーチ」と書かれた青い双眼鏡を拾った方は甲板長まで。"
+ },
+ "city.note.lost.sail_layup": {
+  "ru": "Найдена детская перчатка с вышитым якорем — у эллинга после закрытия сезона. Хозяина ждёт боцман, по субботам.",
+  "en": "Found by the boathouse after the season closed: a child's glove with an embroidered anchor. The bosun keeps it; Saturdays.",
+  "ja": "シーズン納めのあと艇庫のそばで、錨の刺しゅう入りの子ども用手袋を拾いました。土曜日に甲板長のところで。"
+ },
  "city.notices.club.title": {
   "ru": "Клубная доска",
   "en": "Club notice board",
@@ -149,6 +159,26 @@
   "ru": "Итоги фотоконкурса подведены. Три лучших снимка висят в фотолаборатории «Шестерни», на стене у лески. С первого числа — новая тема.",
   "en": "The photo contest has been judged. The three best prints hang in the Cog's photo lab, on the wall by the drying line. A new theme from the first of the month.",
   "ja": "写真コンクールの結果が出ました。上位三点は「歯車」の写真室、干し紐のそばの壁に。一日からは新しいテーマです。"
+ },
+ "city.note.club.sail_enrol": {
+  "ru": "Взрослая группа яхт-школы «Луч» приглашает новичков: вторник и четверг вечером. Первое занятие — на берегу, узлы и устройство лодки.",
+  "en": "The Luch sailing school's adult group welcomes beginners: Tuesday and Thursday evenings. The first lesson is ashore: knots and the parts of the boat.",
+  "ja": "ヨット学校「ルーチ」の大人班が初心者を募集：火曜と木曜の夕方。最初の授業は陸上で、ロープワークと艇のしくみ。"
+ },
+ "city.note.club.sail_opening": {
+  "ru": "Открытие навигации — в первую субботу после 25 апреля: флаг на мачте в 10:00, парад парусов у пирса в 11:00, потом чай у эллинга. Приходите всей семьёй.",
+  "en": "The sailing season opens on the first Saturday after 25 April: the flag up at 10:00, the parade of sail past the pier at 11:00, then tea at the boathouse. Bring the family.",
+  "ja": "シーズン開きは4月25日以降の最初の土曜日。10時に旗揚げ、11時に桟橋沖で帆のパレード、そのあと艇庫で紅茶。ご家族でどうぞ。"
+ },
+ "city.note.club.sail_closing": {
+  "ru": "Закрытие парусного сезона — в первое воскресенье ноября: последняя гонка, награды, лодки в эллинг, на закате флаг и костёр на пляже. Нужны крепкие руки.",
+  "en": "The sailing season closes on the first Sunday of November: the last race, the prizes, the boats into the boathouse, the flag at sunset and a bonfire on the beach. Strong hands needed.",
+  "ja": "シーズン納めは11月の最初の日曜日。最後のレース、表彰、艇を艇庫へ、日没に旗降ろし、浜でたき火。力のある方、求む。"
+ },
+ "city.note.club.sail_theory": {
+  "ru": "Зимние вечера яхт-школы: по вторникам, четвергам и субботам с 15 до 18 — правила гонок, узлы и починка парусов. Чай свой, печенье общее.",
+  "en": "The sailing school's winter evenings: Tuesdays, Thursdays and Saturdays 3 to 6, racing rules, knots and sail mending. Bring your own tea; the biscuits are shared.",
+  "ja": "ヨット学校の冬の夕べ：火・木・土の15〜18時、レースルール、ロープワーク、帆の繕い。お茶は持参、ビスケットはみんなで。"
  },
  "city.notices.health.title": {
   "ru": "Доска здоровья",
@@ -239,6 +269,16 @@
   "ru": "День лыжника: если выпадет снег — гонка вокруг пруда. Если не выпадет — чай и надежда.",
   "en": "Ski day: if the snow comes, a race round the pond. If not, tea and hope.",
   "ja": "スキーの日：雪が降れば池のまわりでレース。降らなければ、お茶と希望。"
+ },
+ "city.note.school.sail_enrol": {
+  "ru": "Яхт-школа «Луч» набирает ребят 7–17 лет: «Оптимисты», «Кадеты», «Лучи». Запись у боцмана в эллинге, с собой — справка от врача и смелость.",
+  "en": "The Luch sailing school is taking boys and girls aged 7 to 17: Optimists, Cadets, Luches. Enrol with the bosun at the boathouse; bring a doctor's note and some courage.",
+  "ja": "ヨット学校「ルーチ」が7〜17歳を募集：オプティミスト、カデット、ルーチ。艇庫の甲板長まで。医師の証明書と勇気を持参。"
+ },
+ "city.note.school.sail_optimist": {
+  "ru": "1 июня — детская регата «Оптимистов» у пирса, начало в 11:00. Болельщиков просим приносить флажки и не свистеть под руку.",
+  "en": "1 June: the children's Optimist regatta off the pier, starting at 11:00. Supporters, bring flags and please don't whistle at the wrong moment.",
+  "ja": "6月1日、桟橋沖で子どものオプティミスト・レガッタ、11時開始。応援の方は旗を持って、ここぞという時に口笛は控えて。"
  },
  "city.notices.photo.title": {
   "ru": "Фотокружок: конкурс месяца",

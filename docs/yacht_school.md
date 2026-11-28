@@ -656,10 +656,16 @@ and pivots: `blender/sailing/README.md`.
 - **Gear**: trolleys (`SM_Sail_Trolley_<C>`, the boat's origin at manifest `boat_origin`), winter covers
   (`SM_Sail_Cover_<C>`), sail bag, spars rack, the coach's launch `SM_Sail_Launch` + `SM_Sail_Launch_Motor`,
   `SM_Sail_Mark`, `SM_Sail_Pin`, `SM_Sail_Buoy`, `SM_Sail_MOB`, `SM_Sail_AnchorBlock`, `SM_Sail_Rope`, `SM_Sail_Block`.
-- **Boathouse** after part B's site (16.5 × 9 m, ridge to the sea, wall 3.4, ridge 5.6, both doors in the north wall:
-  boat door 3.2 m sliding (two `SM_Sail_Boathouse_DoorLeaf`), people's door ALyudDoor 1.20 × 2.18 hole; classroom in
+- **Sails**: cloth panels with stitched seams after the real layouts, tablings, corner patches, batten pockets, windows;
+  the picture's alpha = light through the cloth (M_Sail_Cloth subsurface). Three cloth looks per sail, chosen per boat by
+  the SL_Sail slot's material: `MI_SL_Sail_<C>_<Main|Jib>` (new), `…_Old`, `…_Patched` (manifest `cloth_variants`).
+- **Boathouse** after part B's site (16.5 × 9 m, both doors in the north wall: boat door 3.2 m sliding (two painted
+  steel `SM_Sail_Boathouse_DoorLeaf` on an overhead rail), people's door ALyudDoor 1.20 × 2.18 hole; classroom in
   the landward 5.3 m, then the hall, changing room + wet store with a sail loft at the seaward end; plinth to −0.85 for
-  the 7 % sand slope). `SM_Sail_Boathouse` (collision exact), `_Glass`, ~40 `SM_Sail_Prop_*`, 10 signal flags
+  the 7 % sand slope), built as 60s–70s seaside modernism: exposed concrete portal frame, a mono-pitch roof rising to
+  the sea (soffit 4.0 → 5.6) and oversailing it, a continuous clerestory band, a gridded glazed wall to the sea over
+  the tessellated mosaic, the starter's balcony (loft level 2.8, door `balcony`) with an external stair on the south
+  side; the hero's spot there is `spots` → `deck_view`. `SM_Sail_Boathouse` (collision exact), `_Glass`, ~50 `SM_Sail_Prop_*`, 10 signal flags
   `SM_Sail_Flag_<id>`, windsock, park slab + fence + gate, slip boards. Placement: `blender/sailing/boathouse_layout.json`
   (building frame: origin on the floor in the middle of the footprint, +X to the sea, −Y the north wall): props with
   rooms and `interactive` kinds, boats on racks / trolleys, doors for `place_doors.py`, sliding doors, lamps, rooms,
@@ -668,3 +674,620 @@ and pivots: `blender/sailing/README.md`.
   `sign.sail.school_name`, `sign.sail.door_line1`, `sign.sail.door_line2` (proposed texts in
   `blender/sailing/sign_strings.json` until part G puts them in the strings tables).
 - Previews: `/mnt/project-files/yacht-school/`.
+
+## Clips (part D)
+
+People's body clips for the school and the props in their hands, all procedural (poser.py IK on the clips' body Guy_a,
+like the house's own clips), baked to `/Game/Characters/Humans/Anims/A_Human_Sail_*` by retarget_clips.py.
+
+**Files.** `blender/humans/sail_clips.py` (entry, bake, `sail_grips.json`), `sail_core.py` (boat numbers, mirrored
+posing, grips, checks), `sail_clips_boat.py` (afloat), `sail_clips_shore.py` (shore, class, coach), `sail_preview.py`
+(contact sheets), `standin_rig.py` (a 56-bone SK_Human_Skeleton stand-in for checking in the cloud, never baked for the
+game), `sail_grips.json` (generated: every clip's hand targets in UE cm and the boat numbers it was posed with). Props in
+`blender/humans/props.py` (`SAIL_MAKERS`). Contact sheets (side, front, top at 5 moments, clay body, stand-in boat drawn
+from the same numbers, the tiller/extension/sheets drawn from the clip's own hand targets):
+`/mnt/project-files/yacht-school/clips/Sail_<Clip>.png`; the props and the jacket worn: `Sail_Props.png`.
+
+**Boat numbers.** Part C's `blender/sailing/sockets.json` is read when present (`sail_core.boat_from_sockets`): seat,
+strap, mainsheet block, tiller pivot and length, extension, boom, mast, crew station, beam, deck height. The clips were
+checked against the sockets.json of `yacht-school-meshes` 7ee3d9bc. When the boats change, re-run the bake (Mac steps).
+
+### Frames and origins
+
+Clip space is the usual body space (UE: the mesh faces +Y, +X its left, +Z up; Blender: faces -Y). In place, root at 0.
+
+| frame | origin of the clip | how the engine places the body |
+|---|---|---|
+| boat (`Sail_Helm` ... `Sail_Climb_In`) | on the boat's centreline abreast the helm's seat (`helm_port.pos.x`), on the floor (`helm_port.feet.z` less the ankle's 8 cm x the class's body scale). `sail_grips.json` `boats.<class>.origin_in_boat` = (x, 0, z) m in the boat frame | attach the body at `origin_in_boat` (boat frame; UE cm = (x, -y, z) x 100), facing the bow (mesh +Y = boat +X: actor yaw = boat yaw - 90, as for any human mesh) |
+| capsized (`Sail_Swim_ToBoard`, `Sail_Right`) | where the centreboard leaves the hull, on the water's surface; the hull lies on its side toward the clip's -X, the board sticks out along +X | attach to the capsized hull at the board's root, clip +X along the board |
+| shore | on the ground between the feet, like every life clip | the actor on the ground as usual |
+| seat (`Sail_Knots_Sit`, `Sail_Listen_Class`) | under the house chair's seat centre (seat top 47 cm, pelvis UE (0, 1, 56.7)), as the Sit clips | as a seated life pose |
+| seat (`Sail_Coach_Drive`) | under the launch's aft thwart's centre (thwart top 40 cm), the outboard's tiller behind on the right | attach to the launch's helm seat |
+
+**Port / Stbd.** Every boat clip comes as `_Port` (the body on the port side deck, i.e. starboard tack: tiller in the
+right hand, sheet in the left) and `_Stbd` (its mirror image, posed mirrored, not bone-flipped). `Sail_Tack_Port` and
+`Sail_Gybe_Port` start as `Sail_Helm_Port` and end as `Sail_Helm_Stbd` (and the other way round).
+
+**Children.** A child is the same skeleton at a smaller BodyScale S. The optimist (posed for S 0.74) and the cadet (0.86,
+helm and crew) clips are posed for a grown-up in the boat scaled by 1/S, so a child of that S fits the real boat
+exactly. For a child of another S' raise the attach point by `deck_z * (1 - S'/S)` (deck_z in `sail_grips.json`) so the
+seat stays on the deck; the hands' targets come from the boat anyway (below). The luch clips are for a grown-up (S 1); a
+teenager in a luch takes the same offset with S = 1.
+
+### The clips
+
+45 clips: 15 boat clips as Port/Stbd pairs (30), and 15 shore ones. 30 fps.
+
+| clip | s | kind | when |
+|---|---|---|---|
+| `Sail_Helm_Port/Stbd` | 8.0 | loop | luch helm on the windward deck: tiller and sheet corrections, looks at the luff, ahead, over the shoulder. Hike 0 |
+| `Sail_Hike_Half_Port/Stbd` | 8.0 | loop | hiking with bent knees, the seat on the gunwale's edge. Hike 0.5 |
+| `Sail_Hike_Full_Port/Stbd` | 8.0 | loop | full hike, legs nearly straight under the strap, hips over the water. Hike 1 |
+| `Sail_Cadet_Helm_Port/Stbd` | 8.0 | loop | cadet helm (a teenager), centre mainsheet |
+| `Sail_Tack_Port/Stbd` | 2.2 | one-shot | tack facing forward: tiller away, duck under the boom, cross, sit, hands swapped behind the back |
+| `Sail_Gybe_Port/Stbd` | 1.6 | one-shot | gybe: quicker, lower duck, the sheet hand grabs the falls and throws the boom over |
+| `Sail_Lull_Port/Stbd` | 8.0 | loop | very light air: kneeling in the cockpit's middle, leaning to leeward |
+| `Sail_Opti_Helm_Port/Stbd` | 7.0 | loop | optimist child on the side deck, the sheet from the boom's block |
+| `Sail_Opti_Bail_Port/Stbd` | 4.0 | loop | optimist child kneeling, bailing (prop `bailer` in the right hand), the extension held low |
+| `Sail_Crew_Jib_Port/Stbd` | 6.0 | loop | cadet crew on the windward side trimming the jib sheet |
+| `Sail_Crew_Tack_Port/Stbd` | 2.4 | one-shot | cadet crew tacking: old sheet off, under the boom, the new side, the new sheet |
+| `Sail_Capsize_Fall_Port/Stbd` | 1.5 | one-shot | the boat goes over to leeward, the helm falls in; ends treading water at clip (1.25, -0.1, -0.95) m (water -0.05). Play it while the hull rolls (the legs pass where the deck was) |
+| `Sail_Swim_ToBoard_Port/Stbd` | 3.0 | one-shot | capsized frame: from treading water to standing on the centreboard, hands to the up gunwale; ends as `Sail_Right` |
+| `Sail_Right_Port/Stbd` | 3.0 | loop | on the board, leaning back in pulses until the boat comes up |
+| `Sail_Climb_In_Port/Stbd` | 3.2 | one-shot | from the water by the side: haul, chest over, a leg in, roll into the cockpit, kneel up; then cross-fade to `Sail_Helm` |
+| `Sail_Rig_Mast` | 5.0 | loop | rigging: the sail's sleeve threaded up the stepped mast hand over hand (mast 0.36 m ahead) |
+| `Sail_Rig_Knot` | 4.0 | loop | crouched at the boat on its trolley, tying off ~0.5 m up |
+| `Sail_Trolley_Push` | 1.25 | loop | walk in place at 0.65 m/s pushing the trolley's bow bar (0.78 m up, 0.5 m ahead). Rate = speed / 0.65 |
+| `Sail_Launch_Hold` | 6.0 | loop | thigh-deep (water 0.6 m) holding the boat head to wind by the bow |
+| `Sail_Hose` | 6.0 | loop | rinsing the hull: the nozzle (prop `hose_nozzle`) in the right hand, the hose in the left |
+| `Sail_Carry_Mast` | 1.1 | loop | walk in place at 1.0 m/s, the mast on the right shoulder. Rate = speed / 1.0 |
+| `Sail_Knots_Sit` | 6.0 | loop | the class at desks tying a knot (prop `knot_cord`, both hands) |
+| `Sail_Listen_Class` | 10.0 | loop | the class at desks listening, following the board (3.5 m ahead), a nod |
+| `Sail_Coach_Point` | 6.0 | loop | the coach pointing with the right arm out to sea / at the board |
+| `Sail_Coach_Megaphone` | 5.0 | loop | the coach calling through the megaphone (prop `megaphone`, right hand), the left hand on the hip |
+| `Sail_Coach_Drive` | 8.0 | loop | the coach on the launch's thwart steering the outboard behind on the right, looking round the fleet |
+| `Sail_Whistle` | 3.0 | loop | the coach's whistle (prop `whistle`, right hand), the left arm up |
+| `Sail_Flag_Hoist` | 2.4 | loop | a flag hoisted on the signal mast's halyard (0.33 m ahead), hand over hand |
+| `Sail_Watch_Sea` | 8.0 | loop | a hand shading the eyes, the sea scanned slowly |
+| `Sail_Cheer` | 3.0 | loop | the finish: fists up, a bounce, clapping |
+
+Not made (TODO): a full-hike clip for the cadet's crew (Crew_Jib hikes moderately), the hero's first-person hands, a
+wave from the boat at the parade of sail (the `wave` manner's gesture over `Sail_Helm` will do).
+
+### Props
+
+`/Game/Characters/Humans/Props/SM_Prop_<name>` (props.py; `EProp` names in `PeopleManners.h`, `HoldOf` in BodyGestures):
+
+| prop | hold | notes |
+|---|---|---|
+| `megaphone` | Palm | the grip across the fist, the cone along the fingers |
+| `whistle` | Fingers | chromed, the lanyard hanging from its ring |
+| `bailer` | Palm | the optimist's scoop cut from a bottle |
+| `knot_cord` | TwoHands | ~0.4 m of braided cord between the hands |
+| `hose_nozzle` | Pointing | a brass pistol nozzle, the hose going back and down |
+| `stopwatch` | Palm | the face out of the palm, the crown along the fingers |
+| `start_flag` | Upright | a blue flag with a white square on a 0.74 m stick |
+| `clipboard` | Palm | the race sheet |
+| `life_jacket` | worn | below |
+
+**The life jacket** (orange foam blocks on a cloth vest, a collar roll, white ties; Soviet style). Its origin is the
+`spine_03` joint of a grown-up (Guy_a's size) and it is modelled in the body's rest frame (mesh space). Attach a static
+mesh component to the body's skeletal mesh at bone `spine_03` with relative location 0, relative rotation
+`RefPoseComponentSpace(spine_03).GetRotation().Inverse()` (so the jacket keeps the mesh's rest orientation over the
+bone) and relative scale `BodyScale` (ANpcBody's; the hero's 1): a child's mesh is the same skeleton made smaller, not a
+scaled component. One mesh fits every size that way (`Sail_Props.png` shows it on a grown-up and on a 0.74 child).
+
+### How the engine plays them
+
+- **Load and play.** `LoadObject<UAnimSequence>(nullptr, TEXT("/Game/Characters/Humans/Anims/A_Human_Sail_Helm_Port.A_Human_Sail_Helm_Port"))`,
+  then on the body's `ULyudBodyAnimInstance` (People/LyudBodyAnim.h): `PlayClip(Seq, bLoop, Rate, BlendTime, StartTime)`.
+  One clip plays at a time with a cross-fade (0.3 s by default). While a resident is in a boat the life must not drive
+  their body (ANpcBody picks a pose clip on its updates, and its `Play`/`Clip` are private): hand the body over to the
+  sailing code, or play after ANpcBody's update. Call `SetOnFeet(false)` in the boat (no ground planting).
+- **The hike** has no blendspace: `Sail_Helm` (0), `Sail_Hike_Half` (0.5) and `Sail_Hike_Full` (1) share one 8 s loop
+  phase, so cross-fade between them keeping the phase: `PlayClip(Next, true, 1.f, 0.6f, CurrentClipPhase() * 8.f)`.
+  Pick the nearest of the three to the autopilot's hike value; the hand IK below follows the real tiller and sheet.
+- **The hands** (tiller extension, mainsheet, jib sheet): every frame `ULyudBodyAnimInstance::SetBikeRider(FBikeRiderPose)`
+  (Public/Bikes/LyudBikeRider.h) with `Weight = 1`, `PelvisWeight = 0`, `TorsoPitch = 0`, `bAutoLean = false`,
+  `HeadUp = 0`, both `Feet[i].Weight = 0`, and for each hand `Hands[i] = { Grip, Axis, Radius, PalmNormal, FingerDir,
+  Weight = 1, Close = 1 }` (0 left, 1 right) in the mesh's component space (cm). LyudBikeRider::ApplyArms bends the arm
+  by two-bone IK, turns the hand onto the bar and closes the fingers round it. The tiller hand: Grip on the extension at
+  the dagger grip (part C's `hand_tiller_ext`; the cadet's `hand_tiller`), Axis along the extension, Radius 1.2 cm. The
+  sheet hand: on the sheet (Radius 0.5) between its block and the clip's hand. `sail_grips.json`
+  `clips.<Clip>.hands.<role>` holds each role's `hand` (l/r), `grip_cm`, `axis`, `palm`, `fingers` and `radius_cm` at the
+  clip's first frame (UE, clip space): the rest values, and a check of the IK. Ease Weight to 0 for the hand swaps in
+  `Sail_Tack`/`Sail_Gybe`/`Sail_Crew_Tack` (the clip carries the hands across) and for the capsize set.
+- **The hero** runs HeroAnimInstance, which cannot play arbitrary clips: in the boat give the hero's mesh a
+  ULyudBodyAnimInstance (same skeleton) while sailing, or add a clip slot to HeroAnimInstance (part E).
+- **Manners** (residents at the school; PeopleManners): `sail_rig`, `sail_knot`, `sail_hose`, `sail_knots` (seated),
+  `sail_listen` (seated), `sail_point`, `sail_megaphone`, `sail_whistle`, `sail_flag`, `sail_watch`, `sail_cheer`: rows in
+  `Content/PeopleData/manners.json` at place kind `sail_school`. Each plays its own clip through `LyudGesture::ClipFor`
+  (standing, or seated where `LyudGesture::ClipSeated`), its prop in the right hand. Part F may narrow the rows to its
+  activities (`doing`).
+
+### Mac steps
+
+```sh
+# 1. pose and bake the clips on Guy_a (reads blender/sailing/sockets.json; writes Saved/ClipSources/sail_clips.glb,
+#    blender/humans/sail_grips.json, Saved/ClipSources/sail_clips_report.json); add -- --preview DIR for sheets
+Blender -b -P blender/humans/sail_clips.py
+# 2. carry them onto the clips' body (clips.json source "sail"); no --only = every clip
+Blender -b -P blender/humans/retarget_clips.py -- --only <the list below>
+# 3. import Saved/LifeAnims/life_anims.glb (now only these) as /Game/Characters/Humans/Anims/A_Human_Sail_*
+#    (LIFE_ONLY=<Name> only when step 2 made a single clip)
+UnrealEditor-Cmd unreal/Lyudmilovsk/Lyudmilovsk.uproject -run=pythonscript -script=unreal/scripts/import_life_anims.py -unattended -nullrhi
+# 4. the props
+Blender -b -P blender/humans/props.py -- --only megaphone,whistle,bailer,knot_cord,hose_nozzle,stopwatch,start_flag,clipboard,life_jacket
+unreal/scripts/import_props.sh megaphone whistle bailer knot_cord hose_nozzle stopwatch start_flag clipboard life_jacket
+```
+
+The list: `Sail_Helm_Port,Sail_Helm_Stbd,Sail_Hike_Half_Port,Sail_Hike_Half_Stbd,Sail_Hike_Full_Port,Sail_Hike_Full_Stbd,Sail_Cadet_Helm_Port,Sail_Cadet_Helm_Stbd,Sail_Tack_Port,Sail_Tack_Stbd,Sail_Gybe_Port,Sail_Gybe_Stbd,Sail_Lull_Port,Sail_Lull_Stbd,Sail_Opti_Helm_Port,Sail_Opti_Helm_Stbd,Sail_Opti_Bail_Port,Sail_Opti_Bail_Stbd,Sail_Crew_Jib_Port,Sail_Crew_Jib_Stbd,Sail_Crew_Tack_Port,Sail_Crew_Tack_Stbd,Sail_Capsize_Fall_Port,Sail_Capsize_Fall_Stbd,Sail_Swim_ToBoard_Port,Sail_Swim_ToBoard_Stbd,Sail_Right_Port,Sail_Right_Stbd,Sail_Climb_In_Port,Sail_Climb_In_Stbd,Sail_Rig_Mast,Sail_Rig_Knot,Sail_Trolley_Push,Sail_Launch_Hold,Sail_Hose,Sail_Carry_Mast,Sail_Knots_Sit,Sail_Listen_Class,Sail_Coach_Point,Sail_Coach_Megaphone,Sail_Coach_Drive,Sail_Whistle,Sail_Flag_Hoist,Sail_Watch_Sea,Sail_Cheer`.
+
+Checked in the cloud on the stand-in only: before importing, look over the Mac bake's own sheets (step 1 with
+`--preview`), since Guy_a's proportions differ a little from the stand-in's. Known contacts the checker reports (cm of a
+limb's skin into the boat): thighs on the deck's edge 3-9 (hike, tack, the cadet's seats, the kneeling lull and
+bailing), the capsize fall's legs where the deck was (the hull rolls away in the game), the climb-in's knees on the side
+deck.
+
+## People (part F)
+
+Real townsfolk belong to the school and live its day. `tools/sailing/sailing_people.py` is an idempotent add-on: it never
+rerolls the town. `tools/town/town_life.py` calls it last, after its other extras. Run it after `tools/sailing/sailing.py`.
+`--check` fails when an output is stale, and `--table` prints the members table below.
+
+It writes:
+- `Content/PeopleData/sailing_members.json`: who belongs, and in which groups and roles.
+- `Content/PeopleData/sailing_spots.json`: the places, and the record of the moved beach slots.
+- Its 33 rows at the end of `activities.json`.
+- The staff's occupations and duties in `townsfolk.json`.
+- Their job titles in `Localization/town/strings_{ru,en,ja}.json`.
+- The two moved `S-BEACH` slots in `town_places.json`.
+
+The binding reaches `sailing.json` through one hook in `sailing.py` (`bind_people`). It runs after the doc strip. From
+`sailing_members.json` it fills each `fleet.sailors[].person`, each `crew_person` and each `coaches.<slot>.person`. When
+the binding changes, `sailing_people.py` reruns `sailing.py`. From the committed (pre-F) data its output is byte-identical
+to what is committed, so the `gen.town_life` row stays green.
+
+### Members
+
+The picks are deterministic: a hash of the key, then filters.
+- The age fits the group.
+- The member is free at the school's hours. Their duties do not clash with the term timetable, the weekly regattas, the
+  theory evenings or the fitting-out. The town's school is exempt in the summer weeks, because the life has no school
+  holidays and the programme wins there.
+- The session ends before their bedtime.
+- Siblings get a small bonus, so `jun_x1` is `kids_2`'s sister.
+- The bosun is preferably a man.
+
+The staff were pensioners or homemakers. Their old occupation is kept in `sail_was` and `sail_was_role`, so a rerun puts
+them back before it picks again.
+
+| slot | who | age | occupation | household |
+|---|---|---|---|---|
+| `coach_head` | Rūta Kask (Рута Каск) | 70 | sail_head_coach (was pensioner) | t_p-t3h2_2-05 |
+| `coach_kids` | Meiling Chen (Мэйлин Чэнь) | 35 | sail_coach (was homemaker) | t_p-t3h3_1-04 |
+| `coach_juniors` | Carmen Ferreira (Кармен Феррейра) | 48 | sail_coach (was homemaker) | t_p-unite_1-22 |
+| `bosun` | Hamish Mansour (Хэмиш Мансур) | 67 | sail_bosun (was pensioner) | t_p-t3h2_4-10 |
+| `kids_1` | Ananya Belousova (Ананья Белоусова) | 10 | pupil | t_p-t1h2_2-01 |
+| `kids_2` | Wei Nguyễn (Вэй Нгуен) | 10 | pupil | t_p-wave_6-01 |
+| `kids_3` | Santiago Zhang (Сантьяго Чжан) | 9 | pupil | t_p-serpentine_3-14 |
+| `kids_4` | Tiago Romano (Тиагу Романо) | 8 | pupil | t_p-unite_9-15 |
+| `kids_5` | Ama Yavorska (Ама Яворская) | 7 | pupil | t_p-unite_3-16 |
+| `kids_6` | Sachiko Dubois (Сатико Дюбуа) | 7 | pupil | t_p-serpentine_2-29 |
+| `kids_7` | Haruki Bauer (Харуки Бауэр) | 7 | pupil | t_p-serpentine_2-13 |
+| `kids_8` | Hiroshi Papadopoulos (Хироси Пападопулос) | 7 | pupil | t_p-wave_7-03 |
+| `jun_l1` | Femke Bekele (Фемке Бекеле) | 17 | pupil | t_p-unite_11-18 |
+| `jun_l2` | Ursula Virtanen (Урсула Виртанен) | 15 | pupil | t_w5-d041 |
+| `jun_l3` | Małgorzata Svobodová (Малгожата Свободова) | 15 | pupil | t_p-riser2_0-06 |
+| `jun_c1` | Rashid Yavorskyi (Рашид Яворский) | 14 | pupil | t_w5-d103 |
+| `jun_c2` | Håkon Mortensen (Хокон Мортенсен) | 13 | pupil | t_p-unite_5-05 |
+| `jun_c3` | Nurlan Okafor (Нурлан Окафор) | 13 | pupil | t_p-unite_9-24 |
+| `jun_c4` | Freja Bautista (Фрея Баутиста) | 13 | pupil | t_w5-d096 |
+| `jun_x1` | Yanka Nguyễn (Янка Нгуен) | 12 | pupil | t_p-wave_6-01 |
+| `jun_x2` | Nour Zhang (Нур Чжан) | 12 | pupil | t_w4-d041 |
+| `jun_x3` | Arjun Chen (Арджун Чэнь) | 12 | pupil | t_w5-d081 |
+| `jun_x4` | Oksana Korhonen (Оксана Корхонен) | 12 | pupil | t_p-unite_5-03 |
+| `adult_1` | Aiko Vinogradova (Айко Виноградова) | 28 | doctor | t_p-capsule_11-06 |
+| `adult_2` | Gennady Lefebvre (Геннадий Лефевр) | 26 | station_barista | t_p-t1h1_0-02 |
+| `adult_3` | Nino Girma (Нино Гирма) | 42 | away | t_p-riser1_4-01 |
+| `adult_4` | Tiago Sargsyan (Тиагу Саргсян) | 21 | unemployed | t_p-serpentine_7-03 |
+| `adult_5` | Yerlan Ozols (Ерлан Озолс) | 49 | artist | t_p-serpentine_5-15 |
+
+13 parents of the children (group `kids_parents`, no slot) wait for them on the parents' bench.
+
+Groups and roles (`sailing_members.json`; while a group has a programme its members do it, and a member's first group with
+one wins):
+
+| who | groups [group, role] |
+|---|---|
+| `coach_head` | adults coach, race officer, all coach, staff |
+| `coach_kids` | kids coach, race coach2, staff |
+| `coach_juniors` | juniors coach, race coach2, staff |
+| `bosun` | kids, juniors, adults, race, all: bosun; staff |
+| `kids_1..8` | kids, race_optimist |
+| `jun_c1..4`, `jun_x1..4` | juniors, race_cadet, theory, crew |
+| `jun_l1..3`, `adult_1..5` | juniors / adults, race_luch, theory, crew |
+| parents | kids_parents |
+
+A role turns the pupils' activity into its own through `roles`:
+- `coach`: `sail_drill` → `sail_coach_launch`.
+- `coach2`: in a race, `sail_race` → `sail_coach_mast`.
+- `bosun`: afloat → `sail_bosun_watch`, ashore → `sail_bosun_park` / `slip` / `mend`.
+- An empty mapping means the role skips that part.
+
+### Their week
+
+The phase clock is the rules' `SchoolSessionAt`, so the people change parts at the same minutes as the engine.
+`Private/People/SailPeople.h` (plain C++) runs every 3 s and after a clock jump. It turns the date, the hour and the
+conditions into programmes: `ProgramsAt` gives (group, activity) pairs, and `Apply` hands them to
+`FWorld::SetGroupActivity`. A member's duty is then the programme, ahead of their own duties. The pull is strong: they
+start it at once and break off a free-time activity within ~20 s. They still go to school, eat and sleep, because outside
+the sessions nothing pulls.
+
+- **Term (from the opening to May 31, September to the closing).**
+  - Children: Tue/Thu 15:00-17:30, Sat 10:00-12:30. Juniors: Wed/Fri 15:00-17:45, Sat 13:00-16:00. Adults: Tue/Thu
+    18:00-20:30, Sat 16:30-19:00.
+  - The parts: change → rig → launch → afloat (hidden; the engine draws the boat) → land → de-rig → tea.
+  - Each session's first part is called 24 min early (`LeadH`), so they walk there in time.
+  - The timetable's `TimetableFitDaylight` cuts a session short in the dark: in late October the children come in before
+    sunset.
+- **Summer (June 1 - August 31).**
+  - Children: Mon-Fri 10:00-12:30. Juniors: Mon-Fri 13:30-16:30. Adults: Tue/Thu 18:30-21:00. Saturdays as in term.
+- **Regattas.**
+  - Wednesday 18:00 (luches) and Sunday 11:00-15:00 (all classes): briefing, rig, launch, the races afloat, land,
+    de-rig, prizes.
+  - The opening, the closing, June 1 and the cup take whole days.
+  - The head coach is the race officer. The other coaches are at the mast or in the launch. The bosun keeps watch.
+- **Wrong wind.** The go / no-go is the engine's state. With `sail_shore` on, an afloat session runs ashore instead:
+  change → shore lesson on the lawn → tea, with the coach at `sail_coach_shore`. A recall goes the same way, from the
+  minute the boats come in.
+- **Out of season.**
+  - Fitting-out (the 14 days before the opening) and laying-up (the 7 days after the closing): the staff work 10:00-17:00
+    (`sail_paint` at the trestles, `sail_layup` at the boat door). At weekends the `crew` group helps.
+  - Laid up: the head coach's theory evenings, Tue/Thu/Sat 15:00-18:00, with the bosun mending. The `theory` group comes
+    on Saturdays.
+- **Staff hours.**
+  - The bosun is at the boathouse 9:00-19:00 every day, all year (`sail_bosun_day`, staff role `bosun`). It meets
+    hunger like the other day jobs (his sandwiches at the bench), so a meal does not leave the boathouse unmanned.
+  - The head coach keeps her office Tue-Sat 10:00-13:00 in season (`sail_office`, `when` `sail_season`, role `coach`).
+  - Otherwise they are at their sessions. Duty `days` count from Monday = 0.
+- **Around them.**
+  - Regatta days: `watch_regatta` (free time, `when` `sail_race`, more at weekends) fills the three spectators' places:
+    the beach, the pier and the promenade.
+  - Children's sessions: `wait_child` (`when` `sail_kids`, members `kids_parents`) seats parents on the bench by the
+    boathouse.
+
+### Activities
+
+All 33 are free-time 0 (programme or duty only), except the last two. A `clip` key is a hint for the body clips part (D).
+The activity loader ignores keys it does not know, and no manners entry binds `sail_*`, so today the pose is drawn: the
+fallback is safe, checked by grepping `Private/` for `"clip"` (none) and `manners.json` for `sail_` (none). When D adds a
+clip, a manners row `"doing": ["sail_rig"]` picks it up. The C++ needs no change.
+
+| activity | place / slots | pose | flags | clip hint |
+|---|---|---|---|---|
+| `sail_change` | sail_school / sail_changing | stand | | |
+| `sail_rig` | sail_school / sail_rig | stand | | Sail_Rig_Mast |
+| `sail_launch`, `sail_land` | sail_school / sail_slip | stand | | Sail_Trolley_Push |
+| `sail_drill`, `sail_race` | sail_school / sail_afloat | hidden | afloat | |
+| `sail_derig` | sail_school / sail_rig, sail_wash | stand | | Sail_Hose |
+| `sail_tea` | sail_school / sail_class | sit | | |
+| `sail_shore_lesson` | sail_school / sail_lawn | look | | Sail_Knots_Sit |
+| `sail_arrive` | sail_school / sail_door | stand | | |
+| `sail_theory` | sail_school / sail_class | sit | | Sail_Listen_Class |
+| `sail_briefing` | sail_school / sail_notice | stand | | Sail_Listen_Class |
+| `sail_prizes` | sail_school / sail_podium_crowd | look | | Sail_Cheer |
+| `sail_paint` | sail_school / sail_trestle | stand | | |
+| `sail_layup` | sail_school / sail_boatdoor | stand | | Sail_Carry_Mast |
+| `sail_coach_wait` | sail_school / sail_coach_door | stand | | |
+| `sail_coach_rig` | sail_school / sail_coach_rig | stand | | Sail_Coach_Point |
+| `sail_coach_slip` | sail_school / sail_coach_slip | stand | | Sail_Whistle |
+| `sail_coach_launch` | sail_school / sail_launch_boat | hidden | afloat | Sail_Coach_Drive |
+| `sail_coach_tea` | sail_school / sail_tea_table | stand | | |
+| `sail_coach_shore` | sail_school / sail_coach_shore | stand | | Sail_Coach_Point |
+| `sail_coach_class` | sail_school / sail_blackboard | stand | | Sail_Coach_Point |
+| `sail_coach_brief` | sail_school / sail_coach_board | stand | | Sail_Coach_Megaphone |
+| `sail_coach_prizes` | sail_school / sail_podium | stand | | |
+| `sail_coach_mast` | sail_school / sail_mast | look | | Sail_Flag_Hoist |
+| `sail_bosun_park` | sail_school / sail_bosun_park | stand | | Sail_Trolley_Push |
+| `sail_bosun_slip` | sail_school / sail_bosun_slip | stand | | Sail_Launch_Hold |
+| `sail_bosun_watch` | sail_school / sail_mast | look | | Sail_Watch_Sea |
+| `sail_bosun_mend` | sail_school / sail_bench | sit | | Sail_Knots_Sit |
+| `sail_bosun_day` | sail_school / staff | stand | duty, staff | Sail_Hose |
+| `sail_office` | sail_school / staff | stand | duty, staff, when sail_season | |
+| `watch_regatta` | sail_spectators / watch | look | free, when sail_race, Sat/Sun more | Sail_Cheer |
+| `wait_child` | sail_parents / sail_parent | look | free, when sail_kids, members kids_parents | Sail_Watch_Sea |
+
+New keys in `activities.json`, read by `FWorld::LoadActivities`:
+- `members`: only members of that group take it.
+- `afloat`: the person is in a boat.
+
+### Places (`sailing_spots.json`, town_plan spots format)
+
+- **`S-SAIL-SCHOOL`** (kind `sail_school`): the boathouse and its park, built from `school.points`. A slot's `reach` is its
+  way on from the walk grid (through the gate, the park's aisle or a door), walked as a line. The walk grid does not know
+  the boathouse's walls, so this is how people get in. The afloat slots stand at the slip's foot, reached from the slip's
+  head. The staff slots are tagged `bosun` / `coach`.
+- **`S-SAIL-WATCH-BEACH`, `S-SAIL-WATCH-PIER`, `S-SAIL-WATCH-PROM`** (kind `sail_spectators`): from `spectators_beach`,
+  `spectators_pier` and the promenade.
+- **`S-SAIL-PARENTS`** (kind `sail_parents`): 6 places by the park, outside the footprint.
+- **`moved`**: the two `S-BEACH` sit_ground slots inside the footprint went along the shore, (156.01, 883.9) → (156.01,
+  869.4) and (153.46, 897.2) → (153.46, 880.7). Only `town_places.json` changed: `public_spaces.json` belongs to
+  `tools/public_spaces.py` and keeps the old positions. `check_town_data.py` reads this record when it compares the two.
+
+`FWorld::Load` loads `sailing_spots.json` after the town's places, then `sailing_members.json` (`LoadMembers`).
+
+### The engine's query
+
+```cpp
+UFUNCTION(BlueprintCallable, Category="People|Sailing")
+void UPeopleLifeSubsystem::GetSailors(TArray<FLyudSailorNow>& Out) const;
+
+USTRUCT(BlueprintType) struct FLyudSailorNow   // Public/People/PeopleLife.h
+{ FName Person; int32 Id = -1; FName Slot; FName Group; FName Activity; float AgeYears = 0.f; bool bAfloat = false; };
+```
+
+It lists every member with a slot who is at a programme now.
+- `Group`: kids / juniors / adults / race (any `race_<class>`), all, staff, theory or crew.
+- `Activity`: the life's activity id.
+- `bAfloat`: the activity is an afloat one and they are doing it (or settling into it).
+
+While `bAfloat` the life's own body is hidden at the slip's foot. The engine draws them in the boat (a coach in the
+launch) and calls `SetPresentedExternally(Id, true)`.
+
+### What the engine must set and present
+
+- **Conditions.** Every few seconds the engine calls `SetCondition`, from `SchoolConditionsAt` and the day's states:
+  - `sail_season`, `sail_kids`, `sail_juniors`, `sail_adults`, `sail_race`, `sail_shore` and `sail_fitout`. Fitout is
+    not in the base contract, but F needs it.
+  - `sail_shore` is on for a no-go and from a recall.
+  - Optional: `sail_watch` / `sail_prizes`, and `SetGathering("sail_watch", ...)`.
+
+  The people follow a session only while its condition is on, so the conditions are the engine's word. The subsystem's
+  `UpdateSailing` loads `City/sailing.json` once and takes the date from `UGameCalendar`.
+- **Talk.**
+  - The staff's bodies carry the role's dialogue id as their `TalkId`: `Sail_coach_head`, `Sail_coach_kids`,
+    `Sail_coach_juniors` or `Sail_bosun`, from the binding's `dialogue`.
+  - They are talkable (no `NoTalk` tag), are not taken from the town's pool, and stay alive when out of range.
+  - Quests use `talk Sail_bosun` etc.
+- **`StaffOnShift("S-SAIL-SCHOOL", Role)`** works with either convention:
+  - The slot names `coach_head`, `coach_kids`, `coach_juniors` and `bosun` find that one person at any programme part,
+    afloat too (to seat the launch's driver).
+  - The words part's roles `coach` and `bosun` find whoever is on duty or at an ashore part.
+- **Bodies.** `sail_*` poses are stand, sit, look or hidden. The clip hints wait for D (see Activities).
+
+### Tests
+
+`tools/peoplesim/run.sh sailing` (`tools/peoplesim/sailing_people.h`, ~4 min) drives the whole town as the game does.
+`LYUD_SAIL_ONLY=may|town|july|wind|season|dark` runs one part, and `LYUD_SAIL_TRACE=<key>` prints one person every five
+minutes. The weeks live through their nights in 4 s steps. A clock jump (Resettle) leaves the townsfolk as tired as at
+bedtime, and then the base sim's people flit between a duty and rest. That happens to anyone's school or work too, not
+only the school's. It checks:
+- The members: every sailor, crew and coach is bound, nobody twice, all of their group's ages. The staff talk ids are set.
+- No other place's slot is inside the boathouse's or the park's footprint, and nobody stays at another place inside it.
+  People walking through are counted and printed as a note (the walk grid, see Open issues).
+- A May term week (May 11-17, 2026): attendance ≥ 85%. The children still go to school every weekday, eat, and are home
+  by 22:00. Boats are out.
+- The regatta Sunday draws spectators and racers, and the parents wait.
+- The head coach is at the boathouse and found by `StaffOnShift` Tue-Sat 10-13. The bosun is found in his hours.
+- The same Tuesday without the school: the non-members' person-minutes by kind of place move < 5% (1.7% now). By
+  single place it is ~15%, because who sits on which bench is chance; that number is printed, not checked.
+- A July holiday week (July 13-19): attendance ≥ 85%, the children eat and sleep, and the head coach is findable.
+- A day past the luches' wind limit: the shore lesson, nobody afloat, and the children's coach teaching.
+- Fitting-out (Sat April 11 and Wed April 15): nobody afloat. The staff work on the Wednesday; the staff and the crew work
+  on the Saturday. A March Saturday: nobody afloat.
+- Late October: the children go out but are never afloat after sunset.
+- Afloat people are unseen, and no slot is overbooked.
+
+Also `python3 tools/sailing/sailing_people.py --check`. `tools/run_all_suites.sh` has the rows `peoplesim.sailing` (slow)
+and `sailing_people.check`. `check_town_data.py` and `check_data.py` know `sailing_spots.json`.
+
+### Open issues
+
+- `S-TOWEL-07` (a summer towel spot with two lie slots at about (155.7, 892.9)) is still inside the park in
+  `City/public_spaces.json`. The life does not load summer spots, but whatever draws the towels does.
+  `tools/public_spaces.py` should keep its towels and sit_ground slots out of `school.boathouse/park/slip`. When it does,
+  rerun `sailing_people.py` and the `moved` record empties.
+- The walk grid (`animal_world.bin`) does not know the boathouse. People get in by the slots' reaches. Once the grid is
+  rebuilt with the building, the reaches still work.
+
+### On the Mac
+
+```
+python3 tools/sailing/sailing.py && python3 tools/sailing/sailing_people.py    # only if the school's data changed; commit
+python3 tools/sailing/sailing_people.py --check
+tools/peoplesim/run.sh sailing
+```
+
+In the editor:
+1. Open `sailing.school` with the clock at a Tuesday in May, 15:00 (Dev). Check that the children change, rig and walk
+   the boats down, then vanish at the slip's foot.
+2. Check that `GetSailors` lists them `bAfloat` and the engine shows them in the boats.
+3. Talk to the bosun (`Sail_bosun`).
+4. Set a Sunday 11:00 and look for spectators on the pier and the beach.
+
+## Town: festivals, paper, radio, talk
+
+What the town makes of the school: three festival days, a sailing column and notices in the town paper, a sailors'
+forecast and results on the radio, ~80 townsfolk lines, five rumours about the hero and the letters that follow them.
+None of it needs the school to be built: without the school's engine the paper and the radio simply say nothing about
+sailing, and the festivals, notices and barks run on the calendar alone.
+
+### Festivals (`Content/PeopleData/festivals.json`, `docs/festivals.md` "The yacht school's days")
+
+| id | rule | phases (hours) |
+|---|---|---|
+| `sail_opening` | `weekday_on_after` 25 April, Saturday | flag 10–11 beach, parade of sail 11–11:45 pier, regatta 11:45–15:30 promenade, tea 15:30–17 beach |
+| `sail_cup` | `weekday_on_after` 20 June, Saturday, 2 days | races 11–16 pier (both days), prizes 16–17 pier (day 2) |
+| `sail_closing` | `nth_weekday` November, 1st Sunday | regatta 11–14:30 pier, prizes 14:30–15:30, boats in 15:30–16:30, flag down 16:30–17 (beach), bonfire 17–20:30 |
+| `children_day` | (unchanged date) | new phase `optimists` 11–14:30 on the pier: the children's Optimist regatta |
+
+`weekday_on_after` (new in `LyudFest::StartsOn`, helper `WeekdayOnOrAfter(Y, M, D, Wd)`): the first given weekday on
+or after a date. Each day has a menu, flags and bunting on the pier, beach and promenade, four festival voices
+(`fv_sail_<day>_{bring,grump,kid,elder}`), names in the main tables (`festival.sail_opening/sail_cup/sail_closing
+.name/.desc/.today`), and the opening and the closing have quests (`fest_sail_opening`: the parade and the tea;
+`fest_sail_closing`: the boats in and the bonfire). The cup is `cup_lyudmilovsk` in the school's data.
+
+The dates agree with the school's `LyudSail::SeasonOpening / SeasonClosing / RaceDayOn` (festivalsim checks every year
+2026–2060; `tools/festivalsim/run.sh sail [Y0 [Y1]]` prints the table):
+
+| year | opening | cup (2 days) | children's regatta | closing |
+|---|---|---|---|---|
+| 2026 | Sat 25 Apr | Sat 20 Jun | 1 Jun | Sun 1 Nov |
+| 2027 | Sat 1 May | Sat 26 Jun | 1 Jun | Sun 7 Nov |
+| 2028 | Sat 29 Apr | Sat 24 Jun | 1 Jun | Sun 5 Nov |
+| 2029 | Sat 28 Apr | Sat 23 Jun | 1 Jun | Sun 4 Nov |
+| 2030 | Sat 27 Apr | Sat 22 Jun | 1 Jun | Sun 3 Nov |
+
+### Engine facts: `Public/Sailing/LyudSailNews.h`
+
+The paper and the radio ask through two free functions. They answer nothing until the school's engine registers
+providers, so the town builds and runs with or without the school. The default implementation is in
+`Private/Sailing/LyudSailNews.cpp`.
+
+```cpp
+struct FLyudSailNewsItem   // one class's racing on a day
+{
+	FName Event;            // sail_opening, sail_closing, optimist_day, cup_lyudmilovsk, wednesday, sunday
+	FName Class;            // optimist, cadet, luch
+	TArray<FName> Podium;   // up to 3: townsfolk key (npc.<key>.name), "hero", or NAME_None (a nameless sailor)
+	float WindMs = 0.f;     // mean wind of the racing
+	int32 Boats = 0;        // starters (largest race of the day in this class)
+	int32 Capsizes = 0;
+	bool bRecall = false;   // a general recall at any start
+	int32 Day = 0;          // the event's day (the cup: 0 and 1)
+	int32 HeroPlace = 0;    // 0 = the hero did not race
+	bool bAbandoned = false;
+};
+
+struct FLyudSailMorning    // the morning's facts for the sailors' forecast
+{
+	int32 Season = -1;      // LyudSail::ESeasonState: 0 laid up, 1 fitting out, 2 open, 3 laying up; -1 unknown
+	int32 Call = 0;         // 0 nothing, 1 sail, 2 reef, 3 race, 4 shore, 5 storm, 6 closed
+	FName Reason;           // calm, wind, gust, thunder, fog, dark, ice, low_water (shore/closed days)
+	FName Event;            // today's regatta or NAME_None
+	FString EventTime;      // its warning signal "HH:MM"
+	float WindMs = 0.f, GustMs = 0.f, FromDeg = 0.f;   // FromDeg: compass, 270 = from the west (off the sea)
+	int32 Shift = 0;        // 0 steady, 1 veers, 2 backs, 3 dies away, 4 freshens
+	bool bRecallRisk = false;
+	FString BestHour;       // "HH:MM" or empty
+	FString LowWater;       // "HH:MM" when the trolleys go far over the flats, or empty
+};
+
+using FLyudSailNewsProvider = TFunction<void(const UObject* WorldContext, int32 DayNumber, TArray<FLyudSailNewsItem>& Out)>;
+using FLyudSailMorningProvider = TFunction<bool(const UObject* WorldContext, int32 DayNumber, FLyudSailMorning& Out)>;
+
+LYUDMILOVSK_API void LyudSailNewsOfDay(const UObject* WorldContext, int32 DayNumber, TArray<FLyudSailNewsItem>& Out);
+LYUDMILOVSK_API bool LyudSailMorningOf(const UObject* WorldContext, int32 DayNumber, FLyudSailMorning& Out);
+LYUDMILOVSK_API void LyudSetSailNewsProviders(FLyudSailNewsProvider News, FLyudSailMorningProvider Morning);
+```
+
+`DayNumber` is the number of days since 1970-01-01 of the game's local date (`LyudFest::DaysFromCivil`, the same as
+`LyudSail::SchoolDayNumber`). What the school's engine (ULyudSailing) still has to do:
+
+- Call `LyudSetSailNewsProviders` in `Initialize`, and call it again with empty functions in `Deinitialize`.
+- The news provider maps `SchoolNewsOfDay` to one item per class. For **today** it should give only races already
+  finished: the radio's evening bulletin (after 16:00) reads today's results.
+- The morning provider maps `SchoolForecastForSailors` and the season state.
+- Fire the quest event **`sail towed`** (`ULyudQuests::Notify("sail", "towed")`) when the coach's launch tows the
+  hero's boat home. The rumour `tow` hangs on it; the other rumours use the events already listed (`sail join`,
+  `sail capsize`, `sail race_win`, `sail certificate`).
+
+Who calls the functions:
+
+- `ULyudTownPaper::BuildFacts` asks for yesterday's news and the morning's season.
+- `ULyudMusic::RefreshFacts` asks for yesterday's and today's news and today's morning.
+
+### Town paper (`TownPaperModel.h`, `tools/paper/strings_src.py` SAIL)
+
+- **Town page sailing column** (after the cups):
+  - a head;
+  - the opening or closing feature;
+  - one line per class: the podium by townsfolk name key, "the hero" or "a sailor of the school"; or "few finished";
+    or "abandoned"; and "all abandoned" when every race was off;
+  - the wind, once;
+  - a recall, capsizes, and the hero's place.
+- **Front page**: `front.sail_win` when the hero won.
+- **Weather page**: a storm warning for sailors, when the season is open and the wind is 14 m/s or more.
+- **Bills page**:
+  - today's Wednesday or Sunday race (not on festival days);
+  - the fitting out in April (season 1);
+  - the laying up (season 3).
+- **Other pieces**:
+  - four archive pieces on the school's history;
+  - four small ads;
+  - six festival blurbs.
+- **Notice boards** (8, via `x_notices`):
+  - club: enrolment, opening, closing, winter theory;
+  - school: enrolment, Optimist day;
+  - lost & found: a lost item at the cup, a lost item at laying up.
+- **Keys**: about 45 `paper.sail.*`.
+
+### Radio (`MusicModel.h`, `tools/music/strings.json`: 58 `music.radio.sail.*`)
+
+- **Morning weather** (before 12:00, on the school's days): the sailors' forecast. It gives:
+  - the wind by its Pomor name from the compass (`dir.0..7`: сиверко, полуночник, … шелоник, побережник);
+  - the speed and the gusts;
+  - the sea state (`force.0..5`; white horses from 6 m/s);
+  - the call (`call.sail / sail_any / reef / race / shore / storm / closed`) with its reason;
+  - the shift through the day, a recall risk, and low water.
+- **News bulletins**: yesterday's results in the morning, a race-day notice at noon, today's results in the evening.
+- **Sign-on**: on the school's own days (opening, closing, cup, Optimist day), a special line.
+
+### Talk
+
+- **Barks** (`tools/barks/lines/18_sailing.txt`, 70 lines: 62 single lines and 8 in two pier talks):
+  - spectators on the pier and the promenade;
+  - parents on the beach;
+  - children bragging and hurrying to the boathouse;
+  - old men remembering;
+  - sailors' weather;
+  - winter longing and spring fitting out;
+  - greetings to the hero for each rumour.
+- **Festival voices**: 12 more lines in `17_festival_voices.txt`.
+- **New weather words**: `windy` (the area's mean wind 8 m/s or more) and `calm` (under 1.5 m/s). They come from
+  `ULyudWindSubsystem::GetMeanSpeed` through `LyudBarks::WindWords(float MeanWindMs, std::vector<std::string>& Out)`,
+  which `ULyudTownTalk` calls after `WeatherWords`.
+- **Rumours** (`tools/rumours/rumours.py`, 19 kinds now). Each kind has paper and ask-in-shop lines and a letter
+  postscript:
+
+  | kind | event | rank | note |
+  |---|---|---|---|
+  | `sail` | `sail join` | 4 | once |
+  | `capsize` | `sail capsize` | 2 | |
+  | `regatta` | `sail race_win` | 8 | 0.3 chance of the paper |
+  | `tow` | `sail towed` | 3 | |
+  | `skipper` | `sail certificate` | 6 | once |
+
+### Checks
+
+- `tools/festivalsim/run.sh`: the new rule, each day's window, the cup's length, and the school's dates against the
+  festivals' for 2026–2060 (140 days).
+- `tools/papersim/run.sh` (36 checks):
+  - the column on race days only;
+  - the features;
+  - townsfolk name keys on the podium;
+  - the hero's front page;
+  - the storm warning in season only;
+  - today's race, the fitting out and the laying up;
+  - nothing about sailing without the school.
+- `tools/musicsim/run.sh`:
+  - the forecast in the morning weather only;
+  - the results in the right bulletins, the noon race notice, the sign-on specials;
+  - at least 12 word families on air;
+  - the podium's keys, the compass names, the sea by the wind;
+  - nothing about sailing without the school.
+- `tools/barksim/run.sh`:
+  - every line within the bubble limits;
+  - `windy` and `calm` skies;
+  - every rumour kind has a greeting.
+
+### Known gaps
+
+- Not yet compiled in Unreal: the host suites build the models, but `LyudSailNews.cpp`, the `LyudTownPaper.cpp` and
+  `LyudMusic.cpp` hooks and the `TownTalk.cpp` wind call still need a Mac build.
+- The school's own spectator pull (`SchoolSpectatorPull`) and the festivals' `watch sea` phases both draw people to
+  the pier on the opening, the cup and the closing. Part F should let the festival lead on those days, so the crowd is
+  not counted twice.
+- The pier sets `sail_watch_pier` and `sail_pier_talk1` fit nobody on barksim's sample day: the people sim seldom puts
+  adults on the pier. They will fit once part F's spectator activities send people there.

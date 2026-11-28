@@ -120,95 +120,266 @@ def gable(m, x0, x1, half_w, z0, z1, slot_out, slot_in, out_sign):
         m.face([a[i], a[j], b[j], b[i]], "CT_Concrete")
 
 
+ROOF_LO = 4.0                # roof soffit at the landward wall; it rises to RIDGE (5.6) at the seaward wall
+ROOF_T = 0.24                # roof slab
+OVER = 2.6                   # the roof oversails the seaward wall (over the starter's balcony)
+BALC = (2.80, 1.60)          # the starter's balcony: floor (= the loft's floor), depth out from the seaward wall
+STAIR_Y = (Y1 + 0.50, Y1 + 1.50)
+
+
+def zu(x):
+    """Roof soffit height at x (the mono-pitch rises toward the sea)."""
+    return ROOF_LO + (RIDGE - ROOF_LO) * (x - X0) / L
+
+
+def slab_xz(m, poly, y0, y1, s_front, s_back, s_edges="CT_Concrete"):
+    """A prism of a polygon [(x, z)] (counter-clockwise with x right, z up) between y0 (front, faces -Y) and y1;
+    s_edges: one slot or one per polygon edge."""
+    a = [m.bm.verts.new((x, y0, z)) for x, z in poly]
+    b = [m.bm.verts.new((x, y1, z)) for x, z in poly]
+    m.face(a, s_front)
+    m.face(b[::-1], s_back)
+    n = len(poly)
+    for i in range(n):
+        j = (i + 1) % n
+        s = s_edges[i] if isinstance(s_edges, (list, tuple)) else s_edges
+        m.face([a[i], b[i], b[j], a[j]], s)
+
+
+def slab_yz(m, poly, x0, x1, s_front, s_back, s_edges="CT_Concrete"):
+    """A prism of a polygon [(y, z)] (counter-clockwise with y right, z up as seen from +X) between x1 (front, faces +X)
+    and x0."""
+    a = [m.bm.verts.new((x1, y, z)) for y, z in poly]
+    b = [m.bm.verts.new((x0, y, z)) for y, z in poly]
+    m.face(a, s_front)
+    m.face(b[::-1], s_back)
+    n = len(poly)
+    for i in range(n):
+        j = (i + 1) % n
+        s = s_edges[i] if isinstance(s_edges, (list, tuple)) else s_edges
+        m.face([a[i], b[i], b[j], a[j]], s)
+
+
+def rail_run(m, pts, h=1.05, slot="CT_SteelWhite", post_step=1.1, rails=(0.38, 0.72)):
+    """A steel railing along a polyline on its floor: posts, a top rail and intermediate rails."""
+    pts = [Vector(p) for p in pts]
+    for a, b in zip(pts, pts[1:]):
+        n = max(1, int(round((b - a).length / post_step)))
+        for k in range(n + 1):
+            p = a + (b - a) * k / n
+            m.tube(p, p + Vector((0, 0, h)), 0.022, slot, seg=8)
+    m.pipe([p + Vector((0, 0, h)) for p in pts], 0.026, slot, seg=8)
+    for z in rails:
+        m.pipe([p + Vector((0, 0, z)) for p in pts], 0.012, slot, seg=6)
+
+
+def _grime(m, pts_base, out, seed):
+    """Splash staining: a thin jagged band on a wall's outside face from the sand up ~0.3-0.5 m; pts_base = [(x, y)]
+    along the wall, out = the outward normal (3 mm proud)."""
+    import random as _r
+    r = _r.Random(seed)
+    o = Vector(out) * 0.004
+    for (xa, ya), (xb, yb) in zip(pts_base, pts_base[1:]):
+        za, zb = ground(xa), ground(xb)
+        ha, hb = r.uniform(0.22, 0.48), r.uniform(0.22, 0.48)
+        quad = [Vector((xa, ya, za - 0.05)) + o, Vector((xb, yb, zb - 0.05)) + o, Vector((xb, yb, zb + hb)) + o, Vector((xa, ya, za + ha)) + o]
+        f = m.face(quad, "SL_Grime")
+        if f is not None and f.normal.dot(Vector(out)) < 0:
+            f.normal_flip()
+
+
+def _drift(m, line, out, width, seed):
+    """Sand drifted against a wall: a strip from the wall foot (a heap 0.12-0.3 m high) out to the beach."""
+    import random as _r
+    r = _r.Random(seed)
+    o = Vector(out)
+    prev = None
+    for (x, y) in line:
+        h = r.uniform(0.10, 0.30)
+        inner = Vector((x, y, ground(x) + h))
+        mid = Vector((x, y, 0)) + o * width * 0.45
+        mid.z = ground(mid.x) + h * 0.45
+        outer = Vector((x, y, 0)) + o * width
+        outer.z = ground(outer.x) - 0.04
+        cur = (inner, mid, outer)
+        if prev:
+            for k in range(2):
+                f = m.face([prev[k], cur[k], cur[k + 1], prev[k + 1]], "SL_Sand", smooth=True)
+                if f is not None and f.normal.z < 0:
+                    f.normal_flip()
+        prev = cur
+
+
+def _mosaic_panel(m, cx_y, z0, size, n=28):
+    """The «Луч» mosaic on the seaward wall as real tesserae: n x n tiles (each its own little quad with its own patch of
+    the mosaic picture, a few mm proud of the grout bed, slightly uneven), in a raised concrete surround."""
+    import random as _r
+    r = _r.Random(12)
+    c = cell("mosaic")
+    u0, v0 = c[0]
+    u1, v1 = c[2]
+    t = size / n
+    gap = t * 0.10
+    xw = X1 + 0.012
+    m.face([(xw - 0.004, cx_y - size / 2 - 0.02, z0 - 0.02), (xw - 0.004, cx_y + size / 2 + 0.02, z0 - 0.02),
+            (xw - 0.004, cx_y + size / 2 + 0.02, z0 + size + 0.02), (xw - 0.004, cx_y - size / 2 - 0.02, z0 + size + 0.02)], "CT_Concrete")
+    for i in range(n):
+        for j in range(n):
+            ya = cx_y - size / 2 + i * t + gap / 2
+            za = z0 + j * t + gap / 2
+            d = r.uniform(0.0, 0.004)
+            x = xw + d
+            ua, ub = u0 + (u1 - u0) * (i + 0.18) / n, u0 + (u1 - u0) * (i + 0.82) / n
+            va, vb = v0 + (v1 - v0) * (j + 0.18) / n, v0 + (v1 - v0) * (j + 0.82) / n
+            tilt = r.uniform(-0.0015, 0.0015)
+            m.face([(x + tilt, ya, za), (x - tilt, ya + t - gap, za), (x + tilt, ya + t - gap, za + t - gap), (x - tilt, ya, za + t - gap)],
+                   "SLP_Atlas", uvs=[(ua, va), (ub, va), (ub, vb), (ua, vb)])
+    # the concrete surround (a raised frame) and a little cill
+    fw, fd = 0.16, 0.07
+    m.bx("CT_Concrete", X1, X1 + fd, cx_y - size / 2 - fw, cx_y + size / 2 + fw, z0 - fw, z0)
+    m.bx("CT_Concrete", X1, X1 + fd, cx_y - size / 2 - fw, cx_y + size / 2 + fw, z0 + size, z0 + size + fw)
+    m.bx("CT_Concrete", X1, X1 + fd, cx_y - size / 2 - fw, cx_y - size / 2, z0, z0 + size)
+    m.bx("CT_Concrete", X1, X1 + fd, cx_y + size / 2, cx_y + size / 2 + fw, z0, z0 + size)
+    m.bx("CT_Concrete", X1, X1 + fd + 0.05, cx_y - size / 2 - fw - 0.04, cx_y + size / 2 + fw + 0.04, z0 - fw - 0.05, z0 - fw)
+
+
 def shell():
+    """Soviet seaside modernism of the 60s-70s: an exposed concrete portal frame (pilasters on the door side, deep
+    columns on the south, upstand beams over the roof), a mono-pitch roof rising toward the sea and oversailing it on a
+    free-standing portal, a continuous clerestory band under the eaves of both long walls, a gridded glazed upper wall
+    to the sea over the mosaic, the starter's balcony (the loft's floor carried out) with an external steel stair on the
+    south side. Footprint, wall and door positions, floor and the room split as part B's site."""
     m = Mesh("SM_Sail_Boathouse")
     g = Mesh("SM_Sail_Boathouse_Glass")
     g.closed = False
     m.closed = False
     bx_, bw, bh = BOAT_DOOR
     px, pw, ph = PEOPLE_DOOR
-    # plinth ring (dark concrete), floor slab
+    # ---- plinth ring (dark concrete), floor slab
     m.bx("CT_ConcreteDark", X0 - 0.03, X1 + 0.03, Y0 - 0.03, Y1 + 0.03, PLINTH, -0.20)
     m.bx("CT_ConcreteDark", X0 - 0.03, X1 + 0.03, Y0 - 0.03, Y0 + T, -0.20, 0.0)
     m.bx("CT_ConcreteDark", X0 - 0.03, X1 + 0.03, Y1 - T, Y1 + 0.03, -0.20, 0.0)
     m.bx("CT_ConcreteDark", X0 - 0.03, X0 + T, Y0 + T, Y1 - T, -0.20, 0.0)
     m.bx("CT_ConcreteDark", X1 - T, X1 + 0.03, Y0 + T, Y1 - T, -0.20, 0.0)
     m.bx("CT_Floor", X0 + T, X1 - T, Y0 + T, Y1 - T, -0.20, 0.0)
-    # (the floor's top must reach under the boat door: the plinth there is cut by the door's sill below)
-    # clerestory band in each bay of both long walls; the classroom's south windows low; doors in the north wall
-    clr = (2.45, 3.05)
+    # ---- long walls: solid to 3.05 (the doors in the north one, the classroom's windows in the south one), the
+    # continuous clerestory band 3.05 .. 3.75, the upper wall up to the sloping soffit
+    band = (3.05, 3.75)
     north_ops = [(bx_ - bw / 2, bx_ + bw / 2, 0.0, bh), (px - pw / 2, px + pw / 2, 0.0, ph)]
-    south_ops = []
-    for k in range(6):
-        a, b = X0 + k * BAY + 0.35, X0 + (k + 1) * BAY - 0.35
-        if not (a < bx_ + bw / 2 + 0.2 and b > bx_ - bw / 2 - 0.2):
-            # clip round the people's door (wall_x needs openings that do not overlap in x)
-            d0, d1 = px - pw / 2 - 0.25, px + pw / 2 + 0.25
-            pieces = [(a, b)] if (b <= d0 or a >= d1) else [(a, min(b, d0)), (max(a, d1), b)]
-            for a2, b2 in pieces:
-                if b2 - a2 >= 0.8:
-                    north_ops.append((a2, b2, clr[0], clr[1]))
-        south_ops.append((a, b, clr[0], clr[1]))
-    for a in (X0 + 0.9, X0 + 3.1):
-        south_ops.append((a, a + 1.5, 0.95, 2.05))
-    # the classroom's south windows replace the clerestory in its bays
-    south_ops = [o for o in south_ops if not (o[2] == clr[0] and o[0] < CLASS_X - 0.2)]
-    wall_x(m, Y0, Y0 + T, X0, X1, 0.0, WALL_H, north_ops, outer="y")
-    wall_x(m, Y1 - T, Y1, X0, X1, 0.0, WALL_H, south_ops, outer="Y")
+    south_ops = [(a, a + 1.5, 0.95, 2.05) for a in (X0 + 0.9, X0 + 3.1)]
+    wall_x(m, Y0, Y0 + T, X0, X1, 0.0, band[0], north_ops, outer="y")
+    wall_x(m, Y1 - T, Y1, X0, X1, 0.0, band[0], south_ops, outer="Y")
+    up = [(X0, band[1]), (X1, band[1]), (X1, zu(X1)), (X0, zu(X0))]
+    slab_xz(m, up, Y0, Y0 + T, "CT_Plaster", "CT_Interior")
+    slab_xz(m, up, Y1 - T, Y1, "CT_Interior", "CT_Plaster")
+    for yy, sg in ((Y0 + T * 0.45, -1), (Y1 - T * 0.45, 1)):
+        g.bx("SL_Glass", X0 + T, X1 - T, yy - 0.004, yy + 0.004, band[0], band[1])
+        m.bx("CT_Frame", X0 + T, X1 - T, yy - 0.05, yy + 0.05, band[0], band[0] + 0.06)
+        m.bx("CT_Frame", X0 + T, X1 - T, yy - 0.05, yy + 0.05, band[1] - 0.06, band[1])
+        nm = int((L - 2 * T) / 1.1)
+        for k in range(nm + 1):
+            x = X0 + T + (L - 2 * T) * k / nm
+            m.bx("CT_Frame", x - 0.03, x + 0.03, yy - 0.05, yy + 0.05, band[0], band[1])
+    for xa, xb, za, zb in south_ops:
+        yy = Y1 - T * 0.4
+        g.bx("SL_Glass", xa, xb, yy - 0.004, yy + 0.004, za, zb)
+        for x in (xa + (xb - xa) / 3, xa + 2 * (xb - xa) / 3):
+            m.bx("CT_Frame", x - 0.025, x + 0.025, yy - 0.04, yy + 0.04, za, zb)
+        m.bx("CT_Frame", xa, xb, yy - 0.04, yy + 0.04, za, za + 0.05)
+        m.bx("CT_Frame", xa, xb, yy - 0.04, yy + 0.04, zb - 0.05, zb)
+        m.bx("CT_Concrete", xa - 0.05, xb + 0.05, Y1, Y1 + 0.08, za - 0.08, za)      # cill
+    # ---- landward wall: its two small windows, up to the low soffit
     wall_y(m, X0, X0 + T, Y0 + T, Y1 - T, 0.0, WALL_H, [(-1.6, -0.6, 2.5, 3.1), (0.6, 1.6, 2.5, 3.1)], outer="x")
-    wall_y(m, X1 - T, X1, Y0 + T, Y1 - T, 0.0, WALL_H, [], outer="X")
-    for xa, xb, za, zb in north_ops + south_ops:
-        if zb - za < 1.5 or za > 0.5:
-            yy = (Y0 + T * 0.4) if (xa, xb, za, zb) in north_ops else (Y1 - T * 0.4)
-            g.bx("SL_Glass", xa, xb, yy - 0.004, yy + 0.004, za, zb)
-            # mullions
-            nm = max(1, int((xb - xa) / 0.7))
-            for k in range(1, nm):
-                x = xa + (xb - xa) * k / nm
-                m.bx("CT_Frame", x - 0.025, x + 0.025, yy - 0.04, yy + 0.04, za, zb)
-            m.bx("CT_Frame", xa, xb, yy - 0.04, yy + 0.04, za, za + 0.05)
-            m.bx("CT_Frame", xa, xb, yy - 0.04, yy + 0.04, zb - 0.05, zb)
+    m.bx("CT_Concrete", X0, X0 + T, Y0 + T, Y1 - T, WALL_H, zu(X0 + T), slots={"x": "CT_Plaster", "X": "CT_Interior"})
     for ya, yb, za, zb in [(-1.6, -0.6, 2.5, 3.1), (0.6, 1.6, 2.5, 3.1)]:
         g.bx("SL_Glass", X0 + 0.12 - 0.004, X0 + 0.12 + 0.004, ya, yb, za, zb)
-    # concrete frame: pilasters at the bay lines and corners, the ring beam
+    # ---- seaward wall: solid under the balcony (the mosaic), a gridded glazed wall above it with the balcony door
+    zb0, bd = BALC
+    wall_y(m, X1 - T, X1, Y0 + T, Y1 - T, 0.0, zb0 - 0.18, [], outer="X")
+    _mosaic_panel(m, 0.0, 0.25, 2.25)
+    xg = X1 - T * 0.5
+    door_y = (-0.55, 0.55)
+    ny = 9
+    ys = [Y0 + T + (W - 2 * T) * k / ny for k in range(ny + 1)]
+    zs = [zb0, zb0 + 1.15, zb0 + 2.1, zu(X1)]
+    for y in ys:
+        m.bx("SL_PaintSteel", xg - 0.06, xg + 0.06, y - 0.035, y + 0.035, zb0, zu(X1))
+    for y in door_y:
+        m.bx("SL_PaintSteel", xg - 0.07, xg + 0.07, y - 0.045, y + 0.045, zb0, zb0 + 2.1)
+    for z in zs:
+        m.bx("SL_PaintSteel", xg - 0.06, xg + 0.06, Y0 + T, Y1 - T, z - 0.035, z + 0.035)
+    for a, b in zip(ys, ys[1:]):
+        for za, zz in zip(zs, zs[1:]):
+            if za < zb0 + 2.0 and a < door_y[1] and b > door_y[0]:
+                # the balcony door's opening (the door leaf: layout "doors" -> balcony); glass round it
+                for y0_, y1_ in ((a, door_y[0]), (door_y[1], b)):
+                    if y1_ - y0_ > 0.05:
+                        g.bx("SL_Glass", xg - 0.004, xg + 0.004, y0_, y1_, za, zz)
+                continue
+            g.bx("SL_Glass", xg - 0.004, xg + 0.004, a, b, za, zz)
+    m.bx("CT_Concrete", X1 - T, X1, Y0 + T, Y1 - T, zu(X1) - 0.02, zu(X1) + 0.02)
+    # ---- the starter's balcony: the loft floor carried out to the sea, wrapping round to the stair's landing
+    m.bx("CT_Concrete", X1 - T, X1 + bd, Y0 + 0.45 - 0.6, STAIR_Y[1] + 0.05, zb0 - 0.18, zb0, slots={"Z": "CT_Paving"})
+    for y in (-3.0, -1.0, 1.0, 3.0, Y1 + 1.0):
+        m.bx("CT_Concrete", X1, X1 + bd - 0.1, y - 0.1, y + 0.1, zb0 - 0.40, zb0 - 0.18)
+    yb0, yb1 = Y0 + 0.45 - 0.6 + 0.05, STAIR_Y[1]
+    rail_run(m, [(X1, yb0, zb0), (X1 + bd - 0.05, yb0, zb0), (X1 + bd - 0.05, yb1, zb0), (X1 - T, yb1, zb0)])
+    # ---- the external stair up the south side to the balcony (steel stringers, precast treads, two handrails)
+    nst = 17
+    x_top = X1 - T
+    x_bot = x_top - (nst - 1) * 0.28
+    z_bot = ground(x_bot)
+    rise = (zb0 - z_bot) / nst
+    for k in range(nst - 1):
+        xa = x_bot + k * 0.28
+        top = z_bot + rise * (k + 1)
+        m.bx("CT_Concrete", xa - 0.02, xa + 0.28, STAIR_Y[0], STAIR_Y[1], top - 0.05, top)
+    for y in (STAIR_Y[0] - 0.02, STAIR_Y[1] + 0.02):
+        m.beam((x_bot - 0.3, y, z_bot - 0.05), (x_top, y, zb0 - 0.08), 0.03, 0.24, "SL_PaintSteel", up=(0, 0, 1))
+        rail_run(m, [(x_bot, y, z_bot + rise), (x_top, y, zb0)], h=0.95, slot="SL_PaintSteel", post_step=0.9, rails=(0.45,))
+    m.bx("CT_Concrete", x_bot - 0.45, x_bot + 0.1, STAIR_Y[0] - 0.1, STAIR_Y[1] + 0.1, z_bot - 0.3, z_bot + 0.02)
+    # ---- the exposed concrete frame: pilasters (north: shallow, clear of the sliding leaves), columns (south), upstand
+    # beams over the roof, downstand beams inside; the free-standing portal under the oversail
     for k in range(7):
-        x = X0 + k * BAY
-        x = min(max(x, X0 + 0.16), X1 - 0.16)
-        for yy0, yy1 in ((Y0 - 0.08, Y0), (Y1, Y1 + 0.08)):
-            m.bx("CT_Concrete", x - 0.16, x + 0.16, yy0, yy1, -0.2, WALL_H)
-    m.bx("CT_Concrete", X0 - 0.08, X1 + 0.08, Y0 - 0.12, Y0, WALL_H - 0.28, WALL_H)
-    m.bx("CT_Concrete", X0 - 0.08, X1 + 0.08, Y1, Y1 + 0.12, WALL_H - 0.28, WALL_H)
-    for x0_, x1_ in ((X0 - 0.08, X0), (X1, X1 + 0.08)):
-        m.bx("CT_Concrete", x0_, x1_, Y0 - 0.12, Y1 + 0.12, WALL_H - 0.28, WALL_H)
-    # gables (plaster, the seaward one carries the mosaic and the sign)
-    gable(m, X0, X0 + T, W / 2, WALL_H, RIDGE, "CT_Plaster", "CT_Interior", -1)
-    gable(m, X1 - T, X1, W / 2, WALL_H, RIDGE, "CT_Plaster", "CT_Interior", 1)
-    pic(m, (X1, 0, 1.85), (1, 0, 0), 3.0, 3.0, "mosaic")
-    m.bx("CT_Concrete", X1, X1 + 0.06, -1.62, 1.62, 0.25, 0.35)
-    m.bx("CT_Concrete", X1, X1 + 0.06, -1.62, 1.62, 3.35, 3.40)
-    m.bx("CT_Concrete", X1, X1 + 0.06, -1.62, -1.52, 0.35, 3.35)
-    m.bx("CT_Concrete", X1, X1 + 0.06, 1.52, 1.62, 0.35, 3.35)
-    # the name sign across the gable (its picture: tools/make_sailing_signs.py, per language)
-    m.bx("CT_SteelWhite", X1 + 0.0, X1 + 0.04, -3.05, 3.05, 3.62, 4.28)
-    m.picture([(X1 + 0.045, -3.0, 3.66), (X1 + 0.045, 3.0, 3.66), (X1 + 0.045, 3.0, 4.24), (X1 + 0.045, -3.0, 4.24)], "SLP_Sign_Name")
-    # roof: two slabs with overhangs (grey corrugated asbestos-cement look = CT_Roof), barge boards, ridge cap
-    ov = 0.45
-    pitch = math.atan2(RIDGE - WALL_H, W / 2)
-    for sg in (1, -1):
-        a = Vector((0, sg * (W / 2 + ov), WALL_H - ov * math.tan(pitch) + 0.10))
-        b = Vector((0, 0, RIDGE + 0.10))
-        nrm = Vector((0, sg * math.sin(pitch), math.cos(pitch)))
-        c = (a + b) / 2
-        x_, y_, z_ = (b - a).normalized(), Vector((1, 0, 0)), nrm
-        Mx = Matrix((x_, y_, z_)).transposed()
-        m.box(c, ((b - a).length, L + 2 * 0.35, 0.16), "CT_Roof", rot=Mx, slots={"z": "CT_Wood"})
-        for xe in (X0 - 0.35, X1 + 0.35):
-            m.beam(a + Vector((xe, 0, 0)) + nrm * 0.05, b + Vector((xe, 0, 0)) + nrm * 0.05, 0.05, 0.28, "CT_WoodLight" if False else "CT_Door", up=nrm)
-    m.bx("CT_Steel", X0 - 0.38, X1 + 0.38, -0.12, 0.12, RIDGE + 0.12, RIDGE + 0.22)
-    # partitions: classroom | hall (to the roof, a gable-shaped top), hall | changing room + wet store (to the loft)
+        x = min(max(X0 + k * BAY, X0 + 0.15), X1 - 0.15)
+        top = zu(x) + ROOF_T
+        m.bx("CT_Concrete", x - 0.15, x + 0.15, Y0 - 0.10, Y0, -0.2, top)
+        m.bx("CT_Concrete", x - 0.15, x + 0.15, Y1, Y1 + 0.38, -0.2, top)
+        m.bx("CT_Concrete", x - 0.12, x + 0.12, Y0 - 0.10, Y1 + 0.38, top, top + 0.45)
+        m.bx("CT_Concrete", x - 0.12, x + 0.12, Y0 + T, Y1 - T, zu(x) - 0.42, zu(x))
+    xf = X1 + OVER - 0.30
+    for y0_, y1_ in ((Y0 - 0.40, Y0 - 0.10), (Y1 + 0.08, Y1 + 0.38)):
+        m.bx("CT_Concrete", xf - 0.15, xf + 0.15, y0_, y1_, ground(xf) - 0.3, zu(xf) - 0.42)
+        m.bx("CT_ConcreteDark", xf - 0.35, xf + 0.35, y0_ - 0.2, y1_ + 0.2, ground(xf) - 0.5, ground(xf) + 0.05)
+    # (no solids overlap here: interpenetrating boxes shade black under the sharp-edge split normals)
+    m.bx("CT_Concrete", xf - 0.12, xf + 0.12, Y0 - 0.35, Y1 + 0.45, zu(xf) + ROOF_T, zu(xf) + ROOF_T + 0.45)
+    m.bx("CT_Concrete", xf - 0.15, xf + 0.15, Y0 - 0.40, Y1 + 0.38, zu(xf) - 0.42, zu(xf))
+    # ---- the roof: one slab from the landward eaves to the oversail, a low parapet, the deep seaward fascia (the sign)
+    xa_, xe = X0 - 0.5, X1 + OVER
+    ya_, ye = Y0 - 0.50, Y1 + 0.60
+    slab_xz(m, [(xa_, zu(xa_)), (xe, zu(xe)), (xe, zu(xe) + ROOF_T), (xa_, zu(xa_) + ROOF_T)], ya_, ye, "CT_Concrete", "CT_Concrete",
+            ["CT_Concrete", "CT_Concrete", "CT_Roof", "CT_Concrete"])
+    for y0_, y1_ in ((ya_, ya_ + 0.15), (ye - 0.15, ye)):
+        slab_xz(m, [(xa_, zu(xa_) + ROOF_T), (xe, zu(xe) + ROOF_T), (xe, zu(xe) + ROOF_T + 0.30), (xa_, zu(xa_) + ROOF_T + 0.30)],
+                y0_, y1_, "CT_Concrete", "CT_Concrete")
+    m.bx("CT_Concrete", xa_, xa_ + 0.15, ya_, ye, zu(xa_) + ROOF_T, zu(xa_) + ROOF_T + 0.20)
+    fz0, fz1 = zu(xe) - 0.50, zu(xe) + ROOF_T + 0.42
+    m.bx("CT_Concrete", xe, xe + 0.14, ya_ - 0.02, ye + 0.02, fz0, fz1)
+    m.bx("CT_SteelWhite", xe + 0.14, xe + 0.18, -3.05, 3.05, fz0 + 0.12, fz0 + 0.78)
+    m.picture([(xe + 0.185, -3.0, fz0 + 0.16), (xe + 0.185, 3.0, fz0 + 0.16), (xe + 0.185, 3.0, fz0 + 0.74), (xe + 0.185, -3.0, fz0 + 0.74)],
+              "SLP_Sign_Name")
+    # gutter on the low (landward) eaves and two downpipes to the sand with their shoes
+    gz_ = zu(xa_) + 0.02
+    m.bx("CT_Steel", xa_ - 0.16, xa_, ya_, ye, gz_ - 0.05, gz_ + 0.10)
+    for y in (ya_ + 0.25, ye - 0.25):
+        gx_ = xa_ - 0.08
+        m.tube((gx_, y, gz_), (gx_, y, ground(gx_) + 0.25), 0.05, "CT_Steel", seg=8)
+        m.pipe([(gx_, y, ground(gx_) + 0.27), (gx_, y, ground(gx_) + 0.10), (gx_ - 0.25, y, ground(gx_) + 0.06)], 0.05, "CT_Steel", seg=8)
+        m.bx("CT_Concrete", gx_ - 0.65, gx_ - 0.15, y - 0.15, y + 0.15, ground(gx_ - 0.4) - 0.05, ground(gx_ - 0.4) + 0.03)
+    # ---- partitions: classroom | hall (to the soffit), hall | changing room + wet store (to the loft)
     cx0, cx1 = CLASS_X - TP / 2, CLASS_X + TP / 2
     wall_y(m, cx0, cx1, Y0 + T, Y1 - T, 0.0, WALL_H, [(2.5 - 0.6, 2.5 + 0.6, 0.0, 2.18)], outer="X", s_out="CT_Interior")
-    gable(m, cx0, cx1, W / 2 - T, WALL_H, RIDGE - 0.2, "CT_Interior", "CT_Interior", 1)
+    m.bx("CT_Interior", cx0, cx1, Y0 + T, Y1 - T, WALL_H, zu(cx1))
     wx0, wx1 = WET_X - TP / 2, WET_X + TP / 2
     loft = 2.70
     wall_y(m, wx0, wx1, Y0 + T, Y1 - T, 0.0, loft, [(-2.25 - 0.6, -2.25 + 0.6, 0.0, 2.18), (2.25 - 0.6, 2.25 + 0.6, 0.0, 2.18)],
@@ -222,23 +393,40 @@ def shell():
         m.bx("CT_Steel", wx0 - 0.02, wx0 + 0.02, y - 0.02, y + 0.02, loft + 0.10, loft + 1.0)
     # classroom floor: timber boards on the slab
     m.bx("CT_WoodLight", X0 + T, cx0, Y0 + T, Y1 - T, 0.0, 0.02)
-    # hall trusses at the bay lines inside the hall: tie beam, king post, rafters, struts (timber)
+    # ---- the hall: a lighting rail along the middle and two timber drying rails across (the sails hang from them),
+    # hung from the downstand beams; paint and oil stains on the floor
+    m.tube((cx1 + 0.2, 0.0, WALL_H - 0.25), (wx0 - 0.2, 0.0, WALL_H - 0.25), 0.025, "CT_Steel", seg=8)
     for k in range(2, 6):
         x = X0 + k * BAY
-        if x < CLASS_X + 0.3 or x > WET_X - 0.2:
-            continue
-        m.bx("CT_Wood", x - 0.07, x + 0.07, Y0 + T, Y1 - T, WALL_H - 0.30, WALL_H - 0.08)
-        m.bx("CT_Wood", x - 0.06, x + 0.06, -0.07, 0.07, WALL_H - 0.08, RIDGE - 0.05)
-        for sg in (1, -1):
-            m.beam((x, sg * (W / 2 - T), WALL_H - 0.08), (x, 0, RIDGE - 0.02), 0.12, 0.18, "CT_Wood", up=(0, 0, 1))
-            m.beam((x, 0, WALL_H + 0.1), (x, sg * 2.2, WALL_H + 1.05), 0.10, 0.10, "CT_Wood", up=(0, 0, 1))
-    # the sliding boat door's rail and hangers on the north face, its steel guide at the foot
-    ry_ = Y0 - 0.16
-    m.bx("CT_Steel", bx_ - bw - 0.2, bx_ + bw + 0.2, ry_ - 0.03, ry_ + 0.03, bh + 0.05, bh + 0.15)
-    for x in (bx_ - bw - 0.15, bx_ - 0.05, bx_ + 0.05, bx_ + bw + 0.15):
-        m.bx("CT_Steel", x - 0.03, x + 0.03, Y0 - 0.12, Y0, bh + 0.05, bh + 0.15)
-    m.bx("CT_Steel", bx_ - bw - 0.2, bx_ + bw + 0.2, Y0 - 0.16, Y0 - 0.10, -0.02, 0.0)
-    # aprons: the boat door's (flush with the floor) and the people's door areaway (sunk into the sand, two steps)
+        if cx1 < x < wx0:
+            m.tube((x, 0.0, WALL_H - 0.25), (x, 0.0, zu(x) - 0.42), 0.008, "CT_Steel", seg=5)
+    for k in (3, 4):
+        x = X0 + k * BAY + 0.10
+        m.tube((x, Y0 + T + 0.3, WALL_H - 0.30), (x, Y1 - T - 0.3, WALL_H - 0.30), 0.04, "CT_Wood", seg=8)
+        for y in (-3.0, 0.0, 3.0):
+            m.tube((x, y, WALL_H - 0.30), (x - 0.10, y, zu(x) - 0.42), 0.007, "CT_Steel", seg=5)
+    import random as _r
+    rr = _r.Random(21)
+    for (sx, sy, sr) in ((1.0, -0.6, 0.55), (3.3, -0.2, 0.7), (4.6, 1.8, 0.35), (-0.8, 2.6, 0.5), (2.2, 2.9, 0.3), (0.2, -2.6, 0.4)):
+        pts = []
+        for k in range(14):
+            a = 2 * math.pi * k / 14
+            rad = sr * rr.uniform(0.55, 1.0)
+            pts.append((sx + math.cos(a) * rad, sy + math.sin(a) * rad * 0.75, 0.0015))
+        m.face(pts, "SL_Stain")
+        for k in range(4):
+            dx, dy = rr.uniform(-1.2, 1.2) * sr, rr.uniform(-1.2, 1.2) * sr
+            m.face([(sx + dx + 0.05 * math.cos(2 * math.pi * j / 6), sy + dy + 0.04 * math.sin(2 * math.pi * j / 6), 0.0016) for j in range(6)], "SL_Stain")
+    # ---- the boat door: its overhead rail (a steel channel on brackets with rollers), the guide at the foot, lamps
+    ry_ = Y0 - 0.20
+    m.bx("SL_PaintSteel", bx_ - bw - 0.25, bx_ + bw + 0.25, ry_ - 0.05, ry_ + 0.05, bh + 0.10, bh + 0.24)
+    for x in (bx_ - bw - 0.15, bx_ - bw / 2 - 0.2, bx_ + bw / 2 + 0.2, bx_ + bw + 0.15):
+        m.bx("SL_PaintSteel", x - 0.03, x + 0.03, Y0 - 0.20, Y0, bh + 0.12, bh + 0.22)
+    m.bx("CT_Steel", bx_ - bw - 0.2, bx_ + bw + 0.2, Y0 - 0.24, Y0 - 0.16, -0.02, 0.0)
+    for lx, ly, lz in ((bx_, Y0 - 0.14, bh + 0.55), (px, Y0 - 0.45, ph + 0.21), (X1 + 0.06, 0.95, zb0 + 2.35)):
+        m.bx("SL_Dark", lx - 0.10, lx + 0.10, ly - 0.08, ly + 0.08, lz + 0.02, lz + 0.10)
+        m.sphere((lx, ly, lz), 0.07, "SL_Lamp", seg=10, rings=6)
+    # ---- aprons: the boat door's (flush with the floor) and the people's door areaway (sunk into the sand, two steps)
     m.bx("CT_Paving", bx_ - bw / 2 - 0.6, bx_ + bw / 2 + 0.6, Y0 - 2.0, Y0, -0.20, 0.0)
     ax0, ax1 = px - 0.9, px + 0.9
     m.bx("CT_Paving", ax0, ax1, Y0 - 1.5, Y0, -0.20, 0.0)
@@ -247,29 +435,46 @@ def shell():
         m.bx("CT_Concrete", ax0, ax1, ya - 0.3, ya, -0.20, z)
     for xx in (ax0 - 0.15, ax1):
         m.bx("CT_Concrete", xx, xx + 0.15, Y0 - 2.1, Y0, -0.20, gz + 0.1)
-    # a small canopy over the people's door, the door sign
-    m.bx("CT_Concrete", px - 0.9, px + 0.9, Y0 - 0.9, Y0, ph + 0.25, ph + 0.35)
+    # a thin cantilevered canopy over the people's door, the door sign, the painted timetable board
+    m.bx("CT_Concrete", px - 1.0, px + 1.0, Y0 - 1.0, Y0, ph + 0.27, ph + 0.37)
+    m.bx("SL_PaintSteel", px - 1.0, px + 1.0, Y0 - 1.02, Y0 - 0.98, ph + 0.22, ph + 0.40)
     m.picture([(px + 0.95, Y0 - 0.005, 1.35), (px + 1.45, Y0 - 0.005, 1.35), (px + 1.45, Y0 - 0.005, 1.75), (px + 0.95, Y0 - 0.005, 1.75)],
               "SLP_Sign_Door")
+    picture_box(m, (X0 + 1.2, Y0 - 0.0, 1.55), (0, -1, 0), 1.10, 1.10, 0.04, "timetable", frame_slot="SL_PaintSteel")
+    # ---- weather: splash staining along the wall feet, sand drifted against the south and landward walls
+    _grime(m, [(X0 + k * 0.55, Y1) for k in range(31)], (0, 1, 0), 1)
+    _grime(m, [(X0, Y1 - k * 0.5) for k in range(19)], (-1, 0, 0), 2)
+    _grime(m, [(X1, Y0 + k * 0.5) for k in range(19)], (1, 0, 0), 3)
+    _grime(m, [(X0 + k * 0.5, Y0) for k in range(5)], (0, -1, 0), 4)
+    _drift(m, [(X0 + 0.2 + k * 0.6, Y1 + 0.4) for k in range(12)], (0, 1, 0), 1.6, 5)
+    _drift(m, [(X0 - 0.02, Y1 - 0.2 - k * 0.6) for k in range(15)][::-1], (-1, 0, 0), 1.4, 6)
     return m, g
 
 
 def door_leaf():
+    """One leaf of the sliding boat door: exposed painted steel, a framed leaf with pressed horizontal ribs, hung from the
+    overhead rail on two rollers (same size and origin as before: bottom middle, slides along x)."""
     m = Mesh("SM_Sail_Boathouse_DoorLeaf")
     w, h, t = BOAT_DOOR[1] / 2 + 0.05, BOAT_DOOR[2] + 0.02, 0.06
-    m.bx("CT_Door", -w / 2, w / 2, -t / 2, t / 2, 0.0, h)
-    # framed and braced (Z) battens on the outside face
-    for z in (0.10, h / 2, h - 0.10):
-        m.bx("CT_Wood", -w / 2, w / 2, -t / 2 - 0.03, -t / 2, z - 0.07, z + 0.07)
-    for sg in (1, -1):
-        m.bx("CT_Wood", sg * w / 2 - 0.07 if sg > 0 else -w / 2, sg * w / 2 if sg > 0 else -w / 2 + 0.07, -t / 2 - 0.03, -t / 2, 0.0, h)
-    for z0, z1 in ((0.17, h / 2 - 0.07), (h / 2 + 0.07, h - 0.17)):
-        a = Vector((-w / 2 + 0.1, -t / 2 - 0.015, z0))
-        b = Vector((w / 2 - 0.1, -t / 2 - 0.015, z1))
-        m.beam(a, b, 0.12, 0.03, "CT_Wood", up=(0, -1, 0))
-    m.bx("CT_Steel", -0.05, 0.05, -t / 2 - 0.05, -t / 2 - 0.03, 1.0, 1.25)
+    m.bx("SL_PaintSteel", -w / 2, w / 2, -t / 2, t / 2, 0.0, h)
+    fr = 0.08
+    for (xa, xb, za, zb) in ((-w / 2, w / 2, 0.0, fr), (-w / 2, w / 2, h - fr, h), (-w / 2, -w / 2 + fr, 0.0, h), (w / 2 - fr, w / 2, 0.0, h),
+                             (-w / 2, w / 2, h * 0.55 - fr / 2, h * 0.55 + fr / 2)):
+        m.bx("SL_PaintSteel", xa, xb, -t / 2 - 0.03, -t / 2, za, zb)
+    for k in range(13):
+        z = fr + 0.06 + k * (h * 0.55 - fr - 0.12) / 12
+        m.bx("SL_PaintSteel", -w / 2 + fr, w / 2 - fr, -t / 2 - 0.015, -t / 2, z - 0.015, z + 0.015)
+    # a row of small wired-glass lights in the upper part
+    for k in range(3):
+        xc = -w / 2 + fr + (w - 2 * fr) * (k + 0.5) / 3
+        m.bx("SL_Glass", xc - 0.18, xc + 0.18, -t / 2 - 0.004, -t / 2 - 0.002, h * 0.62, h * 0.80)
+        m.bx("SL_Dark", xc - 0.20, xc + 0.20, -t / 2 - 0.01, -t / 2, h * 0.60, h * 0.62)
+        m.bx("SL_Dark", xc - 0.20, xc + 0.20, -t / 2 - 0.01, -t / 2, h * 0.80, h * 0.82)
+    m.bx("CT_Steel", -0.05, 0.05, -t / 2 - 0.06, -t / 2 - 0.03, 1.0, 1.25)
     for x in (-w / 2 + 0.2, w / 2 - 0.2):
         m.bx("CT_Steel", x - 0.03, x + 0.03, -0.03, 0.03, h, h + 0.13)
+        m.lathe([(0.0, -0.02), (0.05, -0.02), (0.05, 0.02), (0.0, 0.02)], "SL_Black", seg=10, c=(x, 0.0, h + 0.16),
+                axis=Matrix(((1, 0, 0), (0, 0, 1), (0, -1, 0))).transposed())
     m.closed = False
     m.add_box_collision((0, 0, h / 2), (w, t + 0.06, h))
     return m
@@ -578,6 +783,22 @@ def prop_photo(k=0):
     return m
 
 
+def prop_drawing(k=0):
+    """A child's drawing of a boat pinned to the wall (paper with four drawing pins; origin on the wall, front = -Y)."""
+    m = P("Drawing%d" % k)
+    ang = (-4, 3, -2, 5)[k] * math.pi / 180
+    c, s = math.cos(ang), math.sin(ang)
+    w, h = 0.42, 0.42
+    pts = [(-w / 2 * c + h / 2 * s, -0.003, -w / 2 * s - h / 2 * c), (w / 2 * c + h / 2 * s, -0.003, w / 2 * s - h / 2 * c),
+           (w / 2 * c - h / 2 * s, -0.003, w / 2 * s + h / 2 * c), (-w / 2 * c - h / 2 * s, -0.003, -w / 2 * s + h / 2 * c)]
+    m.face(pts, "SLP_Atlas", uvs=cell("drawing%d" % k))
+    m.face(pts[::-1], "SL_Paper")
+    for p in pts:
+        q = Vector(p) * 0.9
+        m.sphere((q.x, -0.008, q.z), 0.008, ("SL_Red", "SL_Blue", "SL_Yellow", "SL_Green")[k], seg=6, rings=4)
+    return m
+
+
 def prop_locker():
     m = P("Lockers")
     for k in range(4):
@@ -742,8 +963,23 @@ def prop_signal_mast():
     for y in (-1.5, 1.5, 0.0):
         zt = 7.5 if y else 9.9
         m.pipe([(0.06 if y == 0 else 0.0, y, zt), (0.06, y * 0.15, 1.3)], 0.004, "SL_Rope", seg=4)
-    for y in (-0.25, 0.25):
-        m.box((0.10, y * 0.3, 1.2), (0.03, 0.03, 0.12), "SL_Black")
+    # pin rail (a bar across the mast's foot with cleats) and the halyards made up on it in hanging coils
+    m.bx("SL_Galv", 0.08, 0.12, -0.45, 0.45, 1.18, 1.24)
+    m.bx("SL_Galv", 0.0, 0.10, -0.03, 0.03, 1.18, 1.24)
+    Mv = Matrix(((0, 1, 0), (0, 0, 1), (1, 0, 0))).transposed()
+    for k, y in enumerate((-0.33, -0.11, 0.11, 0.33)):
+        BT.cleat(m, 0.12, y, 1.24, yaw=math.pi / 2, L=0.09)
+        for j in range(3):
+            BT.torus(m, (0.16, y, 1.02 - j * 0.004), 0.16 - j * 0.01, 0.006, "SL_Rope", seg=14, rs=4, M=Mv)
+    # stays: from the masthead and the yard's ends down to three anchors in the sand (galvanised wire, bottle screws)
+    for a in (0.0, 2.1, 4.2):
+        ax, ay = math.cos(a) * 3.2, math.sin(a) * 3.2
+        m.pipe([(0.0, 0.0, 9.6), (ax, ay, 0.15)], 0.005, "SL_Galv", seg=4)
+        m.tube((ax * 0.97, ay * 0.97, 0.15), (ax * 0.97, ay * 0.97, 0.55), 0.012, "SL_Galv", seg=6)
+        m.bx("CT_Concrete", ax - 0.2, ax + 0.2, ay - 0.2, ay + 0.2, -0.3, 0.12)
+    for y in (-1.55, 1.55):
+        m.pipe([(0.0, y, 7.5), (0.0, y * 1.2, 0.15)], 0.004, "SL_Galv", seg=4)
+        m.bx("CT_Concrete", -0.15, 0.15, y * 1.2 - 0.15, y * 1.2 + 0.15, -0.3, 0.12)
     m.add_box_collision((0, 0, 5.0), (0.25, 0.25, 10.0))
     return m
 
@@ -846,6 +1082,20 @@ def prop_park():
         x = k * 2.5
         m.bx("SL_White", x - 0.025, x + 0.025, -13.0, -4.6, 0.0, 0.004)
     m.bx("SL_White", 0.5, 14.5, -4.625, -4.575, 0.0, 0.004)
+    # the bays' numbers painted at their heads, and puddles in the slab's low spots
+    for k in range(1, 7):
+        x = (k - 0.5) * 2.5
+        m.face([(x - 0.35, -5.35, 0.005), (x + 0.35, -5.35, 0.005), (x + 0.35, -4.75, 0.005), (x - 0.35, -4.75, 0.005)],
+               "SLP_Atlas", uvs=cell("bay%d" % k))
+    import random as _r
+    rr = _r.Random(8)
+    for (px_, py_, pr) in ((3.2, -2.2, 0.9), (9.6, -1.4, 0.6), (12.8, -7.2, 0.5), (5.9, -13.2, 0.7), (1.0, -9.5, 0.4)):
+        pts = []
+        for k in range(16):
+            a = 2 * math.pi * k / 16
+            r_ = pr * rr.uniform(0.6, 1.0)
+            pts.append((px_ + math.cos(a) * r_, py_ + math.sin(a) * r_ * 0.65, 0.003))
+        m.face(pts, "SL_Puddle")
     # fence: posts every 2.5 m, top rail, a mesh panel (SL_Galv thin box: a texture would do it in the game)
     def fence(a, b, gate=None):
         a, b = Vector(a), Vector(b)
@@ -885,12 +1135,133 @@ def prop_park():
     return m
 
 
+def prop_rope_coil():
+    """Coiled lines hanging on a wall peg (origin on the wall at the peg's foot, front = -Y): three coils of different
+    rope and a tail."""
+    m = P("RopeCoil")
+    m.tube((0, 0, 0), (0, -0.14, 0.02), 0.018, "SL_WoodRaw", seg=8)
+    Mv = Matrix(((1, 0, 0), (0, 0, 1), (0, -1, 0))).transposed()
+    for k, (slot, R, dx) in enumerate((("SL_Rope", 0.20, -0.03), ("SL_RopeBlue", 0.17, 0.0), ("SL_RopeRed", 0.15, 0.03))):
+        for j in range(4):
+            BT.torus(m, (dx + j * 0.006, -0.06 - k * 0.025, -R + 0.02), R - j * 0.006, 0.009, slot, seg=18, rs=5, M=Mv)
+    m.pipe([(0.0, -0.08, -0.36), (0.02, -0.09, -0.6), (-0.03, -0.1, -0.8)], 0.009, "SL_Rope", seg=5)
+    return m
+
+
+def prop_buoy_net():
+    """A string net bag of training buoys hanging from a hook (origin on the wall at the hook, front = -Y)."""
+    m = P("BuoyNet")
+    m.tube((0, 0, 0), (0, -0.10, 0.0), 0.012, "SL_Galv", seg=6)
+    c = Vector((0, -0.30, -0.55))
+    for k, (dx, dy, dz, slot) in enumerate(((-0.12, 0.02, -0.15, "SL_Orange"), (0.13, -0.02, -0.12, "SL_Yellow"),
+                                             (0.0, 0.05, 0.05, "SL_Orange"), (-0.05, -0.12, -0.30, "SL_Yellow"))):
+        m.sphere(c + Vector((dx, dy, dz)), 0.16, slot, seg=12, rings=8)
+    for k in range(10):
+        a = 2 * math.pi * k / 10
+        pts = [(0, -0.10, 0.0)]
+        for j in range(1, 8):
+            t = j / 7
+            r = 0.30 * math.sin(math.pi * min(1.0, t * 1.1))
+            pts.append((c.x + math.cos(a) * r, c.y + math.sin(a) * r * 0.8, 0.0 - 0.95 * t))
+        m.pipe(pts, 0.004, "SL_Rope", seg=4)
+    for z in (-0.25, -0.5, -0.75):
+        rr = 0.30 * math.sin(math.pi * min(1.0, (-z / 0.95) * 1.1))
+        ring_ = [(c.x + math.cos(2 * math.pi * k / 14) * rr, c.y + math.sin(2 * math.pi * k / 14) * rr * 0.8, z) for k in range(15)]
+        m.pipe(ring_, 0.004, "SL_Rope", seg=4)
+    return m
+
+
+def prop_stove():
+    """The hall's cast-iron stove (буржуйка) on legs with its flue up and back into the wall (origin on the floor, front
+    = -Y; the flue enters the wall behind at +Y 0.45, z 2.6)."""
+    m = P("Stove")
+    for x in (-0.22, 0.22):
+        for y in (-0.15, 0.15):
+            m.bx("SL_Iron", x - 0.03, x + 0.03, y - 0.03, y + 0.03, 0.0, 0.18)
+    m.bx("SL_Iron", -0.28, 0.28, -0.22, 0.22, 0.18, 0.78)
+    m.bx("SL_Iron", -0.31, 0.31, -0.25, 0.25, 0.78, 0.83)
+    m.bx("SL_Dark", -0.15, 0.15, -0.235, -0.22, 0.32, 0.58)
+    m.bx("SL_Brass", 0.10, 0.14, -0.25, -0.235, 0.43, 0.47)
+    m.pipe([(0.0, 0.05, 0.83), (0.0, 0.05, 2.45), (0.0, 0.20, 2.60), (0.0, 0.47, 2.60)], 0.065, "SL_Iron", seg=10)
+    m.bx("SL_Galv", -0.40, 0.40, -0.40, 0.40, -0.001 + 0.0, 0.004)
+    m.bx("SL_Galv", -0.30, 0.30, 0.36, 0.40, 0.2, 1.6)
+    for k in range(5):
+        m.bx("SL_WoodRaw", 0.42 + k * 0.012, 0.52 + k * 0.012, -0.2 + k * 0.08, -0.14 + k * 0.08, 0.0, 0.40 - k * 0.04)
+    m.add_box_collision((0, 0, 0.42), (0.62, 0.5, 0.84))
+    return m
+
+
+def prop_oar_rack():
+    """A wall rack of oars and paddles (origin on the wall at the floor, front = -Y)."""
+    m = P("OarRack")
+    for z in (0.9, 1.9):
+        m.bx("SL_WoodRaw", -0.8, 0.8, -0.08, 0.0, z - 0.04, z + 0.04)
+        for k in range(7):
+            x = -0.66 + k * 0.22
+            m.bx("SL_WoodRaw", x - 0.015, x + 0.015, -0.14, -0.08, z, z + 0.06)
+    for k in range(6):
+        x = -0.55 + k * 0.22
+        slot = "SL_Wood" if k % 2 else "SL_FoilWood"
+        m.tube((x, -0.11, 0.05), (x + 0.02, -0.11, 2.35), 0.018, slot, seg=8)
+        m.box((x + 0.002, -0.11, 0.35), (0.14, 0.012, 0.55), "SL_Red" if k % 3 == 0 else slot)
+    return m
+
+
+def prop_life_ring():
+    """A life ring on its bracket (origin on the wall at the bracket, front = -Y): red with white bands and the grab line."""
+    m = P("LifeRing")
+    m.bx("SL_Galv", -0.03, 0.03, -0.08, 0.0, 0.25, 0.30)
+    Mv = Matrix(((1, 0, 0), (0, 0, 1), (0, -1, 0))).transposed()
+    seg = 24
+    R, r = 0.30, 0.055
+    for k in range(seg):
+        a0, a1 = 2 * math.pi * k / seg, 2 * math.pi * (k + 1) / seg
+        slot = "SL_White" if (k // 3) % 2 else "SL_Red"
+        pts = [Vector((0, -0.12, 0)) + Mv @ Vector((math.cos(a) * R, math.sin(a) * R, 0)) for a in (a0, a1)]
+        m.pipe(pts, r, slot, seg=8, caps=False)
+    for k in range(4):
+        a0, a1 = math.pi / 2 * k + 0.4, math.pi / 2 * (k + 1) - 0.4
+        p0 = Vector((0, -0.12, 0)) + Mv @ Vector((math.cos(a0) * (R + r), math.sin(a0) * (R + r), 0))
+        p1 = Vector((0, -0.12, 0)) + Mv @ Vector((math.cos(a1) * (R + r), math.sin(a1) * (R + r), 0))
+        mid = (p0 + p1) / 2 + (p0 + p1 - Vector((0, -0.24, 0))).normalized() * 0.05
+        m.pipe([p0, mid, p1], 0.006, "SL_Rope", seg=4)
+    return m
+
+
+def prop_flagstaff():
+    """The club's flagstaff on the roof (origin at its foot): a 5 m tapered white pole with a truck, its halyard to a
+    cleat; the flag hoists at layout flag_points staff_top."""
+    m = P("Flagstaff")
+    m.bx("CT_Concrete", -0.25, 0.25, -0.25, 0.25, 0.0, 0.25)
+    m.lathe([(0.0, 0.25), (0.06, 0.25), (0.035, 5.2), (0.0, 5.2)], "SL_White", seg=10)
+    m.sphere((0, 0, 5.25), 0.06, "SL_Brass", seg=10, rings=6)
+    m.pipe([(0.05, 0, 5.15), (0.06, 0, 1.0)], 0.004, "SL_Rope", seg=4)
+    m.pipe([(-0.05, 0, 5.15), (-0.06, 0, 1.0)], 0.004, "SL_Rope", seg=4)
+    BT.cleat(m, 0.065, 0, 0.95, yaw=math.pi / 2, L=0.10)
+    m.add_box_collision((0, 0, 2.6), (0.15, 0.15, 5.2))
+    return m
+
+
+def prop_bike_rack():
+    """A bike rack by the park gate (origin on the ground, front = -Y): galvanised hoops on a rail, two children's bikes
+    are the engine's business."""
+    m = P("BikeRack")
+    m.bx("SL_Galv", -1.6, 1.6, -0.03, 0.03, 0.0, 0.06)
+    for k in range(6):
+        x = -1.35 + k * 0.54
+        pts = [(x, -0.30, 0.0)] + [(x, -0.30 * math.cos(math.pi * j / 8), 0.42 + 0.30 * math.sin(math.pi * j / 8)) for j in range(9)] + [(x, 0.30, 0.0)]
+        m.pipe(pts, 0.022, "SL_Galv", seg=6)
+    m.add_box_collision((0, 0, 0.36), (3.2, 0.66, 0.72))
+    return m
+
+
 PROPS = [prop_opti_rack, prop_mast_bracket, prop_workbench, prop_tool_board, prop_paint_tins, prop_trestle, prop_hull_frame,
          prop_blackboard, prop_desk, prop_coach_desk, prop_chair, prop_knot_board, prop_flag_chart, prop_chart, prop_cup,
          prop_pennant, prop_trophy_shelf, prop_samovar_table, prop_wall_clock, prop_barometer, prop_anemometer, prop_radio,
          prop_bell, prop_locker, prop_bench, prop_lifejacket, prop_jacket_rail, prop_oar, prop_bailer, prop_shelf, prop_lamp,
          prop_slip_board, prop_signal_mast, prop_windsock_pole, prop_hose_stand, prop_outdoor_bench, prop_notice_board,
-         prop_bollard, prop_winch, prop_park]
+         prop_bollard, prop_winch, prop_park, prop_rope_coil, prop_buoy_net, prop_stove, prop_oar_rack, prop_life_ring,
+         prop_flagstaff, prop_bike_rack]
 
 
 # ================================================================================================= layout
@@ -927,6 +1298,9 @@ def layout():
     put("SM_Sail_Prop_ShipBell", X0 + 2.5 + 0.9, Y0 + T, 1.7, yaw=180, room="classroom", interactive="bell")
     for k in range(4):
         put("SM_Sail_Prop_Photo%d" % k, -7.6 + k * 0.6 + (0.4 if k > 1 else 0), Y1 - T, 1.9 + (k % 2) * 0.1, yaw=0, room="classroom")
+    for k, (x, z) in enumerate(((-7.75, 1.55), (-7.25, 1.75), (-6.75, 1.5))):
+        put("SM_Sail_Prop_Drawing%d" % k, x, Y0 + T, z, yaw=180, room="classroom", note="a pupil's drawing")
+    put("SM_Sail_Prop_Drawing3", -3.34, Y1 - T, 1.6, yaw=0, room="classroom", note="a pupil's drawing")
     for k in range(3):
         put("SM_Sail_Prop_Lamp", -6.9 + k * 1.6, 0.0, 3.2, room="classroom")
     # ---- boat hall (x -2.88 .. 5.18)
@@ -948,16 +1322,25 @@ def layout():
         put("SM_Sail_Trolley_" + cn, x, y, yaw=0, kind="trolley")
         boats.append({"mesh": "SM_Sail_%s_Hull" % cn, "pos": [x, y, None], "on_trolley": "SM_Sail_Trolley_" + cn,
                       "rot_deg": [0, 0, 0], "winter_cover": "SM_Sail_Cover_" + cn})
-    # masts on wall brackets along the north wall (high), booms below; sails hanging to dry from the trusses
-    for k, x in enumerate((hx0 + 0.6, hx0 + 4.4)):
-        for z in (1.6, 2.1):
-            put("SM_Sail_Prop_MastBracket", x, Y0 + T, z, yaw=180)
+    # masts on wall brackets high on the classroom partition (above its door, clear of the boat door), lying along +Y;
+    # sails hanging to dry from the timber rails
+    for y in (-3.4, 1.4):
+        for z in (2.55, 2.95):
+            put("SM_Sail_Prop_MastBracket", hx0, y, z, yaw=90)
     spars = []
-    for k, z in enumerate((1.6, 2.1)):
+    for k, z in enumerate((2.55, 2.95)):
         for j in range(2):
             spars.append({"mesh": "SM_Sail_Luch_Mast" if k else "SM_Sail_Cadet_Mast",
-                          "pos": [round(hx0 + 0.2, 3), round(Y0 + T + 0.12 + j * 0.12, 3), round(z - 0.11, 3)], "rot_deg": [0, 90, 0],
-                          "note": "lying along +X on the brackets"})
+                          "pos": [round(hx0 + 0.12 + j * 0.12, 3), -4.05, round(z - 0.11, 3)], "rot_deg": [-90, 0, 0],
+                          "note": "lying along +Y on the brackets"})
+    # life about the hall: coiled lines on pegs, a net of buoys, the stove, the oar rack, the chart of the bay
+    put("SM_Sail_Prop_RopeCoil", 1.15, Y0 + T, 1.95, yaw=180)
+    put("SM_Sail_Prop_RopeCoil", 1.65, Y0 + T, 1.95, yaw=180)
+    put("SM_Sail_Prop_RopeCoil", hx1, -1.0, 1.95, yaw=-90)
+    put("SM_Sail_Prop_BuoyNet", 3.3, Y1 - T, 2.3, yaw=0)
+    put("SM_Sail_Prop_Stove", 2.55, Y1 - T - 0.47, 0.0, yaw=0, interactive="stove")
+    put("SM_Sail_Prop_OarRack", hx0, -1.2, 0.0, yaw=90)
+    put("SM_Sail_Prop_SeaChart", hx1, 0.9, 0.9, yaw=-90, interactive="chart", note="the chart of the bay")
     hang = []
     # sails drying on the tie beams: the luff along the beam (local z -> +y), the sail hanging down (local -x -> -z)
     eul = Matrix(((0, 1, 0), (0, 0, 1), (1, 0, 0))).to_euler("XYZ")
@@ -971,7 +1354,6 @@ def layout():
     for x in (2.6, 4.1):
         put("SM_Sail_Prop_Trestle", x, -0.4, yaw=90)
     put("SM_Sail_Prop_HullFrame", 3.35, -0.4, 0.74, yaw=0, interactive="boat_build", note="the cadet being built, on the trestles")
-    put("SM_Sail_SparsRack", hx0 + 2.4, Y0 + T + 0.45, yaw=180)
     put("SM_Sail_SailBag", hx1 - 0.6, 3.6, 0.0, yaw=90)
     for k in range(4):
         put("SM_Sail_Prop_Lamp", hx0 + 1.0 + k * 2.0, 0.0, 3.1)
@@ -1012,8 +1394,23 @@ def layout():
     for k in range(6):
         ext("SM_Sail_Prop_SlipBoard", gx + 0.6 + k * 1.2, Y0 - 3.6 - 1.8, note="first of 19 sections down to 22.5 m; repeat +1.2 m in x at ground(x)")
     ext("SM_Sail_Prop_SignalMast", gx + 1.0, Y0 - 3.6 - 5.0, note="10 m; flags hoist at the yard ends (y +-1.5, z 7.5) and the top")
-    ext("SM_Sail_Prop_WindsockPole", X1 - 0.15, 0.0, z=RIDGE + 0.2, note="on the seaward gable's ridge; SM_Sail_Windsock at z +2.0 of it")
+    xr = X1 + OVER - 0.5
+    ext("SM_Sail_Prop_WindsockPole", xr, Y1 + 0.25, z=zu(xr) + ROOF_T,
+        note="on the roof's seaward south corner; SM_Sail_Windsock at z +2.0 of it")
+    ext("SM_Sail_Prop_Flagstaff", xr - 0.45, Y0 - 0.08, z=zu(xr - 0.45) + ROOF_T, note="on the roof's seaward north corner; flag at flag_points staff_top")
     ext("SM_Sail_Prop_HoseStand", bx_ + 2.6, Y0 - 1.2)
+    ext("SM_Sail_Prop_HoseStand", gx - 0.6, Y0 - 3.6 - 3.4, z=ground(park_x0 + 7.5))
+    ext("SM_Sail_Prop_LifeRing", X1, -2.6, z=1.55, yaw=90)
+    ext("SM_Sail_Prop_LifeRing", X1 + BALC[1] - 0.05, 2.2, z=BALC[0] + 0.75, yaw=90)
+    ext("SM_Sail_Prop_LifeRing", 3.0, STAIR_Y[1] + 0.02, z=ground(3.0) + 1.3, yaw=180)
+    ext("SM_Sail_Prop_BikeRack", X0 - 1.5, -2.2, yaw=-90)
+    ext("SM_Sail_Prop_OutdoorBench", 3.7, Y0 - 0.45, yaw=0, note="parents wait here, looking at the park")
+    # spars resting outside on a rack at the park's head (masts along +X)
+    zs_ = ground(park_x0 + 7.5)
+    rx_, ry_ = park_x0 + 3.2, Y0 - 3.6 - 4.2
+    ext("SM_Sail_SparsRack", rx_, ry_, z=zs_, yaw=180)
+    for k, (mesh, zz) in enumerate((("SM_Sail_Luch_Mast", 0.665), ("SM_Sail_Cadet_Mast", 1.165), ("SM_Sail_Luch_Mast", 1.665))):
+        ext(mesh, rx_ - 2.4, ry_ + 0.2, z=zs_ + zz, rot_deg=[0, 90, 0], note="lying along +X on the spars rack")
     ext("SM_Sail_Prop_NoticeBoard", px + 1.8, Y0 - 0.9, yaw=0, interactive="timetable")
     ext("SM_Sail_Prop_OutdoorBench", X1 + 2.0, -2.0, yaw=90)
     ext("SM_Sail_Prop_OutdoorBench", X1 + 2.0, 2.0, yaw=90)
@@ -1021,7 +1418,8 @@ def layout():
         ext("SM_Sail_Prop_Bollard", gx + 0.3, Y0 - 3.6 - 0.4 - k * 1.5)
     ext("SM_Sail_Prop_Winch", gx + 0.6, Y0 - 3.6 + 0.3, yaw=90)
     flags_at = {"yard_port": [gx + 1.0, Y0 - 3.6 - 5.0 + 1.5, 7.5], "yard_stbd": [gx + 1.0, Y0 - 3.6 - 5.0 - 1.5, 7.5],
-                "top": [gx + 1.0, Y0 - 3.6 - 5.0, 9.9]}
+                "top": [gx + 1.0, Y0 - 3.6 - 5.0, 9.9],
+                "staff_top": [round(xr - 0.40, 3), round(Y0 - 0.08, 3), round(zu(xr - 0.45) + ROOF_T + 5.1, 3)]}
     doors = [
         {"name": "people", "at": [px, Y0 + T / 2, 0.0], "out": [0, 1], "hole": [pw, ph], "wall": T, "leaves": 1, "hinge": "left",
          "frame": True, "open": False, "locked": False, "outside": True},
@@ -1031,6 +1429,9 @@ def layout():
          "hinge": "left", "frame": True, "open": False, "locked": False},
         {"name": "wet_store", "at": [WET_X, 2.25, 0.0], "out": [1, 0], "hole": [1.2, 2.18], "wall": TP, "leaves": 1,
          "hinge": "right", "frame": True, "open": False, "locked": False},
+        {"name": "balcony", "at": [X1 - T / 2, 0.0, BALC[0]], "out": [1, 0], "hole": [1.1, 2.1], "wall": T, "leaves": 1,
+         "hinge": "left", "frame": True, "open": False, "locked": False, "outside": True,
+         "note": "the loft's glazed door onto the starter's balcony (in the seaward glazed wall)"},
     ]
     sliding = [{"name": "boat_door", "mesh": "SM_Sail_Boathouse_DoorLeaf", "leaves": [
         {"closed": [round(bx_ - bw / 4 - 0.025, 3), round(Y0 - 0.20, 3), 0.0], "open_dx": round(-(bw / 2 + 0.05), 3)},
@@ -1038,7 +1439,10 @@ def layout():
         "hole": [bw, bh], "note": "leaves hang on the outside rail and slide apart along x"}]
     lamps = [{"pos": e["pos"][:2] + [e["pos"][2] - 1.0], "room": e["room"], "lumens": 1400 if e["room"] == "hall" else 900}
              for e in items if e["mesh"] == "SM_Sail_Prop_Lamp"]
+    for p in ((bx_, Y0 - 0.14, bh + 0.55), (px, Y0 - 0.45, ph + 0.21), (X1 + 0.06, 0.95, BALC[0] + 2.35)):
+        lamps.append({"pos": [round(v, 3) for v in p], "room": "outside", "lumens": 700, "note": "bulkhead lamp in the shell mesh"})
     rooms = {"classroom": [[X0 + T, Y0 + T, 0], [CLASS_X - TP / 2, Y1 - T, 3.2]],
+             "balcony": [[X1 - T, Y0 - 0.1, BALC[0]], [X1 + BALC[1], STAIR_Y[1], BALC[0] + 2.4]],
              "hall": [[CLASS_X + TP / 2, Y0 + T, 0], [WET_X - TP / 2, Y1 - T, RIDGE]],
              "changing": [[WET_X + TP / 2, Y0 + T, 0], [X1 - T, -TP / 2, 2.7]],
              "wet_store": [[WET_X + TP / 2, TP / 2, 0], [X1 - T, Y1 - T, 2.7]],
@@ -1047,7 +1451,11 @@ def layout():
              {"id": "bench_work", "kind": "work", "pos": [hx1 - 1.2, Y0 + T + 1.1, 0.0], "yaw": 180},
              {"id": "boat_build", "kind": "work", "pos": [3.35, 0.7, 0.0], "yaw": 180},
              {"id": "changing", "kind": "change", "pos": [6.6, -1.8, 0.0], "yaw": 0},
-             {"id": "kettle", "kind": "tea", "pos": [CLASS_X - 0.6, Y1 - T - 1.1, 0.02], "yaw": 0}]
+             {"id": "kettle", "kind": "tea", "pos": [CLASS_X - 0.6, Y1 - T - 1.1, 0.02], "yaw": 0},
+             {"id": "deck_view", "kind": "watch", "pos": [round(X1 + 1.0, 3), -1.6, BALC[0]], "yaw": 90,
+              "note": "the starter's balcony: the hero stands here to watch the races (the course is out to +x)"},
+             {"id": "stair_foot", "kind": "path", "pos": [round(X1 - T - 16 * 0.28 - 0.4, 3), round((STAIR_Y[0] + STAIR_Y[1]) / 2, 3),
+                                                          round(ground(X1 - T - 16 * 0.28 - 0.4), 3)], "yaw": 90}]
     for e in items:
         if e["mesh"] == "SM_Sail_Prop_Desk":
             for k in (-0.3, 0.3):
@@ -1061,7 +1469,11 @@ def layout():
                      "place_doors.py entries. sliding_doors: the boat door's two leaves (closed position, open offset in x). "
                      "outside: pos z = the sand (ground(x) = -0.0727 (x + 0.85)) unless given."),
             "footprint": {"x": [X0, X1], "y": [Y0, Y1], "wall_h": WALL_H, "ridge": RIDGE, "floor_z": 0.0,
-                          "ground_slope": "-0.0727 per m toward +x, 0 at x = %.2f" % BOAT_DOOR[0]},
+                          "ground_slope": "-0.0727 per m toward +x, 0 at x = %.2f" % BOAT_DOOR[0],
+                          "roof": {"kind": "mono-pitch rising to the sea", "soffit_z": [ROOF_LO, RIDGE], "slab": ROOF_T,
+                                   "x": [round(X0 - 0.5, 3), round(X1 + OVER, 3)], "y": [round(Y0 - 0.5, 3), round(Y1 + 0.6, 3)]},
+                          "balcony": {"floor_z": BALC[0], "x": [round(X1 - T, 3), round(X1 + BALC[1], 3)],
+                                      "stair": {"y": list(STAIR_Y), "x": [round(X1 - T - 16 * 0.28, 3), round(X1 - T, 3)]}}},
             "props": items, "boats": boats, "spars": spars, "hanging_sails": hang, "doors": doors,
             "sliding_doors": sliding, "lamps": lamps, "rooms": rooms, "spots": spots, "outside": out, "flag_points": flags_at}
 
@@ -1078,6 +1490,8 @@ def build(reg):
         reg.add(prop_photo(k), KIT, closed=False)
     reg.objects  # noqa: B018
     reg.add(prop_photo(0), KIT, closed=False)
+    for k in range(4):
+        reg.add(prop_drawing(k), KIT, closed=False)
     reg.add(prop_lifejacket_worn(), KIT, closed=False)
     reg.add(prop_windsock(), KIT, closed=False)
     with open(os.path.join(HERE, "atlas_cells.json")) as f:

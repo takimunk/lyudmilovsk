@@ -16,7 +16,7 @@ After changing `rumours.py`, run it, then `python3 tools/barks/build_barks.py` a
 
 ## Kinds and rules
 
-There are 14 kinds: cup, garden, beat, cure, job, tamed, radio, fine, crows, catch, kite, tune, sing, film. Each kind has these fields:
+There are 19 kinds: cup, garden, beat, cure, job, tamed, radio, fine, crows, catch, kite, tune, sing, film, and the yacht school's sail, capsize, regatta, tow, skipper (docs/yacht_school.md "Town"). Each kind has these fields:
 
 - `hops`: how far it travels.
 - `life`: days it is remembered.

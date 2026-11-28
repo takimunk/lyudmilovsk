@@ -11,6 +11,7 @@
 #include "Plants/GameCalendar.h"
 #include "Sky/LyudSky.h"
 #include "Weather/LyudWeather.h"
+#include "Weather/LyudWind.h"
 
 #include "Brushes/SlateColorBrush.h"
 #include "Camera/PlayerCameraManager.h"
@@ -631,6 +632,11 @@ void ULyudTownTalkSubsystem::UpdateNow()
 	const float Altitude = TheSky ? TheSky->SunAltitude() : (N.Hour > 8.f && N.Hour < 17.f ? 20.f : -10.f);
 	N.Sun = LyudBarks::SunState(Altitude, Cloud);
 	LyudBarks::WeatherWords(Cloud, Rain, Snow, Fog, TempC, Wet, N.Weather);
+	// the wind (weather = windy, calm): the area's mean, no gusts (the sailors' and the kite fliers' lines)
+	if (const ULyudWindSubsystem* Wind = ULyudWindSubsystem::Get(this))
+	{
+		LyudBarks::WindWords(Wind->GetMeanSpeed(), N.Weather);
+	}
 	// and what there is to see up there (weather = aurora rainbow fireworks)
 	const UPeopleLifeSubsystem* SkyLife = UPeopleLifeSubsystem::Get(this);
 	const FName Show = SkyLife ? SkyLife->GetSkyShow() : NAME_None;
