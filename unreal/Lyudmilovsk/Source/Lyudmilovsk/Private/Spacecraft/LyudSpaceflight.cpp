@@ -73,7 +73,7 @@ namespace LyudFlightImpl
 	constexpr float PlanetFit = 0.9985f;
 
 	/** Every pool of tools/spacecraft/SOUND_NOTES.md (loaded with the craft, let go after the flight). */
-	const TCHAR* const Pools[] = {
+	const TCHAR* const ScPools[] = {
 		TEXT("sc_cabin_hum"), TEXT("sc_fan"), TEXT("sc_gyro_whine"), TEXT("sc_gyro_spinup"), TEXT("sc_air_hiss"), TEXT("sc_radio_static"),
 		TEXT("sc_beacon"), TEXT("sc_toggle"), TEXT("sc_cover"), TEXT("sc_button"), TEXT("sc_relay"), TEXT("sc_buzzer"), TEXT("sc_chime"),
 		TEXT("sc_lamp_tick"), TEXT("sc_hatch_close"), TEXT("sc_hatch_open"), TEXT("sc_wheel"), TEXT("sc_belt"), TEXT("sc_seat"),
@@ -123,11 +123,11 @@ namespace LyudFlightImpl
 
 	TSharedPtr<FJsonObject> ScReadJson(const FString& Rel)
 	{
-		FString Text;
+		FString JsonText;
 		TSharedPtr<FJsonObject> Root;
-		if (FFileHelper::LoadFileToString(Text, *(FPaths::ProjectContentDir() / Rel)))
+		if (FFileHelper::LoadFileToString(JsonText, *(FPaths::ProjectContentDir() / Rel)))
 		{
-			FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Text), Root);
+			FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(JsonText), Root);
 		}
 		return Root;
 	}
@@ -730,7 +730,7 @@ bool ULyudSpaceflightSubsystem::FImpl::EnsureBuilt(ULyudSpaceflightSubsystem& O,
 
 	if (ULyudSoundscapeSubsystem* SS = ULyudSoundscapeSubsystem::Get(&O))
 	{
-		for (const TCHAR* Pool : Pools)
+		for (const TCHAR* Pool : ScPools)
 		{
 			SS->LoadPool(TEXT("Spacecraft"), FName(Pool));
 		}
@@ -967,7 +967,7 @@ void ULyudSpaceflightSubsystem::FImpl::SetActive(ULyudSpaceflightSubsystem& O, b
 		if (bPoolsLoaded)
 		{
 			bPoolsLoaded = false;
-			for (const TCHAR* Pool : Pools)
+			for (const TCHAR* Pool : ScPools)
 			{
 				SS->UnloadPool(FName(Pool));
 			}
@@ -2307,12 +2307,12 @@ void ULyudSpaceflightSubsystem::FImpl::TickExterior(ULyudSpaceflightSubsystem& O
 			O.FireLight->SetLightColor(FMath::Lerp(FLinearColor(1.f, 0.42f, 0.14f), FLinearColor(1.f, 0.86f, 0.74f), Hot));
 		}
 	}
-	const int32 Panel = St.I.bPowered && O.Cabin->IsShownInside() ? 1 : 0;
-	if (O.PanelLight && Panel != PanelLit)
+	const int32 PanelOn = St.I.bPowered && O.Cabin->IsShownInside() ? 1 : 0;
+	if (O.PanelLight && PanelOn != PanelLit)
 	{
-		PanelLit = Panel;
-		O.PanelLight->SetVisibility(Panel != 0);
-		O.PanelLight->SetIntensity(Panel != 0 ? 1.4f : 0.f);
+		PanelLit = PanelOn;
+		O.PanelLight->SetVisibility(PanelOn != 0);
+		O.PanelLight->SetIntensity(PanelOn != 0 ? 1.4f : 0.f);
 	}
 }
 
@@ -2792,14 +2792,14 @@ void ULyudSpaceflightSubsystem::FImpl::TickRecord(ULyudSpaceflightSubsystem& O, 
 	}
 	const LyudFlight::FRecordState& R = St.Record;
 	// the platter, the label, the arm creeping across the side
-	const int32 Cell = Recs.IsValidIndex(R.Index) ? Recs[R.Index].Cell : -1;
+	const int32 CellNow = Recs.IsValidIndex(R.Index) ? Recs[R.Index].Cell : -1;
 	const float Arm = R.bPlaying ? 1.f + float(FMath::Clamp(R.PosSec / FMath::Max(1.0, R.LengthSec), 0.0, 1.0)) : 0.f;
-	if (Cell != CellShown || R.bPlaying != bSpinShown || FMath::Abs(Arm - ArmShown) > 0.002f)
+	if (CellNow != CellShown || R.bPlaying != bSpinShown || FMath::Abs(Arm - ArmShown) > 0.002f)
 	{
-		CellShown = Cell;
+		CellShown = CellNow;
 		bSpinShown = R.bPlaying;
 		ArmShown = Arm;
-		O.Cabin->SetRecord(Cell, R.bPlaying, Arm);
+		O.Cabin->SetRecord(CellNow, R.bPlaying, Arm);
 	}
 	if (MusicIn > 0.f)
 	{
@@ -2967,6 +2967,8 @@ bool ULyudSpaceflightSubsystem::TrySpawn()
 	const FVector At = Europa->GetSiteOrigin() + Azimuth * double(Impl->StageOffsetCm);
 	FActorSpawnParameters P;
 	P.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	// a name already taken in the level gets a unique one (the default mode is a fatal error)
+	P.NameMode = FActorSpawnParameters::ESpawnActorNameMode::Requested;
 	P.Name = TEXT("SpacecraftStage");
 	Stage = World->SpawnActor<ALyudSpacecraftStage>(At, PadRotation, P);
 	P.Name = TEXT("Spacecraft");
