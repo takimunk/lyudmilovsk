@@ -751,14 +751,15 @@ void ULyudWindSubsystem::DrawDebugArrows() const
 				: FLinearColor::LerpUsingHSV(FLinearColor::Red, FLinearColor::Green, FMath::Clamp(L.Exposure, 0.f, 1.f)).ToFColor(true);
 			const FVector Along = FVector(L.VX, L.VY, 0.0) * 40.0;   // 40 cm of arrow per m/s
 			const FVector Tip = At + Along;
-			const FVector Side = FVector(-Along.Y, Along.X, 0.0) * 0.18;
-			DrawDebugLine(World, At, Tip, Colour, false, -1.f, 0, 2.f);
-			DrawDebugLine(World, Tip, Tip - Along * 0.3 + Side, Colour, false, -1.f, 0, 2.f);
-			DrawDebugLine(World, Tip, Tip - Along * 0.3 - Side, Colour, false, -1.f, 0, 2.f);
+			// thick enough to read from above (2 cm lines vanished from a 25 m look-down), the head a bit bigger
+			const FVector Side = FVector(-Along.Y, Along.X, 0.0) * 0.25;
+			DrawDebugLine(World, At, Tip, Colour, false, -1.f, 0, 7.f);
+			DrawDebugLine(World, Tip, Tip - Along * 0.35 + Side, Colour, false, -1.f, 0, 7.f);
+			DrawDebugLine(World, Tip, Tip - Along * 0.35 - Side, Colour, false, -1.f, 0, 7.f);
 			if (FMath::Abs(L.Updraft) > 0.15f)
 			{
 				// rising air a white tick up, sinking air a magenta tick down, a metre per m/s
-				DrawDebugLine(World, At, At + FVector(0.0, 0.0, L.Updraft * 100.0), L.Updraft > 0.f ? FColor::White : FColor::Magenta, false, -1.f, 0, 3.f);
+				DrawDebugLine(World, At, At + FVector(0.0, 0.0, L.Updraft * 100.0), L.Updraft > 0.f ? FColor::White : FColor::Magenta, false, -1.f, 0, 8.f);
 			}
 		}
 	}
