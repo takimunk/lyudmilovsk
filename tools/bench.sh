@@ -5,7 +5,9 @@
 #   tools/bench.sh 3                  Epic only
 #   RES=2560x1440 LABEL=noshadow SETUP="lyud.Bench.ForestShadows 0" tools/bench.sh 3
 # Env: RES (WxH), LABEL (file suffix and note), SETUP (console commands, ';'-separated, run after the forests bake),
-#      MAP (default /Game/Scene01/Lvl_Scene01), EXTRA (more command-line arguments), UE_ROOT.
+#      MAP (default /Game/Scene01/Lvl_Scene01), EXTRA (more command-line arguments), UE_ROOT,
+#      BENCH_TIMEOUT (s, default 2400: the run is killed after that; tools/ue_watchdog.sh also kills it 60 s after
+#      "Log file closed" when it hangs on exit, so the exclusive queue hold is never kept by a finished bench).
 # Never opens a window and leaves running editors alone.
 set -e
 PRESETS="${1:-0,1,2,3}"
@@ -33,10 +35,12 @@ if [ "$BUSY" -gt 0 ]; then echo "bench: warning, $BUSY other Unreal/compiler pro
 GUS="$ROOT/unreal/Lyudmilovsk/Saved/Config/MacEditor/GameUserSettings.ini"
 if [ -f "$GUS" ]; then mv "$GUS" "$GUS.bench-backup"; fi
 echo "bench: presets $PRESETS at $RES, $MAP, commit $COMMIT -> $OUT"
-"$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" "$MAP" -game -RenderOffscreen \
+"$ROOT/tools/ue_watchdog.sh" "$LOG" "${BENCH_TIMEOUT:-2400}" \
+    "$UE/Engine/Binaries/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor" "$PROJ" "$MAP" -game -RenderOffscreen \
     -windowed -ResX="${RES%x*}" -ResY="${RES#*x}" -unattended -nosplash -nosound -NoVerifyGC \
     -dpcvars=lyud.MainMenuOnStart=0,r.SetRes=${RES}w -LyudBench -LyudBenchPresets="$PRESETS" -LyudBenchOut="$OUT" \
     -LyudBenchLabel="$COMMIT${LABEL:+ $LABEL}${BUSY:+ busy=$BUSY}" ${SETUP:+"-LyudBenchSetup=$(echo "$SETUP" | tr ' ' '+')"} $EXTRA -abslog="$LOG" > "$LOG.stdout" 2>&1 || true
+grep -a "^ue_watchdog:" "$LOG.stdout" || true
 rm -f "$LOG.stdout" "$GUS"
 if [ -f "$GUS.bench-backup" ]; then mv "$GUS.bench-backup" "$GUS"; fi
 grep "BENCH" "$LOG" | sed 's/.*BENCH/BENCH/' || true
