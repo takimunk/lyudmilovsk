@@ -17,7 +17,7 @@ class UStaticMesh;
 class UStaticMeshComponent;
 class UTexture2D;
 class ULyudSeabedComponent;
-namespace LyudWeather { class FWaveField; }
+namespace LyudWeather { class FWaveField; struct FCalmFootprint; }
 
 /** The sea at one point: what a floating or swimming thing needs. */
 USTRUCT(BlueprintType)
@@ -174,6 +174,44 @@ public:
 	float GroundZ(double X, double Y, bool& bOk) const;
 	/** The wave clock (s, wrapped to the loop) the surface shows now. */
 	double WaveClock() const;
+	/**
+	 * Carries the whole wave pattern over the sea at a velocity (m/s, world axes), as the water streams past a ship that
+	 * stands still at the cruise stage (docs/ship.md): every train's phase is shifted on the CPU by -k (dir . drift) and
+	 * sent in the same wave table, so the surface on screen and SampleSurface stay the same surface. Zero (the default)
+	 * stops the carrying and keeps the pattern where it is; FLyudSeaSample::Velocity stays the waves' own (orbital).
+	 * Nothing changes at all until this is first called with a non-zero velocity.
+	 */
+	void SetSurfaceDrift(const FVector2D& WaterVelocityMS) { DriftVel = WaterVelocityMS; }
+	FVector2D GetSurfaceDrift() const { return DriftVel; }
+	/** Stops the carrying and puts every phase back exactly as the wave field made it (the pattern jumps: call it
+	 *  unseen, behind a fade). */
+	void ResetSurfaceDrift();
+
+	/**
+	 * Holds the water at the datum whatever the tide and the mean-level offset say, while Owner lives and until it lets
+	 * go (docs/ship.md "The sea at the hull": the cruise ship is a building that stands at the datum, and the tide would
+	 * leave her hanging 4.5 m in the air). The whole sea is held, town and all: SeaLevel, the depths, the wet line, the
+	 * water volume and the materials follow, as with lyud.TideOverride 0. BlendSeconds 0 = at once (behind a fade),
+	 * else the level eases there at a constant rate. TrueTideOffsetCm() is the tide without the hold. One owner.
+	 */
+	void SetTideHold(const UObject* Owner, bool bHold, float BlendSeconds = 0.f);
+	bool IsTideHeld() const { return TideHoldK > 0.f; }
+	float TrueTideOffsetCm() const { return TrueTideCm; }
+	/**
+	 * A patch of sea kept calm: an oriented box (centre, yaw of its long axis, half sizes, world cm) inside which the
+	 * waves keep only what leaves the surface within KeepCm of the level, relaxing to the open sea over EdgeCm outside
+	 * it. For a hull that stands still in the water: the sea is not masked inside her, so the waves must not reach her
+	 * lowest deck. The depth is not changed (no surf round her); the material (CalmA, CalmB: Lyud.Calm in
+	 * tools/sea/sea_hlsl.py) and SampleSurface use the same numbers. One patch; HalfLenCm <= 0 takes it away.
+	 */
+	void SetCalmFootprint(const FVector2D& CentreCm, float YawDeg, float HalfLenCm, float HalfWidCm, float EdgeCm = 1000.f, float KeepCm = 15.f);
+	void ClearCalmFootprint() { SetCalmFootprint(FVector2D::ZeroVector, 0.f, 0.f, 0.f); }
+	/** How much of the waves is left at a point (1 = the open sea). */
+	float CalmAt(const FVector& Location) const;
+	/** Caps the sea state: the waves are grown in no more wind than gives this Hs (m; 0 = no cap). Applied at once to
+	 *  the whole sea at the next wave update: set and lift it unseen (the cruise does, at the boarding fade). */
+	void SetSeaStateCap(float MaxHsM);
+	float GetSeaStateCap() const { return HsCapM; }
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void BeginPlay() override;
@@ -200,6 +238,13 @@ private:
 	bool ViewLocation(FVector& Out) const;
 
 	TPimplPtr<LyudWeather::FWaveField> Field;
+	/** SetSurfaceDrift: the velocity, the metres the pattern has been carried, the phases as the field made them. */
+	FVector2D DriftVel = FVector2D::ZeroVector;
+	double DriftX = 0.0, DriftY = 0.0;
+	bool bDrifted = false;
+	TArray<float> BasePhaseGeo, BasePhaseDetail;
+	void KeepBasePhases();
+	void WriteDriftPhases();
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> SeaMID;
 	UPROPERTY(Transient) TObjectPtr<UMaterialInstanceDynamic> UnderMID;
 	UPROPERTY(Transient) TObjectPtr<UTexture2D> WaveTable;
@@ -212,6 +257,21 @@ private:
 	 * lifts them so the camera stays over the waves (eases up, snaps when far under). */
 	void KeepSwimmerHeadUp(float DeltaSeconds);
 	FString GetDebugReportCore() const;
+	FString GetDebugReportTide() const;
+
+	/** SetTideHold: who holds, 0..1 how far the water has been brought to the datum, the tide without the hold. */
+	TWeakObjectPtr<const UObject> TideHolder;
+	bool bTideHoldWanted = false;
+	float TideHoldK = 0.f;
+	float TideHoldBlend = 0.f;
+	float TrueTideCm = 0.f;
+	/** SetCalmFootprint, SetSeaStateCap. */
+	TPimplPtr<LyudWeather::FCalmFootprint> Calm;
+	float CalmKeepM = 0.15f;
+	bool bCalmSent = false;
+	void PushCalm();
+	float HsCapM = 0.f;
+	float HsCapWind = -1.f;
 
 	float TideCm = 0.f;
 	float TideLowCm = 0.f;

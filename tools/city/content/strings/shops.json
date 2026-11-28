@@ -54,5 +54,6 @@
  "city.plot.p_library.name": {"ru": "Библиотека", "en": "The capsule library", "ja": "カプセル図書館"},
  "city.plot.p_hall.name": {"ru": "Дом собраний «Своды»", "en": "The Vaults community hall", "ja": "集会所「ヴォールト」"},
  "city.plot.p_sanatorium.name": {"ru": "Санаторий «Дружба»", "en": "The Druzhba sanatorium", "ja": "療養所「ドルージバ」"},
- "city.plot.p_bridgehouse.name": {"ru": "Дом-мост", "en": "The bridge house", "ja": "ブリッジハウス"}
+ "city.plot.p_bridgehouse.name": {"ru": "Дом-мост", "en": "The bridge house", "ja": "ブリッジハウス"},
+ "city.plot.p_ship.name": {"ru": "Теплоход «Полдень»", "en": "The motor ship Polden", "ja": "客船「ポルデニ号」"}
 }

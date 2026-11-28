@@ -482,7 +482,8 @@ static int Run(bool bDay, const std::string& Lang)
 	{
 		// the sanatorium's guests in turn (16_sanatorium_guests.txt): each one's own pieces, a piece a weekday, and most
 		// of the dozen away on any day: not counted
-		if (Book.Sets[I].Name.rfind("guest_", 0) == 0)
+		// the same for the weekend cruise's sets (18_cruise.txt): nobody is aboard the motor ship on this day
+		if (Book.Sets[I].Name.rfind("guest_", 0) == 0 || Book.Sets[I].Name.rfind("cruise_", 0) == 0)
 		{
 			GuestSets++;
 			continue;

@@ -415,6 +415,12 @@ def main(argv):
     by_plot = defaultdict(list)
     for t in inter["things"]:
         by_plot[t["plot"]].append(t)
+    linked_from_elsewhere = defaultdict(set)          # plot -> full ids of its things that another plot's lift leads to
+    for t in inter["things"]:
+        for f in t.get("floors") or []:
+            to = f["to"]
+            if "/" in to and to.split("/", 1)[0] != t["plot"]:
+                linked_from_elsewhere[to.split("/", 1)[0]].add(to)
     # export file per plot
     groups = defaultdict(list)
     for plot, (btype, key) in places.items():
@@ -460,6 +466,15 @@ def main(argv):
             # reachability with lift links (directed): street components, then lift door -> arrival spot, until stable
             G.reach = set(G.street)
             arrivals = {}
+            # a plot entered by a link from ANOTHER plot (the motor ship: P-PIER/launch_gate -> P-SHIP/gangway): the arrival
+            # spot of that stop is a seed here, as the street is for a house (the other plot's own audit covers its door)
+            for fid, t in things:
+                if fid in linked_from_elsewhere.get(plot, ()):
+                    a = arrival_nodes(G, t)
+                    if a is not None:
+                        G.reach.add(G.comp[a])
+                    else:
+                        errors.append("%s d %s (the stop of a link from another plot): no walkable floor at the arrival spots" % (nm, fid))
             for fid, t in things:
                 for to in t["floors"]:
                     if to in tmap and to not in arrivals:

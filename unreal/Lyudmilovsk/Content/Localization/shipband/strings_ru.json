@@ -1,0 +1,21 @@
+{
+ "band.name": "Полуденный квартет",
+ "band.tune.saints.title": "Когда святые маршируют",
+ "band.tune.entertainer.title": "Артист эстрады. Регтайм Скотта Джоплина",
+ "band.tune.old_folks.title": "Над рекой Суони",
+ "band.tune.oh_susanna.title": "О, Сюзанна!",
+ "band.tune.st_james.title": "Больница Святого Джеймса",
+ "band.tune.londonderry.title": "Мелодия из Лондондерри",
+ "band.tune.korobeiniki.title": "Коробейники. Танго",
+ "band.tune.ochi.title": "Очи чёрные",
+ "band.tune.sakura.title": "Сакура",
+ "band.tune.aura_lea.title": "Аура Ли",
+ "band.tune.amazing_grace.title": "О, благодать",
+ "band.tune.greensleeves.title": "Зелёные рукава",
+ "band.tune.brahms_lullaby.title": "Колыбельная Брамса",
+ "band.tune.blue_danube.title": "На прекрасном голубом Дунае",
+ "band.tune.daisy_bell.title": "Дейзи Белл. Вальс",
+ "band.tune.choclo.title": "Эль Чокло. Танго",
+ "band.tune.auld_lang_syne.title": "Старое доброе время",
+ "dev.action.band.play_next": "Оркестр: следующая мелодия (здесь, без корабля)"
+}

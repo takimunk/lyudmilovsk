@@ -37,6 +37,8 @@ MATERIALS = {
     "CT_Grass":         ("#4F6B33", 1.0, None, 1.0, "roof garden turf"),
     "CT_Interior":      ("#C9C0B0", 0.9, "plaster_white", 2.0, "inside walls of enterable halls"),
     "CT_Floor":         ("#8B8279", 0.7, "concrete", 1.0, "terrazzo-ish inside floors"),
+    "CT_ShipNavy":      ("#111D3A", 0.45, None, 1.0, "deep navy hull paint (motor ship Polden; flags)"),
+    "CT_ShipCream":     ("#EAD9AE", 0.5, None, 1.0, "warm cream paint: the ship's funnel, masts, ventilators, trim"),
     "CT_Opal":          ("#FFF4E0", 0.3, None, 1.0, "opal glass of lamp fixtures (glows)"),
     "CT_WoodLight":     ("#B48A5E", 0.6, "timber_stained", 1.0, "light varnished wood: school desks, café tables, counters"),
     "CT_Neon":          ("#FF6A3D", 0.4, None, 1.0, "neon letters / lamp glow (emissive at night)"),

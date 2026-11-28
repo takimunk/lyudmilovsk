@@ -1965,6 +1965,31 @@ void ULyudCityThings::StartStay(const FString& Id, int32 Days)
 	}
 }
 
+bool ULyudCityThings::SetFlag(FName Flag, bool bOn)
+{
+	if (!Model || Flag.IsNone())
+	{
+		return false;
+	}
+	Model->SetFlag(std::string(TCHAR_TO_UTF8(*Flag.ToString())), bOn);
+	return true;
+}
+
+bool ULyudCityThings::HasFlag(FName Flag) const
+{
+	return Model && Model->HasFlag(std::string(TCHAR_TO_UTF8(*Flag.ToString())));
+}
+
+bool ULyudCityThings::SetWaitMinutes(FName Name, int32 Minutes)
+{
+	if (!Model || Name.IsNone())
+	{
+		return false;
+	}
+	Model->SetWaitMinutes(std::string(TCHAR_TO_UTF8(*Name.ToString())), Minutes);
+	return true;
+}
+
 bool ULyudCityThings::IsClearNow() const
 {
 	// (only the weather: asked every frame from the beach chair, and the full moment allocates the holidays' names)

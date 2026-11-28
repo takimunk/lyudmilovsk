@@ -958,8 +958,14 @@ static void RealChecks(const std::string& Path)
 		{
 			Conditional += (L.HourFrom >= 0.f || L.Days != 0x7F || L.DateFrom > 0 || L.After > 0 || L.Every > 1) ? 1 : 0;
 		}
-		// an act with lines must have one to show at any hour of any day it may run (else the page would be empty)
-		if (!A.Lines.empty())
+		// an act with lines must have one to show at any hour of any day it may run (else the page would be empty); lines by
+		// the game's flags (the cruise: FLine::Flags) are not counted here, the flags are not known
+		bool bByFlags = false;
+		for (const FLine& L : A.Lines)
+		{
+			bByFlags = bByFlags || !L.Flags.empty();
+		}
+		if (!A.Lines.empty() && !bByFlags)
 		{
 			for (int H = 0; H < 24; ++H)
 			{
@@ -1036,12 +1042,14 @@ static void RealChecks(const std::string& Path)
 	// + 1: the sailing school's bosun's "I capsized" waits for the stamp sailing/capsize (docs/yacht_school.md)
 	// + the topics of one holiday (docs/festivals.md "Science Day, the Old New Year, Neptune Day"): offered on its day only
 	// (holidaychecks.h asks them on their days)
+	// + 2: the radio operator's two topics of the quest ship_farlight (farlight.move waits for the flag cruise_day2, the
+	// answer for the move heard and the keeper's reply: tools/city/content/x_farlight.json)
 	int Festive = 0;
 	for (int I = 0; I < (int)M.Topics.size(); ++I)
 	{
 		Festive += M.Topics[(size_t)I].When.IsFestive() && !Reached.count(I) ? 1 : 0;
 	}
-	CHECK((int)Reached.size() + 6 + 5 + 2 + 1 + Festive >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count; %d for their holiday)",
+	CHECK((int)Reached.size() + 6 + 5 + 2 + 1 + 2 + Festive >= (int)M.Topics.size(), "%d of %d topics are offered on a fresh save at some hour (the rest wait for heard, did, read or count; %d for their holiday)",
 		(int)Reached.size(), (int)M.Topics.size(), Festive);
 	// the room tones: every tone a plot names is there, a closed tone is a tone, volumes in 0..1, every min <= max
 	int BadTone = 0, Loud = 0;
@@ -2002,6 +2010,7 @@ static void JobChecks(const std::string& Path)
 #include "homechecks.h"
 #include "rewardchecks.h"
 #include "rentalchecks.h"
+#include "flagchecks.h"
 #include "holidaychecks.h"
 #include "coinchecks.h"
 #include "sodachecks.h"
@@ -2215,6 +2224,7 @@ int main(int Argc, char** Argv)
 	TalkChecks();
 	LiftChecks();
 	StayChecks();
+	FlagChecks();
 	RealChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	CourseChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");
 	ProcChecks(Argc > 1 ? Argv[1] : "unreal/Lyudmilovsk/Content/City/interiors.json");

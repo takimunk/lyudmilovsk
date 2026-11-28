@@ -1,0 +1,644 @@
+{
+ "_doc": "The Far Light (plot P-FARLIGHT, building far_light; docs/ship.md \"The landing at the Far Light\"): the launch's two link doors (motor_ship/launch_ashore gated by the cruise's flag cruise_ashore_open; far_light/jetty_gate back), every thing on the rock, the keeper August Tamm (ship_tamm: the act farlight_keeper with 8 topics; the chooser opens only when somebody is on shift at the plot, otherwise the act's own lines show), the log book (a text), Lev Markovich's two topics added to W8's act ship_telegram, the collection farlight, the quest ship_farlight. Words: strings/x_farlight.json. Written by L1 from an authoring script; this file is the source.",
+ "acts": {
+  "farlight_launch_out": {
+   "prompt": "city.farlight.launch.prompt",
+   "any_hour": true,
+   "sound": "ship_creak",
+   "flag": "cruise_ashore_open",
+   "no_flag": "farlight_launch_words",
+   "lines": [
+    "city.farlight.launch.1"
+   ]
+  },
+  "farlight_launch_words": {
+   "prompt": "city.farlight.launch.prompt",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.farlight.launch.no.1",
+     "flag": "!cruise_ashore_stop"
+    },
+    {
+     "k": "city.farlight.launch.no.2",
+     "flag": [
+      "cruise_ashore_stop",
+      "!cruise_ashore_open"
+     ],
+     "h": [
+      16,
+      17
+     ]
+    },
+    {
+     "k": "city.farlight.launch.no.3",
+     "flag": [
+      "cruise_ashore_stop",
+      "!cruise_ashore_open"
+     ],
+     "h": [
+      17,
+      20
+     ]
+    }
+   ]
+  },
+  "farlight_launch_back": {
+   "prompt": "city.farlight.back.prompt",
+   "any_hour": true,
+   "sound": "ship_creak",
+   "lines": [
+    "city.farlight.back.1"
+   ]
+  },
+  "farlight_bollard": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.bollard.1"
+   ]
+  },
+  "farlight_stair_up": {
+   "prompt": "city.farlight.stair.up",
+   "any_hour": true,
+   "sound": "wood_creak",
+   "lines": [
+    "city.farlight.stair_up.1"
+   ]
+  },
+  "farlight_stair_down": {
+   "prompt": "city.farlight.stair.down",
+   "any_hour": true,
+   "sound": "wood_creak",
+   "lines": [
+    "city.farlight.stair_down.1"
+   ]
+  },
+  "farlight_ladder_up": {
+   "prompt": "city.farlight.ladder.up",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.ladder_up.1"
+   ]
+  },
+  "farlight_plate": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.plate.1",
+    "city.farlight.plate.2"
+   ],
+   "collect": "farlight/plate"
+  },
+  "farlight_clockwork": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.clockwork.1",
+    "city.farlight.clockwork.2"
+   ],
+   "sound": "clock_tick"
+  },
+  "farlight_watch_desk": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.watch_desk.1"
+   ]
+  },
+  "farlight_view": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.farlight.view.1",
+     "flag": "cruise_ashore_stop",
+     "weather": "!fog"
+    },
+    {
+     "k": "city.farlight.view.2",
+     "weather": "fog"
+    },
+    {
+     "k": "city.farlight.view.3",
+     "h": [
+      17,
+      21
+     ],
+     "weather": "!fog"
+    },
+    "city.farlight.view.4"
+   ],
+   "collect": "farlight/gallery",
+   "sound": "wind_soft"
+  },
+  "farlight_north": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.north.1",
+    "city.farlight.north.2"
+   ]
+  },
+  "farlight_lantern": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.lantern.1",
+    "city.farlight.lantern.2"
+   ],
+   "collect": "farlight/lens"
+  },
+  "farlight_radio": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.radio.1"
+   ],
+   "sound": "morse_beep"
+  },
+  "farlight_stove": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.stove.1"
+   ]
+  },
+  "farlight_bunk": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.bunk.1"
+   ]
+  },
+  "farlight_tins": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.tins.1"
+   ]
+  },
+  "farlight_nets": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.nets.1"
+   ]
+  },
+  "farlight_cat_bowl": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.cat_bowl.1"
+   ]
+  },
+  "farlight_tank": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.tank.1"
+   ],
+   "sound": "tap_water"
+  },
+  "farlight_oil": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.oil.1"
+   ]
+  },
+  "farlight_weather": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.weather.1"
+   ]
+  },
+  "farlight_flag": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.flag.1"
+   ]
+  },
+  "farlight_patch": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.patch.1",
+    "city.farlight.patch.2"
+   ]
+  },
+  "farlight_ledge": {
+   "prompt": "city.act.look.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.ledge.1"
+   ],
+   "sound": "gulls_feed"
+  },
+  "farlight_bell": {
+   "prompt": "city.farlight.bell.prompt",
+   "any_hour": true,
+   "lines": [
+    "city.farlight.bell.1"
+   ],
+   "sound": "ship_bell",
+   "minutes": 1
+  },
+  "farlight_bell_wind": {
+   "prompt": "city.farlight.wind.prompt",
+   "any_hour": true,
+   "minutes": 5,
+   "sound": "clock_tick",
+   "lines": [
+    "city.farlight.wind.1",
+    {
+     "k": "city.farlight.wind.2",
+     "did": "farlight_bell_wind"
+    }
+   ]
+  },
+  "farlight_barometer": {
+   "prompt": "city.farlight.baro.prompt",
+   "any_hour": true,
+   "minutes": 2,
+   "lines": [
+    {
+     "k": "city.farlight.baro.1",
+     "weather": "!rain"
+    },
+    {
+     "k": "city.farlight.baro.2",
+     "weather": "rain"
+    }
+   ]
+  },
+  "farlight_bench": {
+   "prompt": "city.farlight.sit.prompt",
+   "any_hour": true,
+   "pose": "sit",
+   "minutes": 5,
+   "lines": [
+    "city.farlight.bench.1",
+    "city.farlight.bench.2"
+   ]
+  },
+  "farlight_birds": {
+   "prompt": "city.farlight.birds.prompt",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.farlight.birds.1",
+     "collect": "farlight/bird",
+     "once": true
+    },
+    "city.farlight.birds.2"
+   ]
+  },
+  "farlight_log": {
+   "prompt": "city.farlight.log.prompt",
+   "any_hour": true,
+   "minutes": 2,
+   "sound": "page_turn",
+   "lines": [
+    "city.farlight.log.open.1"
+   ],
+   "read": {
+    "texts": [
+     "farlight_log"
+    ],
+    "rotate": "use"
+   }
+  },
+  "farlight_chess": {
+   "prompt": "city.farlight.chess.prompt",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.farlight.chess.1",
+     "heard": "!farlight.move"
+    },
+    {
+     "k": "city.farlight.chess.2",
+     "heard": "farlight.move",
+     "did": "!farlight_bell_wind"
+    },
+    {
+     "k": "city.farlight.chess.3",
+     "heard": "farlight.move",
+     "did": "farlight_bell_wind"
+    }
+   ]
+  },
+  "farlight_keeper": {
+   "prompt": "city.farlight.keeper.prompt",
+   "any_hour": true,
+   "lines": [
+    {
+     "k": "city.farlight.keeper.1",
+     "once": true
+    },
+    "city.farlight.keeper.2",
+    "city.farlight.keeper.3"
+   ]
+  }
+ },
+ "rules": {
+  "motor_ship/launch_ashore": {
+   "act": "farlight_launch_out"
+  },
+  "far_light/jetty_gate": {
+   "act": "farlight_launch_back"
+  },
+  "far_light/jetty_bollard": {
+   "act": "farlight_bollard"
+  },
+  "far_light/tower_stair_foot": {
+   "act": "farlight_stair_up"
+  },
+  "far_light/watch_stair_top": {
+   "act": "farlight_stair_down"
+  },
+  "far_light/watch_ladder": {
+   "act": "farlight_ladder_up"
+  },
+  "far_light/gallery_hatch": {
+   "act": "farlight_stair_down"
+  },
+  "far_light/memorial_plate": {
+   "act": "farlight_plate"
+  },
+  "far_light/lens_clockwork": {
+   "act": "farlight_clockwork"
+  },
+  "far_light/watch_desk": {
+   "act": "farlight_watch_desk"
+  },
+  "far_light/gallery_view": {
+   "act": "farlight_view"
+  },
+  "far_light/gallery_north": {
+   "act": "farlight_north"
+  },
+  "far_light/lantern": {
+   "act": "farlight_lantern"
+  },
+  "far_light/radio_set": {
+   "act": "farlight_radio"
+  },
+  "far_light/keeper_stove": {
+   "act": "farlight_stove"
+  },
+  "far_light/keeper_bunk": {
+   "act": "farlight_bunk"
+  },
+  "far_light/tins_shelf": {
+   "act": "farlight_tins"
+  },
+  "far_light/drying_nets": {
+   "act": "farlight_nets"
+  },
+  "far_light/cat_bowl": {
+   "act": "farlight_cat_bowl"
+  },
+  "far_light/rain_tank": {
+   "act": "farlight_tank"
+  },
+  "far_light/oil_store": {
+   "act": "farlight_oil"
+  },
+  "far_light/weather_box": {
+   "act": "farlight_weather"
+  },
+  "far_light/flagpole": {
+   "act": "farlight_flag"
+  },
+  "far_light/veg_patch": {
+   "act": "farlight_patch"
+  },
+  "far_light/bird_ledge": {
+   "act": "farlight_ledge"
+  },
+  "far_light/fog_bell": {
+   "act": "farlight_bell"
+  },
+  "far_light/bell_clockwork": {
+   "act": "farlight_bell_wind"
+  },
+  "far_light/barometer": {
+   "act": "farlight_barometer"
+  },
+  "far_light/hut_bench": {
+   "act": "farlight_bench"
+  },
+  "far_light/carved_birds": {
+   "act": "farlight_birds"
+  },
+  "far_light/log_book": {
+   "act": "farlight_log"
+  },
+  "far_light/chess_card": {
+   "act": "farlight_chess"
+  },
+  "far_light/keeper_table": {
+   "act": "farlight_keeper"
+  }
+ },
+ "texts": {
+  "farlight_log": {
+   "title": "city.farlight.log.title",
+   "kind": "ledger",
+   "minutes": 2,
+   "collect": "farlight/log",
+   "pages": [
+    "city.farlight.log.p1",
+    "city.farlight.log.p2",
+    "city.farlight.log.p3",
+    "city.farlight.log.p4",
+    "city.farlight.log.p5"
+   ]
+  }
+ },
+ "topics": {
+  "farlight_keeper": [
+   {
+    "id": "farlight.winters",
+    "k": "city.ask.farlight.winters",
+    "lines": [
+     "city.ask.farlight.winters.1",
+     "city.ask.farlight.winters.2"
+    ]
+   },
+   {
+    "id": "farlight.alone",
+    "k": "city.ask.farlight.alone",
+    "lines": [
+     "city.ask.farlight.alone.1",
+     "city.ask.farlight.alone.2"
+    ]
+   },
+   {
+    "id": "farlight.light",
+    "k": "city.ask.farlight.light",
+    "lines": [
+     "city.ask.farlight.light.1",
+     "city.ask.farlight.light.2"
+    ]
+   },
+   {
+    "id": "farlight.birds",
+    "k": "city.ask.farlight.birds",
+    "lines": [
+     "city.ask.farlight.birds.1",
+     "city.ask.farlight.birds.2"
+    ]
+   },
+   {
+    "id": "farlight.lev",
+    "k": "city.ask.farlight.lev",
+    "lines": [
+     "city.ask.farlight.lev.1",
+     "city.ask.farlight.lev.2"
+    ]
+   },
+   {
+    "id": "farlight.cat",
+    "k": "city.ask.farlight.cat",
+    "lines": [
+     "city.ask.farlight.cat.1"
+    ]
+   },
+   {
+    "id": "farlight.storm",
+    "k": "city.ask.farlight.storm",
+    "lines": [
+     "city.ask.farlight.storm.1",
+     "city.ask.farlight.storm.2"
+    ]
+   },
+   {
+    "id": "farlight.town",
+    "k": "city.ask.farlight.town",
+    "lines": [
+     "city.ask.farlight.town.1",
+     "city.ask.farlight.town.2"
+    ]
+   }
+  ]
+ },
+ "collections": {
+  "farlight": {
+   "title": "city.farlight.coll.title",
+   "pieces": [
+    "plate",
+    "gallery",
+    "lens",
+    "log",
+    "bird"
+   ]
+  }
+ },
+ "quests": [
+  {
+   "id": "ship_farlight",
+   "kind": "side",
+   "start_on": {
+    "event": "cruise_event",
+    "target": "lunch2"
+   },
+   "stages": [
+    {
+     "id": "envelope",
+     "objectives": [
+      {
+       "id": "ask_lev",
+       "event": "ask",
+       "target": "farlight.move"
+      }
+     ],
+     "dev": {
+      "exec": [
+       "lyud.Cruise.Board",
+       "lyud.Cruise.Jump bridge_tour"
+      ],
+      "tp": "ship_boat_deck"
+     }
+    },
+    {
+     "id": "carry",
+     "objectives": [
+      {
+       "id": "see_tamm",
+       "event": "do",
+       "target": "farlight_keeper"
+      }
+     ],
+     "dev": {
+      "exec": [
+       "lyud.Cruise.Board",
+       "lyud.Cruise.Landing"
+      ],
+      "tp": "farlight_hut"
+     }
+    },
+    {
+     "id": "chore",
+     "no_skip": true,
+     "objectives": [
+      {
+       "id": "wind_bell",
+       "event": "do",
+       "target": "farlight_bell_wind"
+      }
+     ],
+     "dev": {
+      "exec": [
+       "lyud.Cruise.Board",
+       "lyud.Cruise.Landing"
+      ],
+      "tp": "farlight_hut"
+     }
+    },
+    {
+     "id": "answer",
+     "no_skip": true,
+     "objectives": [
+      {
+       "id": "get_answer",
+       "event": "do",
+       "target": "farlight_chess"
+      }
+     ],
+     "dev": {
+      "exec": [
+       "lyud.Cruise.Board",
+       "lyud.Cruise.Landing"
+      ],
+      "tp": "farlight_hut"
+     }
+    },
+    {
+     "id": "back",
+     "objectives": [
+      {
+       "id": "tell_lev",
+       "event": "ask",
+       "target": "farlight.answer"
+      }
+     ],
+     "reward": {
+      "rubles": 15
+     },
+     "dev": {
+      "exec": [
+       "lyud.Cruise.Board",
+       "lyud.Cruise.Jump captains_dinner"
+      ],
+      "tp": "ship_boat_deck"
+     }
+    }
+   ]
+  }
+ ]
+}

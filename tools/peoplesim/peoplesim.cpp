@@ -1003,7 +1003,8 @@ static int GuestsRota()
 	std::vector<int> Stay;
 	for (const FPerson& P : W.People)
 	{
-		if (P.StayCycle > 0)
+		// (a stay with a season, "when", is the motor ship's: her people and the townsfolk who cruise, cruise_people.h)
+		if (P.StayCycle > 0 && P.StayWhenId < 0)
 		{
 			Stay.push_back(P.Id);
 		}
@@ -1307,7 +1308,8 @@ static int Town()
 	};
 	for (const FPerson& P : W.People)
 	{
-		Guests += P.StayCycle > 0 && !W.Gone(P) ? 1 : 0;
+		// (not the motor ship's people nor the townsfolk who cruise: their stay has a season, "when")
+		Guests += P.StayCycle > 0 && P.StayWhenId < 0 && !W.Gone(P) ? 1 : 0;
 	}
 	double Longest = 0.0;
 	std::string LongestWho;
@@ -1507,7 +1509,9 @@ static int Town()
 						KiteWindHi = std::max(KiteWindHi, W.Wind);
 					}
 				}
-				if (P.N[(int)ENeed::Hunger] > 0.95f && P.Pose != EPose::Sleep)
+				// (not those away on their stay, who need nothing: the sanatorium's guests of another week, the cruising
+				// townsfolk's twins of the motor ship out of her weekend)
+				if (P.N[(int)ENeed::Hunger] > 0.95f && P.Pose != EPose::Sleep && !W.Gone(P))
 				{
 					Hungry[P.Key] += 1.f;
 				}
@@ -1975,6 +1979,7 @@ static int Day(int Argc, char** Argv, const char* TraceKey, bool bSummary = fals
 #include "winter_people.h"
 #include "indoor_weather.h"
 #include "book_club_people.h"
+#include "cruise_people.h"
 #include "street_people.h"
 #include "town_days.h"
 #include "dance_people.h"
@@ -2005,6 +2010,12 @@ int main(int Argc, char** Argv)
 		const int R = BookClub();
 		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
 		return R;
+	}
+	if (Mode == "cruise")
+	{
+		const int R = CruisePeople();
+		std::printf(Failures ? "%d FAILED\n" : "all ok\n", Failures);
+		return R || Failures ? 1 : 0;
 	}
 	if (Mode == "street")
 	{

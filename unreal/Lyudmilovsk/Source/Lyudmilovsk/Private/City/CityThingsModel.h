@@ -202,6 +202,9 @@ namespace LyudCity
 		std::string Stay;
 		/** "rumour": a kind of rumour about the hero going round now (FWhen::Rumours), "any" any, "!kind" not (empty: no condition). */
 		std::string Rumour;
+		/** "flag": names of the game's flags (FModel::SetFlag: the cruise's "cruise_aboard", "cruise_ev_dinner1"...) that must
+		 *  all be set; "!name": must not be set (empty: no condition). */
+		std::vector<std::string> Flags;
 
 		bool IsFestive() const { return Festival == EFestivalCond::Any || Festival == EFestivalCond::Ids; }
 
@@ -214,6 +217,34 @@ namespace LyudCity
 			}
 			return Set && Set->count(Name) > 0;
 		}
+		/** A "flag" condition against the flags set now: every name in the set, every "!name" not (a null set holds none). */
+		static bool FlagsHold(const std::vector<std::string>& Names, const std::set<std::string>* FlagSet)
+		{
+			for (const std::string& Name : Names)
+			{
+				if (!HasName(FlagSet, Name))
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		/** "flag": "name" | "!name" | [names]. */
+		static void ReadFlags(const LyudJson::FValue& V, std::vector<std::string>& Out)
+		{
+			Out.clear();
+			if (V.Type == LyudJson::FValue::String && !V.Str.empty())
+			{
+				Out.push_back(V.Str);
+			}
+			for (const LyudJson::FValue& Name : V.Items)
+			{
+				if (!Name.S().empty())
+				{
+					Out.push_back(Name.S());
+				}
+			}
+		}
 
 		/** Do the conditions hold? Stamps: the collections (null: none collected, so "have" and "count" fail); ReadMap: the
 		 *  texts read to the end (text id -> plot; null: none read, so "read" fails); DoneSet: the targets done ("did"; null:
@@ -221,8 +252,12 @@ namespace LyudCity
 		 *  game began) they no longer hold ("stay"; null: on none). */
 		bool Holds(const FWhen& W, const FStamps* Stamps = nullptr, const std::map<std::string, std::string>* ReadMap = nullptr,
 			const std::set<std::string>* DoneSet = nullptr, const std::set<std::string>* HeardSet = nullptr,
-			const std::map<std::string, long long>* StayMap = nullptr) const
+			const std::map<std::string, long long>* StayMap = nullptr, const std::set<std::string>* FlagSet = nullptr) const
 		{
+			if (!Flags.empty() && !FlagsHold(Flags, FlagSet))
+			{
+				return false;
+			}
 			if (!Stay.empty())
 			{
 				const bool bNot = Stay[0] == '!';
@@ -416,6 +451,13 @@ namespace LyudCity
 		 *  "no_stay", an act id; -1: refused as closed). */
 		std::string NeedsStay;
 		int NoStayAct = -1;
+		/** "flag": the game's flags that must all be set ("!name": not set) for the act (FLine::FlagsHold); while they are not,
+		 *  the thing does NoFlagAct instead (words only: "no_flag", an act id or a line key; -1: refused as closed). */
+		std::vector<std::string> Flags;
+		int NoFlagAct = -1;
+		/** "until": "<name>": the act lasts the minutes of a named wait the game keeps up to date (FModel::SetWaitMinutes: the
+		 *  cruise's "cruise_event", to the next event of the programme); none set: its Minutes. Empty: not one. */
+		std::string UntilName;
 		/** "window": a window that opens (0..1, how wide: a vent 0.3, a casement 0.5, a balcony door 0.8); E opens or shuts it
 		 *  and the open air comes into the room (docs/city_interiors.md "Windows that open"). 0: not one. */
 		float Window = 0.f;
@@ -1452,6 +1494,11 @@ namespace LyudCity
 				{
 					Acts[(size_t)Self->second].NoStayAct = NoStay->second;
 				}
+				const auto NoFlag = ActIndex.find(Field.second["no_flag"].S());
+				if (Self != ActIndex.end() && NoFlag != ActIndex.end() && NoFlag->second != Self->second)
+				{
+					Acts[(size_t)Self->second].NoFlagAct = NoFlag->second;
+				}
 			}
 			for (const auto& Field : Root["stays"].Fields)
 			{
@@ -1779,6 +1826,11 @@ namespace LyudCity
 			{
 				return A.NoStayAct;
 			}
+			// an act behind a flag (the launch to the ship only while she boards): its words instead
+			if (!A.Flags.empty() && A.NoFlagAct >= 0 && !FLine::FlagsHold(A.Flags, &Flags))
+			{
+				return A.NoFlagAct;
+			}
 			if (!bOpenAll && !Stays.empty() && A.Pose != "lie" && A.StayDays == 0)
 			{
 				for (const FStayDef& D : Stays)
@@ -1798,6 +1850,10 @@ namespace LyudCity
 		bool IsWordsOnly(int Thing, int Index) const
 		{
 			const FThing& T = Things[(size_t)Thing];
+			if (Index != T.Act && T.Act >= 0 && T.Act < (int)Acts.size() && Index == Acts[(size_t)T.Act].NoFlagAct)
+			{
+				return true;     // a "no_flag" act: always words only
+			}
 			return Index != T.Act && (Index == T.ClosedAct || Index < 0 || Index >= (int)Acts.size() || Acts[(size_t)Index].Target == "closed");
 		}
 
@@ -1842,6 +1898,37 @@ namespace LyudCity
 			Until = std::max(Until, Since) + Days;
 		}
 		const std::map<std::string, long long>& GetStays() const { return StayUntil; }
+
+		// --- the game's flags and named waits (the cruise: ULyudCruise sets them; never saved, the game sets them again)
+
+		/** Sets or clears a flag the "flag" conditions of lines, topics and acts ask about; true when it changed. */
+		bool SetFlag(const std::string& Name, bool bOn)
+		{
+			if (Name.empty())
+			{
+				return false;
+			}
+			return bOn ? Flags.insert(Name).second : Flags.erase(Name) > 0;
+		}
+		bool HasFlag(const std::string& Name) const { return Flags.count(Name) > 0; }
+		const std::set<std::string>& GetFlags() const { return Flags; }
+		/** The minutes an act with "until": "<name>" lasts from now (0 or less: no such wait now, the act's own minutes pass). */
+		void SetWaitMinutes(const std::string& Name, int Minutes)
+		{
+			if (Minutes > 0)
+			{
+				Waits[Name] = std::min(Minutes, 24 * 60);
+			}
+			else
+			{
+				Waits.erase(Name);
+			}
+		}
+		int WaitMinutes(const std::string& Name) const
+		{
+			const auto It = Waits.find(Name);
+			return It == Waits.end() ? 0 : It->second;
+		}
 		const FAct* ActNow(int Thing, const FWhen& When, bool bOpenAll) const
 		{
 			const int I = ActIndexNow(Thing, When, bOpenAll);
@@ -1867,6 +1954,10 @@ namespace LyudCity
 				return EVerdict::Closed;
 			}
 			if (!A->NeedsStay.empty() && !OnStay(A->NeedsStay, When.Since))
+			{
+				return EVerdict::Closed;
+			}
+			if (!A->Flags.empty() && !FLine::FlagsHold(A->Flags, &Flags))
 			{
 				return EVerdict::Closed;
 			}
@@ -1953,6 +2044,11 @@ namespace LyudCity
 				GiveStamp(T.Collect, &O.NewStamps);
 			}
 			O.Minutes = A->Until >= 0 ? MinutesUntil(When.Hour, A->Until) : A->Minutes;
+			if (!A->UntilName.empty())
+			{
+				const int Wait = WaitMinutes(A->UntilName);
+				O.Minutes = Wait > 0 ? Wait : A->Minutes;
+			}
 			if (O.Text >= 0)
 			{
 				O.Minutes = 0;     // the pages take their own minutes as they are read
@@ -2021,7 +2117,7 @@ namespace LyudCity
 		/** Do a line's conditions hold now, the hero's stamps, texts read, deeds done and topics heard included? */
 		bool HoldsNow(const FLine& L, const FWhen& When) const
 		{
-			return L.Holds(When, &Stamps, &ReadAt, &Done, &Heard, &StayUntil);
+			return L.Holds(When, &Stamps, &ReadAt, &Done, &Heard, &StayUntil, &Flags);
 		}
 
 		// --- the staff talk (docs/city_interiors.md "Staff talk"): topics a counter's staff can be asked about besides the act
@@ -4174,6 +4270,9 @@ namespace LyudCity
 		std::set<std::string> Done;
 		/** The stays the hero is on: id -> the first day (since the game began) it no longer holds. */
 		std::map<std::string, long long> StayUntil;
+		/** The game's flags set now, and its named waits (minutes). Not the hero's doing: kept over a load of the data or a save. */
+		std::set<std::string> Flags;
+		std::map<std::string, int> Waits;
 		/** The complete collections paid for: set -> the day (since the game began). */
 		std::map<std::string, long long> Rewarded;
 		std::unordered_map<std::string, int> TopicIndex;
@@ -4772,6 +4871,7 @@ namespace LyudCity
 			Line.Heard = L["heard"].S();
 			Line.Stay = L["stay"].S();
 			Line.Rumour = L["rumour"].S();
+			FLine::ReadFlags(L["flag"], Line.Flags);
 		}
 
 		/** A topic of "topics": {"k": title key, "lines": [line], <line conditions: when it is offered>, "once": true (offered until
@@ -4915,6 +5015,7 @@ namespace LyudCity
 			{
 				A.Until = -1;
 			}
+			A.UntilName = V["until"].S();
 			A.Price = V["price"].I(0);
 			for (const LyudJson::FValue& G : V["give"].Items)
 			{
@@ -4962,6 +5063,7 @@ namespace LyudCity
 			A.StayId = StayField["id"].S();
 			A.StayDays = A.StayId.empty() ? 0 : std::min(60, std::max(0, StayField["days"].I(0)));
 			A.NeedsStay = V["needs_stay"].S();
+			FLine::ReadFlags(V["flag"], A.Flags);
 			A.Window = std::min(1.f, std::max(0.f, V["window"].F(0.f)));
 			return A;
 		}

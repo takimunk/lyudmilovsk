@@ -1128,6 +1128,20 @@ def top(B):
     return ZL1 + 2.6
 
 
+def _hull2d(pts):
+    """The convex hull of 2D points, counter-clockwise."""
+    pts = sorted(set((round(x, 4), round(y, 4)) for x, y in pts))
+
+    def half(ps):
+        out = []
+        for p in ps:
+            while len(out) >= 2 and (out[-1][0] - out[-2][0]) * (p[1] - out[-2][1]) - (out[-1][1] - out[-2][1]) * (p[0] - out[-2][0]) <= 0:
+                out.pop()
+            out.append(p)
+        return out[:-1]
+    return half(pts) + half(pts[::-1])
+
+
 def build(B):
     base(B)
     th_end, n = stair(B)
@@ -1138,6 +1152,10 @@ def build(B):
     ang0 = -math.pi / 2 - math.pi / N
     B.footprint = [(CX + R_WALL * math.cos(ang0 + 2 * math.pi * k / N), CY + R_WALL * math.sin(ang0 + 2 * math.pi * k / N)) for k in range(N)]
     B.height = h
+    # the motor ship's landing stage at the seaward edge of the pier head (blender/city/buildings/_shipkit.py
+    # pier_landing: ship_ticket_box, ship_timetable, launch_gate); the footprint grows to take it in
+    import _shipkit
+    B.footprint = _hull2d(B.footprint + _shipkit.pier_landing(B))
     for m_ in interior_kit.check(B):
         print("KIT:", m_)
     B.note("%d stair treads up to %.1f m; lattice %d bars x2 x3 sections" % (n, PLAT_Z, NBARS))

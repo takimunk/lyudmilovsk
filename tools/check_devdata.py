@@ -48,7 +48,7 @@ def need_key(key, where):
 places = {p["id"]: p for p in load(os.path.join(CONTENT, "UI", "map.json"))["places"]}
 items = {m.group(1) for k in strings["ru"] for m in [re.match(r"item\.(\w+)\.name$", k)] if m}
 people = set()
-for name in ["people.json", "townsfolk.json"]:
+for name in ["people.json", "townsfolk.json", "ship_people.json"]:   # the motor ship's people when she is in the tree
     path = os.path.join(CONTENT, "PeopleData", name)
     if os.path.exists(path):
         for person in load(path).get("people", []):

@@ -167,8 +167,25 @@ namespace LyudPeople
 		// boat park, the slip, the spectators' places; then who belongs to it (the members and their groups)
 		const std::string Sail = bTownOk ? ReadFile(Dir + "/sailing_spots.json") : std::string();
 		const bool bSpotsOk = (Spots.empty() || LoadSpots(Spots)) && (Yards.empty() || LoadSpots(Yards)) && (Sail.empty() || LoadSpots(Sail));
+		// the motor ship's people (tools/ship/cruise_people.py, docs/ship.md): her places (island 4: no way to or from the
+		// town), her own activities and her crew, band, tourists and the cruising townsfolk's twins, after everything else so
+		// that nobody's id (and so nobody's dice) moves; with the town only, and nothing at all without the files
+		const bool bShip = bTownOk && bSpotsOk && bLoadTown;
+		const std::string ShipPlaces = bShip ? ReadFile(Dir + "/ship_places.json") : std::string();
+		const std::string ShipActs = bShip ? ReadFile(Dir + "/ship_activities.json") : std::string();
+		const std::string ShipPeople = bShip ? ReadFile(Dir + "/ship_people.json") : std::string();
+		bool bShipOk = (ShipPlaces.empty() || LoadTownPlaces(ShipPlaces)) && (ShipActs.empty() || LoadActivities(ShipActs, true));
+		if (bShipOk && !ShipPeople.empty())
+		{
+			LyudJson::FValue ShipJ;
+			bShipOk = LyudJson::Parse(ShipPeople, ShipJ, LastError) && AddPeople(ShipJ, false);
+			if (!bShipOk)
+			{
+				LastError = "ship_people.json: " + LastError;
+			}
+		}
 		bLoading = false;
-		if (!bSpotsOk)
+		if (!bSpotsOk || !bShipOk)
 		{
 			return false;
 		}
@@ -469,33 +486,9 @@ namespace LyudPeople
 
 	bool FWorld::AddPeople(const LyudJson::FValue& J, bool bTown)
 	{
-		for (const LyudJson::FValue& V : J["people"].Items)
+		// a person's fixed hours and stay (also read for a "patch" entry, below)
+		auto ReadDuties = [this](const LyudJson::FValue& V, FPerson& P)
 		{
-			FPerson P;
-			P.bTown = bTown || V["town"].F() > 0.f;
-			P.Chronotype = V["chronotype"].S();
-			P.HomeId = V["home"].S();
-			P.Spread = V["spread"].F(0.f);
-			P.Id = (int)People.size();
-			P.Key = V["key"].S();
-			P.Mesh = V["mesh"].S();
-			P.Body = V["body"].S(P.Mesh);
-			P.ComputerClip = V["computer_clip"].S("Sit_KeyboardMouse");
-			P.Occupation = V["occupation"].S();
-			P.Household = V["household"].S(P.Key);
-			P.Age = V["age"].I(30);
-			P.bFemale = V["female"].F() > 0.f;
-			P.bChild = P.Age < 16;
-			P.WalkSpeed = V["walk_speed"].F(P.bChild ? 1.35f : 1.25f);
-			const LyudJson::FValue& T = V["temper"];
-			P.Social = T["social"].F(0.5f);
-			P.Active = T["active"].F(0.5f);
-			P.Studious = T["studious"].F(0.5f);
-			P.Gamer = T["gamer"].F(0.5f);
-			P.NatureLove = T["nature"].F(0.5f);
-			P.SunLove = T["sun"].F(0.5f);
-			P.Wake = V["wake"].F(7.5f);
-			P.BedTime = V["bed"].F(23.f);
 			for (const LyudJson::FValue& D : V["duties"].Items)
 			{
 				FDuty Duty;
@@ -524,6 +517,9 @@ namespace LyudPeople
 				Duty.StayDay = D["stay_day"].IsNull() ? -1 : D["stay_day"].I();
 				P.Duties.push_back(Duty);
 			}
+		};
+		auto ReadStay = [this](const LyudJson::FValue& V, FPerson& P)
+		{
 			if (!V["stay"].IsNull())
 			{
 				const LyudJson::FValue& St = V["stay"];
@@ -532,7 +528,54 @@ namespace LyudPeople
 				P.StayDays = St["days"].I(14);
 				P.StayArrive = St["arrive"].F(11.f);
 				P.StayLeave = St["leave"].F(10.75f);
+				// "when": the stay is kept only while this condition is on (the cruise's season); while it is off they are
+				// gone all the time, or with "off": "here" here all the time (a townsperson who cruises in the season)
+				const std::string StayWhen = St["when"].S();
+				P.StayWhenId = StayWhen.empty() ? -1 : ConditionId(StayWhen);
+				P.bStayOffHere = St["off"].S() == "here";
 			}
+		};
+		for (const LyudJson::FValue& V : J["people"].Items)
+		{
+			if (V["patch"].F() > 0.f)
+			{
+				// "patch": 1 (ship_people.json): not a new person, but a stay and more duties for one already loaded (a
+				// townsperson who goes on the cruise: away from the town while their twin is aboard); nobody's id moves
+				const int Who = FindPerson(V["key"].S());
+				if (Who >= 0)
+				{
+					ReadStay(V, People[(size_t)Who]);
+					ReadDuties(V, People[(size_t)Who]);
+				}
+				continue;
+			}
+			FPerson P;
+			P.bTown = bTown || V["town"].F() > 0.f;
+			P.Chronotype = V["chronotype"].S();
+			P.HomeId = V["home"].S();
+			P.Spread = V["spread"].F(0.f);
+			P.Id = (int)People.size();
+			P.Key = V["key"].S();
+			P.Mesh = V["mesh"].S();
+			P.Body = V["body"].S(P.Mesh);
+			P.ComputerClip = V["computer_clip"].S("Sit_KeyboardMouse");
+			P.Occupation = V["occupation"].S();
+			P.Household = V["household"].S(P.Key);
+			P.Age = V["age"].I(30);
+			P.bFemale = V["female"].F() > 0.f;
+			P.bChild = P.Age < 16;
+			P.WalkSpeed = V["walk_speed"].F(P.bChild ? 1.35f : 1.25f);
+			const LyudJson::FValue& T = V["temper"];
+			P.Social = T["social"].F(0.5f);
+			P.Active = T["active"].F(0.5f);
+			P.Studious = T["studious"].F(0.5f);
+			P.Gamer = T["gamer"].F(0.5f);
+			P.NatureLove = T["nature"].F(0.5f);
+			P.SunLove = T["sun"].F(0.5f);
+			P.Wake = V["wake"].F(7.5f);
+			P.BedTime = V["bed"].F(23.f);
+			ReadDuties(V, P);
+			ReadStay(V, P);
 			P.ClubSeat = V["club_seat"].S();
 			P.OwnSlot = V["own_slot"].S();
 			P.StartActivity = V["start"]["activity"].S();
@@ -1377,6 +1420,9 @@ namespace LyudPeople
 			}
 			Pl.Building = V["building"].S();
 			Pl.Island = V.Find("island") ? V["island"].I() : IslandOf(Pl.Portal);
+			// the motor ship's cabins (island 4 and beyond): only for whoever is given them (AssignHomes). Only there: the
+			// town's one "private" flat (S-MAYAK-HOME) was never read as such here, and reading it now would move the dice
+			Pl.bPrivate = Pl.Island >= 4 && V["private"].F() > 0.f;
 			for (const LyudJson::FValue& W : V["windows"].Items)
 			{
 				Pl.Windows.push_back(W.S());
@@ -1838,6 +1884,34 @@ namespace LyudPeople
 					A.PlaceIdx.push_back(Pi);
 				}
 			}
+			// the one far island (4 or beyond: the motor ship) all of its places are on, -1 otherwise (Score)
+			A.FarIsland = -1;
+			if (!A.bHome && !A.PlaceIdx.empty() && Places[(size_t)A.PlaceIdx[0]].Island >= 4)
+			{
+				A.FarIsland = Places[(size_t)A.PlaceIdx[0]].Island;
+				for (const int Pi : A.PlaceIdx)
+				{
+					A.FarIsland = Places[(size_t)Pi].Island == A.FarIsland ? A.FarIsland : -1;
+				}
+			}
+		}
+		// the far islands' box (the motor ship): OffWalkGrid()
+		bFarBox = false;
+		for (const FSlot& Sl : Slots)
+		{
+			if (Sl.Place < 0 || Places[(size_t)Sl.Place].Island < 4)
+			{
+				continue;
+			}
+			const float M = 30.f;
+			if (!bFarBox)
+			{
+				FarX0 = Sl.Pos.X - M; FarX1 = Sl.Pos.X + M; FarY0 = Sl.Pos.Y - M; FarY1 = Sl.Pos.Y + M;
+				bFarBox = true;
+				continue;
+			}
+			FarX0 = std::min(FarX0, Sl.Pos.X - M); FarX1 = std::max(FarX1, Sl.Pos.X + M);
+			FarY0 = std::min(FarY0, Sl.Pos.Y - M); FarY1 = std::max(FarY1, Sl.Pos.Y + M);
 		}
 		for (FPerson& P : People)
 		{
@@ -2365,6 +2439,11 @@ namespace LyudPeople
 		{
 			return false;
 		}
+		// a stay with a season ("when"): out of it nobody comes (or, "off": "here", nobody leaves)
+		if (P.StayWhenId >= 0 && !(P.StayWhenId < (int)CondOn.size() && CondOn[(size_t)P.StayWhenId] != 0))
+		{
+			return !P.bStayOffHere;
+		}
 		const float At = StayAt(P);
 		return At < P.StayArrive / 24.f || At >= (float)P.StayDays + P.StayLeave / 24.f;
 	}
@@ -2878,9 +2957,20 @@ namespace LyudPeople
 		{
 			return -1e9f;
 		}
+		// what is done only aboard the motor ship (every place of its kinds is on island 4 or beyond) is nobody else's: the
+		// town does not weigh it at all
+		if (A.FarIsland >= 4 && P.Island != A.FarIsland)
+		{
+			return -1e9f;
+		}
 		float Minutes = 0.f;
 		const int S = PickSlot(P, A, Minutes);
 		if (S < 0)
+		{
+			return -1e9f;
+		}
+		// and nobody chooses across the sea: the ship's people nothing ashore, the town's nothing aboard (no way there)
+		if ((P.Island >= 4 || Places[(size_t)Slots[(size_t)S].Place].Island >= 4) && Places[(size_t)Slots[(size_t)S].Place].Island != P.Island)
 		{
 			return -1e9f;
 		}
@@ -3191,6 +3281,15 @@ namespace LyudPeople
 			TownWay(From, To, Out);
 			return;
 		}
+		// aboard the motor ship at both ends (far off the walk grid): straight. The grid's search would clamp both ends
+		// to its edge and send them along the map's border and back.
+		if (OffWalkGrid(From) && OffWalkGrid(To))
+		{
+			FPerson::FWay W;
+			W.P = To;
+			Out.push_back(W);
+			return;
+		}
 		std::vector<V3> Pts;
 		if (!bHasGround || !Ground.FindPath(From, To, LyudAnimals::EKind::Dog, Pts))
 		{
@@ -3220,8 +3319,12 @@ namespace LyudPeople
 			W.Kind = Kind;
 			Out.push_back(W);
 		};
-		// within one indoor place: back to where the two ways part, then on
-		if (bFromInside && Fr->Place == To.Place)
+		// within one indoor place: back to where the two ways part, then on. Aboard the motor ship (island 4 and beyond)
+		// every place of the one hull is walked like that: all their ways in start at the same point (the gangway)
+		const bool bOneHull = bFromInside && Fr->Place != To.Place && ToPl.bIndoor && !To.Inside.empty() && ToPl.Island >= 4
+			&& Places[Fr->Place].Island == ToPl.Island && !ToPl.Building.empty() && Places[Fr->Place].Building == ToPl.Building
+			&& Same(Fr->Inside.front(), To.Inside.front());
+		if (bFromInside && (Fr->Place == To.Place || bOneHull))
 		{
 			size_t Common = 0;
 			while (Common < Fr->Inside.size() && Common < To.Inside.size() && Same(Fr->Inside[Common], To.Inside[Common]))

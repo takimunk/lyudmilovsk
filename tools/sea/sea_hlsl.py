@@ -14,6 +14,9 @@ Parameters (ALyudSea sets them on its dynamic material):
   LandSideX = world X (m) east of which there is no sea
   Tide      = the water over the datum now, m (0 at spring high water, negative below; the depth map is under the datum)
   Glitter   = (the capillary ripples' slope per train, the water's least roughness, 0, 0)
+  CalmA     = (centre x m, centre y m, long axis x, long axis y) of the calm footprint (ALyudSea::SetCalmFootprint:
+              the cruise ship's hull, which stands still in the water), CalmB = (half length m, half width m, soft
+              edge m, share of the waves left inside); CalmB.x = 0 (the default): no footprint, nothing changes
 and from /Game/Weather/MPC_LyudWeather: Wind = (dir x, dir y, speed m/s, gustiness),
 WindDrift = (drift x m, drift y m, gust clock s, day stir).
 """
@@ -71,6 +74,19 @@ struct FLyudNoise
         float2 uv = (xy - rect.xy) * rect.zw;
         if (any(uv < 0.0) || any(uv > 1.0)) return float3(openDepth + tide, 1.0, 0.0);
         return float3(dep.SampleLevel(depS, uv, 0).r + tide, 1.0, 0.0);
+    }
+    // a patch of sea kept calm (WaveModel.cpp FCalmFootprint::At: a hull standing still at the cruise stage): the
+    // share of the waves' height left at world xy. a = (centre x, y m, long axis x, y), b = (half length, half
+    // width, edge m, share left inside); b.x <= 0 = none. Exactly 1 at the edge and beyond; the depth is untouched
+    float Calm(float2 xy, float4 a, float4 b)
+    {
+        if (b.x <= 0.0) return 1.0;
+        float2 r = xy - a.xy;
+        float2 q = abs(float2(dot(r, a.zw), dot(r, float2(-a.w, a.z)))) - b.xy;
+        float d = length(max(q, 0.0)) + min(max(q.x, q.y), 0.0);
+        if (d >= b.z) return 1.0;
+        float s = saturate(d / max(b.z, 1e-3));
+        return b.w + (1.0 - b.w) * s * s * (3.0 - 2.0 * s);
     }
     // still-water depth at world xy now (m), the same as ALyudSea::WaterDepthAtM: the depth map's depth under
     // the datum (r, bilinear between cell centres) plus the tide
@@ -140,12 +156,14 @@ FLyudNoise Lyud;
 
 # World position offset of the sea surface (WaveModel.cpp Displace), cm. Trains shorter than ~6 mesh
 # cells at this distance fade out of the geometry (their slopes stay in the pixel normals).
-# Inputs: Pos (absolute world position, cm), Cam (camera position, cm), Tab, Dep, Clock, SP, Rect, LandX, Tide.
+# Inputs: Pos (absolute world position, cm), Cam (camera position, cm), Tab, Dep, Clock, SP, Rect, LandX, Tide,
+# CalmA, CalmB (the calm footprint, Lyud.Calm).
 VERTEX_HLSL = r"""
 float3 p = Pos * 0.01;
 float2 xy = p.xy;
 float spacing = max(length(p - Cam * 0.01) * 6.2831853 / Clock.y, Clock.z);
 float3 w = Lyud.Water(xy, Rect, Clock.w, LandX, Tide, Dep, DepSampler);
+w.y *= Lyud.Calm(xy, CalmA, CalmB);
 float depth = w.x;
 // no sea on land: tuck the surface away under the ground
 if (depth < -0.3) return float3(0.0, 0.0, -3000.0);
@@ -172,11 +190,13 @@ return d * 100.0;
 # shader), detail trains scaled by the local gust (cat's paws; glassy where the air is still), trains
 # finer than the pixel fading into roughness; whitecaps where the Gerstner surface pinches (Jacobian)
 # in a fresh wind. Returns (normal x, normal y, roughness, whitecap); normal z = sqrt(1 - x^2 - y^2).
-# Inputs: XY, V (camera vector), Tab, Dep, Clock, SP, Rect, LandX, Tide, Wind, Drift, Glit (capillary slope, least roughness).
+# Inputs: XY, V (camera vector), Tab, Dep, Clock, SP, Rect, LandX, Tide, Wind, Drift, Glit (capillary slope, least roughness),
+# CalmA, CalmB (the calm footprint).
 PIXEL_HLSL = r"""
 float2 xy = XY;
 float foot = max(length(ddx(xy)), length(ddy(xy))) + 1e-5;
 float3 w = Lyud.Water(xy, Rect, Clock.w, LandX, Tide, Dep, DepSampler);
+w.y *= Lyud.Calm(xy, CalmA, CalmB);
 float depth = w.x;
 float cap = Lyud.BreakCap(depth, SP.y) * w.y;
 float t = Clock.x;

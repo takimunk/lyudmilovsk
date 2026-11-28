@@ -104,7 +104,8 @@ namespace LyudTownChat
 	void Build(const LyudPeople::FWorld& W, const LyudPeople::FPerson& P, const FData& D, const LyudBarks::FBook& Book,
 		const LyudBarks::FWho& Who, const LyudBarks::FNow& Now, int Day, FTalk& Out);
 
-	/** A townsperson's given name's id: the key's last part (t_sokolov_ilya: ilya). */
+	/** A townsperson's given name's id: the key's last part (t_sokolov_ilya: ilya; the same for their twin aboard the
+	 *  motor ship, c_sokolov_ilya: docs/ship.md). */
 	std::string NameId(const std::string& PersonKey);
 	/** How P would speak of Other of their household: tc_kin_son, daughter, mum, dad, sister, brother, wife, husband, mate. */
 	const char* KinEvent(const LyudPeople::FPerson& P, const LyudPeople::FPerson& Other);
