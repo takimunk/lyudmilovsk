@@ -88,6 +88,24 @@ namespace LyudPaper
 		bool bOver = false;
 	};
 
+	/** A race of the yacht school on the day before (docs/yacht_school.md "Town: festivals, paper, radio, talk"): what the
+	 *  engine's LyudSailNewsOfDay gives (Public/Sailing/LyudSailNews.h), one per class sailed. Event: sail_opening,
+	 *  sail_closing, optimist_day, cup_lyudmilovsk, wednesday, sunday; Class: optimist, cadet, luch; Podium: the first three
+	 *  (townsfolk keys, shown as npc.<key>.name; "hero" the hero; "" a sailor nobody knows), fewer when fewer finished;
+	 *  HeroPlace 0 when the hero did not race; Day: the event's day (0 first, the cup has two). */
+	struct FSailRace
+	{
+		std::string Event, Class;
+		std::vector<std::string> Podium;
+		int WindMs = 0;
+		int Boats = 0;
+		int Capsizes = 0;
+		int HeroPlace = 0;
+		int Day = 0;
+		bool bRecall = false;
+		bool bAbandoned = false;
+	};
+
 	/** What the game knows on the morning of a day; the rest (residents, market, pools) is the paper's data. */
 	struct FFacts
 	{
@@ -111,6 +129,12 @@ namespace LyudPaper
 		/** The library's book club (ULyudReading::PaperLines, docs/books.md "The book club"): its heading, the month's book,
 		 *  tonight's meeting; printed on the holidays page after the cinema. */
 		std::vector<FLine> Club;
+		/** The yacht school's races of the day before (LyudSailNewsOfDay): the sailing column on the town page; the hero's win
+		 *  is a front story. */
+		std::vector<FSailRace> SailYesterday;
+		/** The yacht school's season this morning (LyudSail::ESeasonState: 0 laid up, 1 fitting out, 2 open, 3 laying up);
+		 *  -1: no school in the game, no sailing lines at all. */
+		int SailSeason = -1;
 	};
 
 	struct FPoolEntry
@@ -528,6 +552,15 @@ namespace LyudPaper
 					AddVariants(Cand, "front.cup", { "@" + C.Title, C.RunnerUp.empty() ? std::string("@paper.cup.nobody") : "@" + C.RunnerUp }, F.Since);
 				}
 			}
+			// the yacht school: the hero won a race yesterday (the sailing column on the town page has the full results)
+			for (const FSailRace& R : F.SailYesterday)
+			{
+				if (!R.bAbandoned && !R.Podium.empty() && R.Podium[0] == "hero")
+				{
+					AddVariants(Cand, "front.sail_win", { "@paper.sail.event." + R.Event, "@paper.sail.class." + R.Class }, F.Since);
+					break;
+				}
+			}
 			// the photo contest judged yesterday: the hero's print took the first place, the paper prints it
 			if (const FDeed* D = Deed("contest"))
 			{
@@ -669,6 +702,7 @@ namespace LyudPaper
 					}
 				}
 			}
+			SailColumn(F, Page);
 			int NBrief = 0;
 			for (const FDeed& D : Briefs)
 			{
@@ -759,6 +793,83 @@ namespace LyudPaper
 			return Page;
 		}
 
+		/** A sailor's name as an argument: a townsperson's name key, the hero, or a sailor nobody knows. */
+		static std::string SailorArg(const std::string& Who)
+		{
+			if (Who == "hero") return "@paper.sail.hero";
+			if (Who.empty()) return "@paper.sail.someone";
+			return "@npc." + Who + ".name";
+		}
+
+		/** Wind words of a race: 0 calm, 1 light, 2 moderate, 3 fresh, 4 strong (the sailors' scale, m/s). */
+		static int SailWindWord(int Ms)
+		{
+			return Ms < 2 ? 0 : (Ms < 4 ? 1 : (Ms < 7 ? 2 : (Ms < 10 ? 3 : 4)));
+		}
+
+		/** The sailing column (docs/yacht_school.md "Town"): yesterday's races, the opening's and the closing's features, the
+		 *  results by class with the wind, the capsizes, a general recall and the hero's place. */
+		void SailColumn(const FFacts& F, FPage& Page) const
+		{
+			if (F.SailYesterday.empty())
+			{
+				return;
+			}
+			Page.push_back({ "paper.sail.head", {} });
+			const FSailRace& First = F.SailYesterday[0];
+			if (First.Event == "sail_opening" || First.Event == "sail_closing")
+			{
+				const std::string Kind = First.Event == "sail_opening" ? "sail.opening" : "sail.closing";
+				Page.push_back({ "paper." + Kind + "." + std::to_string(F.Since % VariantsOf(Kind) + 1), {} });
+			}
+			bool bAllOff = true;
+			for (const FSailRace& R : F.SailYesterday) bAllOff = bAllOff && (R.bAbandoned || R.Podium.empty());
+			if (bAllOff)
+			{
+				// nobody raced at all: one line for the day, not one a class
+				Page.push_back({ "paper.sail.abandoned_all", { "@paper.sail.event." + First.Event } });
+				return;
+			}
+			bool bWind = false;
+			for (size_t I = 0; I < F.SailYesterday.size() && I < 3; ++I)
+			{
+				const FSailRace& R = F.SailYesterday[I];
+				const std::string Ev = "@paper.sail.event." + R.Event, Cl = "@paper.sail.class." + R.Class;
+				if (R.bAbandoned || R.Podium.empty())
+				{
+					Page.push_back({ "paper.sail.abandoned", { Ev, Cl } });
+					continue;
+				}
+				const int V = (F.Since + (int)I) % VariantsOf("sail.result") + 1;
+				if (R.Podium.size() >= 3)
+				{
+					Page.push_back({ "paper.sail.result." + std::to_string(V), { Ev, Cl, SailorArg(R.Podium[0]), SailorArg(R.Podium[1]), SailorArg(R.Podium[2]),
+						std::to_string(std::max(R.Boats, 3)) } });
+				}
+				else
+				{
+					Page.push_back({ "paper.sail.result_few", { Ev, Cl, SailorArg(R.Podium[0]), std::to_string(std::max(R.Boats, (int)R.Podium.size())) } });
+				}
+				if (!bWind)
+				{
+					Page.push_back({ "paper.sail.wind." + std::to_string(SailWindWord(R.WindMs)), { std::to_string(R.WindMs) } });
+					bWind = true;
+				}
+				if (R.bRecall)
+				{
+					Page.push_back({ "paper.sail.recall", { Cl } });
+				}
+				if (R.Capsizes > 0)
+				{
+					Page.push_back({ R.Capsizes == 1 ? "paper.sail.capsize_one" : "paper.sail.capsizes", { Cl, std::to_string(R.Capsizes) } });
+				}
+				if (R.HeroPlace > 3)
+				{
+					Page.push_back({ "paper.sail.hero_place", { Cl, std::to_string(R.HeroPlace) } });
+				}
+			}
+		}
+
 		/** The season's town stories (all of them if none fits the month). */
 		std::vector<const FPoolEntry*> TownSeason(int Month) const
 		{
@@ -801,6 +912,11 @@ namespace LyudPaper
 				if (W.bAurora)
 				{
 					Page.push_back({ "paper.aurora", {} });
+				}
+				// the yacht school's storm warning: its mast shows the cone at a mean of 14 m/s (docs/yacht_school.md)
+				if (F.SailSeason == 2 && W.WindMs >= 14)
+				{
+					Page.push_back({ "paper.sail.storm", { std::to_string(W.WindMs) } });
 				}
 			}
 			else
@@ -861,6 +977,28 @@ namespace LyudPaper
 			for (const FCup& C : F.CupsToday)
 			{
 				Page.push_back({ "paper.cup.today", { "@" + C.Title, Hm(C.StartMinute), "@" + C.Venue } });
+			}
+			// the yacht school: today's club race (a regatta of its own is a festival above), the fitting out, the laying up
+			if (F.SailSeason >= 1)
+			{
+				bool bSailFest = false;
+				for (const auto& Fe : F.Festivals)
+				{
+					bSailFest = bSailFest || (Fe.second <= 0 && (Fe.first.rfind("sail_", 0) == 0 || Fe.first == "children_day"));
+				}
+				const int SailWd = LyudFest::Weekday(F.Date);
+				if (F.SailSeason == 2 && !bSailFest && (SailWd == 2 || SailWd == 6))
+				{
+					Page.push_back({ SailWd == 2 ? "paper.sail.today.wednesday" : "paper.sail.today.sunday", {} });
+				}
+				else if (F.SailSeason == 1)
+				{
+					Page.push_back({ "paper.sail.fitout", {} });
+				}
+				else if (F.SailSeason == 3)
+				{
+					Page.push_back({ "paper.sail.layup", {} });
+				}
 			}
 			// the first of the month: the photo club's contest opens with the month's theme
 			if (F.Date.D == 1)

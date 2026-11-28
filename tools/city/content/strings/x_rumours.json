@@ -79,5 +79,30 @@
   "ru": "— Говорят, ты ходил в «Рассвет» на старую хронику. Ну и как поезд, не страшно?",
   "en": "\"They say you went to the old newsreel at the Rassvet. Well, the train: was it scary?\"",
   "ja": "「『ラスヴェート』の古いニュース映画を見たんだって？で、列車は怖かった？」"
+ },
+ "city.ask.town_talk.sail": {
+  "ru": "— Говорят, ты в яхт-школу записался. У нас тут один покупатель тоже ходил, сорок лет назад, до сих пор узлы вяжет.",
+  "en": "\"They say you've joined the sailing school. One of our customers went too, forty years ago; still ties knots.\"",
+  "ja": "「ヨット学校に入ったって？うちのお客さんにも四十年前に通った人がいてね、いまだにロープを結んでるよ。」"
+ },
+ "city.ask.town_talk.capsize": {
+  "ru": "— Говорят, ты у пирса перевернулся, весь пирс видел. Ничего, сухая одежда — дело наживное.",
+  "en": "\"They say you capsized by the pier and the whole pier saw. Never mind, dry clothes come and go.\"",
+  "ja": "「桟橋のそばで転覆して、みんな見てたって？気にしない、乾いた服なんてまた着ればいい。」"
+ },
+ "city.ask.town_talk.regatta": {
+  "ru": "— Говорят, ты гонку выиграл! Тут с утра все про синий парус спрашивают, а это, выходит, ты.",
+  "en": "\"They say you won a race! People have been asking about the blue sail all morning, and it turns out it was you.\"",
+  "ja": "「レースに勝ったって？朝からみんな青い帆の話をしてたけど、君だったんだね。」"
+ },
+ "city.ask.town_talk.tow": {
+  "ru": "— Говорят, тебя катер на буксире вёл. Ничего, тренер говорит, это лучше, чем грести.",
+  "en": "\"They say the launch had you on a tow. Never mind, the coach says it beats rowing.\"",
+  "ja": "「ボートに引かれてたって？気にしない、コーチいわく、こぐよりましだって。」"
+ },
+ "city.ask.town_talk.skipper": {
+  "ru": "— Говорят, ты теперь рулевой со свидетельством. Если в лодке место будет, меня возьми.",
+  "en": "\"They say you're a certified helmsman now. If there's room in the boat, take me along.\"",
+  "ja": "「証明書持ちの舵手になったって？艇に空きがあったら乗せてよ。」"
  }
 }

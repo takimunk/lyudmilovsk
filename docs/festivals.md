@@ -38,7 +38,7 @@ the data.
 | lunar_new_year | Новый год по лунному календарю (China, East Asia) | the new moon from 21 Jan (China's date) | dumpling fair, drums on the square 17, firecrackers and fireworks at midnight; red lanterns |
 | holi | Холи (India) | the day after the full moon from 24 Feb (India's date) | colour powder and drums in the park 11–14 |
 | nowruz | Навруз (Iran, Central Asia) | 21 March | picnic in the park, a bonfire in the evening |
-| children_day | День защиты детей | 1 June | balloons, games and kites in the park |
+| children_day | День защиты детей | 1 June | balloons, games and kites in the park; the yacht school's children's Optimist regatta off the pier 11–14:30 |
 | tanabata | Танабата (Japan) | 7 July | wish bamboo on the promenade (the hero ties a wish), stars at night |
 | toro_nagashi | Торо-нагаси (Japan, Obon) | 15 August | floating lanterns from the beach at dusk (the hero sets one afloat, 20 ₽) |
 | mid_autumn | Праздник середины осени (China, Vietnam) | the full moon from 8 Sep | lanterns on the square, watching the moon from the promenade |
@@ -52,11 +52,15 @@ the data.
 | kite_day | День воздушных змеев | 3rd Sunday of September | kites over the beach 11–17 |
 | cat_day | День кошек | 1 March | treats in the park 11–15, the cats' walk to the pier 15–17 |
 | book_day | День книги | 23 April | reading on the grass in the park 12–18, reading aloud on the square 18 |
+| sail_opening | Открытие навигации (the yacht school «Луч», docs/yacht_school.md) | the first Saturday on or after 25 April (rule `weekday_on_after`; 2026-04-25, 2027-05-01) | the flag raised on the signal mast by the boathouse with the brass band and the head coach's speech 10–11 (beach), the parade of sail past the pier 11–11:45, the first race watched from the promenade till 15:30, tea and buns at the boathouse 15:30–17 (the children get their first sail numbers) |
+| sail_cup | Кубок Людмиловска | the weekend on or after 20 June, two days (`weekday_on_after`, `days` 2) | races off the pier 11–16 both days, the prizes on the pier 16–17 on Sunday |
+| sail_closing | Закрытие парусного сезона | the first Sunday of November (2026-11-01, the game's second week) | the last regatta off the pier 11–14:30, the season's prizes on the beach, the boats carried into the boathouse 15:30–16:30, the flag lowered at sunset 16:30–17, a bonfire on the beach till 20:30 |
 | amber_morning | Янтарное утро | the morning after a gale (trigger `after_storm`, at most once in ten days) | the whole town on the beach 6:30–12 looking for amber |
 
 `festivals.json`: `when.rule` is `date` (month, day), `new_moon` / `full_moon` (the first such moon on or after month/day
 within `window` days, its date reckoned in `tz` hours from UTC; Meeus ch. 49 in `FestivalCalendar.cpp`, tested against
 2026–2028 dates), `nth_weekday` (month, nth 1..5 or −1 last, weekday 0 Monday),
+`weekday_on_after` (the first `weekday` on or after month/day, which may fall in the next month: the yacht school's opening and cup),
 `easter_orthodox` / `easter_western` (offset days), `weekly` (weekdays, months) or `trigger` (the game fires it); `offset`
 shifts any rule's day. `days` is its length; `holiday` closes offices and schools (`holiday_days`: which of its days).
 Hours count from 00:00 of the festival's first day and may pass 24 (`26.5` = 02:30 the next night); a phase with
@@ -128,9 +132,9 @@ the diary and the forecast.
 
 ## Every holiday's voices
 
-`tools/barks/lines/17_festival_voices.txt`: each of the 31 holidays has four voices of its own, said only on that day: an
+`tools/barks/lines/17_festival_voices.txt`: each of the 34 holidays has four voices of its own, said only on that day: an
 adult says what they are bringing (`fv_<id>_bring`), a nervy one complains (`fv_<id>_grump`), a child tells the day's game
-(`fv_<id>_kid`), an elder remembers how it used to be (`fv_<id>_elder`). 124 lines in ru, en, ja, picked by the barks'
+(`fv_<id>_kid`), an elder remembers how it used to be (`fv_<id>_elder`). 136 lines in ru, en, ja, picked by the barks'
 ordinary conditions (festival, age, temper); the Russian never agrees with the speaker's gender. A new holiday gets its
 four sets in the same file; `tools/barksim/run.sh` checks the conditions and that every line fits a bubble.
 
@@ -212,7 +216,8 @@ captions and lines, the club's summer screen on festival nights (docs/cinema.md)
   from the radiant in the north-east every 4-26 s), `fest_lunar_new_year` (the drums, the firecrackers), `fest_holi` (the
   colours), `fest_tanabata` (`festival_wish tanabata`: E by the bamboo), `fest_toro_nagashi` (`festival_lantern
   water_lantern`: E at the water's edge), `fest_mid_autumn` (the moon from the promenade), `fest_sun_day` (the zenith on
-  the square, the kites, the sunset from the promenade), `fest_city_day` (the parade, the fireworks).
+  the square, the kites, the sunset from the promenade), `fest_city_day` (the parade, the fireworks), `fest_sail_opening` (the parade of sail from the pier, tea at the boathouse),
+  `fest_sail_closing` (carry the boats into the boathouse, the farewell bonfire).
 
 API for other systems: `IsFestivalToday()`, `ActiveFestival()`, `ActivePhase()`, `ActiveFestivals()`, `IsDayOff()`,
 `Upcoming(days)`, `FestivalName(id)`, `FindVenue(name)`. `IsFestivalToday()` is a holiday's day or its night still running
@@ -221,3 +226,16 @@ past midnight; the weekly market does not count.
 Console: `lyud.Festival.List [days]`, `lyud.Festival.Report`, `lyud.Festival.Go <id> [phase]` (moves the calendar:
 `lyud.Festival.Go sea_festival fireworks`, `lyud.Festival.Go sun_day zenith`), `lyud.Festival.Fire first_snow` /
 `after_storm`; `lyud.Festivals 0` turns it all off.
+
+## The yacht school's days (2026-11-27)
+
+The yacht school «Луч» (docs/yacht_school.md) has three festivals of its own and one shared: `sail_opening`, `sail_cup`,
+`sail_closing`, and its children's Optimist regatta joins Children's Day (`children_day` phase `optimists` on the pier).
+Their dates are the school's own (`LyudSail::SeasonOpening` / `SeasonClosing` / `RaceDayOn` on Content/City/sailing.json):
+`tools/festivalsim/run.sh test` checks 2026..2060 day by day that the school's opening, closing, June 1 regatta and cup start
+on the days these festivals start, and `tools/festivalsim/run.sh sail 2026 2030` prints both side by side. The races
+themselves (boats, marks, results) are the school's; the festival only dresses the pier, beach and promenade, sends the town
+to watch (gatherings facing the sea), plays the band (`music`) at the flag ceremonies and lights the closing bonfire.
+The school's own spectators (`SchoolSpectatorPull`) are the same people: the engine should not add both on these days.
+Words: `festival.sail_*` (name, today, desc) in the main tables; voices `fv_sail_*`; the paper, the radio and the talk:
+docs/yacht_school.md "Town: festivals, paper, radio, talk".

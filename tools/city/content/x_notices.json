@@ -96,6 +96,13 @@
        "08-01",
        "08-25"
       ]
+     },
+     {
+      "k": "city.note.lost.sail_layup",
+      "date": [
+       "11-08",
+       "11-15"
+      ]
      }
     ],
     [
@@ -103,6 +110,13 @@
       "k": "city.note.lost.start_parrot",
       "after": 0,
       "before": 4
+     },
+     {
+      "k": "city.note.lost.sail_cup",
+      "date": [
+       "06-10",
+       "06-27"
+      ]
      }
     ],
     [
@@ -181,6 +195,20 @@
       "k": "city.note.club.start_welcome",
       "after": 0,
       "before": 6
+     },
+     {
+      "k": "city.note.club.sail_enrol",
+      "date": [
+       "04-01",
+       "04-17"
+      ]
+     },
+     {
+      "k": "city.note.club.sail_opening",
+      "date": [
+       "04-18",
+       "05-01"
+      ]
      }
     ],
     [
@@ -522,6 +550,22 @@
      }
     ],
     [
+     {
+      "k": "city.note.club.sail_closing",
+      "date": [
+       "10-20",
+       "11-07"
+      ]
+     },
+     {
+      "k": "city.note.club.sail_theory",
+      "date": [
+       "12-01",
+       "12-20"
+      ]
+     }
+    ],
+    [
      "city.look.club.1",
      "city.look.club.2",
      "city.look.club.3",
@@ -676,6 +720,22 @@
       "date": [
        "01-10",
        "02-14"
+      ]
+     }
+    ],
+    [
+     {
+      "k": "city.note.school.sail_enrol",
+      "date": [
+       "04-01",
+       "04-24"
+      ]
+     },
+     {
+      "k": "city.note.school.sail_optimist",
+      "date": [
+       "05-20",
+       "06-01"
       ]
      }
     ],

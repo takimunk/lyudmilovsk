@@ -90,6 +90,36 @@ static FFacts Facts(long long Day)
 	F.TideTime = "14:20";
 	F.Season = (int)((Day / 90) % 4);
 	F.PaperHeadline = (Day % 3) ? "" : "headline";
+	// the yacht school (docs/yacht_school.md "Town"): on two days of three a call for the sailors, every kind in turn, now
+	// and then a regatta, and races of today and yesterday (the hero and a nameless sailor among the names: the townsfolk's
+	// name keys live in the game's own table, checked apart below)
+	if (Day % 3 != 2)
+	{
+		static const char* const Events[] = { "", "wednesday", "sunday", "sail_opening", "sail_closing", "cup_lyudmilovsk", "optimist_day" };
+		static const char* const Whys[] = { "calm", "wind", "gust", "thunder", "fog", "dark", "ice", "low_water" };
+		static const char* const Classes[] = { "optimist", "cadet", "luch" };
+		F.Sail = 1 + (int)((H >> 4) % 6u);
+		F.SailEvent = F.Sail == 3 || Day % 4 == 0 ? Events[1 + (Day / 3) % 6] : "";
+		F.SailEventTime = F.SailEvent.empty() ? "" : "11:00";
+		F.SailWhy = Whys[(Day / 2) % 8];
+		F.SailWind = (float)((H >> 7) % 15u);
+		F.SailGust = F.SailWind * 1.4f;
+		F.SailFromDeg = (float)((H >> 12) % 360u);
+		F.SailShift = (int)(Day % 5);
+		F.bSailRecallRisk = Day % 4 == 1;
+		F.SailBest = Day % 2 ? "14:00" : "";
+		F.SailLowWater = Day % 3 == 0 ? "10:40" : "";
+		for (int I = 0; I < 3; ++I)
+		{
+			FSailResult R;
+			R.Event = Events[1 + (Day + I) % 6];
+			R.Class = Classes[I];
+			R.bToday = I != 1;
+			R.bAbandoned = (Day + I) % 7 == 0;
+			R.Podium = (Day + I) % 5 == 0 ? std::vector<std::string>{ "hero" } : std::vector<std::string>{ "", "hero", "" };
+			F.SailResults.push_back(R);
+		}
+	}
 	return F;
 }
 
@@ -159,6 +189,8 @@ int main(int Argc, char** Argv)
 	};
 	FAir Air;
 	long long FestSignOn = 0, FestNews = 0, FestHour = 0, FestShow = 0, FestWrongDay = 0, PlainOnHoliday = 0;
+	long long SailForecast = 0, SailForecastWrong = 0, SailResultsAm = 0, SailResultsPm = 0, SailRaceNoon = 0, SailSpecial = 0, SailWrong = 0;
+	std::set<std::string> SailKeys;
 	for (long long Day = 0; Day < 120; ++Day)
 	{
 		FFacts F = Facts(Day);
@@ -205,6 +237,24 @@ int main(int Argc, char** Argv)
 				FestNews += Air.Cap->Key == "music.radio.fest.news";
 				FestHour += Air.Cap->Key == "music.radio.fest.hour";
 				FestWrongDay += bFestCap && !bHoliday;
+				if (Air.Cap->Key.compare(0, 17, "music.radio.sail.") == 0)
+				{
+					// the yacht school's words: the sailors' call in the morning weather only, the results in the news, the
+					// regatta at sign-on; never on a day without the school's facts
+					const std::string& K = Air.Cap->Key;
+					SailKeys.insert(K.substr(0, K.find('.', 17) == std::string::npos ? K.size() : K.find('.', 17)));
+					const bool bSchool = F.Sail > 0 || !F.SailResults.empty();
+					SailWrong += bSchool ? 0 : 1;
+					if (K == "music.radio.sail.intro")
+					{
+						++SailForecast;
+						SailForecastWrong += Air.Kind == EKind::Weather && S < 12 * 3600 ? 0 : 1;
+					}
+					if (K == "music.radio.sail.news.yesterday") SailResultsAm += Air.Kind == EKind::News && S < 10 * 3600 ? 1 : 1000;
+					if (K == "music.radio.sail.news.today") SailResultsPm += Air.Kind == EKind::News && S > 16 * 3600 ? 1 : 1000;
+					if (K == "music.radio.sail.race_today") SailRaceNoon += Air.Kind == EKind::News && S > 11 * 3600 && S < 13 * 3600 ? 1 : 1000;
+					if (K.compare(0, 25, "music.radio.sail.special.") == 0) SailSpecial += Air.Kind == EKind::SignOn && K.substr(25) == F.SailEvent ? 1 : 1000;
+				}
 				CheckKey(Air.Cap->Key, (int)Air.Cap->Args.size());
 				for (const FArg& A : Air.Cap->Args)
 				{
@@ -241,6 +291,39 @@ int main(int Argc, char** Argv)
 	CHECK(FestSignOn >= 12 && FestNews >= 24 && FestHour >= 60 && FestShow > 1000, "a holiday's air: greeted at sign-on, in the bulletins and every music hour (%lld, %lld, %lld; %lld samples of the holiday programme)",
 		FestSignOn, FestNews, FestHour, FestShow);
 	CHECK(FestWrongDay == 0 && PlainOnHoliday == 0, "the holiday programme only on a holiday, and all day then (%lld on plain days, %lld plain music hours on holidays)", FestWrongDay, PlainOnHoliday);
+	// the yacht school (docs/yacht_school.md "Town"; sampled every 15 s, so a 6.5 s caption is caught about every other time)
+	CHECK(SailForecast >= 10 && SailForecastWrong == 0, "the sailors' forecast in the morning weather on the school's days, and only there (%lld, %lld elsewhere)", SailForecast, SailForecastWrong);
+	CHECK(SailResultsAm >= 40 && SailResultsAm < 1000 && SailResultsPm >= 40 && SailResultsPm < 1000, "yesterday's results in the morning bulletin, today's in the evening one (%lld, %lld)",
+		SailResultsAm, SailResultsPm);
+	CHECK(SailRaceNoon >= 10 && SailRaceNoon < 1000 && SailSpecial >= 5 && SailSpecial < 1000, "a race day is announced at noon, the school's own days at sign-on (%lld, %lld)", SailRaceNoon, SailSpecial);
+	CHECK(SailWrong == 0, "no word of sailing on a day the school says nothing (%lld)", SailWrong);
+	{
+		// every family of the school's words is said on some day: the calls, the reasons, the shifts, the results
+		int Calls = 0, Others = 0;
+		for (const std::string& K : SailKeys) (K == "music.radio.sail.call" ? Calls : Others)++;
+		CHECK(Calls == 1 && SailKeys.size() >= 12, "the school's word families on air (%zu: intro, wind, call, shift, results...)", SailKeys.size());
+		// a townsperson on the podium is said by the game's own name key
+		FFacts F = Facts(0);
+		F.SailResults.clear();
+		FSailResult R;
+		R.Event = "sunday";
+		R.Class = "luch";
+		R.bToday = true;
+		R.Podium = { "t_saar_noam", "hero", "" };
+		F.SailResults.push_back(R);
+		std::vector<FCaption> Said;
+		FModel::SailResultWords(F, true, Said);
+		CHECK(Said.size() == 2 && Said[1].Key == "music.radio.sail.result" && Said[1].Args.size() == 5 && Said[1].Args[2].bKey && Said[1].Args[2].S == "npc.t_saar_noam.name"
+			&& Said[1].Args[3].S == "music.radio.sail.hero" && Said[1].Args[4].S == "music.radio.sail.someone", "the podium: a townsperson's name key, the hero, a nameless sailor");
+		CHECK(FModel::SailDirKey(270.f) == "music.radio.sail.dir.6" && FModel::SailDirKey(225.f) == "music.radio.sail.dir.5" && FModel::SailDirKey(-10.f) == "music.radio.sail.dir.0",
+			"the winds' names by the compass (from the west: off the sea)");
+		CHECK(FModel::SailForce(1.f) == 0 && FModel::SailForce(5.5f) == 2 && FModel::SailForce(7.f) == 3 && FModel::SailForce(13.f) == 5, "the sea by the wind (white horses from 6 m/s)");
+		FFacts None;
+		std::vector<FCaption> Quiet;
+		FModel::SailorsWords(None, Quiet);
+		FModel::SailResultWords(None, false, Quiet);
+		CHECK(Quiet.empty(), "without the school nothing is said");
+	}
 
 	// 2. the same moment is the same air (every radio in step), and different days differ
 	{

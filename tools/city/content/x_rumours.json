@@ -64,6 +64,26 @@
      {
       "k": "city.ask.town_talk.film",
       "rumour": "film"
+     },
+     {
+      "k": "city.ask.town_talk.sail",
+      "rumour": "sail"
+     },
+     {
+      "k": "city.ask.town_talk.capsize",
+      "rumour": "capsize"
+     },
+     {
+      "k": "city.ask.town_talk.regatta",
+      "rumour": "regatta"
+     },
+     {
+      "k": "city.ask.town_talk.tow",
+      "rumour": "tow"
+     },
+     {
+      "k": "city.ask.town_talk.skipper",
+      "rumour": "skipper"
      }
     ]
    }

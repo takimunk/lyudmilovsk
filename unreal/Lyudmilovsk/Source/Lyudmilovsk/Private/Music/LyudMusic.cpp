@@ -18,6 +18,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Plants/GameCalendar.h"
+#include "Sailing/LyudSailNews.h"
 #include "Sea/Tide.h"
 #include "Sound/SoundBase.h"
 #include "UI/LyudGameScreen.h"
@@ -320,6 +321,44 @@ void ULyudMusic::RefreshFacts(bool bForce)
 		if (!FestId.IsNone())
 		{
 			F.Festival = "festival." + LyudMusicImpl::Std(FestId.ToString()) + ".name";
+		}
+	}
+	// the yacht school (docs/yacht_school.md "Town"): the sailors' morning call, today's and yesterday's races; nothing until
+	// the school's engine registers its providers (Public/Sailing/LyudSailNews.h)
+	{
+		auto NameStd = [](const FName N) { return N.IsNone() ? std::string() : LyudMusicImpl::Std(N.ToString()); };
+		const int32 DayNumber = (int32)(Now.GetDate() - FDateTime(1970, 1, 1)).GetDays();
+		FLyudSailMorning Morning;
+		const bool bSchool = LyudSailMorningOf(this, DayNumber, Morning);
+		F.Sail = bSchool ? FMath::Clamp(Morning.Call, 0, 6) : 0;
+		F.SailWhy = bSchool ? NameStd(Morning.Reason) : std::string();
+		F.SailEvent = bSchool ? NameStd(Morning.Event) : std::string();
+		F.SailEventTime = bSchool ? LyudMusicImpl::Std(Morning.EventTime) : std::string();
+		F.SailBest = bSchool ? LyudMusicImpl::Std(Morning.BestHour) : std::string();
+		F.SailLowWater = bSchool ? LyudMusicImpl::Std(Morning.LowWater) : std::string();
+		F.SailWind = bSchool ? FMath::RoundToFloat(Morning.WindMs) : 0.f;
+		F.SailGust = bSchool ? FMath::RoundToFloat(Morning.GustMs) : 0.f;
+		F.SailFromDeg = bSchool ? Morning.FromDeg : 0.f;
+		F.SailShift = bSchool ? Morning.Shift : 0;
+		F.bSailRecallRisk = bSchool && Morning.bRecallRisk;
+		F.SailResults.clear();
+		for (const int32 Back : { 0, 1 })
+		{
+			TArray<FLyudSailNewsItem> Races;
+			LyudSailNewsOfDay(this, DayNumber - Back, Races);
+			for (const FLyudSailNewsItem& R : Races)
+			{
+				LyudMusic::FSailResult Res;
+				Res.Event = NameStd(R.Event);
+				Res.Class = NameStd(R.Class);
+				for (const FName P : R.Podium)
+				{
+					Res.Podium.push_back(NameStd(P));
+				}
+				Res.bAbandoned = R.bAbandoned;
+				Res.bToday = Back == 0;
+				F.SailResults.push_back(MoveTemp(Res));
+			}
 		}
 	}
 	F.PaperHeadline.clear();
