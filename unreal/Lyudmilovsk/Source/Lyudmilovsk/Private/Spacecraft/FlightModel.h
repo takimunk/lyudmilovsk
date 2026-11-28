@@ -389,7 +389,7 @@ namespace LyudFlight
 		double TAscentEnd = 75.0, TApproach = 600.0, TEntry = 720.0, TChute = 810.0, TSplashPhase = 885.0, TEnd = 900.0;
 		double TStageLeft = 1.5, TLookStart = 78.0, TLookEnd = 96.0, TTurnStart = 195.0, TTurnEnd = 225.0;
 		double TBurn = 300.0, BurnDur = 6.0, TSep = 700.0, TMain = 825.0, TTouch = 888.0;
-		double TWhiteIn = 840.0, TWhitePeak = 850.0, TWhiteOut = 860.0;
+		double TWhiteIn = 826.0, TWhitePeak = 833.0, TWhiteOut = 842.0;
 		// the nap
 		double NapScale = 8.0, NapEndBefore = 20.0, NapLatestBefore = 40.0, NapBurnGuard = 12.0;
 		// the planet
@@ -401,7 +401,7 @@ namespace LyudFlight
 		double GAscentStart = 1.5, GAscentEnd = 1.7, GBurn = 0.3, GEntryPeak = 4.2, TEntryPeak = 768.0, EntrySigmaRise = 17.0, EntrySigmaFall = 14.0;
 		double GSepJolt = 0.8, GDrogueSnatch = 1.0, GMainSnatch = 1.5, GSplashSpike = 2.4, EntryTilt = 0.27;
 		// the plasma and the heat
-		double TPlasmaPeak = 755.0, PlasmaSigmaRise = 14.0, PlasmaSigmaFall = 17.0, BlackoutPlasma = 0.25, ScorchMax = 0.8;
+		double TPlasmaPeak = 755.0, PlasmaSigmaRise = 14.0, PlasmaSigmaFall = 17.0, BlackoutPlasma = 0.25, ScorchMax = 0.45;
 		double HullPeakC = 1650.0, HullSpaceC = -120.0, HullLag = 8.0, HullCoolLag = 30.0, PlasmaKLow = 1800.0, PlasmaKHigh = 7000.0;
 		// under the canopy, m/s down
 		double VEntryEnd = 120.0, VDrogue = 50.0, TauDrogue = 6.0, VMain = 7.0, TauMain = 14.0, VTouch = 2.0;
@@ -442,7 +442,7 @@ namespace LyudFlight
 				{ CueAuto, "auto.sep", 694 }, { CueSound, "module_sep", 700 }, { CueSound, "entry_interface", 720 }, { CueAuto, "auto.entry", 721.5 },
 				{ CueAuto, "auto.blackout", 727 }, { CueSound, "blackout_start", -1 }, { CueSay, "line.hero.flight_fire.1", 745 },
 				{ CueSound, "peak_g", -1 }, { CueSound, "blackout_end", -1 }, { CueSound, "drogue", 810 }, { CueSound, "main_chute", 825 },
-				{ CueAuto, "auto.chute", 827.5 }, { CueSay, "line.hero.flight_chute.1", 833 }, { CueSound, "whiteout", 840 }, { CueSound, "real_world", 850 },
+				{ CueSound, "whiteout", 826 }, { CueAuto, "auto.chute", 827.5 }, { CueSound, "real_world", 833 }, { CueSay, "line.hero.flight_chute.1", 833 },
 				{ CueAuto, "auto.splash", 868 }, { CueSound, "jets", 885 }, { CueSound, "splash", 888 }, { CueSay, "line.hero.flight_home.1", 890 },
 				{ CueAuto, "auto.home", 896 },
 			};
@@ -680,7 +680,7 @@ namespace LyudFlight
 		double PlasmaK = 0.0;       // its colour temperature, kelvin (meaningful while Plasma > 0)
 		double Scorch = 0.0;        // 0..1 on the glass; stays till the craft is back on Europa
 		double HullC = 0.0;
-		double Whiteout = 0.0;      // 0..1, peaks at 850 s
+		double Whiteout = 0.0;      // 0..1, peaks at 833 s
 		bool bRealWorld = false;    // from the whiteout's peak: the cabin hangs in the real level at AltSeaM
 
 		EChute Chute = EChute::None;

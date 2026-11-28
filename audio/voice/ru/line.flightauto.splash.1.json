@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.splash.1",
+ "lang": "ru",
+ "text": "Приготовьтесь к приводнению.",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] Приготовьтесь к приводнению.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a220b5-dfc1-7010-912e-9b19b453bc20",
+ "hash": "2598cdbde900"
+}

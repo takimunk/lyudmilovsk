@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.launch.1",
+ "lang": "ru",
+ "text": "Внимание. Пуск.",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] Внимание. Пуск.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a220b5-a1bd-72b1-92dc-5cd67585ff2c",
+ "hash": "7cff360eeb04"
+}

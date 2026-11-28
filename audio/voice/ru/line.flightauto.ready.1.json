@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.ready.1",
+ "lang": "ru",
+ "text": "Системы готовы к пуску.",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] Системы готовы к пуску.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a220b5-b691-7380-9b0e-db27fdf25766",
+ "hash": "30d37f835427"
+}

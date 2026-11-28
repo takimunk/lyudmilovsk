@@ -29,9 +29,9 @@
   "module_sep": 700,
   "main_chute": 825,
   "touchdown": 888,
-  "whiteout_in": 840,
-  "whiteout_peak": 850,
-  "whiteout_out": 860
+  "whiteout_in": 826,
+  "whiteout_peak": 833,
+  "whiteout_out": 842
  },
  "nap": {
   "scale": 8,
@@ -71,7 +71,7 @@
   "plasma_sigma_rise": 14,
   "plasma_sigma_fall": 17,
   "blackout_plasma": 0.25,
-  "scorch_max": 0.8,
+  "scorch_max": 0.45,
   "hull_peak_c": 1650,
   "hull_space_c": -120,
   "hull_lag": 8,
@@ -631,24 +631,24 @@
    "t": 825
   },
   {
+   "kind": "sound",
+   "id": "whiteout",
+   "t": 826
+  },
+  {
    "kind": "auto",
    "id": "auto.chute",
    "t": 827.5
   },
   {
-   "kind": "say",
-   "id": "line.hero.flight_chute.1",
+   "kind": "sound",
+   "id": "real_world",
    "t": 833
   },
   {
-   "kind": "sound",
-   "id": "whiteout",
-   "t": 840
-  },
-  {
-   "kind": "sound",
-   "id": "real_world",
-   "t": 850
+   "kind": "say",
+   "id": "line.hero.flight_chute.1",
+   "t": 833
   },
   {
    "kind": "auto",

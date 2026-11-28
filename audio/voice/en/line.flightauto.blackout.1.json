@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.blackout.1",
+ "lang": "en",
+ "text": "Communications will be lost for a short time.",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] Communications will be lost for a short time.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a220b6-e997-7da0-ae45-71ff2b3f8aae",
+ "hash": "71076e07c66d"
+}

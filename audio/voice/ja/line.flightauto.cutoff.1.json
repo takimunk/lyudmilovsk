@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.cutoff.1",
+ "lang": "ja",
+ "text": "エンジンを停止しました。",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] エンジンを停止しました。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a220b8-dc7b-7443-ba62-be2471441468",
+ "hash": "d9958e8441ad"
+}

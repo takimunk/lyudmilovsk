@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.chute.1",
+ "lang": "ja",
+ "text": "パラシュートが開きました。",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] パラシュートが開きました。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a220b8-c72d-7ba2-bd9c-2096956412ea",
+ "hash": "67b658e10536"
+}

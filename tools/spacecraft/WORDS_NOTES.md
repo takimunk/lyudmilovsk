@@ -9,7 +9,7 @@ Everything the flight home from Europa says or prints, in ru / en / ja (docs/spa
 | `unreal/Lyudmilovsk/Content/Localization/spacecraft/strings_{ru,en,ja}.json` | generated, never edited by hand |
 | `tools/spacecraft/labels.json` | the plates (plate id -> string keys, class), fonts, and the layout that was drawn |
 | `tools/spacecraft/labels.py` | draws `textures/spacecraft/T_SC_labels_{ru,en,ja}.png`; `--check`, `--auto`, `--boxes`, `--lang` |
-| `localization/voice.json` | speaker `flightauto` and the ten `line.hero.flight_*` directions (no audio generated yet) |
+| `localization/voice.json` | speaker `flightauto` and the ten `line.hero.flight_*` directions; voiced 2026-11-28 in ru/en/ja (69 takes, 7 929 characters: ~$0.79 on fal at $0.10 per 1000, request ids in each `audio/voice/<lang>/<key>.json`) |
 
 Change a word: edit `strings.json`, then `python3 tools/spacecraft/strings.py && python3 tools/spacecraft/labels.py`,
 then `python3 tools/check_localization.py` (its 70 "item ... has no icon" problems are older and not this feature's).

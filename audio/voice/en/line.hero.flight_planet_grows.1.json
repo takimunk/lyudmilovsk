@@ -1,0 +1,33 @@
+{
+ "key": "line.hero.flight_planet_grows.1",
+ "lang": "en",
+ "text": "It keeps growing. And it's all blue. Not a scrap of land anywhere.",
+ "speaker": "hero",
+ "voice": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_id": "ttv-voice-2026102201374626-TYrgTufW",
+ "voice_design": {
+  "endpoint": "fal-ai/minimax/voice-design",
+  "prompt": "Teenage boy, high school student: a light, youthful, boyish tenor voice, not deep, a bit breathy, quiet and uncertain, natural everyday speech",
+  "preview_text": "Как всегда? Я здесь впервые. Где здесь выход?"
+ },
+ "direction": "low, uneasy awe; the blue planet fills the porthole and there is no land on it",
+ "model": "fal-ai/minimax/speech-2.6-hd",
+ "request": {
+  "prompt": "It keeps growing. And it's all blue. Not a scrap of land anywhere.",
+  "voice_setting": {
+   "speed": 0.9,
+   "pitch": 0,
+   "vol": 1,
+   "voice_id": "ttv-voice-2026102201374626-TYrgTufW"
+  },
+  "language_boost": "English",
+  "audio_setting": {
+   "sample_rate": 24000,
+   "format": "mp3",
+   "channel": 1
+  },
+  "output_format": "url"
+ },
+ "fal_request_id": "01a220b8-6044-7993-8266-8fdf045e7117",
+ "hash": "a6cf9c53188f"
+}

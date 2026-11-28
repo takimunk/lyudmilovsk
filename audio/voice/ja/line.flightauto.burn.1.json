@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.burn.1",
+ "lang": "ja",
+ "text": "ご注意ください。軌道を修正します。",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] ご注意ください。軌道を修正します。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a220b8-b0bf-7a60-a4b0-c8b66106d276",
+ "hash": "9a9d61d90c2e"
+}

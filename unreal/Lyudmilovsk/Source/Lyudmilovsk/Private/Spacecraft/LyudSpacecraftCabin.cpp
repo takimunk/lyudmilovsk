@@ -603,7 +603,7 @@ struct ALyudSpacecraft::FCabinData
 	// ------------------------------------------------------------------ what is on the instruments now (set on change)
 
 	bool bCabinLightAllowed = true, bLightWanted = false;
-	float Light01 = 0.f, LightShown = -1.f;
+	float Light01 = 0.f, LightShown = -1.f, LampCdShown = -1.f;
 	float Backlight = 0.f, BacklightShown = -1.f, CrtPower = 0.f, CrtPowerShown = -1.f;
 	float DigitValue[3] = { -1.f, -1.f, -1.f };
 	int32 DigitOpt[3] = { -1, -1, -1 };
@@ -1262,17 +1262,20 @@ void ALyudSpacecraft::FCabinData::ApplyLanguage(ALyudSpacecraft& O)
 void ALyudSpacecraft::FCabinData::ApplyLight(ALyudSpacecraft& O)
 {
 	const float Q = FMath::RoundToFloat(Light01 * 16.f) / 16.f;
-	if (Q == LightShown)
+	static const IConsoleVariable* LampCdVar = IConsoleManager::Get().FindConsoleVariable(TEXT("lyud.Flight.LampCd"));
+	const float LampCd = LampCdVar ? LampCdVar->GetFloat() : 120.f;
+	if (Q == LightShown && LampCd == LampCdShown)
 	{
 		return;
 	}
 	LightShown = Q;
+	LampCdShown = LampCd;
 	const bool bOn = Q > 0.f && O.bShownInside;
 	for (UPointLightComponent* L : O.CabinLamps)
 	{
 		if (L)
 		{
-			L->SetIntensity(22.f * Q);
+			L->SetIntensity(LampCd * Q);
 			if (L->IsVisible() != bOn)
 			{
 				L->SetVisibility(bOn);

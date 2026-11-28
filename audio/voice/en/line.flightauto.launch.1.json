@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.launch.1",
+ "lang": "en",
+ "text": "Attention, please. Launch.",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] Attention, please. Launch.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a220b7-788c-7313-859b-add4ba1b5b96",
+ "hash": "90572d562be5"
+}

@@ -5,8 +5,9 @@ the planet. About 15 minutes; through the porthole the planet grows into an ocea
 detailed cabin with a live instrument panel; a record player with openly licensed music; full sound; atmospheric entry
 with fire. Beautiful, but cheap in memory.
 
-> State 2026-11-28: everything below is written and passes its offline checks, but NOTHING has been compiled, imported
-> or run in Unreal yet. The first Mac build, import and flight are owed (see "On the Mac").
+> State 2026-11-28 (evening): built, imported and flown offscreen on the Mac (`unreal/scripts/test_spaceflight.sh`, the
+> whole flight and `SOUND=1`: 0 failed); the eight records fetched and pinned; the 23 voice lines voiced in ru/en/ja. What
+> the first run found and changed: ENGINE_NOTES "First Mac run".
 
 ## The craft
 
@@ -55,7 +56,7 @@ Words printed on the panel are localized (ru/en/ja label atlases, the localizati
 | `coast` | 75..600 | weightless; Europa shrinks astern, the planet grows from 26 degrees to a wall; one 6 s correction burn near 300 s; records, the thermos, the portholes; the hero may nap on the couch (time runs 8x) |
 | `approach` | 600..720 | a low arc round the planet that brings the island under the track whatever the hour; limb glow, cloud decks, the island comes over the horizon; the instrument section is cast off at 700 s (a bang) |
 | `entry` | 720..810 | plasma: glow, streamers, sparks past the portholes, the glass scorches; up to 4.2 g, shake, radio blackout, the hull bar climbs |
-| `chute` | 810..885 | drogue (a jolt), main canopy at 825; a whiteout through the cloud deck hides the move into the real world: the cabin now hangs under its canopy over the real sea off the real island and comes down to it |
+| `chute` | 810..885 | drogue (a jolt), main canopy at 825; a whiteout through the cloud deck (826..842, peak 833) hides the move into the real world: the cabin now hangs under its canopy 755 m over the real sea off the real island and comes down to it |
 | `splash` | 885..900 | soft-landing jets, the splash, spray on the glass |
 | `afloat` | | bobbing on the real sea off the beach; open the hatch, swim home. The capsule drifts there till the hero is far away, then it is gone |
 
@@ -119,8 +120,10 @@ each guessed sign or axis, is in ENGINE_NOTES "Unverified" and CABIN_NOTES.
 
 ## Open
 
-- The real world starts only 364.5 m above the sea (a canopy ending near 7 m/s allows no more without retuning the
-  chute curve); the island fills the porthole from orbit, but the last look at the real island is short.
+- The real world starts 755 m above the sea (the whiteout moved from 840..860 to 826..842, right after the main canopy;
+  was 364.5 m): 55 s under the canopy over the real island instead of 38.
+- From orbit the island stays on the horizon until the fire (the model's arc); it is drawn at least 0.4 of its distance
+  across (`lyud.Flight.IslandScale`) so it shows as a sliver there, and is true-sized again behind the plasma.
 - Records: licences were read on mirrors, the files themselves were never downloaded in the cloud; «Clair de lune»'s
   licence page could not be opened and the Rachmaninoff is CC BY-SA (see RECORDS_NOTES). The fetch script refuses a
   file whose licence on the host is not PD/CC0/CC BY/CC BY-SA.

@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.half.1",
+ "lang": "en",
+ "text": "We are now half way.",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] We are now half way.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a220b7-4f72-72c0-9474-651b6eee636f",
+ "hash": "f6a30a687b15"
+}

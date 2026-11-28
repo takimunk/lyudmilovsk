@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.entry.1",
+ "lang": "ru",
+ "text": "Вход в атмосферу. Пожалуйста, пристегните ремни.",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] Вход в атмосферу. Пожалуйста, пристегните ремни.",
+  "voice": "Sarah",
+  "language_code": "ru"
+ },
+ "fal_request_id": "01a220b5-5191-7ef0-bd60-f0c2f215a663",
+ "hash": "5d0f3cf43dc2"
+}

@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.weightless.1",
+ "lang": "en",
+ "text": "Weightlessness. You may unfasten your belts.",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] Weightlessness. You may unfasten your belts.",
+  "voice": "Sarah",
+  "language_code": "en"
+ },
+ "fal_request_id": "01a220b7-bf16-7d33-8e28-016cd67eabac",
+ "hash": "5fa0dea1a2c4"
+}

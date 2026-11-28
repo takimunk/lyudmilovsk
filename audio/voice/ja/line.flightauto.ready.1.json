@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.ready.1",
+ "lang": "ja",
+ "text": "発射の準備が整いました。",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] 発射の準備が整いました。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a220b9-3c4a-7323-8837-e5531f9e273e",
+ "hash": "0084d741b7cb"
+}

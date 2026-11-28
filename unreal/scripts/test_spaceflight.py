@@ -87,6 +87,9 @@ def start(w):
     cmd(w, "DisableAllScreenMessages")
     cmd(w, "lyud.Europa.Fast 1")
     cmd(w, "lyud.Birds.Time 12 30")
+    # Europa's day is a month and the game starts in its night: 96 h on puts the star 23 degrees up for the pictures
+    # (SPACEFLIGHTTEST_HOURS=0 keeps the night)
+    cmd(w, "lyud.SkyHourOffset %s" % os.environ.get("SPACEFLIGHTTEST_HOURS", "96"))
     f = fl(w)
     check(f is not None and f.get_cabin() is not None and f.get_stage() is not None, "the craft and its stage are spawned")
     report(w)
@@ -109,12 +112,43 @@ def at_craft(w):
     report(w)
 
 
+def ground_z(w, x, y, z):
+    """The ground under (x, y) near height z (the site's ice is not flat round the stage), or z."""
+    hit = unreal.SystemLibrary.line_trace_single(w, unreal.Vector(x, y, z + 5000.0), unreal.Vector(x, y, z - 5000.0),
+                                                 unreal.TraceTypeQuery.TRACE_TYPE_QUERY1, True, [pawn(w)],
+                                                 unreal.DrawDebugTrace.NONE, True)
+    t = hit.to_tuple()
+    return t[4].z if t[0] else z
+
+
+def sun_dir(w):
+    """The star's world direction from the report ('sun X=.. Y=.. Z=..'), or None."""
+    r = str(fl(w).report())
+    i = r.find("| sun X=")
+    if i < 0:
+        return None
+    try:
+        p = r[i + 6:].split()
+        return unreal.Vector(float(p[0][2:]), float(p[1][2:]), float(p[2][2:]))
+    except (ValueError, IndexError):
+        return None
+
+
 def back_off(w):
-    """A few metres back from the stage for a picture of the whole craft."""
+    """A dozen metres from the stage on its sunlit side (else from behind it), standing on the ice, for a picture of
+    the whole craft."""
     st = fl(w).get_stage()
     fwd = st.get_actor_forward_vector()
     right = st.get_actor_right_vector()
-    at = st.get_actor_location() - fwd * 1100.0 + right * 500.0 + unreal.Vector(0, 0, 260)
+    sun = sun_dir(w)
+    if sun is not None and math.hypot(sun.x, sun.y) > 0.1:
+        k = 1300.0 / math.hypot(sun.x, sun.y)
+        # a little round from the star, so the light rakes across the craft instead of flattening it
+        at = st.get_actor_location() + unreal.Vector(sun.x * k, sun.y * k, 0.0) + right * 450.0
+    else:
+        # (before the cabin's sky is up the report has no star: the planet's side, where it stands by day)
+        at = st.get_actor_location() + fwd * 1300.0 + right * 450.0
+    at = unreal.Vector(at.x, at.y, ground_z(w, at.x, at.y, st.get_actor_location().z) + 170.0)
     pawn(w).set_actor_location(at, False, True)
     d = st.get_actor_location() + unreal.Vector(0, 0, 330) - at
     pc(w).set_control_rotation(unreal.Rotator(0.0, math.degrees(math.atan2(d.z, math.hypot(d.x, d.y))), math.degrees(math.atan2(d.y, d.x))))
@@ -249,7 +283,7 @@ def summary(w):
     seen = ",".join(S["phases"])
     check(all(p in S["phases"] for p in ("prelaunch", "ascent", "coast", "approach", "entry", "chute", "splash", "afloat")), "every phase was seen (%s)" % seen)
     check(S["max_alt"] > 2000.0, "the cabin climbed over the real ice (%.0f m)" % S["max_alt"])
-    check(S["real_alt"] is not None and 150.0 < S["real_alt"] < 600.0, "the real world began a few hundred metres up (%s m)" % S["real_alt"])
+    check(S["real_alt"] is not None and 500.0 < S["real_alt"] < 1000.0, "the real world began a few hundred metres up (%s m)" % S["real_alt"])
     if os.environ.get("SOUND") == "1":
         check(S["loops"] >= 4, "the flight's loops were heard (%d at once)" % S["loops"])
         check(S["music"], "the record's music played")
@@ -299,26 +333,34 @@ else:
         (84.0, lambda w: shot(w, "ascent_before_swap")), (92.0, lambda w: shot(w, "ascent_after_swap")), (92.5, report),
         (93.0, lambda w: jump(w, "coast")), (95.0, lambda w: in_phase(w, "coast")), (96.0, lambda w: jump(w, "150")),
         (98.0, lambda w: fl(w).look_through("big")), (100.0, lambda w: shot(w, "coast_europa_behind")),
-        (100.5, lambda w: jump(w, "400")), (103.0, lambda w: shot(w, "coast_planet_ahead")),
+        (100.5, lambda w: jump(w, "400")), (102.0, lambda w: fl(w).look_through("big")), (103.5, lambda w: shot(w, "coast_planet_ahead")),
         (103.5, lambda w: fl(w).look_through("left")), (105.5, lambda w: shot(w, "coast_left_porthole")),
         (106.0, lambda w: fl(w).look_through("back")), (107.0, lambda w: look(w, -18.0, 24.0)), (108.0, lambda w: shot(w, "coast_panel")),
         (108.5, lambda w: fl(w).do("nap")), (110.0, lambda w: check(field(w, "nap") == 1.0, "asleep in the coast")),
         (110.5, lambda w: shot(w, "nap")), (111.0, lambda w: fl(w).do("wake")), (112.0, lambda w: check(field(w, "nap") == 0.0, "awake again")),
         (113.0, lambda w: jump(w, "approach")), (115.0, lambda w: in_phase(w, "approach")), (115.5, lambda w: jump(w, "690")),
-        (116.0, lambda w: fl(w).look_through("big")), (118.5, lambda w: shot(w, "approach_island")),
-        (119.0, lambda w: jump(w, "entry")), (121.0, lambda w: in_phase(w, "entry")), (121.5, lambda w: jump(w, "750")),
-        (124.0, lambda w: shot(w, "entry_fire")), (124.5, lambda w: fl(w).look_through("back")), (126.0, lambda w: shot(w, "entry_cabin")),
-        (126.5, lambda w: jump(w, "chute")), (128.5, lambda w: in_phase(w, "chute")), (129.0, lambda w: jump(w, "830")),
-        (131.0, lambda w: fl(w).look_through("big")), (133.0, lambda w: shot(w, "chute_before_whiteout")),
-        (133.5, lambda w: jump(w, "849")), (137.0, real_world), (139.0, lambda w: shot(w, "real_world_porthole")),
-        (139.5, lambda w: fl(w).look_through("left")), (141.5, lambda w: shot(w, "real_world_left")),
-        (142.0, lambda w: fl(w).look_through("back")),
-        # the rest of the descent at its own speed would take 35 s: three times faster
-        (142.5, lambda w: fast(w, 3)), (158.0, lambda w: fast(w, 1)), (160.0, afloat), (161.0, lambda w: shot(w, "afloat_cabin")),
-        (161.5, lambda w: fl(w).look_through("big")), (163.5, lambda w: shot(w, "afloat_porthole")),
-        (164.0, lambda w: fl(w).look_through("back")),
-        (165.0, swim_out), (169.0, swum), (169.5, see_capsule), (171.0, lambda w: shot(w, "capsule_on_the_sea")),
-        (172.0, reset), (174.0, after_reset), (175.0, summary), (175.5, lambda w: S.update(phase="done")),
+        # every jump seats the hero again (the view back on the panel): the porthole is looked through after each one
+        (117.0, lambda w: fl(w).look_through("big")), (118.5, lambda w: shot(w, "approach_island")),
+        (119.0, lambda w: jump(w, "712")), (120.5, lambda w: fl(w).look_through("big")), (122.0, lambda w: shot(w, "approach_low")),
+        (122.5, lambda w: jump(w, "entry")), (124.5, lambda w: in_phase(w, "entry")), (125.0, lambda w: jump(w, "750")),
+        (126.5, lambda w: fl(w).look_through("big")), (128.0, lambda w: shot(w, "entry_fire")),
+        (128.5, lambda w: fl(w).look_through("back")), (130.0, lambda w: shot(w, "entry_cabin")),
+        (130.5, lambda w: jump(w, "chute")), (132.5, lambda w: in_phase(w, "chute")), (133.0, lambda w: jump(w, "825.5")),
+        (134.5, lambda w: fl(w).look_through("big")), (136.0, lambda w: shot(w, "chute_before_whiteout")),
+        (136.5, lambda w: jump(w, "832")), (138.0, lambda w: fl(w).look_through("big")), (140.0, real_world),
+        (140.5, lambda w: shot(w, "real_world_whiteout")),
+        # out of the cloud (the whiteout is gone at 842 s): the real sea and the island under the canopy
+        (152.0, lambda w: shot(w, "real_world_porthole")),
+        (152.5, lambda w: fl(w).look_through("left")), (154.5, lambda w: shot(w, "real_world_left")),
+        (155.0, lambda w: fl(w).look_through("right")), (157.0, lambda w: shot(w, "real_world_right")),
+        (157.5, lambda w: fl(w).look_through("big")), (162.0, lambda w: shot(w, "real_world_low")),
+        (162.5, lambda w: fl(w).look_through("back")),
+        # the rest of the descent at its own speed would take 25 s more: four times faster
+        (163.0, lambda w: fast(w, 4)), (175.0, lambda w: fast(w, 1)), (177.0, afloat), (178.0, lambda w: shot(w, "afloat_cabin")),
+        (178.5, lambda w: fl(w).look_through("big")), (180.5, lambda w: shot(w, "afloat_porthole")),
+        (181.0, lambda w: fl(w).look_through("back")),
+        (182.0, swim_out), (186.0, swum), (186.5, see_capsule), (188.0, lambda w: shot(w, "capsule_on_the_sea")),
+        (189.0, reset), (191.0, after_reset), (192.0, summary), (192.5, lambda w: S.update(phase="done")),
     ]
 
 

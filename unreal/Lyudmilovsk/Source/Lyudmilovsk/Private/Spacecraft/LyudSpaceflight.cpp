@@ -20,6 +20,7 @@
 #include "GameFramework/PlayerController.h"
 #include "HAL/IConsoleManager.h"
 #include "HeroCharacter.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "LyudInventory.h"
 #include "LyudText.h"
@@ -61,6 +62,8 @@ namespace LyudFlightImpl
 {
 	TAutoConsoleVariable<int32> CVarFlight(TEXT("lyud.Flight"), 1, TEXT("The craft on Europa and the flight home (0: not spawned; read at play start)."));
 	TAutoConsoleVariable<float> CVarFlightFast(TEXT("lyud.Flight.Fast"), 1.f, TEXT("The flight model runs this many times faster (tests; 20 = the flight in 45 s)."));
+	TAutoConsoleVariable<float> CVarFlightIslandScale(TEXT("lyud.Flight.IslandScale"), 0.4f, TEXT("The island on the planet ball is drawn at least this fraction of its distance across (0: true size all the way in)."));
+	TAutoConsoleVariable<float> CVarFlightLampCd(TEXT("lyud.Flight.LampCd"), 120.f, TEXT("Each of the cabin's three lamps, candelas, at full light (tuning)."));
 	TAutoConsoleVariable<float> CVarFlightShake(TEXT("lyud.Flight.Shake"), 1.f, TEXT("Scales the view's shake in the cabin (0: none)."));
 	TAutoConsoleVariable<float> CVarFlightDetail(TEXT("lyud.Flight.Detail"), 1.f,
 		TEXT("0..1: the planet's fine layers through the porthole (billows, wind streaks, glitter) and its air shell (0: off)."), ECVF_Scalability);
@@ -211,6 +214,16 @@ namespace LyudFlightImpl
 		return PC ? Cast<ACharacter>(PC->GetPawn()) : nullptr;
 	}
 
+	/** The hero's own body (and what his hands hold) while he lies on the couch: the eye is put on the seat's eye, but
+	 *  the body stays upright (AHeroCharacter::SitOn), so the camera would be inside his shoulders. Hidden while seated. */
+	void ScHideSeatedBody(const ACharacter* H, bool bHide)
+	{
+		if (USkeletalMeshComponent* Body = H ? H->GetMesh() : nullptr)
+		{
+			Body->SetHiddenInGame(bHide, true);
+		}
+	}
+
 	void ScToast(const UObject* Ctx, const FString& Key)
 	{
 		if (Key.IsEmpty())
@@ -309,6 +322,7 @@ struct ULyudSpaceflightSubsystem::FImpl
 	FQuat Fix = FQuat::Identity;
 	FVector SunWorld = FVector::UpVector;
 	FVector PlanetWorld = FVector::UpVector;
+	FVector IslandWorld = FVector::UpVector; // from the cabin to the island (tests: lyud.Flight.Report)
 	FVector LastPlanetSun = FVector::ZeroVector;
 	float SkyTimer = 0.f;
 	FLinearColor SunLight = FLinearColor(12.7f, 10.5f, 8.6f);
@@ -718,6 +732,9 @@ bool ULyudSpaceflightSubsystem::FImpl::EnsureBuilt(ULyudSpaceflightSubsystem& O,
 	bBuilt = true;
 	O.Stage->Build();
 	O.Cabin->Build();
+	// hidden as a whole from the spawn on (nothing drawn before the build); from here its parts show themselves
+	// (SetShownInside / SetShownOutside)
+	O.Cabin->SetActorHiddenInGame(false);
 	ShownInside = ShownOutside = ShownStage = ShownCabinLight = -1;
 	CellShown = -2;
 	ArmShown = -1.f;
@@ -856,7 +873,10 @@ void ULyudSpaceflightSubsystem::FImpl::LevelPad(ULyudSpaceflightSubsystem& O)
 	{
 		const FVector At = StageT.TransformPosition(Foot);
 		TArray<FHitResult> Hits;
-		World->LineTraceMultiByObjectType(Hits, FVector(At.X, At.Y, At.Z + 3000.0), FVector(At.X, At.Y, At.Z - 3000.0), FCollisionObjectQueryParams(ECC_WorldStatic));
+		// the site's ground tiles are movable components (BlockAllDynamic: WorldDynamic), so both object types
+		FCollisionObjectQueryParams Objects(ECC_WorldStatic);
+		Objects.AddObjectTypesToQuery(ECC_WorldDynamic);
+		World->LineTraceMultiByObjectType(Hits, FVector(At.X, At.Y, At.Z + 3000.0), FVector(At.X, At.Y, At.Z - 3000.0), Objects);
 		double Best = -1.0e12;
 		for (const FHitResult& H : Hits)
 		{
@@ -1005,6 +1025,7 @@ void ULyudSpaceflightSubsystem::FImpl::SetAboard(ULyudSpaceflightSubsystem& O, b
 	{
 		O.bSeated = false;
 		O.bBuckled = false;
+		ScHideSeatedBody(ScPlayerHero(O.GetWorld()), false);
 		Look = NAME_None;
 		if (O.bBookOpen)
 		{
@@ -1047,6 +1068,7 @@ void ULyudSpaceflightSubsystem::FImpl::Sit(ULyudSpaceflightSubsystem& O, bool bS
 	};
 	SetAboard(O, true);
 	O.bSeated = true;
+	ScHideSeatedBody(H, true);
 	Look = NAME_None;
 	if (bSnap)
 	{
@@ -1078,6 +1100,7 @@ void ULyudSpaceflightSubsystem::FImpl::Stand(ULyudSpaceflightSubsystem& O)
 	{
 		H->StandUp();
 	}
+	ScHideSeatedBody(H, false);
 	Snd(O, TEXT("sc_seat"), TEXT("couch"), 0.5f);
 	UE_LOG(LogTemp, Display, TEXT("FLIGHT hero up from the couch"));
 }
@@ -1169,6 +1192,7 @@ void ULyudSpaceflightSubsystem::FImpl::TickHero(ULyudSpaceflightSubsystem& O, AC
 	{
 		O.bSeated = false;
 		O.bBuckled = false;
+		ScHideSeatedBody(&Hero, false);
 		Look = NAME_None;
 	}
 	if (!O.bSeated)
@@ -1931,6 +1955,7 @@ void ULyudSpaceflightSubsystem::FImpl::Restore(ULyudSpaceflightSubsystem& O)
 		{
 			Seated->StandUp();
 		}
+		ScHideSeatedBody(ScPlayerHero(O.GetWorld()), false);
 	}
 	O.bAboard = O.bSeated = O.bBuckled = false;
 	DayFed = -1;
@@ -2089,6 +2114,7 @@ void ULyudSpaceflightSubsystem::FImpl::TickSky(ULyudSpaceflightSubsystem& O, flo
 	const FQuat Off = FQuat::Slerp(PlanetOff, FQuat::Identity, bFlying ? ScSmooth01(float(St.T / (SwapT + double(BlendSeconds)))) : 0.f);
 	SunWorld = DirWorld(O, Rh(St.SunDir)).GetSafeNormal(UE_SMALL_NUMBER, FVector::UpVector);
 	PlanetWorld = Off.RotateVector(DirWorld(O, Rh(St.PlanetDir))).GetSafeNormal(UE_SMALL_NUMBER, FVector::UpVector);
+	IslandWorld = Off.RotateVector(DirWorld(O, Rh(St.IslandDir))).GetSafeNormal(UE_SMALL_NUMBER, FVector::UpVector);
 
 	// the light by the hour, twice a second
 	SkyTimer -= Dt;
@@ -2116,7 +2142,17 @@ void ULyudSpaceflightSubsystem::FImpl::TickSky(ULyudSpaceflightSubsystem& O, flo
 
 	// the planet: the splash point's texel along the model's island axis, the pole toward its north axis
 	const float SizeEase = ScSmoothStep(26.f, 70.f, float(St.PlanetDiaDeg));
-	const float IslandSize = float(IslandExtentKm) * FMath::Pow(1000.f / float(IslandExtentKm), 1.f - SizeEase);
+	float IslandSize = float(IslandExtentKm) * FMath::Pow(1000.f / float(IslandExtentKm), 1.f - SizeEase);
+	{
+		// in the approach the island stays on the horizon (the model's arc brings it under the track only in the fire), and
+		// at its true 25.6 km it would be a line one pixel high there: it is drawn no smaller than lyud.Flight.IslandScale
+		// (0.4) of its distance, a green sliver that can be seen coming; true-sized again under 64 km away (in the fire,
+		// behind the plasma), so the real island under the canopy matches it
+		const FVector IslandAxisW = Off.RotateVector(DirWorld(O, Rh(St.PlanetIslandAxis))).GetSafeNormal(UE_SMALL_NUMBER, FVector::UpVector);
+		const double CentreKm = double(PlanetRadiusKm) + FMath::Max(0.0, St.RangeKm);
+		const double DistKm = (PlanetWorld * CentreKm + IslandAxisW * double(PlanetRadiusKm)).Size();
+		IslandSize = FMath::Clamp(FMath::Max(IslandSize, float(DistKm * double(CVarFlightIslandScale.GetValueOnGameThread()))), float(IslandExtentKm), 1000.f);
+	}
 	const double Stretch = double(IslandSize) / IslandExtentKm / double(PlanetRadiusKm);
 	const double LatS = FMath::DegreesToRadians(IslandLatDeg) + SplashNorthKm * Stretch;
 	const double LonS = FMath::DegreesToRadians(IslandLonDeg) + SplashEastKm * Stretch / FMath::Max(0.2, FMath::Cos(FMath::DegreesToRadians(IslandLatDeg)));
@@ -3241,6 +3277,7 @@ void ULyudSpaceflightSubsystem::GoCraft()
 	{
 		H->StandUp();
 	}
+	ScHideSeatedBody(Hero, false);
 	M.Move.bOn = false;
 	M.SetAboard(*this, false);
 	// onto Europa first (its sky, its ground, its gravity), then to the ladder's foot
@@ -3451,10 +3488,10 @@ FString ULyudSpaceflightSubsystem::Report() const
 		+ FString::Printf(TEXT(" | g %.2f shake %.2f plasma %.2f whiteout %.2f chute %d alt_sea %.0f m range %.0f km planet %.1f deg europa %.1f deg | switches %d%d%d%d%d lamps %d power %d"),
 			S.GLoad, S.Shake, S.Plasma, S.Whiteout, int32(S.Chute), S.AltSeaM, S.RangeKm, S.PlanetDiaDeg, S.EuropaDiaDeg,
 			S.Switches[0] ? 1 : 0, S.Switches[1] ? 1 : 0, S.Switches[2] ? 1 : 0, S.Switches[3] ? 1 : 0, S.Switches[4] ? 1 : 0, Lamps, S.I.bPowered ? 1 : 0)
-		+ FString::Printf(TEXT(" | loops %d record %d playing %d pos %.1f music %d | cabin %s rot %s | hero %s | splash %s | sun %s planet %s"),
+		+ FString::Printf(TEXT(" | loops %d record %d playing %d pos %.1f music %d | cabin %s rot %s | hero %s | splash %s | sun %s planet %s island %s seen %.2f"),
 			LoopsOn, S.Record.Index, S.Record.bPlaying ? 1 : 0, S.Record.PosSec, M.bMusicOn ? 1 : 0,
 			Cabin ? *Cabin->GetActorLocation().ToString() : TEXT("-"), Cabin ? *Cabin->GetActorRotation().ToString() : TEXT("-"),
-			Hero ? *Hero->GetActorLocation().ToString() : TEXT("none"), *(bRealWorld ? M.AfloatAt : SplashAt).ToString(), *M.SunWorld.ToString(), *M.PlanetWorld.ToString());
+			Hero ? *Hero->GetActorLocation().ToString() : TEXT("none"), *(bRealWorld ? M.AfloatAt : SplashAt).ToString(), *M.SunWorld.ToString(), *M.PlanetWorld.ToString(), *M.IslandWorld.ToString(), S.IslandVisible);
 }
 
 void ULyudSpaceflightSubsystem::OnGameSaving_Implementation()

@@ -306,8 +306,8 @@ float op = 0.03 + refl * 0.5;
 // soot browns the glass from the rim in: it takes light away and gives a little dull brown back
 col = lerp(col, float3(0.050, 0.028, 0.012) * Light.rgb, sc * 0.9);
 op = max(op, sc * (0.55 + 0.4 * Scorch));
-// frost: white crystals, lit by the cabin
-col = lerp(col, (float3(0.75, 0.82, 0.90) * (0.6 + 0.4 * m.r)) * Light.rgb, fr * 0.85);
+// frost: white crystals, lit by the cabin and by the day outside (a little of its own, or it reads as soot)
+col = lerp(col, (float3(0.75, 0.82, 0.90) * (0.6 + 0.4 * m.r)) * (Light.rgb * 2.5 + 0.6), fr * 0.85);
 op = max(op, fr * 0.8);
 // water: beads standing on the pane, runs crawling down it; each a small lens (a bright rim low on the bead)
 float bead = saturate((m.b + Wet - 1.0) * 6.0) * step(0.01, m.b);

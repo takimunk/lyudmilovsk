@@ -443,7 +443,7 @@ static void CheckProfile()
 	CHECK(std::fabs(P.ChuteV(C.TSplashPhase - 0.01) - 7.0) < 1.5, "%.2f m/s before the jets", P.ChuteV(C.TSplashPhase - 0.01));
 	CHECK(std::fabs(P.ChuteV(C.TTouch - 1e-6) - 2.0) < 0.05, "%.2f m/s at the water", P.ChuteV(C.TTouch - 1e-6));
 	CHECK(P.ChuteAlt(C.TTouch) == 0.0 && P.ChuteAlt(C.TTouch - 0.01) < 0.05, "the sea is at 0");
-	CHECK(P.AltSwapM > 250.0 && P.AltSwapM < 800.0, "the real world starts %.0f m up", P.AltSwapM);
+	CHECK(P.AltSwapM > 250.0 && P.AltSwapM < 1000.0, "the real world starts %.0f m up", P.AltSwapM);
 	CHECK(P.AltChuteM > 1500.0 && P.AltChuteM < 5000.0, "the drogue opens %.0f m up", P.AltChuteM);
 	for (double T = C.TChute; T < C.TTouch; T += 0.25)
 	{
@@ -798,7 +798,7 @@ static void CheckFlight()
 		}
 	}
 	CHECK(When["line.hero.flight_island.1"] > P.TIslandSeen && When["line.hero.flight_island.1"] < P.C.TSep - 5.0, "the island's line comes when it is in sight");
-	CHECK(When["correction_burn_on"] == 300.0 && When["correction_burn_off"] == 306.0 && When["module_sep"] == 700.0 && When["real_world"] == 850.0, "the contract's cue times");
+	CHECK(When["correction_burn_on"] == 300.0 && When["correction_burn_off"] == 306.0 && When["module_sep"] == 700.0 && When["real_world"] == 833.0, "the contract's cue times");
 
 	// the words exist (tools/spacecraft/strings.json is the words' source)
 	std::string Text, Err;
@@ -1305,7 +1305,7 @@ static void CheckAfloat()
 	CHECK(F.CanOpenHatch().empty(), "afloat the hatch opens");
 	F.TakeEvents();
 	FState S = F.State();
-	CHECK(S.Scorch > 0.7 && S.bRealWorld && S.AltSeaM == 0.0 && S.I.ClockDigits[2] == 1 && S.I.ClockDigits[3] == 5, "scorched glass, the clock stopped at 15:00");
+	CHECK(S.Scorch > 0.4 && S.bRealWorld && S.AltSeaM == 0.0 && S.I.ClockDigits[2] == 1 && S.I.ClockDigits[3] == 5, "scorched glass, the clock stopped at 15:00");
 	CHECK(F.Toggle(SwArm) == "ui.flight.no.switch_flight" && F.CanSwimOut().empty() && F.PullChuteHandle() == "ui.flight.no.chute_late", "afloat: switches locked, free to swim");
 	// the hatch opens: the hero's last line, once
 	F.Advance(5.0);

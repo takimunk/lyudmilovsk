@@ -1,0 +1,20 @@
+{
+ "key": "line.flightauto.blackout.1",
+ "lang": "ja",
+ "text": "しばらくの間、通信が途切れます。",
+ "speaker": "flightauto",
+ "voice": "Sarah",
+ "voice_id": "EXAVITQu4vr4xnSDxMaL",
+ "voice_design": null,
+ "direction": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker]",
+ "model": "fal-ai/elevenlabs/tts/eleven-v3",
+ "request": {
+  "stability": 0.5,
+  "apply_text_normalization": "auto",
+  "text": "[calm, clear, unhurried recorded announcer, the same woman as the cable car's announcements, a little distant, as from a small cabin loudspeaker] しばらくの間、通信が途切れます。",
+  "voice": "Sarah",
+  "language_code": "ja"
+ },
+ "fal_request_id": "01a220b8-93f4-7670-a2da-bb033991a857",
+ "hash": "dda97b9958bc"
+}
