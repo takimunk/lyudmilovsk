@@ -1,0 +1,13 @@
+{
+ "teleports": [
+  {
+   "id": "kite_poplar",
+   "group": "kite",
+   "name": "dev.tp.kite_poplar",
+   "x": 24.1,
+   "y": 855.0,
+   "yaw": 270,
+   "time": "14:00"
+  }
+ ]
+}

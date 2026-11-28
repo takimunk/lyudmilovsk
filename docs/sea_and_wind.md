@@ -15,6 +15,8 @@ from it. Both follow the game calendar, so the same date and hour always have th
 - **Gusts**: patches of stronger and weaker air (≈500 m, 130 m and 30 m across) drift downwind and change as they
   go; the wind veers a little in each.
 - **Height**: log profile over water or land (`GetWindAt(Location, HeightAboveGroundM, bOverWater)`).
+- **The local wind** (shifts of a few minutes, the lee of the cliff, woods and houses, lift on the cliff's face, the
+  fetch, the gust ahead, Beaufort and outlooks): `WindField.cpp`, see [wind.md](wind.md).
 
 API (C++, Blueprint, Python `unreal.LyudWindSubsystem.get_wind(world)`): `GetWindAt`, `GetMeanWind`,
 `GetMeanSpeed`, `GetFromDegrees`, `GetGustiness`, `GetDayStir`, `GetSeaStateWind` (the last 3 hours' mean the

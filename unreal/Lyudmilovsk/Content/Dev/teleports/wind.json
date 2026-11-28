@@ -1,0 +1,22 @@
+{
+ "teleports": [
+  {
+   "id": "wind_sock_beach",
+   "group": "wind",
+   "name": "dev.tp.wind_sock_beach",
+   "x": 170.0,
+   "y": 861.5,
+   "yaw": 180,
+   "time": "15:00"
+  },
+  {
+   "id": "wind_pier_head",
+   "group": "wind",
+   "name": "dev.tp.wind_pier_head",
+   "x": 300.0,
+   "y": 905.0,
+   "yaw": 0,
+   "time": "15:00"
+  }
+ ]
+}

@@ -2419,6 +2419,13 @@ say = town.friend_gift_named.1..2
 
 # Kites (docs/kites.md): the children flying kites on windy afternoons (town life's fly_kite), the grown-ups who watch
 # them on the beach, a kite flier noticing the player's own kite
+# Kite afternoons (docs/kites.md "Kite afternoons"): the teens' two-line stunt kites (fly_kite_stunt), the deltas of
+# light days (fly_kite_delta), the dragons' owners (fly_kite_dragon), whoever came to the beach to look (watch_kites).
+# The barks know no wind, so the lore about it is said as a rule, never as what the air does this minute.
+# --- said at a moment the kite flying raises (ULyudKiteFlying::Bark -> ULyudTownTalkSubsystem::SayEvent): somebody on
+# the beach agrees to hold the hero's kite for a long launch and lets it go on his pull; a stunt flier who has just
+# shown him a loop and its undoing; a child whose kite he got out of a tree. The last two sets wait for the engine to
+# call them (kite_loop_cheer: somebody near when his stunt kite loops; kite_low_pass: somebody it passes low over).
 
 [kite_kid]
 doing = fly_kite
@@ -2439,6 +2446,80 @@ say = town.kite_watch.1..3
 doing = fly_kite
 near = hero
 say = town.kite_hero.1..2
+
+[kite_kid_more]
+doing = fly_kite
+age = kid
+say = town.kite_kid_more.1..4
+
+[kite_stunt]
+doing = fly_kite_stunt
+say = town.kite_stunt.1..8
+
+[kite_stunt_hero]
+doing = fly_kite_stunt
+near = hero
+say = town.kite_stunt_hero.1..2
+
+[kite_delta]
+doing = fly_kite_delta
+say = town.kite_delta.1..6
+
+[kite_delta_elder]
+doing = fly_kite_delta
+age = elder
+say = town.kite_delta_elder.1..3
+
+[kite_dragon]
+doing = fly_kite_dragon
+say = town.kite_dragon.1..6
+
+[kite_wind_lore]
+doing = fly_kite_stunt fly_kite_delta fly_kite_dragon
+say = town.kite_wind_lore.1..7
+
+[kite_cold]
+doing = fly_kite fly_kite_stunt fly_kite_delta fly_kite_dragon
+months = 11-3
+say = town.kite_cold.1..2
+
+[kite_onlooker]
+doing = watch_kites
+say = town.kite_onlooker.1..5
+
+[kite_parent]
+doing = watch_kites
+age = 25-50
+say = town.kite_parent.1..4
+
+[kite_onlooker_elder]
+doing = watch_kites
+age = elder
+say = town.kite_onlooker_elder.1..2
+
+[kite_hold_yes]
+on = kite_hold_yes
+say = town.kite_hold_yes.1..3
+
+[kite_hold_go]
+on = kite_hold_go
+say = town.kite_hold_go.1..3
+
+[kite_lesson]
+on = kite_lesson
+say = town.kite_lesson.1..3
+
+[kite_rescue_thanks]
+on = kite_rescue_thanks
+say = town.kite_rescue_thanks.1..4
+
+[kite_loop_cheer]
+on = kite_loop_cheer
+say = town.kite_loop_cheer.1..4
+
+[kite_low_pass]
+on = kite_low_pass
+say = town.kite_low_pass.1..3
 
 # The hero plays (docs/instruments.md): somebody near the piano or the guitar notices (on = hero_plays), a tune played to
 # its end gets a word (on = hero_played), and by a bonfire the circle sings the tune's words with him (on = hero_sing_<tune>,

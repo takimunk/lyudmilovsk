@@ -385,6 +385,27 @@ namespace
 		KiteB.Price = 280;
 		KiteB.Radius = 3.f;
 		D.Add(KiteB);
+		// a delta for light air, a two-line stunt kite (two handles, no reel), a dragon with a long tail: the same rolled pack
+		FLyudItemDef KiteL = KiteD;
+		KiteL.Id = TEXT("kite_delta");
+		KiteL.Size = FVector(4.f, 4.f, 75.f);
+		KiteL.Tint = FLinearColor(0.95f, 0.62f, 0.10f);
+		KiteL.Price = 220;
+		D.Add(KiteL);
+		FLyudItemDef KiteS = KiteD;
+		KiteS.Id = TEXT("kite_stunt");
+		KiteS.Size = FVector(5.f, 5.f, 85.f);
+		KiteS.Tint = FLinearColor(0.10f, 0.55f, 0.50f);
+		KiteS.Price = 520;
+		KiteS.Radius = 2.5f;
+		D.Add(KiteS);
+		FLyudItemDef KiteG = KiteD;
+		KiteG.Id = TEXT("kite_dragon");
+		KiteG.Size = FVector(7.f, 7.f, 55.f);
+		KiteG.Tint = FLinearColor(0.70f, 0.10f, 0.16f);
+		KiteG.Price = 640;
+		KiteG.Radius = 3.5f;
+		D.Add(KiteG);
 		// the shop's better rods: a carbon spinning rod with a braided line, a thick sea bottom rod with a 100 g lead
 		FLyudItemDef Spin = Rod;
 		Spin.Id = TEXT("rod_spinning");
