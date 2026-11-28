@@ -586,7 +586,7 @@ void ULyudSailing::SiteHours()
 		}
 	}
 	// the park's halyards: one emitter for the dozen masts, light or fresh by the wind, silent when the masts are down
-	const Sound::FHalyardMix Mix = Sound::MixHalyards(float(S.W.Wind));
+	const LyudSail::Sound::FHalyardMix Mix = LyudSail::Sound::MixHalyards(float(S.W.Wind));
 	const bool bMasts = S.Season == ESeasonState::Open;
 	const int32 Want = !bMasts || Mix.Light + Mix.Fresh < 0.05f ? 0 : (Mix.Fresh > Mix.Light ? 2 : 1);
 	if (Want != S.HalyardPool)
