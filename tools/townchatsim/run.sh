@@ -24,6 +24,6 @@ CXX="${CXX:-clang++}"
 command -v "$CXX" >/dev/null 2>&1 || CXX=g++
 "$CXX" -std=c++17 -O2 $EXTRA_CXXFLAGS -Wall -Wshadow -Wno-unused-function -o "$ROOT/Saved/TownChatSim/townchatsim" \
 	"$ROOT/tools/townchatsim/townchatsim.cpp" "$SRC/People/TownChat.cpp" "$SRC/People/TownBarks.cpp" "$SRC/People/Friends.cpp" \
-	"$SRC/People/PeopleManners.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Animals/AnimalFriendSim.cpp" \
+	"$SRC/People/PeopleManners.cpp" "$SRC/People/PeopleSim.cpp" "$SRC/People/PeopleDays.cpp" "$SRC/Animals/AnimalSim.cpp" "$SRC/Animals/AnimalFriendSim.cpp" \
 	"$SRC/Animals/AnimalPetsSim.cpp" "$SRC/Railway/RailRun.cpp"
 cd "$ROOT" && exec "$ROOT/Saved/TownChatSim/townchatsim" "$@"
