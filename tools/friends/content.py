@@ -596,6 +596,10 @@ for job, ru, en, ja in [
         ("station_attendant", "дежурит на станции канатки", "works at the cable car station", "ロープウェイ駅の係員"),
         ("station_barista", "варит кофе в станционном буфете", "makes coffee at the station buffet", "駅のビュッフェでコーヒーをいれる仕事"),
         ("milk_round", "развозит молоко по дворам", "does the morning milk round", "朝の牛乳配達の仕事"),
+        # the sailing school's staff (docs/yacht_school.md "People (part F)", the glossary's words)
+        ("sail_head_coach", "старший тренер яхт-школы", "the head coach at the sailing school", "ヨット学校のヘッドコーチ"),
+        ("sail_coach", "тренирует в яхт-школе", "coaches at the sailing school", "ヨット学校のコーチ"),
+        ("sail_bosun", "боцман в яхт-школе", "the bosun at the sailing school", "ヨット学校のボースン"),
 ]:
     T("friends.job.%s" % job, ru, en, ja)
 

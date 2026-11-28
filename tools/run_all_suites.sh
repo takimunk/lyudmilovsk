@@ -256,8 +256,9 @@ generator gen.city_plan       "$CONTENT/City/city_plan.json"                    
 generator gen.academ_fountain "$CONTENT/Academgorodok/fountain.json"             python3 tools/academ_fountain.py
 generator gen.academ_wires    "$CONTENT/BirdsData/wires.json"                    python3 tools/academ_wires.py
 generator gen.restaurant_seats "$CONTENT/Restaurant/seats.json"                  python3 tools/restaurant/seats.py
-# (town_life.py also runs its add-ons and build_reading.py: the pets' and the book club's files are its output too)
-generator gen.town_life       "$CONTENT/PeopleData $CONTENT/Localization/town $CONTENT/AnimalsData/pets.json $CONTENT/Localization/pets $CONTENT/Reading/reading.json" python3 tools/town/town_life.py
+# (town_life.py also runs its add-ons and build_reading.py: the pets' and the book club's files are its output too, and
+# the sailing school's members in City/sailing.json, which sailing_people.py binds to the town it is given)
+generator gen.town_life       "$CONTENT/PeopleData $CONTENT/Localization/town $CONTENT/AnimalsData/pets.json $CONTENT/Localization/pets $CONTENT/Reading/reading.json $CONTENT/City/sailing.json" python3 tools/town/town_life.py
 generator gen.barks           "$CONTENT/Dialogue/town_barks.txt $CONTENT/Localization/barks" python3 tools/barks/build_barks.py
 generator gen.letters         "$CONTENT/Letters/letters.json $CONTENT/Localization/letters" python3 tools/letters/build_letters.py
 generator gen.friends         "$CONTENT/PeopleData/friends.json $CONTENT/Localization/friends" python3 tools/friends/build_friends.py
