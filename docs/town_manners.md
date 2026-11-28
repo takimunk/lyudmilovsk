@@ -41,6 +41,7 @@ what it puts in the hands. The file's `_doc` lists every key.
   the hips, a stretch, a yawn, a look at the watch (more of it waiting for the train), a look at the sky, a hand over the
   eyes against the low sun, cold hands rubbed, a phone call, the phone scrolled, a cigarette, a photograph, a newspaper
   on the bench, knitting, an ice cream, a cup, a doze on the bench after lunch, claps and swaying at a holiday,
+  the binoculars of the birdwatchers (on the island's spots, the ornithologist's bench, the hide at the starlings),
   a flat stone sent over the water, the dominoes put down in the sanatorium's lounge, the cup at its pump room, the
   spade, the watering can and the weeding at the allotment's beds.
 - **react** rows are never picked: the game starts them (`ReactManner`): a wave, a nod.
@@ -198,7 +199,9 @@ Town talk sets: `manner = smoke phone_call ...` (what their hands are doing now)
 
 ## Testing
 
-- `tools/mannersim/run.sh` (personas, the four weathers, noticing, passing, a weekend's outings, the sky's shows, cost),
+- `tools/mannersim/run.sh` (personas, the four weathers and a holiday, noticing, passing, a weekend's outings, the sky's
+  shows, cost). The holiday is the sea festival on a Friday: the fair, the concert and the dance on the square, and the
+  Vaults' Friday dances. Every manner must be seen in one of the five days; the claps and the sways only come at it.
   `run.sh day`, `run.sh outing`, `run.sh dates`, `run.sh who`.
 - `tools/peoplesim/run.sh test|town`, `tools/barksim/run.sh`.
 - In the game: `lyud.People.Manner <manner|next|auto>` (everybody drawn does it), `lyud.People.Who <key>`,

@@ -7,6 +7,7 @@
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/PeopleManners.h"
 #include "../../unreal/Lyudmilovsk/Source/Lyudmilovsk/Private/People/Friends.h"
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <cstdio>
@@ -84,6 +85,8 @@ struct FDay
 	const char* Name = "";
 	float TempC = 12.f;
 	float RainFrom = -1.f, RainTo = -1.f;       // hours of a shower
+	int Weekday = 2;                            // Wednesday (0 Monday)
+	bool bSeaFestival = false;                  // the sea festival's program in the town (festivals.json sea_festival)
 	bool bPrint = false;
 	// results
 	std::map<std::string, double> Seconds;      // manner -> person-seconds (people out of doors or seen indoors)
@@ -118,7 +121,7 @@ static void RunDay(FDay& D)
 		return;
 	}
 	FClock C;
-	C.Seconds = (2 * 24.0 + 5.0) * 3600.0;       // Wednesday 05:00
+	C.Seconds = (D.Weekday * 24.0 + 5.0) * 3600.0;       // the day's 05:00 (a Wednesday unless the day says)
 	C.Set(W);
 	W.TempC = D.TempC;
 	W.Resettle();
@@ -138,6 +141,28 @@ static void RunDay(FDay& D)
 		const bool bRain = D.RainFrom >= 0.f && W.Hour >= D.RainFrom && W.Hour < D.RainTo;
 		W.bRain = bRain;
 		W.Rain = bRain ? 0.7f : 0.f;
+		if (D.bSeaFestival && (long)std::lround(T) % 60 == 0)
+		{
+			// the sea festival's program as ULyudFestivalSubsystem sends it to the people's life (festivals.json sea_festival:
+			// the fair 10-17, the concert on the square 17-21:30, the dance on the square from 22:06; the fireworks are the
+			// sky show at 21:00 below)
+			const auto Phase = [&W](const char* Id, const char* Venue, float From, float To, float Pull, EGatherMode Mode)
+			{
+				const bool bOn = W.Hour >= From - 0.1f && W.Hour < To;
+				const bool bSet = std::any_of(W.Gatherings.begin(), W.Gatherings.end(), [Id](const FWorld::FGathering& G) { return G.Id == Id; });
+				if (bOn && !bSet)
+				{
+					W.SetGathering(Id, Venue, From, To, Pull, Mode, false, V3());
+				}
+				else if (!bOn && bSet)
+				{
+					W.ClearGathering(Id);
+				}
+			};
+			Phase("sea_festival.fair", "fair", 10.f, 17.f, 1.0f, EGatherMode::Fair);
+			Phase("sea_festival.concert", "square", 17.f, 21.5f, 1.2f, EGatherMode::Watch);
+			Phase("sea_festival.dance", "square", 22.1f, 24.f, 0.7f, EGatherMode::Mingle);
+		}
 		W.Step(Dt);
 		W.Events.clear();
 		if ((long)std::lround(T) % 60 == 0)
@@ -350,8 +375,8 @@ static void RunDay(FDay& D)
 	{
 		D.AllDates += P.DateWith > P.Id ? 1 : 0;
 		const bool bIll = (size_t)P.Id < DateIll.size() && DateIll[(size_t)P.Id];
-		D.Dates += P.DateWith > P.Id && P.DateDay == 2 && !bIll ? 1 : 0;
-		D.DatesIll += P.DateWith > P.Id && P.DateDay == 2 && bIll ? 1 : 0;
+		D.Dates += P.DateWith > P.Id && P.DateDay == D.Weekday && !bIll ? 1 : 0;
+		D.DatesIll += P.DateWith > P.Id && P.DateDay == D.Weekday && bIll ? 1 : 0;
 		D.DatesKept += P.DateWith > P.Id && (size_t)P.Id < DateKept.size() && DateKept[(size_t)P.Id] ? 1 : 0;
 		D.DatesClose += P.DateWith > P.Id && (size_t)P.Id < DateKept.size() && DateKept[(size_t)P.Id] == 2 ? 1 : 0;
 	}
@@ -1246,7 +1271,7 @@ int main(int Argc, char** Argv)
 	Noticing();
 	std::printf("a weekend:\n");
 	Outings(false);
-	FDay Mild, Shower, Frost, Warm;
+	FDay Mild, Shower, Frost, Warm, Festival;
 	Mild.Name = "a mild day";
 	Shower.Name = "a shower at 14:00";
 	Shower.RainFrom = 14.f;
@@ -1255,7 +1280,11 @@ int main(int Argc, char** Argv)
 	Frost.TempC = -8.f;
 	Warm.Name = "a warm day";
 	Warm.TempC = 23.f;
-	for (FDay* D : { &Mild, &Shower, &Frost, &Warm })
+	// the town's holiday: the sea festival falls on a Friday (the fourth of October), the evening the Vaults dance too
+	Festival.Name = "the sea festival, a Friday";
+	Festival.Weekday = 4;
+	Festival.bSeaFestival = true;
+	for (FDay* D : { &Mild, &Shower, &Frost, &Warm, &Festival })
 	{
 		RunDay(*D);
 		std::printf("%s (%.0f C): %.0f%% of the time people seen do something with their hands;", D->Name, D->TempC, 100.0 * D->MannerSeconds / std::max(1.0, D->DrawnSeconds));
@@ -1278,13 +1307,15 @@ int main(int Argc, char** Argv)
 	for (int I = 1; I < NumManners; I++)
 	{
 		const char* Name = MannerName((EManner)I);
-		if (Mild.Seconds[Name] + Shower.Seconds[Name] + Frost.Seconds[Name] + Warm.Seconds[Name] <= 0.0)
+		if (Mild.Seconds[Name] + Shower.Seconds[Name] + Frost.Seconds[Name] + Warm.Seconds[Name] + Festival.Seconds[Name] <= 0.0)
 		{
 			Never += std::string(" ") + Name;
 		}
 	}
-	// claps and sways need a holiday (tools/festivalsim sets the gatherings); everything else is seen in these four days
-	CHECK(Never.empty() || Never == " clap sway" || Never == " clap" || Never == " sway", "every manner is seen in some weather%s%s", Never.empty() ? "" : ": never", Never.c_str());
+	// (claps and sways need a holiday's concert and dance, or the Vaults' Friday dances: the festival day has them)
+	CHECK(Never.empty(), "every manner is seen in some weather or at the holiday%s%s", Never.empty() ? "" : ": never", Never.c_str());
+	CHECK(Festival.Seconds["clap"] > 0.0 && Festival.Seconds["sway"] > 0.0, "the holiday's crowd claps at the concert and sways at the dances (%.1f, %.1f person-hours)",
+		Festival.Seconds["clap"] / 3600.0, Festival.Seconds["sway"] / 3600.0);
 	CHECK(Mild.SkyOut > 0 && Mild.SkyUp * 4 > Mild.SkyOut && Mild.SkyUp * (long)Mild.BeforeOut > 4L * Mild.BeforeUp * Mild.SkyOut,
 		"something in the sky turns the heads up (%d of %d person-samples out of doors during it, %d of %d before)",
 		Mild.SkyUp, Mild.SkyOut, Mild.BeforeUp, Mild.BeforeOut);

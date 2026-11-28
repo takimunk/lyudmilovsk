@@ -28,7 +28,7 @@
     {"id": "ice_cream", "poses": ["stand", "look", "walk", "sit"], "outdoors": 1, "after": ["buy_icecream"], "after_s": 600, "force": 1, "prop": "ice_cream"},
     {"id": "carry_bag", "poses": ["walk", "stand", "look"], "after": ["shop_town", "shop", "market_day"], "after_s": 2400, "doing": ["!fish_shore", "!paint_island", "!birdwatch", "!jog", "!play_run"], "force": 1, "prop": "bag"},
 
-    {"id": "binoculars", "poses": ["look"], "doing": ["birdwatch"], "seconds": [10, 30], "weight": 8.0, "cooldown": 12, "prop": "binoculars"},
+    {"id": "binoculars", "poses": ["look", "sit"], "doing": ["birdwatch", "birdwatch_yard", "watch_starlings"], "seconds": [10, 30], "weight": 8.0, "cooldown": 12, "prop": "binoculars"},
     {"id": "fold_arms", "poses": ["stand", "look", "talk"], "seconds": [8, 25], "weight": 1.0, "cooldown": 40, "ages": [10, 200]},
     {"id": "hands_hips", "poses": ["stand", "look"], "seconds": [6, 16], "weight": 0.5, "cooldown": 90, "ages": [14, 200]},
     {"id": "hands_back", "poses": ["stand", "look", "walk"], "habit": "hands_back", "doing": ["!jog", "!play_run"], "seconds": [20, 80], "weight": 3.0, "cooldown": 30},
