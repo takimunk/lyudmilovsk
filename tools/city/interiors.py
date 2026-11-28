@@ -72,6 +72,8 @@ QUEST_EVENTS = ("do", "win", "visit", "get", "use", "have", "wear", "reach", "ta
 # (photo <map place | maru | resident key>: a sharp developed frame taken there, or of the dog, or of that resident)
 # the telescopes' own quest event (ULyudTelescope, docs/telescopes.md): observe <sight> | jupiter_night
 QUEST_EVENTS += ("observe",)
+# the yacht school's quest event (ULyudSailing, docs/yacht_school.md): sail <join | lesson <id> | rank <id> | certificate | ...>
+QUEST_EVENTS += ("sail",)
 ACT_FIELDS = ("prompt", "minutes", "price", "lines", "pose", "sound", "event", "target", "give", "daily", "needs_staff",
               "needs_item", "fade", "shop", "screen", "until", "title", "any_hour", "rotate", "collect", "closed", "game", "read",
               "sleep", "topics", "to", "floors", "oneway", "stay", "needs_stay", "no_stay", "open",
@@ -92,7 +94,7 @@ LINE_CONDS = ("h", "d", "date", "after", "before", "once", "every", "festival", 
 WEATHER = ("rain", "snow", "fog", "cold", "warm", "clear", "wet", "dry")
 # the content sections a content file may have
 SECTIONS = ("acts", "shops", "rules", "defaults", "defaults_by_plot_kind", "quests", "collections", "closed_by", "regulars",
-            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments", "rewards")
+            "texts", "topics", "topic_sets", "tones", "tone_by", "sound_alias", "stays", "tournaments", "rewards", "places")
 # what a complete collection gives (docs/city_interiors.md "A complete set pays"): a reward's fields
 REWARD_FIELDS = ("name", "note", "pay", "item", "count", "item_from", "like", "free", "days")
 # the staff talk (docs/city_interiors.md "Staff talk"): a topic's fields besides its line conditions (when it is offered)
@@ -105,6 +107,9 @@ TEXT_KINDS = ("book", "notice", "ledger", "newspaper")
 TEXT_FIELDS = ("title", "kind", "minutes", "pages", "collect", "gen")
 # texts the game sets itself each day (docs/town_paper.md): their pages are only shown while the game cannot set them
 TEXT_GENS = ("town_paper", "paper_archive")
+# ... and the prefixes of the pages other systems set: a tournament's bracket (cup:<id>), the yacht school's timetable and
+# results sheets (sail:timetable, sail:results: ULyudSailing, docs/yacht_school.md part G)
+TEXT_GEN_PREFIXES = ("cup:", "sail:")
 READ_THING_KINDS = ("shelf", "board", "seat", "take")
 ROTATE = ("use", "daily")
 # a seat's or bed's surface over its own floor (m): a bigger "height" was measured from the building's base
@@ -301,7 +306,7 @@ def load_strings():
     return table
 
 
-CONTENT_EXTRA = {"collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}, "topics": {}, "topic_sets": {},
+CONTENT_EXTRA = {"places": {}, "collections": {}, "closed_by": {}, "quests": [], "regulars": {}, "texts": {}, "topics": {}, "topic_sets": {},
                  "tones": {}, "tone_by": {}, "sound_alias": {}, "stays": {}, "tournaments": {}, "rewards": {}}
 
 
@@ -344,7 +349,8 @@ def load_content():
                               ("topics", CONTENT_EXTRA["topics"]), ("topic_sets", CONTENT_EXTRA["topic_sets"]),
                               ("tones", CONTENT_EXTRA["tones"]), ("tone_by", CONTENT_EXTRA["tone_by"]),
                               ("sound_alias", CONTENT_EXTRA["sound_alias"]), ("stays", CONTENT_EXTRA["stays"]),
-                              ("tournaments", CONTENT_EXTRA["tournaments"]), ("rewards", CONTENT_EXTRA["rewards"])):
+                              ("tournaments", CONTENT_EXTRA["tournaments"]), ("rewards", CONTENT_EXTRA["rewards"]),
+                              ("places", CONTENT_EXTRA["places"])):
             for k, v in (data.get(section) or {}).items():
                 if k.startswith("_doc"):
                     continue
@@ -1065,8 +1071,8 @@ def build_texts(src, strings):
             err("%s: no page always shows (every page has conditions): the view could open on nothing" % where)
         rec = {"title": title, "kind": kind, "minutes": minutes, "pages": pages}
         if t.get("gen"):
-            if t["gen"] not in TEXT_GENS and not t["gen"].startswith("cup:"):
-                err("%s: gen must be one of %s or cup:<tournament>" % (where, ", ".join(TEXT_GENS)))
+            if t["gen"] not in TEXT_GENS and not t["gen"].startswith(TEXT_GEN_PREFIXES):
+                err("%s: gen must be one of %s, cup:<tournament> or sail:<sheet>" % (where, ", ".join(TEXT_GENS)))
             else:
                 rec["gen"] = t["gen"]
         if t.get("collect"):
@@ -1401,6 +1407,13 @@ def places(plan):
         out.append({"id": u["id"], "kind": u["kind"], "building": "unit_" + u["kind"], "front": ue_m(plan, u["door"]), "yaw": u["yaw"],
                     "staff": u.get("staff") or [], "name_ru": u.get("name_ru", ""), "name_en": u.get("name_en", ""),
                     "export": export, "w": w, "d": 6.0, "unit": 1})
+    # places that are not in the plan (a content file's "places": the yacht school's boathouse, built in code and placed by
+    # tools/sailing): the same record as a plot's, "front" already in Unreal metres, its things in "export"
+    for pid in sorted(CONTENT_EXTRA["places"]):
+        e = CONTENT_EXTRA["places"][pid]
+        out.append({"id": pid, "kind": e.get("kind", "place"), "building": e.get("building", pid.lower()), "front": list(e["front"]),
+                    "yaw": e.get("yaw", 0.0), "staff": e.get("staff") or [], "name_ru": e.get("name_ru", ""),
+                    "name_en": e.get("name_en", ""), "export": e.get("export") or {}, "w": e.get("w", 10.0), "d": e.get("d", 10.0)})
     return out
 
 
@@ -2417,7 +2430,7 @@ def main():
     stays = build_stays(CONTENT_EXTRA["stays"], acts, strings,
                         {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])})
     n_lifts = build_lifts(things, strings)
-    all_plots = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])}
+    all_plots = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])} | set(CONTENT_EXTRA["places"])
     regs = build_regulars(CONTENT_EXTRA["regulars"], strings, all_plots)
     for aid, a in sorted(acts.items()):
         g = a.get("game")
@@ -2446,7 +2459,7 @@ def main():
     existing = [q["id"] for q in json.loads(qtext)["quests"]]
     ours = {q["id"] for q in quests}
     map_places = {p["id"] for p in load(MAP)["places"]}
-    plot_ids = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])}
+    plot_ids = {p["id"] for p in plan["plots"]} | {u["id"] for u in plan.get("promenade_units", [])} | set(CONTENT_EXTRA["places"])
     check_quests(quests, acts, strings, items, plot_ids, map_places, [q for q in existing if q not in ours])
     # every quest step a thing must make must have a thing in town that makes it, with its staff on that plot
     staff_of = {pl["id"]: {r[0] for r in pl["staff"]} for pl in places(plan)}

@@ -1,0 +1,36 @@
+{
+ "_doc": "Icons of the yacht school's twelve items (docs/yacht_school.md \"Words, quests, items (part G)\"): one 4x3 Higgsfield grid, cells row by row, ids[0] row 1 left. Cut by tools/sailing/icons.py into textures/localized/ru/icon_<id>.jpg; the sidecar next to the picture keeps the job id and URL. Generated 2026-11-28 (1.75 credits); the cloud cannot reach the CDN: on the Mac run `python3 tools/sailing/icons.py icons_sailing <job_id> <output_url>`, look at every cell, then import (the game-items skill).",
+ "grids": [
+  {
+   "id": "icons_sailing",
+   "service": "higgsfield MCP",
+   "tool": "generate_image",
+   "model": "gpt_image_2_6",
+   "aspect_ratio": "4:3",
+   "resolution": "2k",
+   "quality": "medium",
+   "cols": 4,
+   "rows": 3,
+   "output": "design/sailing/icons_sailing.png",
+   "ids": [
+    "sail_card",
+    "life_jacket",
+    "sail_gloves",
+    "knot_cord",
+    "bailer",
+    "sail_pennant",
+    "sail_book",
+    "brass_screws",
+    "yacht_varnish",
+    "lucky_whistle",
+    "bottle_letter",
+    "race_mark"
+   ],
+   "prompt": "Twelve inventory icons for a moody adventure game, arranged as a grid of 4 columns by 3 rows of equal square cells on one picture: in every cell one object of a 1970s-80s seaside town's children's dinghy sailing school, centred and filling most of the cell, softly lit from the upper left, painterly realistic style, plain dark warm-grey cloth background with a faint vignette, the same background and the same scale in every cell, no borders, frames or lines between the cells, nothing crossing a cell edge, exactly one object per cell, no text, letters, numbers or logos anywhere. Row 1, first: a small dark blue cloth-bound membership booklet with a single thin golden diagonal ray embossed on the cover. Row 1, second: an orange foam life jacket with three black buckled straps. Row 1, third: a pair of fingerless sailing gloves with worn leather palms. Row 1, fourth: a neat coil of cream braided cord about a metre long with a bowline loop tied at one end. Row 2, first: a boat bailer scoop cut from a red plastic canister with a handle. Row 2, second: a triangular white pennant with one golden ray from the hoist corner, on a short cord. Row 2, third: a pocket-size book in a dark blue oilcloth cover with a tiny white sail silhouette on it. Row 2, fourth: a twisted brown paper cone packet spilling a few small brass wood screws. Row 3, first: a small tin can of amber yacht varnish with a wire handle and a drip of honey-coloured varnish on its side. Row 3, second: a yellow plastic toy whistle on a string, slightly chewed at one edge. Row 3, third: a green glass bottle crusted with small barnacles, sealed with red sealing wax, a rolled paper inside. Row 3, fourth: a deflated orange inflatable racing buoy, slumped, with sand and a strand of seaweed on it.",
+   "job_id": "36fde753-1624-40de-ae9f-988819b15f9c",
+   "output_url": "https://d8j0ntlcm91z4.cloudfront.net/user_36I3ndR5QeKPyjKAdSKVfbd04n2/hf_20261128_031248_36fde753-1624-40de-ae9f-988819b15f9c.png",
+   "credits": 1.75,
+   "generated": "2026-11-28, credits"
+  }
+ ]
+}

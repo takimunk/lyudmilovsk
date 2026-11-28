@@ -67,6 +67,8 @@
   {"id": "city.w1_u30", "group": "interiors", "name": "dev.tp.city.w1_u30", "x": 144.66, "y": 1375.93, "z": -3950.0, "yaw": 171.6},
   {"id": "city.w1_u31", "group": "interiors", "name": "dev.tp.city.w1_u31", "x": 149.18, "y": 1405.61, "z": -3950.0, "yaw": 171.0},
   {"id": "city.w1_u32", "group": "interiors", "name": "dev.tp.city.w1_u32", "x": 154.02, "y": 1435.23, "z": -3950.0, "yaw": 170.3},
+  {"id": "city.s_sail_school", "group": "interiors", "name": "dev.tp.city.s_sail_school", "x": 143.46, "y": 882.19, "z": -4206.0, "yaw": -94.5},
+  {"id": "city.s_sail_school.2", "group": "interiors", "name": "dev.tp.city.s_sail_school.2", "x": 157.45, "y": 879.69, "z": -3896.0, "yaw": -4.5},
   {"id": "city.q.city_tour.1", "group": "interiors", "name": "dev.tp.city.q.city_tour.1", "x": -416.76, "y": 984.68, "z": -2200.0, "yaw": 174.4},
   {"id": "city.q.library_day.1", "group": "interiors", "name": "dev.tp.city.q.library_day.1", "x": -420.59, "y": 983.62, "z": -2200.0, "yaw": -95.6},
   {"id": "city.q.cinema_night.1", "group": "interiors", "name": "dev.tp.city.q.cinema_night.1", "x": -75.55, "y": 1059.65, "z": -3620.0, "yaw": -5.5},

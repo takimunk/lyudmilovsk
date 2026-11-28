@@ -780,10 +780,18 @@ def main():
     bind_people(data)
     need = strings_needed(content, school)
     if os.path.exists(STRINGS):
-        have = load(STRINGS)
+        # the words' part (G): tools/sailing/strings*.json and, for the city.* keys, the city's theme file; the festivals'
+        # names are the town part's, in the main tables with every other festival's
+        have = {}
+        for name in sorted(os.listdir(HERE)):
+            if name.startswith("strings") and name.endswith(".json") and name != "strings_needed.json":
+                have.update(load(os.path.join(HERE, name)))
+        city = os.path.join(ROOT, "tools", "city", "content", "strings", "x_sailing.json")
+        if os.path.exists(city):
+            have.update(load(city))
         for k in need:
-            if k not in have:
-                err("tools/sailing/strings.json has no %s (%s)" % (k, need[k]))
+            if k not in have and not k.startswith("festival."):
+                err("the words (tools/sailing/strings*.json, tools/city/content/strings/x_sailing.json) have no %s (%s)" % (k, need[k]))
     tps = []
     for t in content["teleports"]:
         pt = school["points"].get(t["point"])
