@@ -1,7 +1,7 @@
 {
  "_doc": "blender/diner/building.py: the diner's frame (metres; x along the car, -y the street front, z over the floor); tools/world_map.py diner() / diner_to_map() put it on the map, floor_z is the floor's map height.",
  "prototype": "Modern Diner, Pawtucket RI (Sterling Streamliner, J. B. Judkins Co., 1940)",
- "floor_z": -35.142,
+ "floor_z": -35.471,
  "parts": [
   "SM_Diner_Shell",
   "SM_Diner_Inside",

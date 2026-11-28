@@ -282,6 +282,8 @@ BUILDING = ("SM_Diner_Shell", "SM_Diner_Inside", "SM_Diner_Glass", "SM_Diner_Ins
 LODS = {"SM_Diner_Inside": ((1.0, 1.0), (0.5, 0.45), (0.2, 0.15)),
         "SM_Diner_Small": ((1.0, 1.0), (0.4, 0.5), (0.12, 0.2)),
         "SM_Diner_Stools": ((1.0, 1.0), (0.4, 0.5), (0.15, 0.2))}
+# the commandlet's fallback (no SetLods there): Inside is seen from across the street, the small things from the room
+LOD_GROUPS = {"SM_Diner_Inside": "LargeProp", "SM_Diner_Small": "SmallProp", "SM_Diner_Stools": "SmallProp"}
 
 
 def _lods(sm, name):
@@ -293,7 +295,12 @@ def _lods(sm, name):
     opts.set_editor_property("reduction_settings", [unreal.EditorScriptingMeshReductionSettings(percent_triangles=p, screen_size=z)
                                                     for p, z in steps])
     sms = unreal.get_editor_subsystem(unreal.StaticMeshEditorSubsystem)
-    n = sms.set_lods(sm, opts)
+    n = sms.set_lods(sm, opts) if sms else -1
+    if n < 0:
+        # a -run=pythonscript commandlet has no editor subsystems, and SetLods refuses outside the editor: the engine's
+        # LOD group gives three steps of its own instead (halving the triangles each time, its own screen sizes)
+        sm.set_editor_property("lod_group", LOD_GROUPS.get(name, "SmallProp"))
+        n = sm.get_num_lods()
     # collision stays on the full mesh (the benches' and the counter's every triangle)
     sm.set_editor_property("lod_for_collision", 0)
     log("%s: %d LODs, triangles %s" % (name, n, [sm.get_num_triangles(i) for i in range(sm.get_num_lods())]))
