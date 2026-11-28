@@ -276,7 +276,7 @@ walked (he stayed on his bench): a plan is a pull, not an order.
 Checks: `run.sh town` keeps only the tower watch's failing check that main has. `tools/mannersim/run.sh` keeps main's
 failing "binoculars never seen"; its weekly dates' check now leaves out the pairs with a cold that day (their date is
 off by design), and a once-a-day errand (the pension, the market, the books back) waits while a date, an outing or a
-plan is due instead of pulling people away from it. A door held is `FPerson::DoorFor` (main's `HoldFor` is the
+plan is due instead of pulling people away from it (dates kept on its Wednesday: 35 of 69, main 29 of 70). A door held is `FPerson::DoorFor` (main's `HoldFor` is the
 hero's word on the way); neither is picked for a street meeting.
 
 Not done: no post office building; guests in a shell flat are not seen; the chess board is not drawn (a prop on the
