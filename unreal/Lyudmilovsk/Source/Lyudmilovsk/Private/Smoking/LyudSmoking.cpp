@@ -16,6 +16,7 @@
 #include "Smoking/SmokingKit.h"
 #include "UI/LyudGameScreen.h"
 #include "UnrealClient.h"
+#include "World/LyudPrefetch.h"
 
 const FName ULyudSmoking::PackId(TEXT("cigarettes"));
 const FName ULyudSmoking::LighterId(TEXT("lighter"));
@@ -180,6 +181,18 @@ void ULyudSmoking::OnWorldBeginPlay(UWorld& InWorld)
 		State->Reset();
 	}
 	SpawnTerrace();
+	// the cigarette's parts, its butt and the smoke's material were first loaded on the spot when the hero took his
+	// first cigarette / lit it (SetKitMeshes, ALyudSmokeFx::Emit): a hitch at that moment. Loaded in the background now
+	// and held by ULyudPrefetch, so those loads only find them.
+	for (const TCHAR* const Asset : { TEXT("/Game/Smoking/SM_CigFilter.SM_CigFilter"), TEXT("/Game/Smoking/SM_CigPaper.SM_CigPaper"),
+		TEXT("/Game/Smoking/SM_CigTip.SM_CigTip"), TEXT("/Game/Smoking/SM_CigButt.SM_CigButt"), TEXT("/Game/Smoking/M_Smoke.M_Smoke") })
+	{
+		ULyudPrefetch::Ready(&InWorld, Asset);
+	}
+	for (int32 I = 1; I <= 3; I++)
+	{
+		LyudText::WarmVoice(&InWorld, FString::Printf(TEXT("line.hero.cough.%d"), I));   // Cough()'s lines, the same way
+	}
 	if (ULyudSaveSubsystem* Saves = ULyudSaveSubsystem::Get(&InWorld))
 	{
 		Saves->OnAfterLoad.AddWeakLambda(this, [this](ULyudSaveGame*)

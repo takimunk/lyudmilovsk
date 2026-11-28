@@ -1919,7 +1919,15 @@ void ALyudStationLift::Tick(float DeltaTime)
 	}
 	// idle, doors settled and already placed, the player well away from the shaft: the leaves stay as they are
 	const bool bPawnFar = !Pawn || FVector2D(Local.X, Local.Y).Size() > ShaftHalf + 600.f;
-	if (Target < 0 && !bOpenMoved && bLeavesPlaced && bPawnFar)
+	const bool bIdleFar = Target < 0 && !bOpenMoved && bLeavesPlaced && bPawnFar;
+	// idle with nobody near: four looks a second (a walker needs over a second from 6 m out to the 4 m call ring); a
+	// lift in use or the player near: every frame (the cab, the doors and the rider move)
+	const float WantInterval = bIdleFar ? 0.25f : 0.f;
+	if (PrimaryActorTick.TickInterval != WantInterval)
+	{
+		SetActorTickInterval(WantInterval);
+	}
+	if (bIdleFar)
 	{
 		return;
 	}

@@ -26,6 +26,7 @@
 #include "UI/LyudUIStyle.h"
 #include "Weather/LyudWeather.h"
 #include "Winter/LyudWinterPlay.h"
+#include "World/LyudPrefetch.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/SOverlay.h"
@@ -695,7 +696,9 @@ void ULyudMusic::TickRadio(const FVector& Hero, float DeltaTime)
 	// a record heard nearby wins over the radio
 	if (!R || bDiscHeard)
 	{
-		if (Radio && (Radio->IsPlaying() || !RadioThing.IsEmpty()))
+		// once, as it goes quiet: asked again four times a second while the fade runs (it still IsPlaying), each FadeOut
+		// started the fade and its stop timer over, so the radio never stopped and kept its voice, nearly silent
+		if (Radio && !RadioThing.IsEmpty())
 		{
 			Radio->FadeOut(0.6f, 0.f);
 		}
@@ -762,6 +765,22 @@ void ULyudMusic::TickRadio(const FVector& Hero, float DeltaTime)
 			RadioTrack = P.Track;
 			RadioStart = P.Start;
 			bRadioStatic = false;
+			// the show's next record starts loading in the background now (held by ULyudPrefetch): Cue() loaded each
+			// track on the spot at its first second, a hitch every few minutes of listening
+			const LyudMusic::FPlay* Upcoming = nullptr;
+			for (const LyudMusic::FPlay& Q : Air.Timeline.Plays)
+			{
+				if (Q.Start > P.Start && Q.Track != P.Track && Q.Track >= 0 && Q.Track < (int32)Model->Tracks.size()
+					&& (!Upcoming || Q.Start < Upcoming->Start))
+				{
+					Upcoming = &Q;
+				}
+			}
+			if (Upcoming && !CueCache.Contains(Upcoming->Track))
+			{
+				const FString UpName = TEXT("MU_") + Str(Model->Tracks[(size_t)Upcoming->Track].Cue);
+				ULyudPrefetch::Ready(this, FString::Printf(TEXT("/Game/Audio/Music/%s.%s"), *UpName, *UpName));
+			}
 		}
 		else
 		{

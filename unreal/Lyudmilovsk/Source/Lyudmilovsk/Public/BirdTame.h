@@ -113,6 +113,10 @@ private:
 	int32 HudWaiting = -1;
 	const FSlateBrush* HudBrush = nullptr;
 	FString HudLanguage;
+	/** The focused bird's name as last formatted, by its species and the language (asked every frame while offering). */
+	FName HudBirdSpecies;
+	FString HudBirdLanguage;
+	FText HudBirdName;
 	/** The murmurations, found when the palm goes out (not searched every frame while it is out). */
 	TArray<TWeakObjectPtr<class AStarlingMurmuration>> Murmurations;
 

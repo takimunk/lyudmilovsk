@@ -132,6 +132,24 @@ public:
 	bool operator==(const char* O) const { return S == O; }
 };
 
+// a small map (PlantSpeciesLibrary::Find's name index): a list of pairs, Add replaces as Unreal's does
+template <typename K, typename V>
+class TMap
+{
+	std::vector<std::pair<K, V>> P;
+public:
+	V& Add(const K& Key, const V& Value)
+	{
+		if (V* Found = Find(Key)) { *Found = Value; return *Found; }
+		P.emplace_back(Key, Value);
+		return P.back().second;
+	}
+	V* Find(const K& Key) { for (auto& E : P) if (E.first == Key) return &E.second; return nullptr; }
+	const V* Find(const K& Key) const { for (const auto& E : P) if (E.first == Key) return &E.second; return nullptr; }
+	bool Contains(const K& Key) const { return Find(Key) != nullptr; }
+	int32 Num() const { return (int32)P.size(); }
+};
+
 struct FText
 {
 	FString S;

@@ -166,6 +166,9 @@ protected:
 	UPROPERTY(Transient) TObjectPtr<class USoundBase> StandSound;
 
 private:
+	/** MakeSounds ran (once: with the sounds missing it was run again every frame, a new attenuation and two more
+	 *  audio components each time under the same names). */
+	bool bSoundsMade = false;
 	TWeakObjectPtr<AActor> Holder;
 	float Speed = 0.f;
 	float Steer = 0.f;

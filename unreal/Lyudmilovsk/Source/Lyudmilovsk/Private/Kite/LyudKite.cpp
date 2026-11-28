@@ -371,6 +371,27 @@ void ALyudKite::Build(int32 InShape, int32 Colours, bool bWithReel)
 	}
 }
 
+void ALyudKite::Repaint(int32 Colours)
+{
+	const FColours& Col = Colourways[((Colours % NumColourways) + NumColourways) % NumColourways];
+	if (Sail)
+	{
+		PaintSlots(Sail, (Shape == 1 ? BoxMesh() : DiamondMesh()).Slots, Col);
+	}
+	if (Line)
+	{
+		PaintSlots(Line, PieceMesh().Slots, Col);
+	}
+	if (Tail)
+	{
+		PaintSlots(Tail, BowMesh().Slots, Col);
+	}
+	if (Reel)
+	{
+		PaintSlots(Reel, ReelMesh().Slots, Col);
+	}
+}
+
 void ALyudKite::EndPlay(const EEndPlayReason::Type Reason)
 {
 	if (Hum)
@@ -533,6 +554,7 @@ ALyudKite* ULyudKiteFlying::MakeActor(int32 Shape, int32 Colours, bool bReel)
 			if (IsValid(K) && K->GetShape() == Shape && !K->GetReel())
 			{
 				Pool.RemoveAtSwap(I);
+				K->Repaint(Colours);   // the pool matches the shape only: this child's own colours
 				K->SetActorHiddenInGame(false);
 				return K;
 			}

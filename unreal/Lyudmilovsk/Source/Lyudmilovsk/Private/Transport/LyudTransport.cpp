@@ -309,6 +309,7 @@ void ULyudTransportSubsystem::Deinitialize()
 	}
 	LifeBodies.Reset();
 	LifeNoBody.Reset();
+	PresentCount.Reset();
 	Life.Reset();
 	Net.Reset();
 	Super::Deinitialize();
@@ -664,6 +665,39 @@ void ULyudTransportSubsystem::StepLife(float DeltaTime)
 	Life->Step(*Net, LifeClock);
 }
 
+void ULyudTransportSubsystem::PresentPerson(int32 Pid, bool bShown)
+{
+	if (Pid < 0)
+	{
+		return;
+	}
+	UPeopleLifeSubsystem* People = UPeopleLifeSubsystem::Get(this);
+	if (bShown)
+	{
+		int32& Count = PresentCount.FindOrAdd(Pid);
+		if (Count++ == 0 && People)
+		{
+			People->SetPresentedExternally(Pid, true);
+		}
+		return;
+	}
+	const int32* Count = PresentCount.Find(Pid);
+	if (!Count)
+	{
+		return;             // not shown by us (an unmatched let-go must not clear another place's flag)
+	}
+	if (*Count > 1)
+	{
+		PresentCount.Add(Pid, *Count - 1);
+		return;
+	}
+	PresentCount.Remove(Pid);
+	if (People)
+	{
+		People->SetPresentedExternally(Pid, false);
+	}
+}
+
 void ULyudTransportSubsystem::TickCabinTalk(float DeltaTime)
 {
 	if (!Life || !Net || RidingCabin < 0 || RidingCabin >= SimNum(Net->Cabins))
@@ -822,6 +856,11 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 				{
 					Model = UTF8_TO_TCHAR(Life->Riders[Rider].Mesh.c_str());
 				}
+				// the model loaded in the background first (asked again next frame): Setup's load stalled the frame
+				if (!ANpcBody::IsModelReady(this, Model))
+				{
+					continue;
+				}
 				FActorSpawnParameters SP;
 				SP.ObjectFlags |= RF_Transient;
 				SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -836,12 +875,10 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 					LifeNoBody.Add(Who);
 					continue;
 				}
+				ANpcBody::ReleaseModel(this, Model);      // the body holds it now
 				Body->Tags.Add(TEXT("StationLife"));
 				Slot = Body;
-				if (Pid >= 0)
-				{
-					People->SetPresentedExternally(Pid, true);
-				}
+				PresentPerson(Pid, true);
 				Body->Drive(T.GetLocation(), T.Rotator().Yaw, EPersonPose::Sit, 0, 0.f, 44.f, 0.f, true);
 			}
 			const LT::ECabinAct Act = K >= 0 && K < Aboard ? (LT::ECabinAct)Acts[K] : LT::ECabinAct::Sit;
@@ -879,10 +916,7 @@ void ULyudTransportSubsystem::DrawLifeRiders(const FVector& View, float DeltaTim
 			if (People && SimValid(Life->Riders, Rider))
 			{
 				const int32 Pid = People->FindPerson(UTF8_TO_TCHAR(Life->Riders[Rider].Key.c_str()));
-				if (Pid >= 0)
-				{
-					People->SetPresentedExternally(Pid, false);
-				}
+				PresentPerson(Pid, false);
 			}
 			It.RemoveCurrent();
 		}
@@ -1141,7 +1175,8 @@ void ULyudTransportSubsystem::Carry(const FTransform& Before, const FTransform& 
 	{
 		return;
 	}
-	const UPrimitiveComponent* Base = Char->GetMovementBase();
+	// (GetMovementBase is deprecated; the base object is a component when it is one of ours)
+	const UActorComponent* Base = Cast<UActorComponent>(Char->GetMovementBaseObject());
 	const AHeroCharacter* Hero = Cast<AHeroCharacter>(Char);
 	// a body nobody plays (the player flies as a bird) has no movement of its own, so no base carries it: by hand
 	if ((!bAway && Base && Base->GetOwner() == Cabin) || (Hero && Hero->IsSeated()))
@@ -1197,7 +1232,11 @@ void ULyudTransportSubsystem::HandleEvents()
 					{
 						ViewWhat = FName(*FString::Printf(TEXT("view_%s_%s"), *Key(Net->Stations[E.Station].Id), *Key(Net->Stations[Next].Id)));
 						ViewTimer = 20.f;
+						// the view's line (in 20 s) and the arrival's below start loading in the background now:
+						// Announce's LoadVoice read each on the spot, a hitch on the ride
+						LyudText::WarmVoice(this, FString::Printf(TEXT("line.transport.%s.1"), *ViewWhat.ToString()));
 					}
+					LyudText::WarmVoice(this, FString::Printf(TEXT("line.transport.arrive_%s.1"), *Key(Net->Stations[Next].Id)));
 				}
 			}
 			else if (E.Kind == LT::EEvent::Arrive && SimValid(Net->Stations, E.Station))

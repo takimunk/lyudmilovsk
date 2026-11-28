@@ -420,4 +420,11 @@ private:
 	TArray<TWeakObjectPtr<ALyudDoorBase>> Doors;
 	TArray<FAgent> Agents;
 	float AgentClock = 0.f;
+	/** UpdateAgents' scratch, kept between calls (reset, not reallocated, ten times a second). Compared only, never read
+	 *  through: filled and used within one call. */
+	TSet<const AActor*> KnownScratch;
+	struct FDoorReach { ALyudDoorBase* Door = nullptr; bool bPass = false; FVector Centre = FVector::ZeroVector; float Reach2 = -1.f; };
+	TArray<FDoorReach> ReachScratch;
+	/** Updates until the next sweep of every pawn for new unplayed ones (a few times a second, not at every update). */
+	int32 PawnSweepIn = 0;
 };

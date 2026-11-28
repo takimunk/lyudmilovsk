@@ -225,6 +225,7 @@ namespace LyudBirds
 		float Struggle = 0.f;       // s it has been flying without making way against the wind
 		uint8_t Weather = 0;        // EWeathering: what the weather has it doing now (a pose for the game)
 		float RidgeYaw = 0.f;       // riding a cliff's updraft: the way along the rim it beats up and down
+		float GustHeld = 0.f;       // s it has sat crouched through gusts without a lull (GustHolds lets go at 20 s)
 		double SightUntil = -1.0;   // the sight line to the player is taken as it was until then (a trace per bird per frame was too many)
 		bool bSightClear = true;
 		// food it spotted (the feed in the player's hand, a handful thrown): it comes and waits or pecks (FWorld::LureThink)

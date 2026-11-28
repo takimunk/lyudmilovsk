@@ -8,6 +8,7 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/PackageName.h"
+#include "World/LyudPrefetch.h"
 
 using namespace LyudBirds;
 
@@ -98,8 +99,15 @@ ABirdNestRenderer::FDrawSet* ABirdNestRenderer::SetFor(FName Mesh, bool bMover)
 	}
 	// only ask whether the package is there (the kits may not be imported in a checkout); load the mesh when it is drawn
 	const FString Path = Mesh == FName(TEXT("Pole")) ? FString(TEXT("/Engine/BasicShapes/Cylinder")) : FString::Printf(TEXT("/Game/Birds/Nests/%s"), *Mesh.ToString());
-	UStaticMesh* SM = FPackageName::DoesPackageExist(Path)
-		? LoadObject<UStaticMesh>(nullptr, *FString::Printf(TEXT("%s.%s"), *Path, *FPackageName::GetShortName(Path)), nullptr, LOAD_NoWarn | LOAD_Quiet) : nullptr;
+	const bool bExists = FPackageName::DoesPackageExist(Path);
+	const FString ObjectPath = FString::Printf(TEXT("%s.%s"), *Path, *FPackageName::GetShortName(Path));
+	// a stage/egg/chick mesh is first drawn somewhere in the middle of play: loaded in the background, drawn from the
+	// frame it is in memory (a LoadObject here stalled the frame once per kind)
+	if (bExists && !ULyudPrefetch::Ready(this, ObjectPath))
+	{
+		return nullptr;
+	}
+	UStaticMesh* SM = bExists ? LoadObject<UStaticMesh>(nullptr, *ObjectPath, nullptr, LOAD_NoWarn | LOAD_Quiet) : nullptr;
 	if (!SM)
 	{
 		Missing.Add(Mesh);

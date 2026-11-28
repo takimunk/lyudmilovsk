@@ -504,6 +504,13 @@ void ULyudCityThings::OnGameLoaded_Implementation()
 		{
 			Model->ResetState();
 		}
+		// the tournaments too: ApplySaved does nothing for a save without this record, and the brackets, sign-ups and cups
+		// of the game left would carry into the one loaded
+		if (Cups)
+		{
+			Cups->Reset();
+		}
+		CupMatchCup = -1;
 		ApplySaved();
 		ApplyOpenAir();
 	}

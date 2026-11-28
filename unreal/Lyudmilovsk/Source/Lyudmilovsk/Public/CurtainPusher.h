@@ -6,6 +6,7 @@
 
 class UMaterialParameterCollection;
 class UMaterialParameterCollectionInstance;
+class ACharacter;
 
 /**
  * Feeds the positions of up to two nearby characters into a material parameter collection, so
@@ -33,4 +34,7 @@ private:
 	TWeakObjectPtr<UMaterialParameterCollectionInstance> CollectionInstance;
 	/** The "nobody near" value is in the collection: no write until someone comes in range. */
 	bool bWroteFar = false;
+	/** Characters near enough to matter, from a sweep of every character a few times a second (not every frame). */
+	TArray<TWeakObjectPtr<ACharacter>> Nearby;
+	float SweepIn = 0.f;
 };

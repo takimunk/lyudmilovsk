@@ -2206,10 +2206,28 @@ namespace LyudPeople
 			{
 				continue;           // the day they come, the day they leave
 			}
-			// a weekday duty that started yesterday evening (a night shift) counts for yesterday
-			const bool bDay = (D.Days >> Weekday) & 1;
 			// set off a little early: they go there first
-			if (bDay && InHours(D.From - 0.3f, D.To, Hour))
+			const float Early = D.From - 0.3f;
+			if (!InHours(Early, D.To, Hour))
+			{
+				continue;
+			}
+			// a weekday duty that started yesterday evening (a night shift) counts for yesterday; the early setting-off
+			// before midnight for a shift from just after it counts for tomorrow
+			int Day = Weekday;
+			const float EarlyW = std::fmod(Early + 48.f, 24.f), ToW = std::fmod(D.To + 48.f, 24.f);
+			if (D.To - Early < 24.f && EarlyW > ToW)
+			{
+				if (Hour < ToW && Early >= 0.f)
+				{
+					Day = (Weekday + 6) % 7;
+				}
+				else if (Hour >= EarlyW && Early < 0.f)
+				{
+					Day = (Weekday + 1) % 7;
+				}
+			}
+			if ((D.Days >> Day) & 1)
 			{
 				return ActOf(D);
 			}
@@ -3515,7 +3533,11 @@ namespace LyudPeople
 				return;
 			}
 			// nowhere for the duty now (its places full or cut off): free time for a while, not called back every step
-			P.DutyBlockedUntil = Time + 900.0;
+			// (a retry meanwhile that finds it still full, a need looked up from, doesn't put the duty off further)
+			if (Time >= P.DutyBlockedUntil || P.DutyBlockedUntil > Time + 900.0)   // (or the clock was set back)
+			{
+				P.DutyBlockedUntil = Time + 900.0;
+			}
 		}
 		int Best = -1, BestSlot = -1;
 		float BestScore = -1e8f;
@@ -3524,11 +3546,28 @@ namespace LyudPeople
 		{
 			Urgent = P.N[(int)ENeed::Hunger] >= P.N[(int)ENeed::Tired] ? (int)ENeed::Hunger : (int)ENeed::Tired;
 		}
+		else if (P.N[(int)ENeed::Hunger] > 0.85f)
+		{
+			Urgent = (int)ENeed::Hunger;    // past what Interrupt calls them away for: not back to something that doesn't meet it
+		}
+		else if (P.N[(int)ENeed::Tired] > 0.96f && FreeHoursLeft(P) < 3.f)
+		{
+			Urgent = (int)ENeed::Tired;     // the evening's tiredness (bed, or the next duty, near): rest at home (below)
+		}
 		// a break from work is taken at the work's own place when it has what's needed (the owner eats in the club, not
 		// at home); otherwise anywhere
 		const std::string WorkKind = bBreakNow && P.Slot >= 0 ? Places[Slots[P.Slot].Place].Kind : std::string();
-		for (int Pass = WorkKind.empty() ? 1 : 0; Pass < 2 && Best < 0; Pass++)
+		for (int Pass = WorkKind.empty() ? 1 : 0; Pass < 3 && Best < 0; Pass++)
 		{
+			if (Pass == 2)
+			{
+				// nothing open for the need that can't wait (not on a break): whatever is best then
+				if (bBreakNow || Urgent < 0)
+				{
+					break;
+				}
+				Urgent = -1;
+			}
 			for (int I = 0; I < (int)Activities.size(); I++)
 			{
 				if (Urgent >= 0 && Activities[I].Need[Urgent] <= 0.f)
@@ -3541,6 +3580,12 @@ namespace LyudPeople
 				}
 				int S = -1;
 				const float Sc = Score(P, Activities[I], S);
+				// worn out (not on a break): rest at home, not a long way off to something restful (the North's hot spring);
+				// nothing at home: the usual pick (Pass 2)
+				if (Urgent == (int)ENeed::Tired && !bBreakNow && (S < 0 || Slots[(size_t)S].Place != P.Home))
+				{
+					continue;
+				}
 				if (Sc > BestScore)
 				{
 					BestScore = Sc;
@@ -5213,7 +5258,9 @@ namespace LyudPeople
 				const int Duty = DutyNow(P, bSleep);
 				// a duty starts (bed, work, school): drop what they're doing
 				// (a break from work: the way there, 35 min at most, the way back)
-				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil);
+				// (an ordered activity is kept till its time is up, as Interrupt keeps it: only bed calls them off it)
+				const bool bDutyCalls = Duty >= 0 && Duty != P.Activity && !(P.bOnBreak && !bSleep) && (bSleep || Time >= P.DutyBlockedUntil)
+					&& (bSleep || P.Why != "ordered");
 				// what they do is off now (the rink shut, the walruses' hour over): they finish within a minute and go
 				if (!ConditionOk(Activities[(size_t)P.Activity]) && P.Until > Time + 60.0)
 				{
@@ -5377,6 +5424,13 @@ namespace LyudPeople
 
 	void FWorld::Resettle()
 	{
+		// a festival night already over (SetStayUp(0)) whose end lies ahead of the clock: the clock was set back before it
+		// (an older save loaded), and its "morning after" would make this morning a late one, everybody worn out
+		if (StayUntil <= Time && StayEnd > Time)
+		{
+			StayUntil = 0.0;
+			StayEnd = -1e18;
+		}
 		SyncSunDuties();
 		if (bDays)
 		{
@@ -5409,6 +5463,11 @@ namespace LyudPeople
 			P.bLoopStop = false;
 			P.SkateWith = -1;
 			P.Speed = 0.f;
+			// times on the old clock: after a jump back (an older save loaded) they would lie in the future, a blocked duty
+			// staying blocked and what they last left staying "just now" for as long as the jump
+			P.DutyBlockedUntil = -1e18;
+			P.PrevActivity = -1;
+			P.PrevActivityEnd = -1e18;
 			// how tired and hungry they'd be at this hour
 			float Awake = Hour - WakeOf(P);
 			if (Awake < 0.f)

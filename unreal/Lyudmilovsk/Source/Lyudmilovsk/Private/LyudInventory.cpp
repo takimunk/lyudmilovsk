@@ -1086,12 +1086,13 @@ void ULyudInventoryUI::Tick(float)
 
 void ULyudInventoryUI::Lock(bool bLock)
 {
+	const bool bWasLocked = LockCount > 0;
+	LockCount = bLock ? LockCount + 1 : FMath::Max(0, LockCount - 1);
 	APlayerController* PC = GetWorld() ? GetWorld()->GetFirstPlayerController() : nullptr;
-	if (!PC || bLocked == bLock)
+	if (!PC || bWasLocked == (LockCount > 0))
 	{
 		return;
 	}
-	bLocked = bLock;
 	PC->SetIgnoreLookInput(bLock);
 	PC->SetIgnoreMoveInput(bLock);
 	PC->bShowMouseCursor = bLock;

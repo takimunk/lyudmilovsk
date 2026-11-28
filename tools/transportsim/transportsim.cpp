@@ -448,21 +448,21 @@ static void HallMoods(const FStationLife& L)
 		CHECK(Parent >= 0 && L.Riders[R].Age < 14, "%s goes along with nobody", L.Riders[R].Key.c_str());
 		for (int D = 0; D < 14 && Parent >= 0; D++)
 		{
-			FStationLife Day = L;
-			Day.StartDay(D, D % 7, true);
+			FStationLife Life = L;
+			Life.StartDay(D, D % 7, true);
 			int Kid = 0, Par = 0;
-			for (const FLifeRun& Run : Day.Today)
+			for (const FLifeRun& Run : Life.Today)
 			{
-				Kid += Day.Trips[Run.Trip].Rider == R ? 1 : 0;
-				Par += Day.Trips[Run.Trip].Rider == Parent ? 1 : 0;
+				Kid += Life.Trips[Run.Trip].Rider == R ? 1 : 0;
+				Par += Life.Trips[Run.Trip].Rider == Parent ? 1 : 0;
 			}
 			CHECK(Kid == 0 || Par > 0, "%s off to the beach on day %d without %s", L.Riders[R].Key.c_str(), D, L.Riders[R].With.c_str());
-			for (const FLifeRun& K : Day.Today)
+			for (const FLifeRun& K : Life.Today)
 			{
-				for (const FLifeRun& P : Day.Today)
+				for (const FLifeRun& PR : Life.Today)
 				{
-					const FLifeTrip &KT = Day.Trips[K.Trip], &PT = Day.Trips[P.Trip];
-					CHECK(!(KT.Rider == R && PT.Rider == Parent && KT.At == PT.At) || K.HallMinutes == P.HallMinutes,
+					const FLifeTrip &KT = Life.Trips[K.Trip], &PT = Life.Trips[PR.Trip];
+					CHECK(!(KT.Rider == R && PT.Rider == Parent && KT.At == PT.At) || K.HallMinutes == PR.HallMinutes,
 						"%s and %s wait different minutes in the hall", L.Riders[R].Key.c_str(), L.Riders[R].With.c_str());
 				}
 			}

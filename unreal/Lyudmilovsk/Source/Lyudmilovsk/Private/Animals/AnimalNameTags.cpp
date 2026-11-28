@@ -197,6 +197,11 @@ void AAnimalNameTags::Tick(float DeltaSeconds)
 		{
 			continue;
 		}
+		// not drawn: too far (asked first, without strings: GetAnimal builds its name, breed and text every call)
+		if (!Life->BodyOf(A.Id))
+		{
+			continue;
+		}
 		FAnimalInfo Info;
 		if (!Life->GetAnimal(A.Id, Info) || !Info.Actor)
 		{

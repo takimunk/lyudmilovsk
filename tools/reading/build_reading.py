@@ -167,15 +167,21 @@ def build():
     places = [p for p in pd["places"] if p["id"] != PLACE_ID]
     by_id = {p["id"]: p for p in places}
     if len(members) == 5:
-        pd["places"] = places + [club_place(plan, things, by_id, members)]
+        # the place and the duties stay where they were when there already (a rerun after the later add-ons must not
+        # move them to the end: the committed files would change for nothing)
+        club = club_place(plan, things, by_id, members)
+        at = next((i for i, p in enumerate(pd["places"]) if p["id"] == PLACE_ID), None)
+        pd["places"] = places[:at] + [club] + places[at:] if at is not None else places + [club]
         out[TA.PLACES] = TA.dump(pd)
         mk = {m["key"] for m in members}
         for p in people:
+            duties = p.get("duties", [])
+            at = next((i for i, d in enumerate(duties) if d.get("activity") == "book_club"), len(duties))
             if "duties" in p:
-                p["duties"] = [d for d in p["duties"] if d.get("activity") != "book_club"]
+                p["duties"] = [d for d in duties if d.get("activity") != "book_club"]
             if p["key"] in mk:
-                p.setdefault("duties", []).append(OD([("activity", "book_club"), ("place", PLACE_ID), ("hours", list(DUTY_HOURS)),
-                                                       ("days", list(DUTY_DAYS))]))
+                p.setdefault("duties", []).insert(at, OD([("activity", "book_club"), ("place", PLACE_ID), ("hours", list(DUTY_HOURS)),
+                                                          ("days", list(DUTY_DAYS))]))
         out[TA.FOLK] = TA.dump(folk)
         text = open(TA.ACTIVITIES, encoding="utf-8").read()
         lines = [l for l in text.split("\n") if '"id": "book_club"' not in l]

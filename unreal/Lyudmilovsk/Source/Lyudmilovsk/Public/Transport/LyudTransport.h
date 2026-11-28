@@ -123,6 +123,11 @@ public:
 	/** Where to draw a rider now: false if not riding; bSeated in a cabin (Location is the seat), else waiting on a platform. */
 	bool RiderPose(int32 Person, FVector& Location, float& Yaw, bool& bSeated) const;
 
+	/** The town's "shown elsewhere" flag of person Pid (UPeopleLifeSubsystem::SetPresentedExternally), shared by the station
+	 *  halls' bodies and the cabins' riders: counted, so one letting go doesn't uncover a body the other still shows (the
+	 *  town would draw them a second time). Pid < 0: nothing. */
+	void PresentPerson(int32 Pid, bool bShown);
+
 	/** Launch, Arrive, Depart, Board, Alight, Done, Park. */
 	UPROPERTY(BlueprintAssignable, Category = "Transport") FLyudTransportEvent OnTransportEvent;
 
@@ -171,6 +176,8 @@ private:
 	TSet<int32> LifeSeen;
 	/** The riders whose body could not be made (no model): not spawned again each frame. */
 	TSet<int32> LifeNoBody;
+	/** PresentPerson's counts (person id -> bodies of the halls and the cabins showing them). */
+	TMap<int32, int32> PresentCount;
 	void StartLife();
 	void StepLife(float DeltaTime);
 	void DrawLifeRiders(const FVector& View, float DeltaTime);

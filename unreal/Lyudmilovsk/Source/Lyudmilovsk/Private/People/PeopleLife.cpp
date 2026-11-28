@@ -1064,6 +1064,8 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		MNow.SkyShow = SkyShow;
 	}
 	bool bOwnerHere = false;
+	// looked up once a frame, not for every person drawn
+	ULyudBikeSubsystem* BikeSys = ULyudBikeSubsystem::Get(this);
 	for (const LP::FPerson& P : S.People)
 	{
 		const LP::FSlot* Sl = P.Slot >= 0 ? &S.Slots[P.Slot] : nullptr;
@@ -1215,7 +1217,6 @@ void UPeopleLifeSubsystem::Present(float DeltaTime)
 		}
 		const float SeatH = Sl && P.State != LP::EState::Going ? Sl->Height * 100.f : 0.f;
 		// with their bicycle in hand (Bikes/LyudBikeSubsystem): the bike's side places the body on it or beside it
-		ULyudBikeSubsystem* BikeSys = ULyudBikeSubsystem::Get(this);
 		if (BikeSys && P.Bike >= 0 && (P.BikeMode > 0 || P.BikeAct != LP::EBikeAct::None))
 		{
 			BikeSys->PresentPerson(P.Id, Body, DeltaTime);
@@ -2592,6 +2593,18 @@ void ANpcBody::PlacePusher(bool bShow)
 	PusherBlade->SetWorldLocationAndRotation(BladeAt, FRotationMatrix::MakeFromXZ(Fwd, FVector::UpVector).Rotator() + FRotator(-12.f, 0.f, 0.f));
 	PusherBlade->SetWorldScale3D(FVector(0.025f, 0.75f, 0.34f));
 	PusherBlade->SetVisibility(true);
+}
+
+bool ANpcBody::IsModelReady(const UObject* WorldContext, const FString& Model)
+{
+	const bool bModel = ULyudPrefetch::Ready(WorldContext, PeopleLifeLocal::PeopleModelPath(Model));
+	const bool bClips = ULyudPrefetch::FolderReady(WorldContext, TEXT("/Game/Characters/Humans/Anims"));
+	return bModel && bClips;
+}
+
+void ANpcBody::ReleaseModel(const UObject* WorldContext, const FString& Model)
+{
+	ULyudPrefetch::Release(WorldContext, PeopleLifeLocal::PeopleModelPath(Model));
 }
 
 bool ANpcBody::Setup(const FString& InMesh, const FString& InComputerClip)

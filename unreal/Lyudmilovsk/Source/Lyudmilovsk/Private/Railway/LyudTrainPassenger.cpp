@@ -38,6 +38,31 @@ DEFINE_LOG_CATEGORY_STATIC(LogLyudPassenger, Log, All);
 
 namespace LyudPassengerImpl
 {
+	/** The conductor's body (a shared crowd look), only once its model is in memory (a body made on the spot stalls the
+	 *  frame); null meanwhile, or if the model doesn't exist (not loaded: no spawn and failed Setup every frame). */
+	ANpcBody* ConductorBody(UObject* Ctx, UWorld* World, const FString& ModelName, const FVector& At)
+	{
+		const FString Path = FString::Printf(TEXT("/Game/Characters/Humans/%s/SK_%s.SK_%s"), *ModelName, *ModelName, *ModelName);
+		if (ModelName.IsEmpty() || !World || !ANpcBody::IsModelReady(Ctx, ModelName) || !FindObject<UObject>(nullptr, *Path))
+		{
+			return nullptr;
+		}
+		FActorSpawnParameters SP;
+		SP.ObjectFlags |= RF_Transient;
+		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		ANpcBody* Body = World->SpawnActor<ANpcBody>(At, FRotator::ZeroRotator, SP);
+		if (Body && !Body->Setup(ModelName, FString()))
+		{
+			Body->Destroy();
+			Body = nullptr;
+		}
+		if (Body)
+		{
+			Body->Tags.Add(TEXT("NoTalk"));
+		}
+		return Body;
+	}
+
 	const TCHAR* DataFile = TEXT("Railway/passenger.json");
 	const TCHAR* BuiltFile = TEXT("Railway/railway_built.json");
 	const TCHAR* PropMat = TEXT("/Game/City/M_CityProp.M_CityProp");
@@ -410,23 +435,7 @@ void ULyudTrainPassenger::StartConductor()
 	Walk = EWalk::Coming;
 	// the body: a shared crowd look, only once its model is loaded (a body made on the spot stalls the frame)
 	const FString ModelName = Conductor >= 0 ? LyudPassengerImpl::Str(Model->Conductors[(size_t)Conductor].Model) : FString();
-	const FString Path = FString::Printf(TEXT("/Game/Characters/Humans/%s/SK_%s.SK_%s"), *ModelName, *ModelName, *ModelName);
-	if (!ModelName.IsEmpty() && ULyudPrefetch::Ready(this, Path) && ULyudPrefetch::FolderReady(this, TEXT("/Game/Characters/Humans/Anims")))
-	{
-		FActorSpawnParameters SP;
-		SP.ObjectFlags |= RF_Transient;
-		SP.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		Body = World->SpawnActor<ANpcBody>(Hero->GetActorLocation(), FRotator::ZeroRotator, SP);
-		if (Body && !Body->Setup(ModelName, FString()))
-		{
-			Body->Destroy();
-			Body = nullptr;
-		}
-		if (Body)
-		{
-			Body->Tags.Add(TEXT("NoTalk"));
-		}
-	}
+	Body = LyudPassengerImpl::ConductorBody(this, World, ModelName, Hero->GetActorLocation());
 	UE_LOG(LogLyudPassenger, Display, TEXT("Passenger: conductor %s down the car (%.0f -> %.0f cm)%s"),
 		Conductor >= 0 ? *LyudPassengerImpl::Str(Model->Conductors[(size_t)Conductor].Id) : TEXT("?"), WalkFrom, WalkTo, Body ? TEXT("") : TEXT(", no body (a voice)"));
 }
@@ -540,6 +549,11 @@ void ULyudTrainPassenger::TickConductor(AHeroCharacter* Hero, float DeltaTime)
 		WalkD += WalkFrom > WalkD ? Step : -Step;
 		Pose = EPersonPose::Walk;
 		Pace = Speed;
+	}
+	if (!Body && Walk != EWalk::Leaving)
+	{
+		// its model was still loading when the walk began: made as soon as it is in memory
+		Body = LyudPassengerImpl::ConductorBody(this, World, LyudPassengerImpl::Str(C.Model), Hero->GetActorLocation());
 	}
 	if (Body)
 	{

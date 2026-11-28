@@ -803,6 +803,8 @@ check("people: every plan spot is furnished or passed on; town_plan spots = publ
 
 probs = []
 for k, f in flats.items():
+    if not f.get("windows"):
+        continue  # no windows, no light to route (the Mayak keeper's annex, tools/town/lighthouse_keeper.py)
     wall = re.match(r"W[2-5]-D\d{3}$", k) is not None
     # UPeopleLifeSubsystem::SendFlatLight routes by the slash: none = the walls' ALyudCityWindows, one = ULyudWindowLights
     if wall == ("/" in k) or (not wall and (k.count("/") != 1 or k.split("/")[0] not in PB)):

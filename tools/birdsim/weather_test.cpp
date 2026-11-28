@@ -223,6 +223,69 @@ namespace WeatherTest
 		Check(Steady.Crouched == 0 && Calm.Crouched == 0, "a steady wind of the same strength, or a light air with its puffs, holds nobody down");
 	}
 
+	/** A steady gale comes up over a calm morning: the small land birds it is too much for leave the open for the lee
+	 *  within half an hour (gusts over a perch hold a bird for a moment, never through a gale that does not let up). */
+	void Gale()
+	{
+		std::printf("a steady gale:\n");
+		FWorld Calm, Blown;
+		if (!Map(Calm, 9.f) || !Map(Blown, 9.f))
+		{
+			std::printf("  (no map data: skipped)\n");
+			return;
+		}
+		for (FWorld* W : { &Calm, &Blown })
+		{
+			W->Wind = V3(-3.f, 0.f, 0.f);
+			W->Gustiness = 0.1f;
+			W->Resettle();
+			Run(*W, 1200.f, 0.25f);
+		}
+		Blown.Wind = V3(-11.f, 0.f, 0.f);       // a steady gale, hardly gusting: its lulls never fall below a small bird's limit
+		std::vector<char> Minds(SpeciesTable().size(), 0);
+		int Kinds = 0;
+		for (size_t I = 0; I < SpeciesTable().size(); I++)
+		{
+			const FSpecies& S = SpeciesTable()[I];
+			Minds[I] = Blown.WindStress(S) > 0.75f && S.Id.find("Gull") == std::string::npos && S.Flight != EFlight::Soar;
+			Kinds += Minds[I];
+		}
+		Run(Calm, 1800.f, 0.25f);
+		long Crouched = 0, Seen = 0;
+		Run(Blown, 1800.f, 0.25f, [&]
+		{
+			for (const FBird& B : Blown.Birds)
+			{
+				if (!B.bGone && Minds[B.Species] && B.Site >= 0 && IsSitting(B.Act))
+				{
+					Seen++;
+					Crouched += B.Weather == (uint8_t)EWeathering::Crouched;
+				}
+			}
+		});
+		// out in the wind as the bird life has it (BirdSim.cpp IsExposed): a street is in the lee of its houses
+		auto Count = [&](const FWorld& W, int& Exposed, int& Land)
+		{
+			Exposed = Land = 0;
+			for (const FBird& B : W.Birds)
+			{
+				if (B.bGone || B.Site < 0 || !Minds[B.Species] || IsAirborne(B.Act))
+				{
+					continue;
+				}
+				const EHabitat K = W.Sites[B.Site].Kind;
+				Land++;
+				Exposed += IsOpen(K) && K != EHabitat::Street;
+			}
+		};
+		int CE, CL, GE, GL;
+		Count(Calm, CE, CL);
+		Count(Blown, GE, GL);
+		std::printf("  %d species find 11 m/s too much; calm: %d of %d of them out in the wind; half an hour into the gale: %d of %d (crouched %.1f%% of their sitting time)\n",
+			Kinds, CE, CL, GE, GL, 100.f * Crouched / std::max(1L, Seen));
+		Check(CL > 100 && GL > 100 && GE * CL * 4 < CE * GL * 3, "a steady gale moves the small birds out of the wind within half an hour (a quarter or more of them)");
+	}
+
 	// --- heads to the wind -----------------------------------------------------------------------------
 
 	void Facing()
@@ -430,6 +493,7 @@ int WeatherTests(int* Passed)
 	std::printf("the weather:\n");
 	Rain();
 	Gusts();
+	Gale();
 	Facing();
 	Ridge();
 	if (Passed)

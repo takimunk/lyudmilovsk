@@ -927,7 +927,14 @@ void UBirdTameSubsystem::UpdateHud(AHeroCharacter* Hero)
 		FBirdLifeInfo Info;
 		if (Life->GetBird(Focus, Info))
 		{
-			Bird = BirdName(Focus);
+			// formatted again only for another species or language (a key built, looked up and formatted every frame)
+			if (Info.SpeciesId != HudBirdSpecies || HudBirdName.IsEmpty() || LyudText::Language() != HudBirdLanguage)
+			{
+				HudBirdSpecies = Info.SpeciesId;
+				HudBirdLanguage = LyudText::Language();
+				HudBirdName = BirdName(Focus);
+			}
+			Bird = HudBirdName;
 			Alert = Info.Alertness;
 			Trust = Info.Trust;
 		}
