@@ -94,7 +94,7 @@ this is the order.
 Known and left: `SailModel.cpp` `Heading()` mode 1 `Side = -Rel * H.Tack` may be sign-inverted (the fleet brain works round it;
 all suites pass); NPCs run dead downwind (no gybing angles); the people's walk grid does not know the boathouse; towel spot
 `S-TOWEL-07` still lies inside the boat park in `public_spaces.json` (fix in `tools/public_spaces.py`, which needs the terrain);
-133 spoken lines are unvoiced; the wind thread's new calls (shifts, gust fronts, batched queries) are not used yet.
+`life_jacket` shares the Outer wear slot with coats (wind jacket, raincoat, winter coat), so putting it on takes the coat off and changes what residents say about the hero's clothes: give it a slot of its own; the school flies its own windsock next to the wind system's tell-tales on the beach (drop one); the fleet still samples `GetWindAt` per boat (main now has batched `GetWindsAt`); 133 spoken lines are unvoiced; the wind thread's new calls (shifts, gust fronts, batched queries) are not used yet.
 
 ## Sounds
 
