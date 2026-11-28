@@ -160,6 +160,19 @@ namespace
 		Good(TEXT("banya_towel"), K::Misc, L::Pack, FVector(5.f, 22.f, 30.f), FLinearColor(0.93f, 0.90f, 0.84f), 30, 8.f);
 		Good(TEXT("carrot"), K::Misc, L::Pack, FVector(3.f, 3.f, 16.f), FLinearColor(0.95f, 0.48f, 0.10f), 3, 2.f);
 		Good(TEXT("coal"), K::Misc, L::Pack, FVector(3.f, 3.f, 3.f), FLinearColor(0.05f, 0.05f, 0.05f), 0, 2.f);
+		// the yacht school (docs/yacht_school.md "Words, quests, items (part G)"): the member's card given on joining, the bosun's
+		// small goods, the keepsake pennant of the full stamp set, the things for the bosun's boat and three finds of the quests
+		Good(TEXT("sail_card"), K::Misc, L::Flat, FVector(0.5f, 7.5f, 10.5f), FLinearColor(0.10f, 0.22f, 0.50f), 0, 3.f);
+		Good(TEXT("sail_gloves"), K::Misc, L::Flat, FVector(3.f, 11.f, 19.f), FLinearColor(0.20f, 0.22f, 0.26f), 120, 4.f);
+		Good(TEXT("knot_cord"), K::Misc, L::Pack, FVector(3.f, 8.f, 8.f), FLinearColor(0.88f, 0.84f, 0.72f), 6, 3.f);
+		Good(TEXT("bailer"), K::Misc, L::Pack, FVector(11.f, 13.f, 24.f), FLinearColor(0.85f, 0.25f, 0.12f), 15, 6.f);
+		Good(TEXT("sail_pennant"), K::Misc, L::Flat, FVector(0.3f, 18.f, 30.f), FLinearColor(0.95f, 0.93f, 0.86f), 0, 4.f);
+		Good(TEXT("sail_book"), K::Misc, L::Flat, FVector(1.2f, 10.f, 15.f), FLinearColor(0.12f, 0.25f, 0.42f), 35, 3.f);
+		Good(TEXT("brass_screws"), K::Misc, L::Pack, FVector(4.f, 6.f, 8.f), FLinearColor(0.80f, 0.62f, 0.22f), 18, 3.f);
+		Good(TEXT("yacht_varnish"), K::Misc, L::Pack, FVector(10.f, 10.f, 12.f), FLinearColor(0.72f, 0.45f, 0.12f), 65, 5.f);
+		Good(TEXT("lucky_whistle"), K::Misc, L::Pack, FVector(1.8f, 2.2f, 5.5f), FLinearColor(0.95f, 0.82f, 0.12f), 0, 2.f);
+		Good(TEXT("bottle_letter"), K::Misc, L::Bottle, FVector(8.f, 8.f, 28.f), FLinearColor(0.16f, 0.36f, 0.22f), 0, 4.f);
+		Good(TEXT("race_mark"), K::Misc, L::Pack, FVector(14.f, 34.f, 40.f), FLinearColor(0.95f, 0.42f, 0.08f), 0, 9.f);
 		// the Academgorodok's grocery (docs/bird_taming.md "Feeds and the feeder"): feeds for the rarer birds (each unit a handful,
 		// held in the hand like the vending machine's seeds; what each bird thinks of them is Content/BirdsData/feeds.json),
 		// the feeder to put them in, and bread and kefir for the hero
@@ -329,6 +342,8 @@ namespace
 		// winter play (docs/winter_play.md): skates on the feet (the pond's ice glides under them), the banya's felt hat
 		Wear(TEXT("skates"), ELyudEquipSlot::Feet);
 		Wear(TEXT("banya_hat"), ELyudEquipSlot::Head);
+		// the yacht school's life jacket (docs/yacht_school.md): taken from the rail in the changing room, worn over everything
+		Wear(TEXT("life_jacket"), ELyudEquipSlot::Outer);
 		// fishing (docs/fishing.md): the rods (taken in the hand), their baits (a bait taken in the hand goes on the rig; each unit is
 		// one on the hook), the spoon (cast and wound in, lost only with the line), and every fish one can catch (fish_<species>)
 		FLyudItemDef Rod;

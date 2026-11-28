@@ -31,14 +31,14 @@
    "prompt": "city.act.watch.prompt",
    "minutes": 1,
    "any_hour": true,
-   "lines": "city.sail.emblem.*"
+   "lines": "city.sail.emblem"
   },
   "sail_bell": {
    "prompt": "city.sail.bell.prompt",
    "minutes": 0,
    "any_hour": true,
    "sound": "sail_bell_single",
-   "lines": "city.sail.bell.*"
+   "lines": "city.sail.bell"
   },
   "sail_carry": {
    "prompt": "city.sail.carry.prompt",
@@ -96,7 +96,7 @@
    "minutes": 10,
    "any_hour": true,
    "sound": "sail_hose",
-   "lines": "city.sail.wash.*"
+   "lines": "city.sail.wash"
   },
   "sail_knot": {
    "prompt": "city.sail.knot.prompt",
@@ -135,13 +135,13 @@
    "prompt": "city.act.watch.prompt",
    "minutes": 1,
    "any_hour": true,
-   "lines": "city.sail.mast.*"
+   "lines": "city.sail.mast"
   },
   "sail_parts": {
    "prompt": "city.sail.parts.prompt",
    "minutes": 3,
    "any_hour": true,
-   "lines": "city.sail.parts.*"
+   "lines": "city.sail.parts"
   },
   "sail_rig": {
    "prompt": "city.sail.rig.prompt",
@@ -149,19 +149,19 @@
    "fade": true,
    "any_hour": true,
    "sound": "sail_mast_step",
-   "lines": "city.sail.rig.*"
+   "lines": "city.sail.rig"
   },
   "sail_jacket": {
    "prompt": "city.sail.jacket.prompt",
    "minutes": 1,
    "sound": "sail_buckle",
-   "lines": "city.sail.jacket.*",
+   "lines": "city.sail.jacket",
    "any_hour": true
   },
   "sail_lockers": {
    "prompt": "city.act.watch.prompt",
    "minutes": 1,
-   "lines": "city.sail.lockers.*"
+   "lines": "city.sail.lockers"
   },
   "sail_old_hull": {
    "prompt": "city.sail.hull.prompt",
@@ -170,17 +170,17 @@
    "needs_staff": "bosun",
    "closed": "city.sail.hull.closed",
    "sound": "plane_wood",
-   "lines": "city.sail.hull.*"
+   "lines": "city.sail.hull"
   },
   "sail_photos": {
    "prompt": "city.act.watch.prompt",
    "minutes": 2,
-   "lines": "city.sail.photos.*"
+   "lines": "city.sail.photos"
   },
   "sail_blackboard": {
    "prompt": "city.act.look.prompt",
    "minutes": 2,
-   "lines": "city.sail.blackboard.*"
+   "lines": "city.sail.blackboard"
   },
   "sail_flags": {
    "prompt": "city.act.look.prompt",
@@ -197,7 +197,7 @@
   "sail_trophies": {
    "prompt": "city.act.watch.prompt",
    "minutes": 2,
-   "lines": "city.sail.trophies.*"
+   "lines": "city.sail.trophies"
   },
   "sail_bookshelf": {
    "prompt": "city.act.read.prompt",
@@ -240,7 +240,7 @@
    "minutes": 1,
    "needs_staff": "coach",
    "closed": "city.sail.desk.closed",
-   "lines": "city.sail.desk.*"
+   "lines": "city.sail.desk"
   },
   "sail_radio": {
    "prompt": "city.sail.radio.prompt",
@@ -354,7 +354,7 @@
     },
     {
      "k": "city.sail.deck.night",
-     "hours": [
+     "h": [
       21,
       6
      ]
@@ -368,12 +368,12 @@
   "sail_stove": {
    "prompt": "city.sail.stove.prompt",
    "minutes": 5,
-   "lines": "city.sail.stove.*"
+   "lines": "city.sail.stove"
   },
   "sail_wind": {
    "prompt": "city.act.look.prompt",
    "minutes": 1,
-   "lines": "city.sail.wind.*"
+   "lines": "city.sail.wind"
   }
  },
  "rules": {
