@@ -1,0 +1,23 @@
+{
+ "comment": "The third town bundle (tq3_*, docs/quests.md \"Townsfolk as quest people\"). x, y map metres; the givers themselves are reached with Quest.GoToPerson in the stages' dev blocks.",
+ "teleports": [
+  {
+   "id": "tq3.yard_leaves",
+   "group": "tq",
+   "name": "dev.tp.tq3.yard_leaves",
+   "x": -578.5,
+   "y": 1066.0,
+   "yaw": 120.0,
+   "time": "09:00"
+  },
+  {
+   "id": "tq3.beach_castle",
+   "group": "tq",
+   "name": "dev.tp.tq3.beach_castle",
+   "x": 166.0,
+   "y": 947.0,
+   "yaw": 0.0,
+   "time": "12:00"
+  }
+ ]
+}
